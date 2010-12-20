@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+
+  <vendor>FirewallD</vendor>
+  <vendor_url>http://fedorahosted.org/firewalld</vendor_url>
+
+   <action id="org.fedoraproject.FirewallD.info">
+    <description>General firewall information</description>
+    <message>System policy prevents to get general firewall information</message>
+    <defaults>
+      <allow_inactive>yes</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+   <action id="org.fedoraproject.FirewallD.config">
+    <description>Active firewall configuration</description>
+    <message>System policy prevents to get active firewall configuration</message>
+    <defaults>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+  </action>
+
+   <action id="org.fedoraproject.FirewallD.modify">
+    <description>Modify firewall configuration</description>
+    <message>System policy prevents to modify firewall configuration</message>
+    <defaults>
+      <allow_inactive>no</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
+</policyconfig>

@@ -1,0 +1,512 @@
+# Translation of system-config-firewall to Dutch.
+# This file is distributed under the same license as the system-config-firewall package.
+# Copyright (C) 2002-2009 Free Software Foundation, Inc.
+# Taco Witte <T.C.Witte@phys.uu.nl>, 2002.
+# Tino Meinen <a.t.meinen@chello.nl>, 2002, 2003.
+# Peter van Egdom <p.van.egdom@gmail.com>, 2003-2009.
+# Bart Couvreur <couf@fedoraproject.org>, 2007.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2009, 2010.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2009, 2010.
+# Richard E. van der Luit <nippur@fedoraproject.org>, 2009, 2010.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: system-config-firewall\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-17 16:58+0100\n"
+"PO-Revision-Date: 2010-06-25 14:46+0200\n"
+"Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
+"Language-Team: Fedora\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.5.2\n"
+
+#
+#: ../firewalld/firewall_config.py:42
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
+"Dit programma is vrije software; Je kunt het verspreiden en/of wijzigen "
+"onder de bepalingen van de GNU General Public License, zoals uitgegeven door "
+"de Free Software Foundation; zowel versie 2 van de licentie, of (naar vrije "
+"keuze) een latere versie.\n"
+"\n"
+"Dit programma wordt verspreid met de hoop dat het nuttig zal zijn, maar "
+"ZONDER ENIGE GARANTIE; zelfs zonder de impliciete garantie van "
+"VERKOOPBAARHEID of GESCHIKTHEID VOOR EEN BEPAALD DOEL. Zie de GNU General "
+"Public License voor meer details.\n"
+"\n"
+"Je moet een kopie van de GNU General Public License, samen met dit "
+"programma, ontvangen hebben. Indien dat niet het geval is, zie <http://www."
+"gnu.org/licenses/>."
+
+#: ../firewalld/firewall-config.glade.h:1
+msgid "21/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:2
+msgid "22/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:3
+msgid "80/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:4
+msgid "Active Configuration"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:5
+msgid "Add"
+msgstr "Toevoegen"
+
+#
+#: ../firewalld/firewall-config.glade.h:6
+msgid ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks."
+msgstr ""
+"Voeg extra poorten of poort reeksen toe, die bereikbaar moeten zijn voor "
+"alle hosts of netwerken."
+
+#
+#: ../firewalld/firewall-config.glade.h:7
+msgid ""
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
+msgstr ""
+"Voeg ingangen toe voor het doorsturen van een poort naar een andere poort op "
+"het lokale systeem of van het lokale systeem naar een ander systeem. "
+"Doorsturen naar een ander systeem is alleen nuttig als het interface vermomd "
+"is. Poorten doorsturen kan alleen met IPv4."
+
+#
+#: ../firewalld/firewall-config.glade.h:8
+msgid "Allow access to necessary ports or port ranges, only."
+msgstr "Sta alleen toegang toe aan noodzakelijke poorten of poort reeksen."
+
+#
+#: ../firewalld/firewall-config.glade.h:9
+msgid "Allow access to necessary services, only."
+msgstr "Sta alleen toegang toe aan noodzakelijke services."
+
+#
+#: ../firewalld/firewall-config.glade.h:10 ../firewalld/firewall-applet:145
+msgid "Custom Rules"
+msgstr "Aangepaste regels"
+
+#: ../firewalld/firewall-config.glade.h:11
+msgid "Default Configuration"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:12
+msgid "Edit"
+msgstr "Bewerken"
+
+#
+#: ../firewalld/firewall-config.glade.h:13
+msgid "FTP"
+msgstr "FTP"
+
+#
+#: ../firewalld/firewall-config.glade.h:14
+msgid ""
+"FTP is a protocol used for remote file transfer. If you plan to make your "
+"FTP server publicly available, enable this option. You need the vsftpd "
+"package installed for this option to be useful."
+msgstr ""
+"FTP is een protocol dat gebruikt wordt voor bestand overdrachten. Als je van "
+"plan bent om jouw FTP server publiekelijk beschikbaar te stellen, zet deze "
+"optie dan aan. Je hebt het vsftpd pakket nodig om een FTP server te draaien."
+
+#: ../firewalld/firewall-config.glade.h:15
+msgid "Firewall Daemon"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:16
+msgid ""
+"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
+"server publicly available, enable this option. This option is not required "
+"for viewing pages locally or developing Web pages."
+msgstr ""
+"HTTP is het protocol dat gebruikt wordt om webpagina's aan te bieden. Als je "
+"van plan bent om jouw webserver publiekelijk beschikbaar te stellen, zet "
+"deze optie dan aan. Deze optie is niet vereist om webpagina's lokaal te "
+"bekijken of om webpagina's te ontwikkelen."
+
+#: ../firewalld/firewall-config.glade.h:17
+msgid ""
+"Here you can define the interfaces and network areas that have fill access "
+"to the system."
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:18
+msgid ""
+"Here you can define which services are trusted. Trusted services are "
+"accessible from all hosts and networks in the selected network protocol. "
+"Click on <i>Add</i> to select an item from the list of predefined services."
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:19
+msgid "Home Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:20
+msgid "ICMP Filter"
+msgstr "ICMP filter"
+
+#: ../firewalld/firewall-config.glade.h:21
+msgid "IPv4"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:22
+msgid "IPv4,IPv6"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:23
+msgid "IPv6"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:24
+msgid ""
+"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
+"networks."
+msgstr ""
+"Als je vermomming aanzet, zal IP doorzenden ook aangezet worden voor jouw "
+"IPv4 netwerken."
+
+#
+#: ../firewalld/firewall-config.glade.h:25
+msgid ""
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
+msgstr ""
+"Markeer de ICMP types die geweigerd moeten worden in de lijst. Aan alle "
+"andere ICMP types is het toegestaan de firewall te passeren. De standaard is "
+"geen beperking."
+
+#
+#: ../firewalld/firewall-config.glade.h:26 ../firewalld/firewall-applet:127
+msgid "Masquerading"
+msgstr "Vermomming"
+
+#
+#: ../firewalld/firewall-config.glade.h:27
+msgid ""
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr ""
+"Vermomming staat het instellen van een host of router toe die jouw lokale "
+"netwerk met het internet verbindt. Jouw lokale netwerk zal niet zichtbaar "
+"zijn en de hosts verschijnen als een enkel adres op het internet. Vermomming "
+"is alleen in IPv4 beschikbaar."
+
+#: ../firewalld/firewall-config.glade.h:28
+msgid ""
+"Only allow full access for interfaces or network areas if you can trust all "
+"participants part of these."
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:29
+msgid "Other Ports"
+msgstr "Andere poorten"
+
+#
+#: ../firewalld/firewall-config.glade.h:30 ../firewalld/firewall-applet:133
+msgid "Port Forwarding"
+msgstr "Poort doorsturen"
+
+#: ../firewalld/firewall-config.glade.h:31
+msgid "Public Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:32
+msgid "Reload"
+msgstr "Herladen"
+
+#
+#: ../firewalld/firewall-config.glade.h:33
+msgid "Remove"
+msgstr "Verwijderen"
+
+#: ../firewalld/firewall-config.glade.h:34
+msgid "Restart"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:35
+msgid "SSH"
+msgstr "SSH"
+
+#: ../firewalld/firewall-config.glade.h:36
+msgid ""
+"Secure Shell (SSH) is a protocol for logging into and executing commands on "
+"remote machines. It provides secure encrypted comminucations. If you plan on "
+"accessing your machine remotely via SSH over a firewalled interface, enable "
+"this option. You need the openssh-server package installed for this option "
+"to be useful. "
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:37
+msgid "Select Configuration"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:38 ../firewalld/firewall-applet:111
+msgid "Services"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:39
+msgid "Start"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:40
+msgid "Stop"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:41
+msgid "Switch Firewall Model"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:42
+msgid "Switch firewall model"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:43
+msgid ""
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
+msgstr ""
+"Het Internet Control Message Protocol (ICMP) wordt voornamelijk gebruikt om "
+"foutmeldingen te versturen tussen computers op het netwerk, maar bovendien "
+"voor informatieve boodschappen zoals ping verzoeken en antwoorden."
+
+#: ../firewalld/firewall-config.glade.h:44
+msgid "Trusted"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:45
+msgid "Trusted Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:46
+msgid "WWW (HTTP)"
+msgstr "WWW (HTTP)"
+
+#: ../firewalld/firewall-config.glade.h:47
+msgid "Work Zone"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:48
+msgid "Zone"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:49
+msgid "Zones"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:50
+msgid "_File"
+msgstr "_Bestand"
+
+#
+#: ../firewalld/firewall-config.glade.h:51
+msgid "_Help"
+msgstr "_Hulp"
+
+#
+#: ../firewalld/firewall-config.glade.h:52
+msgid "_Options"
+msgstr "_Opties"
+
+#: ../firewalld/firewall-config.glade.h:53
+msgid "ftp"
+msgstr ""
+
+#: ../firewalld/firewalld:891
+#, c-format
+msgid "fork #1 failed: %d (%s)"
+msgstr ""
+
+#: ../firewalld/firewall-applet:58
+msgid "Firewall Applet"
+msgstr ""
+
+#: ../firewalld/firewall-applet:59
+msgid "- proof of concept implementation -"
+msgstr ""
+
+#: ../firewalld/firewall-applet:115
+msgid "Ports"
+msgstr ""
+
+#: ../firewalld/firewall-applet:121
+msgid "Trusted Connections"
+msgstr ""
+
+#: ../firewalld/firewall-applet:139
+msgid "ICMP Blocking"
+msgstr ""
+
+#: ../firewalld/firewall-applet:158
+msgid "Panic Mode"
+msgstr ""
+
+#
+#: ../firewalld/firewall-applet:169
+msgid "Enable Firewall"
+msgstr "Firewall aanzetten"
+
+#: ../firewalld/firewall-applet:174
+msgid "Enable All Notifications"
+msgstr ""
+
+#: ../firewalld/firewall-applet:205
+msgid "Not using slip"
+msgstr ""
+
+#: ../firewalld/firewall-applet:223
+#, c-format
+msgid ""
+"\n"
+"Timeout: %d seconds"
+msgstr ""
+
+#: ../firewalld/firewall-applet:225
+#, c-format
+msgid ""
+"\n"
+"Requested by: %s"
+msgstr ""
+
+#: ../firewalld/firewall-applet:245
+msgid "Connection to FirewallD lost"
+msgstr ""
+
+#: ../firewalld/firewall-applet:395
+msgid "No connection to firewall daemon"
+msgstr ""
+
+#: ../firewalld/firewall-applet:402
+msgid "PANIC MODE"
+msgstr ""
+
+#: ../firewalld/firewall-applet:409
+msgid "No Open Services."
+msgstr ""
+
+#: ../firewalld/firewall-applet:411
+msgid "Open Services:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:415
+msgid "No Open Ports."
+msgstr ""
+
+#: ../firewalld/firewall-applet:421
+msgid "No Trusted."
+msgstr ""
+
+#: ../firewalld/firewall-applet:423
+msgid "Trusted:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:427
+msgid "No Masqueraded."
+msgstr ""
+
+#: ../firewalld/firewall-applet:429
+msgid "Masqueraded:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:433
+msgid "No ICMP Blocks."
+msgstr ""
+
+#: ../firewalld/firewall-applet:435
+msgid "ICMP Blocks:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:439
+msgid "No Forward Ports."
+msgstr ""
+
+#: ../firewalld/firewall-applet:441
+msgid "Forward Ports:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:445
+msgid "No Custom Rules."
+msgstr ""
+
+#: ../firewalld/firewall-applet:447
+msgid "Custom Rules:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:465
+msgid "Panic mode"
+msgstr ""
+
+#: ../firewalld/firewall-applet:487
+#, c-format
+msgid "Service '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:502
+#, c-format
+msgid "Port '%s:%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:516
+#, c-format
+msgid "Trusted '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:532
+#, c-format
+msgid "Masquerade '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:548
+#, c-format
+msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:563
+#, c-format
+msgid "Block ICMP '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:586
+#, c-format
+msgid ""
+"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr ""

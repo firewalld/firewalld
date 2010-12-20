@@ -1,0 +1,496 @@
+# translation of system-config-firewall.master.po to Wei Liu
+# translation of zh_CN.po to
+# translation of zh_CN.po to
+# translation of zh_CN.po to
+# translation of zh_CN.po to
+# translation of zh_CN.po to
+# Simplifed Chinese Version of system-config-firewall.
+# Copyright (C) 2002 Red Hat, Inc.
+#
+#
+# Sarah Wang <sarahs@redhat.com>, 2003,2004, 2005.
+# Leah Liu <weliu@redhat.com>, 2005, 2006.
+# Leah Liu <lliu@redhat.com>, 2007.
+# Leah Liu <lliu@redhat.com>, 2008, 2009, 2010.
+msgid ""
+msgstr ""
+"Project-Id-Version: system-config-firewall.master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-17 16:58+0100\n"
+"PO-Revision-Date: 2010-06-30 13:16+1000\n"
+"Last-Translator: Leah Liu <lliu@redhat.com>\n"
+"Language-Team: Wei Liu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#
+#: ../firewalld/firewall_config.py:42
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
+"这一程序是自由软件，你可以遵照自由软件基金会出版的GNU通用公共许可证条款来修改"
+"和重新发布这一程序。或者用许可证的第二版，或者（根据你的选 择）用任何更新的版"
+"本。\n"
+"\n"
+"发布这一程序的目的是希望它有用，但没有任何担保。甚至没有适合特定目的的隐含的"
+"担保。更详细的情况请参阅GNU通用公共许可证。你应该已经和程序一起收到一份GNU通"
+"用公共许可证的副本。如果还没有， 请参考 <http://www.gnu.org/licenses/>。"
+
+#: ../firewalld/firewall-config.glade.h:1
+msgid "21/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:2
+msgid "22/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:3
+msgid "80/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:4
+msgid "Active Configuration"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:5
+msgid "Add"
+msgstr "添加"
+
+#
+#: ../firewalld/firewall-config.glade.h:6
+msgid ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks."
+msgstr "添加可让所有主机或者网络访问的附加端口或者端口范围。"
+
+#
+#: ../firewalld/firewall-config.glade.h:7
+msgid ""
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
+msgstr ""
+"添加条目来转发端口，可以是从本地系统的一个端口到另一个端口，也可以是从本地系"
+"统到另一个系统。转发到另一个系统只在接口是伪装的时候有用。端口转发只适用于 "
+"IPv4。"
+
+#
+#: ../firewalld/firewall-config.glade.h:8
+msgid "Allow access to necessary ports or port ranges, only."
+msgstr "仅允许访问到必要的端口或端口范围"
+
+#
+#: ../firewalld/firewall-config.glade.h:9
+msgid "Allow access to necessary services, only."
+msgstr "仅允许必要的服务访问。"
+
+#
+#: ../firewalld/firewall-config.glade.h:10 ../firewalld/firewall-applet:145
+msgid "Custom Rules"
+msgstr "定制规则"
+
+#: ../firewalld/firewall-config.glade.h:11
+msgid "Default Configuration"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:12
+msgid "Edit"
+msgstr "编辑"
+
+#
+#: ../firewalld/firewall-config.glade.h:13
+msgid "FTP"
+msgstr "FTP"
+
+#
+#: ../firewalld/firewall-config.glade.h:14
+msgid ""
+"FTP is a protocol used for remote file transfer. If you plan to make your "
+"FTP server publicly available, enable this option. You need the vsftpd "
+"package installed for this option to be useful."
+msgstr ""
+"FTP 是用来进行远程文件传输的协议。如果您希望将您的 FTP 服务器向公众开放，请启"
+"用此选项。要使此选项可用，您需要安装 vsftpd 软件包。"
+
+#: ../firewalld/firewall-config.glade.h:15
+msgid "Firewall Daemon"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:16
+msgid ""
+"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
+"server publicly available, enable this option. This option is not required "
+"for viewing pages locally or developing Web pages."
+msgstr ""
+"HTTP 是用来提供网页的协议。如果您希望让您的 Web 服务器向公众开放，请启用此选"
+"项。要浏览本地页面或者开发网页则不需要此选项。"
+
+#: ../firewalld/firewall-config.glade.h:17
+msgid ""
+"Here you can define the interfaces and network areas that have fill access "
+"to the system."
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:18
+msgid ""
+"Here you can define which services are trusted. Trusted services are "
+"accessible from all hosts and networks in the selected network protocol. "
+"Click on <i>Add</i> to select an item from the list of predefined services."
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:19
+msgid "Home Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:20
+msgid "ICMP Filter"
+msgstr "ICMP 过滤器"
+
+#: ../firewalld/firewall-config.glade.h:21
+msgid "IPv4"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:22
+msgid "IPv4,IPv6"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:23
+msgid "IPv6"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:24
+msgid ""
+"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
+"networks."
+msgstr "如果您启用伪装，还会为您的 IPv4 网络启用 IP 转发功能。"
+
+#
+#: ../firewalld/firewall-config.glade.h:25
+msgid ""
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
+msgstr ""
+"在列表中标记应该被拒绝的 ICMP 类型。所有其它 ICMP 类型则被允许通过防火墙。默"
+"认设置是没有限制。"
+
+#
+#: ../firewalld/firewall-config.glade.h:26 ../firewalld/firewall-applet:127
+msgid "Masquerading"
+msgstr "伪装（Masquerading）"
+
+#
+#: ../firewalld/firewall-config.glade.h:27
+msgid ""
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr ""
+"如果您要设置一台将您的本地网络连接到互联网的主机或者路由器，伪装"
+"（Masquerading）是很有用的。您的本地网络将不可见，且该主机是以单一地址的形式"
+"出现在互联网中。伪装仅用于 IPv4。"
+
+#: ../firewalld/firewall-config.glade.h:28
+msgid ""
+"Only allow full access for interfaces or network areas if you can trust all "
+"participants part of these."
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:29
+msgid "Other Ports"
+msgstr "其它端口"
+
+#
+#: ../firewalld/firewall-config.glade.h:30 ../firewalld/firewall-applet:133
+msgid "Port Forwarding"
+msgstr "端口转发"
+
+#: ../firewalld/firewall-config.glade.h:31
+msgid "Public Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:32
+msgid "Reload"
+msgstr "重新载入"
+
+#
+#: ../firewalld/firewall-config.glade.h:33
+msgid "Remove"
+msgstr "删除"
+
+#: ../firewalld/firewall-config.glade.h:34
+msgid "Restart"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:35
+msgid "SSH"
+msgstr "SSH"
+
+#: ../firewalld/firewall-config.glade.h:36
+msgid ""
+"Secure Shell (SSH) is a protocol for logging into and executing commands on "
+"remote machines. It provides secure encrypted comminucations. If you plan on "
+"accessing your machine remotely via SSH over a firewalled interface, enable "
+"this option. You need the openssh-server package installed for this option "
+"to be useful. "
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:37
+msgid "Select Configuration"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:38 ../firewalld/firewall-applet:111
+msgid "Services"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:39
+msgid "Start"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:40
+msgid "Stop"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:41
+msgid "Switch Firewall Model"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:42
+msgid "Switch firewall model"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:43
+msgid ""
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
+msgstr ""
+"互联网控制报文协议（ICMP）主要用于在联网的计算机间发送出错信息，但也发送类似 "
+"ping 请求以及回应等信息。"
+
+#: ../firewalld/firewall-config.glade.h:44
+msgid "Trusted"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:45
+msgid "Trusted Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:46
+msgid "WWW (HTTP)"
+msgstr "WWW (HTTP)"
+
+#: ../firewalld/firewall-config.glade.h:47
+msgid "Work Zone"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:48
+msgid "Zone"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:49
+msgid "Zones"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:50
+msgid "_File"
+msgstr "文件（_F）"
+
+#
+#: ../firewalld/firewall-config.glade.h:51
+msgid "_Help"
+msgstr "帮助（_H）"
+
+#
+#: ../firewalld/firewall-config.glade.h:52
+msgid "_Options"
+msgstr "选项（_O）"
+
+#: ../firewalld/firewall-config.glade.h:53
+msgid "ftp"
+msgstr ""
+
+#: ../firewalld/firewalld:891
+#, c-format
+msgid "fork #1 failed: %d (%s)"
+msgstr ""
+
+#: ../firewalld/firewall-applet:58
+msgid "Firewall Applet"
+msgstr ""
+
+#: ../firewalld/firewall-applet:59
+msgid "- proof of concept implementation -"
+msgstr ""
+
+#: ../firewalld/firewall-applet:115
+msgid "Ports"
+msgstr ""
+
+#: ../firewalld/firewall-applet:121
+msgid "Trusted Connections"
+msgstr ""
+
+#: ../firewalld/firewall-applet:139
+msgid "ICMP Blocking"
+msgstr ""
+
+#: ../firewalld/firewall-applet:158
+msgid "Panic Mode"
+msgstr ""
+
+#
+#: ../firewalld/firewall-applet:169
+msgid "Enable Firewall"
+msgstr "启用防火墙"
+
+#: ../firewalld/firewall-applet:174
+msgid "Enable All Notifications"
+msgstr ""
+
+#: ../firewalld/firewall-applet:205
+msgid "Not using slip"
+msgstr ""
+
+#: ../firewalld/firewall-applet:223
+#, c-format
+msgid ""
+"\n"
+"Timeout: %d seconds"
+msgstr ""
+
+#: ../firewalld/firewall-applet:225
+#, c-format
+msgid ""
+"\n"
+"Requested by: %s"
+msgstr ""
+
+#: ../firewalld/firewall-applet:245
+msgid "Connection to FirewallD lost"
+msgstr ""
+
+#: ../firewalld/firewall-applet:395
+msgid "No connection to firewall daemon"
+msgstr ""
+
+#: ../firewalld/firewall-applet:402
+msgid "PANIC MODE"
+msgstr ""
+
+#: ../firewalld/firewall-applet:409
+msgid "No Open Services."
+msgstr ""
+
+#: ../firewalld/firewall-applet:411
+msgid "Open Services:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:415
+msgid "No Open Ports."
+msgstr ""
+
+#: ../firewalld/firewall-applet:421
+msgid "No Trusted."
+msgstr ""
+
+#: ../firewalld/firewall-applet:423
+msgid "Trusted:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:427
+msgid "No Masqueraded."
+msgstr ""
+
+#: ../firewalld/firewall-applet:429
+msgid "Masqueraded:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:433
+msgid "No ICMP Blocks."
+msgstr ""
+
+#: ../firewalld/firewall-applet:435
+msgid "ICMP Blocks:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:439
+msgid "No Forward Ports."
+msgstr ""
+
+#: ../firewalld/firewall-applet:441
+msgid "Forward Ports:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:445
+msgid "No Custom Rules."
+msgstr ""
+
+#: ../firewalld/firewall-applet:447
+msgid "Custom Rules:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:465
+msgid "Panic mode"
+msgstr ""
+
+#: ../firewalld/firewall-applet:487
+#, c-format
+msgid "Service '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:502
+#, c-format
+msgid "Port '%s:%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:516
+#, c-format
+msgid "Trusted '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:532
+#, c-format
+msgid "Masquerade '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:548
+#, c-format
+msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:563
+#, c-format
+msgid "Block ICMP '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:586
+#, c-format
+msgid ""
+"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr ""

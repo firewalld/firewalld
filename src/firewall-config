@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+import sys
+DATADIR = '/usr/share/firewalld'
+sys.path.append(DATADIR)
+SCFW_DATADIR = '/usr/share/system-config-firewall'
+sys.path.append(SCFW_DATADIR)
+
+import pygtk
+pygtk.require("2.0")
+import gtk
+import gtk_label_autowrap
+
+class FirewallConfig(object):       
+	def __init__(self):
+	    builder = gtk.Builder()
+	    builder.add_from_file("firewall-config.glade")
+	    builder.connect_signals({ "on_window_destroy" : gtk.main_quit })
+	    self.toplevel = builder.get_object("toplevel")
+	    gtk_label_autowrap.set_autowrap(self.toplevel)
+	    self.toplevel.show()
+
+if __name__ == "__main__":
+	app = FirewallConfig()
+	gtk.main()

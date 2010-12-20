@@ -1,0 +1,600 @@
+#!/usr/bin/python
+#
+# Copyright (C) 2010 Red Hat, Inc.
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import sys
+DATADIR = '/usr/share/firewalld'
+sys.path.append(DATADIR)
+SCFW_DATADIR = '/usr/share/system-config-firewall'
+sys.path.append(SCFW_DATADIR)
+
+import gtk
+import gtk.glade
+import os
+import glib
+
+import firewall_config as config
+import firewall_client
+import fw_services
+
+import gobject
+import slip.dbus, dbus
+#import gtk_label_autowrap
+import dbus.mainloop.glib
+import pynotify
+
+# get icon theme
+icon_theme = gtk.icon_theme_get_default()
+
+gtk.glade.bindtextdomain(config.DOMAIN)
+
+class TrayApplet:
+    def __cleanup(self):
+        self._services = [ ]
+        self._ports = [ ]
+        self._trusted = [ ]
+        self._masquerades = [ ]
+        self._icmp_blocks = [ ]
+        self._forward_ports = [ ]
+        self._customs = [ ]        
+
+    def __init__(self, use_dbus=True):
+        self.name = _("Firewall Applet")
+        self.comment = _("- proof of concept implementation -")
+        self.icon_name = "firewall-applet"
+        self.reconnect_timeout = 2
+        self.__cleanup()
+
+        self.icons = { "normal": [None, None],
+                       "action": [None, None],
+                       "error": [None, None],
+                       "alert": [None, None],
+                       "panic": [None, None], }
+
+        self.timer = None
+        self.mode = None
+        self._blink = False
+        self.blink_count = 0
+
+        self.statusicon = gtk.StatusIcon()
+#        self.statusicon.connect("delete_event", gtk.main_quit)
+        self.statusicon.set_from_icon_name(self.icon_name)
+#        self.statusicon.connect("query-tooltip", self.on_query_tooltip)
+#        self.statusicon.props.has_tooltip = True
+
+        icon_theme = gtk.icon_theme_get_default()
+        (width, height) = gtk.icon_size_lookup(gtk.ICON_SIZE_MENU)
+
+        info = icon_theme.lookup_icon("firewall-applet", 24, 0)
+        if info:
+            self.icons["normal"][0] = info.load_icon()
+        else:
+            # fallback
+            info = icon_theme.lookup_icon("preferences-system-firewall", 24, 0)
+            if info:
+                self.icons["normal"][0] = info.load_icon()
+
+        for _type in [ "action", "error", "alert", "panic" ]:
+            info = icon_theme.lookup_icon("firewall-applet-%s" % _type, 24, 0)
+            if info:
+                self.icons[_type][0] = info.load_icon()
+            info = icon_theme.lookup_icon("firewall-applet-%s-inverted" % _type,
+                                          24, 0)
+            if info:
+                self.icons[_type][1] = info.load_icon()
+
+        service_menu = gtk.Menu()
+        self.services = { }
+
+        keys = [ ]
+        for svc in fw_services.service_list:
+            keys.append(svc.key)
+        keys.sort()
+
+        for key in keys:
+            svc = fw_services.getByKey(key)
+            item = gtk.CheckMenuItem(svc.key)
+            item.set_tooltip_text(svc.description)
+            id = item.connect("toggled", self.service_cb, svc.key)
+            self.services[svc.key] = (item, id)
+            service_menu.append(item)
+
+        self.left_menu = gtk.Menu()
+
+        item = gtk.MenuItem(_("Services"))
+        item.set_submenu(service_menu)
+        self.left_menu.append(item)
+
+        item = gtk.MenuItem(_("Ports"))
+        port_menu = gtk.Menu()
+        item.set_submenu(port_menu)
+        item.set_sensitive(False)
+        self.left_menu.append(item)
+
+        item = gtk.MenuItem(_("Trusted Connections"))
+        trusted_menu = gtk.Menu()
+        item.set_submenu(trusted_menu)
+        item.set_sensitive(False)
+        self.left_menu.append(item)
+
+        item = gtk.MenuItem(_("Masquerading"))
+        masq_menu = gtk.Menu()
+        item.set_submenu(masq_menu)
+        item.set_sensitive(False)
+        self.left_menu.append(item)
+
+        item = gtk.MenuItem(_("Port Forwarding"))
+        forward_menu = gtk.Menu()
+        item.set_submenu(forward_menu)
+        item.set_sensitive(False)
+        self.left_menu.append(item)
+
+        item = gtk.MenuItem(_("ICMP Blocking"))
+        icmp_menu = gtk.Menu()
+        item.set_submenu(icmp_menu)
+        item.set_sensitive(False)
+        self.left_menu.append(item)
+
+        item = gtk.MenuItem(_("Custom Rules"))
+        custom_menu = gtk.Menu()
+        item.set_submenu(custom_menu)
+        item.set_sensitive(False)
+        self.left_menu.append(item)
+
+#        item = gtk.MenuItem("Configure Firewall")
+##        item.connect("activate", self.configure_cb)
+#        item.set_sensitive(False)
+#        self.left_menu.append(item)
+
+        self.left_menu.append(gtk.SeparatorMenuItem())
+
+        self.panic_check = gtk.CheckMenuItem(_("Panic Mode"))
+        self.panic_check.set_active(False)
+        self.panic_check_id = self.panic_check.connect("toggled",
+                                                       self.panic_mode_cb)
+        self.left_menu.append(self.panic_check)
+
+        self.statusicon.connect("activate", self.left_menu_cb, self.left_menu)
+
+
+        self.right_menu = gtk.Menu()
+
+        item = gtk.CheckMenuItem(_("Enable Firewall"))
+        item.set_active(True)
+        item.set_sensitive(False)
+        self.right_menu.append(item)
+
+        self.notification_check = gtk.CheckMenuItem(_("Enable All Notifications"))
+#        self.notification_check.set_active(True)
+        self.notification_check.set_active(False)
+        self.right_menu.append(self.notification_check)
+
+        self.right_menu.append(gtk.SeparatorMenuItem())
+
+        item = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+        item.connect('activate', self.about_cb)
+        self.right_menu.append(item)
+
+        self.statusicon.connect("popup-menu", self.right_menu_cb,
+                                self.right_menu)
+
+        self.about_dialog = gtk.AboutDialog()
+        self.about_dialog.set_name(self.name)
+        self.about_dialog.set_version(config.VERSION)
+        self.about_dialog.set_comments(self.comment)
+        self.about_dialog.set_license(config.LICENSE)
+        self.about_dialog.set_wrap_license(True)
+        self.about_dialog.set_copyright(config.COPYRIGHT)
+        self.about_dialog.set_authors(config.AUTHORS)
+        self.about_dialog.set_logo_icon_name(self.icon_name)
+
+        self.statusicon.set_visible(True)
+
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        try:
+            self.bus = slip.dbus.SystemBus()
+            self.bus.default_timeout = None
+        except Exception, msg:
+            print _("Not using slip"), msg
+            self.bus = dbus.SystemBus()
+
+        self.bus.add_signal_receiver(
+            handler_function=self.dbus_connection_changed,
+            signal_name="NameOwnerChanged",
+            dbus_interface="org.freedesktop.DBus")
+
+        self.fw = None
+        self.connect_to_firewalld()
+
+        self.update()
+
+    def notify(self, msg, enable, timeout=0, sender=None,
+               urgency=pynotify.URGENCY_NORMAL):
+        ed = { 1: "enabled", 0: "disabled" }
+        msg += " %s" % (ed[enable])
+        if enable == True and timeout > 0:
+            msg += _("\nTimeout: %d seconds") % timeout
+        if sender:
+            msg += _("\nRequested by: %s") % sender
+
+        n = pynotify.Notification(self.name, msg, self.icon_name)
+        n.attach_to_status_icon(self.statusicon)
+        n.set_urgency(urgency)
+        n.show()
+
+    def dbus_connection_changed(self, name, old_owner, new_owner):
+        if name != firewall_client.DBUS_INTERFACE:
+            return
+
+#        print "dbus_connection_changed(name=%s, old_owner=%s, new_owner=%s)" % (name, old_owner, new_owner)
+
+        if new_owner:
+            # new connection
+            self.connect_to_firewalld()
+        else:
+            # lost connection
+            self.connection_to_firewalld_lost()
+            n = pynotify.Notification(self.name,
+                                      _("Connection to FirewallD lost"),
+                                      self.icon_name)
+            n.attach_to_status_icon(self.statusicon)
+            n.set_urgency(pynotify.URGENCY_CRITICAL)
+            n.show()
+
+    def connect_to_firewalld(self):
+        try:
+            self.fw = firewall_client.Firewall_Client(self.bus)
+        except dbus.DBusException, e:
+            if e._dbus_error_name == \
+                    'org.freedesktop.DBus.Error.ServiceUnknown':
+                # lost connection
+                self.connection_to_firewalld_lost()
+                return
+            else:
+                raise
+        for (signal, handler) in \
+                [ ("PanicSignal", self.panic_handler),
+                  ("ServiceSignal", self.service_handler),
+                  ("PortSignal", self.port_handler),
+                  ("TrustedSignal", self.trusted_handler),
+                  ("MasqueradeSignal", self.masquerade_handler),
+                  ("ForwardPortSignal", self.forward_port_handler),
+                  ("IcmpBlockSignal", self.icmp_block_handler),
+                  ("CustomSignal", self.custom_handler),
+                ]:
+            self.fw.dbus_obj.connect_to_signal(signal, handler,
+                                               sender_keyword="sender")
+
+        self.set_mode("normal")
+        self.__cleanup()
+
+        items = self.fw.getServices()
+        if items:
+            self._services = sorted(items)
+        items = self.fw.getPorts()
+        if items:
+            self._ports = items
+        items = self.fw.getTrusted()
+        if items:
+            self._trusted = sorted(items)
+        items = self.fw.getMasquerades()
+        if items:
+            self._masquerades = sorted(items)
+        items = self.fw.getIcmpBlocks()
+        if items:
+            self._icmp_blocks = sorted(items)
+        items = self.fw.getForwardPorts()
+        if items:
+            self._forward_ports = items
+        items = self.fw.getCustoms()
+        if items:
+            self._customs = items
+
+        for key in self.services:
+            (item, id) = self.services[key]
+            item.handler_block(id)
+            item.set_active(key in self._services)
+            item.handler_unblock(id)
+        for child in self.left_menu.get_children():
+            if child.get_submenu() and \
+                    len(child.get_submenu().get_children()) == 0:
+                continue
+            child.set_sensitive(True)
+
+        self.update()
+
+    def connection_to_firewalld_lost(self):
+        if self.fw:
+            self.fw = None
+            self.set_mode("error")
+        for child in self.left_menu.get_children():
+            child.set_sensitive(False)
+        self.update()
+
+    def left_menu_cb(self, widget, menu, *args):
+        menu.show_all()
+        menu.popup(None, None, gtk.status_icon_position_menu, 1,
+                   gtk.get_current_event_time(), self.statusicon)
+
+    def service_cb(self, check, service):
+        if not self.fw:
+            return
+        if check.get_active():
+            self.fw.enableService(service, 0)
+        else:
+            self.fw.disableService(service)
+
+    def panic_mode_cb(self, check):
+        if not self.fw:
+            return
+        if check.get_active():
+            self.fw.enablePanicMode()
+        else:
+            self.fw.disablePanicMode()
+        
+    def right_menu_cb(self, widget, button, time, menu):
+        if button != 3:
+            return
+        menu.show_all()
+        menu.popup(None, None, gtk.status_icon_position_menu, button, time,
+                   self.statusicon)
+
+    def about_cb(self, widget):
+        self.about_dialog.run()
+        self.about_dialog.hide()
+
+    def on_query_tooltip(self, widget, x, y, keyboard_tip, tooltip):
+        tooltip.set_icon_from_icon_name(self.icon_name, gtk.ICON_SIZE_DIALOG)
+        tooltip.set_markup(self.tooltip)
+        return True
+
+    def __blink(self):
+        self.statusicon.set_from_pixbuf(self.icons[self.mode][int(self._blink)])
+        if self.blink_count != 0:
+            if self.blink_count > 0 and self._blink:
+                self.blink_count -= 1
+            self._blink = not self._blink
+            self.timer = glib.timeout_add_seconds(1, self.__blink)
+        else:
+            self.mode = "normal"
+
+    def set_mode(self, mode, count=-1):
+        if self.mode != mode:
+            if self.timer:
+                glib.source_remove(self.timer)
+                self.timer = None
+                self._blink = False
+            self.mode = mode
+
+        elif self.mode == mode and self.timer:
+            if self.blink_count == 0:
+                self.blink_count += 1
+            return
+
+        if mode == "normal":
+            self.statusicon.set_from_pixbuf(self.icons[mode][0])
+            return
+
+        if count != 0:
+            self._blink = True
+            self.blink_count = count
+            self.__blink()
+
+    def update(self):
+        if not self.fw:
+            self.set_mode("error")
+#            self.statusicon.set_blinking(True)
+            self.tooltip = "<big><b><span color='#FF0000'>" + \
+                _("No connection to firewall daemon") + "</span></b></big>"
+            self.statusicon.set_tooltip_markup(self.tooltip)
+            return
+
+        if self.panic_check.get_active():
+#            self.statusicon.set_blinking(True)
+            self.tooltip = "<big><b><span color='#FF0000'>" + \
+                _("PANIC MODE") + "</span></b></big>"
+            self.statusicon.set_tooltip_markup(self.tooltip)
+            return
+        
+        self.tooltip = ""
+
+        if len(self._services) < 1:
+            self.tooltip += _("No Open Services.")
+        else:
+            self.tooltip += "<b>" + _("Open Services:") + "</b> "
+            self.tooltip += "%s" % (", ".join(self._services))
+
+        if len(self._ports) < 1:
+            self.tooltip += "\n" + _("No Open Ports.")
+        else:
+            self.tooltip += "\n<b>Open Ports:</b>  "
+            self.tooltip += ", ".join(["%s:%s" % (a) for a in self._ports])
+
+        if len(self._trusted) < 1:
+            self.tooltip += "\n" + _("No Trusted.")
+        else:
+            self.tooltip += "\n<b>" + _("Trusted:") + "</b> "
+            self.tooltip += ", ".join(self._trusted)
+
+        if len(self._masquerades) < 1:
+            self.tooltip += "\n" + _("No Masqueraded.")
+        else:
+            self.tooltip += "\n<b>" + _("Masqueraded:") + "</b> "
+            self.tooltip += ", ".join(self._masquerades)
+
+        if len(self._icmp_blocks) < 1:
+            self.tooltip += "\n" + _("No ICMP Blocks.")
+        else:
+            self.tooltip += "\n<b>" + _("ICMP Blocks:") + "</b> "
+            self.tooltip += ", ".join(self._icmp_blocks)
+
+        if len(self._forward_ports) < 1:
+            self.tooltip += "\n" + _("No Forward Ports.")
+        else:
+            self.tooltip += "\n<b>" + _("Forward Ports:") + "</b> "
+            self.tooltip += ", ".join(["if=%s:port=%s:proto=%s:toport=%s:toaddr=%s" % (args) for args in self._forward_ports])
+
+        if len(self._customs) < 1:
+            self.tooltip += "\n" + _("No Custom Rules.")
+        else:
+            self.tooltip += "\n<b>" + _("Custom Rules:") + "</b> "
+            self.tooltip += ", ".join(["table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s" % (args) for args in self._customs])
+
+        self.statusicon.set_tooltip_markup(self.tooltip)
+
+    def panic_handler(self, enable, sender=None):
+#        print "panic_handler(%s, %s)" % (enable, sender)
+        self.update()
+
+        self.panic_check.handler_block(self.panic_check_id)
+        self.panic_check.set_active(enable == 1)
+        self.panic_check.handler_unblock(self.panic_check_id)
+
+        if enable:
+            self.set_mode("panic")
+        else:
+            self.set_mode("normal")
+
+        self.notify(_("Panic mode"), enable, urgency=pynotify.URGENCY_CRITICAL,
+                    sender=sender)
+
+    def service_handler(self, service, enable, timeout=0, sender=None):
+#        print "service_handler(%s, %s, %d, %s)" % (service, enable, timeout, sender)
+        
+        if enable:
+            self._services.append(service)
+            self._services.sort()
+        else:
+            self._services.remove(service)
+
+        (item, id) = self.services[service]
+        item.handler_block(id)
+        item.set_active(enable == 1)
+        item.handler_unblock(id)
+
+        self.update()
+
+        self.set_mode("action", 1)
+
+        if self.notification_check.get_active():
+            self.notify(_("Service '%s'") % (service), enable, timeout,
+                        sender=sender)
+
+    def port_handler(self, port, protocol, enable, timeout=0, sender=None):
+#        print "port_handler(%s, %s, %s, %d, %s)" % (port, protocol, enable, timeout, sender)
+        if enable:
+            self._ports.append((port, protocol))
+        else:
+            self._ports.remove((port, protocol))
+
+        self.update()
+
+        self.set_mode("action", 1)
+
+        if self.notification_check.get_active():
+            self.notify(_("Port '%s:%s'") % (port, protocol), enable, timeout,
+                        sender=sender)
+
+    def trusted_handler(self, trusted, enable, timeout=0, sender=None):
+#        print "trusted_handler(%s, %s, %d, %s)" % (trusted, enable, timeout, sender)
+        if enable:
+            self._trusted.append(trusted)
+            self._trusted.sort()
+        else:
+            self._trusted.remove(trusted)
+
+        self.update()
+
+        if self.notification_check.get_active():
+            self.notify(_("Trusted '%s'") % (trusted), enable, timeout,
+                        sender=sender)
+
+    def masquerade_handler(self, masquerade, enable, timeout=0, sender=None):
+#        print "masquerade_handler(%s, %s, %d, %s)" % (masquerade, enable, timeout, sender)
+        if enable:
+            self._masquerades.append(masquerade)
+            self._masquerades.sort()
+        else:
+            self._masquerades.remove(masquerade)
+
+        self.update()
+
+        self.set_mode("action", 1)
+
+        if self.notification_check.get_active():
+            self.notify(_("Masquerade '%s'") % (masquerade), enable, timeout,
+                        sender=sender)
+
+    def forward_port_handler(self, interface, port, protocol, toport, toaddr,
+                             enable, timeout=0, sender=None):
+#        print "forward_port_handler(%s, %s, %s, %s, %s, %s, %d, %s)" % (interface, port, protocol, toport, toaddr, enable, timeout, sernder)
+        if enable:
+            self._forward_ports.append((interface, port, protocol, toport,
+                                        toaddr))
+        else:
+            self._forward_ports.remove((interface, port, protocol, toport,
+                                        toaddr))
+
+        self.update()
+
+        if self.notification_check.get_active():
+            self.notify(_("Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'") % (interface, port, protocol, toport, toaddr), enable, timeout, sender=sender)
+
+    def icmp_block_handler(self, icmp, enable, timeout=0, sender=None):
+#        print "icmp_block_handler(%s, %s, %d, %s)" % (icmp, enable, timeout, sender)
+        if enable:
+            self._icmp_blocks.append(icmp)
+            self._icmp_blocks.sort()
+        else:
+            self._icmp_blocks.remove(icmp)
+
+        self.update()
+
+        self.set_mode("action", 1)
+
+        if self.notification_check.get_active():
+            self.notify(_("Block ICMP '%s'") % (icmp), enable, timeout,
+                        sender=sender)
+
+    def custom_handler(self, table, chain, src, src_port, dst, dst_port,
+                       protocol, iface_in, iface_out, phydev_in,
+                       physdev_out, target, enable, timeout=0, sender=None):
+#        print "custom_handler(table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s)" % (table, chain, src, src_port, dst, dst_port, protocol, iface_in, iface_out, physdev_in, physdev_out, target)
+        if enable:
+            self._customs.append((table, chain, src, src_port,
+                                  dst, dst_port, protocol,
+                                  iface_in, iface_out,
+                                  phydev_in, physdev_out, target))
+        else:
+            self._customs.remove((table, chain, src, src_port,
+                                  dst, dst_port, protocol,
+                                  iface_in, iface_out,
+                                  phydev_in, physdev_out, target))
+
+        self.update()
+
+        self.set_mode("action", 1)
+
+        if self.notification_check.get_active():
+            self.notify(_("Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'") % (table, chain, src, src_port, dst, dst_port, protocol, iface_in, iface_out, physdev_in, physdev_out, target), enable, timeout, sender=sender)
+
+if __name__ == "__main__":
+    mainloop = gobject.MainLoop()
+    applet = TrayApplet()
+    mainloop.run()

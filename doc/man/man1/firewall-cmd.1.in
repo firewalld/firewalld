@@ -1,0 +1,75 @@
+.TH firewall-cmd 1 "@VERSION@" "" "FirewallD Utilities"
+
+
+.SH NAME
+firewall-cmd \- firewalld command line client
+
+
+.SH SYNOPSIS
+.IP \fBfirewall-cmd\fR \w'[firewall-cmd]'u
+[\fB-h | --help\fR] | (\fB<mode>\fR [\fB<options>\fR])
+
+
+
+.SH DESCRIPTION
+\fBfirewall-cmd\fR is the command line client of the firewall daemon. It provides a simple interface to manage the firewall.
+
+
+.SH OPTIONS
+
+.SS Modes:
+.TP
+\fB--reload\fR
+Reload the firewall rules in firewalld internally. Only 
+.TP
+\fB--restart\fR
+Restart the firewall modules and also the firewall rules in firewalld internally. This will end all active connections.
+.TP
+\fB--status\fR
+Returns the status of the daemon.
+.TP
+\fB--enable\fR \fI<action>\fR
+Enables an action. See below for the supported actions.
+.TP
+\fB--disable\fR \fI<action>\fR
+Disables an enabled action.
+.TP
+\fB--query\fR \fI<action>\fR
+Query if an action has been enabled.
+.TP
+\fB--list\fR=\fI<action name>\fR
+List all entires for an action. Action can be one of \fIservice|port|trusted|masquerade|forward-port|icmp-block|custom\fR
+
+.SS Actions:
+.TP
+\fB--service\fR=\fI<service>\fR
+
+.TP
+\fB--port\fR=\fI<port>[-<port>]:<protocol>\fR
+
+.TP
+\fB--trusted\fR=\fI<interface>\fR
+
+.TP
+\fB--masquerade\fR=\fI<interface>\fR
+
+.TP
+\fB--forward-port\fR=\fIif=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]\fR
+
+.TP
+\fB--icmp-block\fR=\fI<icmp type>\fR
+
+.TP
+\fB--custom\fR=\fItable=<table>:chain=<chain>:src=<addr>:src_port=<port>:dst=<addr>:dst_port=<port>:proto=<protocol>:iface_in=<interface>:iface_out=<interface>:physdev_in=<bridge>:physdev_out=<bridge>:target=<target>\fR
+
+.SS Enable Options:
+.TP
+\fB--timeout\fR=\fI<seconds>\fR
+Enable an action for a specifig amount of time only. The enabled action will be disabled automatically after the time elapsed.
+
+.SH AUTHOR
+Thomas Woerner <twoerner@redhat.com>
+
+
+.SH SEE ALSO
+\fBhttp://fedorahosted.org/firewalld/\fR

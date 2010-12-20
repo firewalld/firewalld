@@ -1,0 +1,505 @@
+# translation of system-config-firewall.master.po to Bengali INDIA
+# Bangla translation for system-config-firewall.
+# Copyright (C) 2004 Red Hat Inc.
+# This file is distributed under the same license as the system-config-firewall package.
+#
+# Jamil Ahmed <jamil@bengalinux.org>, 2003.
+# Runa Bhattacharjee <runab@redhat.com>, 2004, 2005, 2006, 2007, 2008, 2009, 2010.
+# Runa Bhattacharjee <runab@fedoraproject.org>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: system-config-firewall.master\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-17 16:58+0100\n"
+"PO-Revision-Date: 2010-06-30 10:51+0530\n"
+"Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
+"Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.4\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"\n"
+"\n"
+"\n"
+
+#
+#: ../firewalld/firewall_config.py:42
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
+"এই প্রোগ্রামটি একটি মুক্ত সফ্টওয়্যার; Free Software Foundation দ্বারা প্রকাশিত GNU "
+"General Public License-র শর্তানুযায়ী এটি বিতরণ ও পরিবর্তন করা যাবে; লাইসেন্সের "
+"সংস্করণ ২ অথবা (আপনার সুবিধানুযায়ী) ঊর্ধ্বতন কোনো সংস্করণের অধীন।\n"
+"\n"
+"এটি বিতরণ করার মূল উদ্দেশ্য যে ব্যবহারকারীরা এর দ্বারা উপকৃত হবেন, কিন্তু এটির জন্য "
+"কোনো সুস্পষ্ট ওয়ারেন্টি উপস্থিত নেই; বাণিজ্যিক ও কোনো সুনির্দিষ্ট কর্ম সাধনের জন্য "
+"অন্তর্নিহীত ওয়ারেন্টিও অনুপস্থিত। অধিক জানতে GNU General Public License পড়ুন।\n"
+"\n"
+"এই প্রোগ্রামের সাথে GNU General Public License-র একটি প্রতিলিপি উপলব্ধ হওয়া "
+"উচিত। না থাকলে <http://www.gnu.org/licenses/> দেখুন।"
+
+#: ../firewalld/firewall-config.glade.h:1
+msgid "21/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:2
+msgid "22/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:3
+msgid "80/TCP"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:4
+msgid "Active Configuration"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:5
+msgid "Add"
+msgstr "যোগ করুন"
+
+#
+#: ../firewalld/firewall-config.glade.h:6
+msgid ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks."
+msgstr ""
+"সব হোস্ট অথবা নেটওয়ার্ক দ্বারা ব্যবহারযোগ্য অতিরিক্ত পোর্ট অথবা পোর্টের সীমা যোগ করুন।"
+
+#
+#: ../firewalld/firewall-config.glade.h:7
+msgid ""
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
+msgstr ""
+"স্থানীয় সিস্টেমের মধ্যে অন্য পোর্টে অথবা স্থানীয় সিস্টেম থেকে অন্য সিস্টেমে পোর্ট "
+"ফরওয়ার্ড করার জন্য মান লিখুন। ইন্টারফেস masquerade করা থাকলে পৃথক সিস্টেমে পোর্ট "
+"ফরওয়ার্ড করা উপকারী হবে। পোর্ট ফরওয়ার্ডিং ব্যবস্থা শুধুমাত্র IPv4-র ক্ষেত্রে প্রযোজ্য।"
+
+#
+#: ../firewalld/firewall-config.glade.h:8
+msgid "Allow access to necessary ports or port ranges, only."
+msgstr "শুধমাত্র আবশ্যক পোর্ট অথবা পোর্টের সীমার ক্ষেত্রে অনুমতি প্রদান করা হবে।"
+
+#
+#: ../firewalld/firewall-config.glade.h:9
+msgid "Allow access to necessary services, only."
+msgstr "শুধুমাত্র আবশ্যক পরিসেবার ক্ষেত্রে অনুমোদন করা হবে।"
+
+#
+#: ../firewalld/firewall-config.glade.h:10 ../firewalld/firewall-applet:145
+msgid "Custom Rules"
+msgstr "স্বনির্বাচিত নিয়ম"
+
+#: ../firewalld/firewall-config.glade.h:11
+msgid "Default Configuration"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:12
+msgid "Edit"
+msgstr "সম্পাদনা"
+
+#
+#: ../firewalld/firewall-config.glade.h:13
+msgid "FTP"
+msgstr "FTP"
+
+#
+#: ../firewalld/firewall-config.glade.h:14
+msgid ""
+"FTP is a protocol used for remote file transfer. If you plan to make your "
+"FTP server publicly available, enable this option. You need the vsftpd "
+"package installed for this option to be useful."
+msgstr ""
+"FTP প্রোটোকলের সাহায্যে নেটওয়ার্কের বাইরে অবস্থিত দূরবর্তী কম্পিউটারের মধ্যে ফাইল "
+"বিনিময় করা হয়।  যদি আপনার FTP সার্ভার সকলের ব্যবহারের জন্য উন্মুক্ত রাখতে চান, তবে "
+"এই অপশনটি সক্রিয় করুন। এই বিকল্পটি বলবত‌ করতে vsftpd প্যাকেজটি ইনস্টল করা আবশ্যক।"
+
+#: ../firewalld/firewall-config.glade.h:15
+msgid "Firewall Daemon"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:16
+msgid ""
+"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
+"server publicly available, enable this option. This option is not required "
+"for viewing pages locally or developing Web pages."
+msgstr ""
+"HTTP প্রোটোকলের সাহায্যে ওয়েবপেজ প্রস্তুত করা হয়।  সার্বজনীন রূপে ব্যবহারের জন্য ওয়েব "
+"সার্ভার উন্মুক্ত রাখতে হলে এই অপশনটি সক্রিয় করুন।  তবে স্থানীয় কম্পিউটার থেকে "
+"ওয়েবপেজ দেখতে অথবা তৈরি করার জন্য এই অপশনটির প্রয়োজন নেই।"
+
+#: ../firewalld/firewall-config.glade.h:17
+msgid ""
+"Here you can define the interfaces and network areas that have fill access "
+"to the system."
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:18
+msgid ""
+"Here you can define which services are trusted. Trusted services are "
+"accessible from all hosts and networks in the selected network protocol. "
+"Click on <i>Add</i> to select an item from the list of predefined services."
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:19
+msgid "Home Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:20
+msgid "ICMP Filter"
+msgstr "ICMP ফিল্টার"
+
+#: ../firewalld/firewall-config.glade.h:21
+msgid "IPv4"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:22
+msgid "IPv4,IPv6"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:23
+msgid "IPv6"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:24
+msgid ""
+"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
+"networks."
+msgstr ""
+"masquerading সক্রিয় করা হলে, আপনার IPv4 নেটওয়ার্কের ক্ষেত্রে IP ফরওয়ার্ডিং ব্যবস্থা "
+"সক্রিয় করা হবে।"
+
+#
+#: ../firewalld/firewall-config.glade.h:25
+msgid ""
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
+msgstr ""
+"প্রত্যাখ্যানের উদ্দেশ্যে, তালিকার মধ্যে ICMP-র ধরনগুলি চিহ্নিত করুন। অন্যান্য সকল ICMP-"
+"র ধরনগুলি ফায়ারওয়ালের মধ্যে প্রবেশ করতে সক্ষম হবে। ডিফল্টরূপে কোনো প্রতিরোধ করা হয় "
+"না।"
+
+#
+#: ../firewalld/firewall-config.glade.h:26 ../firewalld/firewall-applet:127
+msgid "Masquerading"
+msgstr "Masquerading"
+
+#
+#: ../firewalld/firewall-config.glade.h:27
+msgid ""
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr ""
+"স্থানীয় নেটওয়ার্ক, ইন্টারনেটের সাথে সংযুক্ত করার জন্য হোস্ট অথবা রাউটার প্রস্তুতির সময় "
+"Masquerading সহয়াক। আপনার স্থানীয় নেটওয়ার্ক প্রকাশিত হবে না ও ইন্টারনেটে একটি "
+"হোস্ট রূপে প্রস্তুত করা হবে। Masquerading শুধুমাত্র IPv4-র ক্ষেত্রে প্রযোজ্য।"
+
+#: ../firewalld/firewall-config.glade.h:28
+msgid ""
+"Only allow full access for interfaces or network areas if you can trust all "
+"participants part of these."
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:29
+msgid "Other Ports"
+msgstr "অন্যান্য পোর্ট"
+
+#
+#: ../firewalld/firewall-config.glade.h:30 ../firewalld/firewall-applet:133
+msgid "Port Forwarding"
+msgstr "পোর্ট ফরওয়ার্ডিং"
+
+#: ../firewalld/firewall-config.glade.h:31
+msgid "Public Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:32
+msgid "Reload"
+msgstr "পুনরায় লোড"
+
+#
+#: ../firewalld/firewall-config.glade.h:33
+msgid "Remove"
+msgstr "অপসারণ"
+
+#: ../firewalld/firewall-config.glade.h:34
+msgid "Restart"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:35
+msgid "SSH"
+msgstr "SSH"
+
+#: ../firewalld/firewall-config.glade.h:36
+msgid ""
+"Secure Shell (SSH) is a protocol for logging into and executing commands on "
+"remote machines. It provides secure encrypted comminucations. If you plan on "
+"accessing your machine remotely via SSH over a firewalled interface, enable "
+"this option. You need the openssh-server package installed for this option "
+"to be useful. "
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:37
+msgid "Select Configuration"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:38 ../firewalld/firewall-applet:111
+msgid "Services"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:39
+msgid "Start"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:40
+msgid "Stop"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:41
+msgid "Switch Firewall Model"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:42
+msgid "Switch firewall model"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:43
+msgid ""
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
+msgstr ""
+"ইন্টারনেট কন্ট্রোল মেসেজ প্রোটকল (ICMP) প্রয়োগ করে নেটওয়ার্কের মধ্যে উপস্থিত "
+"কম্পিউটারগুলির মধ্যে ত্রুটি বার্তা আদান প্রদান করা হয়। উপরন্তু, বিবিধ তথ্য যেমন ping-র "
+"অনুরোধ ও উত্তর প্রভৃতিও বিনিময় করার জন্য এটি ব্যবহৃত হয়।"
+
+#: ../firewalld/firewall-config.glade.h:44
+msgid "Trusted"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:45
+msgid "Trusted Zone"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:46
+msgid "WWW (HTTP)"
+msgstr "WWW (HTTP)"
+
+#: ../firewalld/firewall-config.glade.h:47
+msgid "Work Zone"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:48
+msgid "Zone"
+msgstr ""
+
+#: ../firewalld/firewall-config.glade.h:49
+msgid "Zones"
+msgstr ""
+
+#
+#: ../firewalld/firewall-config.glade.h:50
+msgid "_File"
+msgstr "ফাইল (_F)"
+
+#
+#: ../firewalld/firewall-config.glade.h:51
+msgid "_Help"
+msgstr "সাহায্য (_H)"
+
+#
+#: ../firewalld/firewall-config.glade.h:52
+msgid "_Options"
+msgstr "বিবিধ বিকল্প (_O)"
+
+#: ../firewalld/firewall-config.glade.h:53
+msgid "ftp"
+msgstr ""
+
+#: ../firewalld/firewalld:891
+#, c-format
+msgid "fork #1 failed: %d (%s)"
+msgstr ""
+
+#: ../firewalld/firewall-applet:58
+msgid "Firewall Applet"
+msgstr ""
+
+#: ../firewalld/firewall-applet:59
+msgid "- proof of concept implementation -"
+msgstr ""
+
+#: ../firewalld/firewall-applet:115
+msgid "Ports"
+msgstr ""
+
+#: ../firewalld/firewall-applet:121
+msgid "Trusted Connections"
+msgstr ""
+
+#: ../firewalld/firewall-applet:139
+msgid "ICMP Blocking"
+msgstr ""
+
+#: ../firewalld/firewall-applet:158
+msgid "Panic Mode"
+msgstr ""
+
+#
+#: ../firewalld/firewall-applet:169
+msgid "Enable Firewall"
+msgstr "ফায়ারওয়াল সষ্ক্রিয় করা হবে"
+
+#: ../firewalld/firewall-applet:174
+msgid "Enable All Notifications"
+msgstr ""
+
+#: ../firewalld/firewall-applet:205
+msgid "Not using slip"
+msgstr ""
+
+#: ../firewalld/firewall-applet:223
+#, c-format
+msgid ""
+"\n"
+"Timeout: %d seconds"
+msgstr ""
+
+#: ../firewalld/firewall-applet:225
+#, c-format
+msgid ""
+"\n"
+"Requested by: %s"
+msgstr ""
+
+#: ../firewalld/firewall-applet:245
+msgid "Connection to FirewallD lost"
+msgstr ""
+
+#: ../firewalld/firewall-applet:395
+msgid "No connection to firewall daemon"
+msgstr ""
+
+#: ../firewalld/firewall-applet:402
+msgid "PANIC MODE"
+msgstr ""
+
+#: ../firewalld/firewall-applet:409
+msgid "No Open Services."
+msgstr ""
+
+#: ../firewalld/firewall-applet:411
+msgid "Open Services:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:415
+msgid "No Open Ports."
+msgstr ""
+
+#: ../firewalld/firewall-applet:421
+msgid "No Trusted."
+msgstr ""
+
+#: ../firewalld/firewall-applet:423
+msgid "Trusted:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:427
+msgid "No Masqueraded."
+msgstr ""
+
+#: ../firewalld/firewall-applet:429
+msgid "Masqueraded:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:433
+msgid "No ICMP Blocks."
+msgstr ""
+
+#: ../firewalld/firewall-applet:435
+msgid "ICMP Blocks:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:439
+msgid "No Forward Ports."
+msgstr ""
+
+#: ../firewalld/firewall-applet:441
+msgid "Forward Ports:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:445
+msgid "No Custom Rules."
+msgstr ""
+
+#: ../firewalld/firewall-applet:447
+msgid "Custom Rules:"
+msgstr ""
+
+#: ../firewalld/firewall-applet:465
+msgid "Panic mode"
+msgstr ""
+
+#: ../firewalld/firewall-applet:487
+#, c-format
+msgid "Service '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:502
+#, c-format
+msgid "Port '%s:%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:516
+#, c-format
+msgid "Trusted '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:532
+#, c-format
+msgid "Masquerade '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:548
+#, c-format
+msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:563
+#, c-format
+msgid "Block ICMP '%s'"
+msgstr ""
+
+#: ../firewalld/firewall-applet:586
+#, c-format
+msgid ""
+"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr ""

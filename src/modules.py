@@ -1,0 +1,97 @@
+#!/usr/bin/python
+#
+# Copyright (C) 2010 Red Hat, Inc.
+#
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import sys
+
+DATADIR = '/usr/share/firewalld'
+sys.path.append(DATADIR)
+
+from firewall_functions import runProg
+
+class modules:
+    def loaded_modules(self):
+        modules = [ ]
+        deps = { }
+        f = open("/proc/modules", "r")
+        for line in f.xreadlines():
+            if not line:
+                break
+            line = line.strip()
+            splits = line.split()
+            modules.append(splits[0])
+            if splits[3] != "-":
+                deps[splits[0]] = splits[3].split(",")[:-1]
+            else:
+                deps[splits[0]] = [ ]
+
+        f.close()
+        return modules, deps
+
+    def load_module(self, module):
+        return runProg("/sbin/modprobe", [ module ])
+
+    def unload_module(self, module):
+        return runProg("/sbin/modprobe", [ "-r", module ])
+
+    def get_deps(self, module, deps, ret):
+        if module not in deps:
+            return
+        for mod in deps[module]:
+            self.get_deps(mod, deps, ret)
+            if mod not in ret:
+                ret.append(mod)
+        if module not in ret:
+            ret.append(module)
+
+    def get_firewall_modules(self):
+        modules = [ ]
+        (mods, deps) = self.loaded_modules()
+
+        for mod in [ "ip_tables", "ip6_tables", "nf_conntrack" ]:
+            self.get_deps(mod, deps, modules)
+
+        for mod in mods:
+            if mod.startswith("iptable_") or mod.startswith("ip6table_") or \
+                    mod.startswith("nf_") or mod.startswith("xt_") or \
+                    mod.startswith("ipt_") or mod.startswith("ip6t_") :
+                self.get_deps(mod, deps, modules)
+        return modules
+
+    def unload_modules(self, modules):
+        (mods, deps) = self.loaded_modules()
+
+        to_unload = [ ]
+        for module in modules:
+            self.get_deps(module, deps, to_unload)
+
+        for module in to_unload:
+            (status, ret) = self.unload_module(module)
+            if status != 0:
+                raise ValueError, "Unable to unload module %s: %s" % (module,
+                                                                      ret)
+
+    def get_dep_modules(self, module):
+        (mods, deps) = self.loaded_modules()
+
+        dependant = [ ]
+        self.get_deps(module, deps, depandant)
+
+        return depandant
