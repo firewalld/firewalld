@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.1
+Version: 0.1.1
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -125,5 +125,15 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Jan  3 2011 Thomas Woerner <twoerner@redhat.com> 0.1.1-1
+- new version 0.1.1
+- fixed source path in POTFILES*
+- added missing firewall_config.py.in
+- added misssing space for spec_ver line
+- using firewall_config.VARLOGFILE
+- added date to logging output
+- also log fatal and error logs to stderr and firewall_config.VARLOGFILE
+- make log message for active_firewalld fatal
+
 * Mon Dec 20 2010 Thomas Woerner <twoerner@redhat.com> 0.1-1
 - initial package (proof of concept implementation)
