@@ -1,0 +1,57 @@
+#
+# Copyright (C) 2007-2009 Red Hat, Inc.
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# translation
+import locale
+locale.setlocale(locale.LC_ALL, "")
+
+DOMAIN = 'firewalld'
+import gettext
+_ = lambda x: gettext.ldgettext(DOMAIN, x)
+import __builtin__
+__builtin__.__dict__['_'] = _
+
+# configuration
+DAEMON_NAME = 'firewalld'
+CONFIG_NAME = 'firewall-config'
+APPLET_NAME = 'firewall-applet'
+DATADIR = '/usr/share/' + DAEMON_NAME
+CONFIG_GLADE_NAME = CONFIG_NAME + '.glade'
+COPYRIGHT = '(C) 2010 Red Hat, Inc.'
+VERSION = '@PACKAGE_VERSION@'
+AUTHORS = [
+    "Thomas Woerner <twoerner@redhat.com>",
+    ]
+LICENSE = _(
+    "This program is free software; you can redistribute it and/or modify "
+    "it under the terms of the GNU General Public License as published by "
+    "the Free Software Foundation; either version 2 of the License, or "
+    "(at your option) any later version.\n"
+    "\n"
+    "This program is distributed in the hope that it will be useful, "
+    "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+    "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+    "GNU General Public License for more details.\n"
+    "\n"
+    "You should have received a copy of the GNU General Public License "
+    "along with this program.  If not, see <http://www.gnu.org/licenses/>.")
+
+CONFIG = '/etc/firewalld'
+
+SYSCTL_CONFIG = '/etc/sysctl.conf'
