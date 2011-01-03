@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.1.1
+Version: 0.1.2
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -17,6 +17,8 @@ Requires: system-config-firewall-base >= 1.2.28
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
 Requires: iptables, ebtables
+Requires(post): chkconfig
+Requires(preun): chkconfig
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
@@ -61,11 +63,11 @@ rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
 desktop-file-install --delete-original \
-	--dir %{buildroot}%{_datadir}/applications \
-	%{buildroot}%{_datadir}/applications/firewall-applet.desktop
+  --dir %{buildroot}%{_datadir}/applications \
+  %{buildroot}%{_datadir}/applications/firewall-applet.desktop
 #desktop-file-install --delete-original \
-#	--dir %{buildroot}%{_datadir}/applications \
-#	%{buildroot}%{_datadir}/applications/firewall-config.desktop
+#  --dir %{buildroot}%{_datadir}/applications \
+#  %{buildroot}%{_datadir}/applications/firewall-config.desktop
 
 %find_lang %{name} --all-name
 
@@ -81,8 +83,8 @@ fi
 
 %preun
 if [ $1 = 0 ]; then
-        %{_initrddir}/firewalld stop >/dev/null 2>&1
-        /sbin/chkconfig --del firewalld
+  %{_initrddir}/firewalld stop >/dev/null 2>&1
+  /sbin/chkconfig --del firewalld
 fi
 exit 0
 
@@ -103,7 +105,7 @@ fi
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 %attr(0755,root,root) %{_initrddir}/firewalld
-%{_sysconfdir}/dbus-1/system.d/FirewallD.conf
+%config(noreplace) %{_sysconfdir}/dbus-1/system.d/FirewallD.conf
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD.policy
 %attr(0755,root,root) %dir %{_datadir}/firewalld/
 %{_datadir}/firewalld/*.py*
@@ -125,6 +127,13 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Jan  3 2011 Thomas Woerner <twoerner@redhat.com> 0.1.2-1
+- fixed package according to package review (rhbz#665395):
+  - non executable scripts: dropped shebang
+  - using newer GPL license file
+  - made /etc/dbus-1/system.d/FirewallD.conf config(noreplace)
+  - added requires(post) and (pre) for chkconfig
+
 * Mon Jan  3 2011 Thomas Woerner <twoerner@redhat.com> 0.1.1-1
 - new version 0.1.1
 - fixed source path in POTFILES*
