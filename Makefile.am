@@ -13,7 +13,7 @@ DISTCLEANDIRS = autom4te.cache ${PACKAGE_NAME}-*
 all: report
 
 tag:
-	@spec_ver=`awk '/Version:/ { print $$2}'${PACKAGE_NAME}.spec`; \
+	@spec_ver=`awk '/Version:/ { print $$2}' ${PACKAGE_NAME}.spec`; \
 	if test "$$spec_ver" != "${PACKAGE_VERSION}"; then \
 		echo "Spec file and package versions differ: $$spec_ver != ${PACKAGE_VERSION}"; \
 		secs=10; \
