@@ -39,6 +39,7 @@ import pickle
 import syslog, traceback, types
 #import hashlib, random
 import firewall
+import firewall_config
 from firewall_functions import active_firewalld
 from firewall_error import *
 from logger import log, FileLog
@@ -52,9 +53,12 @@ if "--debug" in sys.argv[1:]:
 if "--verbose" in sys.argv[1:]:
     debug = 1
 
-log_file = FileLog("/var/log/firewalld", "a")
+log_file = FileLog(firewall_config.VARLOGFILE, "a")
 log.setDateFormat("%Y-%m-%d %H:%M:%S")
+log.setFormat("%(date)s %(label)s%(message)s")
 log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR ])
+log.addInfoLogging("*", log.stderr, [ log.FATAL, log.ERROR ])
+log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR ])
 log.setInfoLogging("*", log_file, [ log.WARNING ])
 log.setDebugLogLevel(log.NO_INFO)
 log.setDebugLogLevel(log.NO_DEBUG)
@@ -67,7 +71,7 @@ if debug:
     log.addDebugLogging("*", log_file)
 
 if active_firewalld():
-    log.warning(_("Not starting FirewallD, already running."))
+    log.fatal(_("Not starting FirewallD, already running."))
     sys.exit(1)
 
 try:
