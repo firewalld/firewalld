@@ -1,3 +1,4 @@
+# translation of firewalld.master.ml.po to
 # translation of system-config-firewall.master.ml.po to
 # translation of ml.po to
 # This file is distributed under the same license as the PACKAGE package.
@@ -6,10 +7,10 @@
 # Ani Peter <apeter@redhat.com>, 2006, 2007, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall.master.ml\n"
+"Project-Id-Version: firewalld.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-06-30 09:25+0530\n"
+"PO-Revision-Date: 2011-01-10 23:38+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,19 +46,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
 #: ../src/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
 #: ../src/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "സജീവമായ ക്രമീകരണം"
 
 #
 #: ../src/firewall-config.glade.h:5
@@ -69,8 +70,7 @@ msgstr "ചേര്‍ക്കുക"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
-msgstr ""
-"എല്ലാ ആതിഥേയര്‍ക്കും നെറ്റ്‌വര്‍‍ക്കുകള്‍ക്കും ലഭ്യ‌മാകേണ്ട കൂടുതല്‍ പോര്‍ട്ടുകളും പോര്‍‍ട്ട് പരിധികളും ചേര്‍‍ക്കുക."
+msgstr "എല്ലാ ആതിഥേയര്‍ക്കും നെറ്റ്‌വര്‍‍ക്കുകള്‍ക്കും ലഭ്യ‌മാകേണ്ട കൂടുതല്‍ പോര്‍ട്ടുകളും പോര്‍‍ട്ട് പരിധികളും ചേര്‍‍ക്കുക."
 
 #
 #: ../src/firewall-config.glade.h:7
@@ -102,7 +102,7 @@ msgstr "നിയമങ്ങള്‍ ഉണ്ടാക്കുക"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "സ്വതവേയുള്ള ക്രമീകരണം"
 
 #
 #: ../src/firewall-config.glade.h:12
@@ -128,7 +128,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "ഫയര്‍വോള്‍ ഡെമണ്‍"
 
 #
 #: ../src/firewall-config.glade.h:16
@@ -147,6 +147,8 @@ msgid ""
 "Here you can define the interfaces and network areas that have fill access "
 "to the system."
 msgstr ""
+"സിസ്റ്റത്തിലേക്കു് പ്രവേശനമുള്ള സംയോജക ഘടകങ്ങളും നെറ്റ്‌വര്‍ക്ക് സ്ഥലങ്ങളും "
+"നിങ്ങള്‍ക്കിവിടെ നിഷ്കര്‍ഷിയ്ക്കാം."
 
 #: ../src/firewall-config.glade.h:18
 msgid ""
@@ -154,10 +156,14 @@ msgid ""
 "accessible from all hosts and networks in the selected network protocol. "
 "Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
+"വിശ്വസനീയമായ സര്‍വീസുകള്‍ നിങ്ങള്‍ക്കിവിടെ നിഷ്കര്‍ഷിയ്ക്കാം. തെരഞ്ഞെടുത്ത നെറ്റ്‌വര്‍ക്ക് "
+"പ്രോട്ടോക്കോളിലുള്ള എല്ലാ ഹോസ്റ്റുകളും നെറ്റ്‌വര്‍ക്കുകളിലും നിന്നു് വിശ്വസനീയമായ "
+"സര്‍വീസുകള്‍ ലഭ്യമാക്കുവാന്‍ സാധിയ്ക്കുന്നു. നിഷ്കര്‍ഷിച്ചിട്ടുള്ള സര്‍വീസുകളില്‍ നിന്നും ഒരു "
+"വസ്തു തെരഞ്ഞെടുക്കുന്നതിനായി <i>ചേര്‍ക്കുക</i> ക്ലിക്ക് ചെയ്യുക."
 
 #: ../src/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "ആസ്ഥാന മേഘല"
 
 #
 #: ../src/firewall-config.glade.h:20
@@ -166,15 +172,15 @@ msgstr "ICMP ഫില്‍‌റ്റര്‍"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4,IPv6"
 
 #: ../src/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
 #: ../src/firewall-config.glade.h:24
@@ -216,6 +222,8 @@ msgid ""
 "Only allow full access for interfaces or network areas if you can trust all "
 "participants part of these."
 msgstr ""
+"സംയോജക ഘടകം അല്ലെങ്കില്‍ നെറ്റ്‌വര്‍ക്ക് സ്ഥയങ്ങളുടെ ഭാഗമായവ എല്ലാം "
+"വിശ്വസനീയമാണെങ്കില്‍ മാത്രം പൂര്‍ണ്ണ അനുമതി നല്‍കുക."
 
 #
 #: ../src/firewall-config.glade.h:29
@@ -229,7 +237,7 @@ msgstr "പോര്‍ട്ട് ഫോര്‍‍വേര്‍‍ഡി�
 
 #: ../src/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "പബ്ലിക് മേഘല"
 
 #
 #: ../src/firewall-config.glade.h:32
@@ -243,7 +251,7 @@ msgstr "നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "വീണ്ടും ആരംഭിയ്ക്കുക"
 
 #
 #: ../src/firewall-config.glade.h:35
@@ -258,30 +266,35 @@ msgid ""
 "this option. You need the openssh-server package installed for this option "
 "to be useful. "
 msgstr ""
+"റിമോട്ട് സിസ്റ്റങ്ങളിലേക്കു് പ്രവേശിയ്ക്കുന്നതിനും കമാന്‍ഡുകള്‍ നടപ്പിലാക്കുന്നതിനും "
+"ഉപയോഗിയ്ക്കുന്ന കീഴ്വഴക്കമാണു് സെക്യുര്‍ ഷെല്‍ (എസ്എസ്എച്). ഇതു് സുരക്ഷിതമായ "
+"എന്‍ക്രിപ്റ്റ് ചെയ്ത ആശയവിനിമയം ലഭ്യമാക്കുന്നു. ഫയര്‍വോള്‍ ഉള്ള സംയോജക ഘടകത്തിലൂടെ "
+"എസ്എസ്എച് വഴി സിസ്റ്റത്തിലേക്കു് പ്രവേശിയ്ക്കുന്നതിനായി, ഈ ഉപാധി സജ്ജമാക്കുക. "
+"ഇതിനായി openssh-server പാക്കേജ് ഇന്‍സ്റ്റോള്‍ ചെയ്യേണ്ടതുണ്ടു്."
 
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "ക്രമീകരണം തെരഞ്ഞെടുക്കുക"
 
 #: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
 msgid "Services"
-msgstr ""
+msgstr "സര്‍വീസുകള്‍"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "ആരംഭിയ്ക്കുക"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "നിര്‍ത്തുക"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
-msgstr ""
+msgstr "ഫയര്‍വോള്‍ മോഡലിലേക്കു് മാറുക"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Switch firewall model"
-msgstr ""
+msgstr "ഫയര്‍വോള്‍ മോഡലിലേക്ക് മാറുക"
 
 #
 #: ../src/firewall-config.glade.h:43
@@ -296,11 +309,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:44
 msgid "Trusted"
-msgstr ""
+msgstr "വിശ്വസനീയം"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Trusted Zone"
-msgstr ""
+msgstr "വിശ്വസനീയമായ മേഘല"
 
 #
 #: ../src/firewall-config.glade.h:46
@@ -309,11 +322,11 @@ msgstr "WWW (HTTP)"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "ജോലിയുടെ മേഘല"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Zones"
-msgstr ""
+msgstr "മേഘലകള്‍"
 
 #
 #: ../src/firewall-config.glade.h:49
@@ -332,40 +345,40 @@ msgstr "ഐഛികങ്ങള്‍ (_O)"
 
 #: ../src/firewall-config.glade.h:52
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "FirewallD ആരംഭിയ്ക്കുന്നില്ല, നിലവില്‍ പ്രവര്‍ത്തിയ്ക്കുന്നുണ്ടു്."
 
 #: ../src/firewalld:102
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "ഫോര്‍ക്ക് #1 പരാജയപ്പെട്ടു: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "ഫയര്‍വോള്‍ ആപ്ലെറ്റ്"
 
 #: ../src/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
+msgstr "- proof of concept implementation -"
 
 #: ../src/firewall-applet:124
 msgid "Ports"
-msgstr ""
+msgstr "പോര്‍ട്ടുകള്‍"
 
 #: ../src/firewall-applet:130
 msgid "Trusted Connections"
-msgstr ""
+msgstr "വിശ്വസനീയമായ കണക്ഷനുകള്‍"
 
 #: ../src/firewall-applet:148
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "ഐസിഎംപി ബുക്കിങ്"
 
 #: ../src/firewall-applet:167
 msgid "Panic Mode"
-msgstr ""
+msgstr "പാനിക് മോഡ്"
 
 #
 #: ../src/firewall-applet:178
@@ -374,11 +387,11 @@ msgstr "ഫയര്‍വോള്‍ പ്രവര്‍ത്തന സജ�
 
 #: ../src/firewall-applet:183
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "എല്ലാ അറിയിപ്പുകളും പ്രവര്‍ത്തന സജ്ജമാക്കുക"
 
 #: ../src/firewall-applet:214
 msgid "Not using slip"
-msgstr ""
+msgstr "സ്ലിപ്പ് ഉപയോഗിയ്ക്കുന്നില്ല"
 
 #: ../src/firewall-applet:232
 #, c-format
@@ -386,6 +399,8 @@ msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"സമയപരിധി: %d സെക്കന്‍ഡുകള്‍"
 
 #: ../src/firewall-applet:234
 #, c-format
@@ -393,104 +408,106 @@ msgid ""
 "\n"
 "Requested by: %s"
 msgstr ""
+"\n"
+"ആവശ്യപ്പെട്ടതു്: %s"
 
 #: ../src/firewall-applet:254
 msgid "Connection to FirewallD lost"
-msgstr ""
+msgstr "FirewallD-ലേക്കുള്ള കണക്ഷന്‍ നഷ്ടമായി"
 
 #: ../src/firewall-applet:404
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "ഫയര്‍വോള്‍ ഡെമണിലേക്കു് കണക്ഷന്‍ ലഭ്യമല്ല"
 
 #: ../src/firewall-applet:411
 msgid "PANIC MODE"
-msgstr ""
+msgstr "PANIC MODE"
 
 #: ../src/firewall-applet:418
 msgid "No Open Services."
-msgstr ""
+msgstr "തുറന്ന സര്‍വീസുകള്‍ ലഭ്യമല്ല."
 
 #: ../src/firewall-applet:420
 msgid "Open Services:"
-msgstr ""
+msgstr "തുറന്ന സര്‍വീസുകള്‍:"
 
 #: ../src/firewall-applet:424
 msgid "No Open Ports."
-msgstr ""
+msgstr "തുറന്ന പോര്‍ട്ടുകള്‍ ലഭ്യമല്ല."
 
 #: ../src/firewall-applet:430
 msgid "No Trusted."
-msgstr ""
+msgstr "വിശ്വസനീയമായവ ലഭ്യമല്ല."
 
 #: ../src/firewall-applet:432
 msgid "Trusted:"
-msgstr ""
+msgstr "വിശ്വസനീയമായ:"
 
 #: ../src/firewall-applet:436
 msgid "No Masqueraded."
-msgstr ""
+msgstr "മാസ്ക്യുറേഡഡ് ലഭ്യമല്ല."
 
 #: ../src/firewall-applet:438
 msgid "Masqueraded:"
-msgstr ""
+msgstr "മാസ്ക്യുറേഡ് ചെയ്തിരിയ്ക്കുന്നവ:"
 
 #: ../src/firewall-applet:442
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "ഐസിഎംപി ബ്ലോക്കുകള്‍ ലഭ്യമല്ല.ആ"
 
 #: ../src/firewall-applet:444
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "ഐസിഎംപി ബ്ലോക്കുകള്‍:"
 
 #: ../src/firewall-applet:448
 msgid "No Forward Ports."
-msgstr ""
+msgstr "ഫോര്‍വേഡ് ചെയ്ത പോര്‍ട്ടുകള്‍ ലഭ്യമല്ല."
 
 #: ../src/firewall-applet:450
 msgid "Forward Ports:"
-msgstr ""
+msgstr "ഫോര്‍വേഡ് ചെയ്യേണ്ട പോര്‍ട്ടുകള്‍ :"
 
 #: ../src/firewall-applet:454
 msgid "No Custom Rules."
-msgstr ""
+msgstr "യഥേഷ്ടമുള്ള നടപടികള്‍ ലഭ്യമല്ല"
 
 #: ../src/firewall-applet:456
 msgid "Custom Rules:"
-msgstr ""
+msgstr "നടപടികള്‍ യഥേഷ്ടമാക്കുക:"
 
 #: ../src/firewall-applet:474
 msgid "Panic mode"
-msgstr ""
+msgstr "പാനിക് മോഡ്"
 
 #: ../src/firewall-applet:496
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "'%s' സര്‍വീസ്"
 
 #: ../src/firewall-applet:511
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "'%s:%s' പോര്‍ട്ട്"
 
 #: ../src/firewall-applet:525
 #, c-format
 msgid "Trusted '%s'"
-msgstr ""
+msgstr "വിശ്വസനീയമായ '%s'"
 
 #: ../src/firewall-applet:541
 #, c-format
 msgid "Masquerade '%s'"
-msgstr ""
+msgstr "'%s' മാസ്ക്യുറേഡ് ചെയ്യുക"
 
 #: ../src/firewall-applet:557
 #, c-format
 msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+msgstr "'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s' ആണെങ്കില്‍ പോര്‍ട്ട് ഫോര്‍വേഡ് ചെയ്യുക"
 
 #: ../src/firewall-applet:572
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
+msgstr "ഐസിഎംപി '%s' ബ്ലോക്ക് ചെയ്യുക"
 
 #: ../src/firewall-applet:595
 #, c-format
@@ -498,3 +515,6 @@ msgid ""
 "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
 "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
