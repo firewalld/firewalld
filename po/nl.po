@@ -5,24 +5,24 @@
 # Tino Meinen <a.t.meinen@chello.nl>, 2002, 2003.
 # Peter van Egdom <p.van.egdom@gmail.com>, 2003-2009.
 # Bart Couvreur <couf@fedoraproject.org>, 2007.
-# Geert Warrink <geert.warrink@onsnet.nu>, 2009, 2010.
-# Geert Warrink <geert.warrink@onsnet.nu>, 2009, 2010.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2009, 2010, 2011.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2009, 2010, 2011.
 # Richard E. van der Luit <nippur@fedoraproject.org>, 2009, 2010.
-# Geert Warrink <geert.warrink@onsnet.nu>, 2010.
+# Geert Warrink <geert.warrink@onsnet.nu>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-06-25 14:46+0200\n"
+"PO-Revision-Date: 2011-01-10 17:35+0200\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Fedora\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.5.2\n"
+"X-Generator: Virtaal 0.6.1\n"
 
 #
 #: ../src/firewall_config.py:42
@@ -51,24 +51,24 @@ msgstr ""
 "Public License voor meer details.\n"
 "\n"
 "Je moet een kopie van de GNU General Public License, samen met dit "
-"programma, ontvangen hebben. Indien dat niet het geval is, zie <http://www."
-"gnu.org/licenses/>."
+"programma, ontvangen hebben. Indien dat niet het geval is, zie "
+"<http://www.gnu.org/licenses/>."
 
 #: ../src/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
 #: ../src/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
 #: ../src/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "Actieve configuratie"
 
 #
 #: ../src/firewall-config.glade.h:5
@@ -114,7 +114,7 @@ msgstr "Aangepaste regels"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "Standaard configuratie"
 
 #
 #: ../src/firewall-config.glade.h:12
@@ -139,7 +139,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "Firewall daemon"
 
 #
 #: ../src/firewall-config.glade.h:16
@@ -158,6 +158,8 @@ msgid ""
 "Here you can define the interfaces and network areas that have fill access "
 "to the system."
 msgstr ""
+"Hier kun je de interfaces en netwerk gebieden definiëren die volledige "
+"toegang tot het systeem hebben."
 
 #: ../src/firewall-config.glade.h:18
 msgid ""
@@ -165,10 +167,14 @@ msgid ""
 "accessible from all hosts and networks in the selected network protocol. "
 "Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
+"Hier kun je definiëren welke services vertrouwd worden. Vertrouwde services "
+"zijn toegankelijk vanaf alle hosts en netwerken in het geselecteerde netwerk "
+"protocol. Klik op <i>Toevoegen</i> om een item in de lijst met voor-"
+"gedefinieerde services te selecteren."
 
 #: ../src/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "Thuiszone"
 
 #
 #: ../src/firewall-config.glade.h:20
@@ -177,15 +183,15 @@ msgstr "ICMP filter"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4, IPv6"
 
 #: ../src/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
 #: ../src/firewall-config.glade.h:24
@@ -228,6 +234,8 @@ msgid ""
 "Only allow full access for interfaces or network areas if you can trust all "
 "participants part of these."
 msgstr ""
+"Sta alleen volledige toegang toe voor interfaces of netwerkgebieden als je "
+"alle deelnemers van deze kunt vertrouwen."
 
 #
 #: ../src/firewall-config.glade.h:29
@@ -241,7 +249,7 @@ msgstr "Poort doorsturen"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "Publieke zone"
 
 #
 #: ../src/firewall-config.glade.h:32
@@ -255,7 +263,7 @@ msgstr "Verwijderen"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "Herstarten"
 
 #
 #: ../src/firewall-config.glade.h:35
@@ -270,30 +278,36 @@ msgid ""
 "this option. You need the openssh-server package installed for this option "
 "to be useful. "
 msgstr ""
+"Secure Shell (SSH) is een protocol voor het inloggen en uitvoeren van "
+"commando's op machines op afstand. Het biedt de mogelijkheid voor veilig "
+"versleutelde communicatie. Als je van plan bent om jouw systeem op afstand "
+"te benaderen met behulp van SSH via een interface met een firewall, zet dan "
+"deze optie aan. Je moet het openssh-server pakket geïnstalleerd hebben om "
+"van deze optie gebruik te kunnen maken."
 
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "Selecteer configuratie"
 
 #: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
 msgid "Services"
-msgstr ""
+msgstr "Services"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "Start"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "Stop"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
-msgstr ""
+msgstr "Schakel firewall model om"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Switch firewall model"
-msgstr ""
+msgstr "Schakel firewall model om"
 
 #
 #: ../src/firewall-config.glade.h:43
@@ -308,11 +322,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:44
 msgid "Trusted"
-msgstr ""
+msgstr "Vertrouwd"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Trusted Zone"
-msgstr ""
+msgstr "Vertrouwde zone"
 
 #
 #: ../src/firewall-config.glade.h:46
@@ -321,11 +335,11 @@ msgstr "WWW (HTTP)"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "Werk zone"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Zones"
-msgstr ""
+msgstr "Zones"
 
 #
 #: ../src/firewall-config.glade.h:49
@@ -344,40 +358,40 @@ msgstr "_Opties"
 
 #: ../src/firewall-config.glade.h:52
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "FirewallD wordt niet gestart, het draait al."
 
 #: ../src/firewalld:102
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "Afsplitsing #1 faalde: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "Firewall applet"
 
 #: ../src/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
+msgstr "- bewijs van concept implementatie -"
 
 #: ../src/firewall-applet:124
 msgid "Ports"
-msgstr ""
+msgstr "Poorten"
 
 #: ../src/firewall-applet:130
 msgid "Trusted Connections"
-msgstr ""
+msgstr "Vertrouwde verbindingen"
 
 #: ../src/firewall-applet:148
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "ICMP blokkeren"
 
 #: ../src/firewall-applet:167
 msgid "Panic Mode"
-msgstr ""
+msgstr "Paniek mode"
 
 #
 #: ../src/firewall-applet:178
@@ -386,11 +400,11 @@ msgstr "Firewall aanzetten"
 
 #: ../src/firewall-applet:183
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "Alle meldingen aanzetten"
 
 #: ../src/firewall-applet:214
 msgid "Not using slip"
-msgstr ""
+msgstr "Maak geen gebruik van slip"
 
 #: ../src/firewall-applet:232
 #, c-format
@@ -398,6 +412,8 @@ msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"Time-out: %d seconden"
 
 #: ../src/firewall-applet:234
 #, c-format
@@ -405,104 +421,106 @@ msgid ""
 "\n"
 "Requested by: %s"
 msgstr ""
+"\n"
+"Aangevraagd door: %s"
 
 #: ../src/firewall-applet:254
 msgid "Connection to FirewallD lost"
-msgstr ""
+msgstr "Verbinding met FirewallD verloren"
 
 #: ../src/firewall-applet:404
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "Geen verbinding met firewall daemon"
 
 #: ../src/firewall-applet:411
 msgid "PANIC MODE"
-msgstr ""
+msgstr "PANIEK MODE"
 
 #: ../src/firewall-applet:418
 msgid "No Open Services."
-msgstr ""
+msgstr "Geen open services."
 
 #: ../src/firewall-applet:420
 msgid "Open Services:"
-msgstr ""
+msgstr "Open services:"
 
 #: ../src/firewall-applet:424
 msgid "No Open Ports."
-msgstr ""
+msgstr "Geen open poorten."
 
 #: ../src/firewall-applet:430
 msgid "No Trusted."
-msgstr ""
+msgstr "Niet vertrouwde."
 
 #: ../src/firewall-applet:432
 msgid "Trusted:"
-msgstr ""
+msgstr "Vertrouwde:"
 
 #: ../src/firewall-applet:436
 msgid "No Masqueraded."
-msgstr ""
+msgstr "Geen vermomming."
 
 #: ../src/firewall-applet:438
 msgid "Masqueraded:"
-msgstr ""
+msgstr "Vermomd:"
 
 #: ../src/firewall-applet:442
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "Geen ICMP blokken."
 
 #: ../src/firewall-applet:444
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "ICMP blokken:"
 
 #: ../src/firewall-applet:448
 msgid "No Forward Ports."
-msgstr ""
+msgstr "Geen doorgestuurde poorten."
 
 #: ../src/firewall-applet:450
 msgid "Forward Ports:"
-msgstr ""
+msgstr "Doorgestuurde poorten:"
 
 #: ../src/firewall-applet:454
 msgid "No Custom Rules."
-msgstr ""
+msgstr "Geen aangepaste regels."
 
 #: ../src/firewall-applet:456
 msgid "Custom Rules:"
-msgstr ""
+msgstr "Aangepaste regels:"
 
 #: ../src/firewall-applet:474
 msgid "Panic mode"
-msgstr ""
+msgstr "Paniek mode"
 
 #: ../src/firewall-applet:496
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "Service '%s'"
 
 #: ../src/firewall-applet:511
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "Poort '%s:%s'"
 
 #: ../src/firewall-applet:525
 #, c-format
 msgid "Trusted '%s'"
-msgstr ""
+msgstr "Vertrouwde '%s'"
 
 #: ../src/firewall-applet:541
 #, c-format
 msgid "Masquerade '%s'"
-msgstr ""
+msgstr "Vermomde '%s'"
 
 #: ../src/firewall-applet:557
 #, c-format
 msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+msgstr "Doorstuur poort 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
 
 #: ../src/firewall-applet:572
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
+msgstr "Blok ICMP '%s'"
 
 #: ../src/firewall-applet:595
 #, c-format
@@ -510,3 +528,5 @@ msgid ""
 "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
 "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+"Aangepast 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%"
+"s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
