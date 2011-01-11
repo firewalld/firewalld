@@ -9,19 +9,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-08-20 17:39+0300\n"
+"POT-Creation-Date: 2010-12-17 16:58+0100\n"
+"PO-Revision-Date: 2010-12-26 12:20+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
-"Language-Team: Ukrainian <uk@li.org>\n"
+"Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.4\n"
-"X-Generator: Lokalize 1.1\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 1.2\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%"
+"10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Language: uk\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../firewalld/firewall_config.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -48,29 +50,29 @@ msgstr ""
 "Ви мали б отримати копію GNU General Public License разом з програмою; якщо "
 "це не так, дивіться <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
+#: ../firewalld/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
-#: ../src/firewall-config.glade.h:2
+#: ../firewalld/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
-#: ../src/firewall-config.glade.h:3
+#: ../firewalld/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
-#: ../src/firewall-config.glade.h:4
+#: ../firewalld/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "Задіяні налаштування"
 
 #
-#: ../src/firewall-config.glade.h:5
+#: ../firewalld/firewall-config.glade.h:5
 msgid "Add"
 msgstr "Додати"
 
 #
-#: ../src/firewall-config.glade.h:6
+#: ../firewalld/firewall-config.glade.h:6
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
@@ -79,7 +81,7 @@ msgstr ""
 "вузлів чи мереж."
 
 #
-#: ../src/firewall-config.glade.h:7
+#: ../firewalld/firewall-config.glade.h:7
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -92,97 +94,103 @@ msgstr ""
 "використовується лише для IPv4."
 
 #
-#: ../src/firewall-config.glade.h:8
+#: ../firewalld/firewall-config.glade.h:8
 msgid "Allow access to necessary ports or port ranges, only."
 msgstr "Дозволити доступ лише до потрібних портів або діапазонів портів."
 
 #
-#: ../src/firewall-config.glade.h:9
+#: ../firewalld/firewall-config.glade.h:9
 msgid "Allow access to necessary services, only."
 msgstr "Дозволити доступ лише до потрібних служб."
 
 #
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
+#: ../firewalld/firewall-config.glade.h:10 ../firewalld/firewall-applet:145
 msgid "Custom Rules"
 msgstr "Спеціальні правила"
 
-#: ../src/firewall-config.glade.h:11
+#: ../firewalld/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "Типові налаштування"
 
 #
-#: ../src/firewall-config.glade.h:12
+#: ../firewalld/firewall-config.glade.h:12
 msgid "Edit"
 msgstr "Правка"
 
 #
-#: ../src/firewall-config.glade.h:13
+#: ../firewalld/firewall-config.glade.h:13
 msgid "FTP"
 msgstr "FTP"
 
 #
-#: ../src/firewall-config.glade.h:14
+#: ../firewalld/firewall-config.glade.h:14
 msgid ""
 "FTP is a protocol used for remote file transfer. If you plan to make your "
 "FTP server publicly available, enable this option. You need the vsftpd "
 "package installed for this option to be useful."
 msgstr ""
-"FTP - це протокол для передавання файлів. Якщо ви плануєте зробити "
-"загальнодоступний FTP сервер, увімкніть цей параметр. Щоб цей параметр був "
+"FTP — це протокол для передавання файлів. Якщо ви плануєте зробити "
+"загальнодоступний FTP-сервер, увімкніть цей параметр. Щоб цей параметр був "
 "корисний необхідно встановити пакет vsftpd."
 
-#: ../src/firewall-config.glade.h:15
+#: ../firewalld/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "Фонова служба брандмауера"
 
 #
-#: ../src/firewall-config.glade.h:16
+#: ../firewalld/firewall-config.glade.h:16
 msgid ""
 "HTTP is the protocol used to serve Web pages. If you plan to make your Web "
 "server publicly available, enable this option. This option is not required "
 "for viewing pages locally or developing Web pages."
 msgstr ""
-"HTTP - це протокол, який використовується для надання веб-сторінок. Якщо ви "
+"HTTP — це протокол, який використовується для надання веб-сторінок. Якщо ви "
 "плануєте зробити загальнодоступний веб-сервер, увімкніть цей параметр. Цей "
 "параметр не потрібен для локального перегляду веб-сторінок чи для їх "
 "розробки."
 
-#: ../src/firewall-config.glade.h:17
+#: ../firewalld/firewall-config.glade.h:17
 msgid ""
 "Here you can define the interfaces and network areas that have fill access "
 "to the system."
 msgstr ""
+"Тут ви можете визначити інтерфейси і діапазони адрес мережі, які матимуть "
+"повний доступ до системи."
 
-#: ../src/firewall-config.glade.h:18
+#: ../firewalld/firewall-config.glade.h:18
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks in the selected network protocol. "
 "Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
+"Тут можна визначити, які служби є довіреними. Тобто які служби, будуть "
+"доступні з усіх вузлів чи мереж за вказаним протоколом обміну даними мережею. "
+"Натисніть кнопку <i>Додати</i>, щоб вибрати пункт зі списку попередньо "
+"визначених служб."
 
-#: ../src/firewall-config.glade.h:19
+#: ../firewalld/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "Домашня зона"
 
 #
-#: ../src/firewall-config.glade.h:20
+#: ../firewalld/firewall-config.glade.h:20
 msgid "ICMP Filter"
 msgstr "Фільтр ICMP"
 
-#: ../src/firewall-config.glade.h:21
+#: ../firewalld/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:22
+#: ../firewalld/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4,IPv6"
 
-#: ../src/firewall-config.glade.h:23
+#: ../firewalld/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
-#: ../src/firewall-config.glade.h:24
+#: ../firewalld/firewall-config.glade.h:24
 msgid ""
 "If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
 "networks."
@@ -191,7 +199,7 @@ msgstr ""
 "ваших мереж IPv4."
 
 #
-#: ../src/firewall-config.glade.h:25
+#: ../firewalld/firewall-config.glade.h:25
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -200,12 +208,12 @@ msgstr ""
 "мережний екран. Типово обмежень немає."
 
 #
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
+#: ../firewalld/firewall-config.glade.h:26 ../firewalld/firewall-applet:127
 msgid "Masquerading"
 msgstr "Маскарад"
 
 #
-#: ../src/firewall-config.glade.h:27
+#: ../firewalld/firewall-config.glade.h:27
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -215,46 +223,49 @@ msgstr ""
 "локальну мережу з Інтернет. Локальна мережа не буде видимою, у Інтернет буде "
 "видимий лише один вузол. Маскарад застосовується лише до IPv4."
 
-#: ../src/firewall-config.glade.h:28
+#: ../firewalld/firewall-config.glade.h:28
 msgid ""
 "Only allow full access for interfaces or network areas if you can trust all "
 "participants part of these."
 msgstr ""
+"Повний доступ до інтерфейсів або діапазонів адрес мережі варто надавати, лише "
+"якщо ви повністю довіряєте всім, хто може отримати доступ до цих інтерфейсів "
+"або адрес."
 
 #
-#: ../src/firewall-config.glade.h:29
+#: ../firewalld/firewall-config.glade.h:29
 msgid "Other Ports"
 msgstr "Інші порти"
 
 #
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
+#: ../firewalld/firewall-config.glade.h:30 ../firewalld/firewall-applet:133
 msgid "Port Forwarding"
 msgstr "Перенаправлення портів"
 
-#: ../src/firewall-config.glade.h:31
+#: ../firewalld/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "Відкрита зона"
 
 #
-#: ../src/firewall-config.glade.h:32
+#: ../firewalld/firewall-config.glade.h:32
 msgid "Reload"
 msgstr "Перезавантажити"
 
 #
-#: ../src/firewall-config.glade.h:33
+#: ../firewalld/firewall-config.glade.h:33
 msgid "Remove"
 msgstr "Видалити"
 
-#: ../src/firewall-config.glade.h:34
+#: ../firewalld/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "Перезапустити"
 
 #
-#: ../src/firewall-config.glade.h:35
+#: ../firewalld/firewall-config.glade.h:35
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/firewall-config.glade.h:36
+#: ../firewalld/firewall-config.glade.h:36
 msgid ""
 "Secure Shell (SSH) is a protocol for logging into and executing commands on "
 "remote machines. It provides secure encrypted comminucations. If you plan on "
@@ -262,33 +273,38 @@ msgid ""
 "this option. You need the openssh-server package installed for this option "
 "to be useful. "
 msgstr ""
+"Secure Shell (SSH) — протокол для реєстрації та виконання команд на "
+"віддалених комп'ютерах. Він надає можливість безпечного зашифрованого "
+"зв'язку. Якщо ви плануєте підключатись до вашої системи через SSH через "
+"інтерфейс, який контролюється мережним екраном, позначте цей пункт. "
+"Для того, щоб ним скористатися, необхідно встановити пакет openssh-server. "
 
-#: ../src/firewall-config.glade.h:37
+#: ../firewalld/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "Виберіть налаштування"
 
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
+#: ../firewalld/firewall-config.glade.h:38 ../firewalld/firewall-applet:111
 msgid "Services"
-msgstr ""
+msgstr "Служби"
 
-#: ../src/firewall-config.glade.h:39
+#: ../firewalld/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "Запуск"
 
-#: ../src/firewall-config.glade.h:40
+#: ../firewalld/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "Зупинити"
 
-#: ../src/firewall-config.glade.h:41
+#: ../firewalld/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
-msgstr ""
+msgstr "Перемкнути модель брандмауера"
 
-#: ../src/firewall-config.glade.h:42
+#: ../firewalld/firewall-config.glade.h:42
 msgid "Switch firewall model"
-msgstr ""
+msgstr "Перемкнути модель брандмауера"
 
 #
-#: ../src/firewall-config.glade.h:43
+#: ../firewalld/firewall-config.glade.h:43
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -298,207 +314,214 @@ msgstr ""
 "для обміну повідомленнями про помилки між комп'ютерами у мережі, але також "
 "можна надсилати інформаційні повідомлення, такі як запити та відповіді ping."
 
-#: ../src/firewall-config.glade.h:44
+#: ../firewalld/firewall-config.glade.h:44
 msgid "Trusted"
-msgstr ""
+msgstr "Надійна"
 
-#: ../src/firewall-config.glade.h:45
+#: ../firewalld/firewall-config.glade.h:45
 msgid "Trusted Zone"
-msgstr ""
+msgstr "Надійна зона"
 
 #
-#: ../src/firewall-config.glade.h:46
+#: ../firewalld/firewall-config.glade.h:46
 msgid "WWW (HTTP)"
 msgstr "WWW (HTTP)"
 
-#: ../src/firewall-config.glade.h:47
+#: ../firewalld/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "Робоча зона"
 
-#: ../src/firewall-config.glade.h:48
+#: ../firewalld/firewall-config.glade.h:48
+msgid "Zone"
+msgstr "Зона"
+
+#: ../firewalld/firewall-config.glade.h:49
 msgid "Zones"
-msgstr ""
+msgstr "Зони"
 
 #
-#: ../src/firewall-config.glade.h:49
+#: ../firewalld/firewall-config.glade.h:50
 msgid "_File"
 msgstr "_Файл"
 
 #
-#: ../src/firewall-config.glade.h:50
+#: ../firewalld/firewall-config.glade.h:51
 msgid "_Help"
 msgstr "_Довідка"
 
 #
-#: ../src/firewall-config.glade.h:51
+#: ../firewalld/firewall-config.glade.h:52
 msgid "_Options"
 msgstr "_Параметри"
 
-#: ../src/firewall-config.glade.h:52
+#: ../firewalld/firewall-config.glade.h:53
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
-#: ../src/firewalld:74
-msgid "Not starting FirewallD, already running."
-msgstr ""
-
-#: ../src/firewalld:102
+#: ../firewalld/firewalld:891
 #, c-format
-msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgid "fork #1 failed: %d (%s)"
+msgstr "помилка розгалуження: %d (%s)"
 
-#: ../src/firewall-applet:58
+#: ../firewalld/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "Аплет брандмауера"
 
-#: ../src/firewall-applet:59
+#: ../firewalld/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
+msgstr "- тестова реалізація -"
 
-#: ../src/firewall-applet:124
+#: ../firewalld/firewall-applet:115
 msgid "Ports"
-msgstr ""
+msgstr "Порти"
 
-#: ../src/firewall-applet:130
+#: ../firewalld/firewall-applet:121
 msgid "Trusted Connections"
-msgstr ""
+msgstr "Надійні з’єднання"
 
-#: ../src/firewall-applet:148
+#: ../firewalld/firewall-applet:139
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "Блокування ICMP"
 
-#: ../src/firewall-applet:167
+#: ../firewalld/firewall-applet:158
 msgid "Panic Mode"
-msgstr ""
+msgstr "Режим супербезпеки"
 
 #
-#: ../src/firewall-applet:178
+#: ../firewalld/firewall-applet:169
 msgid "Enable Firewall"
 msgstr "Увімкнути мережний екран"
 
-#: ../src/firewall-applet:183
+#: ../firewalld/firewall-applet:174
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "Увімкнути всі сповіщення"
 
-#: ../src/firewall-applet:214
+#: ../firewalld/firewall-applet:205
 msgid "Not using slip"
-msgstr ""
+msgstr "SLIP не використовується"
 
-#: ../src/firewall-applet:232
+#: ../firewalld/firewall-applet:223
 #, c-format
 msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"Час очікування: %d секунд"
 
-#: ../src/firewall-applet:234
+#: ../firewalld/firewall-applet:225
 #, c-format
 msgid ""
 "\n"
 "Requested by: %s"
 msgstr ""
+"\n"
+"Запит від: %s"
 
-#: ../src/firewall-applet:254
+#: ../firewalld/firewall-applet:245
 msgid "Connection to FirewallD lost"
-msgstr ""
+msgstr "Зв’язок з FirewallD втрачено"
 
-#: ../src/firewall-applet:404
+#: ../firewalld/firewall-applet:395
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "Немає зв’язку з фоновою службою брандмауера"
 
-#: ../src/firewall-applet:411
+#: ../firewalld/firewall-applet:402
 msgid "PANIC MODE"
-msgstr ""
+msgstr "Режим супербезпеки"
 
-#: ../src/firewall-applet:418
+#: ../firewalld/firewall-applet:409
 msgid "No Open Services."
-msgstr ""
+msgstr "Немає відкритих служб."
 
-#: ../src/firewall-applet:420
+#: ../firewalld/firewall-applet:411
 msgid "Open Services:"
-msgstr ""
+msgstr "Відкриті служби:"
 
-#: ../src/firewall-applet:424
+#: ../firewalld/firewall-applet:415
 msgid "No Open Ports."
-msgstr ""
+msgstr "Немає відкритих портів."
 
-#: ../src/firewall-applet:430
+#: ../firewalld/firewall-applet:421
 msgid "No Trusted."
-msgstr ""
+msgstr "Немає надійних."
 
-#: ../src/firewall-applet:432
+#: ../firewalld/firewall-applet:423
 msgid "Trusted:"
-msgstr ""
+msgstr "Надійність:"
 
-#: ../src/firewall-applet:436
+#: ../firewalld/firewall-applet:427
 msgid "No Masqueraded."
-msgstr ""
+msgstr "Маскарад не використовується."
 
-#: ../src/firewall-applet:438
+#: ../firewalld/firewall-applet:429
 msgid "Masqueraded:"
-msgstr ""
+msgstr "З маскарадом:"
 
-#: ../src/firewall-applet:442
+#: ../firewalld/firewall-applet:433
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "Немає блокувань ICMP."
 
-#: ../src/firewall-applet:444
+#: ../firewalld/firewall-applet:435
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "Блокування ICMP:"
 
-#: ../src/firewall-applet:448
+#: ../firewalld/firewall-applet:439
 msgid "No Forward Ports."
-msgstr ""
+msgstr "Немає портів переспрямування."
 
-#: ../src/firewall-applet:450
+#: ../firewalld/firewall-applet:441
 msgid "Forward Ports:"
-msgstr ""
+msgstr "Порти переспрямування:"
 
-#: ../src/firewall-applet:454
+#: ../firewalld/firewall-applet:445
 msgid "No Custom Rules."
-msgstr ""
+msgstr "Немає спеціальних правил."
 
-#: ../src/firewall-applet:456
+#: ../firewalld/firewall-applet:447
 msgid "Custom Rules:"
-msgstr ""
+msgstr "Спеціальні правила:"
 
-#: ../src/firewall-applet:474
+#: ../firewalld/firewall-applet:465
 msgid "Panic mode"
-msgstr ""
+msgstr "Режим супербезпеки"
 
-#: ../src/firewall-applet:496
+#: ../firewalld/firewall-applet:487
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "Служба «%s»"
 
-#: ../src/firewall-applet:511
+#: ../firewalld/firewall-applet:502
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "Порт «%s:%s»"
 
-#: ../src/firewall-applet:525
+#: ../firewalld/firewall-applet:516
 #, c-format
 msgid "Trusted '%s'"
-msgstr ""
+msgstr "Надійні «%s»"
 
-#: ../src/firewall-applet:541
+#: ../firewalld/firewall-applet:532
 #, c-format
 msgid "Masquerade '%s'"
-msgstr ""
+msgstr "Маскарад «%s»"
 
-#: ../src/firewall-applet:557
+#: ../firewalld/firewall-applet:548
 #, c-format
 msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+msgstr "Порт переспрямування «if=%s:port=%s:proto=%s:toport=%s:toaddr=%s»"
 
-#: ../src/firewall-applet:572
+#: ../firewalld/firewall-applet:563
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
+msgstr "Блокування ICMP «%s»"
 
-#: ../src/firewall-applet:595
+#: ../firewalld/firewall-applet:586
 #, c-format
 msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto="
+"%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+"Спеціальні «table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto="
+"%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s»"
+
