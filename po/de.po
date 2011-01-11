@@ -27,100 +27,53 @@ msgstr ""
 "POT-Creation-Date: 2011-01-03 15:08+0100\n"
 "PO-Revision-Date: 2010-06-29 22:42+1000\n"
 "Last-Translator: sknirT omiT <moc.tahder@sknirtt>\n"
-"Language-Team:  <en@li.org>\n"
+"Language-Team: <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
 "X-Poedit-Language: German\n"
+"X-Generator: KBabel 1.11.4\n"
 
-#
 #: ../src/firewall_config.py:42
 msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
+"You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>."
 msgstr ""
-"Dieses Programm ist freie Software. Sie können es unter den Bedingungen der "
-"GNU General Public License, wie von der Free Software Foundation "
-"veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 2 "
-"der Lizenz oder (nach Ihrer Option) jeder späteren Version.\n"
+"Dieses Programm ist freie Software. Sie können es unter den Bedingungen der GNU General Public License, wie von der Free Software Foundation veröffentlicht, weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder (nach Ihrer Option) jeder späteren Version.\n"
 "\n"
-"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen "
-"von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die "
-"implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN "
-"BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.\n"
+"Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, daß es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, sogar ohne die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT FÜR EINEN BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License.\n"
 "\n"
-"Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem "
-"Programm erhalten haben. Falls nicht, werfen Sie einen Blick auf <http://www."
-"gnu.org/licenses/>."
-
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
-msgstr ""
+"Sie sollten ein Exemplar der GNU General Public License zusammen mit diesem Programm erhalten haben. Falls nicht, werfen Sie einen Blick auf <http://www.gnu.org/licenses/>."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Active Configuration"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:5
 msgid "Add"
 msgstr "Hinzufügen"
 
-#
 #: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
-msgstr ""
-"Zusätzliche Ports oder Port-Bereiche hinzufügen, die für alle Rechner oder "
-"Netzwerke erreichbar sein müssen."
+msgid "Add additional ports or port ranges, which need to be accessible for all hosts or networks."
+msgstr "Zusätzliche Ports oder Port-Bereiche hinzufügen, die für alle Rechner oder Netzwerke erreichbar sein müssen."
 
-#
 #: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
-msgstr ""
-"Fügen Sie Einträge hinzu, um entweder einen Port auf einen anderen lokalen "
-"Port weiterzuleiten oder vom lokalen System auf ein anderes. Das "
-"Weiterleiten eines Ports auf ein anderes System ist nur dann sinnvoll, wenn "
-"die Schnittstelle maskiert ist. Port-Weiterleitung kann nur für IPv4 benutzt "
-"werden."
+msgid "Add entries to forward ports either from one port to another on the local system or from the local system to another system. Forwarding to another system is only useful if the interface is masqueraded. Port forwarding is IPv4 only."
+msgstr "Fügen Sie Einträge hinzu, um entweder einen Port auf einen anderen lokalen Port weiterzuleiten oder vom lokalen System auf ein anderes. Das Weiterleiten eines Ports auf ein anderes System ist nur dann sinnvoll, wenn die Schnittstelle maskiert ist. Port-Weiterleitung kann nur für IPv4 benutzt werden."
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Allow access to necessary ports or port ranges, only."
 msgstr "Zugriff nur auf benötigte Ports oder Port-Bereiche erlauben."
 
-#
 #: ../src/firewall-config.glade.h:9
 msgid "Allow access to necessary services, only."
 msgstr "Zugriff nur für benötigte Dienste erlauben."
 
-#
 #: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
 msgid "Custom Rules"
 msgstr "Eigene Regeln"
@@ -129,125 +82,66 @@ msgstr "Eigene Regeln"
 msgid "Default Configuration"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:12
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#
 #: ../src/firewall-config.glade.h:13
 msgid "FTP"
 msgstr "FTP"
 
-#
 #: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
-msgstr ""
-"Das FTP-Protokoll wird zum Transfer von Dateien zwischen Rechnern verwendet. "
-"Wenn Sie einen FTP-Server betreiben möchten, aktivieren Sie bitte diese "
-"Option. Außerdem benötigen Sie das Paket 'vsftpd'."
+msgid "FTP is a protocol used for remote file transfer. If you plan to make your FTP server publicly available, enable this option. You need the vsftpd package installed for this option to be useful."
+msgstr "Das FTP-Protokoll wird zum Transfer von Dateien zwischen Rechnern verwendet. Wenn Sie einen FTP-Server betreiben möchten, aktivieren Sie bitte diese Option. Außerdem benötigen Sie das Paket 'vsftpd'."
 
 #: ../src/firewall-config.glade.h:15
 msgid "Firewall Daemon"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
-msgstr ""
-"Mit Hilfe des HTTP-Protokolls werden Web-Seiten zur Verfügung gestellt. Wenn "
-"Sie einen Web-Server betreiben möchten, aktivieren Sie bitte diese Option. "
-"Es ist nicht notwendig diese Option zu aktivieren, wenn Sie Web-Seiten nur "
-"lokal ansehen möchten oder wenn Sie Web-Seiten lokal entwickeln möchten."
+msgid "HTTP is the protocol used to serve Web pages. If you plan to make your Web server publicly available, enable this option. This option is not required for viewing pages locally or developing Web pages."
+msgstr "Mit Hilfe des HTTP-Protokolls werden Web-Seiten zur Verfügung gestellt. Wenn Sie einen Web-Server betreiben möchten, aktivieren Sie bitte diese Option. Es ist nicht notwendig diese Option zu aktivieren, wenn Sie Web-Seiten nur lokal ansehen möchten oder wenn Sie Web-Seiten lokal entwickeln möchten."
 
 #: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
+msgid "Here you can define the interfaces and network areas that have fill access to the system."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
+msgid "Here you can define which services are trusted. Trusted services are accessible from all hosts and networks in the selected network protocol. Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:19
 msgid "Home Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:20
 msgid "ICMP Filter"
 msgstr "ICMP-Filter"
 
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr ""
-
-#
 #: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"Wenn Sie Masquerading aktivieren, wird die IP-Weiterleitung ebenfalls für "
-"Ihre IPv4-Netzwerke aktiviert."
+msgid "If you enable masquerading, IP forwarding will also be enabled for your IPv4 networks."
+msgstr "Wenn Sie Masquerading aktivieren, wird die IP-Weiterleitung ebenfalls für Ihre IPv4-Netzwerke aktiviert."
 
-#
 #: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Markieren Sie die ICMP-Typen in der Liste, die verworfen werden sollen. Alle "
-"anderen ICMP-Typen haben die Erlaubnis, die Firewall zu passieren. Der "
-"Standard hat keine Limitierung."
+msgid "Mark the ICMP types in the list, which should be rejected. All other ICMP types are allowed to pass the firewall. The default is no limitation."
+msgstr "Markieren Sie die ICMP-Typen in der Liste, die verworfen werden sollen. Alle anderen ICMP-Typen haben die Erlaubnis, die Firewall zu passieren. Der Standard hat keine Limitierung."
 
-#
 #: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
 msgid "Masquerading"
 msgstr "Masquerading"
 
-#
 #: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"Masquerading erlaubt es, einen Rechner oder Router einzurichten, der Ihr "
-"lokales Netzwerk mit dem Internet verbindet. Ihr lokales Netzwerk ist nicht "
-"sichtbar und erscheint als ein Recher vom Internet aus betrachtet. "
-"Masquerading kann nur für IPv4 benutzt werden."
+msgid "Masquerading allows you to set up a host or router that connects your local network to the internet. Your local network will not be visible and the hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr "Masquerading erlaubt es, einen Rechner oder Router einzurichten, der Ihr lokales Netzwerk mit dem Internet verbindet. Ihr lokales Netzwerk ist nicht sichtbar und erscheint als ein Recher vom Internet aus betrachtet. Masquerading kann nur für IPv4 benutzt werden."
 
 #: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
+msgid "Only allow full access for interfaces or network areas if you can trust all participants part of these."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:29
 msgid "Other Ports"
 msgstr "Andere Ports"
 
-#
 #: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
 msgid "Port Forwarding"
 msgstr "Port-Weiterleitung"
@@ -256,12 +150,10 @@ msgstr "Port-Weiterleitung"
 msgid "Public Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:32
 msgid "Reload"
 msgstr "Neu laden"
 
-#
 #: ../src/firewall-config.glade.h:33
 msgid "Remove"
 msgstr "Löschen"
@@ -270,18 +162,12 @@ msgstr "Löschen"
 msgid "Restart"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:35
 msgid "SSH"
 msgstr "SSH"
 
 #: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
+msgid "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted comminucations. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful. "
 msgstr ""
 
 #: ../src/firewall-config.glade.h:37
@@ -292,14 +178,6 @@ msgstr ""
 msgid "Services"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
 msgstr ""
@@ -308,16 +186,9 @@ msgstr ""
 msgid "Switch firewall model"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"Das Internet Control Message Protocol (ICMP) wird hauptsächlich gebraucht "
-"zum Senden von Fehlermeldungen zwischen vernetzten Computern, aber auch für "
-"informative Mitteilungen wie Ping-Anforderungen und Antworten."
+msgid "The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies."
+msgstr "Das Internet Control Message Protocol (ICMP) wird hauptsächlich gebraucht zum Senden von Fehlermeldungen zwischen vernetzten Computern, aber auch für informative Mitteilungen wie Ping-Anforderungen und Antworten."
 
 #: ../src/firewall-config.glade.h:44
 msgid "Trusted"
@@ -327,7 +198,6 @@ msgstr ""
 msgid "Trusted Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:46
 msgid "WWW (HTTP)"
 msgstr "WWW (HTTP)"
@@ -340,17 +210,14 @@ msgstr ""
 msgid "Zones"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:49
 msgid "_File"
 msgstr "_Datei"
 
-#
 #: ../src/firewall-config.glade.h:50
 msgid "_Help"
 msgstr "_Hilfe"
 
-#
 #: ../src/firewall-config.glade.h:51
 msgid "_Options"
 msgstr "_Optionen"
@@ -392,7 +259,6 @@ msgstr ""
 msgid "Panic Mode"
 msgstr ""
 
-#
 #: ../src/firewall-applet:178
 msgid "Enable Firewall"
 msgstr "Firewall aktivieren"
@@ -519,7 +385,37 @@ msgstr ""
 
 #: ../src/firewall-applet:595
 #, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+
+#: ../src/firewall-config.glade.h:39
+msgid "Start"
+msgstr "Start"
+
+#: ../src/firewall-config.glade.h:40
+msgid "Stop"
+msgstr "Stop"
+
+#: ../src/firewall-config.glade.h:2
+msgid "22/TCP"
+msgstr "22/TCP"
+
+#: ../src/firewall-config.glade.h:1
+msgid "21/TCP"
+msgstr "21/TCP"
+
+#: ../src/firewall-config.glade.h:3
+msgid "80/TCP"
+msgstr "80/TCP"
+
+#: ../src/firewall-config.glade.h:23
+msgid "IPv6"
+msgstr "IPv6"
+
+#: ../src/firewall-config.glade.h:21
+msgid "IPv4"
+msgstr "IPv4"
+
+#: ../src/firewall-config.glade.h:22
+msgid "IPv4,IPv6"
+msgstr "IPv4,IPv6"
