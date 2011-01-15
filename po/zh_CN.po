@@ -125,37 +125,13 @@ msgstr "SSH"
 msgid "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted comminucations. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful. "
 msgstr ""
 
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:43
 msgid "The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies."
 msgstr "互联网控制报文协议（ICMP）主要用于在联网的计算机间发送出错信息，但也发送类似 ping 请求以及回应等信息。"
 
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:46
 msgid "WWW (HTTP)"
 msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr ""
 
 #: ../src/firewall-config.glade.h:49
 msgid "_File"
@@ -169,37 +145,8 @@ msgstr "帮助（_H）"
 msgid "_Options"
 msgstr "选项（_O）"
 
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr ""
-
-#: ../src/firewalld:74
-msgid "Not starting FirewallD, already running."
-msgstr ""
-
-#: ../src/firewalld:102
-#, c-format
-msgid "Fork #1 failed: %d (%s)"
-msgstr ""
-
-#: ../src/firewall-applet:58
-msgid "Firewall Applet"
-msgstr ""
-
 #: ../src/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
-
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr ""
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr ""
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
 msgstr ""
 
 #: ../src/firewall-applet:167
@@ -210,124 +157,13 @@ msgstr ""
 msgid "Enable Firewall"
 msgstr "启用防火墙"
 
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
-msgstr ""
-
-#: ../src/firewall-applet:214
-msgid "Not using slip"
-msgstr ""
-
-#: ../src/firewall-applet:232
-#, c-format
-msgid ""
-"\n"
-"Timeout: %d seconds"
-msgstr ""
-
-#: ../src/firewall-applet:234
-#, c-format
-msgid ""
-"\n"
-"Requested by: %s"
-msgstr ""
-
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
-msgstr ""
-
-#: ../src/firewall-applet:404
-msgid "No connection to firewall daemon"
-msgstr ""
-
-#: ../src/firewall-applet:411
-msgid "PANIC MODE"
-msgstr ""
-
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr ""
-
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr ""
-
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr ""
-
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr ""
-
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr ""
-
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr ""
-
-#: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr ""
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr ""
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr ""
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr ""
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr ""
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr ""
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr ""
-
 #: ../src/firewall-applet:474
 msgid "Panic mode"
-msgstr ""
-
-#: ../src/firewall-applet:496
-#, c-format
-msgid "Service '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr ""
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:572
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:595
-#, c-format
-msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
 
 #: ../src/firewall-applet:557
@@ -406,3 +242,171 @@ msgstr "服务"
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
 msgstr "选择配置"
+
+#: ../src/firewall-applet:148
+msgid "ICMP Blocking"
+msgstr ""
+
+#: ../src/firewall-applet:456
+msgid "Custom Rules:"
+msgstr "自定义角色："
+
+#: ../src/firewall-applet:438
+msgid "Masqueraded:"
+msgstr "伪装："
+
+#: ../src/firewall-applet:525
+#, c-format
+msgid "Trusted '%s'"
+msgstr "可信 '%s'"
+
+#: ../src/firewall-applet:595
+#, c-format
+msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr "自定义 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
+#: ../src/firewall-applet:541
+#, c-format
+msgid "Masquerade '%s'"
+msgstr "伪装 '%s'"
+
+#: ../src/firewall-applet:430
+msgid "No Trusted."
+msgstr "没有可信。"
+
+#: ../src/firewall-applet:424
+msgid "No Open Ports."
+msgstr "没有开放端口。"
+
+#: ../src/firewall-applet:411
+msgid "PANIC MODE"
+msgstr ""
+
+#: ../src/firewall-applet:404
+msgid "No connection to firewall daemon"
+msgstr "没有到防火墙守护进程的连接"
+
+#: ../src/firewall-applet:420
+msgid "Open Services:"
+msgstr "开放服务："
+
+#: ../src/firewall-applet:418
+msgid "No Open Services."
+msgstr "没有开放服务。"
+
+#: ../src/firewall-applet:436
+msgid "No Masqueraded."
+msgstr "没有伪装。"
+
+#: ../src/firewall-applet:444
+msgid "ICMP Blocks:"
+msgstr ""
+
+#: ../src/firewall-applet:448
+msgid "No Forward Ports."
+msgstr "没有转发端口。"
+
+#: ../src/firewall-applet:450
+msgid "Forward Ports:"
+msgstr "转发端口："
+
+#: ../src/firewall-applet:432
+msgid "Trusted:"
+msgstr "可信："
+
+#: ../src/firewall-applet:496
+#, c-format
+msgid "Service '%s'"
+msgstr "服务“%s”"
+
+#: ../src/firewall-applet:511
+#, c-format
+msgid "Port '%s:%s'"
+msgstr "端口“%s:%s”"
+
+#: ../src/firewall-applet:442
+msgid "No ICMP Blocks."
+msgstr ""
+
+#: ../src/firewall-applet:214
+msgid "Not using slip"
+msgstr "不使用SLIP"
+
+#: ../src/firewall-applet:232
+#, c-format
+msgid ""
+"\n"
+"Timeout: %d seconds"
+msgstr ""
+"\n"
+"超时 %d 秒。"
+
+#: ../src/firewall-applet:183
+msgid "Enable All Notifications"
+msgstr "应用所有修改"
+
+#: ../src/firewall-applet:124
+msgid "Ports"
+msgstr "端口"
+
+#: ../src/firewall-applet:130
+msgid "Trusted Connections"
+msgstr "可信连接"
+
+#: ../src/firewall-applet:234
+#, c-format
+msgid ""
+"\n"
+"Requested by: %s"
+msgstr ""
+"\n"
+"来自 %s 的请求"
+
+#: ../src/firewall-applet:454
+msgid "No Custom Rules."
+msgstr "没有自定义角色。"
+
+#: ../src/firewall-applet:254
+msgid "Connection to FirewallD lost"
+msgstr "丢失到FirewallD的连接"
+
+#: ../src/firewall-config.glade.h:41
+msgid "Switch Firewall Model"
+msgstr "选择防火墙模型"
+
+#: ../src/firewall-config.glade.h:42
+msgid "Switch firewall model"
+msgstr "选择防火墙模型"
+
+#: ../src/firewall-config.glade.h:44
+msgid "Trusted"
+msgstr "可信的"
+
+#: ../src/firewall-config.glade.h:45
+msgid "Trusted Zone"
+msgstr "可信域"
+
+#: ../src/firewall-config.glade.h:48
+msgid "Zones"
+msgstr "域"
+
+#: ../src/firewall-config.glade.h:47
+msgid "Work Zone"
+msgstr "工作域"
+
+#: ../src/firewalld:102
+#, c-format
+msgid "Fork #1 failed: %d (%s)"
+msgstr "分支 #1 失败：%d （%s）"
+
+#: ../src/firewalld:74
+msgid "Not starting FirewallD, already running."
+msgstr "不能启动FirewallD，已在运行。"
+
+#: ../src/firewall-config.glade.h:52
+msgid "ftp"
+msgstr "ftp"
+
+#: ../src/firewall-applet:58
+msgid "Firewall Applet"
+msgstr "防火墙小应用"
