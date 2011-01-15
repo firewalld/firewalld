@@ -137,17 +137,9 @@ msgstr "帮助（_H）"
 msgid "_Options"
 msgstr "选项（_O）"
 
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr ""
-
 #: ../src/firewall-applet:178
 msgid "Enable Firewall"
 msgstr "启用防火墙"
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr ""
 
 #: ../src/firewall-applet:557
 #, c-format
@@ -382,18 +374,9 @@ msgstr "你可以定义接口和网络域，它填充系统访问。"
 msgid "ICMP Blocking"
 msgstr "ICMP锁定"
 
-#: ../src/firewall-applet:411
-msgid "PANIC MODE"
-msgstr ""
-
 #: ../src/firewall-applet:444
 msgid "ICMP Blocks:"
 msgstr "ICMP锁定："
-
-#: ../src/firewall-config.glade.h:28
-#, fuzzy
-msgid "Only allow full access for interfaces or network areas if you can trust all participants part of these."
-msgstr "如果你信任这些所有参与者，允许完全访问接口和网络域。"
 
 #: ../src/firewall-applet:442
 msgid "No ICMP Blocks."
@@ -403,12 +386,27 @@ msgstr "没有ICMP锁定。"
 msgid "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted comminucations. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful. "
 msgstr "安全外壳（Secure Shell，SSH）是用来登陆到远程及其并执行命令的协议。如果你计划在应用此选项的防火墙下使用SSH远程访问你的机器。你需要安装openssh-server包让此选项可用。"
 
-#: ../src/firewall-applet:59
-#, fuzzy
-msgid "- proof of concept implementation -"
-msgstr "- 概念实施的证明 -"
-
 #: ../src/firewall-applet:572
 #, c-format
 msgid "Block ICMP '%s'"
 msgstr "锁定ICMP '%s'"
+
+#: ../src/firewall-config.glade.h:28
+msgid "Only allow full access for interfaces or network areas if you can trust all participants part of these."
+msgstr "只允许对接口和网络域的完全访问，如果你能信任所有这些参与者。"
+
+#: ../src/firewall-applet:411
+msgid "PANIC MODE"
+msgstr "应急方式"
+
+#: ../src/firewall-applet:59
+msgid "- proof of concept implementation -"
+msgstr "- 实施这一构想的证明 -"
+
+#: ../src/firewall-applet:167
+msgid "Panic Mode"
+msgstr "应急方式"
+
+#: ../src/firewall-applet:474
+msgid "Panic mode"
+msgstr "应急方式"
