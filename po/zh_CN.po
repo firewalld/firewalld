@@ -370,26 +370,9 @@ msgstr "防火墙小应用"
 msgid "Here you can define the interfaces and network areas that have fill access to the system."
 msgstr "你可以定义接口和网络域，它填充系统访问。"
 
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr "ICMP锁定"
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr "ICMP锁定："
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr "没有ICMP锁定。"
-
 #: ../src/firewall-config.glade.h:36
 msgid "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted comminucations. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful. "
 msgstr "安全外壳（Secure Shell，SSH）是用来登陆到远程及其并执行命令的协议。如果你计划在应用此选项的防火墙下使用SSH远程访问你的机器。你需要安装openssh-server包让此选项可用。"
-
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr "锁定ICMP '%s'"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Only allow full access for interfaces or network areas if you can trust all participants part of these."
@@ -410,3 +393,20 @@ msgstr "应急方式"
 #: ../src/firewall-applet:474
 msgid "Panic mode"
 msgstr "应急方式"
+
+#: ../src/firewall-applet:444
+msgid "ICMP Blocks:"
+msgstr "ICMP过滤："
+
+#: ../src/firewall-applet:442
+msgid "No ICMP Blocks."
+msgstr "没有ICMP过滤。"
+
+#: ../src/firewall-applet:148
+msgid "ICMP Blocking"
+msgstr "ICMP过滤"
+
+#: ../src/firewall-applet:572
+#, c-format
+msgid "Block ICMP '%s'"
+msgstr "过滤ICMP '%s'"
