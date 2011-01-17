@@ -5,19 +5,19 @@
 # Subhransu Behera <sbehera@redhat.com>, 2006, 2007.
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2007.
 # saroj kumar padhy <saroz.kumar@gmail.com>, 2008.
-# Manoj Kumar Giri <mgiri@redhat.com>, 2008, 2009, 2010.
+# Manoj Kumar Giri <mgiri@redhat.com>, 2008, 2009, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-06-29 19:41+0530\n"
+"POT-Creation-Date: 2010-12-17 16:58+0100\n"
+"PO-Revision-Date: 2011-01-16 20:43+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.1\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "\n"
 "\n"
@@ -56,7 +56,7 @@ msgstr ""
 "\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../firewalld/firewall_config.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -82,29 +82,29 @@ msgstr ""
 " ଆପଣ ଏହି ପ୍ରୋଗ୍ରାମ ସହିତ ଗ୍ନୁ ସାଧାରଣ ସାର୍ବଜନୀନ ଅନୁମତି ପତ୍ର ପାଈଥିବେ. ଯଦି ପାଇନାହାନ୍ତି ତେବେ "
 "ଏହାକୁ ଦେଖନ୍ତୁ <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
+#: ../firewalld/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
-#: ../src/firewall-config.glade.h:2
+#: ../firewalld/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
-#: ../src/firewall-config.glade.h:3
+#: ../firewalld/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
-#: ../src/firewall-config.glade.h:4
+#: ../firewalld/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "ସକ୍ରିୟ ବିନ୍ୟାସ"
 
 #
-#: ../src/firewall-config.glade.h:5
+#: ../firewalld/firewall-config.glade.h:5
 msgid "Add"
 msgstr "ଯୋଗ କରନ୍ତୁ"
 
 #
-#: ../src/firewall-config.glade.h:6
+#: ../firewalld/firewall-config.glade.h:6
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
@@ -113,7 +113,7 @@ msgstr ""
 "ଦ୍ବାରା ଅଭିଗମ୍ଯ ହେବା ଉଚିତ।"
 
 #
-#: ../src/firewall-config.glade.h:7
+#: ../firewalld/firewall-config.glade.h:7
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -125,36 +125,36 @@ msgstr ""
 "ଅନ୍ତରାପୃଷ୍ଠ ମିଥ୍ୟାଭିନୟ କରୁଥାଏ. ସଂଯୋଗିକୀ ଆଗେଇବାଟି କେବଳ IPv4."
 
 #
-#: ../src/firewall-config.glade.h:8
+#: ../firewalld/firewall-config.glade.h:8
 msgid "Allow access to necessary ports or port ranges, only."
 msgstr "ଆବଶ୍ଯକୀୟ ସଂଯୋଗିକୀ ମାନକୁଂ କିମ୍ଭା ସଂଯୋଗିକୀ ପରିସର ଗୁଡିକୁ କେବଳ ପ୍ରବେଶାନୁମତି ପ୍ରଦାନ କରନ୍ତୁ."
 
 #
-#: ../src/firewall-config.glade.h:9
+#: ../firewalld/firewall-config.glade.h:9
 msgid "Allow access to necessary services, only."
 msgstr "ଆବଶ୍ଯକୀୟ ସେବାମାନକୁଂ କେବଳ ପ୍ରବେଶାନୁମତି ପ୍ରଦାନ କରନ୍ତୁ."
 
 #
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
+#: ../firewalld/firewall-config.glade.h:10 ../firewalld/firewall-applet:145
 msgid "Custom Rules"
 msgstr "ଇଚ୍ଛାରୂପଣ ନିୟମ ଗୁଡିକ"
 
-#: ../src/firewall-config.glade.h:11
+#: ../firewalld/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ବିନ୍ୟାସ"
 
 #
-#: ../src/firewall-config.glade.h:12
+#: ../firewalld/firewall-config.glade.h:12
 msgid "Edit"
 msgstr "ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #
-#: ../src/firewall-config.glade.h:13
+#: ../firewalld/firewall-config.glade.h:13
 msgid "FTP"
 msgstr "ଏଫ.ଟି.ପି."
 
 #
-#: ../src/firewall-config.glade.h:14
+#: ../firewalld/firewall-config.glade.h:14
 msgid ""
 "FTP is a protocol used for remote file transfer. If you plan to make your "
 "FTP server publicly available, enable this option. You need the vsftpd "
@@ -164,12 +164,12 @@ msgstr ""
 "ସମସ୍ତଙ୍କ ପାଇଁ ଉପଲବ୍ଧ କରାଇବାକୁ ଯୋଜନା କରୁଥାନ୍ତି, ତେବେ ଏହି ବିକଳ୍ପକୁ ସକ୍ରିୟକରନ୍ତୁ. ଏହି ବିକଳ୍ପକୁ "
 "ଫଳପ୍ରଦକରିବା ପାଇଁ ଆପଣଙ୍କୁ vsftpd ପ୍ୟାକେଜ ସ୍ଥାପନ କରିବାକୁ ହେବ."
 
-#: ../src/firewall-config.glade.h:15
+#: ../firewalld/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "ଅଗ୍ନିକବଚ ଡେମନ"
 
 #
-#: ../src/firewall-config.glade.h:16
+#: ../firewalld/firewall-config.glade.h:16
 msgid ""
 "HTTP is the protocol used to serve Web pages. If you plan to make your Web "
 "server publicly available, enable this option. This option is not required "
@@ -179,50 +179,55 @@ msgstr ""
 "ପାଇଁ ଉପଲବ୍ଧ କରାଇବାକୁ ଯୋଜନା କରୁଥାନ୍ତି, ତେବେ ଏହି ବିକଳ୍ପକୁ ସକ୍ରିୟକରନ୍ତୁ. ଏହି ବିକଳ୍ପଟି ସ୍ଥାନୀୟ "
 "ପୃଷ୍ଠାଗୁଡ଼ିକୁ ଦେଖିବା ପାଇଁ କିମ୍ବା ୱେବ ପୃଷ୍ଠା ବିକାଶ କରିବା ପାଇଁ ଆବଶ୍ୟକ ହୋଇନଥାଏ."
 
-#: ../src/firewall-config.glade.h:17
+#: ../firewalld/firewall-config.glade.h:17
 msgid ""
 "Here you can define the interfaces and network areas that have fill access "
 "to the system."
 msgstr ""
+"ଏଠାରେ ଆପଣ ଅନ୍ତରାପୃଷ୍ଠ ଏବଂ ନେଟୱର୍କ କ୍ଷେତ୍ରଗୁଡ଼ିକୁ ବ୍ୟାଖ୍ୟା କରିପାରିବେ ଯାହାକି ତନ୍ତ୍ରକୁ ଅଭିଗମ୍ୟତା "
+"ପ୍ରଦାନ କରିଥାଏ।"
 
-#: ../src/firewall-config.glade.h:18
+#: ../firewalld/firewall-config.glade.h:18
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks in the selected network protocol. "
 "Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
+"କେଉଁ ସେବା ଗୁଡିକ ବିଶ୍ଯସ୍ତ ଆପଣ ତାହା ଏଠାରେ ବ୍ଯାଖ୍ଯା କରିପାରିବେ। ବଚ୍ଛିତ ନେଟୱର୍କ ପ୍ରଟୋକଲରେ "
+"ବିଶ୍ୱସ୍ତ ସର୍ଭିସଗୁଡ଼ିକୁ ସମସ୍ତ ଆଧାର କିମ୍ବା ନେଟୱାର୍କରୁ ଅଭିଗମ କରିହେବ। ପୂର୍ବରୁ ବ୍ୟାଖ୍ୟା କରାଯାଇଥିବା "
+"ସର୍ଭିସଗୁଡ଼ିକରୁ "
+"ଗୋଟିଏ ବସ୍ତୁକୁ ବାଛିବା ପାଇଁ <i>ଯୋଗକରନ୍ତୁ</i> କୁ କ୍ଲିକ କରନ୍ତୁ।"
 
-#: ../src/firewall-config.glade.h:19
+#: ../firewalld/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "ମୂଳ ସ୍ଥାନ"
 
 #
-#: ../src/firewall-config.glade.h:20
+#: ../firewalld/firewall-config.glade.h:20
 msgid "ICMP Filter"
 msgstr "ICMP ଫିଲଟର"
 
-#: ../src/firewall-config.glade.h:21
+#: ../firewalld/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:22
+#: ../firewalld/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4,IPv6"
 
-#: ../src/firewall-config.glade.h:23
+#: ../firewalld/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
-#: ../src/firewall-config.glade.h:24
+#: ../firewalld/firewall-config.glade.h:24
 msgid ""
 "If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
 "networks."
-msgstr ""
-"ଯଦି ଆପଣ ମିଥ୍ୟାଭନୟକୁ ସକ୍ରିୟ କରିଦିଅନ୍ତି, ଆପଣଙ୍କ IPv4 ନେଟୱର୍କ ପାଇଁ IP ଅଗ୍ରସରଣମଧ୍ଯ ସକ୍ରିୟ ହୋଇଯିବ."
+msgstr "ଯଦି ଆପଣ ମିଥ୍ୟାଭନୟକୁ ସକ୍ରିୟ କରିଦିଅନ୍ତି, ଆପଣଙ୍କ IPv4 ନେଟୱର୍କ ପାଇଁ IP ଅଗ୍ରସରଣମଧ୍ଯ ସକ୍ରିୟ ହୋଇଯିବ."
 
 #
-#: ../src/firewall-config.glade.h:25
+#: ../firewalld/firewall-config.glade.h:25
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -231,12 +236,12 @@ msgstr ""
 "ପ୍ରକାରଗୁଡ଼ିକ ଅଗ୍ନିକବଚ ପାରକରିବା ପାଇଁ ଅନୁମତିପ୍ରାପ୍ତ. ପୂର୍ବନିର୍ଦ୍ଧାରିତରେ କୌଣସି ସୀମା ବନ୍ଧନ ନାହିଁ."
 
 #
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
+#: ../firewalld/firewall-config.glade.h:26 ../firewalld/firewall-applet:127
 msgid "Masquerading"
 msgstr "ଛଦ୍ମ ବେଶ"
 
 #
-#: ../src/firewall-config.glade.h:27
+#: ../firewalld/firewall-config.glade.h:27
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -246,46 +251,48 @@ msgstr ""
 "ବିନ୍ୟାସ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ. ଆପଣଙ୍କର ସ୍ଥାନୀୟ ନେଟୱର୍କ ଦେଖାଯିବ ନାହିଁ ଏବଂ ସେହି ଆଧାରଟି "
 "ଇଣ୍ଟରନେଟରେ ଗୋଟିଏ ଠିକଣା ପରି ଦେଖାଯିବ. କେବଳ IPv4 ମିଥ୍ୟାଭିନୟ କରୁଅଛି."
 
-#: ../src/firewall-config.glade.h:28
+#: ../firewalld/firewall-config.glade.h:28
 msgid ""
 "Only allow full access for interfaces or network areas if you can trust all "
 "participants part of these."
 msgstr ""
+"କେବଳ ଅନ୍ତରାପୃଷ୍ଠ କିମ୍ବା ନେଟୱର୍କ କ୍ଷେତ୍ରଗୁଡ଼ିକ ପାଇଁ ସମ୍ପୂର୍ଣ୍ଣ ଅଭିଗମ୍ୟତା ପ୍ରଦାନ କରନ୍ତୁ ଯଦି ଆପଣ ସମସ୍ତ "
+"ଅଂଶଗ୍ରହଣକାରୀମାନଙ୍କୁ ବିଶ୍ୱାସ କରନ୍ତି।"
 
 #
-#: ../src/firewall-config.glade.h:29
+#: ../firewalld/firewall-config.glade.h:29
 msgid "Other Ports"
 msgstr "ଅନ୍ଯାନ୍ଯ ସଂଯୋଗିକୀ"
 
 #
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
+#: ../firewalld/firewall-config.glade.h:30 ../firewalld/firewall-applet:133
 msgid "Port Forwarding"
 msgstr "ସଂଯୋଗିକୀ ଅଗ୍ରସରଣ"
 
-#: ../src/firewall-config.glade.h:31
+#: ../firewalld/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "ସର୍ବସାଧାରଣ କ୍ଷେତ୍ର"
 
 #
-#: ../src/firewall-config.glade.h:32
+#: ../firewalld/firewall-config.glade.h:32
 msgid "Reload"
 msgstr "ପୁନର୍ଧାରଣ କରନ୍ତୁ"
 
 #
-#: ../src/firewall-config.glade.h:33
+#: ../firewalld/firewall-config.glade.h:33
 msgid "Remove"
 msgstr "ଅପସାରଣ କରନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:34
+#: ../firewalld/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "ପୁନର୍ଚାଳନ କରନ୍ତୁ"
 
 #
-#: ../src/firewall-config.glade.h:35
+#: ../firewalld/firewall-config.glade.h:35
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/firewall-config.glade.h:36
+#: ../firewalld/firewall-config.glade.h:36
 msgid ""
 "Secure Shell (SSH) is a protocol for logging into and executing commands on "
 "remote machines. It provides secure encrypted comminucations. If you plan on "
@@ -293,33 +300,38 @@ msgid ""
 "this option. You need the openssh-server package installed for this option "
 "to be useful. "
 msgstr ""
+"Secure Shell (SSH) ଗୋଟିଏ ପ୍ରୋଟୋକଲ ଯାହାକୁ ଦୂର ମେସିନ ମାନଙ୍କରେ ଲଗଇନ କରିବା ପାଇଁ ଏବଂ "
+"ନିର୍ଦ୍ଦେଶ ନିଷ୍ପାଦନ କରିବା ପାଇଁ ବ୍ଯବହାର କରାଯାଇଥାଏ। ଏହା ସୁରକ୍ଷିକ ଗୋପନୀୟ ସମ୍ବାଦ ପ୍ରେରଣର ସୁବିଧା "
+"ପ୍ରଦାନ କରିଥାଏ। ଯଦି ଆପଣ ଗୋଟିଏ ଅଗ୍ନିକବଚ ଅନ୍ତରାପୃଷ୍ଠ ଦେଇ SSH ଦ୍ବାରା ଆପଣଙ୍କ ମେସିନକୁ ଦୂରରୁ ଅବିଗମ "
+"କରିବା ପାଇଁ ଯୋଜନା କରିଛନ୍ତି, ତାହାହେଲେ ଏହି ବିକଳ୍ପକୁ ସକ୍ରିୟ କରନ୍ତୁ। ଏହି ବିକଳ୍ପକୁ ଉପଯୋଗୀ କରିବା ପାଇଁ "
+"ଆପଣ openssh-server ପ୍ଯାକେଜକୁ ସ୍ଥାପନ କରିବା ଉଚିତ। "
 
-#: ../src/firewall-config.glade.h:37
+#: ../firewalld/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "ବିନ୍ଯାସ ଚୟନ କରନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
+#: ../firewalld/firewall-config.glade.h:38 ../firewalld/firewall-applet:111
 msgid "Services"
-msgstr ""
+msgstr "ସର୍ଭିସଗୁଡ଼ିକ"
 
-#: ../src/firewall-config.glade.h:39
+#: ../firewalld/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "ଆରମ୍ଭ କରନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:40
+#: ../firewalld/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "ବନ୍ଦ କରନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:41
+#: ../firewalld/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
-msgstr ""
+msgstr "ଅଗ୍ନିକବଚ ମଡେଲକୁ ବଦଳାନ୍ତୁ"
 
-#: ../src/firewall-config.glade.h:42
+#: ../firewalld/firewall-config.glade.h:42
 msgid "Switch firewall model"
-msgstr ""
+msgstr "ଅଗ୍ନିକବଚ ମଡେଲକୁ ବଦଳାନ୍ତୁ"
 
 #
-#: ../src/firewall-config.glade.h:43
+#: ../firewalld/firewall-config.glade.h:43
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -329,207 +341,214 @@ msgstr ""
 "ପଠାଇବାରେ ବ୍ୟବହାର ହୋଇଥାଏ, କିନ୍ତୁ ଅତିରିକ୍ତ ଭାବରେ ସୂଚନାତ୍ମକ ସନ୍ଦେଶଗୁଡ଼ିକୁ ଯେପରି କି ping ଅନୁରୋଧ "
 "ଏବଂ ଉତ୍ତରଗୁଡ଼ିକ ପାଇଁ."
 
-#: ../src/firewall-config.glade.h:44
+#: ../firewalld/firewall-config.glade.h:44
 msgid "Trusted"
-msgstr ""
+msgstr "ବିଶ୍ବସ୍ତ"
 
-#: ../src/firewall-config.glade.h:45
+#: ../firewalld/firewall-config.glade.h:45
 msgid "Trusted Zone"
-msgstr ""
+msgstr "ବିଶ୍ବସ୍ତ କ୍ଷେତ୍ର"
 
 #
-#: ../src/firewall-config.glade.h:46
+#: ../firewalld/firewall-config.glade.h:46
 msgid "WWW (HTTP)"
 msgstr "WWW (ଏଚ୍.ଟି.ଟି.ପି.)"
 
-#: ../src/firewall-config.glade.h:47
+#: ../firewalld/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "କାର୍ଯ୍ୟ କ୍ଷେତ୍ର"
 
-#: ../src/firewall-config.glade.h:48
+#: ../firewalld/firewall-config.glade.h:48
+msgid "Zone"
+msgstr "କ୍ଷେତ୍ର"
+
+#: ../firewalld/firewall-config.glade.h:49
 msgid "Zones"
-msgstr ""
+msgstr "କ୍ଷେତ୍ରଗୁଡ଼ିକ"
 
 #
-#: ../src/firewall-config.glade.h:49
+#: ../firewalld/firewall-config.glade.h:50
 msgid "_File"
 msgstr "ଫାଇଲ (_F)"
 
 #
-#: ../src/firewall-config.glade.h:50
+#: ../firewalld/firewall-config.glade.h:51
 msgid "_Help"
 msgstr "ସହାୟତା (_H)"
 
 #
-#: ../src/firewall-config.glade.h:51
+#: ../firewalld/firewall-config.glade.h:52
 msgid "_Options"
 msgstr "ବିକଲ୍ପ (_O)"
 
-#: ../src/firewall-config.glade.h:52
+#: ../firewalld/firewall-config.glade.h:53
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
-#: ../src/firewalld:74
-msgid "Not starting FirewallD, already running."
-msgstr ""
-
-#: ../src/firewalld:102
+#: ../firewalld/firewalld:891
 #, c-format
-msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgid "fork #1 failed: %d (%s)"
+msgstr "ଫର୍କ #1 ବିଫଳହୋଇଛି: %d (%s)"
 
-#: ../src/firewall-applet:58
+#: ../firewalld/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "ଅଗ୍ନିକବଚ ଆପଲେଟ"
 
-#: ../src/firewall-applet:59
+#: ../firewalld/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
+msgstr "- ଯୋଜନା ନିୟୋଜନର ପ୍ରମାଣପତ୍ର -"
 
-#: ../src/firewall-applet:124
+#: ../firewalld/firewall-applet:115
 msgid "Ports"
-msgstr ""
+msgstr "ସଂଯୋଗିକୀଗୁଡ଼ିକ"
 
-#: ../src/firewall-applet:130
+#: ../firewalld/firewall-applet:121
 msgid "Trusted Connections"
-msgstr ""
+msgstr "ବିଶ୍ୱସ୍ତ ସଂଯୋଗଗୁଡିକ"
 
-#: ../src/firewall-applet:148
+#: ../firewalld/firewall-applet:139
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "ICMP ଅଟକ"
 
-#: ../src/firewall-applet:167
+#: ../firewalld/firewall-applet:158
 msgid "Panic Mode"
-msgstr ""
+msgstr "ଜଟିଳ ଅବସ୍ଥା"
 
 #
-#: ../src/firewall-applet:178
+#: ../firewalld/firewall-applet:169
 msgid "Enable Firewall"
 msgstr "ଅଗ୍ନିକବଚକୁ ସକ୍ରିୟ କରନ୍ତୁ"
 
-#: ../src/firewall-applet:183
+#: ../firewalld/firewall-applet:174
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "ସମସ୍ତ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକୁ ସକ୍ରିୟ କରନ୍ତୁ"
 
-#: ../src/firewall-applet:214
+#: ../firewalld/firewall-applet:205
 msgid "Not using slip"
-msgstr ""
+msgstr "ସୁପ୍ତ ଅବସ୍ଥାକୁ ବ୍ୟବହାର କରୁନାହିଁ"
 
-#: ../src/firewall-applet:232
+#: ../firewalld/firewall-applet:223
 #, c-format
 msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"ସମୟ ସମାପ୍ତ: %d ସେକଣ୍ଡ"
 
-#: ../src/firewall-applet:234
+#: ../firewalld/firewall-applet:225
 #, c-format
 msgid ""
 "\n"
 "Requested by: %s"
 msgstr ""
+"\n"
+"ଏହା ଦ୍ୱାରା ଅନୁରୋଧିତ: %s"
 
-#: ../src/firewall-applet:254
+#: ../firewalld/firewall-applet:245
 msgid "Connection to FirewallD lost"
-msgstr ""
+msgstr "FirewallD କୁ ସଂଯୋଗ ନଷ୍ଟ ହୋଇଛି"
 
-#: ../src/firewall-applet:404
+#: ../firewalld/firewall-applet:395
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "ଅଗ୍ନିକବଚ ଡେମନକୁ କୌଣସି ସଂଯୋଗ ନାହିଁ"
 
-#: ../src/firewall-applet:411
+#: ../firewalld/firewall-applet:402
 msgid "PANIC MODE"
-msgstr ""
+msgstr "ଜଟିଳ ଅବସ୍ଥା"
 
-#: ../src/firewall-applet:418
+#: ../firewalld/firewall-applet:409
 msgid "No Open Services."
-msgstr ""
+msgstr "କୌଣସି ମୁକ୍ତ ସର୍ଭିସ ନାହିଁ।"
 
-#: ../src/firewall-applet:420
+#: ../firewalld/firewall-applet:411
 msgid "Open Services:"
-msgstr ""
+msgstr "ମୁକ୍ତ ସର୍ଭିସଗୁଡ଼ିକ:"
 
-#: ../src/firewall-applet:424
+#: ../firewalld/firewall-applet:415
 msgid "No Open Ports."
-msgstr ""
+msgstr "କୌଣସି ମୁକ୍ତ ପୋର୍ଟ ନାହିଁ।"
 
-#: ../src/firewall-applet:430
+#: ../firewalld/firewall-applet:421
 msgid "No Trusted."
-msgstr ""
+msgstr "କୌଣସି ବିଶ୍ବସ୍ତ ଉପଲବ୍ଧ ନାହିଁ।"
 
-#: ../src/firewall-applet:432
+#: ../firewalld/firewall-applet:423
 msgid "Trusted:"
-msgstr ""
+msgstr "ବିଶ୍ବସ୍ତ:"
 
-#: ../src/firewall-applet:436
+#: ../firewalld/firewall-applet:427
 msgid "No Masqueraded."
-msgstr ""
+msgstr "ମିଥ୍ୟାଭିନୟ ନାହିଁ।"
 
-#: ../src/firewall-applet:438
+#: ../firewalld/firewall-applet:429
 msgid "Masqueraded:"
-msgstr ""
+msgstr "ମିଥ୍ୟାଭିନୟ:"
 
-#: ../src/firewall-applet:442
+#: ../firewalld/firewall-applet:433
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "କୌଣସି ICMP ବ୍ଲକ ନାହିଁ।"
 
-#: ../src/firewall-applet:444
+#: ../firewalld/firewall-applet:435
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "ICMP ବ୍ଲକଗୁଡ଼ିକ:"
 
-#: ../src/firewall-applet:448
+#: ../firewalld/firewall-applet:439
 msgid "No Forward Ports."
-msgstr ""
+msgstr "କୌଣସି ଅଗ୍ରସର ପୋର୍ଟ ନାହିଁ।"
 
-#: ../src/firewall-applet:450
+#: ../firewalld/firewall-applet:441
 msgid "Forward Ports:"
-msgstr ""
+msgstr "ଅଗ୍ରସରଣ ପୋର୍ଟଗୁଡ଼ିକ:"
 
-#: ../src/firewall-applet:454
+#: ../firewalld/firewall-applet:445
 msgid "No Custom Rules."
-msgstr ""
+msgstr "କୌଣସି ଇଚ୍ଛାରୂପଣ ନିୟମ ନାହିଁ।"
 
-#: ../src/firewall-applet:456
+#: ../firewalld/firewall-applet:447
 msgid "Custom Rules:"
-msgstr ""
+msgstr "ଇଚ୍ଛାରୂପଣ ନିୟମ ଗୁଡିକ:"
 
-#: ../src/firewall-applet:474
+#: ../firewalld/firewall-applet:465
 msgid "Panic mode"
-msgstr ""
+msgstr "ଜଟିଳ ଅବସ୍ଥା"
 
-#: ../src/firewall-applet:496
+#: ../firewalld/firewall-applet:487
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "ସର୍ଭିସ '%s'"
 
-#: ../src/firewall-applet:511
+#: ../firewalld/firewall-applet:502
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "ପୋର୍ଟ '%s:%s'"
 
-#: ../src/firewall-applet:525
+#: ../firewalld/firewall-applet:516
 #, c-format
 msgid "Trusted '%s'"
-msgstr ""
+msgstr "ବିଶ୍ୱସ୍ତ '%s'"
 
-#: ../src/firewall-applet:541
+#: ../firewalld/firewall-applet:532
 #, c-format
 msgid "Masquerade '%s'"
-msgstr ""
+msgstr "ମିଥ୍ୟାଭିନୟ '%s'"
 
-#: ../src/firewall-applet:557
+#: ../firewalld/firewall-applet:548
 #, c-format
 msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+msgstr "ଅଗ୍ରସରଣ ପୋର୍ଟ 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
 
-#: ../src/firewall-applet:572
+#: ../firewalld/firewall-applet:563
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
+msgstr "ବ୍ଲକ ICMP '%s'"
 
-#: ../src/firewall-applet:595
+#: ../firewalld/firewall-applet:586
 #, c-format
 msgid ""
 "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
 "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+"ଇଚ୍ଛାରୂପଣ 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
