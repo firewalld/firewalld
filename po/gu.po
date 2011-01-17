@@ -1,16 +1,16 @@
-# translation of system-config-firewall.master.gu.po to Gujarati
+# translation of firewalld.master.gu.po to Gujarati
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
 # Ankit Patel <ankit@redhat.com>, 2004, 2005, 2006, 2007, 2008.
 # Sweta Kothari <sweta2782@yahoo.co.in>, 2008.
-# Sweta Kothari <swkothar@redhat.com>, 2008, 2009, 2010.
+# Sweta Kothari <swkothar@redhat.com>, 2008, 2009, 2010, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall.master.gu\n"
+"Project-Id-Version: firewalld.master.gu\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-06-29 17:10+0530\n"
+"PO-Revision-Date: 2011-01-17 11:59+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
 "MIME-Version: 1.0\n"
@@ -67,19 +67,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
 #: ../src/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
 #: ../src/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "સક્રિય રૂપરેખાંકન"
 
 #
 #: ../src/firewall-config.glade.h:5
@@ -124,7 +124,7 @@ msgstr "વૈવિધ્યપૂર્ણ નિયમો"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "મૂળભૂત રૂપરેખાંકન"
 
 #
 #: ../src/firewall-config.glade.h:12
@@ -149,7 +149,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "ફાયરવોલ ડિમન"
 
 #
 #: ../src/firewall-config.glade.h:16
@@ -177,7 +177,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "હૉમ ઝોન"
 
 #
 #: ../src/firewall-config.glade.h:20
@@ -186,15 +186,15 @@ msgstr "ICMP ગાળક"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4,IPv6"
 
 #: ../src/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
 #: ../src/firewall-config.glade.h:24
@@ -248,7 +248,7 @@ msgstr "પોર્ટ ફોરવર્ડીંગ"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "સાર્વજનિક ઝોન"
 
 #
 #: ../src/firewall-config.glade.h:32
@@ -262,7 +262,7 @@ msgstr "દૂર કરો"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "પુન:શરૂ કરો"
 
 #
 #: ../src/firewall-config.glade.h:35
@@ -280,19 +280,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "રૂપરેખાંકનને પસંદ કરો"
 
 #: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
 msgid "Services"
-msgstr ""
+msgstr "સેવાઓ"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "શરૂ કરો"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "બંધ કરો"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
@@ -328,11 +328,11 @@ msgstr "WWW (HTTP)"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "વર્ક ઝોન"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Zones"
-msgstr ""
+msgstr "ઝોન"
 
 #
 #: ../src/firewall-config.glade.h:49
@@ -351,20 +351,20 @@ msgstr "વિકલ્પો (_O)"
 
 #: ../src/firewall-config.glade.h:52
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "FirewallD શરૂ થઇ રહી નથી, પહેલેથી જ ચાલી રહી છે."
 
 #: ../src/firewalld:102
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "ફોર્ક #1 નિષ્ફળ: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "ફાયરવોલ ઍપલેટ"
 
 #: ../src/firewall-applet:59
 msgid "- proof of concept implementation -"
@@ -372,7 +372,7 @@ msgstr ""
 
 #: ../src/firewall-applet:124
 msgid "Ports"
-msgstr ""
+msgstr "પોર્ટ"
 
 #: ../src/firewall-applet:130
 msgid "Trusted Connections"
@@ -380,7 +380,7 @@ msgstr ""
 
 #: ../src/firewall-applet:148
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "ICMP બ્લોકીંગ"
 
 #: ../src/firewall-applet:167
 msgid "Panic Mode"
@@ -393,7 +393,7 @@ msgstr "ફાયરવોલ સક્રિય કરો"
 
 #: ../src/firewall-applet:183
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "બધી સૂચનાઓને સક્રિય કરો"
 
 #: ../src/firewall-applet:214
 msgid "Not using slip"
@@ -405,6 +405,8 @@ msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"સમયસમાપ્ત: %d સેકંડો"
 
 #: ../src/firewall-applet:234
 #, c-format
@@ -419,23 +421,23 @@ msgstr ""
 
 #: ../src/firewall-applet:404
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "ફાયરવોલ ડિમન માટે જોડાણ નથી"
 
 #: ../src/firewall-applet:411
 msgid "PANIC MODE"
-msgstr ""
+msgstr "PANIC MODE"
 
 #: ../src/firewall-applet:418
 msgid "No Open Services."
-msgstr ""
+msgstr "ખુલ્લી સેવાઓ નથી."
 
 #: ../src/firewall-applet:420
 msgid "Open Services:"
-msgstr ""
+msgstr "ખુલ્લી સેવાઓ:"
 
 #: ../src/firewall-applet:424
 msgid "No Open Ports."
-msgstr ""
+msgstr "ખુલ્લા પોર્ટ નથી."
 
 #: ../src/firewall-applet:430
 msgid "No Trusted."
@@ -455,19 +457,19 @@ msgstr ""
 
 #: ../src/firewall-applet:442
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "ICMP બ્લોક નથી."
 
 #: ../src/firewall-applet:444
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "ICMP બ્લોક:"
 
 #: ../src/firewall-applet:448
 msgid "No Forward Ports."
-msgstr ""
+msgstr "ફોર્વડ પોર્ટ નથી."
 
 #: ../src/firewall-applet:450
 msgid "Forward Ports:"
-msgstr ""
+msgstr "ફોર્વડ પોર્ટો:"
 
 #: ../src/firewall-applet:454
 msgid "No Custom Rules."
@@ -479,17 +481,17 @@ msgstr ""
 
 #: ../src/firewall-applet:474
 msgid "Panic mode"
-msgstr ""
+msgstr "Panic mode"
 
 #: ../src/firewall-applet:496
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "સેવા '%s'"
 
 #: ../src/firewall-applet:511
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "પોર્ટ '%s:%s'"
 
 #: ../src/firewall-applet:525
 #, c-format
@@ -517,3 +519,4 @@ msgid ""
 "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
 "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+
