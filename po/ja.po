@@ -1,518 +1,440 @@
-# translation of system-config-firewall.master.po to Japanese
-# translation of ja.po to
-# system-config-firewall Japanese translation.
-# Copyright (C) Red Hat Inc.2002
+# translation of firewalld.master.po to Japanese
+# FirewallD Japanese translation.
+# Copyright (C) Red Hat Inc.2010
 #
-# James Hashida <khashida@redhat.com>,2002.
-# Noriko Mizumoto <noriko@redhat.com>, 2003, 2008.
-# Naoki Shigematsu <sigematu@fedora.jp>, 2004.
-# Tadashi Jokagi <elf2000@users.sourceforge.net>, 2004.
-# Hirofumi Saito <hi_saito@yk.rim.or.jp>, 2004, 2005, 2006.
-# Tadashi Jokagi <elf2000@users.sourceforge.net>, 2005.
-# kiyoto james hashida <khashida@brisbane.redhat.com>, 2006.
-# Kiyoto James Hashida <khashida@redhat.com>, 2006.
-# Hyu_gabaru Ryu_ichi <hyu_gabaru@yahoo.co.jp>, 2007, 2008, 2009.
-# Kiyoto Hashida <khashida@redhat.com>, 2008, 2009, 2010.
-# Noriko Mizumoto <noriko@fedoraproject.org>, 2010.
-# Hajime Taira <htaira@redhat.com>, 2010.
+# Hajime Taira <htaira@redhat.com>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-09-12 22:46+0900\n"
+"POT-Creation-Date: 2010-12-17 16:58+0100\n"
+"PO-Revision-Date: 2011-01-18 09:43+0900\n"
 "Last-Translator: Hajime Taira <htaira@redhat.com>\n"
 "Language-Team: Japanese\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.4\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=1; plural=0;\n"
-"\n"
-"\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../firewalld/firewall_config.py:42
 msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
+"You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>."
 msgstr ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
+"You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
+#: ../firewalld/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
-#: ../src/firewall-config.glade.h:2
+#: ../firewalld/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
-#: ../src/firewall-config.glade.h:3
+#: ../firewalld/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
-#: ../src/firewall-config.glade.h:4
+#: ../firewalld/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "アクティブな設定"
 
 #
-#: ../src/firewall-config.glade.h:5
+#: ../firewalld/firewall-config.glade.h:5
 msgid "Add"
 msgstr "追加"
 
 #
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
-msgstr ""
-"全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポー"
-"トの範囲を追加します。"
+#: ../firewalld/firewall-config.glade.h:6
+msgid "Add additional ports or port ranges, which need to be accessible for all hosts or networks."
+msgstr "全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポートの範囲を追加します。"
 
 #
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
-msgstr ""
-"ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他"
-"のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードは"
-"そのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワー"
-"ドは IPv4 のみです。"
+#: ../firewalld/firewall-config.glade.h:7
+msgid "Add entries to forward ports either from one port to another on the local system or from the local system to another system. Forwarding to another system is only useful if the interface is masqueraded. Port forwarding is IPv4 only."
+msgstr "ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードはそのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワードは IPv4 のみです。"
 
 #
-#: ../src/firewall-config.glade.h:8
+#: ../firewalld/firewall-config.glade.h:8
 msgid "Allow access to necessary ports or port ranges, only."
 msgstr "必要なポートやポート範囲へのみアクセスを許可する。"
 
 #
-#: ../src/firewall-config.glade.h:9
+#: ../firewalld/firewall-config.glade.h:9
 msgid "Allow access to necessary services, only."
 msgstr "必要なサービスへのアクセスのみ許可する。"
 
 #
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
+#: ../firewalld/firewall-config.glade.h:10
+#: ../firewalld/firewall-applet:145
 msgid "Custom Rules"
 msgstr "カスタムルール"
 
-#: ../src/firewall-config.glade.h:11
+#: ../firewalld/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "デフォルトの設定"
 
 #
-#: ../src/firewall-config.glade.h:12
+#: ../firewalld/firewall-config.glade.h:12
 msgid "Edit"
 msgstr "編集"
 
 #
-#: ../src/firewall-config.glade.h:13
+#: ../firewalld/firewall-config.glade.h:13
 msgid "FTP"
 msgstr "FTP"
 
 #
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
-msgstr ""
-"FTP はリモートファイル転送に使用されるプロトコルです。FTP サーバーを公開する"
-"予定の場合はこのオプションを有効にします。このオプションが役に立つようにする"
-"には vsftpd パッケージをインストールする必要があります。"
+#: ../firewalld/firewall-config.glade.h:14
+msgid "FTP is a protocol used for remote file transfer. If you plan to make your FTP server publicly available, enable this option. You need the vsftpd package installed for this option to be useful."
+msgstr "FTP はリモートファイル転送に使用されるプロトコルです。FTP サーバーを公開する予定の場合はこのオプションを有効にします。このオプションが役に立つようにするには vsftpd パッケージをインストールする必要があります。"
 
-#: ../src/firewall-config.glade.h:15
+#: ../firewalld/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "ファイアーウォール・デーモン"
 
 #
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
-msgstr ""
-"HTTP は Web ページを提供するためのプロトコルです。Web ページを公開する予定が"
-"ある場合はこのオプションを有効にします。ページをローカルで表示したり、Web "
-"ページの開発にはこのオプションは必要ありません。"
+#: ../firewalld/firewall-config.glade.h:16
+msgid "HTTP is the protocol used to serve Web pages. If you plan to make your Web server publicly available, enable this option. This option is not required for viewing pages locally or developing Web pages."
+msgstr "HTTP は Web ページを提供するためのプロトコルです。Web ページを公開する予定がある場合はこのオプションを有効にします。ページをローカルで表示したり、Web ページの開発にはこのオプションは必要ありません。"
 
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr ""
+#: ../firewalld/firewall-config.glade.h:17
+msgid "Here you can define the interfaces and network areas that have fill access to the system."
+msgstr "ここでは、システムに対してフルアクセスが許可されるインタフェースおよびネットワークエリアを定義できます。"
 
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
+#: ../firewalld/firewall-config.glade.h:18
+msgid "Here you can define which services are trusted. Trusted services are accessible from all hosts and networks in the selected network protocol. Click on <i>Add</i> to select an item from the list of predefined services."
+msgstr "信頼されたサービスを定義することができます。信頼されたサービスはすべてのホストおよびすべてのネットワークから指定されたネットワークプロトコルでアクセスすることができます。「追加」ボタンをクリックして事前定義済サービス一覧から任意のサービスを選択してください。"
 
-#: ../src/firewall-config.glade.h:19
+#: ../firewalld/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "自宅ゾーン"
 
 #
-#: ../src/firewall-config.glade.h:20
+#: ../firewalld/firewall-config.glade.h:20
 msgid "ICMP Filter"
 msgstr "ICMP フィルター"
 
-#: ../src/firewall-config.glade.h:21
+#: ../firewalld/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:22
+#: ../firewalld/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4,IPv6"
 
-#: ../src/firewall-config.glade.h:23
+#: ../firewalld/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも"
-"有効になります。"
+#: ../firewalld/firewall-config.glade.h:24
+msgid "If you enable masquerading, IP forwarding will also be enabled for your IPv4 networks."
+msgstr "マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも有効になります。"
 
 #
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプ"
-"はファイアーウォールの通過が許可されます。 デフォルトでは無制限になっていま"
-"す。"
+#: ../firewalld/firewall-config.glade.h:25
+msgid "Mark the ICMP types in the list, which should be rejected. All other ICMP types are allowed to pass the firewall. The default is no limitation."
+msgstr "一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプはファイアーウォールの通過が許可されます。 デフォルトでは無制限になっています。"
 
 #
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
+#: ../firewalld/firewall-config.glade.h:26
+#: ../firewalld/firewall-applet:127
 msgid "Masquerading"
 msgstr "マスカレーディング"
 
 #
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"マスカレーディングによりローカルネットワークをインターネットと接続しているホ"
-"ストやルーターをセットアップすることができます。あなたのローカルネットワーク"
-"はインターネットからは見えず、インターネット上の一つのアドレスに見えます。マ"
-"スカレーディングは IPv4 のみです。"
+#: ../firewalld/firewall-config.glade.h:27
+msgid "Masquerading allows you to set up a host or router that connects your local network to the internet. Your local network will not be visible and the hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr "マスカレーディングによりローカルネットワークをインターネットと接続しているホストやルーターをセットアップすることができます。あなたのローカルネットワークはインターネットからは見えず、インターネット上の一つのアドレスに見えます。マスカレーディングは IPv4 のみです。"
 
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
+#: ../firewalld/firewall-config.glade.h:28
+msgid "Only allow full access for interfaces or network areas if you can trust all participants part of these."
+msgstr "すべてに対してフルアクセスを許可したい場合、特定のインタフェースやネットワークエリアに対してのみ許可するにしてください。"
 
 #
-#: ../src/firewall-config.glade.h:29
+#: ../firewalld/firewall-config.glade.h:29
 msgid "Other Ports"
 msgstr "その他のポート"
 
 #
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
+#: ../firewalld/firewall-config.glade.h:30
+#: ../firewalld/firewall-applet:133
 msgid "Port Forwarding"
 msgstr "ポートフォワーディング"
 
-#: ../src/firewall-config.glade.h:31
+#: ../firewalld/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "公共ゾーン"
 
 #
-#: ../src/firewall-config.glade.h:32
+#: ../firewalld/firewall-config.glade.h:32
 msgid "Reload"
 msgstr "再読み込み"
 
 #
-#: ../src/firewall-config.glade.h:33
+#: ../firewalld/firewall-config.glade.h:33
 msgid "Remove"
 msgstr "削除"
 
-#: ../src/firewall-config.glade.h:34
+#: ../firewalld/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "再起動"
 
 #
-#: ../src/firewall-config.glade.h:35
+#: ../firewalld/firewall-config.glade.h:35
 msgid "SSH"
 msgstr "SSH"
 
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
+#: ../firewalld/firewall-config.glade.h:36
+msgid "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted comminucations. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful. "
+msgstr "セキュアシェル (SSH) はリモートのコンピューターへログインしたり、コマンドを発行したりします。SSH では暗号化された通信が使われます。もし、リモートのコンピューターに対して SSH 経由での操作を行う計画している場合には、firewalld インタフェースからオプションを有効にしてください。openssh-server パッケージがインストールされている必要があります。"
 
-#: ../src/firewall-config.glade.h:37
+#: ../firewalld/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "設定を選択"
 
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
+#: ../firewalld/firewall-config.glade.h:38
+#: ../firewalld/firewall-applet:111
 msgid "Services"
-msgstr ""
+msgstr "サービス"
 
-#: ../src/firewall-config.glade.h:39
+#: ../firewalld/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "開始"
 
-#: ../src/firewall-config.glade.h:40
+#: ../firewalld/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
-#: ../src/firewall-config.glade.h:41
+#: ../firewalld/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
-msgstr ""
+msgstr "ファイアーウォールモデルの切り替え"
 
-#: ../src/firewall-config.glade.h:42
+#: ../firewalld/firewall-config.glade.h:42
 msgid "Switch firewall model"
-msgstr ""
+msgstr "ファイアーウォールモデルの切り替え"
 
 #
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュー"
-"タ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答"
-"などの情報メッセージにも使用されます。"
+#: ../firewalld/firewall-config.glade.h:43
+msgid "The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies."
+msgstr "ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュータ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答などの情報メッセージにも使用されます。"
 
-#: ../src/firewall-config.glade.h:44
+#: ../firewalld/firewall-config.glade.h:44
 msgid "Trusted"
-msgstr ""
+msgstr "信頼済み"
 
-#: ../src/firewall-config.glade.h:45
+#: ../firewalld/firewall-config.glade.h:45
 msgid "Trusted Zone"
-msgstr ""
+msgstr "信頼済みゾーン"
 
 #
-#: ../src/firewall-config.glade.h:46
+#: ../firewalld/firewall-config.glade.h:46
 msgid "WWW (HTTP)"
 msgstr "WWW (HTTP)"
 
-#: ../src/firewall-config.glade.h:47
+#: ../firewalld/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "仕事用ゾーン"
 
-#: ../src/firewall-config.glade.h:48
+#: ../firewalld/firewall-config.glade.h:48
+msgid "Zone"
+msgstr "ゾーン"
+
+#: ../firewalld/firewall-config.glade.h:49
 msgid "Zones"
-msgstr ""
+msgstr "ゾーン"
 
 #
-#: ../src/firewall-config.glade.h:49
+#: ../firewalld/firewall-config.glade.h:50
 msgid "_File"
 msgstr "ファイル(_F)"
 
 #
-#: ../src/firewall-config.glade.h:50
+#: ../firewalld/firewall-config.glade.h:51
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
 #
-#: ../src/firewall-config.glade.h:51
+#: ../firewalld/firewall-config.glade.h:52
 msgid "_Options"
 msgstr "オプション(_O)"
 
-#: ../src/firewall-config.glade.h:52
+#: ../firewalld/firewall-config.glade.h:53
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
-#: ../src/firewalld:74
-msgid "Not starting FirewallD, already running."
-msgstr ""
-
-#: ../src/firewalld:102
+#: ../firewalld/firewalld:891
 #, c-format
-msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgid "fork #1 failed: %d (%s)"
+msgstr "fork #1 failed: %d (%s)"
 
-#: ../src/firewall-applet:58
+#: ../firewalld/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "ファイアーウォール・アプレット"
 
-#: ../src/firewall-applet:59
+#: ../firewalld/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
+msgstr "- 試験的な実装です。 -"
 
-#: ../src/firewall-applet:124
+#: ../firewalld/firewall-applet:115
 msgid "Ports"
-msgstr ""
+msgstr "ポート"
 
-#: ../src/firewall-applet:130
+#: ../firewalld/firewall-applet:121
 msgid "Trusted Connections"
-msgstr ""
+msgstr "信頼された接続"
 
-#: ../src/firewall-applet:148
+#: ../firewalld/firewall-applet:139
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "ICMP ブロック中"
 
-#: ../src/firewall-applet:167
+#: ../firewalld/firewall-applet:158
 msgid "Panic Mode"
-msgstr ""
+msgstr "パニックモード"
 
 #
-#: ../src/firewall-applet:178
+#: ../firewalld/firewall-applet:169
 msgid "Enable Firewall"
 msgstr "ファイアーウォールを有効にする"
 
-#: ../src/firewall-applet:183
+#: ../firewalld/firewall-applet:174
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "すべての通知を有効化"
 
-#: ../src/firewall-applet:214
+#: ../firewalld/firewall-applet:205
 msgid "Not using slip"
-msgstr ""
+msgstr "slip を利用しない"
 
-#: ../src/firewall-applet:232
+#: ../firewalld/firewall-applet:223
 #, c-format
 msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"タイムアウト: %d 秒"
 
-#: ../src/firewall-applet:234
+#: ../firewalld/firewall-applet:225
 #, c-format
 msgid ""
 "\n"
 "Requested by: %s"
 msgstr ""
+"\n"
+"次からの要求: %s"
 
-#: ../src/firewall-applet:254
+#: ../firewalld/firewall-applet:245
 msgid "Connection to FirewallD lost"
-msgstr ""
+msgstr "FirewallD への接続が失われました。"
 
-#: ../src/firewall-applet:404
+#: ../firewalld/firewall-applet:395
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "ファイアーウォール・デーモンへの接続がありません。"
 
-#: ../src/firewall-applet:411
+#: ../firewalld/firewall-applet:402
 msgid "PANIC MODE"
-msgstr ""
+msgstr "パニックモード"
 
-#: ../src/firewall-applet:418
+#: ../firewalld/firewall-applet:409
 msgid "No Open Services."
-msgstr ""
+msgstr "公開されたサービスがありません。"
 
-#: ../src/firewall-applet:420
+#: ../firewalld/firewall-applet:411
 msgid "Open Services:"
-msgstr ""
+msgstr "公開されたサービス:"
 
-#: ../src/firewall-applet:424
+#: ../firewalld/firewall-applet:415
 msgid "No Open Ports."
-msgstr ""
+msgstr "公開されたポートがありません。"
 
-#: ../src/firewall-applet:430
+#: ../firewalld/firewall-applet:421
 msgid "No Trusted."
-msgstr ""
+msgstr "信頼済みの接続がありません。"
 
-#: ../src/firewall-applet:432
+#: ../firewalld/firewall-applet:423
 msgid "Trusted:"
-msgstr ""
+msgstr "信頼済み:"
 
-#: ../src/firewall-applet:436
+#: ../firewalld/firewall-applet:427
 msgid "No Masqueraded."
-msgstr ""
+msgstr "マスカレードされたものがありません。"
 
-#: ../src/firewall-applet:438
+#: ../firewalld/firewall-applet:429
 msgid "Masqueraded:"
-msgstr ""
+msgstr "マスカレードされたもの:"
 
-#: ../src/firewall-applet:442
+#: ../firewalld/firewall-applet:433
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "非ICMP ブロック:"
 
-#: ../src/firewall-applet:444
+#: ../firewalld/firewall-applet:435
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "ICMP ブロック:"
 
-#: ../src/firewall-applet:448
+#: ../firewalld/firewall-applet:439
 msgid "No Forward Ports."
-msgstr ""
+msgstr "非転送ポート:"
 
-#: ../src/firewall-applet:450
+#: ../firewalld/firewall-applet:441
 msgid "Forward Ports:"
-msgstr ""
+msgstr "転送ポート:"
 
-#: ../src/firewall-applet:454
+#: ../firewalld/firewall-applet:445
 msgid "No Custom Rules."
-msgstr ""
+msgstr "非カスタムルール:"
 
-#: ../src/firewall-applet:456
+#: ../firewalld/firewall-applet:447
 msgid "Custom Rules:"
-msgstr ""
+msgstr "カスタムルール:"
 
-#: ../src/firewall-applet:474
+#: ../firewalld/firewall-applet:465
 msgid "Panic mode"
-msgstr ""
+msgstr "パニックモード"
 
-#: ../src/firewall-applet:496
+#: ../firewalld/firewall-applet:487
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "サービス '%s'"
 
-#: ../src/firewall-applet:511
+#: ../firewalld/firewall-applet:502
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "ポート '%s:%s'"
 
-#: ../src/firewall-applet:525
+#: ../firewalld/firewall-applet:516
 #, c-format
 msgid "Trusted '%s'"
-msgstr ""
+msgstr "信頼済み '%s'"
 
-#: ../src/firewall-applet:541
+#: ../firewalld/firewall-applet:532
 #, c-format
 msgid "Masquerade '%s'"
-msgstr ""
+msgstr "マスカレード '%s'"
 
-#: ../src/firewall-applet:557
+#: ../firewalld/firewall-applet:548
 #, c-format
 msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+msgstr "転送ポート 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
 
-#: ../src/firewall-applet:572
+#: ../firewalld/firewall-applet:563
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
+msgstr "ブロック ICMP '%s'"
 
-#: ../src/firewall-applet:595
+#: ../firewalld/firewall-applet:586
 #, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
-msgstr ""
+msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr "カスタム 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
