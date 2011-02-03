@@ -4,19 +4,19 @@
 #
 # shankar prasad <svenkate@redhat.com>, 2006.
 # shankar Prasad <svenkate@redhat.com>, 2006.
-# Shankar Prasad <svenkate@redhat.com>, 2007, 2008, 2009, 2010.
+# Shankar Prasad <svenkate@redhat.com>, 2007, 2008, 2009, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-01-03 15:08+0100\n"
-"PO-Revision-Date: 2010-06-29 18:19+0530\n"
+"PO-Revision-Date: 2011-02-03 17:12+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: kn_IN <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.1\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 "\n"
 "\n"
@@ -53,19 +53,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:1
 msgid "21/TCP"
-msgstr ""
+msgstr "21/TCP"
 
 #: ../src/firewall-config.glade.h:2
 msgid "22/TCP"
-msgstr ""
+msgstr "22/TCP"
 
 #: ../src/firewall-config.glade.h:3
 msgid "80/TCP"
-msgstr ""
+msgstr "80/TCP"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Active Configuration"
-msgstr ""
+msgstr "ಸಕ್ರಿಯ ಸಂರಚನೆ"
 
 #
 #: ../src/firewall-config.glade.h:5
@@ -112,7 +112,7 @@ msgstr "ಗ್ರಾಹಕೀಯ ನಿಯಮಗಳು"
 
 #: ../src/firewall-config.glade.h:11
 msgid "Default Configuration"
-msgstr ""
+msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಸಂರಚನೆ"
 
 #
 #: ../src/firewall-config.glade.h:12
@@ -137,7 +137,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:15
 msgid "Firewall Daemon"
-msgstr ""
+msgstr "ಫೈರ್ವಾಲ್ ಡೀಮನ್"
 
 #
 #: ../src/firewall-config.glade.h:16
@@ -155,6 +155,8 @@ msgid ""
 "Here you can define the interfaces and network areas that have fill access "
 "to the system."
 msgstr ""
+"ಇಲ್ಲಿ ನೀವು ವ್ಯವಸ್ಥೆಗೆ ಸಂಪೂರ್ಣ ನಿಲುಕಣೆಯನ್ನು ಹೊಂದಿರುವ ಸಂಪರ್ಕಸಾಧನಗಳು ಹಾಗು ಜಾಲಬಂಧ ಸ್ಥಳಗಳನ್ನು "
+"ಸೂಚಿಸಬಹುದು."
 
 #: ../src/firewall-config.glade.h:18
 msgid ""
@@ -162,10 +164,14 @@ msgid ""
 "accessible from all hosts and networks in the selected network protocol. "
 "Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
+"ಯಾವ ಸೇವೆಗಳನ್ನು ನಂಬಬಹುದು ಎಂದು ಇಲ್ಲಿ ನೀವು ಸೂಚಿಸಬಹುದು. ನಂಬಿಕಸ್ತ ಸೇವೆಗಳನ್ನು ಆಯ್ಕೆ ಮಾಡಲಾದ "
+"ಜಾಲಬಂಧ ಪ್ರೊಟೊಕಾಲ್‌ನಲ್ಲಿನ ಎಲ್ಲಾ ಅತಿಥೇಯಗಳಿಂದ ಹಾಗು ಜಾಲಬಂಧಗಳಿಂದ ನಿಲುಕಿಸಿಕೊಳ್ಳಬಹುದಾಗಿರುತ್ತದೆ. "
+"ಪೂರ್ವನಿರ್ಧರಿತವಾದ ಸೇವೆಗಳ ಪಟ್ಟಿಯಿಂದ ಒಂದು ಅಂಶವನ್ನು ಆಯ್ಕೆ ಮಾಡಿಕೊಳ್ಳಲು <i>ಸೇರಿಸು</i> ಅನ್ನು "
+"ಕ್ಲಿಕ್ ಮಾಡಿ."
 
 #: ../src/firewall-config.glade.h:19
 msgid "Home Zone"
-msgstr ""
+msgstr "ನೆಲೆ ವಲಯ"
 
 #
 #: ../src/firewall-config.glade.h:20
@@ -174,15 +180,15 @@ msgstr "ICMP ಶೋಧಕ"
 
 #: ../src/firewall-config.glade.h:21
 msgid "IPv4"
-msgstr ""
+msgstr "IPv4"
 
 #: ../src/firewall-config.glade.h:22
 msgid "IPv4,IPv6"
-msgstr ""
+msgstr "IPv4,IPv6"
 
 #: ../src/firewall-config.glade.h:23
 msgid "IPv6"
-msgstr ""
+msgstr "IPv6"
 
 #
 #: ../src/firewall-config.glade.h:24
@@ -223,6 +229,8 @@ msgid ""
 "Only allow full access for interfaces or network areas if you can trust all "
 "participants part of these."
 msgstr ""
+"ಇವುಗಳಲ್ಲಿ ಎಲ್ಲವನ್ನೂ ನೀವು ನಂಬುವಂತಿದ್ದಲ್ಲಿ ಮಾತ್ರ ಸಂಪರ್ಕಸಾಧನಗಳಿಗೆ ಹಾಗು ಜಾಲಬಂಧ ಸ್ಥಳಗಳಿಗೆ "
+"ಸಂಪೂರ್ಣ ನಿಲುಕಣೆಗಳನ್ನು ಒದಗಿಸಿ."
 
 #
 #: ../src/firewall-config.glade.h:29
@@ -236,7 +244,7 @@ msgstr "ಸಂಪರ್ಕ ಸ್ಥಾನ ಫಾರ್ವಾರ್ಡಿಂಗ�
 
 #: ../src/firewall-config.glade.h:31
 msgid "Public Zone"
-msgstr ""
+msgstr "ಸಾರ್ವಜನಿಕ ವಲಯ"
 
 #
 #: ../src/firewall-config.glade.h:32
@@ -250,7 +258,7 @@ msgstr "ತೆಗೆದುಹಾಕು"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Restart"
-msgstr ""
+msgstr "ಮರಳಿ ಆರಂಭಿಸು"
 
 #
 #: ../src/firewall-config.glade.h:35
@@ -265,30 +273,35 @@ msgid ""
 "this option. You need the openssh-server package installed for this option "
 "to be useful. "
 msgstr ""
+"ಸೆಕ್ಯೂರ್ ಶೆಲ್ (SSH) ಎನ್ನುವುದು ದೂರದ ಗಣಕಗಳಿಗೆ ಪ್ರವೇಶಿಸುವ ಹಾಗು ಆಜ್ಞೆಗಳನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸುವ "
+"ಒಂದು ಪ್ರೊಟೊಕಾಲ್ ಆಗಿದೆ. ಇದು ಸುರಕ್ಷಿತವಾದ ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ಸಂವಹನಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ. ನೀವು ನಿಮ್ಮ "
+"ಗಣಕವನ್ನು SSH ಮೂಲಕ ಒಂದು ಫೈರ್ವಾಲ್ ಅನ್ನು ಹೊಂದಿರುವ ಸಂಪರ್ಕಸಾಧನದ ಮುಖಾಂತರ ದೂರದಿಂದ "
+"ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದಲ್ಲಿ ಈ ಆಯ್ಕೆಯನ್ನು ಶಕ್ತಗೊಳಿಸಿ. ಈ ಆಯ್ಕೆಯು ಉಪಯುಕ್ತವೆನಿಸಲು ನಿಮ್ಮಲ್ಲಿ "
+"openssh-server ಪ್ಯಾಕೇಜ್ ಅನ್ನು ಅನುಸ್ಥಾಪಿಸಿರಬೇಕು. "
 
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
-msgstr ""
+msgstr "ಸಂರಚನೆಯನ್ನು ಆರಿಸಿ"
 
 #: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
 msgid "Services"
-msgstr ""
+msgstr "ಸೇವೆಗಳು"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Start"
-msgstr ""
+msgstr "ಆರಂಭಿಸು"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Stop"
-msgstr ""
+msgstr "ನಿಲ್ಲಿಸು"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Switch Firewall Model"
-msgstr ""
+msgstr "ಫೈರ್ವಾಲ್ ಮಾದರಿಯನ್ನು ಬದಲಾಯಿಸಿ"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Switch firewall model"
-msgstr ""
+msgstr "ಫೈರ್ವಾಲ್ ಮಾದರಿಯನ್ನು ಬದಲಾಯಿಸಿ"
 
 #
 #: ../src/firewall-config.glade.h:43
@@ -303,11 +316,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:44
 msgid "Trusted"
-msgstr ""
+msgstr "ನಂಬಿಕಸ್ತ"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Trusted Zone"
-msgstr ""
+msgstr "ನಂಬಿಕಸ್ತ ವಲಯ"
 
 #
 #: ../src/firewall-config.glade.h:46
@@ -316,11 +329,11 @@ msgstr "WWW (HTTP)"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Work Zone"
-msgstr ""
+msgstr "ಕೆಲಸದ ವಲಯ"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Zones"
-msgstr ""
+msgstr "ವಲಯಗಳು"
 
 #
 #: ../src/firewall-config.glade.h:49
@@ -339,40 +352,40 @@ msgstr "ಆಯ್ಕೆಗಳು(_O)"
 
 #: ../src/firewall-config.glade.h:52
 msgid "ftp"
-msgstr ""
+msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "FirewallD ಅನ್ನು ಆರಂಭಿಸಲಾಗುತ್ತಿಲ್ಲ, ಅದು ಈಗಾಗಲೆ ಚಾಲನೆಯಲ್ಲಿದೆ."
 
 #: ../src/firewalld:102
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "ಫೋರ್ಕ್ #1 ವಿಫಲಗೊಂಡಿದೆ: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
-msgstr ""
+msgstr "ಫೈರ್ವಾಲ್ ಆಪ್ಲೆಟ್"
 
 #: ../src/firewall-applet:59
 msgid "- proof of concept implementation -"
-msgstr ""
+msgstr "- ಪರಿಕಲ್ಪನೆಯನ್ನು ಅನ್ವಯಿಸುವಿಕೆಯ ಪುರಾವೆ -"
 
 #: ../src/firewall-applet:124
 msgid "Ports"
-msgstr ""
+msgstr "ಸಂಪರ್ಕಸ್ಥಾನಗಳು"
 
 #: ../src/firewall-applet:130
 msgid "Trusted Connections"
-msgstr ""
+msgstr "ನಂಬಿಕಸ್ತ ಸಂಪರ್ಕಗಳು"
 
 #: ../src/firewall-applet:148
 msgid "ICMP Blocking"
-msgstr ""
+msgstr "ICMP ನಿರ್ಬಂಧ"
 
 #: ../src/firewall-applet:167
 msgid "Panic Mode"
-msgstr ""
+msgstr "ಭೀತಿಯ (ಪ್ಯಾನಿಕ್) ಸ್ಥಿತಿ"
 
 #
 #: ../src/firewall-applet:178
@@ -381,11 +394,11 @@ msgstr "ಫೈರ್ವಾಲನ್ನು ಶಕ್ತಗೊಳಿಸು"
 
 #: ../src/firewall-applet:183
 msgid "Enable All Notifications"
-msgstr ""
+msgstr "ಎಲ್ಲಾ ಸೂಚನೆಗಳನ್ನು ಶಕ್ತಗೊಳಿಸು"
 
 #: ../src/firewall-applet:214
 msgid "Not using slip"
-msgstr ""
+msgstr "ಚೀಟಿಯನ್ನು ಬಳಸಲಾಗುತ್ತಿಲ್ಲ"
 
 #: ../src/firewall-applet:232
 #, c-format
@@ -393,6 +406,8 @@ msgid ""
 "\n"
 "Timeout: %d seconds"
 msgstr ""
+"\n"
+"ಕಾಲಾವಧಿ ಮುಗಿದಿದೆ: %d ಸೆಕೆಂಡುಗಳು"
 
 #: ../src/firewall-applet:234
 #, c-format
@@ -400,104 +415,107 @@ msgid ""
 "\n"
 "Requested by: %s"
 msgstr ""
+"\n"
+"ಇವರಿಂದ ಮನವಿ ಸಲ್ಲಿಸಲಾಗಿದೆ: %s"
 
 #: ../src/firewall-applet:254
 msgid "Connection to FirewallD lost"
-msgstr ""
+msgstr "FirewallD ಯೊಂದಿಗಿನ ಸಂಪರ್ಕವು ಕಡಿದು ಹೋಗಿದೆ"
 
 #: ../src/firewall-applet:404
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "ಫೈರ್ವಾಲ್ ಡೀಮನ್‌ನೊಂದಿಗೆ ಸಂಪರ್ಕವು ಕಡಿದು ಹೋಗಿದೆ"
 
 #: ../src/firewall-applet:411
 msgid "PANIC MODE"
-msgstr ""
+msgstr "PANIC MODE"
 
 #: ../src/firewall-applet:418
 msgid "No Open Services."
-msgstr ""
+msgstr "ಯಾವುದೆ ತೆರೆದ ಸೇವೆಗಳಿಲ್ಲ."
 
 #: ../src/firewall-applet:420
 msgid "Open Services:"
-msgstr ""
+msgstr "ತೆರೆದ ಸೇವೆಗಳು:"
 
 #: ../src/firewall-applet:424
 msgid "No Open Ports."
-msgstr ""
+msgstr "ಯಾವುದೆ ತೆರೆದ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಲ್ಲ."
 
 #: ../src/firewall-applet:430
 msgid "No Trusted."
-msgstr ""
+msgstr "ನಂಬಿಕಸ್ತವಲ್ಲ."
 
 #: ../src/firewall-applet:432
 msgid "Trusted:"
-msgstr ""
+msgstr "ನಂಬಿಕಸ್ತ:"
 
 #: ../src/firewall-applet:436
 msgid "No Masqueraded."
-msgstr ""
+msgstr "ಛದ್ಮವೇಶಗೊಳಿಸಲಾಗಿಲ್ಲ:"
 
 #: ../src/firewall-applet:438
 msgid "Masqueraded:"
-msgstr ""
+msgstr "ಛದ್ಮವೇಶಗೊಳಿಕೆ:"
 
 #: ../src/firewall-applet:442
 msgid "No ICMP Blocks."
-msgstr ""
+msgstr "ಯಾವುದೆ ICMP ನಿರ್ಬಂಧಗಳಿಲ್ಲ."
 
 #: ../src/firewall-applet:444
 msgid "ICMP Blocks:"
-msgstr ""
+msgstr "ICMP ನಿರ್ಬಂಧಗಳು:"
 
 #: ../src/firewall-applet:448
 msgid "No Forward Ports."
-msgstr ""
+msgstr "ಯಾವುದೆ ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಲ್ಲ."
 
 #: ../src/firewall-applet:450
 msgid "Forward Ports:"
-msgstr ""
+msgstr "ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನಗಳು:"
 
 #: ../src/firewall-applet:454
 msgid "No Custom Rules."
-msgstr ""
+msgstr "ಯಾವುದೆ ಕಸ್ಟಮ್ ನಿಯಮಗಳಿಲ್ಲ."
 
 #: ../src/firewall-applet:456
 msgid "Custom Rules:"
-msgstr ""
+msgstr "ಕಸ್ಟಮ್ ನಿಯಮಗಳು:"
 
 #: ../src/firewall-applet:474
 msgid "Panic mode"
-msgstr ""
+msgstr "ಭೀತಿಯ (ಪ್ಯಾನಿಕ್) ಸ್ಥಿತಿ"
 
 #: ../src/firewall-applet:496
 #, c-format
 msgid "Service '%s'"
-msgstr ""
+msgstr "ಸೇವೆ '%s'"
 
 #: ../src/firewall-applet:511
 #, c-format
 msgid "Port '%s:%s'"
-msgstr ""
+msgstr "ಸಂಪರ್ಕಸ್ಥಾನ '%s:%s'"
 
 #: ../src/firewall-applet:525
 #, c-format
 msgid "Trusted '%s'"
-msgstr ""
+msgstr "ನಂಬಿಕಸ್ತ '%s'"
 
 #: ../src/firewall-applet:541
 #, c-format
 msgid "Masquerade '%s'"
-msgstr ""
+msgstr "'%s' ಅನ್ನು ಛದ್ಮವೇಶಗೊಳಿಸು"
 
 #: ../src/firewall-applet:557
 #, c-format
 msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
 msgstr ""
+"'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s' ಆದಲ್ಲಿ ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಫಾರ್ವಾರ್ಡ್ ಮಾಡು"
 
 #: ../src/firewall-applet:572
 #, c-format
 msgid "Block ICMP '%s'"
-msgstr ""
+msgstr "ICMP '%s' ಅನ್ನು ನಿರ್ಬಂಧಿಸು"
 
 #: ../src/firewall-applet:595
 #, c-format
@@ -505,3 +523,7 @@ msgid ""
 "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
 "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
+"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
+
