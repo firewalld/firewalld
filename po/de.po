@@ -98,10 +98,6 @@ msgstr ""
 msgid "Here you can define which services are trusted. Trusted services are accessible from all hosts and networks in the selected network protocol. Click on <i>Add</i> to select an item from the list of predefined services."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:20
 msgid "ICMP Filter"
 msgstr "ICMP-Filter"
@@ -133,10 +129,6 @@ msgstr "Andere Ports"
 #: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
 msgid "Port Forwarding"
 msgstr "Port-Weiterleitung"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr ""
 
 #: ../src/firewall-config.glade.h:32
 msgid "Reload"
@@ -182,10 +174,6 @@ msgstr "_Optionen"
 msgid "- proof of concept implementation -"
 msgstr ""
 
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr ""
-
 #: ../src/firewall-applet:178
 msgid "Enable Firewall"
 msgstr "Firewall aktivieren"
@@ -222,10 +210,6 @@ msgstr ""
 
 #: ../src/firewall-applet:442
 msgid "No ICMP Blocks."
-msgstr ""
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
 msgstr ""
 
 #: ../src/firewall-applet:448
@@ -419,3 +403,19 @@ msgstr ""
 #: ../src/firewall-config.glade.h:45
 msgid "Trusted Zone"
 msgstr "Vertraute Zone"
+
+#: ../src/firewall-applet:444
+msgid "ICMP Blocks:"
+msgstr "ICMP-Blöcke:"
+
+#: ../src/firewall-config.glade.h:19
+msgid "Home Zone"
+msgstr "Privater Bereich"
+
+#: ../src/firewall-config.glade.h:31
+msgid "Public Zone"
+msgstr "Öffentlicher Bereich"
+
+#: ../src/firewall-applet:148
+msgid "ICMP Blocking"
+msgstr "ICMP blockieren"
