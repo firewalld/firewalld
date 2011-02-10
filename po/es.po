@@ -136,25 +136,9 @@ msgstr ""
 msgid "The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies."
 msgstr "El Protocolo de Control de Mensaje de Internet (ICMP) se usa principalmente para mandar mensajes de errores entre computadoras en la red, así como información adicional como pedidos de ping y sus respuestas."
 
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:46
 msgid "WWW (HTTP)"
 msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr ""
 
 #: ../src/firewall-config.glade.h:49
 msgid "_File"
@@ -168,19 +152,6 @@ msgstr "Ay_uda"
 msgid "_Options"
 msgstr "_Opciones"
 
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr ""
-
-#: ../src/firewalld:74
-msgid "Not starting FirewallD, already running."
-msgstr ""
-
-#: ../src/firewalld:102
-#, c-format
-msgid "Fork #1 failed: %d (%s)"
-msgstr ""
-
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
 msgstr ""
@@ -189,149 +160,15 @@ msgstr ""
 msgid "- proof of concept implementation -"
 msgstr ""
 
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr ""
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr ""
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr ""
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr ""
-
 #: ../src/firewall-applet:178
 msgid "Enable Firewall"
 msgstr "Habilitar cortafuego"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
-msgstr ""
-
-#: ../src/firewall-applet:214
-msgid "Not using slip"
-msgstr ""
-
-#: ../src/firewall-applet:232
-#, c-format
-msgid ""
-"\n"
-"Timeout: %d seconds"
-msgstr ""
 
 #: ../src/firewall-applet:234
 #, c-format
 msgid ""
 "\n"
 "Requested by: %s"
-msgstr ""
-
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
-msgstr ""
-
-#: ../src/firewall-applet:404
-msgid "No connection to firewall daemon"
-msgstr ""
-
-#: ../src/firewall-applet:411
-msgid "PANIC MODE"
-msgstr ""
-
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr ""
-
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr ""
-
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr ""
-
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr ""
-
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr ""
-
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr ""
-
-#: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr ""
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr ""
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr ""
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr ""
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr ""
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr ""
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr ""
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr ""
-
-#: ../src/firewall-applet:496
-#, c-format
-msgid "Service '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr ""
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
-
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:595
-#, c-format
-msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:39
@@ -413,3 +250,168 @@ msgstr "Servicios"
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
 msgstr "Seleccione configuracion"
+
+#: ../src/firewall-applet:496
+#, c-format
+msgid "Service '%s'"
+msgstr "Servicio '%s'"
+
+#: ../src/firewall-applet:444
+msgid "ICMP Blocks:"
+msgstr "Bloqueos ICMP"
+
+#: ../src/firewall-applet:557
+#, c-format
+msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgstr "Redireciion de Puerto 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+
+#: ../src/firewall-applet:572
+#, c-format
+msgid "Block ICMP '%s'"
+msgstr "Bloqueo ICMP '%s'"
+
+#: ../src/firewall-applet:436
+msgid "No Masqueraded."
+msgstr "No Enmascarable"
+
+#: ../src/firewall-applet:432
+msgid "Trusted:"
+msgstr "Confiable"
+
+#: ../src/firewall-applet:420
+msgid "Open Services:"
+msgstr "Servicios Abiertos"
+
+#: ../src/firewall-applet:418
+msgid "No Open Services."
+msgstr "No hay Servicios Abiertos"
+
+#: ../src/firewall-applet:430
+msgid "No Trusted."
+msgstr "No Confiable"
+
+#: ../src/firewall-applet:424
+msgid "No Open Ports."
+msgstr "No Hay Puertos Abiertos"
+
+#: ../src/firewall-applet:442
+msgid "No ICMP Blocks."
+msgstr "No Hay Bloqueo ICMP"
+
+#: ../src/firewall-applet:450
+msgid "Forward Ports:"
+msgstr "Redireccion de Puertos"
+
+#: ../src/firewall-applet:454
+msgid "No Custom Rules."
+msgstr "Sin Reglas Personalizadas"
+
+#: ../src/firewall-applet:456
+msgid "Custom Rules:"
+msgstr "Reglas Personalizadas"
+
+#: ../src/firewall-applet:438
+msgid "Masqueraded:"
+msgstr "Enmascarable"
+
+#: ../src/firewall-applet:525
+#, c-format
+msgid "Trusted '%s'"
+msgstr "Confiable '%s'"
+
+#: ../src/firewall-applet:541
+#, c-format
+msgid "Masquerade '%s'"
+msgstr "Enmaascarado '%s'"
+
+#: ../src/firewall-applet:511
+#, c-format
+msgid "Port '%s:%s'"
+msgstr "Puerto '%s:%s'"
+
+#: ../src/firewall-applet:448
+msgid "No Forward Ports."
+msgstr "No Hay Redireccion De Puertos"
+
+#: ../src/firewall-applet:254
+msgid "Connection to FirewallD lost"
+msgstr "Se perdio conexion a FirewallID"
+
+#: ../src/firewall-applet:214
+msgid "Not using slip"
+msgstr "No usar Dezlisamiento"
+
+#: ../src/firewall-applet:232
+#, c-format
+msgid ""
+"\n"
+"Timeout: %d seconds"
+msgstr ""
+"\n"
+"Timeout: %d Segundos"
+
+#: ../src/firewall-applet:183
+msgid "Enable All Notifications"
+msgstr "Habilitar Todas las Notificaciones"
+
+#: ../src/firewall-applet:148
+msgid "ICMP Blocking"
+msgstr "Bloquear ICMP"
+
+#: ../src/firewall-applet:167
+msgid "Panic Mode"
+msgstr "Modo Panico"
+
+#: ../src/firewall-applet:404
+msgid "No connection to firewall daemon"
+msgstr "No hay conexion al demonio del cortafuego"
+
+#: ../src/firewall-applet:474
+msgid "Panic mode"
+msgstr "Modo Panico"
+
+#: ../src/firewall-applet:411
+msgid "PANIC MODE"
+msgstr "MODO PANICO"
+
+#: ../src/firewall-config.glade.h:44
+msgid "Trusted"
+msgstr "Confiable"
+
+#: ../src/firewall-config.glade.h:45
+msgid "Trusted Zone"
+msgstr "Zona confiable"
+
+#: ../src/firewall-config.glade.h:47
+msgid "Work Zone"
+msgstr "Zona de trabajo"
+
+#: ../src/firewall-config.glade.h:48
+msgid "Zones"
+msgstr "Zonas"
+
+#: ../src/firewall-applet:595
+#, c-format
+msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr "Personalizado 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
+#: ../src/firewall-config.glade.h:52
+msgid "ftp"
+msgstr "ftp"
+
+#: ../src/firewalld:102
+#, c-format
+msgid "Fork #1 failed: %d (%s)"
+msgstr "Fork #1 Falló: %d (%s)"
+
+#: ../src/firewalld:74
+msgid "Not starting FirewallD, already running."
+msgstr "FirewallID no iniciado, ya se esta ejecutando"
+
+#: ../src/firewall-applet:130
+msgid "Trusted Connections"
+msgstr "Conexiones  confiables"
+
+#: ../src/firewall-applet:124
+msgid "Ports"
+msgstr "Puertos"
