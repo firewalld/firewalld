@@ -38,7 +38,7 @@ Disables an enabled action.
 Query if an action has been enabled.
 .TP
 \fB--list\fR=\fI<action name>\fR
-List all entires for an action. Action can be one of \fIservice|port|trusted|masquerade|forward-port|icmp-block|custom\fR
+List all entries for an action. Action can be one of \fIservice|port|trusted|masquerade|forward-port|icmp-block|custom\fR
 
 .SS Actions:
 .TP
@@ -65,7 +65,7 @@ List all entires for an action. Action can be one of \fIservice|port|trusted|mas
 .SS Enable Options:
 .TP
 \fB--timeout\fR=\fI<seconds>\fR
-Enable an action for a specifig amount of time only. The enabled action will be disabled automatically after the time elapsed.
+Enable an action for a specific amount of time only. The enabled action will be disabled automatically after the time elapsed.
 
 .SH AUTHOR
 Thomas Woerner <twoerner@redhat.com>

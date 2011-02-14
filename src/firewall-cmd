@@ -20,6 +20,7 @@
 
 import sys
 import getopt
+import dbus
 
 DATADIR = '/usr/share/firewalld'
 sys.path.append(DATADIR)
@@ -135,7 +136,12 @@ if timeout != 0:
     if action == "panic":
         __fail("No timeout for panic.")
 
-fw = firewall_client.Firewall_Client()
+try:
+    fw = firewall_client.Firewall_Client()
+except dbus.DBusException, e:
+    if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
+        print "FirewallD is probably not running."
+    sys.exit(1)
 
 if mode == "status":
     status = fw.status()
@@ -180,7 +186,7 @@ elif action == "port":
     if mode == "list":
         l = fw.getPorts()
         if len(l) > 0:
-            print " ".join(l)
+            print " ".join(["%s:%s" % port for port in l])
         sys.exit(0)
 
     try:
