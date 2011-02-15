@@ -313,6 +313,7 @@ class Firewall:
     ### RESTART ###
 
     def reload(self):
+        _panic = self._panic
         _icmp_block = self._icmp_block
         _trusted = self._trusted
         _forward = self._forward
@@ -320,11 +321,15 @@ class Firewall:
         _ports = self._ports
         _masq = self._masquerade
         _custom = self._custom
+        _virt_rules = self._virt_rules
+        _virt_chains = self._virt_chains
 
         self.__init_vars()
         self.start()
-        
+
         # start
+        if _panic:
+            self.enable_panic_mode()
         for icmp in _icmp_block:
             self.__icmp_block(True, icmp)
         for trusted in _trusted:
@@ -339,6 +344,10 @@ class Firewall:
             self.__masquerade(True, masq)
         for args in _custom:
             self.__custom(True, *args)
+        for args in _virt_chains:
+            self.__virt_chain(True, *args)
+        for args in _virt_rules:
+            self.__virt_rule(True, *args)
 
     def restart(self):
         self._unload_firewall_modules()
