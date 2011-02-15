@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.1.2
+Version: 0.1.3
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -127,6 +127,15 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Feb 14 2011 Thomas Woerner <twoerner@redhat.com> 0.1.3-1
+- new version 0.1.3
+- restore all firewall features for reload: panic and virt rules and chains
+- string fixes for firewall-cmd man page (by Jiri Popelka)
+- fixed firewall-cmd port list (by Jiri Popelka)
+- added firewall dbus client connect check to firewall-cmd (by Jiri Popelka)
+- translation updates: de, es, gu, it, ja, kn, ml, nl, or, pa, pl, ru, ta,
+                       uk, zh_CN
+
 * Mon Jan  3 2011 Thomas Woerner <twoerner@redhat.com> 0.1.2-1
 - fixed package according to package review (rhbz#665395):
   - non executable scripts: dropped shebang
