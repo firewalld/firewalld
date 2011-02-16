@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-02-15 18:48+0100\n"
-"PO-Revision-Date: 2010-12-27 11:53+0100\n"
+"PO-Revision-Date: 2011-02-16 09:25+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -355,12 +355,12 @@ msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "FirewallD nie zostanie uruchomione, ponieważ już działa."
 
 #: ../src/firewalld:102
-#, fuzzy, c-format
+#, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr "rozdzielenie #1 nie powiodło się: %d (%s)"
+msgstr "Rozdzielenie #1 nie powiodło się: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
@@ -526,6 +526,3 @@ msgstr ""
 "Własne \"tablica=%s:łańcuch=%s:źródło=%s:port_źródłowy=%s:cel=%s:"
 "port_docelowy=%s:protokół=%s:interfejs_wejściowy=%s:interfejs_wyjściowy=%s:"
 "fizyczne_urządzenie_wejściowe=%s:fizyczne_urządzenie_wyjściowe=%s:cel=%s\""
-
-#~ msgid "Zone"
-#~ msgstr "Strefa"
