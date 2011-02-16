@@ -4,13 +4,13 @@
 #
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003.
 # Maxim Dziumanenko <dziumanenko@gmail.com>, 2003-2006.
-# Yuri Chornoivan <yurchor@ukr.net>, 2010.
+# Yuri Chornoivan <yurchor@ukr.net>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-02-15 18:48+0100\n"
-"PO-Revision-Date: 2010-12-26 12:20+0200\n"
+"PO-Revision-Date: 2011-02-16 07:37+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -356,12 +356,12 @@ msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "Немає сенсу запускати FirewallD, його вже запущено."
 
 #: ../src/firewalld:102
-#, fuzzy, c-format
+#, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr "помилка розгалуження: %d (%s)"
+msgstr "Помилка розгалуження 1: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
