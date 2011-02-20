@@ -1,6 +1,6 @@
 # translation of firewalld.master.po to Japanese
 # FirewallD Japanese translation.
-# Copyright (C) Red Hat Inc.2010
+# Copyright (C) Red Hat Inc. 2010, 2011
 #
 # Hajime Taira <htaira@redhat.com>, 2010, 2011.
 msgid ""
@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: system-config-firewall.master\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-02-15 18:48+0100\n"
-"PO-Revision-Date: 2011-01-18 09:43+0900\n"
+"PO-Revision-Date: 2011-02-20 15:13+0900\n"
 "Last-Translator: Hajime Taira <htaira@redhat.com>\n"
 "Language-Team: Japanese\n"
 "MIME-Version: 1.0\n"
@@ -22,31 +22,17 @@ msgstr ""
 #
 #: ../src/firewall_config.py:42
 msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
+"You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>."
 msgstr ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
+"This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n"
 "\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n"
 "\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
+"You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>."
 
 #: ../src/firewall-config.glade.h:1
 msgid "21/TCP"
@@ -71,25 +57,13 @@ msgstr "追加"
 
 #
 #: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
-msgstr ""
-"全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポー"
-"トの範囲を追加します。"
+msgid "Add additional ports or port ranges, which need to be accessible for all hosts or networks."
+msgstr "全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポートの範囲を追加します。"
 
 #
 #: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
-msgstr ""
-"ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他"
-"のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードは"
-"そのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワー"
-"ドは IPv4 のみです。"
+msgid "Add entries to forward ports either from one port to another on the local system or from the local system to another system. Forwarding to another system is only useful if the interface is masqueraded. Port forwarding is IPv4 only."
+msgstr "ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードはそのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワードは IPv4 のみです。"
 
 #
 #: ../src/firewall-config.glade.h:8
@@ -102,7 +76,8 @@ msgid "Allow access to necessary services, only."
 msgstr "必要なサービスへのアクセスのみ許可する。"
 
 #
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
+#: ../src/firewall-config.glade.h:10
+#: ../src/firewall-applet:154
 msgid "Custom Rules"
 msgstr "カスタムルール"
 
@@ -122,14 +97,8 @@ msgstr "FTP"
 
 #
 #: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
-msgstr ""
-"FTP はリモートファイル転送に使用されるプロトコルです。FTP サーバーを公開する"
-"予定の場合はこのオプションを有効にします。このオプションが役に立つようにする"
-"には vsftpd パッケージをインストールする必要があります。"
+msgid "FTP is a protocol used for remote file transfer. If you plan to make your FTP server publicly available, enable this option. You need the vsftpd package installed for this option to be useful."
+msgstr "FTP はリモートファイル転送に使用されるプロトコルです。FTP サーバーを公開する予定の場合はこのオプションを有効にします。このオプションが役に立つようにするには vsftpd パッケージをインストールする必要があります。"
 
 #: ../src/firewall-config.glade.h:15
 msgid "Firewall Daemon"
@@ -137,33 +106,16 @@ msgstr "ファイアーウォール・デーモン"
 
 #
 #: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
-msgstr ""
-"HTTP は Web ページを提供するためのプロトコルです。Web ページを公開する予定が"
-"ある場合はこのオプションを有効にします。ページをローカルで表示したり、Web "
-"ページの開発にはこのオプションは必要ありません。"
+msgid "HTTP is the protocol used to serve Web pages. If you plan to make your Web server publicly available, enable this option. This option is not required for viewing pages locally or developing Web pages."
+msgstr "HTTP は Web ページを提供するためのプロトコルです。Web ページを公開する予定がある場合はこのオプションを有効にします。ページをローカルで表示したり、Web ページの開発にはこのオプションは必要ありません。"
 
 #: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr ""
-"ここでは、システムに対してフルアクセスが許可されるインタフェースおよびネット"
-"ワークエリアを定義できます。"
+msgid "Here you can define the interfaces and network areas that have fill access to the system."
+msgstr "ここでは、システムに対してフルアクセスが許可されるインタフェースおよびネットワークエリアを定義できます。"
 
 #: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
-"信頼されたサービスを定義することができます。信頼されたサービスはすべてのホス"
-"トおよびすべてのネットワークから指定されたネットワークプロトコルでアクセスす"
-"ることができます。「追加」ボタンをクリックして事前定義済サービス一覧から任意"
-"のサービスを選択してください。"
+msgid "Here you can define which services are trusted. Trusted services are accessible from all hosts and networks in the selected network protocol. Click on <i>Add</i> to select an item from the list of predefined services."
+msgstr "信頼されたサービスを定義することができます。信頼されたサービスはすべてのホストおよびすべてのネットワークから指定されたネットワークプロトコルでアクセスすることができます。「追加」ボタンをクリックして事前定義済サービス一覧から任意のサービスを選択してください。"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Home Zone"
@@ -188,47 +140,28 @@ msgstr "IPv6"
 
 #
 #: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも"
-"有効になります。"
+msgid "If you enable masquerading, IP forwarding will also be enabled for your IPv4 networks."
+msgstr "マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも有効になります。"
 
 #
 #: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプ"
-"はファイアーウォールの通過が許可されます。 デフォルトでは無制限になっていま"
-"す。"
+msgid "Mark the ICMP types in the list, which should be rejected. All other ICMP types are allowed to pass the firewall. The default is no limitation."
+msgstr "一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプはファイアーウォールの通過が許可されます。 デフォルトでは無制限になっています。"
 
 #
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
+#: ../src/firewall-config.glade.h:26
+#: ../src/firewall-applet:136
 msgid "Masquerading"
 msgstr "マスカレーディング"
 
 #
 #: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"マスカレーディングによりローカルネットワークをインターネットと接続しているホ"
-"ストやルーターをセットアップすることができます。あなたのローカルネットワーク"
-"はインターネットからは見えず、インターネット上の一つのアドレスに見えます。マ"
-"スカレーディングは IPv4 のみです。"
+msgid "Masquerading allows you to set up a host or router that connects your local network to the internet. Your local network will not be visible and the hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr "マスカレーディングによりローカルネットワークをインターネットと接続しているホストやルーターをセットアップすることができます。あなたのローカルネットワークはインターネットからは見えず、インターネット上の一つのアドレスに見えます。マスカレーディングは IPv4 のみです。"
 
 #: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
-"すべてに対してフルアクセスを許可したい場合、特定のインタフェースやネットワー"
-"クエリアに対してのみ許可するにしてください。"
+msgid "Only allow full access for interfaces or network areas if you can trust all participants part of these."
+msgstr "すべてに対してフルアクセスを許可したい場合、特定のインタフェースやネットワークエリアに対してのみ許可するにしてください。"
 
 #
 #: ../src/firewall-config.glade.h:29
@@ -236,7 +169,8 @@ msgid "Other Ports"
 msgstr "その他のポート"
 
 #
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
+#: ../src/firewall-config.glade.h:30
+#: ../src/firewall-applet:142
 msgid "Port Forwarding"
 msgstr "ポートフォワーディング"
 
@@ -264,24 +198,15 @@ msgid "SSH"
 msgstr "SSH"
 
 #: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-"セキュアシェル (SSH) はリモートのコンピューターへログインしたり、コマンドを発"
-"行したりします。SSH では暗号化された通信が使われます。もし、リモートのコン"
-"ピューターに対して SSH 経由での操作を行う計画している場合には、firewalld イン"
-"タフェースからオプションを有効にしてください。openssh-server パッケージがイン"
-"ストールされている必要があります。"
+msgid "Secure Shell (SSH) is a protocol for logging into and executing commands on remote machines. It provides secure encrypted comminucations. If you plan on accessing your machine remotely via SSH over a firewalled interface, enable this option. You need the openssh-server package installed for this option to be useful. "
+msgstr "セキュアシェル (SSH) はリモートのコンピューターへログインしたり、コマンドを発行したりします。SSH では暗号化された通信が使われます。もし、リモートのコンピューターに対して SSH 経由での操作を行う計画している場合には、firewalld インタフェースからオプションを有効にしてください。openssh-server パッケージがインストールされている必要があります。"
 
 #: ../src/firewall-config.glade.h:37
 msgid "Select Configuration"
 msgstr "設定を選択"
 
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
+#: ../src/firewall-config.glade.h:38
+#: ../src/firewall-applet:120
 msgid "Services"
 msgstr "サービス"
 
@@ -303,14 +228,8 @@ msgstr "ファイアーウォールモデルの切り替え"
 
 #
 #: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュー"
-"タ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答"
-"などの情報メッセージにも使用されます。"
+msgid "The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies."
+msgstr "ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュータ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答などの情報メッセージにも使用されます。"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Trusted"
@@ -354,12 +273,12 @@ msgstr "ftp"
 
 #: ../src/firewalld:74
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "すでに FirewallD は実行中です。"
 
 #: ../src/firewalld:102
-#, fuzzy, c-format
+#, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr "fork #1 failed: %d (%s)"
+msgstr "fork #1 失敗: %d (%s)"
 
 #: ../src/firewall-applet:58
 msgid "Firewall Applet"
@@ -516,12 +435,8 @@ msgstr "ブロック ICMP '%s'"
 
 #: ../src/firewall-applet:595
 #, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
-msgstr ""
-"カスタム 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgid "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr "カスタム 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
 
 #~ msgid "Zone"
 #~ msgstr "ゾーン"
