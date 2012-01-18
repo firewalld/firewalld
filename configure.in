@@ -25,6 +25,11 @@ GLIB_GSETTINGS
 
 #############################################################
 
+#AC_ARG_ENABLE([systemd],
+#       AS_HELP_STRING([--disable-systemd], [Enable systemd support]),
+#       [USE_SYSTEMD=$enableval], [USE_SYSTEMD=yes])
+#AC_SUBST(USE_SYSTEMD)
+
 #############################################################
 
 AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')
