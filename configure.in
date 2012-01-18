@@ -34,6 +34,7 @@ IT_PROG_INTLTOOL([0.35.0], [no-xml])
 AM_PO_SUBDIRS
 
 AC_CONFIG_FILES([Makefile
+		 doxygen.conf
                  config/Makefile
 		 doc/Makefile
                  doc/man/Makefile
