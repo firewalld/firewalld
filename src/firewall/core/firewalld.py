@@ -37,7 +37,7 @@ import slip.dbus.service
 import syslog, traceback, types
 #import hashlib, random
 import firewall
-from firewall_error import *
+from firewall.error import *
 from firewall.core.logger import log
 
 DBUS_INTERFACE = "org.fedoraproject.FirewallD"
@@ -852,8 +852,8 @@ def sighandler(signum, frame):
 # reloading over dbus is not working server is not responding anymore
 #    if signum == signal.SIGHUP:
 #        try:
-#            import firewall_client
-#            fw = firewall_client.Firewall_Client()
+#            import client
+#            fw = client.Firewall_Client()
 #            fw.reload()
 #        except Exception, e:
 #            pass

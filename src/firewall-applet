@@ -23,8 +23,8 @@ import gtk.glade
 import os
 import glib
 
-from firewall import config
-import firewall_client
+from firewall.config import *
+from firewall.client import FirewallClient
 import fw_services
 
 import gobject
@@ -36,7 +36,7 @@ import pynotify
 # get icon theme
 icon_theme = gtk.icon_theme_get_default()
 
-gtk.glade.bindtextdomain(config.DOMAIN)
+gtk.glade.bindtextdomain(DOMAIN)
 
 class TrayApplet:
     def __cleanup(self):
@@ -190,12 +190,12 @@ class TrayApplet:
 
         self.about_dialog = gtk.AboutDialog()
         self.about_dialog.set_name(self.name)
-        self.about_dialog.set_version(config.VERSION)
+        self.about_dialog.set_version(VERSION)
         self.about_dialog.set_comments(self.comment)
-        self.about_dialog.set_license(config.LICENSE)
+        self.about_dialog.set_license(LICENSE)
         self.about_dialog.set_wrap_license(True)
-        self.about_dialog.set_copyright(config.COPYRIGHT)
-        self.about_dialog.set_authors(config.AUTHORS)
+        self.about_dialog.set_copyright(COPYRIGHT)
+        self.about_dialog.set_authors(AUTHORS)
         self.about_dialog.set_logo_icon_name(self.icon_name)
 
         self.statusicon.set_visible(True)
@@ -233,7 +233,7 @@ class TrayApplet:
         n.show()
 
     def dbus_connection_changed(self, name, old_owner, new_owner):
-        if name != firewall_client.DBUS_INTERFACE:
+        if name != DBUS_INTERFACE:
             return
 
 #        print "dbus_connection_changed(name=%s, old_owner=%s, new_owner=%s)" % (name, old_owner, new_owner)
@@ -253,7 +253,7 @@ class TrayApplet:
 
     def connect_to_firewalld(self):
         try:
-            self.fw = firewall_client.Firewall_Client(self.bus)
+            self.fw = Firewall_Client(self.bus)
         except dbus.DBusException, e:
             if e._dbus_error_name == \
                     'org.freedesktop.DBus.Error.ServiceUnknown':

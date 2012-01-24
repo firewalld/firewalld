@@ -22,8 +22,8 @@ import sys
 import getopt
 import dbus
 
-import firewall_client
-from firewall_error import *
+from firewall.client import FirewallClient
+from firewall.error import *
 
 def usage():
     print "Usage: %s [<options>] <mode> <action>" % sys.argv[0]
@@ -134,7 +134,7 @@ if timeout != 0:
         __fail("No timeout for panic.")
 
 try:
-    fw = firewall_client.Firewall_Client()
+    fw = Firewall_Client()
 except dbus.DBusException, e:
     if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
         print "FirewallD is probably not running."
