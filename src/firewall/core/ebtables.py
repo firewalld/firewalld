@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from firewall_functions import runProg
+from firewall.core.prog import runProg
 
 PROC_IPxTABLE_NAMES = {
 }

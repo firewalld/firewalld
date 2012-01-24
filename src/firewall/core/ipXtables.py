@@ -20,7 +20,7 @@
 
 import os.path
 
-from firewall_functions import runProg
+from firewall.core.prog import runProg
 
 COMMAND = {
     "ipv4": "/sbin/iptables",

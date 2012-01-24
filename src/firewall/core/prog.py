@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010 Red Hat, Inc.
+# Copyright (C) 2010-2012 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -50,29 +50,3 @@ def runProg(prog, argv=[ ]):
     (cpid, status) = os.waitpid(pid, 0)
 
     return (status, cret.rstrip())
-
-def active_firewalld():
-    if not os.path.exists("/var/run/firewalld.pid"):
-        return False
-
-    try:
-        fd = open("/var/run/firewalld.pid", "r")
-        pid = fd.readline()
-        fd.close()
-    except:
-        return False
-
-    if not os.path.exists("/proc/%s" % pid):
-        return False
-
-    try:
-        fd = open("/proc/%s/cmdline" % pid, "r")
-        cmdline = fd.readline()
-        fd.close()
-    except:
-        return False
-
-    if "firewalld" in cmdline:
-        return True
-
-    return False
