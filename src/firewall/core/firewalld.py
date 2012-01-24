@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010 Red Hat, Inc.
+# Copyright (C) 2010-2012 Red Hat, Inc.
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 #
@@ -23,10 +23,7 @@
 #   Thomas Liu  <tliu@redhat.com>
 #   Dan Walsh <dwalsh@redhat.com>
 
-
-import os, sys
-DATADIR = '/usr/share/firewalld'
-sys.path.append(DATADIR)
+import sys
 
 import signal
 import gobject

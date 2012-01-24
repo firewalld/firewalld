@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010 Red Hat, Inc.
+# Copyright (C) 2010-2012 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -18,12 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, os.path, sys, time
-
-DATADIR = '/usr/share/firewalld'
-sys.path.append(DATADIR)
-SCFW_DATADIR = '/usr/share/system-config-firewall'
-sys.path.append(SCFW_DATADIR)
+import os.path, sys, time
 
 import fw_services
 import fw_icmp

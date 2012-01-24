@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2010 Red Hat, Inc.
+# Copyright (C) 2010-2012 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -17,11 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-import sys
-
-DATADIR = '/usr/share/firewalld'
-sys.path.append(DATADIR)
 
 from firewall_functions import runProg
 

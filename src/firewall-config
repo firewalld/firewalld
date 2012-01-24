@@ -1,11 +1,5 @@
 #!/usr/bin/python
 
-import sys
-DATADIR = '/usr/share/firewalld'
-sys.path.append(DATADIR)
-SCFW_DATADIR = '/usr/share/system-config-firewall'
-sys.path.append(SCFW_DATADIR)
-
 import pygtk
 pygtk.require("2.0")
 import gtk
