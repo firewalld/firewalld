@@ -41,7 +41,7 @@ import firewall
 from firewall import config
 from firewall.functions import firewalld_is_active
 from firewall.errors import *
-from logger import log, FileLog
+from firewall.core.logger import log, FileLog
 
 debug = 0
 fork = True

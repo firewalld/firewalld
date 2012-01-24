@@ -38,7 +38,7 @@ import syslog, traceback, types
 #import hashlib, random
 import firewall
 from firewall_error import *
-from logger import log
+from firewall.core.logger import log
 
 DBUS_INTERFACE = "org.fedoraproject.FirewallD"
 DBUS_PATH = "/org/fedoraproject/FirewallD"
