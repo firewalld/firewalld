@@ -23,7 +23,7 @@ import gtk.glade
 import os
 import glib
 
-import firewall_config as config
+from firewall import config
 import firewall_client
 import fw_services
 

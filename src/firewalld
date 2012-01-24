@@ -38,7 +38,7 @@ import pickle
 import syslog, traceback, types
 #import hashlib, random
 import firewall
-import firewall_config
+from firewall import config
 from firewall.functions import firewalld_is_active
 from firewall.errors import *
 from logger import log, FileLog
@@ -52,7 +52,7 @@ if "--debug" in sys.argv[1:]:
 if "--verbose" in sys.argv[1:]:
     debug = 1
 
-log_file = FileLog(firewall_config.VARLOGFILE, "a")
+log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
 log.setDateFormat("%Y-%m-%d %H:%M:%S")
 log.setFormat("%(date)s %(label)s%(message)s")
 log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR ])
