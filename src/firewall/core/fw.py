@@ -465,14 +465,14 @@ class Firewall:
     ### PORTS ###
 
     def __portStr(self, port, delimiter=":"):
-        range = fw_functions.getPortRange(port)
+        range = functions.getPortRange(port)
         if len(range) == 1:
             return "%s" % range
         else:
             return "%s%s%s" % (range[0], delimiter, range[1])
 
     def __check_port(self, port):
-        range = fw_functions.getPortRange(port)
+        range = functions.getPortRange(port)
 
         if range == -2 or range == -1 or range == None or \
                 (len(range) == 2 and range[0] >= range[1]):
@@ -542,7 +542,7 @@ class Firewall:
     ### TRUSTED ###
 
     def __check_interface(self, interface):
-        if not fw_functions.checkInterface(interface):
+        if not functions.checkInterface(interface):
             raise FirewallError(INVALID_INTERFACE)
 
     def __trusted(self, enable, trusted):
@@ -644,7 +644,7 @@ class Firewall:
     ### PORT FORWARDING ###
 
     def __check_ip(self, ip):
-        if not fw_functions.checkIP(ip):
+        if not functions.checkIP(ip):
             raise FirewallError(INVALID_ADDR)
 
     def __forward_port(self, enable, interface, port, protocol, toport=None,

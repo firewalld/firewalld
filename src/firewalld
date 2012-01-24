@@ -40,8 +40,8 @@ import syslog, traceback, types
 #import hashlib, random
 import firewall
 import firewall_config
-from firewall_functions import active_firewalld
-from firewall_error import *
+from firewall.functions import firewalld_is_active
+from firewall.errors import *
 from logger import log, FileLog
 
 debug = 0
@@ -70,7 +70,7 @@ if debug:
     log.addInfoLogging("*", log_file)
     log.addDebugLogging("*", log_file)
 
-if active_firewalld():
+if firewalld_is_active():
     log.fatal(_("Not starting FirewallD, already running."))
     sys.exit(1)
 
