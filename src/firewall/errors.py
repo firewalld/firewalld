@@ -18,37 +18,57 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-NO_ERROR          =    0
 ALREADY_ENABLED   =   -1
 NOT_ENABLED       =   -2
 ENABLE_FAILED     =   -3
 DISABLE_FAILED    =   -4
 NO_IPV6_NAT       =   -5
+PANIC_MODE        =   -6
+ZONE_ALREADY_SET  =   -7
+UNKNOWN_INTERFACE =   -8
+ZONE_CONFLICT     =   -9
+ADD_FAILED        =  -10
+REMOVE_FAILED     =  -11
+IMMUTABLE         =  -12
+BUILTIN_CHAIN     =  -13
 
-INVALID_ACTION    =  -10
-INVALID_SERVICE   =  -11
-INVALID_PORT      =  -12
-INVALID_PROTOCOL  =  -13
-INVALID_INTERFACE =  -14
-INVALID_ADDR      =  -15
-INVALID_FORWARD   =  -16
-INVALID_ICMP_TYPE =  -17
-INVALID_TABLE     =  -18
-INVALID_CHAIN     =  -19
-INVALID_TARGET    =  -20
-INVALID_IPV       =  -21
+INVALID_ACTION    =  -20
+INVALID_SERVICE   =  -21
+INVALID_PORT      =  -22
+INVALID_PROTOCOL  =  -23
+INVALID_INTERFACE =  -24
+INVALID_ADDR      =  -25
+INVALID_FORWARD   =  -26
+INVALID_ICMPTYPE  =  -27
+INVALID_TABLE     =  -28
+INVALID_CHAIN     =  -29
+INVALID_TARGET    =  -30
+INVALID_IPV       =  -31
+INVALID_ZONE      =  -32
+INVALID_PROPERTY  =  -33
+INVALID_VALUE     =  -34
+INVALID_OBJECT    =  -35
 
-MISSING_TABLE     =  -30
-MISSING_CHAIN     =  -31
-MISSING_PORT      =  -32
-MISSING_PROTOCOL  =  -33
-MISSING_ADDR      =  -34
+MISSING_TABLE     =  -40
+MISSING_CHAIN     =  -41
+MISSING_PORT      =  -42
+MISSING_PROTOCOL  =  -43
+MISSING_ADDR      =  -44
 
+UNKNOWN_SENDER    =  -99
 UNKNOWN_ERROR     = -100
 
+import sys
+
 class FirewallError(Exception):
+    mod = sys.modules[__module__]
+    errors = dict([(getattr(mod,varname),varname)
+                   for varname in dir(mod)
+                   if not varname.startswith("_")])
+    codes = dict([(errors[code],code) for code in errors])
+
     def __init__(self, code, msg=None):
         self.code = code
 
     def __str__(self):
-        return repr(self.code)
+        return self.errors[self.code]
