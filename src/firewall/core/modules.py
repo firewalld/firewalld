@@ -19,8 +19,12 @@
 #
 
 from firewall.core.prog import runProg
+from firewall.core.logger import log
 
 class modules:
+    def __init__(self):
+        self._command = "/sbin/modprobe"
+
     def loaded_modules(self):
         modules = [ ]
         deps = { }
@@ -40,10 +44,12 @@ class modules:
         return modules, deps
 
     def load_module(self, module):
-        return runProg("/sbin/modprobe", [ module ])
+        log.debug2("%s: %s %s", self.__class__, self._command, module)
+        return runProg(self._command, [ module ])
 
     def unload_module(self, module):
-        return runProg("/sbin/modprobe", [ "-r", module ])
+        log.debug2("%s: %s -r %s", self.__class__, self._command, module)
+        return runProg(self._command, [ "-r", module ])
 
     def get_deps(self, module, deps, ret):
         if module not in deps:
@@ -59,7 +65,7 @@ class modules:
         modules = [ ]
         (mods, deps) = self.loaded_modules()
 
-        for mod in [ "ip_tables", "ip6_tables", "nf_conntrack" ]:
+        for mod in [ "ip_tables", "ip6_tables", "nf_conntrack", "ebtables" ]:
             self.get_deps(mod, deps, modules)
 
         for mod in mods:
@@ -81,6 +87,12 @@ class modules:
             if status != 0:
                 raise ValueError, "Unable to unload module %s: %s" % (module,
                                                                       ret)
+
+    def unload_firewall_modules(self):
+        for module in self.get_firewall_modules():
+            (status, ret) = self.unload_module(module)
+            if status != 0:
+                log.debug1("Failed to unload module '%s': %s" %(module, ret))
 
     def get_dep_modules(self, module):
         (mods, deps) = self.loaded_modules()
