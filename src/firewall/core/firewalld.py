@@ -36,7 +36,7 @@ import slip.dbus.service
 
 import syslog, traceback, types
 #import hashlib, random
-import firewall
+from firewall.core.fw import Firewall
 from firewall.errors import *
 from firewall.core.logger import log
 
@@ -48,7 +48,7 @@ class FirewallD(slip.dbus.service.Object):
     def __init__(self, *args, **kwargs):
         super(FirewallD, self).__init__(*args, **kwargs)
         self.persistent = True
-        self.fw = firewall.qFirewall()
+        self.fw = Firewall()
         self.start()
 
     def __del__(self):
