@@ -26,7 +26,7 @@ import fw_functions
 import ipXtables
 import ebtables
 import modules
-from firewall.error import *
+from firewall.errors import *
 
 CHAINS = {
     "raw": [ "PREROUTING", "OUTPUT" ],

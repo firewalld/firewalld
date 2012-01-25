@@ -37,7 +37,7 @@ import slip.dbus.service
 import syslog, traceback, types
 #import hashlib, random
 import firewall
-from firewall.error import *
+from firewall.errors import *
 from firewall.core.logger import log
 
 DBUS_INTERFACE = "org.fedoraproject.FirewallD"
@@ -48,7 +48,7 @@ class FirewallD(slip.dbus.service.Object):
     def __init__(self, *args, **kwargs):
         super(FirewallD, self).__init__(*args, **kwargs)
         self.persistent = True
-        self.fw = firewall.Firewall()
+        self.fw = firewall.qFirewall()
         self.start()
 
     def __del__(self):

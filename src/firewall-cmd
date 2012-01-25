@@ -23,7 +23,7 @@ import getopt
 import dbus
 
 from firewall.client import FirewallClient
-from firewall.error import *
+from firewall.errors import *
 
 def usage():
     print "Usage: %s [<options>] <mode> <action>" % sys.argv[0]
