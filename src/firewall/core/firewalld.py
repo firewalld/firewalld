@@ -40,9 +40,9 @@ from firewall.core.fw import Firewall
 from firewall.errors import *
 from firewall.core.logger import log
 
-DBUS_INTERFACE = "org.fedoraproject.FirewallD"
-DBUS_PATH = "/org/fedoraproject/FirewallD"
-POLKIT_DOMAIN = "org.fedoraproject.FirewallD"
+DBUS_INTERFACE = "org.fedoraproject.FirewallD1"
+DBUS_PATH = "/org/fedoraproject/FirewallD1"
+POLKIT_DOMAIN = "org.fedoraproject.FirewallD1"
 
 class FirewallD(slip.dbus.service.Object):
     def __init__(self, *args, **kwargs):
