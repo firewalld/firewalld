@@ -25,38 +25,46 @@
 
 import os
 import sys
-
-import gobject
-import glib
 import dbus
-import dbus.service
-import dbus.mainloop.glib
-import slip.dbus
-import slip.dbus.service
-import pickle
+import syslog
+import traceback
 
-import syslog, traceback, types
-#import hashlib, random
-import firewall
 from firewall import config
-from firewall.functions import firewalld_is_active
 from firewall.errors import *
+from firewall.functions import firewalld_is_active
 from firewall.core.logger import log, FileLog
 
 debug = 0
 fork = True
 
-if "--debug" in sys.argv[1:]:
-    debug = 1
-    fork = False
-if "--verbose" in sys.argv[1:]:
-    debug = 1
+args = sys.argv[1:]
+
+def usage(code):
+    print(_("Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]") % \
+              sys.argv[0])
+    sys.exit(code)
+
+for arg in args:
+    if arg in ["-h", "--help"]:
+        usage(0)
+    elif arg == "--debug":
+        debug = 1
+    elif arg[:8] == "--debug=":
+        try:
+            debug = int(arg[8:])
+        except:
+            usage(1)
+    elif arg == "--nofork":
+        fork = False
+    else:
+        print(_("Unknown option '%s'") % arg)
+        usage(2)
+
 
 log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
 log.setDateFormat("%Y-%m-%d %H:%M:%S")
 log.setFormat("%(date)s %(label)s%(message)s")
 log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR ])
-log.addInfoLogging("*", log.stderr, [ log.FATAL, log.ERROR ])
 log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR ])
 log.setInfoLogging("*", log_file, [ log.WARNING ])
 log.setDebugLogLevel(log.NO_INFO)
@@ -64,10 +72,16 @@ log.setDebugLogLevel(log.NO_DEBUG)
 log.setDebugLogging("*", log_file, [ i for i in xrange(1, log.DEBUG_MAX+1) ])
 
 if debug:
-    log.setInfoLogLevel(log.INFO2)
-    log.setDebugLogLevel(log.DEBUG5)
+    if debug > log.DEBUG_MAX:
+        debug = log.DEBUG_MAX
+    log.setInfoLogLevel(log.INFO_MAX)
+    log.setDebugLogLevel(debug)
     log.addInfoLogging("*", log_file)
     log.addDebugLogging("*", log_file)
+    if not fork:
+        log.addInfoLogging("*", log.stdout)
+        log.addDebugLogging("*", log.stdout)
+        
 
 if firewalld_is_active():
     log.fatal(_("Not starting FirewallD, already running."))
@@ -94,22 +108,26 @@ try:
     f.close()
 
     # import here
-    from server import run_server
+    from firewall.core.firewalld import run_server
     run_server()
 
 except OSError, e: 
     log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
     log.error(traceback.format_exc())
+    os.remove(pid_file)
     sys.exit(1)
 
 except dbus.DBusException, e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
+    os.remove(pid_file)
     sys.exit(1)
 
 except IOError, e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
+    os.remove(pid_file)
     sys.exit(1)
 
+os.remove(pid_file)
 sys.exit(0)
