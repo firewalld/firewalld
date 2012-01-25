@@ -19,6 +19,7 @@
 #
 
 from firewall.core.prog import runProg
+from firewall.core.logger import log
 
 PROC_IPxTABLE_NAMES = {
 }
@@ -36,7 +37,10 @@ class ebtables:
         self._command = "/sbin/ebtables"
 
     def __run(self, args):
-        (status, ret) = runProg(self._command, args)
+        # convert to string list
+        _args = ["%s" % item for item in args]
+        log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
+        (status, ret) = runProg(self._command, _args)
         if status != 0:
             raise ValueError, "'%s %s' failed: %s" % (self._command, 
                                                       " ".join(args), ret)
