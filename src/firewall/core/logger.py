@@ -25,6 +25,7 @@ import time
 import inspect
 import fnmatch
 import syslog
+import traceback
 
 # ---------------------------------------------------------------------------
 
@@ -208,9 +209,10 @@ class Logger:
 
     """
 
-    ALL       = -4
-    NOTHING   = -3
-    FATAL     = -2
+    ALL       = -5
+    NOTHING   = -4
+    FATAL     = -3
+    TRACEBACK = -2
     ERROR     = -1
     WARNING   =  0
 
@@ -245,6 +247,7 @@ class Logger:
         self.DEBUG_MAX = debug_max
 
         self.setInfoLogLabel(self.FATAL, "FATAL ERROR: ")
+        self.setInfoLogLabel(self.TRACEBACK, "")
         self.setInfoLogLabel(self.ERROR, "ERROR: ")
         self.setInfoLogLabel(self.WARNING, "WARNING: ")
 
@@ -435,6 +438,9 @@ class Logger:
         self._checkKWargs(kwargs)
         kwargs["is_debug"] = 1
         self._log(level, format, *args, **kwargs)
+
+    def exception(self):
+        self._log(self.TRACEBACK, traceback.format_exc(), args=[], kwargs={})
 
     ### internal functions
 
@@ -859,5 +865,10 @@ if __name__ == '__main__':
     log.fatal("fatal")
     log.info(log.INFO1, "nofmt info", nofmt=1)
     log.info(log.INFO2, "info2 fmt", fmt="%(file)s:%(line)d %(message)s")
+
+    try:
+        a = b
+    except Exception, e:
+        log.exception()
 
 # vim:ts=4:sw=4:showmatch:expandtab
