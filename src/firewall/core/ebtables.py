@@ -30,6 +30,8 @@ CHAINS = {
     "filter": [ "INPUT", "OUTPUT", "FORWARD" ],
 }
 
+DEFAULT_RULES = { }
+
 class ebtables:
     ipv = "ipv4"
 
