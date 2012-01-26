@@ -265,6 +265,14 @@ class Firewall:
         self._set_policy("DROP", "all")
 
     def __rule(self, ipv, rule):
+        # replace %%REJECT%%
+        try:
+            i = rule.index("%%REJECT%%")
+        except:
+            pass
+        else:
+            rule[i:i+1] = [ "REJECT", "--reject-with", REJECT_TYPE[ipv] ]
+
         if ipv == "ipv4":
             self._ip4tables.set_rule(rule)
         elif ipv == "ipv6":
