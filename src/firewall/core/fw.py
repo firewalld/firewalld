@@ -165,6 +165,8 @@ class Firewall:
         # TODO: load zones, services and icmp types
         pass
 
+    # marks
+
     def new_mark(self):
         # return first unused mark
         i = self._min_mark
@@ -175,6 +177,8 @@ class Firewall:
 
     def del_mark(self, mark):
         self._marks.remove(mark)
+
+    # handle rules, chains and modules
 
     def handle_rules(self, rules, enable, insert=False):
         if insert:
@@ -243,6 +247,8 @@ class Firewall:
                          del self._module_refcount[module]
         return None
 
+    # apply default rules
+
     def __apply_default_rules(self, ipv):
         for (prefix, rules) in [ ([ "-t", "mangle" ], MANGLE_RULES),
                                  ([ "-t", "nat" ], NAT_RULES),
@@ -276,6 +282,8 @@ class Firewall:
         for ipv in [ "ipv4", "ipv6" ]:
             self.__apply_default_rules(ipv)
 
+    # module handling
+
     def __get_firewall_modules(self):
         modules = [ ]
         (mods, deps) = self._modules.loaded_modules()
@@ -295,6 +303,8 @@ class Firewall:
         for mod in modules:
             self._modules.unload_module(mod)
 
+    # flush and policy
+
     def _flush(self):
         self._ip4tables.flush()
         self._ip6tables.flush()
@@ -303,9 +313,7 @@ class Firewall:
         self._ip4tables.set_policy(policy, which)
         self._ip6tables.set_policy(policy, which)
 
-    def _panic(self):
-        self._flush()
-        self._set_policy("DROP", "all")
+    # internal __rule function use in handle_ functions
 
     def __rule(self, ipv, rule):
         # replace %%REJECT%%
@@ -325,7 +333,7 @@ class Firewall:
         else:
             raise FirewallError(INVALID_IPV)
 
-    ### RESTART ###
+    # RESTART
 
     def reload(self):
         _panic = self._panic
@@ -365,14 +373,14 @@ class Firewall:
         self._unload_firewall_modules()
         self.reload()
 
-    ### STATUS ###
+    # STATUS
 
     def status(self):
 #        mods = self.__get_firewall_modules()
 #        print "\n".join(mods)
         return (self._initialized == True)
 
-    ### PANIC MODE ###
+    # PANIC MODE
 
     def enable_panic_mode(self):
         if self._panic:
@@ -397,7 +405,7 @@ class Firewall:
     def query_panic_mode(self):
         return (self._panic == True)
 
-    ### SERVICES ###
+    # SERVICES
 
     def __service(self, enable, service):
         svc = fw_services.getByKey(service)
@@ -474,7 +482,7 @@ class Firewall:
     def get_services(self):
         return self._services[:]
 
-    ### PORTS ###
+    # PORTS
 
     def __portStr(self, port, delimiter=":"):
         range = functions.getPortRange(port)
@@ -551,7 +559,7 @@ class Firewall:
     def get_ports(self):
         return self._ports[:]
 
-    ### TRUSTED ###
+    # TRUSTED
 
     def __check_interface(self, interface):
         if not functions.checkInterface(interface):
@@ -604,7 +612,7 @@ class Firewall:
     def get_trusted(self):
         return self._trusted[:]
 
-    ### MASQUERADE ###
+    # MASQUERADE
 
     def __masquerade(self, enable, masq):
         self.__check_interface(masq)
@@ -653,7 +661,7 @@ class Firewall:
     def get_masquerades(self):
         return self._masquerade[:]
 
-    ### PORT FORWARDING ###
+    # PORT FORWARDING
 
     def __check_ip(self, ip):
         if not functions.checkIP(ip):
@@ -778,7 +786,7 @@ class Firewall:
             ret.append(key[:])
         return ret
 
-    ### ICMP ###
+    # ICMP
 
     def __icmp_block(self, enable, icmp):
         ic = fw_icmp.getByKey(icmp)
@@ -841,7 +849,7 @@ class Firewall:
     def get_icmp_blocks(self):
         return self._icmp_block[:]
 
-    ### VIRT RULES ###
+    # VIRT RULES
 
     def __virt_rule(self, insert, ipv, table, chain, args):
         _chain = "%s_virt" % (chain)
