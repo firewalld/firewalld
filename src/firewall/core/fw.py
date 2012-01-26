@@ -139,7 +139,7 @@ class Firewall:
         self._virt_chains = [ ]
         self._module_refcount = { }
         self._marks = [ ]
-        self._min_mark = 100
+        self._min_mark = 100 #TODO: configurable
 
         self._rules = { }
         self._rules_by_id = { }
@@ -165,7 +165,7 @@ class Firewall:
         # TODO: load zones, services and icmp types
         pass
 
-    def __new_mark(self):
+    def new_mark(self):
         # return first unused mark
         i = self._min_mark
         while i in self._marks:
@@ -173,7 +173,7 @@ class Firewall:
         self._marks.append(i)
         return i
 
-    def __del_mark(self, mark):
+    def del_mark(self, mark):
         self._marks.remove(mark)
 
     def __handle_rules(self, rules, enable):
@@ -654,7 +654,7 @@ class Firewall:
         if enable:
             if forward_id in self._forward:
                 raise FirewallError(ALREADY_ENABLED)
-            mark_id = self.__new_mark()
+            mark_id = self.new_mark()
         else:
             if not forward_id in self._forward:
                 raise FirewallError(NOT_ENABLED)
@@ -731,7 +731,7 @@ class Firewall:
         else:
             del self._forward[forward_id]
             if not toaddr:
-                self.__del_mark(mark_id)
+                self.del_mark(mark_id)
 
     def enable_forward_port(self, interface, port, protocol, toport=None,
                             toaddr=None):
