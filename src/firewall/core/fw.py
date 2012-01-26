@@ -22,18 +22,10 @@ import os.path, sys, time
 
 import fw_services
 import fw_icmp
-import fw_functions
-import ipXtables
-import ebtables
-import modules
+from firewall.core import ipXtables
+from firewall.core import ebtables
+from firewall.core import modules
 from firewall.errors import *
-
-CHAINS = {
-    "raw": [ "PREROUTING", "OUTPUT" ],
-    "mangle": [ "PREROUTING", "POSTROUTING", "INPUT", "OUTPUT", "FORWARD" ],
-    "nat": [ "PREROUTING", "POSTROUTING", "OUTPUT" ],
-    "filter": [ "INPUT", "OUTPUT", "FORWARD" ],
-}
 
 REJECT_TYPE = {
     "ipv4": "icmp-host-prohibited",
@@ -43,47 +35,31 @@ REJECT_TYPE = {
 MANGLE_RULES = [
     [ "-N", "PREROUTING_virt" ],
     [ "-N", "PREROUTING_forward" ],
-    [ "-N", "PREROUTING_custom" ],
     [ "-N", "INPUT_virt" ],
-    [ "-N", "INPUT_custom" ],
     [ "-N", "FORWARD_virt" ],
-    [ "-N", "FORWARD_custom" ],
     [ "-N", "OUTPUT_virt" ],
-    [ "-N", "OUTPUT_custom" ],
     [ "-N", "POSTROUTING_virt" ],
-    [ "-N", "POSTROUTING_custom" ],
     
     [ "-I", "PREROUTING", "1", "-j", "PREROUTING_virt" ],
     [ "-I", "PREROUTING", "2", "-j", "PREROUTING_forward" ],
-    [ "-I", "PREROUTING", "3", "-j", "PREROUTING_custom" ],
     [ "-I", "INPUT", "1", "-j", "INPUT_virt" ],
-    [ "-I", "INPUT", "2", "-j", "INPUT_custom" ],
     [ "-I", "FORWARD", "1", "-j", "FORWARD_virt" ],
-    [ "-I", "FORWARD", "2", "-j", "FORWARD_custom" ],
     [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
-    [ "-I", "OUTPUT", "2", "-j", "OUTPUT_custom" ],
     [ "-I", "POSTROUTING", "1", "-j", "POSTROUTING_virt" ],
-    [ "-I", "POSTROUTING", "2", "-j", "POSTROUTING_custom" ],
 ]
 
 NAT_RULES = [
     [ "-N", "PREROUTING_virt" ],
     [ "-N", "PREROUTING_forward" ],
-    [ "-N", "PREROUTING_custom" ],
     [ "-N", "OUTPUT_virt" ],
-    [ "-N", "OUTPUT_custom" ],
     [ "-N", "POSTROUTING_virt" ],
     [ "-N", "POSTROUTING_masq" ],
-    [ "-N", "POSTROUTING_custom" ],
 
     [ "-I", "PREROUTING", "1", "-j", "PREROUTING_virt" ],
     [ "-I", "PREROUTING", "2", "-j", "PREROUTING_forward" ],
-    [ "-I", "PREROUTING", "3", "-j", "PREROUTING_custom" ],
     [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
-    [ "-I", "OUTPUT", "2", "-j", "OUTPUT_custom" ],
     [ "-I", "POSTROUTING", "1", "-j", "POSTROUTING_virt" ],
     [ "-I", "POSTROUTING", "2", "-j", "POSTROUTING_masq" ],
-    [ "-I", "POSTROUTING", "3", "-j", "POSTROUTING_custom" ],
 ]
 
 FILTER_RULES = [
@@ -93,17 +69,14 @@ FILTER_RULES = [
     [ "-N", "INPUT_ports" ],
     [ "-N", "INPUT_services" ],
     [ "-N", "INPUT_trusted" ],
-    [ "-N", "INPUT_custom" ],
 
     [ "-N", "FORWARD_virt" ],
     [ "-N", "FORWARD_forward" ],
     [ "-N", "FORWARD_icmp" ],
     [ "-N", "FORWARD_trusted" ],
     [ "-N", "FORWARD_masq" ],
-    [ "-N", "FORWARD_custom" ],
 
     [ "-N", "OUTPUT_virt" ],
-    [ "-N", "OUTPUT_custom" ],
 
     [ "-I", "INPUT", "1", "-j", "INPUT_virt" ],
     [ "-I", "INPUT", "2", "-m", "state", "--state", "INVALID",
@@ -117,8 +90,7 @@ FILTER_RULES = [
     [ "-I", "INPUT", "8", "-j", "INPUT_forward" ],
     [ "-I", "INPUT", "9", "-j", "INPUT_services" ],
     [ "-I", "INPUT", "10", "-j", "INPUT_ports" ],
-    [ "-I", "INPUT", "11", "-j", "INPUT_custom" ],
-    [ "-I", "INPUT", "12", "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
+    [ "-I", "INPUT", "11", "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
 
     [ "-I", "FORWARD", "1", "-j", "FORWARD_virt" ],
     [ "-I", "FORWARD", "2", "-m", "state", "--state", "INVALID",
@@ -131,12 +103,10 @@ FILTER_RULES = [
     [ "-I", "FORWARD", "7", "-j", "FORWARD_trusted" ],
     [ "-I", "FORWARD", "8", "-j", "FORWARD_forward" ],
     [ "-I", "FORWARD", "9", "-j", "FORWARD_masq" ],
-    [ "-I", "FORWARD", "10", "-j", "FORWARD_custom" ],
-    [ "-I", "FORWARD", "11",
+    [ "-I", "FORWARD", "10",
       "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
 
     [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
-    [ "-I", "OUTPUT", "2", "-j", "OUTPUT_custom" ],
 ]
 
 class Firewall:
@@ -153,7 +123,6 @@ class Firewall:
         self._services = [ ]
         self._ports = [ ]
         self._masquerade = [ ]
-        self._custom = [ ]
         self._virt_rules = [ ]
         self._virt_chains = [ ]
         self._module_refcount = { }
@@ -315,7 +284,6 @@ class Firewall:
         _services = self._services
         _ports = self._ports
         _masq = self._masquerade
-        _custom = self._custom
         _virt_rules = self._virt_rules
         _virt_chains = self._virt_chains
 
@@ -337,8 +305,6 @@ class Firewall:
             self.__port(True, *args)
         for masq in _masq:
             self.__masquerade(True, masq)
-        for args in _custom:
-            self.__custom(True, *args)
         for args in _virt_chains:
             self.__virt_chain(True, *args)
         for args in _virt_rules:
@@ -823,138 +789,6 @@ class Firewall:
 
     def get_icmp_blocks(self):
         return self._icmp_block[:]
-
-    ### CUSTOM ###
-
-    def __custom(self, enable, table="filter", chain="INPUT",
-                 src=None, src_port=None, dst=None, dst_port=None,
-                 protocol=None, iface_in=None, iface_out=None,
-                 physdev_in=None, physdev_out=None, target="ACCEPT"):
-        if src:
-            self.__check_ip(src)
-        if src_port:
-            self.__check_port(src_port)
-        if dst:
-            self.__check_ip(dst)
-        if dst_port:
-            self.__check_port(dst_port)
-        self.__check_protocol(protocol)
-        if iface_in:
-            self.__check_interface(iface_in)
-        if iface_out:
-            self.__check_interface(iface_out)
-        if physdev_in:
-            self.__check_interface(physdev_in)
-        if physdev_out:
-            self.__check_interface(physdev_out)
-
-        if not table:
-            raise FirewallError(MISSING_TABLE)
-        elif table not in CHAINS:
-            raise FirewallError(INVALID_TABLE)
-
-        if not chain:
-            raise FirewallError(MISSING_CHAIN)
-
-        if not src_port and not dst_port:
-            raise FirewallError(MISSING_PORT)
-
-        if not target in [ "ACCEPT", "DROP", "REJECT" ]:
-            raise FirewallError(INVALID_TARGET)
-
-        custom_id = (table, chain, src, src_port, dst, dst_port, protocol,
-                     iface_in, iface_out, physdev_in, physdev_out, target)
-        custom_str = "table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s" % \
-            (table, chain, src, src_port, dst, dst_port, protocol, iface_in,
-             iface_out, physdev_in, physdev_out, target)
-
-        if enable:
-            if custom_id in self._custom:
-                raise FirewallError(ALREADY_ENABLED)
-            opt = "-A"
-        else:
-            if not custom_id in self._custom:
-                raise FirewallError(NOT_ENABLED)
-            opt = "-D"
-
-        _chain = None
-        if table != "raw" and table in CHAINS and chain in CHAINS[table]:
-            _chain = "%s_custom" % (chain)
-        if not _chain:
-            # TODO: log table and chain
-            raise FirewallError(INVALID_CHAIN)
-
-        rules = [ ]
-        for ipv in [ "ipv4", "ipv6" ]:
-            if table == "nat" and ipv == "ipv6":
-                raise FirewallError(NO_IPV6_NAT)
-
-            rule = [ _chain, "-t", table, "-m", protocol, "-p", protocol ]
-            if src:
-                rule += [ "-s", src ]
-            if src_port:
-                rule += [ "--sport", self.__portStr(src_port) ]
-            if dst:
-                rule += [ "-d", dst ]
-            if dst_port:
-                rule += [ "--dport", self.__portStr(dst_port) ]
-            if iface_in:
-                rule += [ "-i", iface_in ]
-            if iface_out:
-                rule += [ "-o", iface_out ]
-            if physdev_in or physdev_out:
-                rule += [ "-m", "physdev" ]
-                if physdev_in:
-                    rule += [ "--physdev-in", physdev_in ]
-                else:
-                    rule += [ "--physdev-out", physdev_out ]
-            rule += [ "-j", target ]
-            if target == "REJECT":
-                rule += [ "--reject-with", REJECT_TYPE[ipv] ]
-            rules.append((ipv, rule))
-
-        # handle rules
-        ret = self.__handle_rules(rules, enable)
-        if ret:
-            (cleanup_rules, msg) = ret
-            self.__handle_rules(cleanup_rules, not enable)
-            # TODO: log msg
-            if enable:
-                raise FirewallError(ENABLE_FAILED)
-            else:
-                raise FirewallError(DISABLE_FAILED)
-
-        if enable:
-            self._custom.append(custom_id)
-        else:
-            self._custom.remove(custom_id)
-
-    def enable_custom(self, table="filter", chain="INPUT",
-                      src=None, src_port=None, dst=None, dst_port=None,
-                      protocol=None, iface_in=None, iface_out=None,
-                      physdev_in=None, physdev_out=None, target="ACCEPT"):
-        self.__custom(True, table, chain, src, src_port, dst, dst_port,
-                      protocol, iface_in, iface_out, physdev_in, physdev_out,
-                      target)
-
-    def disable_custom(self, table="filter", chain="INPUT",
-                       src=None, src_port=None, dst=None, dst_port=None,
-                       protocol=None, iface_in=None, iface_out=None,
-                       physdev_in=None, physdev_out=None, target="ACCEPT"):
-        self.__custom(False, table, chain, src, src_port, dst, dst_port,
-                      protocol, iface_in, iface_out, physdev_in, physdev_out,
-                      target)
-
-    def query_custom(self,table="filter", chain="INPUT",
-                     src=None, src_port=None, dst=None, dst_port=None,
-                     protocol=None, iface_in=None, iface_out=None,
-                     physdev_in=None, physdev_out=None, target="ACCEPT"):
-        custom_id = (table, chain, src, src_port, dst, dst_port, protocol,
-                     iface_in, iface_out, physdev_in, physdev_out, target)
-        return custom_id in self._custom
-
-    def get_customs(self):
-        return self._custom[:]
 
     ### VIRT RULES ###
 
