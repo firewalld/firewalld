@@ -25,88 +25,6 @@ from firewall.core import ebtables
 from firewall.core import modules
 from firewall.errors import *
 
-REJECT_TYPE = {
-    "ipv4": "icmp-host-prohibited",
-    "ipv6": "icmp6-adm-prohibited",
-}
-
-MANGLE_RULES = [
-    [ "-N", "PREROUTING_virt" ],
-    [ "-N", "PREROUTING_forward" ],
-    [ "-N", "INPUT_virt" ],
-    [ "-N", "FORWARD_virt" ],
-    [ "-N", "OUTPUT_virt" ],
-    [ "-N", "POSTROUTING_virt" ],
-    
-    [ "-I", "PREROUTING", "1", "-j", "PREROUTING_virt" ],
-    [ "-I", "PREROUTING", "2", "-j", "PREROUTING_forward" ],
-    [ "-I", "INPUT", "1", "-j", "INPUT_virt" ],
-    [ "-I", "FORWARD", "1", "-j", "FORWARD_virt" ],
-    [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
-    [ "-I", "POSTROUTING", "1", "-j", "POSTROUTING_virt" ],
-]
-
-NAT_RULES = [
-    [ "-N", "PREROUTING_virt" ],
-    [ "-N", "PREROUTING_forward" ],
-    [ "-N", "OUTPUT_virt" ],
-    [ "-N", "POSTROUTING_virt" ],
-    [ "-N", "POSTROUTING_masq" ],
-
-    [ "-I", "PREROUTING", "1", "-j", "PREROUTING_virt" ],
-    [ "-I", "PREROUTING", "2", "-j", "PREROUTING_forward" ],
-    [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
-    [ "-I", "POSTROUTING", "1", "-j", "POSTROUTING_virt" ],
-    [ "-I", "POSTROUTING", "2", "-j", "POSTROUTING_masq" ],
-]
-
-FILTER_RULES = [
-    [ "-N", "INPUT_virt" ],
-    [ "-N", "INPUT_forward" ],
-    [ "-N", "INPUT_icmp" ],
-    [ "-N", "INPUT_ports" ],
-    [ "-N", "INPUT_services" ],
-    [ "-N", "INPUT_trusted" ],
-
-    [ "-N", "FORWARD_virt" ],
-    [ "-N", "FORWARD_forward" ],
-    [ "-N", "FORWARD_icmp" ],
-    [ "-N", "FORWARD_trusted" ],
-    [ "-N", "FORWARD_masq" ],
-
-    [ "-N", "OUTPUT_virt" ],
-
-    [ "-I", "INPUT", "1", "-j", "INPUT_virt" ],
-    [ "-I", "INPUT", "2", "-m", "state", "--state", "INVALID",
-      "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
-    [ "-I", "INPUT", "3", "-m", "state", "--state", "RELATED,ESTABLISHED",
-      "-j", "ACCEPT" ],
-    [ "-I", "INPUT", "4", "-i", "lo", "-j", "ACCEPT" ],
-    [ "-I", "INPUT", "5", "-p", "icmp", "-j", "INPUT_icmp" ],
-    [ "-I", "INPUT", "6", "-p", "icmp", "-j", "ACCEPT" ],
-    [ "-I", "INPUT", "7", "-j", "INPUT_trusted" ],
-    [ "-I", "INPUT", "8", "-j", "INPUT_forward" ],
-    [ "-I", "INPUT", "9", "-j", "INPUT_services" ],
-    [ "-I", "INPUT", "10", "-j", "INPUT_ports" ],
-    [ "-I", "INPUT", "11", "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
-
-    [ "-I", "FORWARD", "1", "-j", "FORWARD_virt" ],
-    [ "-I", "FORWARD", "2", "-m", "state", "--state", "INVALID",
-      "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
-    [ "-I", "FORWARD", "3", "-m", "state", "--state", "RELATED,ESTABLISHED",
-      "-j", "ACCEPT" ],
-    [ "-I", "FORWARD", "4", "-i", "lo", "-j", "ACCEPT" ],
-    [ "-I", "FORWARD", "5", "-p", "icmp", "-j", "FORWARD_icmp" ],
-    [ "-I", "FORWARD", "6", "-p", "icmp", "-j", "ACCEPT" ],
-    [ "-I", "FORWARD", "7", "-j", "FORWARD_trusted" ],
-    [ "-I", "FORWARD", "8", "-j", "FORWARD_forward" ],
-    [ "-I", "FORWARD", "9", "-j", "FORWARD_masq" ],
-    [ "-I", "FORWARD", "10",
-      "-j", "REJECT", "--reject-with", "%%REJECT_TYPE%%" ],
-
-    [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
-]
-
 ############################################################################
 #
 # class Firewall
@@ -250,25 +168,20 @@ class Firewall:
     # apply default rules
 
     def __apply_default_rules(self, ipv):
-        for (prefix, rules) in [ ([ "-t", "mangle" ], MANGLE_RULES),
-                                 ([ "-t", "nat" ], NAT_RULES),
-                                 ([ "-t", "filter" ], FILTER_RULES) ]:
-            if ipv == "ipv6" and rules == NAT_RULES:
-                # no nat for IPv6
-                continue
-            for rule in rules:
-                _rule = prefix+rule[:]
-                try:
-                    i = _rule.index("%%REJECT_TYPE%%")
-                except:
-                    pass
-                else:
-                    _rule[i] = REJECT_TYPE[ipv]
+        if ipv in [ "ipv4", "ipv6" ]:
+            default_rules = ipXtables.DEFAULT_RULES
+        else:
+            default_rules = ebtables.DEFAULT_RULES
 
-                if ipv == "ipv4":
-                    self._ip4tables.set_rule(_rule)
-                else:
-                    self._ip6tables.set_rule(_rule)
+        for table in default_rules:
+            if ipv == "ipv6" and table == "nat":
+                # no nat for IPv6 for now
+                continue
+
+            prefix = [ "-t", table ]
+            for rule in default_rules[table]:
+                _rule = prefix + rule.split()
+                self.__rule(ipv, _rule)
 
 #                try:
 #                except Exception, msg:
@@ -279,7 +192,7 @@ class Firewall:
 #                    raise FirewallError, <code>
 
     def _apply_default_rules(self):
-        for ipv in [ "ipv4", "ipv6" ]:
+        for ipv in [ "ipv4", "ipv6", "eb" ]:
             self.__apply_default_rules(ipv)
 
     # flush and policy
@@ -301,7 +214,11 @@ class Firewall:
         except:
             pass
         else:
-            rule[i:i+1] = [ "REJECT", "--reject-with", REJECT_TYPE[ipv] ]
+            if ipv in [ "ipv4", "ipv6" ]:
+                rule[i:i+1] = [ "REJECT", "--reject-with",
+                                ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
+            else:
+                FirewallError(EBTABLES_NO_REJECT)
 
         if ipv == "ipv4":
             self._ip4tables.set_rule(rule)
@@ -792,11 +709,9 @@ class Firewall:
                 match = [ "-m", "icmp6", "--icmpv6-type", icmp ]
 
             rules.append((ipv, [ "INPUT_icmp", "-t", "filter", ] + proto + \
-                              match + [ "-j", "REJECT",
-                                        "--reject-with", REJECT_TYPE[ipv] ]))
+                              match + [ "-j", "%%REJECT%%" ]))
             rules.append((ipv, [ "FORWARD_icmp", "-t", "filter", ] + proto + \
-                              match + [ "-j", "REJECT",
-                                        "--reject-with", REJECT_TYPE[ipv] ]))
+                              match + [ "-j", "%%REJECT%%" ]))
 
         # handle rules
         ret = self.handle_rules(rules, enable)

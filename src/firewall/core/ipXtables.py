@@ -40,6 +40,59 @@ CHAINS = {
     "filter": [ "INPUT", "OUTPUT", "FORWARD" ],
 }
 
+DEFAULT_REJECT_TYPE = {
+    "ipv4": "icmp-host-prohibited",
+    "ipv6": "icmp6-adm-prohibited",
+}
+
+DEFAULT_RULES = { }
+
+DEFAULT_RULES["mangle"] = [ ]
+for chain in CHAINS["mangle"]:
+    DEFAULT_RULES["mangle"].append("-N %s_direct" % chain)
+    DEFAULT_RULES["mangle"].append("-I %s 1 -j %s_direct" % (chain, chain))
+
+    if chain == "PREROUTING":
+        DEFAULT_RULES["mangle"].append("-N %s_ZONES" % chain)
+        DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES" % (chain, chain))
+
+DEFAULT_RULES["nat"] = [ ]
+for chain in CHAINS["nat"]:
+    DEFAULT_RULES["nat"].append("-N %s_direct" % chain)
+    DEFAULT_RULES["nat"].append("-I %s 1 -j %s_direct" % (chain, chain))
+
+    if chain in [ "PREROUTING", "POSTROUTING" ]:
+        DEFAULT_RULES["nat"].append("-N %s_ZONES" % chain)
+        DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES" % (chain, chain))
+
+DEFAULT_RULES["filter"] = [
+    "-N INPUT_direct",
+    "-N INPUT_ZONES",
+
+    "-I INPUT 1 -m conntrack --ctstate INVALID -j %%REJECT%%",
+    "-I INPUT 2 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+    "-I INPUT 3 -i lo -j ACCEPT",
+    "-I INPUT 4 -j INPUT_direct",
+    "-I INPUT 5 -j INPUT_ZONES",
+    "-I INPUT 6 -p icmp -j ACCEPT",
+    "-I INPUT 7 -j %%REJECT%%",
+
+    "-N FORWARD_direct",
+    "-N FORWARD_ZONES",
+
+    "-I FORWARD 1 -m conntrack --ctstate INVALID -j %%REJECT%%",
+    "-I FORWARD 2 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
+    "-I FORWARD 3 -i lo -j ACCEPT",
+    "-I FORWARD 4 -j FORWARD_direct",
+    "-I FORWARD 5 -j FORWARD_ZONES",
+    "-I FORWARD 6 -p icmp -j ACCEPT",
+    "-I FORWARD 7 -j %%REJECT%%",
+
+    "-N OUTPUT_direct",
+
+    "-I OUTPUT 1 -j OUTPUT_direct",
+]
+
 class ip4tables:
     ipv = "ipv4"
 
