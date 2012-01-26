@@ -157,7 +157,7 @@ class Firewall:
         # if cleanup on exit
         self._flush()
         self._set_policy("ACCEPT")
-        self._unload_firewall_modules()
+        self._modules.unload_firewall_modules()
 
     def update(self):
         # TODO: cleanup zones, services and icmp types
@@ -282,27 +282,6 @@ class Firewall:
         for ipv in [ "ipv4", "ipv6" ]:
             self.__apply_default_rules(ipv)
 
-    # module handling
-
-    def __get_firewall_modules(self):
-        modules = [ ]
-        (mods, deps) = self._modules.loaded_modules()
-
-        for mod in [ "ip_tables", "ip6_tables", "nf_conntrack" ]:
-            self._modules.get_deps(mod, deps, modules)
-
-        for mod in mods:
-            if mod.startswith("iptable_") or mod.startswith("ip6table_") or \
-                    mod.startswith("nf_") or mod.startswith("xt_") or \
-                    mod.startswith("ipt_") or mod.startswith("ip6t_") :
-                self._modules.get_deps(mod, deps, modules)
-        return modules
-
-    def _unload_firewall_modules(self):
-        modules = self.__get_firewall_modules()
-        for mod in modules:
-            self._modules.unload_module(mod)
-
     # flush and policy
 
     def _flush(self):
@@ -370,14 +349,12 @@ class Firewall:
             self.__virt_rule(True, *args)
 
     def restart(self):
-        self._unload_firewall_modules()
+        self._modules.unload_firewall_modules()
         self.reload()
 
     # STATUS
 
     def status(self):
-#        mods = self.__get_firewall_modules()
-#        print "\n".join(mods)
         return (self._initialized == True)
 
     # PANIC MODE
