@@ -18,8 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os.path, sys, time
-
 import fw_services
 import fw_icmp
 from firewall.core import ipXtables
@@ -109,10 +107,24 @@ FILTER_RULES = [
     [ "-I", "OUTPUT", "1", "-j", "OUTPUT_virt" ],
 ]
 
+############################################################################
+#
+# class Firewall
+#
+############################################################################
+
 class Firewall:
     def __init__(self):
+        # TODO: check if ipv4 is enabled:
+        self._ip4tables = ipXtables.ip4tables()
+        # TODO: check if ipv6 is enabled:
+        self._ip6tables = ipXtables.ip6tables()
+
+        self._ebtables = ebtables.ebtables()
+
+        self._modules = modules.modules()
+
         self.__init_vars()
-        self.start()
 
     def __init_vars(self):
         self._initialized = False
@@ -132,21 +144,26 @@ class Firewall:
         self._rules = { }
         self._rules_by_id = { }
 
-        # TODO: check if ipv4 is enabled:
-        self._ip4tables = ipXtables.ip4tables()
-        # TODO: check if ipv6 is enabled:
-        self._ip6tables = ipXtables.ip6tables()
-
-        self._ebtables = ebtables.ebtables()
-
-        self._modules = modules.modules()
-
     def start(self):
         # initialize firewall
         self._flush()
         self._set_policy("ACCEPT")
         self._apply_default_rules()
+        self.update()
         self._initialized = True
+
+    def stop(self):
+        self.__init_vars()
+        # if cleanup on exit
+        self._flush()
+        self._set_policy("ACCEPT")
+        self._unload_firewall_modules()
+
+    def update(self):
+        # TODO: cleanup zones, services and icmp types
+        # TODO: load default_zone from firewalld config file
+        # TODO: load zones, services and icmp types
+        pass
 
     def __new_mark(self):
         # return first unused mark
@@ -884,12 +901,3 @@ class Firewall:
     def virt_query_chain(self, ipv, table, chain):
          chain_id = (ipv, table, "%s_virt" % (chain))
          return (chain_id in self._virt_chains)
-
-    ### STOP ###
-
-    def stop(self):
-#        print "modules:", self.__get_firewall_modules()
-        self.__init_vars()
-        self._flush()
-        self._unload_firewall_modules()
-#        print "modules:", self.__get_firewall_modules()
