@@ -176,23 +176,49 @@ class Firewall:
     def del_mark(self, mark):
         self._marks.remove(mark)
 
-    def __handle_rules(self, rules, enable):
-        append_delete = { True: "-A", False: "-D", }
+    def handle_rules(self, rules, enable, insert=False):
+        if insert:
+            append_delete = { True: "-I", False: "-D", }
+        else:
+            append_delete = { True: "-A", False: "-D", }
 
         # appends rules
         # returns None if all worked, else (cleanup rules, error message)
         i = 0
         for i in xrange(len(rules)):
-            (ipv, rule) = rules[i]
+            if len(rules[i]) == 3:
+                (ipv, rule, insert) = rules[i]
+            else:
+                (ipv, rule) = rules[i]
+
+            # drop insert rule number if it exists
+            if insert and not enable and isinstance(rule[1], IntType):
+                rule.pop(1)
+
+            # run
             try:
                 self.__rule(ipv, [ append_delete[enable], ] + rule)
             except Exception, msg:
-                if enable:
-                    return (rules[:i], msg) # cleanup rules and error message
-                # else: ignore cleanup
+                log.error(msg)
+                return (rules[:i], msg) # cleanup rules and error message
         return None
 
-    def __handle_modules(self, modules, enable):
+    def handle_chains(self, rules, enable):
+        new_delete = { True: "-N", False: "-X" }
+
+        # appends chains
+        # returns None if all worked, else (cleanup chains, error message)
+        i = 0
+        for i in xrange(len(rules)):
+            (ipv, rule) = rules[i]
+            try:
+                self.__rule(ipv, [ new_delete[enable], ] + rule)
+            except Exception, msg:
+                log.error(msg)
+                return (rules[:i], msg) # cleanup chains and error message
+        return None
+
+    def handle_modules(self, modules, enable):
         for i in xrange(len(modules)):
             module = modules[i]
             if enable:
@@ -411,9 +437,9 @@ class Firewall:
         msg = None
 
         # handle rules
-        ret = self.__handle_rules(rules, enable)
+        ret = self.handle_rules(rules, enable)
         if ret == None: # no error, handle modules
-            mod_ret = self.__handle_modules(svc.modules, enable)
+            mod_ret = self.handle_modules(svc.modules, enable)
             if mod_ret != None: # error loading modules
                 (cleanup_modules, msg) = mod_ret
                 cleanup_rules = rules
@@ -422,9 +448,9 @@ class Firewall:
 
         if cleanup_rules or cleanup_modules:
             if cleanup_rules:
-                self.__handle_rules(cleanup_rules, not enable)
+                self.handle_rules(cleanup_rules, not enable)
             if cleanup_modules:
-                self.__handle_modules(cleanup_modules, not enable)
+                self.handle_modules(cleanup_modules, not enable)
             # TODO: log msg
             if enable:
                 raise FirewallError(ENABLE_FAILED)
@@ -497,10 +523,10 @@ class Firewall:
                                  "-j", "ACCEPT" ]))
 
         # handle rules
-        ret = self.__handle_rules(rules, enable)
+        ret = self.handle_rules(rules, enable)
         if ret:
             (cleanup_rules, msg) = ret
-            self.__handle_rules(cleanup_rules, not enable)
+            self.handle_rules(cleanup_rules, not enable)
             # TODO: log , port_str, str(msg))
             if enable:
                 raise FirewallError(ENABLE_FAILED)
@@ -551,10 +577,10 @@ class Firewall:
                                  "-i", trusted, "-j", "ACCEPT" ]))
 
         # handle rules
-        ret = self.__handle_rules(rules, enable)
+        ret = self.handle_rules(rules, enable)
         if ret:
             (cleanup_rules, msg) = ret
-            self.__handle_rules(cleanup_rules, not enable)
+            self.handle_rules(cleanup_rules, not enable)
             # TODO: log msg
             if enable:
                 raise FirewallError(ENABLE_FAILED)
@@ -600,10 +626,10 @@ class Firewall:
                                  "-j", "ACCEPT" ]))
 
         # handle rules
-        ret = self.__handle_rules(rules, enable)
+        ret = self.handle_rules(rules, enable)
         if ret:
             (cleanup_rules, msg) = ret
-            self.__handle_rules(cleanup_rules, not enable)
+            self.handle_rules(cleanup_rules, not enable)
             # TODO: log msg
             if enable:
                 raise FirewallError(ENABLE_FAILED)
@@ -716,10 +742,10 @@ class Firewall:
                               mark + [ "-j", "DNAT", "--to-destination", to ]))
 
         # handle rules
-        ret = self.__handle_rules(rules, enable)
+        ret = self.handle_rules(rules, enable)
         if ret:
             (cleanup_rules, msg) = ret
-            self.__handle_rules(cleanup_rules, not enable)
+            self.handle_rules(cleanup_rules, not enable)
             # TODO: log msg
             if enable:
                 raise FirewallError(ENABLE_FAILED)
@@ -788,10 +814,10 @@ class Firewall:
                                         "--reject-with", REJECT_TYPE[ipv] ]))
 
         # handle rules
-        ret = self.__handle_rules(rules, enable)
+        ret = self.handle_rules(rules, enable)
         if ret:
             (cleanup_rules, msg) = ret
-            self.__handle_rules(cleanup_rules, not enable)
+            self.handle_rules(cleanup_rules, not enable)
             # TODO: log msg
             if enable:
                 raise FirewallError(ENABLE_FAILED)
