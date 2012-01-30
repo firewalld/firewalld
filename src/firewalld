@@ -108,7 +108,7 @@ try:
     f.close()
 
     # import here
-    from firewall.core.firewalld import run_server
+    from firewall.server.firewalld import run_server
     run_server()
 
 except OSError, e: 
