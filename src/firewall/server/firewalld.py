@@ -36,7 +36,6 @@ import slip.dbus
 import slip.dbus.service
 from decorator import decorator
 
-#import hashlib, random
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.core.fw import Firewall
@@ -99,12 +98,6 @@ class FirewallD(slip.dbus.service.Object):
 
     def __del__(self):
         self.stop()
-
-#    def __new_key(self):
-#        while True:
-#            key = hashlib.md5("%f" % random.random()).hexdigest()[:8]
-#            if key not in self._by_key:
-#                return key
 
     def start(self):
         # tests if iptables and ip6tables are usable using test functions
