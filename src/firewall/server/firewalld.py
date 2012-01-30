@@ -23,23 +23,66 @@
 #   Thomas Liu  <tliu@redhat.com>
 #   Dan Walsh <dwalsh@redhat.com>
 
-import sys
+import os, sys
 
 import signal
-import gobject
+from gi.repository import GObject
 import glib
 import dbus
 import dbus.service
+from dbus.exceptions import DBusException
 import dbus.mainloop.glib
 import slip.dbus
 import slip.dbus.service
+from decorator import decorator
 
 #import hashlib, random
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.core.fw import Firewall
-from firewall.errors import *
 from firewall.core.logger import log
+from firewall.errors import *
+
+############################################################################
+#
+# Exception handler
+#
+############################################################################
+
+@decorator
+def handle_exceptions(func, *args, **kwargs):
+    """Decorator to handle exceptions and log them. Used if not conneced 
+    to D-BUS.
+    """
+    try:
+        return func(*args, **kwargs)
+    except FirewallError, error:
+        log.debug1(error)
+    except Exception, msg:
+        log.exception()
+
+@decorator
+def dbus_handle_exceptions(func, *args, **kwargs):
+    """Decorator to handle exceptions, log and report them into D-BUS
+
+    :Raises DBusException: on a firewall error code problems.
+    """
+    try:
+        return func(*args, **kwargs)
+    except FirewallError, error:
+        log.debug1(str(error))
+        raise DBusException(error)
+    except DBusException, e:
+        # only log DBusExceptions once
+        raise DBusException(e)
+    except Exception, msg:
+        log.exception()
+        raise DBusException(msg)
+
+def dbus_service_method(*args, **kwargs):
+    kwargs.setdefault("sender_keyword", "sender")
+    return dbus.service.method(*args, **kwargs)
+
 
 ############################################################################
 #
@@ -849,24 +892,32 @@ class FirewallD(slip.dbus.service.Object):
 
     # net
 
+############################################################################
+#
+# signal handler
+#
+############################################################################
+
 def sighandler(signum, frame):
-#    log.debug("Received signal=%s", signum)
+    """ signal handler
+    """
+    # reloading over dbus is not working server is not responding anymore
+    # therefore using external firewall-cmd 
+    if signum == signal.SIGHUP:
+        os.system("firewall-cmd --reload &")
+        return
 
-# reloading over dbus is not working server is not responding anymore
-#    if signum == signal.SIGHUP:
-#        try:
-#            import client
-#            fw = client.Firewall_Client()
-#            fw.reload()
-#        except Exception, e:
-#            pass
-#        else:
-#            return
-
-    import sys    
     sys.exit()
 
+############################################################################
+#
+# run_server function
+#
+############################################################################
+
 def run_server():
+    """ Main function for firewall server. Handles D-BUS and GLib mainloop.
+    """
     signal.signal(signal.SIGHUP, sighandler)
     signal.signal(signal.SIGQUIT, sighandler)
     signal.signal(signal.SIGTERM, sighandler)
@@ -880,7 +931,7 @@ def run_server():
         name = dbus.service.BusName(DBUS_INTERFACE, bus=bus)
         service = FirewallD(name, DBUS_PATH)
 
-        mainloop = gobject.MainLoop()
+        mainloop = GObject.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)
         mainloop.run()
 
