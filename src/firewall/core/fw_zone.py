@@ -415,9 +415,9 @@ class FirewallZone:
             self.remove_chain(zone, "filter", "INPUT")
 
     def add_service(self, zone, service, timeout=0, sender=None):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         service_id = self.__service_id(service)
@@ -433,9 +433,9 @@ class FirewallZone:
         return _zone
 
     def remove_service(self, zone, service):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         service_id = self.__service_id(service)
@@ -495,9 +495,9 @@ class FirewallZone:
             self.remove_chain(zone, "filter", "INPUT")
 
     def add_port(self, zone, port, protocol, timeout=0, sender=None):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         port_id = self.__port_id(port, protocol)
@@ -513,9 +513,9 @@ class FirewallZone:
         return _zone
 
     def remove_port(self, zone, port, protocol):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         port_id = self.__port_id(port, protocol)
@@ -574,9 +574,9 @@ class FirewallZone:
             self.remove_chain(zone, "filter", "FORWARD_OUT")
 
     def enable_masquerade(self, zone, timeout, sender):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         masquerade_id = self.__masquerade_id()
@@ -592,9 +592,9 @@ class FirewallZone:
         return _zone
 
     def disable_masquerade(self, zone):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         masquerade_id = self.__masquerade_id()
@@ -705,9 +705,9 @@ class FirewallZone:
 
     def add_forward_port(self, zone, port, protocol, toport=None,
                          toaddr=None, timeout=0, sender=None):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
@@ -726,9 +726,9 @@ class FirewallZone:
 
     def remove_forward_port(self, zone, port, protocol, toport=None,
                             toaddr=None):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
@@ -810,9 +810,9 @@ class FirewallZone:
             self.remove_chain(zone, "filter", "FORWARD_IN")
 
     def add_icmp_block(self, zone, icmp, timeout, sender):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         icmp_id = self.__icmp_block_id(icmp)
@@ -828,9 +828,9 @@ class FirewallZone:
         return _zone
 
     def remove_icmp_block(self, zone, icmp):
-        self.check_immutable(zone)
-        self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
         _obj = self._zones[_zone]
 
         icmp_id = self.__icmp_block_id(icmp)
