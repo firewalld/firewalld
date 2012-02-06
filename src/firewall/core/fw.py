@@ -217,12 +217,6 @@ class Firewall:
 
     def reload(self):
         _panic = self._panic
-        _icmp_block = self._icmp_block
-        _trusted = self._trusted
-        _forward = self._forward
-        _services = self._services
-        _ports = self._ports
-        _masq = self._masquerade
 
         self.__init_vars()
         self.start()
