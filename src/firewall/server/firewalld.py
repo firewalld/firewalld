@@ -92,6 +92,74 @@ class FirewallD(slip.dbus.service.Object):
             self._timeouts[zone].clear()
         self._timeouts.clear()
 
+    # property handling
+
+    @dbus_handle_exceptions
+    def _get_property(self, prop):
+        if prop == "version":
+            return VERSION
+        elif prop == "interface_version":
+            return "%d.%d" % (DBUS_INTERFACE_VERSION,
+                              DBUS_INTERFACE_REVISION)
+        elif prop == "state":
+            return self.fw.get_state()
+        else:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.AccessDenied: "
+                "Property '%s' isn't exported (or may not exist)" % prop)
+
+    @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='ss',
+                         out_signature='v')
+    @dbus_handle_exceptions
+    def Get(self, interface_name, property_name):
+        # get a property
+        log.debug1("Get('%s', '%s')", interface_name, property_name)
+
+        if interface_name != DBUS_INTERFACE:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "FirewallD does not implement %s" % interface_name)
+
+        return self._get_property(property_name)
+
+    @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='s',
+                         out_signature='a{sv}')
+    @dbus_handle_exceptions
+    def GetAll(self, interface_name):
+        log.debug1("GetAll('%s')", interface_name)
+
+        if interface_name != DBUS_INTERFACE:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "FirewallD does not implement %s" % interface_name)
+
+        return {
+            'version': self._get_property("version"),
+            'interface_version': self._get_property("interface_version"),
+            'state': self._get_property("state"),
+        }
+        
+
+    @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='ssv')
+    @dbus_handle_exceptions
+    def Set(self, interface_name, property_name, new_value):
+        log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
+                   new_value)
+
+        if interface_name != DBUS_INTERFACE:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "FirewallD does not implement %s" % interface_name)
+
+        raise dbus.exceptions.DBusException(
+            "org.freedesktop.DBus.Error.AccessDenied: "
+            "Property '%s' is not settable" % property_name)
+
+    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
+    def PropertiesChanged(self, interface_name, changed_properties,
+                          invalidated_properties):
+        pass
+
     # reload
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
