@@ -198,57 +198,53 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("Reloaded()")
         pass
 
-    # panic
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # PANIC
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='i')
-    def enablePanicMode(self):
-        # enables panic mode
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @dbus_handle_exceptions
+    def enablePanicMode(self, sender=None):
+        """Enable panic mode.
+        
+        All ingoing and outgoing connections and packets will be blocked.
+        """
         log.debug1("enablePanicMode()")
-        try:
-            self.fw.enable_panic_mode()
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-
-        self.PanicSignal(True)
-        return NO_ERROR
+        self.fw.enable_panic_mode()
+        self.PanicModeEnabled()
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='i')
-    def disablePanicMode(self):
-        # enables normal mode: return from panic mode
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @dbus_handle_exceptions
+    def disablePanicMode(self, sender=None):
+        """Disable panic mode.
+
+        Enables normal mode: Allowed ingoing and outgoing connections 
+        will not be blocked anymore
+        """
         log.debug1("disablePanicMode()")
-        try:
-            self.fw.disable_panic_mode()
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-
-        self.PanicSignal(False)
-        return NO_ERROR
+        self.fw.disable_panic_mode()
+        self.PanicModeDisabled()
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='i')
-    def queryPanicMode(self):
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='b')
+    @dbus_handle_exceptions
+    def queryPanicMode(self, sender=None):
         # returns True if in panic mode
         log.debug1("queryPanicMode()")
-        try:
-            enabled = self.fw.query_panic_mode()
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return enabled
+        return self.fw.query_panic_mode()
 
-    @dbus.service.signal(DBUS_INTERFACE)
-    def PanicSignal(self, enabled):
-        log.debug1("PanicSignal(%s)" % enabled)
+    @dbus.service.signal(DBUS_INTERFACE, signature='')
+    @dbus_handle_exceptions
+    def PanicModeEnabled(self):
+        log.debug1("PanicModeEnabled()")
+        pass
+
+    @dbus.service.signal(DBUS_INTERFACE, signature='')
+    @dbus_handle_exceptions
+    def PanicModeDisabled(self):
+        log.debug1("PanicModeDisabled()")
         pass
 
     # services
