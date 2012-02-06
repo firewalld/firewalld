@@ -14,6 +14,7 @@ Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
 BuildRequires: intltool
+BuildRequires: systemd-units
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
 Requires: iptables, ebtables
