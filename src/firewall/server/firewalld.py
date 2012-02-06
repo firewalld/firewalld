@@ -552,80 +552,66 @@ class FirewallD(slip.dbus.service.Object):
                        (zone, port, protocol))
         pass
 
-    # masquerade
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    def _disable_masquerade(self, masquerade):
-        self.fw.disable_masquerade(masquerade)
-        self.MasqueradeSignal(masquerade, False)
+    # MASQUERADE
+
+    @dbus_handle_exceptions
+    def disable_masquerade(self, zone):
+        del self._timeouts[zone]["masquerade"]
+        self.fw.zone.disable_masquerade(zone)
+        self.MasqueradeDisabled(zone)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='si', out_signature='i')
-    def enableMasquerade(self, masquerade, timeout):
-        # enables masquerade <masquerade> if not enabled already
-        log.debug1("enableMasquerade('%s')" % masquerade)
-        try:
-            self.fw.enable_masquerade(masquerade)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='si',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def enableMasquerade(self, zone, timeout, sender=None):
+        # enables masquerade if not enabled already
+        timeout = int(timeout)
+        log.debug1("zone.enableMasquerade('%s')" % (zone))
+        _zone = self.fw.zone.enable_masquerade(zone, timeout, sender)
+        
         if timeout > 0:
-            log.debug1("adding timeout %d seconds" % timeout)
-            tag = glib.timeout_add_seconds(timeout, self._disable_masquerade,
-                                           masquerade)
-        self.MasqueradeSignal(masquerade, True, timeout)
-        return NO_ERROR
+            tag = glib.timeout_add_seconds(timeout, self.disable_masquerade,
+                                           _zone)
+            self.addTimeout(_zone, "masquerade", tag)
+
+        self.MasqueradeEnabled(_zone, timeout)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='s', out_signature='i')
-    def disableMasquerade(self, masquerade):
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def disableMasquerade(self, zone, sender=None):
         # disables masquerade
-        log.debug1("disableMasquerade('%s')" % masquerade)
-        try:
-            self.fw.disable_masquerade(masquerade)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+        log.debug1("zone.disableMasquerade('%s')" % (zone))
+        _zone = self.fw.zone.disable_masquerade(zone)
 
-        self.MasqueradeSignal(masquerade, False)
-        return NO_ERROR
+        self.removeTimeout(_zone, "masquerade")
+        self.MasqueradeDisabled(_zone)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='s', out_signature='i')
-    def queryMasquerade(self, masquerade):
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryMasquerade(self, zone, sender=None):
         # returns true if a masquerade is enabled
-        log.debug1("queryMasquerade('%s')" % masquerade)
-        try:
-            enabled = self.fw.query_masquerade(masquerade)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return enabled
+        log.debug1("zone.queryMasquerade('%s')" % (zone))
+        return self.fw.zone.query_masquerade(zone)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='(ias)')
-    def getMasquerades(self):
-        # returns the list of enabled masquerades
-        log.debug1("getMasquerades()")
-        masquerade = [ ]
-        try:
-            masquerade = self.fw.get_masquerades()
-        except FirewallError, error:
-            return (error.code, [])
-        except Exception, msg:
-            log.debug1(msg)
-            return (UNKNOWN_ERROR, [])
-        return (len(masquerade), masquerade)
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='si')
+    @dbus_handle_exceptions
+    def MasqueradeEnabled(self, zone, timeout=0):
+        log.debug1("zone.MasqueradeEnabled('%s', %d)" % (zone, timeout))
+        pass
 
-    @dbus.service.signal(DBUS_INTERFACE)
-    def MasqueradeSignal(self, masquerade, enable, timeout=0):
-        log.debug1("MasqueradeSignal(%s, %s, %d)" % (masquerade, enable, timeout))
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='s')
+    @dbus_handle_exceptions
+    def MasqueradeDisabled(self, zone):
+        log.debug1("zone.MasqueradeDisabled('%s')" % (zone))
         pass
 
     # forward ports
