@@ -32,6 +32,10 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+@USE_SYSTEMD_TRUE@am__append_1 = install-service
+@USE_SYSTEMD_TRUE@am__append_2 = uninstall-service
+@USE_SYSTEMD_FALSE@am__append_3 = install-init
+@USE_SYSTEMD_FALSE@am__append_4 = uninstall-init
 subdir = config
 DIST_COMMON = $(dist_dbus_policy_DATA) $(dist_desktop_DATA) \
 	$(dist_polkit1_action_DATA) $(dist_sconf_DATA) \
@@ -139,6 +143,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
+USE_SYSTEMD = @USE_SYSTEMD@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
@@ -201,6 +206,8 @@ polkit1_actiondir = $(datadir)/polkit-1/actions
 dist_polkit1_action_DATA = $(polkit1_action_FILES:.in=)
 dbus_policydir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_policy_DATA = FirewallD.conf
+gsettings_in_file = org.fedoraproject.FirewallApplet.gschema.xml.in
+gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 CLEANFILES = *~ *\# .\#*
 DISTCLEANFILES = \
 	$(dist_desktop_DATA) \
@@ -212,8 +219,13 @@ EXTRA_DIST = \
 	$(desktop_FILES) \
 	$(polkit1_action_FILES) \
 	firewalld.init \
+	firewalld.service \
 	firewalld.sysconfig
 
+INSTALL_TARGETS = install-config install-sysconfig $(am__append_1) \
+	$(am__append_3)
+UNINSTALL_TARGETS = uninstall-config uninstall-sysconfig \
+	$(am__append_2) $(am__append_4)
 all: all-am
 
 .SUFFIXES:
@@ -489,22 +501,50 @@ uninstall-am: uninstall-dist_dbus_policyDATA \
 
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_POLICY_RULE@
+@INTLTOOL_XML_NOMERGE_RULE@
+@GSETTINGS_RULES@
 
 all: $(dist_desktop_DATA) $(dist_polkit1_action_DATA)
+
+install-sysconfig:
+	mkdir -p $(DESTDIR)$(sysconfdir)/sysconfig
+	$(INSTALL) firewalld.sysconfig $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
+
+uninstall-sysconfig:
+	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
 
 install-init: firewalld.init firewalld.sysconfig
 	mkdir -p $(DESTDIR)$(sysconfdir)/rc.d/init.d
 	$(INSTALL_SCRIPT) firewalld.init $(DESTDIR)$(sysconfdir)/rc.d/init.d/firewalld
-	mkdir -p $(DESTDIR)$(sysconfdir)/sysconfig
-	$(INSTALL) firewalld.sysconfig $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
 
 uninstall-init:
 	rm -f $(DESTDIR)$(sysconfdir)/rc.d/init.d/firewalld
 	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
 
-install-data-local: install-init
+install-service:
+	mkdir -p $(DESTDIR)/lib/systemd/system
+	$(INSTALL) firewalld.service $(DESTDIR)/lib/systemd/system/
 
-uninstall-local: uninstall-init
+uninstall-service:
+	rm -f $(DESTDIR)$(sysconfdir)/lib/systemd/system/firewalld.service
+
+install-config:
+	mkdir -p $(DESTDIR)$(sconfdir)
+	cp -r icmptypes $(DESTDIR)$(sconfdir)
+	cp -r services $(DESTDIR)$(sconfdir)
+	cp -r zones $(DESTDIR)$(sconfdir)
+
+uninstall-config:
+	rm -f $(DESTDIR)$(sconfdir)/icmptypes/*
+	rmdir $(DESTDIR)$(sconfdir)/icmptypes
+	rm -f $(DESTDIR)$(sconfdir)/services/*
+	rmdir $(DESTDIR)$(sconfdir)/services
+	rm -f $(DESTDIR)$(sconfdir)/zones/*
+	rmdir $(DESTDIR)$(sconfdir)/zones
+
+install-data-local: $(INSTALL_TARGETS)
+
+uninstall-local: $(UNINSTALL_TARGETS)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

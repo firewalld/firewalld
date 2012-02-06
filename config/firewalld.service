@@ -1,0 +1,14 @@
+[Unit]
+Description=firewalld - dynamic firewall daemon
+After=syslog.target
+Before=network.target
+Conflicts=iptables.service ip6tables.service ebtables.service
+
+[Service]
+Type=forking
+EnvironmentFile=-/etc/sysconfig/firewalld
+ExecStart=/usr/sbin/firewalld
+ExecReload=/usr/bin/firewall-cmd --reload
+
+[Install]
+WantedBy=basic.target

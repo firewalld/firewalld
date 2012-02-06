@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema path="/org/fedoraproject/FirewallApplet/" id="org.fedoraproject.FirewallApplet">
+    <key type="b" name="notifications">
+      <default>false</default>
+      <summary>Applet shows notifications if true</summary>
+    </key>
+    <key type="b" name="sender-info">
+      <default>false</default>
+      <summary>Add sender info to notifications</summary>
+    </key>
+  </schema>
+</schemalist>
