@@ -18,6 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os.path
 from firewall.config import *
 from firewall.core import ipXtables
 from firewall.core import ebtables
