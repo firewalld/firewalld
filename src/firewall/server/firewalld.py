@@ -390,95 +390,84 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.InterfaceRemoved('%s', '%s')" % (zone, interface))
         pass
 
-    # services
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    def _disable_service(self, service):
-        self.fw.disable_service(service)
-        self.ServiceSignal(service, False)
+    # SERVICES
+
+    @dbus_handle_exceptions
+    def disableTimedService(self, zone, service):
+        log.debug1("zone.disableTimedService('%s', '%s')" % (zone, service))
+        del self._timeouts[zone][service]
+        self.fw.zone.remove_service(zone, service)
+        self.ServiceRemoved(zone, service)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='si', out_signature='i')
-    def enableService(self, service, timeout):
-        # enables service <service> if not enabled already
-        log.debug1("enableService('%s')" % service)
-        try:
-            self.fw.enable_service(service)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addService(self, zone, service, timeout, sender=None):
+        # enables service <service> if not enabled already for zone
+        service = str(service)
+        timeout = int(timeout)
+        log.debug1("zone.addService('%s', '%s', %d)" % (zone, service, timeout))
+
+        _zone = self.fw.zone.add_service(zone, service, timeout, sender)
 
         if timeout > 0:
-            log.debug1("adding timeout %d seconds" % timeout)
-            tag = glib.timeout_add_seconds(timeout, self._disable_service,
-                                           service)
-            self._timeouts[service] = tag
+            tag = glib.timeout_add_seconds(timeout, self.disableTimedService,
+                                           _zone, service)
+            self.addTimeout(_zone, service, tag)
 
-#        key = self.__new_key()
-#        self._enabled_services[service] = key
-#        self._by_key[key] = service
-
-        self.ServiceSignal(service, True, timeout)
-        return NO_ERROR
+        self.ServiceAdded(_zone, service, timeout)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='s', out_signature='i')
-    def disableService(self, service):
-        # disables service
-        log.debug1("disableService('%s')" % service)
-        try:
-            self.fw.disable_service(service)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeService(self, zone, service, sender=None):
+        # disables service for zone
+        service = str(service)
+        log.debug1("zone.removeService('%s', '%s')" % (zone, service))
 
-        if service in self._timeouts:
-            glib.source_remove(self._timeouts[service])
-            del self._timeouts[service]
+        _zone = self.fw.zone.remove_service(zone, service)
 
-#        key = self._enabled_services[service]
-#        del self._by_key[key]
-#        del self._enabled_services[service]
-
-        self.ServiceSignal(service, False)
-        return NO_ERROR
+        self.removeTimeout(_zone, service)
+        self.ServiceRemoved(_zone, service)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='s', out_signature='i')
-    def queryService(self, service):
-        # returns true if a service is enabled
-        log.debug1("queryService('%s')" % service)
-        try:
-            enabled = self.fw.query_service(service)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return enabled
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryService(self, zone, service, sender=None):
+        # returns true if a service is enabled for zone
+        service = str(service)
+        log.debug1("zone.queryService('%s', '%s')" % (zone, service))
+        return self.fw.zone.query_service(zone, service)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='(ias)')
-    def getServices(self):
-        # returns the list of enabled services
-        log.debug1("getServices()")
-        services = [ ]
-        try:
-            services = self.fw.get_services()
-        except FirewallError, error:
-            return (error.code, [])
-        except Exception, msg:
-            log.debug1(msg)
-            return (UNKNOWN_ERROR, [])
-        return (len(services), services)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getServices(self, zone, sender=None):
+        # returns the list of enabled services for zone
+        log.debug1("zone.getServices('%s')" % (zone))
+        return self.fw.zone.get_services(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE)
-    def ServiceSignal(self, service, enable, timeout=0):
-        log.debug1("ServiceSignal(%s, %s, %d)" % (service, enable, timeout))
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus_handle_exceptions
+    def ServiceAdded(self, zone, service, timeout):
+        log.debug1("zone.ServiceAdded('%s', '%s', %d)" % \
+                       (zone, service, timeout))
         pass
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def ServiceRemoved(self, zone, service):
+        log.debug1("zone.ServiceRemoved('%s', '%s')" % (zone, service))
+        pass
+
 
     # ports
 
