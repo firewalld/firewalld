@@ -11,17 +11,18 @@ Group: System Environment/Base
 BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
-
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
 BuildRequires: intltool
-BuildRequires: doxygen > 1.5.8
-Requires: system-config-firewall-base >= 1.2.28
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
 Requires: iptables, ebtables
 Requires(post): chkconfig
 Requires(preun): chkconfig
+Requires(post): systemd-sysv
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
@@ -78,7 +79,6 @@ desktop-file-install --delete-original \
 rm -rf %{buildroot}
 
 %post
-/sbin/ldconfig
 if [ $1 -eq 1 ] ; then # Initial installation
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
    /bin/systemctl enable firewalld.service >/dev/null 2>&1 || :
@@ -95,14 +95,24 @@ if [ $1 -eq 0 ]; then # Package removal, not upgrade
 fi
 
 %postun
-/sbin/ldconfig
 /bin/systemctl daemon-reload >/dev/null 2>&1 || :
 if [ $1 -ge 1 ] ; then # Package upgrade, not uninstall
    /bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
 fi
+touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
   gtk-update-icon-cache -q %{_datadir}/icons/hicolor
 fi
+
+%triggerun -- firewalld < 0.1.3-3
+# Save the current service runlevel info
+# User must manually run systemd-sysv-convert --apply firewalld
+# to migrate them to systemd targets
+/usr/bin/systemd-sysv-convert --save firewalld >/dev/null 2>&1 ||:
+
+# Run these because the SysV package being removed won't do them
+/sbin/chkconfig --del firewalld >/dev/null 2>&1 || :
+/bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
 
 
 %files -f %{name}.lang
@@ -122,7 +132,7 @@ fi
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 #%attr(0755,root,root) %{_initrddir}/firewalld
-/lib/systemd/system/firewalld.service
+%{_unitdir}/firewalld.service
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/FirewallD.conf
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD.policy
 %attr(0755,root,root) %dir %{python_sitelib}/firewall
