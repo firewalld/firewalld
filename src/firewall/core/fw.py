@@ -20,13 +20,18 @@
 
 import os.path
 from firewall.config import *
+from firewall import functions
 from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core import modules
+from firewall.core.fw_icmptype import FirewallIcmpType
+from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
+from firewall.core.io.service import service_reader
+from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader
 from firewall.errors import *
 
@@ -49,6 +54,8 @@ class Firewall:
 
         self._modules = modules.modules()
 
+        self.icmptype = FirewallIcmpType(self)
+        self.service = FirewallService(self)
         self.zone = FirewallZone(self)
         self.direct = FirewallDirect(self)
 
@@ -87,6 +94,46 @@ class Firewall:
 
         # apply default rules
         self._apply_default_rules()
+
+        # load icmptype files
+        path = FIREWALLD_ICMPTYPES
+        if os.path.isdir(path):
+            for filename in os.listdir(path):
+                if filename.endswith(".xml"):
+                    log.debug1("Loading icmptype file '%s/%s'", path, filename)
+                    try:
+                        obj = icmptype_reader(filename, path)
+                        self.icmptype.add_icmptype(obj)
+                    except FirewallError, msg:
+                        log.error("Failed to load icmptype file '%s/%s': %s",
+                                  path, filename, msg)
+                    except Exception, msg:
+                        log.error("Failed to load icmptype file '%s/%s': ",
+                                  path, filename)
+                        log.exception()
+
+        if len(self.icmptype.get_icmptypes()) == 0:
+            log.fatal("No icmptypes found.")
+
+        # load service files
+        path = FIREWALLD_SERVICES
+        if os.path.isdir(path):
+            for filename in os.listdir(path):
+                if filename.endswith(".xml"):
+                    log.debug1("Loading service file '%s/%s'", path, filename)
+                    try:
+                        obj = service_reader(filename, path)
+                        self.service.add_service(obj)
+                    except FirewallError, msg:
+                        log.error("Failed to load service file '%s/%s': %s",
+                                  path, filename, msg)
+                    except Exception, msg:
+                        log.error("Failed to load service file '%s/%s':", path,
+                                  filename)
+                        log.exception()
+
+        if len(self.service.get_services()) == 0:
+            log.fatal("No services found.")
 
         # load zone files
         path = FIREWALLD_ZONES
@@ -127,6 +174,8 @@ class Firewall:
 
     def stop(self):
         self.__init_vars()
+        self.icmptype.cleanup()
+        self.service.cleanup()
         self.zone.cleanup()
 
         # if cleanup on exit
@@ -280,21 +329,96 @@ class Firewall:
         else:
             raise FirewallError(INVALID_IPV)
 
-    # RESTART
+    # check functions
 
-    def reload(self):
+    def check_panic(self):
+        if self._panic:
+            raise FirewallError(PANIC_MODE)
+
+    def check_zone(self, zone):
+        _zone = zone
+        if not _zone or _zone == "":
+            _zone = self.get_default_zone()
+        if _zone not in self.zone.get_zones():
+            FirewallError(INVALID_ZONE)
+        return _zone
+
+    def check_interface(self, interface):
+        if not functions.checkInterface(interface):
+            raise FirewallError(INVALID_INTERFACE)
+
+    def check_service(self, service):
+        if not service in self.service.get_services():
+            raise FirewallError(INVALID_SERVICE)
+        
+    def check_port(self, port):
+        range = functions.getPortRange(port)
+
+        if range == -2 or range == -1 or range == None or \
+                (len(range) == 2 and range[0] >= range[1]):
+            if range == -2:
+                log.debug2("'%s': port > 65535" % port)
+            elif range == -1:
+                log.debug2("'%s': port is invalid" % port)
+            elif range == None:
+                log.debug2("'%s': port is ambiguous" % port)
+            elif len(range) == 2 and range[0] >= range[1]:
+                log.debug2("'%s': range start >= end" % port)
+            raise FirewallError(INVALID_PORT, port)
+
+    def check_protocol(self, protocol):
+        if not protocol:
+            raise FirewallError(MISSING_PROTOCOL)
+        if not protocol in [ "tcp", "udp" ]:
+            # TODO: log
+            raise FirewallError(INVALID_PROTOCOL)
+
+    def check_ip(self, ip):
+        if not functions.checkIP(ip):
+            raise FirewallError(INVALID_ADDR)
+
+    def check_icmp_type(self, icmp):
+        if not icmp in self.icmptype.get_icmptypes():
+            raise FirewallError(INVALID_ICMPTYPE)
+
+    # RELOAD
+
+    def reload(self, stop=False):
         _panic = self._panic
 
-        self.__init_vars()
+        _zone_settings = { }
+        for zone in self.zone.get_zones():
+            _zone_settings[zone] = self.zone.get_settings(zone)
+        # TODO: save direct settings
+
+        if stop:
+            self.stop()
+        else:
+            self.__init_vars()
+            self.icmptype.cleanup()
+            self.service.cleanup()
+            self.zone.cleanup()
+
+            self._flush()
+            self._set_policy("ACCEPT")
         self.start()
 
         # start
         if _panic:
             self.enable_panic_mode()
 
-    def restart(self):
-        self._modules.unload_firewall_modules()
-        self.reload()
+        for zone in self.zone.get_zones():
+            if zone in _zone_settings:
+                self.zone.set_settings(zone, _zone_settings[zone])
+                del _zone_settings[zone]
+            else:
+                log.info1("New zone '%s'.", zone)
+        if len(_zone_settings) > 0:
+            for zone in _zone_settings:
+                log.info1("Lost zone '%s', settings dropped.", zone)
+        del _zone_settings
+
+        # TODO: restore direct settings
 
     # STATUS
 
@@ -306,6 +430,8 @@ class Firewall:
     def enable_panic_mode(self):
         if self._panic:
             raise FirewallError(ALREADY_ENABLED)
+
+        # TODO: use rule in raw table not default chain policy
         try:
             self._set_policy("DROP", "all")
         except Exception, msg:
@@ -316,6 +442,8 @@ class Firewall:
     def disable_panic_mode(self):
         if not self._panic:
             raise FirewallError(NOT_ENABLED)
+
+        # TODO: use rule in raw table not default chain policy
         try:
             self._set_policy("ACCEPT", "all")
         except Exception, msg:
