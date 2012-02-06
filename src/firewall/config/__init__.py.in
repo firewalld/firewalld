@@ -52,10 +52,11 @@ LICENSE = _(
     "You should have received a copy of the GNU General Public License "
     "along with this program.  If not, see <http://www.gnu.org/licenses/>.")
 
-FIREWALLD_CONFIG = '/etc/firewalld'
-FIREWALLD_ZONES = FIREWALLD_CONFIG + '/zones'
-FIREWALLD_SERVICES = FIREWALLD_CONFIG + '/services'
-FIREWALLD_ICMPTYPES = FIREWALLD_CONFIG + '/icmptypes'
+ETC_FIREWALLD = '/etc/firewalld'
+FIREWALLD_CONF = ETC_FIREWALLD + '/firewalld.conf'
+FIREWALLD_ZONES = ETC_FIREWALLD + '/zones'
+FIREWALLD_SERVICES = ETC_FIREWALLD + '/services'
+FIREWALLD_ICMPTYPES = ETC_FIREWALLD + '/icmptypes'
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
