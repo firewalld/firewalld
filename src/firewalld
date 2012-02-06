@@ -108,8 +108,8 @@ try:
     f.close()
 
     # import here
-    from firewall.server.firewalld import run_server
-    run_server()
+    from firewall.server import server
+    server.run_server()
 
 except OSError, e: 
     log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
