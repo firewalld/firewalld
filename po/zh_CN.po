@@ -16,16 +16,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 18:48+0100\n"
+"POT-Creation-Date: 2012-02-07 00:11+0100\n"
 "PO-Revision-Date: 2010-06-30 13:16+1000\n"
 "Last-Translator: Leah Liu <lliu@redhat.com>\n"
 "Language-Team: Wei Liu\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: ../src/firewall_config.py:42
+#: ../src/firewall/config/__init__.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -48,433 +49,454 @@ msgstr ""
 "担保。更详细的情况请参阅GNU通用公共许可证。你应该已经和程序一起收到一份GNU通"
 "用公共许可证的副本。如果还没有， 请参考 <http://www.gnu.org/licenses/>。"
 
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
-msgstr "21/TCP"
-
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
-msgstr "22/TCP"
-
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
-msgstr "80/TCP"
-
-#: ../src/firewall-config.glade.h:4
-msgid "Active Configuration"
-msgstr "活动配置"
-
-#: ../src/firewall-config.glade.h:5
-msgid "Add"
-msgstr "添加"
-
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
-msgstr "添加可让所有主机或者网络访问的附加端口或者端口范围。"
-
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
+#: ../src/firewall/core/io/icmptype.py:41
+#: ../src/firewall/core/io/service.py:43 ../src/firewall/core/io/zone.py:49
+#, python-format
+msgid "Unexpected element '%s'"
 msgstr ""
-"添加条目来转发端口，可以是从本地系统的一个端口到另一个端口，也可以是从本地系"
-"统到另一个系统。转发到另一个系统只在接口是伪装的时候有用。端口转发只适用于 "
-"IPv4。"
 
-#: ../src/firewall-config.glade.h:8
-msgid "Allow access to necessary ports or port ranges, only."
-msgstr "仅允许访问到必要的端口或端口范围"
-
-#: ../src/firewall-config.glade.h:9
-msgid "Allow access to necessary services, only."
-msgstr "仅允许必要的服务访问。"
-
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
-msgid "Custom Rules"
-msgstr "定制规则"
-
-#: ../src/firewall-config.glade.h:11
-msgid "Default Configuration"
-msgstr "默认配置"
-
-#: ../src/firewall-config.glade.h:12
-msgid "Edit"
-msgstr "编辑"
-
-#: ../src/firewall-config.glade.h:13
-msgid "FTP"
-msgstr "FTP"
-
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
+#: ../src/firewall/core/io/icmptype.py:48
+#: ../src/firewall/core/io/service.py:50 ../src/firewall/core/io/zone.py:56
+#, python-format
+msgid "Element '%s': missing '%s' attribute"
 msgstr ""
-"FTP 是用来进行远程文件传输的协议。如果您希望将您的 FTP 服务器向公众开放，请启"
-"用此选项。要使此选项可用，您需要安装 vsftpd 软件包。"
 
-#: ../src/firewall-config.glade.h:15
-msgid "Firewall Daemon"
-msgstr "防火墙守护进程"
-
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
+#: ../src/firewall/core/io/icmptype.py:56
+#: ../src/firewall/core/io/service.py:58 ../src/firewall/core/io/zone.py:64
+#, python-format
+msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
-"HTTP 是用来提供网页的协议。如果您希望让您的 Web 服务器向公众开放，请启用此选"
-"项。要浏览本地页面或者开发网页则不需要此选项。"
 
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr "你可以定义接口和网络域，它填充系统访问。"
-
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
+#: ../src/firewalld:43
+#, c-format
+msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
-"你可以在这里定义哪些服务是可信的。可信服务可以从所有宿主和网络中选择网络协议"
-"访问。单击<i>添加</i>来从预定义服务列表中选择一个项目。"
 
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr "主域"
-
-#: ../src/firewall-config.glade.h:20
-msgid "ICMP Filter"
-msgstr "ICMP 过滤器"
-
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr "IPv4"
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr "IPv4、IPv6"
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr "IPv6"
-
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr "如果您启用伪装，还会为您的 IPv4 网络启用 IP 转发功能。"
-
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
+#: ../src/firewalld:60
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
-"在列表中标记应该被拒绝的 ICMP 类型。所有其它 ICMP 类型则被允许通过防火墙。默"
-"认设置是没有限制。"
 
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
-msgid "Masquerading"
-msgstr "伪装（Masquerading）"
-
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"如果您要设置一台将您的本地网络连接到互联网的主机或者路由器，伪装"
-"（Masquerading）是很有用的。您的本地网络将不可见，且该主机是以单一地址的形式"
-"出现在互联网中。伪装仅用于 IPv4。"
-
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr "只允许对接口和网络域的完全访问，如果你能信任所有这些参与者。"
-
-#: ../src/firewall-config.glade.h:29
-msgid "Other Ports"
-msgstr "其它端口"
-
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
-msgid "Port Forwarding"
-msgstr "端口转发"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr "公共域"
-
-#: ../src/firewall-config.glade.h:32
-msgid "Reload"
-msgstr "重新载入"
-
-#: ../src/firewall-config.glade.h:33
-msgid "Remove"
-msgstr "删除"
-
-#: ../src/firewall-config.glade.h:34
-msgid "Restart"
-msgstr "重启"
-
-#: ../src/firewall-config.glade.h:35
-msgid "SSH"
-msgstr "SSH"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-"安全外壳（Secure Shell，SSH）是用来登陆到远程及其并执行命令的协议。如果你计划"
-"在应用此选项的防火墙下使用SSH远程访问你的机器。你需要安装openssh-server包让此"
-"选项可用。"
-
-#: ../src/firewall-config.glade.h:37
-msgid "Select Configuration"
-msgstr "选择配置"
-
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
-msgid "Services"
-msgstr "服务"
-
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr "启动"
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr "停止"
-
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr "选择防火墙模型"
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr "选择防火墙模型"
-
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"互联网控制报文协议（ICMP）主要用于在联网的计算机间发送出错信息，但也发送类似 "
-"ping 请求以及回应等信息。"
-
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr "可信的"
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr "可信域"
-
-#: ../src/firewall-config.glade.h:46
-msgid "WWW (HTTP)"
-msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr "工作域"
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr "域"
-
-#: ../src/firewall-config.glade.h:49
-msgid "_File"
-msgstr "文件（_F）"
-
-#: ../src/firewall-config.glade.h:50
-msgid "_Help"
-msgstr "帮助（_H）"
-
-#: ../src/firewall-config.glade.h:51
-msgid "_Options"
-msgstr "选项（_O）"
-
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr "ftp"
-
-#: ../src/firewalld:74
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "不能启动FirewallD，已在运行。"
 
-#: ../src/firewalld:102
+#: ../src/firewalld:115
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "分支 #1 失败：%d （%s）"
 
-#: ../src/firewall-applet:58
+#: ../src/firewall-applet:40
 msgid "Firewall Applet"
 msgstr "防火墙小应用"
 
-#: ../src/firewall-applet:59
-msgid "- proof of concept implementation -"
-msgstr "- 实施这一构想的证明 -"
-
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr "端口"
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr "可信连接"
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr "ICMP过滤"
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr "应急方式"
-
-#: ../src/firewall-applet:178
-msgid "Enable Firewall"
-msgstr "启用防火墙"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
+#: ../src/firewall-applet:85
+#, fuzzy
+msgid "Enable Notifications"
 msgstr "应用所有修改"
 
-#: ../src/firewall-applet:214
+#: ../src/firewall-applet:97
+msgid "Firewall Zone Settings"
+msgstr ""
+
+#: ../src/firewall-applet:105
+msgid "Block all network traffic"
+msgstr ""
+
+#: ../src/firewall-applet:137
 msgid "Not using slip"
 msgstr "不使用SLIP"
 
-#: ../src/firewall-applet:232
-#, c-format
+#: ../src/firewall-applet:186
+#, fuzzy, c-format
 msgid ""
 "\n"
-"Timeout: %d seconds"
-msgstr ""
-"\n"
-"超时 %d 秒。"
-
-#: ../src/firewall-applet:234
-#, c-format
-msgid ""
-"\n"
-"Requested by: %s"
+"Requested by %s (%s)"
 msgstr ""
 "\n"
 "来自 %s 的请求"
 
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
+#: ../src/firewall-applet:189
+#, c-format
+msgid ""
+"\n"
+"Command: '%s' (%s)"
+msgstr ""
+
+#: ../src/firewall-applet:216
+#, fuzzy
+msgid "Connection to FirewallD lost."
 msgstr "丢失到FirewallD的连接"
 
-#: ../src/firewall-applet:404
+#: ../src/firewall-applet:217
+#, fuzzy
+msgid "Connection to FirewallD established."
+msgstr "丢失到FirewallD的连接"
+
+#: ../src/firewall-applet:311
 msgid "No connection to firewall daemon"
 msgstr "没有到防火墙守护进程的连接"
 
-#: ../src/firewall-applet:411
+#: ../src/firewall-applet:317
 msgid "PANIC MODE"
 msgstr "应急方式"
 
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr "没有开放服务。"
+#: ../src/firewall-applet:329
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr "开放服务："
+#: ../src/firewall-applet:332
+msgid "Zone '{zone}' active for interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr "没有开放端口。"
+#: ../src/firewall-applet:340
+msgid "No Active Zones."
+msgstr ""
 
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr "没有可信。"
+#: ../src/firewall-applet:357
+msgid "All network traffic is blocked."
+msgstr ""
 
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr "可信："
+#: ../src/firewall-applet:358
+msgid "Network traffic is not blocked anymore."
+msgstr ""
 
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr "没有伪装。"
+#: ../src/firewall-applet:365
+msgid "First Use"
+msgstr ""
+
+#: ../src/firewall-applet:367
+msgid "Close"
+msgstr ""
+
+#: ../src/firewall-applet:383
+msgid "Please select the default network location."
+msgstr ""
+
+#: ../src/firewall-applet:385
+#, fuzzy
+msgid "Zones:"
+msgstr "域"
+
+#: ../src/firewall-applet:394
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "FirewallD has been restarted."
+msgstr ""
+
+#: ../src/firewall-applet:437
+#, c-format
+msgid "Zone '%s' activated for interface '%s'"
+msgstr ""
 
 #: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr "伪装："
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr "没有ICMP过滤。"
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr "ICMP过滤："
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr "没有转发端口。"
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr "转发端口："
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr "没有自定义角色。"
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr "自定义角色："
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr "应急方式"
-
-#: ../src/firewall-applet:496
 #, c-format
-msgid "Service '%s'"
-msgstr "服务“%s”"
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr "端口“%s:%s”"
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr "可信 '%s'"
-
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
-msgstr "伪装 '%s'"
-
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr "转发端口 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr "过滤ICMP '%s'"
-
-#: ../src/firewall-applet:595
-#, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgid "Zone '%s' deactivated for interface '%s'"
 msgstr ""
-"自定义 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
+#: ../src/firewall-cmd:175 ../src/firewall-cmd:177
+msgid "Wrong action and mode combination"
+msgstr ""
+
+#~ msgid "21/TCP"
+#~ msgstr "21/TCP"
+
+#~ msgid "22/TCP"
+#~ msgstr "22/TCP"
+
+#~ msgid "80/TCP"
+#~ msgstr "80/TCP"
+
+#~ msgid "Active Configuration"
+#~ msgstr "活动配置"
+
+#~ msgid "Add"
+#~ msgstr "添加"
+
+#~ msgid ""
+#~ "Add additional ports or port ranges, which need to be accessible for all "
+#~ "hosts or networks."
+#~ msgstr "添加可让所有主机或者网络访问的附加端口或者端口范围。"
+
+#~ msgid ""
+#~ "Add entries to forward ports either from one port to another on the local "
+#~ "system or from the local system to another system. Forwarding to another "
+#~ "system is only useful if the interface is masqueraded. Port forwarding is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "添加条目来转发端口，可以是从本地系统的一个端口到另一个端口，也可以是从本地"
+#~ "系统到另一个系统。转发到另一个系统只在接口是伪装的时候有用。端口转发只适用"
+#~ "于 IPv4。"
+
+#~ msgid "Allow access to necessary ports or port ranges, only."
+#~ msgstr "仅允许访问到必要的端口或端口范围"
+
+#~ msgid "Allow access to necessary services, only."
+#~ msgstr "仅允许必要的服务访问。"
+
+#~ msgid "Custom Rules"
+#~ msgstr "定制规则"
+
+#~ msgid "Default Configuration"
+#~ msgstr "默认配置"
+
+#~ msgid "Edit"
+#~ msgstr "编辑"
+
+#~ msgid "FTP"
+#~ msgstr "FTP"
+
+#~ msgid ""
+#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
+#~ "FTP server publicly available, enable this option. You need the vsftpd "
+#~ "package installed for this option to be useful."
+#~ msgstr ""
+#~ "FTP 是用来进行远程文件传输的协议。如果您希望将您的 FTP 服务器向公众开放，"
+#~ "请启用此选项。要使此选项可用，您需要安装 vsftpd 软件包。"
+
+#~ msgid "Firewall Daemon"
+#~ msgstr "防火墙守护进程"
+
+#~ msgid ""
+#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
+#~ "Web server publicly available, enable this option. This option is not "
+#~ "required for viewing pages locally or developing Web pages."
+#~ msgstr ""
+#~ "HTTP 是用来提供网页的协议。如果您希望让您的 Web 服务器向公众开放，请启用此"
+#~ "选项。要浏览本地页面或者开发网页则不需要此选项。"
+
+#~ msgid ""
+#~ "Here you can define the interfaces and network areas that have fill "
+#~ "access to the system."
+#~ msgstr "你可以定义接口和网络域，它填充系统访问。"
+
+#~ msgid ""
+#~ "Here you can define which services are trusted. Trusted services are "
+#~ "accessible from all hosts and networks in the selected network protocol. "
+#~ "Click on <i>Add</i> to select an item from the list of predefined "
+#~ "services."
+#~ msgstr ""
+#~ "你可以在这里定义哪些服务是可信的。可信服务可以从所有宿主和网络中选择网络协"
+#~ "议访问。单击<i>添加</i>来从预定义服务列表中选择一个项目。"
+
+#~ msgid "Home Zone"
+#~ msgstr "主域"
+
+#~ msgid "ICMP Filter"
+#~ msgstr "ICMP 过滤器"
+
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv4,IPv6"
+#~ msgstr "IPv4、IPv6"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#~ msgid ""
+#~ "If you enable masquerading, IP forwarding will also be enabled for your "
+#~ "IPv4 networks."
+#~ msgstr "如果您启用伪装，还会为您的 IPv4 网络启用 IP 转发功能。"
+
+#~ msgid ""
+#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
+#~ "types are allowed to pass the firewall. The default is no limitation."
+#~ msgstr ""
+#~ "在列表中标记应该被拒绝的 ICMP 类型。所有其它 ICMP 类型则被允许通过防火墙。"
+#~ "默认设置是没有限制。"
+
+#~ msgid "Masquerading"
+#~ msgstr "伪装（Masquerading）"
+
+#~ msgid ""
+#~ "Masquerading allows you to set up a host or router that connects your "
+#~ "local network to the internet. Your local network will not be visible and "
+#~ "the hosts appear as a single address on the internet. Masquerading is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "如果您要设置一台将您的本地网络连接到互联网的主机或者路由器，伪装"
+#~ "（Masquerading）是很有用的。您的本地网络将不可见，且该主机是以单一地址的形"
+#~ "式出现在互联网中。伪装仅用于 IPv4。"
+
+#~ msgid ""
+#~ "Only allow full access for interfaces or network areas if you can trust "
+#~ "all participants part of these."
+#~ msgstr "只允许对接口和网络域的完全访问，如果你能信任所有这些参与者。"
+
+#~ msgid "Other Ports"
+#~ msgstr "其它端口"
+
+#~ msgid "Port Forwarding"
+#~ msgstr "端口转发"
+
+#~ msgid "Public Zone"
+#~ msgstr "公共域"
+
+#~ msgid "Reload"
+#~ msgstr "重新载入"
+
+#~ msgid "Remove"
+#~ msgstr "删除"
+
+#~ msgid "Restart"
+#~ msgstr "重启"
+
+#~ msgid "SSH"
+#~ msgstr "SSH"
+
+#~ msgid ""
+#~ "Secure Shell (SSH) is a protocol for logging into and executing commands "
+#~ "on remote machines. It provides secure encrypted comminucations. If you "
+#~ "plan on accessing your machine remotely via SSH over a firewalled "
+#~ "interface, enable this option. You need the openssh-server package "
+#~ "installed for this option to be useful. "
+#~ msgstr ""
+#~ "安全外壳（Secure Shell，SSH）是用来登陆到远程及其并执行命令的协议。如果你"
+#~ "计划在应用此选项的防火墙下使用SSH远程访问你的机器。你需要安装openssh-"
+#~ "server包让此选项可用。"
+
+#~ msgid "Select Configuration"
+#~ msgstr "选择配置"
+
+#~ msgid "Services"
+#~ msgstr "服务"
+
+#~ msgid "Start"
+#~ msgstr "启动"
+
+#~ msgid "Stop"
+#~ msgstr "停止"
+
+#~ msgid "Switch Firewall Model"
+#~ msgstr "选择防火墙模型"
+
+#~ msgid "Switch firewall model"
+#~ msgstr "选择防火墙模型"
+
+#~ msgid ""
+#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
+#~ "messages between networked computers, but additionally for informational "
+#~ "messages like ping requests and replies."
+#~ msgstr ""
+#~ "互联网控制报文协议（ICMP）主要用于在联网的计算机间发送出错信息，但也发送类"
+#~ "似 ping 请求以及回应等信息。"
+
+#~ msgid "Trusted"
+#~ msgstr "可信的"
+
+#~ msgid "Trusted Zone"
+#~ msgstr "可信域"
+
+#~ msgid "WWW (HTTP)"
+#~ msgstr "WWW (HTTP)"
+
+#~ msgid "Work Zone"
+#~ msgstr "工作域"
+
+#~ msgid "_File"
+#~ msgstr "文件（_F）"
+
+#~ msgid "_Help"
+#~ msgstr "帮助（_H）"
+
+#~ msgid "_Options"
+#~ msgstr "选项（_O）"
+
+#~ msgid "ftp"
+#~ msgstr "ftp"
+
+#~ msgid "- proof of concept implementation -"
+#~ msgstr "- 实施这一构想的证明 -"
+
+#~ msgid "Ports"
+#~ msgstr "端口"
+
+#~ msgid "Trusted Connections"
+#~ msgstr "可信连接"
+
+#~ msgid "ICMP Blocking"
+#~ msgstr "ICMP过滤"
+
+#~ msgid "Panic Mode"
+#~ msgstr "应急方式"
+
+#~ msgid "Enable Firewall"
+#~ msgstr "启用防火墙"
+
+#~ msgid ""
+#~ "\n"
+#~ "Timeout: %d seconds"
+#~ msgstr ""
+#~ "\n"
+#~ "超时 %d 秒。"
+
+#~ msgid "No Open Services."
+#~ msgstr "没有开放服务。"
+
+#~ msgid "Open Services:"
+#~ msgstr "开放服务："
+
+#~ msgid "No Open Ports."
+#~ msgstr "没有开放端口。"
+
+#~ msgid "No Trusted."
+#~ msgstr "没有可信。"
+
+#~ msgid "Trusted:"
+#~ msgstr "可信："
+
+#~ msgid "No Masqueraded."
+#~ msgstr "没有伪装。"
+
+#~ msgid "Masqueraded:"
+#~ msgstr "伪装："
+
+#~ msgid "No ICMP Blocks."
+#~ msgstr "没有ICMP过滤。"
+
+#~ msgid "ICMP Blocks:"
+#~ msgstr "ICMP过滤："
+
+#~ msgid "No Forward Ports."
+#~ msgstr "没有转发端口。"
+
+#~ msgid "Forward Ports:"
+#~ msgstr "转发端口："
+
+#~ msgid "No Custom Rules."
+#~ msgstr "没有自定义角色。"
+
+#~ msgid "Custom Rules:"
+#~ msgstr "自定义角色："
+
+#~ msgid "Panic mode"
+#~ msgstr "应急方式"
+
+#~ msgid "Service '%s'"
+#~ msgstr "服务“%s”"
+
+#~ msgid "Port '%s:%s'"
+#~ msgstr "端口“%s:%s”"
+
+#~ msgid "Trusted '%s'"
+#~ msgstr "可信 '%s'"
+
+#~ msgid "Masquerade '%s'"
+#~ msgstr "伪装 '%s'"
+
+#~ msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+#~ msgstr "转发端口 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+
+#~ msgid "Block ICMP '%s'"
+#~ msgstr "过滤ICMP '%s'"
+
+#~ msgid ""
+#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#~ msgstr ""
+#~ "自定义 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"

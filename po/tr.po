@@ -7,19 +7,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 18:48+0100\n"
+"POT-Creation-Date: 2012-02-07 00:11+0100\n"
 "PO-Revision-Date: 2011-02-04 17:07+0200\n"
 "Last-Translator: Hasan Alp İNAN\n"
 "Language-Team: Turkish <hasanalpinan@gmail.com>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: tr\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Lokalize 1.1\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../src/firewall/config/__init__.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -35,438 +35,321 @@ msgid ""
 "this program.  If not, see <http://www.gnu.org/licenses/>."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
-msgstr "21/TCP"
-
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
-msgstr "22/TCP"
-
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
-msgstr "80/TCP"
-
-#: ../src/firewall-config.glade.h:4
-msgid "Active Configuration"
+#: ../src/firewall/core/io/icmptype.py:41
+#: ../src/firewall/core/io/service.py:43 ../src/firewall/core/io/zone.py:49
+#, python-format
+msgid "Unexpected element '%s'"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:5
-msgid "Add"
-msgstr "Ekle"
-
-#
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
+#: ../src/firewall/core/io/icmptype.py:48
+#: ../src/firewall/core/io/service.py:50 ../src/firewall/core/io/zone.py:56
+#, python-format
+msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
+#: ../src/firewall/core/io/icmptype.py:56
+#: ../src/firewall/core/io/service.py:58 ../src/firewall/core/io/zone.py:64
+#, python-format
+msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:8
-msgid "Allow access to necessary ports or port ranges, only."
+#: ../src/firewalld:43
+#, c-format
+msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:9
-msgid "Allow access to necessary services, only."
+#: ../src/firewalld:60
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
-msgid "Custom Rules"
-msgstr "Özel Kurallar"
-
-#: ../src/firewall-config.glade.h:11
-msgid "Default Configuration"
-msgstr "Ön Tanımlı Yapılandırma"
-
-#
-#: ../src/firewall-config.glade.h:12
-msgid "Edit"
-msgstr "Düzenle"
-
-#
-#: ../src/firewall-config.glade.h:13
-msgid "FTP"
-msgstr "FTP"
-
-#
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:15
-msgid "Firewall Daemon"
-msgstr "Güvenlik Duvarı Artalan Süreci"
-
-#
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr "Ev Alanı"
-
-#
-#: ../src/firewall-config.glade.h:20
-msgid "ICMP Filter"
-msgstr "ICMP Filter"
-
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr "IPv4"
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr "IPv4,IPv6"
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr "IPv6"
-
-#
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
-msgid "Masquerading"
-msgstr "Maskeleme"
-
-#
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:29
-msgid "Other Ports"
-msgstr "Diğer Portlar"
-
-#
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
-msgid "Port Forwarding"
-msgstr "Port Yönlendirme"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr "Kamu Alanı"
-
-#
-#: ../src/firewall-config.glade.h:32
-msgid "Reload"
-msgstr "Yeniden Yükle"
-
-#
-#: ../src/firewall-config.glade.h:33
-msgid "Remove"
-msgstr "Kaldır"
-
-#: ../src/firewall-config.glade.h:34
-msgid "Restart"
-msgstr "Yeniden Başlat"
-
-#
-#: ../src/firewall-config.glade.h:35
-msgid "SSH"
-msgstr "SSH"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-
-#: ../src/firewall-config.glade.h:37
-msgid "Select Configuration"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
-msgid "Services"
-msgstr "Servisler"
-
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr "Başlat"
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr "Durdur"
-
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr "Güvenilen"
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr "Güvenilen Alan"
-
-#
-#: ../src/firewall-config.glade.h:46
-msgid "WWW (HTTP)"
-msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr "İş Alanı"
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr "Alanlar"
-
-#
-#: ../src/firewall-config.glade.h:49
-msgid "_File"
-msgstr "_Dosya"
-
-#
-#: ../src/firewall-config.glade.h:50
-msgid "_Help"
-msgstr "_Yardım"
-
-#
-#: ../src/firewall-config.glade.h:51
-msgid "_Options"
-msgstr "_Seçenekler"
-
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr "ftp"
-
-#: ../src/firewalld:74
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD çalıştırılamıyor, şuan zaten çalışıyor."
 
-#: ../src/firewalld:102
+#: ../src/firewalld:115
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:58
+#: ../src/firewall-applet:40
 msgid "Firewall Applet"
 msgstr ""
 
-#: ../src/firewall-applet:59
-msgid "- proof of concept implementation -"
-msgstr ""
-
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr "Portlar"
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr ""
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr ""
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr "Panik Kipi"
-
-#
-#: ../src/firewall-applet:178
-msgid "Enable Firewall"
-msgstr "Güvenlik Duvarını Etkinleştir"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
+#: ../src/firewall-applet:85
+#, fuzzy
+msgid "Enable Notifications"
 msgstr "Tüm Bildirimleri Etkinleştir"
 
-#: ../src/firewall-applet:214
+#: ../src/firewall-applet:97
+msgid "Firewall Zone Settings"
+msgstr ""
+
+#: ../src/firewall-applet:105
+msgid "Block all network traffic"
+msgstr ""
+
+#: ../src/firewall-applet:137
 msgid "Not using slip"
 msgstr ""
 
-#: ../src/firewall-applet:232
-#, c-format
+#: ../src/firewall-applet:186
+#, fuzzy, c-format
 msgid ""
 "\n"
-"Timeout: %d seconds"
-msgstr ""
-"\n"
-"Zaman aşımı: %d saniye"
-
-#: ../src/firewall-applet:234
-#, c-format
-msgid ""
-"\n"
-"Requested by: %s"
+"Requested by %s (%s)"
 msgstr ""
 "\n"
 "Talep eden: %s"
 
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
+#: ../src/firewall-applet:189
+#, c-format
+msgid ""
+"\n"
+"Command: '%s' (%s)"
+msgstr ""
+
+#: ../src/firewall-applet:216
+#, fuzzy
+msgid "Connection to FirewallD lost."
 msgstr "FirewallD bağlantısını kayıp"
 
-#: ../src/firewall-applet:404
+#: ../src/firewall-applet:217
+#, fuzzy
+msgid "Connection to FirewallD established."
+msgstr "FirewallD bağlantısını kayıp"
+
+#: ../src/firewall-applet:311
 msgid "No connection to firewall daemon"
 msgstr "Ateş Duvarı artalan sürecine bağlantı yok"
 
-#: ../src/firewall-applet:411
+#: ../src/firewall-applet:317
 msgid "PANIC MODE"
 msgstr "PANİK KİPİ"
 
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr "Açık Hizmet Yok."
+#: ../src/firewall-applet:329
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr "Açık Hizmetler:"
+#: ../src/firewall-applet:332
+msgid "Zone '{zone}' active for interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr "Açık Port Yok."
+#: ../src/firewall-applet:340
+msgid "No Active Zones."
+msgstr ""
 
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr "Güvenilmeyen."
+#: ../src/firewall-applet:357
+msgid "All network traffic is blocked."
+msgstr ""
 
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr "Güvenilir:"
+#: ../src/firewall-applet:358
+msgid "Network traffic is not blocked anymore."
+msgstr ""
 
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr "Maskelenmemiş."
+#: ../src/firewall-applet:365
+msgid "First Use"
+msgstr ""
+
+#: ../src/firewall-applet:367
+msgid "Close"
+msgstr ""
+
+#: ../src/firewall-applet:383
+msgid "Please select the default network location."
+msgstr ""
+
+#: ../src/firewall-applet:385
+#, fuzzy
+msgid "Zones:"
+msgstr "Alanlar"
+
+#: ../src/firewall-applet:394
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "FirewallD has been restarted."
+msgstr ""
+
+#: ../src/firewall-applet:437
+#, c-format
+msgid "Zone '%s' activated for interface '%s'"
+msgstr ""
 
 #: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr "Maskelenmiş:"
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr ""
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr "ICMP Blokları:"
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr ""
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr "Yönlendirilen Portlar:"
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr ""
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr ""
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr "Panik kipi"
-
-#: ../src/firewall-applet:496
 #, c-format
-msgid "Service '%s'"
-msgstr "Servis '%s'"
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr "Port '%s:%s'"
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
+msgid "Zone '%s' deactivated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
+#: ../src/firewall-cmd:175 ../src/firewall-cmd:177
+msgid "Wrong action and mode combination"
 msgstr ""
 
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+#~ msgid "21/TCP"
+#~ msgstr "21/TCP"
 
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr ""
+#~ msgid "22/TCP"
+#~ msgstr "22/TCP"
 
-#: ../src/firewall-applet:595
-#, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
-msgstr ""
+#~ msgid "80/TCP"
+#~ msgstr "80/TCP"
+
+#
+#~ msgid "Add"
+#~ msgstr "Ekle"
+
+#
+#~ msgid "Custom Rules"
+#~ msgstr "Özel Kurallar"
+
+#~ msgid "Default Configuration"
+#~ msgstr "Ön Tanımlı Yapılandırma"
+
+#
+#~ msgid "Edit"
+#~ msgstr "Düzenle"
+
+#
+#~ msgid "FTP"
+#~ msgstr "FTP"
+
+#~ msgid "Firewall Daemon"
+#~ msgstr "Güvenlik Duvarı Artalan Süreci"
+
+#~ msgid "Home Zone"
+#~ msgstr "Ev Alanı"
+
+#
+#~ msgid "ICMP Filter"
+#~ msgstr "ICMP Filter"
+
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv4,IPv6"
+#~ msgstr "IPv4,IPv6"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#
+#~ msgid "Masquerading"
+#~ msgstr "Maskeleme"
+
+#
+#~ msgid "Other Ports"
+#~ msgstr "Diğer Portlar"
+
+#
+#~ msgid "Port Forwarding"
+#~ msgstr "Port Yönlendirme"
+
+#~ msgid "Public Zone"
+#~ msgstr "Kamu Alanı"
+
+#
+#~ msgid "Reload"
+#~ msgstr "Yeniden Yükle"
+
+#
+#~ msgid "Remove"
+#~ msgstr "Kaldır"
+
+#~ msgid "Restart"
+#~ msgstr "Yeniden Başlat"
+
+#
+#~ msgid "SSH"
+#~ msgstr "SSH"
+
+#~ msgid "Services"
+#~ msgstr "Servisler"
+
+#~ msgid "Start"
+#~ msgstr "Başlat"
+
+#~ msgid "Stop"
+#~ msgstr "Durdur"
+
+#~ msgid "Trusted"
+#~ msgstr "Güvenilen"
+
+#~ msgid "Trusted Zone"
+#~ msgstr "Güvenilen Alan"
+
+#
+#~ msgid "WWW (HTTP)"
+#~ msgstr "WWW (HTTP)"
+
+#~ msgid "Work Zone"
+#~ msgstr "İş Alanı"
+
+#
+#~ msgid "_File"
+#~ msgstr "_Dosya"
+
+#
+#~ msgid "_Help"
+#~ msgstr "_Yardım"
+
+#
+#~ msgid "_Options"
+#~ msgstr "_Seçenekler"
+
+#~ msgid "ftp"
+#~ msgstr "ftp"
+
+#~ msgid "Ports"
+#~ msgstr "Portlar"
+
+#~ msgid "Panic Mode"
+#~ msgstr "Panik Kipi"
+
+#
+#~ msgid "Enable Firewall"
+#~ msgstr "Güvenlik Duvarını Etkinleştir"
+
+#~ msgid ""
+#~ "\n"
+#~ "Timeout: %d seconds"
+#~ msgstr ""
+#~ "\n"
+#~ "Zaman aşımı: %d saniye"
+
+#~ msgid "No Open Services."
+#~ msgstr "Açık Hizmet Yok."
+
+#~ msgid "Open Services:"
+#~ msgstr "Açık Hizmetler:"
+
+#~ msgid "No Open Ports."
+#~ msgstr "Açık Port Yok."
+
+#~ msgid "No Trusted."
+#~ msgstr "Güvenilmeyen."
+
+#~ msgid "Trusted:"
+#~ msgstr "Güvenilir:"
+
+#~ msgid "No Masqueraded."
+#~ msgstr "Maskelenmemiş."
+
+#~ msgid "Masqueraded:"
+#~ msgstr "Maskelenmiş:"
+
+#~ msgid "ICMP Blocks:"
+#~ msgstr "ICMP Blokları:"
+
+#~ msgid "Forward Ports:"
+#~ msgstr "Yönlendirilen Portlar:"
+
+#~ msgid "Panic mode"
+#~ msgstr "Panik kipi"
+
+#~ msgid "Service '%s'"
+#~ msgstr "Servis '%s'"
+
+#~ msgid "Port '%s:%s'"
+#~ msgstr "Port '%s:%s'"

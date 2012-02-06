@@ -9,10 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.kn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 18:48+0100\n"
+"POT-Creation-Date: 2012-02-07 00:11+0100\n"
 "PO-Revision-Date: 2011-02-03 17:12+0530\n"
 "Last-Translator: Shankar Prasad <svenkate@redhat.com>\n"
 "Language-Team: kn_IN <kde-i18n-doc@kde.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -23,7 +24,7 @@ msgstr ""
 "\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../src/firewall/config/__init__.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -51,477 +52,502 @@ msgstr ""
 "You should have received a copy of the GNU General Public License along with "
 "this program.  If not, see <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
-msgstr "21/TCP"
-
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
-msgstr "22/TCP"
-
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
-msgstr "80/TCP"
-
-#: ../src/firewall-config.glade.h:4
-msgid "Active Configuration"
-msgstr "ಸಕ್ರಿಯ ಸಂರಚನೆ"
-
-#
-#: ../src/firewall-config.glade.h:5
-msgid "Add"
-msgstr "ಸೇರಿಸು"
-
-#
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
+#: ../src/firewall/core/io/icmptype.py:41
+#: ../src/firewall/core/io/service.py:43 ../src/firewall/core/io/zone.py:49
+#, python-format
+msgid "Unexpected element '%s'"
 msgstr ""
-"ಎಲ್ಲಾ ಅತಿಥೇಯಗಳಿಂದ ಅಥವ ಜಾಲಂಬಂಧಗಳಿಂದ ನಿಲುಕಿಸಿಕೊಳ್ಳಬಹುದಾದಂತ ಹೆಚ್ಚುವರಿ ಸಂಪರ್ಕ "
-"ಸ್ಥಾನಗಳನ್ನು ಅಥವ ಸಂಪರ್ಕ ಸ್ಥಾನ ವ್ಯಾಪ್ತಿಗಳನ್ನು ಸೇರಿಸಿ."
 
-#
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
+#: ../src/firewall/core/io/icmptype.py:48
+#: ../src/firewall/core/io/service.py:50 ../src/firewall/core/io/zone.py:56
+#, python-format
+msgid "Element '%s': missing '%s' attribute"
 msgstr ""
-"ಸ್ಥಳೀಯ ಗಣಕದಲ್ಲಿನ ಒಂದು ಸಂಪರ್ಕಸ್ಥಾನದಿಂದ ಇನ್ನೊಂದಕ್ಕೆ ಅಥವ ಸ್ಥಳೀಯ ಗಣಕದಿಂದ ಇನ್ನೊಂದು ಗಣಕಕ್ಕೆ "
-"ಸಂಪರ್ಕಸ್ಥಾನಗಳನ್ನು ಫಾರ್ವಾರ್ಡ್‌ಮಾಡಲು ನಮೂದುಗಳನ್ನು ಸೇರಿಸಿ. ಬೇರೆ ಗಣಕಕ್ಕೆ ಫಾರ್ವಾರ್ಡ್‌ ಮಾಡುವುದು, "
-"ಸಂಪರ್ಕಸಾಧನವು ಮರೆಮಾಚಲ್ಪಟ್ಟಿದ್ದಲ್ಲಿ ಮಾತ್ರ ಪ್ರಯೋಜನಕಾರಿಯಾಗುತ್ತದೆ. ಸಂಪರ್ಕಸ್ಥಾನ ಫಾರ್ವಾಡಿಂಗ್ "
-"ಕೇವಲ IPv4 ಮಾತ್ರ ಆಗಿರುತ್ತದೆ."
 
-#
-#: ../src/firewall-config.glade.h:8
-msgid "Allow access to necessary ports or port ranges, only."
+#: ../src/firewall/core/io/icmptype.py:56
+#: ../src/firewall/core/io/service.py:58 ../src/firewall/core/io/zone.py:64
+#, python-format
+msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
-"ಕೇವಲ ಅಗತ್ಯ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಗೆ ಅಥವ ಸಂಪರ್ಕಸ್ಥಾನ ವ್ಯಾಪ್ತಿಗಳಿಗೆ ಮಾತ್ರ ಅನುಮತಿಯನ್ನು ಅಂಗೀಕರಿಸು."
 
-#
-#: ../src/firewall-config.glade.h:9
-msgid "Allow access to necessary services, only."
-msgstr "ಕೇವಲ ಅಗತ್ಯ ಸೇವಗಳಿಗೆ ಮಾತ್ರ ಅನುಮತಿಯನ್ನು ಅಂಗೀಕರಿಸು."
-
-#
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
-msgid "Custom Rules"
-msgstr "ಗ್ರಾಹಕೀಯ ನಿಯಮಗಳು"
-
-#: ../src/firewall-config.glade.h:11
-msgid "Default Configuration"
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಸಂರಚನೆ"
-
-#
-#: ../src/firewall-config.glade.h:12
-msgid "Edit"
-msgstr "ಸಂಪಾದಿಸು"
-
-#
-#: ../src/firewall-config.glade.h:13
-msgid "FTP"
-msgstr "FTP"
-
-#
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
+#: ../src/firewalld:43
+#, c-format
+msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
-"FTP ಯು ದೂರದ ಕಡತ ವರ್ಗಾವಣೆಗೆ ಉಪಯೋಗಿಸುವ ಒಂದು ಪ್ರೊಟೋಕಾಲ್. ನಿಮ್ಮ FTP ಪರಿಚಾರಕನನ್ನು "
-"ಸಾರ್ವಜನಿಕವಾಗಿ ದೊರೆಯುವಂತೆ ಮಾಡುವ ಯೋಜನೆ ಇದ್ದಇದನ್ನು ಶಕ್ತಗೊಳಿಸಿ. ಈ ಆಯ್ಕೆಯನ್ನು ಉಪಯೋಗಿಸಲು "
-"vsftpd ಪ್ಯಾಕೇಜ್ ಅನ್ನುನೀವು ಅನುಸ್ಥಾಪಿಸ ಬೇಕಾಗುತ್ತದೆ."
 
-#: ../src/firewall-config.glade.h:15
-msgid "Firewall Daemon"
-msgstr "ಫೈರ್ವಾಲ್ ಡೀಮನ್"
-
-#
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
+#: ../src/firewalld:60
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
-"HTTPಯು ವೆಬ್ ಪುಟ್ ಗಳಿಗೆ ಉಪಕರಿಸುವ ಒಂದು ಪ್ರೋಟೋಕಾಲ್. ವೆಬ್ ಪರಿಚಾರಕವನ್ನು ಸಾರ್ವಜನಿಕವಾಗಿ "
-"ದೊರೆಯುವಂತೆ ಮಾಡುವ ಯೋಜನೆ ಇದ್ದರೆ, ಈ ಆಯ್ಕೆಯನ್ನು ಶಕ್ತಗೊಳಿಸಿ. ಸ್ಥಳೀಯವಾಗಿ ಪುಟಗಳನ್ನು "
-"ವೀಕ್ಷಿಸುವಾಗ ಹಾಗೂ ವೆಬ್ ಪುಟಗಳನ್ನು ನಿರ್ಮಿಸುವಾಗ ಈ ಆಯ್ಕೆಯ ಆವಶ್ಯಕತೆ ಇರುವುದಿಲ್ಲ."
 
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr ""
-"ಇಲ್ಲಿ ನೀವು ವ್ಯವಸ್ಥೆಗೆ ಸಂಪೂರ್ಣ ನಿಲುಕಣೆಯನ್ನು ಹೊಂದಿರುವ ಸಂಪರ್ಕಸಾಧನಗಳು ಹಾಗು ಜಾಲಬಂಧ "
-"ಸ್ಥಳಗಳನ್ನು ಸೂಚಿಸಬಹುದು."
-
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
-"ಯಾವ ಸೇವೆಗಳನ್ನು ನಂಬಬಹುದು ಎಂದು ಇಲ್ಲಿ ನೀವು ಸೂಚಿಸಬಹುದು. ನಂಬಿಕಸ್ತ ಸೇವೆಗಳನ್ನು ಆಯ್ಕೆ "
-"ಮಾಡಲಾದ ಜಾಲಬಂಧ ಪ್ರೊಟೊಕಾಲ್‌ನಲ್ಲಿನ ಎಲ್ಲಾ ಅತಿಥೇಯಗಳಿಂದ ಹಾಗು ಜಾಲಬಂಧಗಳಿಂದ "
-"ನಿಲುಕಿಸಿಕೊಳ್ಳಬಹುದಾಗಿರುತ್ತದೆ. ಪೂರ್ವನಿರ್ಧರಿತವಾದ ಸೇವೆಗಳ ಪಟ್ಟಿಯಿಂದ ಒಂದು ಅಂಶವನ್ನು ಆಯ್ಕೆ "
-"ಮಾಡಿಕೊಳ್ಳಲು <i>ಸೇರಿಸು</i> ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ."
-
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr "ನೆಲೆ ವಲಯ"
-
-#
-#: ../src/firewall-config.glade.h:20
-msgid "ICMP Filter"
-msgstr "ICMP ಶೋಧಕ"
-
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr "IPv4"
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr "IPv4,IPv6"
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr "IPv6"
-
-#
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"ನೀವು ಛದ್ಮವೇಶಿಸುವುದನ್ನು ಶಕ್ತಗೊಳಿಸುವುದಾದರೆ, ನಿಮ್ಮ IPv4ನಲ್ಲಿ ಜಾಲಬಂಧಕ್ಕೆ IP ಫಾರ್ವಾರ್ಡಿಂಗ್ "
-"ಸಹ ಶಕ್ತಗೊಳ್ಳುತ್ತದೆ."
-
-#
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"ಪಟ್ಟಿಯಲ್ಲಿರುವ ತಿರಸ್ಕರಿಸಬೇಕಿರುವ ICMP ಬಗೆಗಳನ್ನು ಗುರುತು ಹಾಕಿ. ಎಲ್ಲಾ ಇತರೆ ICMP ಬಗೆಗಳು "
-"ಫೈರ್ವಾಲ್ ಮೂಲಕ ಹಾದುಹೋಗಲು ಅನುಮತಿಸಲ್ಪಡುತ್ತವೆ. ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಯಾವುದೆ ಮಿತಿ ಇರುವುದಿಲ್ಲ."
-
-#
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
-msgid "Masquerading"
-msgstr "ಛದ್ಮವೇಷಗೊಳಿಕೆ"
-
-#
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"ನಿಮ್ಮ ಸ್ಥಳೀಯ ಜಾಲಬಂಧಕ್ಕೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸುವ ಅತಿಥೇಯ ಅಥವ ರೌಟರ್ ಅನ್ನು ಸಂಯೋಜಿಸುವಾಗ "
-"ಛದ್ಮವೇಶಗೊಳಿಕೆಯು(Masquerading) ಸಹಾಯಕವಾಗುತ್ತದೆ. ನಿಮ್ಮ ಸ್ಥಳೀಯ ಜಾಲಬಂಧವು ಅಂತರ್ಜಾಲಕ್ಕೆ "
-"ಒಂದು ಅತಿಥೇಯವಾಗಿ ಗೋಚರಿಸುವುದಿಲ್ಲ. ಛದ್ಮವೇಶಿಸುವುದು IPv4 ನಲ್ಲಿ ಮಾತ್ರ."
-
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
-"ಇವುಗಳಲ್ಲಿ ಎಲ್ಲವನ್ನೂ ನೀವು ನಂಬುವಂತಿದ್ದಲ್ಲಿ ಮಾತ್ರ ಸಂಪರ್ಕಸಾಧನಗಳಿಗೆ ಹಾಗು ಜಾಲಬಂಧ ಸ್ಥಳಗಳಿಗೆ "
-"ಸಂಪೂರ್ಣ ನಿಲುಕಣೆಗಳನ್ನು ಒದಗಿಸಿ."
-
-#
-#: ../src/firewall-config.glade.h:29
-msgid "Other Ports"
-msgstr "ಇತರೆ ಸಂಪರ್ಕ ಸ್ಥಾನಗಳು"
-
-#
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
-msgid "Port Forwarding"
-msgstr "ಸಂಪರ್ಕ ಸ್ಥಾನ ಫಾರ್ವಾರ್ಡಿಂಗ್"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr "ಸಾರ್ವಜನಿಕ ವಲಯ"
-
-#
-#: ../src/firewall-config.glade.h:32
-msgid "Reload"
-msgstr "ಪುನಃ ಲೋಡ್ ಮಾಡು"
-
-#
-#: ../src/firewall-config.glade.h:33
-msgid "Remove"
-msgstr "ತೆಗೆದುಹಾಕು"
-
-#: ../src/firewall-config.glade.h:34
-msgid "Restart"
-msgstr "ಮರಳಿ ಆರಂಭಿಸು"
-
-#
-#: ../src/firewall-config.glade.h:35
-msgid "SSH"
-msgstr "SSH"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-"ಸೆಕ್ಯೂರ್ ಶೆಲ್ (SSH) ಎನ್ನುವುದು ದೂರದ ಗಣಕಗಳಿಗೆ ಪ್ರವೇಶಿಸುವ ಹಾಗು ಆಜ್ಞೆಗಳನ್ನು "
-"ಕಾರ್ಯಗತಗೊಳಿಸುವ ಒಂದು ಪ್ರೊಟೊಕಾಲ್ ಆಗಿದೆ. ಇದು ಸುರಕ್ಷಿತವಾದ ಗೂಢಲಿಪೀಕರಣಗೊಂಡ ಸಂವಹನಗಳನ್ನು "
-"ಒದಗಿಸುತ್ತದೆ. ನೀವು ನಿಮ್ಮ ಗಣಕವನ್ನು SSH ಮೂಲಕ ಒಂದು ಫೈರ್ವಾಲ್ ಅನ್ನು ಹೊಂದಿರುವ ಸಂಪರ್ಕಸಾಧನದ "
-"ಮುಖಾಂತರ ದೂರದಿಂದ ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದಲ್ಲಿ ಈ ಆಯ್ಕೆಯನ್ನು ಶಕ್ತಗೊಳಿಸಿ. ಈ ಆಯ್ಕೆಯು "
-"ಉಪಯುಕ್ತವೆನಿಸಲು ನಿಮ್ಮಲ್ಲಿ openssh-server ಪ್ಯಾಕೇಜ್ ಅನ್ನು ಅನುಸ್ಥಾಪಿಸಿರಬೇಕು. "
-
-#: ../src/firewall-config.glade.h:37
-msgid "Select Configuration"
-msgstr "ಸಂರಚನೆಯನ್ನು ಆರಿಸಿ"
-
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
-msgid "Services"
-msgstr "ಸೇವೆಗಳು"
-
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr "ಆರಂಭಿಸು"
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr "ನಿಲ್ಲಿಸು"
-
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr "ಫೈರ್ವಾಲ್ ಮಾದರಿಯನ್ನು ಬದಲಾಯಿಸಿ"
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr "ಫೈರ್ವಾಲ್ ಮಾದರಿಯನ್ನು ಬದಲಾಯಿಸಿ"
-
-#
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"ಇಂಟರ್ನೆಟ್ ಕಂಟ್ರೋಲ್ ಮೆಸೇಜ್ ಪ್ರೊಟೋಕಾಲ್ (ICMP) ಹೆಚ್ಚಾಗಿ ಜಾಲದೊಳಗಿನ ಗಣಕಗಳ ನಡುವೆ ದೋಷ "
-"ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸಲು ಬಳಸಲ್ಪಡುತ್ತದೆ, ಆದರೆ ಇದರ ಜೊತೆಗೆ ಮಾಹಿತಿಯ ಸಂದೇಶಗಳಾದಂತಹ ಪಿಂಗ್ "
-"ಮನವಿಗಳು ಹಾಗು ಪ್ರತ್ಯುತ್ತರಗಳನ್ನೂ ಸಹ ಕಳುಹಿಸಲು ಬಳಸಲ್ಪಡುತ್ತದೆ."
-
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr "ನಂಬಿಕಸ್ತ"
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr "ನಂಬಿಕಸ್ತ ವಲಯ"
-
-#
-#: ../src/firewall-config.glade.h:46
-msgid "WWW (HTTP)"
-msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr "ಕೆಲಸದ ವಲಯ"
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr "ವಲಯಗಳು"
-
-#
-#: ../src/firewall-config.glade.h:49
-msgid "_File"
-msgstr "ಕಡತ(_F)"
-
-#
-#: ../src/firewall-config.glade.h:50
-msgid "_Help"
-msgstr "ಸಹಾಯ(_H)"
-
-#
-#: ../src/firewall-config.glade.h:51
-msgid "_Options"
-msgstr "ಆಯ್ಕೆಗಳು(_O)"
-
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr "ftp"
-
-#: ../src/firewalld:74
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD ಅನ್ನು ಆರಂಭಿಸಲಾಗುತ್ತಿಲ್ಲ, ಅದು ಈಗಾಗಲೆ ಚಾಲನೆಯಲ್ಲಿದೆ."
 
-#: ../src/firewalld:102
+#: ../src/firewalld:115
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ಫೋರ್ಕ್ #1 ವಿಫಲಗೊಂಡಿದೆ: %d (%s)"
 
-#: ../src/firewall-applet:58
+#: ../src/firewall-applet:40
 msgid "Firewall Applet"
 msgstr "ಫೈರ್ವಾಲ್ ಆಪ್ಲೆಟ್"
 
-#: ../src/firewall-applet:59
-msgid "- proof of concept implementation -"
-msgstr "- ಪರಿಕಲ್ಪನೆಯನ್ನು ಅನ್ವಯಿಸುವಿಕೆಯ ಪುರಾವೆ -"
-
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr "ಸಂಪರ್ಕಸ್ಥಾನಗಳು"
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr "ನಂಬಿಕಸ್ತ ಸಂಪರ್ಕಗಳು"
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr "ICMP ನಿರ್ಬಂಧ"
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr "ಭೀತಿಯ (ಪ್ಯಾನಿಕ್) ಸ್ಥಿತಿ"
-
-#
-#: ../src/firewall-applet:178
-msgid "Enable Firewall"
-msgstr "ಫೈರ್ವಾಲನ್ನು ಶಕ್ತಗೊಳಿಸು"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
+#: ../src/firewall-applet:85
+#, fuzzy
+msgid "Enable Notifications"
 msgstr "ಎಲ್ಲಾ ಸೂಚನೆಗಳನ್ನು ಶಕ್ತಗೊಳಿಸು"
 
-#: ../src/firewall-applet:214
+#: ../src/firewall-applet:97
+msgid "Firewall Zone Settings"
+msgstr ""
+
+#: ../src/firewall-applet:105
+msgid "Block all network traffic"
+msgstr ""
+
+#: ../src/firewall-applet:137
 msgid "Not using slip"
 msgstr "ಚೀಟಿಯನ್ನು ಬಳಸಲಾಗುತ್ತಿಲ್ಲ"
 
-#: ../src/firewall-applet:232
-#, c-format
+#: ../src/firewall-applet:186
+#, fuzzy, c-format
 msgid ""
 "\n"
-"Timeout: %d seconds"
-msgstr ""
-"\n"
-"ಕಾಲಾವಧಿ ಮುಗಿದಿದೆ: %d ಸೆಕೆಂಡುಗಳು"
-
-#: ../src/firewall-applet:234
-#, c-format
-msgid ""
-"\n"
-"Requested by: %s"
+"Requested by %s (%s)"
 msgstr ""
 "\n"
 "ಇವರಿಂದ ಮನವಿ ಸಲ್ಲಿಸಲಾಗಿದೆ: %s"
 
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
+#: ../src/firewall-applet:189
+#, c-format
+msgid ""
+"\n"
+"Command: '%s' (%s)"
+msgstr ""
+
+#: ../src/firewall-applet:216
+#, fuzzy
+msgid "Connection to FirewallD lost."
 msgstr "FirewallD ಯೊಂದಿಗಿನ ಸಂಪರ್ಕವು ಕಡಿದು ಹೋಗಿದೆ"
 
-#: ../src/firewall-applet:404
+#: ../src/firewall-applet:217
+#, fuzzy
+msgid "Connection to FirewallD established."
+msgstr "FirewallD ಯೊಂದಿಗಿನ ಸಂಪರ್ಕವು ಕಡಿದು ಹೋಗಿದೆ"
+
+#: ../src/firewall-applet:311
 msgid "No connection to firewall daemon"
 msgstr "ಫೈರ್ವಾಲ್ ಡೀಮನ್‌ನೊಂದಿಗೆ ಸಂಪರ್ಕವು ಕಡಿದು ಹೋಗಿದೆ"
 
-#: ../src/firewall-applet:411
+#: ../src/firewall-applet:317
 msgid "PANIC MODE"
 msgstr "PANIC MODE"
 
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr "ಯಾವುದೆ ತೆರೆದ ಸೇವೆಗಳಿಲ್ಲ."
+#: ../src/firewall-applet:329
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr "ತೆರೆದ ಸೇವೆಗಳು:"
+#: ../src/firewall-applet:332
+msgid "Zone '{zone}' active for interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr "ಯಾವುದೆ ತೆರೆದ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಲ್ಲ."
+#: ../src/firewall-applet:340
+msgid "No Active Zones."
+msgstr ""
 
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr "ನಂಬಿಕಸ್ತವಲ್ಲ."
+#: ../src/firewall-applet:357
+msgid "All network traffic is blocked."
+msgstr ""
 
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr "ನಂಬಿಕಸ್ತ:"
+#: ../src/firewall-applet:358
+msgid "Network traffic is not blocked anymore."
+msgstr ""
 
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr "ಛದ್ಮವೇಶಗೊಳಿಸಲಾಗಿಲ್ಲ:"
+#: ../src/firewall-applet:365
+msgid "First Use"
+msgstr ""
+
+#: ../src/firewall-applet:367
+msgid "Close"
+msgstr ""
+
+#: ../src/firewall-applet:383
+msgid "Please select the default network location."
+msgstr ""
+
+#: ../src/firewall-applet:385
+#, fuzzy
+msgid "Zones:"
+msgstr "ವಲಯಗಳು"
+
+#: ../src/firewall-applet:394
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "FirewallD has been restarted."
+msgstr ""
+
+#: ../src/firewall-applet:437
+#, c-format
+msgid "Zone '%s' activated for interface '%s'"
+msgstr ""
 
 #: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr "ಛದ್ಮವೇಶಗೊಳಿಕೆ:"
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr "ಯಾವುದೆ ICMP ನಿರ್ಬಂಧಗಳಿಲ್ಲ."
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr "ICMP ನಿರ್ಬಂಧಗಳು:"
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr "ಯಾವುದೆ ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಲ್ಲ."
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr "ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನಗಳು:"
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr "ಯಾವುದೆ ಕಸ್ಟಮ್ ನಿಯಮಗಳಿಲ್ಲ."
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr "ಕಸ್ಟಮ್ ನಿಯಮಗಳು:"
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr "ಭೀತಿಯ (ಪ್ಯಾನಿಕ್) ಸ್ಥಿತಿ"
-
-#: ../src/firewall-applet:496
 #, c-format
-msgid "Service '%s'"
-msgstr "ಸೇವೆ '%s'"
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr "ಸಂಪರ್ಕಸ್ಥಾನ '%s:%s'"
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr "ನಂಬಿಕಸ್ತ '%s'"
-
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
-msgstr "'%s' ಅನ್ನು ಛದ್ಮವೇಶಗೊಳಿಸು"
-
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgid "Zone '%s' deactivated for interface '%s'"
 msgstr ""
-"'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s' ಆದಲ್ಲಿ ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಫಾರ್ವಾರ್ಡ್ ಮಾಡು"
 
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr "ICMP '%s' ಅನ್ನು ನಿರ್ಬಂಧಿಸು"
-
-#: ../src/firewall-applet:595
-#, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#: ../src/firewall-cmd:175 ../src/firewall-cmd:177
+msgid "Wrong action and mode combination"
 msgstr ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+
+#~ msgid "21/TCP"
+#~ msgstr "21/TCP"
+
+#~ msgid "22/TCP"
+#~ msgstr "22/TCP"
+
+#~ msgid "80/TCP"
+#~ msgstr "80/TCP"
+
+#~ msgid "Active Configuration"
+#~ msgstr "ಸಕ್ರಿಯ ಸಂರಚನೆ"
+
+#
+#~ msgid "Add"
+#~ msgstr "ಸೇರಿಸು"
+
+#
+#~ msgid ""
+#~ "Add additional ports or port ranges, which need to be accessible for all "
+#~ "hosts or networks."
+#~ msgstr ""
+#~ "ಎಲ್ಲಾ ಅತಿಥೇಯಗಳಿಂದ ಅಥವ ಜಾಲಂಬಂಧಗಳಿಂದ ನಿಲುಕಿಸಿಕೊಳ್ಳಬಹುದಾದಂತ ಹೆಚ್ಚುವರಿ ಸಂಪರ್ಕ "
+#~ "ಸ್ಥಾನಗಳನ್ನು ಅಥವ ಸಂಪರ್ಕ ಸ್ಥಾನ ವ್ಯಾಪ್ತಿಗಳನ್ನು ಸೇರಿಸಿ."
+
+#
+#~ msgid ""
+#~ "Add entries to forward ports either from one port to another on the local "
+#~ "system or from the local system to another system. Forwarding to another "
+#~ "system is only useful if the interface is masqueraded. Port forwarding is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "ಸ್ಥಳೀಯ ಗಣಕದಲ್ಲಿನ ಒಂದು ಸಂಪರ್ಕಸ್ಥಾನದಿಂದ ಇನ್ನೊಂದಕ್ಕೆ ಅಥವ ಸ್ಥಳೀಯ ಗಣಕದಿಂದ ಇನ್ನೊಂದು "
+#~ "ಗಣಕಕ್ಕೆ ಸಂಪರ್ಕಸ್ಥಾನಗಳನ್ನು ಫಾರ್ವಾರ್ಡ್‌ಮಾಡಲು ನಮೂದುಗಳನ್ನು ಸೇರಿಸಿ. ಬೇರೆ ಗಣಕಕ್ಕೆ ಫಾರ್ವಾರ್ಡ್‌ "
+#~ "ಮಾಡುವುದು, ಸಂಪರ್ಕಸಾಧನವು ಮರೆಮಾಚಲ್ಪಟ್ಟಿದ್ದಲ್ಲಿ ಮಾತ್ರ ಪ್ರಯೋಜನಕಾರಿಯಾಗುತ್ತದೆ. ಸಂಪರ್ಕಸ್ಥಾನ "
+#~ "ಫಾರ್ವಾಡಿಂಗ್ ಕೇವಲ IPv4 ಮಾತ್ರ ಆಗಿರುತ್ತದೆ."
+
+#
+#~ msgid "Allow access to necessary ports or port ranges, only."
+#~ msgstr ""
+#~ "ಕೇವಲ ಅಗತ್ಯ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಗೆ ಅಥವ ಸಂಪರ್ಕಸ್ಥಾನ ವ್ಯಾಪ್ತಿಗಳಿಗೆ ಮಾತ್ರ ಅನುಮತಿಯನ್ನು "
+#~ "ಅಂಗೀಕರಿಸು."
+
+#
+#~ msgid "Allow access to necessary services, only."
+#~ msgstr "ಕೇವಲ ಅಗತ್ಯ ಸೇವಗಳಿಗೆ ಮಾತ್ರ ಅನುಮತಿಯನ್ನು ಅಂಗೀಕರಿಸು."
+
+#
+#~ msgid "Custom Rules"
+#~ msgstr "ಗ್ರಾಹಕೀಯ ನಿಯಮಗಳು"
+
+#~ msgid "Default Configuration"
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಸಂರಚನೆ"
+
+#
+#~ msgid "Edit"
+#~ msgstr "ಸಂಪಾದಿಸು"
+
+#
+#~ msgid "FTP"
+#~ msgstr "FTP"
+
+#
+#~ msgid ""
+#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
+#~ "FTP server publicly available, enable this option. You need the vsftpd "
+#~ "package installed for this option to be useful."
+#~ msgstr ""
+#~ "FTP ಯು ದೂರದ ಕಡತ ವರ್ಗಾವಣೆಗೆ ಉಪಯೋಗಿಸುವ ಒಂದು ಪ್ರೊಟೋಕಾಲ್. ನಿಮ್ಮ FTP ಪರಿಚಾರಕನನ್ನು "
+#~ "ಸಾರ್ವಜನಿಕವಾಗಿ ದೊರೆಯುವಂತೆ ಮಾಡುವ ಯೋಜನೆ ಇದ್ದಇದನ್ನು ಶಕ್ತಗೊಳಿಸಿ. ಈ ಆಯ್ಕೆಯನ್ನು "
+#~ "ಉಪಯೋಗಿಸಲು vsftpd ಪ್ಯಾಕೇಜ್ ಅನ್ನುನೀವು ಅನುಸ್ಥಾಪಿಸ ಬೇಕಾಗುತ್ತದೆ."
+
+#~ msgid "Firewall Daemon"
+#~ msgstr "ಫೈರ್ವಾಲ್ ಡೀಮನ್"
+
+#
+#~ msgid ""
+#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
+#~ "Web server publicly available, enable this option. This option is not "
+#~ "required for viewing pages locally or developing Web pages."
+#~ msgstr ""
+#~ "HTTPಯು ವೆಬ್ ಪುಟ್ ಗಳಿಗೆ ಉಪಕರಿಸುವ ಒಂದು ಪ್ರೋಟೋಕಾಲ್. ವೆಬ್ ಪರಿಚಾರಕವನ್ನು ಸಾರ್ವಜನಿಕವಾಗಿ "
+#~ "ದೊರೆಯುವಂತೆ ಮಾಡುವ ಯೋಜನೆ ಇದ್ದರೆ, ಈ ಆಯ್ಕೆಯನ್ನು ಶಕ್ತಗೊಳಿಸಿ. ಸ್ಥಳೀಯವಾಗಿ ಪುಟಗಳನ್ನು "
+#~ "ವೀಕ್ಷಿಸುವಾಗ ಹಾಗೂ ವೆಬ್ ಪುಟಗಳನ್ನು ನಿರ್ಮಿಸುವಾಗ ಈ ಆಯ್ಕೆಯ ಆವಶ್ಯಕತೆ ಇರುವುದಿಲ್ಲ."
+
+#~ msgid ""
+#~ "Here you can define the interfaces and network areas that have fill "
+#~ "access to the system."
+#~ msgstr ""
+#~ "ಇಲ್ಲಿ ನೀವು ವ್ಯವಸ್ಥೆಗೆ ಸಂಪೂರ್ಣ ನಿಲುಕಣೆಯನ್ನು ಹೊಂದಿರುವ ಸಂಪರ್ಕಸಾಧನಗಳು ಹಾಗು ಜಾಲಬಂಧ "
+#~ "ಸ್ಥಳಗಳನ್ನು ಸೂಚಿಸಬಹುದು."
+
+#~ msgid ""
+#~ "Here you can define which services are trusted. Trusted services are "
+#~ "accessible from all hosts and networks in the selected network protocol. "
+#~ "Click on <i>Add</i> to select an item from the list of predefined "
+#~ "services."
+#~ msgstr ""
+#~ "ಯಾವ ಸೇವೆಗಳನ್ನು ನಂಬಬಹುದು ಎಂದು ಇಲ್ಲಿ ನೀವು ಸೂಚಿಸಬಹುದು. ನಂಬಿಕಸ್ತ ಸೇವೆಗಳನ್ನು ಆಯ್ಕೆ "
+#~ "ಮಾಡಲಾದ ಜಾಲಬಂಧ ಪ್ರೊಟೊಕಾಲ್‌ನಲ್ಲಿನ ಎಲ್ಲಾ ಅತಿಥೇಯಗಳಿಂದ ಹಾಗು ಜಾಲಬಂಧಗಳಿಂದ "
+#~ "ನಿಲುಕಿಸಿಕೊಳ್ಳಬಹುದಾಗಿರುತ್ತದೆ. ಪೂರ್ವನಿರ್ಧರಿತವಾದ ಸೇವೆಗಳ ಪಟ್ಟಿಯಿಂದ ಒಂದು ಅಂಶವನ್ನು "
+#~ "ಆಯ್ಕೆ ಮಾಡಿಕೊಳ್ಳಲು <i>ಸೇರಿಸು</i> ಅನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ."
+
+#~ msgid "Home Zone"
+#~ msgstr "ನೆಲೆ ವಲಯ"
+
+#
+#~ msgid "ICMP Filter"
+#~ msgstr "ICMP ಶೋಧಕ"
+
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv4,IPv6"
+#~ msgstr "IPv4,IPv6"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#
+#~ msgid ""
+#~ "If you enable masquerading, IP forwarding will also be enabled for your "
+#~ "IPv4 networks."
+#~ msgstr ""
+#~ "ನೀವು ಛದ್ಮವೇಶಿಸುವುದನ್ನು ಶಕ್ತಗೊಳಿಸುವುದಾದರೆ, ನಿಮ್ಮ IPv4ನಲ್ಲಿ ಜಾಲಬಂಧಕ್ಕೆ IP "
+#~ "ಫಾರ್ವಾರ್ಡಿಂಗ್ ಸಹ ಶಕ್ತಗೊಳ್ಳುತ್ತದೆ."
+
+#
+#~ msgid ""
+#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
+#~ "types are allowed to pass the firewall. The default is no limitation."
+#~ msgstr ""
+#~ "ಪಟ್ಟಿಯಲ್ಲಿರುವ ತಿರಸ್ಕರಿಸಬೇಕಿರುವ ICMP ಬಗೆಗಳನ್ನು ಗುರುತು ಹಾಕಿ. ಎಲ್ಲಾ ಇತರೆ ICMP "
+#~ "ಬಗೆಗಳು ಫೈರ್ವಾಲ್ ಮೂಲಕ ಹಾದುಹೋಗಲು ಅನುಮತಿಸಲ್ಪಡುತ್ತವೆ. ಪೂರ್ವನಿಯೋಜಿತವಾಗಿ ಯಾವುದೆ ಮಿತಿ "
+#~ "ಇರುವುದಿಲ್ಲ."
+
+#
+#~ msgid "Masquerading"
+#~ msgstr "ಛದ್ಮವೇಷಗೊಳಿಕೆ"
+
+#
+#~ msgid ""
+#~ "Masquerading allows you to set up a host or router that connects your "
+#~ "local network to the internet. Your local network will not be visible and "
+#~ "the hosts appear as a single address on the internet. Masquerading is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "ನಿಮ್ಮ ಸ್ಥಳೀಯ ಜಾಲಬಂಧಕ್ಕೆ ಸಂಪರ್ಕ ಕಲ್ಪಿಸುವ ಅತಿಥೇಯ ಅಥವ ರೌಟರ್ ಅನ್ನು ಸಂಯೋಜಿಸುವಾಗ "
+#~ "ಛದ್ಮವೇಶಗೊಳಿಕೆಯು(Masquerading) ಸಹಾಯಕವಾಗುತ್ತದೆ. ನಿಮ್ಮ ಸ್ಥಳೀಯ ಜಾಲಬಂಧವು "
+#~ "ಅಂತರ್ಜಾಲಕ್ಕೆ ಒಂದು ಅತಿಥೇಯವಾಗಿ ಗೋಚರಿಸುವುದಿಲ್ಲ. ಛದ್ಮವೇಶಿಸುವುದು IPv4 ನಲ್ಲಿ ಮಾತ್ರ."
+
+#~ msgid ""
+#~ "Only allow full access for interfaces or network areas if you can trust "
+#~ "all participants part of these."
+#~ msgstr ""
+#~ "ಇವುಗಳಲ್ಲಿ ಎಲ್ಲವನ್ನೂ ನೀವು ನಂಬುವಂತಿದ್ದಲ್ಲಿ ಮಾತ್ರ ಸಂಪರ್ಕಸಾಧನಗಳಿಗೆ ಹಾಗು ಜಾಲಬಂಧ "
+#~ "ಸ್ಥಳಗಳಿಗೆ ಸಂಪೂರ್ಣ ನಿಲುಕಣೆಗಳನ್ನು ಒದಗಿಸಿ."
+
+#
+#~ msgid "Other Ports"
+#~ msgstr "ಇತರೆ ಸಂಪರ್ಕ ಸ್ಥಾನಗಳು"
+
+#
+#~ msgid "Port Forwarding"
+#~ msgstr "ಸಂಪರ್ಕ ಸ್ಥಾನ ಫಾರ್ವಾರ್ಡಿಂಗ್"
+
+#~ msgid "Public Zone"
+#~ msgstr "ಸಾರ್ವಜನಿಕ ವಲಯ"
+
+#
+#~ msgid "Reload"
+#~ msgstr "ಪುನಃ ಲೋಡ್ ಮಾಡು"
+
+#
+#~ msgid "Remove"
+#~ msgstr "ತೆಗೆದುಹಾಕು"
+
+#~ msgid "Restart"
+#~ msgstr "ಮರಳಿ ಆರಂಭಿಸು"
+
+#
+#~ msgid "SSH"
+#~ msgstr "SSH"
+
+#~ msgid ""
+#~ "Secure Shell (SSH) is a protocol for logging into and executing commands "
+#~ "on remote machines. It provides secure encrypted comminucations. If you "
+#~ "plan on accessing your machine remotely via SSH over a firewalled "
+#~ "interface, enable this option. You need the openssh-server package "
+#~ "installed for this option to be useful. "
+#~ msgstr ""
+#~ "ಸೆಕ್ಯೂರ್ ಶೆಲ್ (SSH) ಎನ್ನುವುದು ದೂರದ ಗಣಕಗಳಿಗೆ ಪ್ರವೇಶಿಸುವ ಹಾಗು ಆಜ್ಞೆಗಳನ್ನು "
+#~ "ಕಾರ್ಯಗತಗೊಳಿಸುವ ಒಂದು ಪ್ರೊಟೊಕಾಲ್ ಆಗಿದೆ. ಇದು ಸುರಕ್ಷಿತವಾದ ಗೂಢಲಿಪೀಕರಣಗೊಂಡ "
+#~ "ಸಂವಹನಗಳನ್ನು ಒದಗಿಸುತ್ತದೆ. ನೀವು ನಿಮ್ಮ ಗಣಕವನ್ನು SSH ಮೂಲಕ ಒಂದು ಫೈರ್ವಾಲ್ ಅನ್ನು "
+#~ "ಹೊಂದಿರುವ ಸಂಪರ್ಕಸಾಧನದ ಮುಖಾಂತರ ದೂರದಿಂದ ನಿಲುಕಿಸಿಕೊಳ್ಳಲು ಬಯಸಿದಲ್ಲಿ ಈ ಆಯ್ಕೆಯನ್ನು "
+#~ "ಶಕ್ತಗೊಳಿಸಿ. ಈ ಆಯ್ಕೆಯು ಉಪಯುಕ್ತವೆನಿಸಲು ನಿಮ್ಮಲ್ಲಿ openssh-server ಪ್ಯಾಕೇಜ್ ಅನ್ನು "
+#~ "ಅನುಸ್ಥಾಪಿಸಿರಬೇಕು. "
+
+#~ msgid "Select Configuration"
+#~ msgstr "ಸಂರಚನೆಯನ್ನು ಆರಿಸಿ"
+
+#~ msgid "Services"
+#~ msgstr "ಸೇವೆಗಳು"
+
+#~ msgid "Start"
+#~ msgstr "ಆರಂಭಿಸು"
+
+#~ msgid "Stop"
+#~ msgstr "ನಿಲ್ಲಿಸು"
+
+#~ msgid "Switch Firewall Model"
+#~ msgstr "ಫೈರ್ವಾಲ್ ಮಾದರಿಯನ್ನು ಬದಲಾಯಿಸಿ"
+
+#~ msgid "Switch firewall model"
+#~ msgstr "ಫೈರ್ವಾಲ್ ಮಾದರಿಯನ್ನು ಬದಲಾಯಿಸಿ"
+
+#
+#~ msgid ""
+#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
+#~ "messages between networked computers, but additionally for informational "
+#~ "messages like ping requests and replies."
+#~ msgstr ""
+#~ "ಇಂಟರ್ನೆಟ್ ಕಂಟ್ರೋಲ್ ಮೆಸೇಜ್ ಪ್ರೊಟೋಕಾಲ್ (ICMP) ಹೆಚ್ಚಾಗಿ ಜಾಲದೊಳಗಿನ ಗಣಕಗಳ ನಡುವೆ ದೋಷ "
+#~ "ಸಂದೇಶಗಳನ್ನು ಕಳುಹಿಸಲು ಬಳಸಲ್ಪಡುತ್ತದೆ, ಆದರೆ ಇದರ ಜೊತೆಗೆ ಮಾಹಿತಿಯ ಸಂದೇಶಗಳಾದಂತಹ "
+#~ "ಪಿಂಗ್ ಮನವಿಗಳು ಹಾಗು ಪ್ರತ್ಯುತ್ತರಗಳನ್ನೂ ಸಹ ಕಳುಹಿಸಲು ಬಳಸಲ್ಪಡುತ್ತದೆ."
+
+#~ msgid "Trusted"
+#~ msgstr "ನಂಬಿಕಸ್ತ"
+
+#~ msgid "Trusted Zone"
+#~ msgstr "ನಂಬಿಕಸ್ತ ವಲಯ"
+
+#
+#~ msgid "WWW (HTTP)"
+#~ msgstr "WWW (HTTP)"
+
+#~ msgid "Work Zone"
+#~ msgstr "ಕೆಲಸದ ವಲಯ"
+
+#
+#~ msgid "_File"
+#~ msgstr "ಕಡತ(_F)"
+
+#
+#~ msgid "_Help"
+#~ msgstr "ಸಹಾಯ(_H)"
+
+#
+#~ msgid "_Options"
+#~ msgstr "ಆಯ್ಕೆಗಳು(_O)"
+
+#~ msgid "ftp"
+#~ msgstr "ftp"
+
+#~ msgid "- proof of concept implementation -"
+#~ msgstr "- ಪರಿಕಲ್ಪನೆಯನ್ನು ಅನ್ವಯಿಸುವಿಕೆಯ ಪುರಾವೆ -"
+
+#~ msgid "Ports"
+#~ msgstr "ಸಂಪರ್ಕಸ್ಥಾನಗಳು"
+
+#~ msgid "Trusted Connections"
+#~ msgstr "ನಂಬಿಕಸ್ತ ಸಂಪರ್ಕಗಳು"
+
+#~ msgid "ICMP Blocking"
+#~ msgstr "ICMP ನಿರ್ಬಂಧ"
+
+#~ msgid "Panic Mode"
+#~ msgstr "ಭೀತಿಯ (ಪ್ಯಾನಿಕ್) ಸ್ಥಿತಿ"
+
+#
+#~ msgid "Enable Firewall"
+#~ msgstr "ಫೈರ್ವಾಲನ್ನು ಶಕ್ತಗೊಳಿಸು"
+
+#~ msgid ""
+#~ "\n"
+#~ "Timeout: %d seconds"
+#~ msgstr ""
+#~ "\n"
+#~ "ಕಾಲಾವಧಿ ಮುಗಿದಿದೆ: %d ಸೆಕೆಂಡುಗಳು"
+
+#~ msgid "No Open Services."
+#~ msgstr "ಯಾವುದೆ ತೆರೆದ ಸೇವೆಗಳಿಲ್ಲ."
+
+#~ msgid "Open Services:"
+#~ msgstr "ತೆರೆದ ಸೇವೆಗಳು:"
+
+#~ msgid "No Open Ports."
+#~ msgstr "ಯಾವುದೆ ತೆರೆದ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಲ್ಲ."
+
+#~ msgid "No Trusted."
+#~ msgstr "ನಂಬಿಕಸ್ತವಲ್ಲ."
+
+#~ msgid "Trusted:"
+#~ msgstr "ನಂಬಿಕಸ್ತ:"
+
+#~ msgid "No Masqueraded."
+#~ msgstr "ಛದ್ಮವೇಶಗೊಳಿಸಲಾಗಿಲ್ಲ:"
+
+#~ msgid "Masqueraded:"
+#~ msgstr "ಛದ್ಮವೇಶಗೊಳಿಕೆ:"
+
+#~ msgid "No ICMP Blocks."
+#~ msgstr "ಯಾವುದೆ ICMP ನಿರ್ಬಂಧಗಳಿಲ್ಲ."
+
+#~ msgid "ICMP Blocks:"
+#~ msgstr "ICMP ನಿರ್ಬಂಧಗಳು:"
+
+#~ msgid "No Forward Ports."
+#~ msgstr "ಯಾವುದೆ ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನಗಳಿಲ್ಲ."
+
+#~ msgid "Forward Ports:"
+#~ msgstr "ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನಗಳು:"
+
+#~ msgid "No Custom Rules."
+#~ msgstr "ಯಾವುದೆ ಕಸ್ಟಮ್ ನಿಯಮಗಳಿಲ್ಲ."
+
+#~ msgid "Custom Rules:"
+#~ msgstr "ಕಸ್ಟಮ್ ನಿಯಮಗಳು:"
+
+#~ msgid "Panic mode"
+#~ msgstr "ಭೀತಿಯ (ಪ್ಯಾನಿಕ್) ಸ್ಥಿತಿ"
+
+#~ msgid "Service '%s'"
+#~ msgstr "ಸೇವೆ '%s'"
+
+#~ msgid "Port '%s:%s'"
+#~ msgstr "ಸಂಪರ್ಕಸ್ಥಾನ '%s:%s'"
+
+#~ msgid "Trusted '%s'"
+#~ msgstr "ನಂಬಿಕಸ್ತ '%s'"
+
+#~ msgid "Masquerade '%s'"
+#~ msgstr "'%s' ಅನ್ನು ಛದ್ಮವೇಶಗೊಳಿಸು"
+
+#~ msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+#~ msgstr ""
+#~ "'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s' ಆದಲ್ಲಿ ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಫಾರ್ವಾರ್ಡ್ "
+#~ "ಮಾಡು"
+
+#~ msgid "Block ICMP '%s'"
+#~ msgstr "ICMP '%s' ಅನ್ನು ನಿರ್ಬಂಧಿಸು"
+
+#~ msgid ""
+#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#~ msgstr ""
+#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"

@@ -8,17 +8,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 18:48+0100\n"
+"POT-Creation-Date: 2012-02-07 00:11+0100\n"
 "PO-Revision-Date: 2010-06-07 19:58+0200\n"
 "Last-Translator: Kris Thomsen <lakristho@gmail.com>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../src/firewall/config/__init__.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -44,459 +45,300 @@ msgstr ""
 "Du skulle have modtaget en kopi af GNU General Public License sammen med "
 "dette program. Hvis ikke, kig på <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
+#: ../src/firewall/core/io/icmptype.py:41
+#: ../src/firewall/core/io/service.py:43 ../src/firewall/core/io/zone.py:49
+#, python-format
+msgid "Unexpected element '%s'"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
+#: ../src/firewall/core/io/icmptype.py:48
+#: ../src/firewall/core/io/service.py:50 ../src/firewall/core/io/zone.py:56
+#, python-format
+msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
+#: ../src/firewall/core/io/icmptype.py:56
+#: ../src/firewall/core/io/service.py:58 ../src/firewall/core/io/zone.py:64
+#, python-format
+msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:4
-msgid "Active Configuration"
+#: ../src/firewalld:43
+#, c-format
+msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:5
-msgid "Add"
-msgstr "Tilføj"
-
-#
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
-msgstr ""
-"Tilføj yderligere porte eller portintervaller, som skal være tilgængelige "
-"for alle værter og netværk."
-
-#
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
-msgstr ""
-"Tilføj indgange til videresendingsporte, enten fra en port til en anden på "
-"det lokale system eller fra det lokale system til et andet system. "
-"Videresending til et anden system er kun brugbart, hvis grænsefladen er "
-"maskeret. Videresending af port er kun for IPv4."
-
-#
-#: ../src/firewall-config.glade.h:8
-msgid "Allow access to necessary ports or port ranges, only."
-msgstr "Tillad kun adgang til nødvendige porte eller portintervaller."
-
-#
-#: ../src/firewall-config.glade.h:9
-msgid "Allow access to necessary services, only."
-msgstr "Tillad kun adgang til nødvendige tjenester."
-
-#
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
-msgid "Custom Rules"
-msgstr "Tilpassede regler"
-
-#: ../src/firewall-config.glade.h:11
-msgid "Default Configuration"
+#: ../src/firewalld:60
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
 
-#
-#: ../src/firewall-config.glade.h:12
-msgid "Edit"
-msgstr "Redigér"
-
-#
-#: ../src/firewall-config.glade.h:13
-msgid "FTP"
-msgstr "FTP"
-
-#
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
-msgstr ""
-"FTP er en protokol til ekstern filoverførsel. Hvis du planlægger at gøre din "
-"FTP-server offentligt tilgængelig, skal du aktivere denne indstilling. Du "
-"skal have vsftpd-pakken installeret for at denne indstilling skal være "
-"brugbar."
-
-#: ../src/firewall-config.glade.h:15
-msgid "Firewall Daemon"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
-msgstr ""
-"HTTP er protokollen som bruges til at vise internetsider. Hvis du planlægger "
-"at gøre din internetserver offentligt tilgængelig, skal du aktivere denne "
-"indstilling. Denne indstilling er ikke nødvendigt for at vise sider lokalt "
-"og udvikle internetsider."
-
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:20
-msgid "ICMP Filter"
-msgstr "ICMP-filter"
-
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"Hvis du aktiverer maskering vil IP-videresending også blive aktivere for "
-"dine IPv4-netværk."
-
-#
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Markér de ICMP-typer i listen, der skal afvises. Alle andre ICMP-typer er "
-"tilladt at passere firewallen. Som standard er der ingen begrænsninger."
-
-#
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
-msgid "Masquerading"
-msgstr "Maskerede"
-
-#
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"Maskering tillader dig at sætte en vært eller en ruter op, som forbinder til "
-"dit lokale netværk til internettet. Dit lokale netværk vil ikke blive "
-"synligt og værterne vises som en enkelt adresse på internettet. Maskering er "
-"kun for IPv4."
-
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:29
-msgid "Other Ports"
-msgstr "Andre porte"
-
-#
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
-msgid "Port Forwarding"
-msgstr "Videresending af port"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:32
-msgid "Reload"
-msgstr "Genindlæs"
-
-#
-#: ../src/firewall-config.glade.h:33
-msgid "Remove"
-msgstr "Fjern"
-
-#: ../src/firewall-config.glade.h:34
-msgid "Restart"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:35
-msgid "SSH"
-msgstr "SSH"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-
-#: ../src/firewall-config.glade.h:37
-msgid "Select Configuration"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
-msgid "Services"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"Internet Control Message Protocol (ICMP) er hovedsageligt brugt til at sende "
-"fejlmeddelser mellem computere på netværk, men også til "
-"informationsmeddelser, som for eksempel, ping-forespørgsler og svar."
-
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:46
-msgid "WWW (HTTP)"
-msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:49
-msgid "_File"
-msgstr "_Fil"
-
-#
-#: ../src/firewall-config.glade.h:50
-msgid "_Help"
-msgstr "_Hjælp"
-
-#
-#: ../src/firewall-config.glade.h:51
-msgid "_Options"
-msgstr "_Indstillinger"
-
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr ""
-
-#: ../src/firewalld:74
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr ""
 
-#: ../src/firewalld:102
+#: ../src/firewalld:115
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:58
+#: ../src/firewall-applet:40
 msgid "Firewall Applet"
 msgstr ""
 
-#: ../src/firewall-applet:59
-msgid "- proof of concept implementation -"
+#: ../src/firewall-applet:85
+msgid "Enable Notifications"
 msgstr ""
 
-#: ../src/firewall-applet:124
-msgid "Ports"
+#: ../src/firewall-applet:97
+msgid "Firewall Zone Settings"
 msgstr ""
 
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
+#: ../src/firewall-applet:105
+msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr ""
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr ""
-
-#
-#: ../src/firewall-applet:178
-msgid "Enable Firewall"
-msgstr "Aktivér firewall"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
-msgstr ""
-
-#: ../src/firewall-applet:214
+#: ../src/firewall-applet:137
 msgid "Not using slip"
 msgstr ""
 
-#: ../src/firewall-applet:232
+#: ../src/firewall-applet:186
 #, c-format
 msgid ""
 "\n"
-"Timeout: %d seconds"
+"Requested by %s (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:234
+#: ../src/firewall-applet:189
 #, c-format
 msgid ""
 "\n"
-"Requested by: %s"
+"Command: '%s' (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
+#: ../src/firewall-applet:216
+msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:404
+#: ../src/firewall-applet:217
+msgid "Connection to FirewallD established."
+msgstr ""
+
+#: ../src/firewall-applet:311
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:411
+#: ../src/firewall-applet:317
 msgid "PANIC MODE"
 msgstr ""
 
-#: ../src/firewall-applet:418
-msgid "No Open Services."
+#: ../src/firewall-applet:329
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:420
-msgid "Open Services:"
+#: ../src/firewall-applet:332
+msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
+#: ../src/firewall-applet:340
+msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:430
-msgid "No Trusted."
+#: ../src/firewall-applet:357
+msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:432
-msgid "Trusted:"
+#: ../src/firewall-applet:358
+msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
+#: ../src/firewall-applet:365
+msgid "First Use"
+msgstr ""
+
+#: ../src/firewall-applet:367
+msgid "Close"
+msgstr ""
+
+#: ../src/firewall-applet:383
+msgid "Please select the default network location."
+msgstr ""
+
+#: ../src/firewall-applet:385
+msgid "Zones:"
+msgstr ""
+
+#: ../src/firewall-applet:394
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "FirewallD has been restarted."
+msgstr ""
+
+#: ../src/firewall-applet:437
+#, c-format
+msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr ""
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr ""
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr ""
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr ""
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr ""
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr ""
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr ""
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr ""
-
-#: ../src/firewall-applet:496
 #, c-format
-msgid "Service '%s'"
+msgid "Zone '%s' deactivated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
+#: ../src/firewall-cmd:175 ../src/firewall-cmd:177
+msgid "Wrong action and mode combination"
 msgstr ""
 
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr ""
+#
+#~ msgid "Add"
+#~ msgstr "Tilføj"
 
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
-msgstr ""
+#
+#~ msgid ""
+#~ "Add additional ports or port ranges, which need to be accessible for all "
+#~ "hosts or networks."
+#~ msgstr ""
+#~ "Tilføj yderligere porte eller portintervaller, som skal være tilgængelige "
+#~ "for alle værter og netværk."
 
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-msgstr ""
+#
+#~ msgid ""
+#~ "Add entries to forward ports either from one port to another on the local "
+#~ "system or from the local system to another system. Forwarding to another "
+#~ "system is only useful if the interface is masqueraded. Port forwarding is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "Tilføj indgange til videresendingsporte, enten fra en port til en anden "
+#~ "på det lokale system eller fra det lokale system til et andet system. "
+#~ "Videresending til et anden system er kun brugbart, hvis grænsefladen er "
+#~ "maskeret. Videresending af port er kun for IPv4."
 
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr ""
+#
+#~ msgid "Allow access to necessary ports or port ranges, only."
+#~ msgstr "Tillad kun adgang til nødvendige porte eller portintervaller."
 
-#: ../src/firewall-applet:595
-#, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
-msgstr ""
+#
+#~ msgid "Allow access to necessary services, only."
+#~ msgstr "Tillad kun adgang til nødvendige tjenester."
+
+#
+#~ msgid "Custom Rules"
+#~ msgstr "Tilpassede regler"
+
+#
+#~ msgid "Edit"
+#~ msgstr "Redigér"
+
+#
+#~ msgid "FTP"
+#~ msgstr "FTP"
+
+#
+#~ msgid ""
+#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
+#~ "FTP server publicly available, enable this option. You need the vsftpd "
+#~ "package installed for this option to be useful."
+#~ msgstr ""
+#~ "FTP er en protokol til ekstern filoverførsel. Hvis du planlægger at gøre "
+#~ "din FTP-server offentligt tilgængelig, skal du aktivere denne "
+#~ "indstilling. Du skal have vsftpd-pakken installeret for at denne "
+#~ "indstilling skal være brugbar."
+
+#
+#~ msgid ""
+#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
+#~ "Web server publicly available, enable this option. This option is not "
+#~ "required for viewing pages locally or developing Web pages."
+#~ msgstr ""
+#~ "HTTP er protokollen som bruges til at vise internetsider. Hvis du "
+#~ "planlægger at gøre din internetserver offentligt tilgængelig, skal du "
+#~ "aktivere denne indstilling. Denne indstilling er ikke nødvendigt for at "
+#~ "vise sider lokalt og udvikle internetsider."
+
+#
+#~ msgid "ICMP Filter"
+#~ msgstr "ICMP-filter"
+
+#
+#~ msgid ""
+#~ "If you enable masquerading, IP forwarding will also be enabled for your "
+#~ "IPv4 networks."
+#~ msgstr ""
+#~ "Hvis du aktiverer maskering vil IP-videresending også blive aktivere for "
+#~ "dine IPv4-netværk."
+
+#
+#~ msgid ""
+#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
+#~ "types are allowed to pass the firewall. The default is no limitation."
+#~ msgstr ""
+#~ "Markér de ICMP-typer i listen, der skal afvises. Alle andre ICMP-typer er "
+#~ "tilladt at passere firewallen. Som standard er der ingen begrænsninger."
+
+#
+#~ msgid "Masquerading"
+#~ msgstr "Maskerede"
+
+#
+#~ msgid ""
+#~ "Masquerading allows you to set up a host or router that connects your "
+#~ "local network to the internet. Your local network will not be visible and "
+#~ "the hosts appear as a single address on the internet. Masquerading is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "Maskering tillader dig at sætte en vært eller en ruter op, som forbinder "
+#~ "til dit lokale netværk til internettet. Dit lokale netværk vil ikke blive "
+#~ "synligt og værterne vises som en enkelt adresse på internettet. Maskering "
+#~ "er kun for IPv4."
+
+#
+#~ msgid "Other Ports"
+#~ msgstr "Andre porte"
+
+#
+#~ msgid "Port Forwarding"
+#~ msgstr "Videresending af port"
+
+#
+#~ msgid "Reload"
+#~ msgstr "Genindlæs"
+
+#
+#~ msgid "Remove"
+#~ msgstr "Fjern"
+
+#
+#~ msgid "SSH"
+#~ msgstr "SSH"
+
+#
+#~ msgid ""
+#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
+#~ "messages between networked computers, but additionally for informational "
+#~ "messages like ping requests and replies."
+#~ msgstr ""
+#~ "Internet Control Message Protocol (ICMP) er hovedsageligt brugt til at "
+#~ "sende fejlmeddelser mellem computere på netværk, men også til "
+#~ "informationsmeddelser, som for eksempel, ping-forespørgsler og svar."
+
+#
+#~ msgid "WWW (HTTP)"
+#~ msgstr "WWW (HTTP)"
+
+#
+#~ msgid "_File"
+#~ msgstr "_Fil"
+
+#
+#~ msgid "_Help"
+#~ msgstr "_Hjælp"
+
+#
+#~ msgid "_Options"
+#~ msgstr "_Indstillinger"
+
+#
+#~ msgid "Enable Firewall"
+#~ msgstr "Aktivér firewall"

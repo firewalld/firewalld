@@ -12,20 +12,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ru\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 18:48+0100\n"
+"POT-Creation-Date: 2012-02-07 00:11+0100\n"
 "PO-Revision-Date: 2011-01-26 18:02+0300\n"
 "Last-Translator: Alexander Opoycev <opoycev@yandex.ru>\n"
 "Language-Team: Russian\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.4\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../src/firewall/config/__init__.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -51,481 +52,502 @@ msgstr ""
 "Копия лицензии предоставляется с этой программой. Ее также можно найти по "
 "адресу <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
-msgstr "21/TCP"
-
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
-msgstr "22/TCP"
-
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
-msgstr "80/TCP"
-
-#: ../src/firewall-config.glade.h:4
-msgid "Active Configuration"
-msgstr "Активные настройки"
-
-#
-#: ../src/firewall-config.glade.h:5
-msgid "Add"
-msgstr "Добавить"
-
-#
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
+#: ../src/firewall/core/io/icmptype.py:41
+#: ../src/firewall/core/io/service.py:43 ../src/firewall/core/io/zone.py:49
+#, python-format
+msgid "Unexpected element '%s'"
 msgstr ""
-"Добавьте дополнительные порты или диапазоны портов, которые должны быть "
-"доступны из других сетей или узлов."
 
-#
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
+#: ../src/firewall/core/io/icmptype.py:48
+#: ../src/firewall/core/io/service.py:50 ../src/firewall/core/io/zone.py:56
+#, python-format
+msgid "Element '%s': missing '%s' attribute"
 msgstr ""
-"Добавьте записи для перенаправления портов либо с одного порта другому в "
-"локальной системе, либо из локальной системы другой системе. Перенаправление "
-"другой системе имеет смысл при маскараде интерфейса. Перенаправление портов "
-"используется только для IPv4."
 
-#
-#: ../src/firewall-config.glade.h:8
-msgid "Allow access to necessary ports or port ranges, only."
-msgstr "Разрешить доступ только к необходимым портам или диапазонам портов."
-
-#
-#: ../src/firewall-config.glade.h:9
-msgid "Allow access to necessary services, only."
-msgstr "Разрешить доступ только к необходимым службам."
-
-#
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
-msgid "Custom Rules"
-msgstr "Специальные правила"
-
-#: ../src/firewall-config.glade.h:11
-msgid "Default Configuration"
-msgstr "Настройки по умолчанию"
-
-#
-#: ../src/firewall-config.glade.h:12
-msgid "Edit"
-msgstr "Правка"
-
-#
-#: ../src/firewall-config.glade.h:13
-msgid "FTP"
-msgstr "FTP"
-
-#
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
+#: ../src/firewall/core/io/icmptype.py:56
+#: ../src/firewall/core/io/service.py:58 ../src/firewall/core/io/zone.py:64
+#, python-format
+msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
-"FTP -- это протокол используемый для передачи файлов по сети. Если вы "
-"планируете сделать ваш FTP сервер публично доступным, включите эту опцию. "
-"Вам потребуется установить пакет vsftpd для работы FTP сервера на вашем "
-"компьютере."
 
-#: ../src/firewall-config.glade.h:15
-msgid "Firewall Daemon"
-msgstr "Фоновая служба межсетевого экрана"
-
-#
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
+#: ../src/firewalld:43
+#, c-format
+msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
-"HTTP -- это протокол, используемый для работы с веб-страницами. Если вы "
-"планируете сделать ваш веб-сервер публично доступным, включите эту опцию. "
-"Эта опция не требуется для просмотра локальных страниц или разработки веб-"
-"страниц."
 
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
+#: ../src/firewalld:60
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
-"Здесь вы можете определить интерфейсы и диапазоны адресов сети, которые "
-"будут иметь полный доступ к системе."
 
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
-"Здесь вы можете определить, какие службы являются доверенными. Доверенные "
-"службы, будут доступны со всех узлов и сетей по указанному сетевому "
-"протоколу. Нажмите кнопку <i>Добавить</ i>, чтобы выбрать из списка заранее "
-"определенных служб."
-
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr "Домашняя зона"
-
-#
-#: ../src/firewall-config.glade.h:20
-msgid "ICMP Filter"
-msgstr "Фильтр ICMP"
-
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr "IPv4"
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr "IPv4,IPv6"
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr "IPv6"
-
-#
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"Если вы включите возможность маскарада, то для сетей IPv4 будет активировано "
-"перенаправление IP."
-
-#
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Отметьте в списке типы ICMP, которым следует отказать в прохождении через "
-"межсетевой экран. По умолчанию ограничений нет."
-
-#
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
-msgid "Masquerading"
-msgstr "Маскарад"
-
-#
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"Возможность маскарада (только для IPv4) позволяет настроить узел или "
-"маршрутизатор, подключающий локальную сеть к Интернету. Локальная сеть при "
-"этом не будет видна извне, будет лишь доступен один адрес."
-
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
-"Полный доступ к интерфейсам или диапазонам адресов сети стоит предоставлять, "
-"только если вы полностью доверяете всем, кто может получить доступ к этим "
-"интерфейсам или адресам."
-
-#
-#: ../src/firewall-config.glade.h:29
-msgid "Other Ports"
-msgstr "Другие порты"
-
-#
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
-msgid "Port Forwarding"
-msgstr "Перенаправление портов"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr "Открытая зона"
-
-#
-#: ../src/firewall-config.glade.h:32
-msgid "Reload"
-msgstr "Перезагрузить"
-
-#
-#: ../src/firewall-config.glade.h:33
-msgid "Remove"
-msgstr "Удалить"
-
-#: ../src/firewall-config.glade.h:34
-msgid "Restart"
-msgstr "Перезапустить"
-
-#
-#: ../src/firewall-config.glade.h:35
-msgid "SSH"
-msgstr "SSH"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-"Secure Shell (SSH) - протокол для регистрации и выполнения команд на "
-"удаленных компьютерах обеспечивающий безопасную зашифрованную связь. Если вы "
-"планируете подключаться к вашей системе через SSH через интерфейс, который "
-"контролируется межсетевым экраном, отметьте этот пункт. Для того чтобы им "
-"воспользоваться, необходимо установить пакет openssh-server."
-
-#: ../src/firewall-config.glade.h:37
-msgid "Select Configuration"
-msgstr "Выберите настройки"
-
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
-msgid "Services"
-msgstr "Службы"
-
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr "Запуск"
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr "Остановить"
-
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr "Переключить модель брандмауэра"
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr "Переключить модель брандмауэра"
-
-#
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"Протокол ICMP (Internet Control Message Protocol) обычно используется для "
-"обмена сообщениями об ошибках между компьютерами в сети, но с его помощью "
-"также можно отправлять информационные сообщения, такие как запросы и ответы "
-"ping."
-
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr "Доверенные"
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr "Доверенная зона"
-
-#
-#: ../src/firewall-config.glade.h:46
-msgid "WWW (HTTP)"
-msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr "Рабочая зона"
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr "Зоны"
-
-#
-#: ../src/firewall-config.glade.h:49
-msgid "_File"
-msgstr "_Файл"
-
-#
-#: ../src/firewall-config.glade.h:50
-msgid "_Help"
-msgstr "_Справка"
-
-#
-#: ../src/firewall-config.glade.h:51
-msgid "_Options"
-msgstr "_Параметры"
-
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr "ftp"
-
-#: ../src/firewalld:74
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD уже запущен."
 
-#: ../src/firewalld:102
+#: ../src/firewalld:115
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Невозможно выполнить ветвление: %d (%s)"
 
-#: ../src/firewall-applet:58
+#: ../src/firewall-applet:40
 msgid "Firewall Applet"
 msgstr "Аплет брандмауера"
 
-#: ../src/firewall-applet:59
-msgid "- proof of concept implementation -"
-msgstr "- Тестовая реализация -"
-
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr "Порты"
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr "Разрушённые соединения"
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr "Блокировка ICMP"
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr "Режим усиленной безопасности"
-
-#
-#: ../src/firewall-applet:178
-msgid "Enable Firewall"
-msgstr "Включить межсетевой экран"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
+#: ../src/firewall-applet:85
+#, fuzzy
+msgid "Enable Notifications"
 msgstr "Вклюачить все уведомлнения"
 
-#: ../src/firewall-applet:214
+#: ../src/firewall-applet:97
+msgid "Firewall Zone Settings"
+msgstr ""
+
+#: ../src/firewall-applet:105
+msgid "Block all network traffic"
+msgstr ""
+
+#: ../src/firewall-applet:137
 msgid "Not using slip"
 msgstr "SLIP не используется"
 
-#: ../src/firewall-applet:232
-#, c-format
+#: ../src/firewall-applet:186
+#, fuzzy, c-format
 msgid ""
 "\n"
-"Timeout: %d seconds"
-msgstr ""
-"\n"
-"Время ожидания: %d секунд"
-
-#: ../src/firewall-applet:234
-#, c-format
-msgid ""
-"\n"
-"Requested by: %s"
+"Requested by %s (%s)"
 msgstr ""
 "\n"
 "Запрос от: %s"
 
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
+#: ../src/firewall-applet:189
+#, c-format
+msgid ""
+"\n"
+"Command: '%s' (%s)"
+msgstr ""
+
+#: ../src/firewall-applet:216
+#, fuzzy
+msgid "Connection to FirewallD lost."
 msgstr "Потеряна связь с FirewallD"
 
-#: ../src/firewall-applet:404
+#: ../src/firewall-applet:217
+#, fuzzy
+msgid "Connection to FirewallD established."
+msgstr "Потеряна связь с FirewallD"
+
+#: ../src/firewall-applet:311
 msgid "No connection to firewall daemon"
 msgstr "Нет соединения с фоновой службой брандмауэра"
 
-#: ../src/firewall-applet:411
+#: ../src/firewall-applet:317
 msgid "PANIC MODE"
 msgstr "Режим усиленной безопасности"
 
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr "Нет открытых служб."
+#: ../src/firewall-applet:329
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr "Открытые службы:"
+#: ../src/firewall-applet:332
+msgid "Zone '{zone}' active for interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr "Нет открытых портов."
+#: ../src/firewall-applet:340
+msgid "No Active Zones."
+msgstr ""
 
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr "Нет доверенных."
+#: ../src/firewall-applet:357
+msgid "All network traffic is blocked."
+msgstr ""
 
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr "Доверенные:"
+#: ../src/firewall-applet:358
+msgid "Network traffic is not blocked anymore."
+msgstr ""
 
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr "Маскарад не используется."
+#: ../src/firewall-applet:365
+msgid "First Use"
+msgstr ""
+
+#: ../src/firewall-applet:367
+msgid "Close"
+msgstr ""
+
+#: ../src/firewall-applet:383
+msgid "Please select the default network location."
+msgstr ""
+
+#: ../src/firewall-applet:385
+#, fuzzy
+msgid "Zones:"
+msgstr "Зоны"
+
+#: ../src/firewall-applet:394
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "FirewallD has been restarted."
+msgstr ""
+
+#: ../src/firewall-applet:437
+#, c-format
+msgid "Zone '%s' activated for interface '%s'"
+msgstr ""
 
 #: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr "С Маскарадом:"
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr "Нет блокировок ICMP:"
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr "Блокировки ICMP:"
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr "Нет портов перенаправления."
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr "Порты перенаправления:"
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr "Нет специальных правил."
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr "Специальные правила:"
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr "Режим усиленной защиты"
-
-#: ../src/firewall-applet:496
 #, c-format
-msgid "Service '%s'"
-msgstr "Служба «%s»"
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr "Порт «%s:%s»"
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr "Доверенные «%s»"
-
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
-msgstr "Маскарад «%s»"
-
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgid "Zone '%s' deactivated for interface '%s'"
 msgstr ""
-"Порт перенаправления «if =% s: port =% s: proto =% s: toport =% s: toaddr =% "
-"s»"
 
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr "Блокировка ICMP «% s»"
-
-#: ../src/firewall-applet:595
-#, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#: ../src/firewall-cmd:175 ../src/firewall-cmd:177
+msgid "Wrong action and mode combination"
 msgstr ""
-"Специальные  «table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%"
-"s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s»"
+
+#~ msgid "21/TCP"
+#~ msgstr "21/TCP"
+
+#~ msgid "22/TCP"
+#~ msgstr "22/TCP"
+
+#~ msgid "80/TCP"
+#~ msgstr "80/TCP"
+
+#~ msgid "Active Configuration"
+#~ msgstr "Активные настройки"
+
+#
+#~ msgid "Add"
+#~ msgstr "Добавить"
+
+#
+#~ msgid ""
+#~ "Add additional ports or port ranges, which need to be accessible for all "
+#~ "hosts or networks."
+#~ msgstr ""
+#~ "Добавьте дополнительные порты или диапазоны портов, которые должны быть "
+#~ "доступны из других сетей или узлов."
+
+#
+#~ msgid ""
+#~ "Add entries to forward ports either from one port to another on the local "
+#~ "system or from the local system to another system. Forwarding to another "
+#~ "system is only useful if the interface is masqueraded. Port forwarding is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "Добавьте записи для перенаправления портов либо с одного порта другому в "
+#~ "локальной системе, либо из локальной системы другой системе. "
+#~ "Перенаправление другой системе имеет смысл при маскараде интерфейса. "
+#~ "Перенаправление портов используется только для IPv4."
+
+#
+#~ msgid "Allow access to necessary ports or port ranges, only."
+#~ msgstr "Разрешить доступ только к необходимым портам или диапазонам портов."
+
+#
+#~ msgid "Allow access to necessary services, only."
+#~ msgstr "Разрешить доступ только к необходимым службам."
+
+#
+#~ msgid "Custom Rules"
+#~ msgstr "Специальные правила"
+
+#~ msgid "Default Configuration"
+#~ msgstr "Настройки по умолчанию"
+
+#
+#~ msgid "Edit"
+#~ msgstr "Правка"
+
+#
+#~ msgid "FTP"
+#~ msgstr "FTP"
+
+#
+#~ msgid ""
+#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
+#~ "FTP server publicly available, enable this option. You need the vsftpd "
+#~ "package installed for this option to be useful."
+#~ msgstr ""
+#~ "FTP -- это протокол используемый для передачи файлов по сети. Если вы "
+#~ "планируете сделать ваш FTP сервер публично доступным, включите эту опцию. "
+#~ "Вам потребуется установить пакет vsftpd для работы FTP сервера на вашем "
+#~ "компьютере."
+
+#~ msgid "Firewall Daemon"
+#~ msgstr "Фоновая служба межсетевого экрана"
+
+#
+#~ msgid ""
+#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
+#~ "Web server publicly available, enable this option. This option is not "
+#~ "required for viewing pages locally or developing Web pages."
+#~ msgstr ""
+#~ "HTTP -- это протокол, используемый для работы с веб-страницами. Если вы "
+#~ "планируете сделать ваш веб-сервер публично доступным, включите эту опцию. "
+#~ "Эта опция не требуется для просмотра локальных страниц или разработки веб-"
+#~ "страниц."
+
+#~ msgid ""
+#~ "Here you can define the interfaces and network areas that have fill "
+#~ "access to the system."
+#~ msgstr ""
+#~ "Здесь вы можете определить интерфейсы и диапазоны адресов сети, которые "
+#~ "будут иметь полный доступ к системе."
+
+#~ msgid ""
+#~ "Here you can define which services are trusted. Trusted services are "
+#~ "accessible from all hosts and networks in the selected network protocol. "
+#~ "Click on <i>Add</i> to select an item from the list of predefined "
+#~ "services."
+#~ msgstr ""
+#~ "Здесь вы можете определить, какие службы являются доверенными. Доверенные "
+#~ "службы, будут доступны со всех узлов и сетей по указанному сетевому "
+#~ "протоколу. Нажмите кнопку <i>Добавить</ i>, чтобы выбрать из списка "
+#~ "заранее определенных служб."
+
+#~ msgid "Home Zone"
+#~ msgstr "Домашняя зона"
+
+#
+#~ msgid "ICMP Filter"
+#~ msgstr "Фильтр ICMP"
+
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv4,IPv6"
+#~ msgstr "IPv4,IPv6"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#
+#~ msgid ""
+#~ "If you enable masquerading, IP forwarding will also be enabled for your "
+#~ "IPv4 networks."
+#~ msgstr ""
+#~ "Если вы включите возможность маскарада, то для сетей IPv4 будет "
+#~ "активировано перенаправление IP."
+
+#
+#~ msgid ""
+#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
+#~ "types are allowed to pass the firewall. The default is no limitation."
+#~ msgstr ""
+#~ "Отметьте в списке типы ICMP, которым следует отказать в прохождении через "
+#~ "межсетевой экран. По умолчанию ограничений нет."
+
+#
+#~ msgid "Masquerading"
+#~ msgstr "Маскарад"
+
+#
+#~ msgid ""
+#~ "Masquerading allows you to set up a host or router that connects your "
+#~ "local network to the internet. Your local network will not be visible and "
+#~ "the hosts appear as a single address on the internet. Masquerading is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "Возможность маскарада (только для IPv4) позволяет настроить узел или "
+#~ "маршрутизатор, подключающий локальную сеть к Интернету. Локальная сеть "
+#~ "при этом не будет видна извне, будет лишь доступен один адрес."
+
+#~ msgid ""
+#~ "Only allow full access for interfaces or network areas if you can trust "
+#~ "all participants part of these."
+#~ msgstr ""
+#~ "Полный доступ к интерфейсам или диапазонам адресов сети стоит "
+#~ "предоставлять, только если вы полностью доверяете всем, кто может "
+#~ "получить доступ к этим интерфейсам или адресам."
+
+#
+#~ msgid "Other Ports"
+#~ msgstr "Другие порты"
+
+#
+#~ msgid "Port Forwarding"
+#~ msgstr "Перенаправление портов"
+
+#~ msgid "Public Zone"
+#~ msgstr "Открытая зона"
+
+#
+#~ msgid "Reload"
+#~ msgstr "Перезагрузить"
+
+#
+#~ msgid "Remove"
+#~ msgstr "Удалить"
+
+#~ msgid "Restart"
+#~ msgstr "Перезапустить"
+
+#
+#~ msgid "SSH"
+#~ msgstr "SSH"
+
+#~ msgid ""
+#~ "Secure Shell (SSH) is a protocol for logging into and executing commands "
+#~ "on remote machines. It provides secure encrypted comminucations. If you "
+#~ "plan on accessing your machine remotely via SSH over a firewalled "
+#~ "interface, enable this option. You need the openssh-server package "
+#~ "installed for this option to be useful. "
+#~ msgstr ""
+#~ "Secure Shell (SSH) - протокол для регистрации и выполнения команд на "
+#~ "удаленных компьютерах обеспечивающий безопасную зашифрованную связь. Если "
+#~ "вы планируете подключаться к вашей системе через SSH через интерфейс, "
+#~ "который контролируется межсетевым экраном, отметьте этот пункт. Для того "
+#~ "чтобы им воспользоваться, необходимо установить пакет openssh-server."
+
+#~ msgid "Select Configuration"
+#~ msgstr "Выберите настройки"
+
+#~ msgid "Services"
+#~ msgstr "Службы"
+
+#~ msgid "Start"
+#~ msgstr "Запуск"
+
+#~ msgid "Stop"
+#~ msgstr "Остановить"
+
+#~ msgid "Switch Firewall Model"
+#~ msgstr "Переключить модель брандмауэра"
+
+#~ msgid "Switch firewall model"
+#~ msgstr "Переключить модель брандмауэра"
+
+#
+#~ msgid ""
+#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
+#~ "messages between networked computers, but additionally for informational "
+#~ "messages like ping requests and replies."
+#~ msgstr ""
+#~ "Протокол ICMP (Internet Control Message Protocol) обычно используется для "
+#~ "обмена сообщениями об ошибках между компьютерами в сети, но с его помощью "
+#~ "также можно отправлять информационные сообщения, такие как запросы и "
+#~ "ответы ping."
+
+#~ msgid "Trusted"
+#~ msgstr "Доверенные"
+
+#~ msgid "Trusted Zone"
+#~ msgstr "Доверенная зона"
+
+#
+#~ msgid "WWW (HTTP)"
+#~ msgstr "WWW (HTTP)"
+
+#~ msgid "Work Zone"
+#~ msgstr "Рабочая зона"
+
+#
+#~ msgid "_File"
+#~ msgstr "_Файл"
+
+#
+#~ msgid "_Help"
+#~ msgstr "_Справка"
+
+#
+#~ msgid "_Options"
+#~ msgstr "_Параметры"
+
+#~ msgid "ftp"
+#~ msgstr "ftp"
+
+#~ msgid "- proof of concept implementation -"
+#~ msgstr "- Тестовая реализация -"
+
+#~ msgid "Ports"
+#~ msgstr "Порты"
+
+#~ msgid "Trusted Connections"
+#~ msgstr "Разрушённые соединения"
+
+#~ msgid "ICMP Blocking"
+#~ msgstr "Блокировка ICMP"
+
+#~ msgid "Panic Mode"
+#~ msgstr "Режим усиленной безопасности"
+
+#
+#~ msgid "Enable Firewall"
+#~ msgstr "Включить межсетевой экран"
+
+#~ msgid ""
+#~ "\n"
+#~ "Timeout: %d seconds"
+#~ msgstr ""
+#~ "\n"
+#~ "Время ожидания: %d секунд"
+
+#~ msgid "No Open Services."
+#~ msgstr "Нет открытых служб."
+
+#~ msgid "Open Services:"
+#~ msgstr "Открытые службы:"
+
+#~ msgid "No Open Ports."
+#~ msgstr "Нет открытых портов."
+
+#~ msgid "No Trusted."
+#~ msgstr "Нет доверенных."
+
+#~ msgid "Trusted:"
+#~ msgstr "Доверенные:"
+
+#~ msgid "No Masqueraded."
+#~ msgstr "Маскарад не используется."
+
+#~ msgid "Masqueraded:"
+#~ msgstr "С Маскарадом:"
+
+#~ msgid "No ICMP Blocks."
+#~ msgstr "Нет блокировок ICMP:"
+
+#~ msgid "ICMP Blocks:"
+#~ msgstr "Блокировки ICMP:"
+
+#~ msgid "No Forward Ports."
+#~ msgstr "Нет портов перенаправления."
+
+#~ msgid "Forward Ports:"
+#~ msgstr "Порты перенаправления:"
+
+#~ msgid "No Custom Rules."
+#~ msgstr "Нет специальных правил."
+
+#~ msgid "Custom Rules:"
+#~ msgstr "Специальные правила:"
+
+#~ msgid "Panic mode"
+#~ msgstr "Режим усиленной защиты"
+
+#~ msgid "Service '%s'"
+#~ msgstr "Служба «%s»"
+
+#~ msgid "Port '%s:%s'"
+#~ msgstr "Порт «%s:%s»"
+
+#~ msgid "Trusted '%s'"
+#~ msgstr "Доверенные «%s»"
+
+#~ msgid "Masquerade '%s'"
+#~ msgstr "Маскарад «%s»"
+
+#~ msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+#~ msgstr ""
+#~ "Порт перенаправления «if =% s: port =% s: proto =% s: toport =% s: toaddr "
+#~ "=% s»"
+
+#~ msgid "Block ICMP '%s'"
+#~ msgstr "Блокировка ICMP «% s»"
+
+#~ msgid ""
+#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#~ msgstr ""
+#~ "Специальные  «table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:"
+#~ "proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s»"

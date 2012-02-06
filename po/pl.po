@@ -10,16 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-02-15 18:48+0100\n"
+"POT-Creation-Date: 2012-02-07 00:11+0100\n"
 "PO-Revision-Date: 2011-02-16 09:25+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #
-#: ../src/firewall_config.py:42
+#: ../src/firewall/config/__init__.py:42
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -49,480 +50,504 @@ msgstr ""
 "Powszechnej Licencji Publicznej GNU (GNU General Public License); jeśli nie "
 "- proszę odwiedzić stronę internetową <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall-config.glade.h:1
-msgid "21/TCP"
-msgstr "21/TCP"
-
-#: ../src/firewall-config.glade.h:2
-msgid "22/TCP"
-msgstr "22/TCP"
-
-#: ../src/firewall-config.glade.h:3
-msgid "80/TCP"
-msgstr "80/TCP"
-
-#: ../src/firewall-config.glade.h:4
-msgid "Active Configuration"
-msgstr "Aktywna konfiguracja"
-
-#
-#: ../src/firewall-config.glade.h:5
-msgid "Add"
-msgstr "Dodaj"
-
-#
-#: ../src/firewall-config.glade.h:6
-msgid ""
-"Add additional ports or port ranges, which need to be accessible for all "
-"hosts or networks."
+#: ../src/firewall/core/io/icmptype.py:41
+#: ../src/firewall/core/io/service.py:43 ../src/firewall/core/io/zone.py:49
+#, python-format
+msgid "Unexpected element '%s'"
 msgstr ""
-"Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne dla "
-"wszystkich komputerów i sieci."
 
-#
-#: ../src/firewall-config.glade.h:7
-msgid ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
+#: ../src/firewall/core/io/icmptype.py:48
+#: ../src/firewall/core/io/service.py:50 ../src/firewall/core/io/zone.py:56
+#, python-format
+msgid "Element '%s': missing '%s' attribute"
 msgstr ""
-"Można dodać wpisy, aby przekierowywać porty w obrębie lokalnego systemu lub "
-"z lokalnego systemu do innego. Przekierowanie do innego systemu jest "
-"przydatne tylko, jeśli interfejs jest za maskaradą. Przekierowanie portów "
-"działa tylko dla IPv4."
 
-#
-#: ../src/firewall-config.glade.h:8
-msgid "Allow access to necessary ports or port ranges, only."
+#: ../src/firewall/core/io/icmptype.py:56
+#: ../src/firewall/core/io/service.py:58 ../src/firewall/core/io/zone.py:64
+#, python-format
+msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
-"Należy pozwolić na dostęp tylko do niezbędnych portów lub zakresów portów."
 
-#
-#: ../src/firewall-config.glade.h:9
-msgid "Allow access to necessary services, only."
-msgstr "Należy pozwolić na dostęp tylko do niezbędnych usług."
-
-#
-#: ../src/firewall-config.glade.h:10 ../src/firewall-applet:154
-msgid "Custom Rules"
-msgstr "Własne reguły"
-
-#: ../src/firewall-config.glade.h:11
-msgid "Default Configuration"
-msgstr "Domyślna konfiguracja"
-
-#
-#: ../src/firewall-config.glade.h:12
-msgid "Edit"
-msgstr "Zmodyfikuj"
-
-#
-#: ../src/firewall-config.glade.h:13
-msgid "FTP"
-msgstr "FTP"
-
-#
-#: ../src/firewall-config.glade.h:14
-msgid ""
-"FTP is a protocol used for remote file transfer. If you plan to make your "
-"FTP server publicly available, enable this option. You need the vsftpd "
-"package installed for this option to be useful."
+#: ../src/firewalld:43
+#, c-format
+msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
-"FTP jest protokołem używanym do zdalnego przesyłania plików. Jeśli planowane "
-"jest publiczne udostępnianie serwera FTP, należy włączyć tę opcję. Aby "
-"skorzystać z tej opcji musi być zainstalowany pakiet vsftpd."
 
-#: ../src/firewall-config.glade.h:15
-msgid "Firewall Daemon"
-msgstr "Demon zapory sieciowej"
-
-#
-#: ../src/firewall-config.glade.h:16
-msgid ""
-"HTTP is the protocol used to serve Web pages. If you plan to make your Web "
-"server publicly available, enable this option. This option is not required "
-"for viewing pages locally or developing Web pages."
+#: ../src/firewalld:60
+#, c-format
+msgid "Unknown option '%s'"
 msgstr ""
-"HTTP jest protokołem używanym do udostępniania stron WWW. Jeśli planowane "
-"jest publiczne udostępnienie serwera, należy włączyć tę opcję. Nie jest ona "
-"wymagana, aby lokalnie wyświetlać lub tworzyć strony."
 
-#: ../src/firewall-config.glade.h:17
-msgid ""
-"Here you can define the interfaces and network areas that have fill access "
-"to the system."
-msgstr ""
-"Tutaj można określić interfejsy i obszary sieciowe, które mają mieć pełny "
-"dostęp do systemu."
-
-#: ../src/firewall-config.glade.h:18
-msgid ""
-"Here you can define which services are trusted. Trusted services are "
-"accessible from all hosts and networks in the selected network protocol. "
-"Click on <i>Add</i> to select an item from the list of predefined services."
-msgstr ""
-"Tutaj można określić, które usługi są zaufane. Zaufane usługi są dostępne ze "
-"wszystkich komputerów i sieci w wybranym protokole sieciowym. Naciśnięcie "
-"przycisku <i>Dodaj</i> wybiera element z listy wcześniej określonych usług."
-
-#: ../src/firewall-config.glade.h:19
-msgid "Home Zone"
-msgstr "Strefa domowa"
-
-#
-#: ../src/firewall-config.glade.h:20
-msgid "ICMP Filter"
-msgstr "Filtr ICMP"
-
-#: ../src/firewall-config.glade.h:21
-msgid "IPv4"
-msgstr "IPv4"
-
-#: ../src/firewall-config.glade.h:22
-msgid "IPv4,IPv6"
-msgstr "IPv4, IPv6"
-
-#: ../src/firewall-config.glade.h:23
-msgid "IPv6"
-msgstr "IPv6"
-
-#
-#: ../src/firewall-config.glade.h:24
-msgid ""
-"If you enable masquerading, IP forwarding will also be enabled for your IPv4 "
-"networks."
-msgstr ""
-"Jeśli maskarada zostanie włączona, przekierowanie IP będzie także włączone "
-"dla sieci IPv4."
-
-#
-#: ../src/firewall-config.glade.h:25
-msgid ""
-"Mark the ICMP types in the list, which should be rejected. All other ICMP "
-"types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Można zaznaczyć typy ICMP na liście, które powinny być odrzucane. Wszystkie "
-"inne typy ICMP będą mogły przechodzić przez zaporę sieciową. Domyślnie nie "
-"ma ograniczeń."
-
-#
-#: ../src/firewall-config.glade.h:26 ../src/firewall-applet:136
-msgid "Masquerading"
-msgstr "Maskarada"
-
-#
-#: ../src/firewall-config.glade.h:27
-msgid ""
-"Masquerading allows you to set up a host or router that connects your local "
-"network to the internet. Your local network will not be visible and the "
-"hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"Maskarada umożliwia ustawienie komputera lub routera łączącego lokalny "
-"komputer z Internetem. Lokalna sieć nie będzie widoczna i będzie występować "
-"w Internecie jako jeden adres. Maskaradę można ustawić tylko dla IPv4."
-
-#: ../src/firewall-config.glade.h:28
-msgid ""
-"Only allow full access for interfaces or network areas if you can trust all "
-"participants part of these."
-msgstr ""
-"Należy umożliwić pełny dostęp tylko tym interfejsom lub obszarom sieciowym, "
-"w których można zaufać wszystkim uczestnikom."
-
-#
-#: ../src/firewall-config.glade.h:29
-msgid "Other Ports"
-msgstr "Inne porty"
-
-#
-#: ../src/firewall-config.glade.h:30 ../src/firewall-applet:142
-msgid "Port Forwarding"
-msgstr "Przekierowanie portów"
-
-#: ../src/firewall-config.glade.h:31
-msgid "Public Zone"
-msgstr "Strefa publiczna"
-
-#
-#: ../src/firewall-config.glade.h:32
-msgid "Reload"
-msgstr "Wczytaj ponownie"
-
-#
-#: ../src/firewall-config.glade.h:33
-msgid "Remove"
-msgstr "Usuń"
-
-#: ../src/firewall-config.glade.h:34
-msgid "Restart"
-msgstr "Uruchom ponownie"
-
-#
-#: ../src/firewall-config.glade.h:35
-msgid "SSH"
-msgstr "SSH"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Secure Shell (SSH) is a protocol for logging into and executing commands on "
-"remote machines. It provides secure encrypted comminucations. If you plan on "
-"accessing your machine remotely via SSH over a firewalled interface, enable "
-"this option. You need the openssh-server package installed for this option "
-"to be useful. "
-msgstr ""
-"Bezpieczna powłoka (SSH) jest protokołem pozwalającym na logowanie i "
-"wykonywanie poleceń na zdalnym komputerze. Pozwala na bezpieczną, szyfrowaną "
-"komunikację. Jeśli planowane jest logowanie na ten komputer przez SSH przez "
-"zaporę sieciową, należy włączyć tę opcję. Aby móc skorzystać z tej opcji, "
-"musi być zainstalowany pakiet openssh-server."
-
-#: ../src/firewall-config.glade.h:37
-msgid "Select Configuration"
-msgstr "Wybór konfiguracji"
-
-#: ../src/firewall-config.glade.h:38 ../src/firewall-applet:120
-msgid "Services"
-msgstr "Usługi"
-
-#: ../src/firewall-config.glade.h:39
-msgid "Start"
-msgstr "Uruchom"
-
-#: ../src/firewall-config.glade.h:40
-msgid "Stop"
-msgstr "Zatrzymaj"
-
-#: ../src/firewall-config.glade.h:41
-msgid "Switch Firewall Model"
-msgstr "Przełącz model zapory sieciowej"
-
-#: ../src/firewall-config.glade.h:42
-msgid "Switch firewall model"
-msgstr "Przełącz model zapory sieciowej"
-
-#
-#: ../src/firewall-config.glade.h:43
-msgid ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
-msgstr ""
-"Internetowy protokół kontroli komunikatów (ICMP) jest używany głównie do "
-"wysyłania komunikatów błędów między komputerami sieciowymi, ale także "
-"dodatkowo do komunikatów informacyjnych, takich jak żądania i odpowiedzi "
-"ping."
-
-#: ../src/firewall-config.glade.h:44
-msgid "Trusted"
-msgstr "Zaufane"
-
-#: ../src/firewall-config.glade.h:45
-msgid "Trusted Zone"
-msgstr "Strefa zaufana"
-
-#
-#: ../src/firewall-config.glade.h:46
-msgid "WWW (HTTP)"
-msgstr "WWW (HTTP)"
-
-#: ../src/firewall-config.glade.h:47
-msgid "Work Zone"
-msgstr "Strefa robocza"
-
-#: ../src/firewall-config.glade.h:48
-msgid "Zones"
-msgstr "Strefy"
-
-#
-#: ../src/firewall-config.glade.h:49
-msgid "_File"
-msgstr "_Plik"
-
-#
-#: ../src/firewall-config.glade.h:50
-msgid "_Help"
-msgstr "Pomo_c"
-
-#
-#: ../src/firewall-config.glade.h:51
-msgid "_Options"
-msgstr "_Opcje"
-
-#: ../src/firewall-config.glade.h:52
-msgid "ftp"
-msgstr "ftp"
-
-#: ../src/firewalld:74
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD nie zostanie uruchomione, ponieważ już działa."
 
-#: ../src/firewalld:102
+#: ../src/firewalld:115
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Rozdzielenie #1 nie powiodło się: %d (%s)"
 
-#: ../src/firewall-applet:58
+#: ../src/firewall-applet:40
 msgid "Firewall Applet"
 msgstr "Aplet zapory sieciowej"
 
-#: ../src/firewall-applet:59
-msgid "- proof of concept implementation -"
-msgstr "- przykładowa implementacja -"
-
-#: ../src/firewall-applet:124
-msgid "Ports"
-msgstr "Porty"
-
-#: ../src/firewall-applet:130
-msgid "Trusted Connections"
-msgstr "Zaufane połączenia"
-
-#: ../src/firewall-applet:148
-msgid "ICMP Blocking"
-msgstr "Blokowanie ICMP"
-
-#: ../src/firewall-applet:167
-msgid "Panic Mode"
-msgstr "Tryb paniki"
-
-#
-#: ../src/firewall-applet:178
-msgid "Enable Firewall"
-msgstr "Włącz zaporę sieciową"
-
-#: ../src/firewall-applet:183
-msgid "Enable All Notifications"
+#: ../src/firewall-applet:85
+#, fuzzy
+msgid "Enable Notifications"
 msgstr "Włącz wszystkie powiadomienia"
 
-#: ../src/firewall-applet:214
+#: ../src/firewall-applet:97
+msgid "Firewall Zone Settings"
+msgstr ""
+
+#: ../src/firewall-applet:105
+msgid "Block all network traffic"
+msgstr ""
+
+#: ../src/firewall-applet:137
 msgid "Not using slip"
 msgstr "Bez używania slip"
 
-#: ../src/firewall-applet:232
-#, c-format
+#: ../src/firewall-applet:186
+#, fuzzy, c-format
 msgid ""
 "\n"
-"Timeout: %d seconds"
-msgstr ""
-"\n"
-"Czas oczekiwania: %d sekund"
-
-#: ../src/firewall-applet:234
-#, c-format
-msgid ""
-"\n"
-"Requested by: %s"
+"Requested by %s (%s)"
 msgstr ""
 "\n"
 "Żądane przez: %s"
 
-#: ../src/firewall-applet:254
-msgid "Connection to FirewallD lost"
+#: ../src/firewall-applet:189
+#, c-format
+msgid ""
+"\n"
+"Command: '%s' (%s)"
+msgstr ""
+
+#: ../src/firewall-applet:216
+#, fuzzy
+msgid "Connection to FirewallD lost."
 msgstr "Utracono połączenie z FirewallD"
 
-#: ../src/firewall-applet:404
+#: ../src/firewall-applet:217
+#, fuzzy
+msgid "Connection to FirewallD established."
+msgstr "Utracono połączenie z FirewallD"
+
+#: ../src/firewall-applet:311
 msgid "No connection to firewall daemon"
 msgstr "Brak połączenia z demonem zapory sieciowej"
 
-#: ../src/firewall-applet:411
+#: ../src/firewall-applet:317
 msgid "PANIC MODE"
 msgstr "TRYB PANIKI"
 
-#: ../src/firewall-applet:418
-msgid "No Open Services."
-msgstr "Brak otwartych usług."
+#: ../src/firewall-applet:329
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:420
-msgid "Open Services:"
-msgstr "Otwarte usługi:"
+#: ../src/firewall-applet:332
+msgid "Zone '{zone}' active for interface '{interface}'"
+msgstr ""
 
-#: ../src/firewall-applet:424
-msgid "No Open Ports."
-msgstr "Brak otwartych portów."
+#: ../src/firewall-applet:340
+msgid "No Active Zones."
+msgstr ""
 
-#: ../src/firewall-applet:430
-msgid "No Trusted."
-msgstr "Brak zaufanych."
+#: ../src/firewall-applet:357
+msgid "All network traffic is blocked."
+msgstr ""
 
-#: ../src/firewall-applet:432
-msgid "Trusted:"
-msgstr "Zaufane:"
+#: ../src/firewall-applet:358
+msgid "Network traffic is not blocked anymore."
+msgstr ""
 
-#: ../src/firewall-applet:436
-msgid "No Masqueraded."
-msgstr "Brak maskarady."
+#: ../src/firewall-applet:365
+msgid "First Use"
+msgstr ""
+
+#: ../src/firewall-applet:367
+msgid "Close"
+msgstr ""
+
+#: ../src/firewall-applet:383
+msgid "Please select the default network location."
+msgstr ""
+
+#: ../src/firewall-applet:385
+#, fuzzy
+msgid "Zones:"
+msgstr "Strefy"
+
+#: ../src/firewall-applet:394
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "FirewallD has been restarted."
+msgstr ""
+
+#: ../src/firewall-applet:437
+#, c-format
+msgid "Zone '%s' activated for interface '%s'"
+msgstr ""
 
 #: ../src/firewall-applet:438
-msgid "Masqueraded:"
-msgstr "Maskarada:"
-
-#: ../src/firewall-applet:442
-msgid "No ICMP Blocks."
-msgstr "Brak blokad ICMP."
-
-#: ../src/firewall-applet:444
-msgid "ICMP Blocks:"
-msgstr "Blokady ICMP:"
-
-#: ../src/firewall-applet:448
-msgid "No Forward Ports."
-msgstr "Brak przekierowywanych portów."
-
-#: ../src/firewall-applet:450
-msgid "Forward Ports:"
-msgstr "Przekierowywane porty:"
-
-#: ../src/firewall-applet:454
-msgid "No Custom Rules."
-msgstr "Brak własnych reguł."
-
-#: ../src/firewall-applet:456
-msgid "Custom Rules:"
-msgstr "Własne reguły:"
-
-#: ../src/firewall-applet:474
-msgid "Panic mode"
-msgstr "Tryb paniki"
-
-#: ../src/firewall-applet:496
 #, c-format
-msgid "Service '%s'"
-msgstr "Usługa \"%s\""
-
-#: ../src/firewall-applet:511
-#, c-format
-msgid "Port '%s:%s'"
-msgstr "Port \"%s:%s\""
-
-#: ../src/firewall-applet:525
-#, c-format
-msgid "Trusted '%s'"
-msgstr "Zaufane \"%s\""
-
-#: ../src/firewall-applet:541
-#, c-format
-msgid "Masquerade '%s'"
-msgstr "Maskarada \"%s\""
-
-#: ../src/firewall-applet:557
-#, c-format
-msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+msgid "Zone '%s' deactivated for interface '%s'"
 msgstr ""
-"Przekierowywany port \"if=%s:port=%s:protokół=%s:port_docelowy=%s:"
-"adres_docelowy=%s\""
 
-#: ../src/firewall-applet:572
-#, c-format
-msgid "Block ICMP '%s'"
-msgstr "Blokada ICMP \"%s\""
-
-#: ../src/firewall-applet:595
-#, c-format
-msgid ""
-"Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-"iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#: ../src/firewall-cmd:175 ../src/firewall-cmd:177
+msgid "Wrong action and mode combination"
 msgstr ""
-"Własne \"tablica=%s:łańcuch=%s:źródło=%s:port_źródłowy=%s:cel=%s:"
-"port_docelowy=%s:protokół=%s:interfejs_wejściowy=%s:interfejs_wyjściowy=%s:"
-"fizyczne_urządzenie_wejściowe=%s:fizyczne_urządzenie_wyjściowe=%s:cel=%s\""
+
+#~ msgid "21/TCP"
+#~ msgstr "21/TCP"
+
+#~ msgid "22/TCP"
+#~ msgstr "22/TCP"
+
+#~ msgid "80/TCP"
+#~ msgstr "80/TCP"
+
+#~ msgid "Active Configuration"
+#~ msgstr "Aktywna konfiguracja"
+
+#
+#~ msgid "Add"
+#~ msgstr "Dodaj"
+
+#
+#~ msgid ""
+#~ "Add additional ports or port ranges, which need to be accessible for all "
+#~ "hosts or networks."
+#~ msgstr ""
+#~ "Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne "
+#~ "dla wszystkich komputerów i sieci."
+
+#
+#~ msgid ""
+#~ "Add entries to forward ports either from one port to another on the local "
+#~ "system or from the local system to another system. Forwarding to another "
+#~ "system is only useful if the interface is masqueraded. Port forwarding is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "Można dodać wpisy, aby przekierowywać porty w obrębie lokalnego systemu "
+#~ "lub z lokalnego systemu do innego. Przekierowanie do innego systemu jest "
+#~ "przydatne tylko, jeśli interfejs jest za maskaradą. Przekierowanie portów "
+#~ "działa tylko dla IPv4."
+
+#
+#~ msgid "Allow access to necessary ports or port ranges, only."
+#~ msgstr ""
+#~ "Należy pozwolić na dostęp tylko do niezbędnych portów lub zakresów portów."
+
+#
+#~ msgid "Allow access to necessary services, only."
+#~ msgstr "Należy pozwolić na dostęp tylko do niezbędnych usług."
+
+#
+#~ msgid "Custom Rules"
+#~ msgstr "Własne reguły"
+
+#~ msgid "Default Configuration"
+#~ msgstr "Domyślna konfiguracja"
+
+#
+#~ msgid "Edit"
+#~ msgstr "Zmodyfikuj"
+
+#
+#~ msgid "FTP"
+#~ msgstr "FTP"
+
+#
+#~ msgid ""
+#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
+#~ "FTP server publicly available, enable this option. You need the vsftpd "
+#~ "package installed for this option to be useful."
+#~ msgstr ""
+#~ "FTP jest protokołem używanym do zdalnego przesyłania plików. Jeśli "
+#~ "planowane jest publiczne udostępnianie serwera FTP, należy włączyć tę "
+#~ "opcję. Aby skorzystać z tej opcji musi być zainstalowany pakiet vsftpd."
+
+#~ msgid "Firewall Daemon"
+#~ msgstr "Demon zapory sieciowej"
+
+#
+#~ msgid ""
+#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
+#~ "Web server publicly available, enable this option. This option is not "
+#~ "required for viewing pages locally or developing Web pages."
+#~ msgstr ""
+#~ "HTTP jest protokołem używanym do udostępniania stron WWW. Jeśli planowane "
+#~ "jest publiczne udostępnienie serwera, należy włączyć tę opcję. Nie jest "
+#~ "ona wymagana, aby lokalnie wyświetlać lub tworzyć strony."
+
+#~ msgid ""
+#~ "Here you can define the interfaces and network areas that have fill "
+#~ "access to the system."
+#~ msgstr ""
+#~ "Tutaj można określić interfejsy i obszary sieciowe, które mają mieć pełny "
+#~ "dostęp do systemu."
+
+#~ msgid ""
+#~ "Here you can define which services are trusted. Trusted services are "
+#~ "accessible from all hosts and networks in the selected network protocol. "
+#~ "Click on <i>Add</i> to select an item from the list of predefined "
+#~ "services."
+#~ msgstr ""
+#~ "Tutaj można określić, które usługi są zaufane. Zaufane usługi są dostępne "
+#~ "ze wszystkich komputerów i sieci w wybranym protokole sieciowym. "
+#~ "Naciśnięcie przycisku <i>Dodaj</i> wybiera element z listy wcześniej "
+#~ "określonych usług."
+
+#~ msgid "Home Zone"
+#~ msgstr "Strefa domowa"
+
+#
+#~ msgid "ICMP Filter"
+#~ msgstr "Filtr ICMP"
+
+#~ msgid "IPv4"
+#~ msgstr "IPv4"
+
+#~ msgid "IPv4,IPv6"
+#~ msgstr "IPv4, IPv6"
+
+#~ msgid "IPv6"
+#~ msgstr "IPv6"
+
+#
+#~ msgid ""
+#~ "If you enable masquerading, IP forwarding will also be enabled for your "
+#~ "IPv4 networks."
+#~ msgstr ""
+#~ "Jeśli maskarada zostanie włączona, przekierowanie IP będzie także "
+#~ "włączone dla sieci IPv4."
+
+#
+#~ msgid ""
+#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
+#~ "types are allowed to pass the firewall. The default is no limitation."
+#~ msgstr ""
+#~ "Można zaznaczyć typy ICMP na liście, które powinny być odrzucane. "
+#~ "Wszystkie inne typy ICMP będą mogły przechodzić przez zaporę sieciową. "
+#~ "Domyślnie nie ma ograniczeń."
+
+#
+#~ msgid "Masquerading"
+#~ msgstr "Maskarada"
+
+#
+#~ msgid ""
+#~ "Masquerading allows you to set up a host or router that connects your "
+#~ "local network to the internet. Your local network will not be visible and "
+#~ "the hosts appear as a single address on the internet. Masquerading is "
+#~ "IPv4 only."
+#~ msgstr ""
+#~ "Maskarada umożliwia ustawienie komputera lub routera łączącego lokalny "
+#~ "komputer z Internetem. Lokalna sieć nie będzie widoczna i będzie "
+#~ "występować w Internecie jako jeden adres. Maskaradę można ustawić tylko "
+#~ "dla IPv4."
+
+#~ msgid ""
+#~ "Only allow full access for interfaces or network areas if you can trust "
+#~ "all participants part of these."
+#~ msgstr ""
+#~ "Należy umożliwić pełny dostęp tylko tym interfejsom lub obszarom "
+#~ "sieciowym, w których można zaufać wszystkim uczestnikom."
+
+#
+#~ msgid "Other Ports"
+#~ msgstr "Inne porty"
+
+#
+#~ msgid "Port Forwarding"
+#~ msgstr "Przekierowanie portów"
+
+#~ msgid "Public Zone"
+#~ msgstr "Strefa publiczna"
+
+#
+#~ msgid "Reload"
+#~ msgstr "Wczytaj ponownie"
+
+#
+#~ msgid "Remove"
+#~ msgstr "Usuń"
+
+#~ msgid "Restart"
+#~ msgstr "Uruchom ponownie"
+
+#
+#~ msgid "SSH"
+#~ msgstr "SSH"
+
+#~ msgid ""
+#~ "Secure Shell (SSH) is a protocol for logging into and executing commands "
+#~ "on remote machines. It provides secure encrypted comminucations. If you "
+#~ "plan on accessing your machine remotely via SSH over a firewalled "
+#~ "interface, enable this option. You need the openssh-server package "
+#~ "installed for this option to be useful. "
+#~ msgstr ""
+#~ "Bezpieczna powłoka (SSH) jest protokołem pozwalającym na logowanie i "
+#~ "wykonywanie poleceń na zdalnym komputerze. Pozwala na bezpieczną, "
+#~ "szyfrowaną komunikację. Jeśli planowane jest logowanie na ten komputer "
+#~ "przez SSH przez zaporę sieciową, należy włączyć tę opcję. Aby móc "
+#~ "skorzystać z tej opcji, musi być zainstalowany pakiet openssh-server."
+
+#~ msgid "Select Configuration"
+#~ msgstr "Wybór konfiguracji"
+
+#~ msgid "Services"
+#~ msgstr "Usługi"
+
+#~ msgid "Start"
+#~ msgstr "Uruchom"
+
+#~ msgid "Stop"
+#~ msgstr "Zatrzymaj"
+
+#~ msgid "Switch Firewall Model"
+#~ msgstr "Przełącz model zapory sieciowej"
+
+#~ msgid "Switch firewall model"
+#~ msgstr "Przełącz model zapory sieciowej"
+
+#
+#~ msgid ""
+#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
+#~ "messages between networked computers, but additionally for informational "
+#~ "messages like ping requests and replies."
+#~ msgstr ""
+#~ "Internetowy protokół kontroli komunikatów (ICMP) jest używany głównie do "
+#~ "wysyłania komunikatów błędów między komputerami sieciowymi, ale także "
+#~ "dodatkowo do komunikatów informacyjnych, takich jak żądania i odpowiedzi "
+#~ "ping."
+
+#~ msgid "Trusted"
+#~ msgstr "Zaufane"
+
+#~ msgid "Trusted Zone"
+#~ msgstr "Strefa zaufana"
+
+#
+#~ msgid "WWW (HTTP)"
+#~ msgstr "WWW (HTTP)"
+
+#~ msgid "Work Zone"
+#~ msgstr "Strefa robocza"
+
+#
+#~ msgid "_File"
+#~ msgstr "_Plik"
+
+#
+#~ msgid "_Help"
+#~ msgstr "Pomo_c"
+
+#
+#~ msgid "_Options"
+#~ msgstr "_Opcje"
+
+#~ msgid "ftp"
+#~ msgstr "ftp"
+
+#~ msgid "- proof of concept implementation -"
+#~ msgstr "- przykładowa implementacja -"
+
+#~ msgid "Ports"
+#~ msgstr "Porty"
+
+#~ msgid "Trusted Connections"
+#~ msgstr "Zaufane połączenia"
+
+#~ msgid "ICMP Blocking"
+#~ msgstr "Blokowanie ICMP"
+
+#~ msgid "Panic Mode"
+#~ msgstr "Tryb paniki"
+
+#
+#~ msgid "Enable Firewall"
+#~ msgstr "Włącz zaporę sieciową"
+
+#~ msgid ""
+#~ "\n"
+#~ "Timeout: %d seconds"
+#~ msgstr ""
+#~ "\n"
+#~ "Czas oczekiwania: %d sekund"
+
+#~ msgid "No Open Services."
+#~ msgstr "Brak otwartych usług."
+
+#~ msgid "Open Services:"
+#~ msgstr "Otwarte usługi:"
+
+#~ msgid "No Open Ports."
+#~ msgstr "Brak otwartych portów."
+
+#~ msgid "No Trusted."
+#~ msgstr "Brak zaufanych."
+
+#~ msgid "Trusted:"
+#~ msgstr "Zaufane:"
+
+#~ msgid "No Masqueraded."
+#~ msgstr "Brak maskarady."
+
+#~ msgid "Masqueraded:"
+#~ msgstr "Maskarada:"
+
+#~ msgid "No ICMP Blocks."
+#~ msgstr "Brak blokad ICMP."
+
+#~ msgid "ICMP Blocks:"
+#~ msgstr "Blokady ICMP:"
+
+#~ msgid "No Forward Ports."
+#~ msgstr "Brak przekierowywanych portów."
+
+#~ msgid "Forward Ports:"
+#~ msgstr "Przekierowywane porty:"
+
+#~ msgid "No Custom Rules."
+#~ msgstr "Brak własnych reguł."
+
+#~ msgid "Custom Rules:"
+#~ msgstr "Własne reguły:"
+
+#~ msgid "Panic mode"
+#~ msgstr "Tryb paniki"
+
+#~ msgid "Service '%s'"
+#~ msgstr "Usługa \"%s\""
+
+#~ msgid "Port '%s:%s'"
+#~ msgstr "Port \"%s:%s\""
+
+#~ msgid "Trusted '%s'"
+#~ msgstr "Zaufane \"%s\""
+
+#~ msgid "Masquerade '%s'"
+#~ msgstr "Maskarada \"%s\""
+
+#~ msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
+#~ msgstr ""
+#~ "Przekierowywany port \"if=%s:port=%s:protokół=%s:port_docelowy=%s:"
+#~ "adres_docelowy=%s\""
+
+#~ msgid "Block ICMP '%s'"
+#~ msgstr "Blokada ICMP \"%s\""
+
+#~ msgid ""
+#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
+#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+#~ msgstr ""
+#~ "Własne \"tablica=%s:łańcuch=%s:źródło=%s:port_źródłowy=%s:cel=%s:"
+#~ "port_docelowy=%s:protokół=%s:interfejs_wejściowy=%s:interfejs_wyjściowy="
+#~ "%s:fizyczne_urządzenie_wejściowe=%s:fizyczne_urządzenie_wyjściowe=%s:cel="
+#~ "%s\""
