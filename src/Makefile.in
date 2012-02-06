@@ -33,8 +33,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 subdir = src
-DIST_COMMON = $(scfwin_PYTHON) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -63,12 +62,10 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" \
-	"$(DESTDIR)$(scfwindir)"
+am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)"
 SCRIPTS = $(bin_SCRIPTS) $(sbin_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
-py_compile = $(top_srcdir)/py-compile
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
@@ -137,6 +134,7 @@ SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
+USE_SYSTEMD = @USE_SYSTEMD@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
@@ -191,15 +189,6 @@ top_srcdir = @top_srcdir@
 bin_SCRIPTS = firewall-applet firewall-cmd
 #firewall-config
 sbin_SCRIPTS = firewalld
-
-#scfwdir = $(pkgdatadir)
-#scfw_PYTHON = *.py convert-config
-scfwindir = $(pkgdatadir)
-scfwin_in_files = *.py.in
-scfwin_PYTHON = $(scfwin_in_files:.in=)
-
-#gladedir = $(pkgdatadir)
-#glade_PYTHON = *.glade
 icondir = $(datadir)/icons/hicolor
 iconFILES = icons/*/apps/*
 EXTRA_DIST = $(bin_SCRIPTS) $(sbin_SCRIPTS) $(iconFILES)
@@ -305,44 +294,6 @@ uninstall-sbinSCRIPTS:
 	test -n "$$list" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(sbindir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(sbindir)" && rm -f $$files
-install-scfwinPYTHON: $(scfwin_PYTHON)
-	@$(NORMAL_INSTALL)
-	test -z "$(scfwindir)" || $(MKDIR_P) "$(DESTDIR)$(scfwindir)"
-	@list='$(scfwin_PYTHON)'; dlist=; list2=; test -n "$(scfwindir)" || list=; \
-	for p in $$list; do \
-	  if test -f "$$p"; then b=; else b="$(srcdir)/"; fi; \
-	  if test -f $$b$$p; then \
-	    $(am__strip_dir) \
-	    dlist="$$dlist $$f"; \
-	    list2="$$list2 $$b$$p"; \
-	  else :; fi; \
-	done; \
-	for file in $$list2; do echo $$file; done | $(am__base_list) | \
-	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(scfwindir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(scfwindir)" || exit $$?; \
-	done || exit $$?; \
-	if test -n "$$dlist"; then \
-	  if test -z "$(DESTDIR)"; then \
-	    PYTHON=$(PYTHON) $(py_compile) --basedir "$(scfwindir)" $$dlist; \
-	  else \
-	    PYTHON=$(PYTHON) $(py_compile) --destdir "$(DESTDIR)" --basedir "$(scfwindir)" $$dlist; \
-	  fi; \
-	else :; fi
-
-uninstall-scfwinPYTHON:
-	@$(NORMAL_UNINSTALL)
-	@list='$(scfwin_PYTHON)'; test -n "$(scfwindir)" || list=; \
-	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
-	test -n "$$files" || exit 0; \
-	filesc=`echo "$$files" | sed 's|$$|c|'`; \
-	fileso=`echo "$$files" | sed 's|$$|o|'`; \
-	echo " ( cd '$(DESTDIR)$(scfwindir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(scfwindir)" && rm -f $$files || exit $$?; \
-	echo " ( cd '$(DESTDIR)$(scfwindir)' && rm -f" $$filesc ")"; \
-	cd "$(DESTDIR)$(scfwindir)" && rm -f $$filesc || exit $$?; \
-	echo " ( cd '$(DESTDIR)$(scfwindir)' && rm -f" $$fileso ")"; \
-	cd "$(DESTDIR)$(scfwindir)" && rm -f $$fileso
 tags: TAGS
 TAGS:
 
@@ -384,7 +335,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS)
 installdirs:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)" "$(DESTDIR)$(scfwindir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(sbindir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -433,7 +384,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-data-local install-scfwinPYTHON
+install-data-am: install-data-local
 
 install-dvi: install-dvi-am
 
@@ -477,8 +428,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-binSCRIPTS uninstall-sbinSCRIPTS \
-	uninstall-scfwinPYTHON
+uninstall-am: uninstall-binSCRIPTS uninstall-sbinSCRIPTS
 
 .MAKE: install-am install-strip
 
@@ -489,14 +439,17 @@ uninstall-am: uninstall-binSCRIPTS uninstall-sbinSCRIPTS \
 	install-exec install-exec-am install-html install-html-am \
 	install-info install-info-am install-man install-pdf \
 	install-pdf-am install-ps install-ps-am install-sbinSCRIPTS \
-	install-scfwinPYTHON install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am uninstall uninstall-am uninstall-binSCRIPTS \
-	uninstall-sbinSCRIPTS uninstall-scfwinPYTHON
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am uninstall uninstall-am \
+	uninstall-binSCRIPTS uninstall-sbinSCRIPTS
 
 
 install-data-local:
+	install -d $(DESTDIR)/$(pythondir)
+	cp -fpR firewall $(DESTDIR)/$(pythondir)
+	find $(DESTDIR)/$(pythondir) -name "*.in" -exec rm {} \;
+
 	install -d $(DESTDIR)/$(icondir)
 	cp -fpR icons/* $(DESTDIR)/$(icondir)
 
