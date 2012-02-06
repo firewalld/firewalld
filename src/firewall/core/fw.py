@@ -23,6 +23,7 @@ from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core import modules
 from firewall.core.fw_zone import FirewallZone
+from firewall.core.fw_direct import FirewallDirect
 from firewall.core.logger import log
 from firewall.errors import *
 
@@ -48,8 +49,6 @@ class Firewall:
     def __init_vars(self):
         self._initialized = False
         self._panic = False
-        self._virt_rules = [ ]
-        self._virt_chains = [ ]
         self._module_refcount = { }
         self._marks = [ ]
         self._min_mark = 100 #TODO: configurable
@@ -224,8 +223,6 @@ class Firewall:
         _services = self._services
         _ports = self._ports
         _masq = self._masquerade
-        _virt_rules = self._virt_rules
-        _virt_chains = self._virt_chains
 
         self.__init_vars()
         self.start()
@@ -267,90 +264,3 @@ class Firewall:
 
     def query_panic_mode(self):
         return (self._panic == True)
-
-    # VIRT RULES
-
-    def __virt_rule(self, insert, ipv, table, chain, args):
-        _chain = "%s_virt" % (chain)
-        rule_id = (ipv, table, _chain) + args
-
-        if insert:
-            if rule_id in self._virt_rules:
-                raise FirewallError(AREADY_ENABLED)
-        else:
-            if not rule_id in self._virt_rules:
-                raise FirewallError(NOT_ENABLED)
-
-        rule = [ "-t", table ]
-        if insert:
-            rule.append("-I")
-        else:
-            rule.append("-D")
-        rule.append(_chain)
-        rule += args
-
-        try:
-            self.__rule(ipv, rule)
-        except Exception, msg:
-            log(msg)
-            if insert:
-                FirewallError(ENABLE_FAILED)
-            else:
-                FirewallError(DISABLE_FAILED)
-
-        if insert:
-            self._virt_rules.append(rule_id)
-        else:
-            self._virt_rules.remove(rule_id)
-
-    def __virt_chain(self, add, ipv, table, chain):
-        _chain = "%s_virt" % (chain)
-        chain_id = (ipv, table, _chain)
-
-        if add:
-            if chain_id in self._virt_chains:
-                raise FirewallError(ALREADY_ENABLED)
-        else:
-            if not chain_id in self._virt_chains:
-                raise FirewallError(NOT_ENABLED)
-
-        rule = [ "-t", table ]
-        if add:
-            rule.append("-N")
-        else:
-            rule.append("-X")
-        rule.append(_chain)
-
-        try:
-            self.__rule(ipv, rule)
-        except Exception, msg:
-            log(msg)
-            if add:
-                FirewallError(ENABLE_FAILED)
-            else:
-                FirewallError(DISABLE_FAILED)
-
-        if add:
-            self._virt_chains.append(chain_id)
-        else:
-            self._virt_chains.remove(chain_id)
-
-    def virt_insert_rule(self, ipv, table, chain, args):
-        self.__virt_rule(True, ipv, table, chain, args)
-
-    def virt_delete_rule(self, ipv, table, chain, args):
-        self.__virt_rule(False, ipv, table, chain, args)
-
-    def virt_query_rule(self, ipv, table, chain, args):
-        rule_id = (ipv, table, "%s_virt" % (chain)) + args
-        return (rule_id in self._virt_rules)
-
-    def virt_new_chain(self, ipv, table, chain, policy="ACCEPT"):
-        self.__virt_chain(True, ipv, table, chain)
-
-    def virt_remove_chain(self, ipv, table, chain):
-        self.__virt_chain(False, ipv, table, chain)
-
-    def virt_query_chain(self, ipv, table, chain):
-         chain_id = (ipv, table, "%s_virt" % (chain))
-         return (chain_id in self._virt_chains)
