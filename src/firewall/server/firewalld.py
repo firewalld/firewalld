@@ -163,52 +163,40 @@ class FirewallD(slip.dbus.service.Object):
     # reload
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='i')
-    def reload(self):
-        # reloads firewall rules
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @dbus_handle_exceptions
+    def reload(self, sender=None):
+        """Reload the firewall rules.
+        """
         log.debug1("reload()")
-        try:
-            self.fw.reload()
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return NO_ERROR
 
-    # restart
+        # cleanup timeouts in zones
+        self.cleanup_timeouts()
+
+        self.fw.reload()
+        self.Reloaded()
+
+    # complete_reload
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='i')
-    def restart(self):
-        # stops firewall: unloads firewall modules
-        # starts firewall
-        log.debug1("restart()")
-        try:
-            self.fw.restart()
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return NO_ERROR
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @dbus_handle_exceptions
+    def completeReload(self, sender=None):
+        """Completely reload the firewall.
 
-    # status
+        Completely reload the firewall: Stops firewall, unloads modules and 
+        starts the firewall again.
+        """
+        log.debug1("completeReload()")
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='i')
-    def status(self):
-        # returns firewall state: panic, ipv4, ipv6, ..
-        # enabled or disabled, why?
-        log.debug1("status()")
-        try:
-            status = self.fw.status()
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return NO_ERROR
+        self.fw.reload(True)
+        self.Reloaded()
+
+    @dbus.service.signal(DBUS_INTERFACE)
+    @dbus_handle_exceptions
+    def Reloaded(self):
+        log.debug1("Reloaded()")
+        pass
 
     # panic
 
