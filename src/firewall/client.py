@@ -79,7 +79,7 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def queryPanicMode(self):
-        self.fw.queryPanicMode()
+        return self.fw.queryPanicMode()
 
     # default zone
 
@@ -141,84 +141,89 @@ class FirewallClient(object):
     def removeService(self, zone, service):
         return dbus_to_python(self.fw_zone.removeService(zone, service))
 
-"""
     # ports
 
     @slip.dbus.polkit.enable_proxy
-    def enablePort(self, port, protocol, timeout=0):
-        return dbus_to_python(self._zone.enablePort(port, protocol, timeout))
+    def addPort(self, zone, port, protocol, timeout=0):
+        return dbus_to_python(self.fw_zone.addPort(zone, port, protocol, timeout))
 
     @slip.dbus.polkit.enable_proxy
-    def getPorts(self):
-        return dbus_to_python(self._zone.getPorts())
+    def getPorts(self, zone):
+        return dbus_to_python(self.fw_zone.getPorts(zone))
 
     @slip.dbus.polkit.enable_proxy
-    def queryPort(self, port, protocol):
-        return dbus_to_python(self._zone.queryPort(port, protocol))
+    def queryPort(self, zone, port, protocol):
+        return dbus_to_python(self.fw_zone.queryPort(zone, port, protocol))
 
     @slip.dbus.polkit.enable_proxy
-    def disablePort(self, port, protocol):
-        return dbus_to_python(self._zone.disablePort(port, protocol))
+    def removePort(self, zone, port, protocol):
+        return dbus_to_python(self.fw_zone.removePort(zone, port, protocol))
 
     # masquerade
 
     @slip.dbus.polkit.enable_proxy
-    def enableMasquerade(self, timeout=0):
-        return dbus_to_python(self._zone.enableMasquerade(timeout))
+    def enableMasquerade(self, zone, timeout=0):
+        return dbus_to_python(self.fw_zone.enableMasquerade(zone, timeout))
 
     @slip.dbus.polkit.enable_proxy
-    def queryMasquerade(self):
-        return dbus_to_python(self._zone.queryMasquerade())
+    def queryMasquerade(self, zone):
+        return dbus_to_python(self.fw_zone.queryMasquerade(zone))
 
     @slip.dbus.polkit.enable_proxy
-    def disableMasquerade(self):
-        return dbus_to_python(self._zone.disableMasquerade())
+    def disableMasquerade(self, zone):
+        return dbus_to_python(self.fw_zone.disableMasquerade(zone))
 
     # forward ports
 
     @slip.dbus.polkit.enable_proxy
-    def enableForwardPort(self, port, protocol, toport, toaddr, timeout=0):
+    def addForwardPort(self, zone, port, protocol, toport, toaddr,
+                       timeout=0):
         if not toport:
             toport = ""
         if not toaddr:
             toaddr = ""
-        return dbus_to_python(self._zone.enableForwardPort(port, protocol,
-                                                           toport, toaddr,
-                                                           timeout))
+        return dbus_to_python(self.fw_zone.addForwardPort(zone, port, protocol,
+                                                          toport, toaddr,
+                                                          timeout))
 
     @slip.dbus.polkit.enable_proxy
-    def getForwardPorts(self):
-        return dbus_to_python(self._zone.getForwardPorts())
+    def getForwardPorts(self, zone):
+        return dbus_to_python(self.fw_zone.getForwardPorts(zone))
 
     @slip.dbus.polkit.enable_proxy
-    def queryForwardPort(self, port, protocol, toport, toaddr):
-        return dbus_to_python(self._zone.queryForwardPort(port, protocol,
-                                                          toport, toaddr))
-
-    @slip.dbus.polkit.enable_proxy
-    def disableForwardPort(self, port, protocol, toport, toaddr):
+    def queryForwardPort(self, zone, port, protocol, toport, toaddr):
         if not toport:
             toport = ""
         if not toaddr:
             toaddr = ""
-        return dbus_to_python(self._zone.disableForwardPort(port, protocol,
+        return dbus_to_python(self.fw_zone.queryForwardPort(zone,
+                                                            port, protocol,
                                                             toport, toaddr))
+
+    @slip.dbus.polkit.enable_proxy
+    def removeForwardPort(self, zone, port, protocol, toport, toaddr):
+        if not toport:
+            toport = ""
+        if not toaddr:
+            toaddr = ""
+        return dbus_to_python(self.fw_zone.removeForwardPort(zone,
+                                                             port, protocol,
+                                                             toport, toaddr))
 
     # icmpblock
 
     @slip.dbus.polkit.enable_proxy
-    def enableIcmpBlock(self, icmp, timeout=0):
-        return dbus_to_python(self._zone.enableIcmpBlock(icmp, timeout))
+    def addIcmpBlock(self, zone, icmp, timeout=0):
+        return dbus_to_python(self.fw_zone.addIcmpBlock(zone, icmp, timeout))
 
     @slip.dbus.polkit.enable_proxy
-    def getIcmpBlocks(self):
-        return dbus_to_python(self._zone.getIcmpBlocks())
+    def getIcmpBlocks(self, zone):
+        return dbus_to_python(self.fw_zone.getIcmpBlocks(zone))
 
     @slip.dbus.polkit.enable_proxy
-    def queryIcmpBlock(self, icmp):
-        return dbus_to_python(self._zone.queryIcmpBlock(icmp))
+    def queryIcmpBlock(self, zone, icmp):
+        return dbus_to_python(self.fw_zone.queryIcmpBlock(zone, icmp))
 
     @slip.dbus.polkit.enable_proxy
-    def disableIcmpBlock(self, icmp):
-        return dbus_to_python(self._zone.disableIcmpBlock(icmp))
-"""
+    def removeIcmpBlock(self, zone, icmp):
+        return dbus_to_python(self.fw_zone.removeIcmpBlock(zone, icmp))
