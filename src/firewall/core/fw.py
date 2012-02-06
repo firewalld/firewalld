@@ -25,6 +25,8 @@ from firewall.core import modules
 from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.logger import log
+from firewall.core.io.firewalld_conf import firewalld_conf
+from firewall.core.io.zone import zone_reader
 from firewall.errors import *
 
 ############################################################################
@@ -35,6 +37,8 @@ from firewall.errors import *
 
 class Firewall:
     def __init__(self):
+        self._firewalld_conf = firewalld_conf(FIREWALLD_CONF)
+
         # TODO: check if ipv4 is enabled:
         self._ip4tables = ipXtables.ip4tables()
         # TODO: check if ipv6 is enabled:
@@ -44,24 +48,86 @@ class Firewall:
 
         self._modules = modules.modules()
 
+        self.zone = FirewallZone(self)
+        self.direct = FirewallDirect(self)
+
         self.__init_vars()
 
     def __init_vars(self):
         self._initialized = False
         self._panic = False
+        self._default_zone = "public" # initial default, will be overloaded by firewalld.conf
         self._module_refcount = { }
         self._marks = [ ]
-        self._min_mark = 100 #TODO: configurable
+        self._min_mark = 100 # initial default, will be overloaded by firewalld.conf
 
     def start(self):
         # initialize firewall
         self._flush()
         self._set_policy("ACCEPT")
+
+        # load firewalld config
+        log.debug1("Loading firewalld config file '%s'", FIREWALLD_CONF)
+        try:
+            self._firewalld_conf.read()
+        except Exception, msg:
+            log.error("Failed to open firewalld config file '%s': %s",
+                      FIREWALLD_CONF, msg)
+        else:
+            if self._firewalld_conf.get("DefaultZone"):
+                self._default_zone = self._firewalld_conf.get("DefaultZone")
+            if self._firewalld_conf.get("MinimalMark"):
+                mark = self._firewalld_conf.get("MinimalMark")
+                try:
+                    self._min_mark = int(mark)
+                except Exception, msg:
+                    log.error("MinimalMark %s is not valid, using default "
+                              "value %d", mark, self._min_mark)
+
+        # apply default rules
         self._apply_default_rules()
+
+        # load zone files
+        path = FIREWALLD_ZONES
+        if os.path.isdir(path):
+            for filename in os.listdir(path):
+                if filename.endswith(".xml"):
+                    log.debug1("Loading zone file '%s/%s'", path, filename)
+                    try:
+                        obj = zone_reader(filename, path)
+                        self.zone.add_zone(obj)
+                    except FirewallError, msg:
+                        log.error("Failed to load zone file '%s/%s': %s", path,
+                                  filename, msg)
+                    except Exception, msg:
+                        log.error("Failed to load zone file '%s/%s':", path,
+                                  filename)
+                        log.exception()
+
+        if len(self.zone.get_zones()) == 0:
+            log.fatal("No zones found.")
+
+        # check if default_zone is a valid zone
+        if self._default_zone not in self.zone.get_zones():
+            if "public" in self.zone.get_zones():
+                zone = "public"
+            elif "external" in self.zone.get_zones():
+                zone = "external"
+            else:
+                zone = "block" # block is a base zone, therefore it has to exist
+                
+            log.error("Default zone '%s' is not valid. Using '%s'.",
+                      self._default_zone, zone)
+            self._default_zone = zone
+        else:
+            log.debug1("Using default zone '%s'", self._default_zone)
+
         self._initialized = True
 
     def stop(self):
         self.__init_vars()
+        self.zone.cleanup()
+
         # if cleanup on exit
         self._flush()
         self._set_policy("ACCEPT")
@@ -258,3 +324,16 @@ class Firewall:
 
     def query_panic_mode(self):
         return (self._panic == True)
+
+    # DEFAULT ZONE
+
+    def get_default_zone(self):
+        return self._default_zone
+
+    def set_default_zone(self, zone):
+        if zone in self.zone.get_zones():
+            self._default_zone = zone
+            self._firewalld_conf.set("DefaultZone", zone)
+            self._firewalld_conf.write()
+        else:
+            raise FirewallError(INVALID_ZONE)
