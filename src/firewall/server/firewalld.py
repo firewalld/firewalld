@@ -247,6 +247,33 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("PanicModeDisabled()")
         pass
 
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # DEFAULT ZONE
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='s')
+    @dbus_handle_exceptions
+    def getDefaultZone(self, sender=None):
+        # returns the system default zone
+        log.debug1("getDefaultZone()")
+        return self.fw.get_default_zone()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='s', out_signature='')
+    @dbus_handle_exceptions
+    def setDefaultZone(self, zone, sender=None):
+        # set the system default zone
+        log.debug1("setDefaultZone('%s')" % zone)
+        self.fw.set_default_zone(zone)
+        self.DefaultZoneChanged(zone)
+
+    @dbus.service.signal(DBUS_INTERFACE, signature='s')
+    @dbus_handle_exceptions
+    def DefaultZoneChanged(self, zone):
+        log.debug1("DefaultZoneChanged('%s')" % (zone))
+        pass
+
     # services
 
     def _disable_service(self, service):
