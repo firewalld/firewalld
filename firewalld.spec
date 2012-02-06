@@ -1,6 +1,8 @@
+%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(0)")}
+
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.1.3
+Version: 0.2.0
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -76,21 +78,28 @@ desktop-file-install --delete-original \
 rm -rf %{buildroot}
 
 %post
-/sbin/chkconfig --add firewalld
+/sbin/ldconfig
+if [ $1 -eq 1 ] ; then # Initial installation
+   /bin/systemctl daemon-reload >/dev/null 2>&1 || :
+   /bin/systemctl enable firewalld.service >/dev/null 2>&1 || :
+fi
 touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
   gtk-update-icon-cache -q %{_datadir}/icons/hicolor
 fi
 
 %preun
-if [ $1 = 0 ]; then
-  %{_initrddir}/firewalld stop >/dev/null 2>&1
-  /sbin/chkconfig --del firewalld
+if [ $1 -eq 0 ]; then # Package removal, not upgrade
+   /bin/systemctl --no-reload disable firewalld.service > /dev/null 2>&1 || :
+   /bin/systemctl stop firewalld.service > /dev/null 2>&1 || :
 fi
-exit 0
 
 %postun
-touch --no-create %{_datadir}/icons/hicolor
+/sbin/ldconfig
+/bin/systemctl daemon-reload >/dev/null 2>&1 || :
+if [ $1 -ge 1 ] ; then # Package upgrade, not uninstall
+   /bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
+fi
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
   gtk-update-icon-cache -q %{_datadir}/icons/hicolor
 fi
@@ -101,15 +110,31 @@ fi
 %doc COPYING
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
-%defattr(0644,root,root)
-%attr(0755,root,root) %dir %{_sysconfdir}/firewalld
+%defattr(0640,root,root)
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
+%{_sysconfdir}/firewalld/icmptypes/*.xml
+%{_sysconfdir}/firewalld/services/*.xml
+%{_sysconfdir}/firewalld/zones/*.xml
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
+%defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
-%attr(0755,root,root) %{_initrddir}/firewalld
+#%attr(0755,root,root) %{_initrddir}/firewalld
+/lib/systemd/system/firewalld.service
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/FirewallD.conf
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD.policy
-%attr(0755,root,root) %dir %{_datadir}/firewalld/
-%{_datadir}/firewalld/*.py*
+%attr(0755,root,root) %dir %{python_sitelib}/firewall
+%attr(0755,root,root) %dir %{python_sitelib}/firewall/config
+%attr(0755,root,root) %dir %{python_sitelib}/firewall/core
+%attr(0755,root,root) %dir %{python_sitelib}/firewall/core/io
+%attr(0755,root,root) %dir %{python_sitelib}/firewall/server
+%{python_sitelib}/firewall/*.py*
+%{python_sitelib}/firewall/config/*.py*
+%{python_sitelib}/firewall/core/*.py*
+%{python_sitelib}/firewall/core/io/*.py*
+%{python_sitelib}/firewall/server/*.py*
 %{_mandir}/man1/firewall-cmd.1*
 
 %files -n firewall-applet
@@ -118,6 +143,7 @@ fi
 %defattr(0644,root,root)
 %{_datadir}/applications/firewall-applet.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
+%{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
 
 #%files -n firewall-config
 #%defattr(-,root,root)
@@ -128,6 +154,16 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Feb  6 2012 Thomas Woerner <twoerner@redhat.com> 0.2.0-1
+- version 0.2.0 with new FirewallD1 D-BUS interface
+- supports zones with a default zone
+- new direct interface as a replacement of the partial virt interface with 
+  additional passthrough functionality
+- dropped custom rules, use direct interface instead
+- dropped trusted interface funcionality, use trusted zone instead
+- using zone, service and icmptype configuration files
+- not using any system-config-firewall parts anymore
+
 * Mon Feb 14 2011 Thomas Woerner <twoerner@redhat.com> 0.1.3-1
 - new version 0.1.3
 - restore all firewall features for reload: panic and virt rules and chains
