@@ -321,6 +321,75 @@ class FirewallD(slip.dbus.service.Object):
             return zone
         raise FirewallError(UNKNOWN_INTERFACE)
 
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # INTERFACES
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addInterface(self, zone, interface, sender=None):
+        """Add an interface to a zone.
+        If zone is empty, use default zone.
+        """
+        interface = str(interface)
+        log.debug1("zone.addInterface('%s', '%s')" % (zone, interface))
+        _zone = self.fw.zone.add_interface(zone, interface, sender)
+
+        self.InterfaceAdded(_zone, interface)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeInterface(self, zone, interface, sender=None):
+        """Remove interface from a zone.
+        If zone is empty, use default zone.
+        """
+        interface = str(interface)
+        log.debug1("zone.removeInterface('%s', '%s')" % (zone, interface))
+        _zone = self.fw.zone.remove_interface(zone, interface)
+
+        self.InterfaceRemoved(_zone, interface)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryInterface(self, zone, interface, sender=None):
+        """Return true if an interface is in a zone.
+        If zone is empty, use default zone.
+        """
+        interface = str(interface)
+        log.debug1("zone.queryInterface('%s', '%s')" % (zone, interface))
+        return self.fw.zone.query_interface(zone, interface)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getInterfaces(self, zone, sender=None):
+        """Return the list of interfaces of a zone.
+        If zone is empty, use default zone.
+        """
+        log.debug1("zone.getInterfaces('%s')" % (zone))
+        return self.fw.zone.get_interfaces(zone)
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def InterfaceAdded(self, zone, interface):
+        log.debug1("zone.InterfaceAdded('%s', '%s')" % (zone, interface))
+        pass
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def InterfaceRemoved(self, zone, interface):
+        log.debug1("zone.InterfaceRemoved('%s', '%s')" % (zone, interface))
+        pass
+
     # services
 
     def _disable_service(self, service):
