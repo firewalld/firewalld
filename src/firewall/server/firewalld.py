@@ -36,15 +36,22 @@ from firewall.errors import *
 ############################################################################
 
 class FirewallD(slip.dbus.service.Object):
+    """FirewallD main class"""
+
+    persistent = True
+    """Make FirewallD persistent."""
+
+    @handle_exceptions
     def __init__(self, *args, **kwargs):
         super(FirewallD, self).__init__(*args, **kwargs)
-        self.persistent = True
         self.fw = Firewall()
+        self.path = args[0]
         self.start()
 
     def __del__(self):
         self.stop()
 
+    @handle_exceptions
     def start(self):
         # tests if iptables and ip6tables are usable using test functions
         # loads default firewall rules for iptables and ip6tables
@@ -55,11 +62,35 @@ class FirewallD(slip.dbus.service.Object):
         
         return self.fw.start()
 
+    @handle_exceptions
     def stop(self):
         # stops firewall: unloads firewall modules, flushes chains and tables,
         #   resets policies
         log.debug1("stop()")
         return self.fw.stop()
+
+    # timeout functions
+
+    @dbus_handle_exceptions
+    def addTimeout(self, zone, x, tag):
+        if zone not in self._timeouts:
+            self._timeouts[zone] = { }
+        self._timeouts[zone][x] = tag
+
+    @dbus_handle_exceptions
+    def removeTimeout(self, zone, x):
+        if zone in self._timeouts and x in self._timeouts[zone]:
+            glib.source_remove(self._timeouts[zone][x])
+            del self._timeouts[zone][x]
+
+    @dbus_handle_exceptions
+    def cleanup_timeouts(self):
+        # cleanup timeouts
+        for zone in self._timeouts:
+            for x in self._timeouts[zone]:
+                glib.source_remove(self._timeouts[zone][x])
+            self._timeouts[zone].clear()
+        self._timeouts.clear()
 
     # reload
 
