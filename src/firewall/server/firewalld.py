@@ -15,23 +15,10 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# signal handling and run_server derived from setroubleshoot
-# Copyright (C) 2006,2007,2008,2009 Red Hat, Inc.
-# Authors:
-#   John Dennis <jdennis@redhat.com>
-#   Thomas Liu  <tliu@redhat.com>
-#   Dan Walsh <dwalsh@redhat.com>
 
-import os, sys
-
-import signal
-from gi.repository import GObject
 import glib
 import dbus
 import dbus.service
-from dbus.exceptions import DBusException
-import dbus.mainloop.glib
 import slip.dbus
 import slip.dbus.service
 
@@ -842,59 +829,3 @@ class FirewallD(slip.dbus.service.Object):
             return UNKNOWN_ERROR
         return enabled
 
-    # net
-
-############################################################################
-#
-# signal handler
-#
-############################################################################
-
-def sighandler(signum, frame):
-    """ signal handler
-    """
-    # reloading over dbus is not working server is not responding anymore
-    # therefore using external firewall-cmd 
-    if signum == signal.SIGHUP:
-        os.system("firewall-cmd --reload &")
-        return
-
-    sys.exit()
-
-############################################################################
-#
-# run_server function
-#
-############################################################################
-
-def run_server():
-    """ Main function for firewall server. Handles D-BUS and GLib mainloop.
-    """
-    signal.signal(signal.SIGHUP, sighandler)
-    signal.signal(signal.SIGQUIT, sighandler)
-    signal.signal(signal.SIGTERM, sighandler)
-    signal.signal(signal.SIGALRM, sighandler)
-
-    service = None
-
-    try:
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        bus = dbus.SystemBus()
-        name = dbus.service.BusName(DBUS_INTERFACE, bus=bus)
-        service = FirewallD(name, DBUS_PATH)
-
-        mainloop = GObject.MainLoop()
-        slip.dbus.service.set_mainloop(mainloop)
-        mainloop.run()
-
-    except KeyboardInterrupt, e:
-        log.warning("KeyboardInterrupt in run_server")
-
-    except SystemExit, e:
-        log.error("Raising SystemExit in run_server")
-
-    except Exception, e:
-        log.error("Exception %s: %s", e.__class__.__name__, str(e))
-
-    if service:
-       service.stop()
