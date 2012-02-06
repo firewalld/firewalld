@@ -711,80 +711,80 @@ class FirewallD(slip.dbus.service.Object):
                        (zone, port, protocol, toport, toaddr))
         pass
 
-    # icmp block
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    def _disable_icmp_block(self, icmp):
-        self.fw.disable_icmp_block(icmp)
-        self.IcmpBlockSignal(icmp, False)
+    # ICMP BLOCK
+
+    @dbus_handle_exceptions
+    def disableTimedIcmpBlock(self, zone, icmp, sender):
+        log.debug1("zone.disableTimedIcmpBlock('%s', '%s')" % (zone, icmp))
+        del self._timeouts[zone][icmp]
+        self.fw.zone.remove_icmp_block(zone, icmp)
+        self.IcmpBlockRemoved(zone, icmp)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='si', out_signature='i')
-    def enableIcmpBlock(self, icmp, timeout):
-        # enables icmpblock <icmp> if not enabled already
-        log.debug1("enableIcmpBlock('%s')" % icmp)
-        try:
-            self.fw.enable_icmp_block(icmp)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addIcmpBlock(self, zone, icmp, timeout, sender=None):
+        # add icmpblock <icmp> if not enabled already for zone
+        icmp = str(icmp)
+        timeout = int(timeout)
+        log.debug1("zone.enableIcmpBlock('%s', '%s')" % (zone, icmp))
+        _zone = self.fw.zone.add_icmp_block(zone, icmp, timeout, sender)
 
         if timeout > 0:
-            log.debug1("adding timeout %d seconds" % timeout)
-            tag = glib.timeout_add_seconds(timeout, self._disable_icmp_block,
-                                           icmp)
-        self.IcmpBlockSignal(icmp, True, timeout)
-        return NO_ERROR
+            tag = glib.timeout_add_seconds(timeout, self.disableTimedIcmpBlock,
+                                           _zone, icmp, sender)
+            self.addTimeout(_zone, icmp, tag)
+
+        self.IcmpBlockAdded(_zone, icmp, timeout)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='s', out_signature='i')
-    def disableIcmpBlock(self, icmp):
-        # disables icmpBlock
-        log.debug1("disableIcmpBlock('%s')" % icmp)
-        try:
-            self.fw.disable_icmp_block(icmp)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeIcmpBlock(self, zone, icmp, sender=None):
+        # removes icmpBlock from zone
+        icmp = str(icmp)
+        log.debug1("zone.disableIcmpBlock('%s', '%s')" % (zone, icmp))
+        _zone = self.fw.zone.remove_icmp_block(zone, icmp)
 
-        self.IcmpBlockSignal(icmp, False)
-        return NO_ERROR
+        self.removeTimeout(_zone, icmp)
+        self.IcmpBlockRemoved(_zone, icmp)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='s', out_signature='i')
-    def queryIcmpBlock(self, icmp):
-        # returns true if a icmp is enabled
-        log.debug1("queryIcmpBlock('%s')" % icmp)
-        try:
-            enabled = self.fw.query_icmp_block(icmp)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return enabled
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryIcmpBlock(self, zone, icmp, sender=None):
+        # returns true if a icmp is enabled for zone
+        icmp = str(icmp)
+        log.debug1("zone.queryIcmpBlock('%s', '%s')" % (zone, icmp))
+        return self.fw.zone.query_icmp_block(zone, icmp)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='', out_signature='(ias)')
-    def getIcmpBlocks(self):
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getIcmpBlocks(self, zone, sender=None):
         # returns the list of enabled icmpblocks
-        log.debug1("getIcmpBlocks()")
-        icmp_blocks = [ ]
-        try:
-            icmp_blocks = self.fw.get_icmp_blocks()
-        except FirewallError, error:
-            return (error.code, [])
-        except Exception, msg:
-            log.debug1(msg)
-            return (UNKNOWN_ERROR, [])
-        return (len(icmp_blocks), icmp_blocks)
+        log.debug1("zone.getIcmpBlocks('%s')" % (zone))
+        return self.fw.zone.get_icmp_blocks(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE)
-    def IcmpBlockSignal(self, icmp, enable, timeout=0):
-        log.debug1("IcmpBlockSignal(%s, %s, %d)" % (icmp, enable, timeout))
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus_handle_exceptions
+    def IcmpBlockAdded(self, zone, icmp, timeout=0):
+        log.debug1("zone.IcmpBlockAdded('%s', '%s', %d)" % \
+                       (zone, icmp, timeout))
+        pass
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def IcmpBlockRemoved(self, zone, icmp):
+        log.debug1("zone.IcmpBlockRemoved('%s', '%s')" % (zone, icmp))
         pass
 
     # custom
