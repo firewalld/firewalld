@@ -819,7 +819,7 @@ class FirewallZone:
         if icmp_id in _obj.icmp_blocks:
             raise FirewallError(ALREADY_ENABLED)
 
-        self.__icmp_block(True, zone, icmp)
+        self.__icmp_block(True, _zone, icmp)
 
         _obj.icmp_blocks.append(icmp_id)
         _obj.settings["icmp_blocks"][icmp_id] = \
@@ -837,7 +837,7 @@ class FirewallZone:
         if not icmp_id in _obj.icmp_blocks:
             raise FirewallError(NOT_ENABLED)
 
-        self.__icmp_block(False, zone, icmp)
+        self.__icmp_block(False, _zone, icmp)
 
         _obj.icmp_blocks.remove(icmp_id)
         if icmp_id in _obj.settings["icmp_blocks"]:
