@@ -1,7 +1,13 @@
 config/org.fedoraproject.FirewallD.policy
 config/firewall-config.desktop
-src/*.py
-src/*.glade
+config/icmptypes/*.xml
+config/services/*.xml
+config/zones/*.xml
+src/firewall/*.py
+src/firewall/config/*.py
+src/firewall/core/*.py
+src/firewall/core/io/*.py
+src/firewall/server/*.py
 src/firewalld
 src/firewall-applet
 src/firewall-cmd
