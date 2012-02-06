@@ -62,7 +62,7 @@ class Firewall:
         self.__init_vars()
 
     def __init_vars(self):
-        self._initialized = False
+        self._state = "INIT"
         self._panic = False
         self._default_zone = "public" # initial default, will be overloaded by firewalld.conf
         self._module_refcount = { }
@@ -170,7 +170,7 @@ class Firewall:
         else:
             log.debug1("Using default zone '%s'", self._default_zone)
 
-        self._initialized = True
+        self._state = "RUNNING"
 
     def stop(self):
         self.__init_vars()
@@ -420,10 +420,10 @@ class Firewall:
 
         # TODO: restore direct settings
 
-    # STATUS
+    # STATE
 
-    def status(self):
-        return (self._initialized == True)
+    def get_state(self):
+        return self._state
 
     # PANIC MODE
 
