@@ -468,7 +468,6 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.ServiceRemoved('%s', '%s')" % (zone, service))
         pass
 
-
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # PORTS
