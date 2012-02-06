@@ -614,99 +614,101 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.MasqueradeDisabled('%s')" % (zone))
         pass
 
-    # forward ports
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    def _disable_forward_port(self, interface, port, protocol, toport, toaddr):
-        self.fw.disable_forward_port(interface, port, protocol, toport, toaddr)
-        self.ForwardPortSignal(interface, port, protocol, toport, toaddr, False)
+    # FORWARD PORT
+
+    @dbus_handle_exceptions
+    def disable_forward_port(self, zone, port, protocol, toport, toaddr):
+        del self._timeouts[zone][(port, protocol, toport, toaddr)]
+        self.fw.zone.remove_forward_port(zone, port, protocol, toport, toaddr)
+        self.ForwardPortRemoved(zone, port, protocol, toport, toaddr)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='sssssi',
-                         out_signature='i')
-    def enableForwardPort(self, interface, port, protocol, toport, toaddr,
-                          timeout):
-        # enables forward port if not enabled already
-        log.debug1("enableForwardPort(%s, %s, %s, %s, %s)" % (interface, port,
-                                                       protocol, toport,
-                                                       toaddr))
-        try:
-            self.fw.enable_forward_port(interface, port, protocol, toport,
-                                        toaddr)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addForwardPort(self, zone, port, protocol, toport, toaddr, timeout,
+                       sender=None):
+        # add forward port if not enabled already for zone
+        port = str(port)
+        protocol = str(protocol)
+        toport = str(toport)
+        toaddr = str(toaddr)
+        timeout = int(timeout)
+        log.debug1("zone.addForwardPort('%s', '%s', '%s', '%s', '%s')" % \
+                       (zone, port, protocol, toport, toaddr))
+        _zone = self.fw.zone.add_forward_port(zone, port, protocol, toport,
+                                              toaddr, timeout, sender)
 
         if timeout > 0:
-            log.debug1("adding timeout %d seconds" % timeout)
             tag = glib.timeout_add_seconds(timeout,
-                                           self._disable_forward_port,
-                                           interface, port, protocol, toport,
+                                           self.disable_forward_port,
+                                           _zone, port, protocol, toport,
                                            toaddr)
-        self.ForwardPortSignal(interface, port, protocol, toport, toaddr, True,
-                               timeout)
-        return NO_ERROR
+            self.addTimeout(_zone, (port, protocol, toport, toaddr), tag)
+
+        self.ForwardPortAdded(_zone, port, protocol, toport, toaddr, timeout)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='sssss',
-                         out_signature='i')
-    def disableForwardPort(self, interface, port, protocol, toport, toaddr):
-        # disables forward port
-        log.debug1("disableForwardPort(%s, %s, %s, %s, %s)" % (interface, port,
-                                                        protocol, toport,
-                                                        toaddr))
-        try:
-            self.fw.disable_forward_port(interface, port, protocol, toport,
-                                         toaddr)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeForwardPort(self, zone, port, protocol, toport, toaddr,
+                          sender=None):
+        # remove forward port from zone
+        port = str(port)
+        protocol = str(protocol)
+        toport = str(toport)
+        toaddr = str(toaddr)
+        log.debug1("zone.disableForwardPort('%s', '%s', '%s', '%s', '%s')" % \
+                       (zone, port, protocol, toport, toaddr))
+        _zone = self.fw.zone.remove_forward_port(zone, port, protocol, toport,
+                                                 toaddr)
 
-        self.ForwardPortSignal(interface, port, protocol, toport, toaddr, False)
-        return NO_ERROR
-
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='sssss',
-                         out_signature='i')
-    def queryForwardPort(self, interface, port, protocol, toport, toaddr):
-        # returns true if a forward port is enabled
-        log.debug1("queryForwardPort(%s, %s, %s, %s, %s)" % (interface, port,
-                                                      protocol, toport,
-                                                      toaddr))
-        try:
-            enabled = self.fw.query_forward_port(interface, port, protocol,
-                                                 toport, toaddr)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return enabled
+        self.removeTimeout(_zone, (port, protocol, toport, toaddr))
+        self.ForwardPortRemoved(_zone, port, protocol, toport, toaddr)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='',
-                         out_signature='(iaas)')
-    def getForwardPorts(self):
-        # returns the list of enabled ports
-        log.debug1("getForwardPorts()")
-        ports = [ ]
-        try:
-            ports = self.fw.get_forward_ports()
-        except FirewallError, error:
-            return (error.code, [])
-        except Exception, msg:
-            log.debug1(msg)
-            return (UNKNOWN_ERROR, [])
-        return (len(ports), ports)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryForwardPort(self, zone, port, protocol, toport, toaddr,
+                         sender=None):
+        # returns true if a forward port is enabled for zone
+        port = str(port)
+        protocol = str(protocol)
+        toport = str(toport)
+        toaddr = str(toaddr)
+        log.debug1("zone.queryForwardPort('%s', '%s', '%s', '%s', '%s')" % \
+                       (zone, port, protocol, toport, toaddr))
+        return self.fw.zone.query_forward_port(zone, port, protocol, toport,
+                                               toaddr)
 
-    @dbus.service.signal(DBUS_INTERFACE)
-    def ForwardPortSignal(self, interface, port, protocol, toport, toaddr,
-                          enable, timeout=0):
-        log.debug1("ForwardPortSignal(%s, %s, %s, %s, %s, %s, %d)" % (interface, port,
-            protocol, toport, toaddr, enable, timeout))
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='aas')
+    @dbus_handle_exceptions
+    def getForwardPorts(self, zone, sender=None):
+        # returns the list of enabled ports for zone
+        log.debug1("zone.getForwardPorts('%s')" % (zone))
+        return self.fw.zone.get_forward_ports(zone)
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssssi')
+    @dbus_handle_exceptions
+    def ForwardPortAdded(self, zone, port, protocol, toport, toaddr,
+                         timeout=0):
+        log.debug1("zone.ForwardPortAdded('%s', '%s', '%s', '%s', '%s', %d)" % \
+                       (zone, port, protocol, toport, toaddr, timeout))
+        pass
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssss')
+    @dbus_handle_exceptions
+    def ForwardPortRemoved(self, zone, port, protocol, toport, toaddr):
+        log.debug1("zone.ForwardPortRemoved('%s', '%s', '%s', '%s', '%s')" % \
+                       (zone, port, protocol, toport, toaddr))
         pass
 
     # icmp block
