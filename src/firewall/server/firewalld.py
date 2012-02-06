@@ -35,7 +35,7 @@ from firewall.errors import *
 #
 ############################################################################
 
-class FirewallD(slip.dbus.service.Object):
+class FirewallD(dbus.service.Object):
     """FirewallD main class"""
 
     persistent = True
