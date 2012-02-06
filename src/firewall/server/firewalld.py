@@ -274,6 +274,53 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("DefaultZoneChanged('%s')" % (zone))
         pass
 
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # ZONE INTERFACE
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # ZONES
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getZones(self, sender=None):
+        # returns the list of zones
+        log.debug1("zone.getZones()")
+        return self.fw.zone.get_zones()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
+                         out_signature='a{sas}')
+    @dbus_handle_exceptions
+    def getActiveZones(self, sender=None):
+        # returns the list of active zones
+        log.debug1("zone.getActiveZones()")
+        zones = { }
+        for zone in self.fw.zone.get_zones():
+            interfaces = self.fw.zone.get_zone(zone).interfaces
+            if len(interfaces) > 0:
+                zones[zone] = interfaces
+        return zones
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getZoneOfInterface(self, interface, sender=None):
+        """Return the zone an interface belongs to.
+
+        :Parameters:
+            `interface` : str
+                Name of the interface
+        :Retruns: str. The name of the zone.
+        """
+        log.debug1("zone.getZoneOfInterface('%s')" % interface)
+        zone = self.fw.zone.get_zone_of_interface(interface)
+        if zone:
+            return zone
+        raise FirewallError(UNKNOWN_INTERFACE)
+
     # services
 
     def _disable_service(self, service):
