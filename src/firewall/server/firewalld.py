@@ -469,82 +469,87 @@ class FirewallD(slip.dbus.service.Object):
         pass
 
 
-    # ports
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    def _disable_port(self, port, protocol):
-        self.fw.disable_port(port, protocol)
-        self.PortSignal(port, protocol, False)
+    # PORTS
+
+    @dbus_handle_exceptions
+    def disableTimedPort(self, zone, port, protocol):
+        log.debug1("zone.disableTimedPort('%s', '%s', '%s')" % \
+                       (zone, port, protocol))
+        del self._timeouts[zone][(port, protocol)]
+        self.fw.zone.remove_port(zone, port, protocol)
+        self.PortRemoved(zone, port, protocol)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='ssi', out_signature='i')
-    def enablePort(self, port, protocol, timeout):
-        # enables port <port> <protocol> if not enabled already
-        log.debug1("enablePort(%s, %s)" % (port, protocol))
-        try:
-            self.fw.enable_port(port, protocol)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addPort(self, zone, port, protocol, timeout, sender=None):
+        # adds port <port> <protocol> if not enabled already to zone
+        port = str(port)
+        protocol = str(protocol)
+        timeout = int(timeout)
+        log.debug1("zone.enablePort('%s', '%s', '%s')" % \
+                       (zone, port, protocol))
+        _zone = self.fw.zone.add_port(zone, port, protocol, timeout, sender)
 
         if timeout > 0:
-            log.debug1("adding timeout %d seconds" % timeout)
-            tag = glib.timeout_add_seconds(timeout, self._disable_port,
-                                           port, protocol)
+            tag = glib.timeout_add_seconds(timeout, self.disableTimedPort,
+                                           _zone, port, protocol)
+            self.addTimeout(_zone, (port, protocol), tag)
 
-        self.PortSignal(port, protocol, True, timeout)
-        return NO_ERROR
-
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='ss', out_signature='i')
-    def disablePort(self, port, protocol):
-        # disables port
-        log.debug1("disablePort(%s, %s)" % (port, protocol))
-        try:
-            self.fw.disable_port(port, protocol)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-
-        self.PortSignal(port, protocol, False)
-        return NO_ERROR
+        self.PortAdded(_zone, port, protocol, timeout)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='ss', out_signature='i')
-    def queryPort(self, port, protocol):
-        # returns true if a port is enabled
-        log.debug1("queryPort(%s, %s)" % (port, protocol))
-        try:
-            enabled = self.fw.query_port(port, protocol)
-        except FirewallError, error:
-            return error.code
-        except Exception, msg:
-            log.debug1(msg)
-            return UNKNOWN_ERROR
-        return enabled
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removePort(self, zone, port, protocol, sender=None):
+        # removes port<port> <protocol> if enabled from zone
+        port = str(port)
+        protocol = str(protocol)
+        log.debug1("zone.removePort('%s', '%s', '%s')" % \
+                       (zone, port, protocol))
+        _zone= self.fw.zone.remove_port(zone, port, protocol)
+
+        self.removeTimeout(_zone, (port, protocol))
+        self.PortRemoved(_zone, port, protocol)
+        return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(DBUS_INTERFACE, in_signature='',
-                         out_signature='(iaas)')
-    def getPorts(self):
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryPort(self, zone, port, protocol, sender=None):
+        # returns true if a port is enabled for zone
+        port = str(port)
+        protocol = str(protocol)
+        log.debug1("zone.queryPort('%s', '%s', '%s')" % (zone, port, protocol))
+        return self.fw.zone.query_port(zone, port, protocol)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='aas')
+    @dbus_handle_exceptions
+    def getPorts(self, zone, sender=None):
         # returns the list of enabled ports
-        log.debug1("getPorts()")
-        ports = [ ]
-        try:
-            ports = self.fw.get_ports()
-        except FirewallError, error:
-            return (error.code, [])
-        except Exception, msg:
-            log.debug1(msg)
-            return (UNKNOWN_ERROR, [])
-        return (len(ports), ports)
+        log.debug1("zone.getPorts('%s')" % (zone))
+        return self.fw.zone.get_ports(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE)
-    def PortSignal(self, port, protocol, enable, timeout=0):
-        log.debug1("PortSignal(%s, %s, %s, %d)" % (port, protocol, enable, timeout))
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssi')
+    @dbus_handle_exceptions
+    def PortAdded(self, zone, port, protocol, timeout=0):
+        log.debug1("zone.PortAdded('%s', '%s', '%s', %d)" % \
+                       (zone, port, protocol, timeout))
+        pass
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sss')
+    @dbus_handle_exceptions
+    def PortRemoved(self, zone, port, protocol):
+        log.debug1("zone.PortRemoved('%s', '%s', '%s')" % \
+                       (zone, port, protocol))
         pass
 
     # trusted
