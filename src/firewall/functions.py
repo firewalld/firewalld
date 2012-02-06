@@ -83,6 +83,21 @@ def getPortRange(ports):
         return None
     return matched[0]
 
+def portStr(port, delimiter=":"):
+    """ Create port and port range string 
+    
+    @param port port or port range int or [int, int]
+    @param delimiter of the output string for port ranges, default ':'
+    @return Port or port range string, None if port or port range is not valid
+    """
+    range = getPortRange(port)
+    if isinstance(range, types.IntType) and range < 0:
+        return None
+    elif len(range) == 1:
+        return "%s" % range
+    else:
+        return "%s%s%s" % (range[0], delimiter, range[1])
+
 def getServiceName(port, proto):
     """ Check and Get service name from port and proto string combination using socket.getservbyport
 
