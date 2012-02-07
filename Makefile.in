@@ -165,6 +165,7 @@ PYTHON_VERSION = @PYTHON_VERSION@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
+SYSTEMD_UNITDIR = @SYSTEMD_UNITDIR@
 USE_NLS = @USE_NLS@
 USE_SYSTEMD = @USE_SYSTEMD@
 VERSION = @VERSION@
@@ -221,6 +222,7 @@ top_srcdir = @top_srcdir@
 SUBDIRS = config doc po src
 EXTRA_DIST = \
 	COPYING \
+	autogen.sh \
 	${PACKAGE_NAME}.spec 
 
 CLEANFILES = *~ *\# .\#* *.tar*

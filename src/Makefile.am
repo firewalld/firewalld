@@ -5,7 +5,13 @@ sbin_SCRIPTS = firewalld
 icondir = $(datadir)/icons/hicolor
 iconFILES = icons/*/apps/*
 
-EXTRA_DIST = $(bin_SCRIPTS) $(sbin_SCRIPTS) $(iconFILES)
+EXTRA_DIST = $(bin_SCRIPTS) \
+	$(sbin_SCRIPTS) \
+	firewall/*.py \
+	firewall/*/*.py \
+	firewall/*/*.py.in \
+	firewall/*/*/*.py \
+	$(iconFILES)
 
 CLEANFILES = *~ *\# .\#* *.py?
 

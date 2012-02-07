@@ -31,6 +31,11 @@ AC_ARG_ENABLE([systemd],
 AM_CONDITIONAL(USE_SYSTEMD, test x$use_systemd = xyes)
 AC_SUBST(USE_SYSTEMD)
 
+AC_ARG_WITH([systemd-unitdir],
+       AS_HELP_STRING([--with-systemd-unitdir], [Specify systemd unitdir]),
+       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="/lib/systemd/system"])
+AC_SUBST(SYSTEMD_UNITDIR)
+
 #############################################################
 
 AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')

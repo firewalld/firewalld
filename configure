@@ -618,6 +618,7 @@ INTLTOOL_MERGE
 INTLTOOL_UPDATE
 USE_NLS
 GETTEXT_PACKAGE
+SYSTEMD_UNITDIR
 USE_SYSTEMD
 USE_SYSTEMD_FALSE
 USE_SYSTEMD_TRUE
@@ -706,6 +707,7 @@ ac_user_opts='
 enable_option_checking
 enable_schemas_compile
 enable_systemd
+with_systemd_unitdir
 enable_nls
 enable_dependency_tracking
 '
@@ -1342,6 +1344,11 @@ Optional Features:
   --disable-nls           do not use Native Language Support
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+
+Optional Packages:
+  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
+  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-systemd-unitdir  Specify systemd unitdir
 
 Some influential environment variables:
   PKG_CONFIG  path to pkg-config utility
@@ -2998,6 +3005,16 @@ fi
 else
   USE_SYSTEMD_TRUE='#'
   USE_SYSTEMD_FALSE=
+fi
+
+
+
+
+# Check whether --with-systemd-unitdir was given.
+if test "${with_systemd_unitdir+set}" = set; then :
+  withval=$with_systemd_unitdir; SYSTEMD_UNITDIR=$withval
+else
+  SYSTEMD_UNITDIR="/lib/systemd/system"
 fi
 
 

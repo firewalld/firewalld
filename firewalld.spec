@@ -3,7 +3,7 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
 Version: 0.2.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -14,7 +14,8 @@ Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
 BuildRequires: intltool
-BuildRequires: glib2
+# glib2-devel is needed for gsettings.m4
+BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
@@ -61,7 +62,8 @@ the firewall settings.
 %setup -q
 
 %build
-%configure
+./autogen.sh
+%configure --with-systemd-unitdir=%{_unitdir}
 
 %install
 rm -rf %{buildroot}
@@ -105,6 +107,9 @@ touch --no-create %{_datadir}/icons/hicolor
 if [ -x /usr/bin/gtk-update-icon-cache ]; then
   gtk-update-icon-cache -q %{_datadir}/icons/hicolor
 fi
+if [ $1 -eq 0 ] ; then
+  /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+fi
 
 %triggerun -- firewalld < 0.1.3-3
 # Save the current service runlevel info
@@ -115,6 +120,9 @@ fi
 # Run these because the SysV package being removed won't do them
 /sbin/chkconfig --del firewalld >/dev/null 2>&1 || :
 /bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
+
+%posttrans
+/usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 
 %files -f %{name}.lang
@@ -166,6 +174,12 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Feb  7 2012 Thomas Woerner <twoerner@redhat.com> 0.2.0-2
+- added glib2-devel to build requires, needed for gsettings.m4
+- added --with-system-unitdir arg to fix installaiton of system file
+- added glib-compile-schemas calls for postun and posttrans
+- added EXTRA_DIST file lists
+
 * Mon Feb  6 2012 Thomas Woerner <twoerner@redhat.com> 0.2.0-1
 - version 0.2.0 with new FirewallD1 D-BUS interface
 - supports zones with a default zone

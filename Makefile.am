@@ -2,6 +2,7 @@ SUBDIRS = config doc po src
 
 EXTRA_DIST = \
 	COPYING \
+	autogen.sh \
 	${PACKAGE_NAME}.spec 
 
 CLEANFILES = *~ *\# .\#* *.tar*

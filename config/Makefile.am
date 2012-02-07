@@ -34,6 +34,10 @@ EXTRA_DIST = \
 	$(console_FILES) \
 	$(desktop_FILES) \
 	$(polkit1_action_FILES) \
+	$(gsettings_in_file) \
+	icmptypes/*.xml \
+	services/*.xml \
+	zones/*.xml \
 	firewalld.init \
 	firewalld.service \
 	firewalld.sysconfig
@@ -64,11 +68,11 @@ uninstall-init:
 	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
 
 install-service:
-	mkdir -p $(DESTDIR)/lib/systemd/system
-	$(INSTALL) firewalld.service $(DESTDIR)/lib/systemd/system/
+	mkdir -p $(DESTDIR)$(SYSTEMD_UNITDIR)
+	$(INSTALL) firewalld.service $(DESTDIR)$(SYSTEMD_UNITDIR)
 
 uninstall-service:
-	rm -f $(DESTDIR)$(sysconfdir)/lib/systemd/system/firewalld.service
+	rm -f $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
 
 install-config:
 	mkdir -p $(DESTDIR)$(sconfdir)
