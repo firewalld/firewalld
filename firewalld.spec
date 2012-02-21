@@ -2,8 +2,8 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.0
-Release: 2%{?dist}
+Version: 0.2.1
+Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -174,6 +174,9 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Feb 21 2012 Thomas Woerner <twoerner@redhat.com> 0.2.1-1
+- added missing firewall.dbus_utils
+
 * Tue Feb  7 2012 Thomas Woerner <twoerner@redhat.com> 0.2.0-2
 - added glib2-devel to build requires, needed for gsettings.m4
 - added --with-system-unitdir arg to fix installaiton of system file
