@@ -35,7 +35,6 @@ tag:
 		echo "Do you want to commit these changes? (y/N)"; \
 		read answer; \
 		[ "$$answer" == "Y" -o "$$answer" == "y" ] || exit 1; \
-		perl -pi -e "s/^VERSION = .*/VERSION = '${PACKAGE_VERSION}'/" src/fw_config.py; \
 		git commit -a -m "$(PACKAGE_TAG)"; \
 	fi
 	git tag -f $(PACKAGE_TAG)
