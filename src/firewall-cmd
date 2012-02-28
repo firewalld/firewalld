@@ -53,7 +53,7 @@ def usage():
     --list=interface                     lists interfaces of a zone
   Actions:
     --service=<service>
-    --port=<port>[-<port>]:<protocol>
+    --port=<port>[-<port>]/<protocol>
     --masquerade
     --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
     --icmp-block=<icmp type>
@@ -262,7 +262,7 @@ try:
             if mode == "list":
                 l = fw.getPorts(zone)
                 if len(l) > 0:
-                    print(", ".join(["%s/%s" % port for port in l]))
+                    print(", ".join(["%s/%s" % (port[0], port[1]) for port in l]))
             else:
                 try:
                     (port, proto) = value.split("/")
