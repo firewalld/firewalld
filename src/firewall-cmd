@@ -45,18 +45,21 @@ def usage():
     --get-zone-of-interface=<interface>
 
     --zone=<zone>
-  Modes:
-    --add|--enable [--timeout=<seconds>] <action>
-    --remove|--disable <action>
-    --query <action>
+  Mode:
+    --add [--timeout=<seconds>] <action>
+    --remove <action>
+    --enable [--timeout=<seconds>] <masquerade>
+    --disable <masquerade>
+    --query <action> | <masquerade> 
     --list=<action>
-  Actions:
+  Action:
     --service=<service>
     --port=<port>[-<port>]/<protocol>
     --interface=<interface>
-    --masquerade
     --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
     --icmp-block=<icmp type>
+  Masquerade:
+    --masquerade
 """)
 
 try:
