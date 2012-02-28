@@ -113,7 +113,7 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def getInterfaces(self, zone):
-        return dbu_to_python(self.fw_zone.getInterfaces(zone))
+        return dbus_to_python(self.fw_zone.getInterfaces(zone))
 
     @slip.dbus.polkit.enable_proxy
     def queryInterface(self, interface):
