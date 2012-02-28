@@ -247,7 +247,7 @@ try:
         # service
         elif action == "service":
             if mode == "list":
-                l = z.getServices(zone)
+                l = fw.getServices(zone)
                 if len(l) > 0:
                     print(", ".join(l))
             elif mode == "add":
