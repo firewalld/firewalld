@@ -50,10 +50,10 @@ def usage():
     --remove|--disable <action>
     --query <action>
     --list=<action>
-    --list=interface                     lists interfaces of a zone
   Actions:
     --service=<service>
     --port=<port>[-<port>]/<protocol>
+    --interface=<interface>
     --masquerade
     --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
     --icmp-block=<icmp type>
