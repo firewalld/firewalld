@@ -190,7 +190,7 @@ try:
     if mode == "version":
         print(fw.get_property("version"))
         sys.exit(0)
-    elif mode == "stats":
+    elif mode == "state":
         state = fw.get_property("state")
         if state != "RUNNING":
             sys.exit(-1)
