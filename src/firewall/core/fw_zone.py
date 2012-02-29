@@ -294,7 +294,7 @@ class FirewallZone:
         if not enable:
             self.remove_chain(zone, table, chain)
 
-    def add_interface(self, zone, interface, timeout=0, sender=None):
+    def add_interface(self, zone, interface, sender=None):
         self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
         _obj = self._zones[_zone]
@@ -310,7 +310,7 @@ class FirewallZone:
 
         _obj.interfaces.append(interface)
         _obj.settings["interfaces"][interface_id] = \
-            self.__gen_settings(timeout, sender)
+            self.__gen_settings(0, sender)
 
         return _zone
 
