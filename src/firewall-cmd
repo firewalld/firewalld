@@ -45,18 +45,21 @@ def usage():
     --get-zone-of-interface=<interface>
 
     --zone=<zone>
-  Modes:
-    --add|--enable [--timeout=<seconds>] <action>
-    --remove|--disable <action>
-    --query <action>
+  Mode:
+    --add [--timeout=<seconds>] <action>
+    --remove <action>
+    --enable [--timeout=<seconds>] <masquerade>
+    --disable <masquerade>
+    --query <action> | <masquerade> 
     --list=<action>
-    --list=interface                     lists interfaces of a zone
-  Actions:
+  Action:
     --service=<service>
-    --port=<port>[-<port>]:<protocol>
-    --masquerade
+    --port=<port>[-<port>]/<protocol>
+    --interface=<interface>
     --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
     --icmp-block=<icmp type>
+  Masquerade:
+    --masquerade
 """)
 
 try:
@@ -262,7 +265,7 @@ try:
             if mode == "list":
                 l = fw.getPorts(zone)
                 if len(l) > 0:
-                    print(", ".join(["%s/%s" % port for port in l]))
+                    print(", ".join(["%s/%s" % (port[0], port[1]) for port in l]))
             else:
                 try:
                     (port, proto) = value.split("/")

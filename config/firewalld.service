@@ -5,9 +5,8 @@ Before=network.target
 Conflicts=iptables.service ip6tables.service ebtables.service
 
 [Service]
-Type=forking
 EnvironmentFile=-/etc/sysconfig/firewalld
-ExecStart=/usr/sbin/firewalld
+ExecStart=/usr/sbin/firewalld --nofork
 ExecReload=/usr/bin/firewall-cmd --reload
 
 [Install]
