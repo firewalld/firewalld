@@ -314,6 +314,23 @@ class FirewallZone:
 
         return _zone
 
+    def change_zone(self, zone, interface, sender=None):
+        self._fw.check_panic()
+        _old_zone = self.get_zone_of_interface(interface)
+        _new_zone = self._fw.check_zone(zone)
+        _obj = self._zones[_new_zone]
+        interface_id = self.__interface_id(interface)
+
+        if _new_zone == _old_zone:
+            raise FirewallError(ZONE_ALREADY_SET)
+
+        if _old_zone != None:
+            self.remove_interface(_old_zone, interface)
+
+        self.add_interface(_new_zone, interface, sender)
+
+        return _new_zone
+
     def remove_interface(self, zone, interface):
         self._fw.check_panic()
         _zone = self._fw.check_zone(zone)

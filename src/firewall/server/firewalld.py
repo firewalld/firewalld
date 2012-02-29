@@ -344,6 +344,21 @@ class FirewallD(dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
+    def changeZone(self, zone, interface, sender=None):
+        """Change a zone an interface is part of.
+        If zone is empty, use default zone.
+        """
+        interface = str(interface)
+        log.debug1("zone.changeZone('%s', '%s')" % (zone, interface))
+        _zone = self.fw.zone.change_zone(zone, interface, sender)
+
+        self.ZoneChanged(_zone, interface)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
     def removeInterface(self, zone, interface, sender=None):
         """Remove interface from a zone.
         If zone is empty, use default zone.
@@ -382,6 +397,12 @@ class FirewallD(dbus.service.Object):
     @dbus_handle_exceptions
     def InterfaceAdded(self, zone, interface):
         log.debug1("zone.InterfaceAdded('%s', '%s')" % (zone, interface))
+        pass
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def ZoneChanged(self, zone, interface):
+        log.debug1("zone.ZoneChanged('%s', '%s')" % (zone, interface))
         pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')

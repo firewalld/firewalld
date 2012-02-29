@@ -71,7 +71,7 @@ try:
                         "get-zones", "get-active-zones",
                         "get-zone-of-interface=",
                         # modes (exactly one of those)
-                         "add", "remove","enable", "disable", "query", "list=",
+                         "add", "change", "remove","enable", "disable", "query", "list=",
                         # zone
                         "zone=",
                         # actions (exactly one of those)
@@ -133,7 +133,7 @@ for (opt, val) in opts:
             __fail("Timeout not valid")
 
     # mode
-    elif opt in [ "--enable", "--disable", "--query", "--add", "--remove" ]:
+    elif opt in [ "--enable", "--disable", "--query", "--add", "--change", "--remove" ]:
         if mode:
             __fail()
         mode = opt[2:]
@@ -174,7 +174,7 @@ if mode not in [ "version", "reload", "complete-reload", "state",
         __fail("No value.")
 
 if action in [ "interface", "service", "port", "forward-port", "icmp-block" ]:
-    if mode not in [ "add", "remove", "query", "list" ]:
+    if mode not in [ "add", "change", "remove", "query", "list" ]:
         __fail(_("Wrong action and mode combination"))
 elif action == "masquerade" and mode not in [ "enable", "disable", "query" ]:
     __fail(_("Wrong action and mode combination"))
@@ -242,6 +242,8 @@ try:
                     print(", ".join(l))
             elif mode == "add":
                 fw.addInterface(zone, value)
+            elif mode == "change":
+                fw.changeZone(zone, value)
             elif mode == "remove":
                 fw.removeInterface(zone, value)
             elif mode == "query":
