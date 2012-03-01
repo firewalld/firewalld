@@ -87,10 +87,6 @@ if [ $1 -eq 1 ] ; then # Initial installation
    /bin/systemctl daemon-reload >/dev/null 2>&1 || :
    /bin/systemctl enable firewalld.service >/dev/null 2>&1 || :
 fi
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x /usr/bin/gtk-update-icon-cache ]; then
-  gtk-update-icon-cache -q %{_datadir}/icons/hicolor
-fi
 
 %preun
 if [ $1 -eq 0 ]; then # Package removal, not upgrade
@@ -103,13 +99,6 @@ fi
 if [ $1 -ge 1 ] ; then # Package upgrade, not uninstall
    /bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
 fi
-touch --no-create %{_datadir}/icons/hicolor
-if [ -x /usr/bin/gtk-update-icon-cache ]; then
-  gtk-update-icon-cache -q %{_datadir}/icons/hicolor
-fi
-if [ $1 -eq 0 ] ; then
-  /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
-fi
 
 %triggerun -- firewalld < 0.1.3-3
 # Save the current service runlevel info
@@ -121,7 +110,22 @@ fi
 /sbin/chkconfig --del firewalld >/dev/null 2>&1 || :
 /bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
 
-%posttrans
+%post -n firewall-applet
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  gtk-update-icon-cache -q %{_datadir}/icons/hicolor
+fi
+
+%postun -n firewall-applet
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x /usr/bin/gtk-update-icon-cache ]; then
+  gtk-update-icon-cache -q %{_datadir}/icons/hicolor
+fi
+if [ $1 -eq 0 ] ; then
+  /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
+fi
+
+%posttrans -n firewall-applet
 /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 
 
