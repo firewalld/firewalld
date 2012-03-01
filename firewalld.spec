@@ -135,9 +135,9 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
-%{_sysconfdir}/firewalld/icmptypes/*.xml
-%{_sysconfdir}/firewalld/services/*.xml
-%{_sysconfdir}/firewalld/zones/*.xml
+%config(noreplace) %{_sysconfdir}/firewalld/icmptypes/*.xml
+%config(noreplace) %{_sysconfdir}/firewalld/services/*.xml
+%config(noreplace) %{_sysconfdir}/firewalld/zones/*.xml
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
