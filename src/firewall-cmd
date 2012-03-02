@@ -225,7 +225,7 @@ try:
             elif mode == "disable":
                 fw.disablePanicMode()
             elif mode == "query":
-                sy.exit(fw.queryPanicMode())
+                sys.exit(not fw.queryPanicMode())
 
         # zone
         elif action == "zone":
@@ -247,7 +247,7 @@ try:
             elif mode == "remove":
                 fw.removeInterface(zone, value)
             elif mode == "query":
-                sys.exit(fw.queryInterface(zone, value))
+                sys.exit(not fw.queryInterface(zone, value))
 
         # service
         elif action == "service":
@@ -260,7 +260,7 @@ try:
             elif mode == "remove":
                 fw.removeService(zone, value)
             elif mode == "query":
-                sys.exit(fw.queryService(zone, value))
+                sys.exit(not fw.queryService(zone, value))
 
         # port
         elif action == "port":
@@ -279,7 +279,7 @@ try:
                 elif mode == "remove":
                     fw.removePort(zone, port, proto)
                 elif mode == "query":
-                    sys.exit(fw.queryPort(zone, port, proto))
+                    sys.exit(not fw.queryPort(zone, port, proto))
 
         # masquerade
         elif action == "masquerade":
@@ -288,7 +288,7 @@ try:
             elif mode == "disable":
                 fw.disableMasquerade(zone)
             elif mode == "query":
-                sys.exit(fw.queryMasquerade(zone))
+                sys.exit(not fw.queryMasquerade(zone))
 
         # forward port
         elif action == "forward-port":
@@ -328,8 +328,8 @@ try:
                 elif mode == "remove":
                     fw.removeForwardPort(zone, port, protocol, toport, toaddr)
                 elif mode == "query":
-                    sys.exit(fw.queryForwardPort(zone, port, protocol, toport,
-                                                 toaddr))
+                    sys.exit(not fw.queryForwardPort(zone, port, protocol,
+                                                     toport, toaddr))
                     
         # block icmp
         elif action == "icmp-block":
@@ -343,7 +343,7 @@ try:
             elif mode == "remove":
                 fw.removeIcmpBlock(zone, value)
             elif mode == "query":
-                sys.exit(fw.queryIcmpBlock(zone, value))
+                sys.exit(not fw.queryIcmpBlock(zone, value))
 
 except dbus.DBusException, e:
     if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
