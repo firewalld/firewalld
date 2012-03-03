@@ -283,7 +283,7 @@ class Logger:
     def close(self):
         """ Close all logging targets """
         for level in xrange(self.FATAL, self.DEBUG_MAX+1):
-            if not self._logging.has_key(level):
+            if not level in self._logging:
                 continue
             for (domain, target, _format) in self._logging[level]:
                 target.close()
@@ -291,14 +291,14 @@ class Logger:
     def getInfoLogLevel(self, domain="*"):
         """ Get info log level. """
         self._checkDomain(domain)
-        if self._level.has_key(domain):
+        if domain in self._level:
             return self._level[domain]
         return self.NOTHING
 
     def getDebugLogLevel(self, domain="*"):
         """ Get debug log level. """
         self._checkDomain(domain)
-        if self._debug_level.has_key(domain):
+        if domain in self._debug_level:
             return self._debug_level[domain]
         return self.NO_DEBUG
 
@@ -314,7 +314,7 @@ class Logger:
     def getDebugLogLevel(self, domain="*"):
         """ Get debug log level. """
         self._checkDomain(domain)
-        if self._debug_level.has_key(domain):
+        if domain in self._debug_level:
             return self._debug_level[domain] - self.NO_DEBUG
         return self.NO_DEBUG
 
@@ -511,7 +511,7 @@ class Logger:
             _domains.clear()
 
         for level in xrange(_range[0], _range[1]):
-            if not _logging.has_key(level):
+            if not level in _logging:
                 continue
             for (domain, target, _format) in _logging[level]:
                 if domain not in _domains:
@@ -559,7 +559,7 @@ class Logger:
 
         for _level in levels:
             for target in targets:
-                if not _logging.has_key(_level):
+                if not _level in _logging:
                     continue
                 if (domain, target, fmt) in _logging[_level]:
                     _logging[_level].remove( (domain, target, fmt) )
@@ -597,7 +597,7 @@ class Logger:
         # get class by first function argument, if there are any
         if frame.f_code.co_argcount > 0:
             selfname = frame.f_code.co_varnames[0]
-            if frame.f_locals.has_key(selfname):
+            if selfname in frame.f_locals:
                 _self = frame.f_locals[selfname]
                 obj = self._getClass2(_self.__class__, frame.f_code)
                 if obj:
@@ -607,7 +607,7 @@ class Logger:
         code = frame.f_code
 
         # function in module?
-        if module.__dict__.has_key(code.co_name):
+        if code.co_name in module.__dict__:
             if hasattr(module.__dict__[code.co_name], "func_code") and \
                    module.__dict__[code.co_name].func_code  == code:
                 return None
@@ -640,15 +640,15 @@ class Logger:
     # internal log class
     def _log(self, level, format, *args, **kwargs):
         is_debug = 0
-        if kwargs.has_key("is_debug"):
+        if "is_debug" in kwargs:
             is_debug = kwargs["is_debug"]
 
         nl = 1
-        if kwargs.has_key("nl"):
+        if "nl" in kwargs:
             nl = kwargs["nl"]
 
         nofmt = 0
-        if kwargs.has_key("nofmt"):
+        if "nofmt" in kwargs:
             nofmt = kwargs["nofmt"]
 
         dict = self._genDict(level, is_debug)
@@ -679,7 +679,7 @@ class Logger:
                    or fnmatch.fnmatchcase(dict["domain"], domain):
                 if not _format:
                     _format = self._format
-                if kwargs.has_key("fmt"):
+                if "fmt" in kwargs:
                     _format = kwargs["fmt"]
                 if nofmt:
                     target.write(dict["message"], level, self, is_debug)
@@ -720,7 +720,7 @@ class Logger:
         if not simple_match and len(check_domains) < 1:
             return None
 
-        if not _domains.has_key(level):
+        if not level in _domains:
             return None
 
         f = inspect.currentframe()
@@ -765,7 +765,7 @@ class Logger:
 
         # generate dict for format output
         level_str = ""
-        if _label.has_key(level):
+        if level in _label:
             level_str = _label[level]
         dict = { 'file': co.co_filename,
                  'line': f.f_lineno,
