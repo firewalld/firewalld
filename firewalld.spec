@@ -135,14 +135,18 @@ fi
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %defattr(0640,root,root)
+%attr(0750,root,root) %dir %{_prefix}/lib/firewalld
+%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/icmptypes
+%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/services
+%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/zones
+%{_prefix}/lib/firewalld/icmptypes/*.xml
+%{_prefix}/lib/firewalld/services/*.xml
+%{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
+%config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
-%config(noreplace) %{_sysconfdir}/firewalld/icmptypes/*.xml
-%config(noreplace) %{_sysconfdir}/firewalld/services/*.xml
-%config(noreplace) %{_sysconfdir}/firewalld/zones/*.xml
-%config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 #%attr(0755,root,root) %{_initrddir}/firewalld
@@ -178,6 +182,11 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Mar  5 2012 Thomas Woerner <twoerner@redhat.com>
+- moved zones, services and icmptypes to /usr/lib/firewalld, can be overloaded
+  by files in /etc/firewalld (no overload of immutable zones block, drop,
+  trusted)
+
 * Tue Feb 21 2012 Thomas Woerner <twoerner@redhat.com> 0.2.1-1
 - added missing firewall.dbus_utils
 

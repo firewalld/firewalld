@@ -27,6 +27,7 @@ from firewall.core.base import DEFAULT_ZONE_TARGET
 class Zone(object):
     def __init__(self):
         self.filename = ""
+        self.path = ""
         self.name = ""
         self.short = ""
         self.version = ""
@@ -176,6 +177,7 @@ def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     zone = Zone()
     zone.filename = filename
+    zone.path = path
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)

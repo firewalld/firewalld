@@ -1,4 +1,5 @@
 sconfdir = $(sysconfdir)/firewalld
+prefixlibdir = ${prefix}/lib/firewalld
 dist_sconf_DATA = firewalld.conf
 
 desktop_FILES = firewall-applet.desktop.in
@@ -76,17 +77,24 @@ uninstall-service:
 
 install-config:
 	mkdir -p $(DESTDIR)$(sconfdir)
-	cp -r icmptypes $(DESTDIR)$(sconfdir)
-	cp -r services $(DESTDIR)$(sconfdir)
-	cp -r zones $(DESTDIR)$(sconfdir)
+	mkdir -p $(DESTDIR)$(sconfdir)/icmptypes
+	mkdir -p $(DESTDIR)$(sconfdir)/services
+	mkdir -p $(DESTDIR)$(sconfdir)/zones
+	mkdir -p $(DESTDIR)$(prefixlibdir)
+	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
+	cp -r services $(DESTDIR)$(prefixlibdir)
+	cp -r zones $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
-	rm -f $(DESTDIR)$(sconfdir)/icmptypes/*
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
-	rm -f $(DESTDIR)$(sconfdir)/services/*
 	rmdir $(DESTDIR)$(sconfdir)/services
-	rm -f $(DESTDIR)$(sconfdir)/zones/*
 	rmdir $(DESTDIR)$(sconfdir)/zones
+	rm -f $(DESTDIR)$(prefixlibdir)/icmptypes/*
+	rmdir $(DESTDIR)$(prefixlibdir)/icmptypes
+	rm -f $(DESTDIR)$(prefixlibdir)/services/*
+	rmdir $(DESTDIR)$(prefixlibdir)/services
+	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
+	rmdir $(DESTDIR)$(prefixlibdir)/zones
 
 install-data-local: $(INSTALL_TARGETS)
 

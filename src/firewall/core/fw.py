@@ -96,64 +96,35 @@ class Firewall:
         self._apply_default_rules()
 
         # load icmptype files
-        path = FIREWALLD_ICMPTYPES
-        if os.path.isdir(path):
-            for filename in os.listdir(path):
-                if filename.endswith(".xml"):
-                    log.debug1("Loading icmptype file '%s/%s'", path, filename)
-                    try:
-                        obj = icmptype_reader(filename, path)
-                        self.icmptype.add_icmptype(obj)
-                    except FirewallError, msg:
-                        log.error("Failed to load icmptype file '%s/%s': %s",
-                                  path, filename, msg)
-                    except Exception, msg:
-                        log.error("Failed to load icmptype file '%s/%s': ",
-                                  path, filename)
-                        log.exception()
+        self._loader(FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(ETC_FIREWALLD_ICMPTYPES, "icmptype")
 
         if len(self.icmptype.get_icmptypes()) == 0:
-            log.fatal("No icmptypes found.")
+            log.error("No icmptypes found.")
 
         # load service files
-        path = FIREWALLD_SERVICES
-        if os.path.isdir(path):
-            for filename in os.listdir(path):
-                if filename.endswith(".xml"):
-                    log.debug1("Loading service file '%s/%s'", path, filename)
-                    try:
-                        obj = service_reader(filename, path)
-                        self.service.add_service(obj)
-                    except FirewallError, msg:
-                        log.error("Failed to load service file '%s/%s': %s",
-                                  path, filename, msg)
-                    except Exception, msg:
-                        log.error("Failed to load service file '%s/%s':", path,
-                                  filename)
-                        log.exception()
+        self._loader(FIREWALLD_SERVICES, "service")
+        self._loader(ETC_FIREWALLD_SERVICES, "service")
 
         if len(self.service.get_services()) == 0:
-            log.fatal("No services found.")
+            log.error("No services found.")
 
         # load zone files
-        path = FIREWALLD_ZONES
-        if os.path.isdir(path):
-            for filename in os.listdir(path):
-                if filename.endswith(".xml"):
-                    log.debug1("Loading zone file '%s/%s'", path, filename)
-                    try:
-                        obj = zone_reader(filename, path)
-                        self.zone.add_zone(obj)
-                    except FirewallError, msg:
-                        log.error("Failed to load zone file '%s/%s': %s", path,
-                                  filename, msg)
-                    except Exception, msg:
-                        log.error("Failed to load zone file '%s/%s':", path,
-                                  filename)
-                        log.exception()
+        self._loader(FIREWALLD_ZONES, "zone")
+        self._loader(ETC_FIREWALLD_ZONES, "zone")
 
         if len(self.zone.get_zones()) == 0:
             log.fatal("No zones found.")
+            sys.exit(1)
+
+        # check minimum required zones
+        error = False
+        for z in [ "block", "drop", "trusted" ]:
+            if not z in self.zone.get_zones():
+                log.fatal("Zone '%s' is not available.", z)
+                error = True
+        if error:
+            sys.exit(1)
 
         # check if default_zone is a valid zone
         if self._default_zone not in self.zone.get_zones():
@@ -163,7 +134,7 @@ class Firewall:
                 zone = "external"
             else:
                 zone = "block" # block is a base zone, therefore it has to exist
-                
+
             log.error("Default zone '%s' is not valid. Using '%s'.",
                       self._default_zone, zone)
             self._default_zone = zone
@@ -171,6 +142,54 @@ class Firewall:
             log.debug1("Using default zone '%s'", self._default_zone)
 
         self._state = "RUNNING"
+
+    def _loader(self, path, reader_type):
+        if not os.path.isdir(path):
+            return
+
+        for filename in os.listdir(path):
+            if not filename.endswith(".xml"):
+                continue
+
+            name = "%s/%s" % (path, filename)
+            log.debug1("Loading %s file '%s'", reader_type, name)
+            try:
+                if reader_type == "icmptype":
+                    obj = icmptype_reader(filename, path)
+                    if obj.name in self.icmptype.get_icmptypes():
+                        orig_obj = self.icmptype.get_icmptype(obj.name)
+                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                                   orig_obj.name, orig_obj.path,
+                                   orig_obj.filename)
+
+                    self.icmptype.add_icmptype(obj)
+                elif reader_type == "service":
+                    obj = service_reader(filename, path)
+                    if obj.name in self.service.get_services():
+                        orig_obj = self.service.get_service(obj.name)
+                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                                   orig_obj.name, orig_obj.path,
+                                   orig_obj.filename)
+                    self.service.add_service(obj)
+                elif reader_type == "zone":
+                    obj = zone_reader(filename, path)
+                    if obj.name in self.zone.get_zones():
+                        orig_obj = self.zone.get_zone(obj.name)
+                        if orig_obj.immutable:
+                            raise FirewallError(NOT_OVERLOADABLE)
+                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                                   orig_obj.name, orig_obj.path,
+                                   orig_obj.filename)
+                    self.zone.add_zone(obj)
+                else:
+                    log.fatal("Unknown reader type %s", reader_type)
+            except FirewallError, msg:
+                log.error("Failed to load %s file '%s': %s", reader_type,
+                          name, msg)
+            except Exception, msg:
+                log.error("Failed to load %s file '%s':", reader_type, name)
+                log.exception()
+        
 
     def stop(self):
         self.__init_vars()

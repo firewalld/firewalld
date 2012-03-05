@@ -26,6 +26,7 @@ from firewall.config import _
 class Service(object):
     def __init__(self):
         self.filename = ""
+        self.path = ""
         self.name = ""
         self.version = ""
         self.short = ""
@@ -150,6 +151,7 @@ def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
     service = Service()
     service.filename = filename
+    service.path = path
     handler = service_ContentHandler(service)
     parser = sax.make_parser()
     parser.setContentHandler(handler)

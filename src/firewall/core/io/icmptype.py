@@ -26,6 +26,7 @@ from firewall.config import _
 class ICMPType(object):
     def __init__(self):
         self.filename = ""
+        self.path = ""
         self.name = ""
         self.version = ""
         self.short = ""
@@ -143,6 +144,7 @@ def icmptype_reader(filename, path):
     name = "%s/%s" % (path, filename)
     icmptype = ICMPType()
     icmptype.filename = filename
+    icmptype.path = path
     handler = icmptype_ContentHandler(icmptype)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
