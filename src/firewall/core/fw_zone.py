@@ -367,6 +367,10 @@ class FirewallZone:
 
         rules = [ ]
         for ipv in [ "ipv4", "ipv6" ]:
+            if len(svc.destination) > 0 and ipv not in svc.destination:
+                # destination is set, only use if it contains ipv
+                continue
+
             # handle rules
             for (port,proto) in svc.ports:
                 target = self._zones[zone].target.format(
@@ -381,7 +385,7 @@ class FirewallZone:
                          rule += [ "-m", "ipv6header", "--header", proto ]
                 if port:
                      rule += [ "--dport", "%s" % portStr(port) ]
-                if ipv in svc.destination:
+                if ipv in svc.destination and svc.destination[ipv] != "":
                      rule += [ "-d",  svc.destination[ipv] ]
                 rule += [ "-j", "ACCEPT" ]
                 rules.append((ipv, rule))

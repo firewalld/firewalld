@@ -32,7 +32,7 @@ class Service(object):
         self.description = ""
         self.ports = [ ]
         self.modules = [ ]
-        self.destination = [ ]
+        self.destination = { }
 
 # PARSER
 
@@ -119,9 +119,8 @@ class service_ContentHandler(sax.handler.ContentHandler):
             self.service.ports.append((attrs["port"], attrs["protocol"]))
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
-                if x in attrs and \
-                        attrs[x].lower() in [ "yes", "true" ]:
-                    self.service.destination.append(x)
+                if x in attrs:
+                    self.service.destination[x] = attrs[x]
         elif name == "module":
             self.service.modules.append(attrs["name"])
 
@@ -204,10 +203,7 @@ def service_writer(service, path=""):
     # destination
     if len(service.destination) > 0:
         handler.ignorableWhitespace("  ")
-        attrs = { }
-        for x in service.destination:
-            attrs[x] = "yes"
-        handler.simpleElement("destination", attrs)
+        handler.simpleElement("destination", service.destination)
         handler.ignorableWhitespace("\n")
 
     # end service element
