@@ -63,7 +63,6 @@ def user_of_uid(uid):
     try:
         pws = pwd.getpwuid(uid)
     except Exception, msg:
-        print msg
         return None
     return pws[0]
 
