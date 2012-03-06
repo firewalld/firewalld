@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service name="dhcpv6-client">
+  <short>DHCPv6 Client</short>
+  <description>This option allows a Dynamic Host Configuration Protocol for IPv6 (DHCPv6) server to send addresses and nameserver settings for IPv6 to the client.</description>
+  <port protocol="udp" port="546"/>
+  <destination ipv6="fe80::/64"/>
+</service>
