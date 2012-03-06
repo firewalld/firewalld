@@ -2,7 +2,7 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.1
+Version: 0.2.2
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -182,6 +182,28 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Mar  6 2012 Thomas Woerner <twoerner@redhat.com> 0.2.2-1
+- enabled dhcpv6-client service for zones home and work
+- new dhcpv6-client service
+- firewall-cmd: query mode returns reversed values
+- new zone.changeZone(zone, interface)
+- moved zones, services and icmptypes to /usr/lib/firewalld, can be overloaded
+  by files in /etc/firewalld (no overload of immutable zones block, drop,
+  trusted)
+- reset MinimalMark in firewalld.cnf to default value
+- fixed service destination (addresses not used)
+- fix xmlplus to be compatible with the python xml sax parser and python 3
+  by adding __contains__ to xml.sax.xmlreader.AttributesImpl
+- use icon and glib related post, postun and posttrans scriptes for firewall
+- firewall-cmd: fix typo in state
+- firewall-cmd: fix usage()
+- firewall-cmd: fix interface action description in usage()
+- client.py: fix definition of queryInterface()
+- client.py: fix typo in getInterfaces()
+- firewalld.service: do not fork
+- firewall-cmd: fix bug in --list=port and --port action help message
+- firewall-cmd: fix bug in --list=service
+
 * Mon Mar  5 2012 Thomas Woerner <twoerner@redhat.com>
 - moved zones, services and icmptypes to /usr/lib/firewalld, can be overloaded
   by files in /etc/firewalld (no overload of immutable zones block, drop,
