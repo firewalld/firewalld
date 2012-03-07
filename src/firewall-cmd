@@ -51,7 +51,7 @@ def usage():
     --enable [--timeout=<seconds>] <masquerade>
     --disable <masquerade>
     --query <action> | <masquerade> 
-    --list=<action>
+    --list=<action> | all
   Action:
     --service=<service>
     --port=<port>[-<port>]/<protocol>
@@ -330,7 +330,7 @@ try:
                 elif mode == "query":
                     sys.exit(not fw.queryForwardPort(zone, port, protocol,
                                                      toport, toaddr))
-                    
+
         # block icmp
         elif action == "icmp-block":
             if mode == "list":
@@ -344,6 +344,25 @@ try:
                 fw.removeIcmpBlock(zone, value)
             elif mode == "query":
                 sys.exit(not fw.queryIcmpBlock(zone, value))
+
+        elif (action == "all"):
+            if mode == "list":
+                print("zone: " + (zone if zone != "" else fw.getDefaultZone()))
+                l = fw.getInterfaces(zone)
+                if len(l) > 0:
+                    print("interfaces: " + ", ".join(l))
+                l = fw.getServices(zone)
+                if len(l) > 0:
+                    print("services: " + ", ".join(l))
+                l = fw.getPorts(zone)
+                if len(l) > 0:
+                    print("ports: " + ", ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+                l = fw.getForwardPorts(zone)
+                if len(l) > 0:
+                    print("forward-ports: " + "\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (interface, port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+                l = fw.getIcmpBlocks(zone)
+                if len(l) > 0:
+                    print("icmp-blocks: " + ", ".join(l))
 
 except dbus.DBusException, e:
     if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
