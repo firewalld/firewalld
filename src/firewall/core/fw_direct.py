@@ -77,7 +77,7 @@ class FirewallDirect:
         rule.append(chain)
 
         try:
-            self.__rule(ipv, rule)
+            self.rule(ipv, rule)
         except Exception, msg:
             log.debug2(msg)
             if add:
@@ -161,7 +161,7 @@ class FirewallDirect:
         rule += args
 
         try:
-            self.__rule(ipv, rule)
+            self.rule(ipv, rule)
         except Exception, msg:
             log.debug2(msg)
             if enable:
@@ -225,7 +225,7 @@ class FirewallDirect:
         self.check_panic()
 
         try:
-            self.__rule(ipv, args)
+            self.rule(ipv, args)
         except Exception, msg:
             log.debug2(msg)
             if enable:

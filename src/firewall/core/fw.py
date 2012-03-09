@@ -238,7 +238,7 @@ class Firewall:
 
             # run
             try:
-                self.__rule(ipv, [ append_delete[enable], ] + rule)
+                self.rule(ipv, [ append_delete[enable], ] + rule)
             except Exception, msg:
                 log.error(msg)
                 return (rules[:i], msg) # cleanup rules and error message
@@ -253,7 +253,7 @@ class Firewall:
         for i in xrange(len(rules)):
             (ipv, rule) = rules[i]
             try:
-                self.__rule(ipv, [ new_delete[enable], ] + rule)
+                self.rule(ipv, [ new_delete[enable], ] + rule)
             except Exception, msg:
                 log.error(msg)
                 return (rules[:i], msg) # cleanup chains and error message
@@ -300,7 +300,7 @@ class Firewall:
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
                 _rule = prefix + rule.split()
-                self.__rule(ipv, _rule)
+                self.rule(ipv, _rule)
 
 #                try:
 #                except Exception, msg:
@@ -324,9 +324,9 @@ class Firewall:
         self._ip4tables.set_policy(policy, which)
         self._ip6tables.set_policy(policy, which)
 
-    # internal __rule function use in handle_ functions
+    # rule function use in handle_ functions
 
-    def __rule(self, ipv, rule):
+    def rule(self, ipv, rule):
         # replace %%REJECT%%
         try:
             i = rule.index("%%REJECT%%")
