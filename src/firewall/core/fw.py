@@ -327,7 +327,7 @@ class Firewall:
         self._ip4tables.set_policy(policy, which)
         self._ip6tables.set_policy(policy, which)
 
-    # rule function use in handle_ functions
+    # rule function used in handle_ functions
 
     def rule(self, ipv, rule):
         # replace %%REJECT%%
@@ -419,6 +419,7 @@ class Firewall:
     def reload(self, stop=False):
         _panic = self._panic
 
+        # save zone settings
         _zone_settings = { }
         for zone in self.zone.get_zones():
             _zone_settings[zone] = self.zone.get_settings(zone)
@@ -436,6 +437,7 @@ class Firewall:
         if _panic:
             self.enable_panic_mode()
 
+        # restore zone settings
         for zone in self.zone.get_zones():
             if zone in _zone_settings:
                 self.zone.set_settings(zone, _zone_settings[zone])
