@@ -48,16 +48,29 @@ class FirewallDirect:
     def __init_vars(self):
         self._chains = { }
         self._rules = { }
-        self._rule_priority_position = { }
+        self._rule_priority_positions = { }
 
     def cleanup(self):
         self.__init_vars()
 
+    def get_config(self):
+        return (self._chains, self._rules)
+
+    def set_config(self, config):
+        (_chains, _rules) = config
+        for table_id in _chains:
+            (ipv, table) = table_id
+            for chain in _chains[table_id]:
+                self.__chain(True, ipv, table, chain)
+        for chain_id in _rules:
+            (ipv, table, _chain) = chain_id
+            for args in _rules[chain_id]:
+                priority = _rules[chain_id][args]
+                self.__rule(True, ipv, table, chain, priority, args)
+
     # DIRECT CHAIN
 
     def __chain(self, add, ipv, table, chain):
-        self.check_panic()
-
         table_id = (ipv, table)
 
         if add:
@@ -77,7 +90,7 @@ class FirewallDirect:
         rule.append(chain)
 
         try:
-            self.rule(ipv, rule)
+            self._fw.rule(ipv, rule)
         except Exception, msg:
             log.debug2(msg)
             if add:
@@ -86,7 +99,7 @@ class FirewallDirect:
                 FirewallError(DISABLE_FAILED)
 
         if add:
-            self._chains.set_default(table_id, [ ]).append(chain)
+            self._chains.setdefault(table_id, [ ]).append(chain)
         else:
             self._chains[table_id].remove(chain)
             if len(self._chains[table_id]) == 0:
@@ -114,8 +127,6 @@ class FirewallDirect:
     # DIRECT RULE
 
     def __rule(self, enable, ipv, table, chain, priority, args):
-        self.check_panic()
-
         _chain = chain
         # use "%s_chain" for built-in chains
 
@@ -132,7 +143,7 @@ class FirewallDirect:
         if enable:
             if chain_id in self._rules and \
                     args in self._rules[chain_id]:
-                raise FirewallError(AREADY_ENABLED)
+                raise FirewallError(ALREADY_ENABLED)
         else:
             if not chain_id in self._rules or \
                     not args in self._rules[chain_id]:
@@ -144,24 +155,20 @@ class FirewallDirect:
         # sort used positions
         positions = sorted(self._rule_priority_positions.keys())
         index = 1
-        if len(posistions) > 0:
-            i = positions[0]
-            j = 0
-            while i <= positions[j]:
-                index += self._rule_priority_positions[positions[j]]
-                j += 1
+        j = 0
+        while j < len(positions) and priority >= positions[j]:
+            index += self._rule_priority_positions[positions[j]]
+            j += 1
 
         rule = [ "-t", table ]
         if enable:
-            rule.append("-I")
-            rule.append(index)
+            rule += [ "-I", _chain, index ]
         else:
-            rule.append("-D")
-        rule.append(_chain)
+            rule += [ "-D", _chain ]
         rule += args
 
         try:
-            self.rule(ipv, rule)
+            self._fw.rule(ipv, rule)
         except Exception, msg:
             log.debug2(msg)
             if enable:
@@ -222,13 +229,8 @@ class FirewallDirect:
     # DIRECT PASSTROUGH
 
     def passthrough(self, ipv, args):
-        self.check_panic()
-
         try:
-            self.rule(ipv, args)
+            self._fw.rule(ipv, args)
         except Exception, msg:
             log.debug2(msg)
-            if enable:
-                FirewallError(ENABLE_FAILED)
-            else:
-                FirewallError(DISABLE_FAILED)
+            FirewallError(ENABLE_FAILED)

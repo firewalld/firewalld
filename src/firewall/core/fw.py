@@ -423,7 +423,8 @@ class Firewall:
         _zone_settings = { }
         for zone in self.zone.get_zones():
             _zone_settings[zone] = self.zone.get_settings(zone)
-        # TODO: save direct settings
+        # save direct config
+        _direct_config = self.direct.get_config()
 
         if stop:
             self.stop()
@@ -449,7 +450,8 @@ class Firewall:
                 log.info1("Lost zone '%s', settings dropped.", zone)
         del _zone_settings
 
-        # TODO: restore direct settings
+        # restore direct config
+        self.direct.set_config(_direct_config)
 
     # STATE
 
