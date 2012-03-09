@@ -340,7 +340,7 @@ class Firewall:
                 rule[i:i+1] = [ "REJECT", "--reject-with",
                                 ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
             else:
-                FirewallError(EBTABLES_NO_REJECT)
+                raise FirewallError(EBTABLES_NO_REJECT)
 
         # replace %%ICMP%%
         try:
@@ -351,7 +351,7 @@ class Firewall:
             if ipv in [ "ipv4", "ipv6" ]:
                 rule[i] = ipXtables.ICMP[ipv]
             else:
-                FirewallError(INVALID_IPV)
+                raise FirewallError(INVALID_IPV)
 
         if ipv == "ipv4":
             self._ip4tables.set_rule(rule)
@@ -373,7 +373,7 @@ class Firewall:
         if not _zone or _zone == "":
             _zone = self.get_default_zone()
         if _zone not in self.zone.get_zones():
-            FirewallError(INVALID_ZONE)
+            raise FirewallError(INVALID_ZONE)
         return _zone
 
     def check_interface(self, interface):

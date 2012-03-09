@@ -37,7 +37,7 @@ class FirewallService:
 
     def check_service(self, service):
         if service not in self._services:
-            FirewallError(INVALID_SERVICE)
+            raise FirewallError(INVALID_SERVICE)
 
     def get_service(self, service):
         self.check_service(service)

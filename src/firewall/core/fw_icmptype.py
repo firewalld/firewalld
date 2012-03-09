@@ -37,7 +37,7 @@ class FirewallIcmpType:
 
     def check_icmptype(self, icmptype):
         if icmptype not in self._icmptypes:
-            FirewallError(INVALID_ICMPTYPE)
+            raise FirewallError(INVALID_ICMPTYPE)
 
     def get_icmptype(self, icmptype):
         self.check_icmptype(icmptype)
