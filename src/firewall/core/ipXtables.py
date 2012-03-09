@@ -45,6 +45,11 @@ DEFAULT_REJECT_TYPE = {
     "ipv6": "icmp6-adm-prohibited",
 }
 
+ICMP = {
+    "ipv4": "icmp",
+    "ipv6": "ipv6-icmp",
+}
+
 DEFAULT_RULES = { }
 
 DEFAULT_RULES["mangle"] = [ ]
@@ -74,7 +79,7 @@ DEFAULT_RULES["filter"] = [
     "-I INPUT 3 -i lo -j ACCEPT",
     "-I INPUT 4 -j INPUT_direct",
     "-I INPUT 5 -j INPUT_ZONES",
-    "-I INPUT 6 -p icmp -j ACCEPT",
+    "-I INPUT 6 -p %%ICMP%% -j ACCEPT",
     "-I INPUT 7 -j %%REJECT%%",
 
     "-N FORWARD_direct",
@@ -85,7 +90,7 @@ DEFAULT_RULES["filter"] = [
     "-I FORWARD 3 -i lo -j ACCEPT",
     "-I FORWARD 4 -j FORWARD_direct",
     "-I FORWARD 5 -j FORWARD_ZONES",
-    "-I FORWARD 6 -p icmp -j ACCEPT",
+    "-I FORWARD 6 -p %%ICMP%% -j ACCEPT",
     "-I FORWARD 7 -j %%REJECT%%",
 
     "-N OUTPUT_direct",

@@ -339,6 +339,17 @@ class Firewall:
             else:
                 FirewallError(EBTABLES_NO_REJECT)
 
+        # replace %%ICMP%%
+        try:
+            i = rule.index("%%ICMP%%")
+        except:
+            pass
+        else:
+            if ipv in [ "ipv4", "ipv6" ]:
+                rule[i] = ipXtables.ICMP[ipv]
+            else:
+                FirewallError(INVALID_IPV)
+
         if ipv == "ipv4":
             self._ip4tables.set_rule(rule)
         elif ipv == "ipv6":
