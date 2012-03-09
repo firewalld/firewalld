@@ -189,15 +189,18 @@ class Firewall:
             except Exception, msg:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
-        
 
-    def stop(self):
+    def cleanup(self):
         self.__init_vars()
         self.icmptype.cleanup()
         self.service.cleanup()
         self.zone.cleanup()
+        self.direct.cleanup()
 
-        # if cleanup on exit
+    def stop(self):
+        self.cleanup()
+
+        # TODO: only if cleanup on exit
         self._flush()
         self._set_policy("ACCEPT")
         self._modules.unload_firewall_modules()
@@ -424,11 +427,7 @@ class Firewall:
         if stop:
             self.stop()
         else:
-            self.__init_vars()
-            self.icmptype.cleanup()
-            self.service.cleanup()
-            self.zone.cleanup()
-
+            self.cleanup()
             self._flush()
             self._set_policy("ACCEPT")
         self.start()
