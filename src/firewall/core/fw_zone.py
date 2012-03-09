@@ -225,7 +225,8 @@ class FirewallZone:
                 # do not re add timeout features
                 keys = settings[key].keys()
                 for args in keys:
-                    if "timeout" in settings[key][args]:
+                    if "timeout" in settings[key][args] and \
+                            settings[key][args]["timeout"] != 0:
                         del _obj.settings[key][args]                    
 
                 for args in settings[key]:
@@ -239,10 +240,10 @@ class FirewallZone:
                         self.check_forward_port(*args)
                         mark = settings[key][args]["mark"]
                         self.__forward_port(True, zone, *args, mark_id=mark)
-                    elif key == "service":
+                    elif key == "services":
                         self.check_service(args)
                         self.__service(True, zone, args)
-                    elif key == "port":
+                    elif key == "ports":
                         self.check_port(*args)
                         self.__port(True, zone, *args)
                     elif key == "masquerade":
