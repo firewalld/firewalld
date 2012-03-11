@@ -26,40 +26,34 @@ from firewall.client import FirewallClient
 from firewall.errors import *
 
 def usage():
-    print("Usage: %s [<options>] (<panic> | (<zone> <mode>))" % sys.argv[0])
+    print("Usage: %s HELP | STATUS | PANIC | ZONE | MODE" % sys.argv[0])
     print(
 """
-    -h --help
-    -v --version
-  Status:
-    --reload
-    --complete-reload
-    --state
-  Panic:
-    (--enable | --disable | --query) --panic
-  Zone:
-    --get-default-zone
-    --set-default-zone=<zone>
-    --get-zones
-    --get-active-zones
-    --get-zone-of-interface=<interface>
-
-    --zone=<zone>
-  Mode:
-    --add [--timeout=<seconds>] <action>
-    --remove <action>
-    --enable [--timeout=<seconds>] <masquerade>
-    --disable <masquerade>
-    --query <action> | <masquerade> 
-    --list=<action> | all
-  Action:
-    --service=<service>
-    --port=<port>[-<port>]/<protocol>
-    --interface=<interface>
-    --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
-    --icmp-block=<icmp type>
-  Masquerade:
-    --masquerade
+  HELP   := { -v | --version |
+              -h | --help }
+  STATUS := { --reload |
+              --complete-reload |
+              --state }
+  PANIC  := { --enable |
+              --disable |
+              --query } --panic
+  ZONE   := { --get-default-zone |
+              --set-default-zone=<zone> |
+              --get-zones |
+              --get-active-zones |
+              --get-zone-of-interface=<interface> }
+  MODE   := [ --zone=<zone> ]
+            { --add [--timeout=<seconds>] ACTION
+              --remove ACTION
+              --enable [--timeout=<seconds>] --masquerade
+              --disable --masquerade
+              --query { ACTION | --masquerade }
+              --list={ ACTION | all }
+  ACTION := { --service=<service>
+              --port=<port>[-<port>]/<protocol>
+              --interface=<interface>
+              --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
+              --icmp-block=<icmp type> }
 """)
 
 try:
