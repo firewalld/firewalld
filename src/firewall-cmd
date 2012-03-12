@@ -80,6 +80,10 @@ except Exception, msg:
     usage()
     sys.exit(1)
 
+if not opts:
+    usage()
+    sys.exit(1)
+
 timeout = 0
 mode = None
 action = None
@@ -108,12 +112,12 @@ for (opt, val) in opts:
     elif opt in [ "--get-default-zone", "--get-zones", "--get-active-zones" ]:
         if mode:
             __fail()
-        mode = opt[2:]        
+        mode = opt[2:]
 
     elif opt in [ "--set-default-zone", "--get-zone-of-interface" ]:
         if mode:
             __fail()
-        mode = opt[2:]        
+        mode = opt[2:]
         value = val
 
     # timeout
