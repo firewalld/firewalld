@@ -43,6 +43,16 @@ print properties.Get(DBUS_INTERFACE, "version")
 print properties.Get(DBUS_INTERFACE, "interface_version")
 print properties.Get(DBUS_INTERFACE, "state")
 
+print("\nActive Zones")
+
+try:
+    active_zones = fw_zone.getActiveZones()
+except Exception, msg:
+    print("FAILED: %s" % msg)
+else:
+    for zone in active_zones:
+        print("Zone '%s' active for interface '%s'" % \
+                  (zone, "','".join(active_zones[zone])))
 
 print("\nDefault Zones")
 
