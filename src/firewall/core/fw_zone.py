@@ -334,12 +334,12 @@ class FirewallZone:
 
     def remove_interface(self, zone, interface):
         self._fw.check_panic()
-        _zone = self._fw.check_zone(zone)
+        zoi = self.get_zone_of_interface(interface)
+        _zone = zoi if zone == "" else self._fw.check_zone(zone)
         _obj = self._zones[_zone]
 
         interface_id = self.__interface_id(interface)
         if interface_id not in _obj.interfaces:
-            zoi = self.get_zone_of_interface(interface)
             if zoi == None:
                 raise FirewallError(UNKNOWN_INTERFACE)
             if zoi != _zone:

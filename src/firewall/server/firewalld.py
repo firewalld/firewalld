@@ -313,7 +313,7 @@ class FirewallD(dbus.service.Object):
         :Parameters:
             `interface` : str
                 Name of the interface
-        :Retruns: str. The name of the zone.
+        :Returns: str. The name of the zone.
         """
         log.debug1("zone.getZoneOfInterface('%s')" % interface)
         zone = self.fw.zone.get_zone_of_interface(interface)
@@ -361,7 +361,7 @@ class FirewallD(dbus.service.Object):
     @dbus_handle_exceptions
     def removeInterface(self, zone, interface, sender=None):
         """Remove interface from a zone.
-        If zone is empty, use default zone.
+        If zone is empty, remove from zone the interface belongs to.
         """
         interface = str(interface)
         log.debug1("zone.removeInterface('%s', '%s')" % (zone, interface))
