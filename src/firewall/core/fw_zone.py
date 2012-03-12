@@ -128,7 +128,7 @@ class FirewallZone:
                                      "-j", "%s_allow" % (_zone) ]))
                 if table == "filter":
                     rules.append((ipv, [ _zone, 3, "-t", table,
-                                         "-j", "%%REJECT%%" ]))
+                                         "-j", "RETURN" ]))
 
         if create:
             # handle chains first
