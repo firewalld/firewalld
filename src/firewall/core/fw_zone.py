@@ -357,14 +357,6 @@ class FirewallZone:
     def get_interfaces(self, zone):
         return self.get_zone(zone).interfaces
 
-    def get_zone_of_interface(self, interface):
-        self.check_interface(interface)
-        for zone in self._zones:
-            if interface in self._zones[zone].interfaces:
-                # an interface can only be part of one zone
-                return zone
-        return None
-
     # SERVICES
 
     def check_service(self, service):
