@@ -100,6 +100,21 @@ if fw_zone.queryInterface(zone, interface):
 else:
     print("NO")
 
+zone = "internal"
+sys.stdout.write("Changing zone of interface '%s' to '%s': " % (interface, zone))
+try:
+    fw_zone.changeZone(zone, interface)
+except Exception, msg:
+    print("FAILED: %s" % msg)
+else:
+    print("OK")
+
+sys.stdout.write("Checking if zone of interface '%s' has been changed to '%s' zone: " % (interface, zone))
+if fw_zone.queryInterface(zone, interface):
+    print("YES")
+else:
+    print("NO")
+
 sys.stdout.write("Get zone of interface '%s': " % (interface))
 try:
     z = fw_zone.getZoneOfInterface(interface)
