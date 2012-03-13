@@ -88,7 +88,7 @@ def user_of_sender(bus, sender):
     return user_of_uid(uid_of_sender(bus, sender))
 
 def dbus_to_python(obj):
-    if not obj:
+    if obj == None:
         return obj
     elif isinstance(obj, dbus.types.Boolean):
         return obj == True
