@@ -88,8 +88,11 @@ def portStr(port, delimiter=":"):
     
     @param port port or port range int or [int, int]
     @param delimiter of the output string for port ranges, default ':'
-    @return Port or port range string, None if port or port range is not valid
+    @return Port or port range string, empty string if port isn't specified, None if port or port range is not valid
     """
+    if port == "":
+        return ""
+
     range = getPortRange(port)
     if isinstance(range, types.IntType) and range < 0:
         return None

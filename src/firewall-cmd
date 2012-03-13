@@ -52,7 +52,7 @@ def usage():
   ACTION := { --service=<service> |
               --port=<port>[-<port>]/<protocol> |
               --interface=<interface> |
-              --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>] |
+              --forward-port=port=<port>:proto=<protocol>{[:toport=<destination port>] | [:toaddr=<destination address>]} |
               --icmp-block=<icmp type> }
 """)
 
@@ -293,7 +293,7 @@ try:
             if mode == "list":
                 l = fw.getForwardPorts(zone)
                 if len(l) > 0:
-                    print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (interface, port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+                    print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
             else:
                 port = None
                 protocol = None
@@ -357,7 +357,7 @@ try:
                     print("ports: " + ", ".join(["%s/%s" % (port[0], port[1]) for port in l]))
                 l = fw.getForwardPorts(zone)
                 if len(l) > 0:
-                    print("forward-ports: " + "\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (interface, port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+                    print("forward-ports: " + "\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
                 l = fw.getIcmpBlocks(zone)
                 if len(l) > 0:
                     print("icmp-blocks: " + ", ".join(l))
