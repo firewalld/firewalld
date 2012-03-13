@@ -298,7 +298,7 @@ class FirewallD(dbus.service.Object):
         log.debug1("zone.getActiveZones()")
         zones = { }
         for zone in self.fw.zone.get_zones():
-            interfaces = self.fw.zone.get_zone(zone).interfaces
+            interfaces = self.fw.zone.get_interfaces(zone)
             if len(interfaces) > 0:
                 zones[zone] = interfaces
         return zones

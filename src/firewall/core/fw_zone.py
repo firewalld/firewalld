@@ -43,7 +43,7 @@ class FirewallZone:
     def get_zone_of_interface(self, interface):
         self.check_interface(interface)
         for zone in self._zones:
-            if interface in self._zones[zone].interfaces:
+            if interface in self._zones[zone].settings["interfaces"]:
                 # an interface can only be part of one zone
                 return zone
         return None
@@ -53,7 +53,6 @@ class FirewallZone:
         return self._zones[z]
 
     def add_zone(self, obj):
-        obj.interfaces = [ ]
         obj.settings = { }
         for x in [ "interfaces", "services", "ports", "masquerade",
                    "forward_ports", "icmp_blocks" ]:
@@ -62,9 +61,6 @@ class FirewallZone:
         self._zones[obj.name] = obj
 
         # apply default zone settings from config files
-        for args in obj.interfaces:
-            self.check_interface(args)
-            self.__interface(True, obj.name, args)
         for args in obj.icmp_blocks:
             self.check_icmp_block(*args)
             self.__icmp_block(True, obj.name, *args)
@@ -83,7 +79,6 @@ class FirewallZone:
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
-        obj.interfaces = [ ]
         obj.settings.clear()
         del self._zones[zone]
 
@@ -299,14 +294,13 @@ class FirewallZone:
 
         interface_id = self.__interface_id(interface)
 
-        if interface_id in _obj.interfaces:
+        if interface_id in _obj.settings["interfaces"]:
             raise FirewallError(ZONE_ALREADY_SET)
         if self.get_zone_of_interface(interface) != None:
             raise FirewallError(ZONE_CONFLICT)
 
         self.__interface(True, _zone, interface)
 
-        _obj.interfaces.append(interface)
         _obj.settings["interfaces"][interface_id] = \
             self.__gen_settings(0, sender)
 
@@ -316,8 +310,6 @@ class FirewallZone:
         self._fw.check_panic()
         _old_zone = self.get_zone_of_interface(interface)
         _new_zone = self._fw.check_zone(zone)
-        _obj = self._zones[_new_zone]
-        interface_id = self.__interface_id(interface)
 
         if _new_zone == _old_zone:
             raise FirewallError(ZONE_ALREADY_SET)
@@ -336,7 +328,7 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         interface_id = self.__interface_id(interface)
-        if interface_id not in _obj.interfaces:
+        if interface_id not in _obj.settings["interfaces"]:
             if zoi == None:
                 raise FirewallError(UNKNOWN_INTERFACE)
             if zoi != _zone:
@@ -344,18 +336,17 @@ class FirewallZone:
 
         self.__interface(False, _zone, interface)
 
-        _obj.interfaces.remove(interface)
-        if interface_id in _obj.settings:
+        if interface_id in _obj.settings["interfaces"]:
             del _obj.settings["interfaces"][interface_id]
 
         return _zone
 
     def query_interface(self, zone, interface):
         self._fw.check_interface(interface)
-        return self.__interface_id(interface) in self.get_zone(zone).interfaces
+        return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
     def get_interfaces(self, zone):
-        return self.get_zone(zone).interfaces
+        return self.get_settings(zone)["interfaces"]
 
     # SERVICES
 
@@ -432,12 +423,11 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         service_id = self.__service_id(service)
-        if service_id in _obj.services:
+        if service_id in _obj.settings["services"]:
             raise FirewallError(ALREADY_ENABLED)
 
         self.__service(True, _zone, service)
 
-        _obj.services.append(service_id)
         _obj.settings["services"][service_id] = \
             self.__gen_settings(timeout, sender)
 
@@ -450,22 +440,21 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         service_id = self.__service_id(service)
-        if not service_id in _obj.services:
+        if not service_id in _obj.settings["services"]:
             raise FirewallError(NOT_ENABLED)
 
         self.__service(False, _zone, service)
 
-        _obj.services.remove(service_id)
         if service_id in _obj.settings["services"]:
             del _obj.settings["services"][service_id]
 
         return _zone
 
     def query_service(self, zone, service):
-        return (self.__service_id(service) in self.get_zone(zone).services)
+        return (self.__service_id(service) in self.get_settings(zone)["services"])
 
     def get_services(self, zone):
-        return self.get_zone(zone).services
+        return self.get_settings(zone)["services"]
 
     # PORTS
 
@@ -512,12 +501,11 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         port_id = self.__port_id(port, protocol)
-        if port_id in _obj.ports:
+        if port_id in _obj.settings["ports"]:
             raise FirewallError(ALREADY_ENABLED)
 
         self.__port(True, _zone, port, protocol)
 
-        _obj.ports.append(port_id)
         _obj.settings["ports"][port_id] = \
             self.__gen_settings(timeout, sender)
 
@@ -530,22 +518,21 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         port_id = self.__port_id(port, protocol)
-        if not port_id in _obj.ports:
+        if not port_id in _obj.settings["ports"]:
             raise FirewallError(NOT_ENABLED)
 
         self.__port(False, _zone, port, protocol)
 
-        _obj.ports.remove(port_id)
         if port_id in _obj.settings["ports"]:
             del _obj.settings["ports"][port_id]
 
         return _zone
 
     def query_port(self, zone, port, protocol):
-        return self.__port_id(port, protocol) in self.get_zone(zone).ports
+        return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
 
     def get_ports(self, zone):
-        return self.get_zone(zone).ports
+        return self.get_settings(zone)["ports"]
 
     # MASQUERADE
 
@@ -591,12 +578,11 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         masquerade_id = self.__masquerade_id()
-        if masquerade_id == _obj.masquerade:
+        if masquerade_id in _obj.settings["masquerade"]:
             raise FirewallError(ALREADY_ENABLED)
 
         self.__masquerade(True, _zone)
 
-        _obj.masquerade = masquerade_id
         _obj.settings["masquerade"][masquerade_id] = \
             self.__gen_settings(timeout, sender)
 
@@ -609,19 +595,18 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         masquerade_id = self.__masquerade_id()
-        if masquerade_id != _obj.masquerade:
+        if masquerade_id not in _obj.settings["masquerade"]:
             raise FirewallError(NOT_ENABLED)
 
         self.__masquerade(False, _zone)
 
-        _obj.masquerade = not masquerade_id
         if masquerade_id in _obj.settings["masquerade"]:
             del _obj.settings["masquerade"][masquerade_id]
 
         return _zone
 
     def query_masquerade(self, zone):
-        return self.__masquerade_id() == self.get_zone(zone).masquerade
+        return self.__masquerade_id() in self.get_settings(zone)["masquerade"]
 
     # PORT FORWARDING
 
@@ -722,14 +707,13 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if forward_id in _obj.forward_ports:
+        if forward_id in _obj.settings["forward_ports"]:
             raise FirewallError(ALREADY_ENABLED)
 
         mark = self._fw.new_mark()
         self.__forward_port(True, _zone, port, protocol, toport, toaddr,
                             mark_id=mark)
         
-        _obj.forward_ports.append(forward_id)
         _obj.settings["forward_ports"][forward_id] = \
             self.__gen_settings(timeout, sender, mark=mark)
 
@@ -743,7 +727,7 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if not forward_id in _obj.forward_ports:
+        if not forward_id in _obj.settings["forward_ports"]:
             raise FirewallError(NOT_ENABLED)
 
         mark = _obj.settings["forward_ports"][forward_id]["mark"]
@@ -751,7 +735,6 @@ class FirewallZone:
         self.__forward_port(False, _zone, port, protocol, toport, toaddr,
                             mark_id=mark)
 
-        _obj.forward_ports.remove(forward_id)
         if forward_id in _obj.settings["forward_ports"]:
             del _obj.settings["forward_ports"][forward_id]
         self._fw.del_mark(mark)
@@ -761,10 +744,10 @@ class FirewallZone:
     def query_forward_port(self, zone, port, protocol, toport=None,
                            toaddr=None):
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        return forward_id in self.get_zone(zone).forward_ports
+        return forward_id in self.get_settings(zone)["forward_ports"]
 
     def get_forward_ports(self, zone):
-        return self.get_zone(zone).forward_ports
+        return self.get_settings(zone)["forward_ports"]
 
     # ICMP BLOCK
 
@@ -827,12 +810,11 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         icmp_id = self.__icmp_block_id(icmp)
-        if icmp_id in _obj.icmp_blocks:
+        if icmp_id in _obj.settings["icmp_blocks"]:
             raise FirewallError(ALREADY_ENABLED)
 
         self.__icmp_block(True, _zone, icmp)
 
-        _obj.icmp_blocks.append(icmp_id)
         _obj.settings["icmp_blocks"][icmp_id] = \
             self.__gen_settings(timeout, sender)
 
@@ -845,19 +827,18 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         icmp_id = self.__icmp_block_id(icmp)
-        if not icmp_id in _obj.icmp_blocks:
+        if not icmp_id in _obj.settings["icmp_blocks"]:
             raise FirewallError(NOT_ENABLED)
 
         self.__icmp_block(False, _zone, icmp)
 
-        _obj.icmp_blocks.remove(icmp_id)
         if icmp_id in _obj.settings["icmp_blocks"]:
             del _obj.settings["icmp_blocks"][icmp_id]
 
         return _zone
 
     def query_icmp_block(self, zone, icmp):
-        return self.__icmp_block_id(icmp) in self.get_zone(zone).icmp_blocks
+        return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
 
     def get_icmp_blocks(self, zone):
-        return self.get_zone(zone).icmp_blocks
+        return self.get_settings(zone)["icmp_blocks"]
