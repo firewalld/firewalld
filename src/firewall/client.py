@@ -231,3 +231,45 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     def removeIcmpBlock(self, zone, icmp):
         return dbus_to_python(self.fw_zone.removeIcmpBlock(zone, icmp))
+
+    # direct chain
+
+    @slip.dbus.polkit.enable_proxy
+    def addChain(self, ipv, table, chain):
+        self.fw_direct.addChain(ipv, table, chain)
+
+    @slip.dbus.polkit.enable_proxy
+    def removeChain(self, ipv, table, chain):
+        self.fw_direct.removeChain(ipv, table, chain)
+
+    @slip.dbus.polkit.enable_proxy
+    def queryChain(self, ipv, table, chain):
+        return dbus_to_python(self.fw_direct.queryChain(ipv, table, chain))
+
+    @slip.dbus.polkit.enable_proxy
+    def getChains(self, ipv, table):
+        return dbus_to_python(self.fw_direct.getChains(ipv, table))
+
+    # direct rule
+
+    @slip.dbus.polkit.enable_proxy
+    def addRule(self, ipv, table, chain, priority, args):
+        self.fw_direct.addRule(ipv, table, chain, priority, args)
+
+    @slip.dbus.polkit.enable_proxy
+    def removeRule(self, ipv, table, chain, args):
+        self.fw_direct.removeRule(ipv, table, chain, args)
+
+    @slip.dbus.polkit.enable_proxy
+    def queryRule(self, ipv, table, chain, args):
+        return dbu_to_python(self.fw_direct.queryRule(ipv, table, chain, args))
+
+    @slip.dbus.polkit.enable_proxy
+    def getRules(self, ipv, table, chain, args):
+        return dbus_to_python(self.fw_direct.getRules(ipv, table, chain, args))
+
+    # direct passthrough
+
+    @slip.dbus.polkit.enable_proxy
+    def passthrough(self, ipv, args):
+        self.fw_direct.passthrough(ipv, args)
