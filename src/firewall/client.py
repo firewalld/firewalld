@@ -57,15 +57,15 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
-        return self.fw_properties.Get(DBUS_INTERFACE, prop)
+        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE, prop))
 
     @slip.dbus.polkit.enable_proxy
     def get_properties(self, prop):
-        return self.fw_properties.GetAll(DBUS_INTERFACE)
+        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE))
 
     @slip.dbus.polkit.enable_proxy
     def set_property(self, prop, value):
-        return self.fw_properties.Set(DBUS_INTERFACE, prop, value)
+        self.fw_properties.Set(DBUS_INTERFACE, prop, value)
 
     # panic mode
 
@@ -79,7 +79,7 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def queryPanicMode(self):
-        return self.fw.queryPanicMode()
+        return dbus_to_python(self.fw.queryPanicMode())
 
     # default zone
 
@@ -89,7 +89,7 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def setDefaultZone(self, zone):
-        return dbus_to_python(self.fw.setDefaultZone(zone))
+        self.fw.setDefaultZone(zone)
 
     # zone
 
