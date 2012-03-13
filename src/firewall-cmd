@@ -43,16 +43,16 @@ def usage():
               --get-active-zones |
               --get-zone-of-interface=<interface> }
   MODE   := [ --zone=<zone> ]
-            { --add [--timeout=<seconds>] ACTION
-              --remove ACTION
-              --enable [--timeout=<seconds>] --masquerade
-              --disable --masquerade
-              --query { ACTION | --masquerade }
-              --list={ ACTION | all }
-  ACTION := { --service=<service>
-              --port=<port>[-<port>]/<protocol>
-              --interface=<interface>
-              --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>]
+            { --add [--timeout=<seconds>] ACTION |
+              --remove ACTION |
+              --enable [--timeout=<seconds>] --masquerade |
+              --disable --masquerade |
+              --query { ACTION | --masquerade } |
+              --list={ ACTION | all } }
+  ACTION := { --service=<service> |
+              --port=<port>[-<port>]/<protocol> |
+              --interface=<interface> |
+              --forward-port=port=<port>:proto=<protocol>[:toport=<destinaton port>][:toaddr=<destination address>] |
               --icmp-block=<icmp type> }
 """)
 
