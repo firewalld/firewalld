@@ -102,6 +102,8 @@ for (opt, val) in opts:
         usage()
         sys.exit(0)
     elif opt in ["-v", "--version"]:
+        if mode:
+            __fail()
         mode = "version"
 
     elif opt in [ "--reload", "--complete-reload", "--state" ]:
