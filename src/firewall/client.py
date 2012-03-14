@@ -262,7 +262,7 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def queryRule(self, ipv, table, chain, args):
-        return dbu_to_python(self.fw_direct.queryRule(ipv, table, chain, args))
+        return dbus_to_python(self.fw_direct.queryRule(ipv, table, chain, args))
 
     @slip.dbus.polkit.enable_proxy
     def getRules(self, ipv, table, chain, args):
