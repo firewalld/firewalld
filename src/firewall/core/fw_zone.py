@@ -83,7 +83,8 @@ class FirewallZone:
         del self._zones[zone]
 
     def is_immutable(self, zone):
-        return self._zones[zone].immutable
+        z = self._fw.check_zone(zone)
+        return self._zones[z].immutable
 
     def check_immutable(self, zone):
         if self.is_immutable(zone):

@@ -85,7 +85,7 @@ else:
     print("'%s'" % ','.join(z))
 
 interface = "foo"
-zone = "public"
+zone = "trusted"
 sys.stdout.write("Adding interface '%s' to '%s' zone: " % (interface, zone))
 try:
     fw_zone.addInterface(zone, interface)
@@ -99,6 +99,12 @@ if fw_zone.queryInterface(zone, interface):
     print("YES")
 else:
     print("NO")
+
+sys.stdout.write("Checking if zone '%s' is immutable: " % zone)
+if fw_zone.isImmutable(zone):
+    print("YES (OK)")
+else:
+    print("NO (FAILED)")
 
 zone = "internal"
 sys.stdout.write("Changing zone of interface '%s' to '%s': " % (interface, zone))
@@ -114,6 +120,12 @@ if fw_zone.queryInterface(zone, interface):
     print("YES")
 else:
     print("NO")
+
+sys.stdout.write("Checking if zone '%s' is immutable: " % zone)
+if fw_zone.isImmutable(zone):
+    print("YES (FAILED)")
+else:
+    print("NO (OK)")
 
 sys.stdout.write("Get zone of interface '%s': " % (interface))
 try:

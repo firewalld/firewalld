@@ -105,6 +105,10 @@ class FirewallClient(object):
     def getZoneOfInterface(self, interface):
         return dbus_to_python(self.fw_zone.getZoneOfInterface(interface))
 
+    @slip.dbus.polkit.enable_proxy
+    def isImmutable(self, zone):
+        return dbus_to_python(self.fw_zone.isImmutable(zone))
+
     # interfaces
 
     @slip.dbus.polkit.enable_proxy
