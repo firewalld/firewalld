@@ -48,41 +48,52 @@ def usage():
               --enable [--timeout=<seconds>] --masquerade |
               --disable --masquerade |
               --query { ACTION | --masquerade } |
-              --list={ ACTION | all } }
+              --list={ ACTION | all } | 
+              --direct DIRECT }
   ACTION := { --service=<service> |
               --port=<port>[-<port>]/<protocol> |
               --interface=<interface> |
               --forward-port=port=<port>:proto=<protocol>{[:toport=<destination port>] | [:toaddr=<destination address>]} |
               --icmp-block=<icmp type> }
+  DIRECT := { --passthrough {ipv4|ipv6|eb} args }
 """)
 
-try:
-    (opts, args) = \
-        getopt.getopt(sys.argv[1:], "hv", 
-                      [ "help", "version", "timeout=", "reload",
-                        "complete-reload", "state", 
-                        "get-default-zone", "set-default-zone=",
-                        "get-zones", "get-active-zones",
-                        "get-zone-of-interface=",
-                        # modes (exactly one of those)
-                         "add", "change", "remove","enable", "disable", "query", "list=",
-                        # zone
-                        "zone=",
-                        # actions (exactly one of those)
-                        "panic",
-                        "interface=",
-                        "service=", "port=", "masquerade",
-                        "forward-port=", "icmp-block=",
-                        "direct=", "passthrough="
-                        ])
-except Exception, msg:
-    print(msg)
-    usage()
-    sys.exit(1)
+def __fail(msg=None):
+    if msg:
+        print(msg)
+#    usage()
+    sys.exit(2)
 
-if not opts:
-    usage()
-    sys.exit(1)
+if "--direct" not in sys.argv[1:]:
+    try:
+        (opts, args) = \
+            getopt.getopt(sys.argv[1:], "hv", 
+                          [ "help", "version", "timeout=", "reload",
+                            "complete-reload", "state", 
+                            "get-default-zone", "set-default-zone=",
+                            "get-zones", "get-active-zones",
+                            "get-zone-of-interface=",
+                            # modes (exactly one of those)
+                            "add", "change", "remove","enable", "disable", "query", "list=",
+                            # zone
+                            "zone=",
+                            # actions (exactly one of those)
+                            "panic",
+                            "interface=",
+                            "service=", "port=", "masquerade",
+                            "forward-port=", "icmp-block=",
+                            ])
+    except Exception, msg:
+        print(msg)
+        usage()
+        sys.exit(1)
+
+    if not opts:
+        usage()
+        sys.exit(1)
+else:
+    opts = [ ]
+    args = sys.argv[1:]
 
 timeout = 0
 mode = None
@@ -91,11 +102,35 @@ value = None
 zone = ""
 interface = None
 
-def __fail(msg=None):
-    if msg:
-        print(msg)
-#    usage()
-    sys.exit(2)
+if len(args) > 2 and args[0] == "--direct":
+    direct_ipv = args[2]
+    if args[1] == "--passthrough" and len(args) > 4:
+        mode = args[1][2:]
+        direct_args = args[3:]
+    elif args[1] in [ "--add-chain", "--remove-chain", "--query-chain" ] and \
+            len(args) == 5:
+        mode = args[1][2:]
+        direct_table = args[3]
+        direct_chain = args[4]
+    elif args[1] == "--get-chains" and len(args) == 4:
+        mode = args[1][2:]
+        direct_table = args[3]
+    elif args[1] == "--add-rule" and len(args) > 7:
+        mode = args[1][2:]
+        direct_table = args[3]
+        direct_chain = args[4]
+        direct_priority = int(args[5])
+        direct_args = args[6:]
+    elif args[1] in [ "--remove-rule", "--query-rule" ] and \
+            len(args) > 6:
+        mode = args[1][2:]
+        direct_table = args[3]
+        direct_chain = args[4]
+        direct_args = args[5:]
+    elif args[1] == "--get-rules" and len(args) == 5:
+        mode = args[1][2:]
+        direct_table = args[3]
+        direct_chain = args[4]        
 
 for (opt, val) in opts:
     if opt in ["-h", "--help"]:
@@ -165,7 +200,10 @@ if not mode:
     __fail("No mode.")
 if mode not in [ "version", "reload", "complete-reload", "state",
                  "get-default-zone", "set-default-zone", "get-zones",
-                 "get-active-zones", "get-zone-of-interface" ]:
+                 "get-active-zones", "get-zone-of-interface",
+                 "passthrough", "add-chain", "remove-chain", "query-chain",
+                 "get-chains", "add-rule", "remove-rule", "query-rule",
+                 "get-rules" ]:
     if not action:
         __fail("No action.")
 #    if not zone and not (mode == "list" and action == "zone"):
@@ -202,6 +240,28 @@ try:
             sys.exit(1)
     elif mode == "complete-reload":
         fw.complete_reload()
+    elif mode == "passthrough":
+        fw.passthrough(direct_ipv, direct_args)
+    elif mode == "add-chain":
+        fw.addChain(direct_ipv, direct_table, direct_chain)
+    elif mode == "remove-chain":
+        fw.removeChain(direct_ipv, direct_table, direct_chain)
+    elif mode == "query-chain":
+        sys.exit(not fw.queryChain(direct_ipv, direct_table, direct_chain))
+    elif mode == "get-chains":
+        print(" ".join(fw.getChains(direct_ipv, direct_table)))
+    elif mode == "add-rule":
+        fw.addRule(direct_ipv, direct_table, direct_chain, direct_priority,
+                   direct_args)
+    elif mode == "remove-rule":
+        fw.removeRule(direct_ipv, direct_table, direct_chain, direct_args)
+    elif mode == "query-rule":
+        sys.exit(not fw.queryRule(direct_ipv, direct_table, direct_chain,
+                                  direct_args))
+    elif mode == "get-rules":
+        rules = fw.getRules(direct_ipv, direct_table, direct_chain)
+        for rule in rules:
+            print(" ".join(rule)) 
     elif mode == "get-default-zone":
         print(fw.getDefaultZone())
     elif mode == "set-default-zone":
