@@ -63,7 +63,7 @@ class FirewallDirect:
             for chain in _chains[table_id]:
                 self.__chain(True, ipv, table, chain)
         for chain_id in _rules:
-            (ipv, table, _chain) = chain_id
+            (ipv, table, chain) = chain_id
             for args in _rules[chain_id]:
                 priority = _rules[chain_id][args]
                 self.__rule(True, ipv, table, chain, priority, args)
