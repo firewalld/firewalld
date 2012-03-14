@@ -7,7 +7,7 @@ desktop_FILES = firewall-applet.desktop.in
 desktopdir = $(datadir)/applications
 dist_desktop_DATA = $(desktop_FILES:.in=)
 
-polkit1_action_FILES = org.fedoraproject.FirewallD.policy.in
+polkit1_action_FILES = org.fedoraproject.FirewallD1.policy.in
 polkit1_actiondir = $(datadir)/polkit-1/actions
 dist_polkit1_action_DATA = $(polkit1_action_FILES:.in=)
 

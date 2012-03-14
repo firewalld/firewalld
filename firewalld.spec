@@ -152,7 +152,7 @@ fi
 #%attr(0755,root,root) %{_initrddir}/firewalld
 %{_unitdir}/firewalld.service
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/FirewallD.conf
-%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD.policy
+%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
 %attr(0755,root,root) %dir %{python_sitelib}/firewall
 %attr(0755,root,root) %dir %{python_sitelib}/firewall/config
 %attr(0755,root,root) %dir %{python_sitelib}/firewall/core
