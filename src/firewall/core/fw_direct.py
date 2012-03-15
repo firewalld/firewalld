@@ -236,4 +236,4 @@ class FirewallDirect:
             return self._fw.rule(ipv, args)
         except Exception, msg:
             log.debug2(msg)
-            raise FirewallError(ENABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
