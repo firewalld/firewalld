@@ -71,6 +71,18 @@ class FirewallError(Exception):
 
     def __init__(self, code, msg=None):
         self.code = code
+        self.msg = msg
 
     def __str__(self):
+        if self.msg:
+            return "%s: %s" % (self.errors[self.code], self.msg)
         return self.errors[self.code]
+
+    def get_code(msg):
+        if ":" in msg:
+            idx = msg.index(":")
+            ecode = msg[:idx]
+        else:
+            ecode = msg
+        return FirewallError.codes[ecode]
+    get_code = staticmethod(get_code)

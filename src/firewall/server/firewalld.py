@@ -319,7 +319,7 @@ class FirewallD(dbus.service.Object):
         zone = self.fw.zone.get_zone_of_interface(interface)
         if zone:
             return zone
-        raise FirewallError(UNKNOWN_INTERFACE)
+        raise FirewallError(UNKNOWN_INTERFACE, interface)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
@@ -961,11 +961,11 @@ class FirewallD(dbus.service.Object):
 
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
-                         out_signature='')
+                         out_signature='s')
     @dbus_handle_exceptions
     def passthrough(self, ipv, args, sender=None):
         # inserts direct rule
         ipv = str(ipv)
         args = tuple( str(i) for i in args )
         log.debug1("direct.passthrough('%s', '%s')" % (ipv, "','".join(args)))
-        self.fw.direct.passthrough(ipv, args)
+        return self.fw.direct.passthrough(ipv, args)

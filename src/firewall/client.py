@@ -276,4 +276,4 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     def passthrough(self, ipv, args):
-        self.fw_direct.passthrough(ipv, args)
+        return self.fw_direct.passthrough(ipv, args)

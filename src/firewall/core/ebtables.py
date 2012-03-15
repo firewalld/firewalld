@@ -46,9 +46,10 @@ class ebtables:
         if status != 0:
             raise ValueError, "'%s %s' failed: %s" % (self._command, 
                                                       " ".join(args), ret)
+        return ret
 
     def set_rule(self, rule):
-        self.__run(rule)
+        return self.__run(rule)
 
     def append_rule(self, rule):
         self.__run([ "-A" ] + rule)

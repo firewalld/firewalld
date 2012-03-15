@@ -104,7 +104,7 @@ interface = None
 
 if len(args) > 2 and args[0] == "--direct":
     direct_ipv = args[2]
-    if args[1] == "--passthrough" and len(args) > 4:
+    if args[1] == "--passthrough" and len(args) > 3:
         mode = args[1][2:]
         direct_args = args[3:]
     elif args[1] in [ "--add-chain", "--remove-chain", "--query-chain" ] and \
@@ -241,7 +241,7 @@ try:
     elif mode == "complete-reload":
         fw.complete_reload()
     elif mode == "passthrough":
-        fw.passthrough(direct_ipv, direct_args)
+        print(fw.passthrough(direct_ipv, direct_args))
     elif mode == "add-chain":
         fw.addChain(direct_ipv, direct_table, direct_chain)
     elif mode == "remove-chain":
@@ -432,7 +432,7 @@ except dbus.DBusException, e:
 #        print(dir(e))
 #        print(e.message)
         print("Error: %s" % e.message)
-        code = FirewallError.codes[e.message]
+        code = FirewallError.get_code(e.message)
         sys.exit(code)
 
 sys.exit(0)

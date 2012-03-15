@@ -176,7 +176,7 @@ class Firewall:
                     if obj.name in self.zone.get_zones():
                         orig_obj = self.zone.get_zone(obj.name)
                         if orig_obj.immutable:
-                            raise FirewallError(NOT_OVERLOADABLE)
+                            raise FirewallError(NOT_OVERLOADABLE, obj.name)
                         log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
@@ -351,16 +351,16 @@ class Firewall:
             if ipv in [ "ipv4", "ipv6" ]:
                 rule[i] = ipXtables.ICMP[ipv]
             else:
-                raise FirewallError(INVALID_IPV)
+                raise FirewallError(INVALID_IPV, ipv)
 
         if ipv == "ipv4":
-            self._ip4tables.set_rule(rule)
+            return self._ip4tables.set_rule(rule)
         elif ipv == "ipv6":
-            self._ip6tables.set_rule(rule)
+            return self._ip6tables.set_rule(rule)
         elif ipv == "eb":
-            self._ebtables.set_rule(rule)
+            return self._ebtables.set_rule(rule)
         else:
-            raise FirewallError(INVALID_IPV)
+            raise FirewallError(INVALID_IPV, ipv)
 
     # check functions
 
@@ -373,16 +373,16 @@ class Firewall:
         if not _zone or _zone == "":
             _zone = self.get_default_zone()
         if _zone not in self.zone.get_zones():
-            raise FirewallError(INVALID_ZONE)
+            raise FirewallError(INVALID_ZONE, _zone)
         return _zone
 
     def check_interface(self, interface):
         if not functions.checkInterface(interface):
-            raise FirewallError(INVALID_INTERFACE)
+            raise FirewallError(INVALID_INTERFACE, interface)
 
     def check_service(self, service):
         if not service in self.service.get_services():
-            raise FirewallError(INVALID_SERVICE)
+            raise FirewallError(INVALID_SERVICE, service)
         
     def check_port(self, port):
         range = functions.getPortRange(port)
@@ -404,15 +404,15 @@ class Firewall:
             raise FirewallError(MISSING_PROTOCOL)
         if not protocol in [ "tcp", "udp" ]:
             # TODO: log
-            raise FirewallError(INVALID_PROTOCOL)
+            raise FirewallError(INVALID_PROTOCOL, protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):
-            raise FirewallError(INVALID_ADDR)
+            raise FirewallError(INVALID_ADDR, ip)
 
     def check_icmp_type(self, icmp):
         if not icmp in self.icmptype.get_icmptypes():
-            raise FirewallError(INVALID_ICMPTYPE)
+            raise FirewallError(INVALID_ICMPTYPE, icmp)
 
     # RELOAD
 
@@ -469,7 +469,7 @@ class Firewall:
             self._set_policy("DROP", "all")
         except Exception, msg:
             # TODO: log msg
-            raise FirewallError(ENABLE_FAILED)
+            raise FirewallError(ENABLE_FAILED, msg)
         self._panic = True
 
     def disable_panic_mode(self):
@@ -481,7 +481,7 @@ class Firewall:
             self._set_policy("ACCEPT", "all")
         except Exception, msg:
             # TODO: log msg
-            raise FirewallError(DISABLE_FAILED)
+            raise FirewallError(DISABLE_FAILED, msg)
         self._panic = False
 
     def query_panic_mode(self):
@@ -498,4 +498,4 @@ class Firewall:
             self._firewalld_conf.set("DefaultZone", zone)
             self._firewalld_conf.write()
         else:
-            raise FirewallError(INVALID_ZONE)
+            raise FirewallError(INVALID_ZONE, zone)
