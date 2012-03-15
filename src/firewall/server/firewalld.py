@@ -35,11 +35,13 @@ from firewall.errors import *
 #
 ############################################################################
 
-class FirewallD(dbus.service.Object):
+class FirewallD(slip.dbus.service.Object):
     """FirewallD main class"""
 
     persistent = True
-    """Make FirewallD persistent."""
+    """ Make FirewallD persistent. """
+    default_polkit_auth_required = PK_ACTION_INFO
+    """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
     def __init__(self, *args, **kwargs):
@@ -140,6 +142,7 @@ class FirewallD(dbus.service.Object):
         }
         
 
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value):
@@ -202,7 +205,7 @@ class FirewallD(dbus.service.Object):
 
     # PANIC
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def enablePanicMode(self, sender=None):
@@ -214,7 +217,7 @@ class FirewallD(dbus.service.Object):
         self.fw.enable_panic_mode()
         self.PanicModeEnabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def disablePanicMode(self, sender=None):
@@ -227,7 +230,7 @@ class FirewallD(dbus.service.Object):
         self.fw.disable_panic_mode()
         self.PanicModeDisabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='b')
     @dbus_handle_exceptions
     def queryPanicMode(self, sender=None):
@@ -251,7 +254,7 @@ class FirewallD(dbus.service.Object):
 
     # DEFAULT ZONE
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='s')
     @dbus_handle_exceptions
     def getDefaultZone(self, sender=None):
@@ -280,7 +283,7 @@ class FirewallD(dbus.service.Object):
 
     # ZONES
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
@@ -289,7 +292,7 @@ class FirewallD(dbus.service.Object):
         log.debug1("zone.getZones()")
         return self.fw.zone.get_zones()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
                          out_signature='a{sas}')
     @dbus_handle_exceptions
@@ -303,7 +306,7 @@ class FirewallD(dbus.service.Object):
                 zones[zone] = interfaces
         return zones
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='s')
     @dbus_handle_exceptions

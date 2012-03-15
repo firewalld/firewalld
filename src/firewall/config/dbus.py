@@ -36,5 +36,5 @@ DBUS_PATH = "/org/fedoraproject/FirewallD%d" % DBUS_INTERFACE_VERSION
 _PK_ACTION = "org.fedoraproject.FirewallD%d" % DBUS_INTERFACE_VERSION
 PK_ACTION_CONFIG = _PK_ACTION+".config"
 PK_ACTION_DIRECT = _PK_ACTION+".direct"
-#PK_ACTION_INFO = _PK_ACTION+".info"
+PK_ACTION_INFO = _PK_ACTION+".info"
 #PK_ACTION_MODIFY = _PK_ACTION+".modify"
