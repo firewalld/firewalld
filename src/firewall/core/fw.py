@@ -68,6 +68,7 @@ class Firewall:
         self._module_refcount = { }
         self._marks = [ ]
         self._min_mark = 100 # initial default, will be overloaded by firewalld.conf
+        self.cleanup_on_exit = True
 
     def start(self):
         # initialize firewall
@@ -91,6 +92,10 @@ class Firewall:
                 except Exception, msg:
                     log.error("MinimalMark %s is not valid, using default "
                               "value %d", mark, self._min_mark)
+            if self._firewalld_conf.get("CleanupOnExit"):
+                value = self._firewalld_conf.get("CleanupOnExit")
+                if value.lower() in [ "no", "false" ]:
+                    self.cleanup_on_exit = False
 
         # apply default rules
         self._apply_default_rules()
@@ -198,12 +203,12 @@ class Firewall:
         self.direct.cleanup()
 
     def stop(self):
-        self.cleanup()
+        if self.cleanup_on_exit:
+            self._flush()
+            self._set_policy("ACCEPT")
+            self._modules.unload_firewall_modules()
 
-        # TODO: only if cleanup on exit
-        self._flush()
-        self._set_policy("ACCEPT")
-        self._modules.unload_firewall_modules()
+        self.cleanup()
 
     # marks
 
