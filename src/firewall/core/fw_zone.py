@@ -62,20 +62,15 @@ class FirewallZone:
 
         # apply default zone settings from config files
         for args in obj.icmp_blocks:
-            self.check_icmp_block(*args)
-            self.__icmp_block(True, obj.name, *args)
+            self.add_icmp_block(obj.name, *args)
         for args in obj.forward_ports:
-            self.check_forward_port(*args)
-            mark = self._fw.new_mark()
-            self.__forward_port(True, obj.name, *args, mark_id=mark)
+            self.add_forward_port(obj.name, *args)
         for args in obj.services:
-            self.check_service(args)
-            self.__service(True, obj.name, args)
+            self.add_service(obj.name, args)
         for args in obj.ports:
-            self.check_port(*args)
-            self.__port(True, obj.name, *args)
+            self.add_port(obj.name, *args)
         if obj.masquerade:
-            self.__masquerade(True, obj.name)
+            self.enable_masquerade(obj.name)
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
@@ -328,7 +323,7 @@ class FirewallZone:
         return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
     def get_interfaces(self, zone):
-        return self.get_settings(zone)["interfaces"]
+        return self.get_settings(zone)["interfaces"].keys()
 
     # SERVICES
 
@@ -432,7 +427,7 @@ class FirewallZone:
         return (self.__service_id(service) in self.get_settings(zone)["services"])
 
     def get_services(self, zone):
-        return self.get_settings(zone)["services"]
+        return self.get_settings(zone)["services"].keys()
 
     # PORTS
 
@@ -506,7 +501,7 @@ class FirewallZone:
         return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
 
     def get_ports(self, zone):
-        return self.get_settings(zone)["ports"]
+        return self.get_settings(zone)["ports"].keys()
 
     # MASQUERADE
 
@@ -541,7 +536,7 @@ class FirewallZone:
             self.remove_chain(zone, "nat", "POSTROUTING")
             self.remove_chain(zone, "filter", "FORWARD_OUT")
 
-    def enable_masquerade(self, zone, timeout, sender):
+    def enable_masquerade(self, zone, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
         self.check_immutable(_zone)
         self._fw.check_panic()
@@ -714,7 +709,7 @@ class FirewallZone:
         return forward_id in self.get_settings(zone)["forward_ports"]
 
     def get_forward_ports(self, zone):
-        return self.get_settings(zone)["forward_ports"]
+        return self.get_settings(zone)["forward_ports"].keys()
 
     # ICMP BLOCK
 
@@ -804,4 +799,4 @@ class FirewallZone:
         return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
 
     def get_icmp_blocks(self, zone):
-        return self.get_settings(zone)["icmp_blocks"]
+        return self.get_settings(zone)["icmp_blocks"].keys()
