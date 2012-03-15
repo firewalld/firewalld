@@ -468,8 +468,7 @@ class Firewall:
         try:
             self._set_policy("DROP", "all")
         except Exception, msg:
-            # TODO: log msg
-            raise FirewallError(ENABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
         self._panic = True
 
     def disable_panic_mode(self):
@@ -480,8 +479,7 @@ class Firewall:
         try:
             self._set_policy("ACCEPT", "all")
         except Exception, msg:
-            # TODO: log msg
-            raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
         self._panic = False
 
     def query_panic_mode(self):

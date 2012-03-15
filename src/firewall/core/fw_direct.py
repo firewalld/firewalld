@@ -93,10 +93,7 @@ class FirewallDirect:
             self._fw.rule(ipv, rule)
         except Exception, msg:
             log.debug2(msg)
-            if add:
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if add:
             self._chains.setdefault(table_id, [ ]).append(chain)
@@ -172,10 +169,7 @@ class FirewallDirect:
             self._fw.rule(ipv, rule)
         except Exception, msg:
             log.debug2(msg)
-            if enable:
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if enable:
             if not chain_id in self._rules:

@@ -131,10 +131,7 @@ class FirewallZone:
                 log.debug2(msg)
                 self._fw.handle_chains(cleanup_chains, not create)
                 # TODO: log msg
-                if create:
-                    raise FirewallError(ADD_FAILED, msg)
-                else:
-                    raise FirewallError(REMOVE_FAILED, msg)
+                raise FirewallError(COMMAND_FAILED, msg)
 
             # handle rules
             ret = self._fw.handle_rules(rules, create, insert=True)
@@ -145,10 +142,7 @@ class FirewallZone:
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
                 # TODO: log msg
-                if create:
-                    raise FirewallError(ADD_FAILED, msg)
-                else:
-                    raise FirewallError(REMOVE_FAILED, msg)
+                raise FirewallError(COMMAND_FAILED, msg)
         else:
             # cleanup rules first
             ret = self._fw.handle_rules(rules, create, insert=True)
@@ -156,10 +150,7 @@ class FirewallZone:
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
                 # TODO: log msg
-                if create:
-                    raise FirewallError(ADD_FAILED, msg)
-                else:
-                    raise FirewallError(REMOVE_FAILED, msg)
+                raise FirewallError(COMMAND_FAILED, msg)
             
             # cleanup chains
             ret = self._fw.handle_chains(chains, create)
@@ -170,10 +161,7 @@ class FirewallZone:
                 (cleanup_chains, msg) = ret
                 self._fw.handle_chains(cleanup_chains, not create)
                 # TODO: log msg
-                if create:
-                    raise FirewallError(ADD_FAILED, msg)
-                else:
-                    raise FirewallError(REMOVE_FAILED, msg)
+                raise FirewallError(COMMAND_FAILED, msg)
 
         if create:
             self._chains.setdefault(zone, { }).setdefault(table, [ ]).append(chain)
@@ -280,10 +268,7 @@ class FirewallZone:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
             log.debug2(msg)
-            if enable:
-                raise FirewallError(ADD_FAILED, msg)
-            else:
-                raise FirewallError(REMOVE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, table, chain)
@@ -408,11 +393,7 @@ class FirewallZone:
                 self._fw.handle_rules(cleanup_rules, not enable)
             if cleanup_modules:
                 self._fw.handle_modules(cleanup_modules, not enable)
-            # TODO: log msg
-            if enable:
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -486,11 +467,7 @@ class FirewallZone:
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            # TODO: log , port_str, str(msg))
-            if enable:
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
         
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -562,11 +539,7 @@ class FirewallZone:
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            # TODO: log msg
-            if enable:
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "nat", "POSTROUTING")
@@ -688,9 +661,7 @@ class FirewallZone:
             # TODO: log msg
             if enable:
                 self._fw.del_mark(mark_id)
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "mangle", "PREROUTING")
@@ -794,11 +765,7 @@ class FirewallZone:
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            # TODO: log msg
-            if enable:
-                raise FirewallError(ENABLE_FAILED, msg)
-            else:
-                raise FirewallError(DISABLE_FAILED, msg)
+            raise FirewallError(COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
