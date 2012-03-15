@@ -130,7 +130,6 @@ class FirewallZone:
                 (cleanup_chains, msg) = ret
                 log.debug2(msg)
                 self._fw.handle_chains(cleanup_chains, not create)
-                # TODO: log msg
                 raise FirewallError(COMMAND_FAILED, msg)
 
             # handle rules
@@ -141,7 +140,6 @@ class FirewallZone:
 
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
-                # TODO: log msg
                 raise FirewallError(COMMAND_FAILED, msg)
         else:
             # cleanup rules first
@@ -149,7 +147,6 @@ class FirewallZone:
             if ret:
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
-                # TODO: log msg
                 raise FirewallError(COMMAND_FAILED, msg)
             
             # cleanup chains
@@ -160,7 +157,6 @@ class FirewallZone:
 
                 (cleanup_chains, msg) = ret
                 self._fw.handle_chains(cleanup_chains, not create)
-                # TODO: log msg
                 raise FirewallError(COMMAND_FAILED, msg)
 
         if create:
@@ -658,7 +654,6 @@ class FirewallZone:
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            # TODO: log msg
             if enable:
                 self._fw.del_mark(mark_id)
             raise FirewallError(COMMAND_FAILED, msg)

@@ -310,7 +310,6 @@ class Firewall:
 # TODO: better handling of init error
 #                    if "Chain already exists." in msg:
 #                        continue
-#                    # TODO: log msg
 #                    raise FirewallError, <code>
 
     def _apply_default_rules(self):
@@ -403,7 +402,6 @@ class Firewall:
         if not protocol:
             raise FirewallError(MISSING_PROTOCOL)
         if not protocol in [ "tcp", "udp" ]:
-            # TODO: log
             raise FirewallError(INVALID_PROTOCOL, protocol)
 
     def check_ip(self, ip):
