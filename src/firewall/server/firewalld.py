@@ -252,6 +252,28 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    # list functions
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def listServices(self, sender=None):
+        # returns the list of services
+        log.debug1("listServices()")
+        return self.fw.service.get_services()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def listIcmpTypes(self, sender=None):
+        # returns the list of services
+        log.debug1("listServices()")
+        return self.fw.icmptype.get_icmptypes()
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
     # DEFAULT ZONE
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)

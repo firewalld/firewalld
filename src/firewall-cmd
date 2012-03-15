@@ -405,6 +405,18 @@ try:
             elif mode == "query":
                 sys.exit(not fw.queryIcmpBlock(zone, value))
 
+        # services
+        elif action == "services":
+            l = fw.listServices()
+            if len(l) > 0:
+                print(" ".join(l))
+
+        # icmp types
+        elif action == "icmptypes":
+            l = fw.listIcmpTypes()
+            if len(l) > 0:
+                print(" ".join(l))
+
         elif (action == "all"):
             if mode == "list":
                 print("zone: " + (zone if zone != "" else fw.getDefaultZone()))

@@ -81,6 +81,14 @@ class FirewallClient(object):
     def queryPanicMode(self):
         return dbus_to_python(self.fw.queryPanicMode())
 
+    # list functions
+
+    def listServices(self):
+        return dbus_to_python(self.fw.listServices())
+
+    def listIcmpTypes(self):
+        return dbus_to_python(self.fw.listIcmpTypes())
+
     # default zone
 
     @slip.dbus.polkit.enable_proxy
