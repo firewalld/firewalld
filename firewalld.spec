@@ -2,7 +2,7 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.2
+Version: 0.2.3
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -182,6 +182,36 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Thu Mar 15 2012 Thomas Woerner <twoerner@redhat.com> 0.2.3-1
+- firewall-cmd: several changes and fixes
+- code cleanup
+- fixed icmp protocol used for ipv6 (rhbz#801182)
+- added and fixed some comments
+- properly restore zone settings, timeout is always set, check for 0
+- some FirewallError exceptions were actually not raised
+- do not REJECT in each zone
+- removeInterface() don't require zone
+- new tests in firewall-test script
+- dbus_to_python() was ignoring certain values
+- added functions for the direct interface: chains, rules, passthrough
+- fixed inconsistent data after reload
+- some fixes for the direct interface: priority positions are bound to ipv,
+  table and chain
+- added support for direct interface in firewall-cmd:
+- added isImmutable(zone) to zone D-Bus interface
+- renamed policy file
+- enhancements for error messages, enables output for direct.passthrough
+- added allow_any to firewald policies, using at leas auth_admin for policies
+- replaced ENABLE_FAILED, DISABLE_FAILED, ADD_FAILED and REMOVE_FAILED by
+  COMMAND_FAILED, resorted error codes
+- new firewalld configuration setting CleanupOnExit
+- enabled polkit again, found a fix for property problem with slip.dbus.service
+- added dhcpv6-client to 'public' (the default) and to 'internal' zones.
+- fixed missing settings form zone config files in
+  "firewall-cmd --list=all --zone=<zone>" call
+- added list functions for services and icmptypes, added --list=services and
+  --list=icmptypes to firewall-cmd
+
 * Tue Mar  6 2012 Thomas Woerner <twoerner@redhat.com> 0.2.2-1
 - enabled dhcpv6-client service for zones home and work
 - new dhcpv6-client service
