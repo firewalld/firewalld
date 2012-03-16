@@ -84,9 +84,10 @@ class firewalld_conf:
         done = [ ]
 
         try:
-            (temp_file, temp) = tempfile.mkstemp(prefix="%s." % self.filename)
-        except:
-            log.error("Failed to open temporary file '%s': %s" % (temp, msg))
+            (temp_file, temp) = tempfile.mkstemp(prefix="%s." % os.path.basename(self.filename),
+                                                 dir=os.path.dirname(self.filename))
+        except Exception, msg:
+            log.error("Failed to open temporary file: %s" % msg)
             raise Exception, msg
 
         modified = False
