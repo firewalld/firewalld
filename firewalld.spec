@@ -2,7 +2,7 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.3
+Version: 0.2.4
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -182,6 +182,10 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Fri Mar 16 2012 Thomas Woerner <twoerner@redhat.com> 0.2.4-1
+- fixed firewalld.conf save exception if no temporary file can be written to 
+  /etc/firewalld/
+
 * Thu Mar 15 2012 Thomas Woerner <twoerner@redhat.com> 0.2.3-1
 - firewall-cmd: several changes and fixes
 - code cleanup
