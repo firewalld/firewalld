@@ -439,12 +439,18 @@ try:
 except dbus.DBusException, e:
     if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
         print("FirewallD is probably not running.")
-
+        sys.exit(NOT_RUNNING)
+    elif "NotAuthorizedException" in e._dbus_error_name:
+        print("Authorization failed.")
+        sys.exit(NOT_AUTHORIZED)
     else:
-#        print(dir(e))
-#        print(e.message)
-        print("Error: %s" % e.message)
-        code = FirewallError.get_code(e.message)
+        try:
+            code = FirewallError.get_code(e.message)
+        except:
+            code = UNKNOWN_ERROR
+            print("Error: %s" % e)
+        else:
+            print("Error: %s" % e.message)
         sys.exit(code)
 
 sys.exit(0)

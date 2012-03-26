@@ -54,7 +54,8 @@ MISSING_PORT      =  -42
 MISSING_PROTOCOL  =  -43
 MISSING_ADDR      =  -44
 
-UNKNOWN_SENDER    =  -99
+NOT_RUNNING       =  -98
+NOT_AUTHORIZED    =  -99
 UNKNOWN_ERROR     = -100
 
 import sys
