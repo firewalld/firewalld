@@ -1,13 +1,19 @@
 [Unit]
 Description=firewalld - dynamic firewall daemon
 After=syslog.target
+After=dbus.target
 Before=network.target
+Before=libvirtd.service
 Conflicts=iptables.service ip6tables.service ebtables.service
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/firewalld
-ExecStart=/usr/sbin/firewalld --nofork
-ExecReload=/usr/bin/firewall-cmd --reload
+ExecStart=/usr/sbin/firewalld --nofork $FIREWALLD_ARGS
+ExecReload=/bin/kill -HUP $MAINPID
+# supress to log debug and error output also to /var/log/messages
+StandardOutput=null
+StandardError=null
 
 [Install]
 WantedBy=basic.target
+Alias=dbus-org.fedoraproject.FirewallD1.service
