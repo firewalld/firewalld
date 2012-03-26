@@ -357,6 +357,7 @@ class FirewallZone:
                      rule += [ "--dport", "%s" % portStr(port) ]
                 if ipv in svc.destination and svc.destination[ipv] != "":
                      rule += [ "-d",  svc.destination[ipv] ]
+                rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
                 rule += [ "-j", "ACCEPT" ]
                 rules.append((ipv, rule))
 
@@ -446,6 +447,7 @@ class FirewallZone:
                                  "-t", "filter",
                                  "-m", protocol, "-p", protocol,
                                  "--dport", portStr(port),
+                                 "-m", "conntrack", "--ctstate", "NEW",
                                  "-j", "ACCEPT" ]))
 
         # handle rules
@@ -629,14 +631,16 @@ class FirewallZone:
                 target = self._zones[zone].target.format(
                     chain=SHORTCUTS["INPUT"], zone=zone)
                 rules.append((ipv, [ "%s_allow" % (target),
-                                     "-t", "filter" ] + \
+                                     "-t", "filter", 
+                                     "-m", "conntrack", "--ctstate", "NEW" ] + \
                                   mark + [ "-j", "ACCEPT" ]))
             else:
                 # FORWARD_IN
                 target = self._zones[zone].target.format(
                     chain=SHORTCUTS["FORWARD_IN"], zone=zone)
                 rules.append((ipv, [ "%s_allow" % (target),
-                                     "-t", "filter" ] + \
+                                     "-t", "filter",
+                                     "-m", "conntrack", "--ctstate", "NEW" ] + \
                                   mark + [ "-j", "ACCEPT" ]))
 
         # handle rules
