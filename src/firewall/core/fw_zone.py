@@ -190,39 +190,34 @@ class FirewallZone:
 
     def set_settings(self, zone, settings):
         _obj = self.get_zone(zone)
-        _obj.settings = settings
 
         try:
             for key in settings:
-                # do not re add timeout features
-                keys = settings[key].keys()
-                for args in keys:
-                    if "timeout" in settings[key][args] and \
-                            settings[key][args]["timeout"] != 0:
-                        del _obj.settings[key][args]                    
-
                 for args in settings[key]:
+                    if args in _obj.settings[key]:
+                        # do not add things, that are already active in the
+                        # zone configuration, also do not restore date,
+                        # sender and timeout
+                        continue
                     if key == "interfaces":
-                        self.check_interface(args)
-                        self.__interface(True, zone, args)
+                        self.add_interface(zone, args)
                     elif key == "icmp_blocks":
-                        self.check_icmp_block(*args)
-                        self.__icmp_block(True, zone, *args)
+                        self.add_icmp_block(zone, *args)
                     elif key == "forward_ports":
-                        self.check_forward_port(*args)
-                        mark = settings[key][args]["mark"]
-                        self.__forward_port(True, zone, *args, mark_id=mark)
+                        self.add_forward_port(zone, *args)
                     elif key == "services":
-                        self.check_service(args)
-                        self.__service(True, zone, args)
+                        self.add_service(zone, args)
                     elif key == "ports":
-                        self.check_port(*args)
-                        self.__port(True, zone, *args)
+                        self.add_port(zone, *args)
                     elif key == "masquerade":
-                        self.__masquerade(True, zone)
+                        self.enable_masquerade(zone)
                     else:
                         log.error("Zone '%s': Unknown setting '%s:%s', "
                                   "unable to restore.", zone, key, args)
+                    # restore old date, sender and timeout
+                    if args in _obj.settings[key]:
+                        _obj.settings[key][args] = settings[key][args]
+
         except FirewallError, msg:
             log.error(msg)
 

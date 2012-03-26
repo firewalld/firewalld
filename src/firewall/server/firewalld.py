@@ -173,9 +173,6 @@ class FirewallD(slip.dbus.service.Object):
         """
         log.debug1("reload()")
 
-        # cleanup timeouts in zones
-        self.cleanup_timeouts()
-
         self.fw.reload()
         self.Reloaded()
 
