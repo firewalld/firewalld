@@ -427,6 +427,7 @@ class Firewall:
         for zone in self.zone.get_zones():
             _zone_settings[zone] = self.zone.get_settings(zone)
         # save direct config
+        old_dz = self.get_default_zone()
         _direct_config = self.direct.get_config()
 
         if stop:
@@ -440,6 +441,15 @@ class Firewall:
         # start
         if _panic:
             self.enable_panic_mode()
+
+        new_dz = self.get_default_zone()
+        if new_dz != old_dz:
+            # default zone changed. Move interfaces from old default zone to the new one.
+            # FIXME: This moves all interfaces from old default zone, because we
+            # can't distinguish which were there as in a default zone and which
+            # had been added there namely (i.e. to a specific zone, same with the default one)
+            _zone_settings[new_dz]['interfaces'].update(_zone_settings[old_dz]['interfaces'])
+            _zone_settings[old_dz]['interfaces'].clear()
 
         # restore zone settings
         for zone in self.zone.get_zones():
