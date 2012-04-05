@@ -296,16 +296,14 @@ class FirewallZone:
     def remove_interface(self, zone, interface):
         self._fw.check_panic()
         zoi = self.get_zone_of_interface(interface)
+        if zoi == None:
+            raise FirewallError(UNKNOWN_INTERFACE, interface)
         _zone = zoi if zone == "" else self._fw.check_zone(zone)
+        if zoi != _zone:
+            raise FirewallError(ZONE_CONFLICT)
+
         _obj = self._zones[_zone]
-
         interface_id = self.__interface_id(interface)
-        if interface_id not in _obj.settings["interfaces"]:
-            if zoi == None:
-                raise FirewallError(UNKNOWN_INTERFACE, interface)
-            if zoi != _zone:
-                raise FirewallError(ZONE_CONFLICT)
-
         self.__interface(False, _zone, interface)
 
         if interface_id in _obj.settings["interfaces"]:
