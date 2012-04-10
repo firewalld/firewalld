@@ -275,6 +275,8 @@ class FirewallZone:
 
         _obj.settings["interfaces"][interface_id] = \
             self.__gen_settings(0, sender)
+        # add information whether we add to default or specific zone
+        _obj.settings["interfaces"][interface_id]["__default__"] = (not zone or zone == "")
 
         return _zone
 
@@ -289,9 +291,7 @@ class FirewallZone:
         if _old_zone != None:
             self.remove_interface(_old_zone, interface)
 
-        self.add_interface(_new_zone, interface, sender)
-
-        return _new_zone
+        return self.add_interface(zone, interface, sender)
 
     def remove_interface(self, zone, interface):
         self._fw.check_panic()

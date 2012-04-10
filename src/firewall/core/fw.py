@@ -428,6 +428,7 @@ class Firewall:
             _zone_settings[zone] = self.zone.get_settings(zone)
         # save direct config
         _direct_config = self.direct.get_config()
+        _old_dz = self.get_default_zone()
 
         if stop:
             self.stop()
@@ -440,6 +441,17 @@ class Firewall:
         # start
         if _panic:
             self.enable_panic_mode()
+
+        _new_dz = self.get_default_zone()
+        if _new_dz != _old_dz:
+            # default zone changed. Move interfaces from old default zone to the new one.
+            for iface, settings in _zone_settings[_old_dz]["interfaces"].items():
+                if settings["__default__"]:
+                    # move only those that were added to default zone
+                    # (not those that were added to specific zone same as default)
+                    _zone_settings[_new_dz]["interfaces"][iface] = \
+                    _zone_settings[_old_dz]["interfaces"][iface]
+                    del _zone_settings[_old_dz]["interfaces"][iface]
 
         # restore zone settings
         for zone in self.zone.get_zones():
@@ -495,8 +507,25 @@ class Firewall:
 
     def set_default_zone(self, zone):
         if zone in self.zone.get_zones():
-            self._default_zone = zone
-            self._firewalld_conf.set("DefaultZone", zone)
-            self._firewalld_conf.write()
+            if zone != self._default_zone:
+                _old_dz = self._default_zone
+                self._default_zone = zone
+                self._firewalld_conf.set("DefaultZone", zone)
+                self._firewalld_conf.write()
+
+                # Move interfaces from old default zone to the new one.
+                _old_dz_settings = self.zone.get_settings(_old_dz)
+                _new_dz_settings = self.zone.get_settings(zone)
+                for iface, settings in _old_dz_settings["interfaces"].items():
+                    if settings["__default__"]:
+                        # move only those that were added to default zone
+                        # (not those that were added to specific zone same as default)
+                        _new_dz_settings["interfaces"][iface] = \
+                        _old_dz_settings["interfaces"][iface]
+                        del _old_dz_settings["interfaces"][iface]
+                self.zone.set_settings(_old_dz, _old_dz_settings)
+                self.zone.set_settings(zone, _new_dz_settings)
+            else:
+                raise FirewallError(ZONE_ALREADY_SET, zone)
         else:
             raise FirewallError(INVALID_ZONE, zone)
