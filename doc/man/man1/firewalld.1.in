@@ -1,0 +1,88 @@
+.TH firewalld 1 "@VERSION@" "firewalld" "firewalld"
+.nh
+.ad l
+
+.SH NAME
+firewalld \- Dynamic Firewall Manager
+
+.SH SYNOPSIS
+.IP \fBfirewalld\ \fR\fB[OPTIONS...]\fR\
+
+.SH DESCRIPTION
+\fBfirewalld\fR provides a dynamically managed firewall with support for network/firewall zones to define the trust level of network connections or interfaces. It has support for IPv4, IPv6 firewall settings and for ethernet bridges and has a separation of runtime and persistent configuration options.
+
+.SH OPTIONS
+These are the command line options of firewalld:
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Prints a short help text and exists.
+.TP
+\fB\-\-debug\fR[=\fI<level>\fR]
+Set the debug level for firewalld to \fIlevel\fR. The debug output will be written to the firewalld log file \fI/var/log/firewalld\fR.
+.TP
+\fB\-\-nofork\fR
+Turn off daemon forking, firewalld runs in the foreground.
+
+.SH CONCEPTS
+firewalld has a D\-BUS interface and a command line client for firewall configuration in services, applications and also for the user. Services or applications alredy using D\-BUS can request changes to the firewall with the D-BUS inteface directly. For more information on the firewalld D-BUS interface, please have a lok at the \fBfirewalld.dbus\fR(5) man page. 
+
+firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and and persistent configuration options.
+
+.SS Zones
+A network or firewall zone defines the trust level of the interface used for a connection. There are several pre\-defined zones provided by firewalld. Zone configuration options and generic information about zones are described in \fBfirewalld.zones\fR(5).
+
+.SS Services
+A service can be a list of local ports and destinations and additionally also a list of firewall helper modules automatically loaded if a service is enabled.
+\fBfirewalld.services\fR(5). The use of predefined services makes it easier for the user to enable and disable access to a service.
+
+.SS ICMP types
+The Internet Control Message Protocol (ICMP) is used to exchange information and also error messages in the Internet Protocol (IP). ICMP types can be used in firewalld to limit the exchange of these messages. For more information, please have a look at \fBfirewalld.icmptypes\fR(5).
+
+.SS Runtime configuration
+The runtime configuration is not persistent and will only be restored for a reload. After restart or stop of the service or a system reboot, these options will be gone.
+.PP
+.SS Persistent configuration
+The persistent configuration is stored in the config files and will be restored with every machine boot or service reload or restart.
+.PP
+
+
+.SH DIRECTORIES
+firewalld supports two configuration directories:
+
+.SS Default configuration in \fI@PREFIX@/lib/firewalld\fR
+This directory contains the default configuration provided by firewalld for \fIicmptypes\fR, \fIservices\fR and \fIzones\fR. For more information on icmptypes, please have a look at the \fIfirewalld.icmptype\fR(5) man page, for services at \fIfirewalld.service\fR(5) and for zones at \fIfirewalld.zone\fR(5).
+.PP
+.SS System configuration settings in \fI@SYSCONFDIR@/firewalld\fR
+The system or user configuration stored here is either created by the system administator or with the configuration interface of firewalld. The files will overload the default configuration files.
+
+To change settings in pre-defined zones or services, copy the file from the default configuration directory to the correcsponding directory in the system configuration directory and chnage it accordingly. It will overload the default file configuration. It is not possible to overload immutable zones, because these may not get changed.
+
+Additional configuration files for zones, services and ICMP types should be placed into this directory.
+.PP
+
+.SH SIGNALS
+Currently only SIGHUP is supported.
+
+.SS SIGHUP
+Reloads the complete firewall configuration. You can also use \fBfirewall\-cmd\ \-\-reload\fR. All runtime configuration settings will be restored. Persistent configuration will change according to options defined in the configuration files.
+.PP
+
+.SH SEE ALSO
+\fIfirewalld.conf\fR(5), 
+\fIfirewall\-cmd\fR(1), 
+\fIfirewalld.icmptype\fR(5), 
+\fIfirewalld.service\fR(5), 
+\fIfirewalld.zone\fR(5), 
+\fIfirewalld.dbus\fR(5), 
+\fIfirewalld.direct\fR(5) 
+
+.SH AUTHOR
+\fBThomas Woerner\fR <twoerner@redhat.com>
+.br
+\fBJiri Popelka\fR <jpopelka@redhat.com>
+
+
+.SH NOTES
+Firewalld home page at fedorahosted.org
+.RS 4
+\fBhttp://fedorahosted.org/firewalld/\fR

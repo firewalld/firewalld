@@ -44,14 +44,25 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],)
 IT_PROG_INTLTOOL([0.35.0], [no-xml])
 AM_PO_SUBDIRS
 
+PREFIX=`eval echo $prefix`
+AC_SUBST(PREFIX)
+SYSCONFDIR=`eval echo $sysconfdir`
+AC_SUBST(SYSCONFDIR)
+
 AC_CONFIG_FILES([Makefile
 		 doxygen.conf
-                 config/Makefile
+		 config/Makefile
 		 doc/Makefile
-                 doc/man/Makefile
-                 doc/man/man1/Makefile
-                 doc/man/man1/firewall-cmd.1
-                 po/Makefile.in
+		 doc/man/Makefile
+		 doc/man/man1/Makefile
+		 doc/man/man1/firewall-cmd.1
+		 doc/man/man1/firewalld.1
+		 doc/man/man5/Makefile
+		 doc/man/man5/firewalld.conf.5
+		 doc/man/man5/firewalld.icmptype.5
+		 doc/man/man5/firewalld.service.5
+		 doc/man/man5/firewalld.zone.5
+		 po/Makefile.in
 		 src/firewall/config/__init__.py
 		 src/Makefile])
 AC_OUTPUT

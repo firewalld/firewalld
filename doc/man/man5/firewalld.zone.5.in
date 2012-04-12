@@ -1,0 +1,138 @@
+.TH firewalld.zone 5 "@VERSION@" "firewalld.zone" "firewalld.zone"
+.nh
+.ad l
+
+.SH NAME
+firewalld.zone \- firewalld zone configuration files
+
+.SH SYNOPSIS
+\fI@SYSCONFDIR@/firewalld/zones/<zone>.xml\fR
+\fI@PREFIX@/lib/firewalld/zones/<zone>.xml\fR
+
+.SH DESCRIPTION
+A \fIfirewalld.zone\fR configuration file contains the information for a zone. These are the zone name, services, ports, icmp-blocks, masquerade and forward-ports in an XML file format.
+
+This example configuration file shows the structure of a zone configuration file:
+
+.nf
+<?xml version="1.0" encoding="utf-8"?>
+<zone name="\fImyzone\fR" version="\fI1.0\fR" immutable="\fIFalse\fR">
+  <short>\fIMy Zone\fR</short>
+  <description>\fIdescription\fR</description>
+  <service name="\fIssh\fR"/>
+  <port port="\fI21\fR" protocol="\fItcp\fR"/>
+  <icmp-block name="\fIsource-quench\fR"/>
+  <masquerade enabled="\fINo\fR"/>
+  <forward-port port="\fI443-445\fR" protocol="\fItcp\fR" to-port="\fI444\fR" to-addr="\fI192.168.0.2\fR"/>
+</zone>
+.fi
+
+.SH OPTIONS
+The config can contain these tags and attributes. Some of them are mandatory, others optional.
+
+.SS zone
+The mandatory zone start and end tag defines the zone. This tag can only be used once in a zone configuration file. There are mandatory and also optional attributes for zones:
+
+Mandatory attributes:
+
+\fIname="\fR<string>\fI"\fR
+.RS 4
+defines the name of the zone as a string. This name is used by firewalld and firewall-cmd.
+.RE
+
+Optional attributes:
+
+\fIversion="\fR<string>\fI"\fR
+.RS 4
+To give the zone a version.
+.RE
+
+\fIimmutable="\fR<bool>\fI"\fR
+.RS 4
+Can be used to mark a zone as immutable. That means that the zone can not get modified. Possible values are \fIyes\fR or \fItrue\fR, the default value is \fIfalse\fR.
+.RE
+
+.SS short
+Is an optional start and end tag and is used to give a zone a more readable name.
+
+.SS description
+Is an optional start and end tag to have a description for a zone.
+
+.SS service
+Is an optional empty-element tag and can be used several times to have more than one service entry enabled. A service entry has exactly one attribute:
+
+\fIname="\fR<string>\fI"\fR
+.RS 4
+The name of the service to be enabled. To get a list of valid service names \fIfirewall-cmd --list=services\fR can be used.
+.RE
+
+.SS port
+Is an optional empty-element tag and can be used several times to have more than one port entry. All attributes of a port entry are mandatory:
+
+\fIport="\fR<string>\fI"\fR
+.RS 4
+The port or port range string to be enabled. The value is of the form \fI<port>[-<port>]\fR, where port is a port id.
+.RE
+
+\fIprotocol="\fR<string>\fI"\fR
+.RS 4
+The protocol value can either be \fI"tcp"\fR or \fI"udp"\fR.
+.RE
+
+.SS icmp-block
+Is an optional empty-element tag and can be used several times to have more than one icmp-block entry. Each icmp-block tag has exactly one mandatory attribute:
+
+\fIname="\fR<string>\fI"\fR
+.RS 4
+The name of the Internet Control Message Protocol (ICMP) type to be blocked. To get a list of valid ICMP types \fIfirewall-cmd --list=icmptypes\fR can be used.
+.RE
+
+.SS masquerade
+Is an optional empty-element tag and can be used only once in a zone configuration. This is not usable for IPv6. The masquerade tag entry has exactly one mandatory attribute:
+
+\fIenabled="\fR<bool>\fI"\fR
+.RS 4
+If set to \fIyes\fR or \fItrue\fR, masquerading is enabled for the zone. If \fIno\fR or \fIfalse\fR, the masquerade tag can be removed.
+.RE
+
+.SS forward-port
+Is an optional empty-element tag and can be used several times to have more than one port or packet forward entry. This is not usable for IPv6. There are mandatory and also optional attributes for forward ports:
+
+Mandatory attributes:
+
+\fIport="\fR<string>\fI"\fR
+.br
+\fIprotocol="\fR<string>\fI"\fR
+.RS 4
+These are the same as the entries for the port tag and define the local source port or port range and protocol.
+.RE
+
+Optional attributes (at least has to be specified):
+
+\fIto-port="\fR<string>\fI"\fR
+.RS 4
+The local or remote port or port range to forward to. If omitted, the value of the \fIport=\fR attribute will be used altogether with the \fIto-addr=\fRq attribute.
+.RE
+
+\fIto-addr="\fR<string>\fI"\fR
+.RS 4
+If specified, the destination IPv4 IP address of the port forwarding.
+
+.RE
+
+
+.SH SEE ALSO
+\fIfirewalld\fR(1), 
+\fIfirewall-cmd\fR(1)
+\fIfirewalld.icmptype\fR(5), 
+\fIfirewalld.service\fR(5), 
+
+.SH AUTHOR
+\fBThomas Woerner\fR <twoerner@redhat.com>
+.br
+\fBJiri Popelka\fR <jpopelka@redhat.com>
+
+.SH NOTES
+Firewalld home page at fedorahosted.org
+.RS 4
+\fBhttp://fedorahosted.org/firewalld/\fR
