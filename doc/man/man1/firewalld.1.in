@@ -24,9 +24,9 @@ Set the debug level for firewalld to \fIlevel\fR. The debug output will be writt
 Turn off daemon forking, firewalld runs in the foreground.
 
 .SH CONCEPTS
-firewalld has a D\-BUS interface and a command line client for firewall configuration in services, applications and also for the user. Services or applications alredy using D\-BUS can request changes to the firewall with the D-BUS inteface directly. For more information on the firewalld D-BUS interface, please have a lok at the \fBfirewalld.dbus\fR(5) man page. 
+firewalld has a D\-BUS interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D\-BUS can request changes to the firewall with the D-BUS interface directly. For more information on the firewalld D-BUS interface, please have a look at the \fBfirewalld.dbus\fR(5) man page. 
 
-firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and and persistent configuration options.
+firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and persistent configuration options.
 
 .SS Zones
 A network or firewall zone defines the trust level of the interface used for a connection. There are several pre\-defined zones provided by firewalld. Zone configuration options and generic information about zones are described in \fBfirewalld.zones\fR(5).
@@ -53,9 +53,9 @@ firewalld supports two configuration directories:
 This directory contains the default configuration provided by firewalld for \fIicmptypes\fR, \fIservices\fR and \fIzones\fR. For more information on icmptypes, please have a look at the \fIfirewalld.icmptype\fR(5) man page, for services at \fIfirewalld.service\fR(5) and for zones at \fIfirewalld.zone\fR(5).
 .PP
 .SS System configuration settings in \fI@SYSCONFDIR@/firewalld\fR
-The system or user configuration stored here is either created by the system administator or with the configuration interface of firewalld. The files will overload the default configuration files.
+The system or user configuration stored here is either created by the system administrator or with the configuration interface of firewalld. The files will overload the default configuration files.
 
-To change settings in pre-defined zones or services, copy the file from the default configuration directory to the correcsponding directory in the system configuration directory and chnage it accordingly. It will overload the default file configuration. It is not possible to overload immutable zones, because these may not get changed.
+To change settings of pre-defined zones or services, copy the file from the default configuration directory to the corresponding directory in the system configuration directory and change it accordingly. It will overload the default file configuration. It is not possible to overload immutable zones, because these may not get changed.
 
 Additional configuration files for zones, services and ICMP types should be placed into this directory.
 .PP

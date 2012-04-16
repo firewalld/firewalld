@@ -73,7 +73,7 @@ defines the name of the kernel netfilter helper as a string.
 .RE
 
 .SS destination
-Is an optional empty-element tag and can be used only once. The destination specifies the destination network as a network IP address (optinal with /mask), or a plain IP address. It is also possible to use hostnames, these will only be resolved at service activation and transmitted to the kernel. The use of hostnames is not recommended. For more information in this element, please have a look at \fIiptables\fR(8) and \fIip6tables\fR(8).
+Is an optional empty-element tag and can be used only once. The destination specifies the destination network as a network IP address (optional with /mask), or a plain IP address. It is also possible to use hostnames, these will only be resolved at service activation and transmitted to the kernel. The use of hostnames is not recommended. For more information in this element, please have a look at \fIiptables\fR(8) and \fIip6tables\fR(8).
 
 This entry has two attributes, at least one of them needs to be specified. If only one of them is specified, the service will only be added to this destination.
 

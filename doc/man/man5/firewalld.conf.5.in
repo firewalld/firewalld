@@ -9,7 +9,7 @@ firewalld.conf \- firewalld configuration file
 .IP \fI@SYSCONFDIR@/firewalld/firewalld.conf\fR
 
 .SH DESCRIPTION
-\fIfirewalld.conf\fR is loaded by firewalld during the initialization process. The file contains the basic coniguration options for firewalld.
+\fIfirewalld.conf\fR is loaded by firewalld during the initialization process. The file contains the basic configuration options for firewalld.
 
 .SH OPTIONS
 These are the options that can be set in the config file:
@@ -18,7 +18,7 @@ These are the options that can be set in the config file:
 This sets the default zone for connections or interfaces if the zone is not selected or specified by NetworkManager, initscripts or command line tool. The default zone is \fIpublic\fR.
 .TP
 \fBMinimalMark\fR
-For some firewall settings several rules are needed in different tables to be able to handle packets in the correct way. To achive that these packets are marked. With the MinimalMark option a block of marks can be reseved for private use; only marks over this value are used. The default MinimalMark value is \fI100\fR.
+For some firewall settings several rules are needed in different tables to be able to handle packets in the correct way. To achieve that these packets are marked. With the MinimalMark option a block of marks can be reserved for private use; only marks over this value are used. The default MinimalMark value is \fI100\fR.
 .TP
 \fBCleanupOnExit\fR
 If firewalld stops, it cleans up all firewall rules. Setting CleanupOnExit to \fIno\fR or \fIfalse\fR leaves firewall rules as is. The default value is \fIyes\fR or \fItrue\fR.
