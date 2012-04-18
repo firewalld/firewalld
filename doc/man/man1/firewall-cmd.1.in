@@ -1,75 +1,222 @@
 .TH firewall-cmd 1 "@VERSION@" "" "FirewallD Utilities"
-
+.nh
+.ad l
+'\" t
 
 .SH NAME
 firewall-cmd \- firewalld command line client
 
 
 .SH SYNOPSIS
-.IP \fBfirewall-cmd\fR \w'[firewall-cmd]'u
-[\fB-h | --help\fR] | (\fB<mode>\fR [\fB<options>\fR])
-
-
+.IP \fBfirewall-cmd\fR\ {\ \fIHELP\fR\ |\ \fISTATUS\fR\ |\ \fIPANIC\fR\ |\ \fIZONE\fR\ |\ \fIMODE\fR\ |\ \fIDIRECT\fR\ }
 
 .SH DESCRIPTION
-\fBfirewall-cmd\fR is the command line client of the firewall daemon. It provides a simple interface to manage the firewall.
-
+\fBfirewall-cmd\fR is the command line client of the firewall daemon. It provides a simple interface to manage the runtime firewall. Persistent configuration needs to be done with according to \fIfirewalld\fR(1).
 
 .SH OPTIONS
 
-.SS Modes:
+.nf
+\fIHELP\fR   := { \fB-h\fR | \fB--help\fR | 
+            \fB-v\fR | \fB--version\fR }
+\fISTATUS\fR := { \fB--state\fR |
+            \fB--reload\fR |
+            \fB--complete-reload\fR }
+\fIPANIC\fR  := { \fB--enable\fR | \fB--disable\fR | \fB--query\fR } \fB--panic\fR
+\fIZONE\fR   := { \fB--get-default-zone\fR |
+            \fB--set-default-zone\fR=\fI<zone>\fR |
+            \fB--get-zones\fR |
+            \fB--get-active-zones\fR |
+            \fB--get-zone-of-interface\fR=\fI<interface>\fR }
+\fIMODE\fR   := { [ \fB--zone\fR=\fI<zone>\fR ] {
+              { { \fB--add\fR [\fB--timeout\fR=\fI<seconds>\fR] | \fB--remove\fR | \fB--query\fR } \fIACTION\fR } |
+              { { \fB--enable\fR [\fB--timeout\fR=\fI<seconds>\fR] } | \fB--disable\fR | \fB--query\fR } \fB--masquerade\fR } |
+              \fB--list\fR={ \fIservice\fR | \fIport\fR | \fIinterface\fR | \fIicmp-block\fR | \fIforward-port\fR | \fIall\fR } } |
+            \fB--get-services\fR |
+            \fB--get-icmptypes\fR }
+\fIACTION\fR := { \fB--service\fR=\fI<service>\fR |
+            \fB--port\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR |
+            \fB--interface\fR=\fI<interface>\fR |
+            \fB--icmp-block\fR=\fI<icmptype>\fR |
+            \fB--forward-port=port\fR=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR { :toport=\fI<port>\fR[-\fI<port>\fR] | :toaddr=\fI<address>\fR | :toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR } }
+\fIDIRECT\fR := \fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } {
+            {\fB--passthrough\fR \fI<args>\fR } |
+            { { \fB--add-chain\fR | \fB--remove-chain\fR | \fB--query-chain\fR } \fI<table>\fR \fI<chain>\fR } |
+            { \fB--get-chains\fR \fI<table>\fR } |
+            { \fB--add-rule\fR \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR } |
+            { { \fB--remove-rule\fR | \fB--query-rule\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR } |
+            { \fB--get-rules\fR \fI<table>\fR \fI<chain>\fR } }
+.fi
+
+.SS Help Options
+.TP
+\fB-h\fR, \fB--help\fR
+Print a description of the options of firewall-cmd.
+.TP
+\fB-v\fR, \fB--version\fR
+Print the version string of firewalld.
+
+.SS Status Options
+.TP
+\fB--state\fR
+Return the status of the daemon, see \fIEXIT CODES\fR.
 .TP
 \fB--reload\fR
 Reload the firewall rules in firewalld internally. Only 
 .TP
-\fB--restart\fR
-Restart the firewall modules and also the firewall rules in firewalld internally. This will end all active connections.
-.TP
-\fB--status\fR
-Returns the status of the daemon.
-.TP
-\fB--enable\fR \fI<action>\fR
-Enables an action. See below for the supported actions.
-.TP
-\fB--disable\fR \fI<action>\fR
-Disables an enabled action.
-.TP
-\fB--query\fR \fI<action>\fR
-Query if an action has been enabled.
-.TP
-\fB--list\fR=\fI<action name>\fR
-List all entries for an action. Action can be one of \fIservice|port|trusted|masquerade|forward-port|icmp-block|custom\fR
+\fB--complete-reload\fR
+Reload the firewall completely, also netfilter kernel modules. This could terminate active connections, because state information is lost.
 
-.SS Actions:
+.SS Panic Options
+.TP
+\fB--enable\fR \fB--panic\fR
+Enable panic mode. All incoming and outgoing packets are dropped, active connections will be terminated after a while of activity. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.
+.TP
+\fB--disable\fR \fB--panic\fR
+Disable manic mode again. After disbaling panic mode established connections might work again, if panic mode was enabled for a short period of time.
+.TP
+\fB--query\fR \fB--panic\fR
+Query if panic mode is enabled. Returns 0 if panic mode is enabled, 1 otherwise.
+
+.SS Zone Options
+.TP
+\fB--get-default-zone\fR
+Return the default zone for connections and interfaces. By default this is \fIpublic\fR.
+.TP
+\fB--set-default-zone\fR=\fI<zone>\fR
+Set the default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a persistent change.
+.TP
+\fB--get-zones\fR
+Return a space separated list of supported zones.
+.TP
+\fB--get-active-zones\fR
+Return the currently active zones altogether with the interfaces in the zones.
+.TP
+\fB--get-zone-of-interface\fR=\fI<interface>\fR
+Return the zone of the interface \fI<interface>\fR or nothing if the interface does not belong to a zone.
+
+.SS Mode Options
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--add\fR [\fB--timeout\fR=\fI<seconds>\fR] \fIACTION\fR
+Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the the amount of seconds. Afterward it will be removed automatically.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--remove\fR \fIACTION\fR
+Remove an \fIACTION\fR from the zone \fI<zone>\fR again. If zone is omitted, the default zone will be used. If the ACTION was added with a timeout, it will be removed also.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--query\fR \fIACTION\fR
+Query if an \fIACTION\fR has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--enable\fR [\fB--timeout\fR=\fI<seconds>\fR] \fB--masquerade\fR
+Enable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If a timeout is supplied, masquerading will be active for the amount of seconds. Masquerading is useful if the machine is a router and machines connected over an interface in another zone should be able to use the first connection.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--disable\fR \fB--masquerade\fR
+Disable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the masquerading was enabled with a timeout, it will be disabled also.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--query\fR \fB--masquerade\fR
+Query if masquerading has been nabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIservice\fR
+List added services for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIport\fR
+List ports added for zone \fI<zone>\fR as a space separated list. A port is of the form \fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR, it can be either a port and protocol pair or a port range with a protocol. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIinterface\fR
+List interfaces added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIicmp-block\fR
+List Internet Control Message Protocol (ICMP) type blocks added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined icmptypes use \fI--get-icmptypes\fR.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIforward-port\fR
+List forward port added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIall\fR
+List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+.TP
+\fB--get-service\fR
+ List all predefined services known by firewalld.
+.TP
+\fB--get-icmptypes\fR
+ List all predefined icmptypes known by firewalld.
+
+.SS Action Options
 .TP
 \fB--service\fR=\fI<service>\fR
+Use one of the predefined services. For a list of all predefined services use \fI--get-services\fR.
+.TP
+\fB--port\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR
+Use a port or port range altogether with a protocol. The protocol can be either \fItcp\fR or \fIudp\fR.
+.TP
+\fB--interface\fR=\fI<interface>\fR
+Use an interface name. 
+.TP
+\fB--icmp-block\fR=\fI<icmptype>\fR
+Use one of the predefinced ICMP types. For a list of all predefined ICMP types use \fI--get-icmptypes\fR.
+.TP
+\fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]
+Use port or packet forwarding. The source and the destination ports are a port or port range altogether with a protocol. The protocol can be either \fItcp\fR or \fIudp\fR.
+Forward from the local port \fIport\fR to the local port \fItoport\fR.
+.TP
+\fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toaddr=\fI<address>\fR
+Forward from the local port \fIport\fR to the same port on host \fItoaddr\fR.
+.TP
+\fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR
+Forward from the local port \fIport\fR to qport \fItoport\fR on host \fItoaddr\fR.
+
+.SS Direct Option
+The direct options give a more direct access to the firewall. With \fIipv4\fR it will be for IPv4 (\fIiptables\fR(8)), with \fIipv6\fR for IPv6 (\fIip6tables\fR(8)) and with \fIeb\fR for ethernet bridges (\fIebtables\fR(8)).
 
 .TP
-\fB--port\fR=\fI<port>[-<port>]:<protocol>\fR
-
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--passthrough\fR \fI<args>\fR
+Pass a command thourgh to the firewall. \fI<args>\fR can be all iptables, ip6tables and ebtables command line arguments.
 .TP
-\fB--trusted\fR=\fI<interface>\fR
-
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--add-chain\fR \fI<table>\fR \fI<chain>\fR
+Add a new chain with name \fI<chain>\fR to table \fI<table>\fR.
 .TP
-\fB--masquerade\fR=\fI<interface>\fR
-
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--remove-chain\fRq \fI<table>\fR \fI<chain>\fR
+Remove a chain with name \fI<chain>\fR from table \fI<table>\fR.
 .TP
-\fB--forward-port\fR=\fIif=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]\fR
-
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--query-chain\fR \fI<table>\fR \fI<chain>\fR
+Query if a chain with name \fI<chain>\fR exists in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
 .TP
-\fB--icmp-block\fR=\fI<icmp type>\fR
-
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--get-chains\fR \fI<table>\fR
+Get all chains added to table \fI<table>\fR as a space separated list.
 .TP
-\fB--custom\fR=\fItable=<table>:chain=<chain>:src=<addr>:src_port=<port>:dst=<addr>:dst_port=<port>:proto=<protocol>:iface_in=<interface>:iface_out=<interface>:physdev_in=<bridge>:physdev_out=<bridge>:target=<target>\fR
-
-.SS Enable Options:
+\fB--direct\fR{ \fIipv4\fR | \fIipv6\fR | \fIeb\fR }  \fB--add-rule\fR \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR
+Add a rule with the arguments \fI<args>\fR to chain \fI<chain>\fR in table \fI<table>\fR with priority \fI<priority>\fR.
 .TP
-\fB--timeout\fR=\fI<seconds>\fR
-Enable an action for a specific amount of time only. The enabled action will be disabled automatically after the time elapsed.
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--remove-rule\fR \fI<table>\fR \fI<chain>\fR \fI<args>\fR
+Remove a rule with the arguments \fI<args>\fR from chain \fI<chain>\fR in table \fI<table>\fR.
+.TP
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--query-rule\fR \fI<table>\fR \fI<chain>\fR \fI<args>\fR
+Query if a rule with the arguments \fI<args>\fR exists in chain \fI<chain>\fR in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
+.TP
+\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--get-rules\fR \fI<table>\fR \fI<chain>\fR
+Get all ruless added to chain \fI<chain>\fR in table \fI<table>\fR as a newline separated list of arguments.
 
-.SH AUTHOR
-Thomas Woerner <twoerner@redhat.com>
+.SH EXIT CODES
 
+On success 0 is returned. In case of error one of the following error codes:
+
+.TS
+allbox tab(=) nospaces;
+l nw(1i).
+\fBString\fR = \fBCode\fR
+@FIREWALLD_ERROR_CODES@
+.TE
 
 .SH SEE ALSO
+\fIfirewalld\fR(1), 
+\fIfirewalld.conf\fR(5), 
+\fIfirewalld.icmptype\fR(5), 
+\fIfirewalld.service\fR(5), 
+\fIfirewalld.zone\fR(5)
+
+.SH AUTHOR
+\fBThomas Woerner\fR <twoerner@redhat.com>
+.br
+\fBJiri Popelka\fR <jpopelka@redhat.com>
+
+.SH NOTES
+Firewalld home page at fedorahosted.org
+.RS 4
 \fBhttp://fedorahosted.org/firewalld/\fR
