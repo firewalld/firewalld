@@ -44,6 +44,11 @@ def usage(code):
               sys.argv[0])
     sys.exit(code)
 
+# check for root user
+if os.getuid() != 0:
+    print(_("You need to be root to run %s.") % sys.argv[0])
+    sys.exit(-1)
+
 for arg in args:
     if arg in ["-h", "--help"]:
         usage(0)
