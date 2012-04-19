@@ -37,9 +37,8 @@ Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
 #Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
-Requires: pygtk2
-Requires: pygtk2-libglade
-Requires: gtk2 >= 2.6
+Requires: gtk3
+Requires: pygobject3
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also 
