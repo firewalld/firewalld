@@ -75,8 +75,6 @@ class TrayApplet(object):
 
         info = theme.lookup_icon("firewall-applet", size, 0)
         if not info:
-            info = theme.lookup_icon("preferences-system-firewall", size, 0)
-        if not info:
             print("Icon 'firewall-applet' could not be loaded")
         else:
             self.icons["normal"] = info.load_icon()
