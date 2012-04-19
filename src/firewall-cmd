@@ -226,8 +226,6 @@ if action in [ "interface", "service", "port", "forward-port", "icmp-block" ]:
         __fail(_("Wrong action and mode combination"))
 elif action == "masquerade" and mode not in [ "enable", "disable", "query" ]:
     __fail(_("Wrong action and mode combination"))
-elif action:
-    __fail(_("Wrong action"))
 
 if timeout != 0:
     if mode != "add" and mode != "enable":
