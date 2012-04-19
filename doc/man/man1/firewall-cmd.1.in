@@ -11,7 +11,7 @@ firewall-cmd \- firewalld command line client
 .IP \fBfirewall-cmd\fR\ {\ \fIHELP\fR\ |\ \fISTATUS\fR\ |\ \fIPANIC\fR\ |\ \fIZONE\fR\ |\ \fIMODE\fR\ |\ \fIDIRECT\fR\ }
 
 .SH DESCRIPTION
-\fBfirewall-cmd\fR is the command line client of the firewall daemon. It provides a simple interface to manage the runtime firewall. Persistent configuration needs to be done with according to \fIfirewalld\fR(1).
+\fBfirewall-cmd\fR is the command line client of the firewall daemon. It provides a simple interface to manage the runtime firewall. Persistent configuration needs to be done according to \fIfirewalld\fR(1).
 
 .SH OPTIONS
 
@@ -61,10 +61,10 @@ Print the version string of firewalld.
 Return the status of the daemon, see \fIEXIT CODES\fR.
 .TP
 \fB--reload\fR
-Reload the firewall rules in firewalld internally. Only 
+Reload the firewall rules in firewalld internally.
 .TP
 \fB--complete-reload\fR
-Reload the firewall completely, also netfilter kernel modules. This could terminate active connections, because state information is lost.
+Reload the firewall completely, even netfilter kernel modules. This could terminate active connections, because state information is lost.
 
 .SS Panic Options
 .TP
@@ -72,7 +72,7 @@ Reload the firewall completely, also netfilter kernel modules. This could termin
 Enable panic mode. All incoming and outgoing packets are dropped, active connections will be terminated after a while of activity. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.
 .TP
 \fB--disable\fR \fB--panic\fR
-Disable manic mode again. After disbaling panic mode established connections might work again, if panic mode was enabled for a short period of time.
+Disable panic mode again. After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time.
 .TP
 \fB--query\fR \fB--panic\fR
 Query if panic mode is enabled. Returns 0 if panic mode is enabled, 1 otherwise.
@@ -97,7 +97,7 @@ Return the zone of the interface \fI<interface>\fR or nothing if the interface d
 .SS Mode Options
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add\fR [\fB--timeout\fR=\fI<seconds>\fR] \fIACTION\fR
-Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the the amount of seconds. Afterward it will be removed automatically.
+Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds. Afterward it will be removed automatically.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--remove\fR \fIACTION\fR
 Remove an \fIACTION\fR from the zone \fI<zone>\fR again. If zone is omitted, the default zone will be used. If the ACTION was added with a timeout, it will be removed also.
@@ -112,7 +112,7 @@ Enable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone wi
 Disable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the masquerading was enabled with a timeout, it will be disabled also.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query\fR \fB--masquerade\fR
-Query if masquerading has been nabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+Query if masquerading has been enabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIservice\fR
 List added services for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
@@ -150,7 +150,7 @@ Use a port or port range altogether with a protocol. The protocol can be either 
 Use an interface name. 
 .TP
 \fB--icmp-block\fR=\fI<icmptype>\fR
-Use one of the predefinced ICMP types. For a list of all predefined ICMP types use \fI--get-icmptypes\fR.
+Use one of the predefined ICMP types. For a list of all predefined ICMP types use \fI--get-icmptypes\fR.
 .TP
 \fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]
 Use port or packet forwarding. The source and the destination ports are a port or port range altogether with a protocol. The protocol can be either \fItcp\fR or \fIudp\fR.
@@ -160,14 +160,14 @@ Forward from the local port \fIport\fR to the local port \fItoport\fR.
 Forward from the local port \fIport\fR to the same port on host \fItoaddr\fR.
 .TP
 \fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR
-Forward from the local port \fIport\fR to qport \fItoport\fR on host \fItoaddr\fR.
+Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR.
 
 .SS Direct Option
 The direct options give a more direct access to the firewall. With \fIipv4\fR it will be for IPv4 (\fIiptables\fR(8)), with \fIipv6\fR for IPv6 (\fIip6tables\fR(8)) and with \fIeb\fR for ethernet bridges (\fIebtables\fR(8)).
 
 .TP
 \fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--passthrough\fR \fI<args>\fR
-Pass a command thourgh to the firewall. \fI<args>\fR can be all iptables, ip6tables and ebtables command line arguments.
+Pass a command through to the firewall. \fI<args>\fR can be all iptables, ip6tables and ebtables command line arguments.
 .TP
 \fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--add-chain\fR \fI<table>\fR \fI<chain>\fR
 Add a new chain with name \fI<chain>\fR to table \fI<table>\fR.
@@ -191,7 +191,7 @@ Remove a rule with the arguments \fI<args>\fR from chain \fI<chain>\fR in table 
 Query if a rule with the arguments \fI<args>\fR exists in chain \fI<chain>\fR in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
 .TP
 \fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--get-rules\fR \fI<table>\fR \fI<chain>\fR
-Get all ruless added to chain \fI<chain>\fR in table \fI<table>\fR as a newline separated list of arguments.
+Get all rules added to chain \fI<chain>\fR in table \fI<table>\fR as a newline separated list of arguments.
 
 .SH EXIT CODES
 
