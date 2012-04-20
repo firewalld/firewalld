@@ -4,6 +4,7 @@ After=syslog.target
 After=dbus.target
 Before=network.target
 Before=libvirtd.service
+Before=NetworkManager.service
 Conflicts=iptables.service ip6tables.service ebtables.service
 
 [Service]
