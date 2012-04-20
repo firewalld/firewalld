@@ -2,7 +2,7 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.4
+Version: 0.2.5
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -181,6 +181,25 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Fri Apr 20 2012 Thomas Woerner <twoerner@redhat.com> 0.2.5-1
+- Fixed traceback in firewall-cmd for failed or canceled authorization, 
+  return proper error codes, new error codes NOT_RUNNING and NOT_AUTHORIZED
+- Enhanced firewalld service file (RHBZ#806868) and (RHBZ#811240)
+- Fixed duplicates in zone after reload, enabled timed settings after reload
+- Removed conntrack --ctstate INVALID check from default ruleset, because it
+  results in ICMP problems (RHBZ#806017).
+- Update interfaces in default zone after reload (rhbz#804814)
+- New man pages for firewalld(1), firewalld.conf(5), firewalld.icmptype(5),
+  firewalld.service(5) and firewalld.zone(5), updated firewall-cmd man page
+  (RHBZ#811257)
+- Fixed firewall-cmd help output
+- Fixed missing icon for firewall-applet (RHBZ#808759)
+- Added root user check for firewalld (RHBZ#767654)
+- Fixed requirements of firewall-applet sub package (RHBZ#808746)
+- Update interfaces in default zone after changing of default zone (RHBZ#804814)
+- Start firewalld before NetworkManager (RHBZ#811240)
+- Add Type=dbus and BusName to service file (RHBZ#811240)
+
 * Fri Mar 16 2012 Thomas Woerner <twoerner@redhat.com> 0.2.4-1
 - fixed firewalld.conf save exception if no temporary file can be written to 
   /etc/firewalld/

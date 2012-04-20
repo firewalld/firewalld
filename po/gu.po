@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld.master.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-16 16:35+0100\n"
+"POT-Creation-Date: 2012-04-20 21:14+0200\n"
 "PO-Revision-Date: 2011-01-18 13:08+0530\n"
 "Last-Translator: Sweta Kothari <swkothar@redhat.com>\n"
 "Language-Team: Gujarati\n"
@@ -89,134 +89,132 @@ msgstr ""
 msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
 
-#: ../src/firewalld:60
+#: ../src/firewalld:49
+#, c-format
+msgid "You need to be root to run %s."
+msgstr ""
+
+#: ../src/firewalld:65
 #, c-format
 msgid "Unknown option '%s'"
 msgstr ""
 
-#: ../src/firewalld:87
+#: ../src/firewalld:92
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD શરૂ થઇ રહી નથી, પહેલેથી જ ચાલી રહી છે."
 
-#: ../src/firewalld:115
+#: ../src/firewalld:120
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ફોર્ક #1 નિષ્ફળ: %d (%s)"
 
-#: ../src/firewall-applet:40
+#: ../src/firewall-applet:54
 msgid "Firewall Applet"
 msgstr "ફાયરવોલ ઍપલેટ"
 
-#: ../src/firewall-applet:85
+#: ../src/firewall-applet:97
 #, fuzzy
 msgid "Enable Notifications"
 msgstr "બધી સૂચનાઓને સક્રિય કરો"
 
-#: ../src/firewall-applet:97
-msgid "Firewall Zone Settings"
+#: ../src/firewall-applet:109
+msgid "Edit Firewall Settings..."
 msgstr ""
 
-#: ../src/firewall-applet:105
+#: ../src/firewall-applet:119
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:137
+#: ../src/firewall-applet:151
 msgid "Not using slip"
 msgstr "સ્લિપ વાપરી રહ્યા નથી"
 
-#: ../src/firewall-applet:186
-#, fuzzy, c-format
-msgid ""
-"\n"
-"Requested by %s (%s)"
-msgstr ""
-"\n"
-"દ્દારા સૂચિત થયેલ છે: %s"
-
-#: ../src/firewall-applet:189
-#, c-format
-msgid ""
-"\n"
-"Command: '%s' (%s)"
-msgstr ""
-
-#: ../src/firewall-applet:216
+#: ../src/firewall-applet:215
 #, fuzzy
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD સાથે જોડાણ ગુમ થઇ ગયું"
 
-#: ../src/firewall-applet:217
+#: ../src/firewall-applet:216
 #, fuzzy
 msgid "Connection to FirewallD established."
 msgstr "FirewallD સાથે જોડાણ ગુમ થઇ ગયું"
 
-#: ../src/firewall-applet:311
+#: ../src/firewall-applet:304
 msgid "No connection to firewall daemon"
 msgstr "ફાયરવોલ ડિમન માટે જોડાણ નથી"
 
-#: ../src/firewall-applet:317
+#: ../src/firewall-applet:310
 msgid "PANIC MODE"
 msgstr "PANIC MODE"
 
-#: ../src/firewall-applet:329
+#: ../src/firewall-applet:322
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:325
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:340
+#: ../src/firewall-applet:333
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:357
-msgid "All network traffic is blocked."
-msgstr ""
-
-#: ../src/firewall-applet:358
-msgid "Network traffic is not blocked anymore."
-msgstr ""
-
-#: ../src/firewall-applet:365
-msgid "First Use"
-msgstr ""
-
-#: ../src/firewall-applet:367
-msgid "Close"
-msgstr ""
-
-#: ../src/firewall-applet:383
-msgid "Please select the default network location."
-msgstr ""
-
-#: ../src/firewall-applet:385
-#, fuzzy
-msgid "Zones:"
-msgstr "ઝોન"
-
-#: ../src/firewall-applet:394
+#: ../src/firewall-applet:345
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:399
-msgid "FirewallD has been restarted."
+#: ../src/firewall-applet:347
+#, c-format
+msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:437
+#: ../src/firewall-applet:367
+msgid "All network traffic is blocked."
+msgstr ""
+
+#: ../src/firewall-applet:368
+msgid "Network traffic is not blocked anymore."
+msgstr ""
+
+#: ../src/firewall-applet:398
+msgid "activated"
+msgstr ""
+
+#: ../src/firewall-applet:399
+msgid "deactivated"
+msgstr ""
+
+#: ../src/firewall-applet:402
+msgid ""
+"Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
+"interface '{interface}'"
+msgstr ""
+
+#: ../src/firewall-applet:407
+msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
+msgstr ""
+
+#: ../src/firewall-applet:429
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:438
-#, c-format
-msgid "Zone '%s' deactivated for interface '%s'"
-msgstr ""
-
-#: ../src/firewall-cmd:216 ../src/firewall-cmd:218
+#: ../src/firewall-cmd:226 ../src/firewall-cmd:228
 msgid "Wrong action and mode combination"
 msgstr ""
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "Requested by %s (%s)"
+#~ msgstr ""
+#~ "\n"
+#~ "દ્દારા સૂચિત થયેલ છે: %s"
+
+#, fuzzy
+#~ msgid "Zones:"
+#~ msgstr "ઝોન"
 
 #~ msgid "21/TCP"
 #~ msgstr "21/TCP"
