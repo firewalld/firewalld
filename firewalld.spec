@@ -162,7 +162,8 @@ fi
 %{python_sitelib}/firewall/core/*.py*
 %{python_sitelib}/firewall/core/io/*.py*
 %{python_sitelib}/firewall/server/*.py*
-%{_mandir}/man1/firewall-cmd.1*
+%{_mandir}/man1/firewall*.1*
+%{_mandir}/man5/firewall*.5*
 
 %files -n firewall-applet
 %defattr(-,root,root)
