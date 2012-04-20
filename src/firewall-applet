@@ -442,7 +442,7 @@ class TrayApplet(object):
                                           a.get_connection())
                 connection = obj.GetSettings()['connection']['id']
                 for dev in a.get_devices():
-                    self.connections[dev.get_iface()] = connection
+                    self.connections[dev.get_iface()] = connection.encode("utf-8")
         except Exception as msg:
             print(msg)
 
