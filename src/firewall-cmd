@@ -244,7 +244,7 @@ try:
     elif mode == "state":
         state = fw.get_property("state")
         if state != "RUNNING":
-            sys.exit(-1)
+            sys.exit(1)
     elif mode == "reload":
         if not fw.reload():
             sys.exit(1)
