@@ -55,14 +55,15 @@ def usage():
              --forward-port=port=<port>[-<port>]:proto=<protocol> { 
                :toport=<port>[-<port>] | :toaddr=<address> | 
                :toport=<port>[-<port>]:toaddr=<address> } }
- DIRECT := --direct { ipv4 | ipv6 | eb } {
-             {--passthrough <args> } |
-             { { --add-chain | --remove-chain | --query-chain } <table> 
+ DIRECT := --direct
+             {--passthrough TOOL <args> } |
+             { { --add-chain | --remove-chain | --query-chain } TOOL <table>
                <chain> } |
-             { --get-chains <table> } |
-             { --add-rule <table> <chain> <priority> <args> } |
-             { { --remove-rule | --query-rule } <table> <chain> <args> } |
-             { --get-rules <table> <chain> } }
+             { --get-chains TOOL <table> } |
+             { --add-rule TOOL <table> <chain> <priority> <args> } |
+             { { --remove-rule | --query-rule } TOOL <table> <chain> <args> } |
+             { --get-rules TOOL <table> <chain> }
+ TOOL := { ipv4 | ipv6 | eb }
 """)
 
 def __fail(msg=None):

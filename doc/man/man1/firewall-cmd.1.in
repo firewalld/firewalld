@@ -38,13 +38,14 @@ firewall-cmd \- firewalld command line client
             \fB--interface\fR=\fI<interface>\fR |
             \fB--icmp-block\fR=\fI<icmptype>\fR |
             \fB--forward-port=port\fR=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR { :toport=\fI<port>\fR[-\fI<port>\fR] | :toaddr=\fI<address>\fR | :toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR } }
-\fIDIRECT\fR := \fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } {
-            {\fB--passthrough\fR \fI<args>\fR } |
-            { { \fB--add-chain\fR | \fB--remove-chain\fR | \fB--query-chain\fR } \fI<table>\fR \fI<chain>\fR } |
-            { \fB--get-chains\fR \fI<table>\fR } |
-            { \fB--add-rule\fR \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR } |
-            { { \fB--remove-rule\fR | \fB--query-rule\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR } |
-            { \fB--get-rules\fR \fI<table>\fR \fI<chain>\fR } }
+\fIDIRECT\fR := \fB--direct\fR
+            {\fB--passthrough\fR \fITOOL\fR \fI<args>\fR } |
+            { { \fB--add-chain\fR | \fB--remove-chain\fR | \fB--query-chain\fR } \fITOOL\fR \fI<table>\fR \fI<chain>\fR } |
+            { \fB--get-chains\fR \fITOOL\fR \fI<table>\fR } |
+            { \fB--add-rule\fR \fITOOL\fR \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR } |
+            { { \fB--remove-rule\fR | \fB--query-rule\fR } \fITOOL\fR \fI<table>\fR \fI<chain>\fR \fI<args>\fR } |
+            { \fB--get-rules\fR \fITOOL\fR \fI<table>\fR \fI<chain>\fR }
+\fITOOL\fR := { \fIipv4\fR | \fIipv6\fR | \fIeb\fR }
 .fi
 
 .SS Help Options
@@ -166,31 +167,31 @@ Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR
 The direct options give a more direct access to the firewall. With \fIipv4\fR it will be for IPv4 (\fIiptables\fR(8)), with \fIipv6\fR for IPv6 (\fIip6tables\fR(8)) and with \fIeb\fR for ethernet bridges (\fIebtables\fR(8)).
 
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--passthrough\fR \fI<args>\fR
+\fB--direct\fR \fB--passthrough\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<args>\fR
 Pass a command through to the firewall. \fI<args>\fR can be all iptables, ip6tables and ebtables command line arguments.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--add-chain\fR \fI<table>\fR \fI<chain>\fR
+\fB--direct\fR \fB--add-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Add a new chain with name \fI<chain>\fR to table \fI<table>\fR.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--remove-chain\fRq \fI<table>\fR \fI<chain>\fR
+\fB--direct\fR \fB--remove-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Remove a chain with name \fI<chain>\fR from table \fI<table>\fR.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--query-chain\fR \fI<table>\fR \fI<chain>\fR
+\fB--direct\fR \fB--query-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Query if a chain with name \fI<chain>\fR exists in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--get-chains\fR \fI<table>\fR
+\fB--direct\fR \fB--get-chains\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR
 Get all chains added to table \fI<table>\fR as a space separated list.
 .TP
-\fB--direct\fR{ \fIipv4\fR | \fIipv6\fR | \fIeb\fR }  \fB--add-rule\fR \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR
+\fB--direct\fR \fB--add-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR
 Add a rule with the arguments \fI<args>\fR to chain \fI<chain>\fR in table \fI<table>\fR with priority \fI<priority>\fR.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--remove-rule\fR \fI<table>\fR \fI<chain>\fR \fI<args>\fR
+\fB--direct\fR \fB--remove-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR
 Remove a rule with the arguments \fI<args>\fR from chain \fI<chain>\fR in table \fI<table>\fR.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--query-rule\fR \fI<table>\fR \fI<chain>\fR \fI<args>\fR
+\fB--direct\fR \fB--query-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR
 Query if a rule with the arguments \fI<args>\fR exists in chain \fI<chain>\fR in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
 .TP
-\fB--direct\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fB--get-rules\fR \fI<table>\fR \fI<chain>\fR
+\fB--direct\fR \fB--get-rules\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Get all rules added to chain \fI<chain>\fR in table \fI<table>\fR as a newline separated list of arguments.
 
 .SH EXIT CODES
