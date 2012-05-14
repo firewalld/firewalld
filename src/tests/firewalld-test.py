@@ -3,6 +3,7 @@
 # Copyright (C) 2010-2012 Red Hat, Inc.
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
+# Jiri Popelka <jpopelka@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,389 +24,276 @@
 import dbus
 import sys
 import time
+import unittest
 
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
+from pprint import pprint
 
-bus = dbus.SystemBus()
-dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH)
-fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
-fw_zone = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_ZONE)
-fw_direct = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
+class TestFirewallD(unittest.TestCase):
+    def setUp(self):
+        unittest.TestCase.setUp(self)
+        bus = dbus.SystemBus()
+        dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH)
+        self.fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
+        self.fw_zone = dbus.Interface(dbus_obj,
+                                     dbus_interface=DBUS_INTERFACE_ZONE)
 
-properties = dbus.Interface(dbus_obj,
-                            dbus_interface='org.freedesktop.DBus.Properties')
+    def test_get_setDefaultZone(self):
+        old_zone = dbus_to_python(self.fw.getDefaultZone())
+        print ("\nCurrent default zone is '%s'" % old_zone)
 
-print("FirewallD Info")
+        print ("Setting default zone to 'external'")
+        self.fw.setDefaultZone("external")
+        zone = self.fw.getDefaultZone()
+        # make sure the default zone was properly set
+        self.assertEqual(zone, "external")
 
-print properties.Get(DBUS_INTERFACE, "version")
-print properties.Get(DBUS_INTERFACE, "interface_version")
-print properties.Get(DBUS_INTERFACE, "state")
+        print ("Re-setting default zone back to '%s'" % old_zone)
+        self.fw.setDefaultZone(old_zone)
 
-print("\nActive Zones")
+    def test_zone_getActiveZones(self):
+        interface = "baz"
+        zone = "home"
 
-try:
-    active_zones = fw_zone.getActiveZones()
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    for zone in active_zones:
-        print("Zone '%s' active for interface '%s'" % \
-                  (zone, "','".join(active_zones[zone])))
+        print ("\nAdding interface '%s' to '%s' zone" % (interface, zone))
+        ret = self.fw_zone.addInterface(zone, interface)
 
-print("\nDefault Zones")
+        print ("Getting active zones: ")
+        ret = self.fw_zone.getActiveZones()
+        self.assertTrue(len(ret)>0)
+        pprint (dbus_to_python(ret))
 
-zone = fw.getDefaultZone()
-print("Current zone: '%s'" % zone)
-sys.stdout.write("Setting to 'external': ")
-try:
-    fw.setDefaultZone("external")
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        self.fw_zone.removeInterface(zone, interface) #cleanup
 
-sys.stdout.write("Resetting default zone back to '%s': " % zone)
-try:
-    fw.setDefaultZone(zone)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+    def test_zone_getZones(self):
+        z = self.fw_zone.getZones()
+        print ("\nZones:"); pprint(dbus_to_python(z))
 
+    def test_zone_isImmutable(self):
+        zone = "trusted"
+        print ("\nChecking if zone '%s' is immutable" % zone)
+        self.assertTrue(self.fw_zone.isImmutable(zone))
+        zone = "internal"
+        print ("Checking if zone '%s' is immutable" % zone)
+        self.assertFalse(self.fw_zone.isImmutable(zone))
 
-print("\nHandling Zones")
-sys.stdout.write("Get zones: ")
-try:
-    z = fw_zone.getZones()
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % ','.join(z))
+    def test_zone_add_remove_queryInterface(self):
+        interface = "foo"
+        zone = "trusted"
 
-interface = "foo"
-zone = "trusted"
-sys.stdout.write("Adding interface '%s' to '%s' zone: " % (interface, zone))
-try:
-    fw_zone.addInterface(zone, interface)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("\nAdding interface '%s' to '%s' zone" % (interface, zone))
+        ret = self.fw_zone.addInterface(zone, interface)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryInterface(zone, interface))
 
-sys.stdout.write("Checking if interface '%s' has been added to '%s' zone: " % (interface, zone))
-if fw_zone.queryInterface(zone, interface):
-    print("YES")
-else:
-    print("NO")
+        print ("Re-adding")
+        self.assertRaisesRegexp(Exception, 'ZONE_ALREADY_SET', self.fw_zone.addInterface, zone, interface)
 
-sys.stdout.write("Checking if zone '%s' is immutable: " % zone)
-if fw_zone.isImmutable(zone):
-    print("YES (OK)")
-else:
-    print("NO (FAILED)")
+        zone = "block"
+        print ("Re-adding interface '%s' to '%s' zone" % (interface, zone))
+        self.assertRaisesRegexp(Exception, 'ZONE_CONFLICT', self.fw_zone.addInterface, zone, interface)
 
-zone = "internal"
-sys.stdout.write("Changing zone of interface '%s' to '%s': " % (interface, zone))
-try:
-    fw_zone.changeZone(zone, interface)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("Removing interface '%s' from '%s' zone" % (interface, zone))
+        self.assertRaisesRegexp(Exception, 'ZONE_CONFLICT', self.fw_zone.removeInterface, zone, interface)
 
-sys.stdout.write("Checking if zone of interface '%s' has been changed to '%s' zone: " % (interface, zone))
-if fw_zone.queryInterface(zone, interface):
-    print("YES")
-else:
-    print("NO")
+        zone = "trusted"
+        print ("Removing interface '%s' from '%s' zone" % (interface, zone))
+        ret = self.fw_zone.removeInterface(zone, interface)
+        self.assertEqual(ret, zone)
+        self.assertFalse(self.fw_zone.queryInterface(zone, interface))
+        print ("Re-removing")
+        self.assertRaises(Exception, self.fw_zone.removeInterface, zone, interface)
 
-sys.stdout.write("Checking if zone '%s' is immutable: " % zone)
-if fw_zone.isImmutable(zone):
-    print("YES (FAILED)")
-else:
-    print("NO (OK)")
+        print ("Add again and remove interface '%s' from zone it belongs to" % interface)
+        self.fw_zone.addInterface(zone, interface)
+        self.assertTrue(self.fw_zone.queryInterface(zone, interface))
+        ret = self.fw_zone.removeInterface("", interface)
+        self.assertEqual(ret, zone)
+        self.assertFalse(self.fw_zone.queryInterface(zone, interface))
+        print ("Re-removing")
+        self.assertRaises(Exception, self.fw_zone.removeInterface, "", interface)
 
-sys.stdout.write("Get zone of interface '%s': " % (interface))
-try:
-    z = fw_zone.getZoneOfInterface(interface)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % z)
+    def test_zone_change_queryZone(self):
+        interface = "foo"
+        zone = "internal"
 
-sys.stdout.write("Get active zones: ")
-try:
-    z = fw_zone.getActiveZones()
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % ','.join(z))
+        print ("\nChanging zone of interface '%s' to '%s'" % (interface, zone))
+        ret = self.fw_zone.changeZone(zone, interface)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryInterface(zone, interface))
 
-sys.stdout.write("Removing interface '%s' from '%s' zone: " % (interface, zone))
-try:
-    fw_zone.removeInterface(zone, interface)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("Get zone of interface '%s': " % (interface))
+        ret = self.fw_zone.getZoneOfInterface(interface)
+        self.assertEqual(ret, zone)
+        print (dbus_to_python(ret))
 
-sys.stdout.write("Get active zones: ")
-try:
-    z = fw_zone.getActiveZones()
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % ','.join(z))
+        self.fw_zone.removeInterface(zone, interface) #cleanup
 
+    def test_zone_add_get_query_removeService(self):
+        service = "samba"
+        zone = "external"
+        print ("\nAdding service '%s' to '%s' zone" % (service, zone))
+        ret = self.fw_zone.addService(zone, service, 0)
+        self.assertEqual(ret, zone)
+        print ("Re-adding")
+        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addService, zone, service, 0)
 
-print("\nHandling Services")
-service = "samba"
-zone = "external"
-sys.stdout.write("Adding service '%s' to '%s' zone: " % (service, zone))
-try:
-    fw_zone.addService(zone, service, 0)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("Get services of zone '%s'" % (zone))
+        ret = self.fw_zone.getServices(zone)
+        self.assertTrue(len(ret)>0)
+        pprint (dbus_to_python(ret))
 
-sys.stdout.write("Get services of zone '%s': " % (zone))
-try:
-    z = fw_zone.getServices(zone)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % ','.join(z))
+        print ("Removing service '%s' from '%s' zone" % (service, zone))
+        ret = self.fw_zone.removeService(zone, service)
+        self.assertEqual(ret, zone)
+        print ("Re-removing")
+        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeService, zone, service)
 
-sys.stdout.write("Removing service '%s' from '%s' zone: " % (service, zone))
-try:
-    fw_zone.removeService(zone, service)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        zone = "dmz"
+        timeout = 2
+        print ("Adding timed service '%s' to '%s' zone, active for %d seconds" % (service, zone, timeout))
+        ret = self.fw_zone.addService(zone, service, timeout)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryService(zone, service))
+        time.sleep(timeout+1)
+        print ("Checking if timeout has been working")
+        self.assertFalse(self.fw_zone.queryService(zone, service))
 
-print("")
+    def test_zone_add_get_query_removePort(self):
+        port = "443"
+        protocol="tcp"
+        zone = "public"
+        print ("\nAdding port '%s/%s' to '%s' zone" % (port, protocol, zone))
+        ret = self.fw_zone.addPort(zone, port, protocol, 0)
+        self.assertEqual(ret, zone)
+        print ("Re-adding port")
+        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addPort, zone, port, protocol, 0)
 
-service = "samba"
-zone = "dmz"
-timeout = 5
-sys.stdout.write("Adding timed service '%s' to '%s' zone, active for %d seconds: " % (service, zone, timeout))
-try:
-    fw_zone.addService(zone, service, timeout)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("Get ports of zone '%s': " % (zone))
+        ret = self.fw_zone.getPorts(zone)
+        self.assertTrue(len(ret)>0)
+        pprint (dbus_to_python(ret))
 
-time.sleep(timeout+1)
-sys.stdout.write("Checking if timeout has been working: ")
-if fw_zone.queryService(zone, service):
-    print("NO")
-else:
-    print("YES")
+        print ("Removing port '%s/%s' from '%s' zone" % (port, protocol, zone))
+        ret = self.fw_zone.removePort(zone, port, protocol)
+        self.assertEqual(ret, zone)
+        print ("Re-removing")
+        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removePort, zone, port, protocol)
 
+        port = "443-445"
+        protocol="udp"
+        zone = "dmz"
+        timeout = 2
+        print ("Adding timed port '%s/%s' to '%s' zone, active for %d seconds" % (port, protocol, zone, timeout))
+        ret = self.fw_zone.addPort(zone, port, protocol, timeout)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryPort(zone, port, protocol))
+        time.sleep(timeout+1)
+        print ("Checking if timeout has been working")
+        self.assertFalse(self.fw_zone.queryPort(zone, port, protocol))
 
-print("\nHandling Ports")
-port = "443"
-protocol="tcp"
-zone = "public"
-sys.stdout.write("Adding port '%s/%s' to '%s' zone: " % (port, protocol, zone))
-try:
-    fw_zone.addPort(zone, port, protocol, 0)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+    def test_zone_enable_query_disableMasquerade(self):
+        zone = "public"
+        print ("\nEnabling masquerade for '%s' zone" % (zone))
+        ret = self.fw_zone.enableMasquerade(zone, 0)
+        self.assertEqual(ret, zone)
+        print ("Re-enabling")
+        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.enableMasquerade, zone, 0)
 
-sys.stdout.write("Get ports of zone '%s': " % (zone))
-try:
-    z = fw_zone.getPorts(zone)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % dbus_to_python(z))
+        print ("Checking if masquerade is enabled for zone '%s'" % (zone))
+        self.assertTrue(self.fw_zone.queryMasquerade(zone))
 
-sys.stdout.write("Removing port '%s/%s' from '%s' zone: " % (port, protocol, zone))
-try:
-    fw_zone.removePort(zone, port, protocol)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("Disabling masquerade for '%s' zone" % (zone))
+        ret = self.fw_zone.disableMasquerade(zone)
+        self.assertEqual(ret, zone)
+        print ("Re-disabling")
+        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.disableMasquerade, zone)
 
-print("")
+        zone = "dmz"
+        timeout = 2
+        print ("Enabling timed masquerade for '%s' zone, active for %d seconds" % (zone, timeout))
+        ret = self.fw_zone.enableMasquerade(zone, timeout)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryMasquerade(zone))
+        time.sleep(timeout+1)
+        print ("Checking if timeout has been working")
+        self.assertFalse(self.fw_zone.queryMasquerade(zone))
 
-port = "443-445"
-protocol="udp"
-zone = "dmz"
-timeout = 5
-sys.stdout.write("Adding timed port '%s/%s' to '%s' zone, active for %d seconds: " % (port, protocol, zone, timeout))
-try:
-    fw_zone.addPort(zone, port, protocol, timeout)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+    def test_zone_add_get_query_removeForwardPort(self):
+        port = "443"
+        protocol="tcp"
+        toport = "441"
+        toaddr = "192.168.0.2"
+        zone = "public"
+        print ("\nAdding forward port '%s/%s' to '%s:%s' to '%s' zone" % (port, protocol, toaddr, toport, zone))
+        ret = self.fw_zone.addForwardPort(zone, port, protocol, toport, toaddr, 0)
+        self.assertEqual(ret, zone)
+        print ("Re-adding")
+        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addForwardPort, zone, port, protocol, toport, toaddr, 0)
 
-time.sleep(timeout+1)
-sys.stdout.write("Checking if timeout has been working: ")
-if fw_zone.queryPort(zone, port, protocol):
-    print("NO")
-else:
-    print("YES")
+        print ("Get forward ports of zone '%s': " % (zone))
+        ret = self.fw_zone.getForwardPorts(zone)
+        self.assertTrue(len(ret)>0)
+        pprint (dbus_to_python(ret))
 
+        print ("Removing forward port '%s/%s' to '%s:%s' from '%s' zone" % (port, protocol, toaddr, toport, zone))
+        ret = self.fw_zone.removeForwardPort(zone, port, protocol, toport, toaddr)
+        self.assertEqual(ret, zone)
+        print ("Re-removing")
+        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeForwardPort, zone, port, protocol, toport, toaddr)
 
-print("\nHandling Masquerade")
-zone = "public"
-sys.stdout.write("Enabling masquerade for '%s' zone: " % (zone))
-try:
-    fw_zone.enableMasquerade(zone, 0)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        port = "443-445"
+        protocol="udp"
+        toport = ""
+        toaddr = "192.168.0.3"
+        zone = "dmz"
+        timeout = 2
+        print ("Adding timed forward port '%s/%s' to '%s:%s' to '%s' zone, active for %d seconds" % (port, protocol, toaddr, toport, zone, timeout))
+        ret = self.fw_zone.addForwardPort(zone, port, protocol, toport, toaddr, timeout)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryForwardPort(zone, port, protocol, toport, toaddr))
+        time.sleep(timeout+1)
+        print ("Checking if timeout has been working")
+        self.assertFalse(self.fw_zone.queryForwardPort(zone, port, protocol, toport, toaddr))
 
-sys.stdout.write("Checking if masquerade is enabled for zone '%s': " % (zone))
-if fw_zone.queryMasquerade(zone):
-    print("YES")
-else:
-    print("NO")
-    
-sys.stdout.write("Disabling masquerade for '%s' zone: " % (zone))
-try:
-    fw_zone.disableMasquerade(zone)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+    def test_zone_add_get_query_removeIcmpBlock(self):
+        icmp = "parameter-problem"
+        zone = "external"
+        print ("\nAdding icmp block '%s' to '%s' zone" % (icmp, zone))
+        ret = self.fw_zone.addIcmpBlock(zone, icmp, 0)
+        self.assertEqual(ret, zone)
+        print ("Re-adding")
+        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addIcmpBlock, zone, icmp, 0)
 
-print("")
+        print ("Get icmp blocks of zone '%s': " % (zone))
+        ret = self.fw_zone.getIcmpBlocks(zone)
+        self.assertTrue(len(ret)>0)
+        pprint (dbus_to_python(ret))
 
-zone = "dmz"
-timeout = 5
-sys.stdout.write("Enabling timed masquerade for '%s' zone, active for %d seconds: " % (zone, timeout))
-try:
-    fw_zone.enableMasquerade(zone, timeout)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
+        print ("Removing icmp block '%s' from '%s' zone" % (icmp, zone))
+        ret = self.fw_zone.removeIcmpBlock(zone, icmp)
+        self.assertEqual(ret, zone)
+        print ("Re-removing")
+        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeIcmpBlock, zone, icmp)
 
-time.sleep(timeout+1)
-sys.stdout.write("Checking if timeout has been working: ")
-if fw_zone.queryMasquerade(zone):
-    print("NO")
-else:
-    print("YES")
+        icmp = "redirect"
+        zone = "dmz"
+        timeout = 2
+        print ("Adding timed icmp block '%s' to '%s' zone, active for %d seconds: " % (icmp, zone, timeout))
+        ret = self.fw_zone.addIcmpBlock(zone, icmp, timeout)
+        self.assertEqual(ret, zone)
+        self.assertTrue(self.fw_zone.queryIcmpBlock(zone, icmp))
+        time.sleep(timeout+1)
+        print ("Checking if timeout has been working: ")
+        self.assertFalse(self.fw_zone.queryIcmpBlock(zone, icmp))
+
+    def test_reload(self):
+        self.fw.reload()
+
+if __name__ == '__main__':
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallD)
+    unittest.TextTestRunner(verbosity=2).run(suite)
 
 
-print("\nHandling Forward Ports")
-port = "443"
-protocol="tcp"
-toport = "441"
-toaddr = "192.168.0.2"
-zone = "public"
-sys.stdout.write("Adding forward port '%s/%s' to '%s:%s' to '%s' zone: " % (port, protocol, toaddr, toport, zone))
-try:
-    fw_zone.addForwardPort(zone, port, protocol, toport, toaddr, 0)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
-
-sys.stdout.write("Get forward ports of zone '%s': " % (zone))
-try:
-    z = fw_zone.getForwardPorts(zone)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % dbus_to_python(z))
-
-sys.stdout.write("Removing forward port '%s/%s' to '%s:%s' from '%s' zone: " % (port, protocol, toaddr, toport, zone))
-try:
-    fw_zone.removeForwardPort(zone, port, protocol, toport, toaddr)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
-
-print("")
-
-port = "443-445"
-protocol="udp"
-toport = ""
-toaddr = "192.168.0.3"
-zone = "dmz"
-timeout = 5
-sys.stdout.write("Adding timed forward port '%s/%s' to '%s:%s' to '%s' zone, active for %d seconds: " % (port, protocol, toaddr, toport, zone, timeout))
-try:
-    fw_zone.addForwardPort(zone, port, protocol, toport, toaddr, timeout)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
-
-time.sleep(timeout+1)
-sys.stdout.write("Checking if timeout has been working: ")
-if fw_zone.queryForwardPort(zone, port, protocol, toport, toaddr):
-    print("NO")
-else:
-    print("YES")
-
-
-print("\nHandling IcmpType")
-icmp = "parameter-problem"
-zone = "external"
-sys.stdout.write("Adding icmp block '%s' to '%s' zone: " % (icmp, zone))
-try:
-    fw_zone.addIcmpBlock(zone, icmp, 0)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
-
-sys.stdout.write("Get icmp blocks of zone '%s': " % (zone))
-try:
-    z = fw_zone.getIcmpBlocks(zone)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("'%s'" % ','.join(z))
-
-sys.stdout.write("Removing icmp block '%s' from '%s' zone: " % (icmp, zone))
-try:
-    fw_zone.removeIcmpBlock(zone, icmp)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
-
-print("")
-
-icmp = "redirect"
-zone = "dmz"
-timeout = 5
-sys.stdout.write("Adding timed icmp block '%s' to '%s' zone, active for %d seconds: " % (icmp, zone, timeout))
-try:
-    fw_zone.addIcmpBlock(zone, icmp, timeout)
-except Exception, msg:
-    print("FAILED: %s" % msg)
-else:
-    print("OK")
-
-time.sleep(timeout+1)
-sys.stdout.write("Checking if timeout has been working: ")
-if fw_zone.queryIcmpBlock(zone, icmp):
-    print("NO")
-else:
-    print("YES")
-
-
-print("Reloading Firewall")
-fw.reload()
-
-#print("Restarting Firewall")
-#fw.restart()
