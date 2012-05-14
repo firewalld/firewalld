@@ -112,7 +112,7 @@ class FirewallDirect:
     def query_chain(self, ipv, table, chain):
         table_id = (ipv, table)
         return (table_id in self._chains and \
-                    chain_id in self._chains[table_id])
+                    chain in self._chains[table_id])
 
     def get_chains(self, ipv, table):
         table_id = (ipv, table)
