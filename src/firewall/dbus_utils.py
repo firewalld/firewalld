@@ -108,11 +108,8 @@ def dbus_to_python(obj):
         return float(obj)
     elif isinstance(obj, dbus.types.Array) or \
             isinstance(obj, dbus.types.Struct):
-        return map(dbus_to_python, obj)
+        return [dbus_to_python(x) for x in obj]
     elif isinstance(obj, dbus.types.Dictionary):
-        ret = { }
-        for key, value in obj.iteritems():
-            ret[dbus_to_python(key)] = dbus_to_python(value)
-        return ret
+        return {dbus_to_python(k):dbus_to_python(v) for k,v in obj.iteritems()}
     else:
         raise TypeError, "Unhandled %s" % obj
