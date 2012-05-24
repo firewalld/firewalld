@@ -506,26 +506,19 @@ class Firewall:
         return self._default_zone
 
     def set_default_zone(self, zone):
-        if zone in self.zone.get_zones():
-            if zone != self._default_zone:
-                _old_dz = self._default_zone
-                self._default_zone = zone
-                self._firewalld_conf.set("DefaultZone", zone)
-                self._firewalld_conf.write()
+        _zone = self.check_zone(zone)
+        if _zone != self._default_zone:
+            _old_dz = self._default_zone
+            self._default_zone = _zone
+            self._firewalld_conf.set("DefaultZone", _zone)
+            self._firewalld_conf.write()
 
-                # Move interfaces from old default zone to the new one.
-                _old_dz_settings = self.zone.get_settings(_old_dz)
-                _new_dz_settings = self.zone.get_settings(zone)
-                for iface, settings in _old_dz_settings["interfaces"].items():
-                    if settings["__default__"]:
-                        # move only those that were added to default zone
-                        # (not those that were added to specific zone same as default)
-                        _new_dz_settings["interfaces"][iface] = \
-                        _old_dz_settings["interfaces"][iface]
-                        del _old_dz_settings["interfaces"][iface]
-                self.zone.set_settings(_old_dz, _old_dz_settings)
-                self.zone.set_settings(zone, _new_dz_settings)
-            else:
-                raise FirewallError(ZONE_ALREADY_SET, zone)
+            # Move interfaces from old default zone to the new one.
+            _old_dz_settings = self.zone.get_settings(_old_dz)
+            for iface, settings in _old_dz_settings["interfaces"].items():
+                if settings["__default__"]:
+                    # move only those that were added to default zone
+                    # (not those that were added to specific zone same as default)
+                    self.zone.change_zone("", iface)
         else:
-            raise FirewallError(INVALID_ZONE, zone)
+            raise FirewallError(ZONE_ALREADY_SET, _zone)
