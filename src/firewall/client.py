@@ -178,16 +178,16 @@ class FirewallClient(object):
     # masquerade
 
     @slip.dbus.polkit.enable_proxy
-    def enableMasquerade(self, zone, timeout=0):
-        return dbus_to_python(self.fw_zone.enableMasquerade(zone, timeout))
+    def addMasquerade(self, zone, timeout=0):
+        return dbus_to_python(self.fw_zone.addMasquerade(zone, timeout))
 
     @slip.dbus.polkit.enable_proxy
     def queryMasquerade(self, zone):
         return dbus_to_python(self.fw_zone.queryMasquerade(zone))
 
     @slip.dbus.polkit.enable_proxy
-    def disableMasquerade(self, zone):
-        return dbus_to_python(self.fw_zone.disableMasquerade(zone))
+    def removeMasquerade(self, zone):
+        return dbus_to_python(self.fw_zone.removeMasquerade(zone))
 
     # forward ports
 

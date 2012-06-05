@@ -42,8 +42,6 @@ def usage():
              --get-zone-of-interface=<interface> }
  MODE   := { [ --zone=<zone> ] {
                { { --add [--timeout=<seconds>] | --remove | --query } ACTION } |
-               { { --enable [--timeout=<seconds>] } | --disable | --query }
-                 --masquerade } |
                --list={ service | port | interface | icmp-block |
                  forward-port | all } } | 
              --get-services |
@@ -51,6 +49,7 @@ def usage():
  ACTION := { --service=<service> |
              --port=<port>[-<port>]/<protocol> |
              --interface=<interface> |
+             --masquerade | 
              --icmp-block=<icmptype> |
              --forward-port=port=<port>[-<port>]:proto=<protocol> { 
                :toport=<port>[-<port>] | :toaddr=<address> | 
@@ -222,11 +221,11 @@ if mode not in [ "version", "reload", "complete-reload", "state",
     if action not in [ "panic", "masquerade"] and mode != "list" and not value:
         __fail("No value.")
 
-if action in [ "interface", "service", "port", "forward-port", "icmp-block" ]:
-    if mode not in [ "add", "change", "remove", "query", "list" ]:
+if action in [ "interface", "masquerade", "service", "port", "forward-port", "icmp-block" ]:
+    if mode not in [ "add", "change", "remove", "query", "list" ] or \
+            (mode == "change" and action != "interface") or \
+            (mode == "list" and action == "masquerade"):
         __fail(_("Wrong action and mode combination"))
-elif action == "masquerade" and mode not in [ "enable", "disable", "query" ]:
-    __fail(_("Wrong action and mode combination"))
 
 if timeout != 0:
     if mode != "add" and mode != "enable":
@@ -362,10 +361,10 @@ try:
 
         # masquerade
         elif action == "masquerade":
-            if mode == "enable":
-                fw.enableMasquerade(zone, timeout)
-            elif mode == "disable":
-                fw.disableMasquerade(zone)
+            if mode == "add":
+                fw.addMasquerade(zone, timeout)
+            elif mode == "remove":
+                fw.removeMasquerade(zone)
             elif mode == "query":
                 sys.exit(not fw.queryMasquerade(zone))
 

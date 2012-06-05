@@ -202,27 +202,27 @@ class TestFirewallD(unittest.TestCase):
         print ("Checking if timeout has been working")
         self.assertFalse(self.fw_zone.queryPort(zone, port, protocol))
 
-    def test_zone_enable_query_disableMasquerade(self):
+    def test_zone_add_query_removeMasquerade(self):
         zone = "public"
-        print ("\nEnabling masquerade for '%s' zone" % (zone))
-        ret = self.fw_zone.enableMasquerade(zone, 0)
+        print ("\nAdd masquerade to '%s' zone" % (zone))
+        ret = self.fw_zone.addMasquerade(zone, 0)
         self.assertEqual(ret, zone)
-        print ("Re-enabling")
-        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.enableMasquerade, zone, 0)
+        print ("Re-adding")
+        self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED', self.fw_zone.addMasquerade, zone, 0)
 
-        print ("Checking if masquerade is enabled for zone '%s'" % (zone))
+        print ("Checking if masquerade is added to zone '%s'" % (zone))
         self.assertTrue(self.fw_zone.queryMasquerade(zone))
 
-        print ("Disabling masquerade for '%s' zone" % (zone))
-        ret = self.fw_zone.disableMasquerade(zone)
+        print ("Remove masquerade from '%s' zone" % (zone))
+        ret = self.fw_zone.removeMasquerade(zone)
         self.assertEqual(ret, zone)
-        print ("Re-disabling")
-        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.disableMasquerade, zone)
+        print ("Re-adding")
+        self.assertRaisesRegexp(Exception, 'NOT_ENABLED', self.fw_zone.removeMasquerade, zone)
 
         zone = "dmz"
         timeout = 2
-        print ("Enabling timed masquerade for '%s' zone, active for %d seconds" % (zone, timeout))
-        ret = self.fw_zone.enableMasquerade(zone, timeout)
+        print ("Add timed masquerade to '%s' zone, active for %d seconds" % (zone, timeout))
+        ret = self.fw_zone.addMasquerade(zone, timeout)
         self.assertEqual(ret, zone)
         self.assertTrue(self.fw_zone.queryMasquerade(zone))
         time.sleep(timeout+1)

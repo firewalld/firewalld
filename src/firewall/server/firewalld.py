@@ -608,40 +608,40 @@ class FirewallD(slip.dbus.service.Object):
     # MASQUERADE
 
     @dbus_handle_exceptions
-    def disable_masquerade(self, zone):
+    def disableTimedMasquerade(self, zone):
         del self._timeouts[zone]["masquerade"]
-        self.fw.zone.disable_masquerade(zone)
-        self.MasqueradeDisabled(zone)
+        self.fw.zone.remove_masquerade(zone)
+        self.MasqueradeRemoved(zone)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='si',
                          out_signature='s')
     @dbus_handle_exceptions
-    def enableMasquerade(self, zone, timeout, sender=None):
-        # enables masquerade if not enabled already
+    def addMasquerade(self, zone, timeout, sender=None):
+        # adds masquerade if not added already
         timeout = int(timeout)
-        log.debug1("zone.enableMasquerade('%s')" % (zone))
-        _zone = self.fw.zone.enable_masquerade(zone, timeout, sender)
+        log.debug1("zone.addMasquerade('%s')" % (zone))
+        _zone = self.fw.zone.add_masquerade(zone, timeout, sender)
         
         if timeout > 0:
-            tag = glib.timeout_add_seconds(timeout, self.disable_masquerade,
+            tag = glib.timeout_add_seconds(timeout, self.disableTimedMasquerade,
                                            _zone)
             self.addTimeout(_zone, "masquerade", tag)
 
-        self.MasqueradeEnabled(_zone, timeout)
+        self.MasqueradeAdded(_zone, timeout)
         return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='s')
     @dbus_handle_exceptions
-    def disableMasquerade(self, zone, sender=None):
-        # disables masquerade
-        log.debug1("zone.disableMasquerade('%s')" % (zone))
-        _zone = self.fw.zone.disable_masquerade(zone)
+    def removeMasquerade(self, zone, sender=None):
+        # removes masquerade
+        log.debug1("zone.removeMasquerade('%s')" % (zone))
+        _zone = self.fw.zone.remove_masquerade(zone)
 
         self.removeTimeout(_zone, "masquerade")
-        self.MasqueradeDisabled(_zone)
+        self.MasqueradeRemoved(_zone)
         return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
@@ -649,20 +649,20 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='b')
     @dbus_handle_exceptions
     def queryMasquerade(self, zone, sender=None):
-        # returns true if a masquerade is enabled
+        # returns true if a masquerade is added
         log.debug1("zone.queryMasquerade('%s')" % (zone))
         return self.fw.zone.query_masquerade(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='si')
     @dbus_handle_exceptions
-    def MasqueradeEnabled(self, zone, timeout=0):
-        log.debug1("zone.MasqueradeEnabled('%s', %d)" % (zone, timeout))
+    def MasqueradeAdded(self, zone, timeout=0):
+        log.debug1("zone.MasqueradeAdded('%s', %d)" % (zone, timeout))
         pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='s')
     @dbus_handle_exceptions
-    def MasqueradeDisabled(self, zone):
-        log.debug1("zone.MasqueradeDisabled('%s')" % (zone))
+    def MasqueradeRemoved(self, zone):
+        log.debug1("zone.MasqueradeRemoved('%s')" % (zone))
         pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #

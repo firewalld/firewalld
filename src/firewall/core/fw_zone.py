@@ -70,7 +70,7 @@ class FirewallZone:
         for args in obj.ports:
             self.add_port(obj.name, *args)
         if obj.masquerade:
-            self.enable_masquerade(obj.name)
+            self.add_masquerade(obj.name)
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
@@ -210,7 +210,7 @@ class FirewallZone:
                     elif key == "ports":
                         self.add_port(zone, *args)
                     elif key == "masquerade":
-                        self.enable_masquerade(zone)
+                        self.add_masquerade(zone)
                     else:
                         log.error("Zone '%s': Unknown setting '%s:%s', "
                                   "unable to restore.", zone, key, args)
@@ -531,7 +531,7 @@ class FirewallZone:
             self.remove_chain(zone, "nat", "POSTROUTING")
             self.remove_chain(zone, "filter", "FORWARD_OUT")
 
-    def enable_masquerade(self, zone, timeout=0, sender=None):
+    def add_masquerade(self, zone, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
         self.check_immutable(_zone)
         self._fw.check_panic()
@@ -548,7 +548,7 @@ class FirewallZone:
 
         return _zone
 
-    def disable_masquerade(self, zone):
+    def remove_masquerade(self, zone):
         _zone = self._fw.check_zone(zone)
         self.check_immutable(_zone)
         self._fw.check_panic()
