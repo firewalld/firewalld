@@ -19,159 +19,122 @@
 #
 
 import xml.sax as sax
-import xml.sax.saxutils as saxutils
+import os
+import shutil
 
 from firewall.config import _
+from firewall.errors import *
+from firewall import functions
 from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.io.io_object import *
 
-class Zone(object):
+class Zone(IO_Object):
+    """ Zone class """
+
+    IMPORT_EXPORT_STRUCTURE = (
+        ( "version",  "" ),                            # s
+        ( "short", "" ),                               # s
+        ( "description", "" ),                         # s
+        ( "immutable", False ),                        # b
+        ( "target", "" ),                              # s
+        ( "services", [ "", ], ),                      # as
+        ( "ports", [ ( "", "" ), ], ),                 # a(ss)
+        ( "icmp_blocks", [ "", ], ),                   # as
+        ( "masquerade", False ),                       # b
+        ( "forward_ports", [ ( "", "", "", "" ), ], ), # a(ssss)
+        )
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss))'
+    ADDITIONAL_ALNUM_CHARS = [ "_" ]
+    PARSER_REQUIRED_ELEMENT_ATTRS = {
+        "short": None,
+        "description": None,
+        "zone": [ "name" ],
+        "service": [ "name" ],
+        "port": [ "port", "protocol" ],
+        "icmp-block": [ "name" ],
+        "masquerade": [ "enabled" ],
+        "forward-port": [ "port", "protocol" ],
+        }
+    PARSER_OPTIONAL_ELEMENT_ATTRS = {
+        "zone": [ "immutable", "target", "version" ],
+        "forward-port": [ "to-port", "to-addr" ],
+        }
+
     def __init__(self):
-        self.filename = ""
-        self.path = ""
-        self.name = ""
-        self.short = ""
+        super(Zone, self).__init__()
         self.version = ""
+        self.short = ""
+        self.description = ""
         self.immutable = False
         self.target = DEFAULT_ZONE_TARGET
-        self.description = ""
         self.services = [ ]
         self.ports = [ ]
         self.icmp_blocks = [ ]
         self.masquerade = False
         self.forward_ports = [ ]
-        self.custom_rules = [ ]
+
+    def _check_config(self, config, item):
+        if item == "ports":
+            for port in config:
+                check_port(port[0])
+                check_protocol(port[1])
+        if item == "forward_ports":
+            for fwd_port in config:
+                check_port(fwd_port[0])
+                check_protocol(fwd_port[1])
+                if not fwd_port[2] and not fwd_port[3]:
+                    raise FirewallError(INVALID_FORWARD, fwd_port)
+                if fwd_port[2]:
+                    check_port(fwd_port[2])
+                if fwd_port[3]:
+                    if not functions.checkIP(fwd_port[3]):
+                        raise FirewallError(INVALID_ADDR, fwd_port[3])
 
 # PARSER
 
-class UnexpectedElementError(Exception):
-    def __init__(self, name):
-        self.name = name
-    def __str__(self):
-        return _("Unexpected element '%s'") % (self.name)
-
-class MissingAttributeError(Exception):
-    def __init__(self, name, attribute):
-        self.name = name
-        self.attribute = attribute
-    def __str__(self):
-        return _("Element '%s': missing '%s' attribute") % \
-            (self.name, self.attribute)
-
-class UnexpectedAttributeError(Exception):
-    def __init__(self, name, attribute):
-        self.name = name
-        self.attribute = attribute
-    def __str__(self):
-        return _("Element '%s': unexpected attribute '%s'") % \
-            (self.name, self.attribute)
-
-class zone_ContentHandler(sax.handler.ContentHandler):
-    def __init__(self, zone):
-        self._element = None
-        self.zone = zone
-
-        # required element and attributes
-        self.__required_element_attrs = {
-            "short": None,
-            "description": None,
-            "zone": [ "name" ],
-            "service": [ "name" ],
-            "port": [ "port", "protocol" ],
-            "icmp-block": [ "name" ],
-            "masquerade": [ "enabled" ],
-            "forward-port": [ "port", "protocol" ],
-        }
-        # optional element attributes
-        self.__optional_element_attrs = {
-            "zone": [ "immutable", "target", "version" ],
-            "forward-port": [ "to-port", "to-addr" ],
-        }
-
-    # check required elements and attributes and also optional attributes
-    def __check_element_attrs(self, name, attrs):
-        _attrs = attrs.getNames()
-
-        found = False
-        if name in self.__required_element_attrs:
-            found = True
-            if self.__required_element_attrs[name] == None:
-                if len(_attrs) > 0:
-                    raise UnexpectedAttributeError(name, _attrs)
-            else:
-                for x in self.__required_element_attrs[name]:
-                    if x in _attrs:
-                        _attrs.remove(x)
-                    else:
-                        raise MissingAttributeError(name, x)                    
-        if name in self.__optional_element_attrs:
-            found = True
-            for x in self.__optional_element_attrs[name]:
-                if x in _attrs:
-                    _attrs.remove(x)
-        if not found:
-            raise UnexpectedElementError(name)
-        # raise attributes[0]
-        for x in _attrs:
-            raise UnexpectedAttributeError(name, x)
-
+class zone_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
-        self.__check_element_attrs(name, attrs)
+        self.item.parser_check_element_attrs(name, attrs)
 
         if name == "zone":
-            self.zone.name = attrs["name"]
+            self.item.name = str(attrs["name"])
             if "version" in attrs:
-                self.zone.version = attrs["version"]
+                self.item.version = str(attrs["version"])
             if "immutable" in attrs and \
                     attrs["immutable"].lower() in [ "yes", "true" ]:
-                self.zone.immutable = True
+                self.item.immutable = True
             if "target" in attrs:
-                self.zone.target = attrs["target"]
+                self.item.target = str(attrs["target"])
         elif name == "short":
-            self._element = self.zone.short
+            self._element = self.item.short
         elif name == "description":
-            self._element = self.zone.description
+            self._element = self.item.description
         elif name == "service":
-            self.zone.services.append(attrs["name"])
+            if str(attrs["name"]) not in self.item.services:
+                self.item.services.append(str(attrs["name"]))
         elif name == "port":
             # TODO: fix port string according to fw_zone.__port_id()
-            self.zone.ports.append((attrs["port"], attrs["protocol"]))
+            entry = (str(attrs["port"]), str(attrs["protocol"]))
+            if entry not in self.item.ports:
+                self.item.ports.append(entry)
         elif name == "icmp-block":
-            self.zone.icmp_blocks.append(attrs["name"])
+            if str(attrs["name"]) not in self.item.icmp_blocks:
+                self.item.icmp_blocks.append(str(attrs["name"]))
         elif name == "masquerade" and \
                 attrs["enabled"].lower() in [ "yes", "true" ]:
-            self.zone.masquerade = True
+            self.item.masquerade = True
         elif name == "forward-port":
             to_port = None
             if "to-port" in attrs:
-                to_port = attrs["to-port"]
+                to_port = str(attrs["to-port"])
             to_addr = None
             if "to-addr" in attrs:
-                to_addr = attrs["to-addr"]
+                to_addr = str(attrs["to-addr"])
             # TODO: fix port string according to fw_zone.__forward_port_id()
-            self.zone.forward_ports.append((attrs["port"], attrs["protocol"],
-                                            to_port, to_addr))
-
-    def endElement(self, name): 
-        if name == "short":
-            self.zone.short = self._element
-            self._element = None
-        elif name == "description":
-            self.zone.description = self._element
-            self._element = None
-
-    def characters(self, content):
-        if self._element != None:
-            self._element += content.replace('\n', ' ')
-
-class zone_XMLGenerator(saxutils.XMLGenerator):
-    def __init__(self, out):
-        saxutils.XMLGenerator.__init__(self, out, "utf-8")
-
-    def simpleElement(self, name, attrs):
-        self._write('<' + name)
-        for (name, value) in attrs.items():
-            self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
-        self._write('/>')
+            entry = (str(attrs["port"]), str(attrs["protocol"]), to_port,
+                     to_addr)
+            if entry not in self.item.forward_ports:
+                self.item.forward_ports.append(entry)
 
 def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
@@ -182,15 +145,29 @@ def zone_reader(filename, path):
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
+    if filename != ("%s.xml" % zone.name):
+        raise FirewallError(NAME_MISMATCH, "'%s' provides zone '%s'" % (filename, zone.name))
     return zone
 
-def zone_writer(zone, path=""):
-    if zone.filename:
-        name = "%s/%s" % (path, zone.filename)
+def zone_writer(zone, path=None):
+    if path:
+        _path = path
     else:
-        name = "%s/%s.xml" % (path, zone.name)
+        _path = zone.path
+
+    if zone.filename:
+        name = "%s/%s" % (_path, zone.filename)
+    else:
+        name = "%s/%s.xml" % (_path, zone.name)
+
+    if os.path.exists(name):
+        try:
+            shutil.copy2(name, "%s.old" % name)
+        except Exception, msg:
+            raise IOError, "Backup of '%s' failed: %s" % (name, msg)
+
     fd = open(name, "w")
-    handler = zone_XMLGenerator(fd)
+    handler = IO_Object_XMLGenerator(fd)
     handler.startDocument()
 
     # start zone element
@@ -221,19 +198,19 @@ def zone_writer(zone, path=""):
         handler.ignorableWhitespace("\n")
 
     # services
-    for service in zone.services:
+    for service in set(zone.services):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("service", { "name": service })
         handler.ignorableWhitespace("\n")
 
     # ports
-    for port in zone.ports:
+    for port in set(zone.ports):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("port", { "port": port[0], "protocol": port[1] })
         handler.ignorableWhitespace("\n")
 
     # icmp-blocks
-    for icmp in zone.icmp_blocks:
+    for icmp in set(zone.icmp_blocks):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("icmp-block", { "name": icmp })
         handler.ignorableWhitespace("\n")
@@ -245,7 +222,7 @@ def zone_writer(zone, path=""):
         handler.ignorableWhitespace("\n")
 
     # forward-ports
-    for forward in zone.forward_ports:
+    for forward in set(zone.forward_ports):
         handler.ignorableWhitespace("  ")
         attrs = { "port": port[0], "protocol": port[1] }
         if forward[2] and forward[2] != "" :
@@ -259,4 +236,3 @@ def zone_writer(zone, path=""):
     handler.endElement('zone')
     handler.endDocument()
     fd.close()
-

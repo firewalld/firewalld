@@ -19,15 +19,39 @@
 #
 
 import xml.sax as sax
-import xml.sax.saxutils as saxutils
+import os
+import shutil
 
 from firewall.config import _
+from firewall.errors import *
+from firewall import functions
+from firewall.core.io.io_object import *
 
-class Service(object):
+class Service(IO_Object):
+    IMPORT_EXPORT_STRUCTURE = (
+        ( "version",  "" ),              # s
+        ( "short", "" ),                 # s
+        ( "description", "" ),           # s
+        ( "ports", [ ( "", "" ), ], ),   # a(ss)
+        ( "modules", [ "", ], ),         # as
+        ( "destination", { "": "", }, ), # a{ss}
+        )
+    DBUS_SIGNATURE = '(sssa(ss)asa{ss})'
+    ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
+    PARSER_REQUIRED_ELEMENT_ATTRS = {
+        "short": None,
+        "description": None,
+        "service": [ "name" ],
+        }
+    PARSER_OPTIONAL_ELEMENT_ATTRS = {
+        "service": [ "version" ],
+        "port": [ "port", "protocol" ],
+        "module": [ "name" ],
+        "destination": [ "ipv4", "ipv6" ],
+        }
+
     def __init__(self):
-        self.filename = ""
-        self.path = ""
-        self.name = ""
+        super(Service, self).__init__()
         self.version = ""
         self.short = ""
         self.description = ""
@@ -35,117 +59,40 @@ class Service(object):
         self.modules = [ ]
         self.destination = { }
 
+    def _check_config(self, config, item):
+        if item == "ports":
+            for port in config:
+                check_port(port[0])
+                check_protocol(port[1])
+        if item == "destination":
+            for destination in config:
+                if destination not in [ "ipv4", "ipv6" ]:
+                    raise FirewallError(INVALID_DESTINATION, destination)
+                # TODO: check IP address
+
 # PARSER
 
-class UnexpectedElementError(Exception):
-    def __init__(self, name):
-        self.name = name
-    def __str__(self):
-        return _("Unexpected element '%s'") % (self.name)
-
-class MissingAttributeError(Exception):
-    def __init__(self, name, attribute):
-        self.name = name
-        self.attribute = attribute
-    def __str__(self):
-        return _("Element '%s': missing '%s' attribute") % \
-            (self.name, self.attribute)
-
-class UnexpectedAttributeError(Exception):
-    def __init__(self, name, attribute):
-        self.name = name
-        self.attribute = attribute
-    def __str__(self):
-        return _("Element '%s': unexpected attribute '%s'") % \
-            (self.name, self.attribute)
-
-class service_ContentHandler(sax.handler.ContentHandler):
-    def __init__(self, service):
-        self._element = None
-        self.service = service
-
-        # required element and attributes
-        self.__required_element_attrs = {
-            "short": None,
-            "description": None,
-            "service": [ "name" ],
-        }
-        # optional element attributes
-        self.__optional_element_attrs = {
-            "service": [ "version" ],
-            "port": [ "port", "protocol" ],
-            "module": [ "name" ],
-            "destination": [ "ipv4", "ipv6" ],
-        }
-
-    # check required elements and attributes and also optional attributes
-    def __check_element_attrs(self, name, attrs):
-        _attrs = attrs.getNames()
-
-        found = False
-        if name in self.__required_element_attrs:
-            found = True
-            if self.__required_element_attrs[name] == None:
-                if len(_attrs) > 0:
-                    raise UnexpectedAttributeError(name, _attrs)
-            else:
-                for x in self.__required_element_attrs[name]:
-                    if x in _attrs:
-                        _attrs.remove(x)
-                    else:
-                        raise MissingAttributeError(name, x)                    
-        if name in self.__optional_element_attrs:
-            found = True
-            for x in self.__optional_element_attrs[name]:
-                if x in _attrs:
-                    _attrs.remove(x)
-        if not found:
-            raise UnexpectedElementError(name)
-        # raise attributes[0]
-        for x in _attrs:
-            raise UnexpectedAttributeError(name, x)
-
+class service_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
-        self.__check_element_attrs(name, attrs)
+        self.item.parser_check_element_attrs(name, attrs)
 
         if name == "service":
-            self.service.name = attrs["name"]
+            self.item.name = str(attrs["name"])
             if "version" in attrs:
-                self.service.version = attrs["version"]
+                self.item.version = str(attrs["version"])
         elif name == "short":
-            self._element = self.service.short
+            self._element = self.item.short
         elif name == "description":
-            self._element = self.service.description
+            self._element = self.item.description
         elif name == "port":
-            self.service.ports.append((attrs["port"], attrs["protocol"]))
+            self.item.ports.append((str(attrs["port"]),
+                                       str(attrs["protocol"])))
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
-                    self.service.destination[x] = attrs[x]
+                    self.item.destination[x] = str(attrs[x])
         elif name == "module":
-            self.service.modules.append(attrs["name"])
-
-    def endElement(self, name): 
-        if name == "short":
-            self.service.short = self._element
-            self._element = None
-        elif name == "description":
-            self.service.description = self._element
-            self._element = None
-
-    def characters(self, content):
-        if self._element != None:
-            self._element += content.replace('\n', ' ')
-
-class service_XMLGenerator(saxutils.XMLGenerator):
-    def __init__(self, out):
-        saxutils.XMLGenerator.__init__(self, out, "utf-8")
-
-    def simpleElement(self, name, attrs):
-        self._write('<' + name)
-        for (name, value) in attrs.items():
-            self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
-        self._write('/>')
+            self.item.modules.append(str(attrs["name"]))
 
 def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
@@ -156,15 +103,29 @@ def service_reader(filename, path):
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
+    if filename != ("%s.xml" % service.name):
+        raise FirewallError(NAME_MISMATCH, "'%s' provides service '%s'" % (filename, service.name))
     return service
 
 def service_writer(service, path=""):
-    if service.filename:
-        name = "%s/%s" % (path, service.filename)
+    if path:
+        _path = path
     else:
-        name = "%s/%s.xml" % (path, service.name)
+        _path = service.path
+
+    if service.filename:
+        name = "%s/%s" % (_path, service.filename)
+    else:
+        name = "%s/%s.xml" % (_path, service.name)
+
+    if os.path.exists(name):
+        try:
+            shutil.copy2(name, "%s.old" % name)
+        except Exception, msg:
+            raise IOError, "Backup of '%s' failed: %s" % (name, msg)
+
     fd = open(name, "w")
-    handler = service_XMLGenerator(fd)
+    handler = IO_Object_XMLGenerator(fd)
     handler.startDocument()
 
     # start service element
@@ -212,4 +173,3 @@ def service_writer(service, path=""):
     handler.endElement('service')
     handler.endDocument()
     fd.close()
-
