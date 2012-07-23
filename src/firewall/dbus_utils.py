@@ -19,6 +19,7 @@
 #
 
 import dbus
+import types
 import pwd
 
 def command_of_pid(pid):
