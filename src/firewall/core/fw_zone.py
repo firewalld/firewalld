@@ -231,22 +231,22 @@ class FirewallZone:
         return interface
 
     def __interface(self, enable, zone, interface):
-        table = "filter"
         rules = [ ]
-        for ipv in [ "ipv4", "ipv6" ]:
-            for chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT" ]:
-                # create needed chains if not done already
-                if enable:
-                    self.add_chain(zone, table, chain)
+        for table in ZONE_CHAINS:
+            for chain in ZONE_CHAINS[table]:
+                for ipv in ZONE_CHAINS[table][chain]:
+                    # create needed chains if not done already
+                    if enable:
+                        self.add_chain(zone, table, chain)
 
-                # handle trust and block zone directly, accept or reject
-                # others will be placed into the proper zone chains
-                opt = INTERFACE_ZONE_OPTS[chain]
-                src_chain = INTERFACE_ZONE_SRC[chain]
-                target = self._zones[zone].target.format(
-                    chain=SHORTCUTS[chain], zone=zone)
-                rules.append((ipv, [ "%s_ZONES" % src_chain, "-t", table,
-                                     opt, interface, "-j", target ]))
+                    # handle trust and block zone directly, accept or reject
+                    # others will be placed into the proper zone chains
+                    opt = INTERFACE_ZONE_OPTS[chain]
+                    src_chain = INTERFACE_ZONE_SRC[chain]
+                    target = self._zones[zone].target.format(
+                        chain=SHORTCUTS[chain], zone=zone)
+                    rules.append((ipv, [ "%s_ZONES" % src_chain, "-t", table,
+                                         opt, interface, "-j", target ]))
 
         # handle rules
         ret = self._fw.handle_rules(rules, enable)

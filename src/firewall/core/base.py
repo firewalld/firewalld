@@ -45,3 +45,18 @@ INTERFACE_ZONE_SRC = {
     "FORWARD_OUT": "FORWARD",
     "OUTPUT": "OUTPUT",
 }
+
+ZONE_CHAINS = {
+    "filter": {
+        "INPUT": [ "ipv4", "ipv6" ],
+        "FORWARD_IN": [ "ipv4", "ipv6" ],
+        "FORWARD_OUT": [ "ipv4", "ipv6" ],
+        },
+    "nat": {
+        "PREROUTING": [ "ipv4" ],
+        "POSTROUTING": [ "ipv4" ],
+        },
+    "mangle": {
+        "PREROUTING": [ "ipv4" ],
+        },
+}
