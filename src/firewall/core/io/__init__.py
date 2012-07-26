@@ -18,14 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# fix xmlplus to be compatible with the python xml sax parser and python 3
-# by adding __contains__ to xml.sax.xmlreader.AttributesImpl
-import xml
-if "_xmlplus" in xml.__file__:
-    from xml.sax.xmlreader import AttributesImpl
-    if not hasattr(AttributesImpl, "__contains__"):
-        # this is missing:
-        def __AttributesImpl__contains__(self, name):
-            return name in self._attrs
-        # add it using the name __contains__
-        setattr(AttributesImpl, "__contains__", __AttributesImpl__contains__)
+# Neutralize _xmlplus, if present; we want "xml" to be the
+# stdlib's "xml"
+# code by David Malcolm <dmalcolm@redhat.com> 
+try:
+    import _xmlplus
+    # Prevent _xmlplus from being used in place of "xml"
+    _xmlplus.version_info = (0, 0, 0)
+except ImportError:
+    pass # _xmlplus aka PyXML not installed
+
