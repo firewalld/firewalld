@@ -37,7 +37,7 @@ firewall-cmd \- firewalld command line client
             \fB--port\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR |
             \fB--interface\fR=\fI<interface>\fR |
             \fB--icmp-block\fR=\fI<icmptype>\fR |
-            \fB--forward-port=port\fR=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR { :toport=\fI<port>\fR[-\fI<port>\fR] | :toaddr=\fI<address>\fR | :toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR } }
+            \fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR { :toport=\fI<port>\fR[-\fI<port>\fR] | :toaddr=\fI<address>\fR | :toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR } }
 \fIDIRECT\fR := \fB--direct\fR
             {\fB--passthrough\fR \fITOOL\fR \fI<args>\fR } |
             { { \fB--add-chain\fR | \fB--remove-chain\fR | \fB--query-chain\fR } \fITOOL\fR \fI<table>\fR \fI<chain>\fR } |
