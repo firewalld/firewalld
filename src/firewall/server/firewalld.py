@@ -27,6 +27,7 @@ from firewall.config.dbus import *
 from firewall.core.fw import Firewall
 from firewall.core.logger import log
 from firewall.server.decorators import *
+from firewall.server.config import FirewallDConfig
 from firewall.errors import *
 
 ############################################################################
@@ -49,6 +50,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw = Firewall()
         self.path = args[0]
         self.start()
+        self.config = FirewallDConfig(self.fw.config, self.path,
+                                      DBUS_PATH_CONFIG)
 
     def __del__(self):
         self.stop()
@@ -61,7 +64,7 @@ class FirewallD(slip.dbus.service.Object):
         self._by_key = { }
         self._enabled_services = { }
         self._timeouts = { }
-        
+
         return self.fw.start()
 
     @handle_exceptions
@@ -174,6 +177,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("reload()")
 
         self.fw.reload()
+        self.config.reload()
         self.Reloaded()
 
     # complete_reload
