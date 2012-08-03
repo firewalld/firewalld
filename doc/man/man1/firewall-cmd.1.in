@@ -21,23 +21,22 @@ firewall-cmd \- firewalld command line client
 \fISTATUS\fR := { \fB--state\fR |
             \fB--reload\fR |
             \fB--complete-reload\fR }
-\fIPANIC\fR  := { \fB--enable\fR | \fB--disable\fR | \fB--query\fR } \fB--panic\fR
+\fIPANIC\fR  := { \fB--enable-panic\fR | \fB--disable-panic\fR | \fB--query-panic\fR }
 \fIZONE\fR   := { \fB--get-default-zone\fR |
             \fB--set-default-zone\fR=\fI<zone>\fR |
             \fB--get-zones\fR |
             \fB--get-active-zones\fR |
             \fB--get-zone-of-interface\fR=\fI<interface>\fR }
 \fIMODE\fR   := { [ \fB--zone\fR=\fI<zone>\fR ] {
-              { { \fB--add\fR [\fB--timeout\fR=\fI<seconds>\fR] | \fB--remove\fR | \fB--query\fR } \fIACTION\fR } |
-              { { \fB--enable\fR [\fB--timeout\fR=\fI<seconds>\fR] } | \fB--disable\fR | \fB--query\fR } \fB--masquerade\fR } |
-              \fB--list\fR={ \fIservice\fR | \fIport\fR | \fIinterface\fR | \fIicmp-block\fR | \fIforward-port\fR | \fIall\fR } } |
+              { \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR] } | \fB--remove-\fR\fIACTION\fR | \fB--query-\fR\fIACTION\fR } } |
+              \fB--list-services\fR | \fI--list-ports\fR | \fI--list-interfaces\fR | \fI--list-icmp-blocks\fR | \fI--list-forward-ports\fR | \fI--list-all\fR } } |
             \fB--get-services\fR |
             \fB--get-icmptypes\fR }
-\fIACTION\fR := { \fB--service\fR=\fI<service>\fR |
-            \fB--port\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR |
-            \fB--interface\fR=\fI<interface>\fR |
-            \fB--icmp-block\fR=\fI<icmptype>\fR |
-            \fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR { :toport=\fI<port>\fR[-\fI<port>\fR] | :toaddr=\fI<address>\fR | :toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR } }
+\fIACTION\fR := { \fBservice\fR=\fI<service>\fR |
+            \fBport\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR |
+            \fBinterface\fR=\fI<interface>\fR |
+            \fBicmp-block\fR=\fI<icmptype>\fR |
+            \fBforward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR { :toport=\fI<port>\fR[-\fI<port>\fR] | :toaddr=\fI<address>\fR | :toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR } }
 \fIDIRECT\fR := \fB--direct\fR
             {\fB--passthrough\fR \fITOOL\fR \fI<args>\fR } |
             { { \fB--add-chain\fR | \fB--remove-chain\fR | \fB--query-chain\fR } \fITOOL\fR \fI<table>\fR \fI<chain>\fR } |
@@ -69,13 +68,13 @@ Reload the firewall completely, even netfilter kernel modules. This could termin
 
 .SS Panic Options
 .TP
-\fB--enable\fR \fB--panic\fR
+\fB--enable-panic\fR
 Enable panic mode. All incoming and outgoing packets are dropped, active connections will be terminated after a while of activity. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.
 .TP
-\fB--disable\fR \fB--panic\fR
+\fB--disable-panic\fR
 Disable panic mode again. After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time.
 .TP
-\fB--query\fR \fB--panic\fR
+\fB--query-panic\fR
 Query if panic mode is enabled. Returns 0 if panic mode is enabled, 1 otherwise.
 
 .SS Zone Options
@@ -97,40 +96,40 @@ Return the zone of the interface \fI<interface>\fR or nothing if the interface d
 
 .SS Mode Options
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--add\fR [\fB--timeout\fR=\fI<seconds>\fR] \fIACTION\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR]
 Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds. Afterward it will be removed automatically.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--remove\fR \fIACTION\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--remove-\fR\fIACTION\fR
 Remove an \fIACTION\fR from the zone \fI<zone>\fR again. If zone is omitted, the default zone will be used. If the ACTION was added with a timeout, it will be removed also.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--query\fR \fIACTION\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--query-\fR\fIACTION\fR
 Query if an \fIACTION\fR has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--enable\fR [\fB--timeout\fR=\fI<seconds>\fR] \fB--masquerade\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--add-masquerade\fR [\fB--timeout\fR=\fI<seconds>\fR]
 Enable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If a timeout is supplied, masquerading will be active for the amount of seconds. Masquerading is useful if the machine is a router and machines connected over an interface in another zone should be able to use the first connection.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--disable\fR \fB--masquerade\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--remove-masquerade\fR
 Disable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the masquerading was enabled with a timeout, it will be disabled also.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--query\fR \fB--masquerade\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--query-masquerade\fR
 Query if masquerading has been enabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIservice\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-services\fR
 List added services for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIport\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-ports\fR
 List ports added for zone \fI<zone>\fR as a space separated list. A port is of the form \fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR, it can be either a port and protocol pair or a port range with a protocol. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIinterface\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-interfaces\fR
 List interfaces added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIicmp-block\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-icmp-blocks\fR
 List Internet Control Message Protocol (ICMP) type blocks added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined icmptypes use \fI--get-icmptypes\fR.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIforward-port\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-forward-ports\fR
 List forward port added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list\fR=\fIall\fR
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-Iall\fR
 List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
 \fB--get-service\fR
@@ -141,26 +140,26 @@ List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, 
 
 .SS Action Options
 .TP
-\fB--service\fR=\fI<service>\fR
+\fBservice\fR=\fI<service>\fR
 Use one of the predefined services. For a list of all predefined services use \fI--get-services\fR.
 .TP
-\fB--port\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR
+\fBport\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR
 Use a port or port range altogether with a protocol. The protocol can be either \fItcp\fR or \fIudp\fR.
 .TP
-\fB--interface\fR=\fI<interface>\fR
+\fBinterface\fR=\fI<interface>\fR
 Use an interface name. 
 .TP
-\fB--icmp-block\fR=\fI<icmptype>\fR
+\fBicmp-block\fR=\fI<icmptype>\fR
 Use one of the predefined ICMP types. For a list of all predefined ICMP types use \fI--get-icmptypes\fR.
 .TP
-\fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]
+\fBforward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]
 Use port or packet forwarding. The source and the destination ports are a port or port range altogether with a protocol. The protocol can be either \fItcp\fR or \fIudp\fR.
 Forward from the local port \fIport\fR to the local port \fItoport\fR.
 .TP
-\fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toaddr=\fI<address>\fR
+\fBforward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toaddr=\fI<address>\fR
 Forward from the local port \fIport\fR to the same port on host \fItoaddr\fR.
 .TP
-\fB--forward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR
+\fBforward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR
 Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR.
 
 .SS Direct Option

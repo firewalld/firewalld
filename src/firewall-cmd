@@ -34,24 +34,26 @@ def usage():
  STATUS := { --state |
              --reload |
              --complete-reload }
- PANIC  := { --enable | --disable | --query } --panic
+ PANIC  := { --enable-panic | --disable-panic | --query-panic }
  ZONE   := { --get-default-zone |
              --set-default-zone=<zone> |
              --get-zones |
              --get-active-zones |
              --get-zone-of-interface=<interface> }
  MODE   := { [ --zone=<zone> ] {
-               { { --add [--timeout=<seconds>] | --remove | --query } ACTION } |
-               --list={ service | port | interface | icmp-block |
-                 forward-port | all } } | 
+               { --add-ACTION [--timeout=<seconds>] } | --remove-ACTION | --query-ACTION |
+               --change-interface<interface> |
+               --list-services | --list-ports | --list-interfaces | 
+               --list-icmp-blocks | --list-forward-ports |
+               --list-all } |
              --get-services |
              --get-icmptypes }
- ACTION := { --service=<service> |
-             --port=<port>[-<port>]/<protocol> |
-             --interface=<interface> |
-             --masquerade | 
-             --icmp-block=<icmptype> |
-             --forward-port=port=<port>[-<port>]:proto=<protocol> { 
+ ACTION := { service=<service> |
+             port=<port>[-<port>]/<protocol> |
+             interface=<interface> |
+             masquerade | 
+             icmp-block=<icmptype> |
+             forward-port=port=<port>[-<port>]:proto=<protocol> { 
                :toport=<port>[-<port>] | :toaddr=<address> | 
                :toport=<port>[-<port>]:toaddr=<address> } }
  DIRECT := --direct
@@ -71,25 +73,68 @@ def __fail(msg=None):
 #    usage()
     sys.exit(2)
 
+def __parse_port(value):
+    try:
+        (port, proto) = value.split("/")
+    except Exception as msg:
+        __fail(msg)
+    return (port, proto)
+
+def __parse_forward_port(value):
+    port = None
+    protocol = None
+    toport = None
+    toaddr = None
+    args = value.split(":")
+    for arg in args:
+        try:
+            (opt,val) = arg.split("=")
+            if opt == "port":
+                port = val
+            elif opt == "proto":
+                protocol = val
+            elif opt == "toport":
+                toport = val
+            elif opt == "toaddr":
+                toaddr = val
+        except:
+            __fail("invalid forward port arg '%s'" % (arg))
+    if not port:
+        __fail("missing port")
+    if not protocol:
+        __fail("missing protocol")
+    if not (toport or toaddr):
+        __fail("missing destination")
+    return (port, protocol, toport, toaddr)
+
 if "--direct" not in sys.argv[1:]:
     try:
         (opts, args) = \
             getopt.getopt(sys.argv[1:], "hv", 
-                          [ "help", "version", "timeout=", "reload",
-                            "complete-reload", "state", 
+                          [ "help", "version", "timeout=",
+                            "reload", "complete-reload", "state",
                             "get-default-zone", "set-default-zone=",
                             "get-zones", "get-active-zones",
                             "get-zone-of-interface=",
-                            # modes (exactly one of those)
-                            "add", "change", "remove","enable", "disable",
-                            "query", "list=", "get-services", "get-icmptypes",
+                            "enable-panic", "disable-panic", "query-panic",
                             # zone
                             "zone=",
-                            # actions (exactly one of those)
-                            "panic",
-                            "interface=",
-                            "service=", "port=", "masquerade",
-                            "forward-port=", "icmp-block=",
+                            # modes (exactly one of those)
+                            "add-service=", "remove-service=", "query-service=",
+                            "list-services",
+                            "add-port=", "remove-port=", "query-port=",
+                            "list-ports",
+                            "add-interface=", "remove-interface=",
+                            "query-interface=", "list-interfaces",
+                            "change-interface=",
+                            "add-masquerade", "remove-masquerade",
+                            "query-masquerade",
+                            "add-icmp-block=", "remove-icmp-block=",
+                            "query-icmp-block=", "list-icmp-blocks",
+                            "add-forward-port=", "remove-forward-port=",
+                            "query-forward-port=",
+                            "list-forward-ports",
+                            "list-all",
                             ])
     except Exception, msg:
         print(msg)
@@ -105,10 +150,8 @@ else:
 
 timeout = 0
 mode = None
-action = None
 value = None
 zone = ""
-interface = None
 
 if len(args) > 2 and args[0] == "--direct":
     direct_ipv = args[2]
@@ -149,21 +192,38 @@ for (opt, val) in opts:
             __fail()
         mode = "version"
 
-    elif opt in [ "--reload", "--complete-reload", "--state" ]:
+    elif opt in [ "--reload", "--complete-reload", "--state",
+                  "--get-default-zone", "--get-zones", "--get-active-zones",
+                  "--enable-panic", "--disable-panic", "--query-panic",
+                  "--list-services", "--list-ports", "--list-interfaces", 
+                  "--list-icmp-blocks", "--list-forward-ports",
+                  "--list-all", "--get-services", "--get-icmptypes",
+                  "--add-masquerade", "--remove-masquerade",
+                  "--query-masquerade", ]:
         if mode:
             __fail()
         mode = opt[2:]
 
-    elif opt in [ "--get-default-zone", "--get-zones", "--get-active-zones" ]:
-        if mode:
-            __fail()
-        mode = opt[2:]
-
-    elif opt in [ "--set-default-zone", "--get-zone-of-interface" ]:
+    elif opt in [ "--set-default-zone", "--get-zone-of-interface",
+                  "--add-service", "--remove-service", "--query-service",
+                  "--add-port", "--remove-port", "--query-port",
+                  "--add-interface", "--remove-interface=",
+                  "--query-interface",
+                  "--change-interface",
+                  "--add-icmp-block", "--remove-icmp-block",
+                  "--query-icmp-block",
+                  "--add-forward-port", "--remove-forward-port",
+                  "--query-forward-port", ]:
         if mode:
             __fail()
         mode = opt[2:]
         value = val
+
+    # zone
+    elif opt == "--zone":
+        if zone:
+            __fail()
+        zone = val
 
     # timeout
     elif opt == "--timeout":
@@ -174,64 +234,13 @@ for (opt, val) in opts:
             sys.exit(2)
         if timeout < 1:
             __fail("Timeout not valid")
-
-    # mode
-    elif opt in [ "--enable", "--disable", "--query", "--add", "--change", "--remove" ]:
-        if mode:
-            __fail()
-        mode = opt[2:]
-    elif opt == "--list":
-        if mode or action:
-            __fail()
-        mode = opt[2:]
-        action = val
-    elif opt in [ "--get-services", "--get-icmptypes"]:
-        mode = opt[2:]
-    # zone
-    elif opt == "--zone":
-        if zone:
-            __fail()
-        zone = val
-
-    # action
-    elif opt in [ "--panic", "--interface",
-                  "--service", "--port", "--masquerade",
-                  "--forward-port", "--icmp-block" ]:
-        if action:
-            __fail()
-        action = opt[2:]
-        
-        if opt not in [ "--panic", "--masquerade" ]:
-            if value:
-                __fail()
-            value = val
-
 if not mode:
     __fail("No mode.")
-if mode not in [ "version", "reload", "complete-reload", "state",
-                 "get-default-zone", "set-default-zone", "get-zones",
-                 "get-active-zones", "get-zone-of-interface",
-                 "passthrough", "add-chain", "remove-chain", "query-chain",
-                 "get-chains", "add-rule", "remove-rule", "query-rule",
-                 "get-rules", "get-services", "get-icmptypes" ]:
-    if not action:
-        __fail("No action.")
-#    if not zone and not (mode == "list" and action == "zone"):
-#        __fail("No zone.")
-    if action not in [ "panic", "masquerade"] and mode != "list" and not value:
-        __fail("No value.")
 
-if action in [ "interface", "masquerade", "service", "port", "forward-port", "icmp-block" ]:
-    if mode not in [ "add", "change", "remove", "query", "list" ] or \
-            (mode == "change" and action != "interface") or \
-            (mode == "list" and action == "masquerade"):
-        __fail(_("Wrong action and mode combination"))
 
 if timeout != 0:
-    if mode != "add" and mode != "enable":
-        __fail("Timeout only valid in enable or add mode.")
-    if action == "panic":
-        __fail("No timeout for panic.")
+    if mode[:3] != "add":
+        __fail("Timeout only valid in add mode.")
 
 #print("ZONE='%s', ACTION='%s', MODE='%s'" % (zone, action, mode))
 
@@ -295,152 +304,112 @@ try:
         l = fw.listIcmpTypes()
         if len(l) > 0:
             print(" ".join(l))
-    else:
-        # panic
-        if action == "panic":
-            if mode == "enable":
-                fw.enablePanicMode()
-            elif mode == "disable":
-                fw.disablePanicMode()
-            elif mode == "query":
-                sys.exit(not fw.queryPanicMode())
 
-        # zone
-        elif action == "zone":
-            if mode == "list":
-                l = fw.getZones()
-                if len(l) > 0:
-                    print(" ".join(l))
+    # panic
+    elif mode == "enable-panic":
+        fw.enablePanicMode()
+    elif mode == "disable-panic":
+        fw.disablePanicMode()
+    elif mode == "query-panic":
+        sys.exit(not fw.queryPanicMode())
 
-        # interface
-        elif action == "interface":
-            if mode == "list":
-                l = fw.getInterfaces(zone)
-                if len(l) > 0:
-                    print(" ".join(l))
-            elif mode == "add":
-                fw.addInterface(zone, value)
-            elif mode == "change":
-                fw.changeZone(zone, value)
-            elif mode == "remove":
-                fw.removeInterface(zone, value)
-            elif mode == "query":
-                sys.exit(not fw.queryInterface(zone, value))
+    # interface
+    elif mode == "list-interfaces":
+        l = fw.getInterfaces(zone)
+        if len(l) > 0:
+            print(" ".join(l))
+    elif mode == "add-interface":
+        fw.addInterface(zone, value)
+    elif mode == "change-interface":
+        fw.changeZone(zone, value)
+    elif mode == "remove-interface":
+        fw.removeInterface(zone, value)
+    elif mode == "query-interface":
+        sys.exit(not fw.queryInterface(zone, value))
 
-        # service
-        elif action == "service":
-            if mode == "list":
-                l = fw.getServices(zone)
-                if len(l) > 0:
-                    print(" ".join(l))
-            elif mode == "add":
-                fw.addService(zone, value, timeout)
-            elif mode == "remove":
-                fw.removeService(zone, value)
-            elif mode == "query":
-                sys.exit(not fw.queryService(zone, value))
+    # service
+    elif mode == "list-services":
+        l = fw.getServices(zone)
+        if len(l) > 0:
+            print(" ".join(l))
+    elif mode == "add-service":
+        fw.addService(zone, value, timeout)
+    elif mode == "remove-service":
+        fw.removeService(zone, value)
+    elif mode == "query-service":
+        sys.exit(not fw.queryService(zone, value))
 
-        # port
-        elif action == "port":
-            if mode == "list":
-                l = fw.getPorts(zone)
-                if len(l) > 0:
-                    print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
-            else:
-                try:
-                    (port, proto) = value.split("/")
-                except Exception, msg:
-                    __fail(msg)
+    # port
+    elif mode == "list-ports":
+        l = fw.getPorts(zone)
+        if len(l) > 0:
+            print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+    elif mode == "add-port":
+        (port, proto) = __parse_port(value)
+        fw.addPort(zone, port, proto, timeout)
+    elif mode == "remove-port":
+        (port, proto) = __parse_port(value)
+        fw.removePort(zone, port, proto)
+    elif mode == "query-port":
+        (port, proto) = __parse_port(value)
+        sys.exit(not fw.queryPort(zone, port, proto))
 
-                if mode == "add":
-                    fw.addPort(zone, port, proto, timeout)
-                elif mode == "remove":
-                    fw.removePort(zone, port, proto)
-                elif mode == "query":
-                    sys.exit(not fw.queryPort(zone, port, proto))
+    # masquerade
+    elif mode == "add-masquerade":
+        fw.addMasquerade(zone, timeout)
+    elif mode == "remove-masquerade":
+        fw.removeMasquerade(zone)
+    elif mode == "query-masqueade":
+        sys.exit(not fw.queryMasquerade(zone))
 
-        # masquerade
-        elif action == "masquerade":
-            if mode == "add":
-                fw.addMasquerade(zone, timeout)
-            elif mode == "remove":
-                fw.removeMasquerade(zone)
-            elif mode == "query":
-                sys.exit(not fw.queryMasquerade(zone))
+    # forward port    
+    elif mode == "list-forward-ports":
+        l = fw.getForwardPorts(zone)
+        if len(l) > 0:
+            print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
 
-        # forward port
-        elif action == "forward-port":
-            if mode == "list":
-                l = fw.getForwardPorts(zone)
-                if len(l) > 0:
-                    print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
-            else:
-                port = None
-                protocol = None
-                toport = None
-                toaddr = None
-                args = value.split(":")
-                for arg in args:
-                    try:
-                        (opt,val) = arg.split("=")
-                        if opt == "port":
-                            port = val
-                        elif opt == "proto":
-                            protocol = val
-                        elif opt == "toport":
-                            toport = val
-                        elif opt == "toaddr":
-                            toaddr = val
-                    except:
-                        __fail("invalid forward port arg '%s'" % (arg))
-                if not port:
-                    __fail("missing port")
-                if not protocol:
-                    __fail("missing protocol")
-                if not (toport or toaddr):
-                    __fail("missing destination")
+    elif mode == "add-forward-port":
+        (port, protocol, toport, toaddr) = __parse_forward_port(value)
+        fw.addForwardPort(zone, port, protocol, toport, toaddr, timeout)
+    elif mode == "remove-forward-port":
+        (port, protocol, toport, toaddr) = __parse_forward_port(value)
+        fw.removeForwardPort(zone, port, protocol, toport, toaddr)
+    elif mode == "query-forward-port":
+        (port, protocol, toport, toaddr) = __parse_forward_port(value)
+        sys.exit(not fw.queryForwardPort(zone, port, protocol,
+                                         toport, toaddr))
 
-                if mode == "add":
-                    fw.addForwardPort(zone, port, protocol, toport, toaddr,
-                                      timeout)
-                elif mode == "remove":
-                    fw.removeForwardPort(zone, port, protocol, toport, toaddr)
-                elif mode == "query":
-                    sys.exit(not fw.queryForwardPort(zone, port, protocol,
-                                                     toport, toaddr))
+    # block icmp
+    elif mode == "list-icmp-blocks":
+        l = fw.getIcmpBlocks(zone)
+        if len(l) > 0:
+            print(" ".join(l))
+    elif mode == "add-icmp-block":
+        fw.addIcmpBlock(zone, value, timeout)
+    elif mode == "remove-icmp-block":
+        fw.removeIcmpBlock(zone, value)
+    elif mode == "query-icmp-block":
+        sys.exit(not fw.queryIcmpBlock(zone, value))
 
-        # block icmp
-        elif action == "icmp-block":
-            if mode == "list":
-                l = fw.getIcmpBlocks(zone)
-                if len(l) > 0:
-                    print(" ".join(l))
 
-            elif mode == "add":
-                fw.addIcmpBlock(zone, value, timeout)
-            elif mode == "remove":
-                fw.removeIcmpBlock(zone, value)
-            elif mode == "query":
-                sys.exit(not fw.queryIcmpBlock(zone, value))
+    elif mode == "list-all":
+        print("zone: " + (zone if zone != "" else fw.getDefaultZone()))
+        l = fw.getInterfaces(zone)
+        if len(l) > 0:
+            print("interfaces: " + " ".join(l))
+        l = fw.getServices(zone)
+        if len(l) > 0:
+            print("services: " + " ".join(l))
+        l = fw.getPorts(zone)
+        if len(l) > 0:
+            print("ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+        l = fw.getForwardPorts(zone)
+        if len(l) > 0:
+            print("forward-ports: " + "\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+        l = fw.getIcmpBlocks(zone)
+        if len(l) > 0:
+            print("icmp-blocks: " + " ".join(l))
 
-        elif (action == "all"):
-            if mode == "list":
-                print("zone: " + (zone if zone != "" else fw.getDefaultZone()))
-                l = fw.getInterfaces(zone)
-                if len(l) > 0:
-                    print("interfaces: " + " ".join(l))
-                l = fw.getServices(zone)
-                if len(l) > 0:
-                    print("services: " + " ".join(l))
-                l = fw.getPorts(zone)
-                if len(l) > 0:
-                    print("ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in l]))
-                l = fw.getForwardPorts(zone)
-                if len(l) > 0:
-                    print("forward-ports: " + "\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
-                l = fw.getIcmpBlocks(zone)
-                if len(l) > 0:
-                    print("icmp-blocks: " + " ".join(l))
 
 except dbus.DBusException, e:
     if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
