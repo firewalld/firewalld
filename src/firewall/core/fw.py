@@ -19,6 +19,7 @@
 #
 
 import os.path
+import copy
 from firewall.config import *
 from firewall import functions
 from firewall.core import ipXtables
@@ -28,6 +29,7 @@ from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
+from firewall.core.fw_config import FirewallConfig
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.service import service_reader
@@ -58,6 +60,7 @@ class Firewall:
         self.service = FirewallService(self)
         self.zone = FirewallZone(self)
         self.direct = FirewallDirect(self)
+        self.config = FirewallConfig(self)
 
         self.__init_vars()
 
@@ -101,21 +104,21 @@ class Firewall:
         self._apply_default_rules()
 
         # load icmptype files
-        self._loader(FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(FIREWALLD_ICMPTYPES, "icmptype", True)
         self._loader(ETC_FIREWALLD_ICMPTYPES, "icmptype")
 
         if len(self.icmptype.get_icmptypes()) == 0:
             log.error("No icmptypes found.")
 
         # load service files
-        self._loader(FIREWALLD_SERVICES, "service")
+        self._loader(FIREWALLD_SERVICES, "service", True)
         self._loader(ETC_FIREWALLD_SERVICES, "service")
 
         if len(self.service.get_services()) == 0:
             log.error("No services found.")
 
         # load zone files
-        self._loader(FIREWALLD_ZONES, "zone")
+        self._loader(FIREWALLD_ZONES, "zone", True)
         self._loader(ETC_FIREWALLD_ZONES, "zone")
 
         if len(self.zone.get_zones()) == 0:
@@ -148,7 +151,7 @@ class Firewall:
 
         self._state = "RUNNING"
 
-    def _loader(self, path, reader_type):
+    def _loader(self, path, reader_type, default=False):
         if not os.path.isdir(path):
             return
 
@@ -168,6 +171,8 @@ class Firewall:
                                    orig_obj.filename)
 
                     self.icmptype.add_icmptype(obj)
+                    # add a deep copy to the configuration interface
+                    self.config.add_icmptype(copy.deepcopy(obj), default)
                 elif reader_type == "service":
                     obj = service_reader(filename, path)
                     if obj.name in self.service.get_services():
@@ -176,6 +181,8 @@ class Firewall:
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                     self.service.add_service(obj)
+                    # add a deep copy to the configuration interface
+                    self.config.add_service(copy.deepcopy(obj), default)
                 elif reader_type == "zone":
                     obj = zone_reader(filename, path)
                     if obj.name in self.zone.get_zones():
@@ -186,6 +193,8 @@ class Firewall:
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                     self.zone.add_zone(obj)
+                    # add a deep copy to the configuration interface
+                    self.config.add_zone(copy.deepcopy(obj), default)
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError, msg:
@@ -200,6 +209,7 @@ class Firewall:
         self.icmptype.cleanup()
         self.service.cleanup()
         self.zone.cleanup()
+        self.config.cleanup()
         self.direct.cleanup()
 
     def stop(self):
