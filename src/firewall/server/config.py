@@ -233,7 +233,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         log.debug1("config.getIcmpTypeByName('%s')", icmptype)
         for obj in self.icmptypes:
-            if obj.icmptype.name == icmptype:
+            if obj.obj.name == icmptype:
                 return obj
         raise FirewallError(INVALID_ICMPTYPE, icmptype)
 
@@ -272,7 +272,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         log.debug1("config.getServiceByName('%s')", service)
         for obj in self.services:
-            if obj.service.name == service:
+            if obj.obj.name == service:
                 return obj
         raise FirewallError(INVALID_SERVICE, service)
 
@@ -311,7 +311,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         log.debug1("config.getZoneByName('%s')", zone)
         for obj in self.zones:
-            if obj.zone.name == zone:
+            if obj.obj.name == zone:
                 return obj
         raise FirewallError(INVALID_ZONE, zone)
 
