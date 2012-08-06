@@ -162,6 +162,7 @@ class FirewallConfig:
         # new or updated file
 
         obj = icmptype_reader(filename, path)
+        obj.defaults = False
 
         # new icmptype
         if obj.name not in self._default_icmptypes and obj.name not in self._icmptypes:
@@ -317,6 +318,7 @@ class FirewallConfig:
         # new or updated file
 
         obj = service_reader(filename, path)
+        obj.defaults = False
 
         # new service
         if obj.name not in self._default_services and obj.name not in self._services:
@@ -472,6 +474,7 @@ class FirewallConfig:
         # new or updated file
 
         obj = zone_reader(filename, path)
+        obj.defaults = False
 
         # new zone
         if obj.name not in self._default_zones and obj.name not in self._zones:
