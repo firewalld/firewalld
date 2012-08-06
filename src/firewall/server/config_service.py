@@ -71,23 +71,24 @@ class FirewallDConfigService(slip.dbus.service.Object):
         # get a property
         log.debug1("Get('%s', '%s')", interface_name, property_name)
 
-        if interface_name != DBUS_INTERFACE:
+        if interface_name != DBUS_INTERFACE_CONFIG:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        if prop == "name":
+        if property_name == "name":
             return self.obj.name
-        elif prop == "filename":
+        elif property_name == "filename":
             return self.obj.filename
-        elif prop == "path":
+        elif property_name == "path":
             return self.obj.path
-        elif prop == "defaults":
+        elif property_name == "defaults":
             return self.obj.defaults
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % prop)
+                "Property '%s' isn't exported (or may not exist)" % \
+                    property_name)
 
     @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
@@ -95,7 +96,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def GetAll(self, interface_name):
         log.debug1("GetAll('%s')", interface_name)
 
-        if interface_name != DBUS_INTERFACE:
+        if interface_name != DBUS_INTERFACE_CONFIG:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -114,7 +115,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
                    new_value)
 
-        if interface_name != DBUS_INTERFACE:
+        if interface_name != DBUS_INTERFACE_CONFIG:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
