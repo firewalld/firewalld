@@ -26,7 +26,7 @@ from firewall.client import FirewallClient
 from firewall.errors import *
 
 def usage():
-    print("Usage: %s { HELP | STATUS | PANIC | ZONE | MODE | DIRECT }" % sys.argv[0])
+    print("Usage: %s { HELP | STATUS | PANIC | ZONE | MODE | PERMANENT | DIRECT }" % sys.argv[0])
     print(
 """
  HELP   := { -h | --help | 
@@ -41,21 +41,27 @@ def usage():
              --get-active-zones |
              --get-zone-of-interface=<interface> }
  MODE   := { [ --zone=<zone> ] {
-               { --add-ACTION [--timeout=<seconds>] } | --remove-ACTION | --query-ACTION |
+               { { --add-ACTION [--timeout=<seconds>] } | 
+                   --remove-ACTION | --query-ACTION } |
                --change-interface<interface> |
                --list-services | --list-ports | --list-interfaces | 
                --list-icmp-blocks | --list-forward-ports |
                --list-all } |
              --get-services |
              --get-icmptypes }
- ACTION := { service=<service> |
-             port=<port>[-<port>]/<protocol> |
-             interface=<interface> |
-             masquerade | 
-             icmp-block=<icmptype> |
-             forward-port=port=<port>[-<port>]:proto=<protocol> { 
-               :toport=<port>[-<port>] | :toaddr=<address> | 
-               :toport=<port>[-<port>]:toaddr=<address> } }
+ PERMANENT := --permanent
+                { --zone=<zone> { --add-PERMANENT_ACTION |
+                                  --remove-PERMANENT_ACTION |
+                                  --query-PERMANENT_ACTION } } |
+                --get-zones
+ PERMANENT_ACTION := { service=<service> |
+                       port=<port>[-<port>]/<protocol> |
+                       masquerade | 
+                       icmp-block=<icmptype> |
+                       forward-port=port=<port>[-<port>]:proto=<protocol> { 
+                         :toport=<port>[-<port>] | :toaddr=<address> | 
+                         :toport=<port>[-<port>]:toaddr=<address> } }
+ ACTION := { PERMANENT_ACION | interface=<interface> }
  DIRECT := --direct
              {--passthrough TOOL <args> } |
              { { --add-chain | --remove-chain | --query-chain } TOOL <table>
@@ -119,6 +125,8 @@ if "--direct" not in sys.argv[1:]:
                             "enable-panic", "disable-panic", "query-panic",
                             # zone
                             "zone=",
+                            # permanent
+                            "permanent",
                             # modes (exactly one of those)
                             "add-service=", "remove-service=", "query-service=",
                             "list-services",
@@ -152,6 +160,7 @@ timeout = 0
 mode = None
 value = None
 zone = ""
+permanent = False
 
 if len(args) > 2 and args[0] == "--direct":
     direct_ipv = args[2]
@@ -182,6 +191,9 @@ if len(args) > 2 and args[0] == "--direct":
         mode = args[1][2:]
         direct_table = args[3]
         direct_chain = args[4]        
+    else:
+        usage()
+        sys.exit(1)
 
 for (opt, val) in opts:
     if opt in ["-h", "--help"]:
@@ -191,6 +203,9 @@ for (opt, val) in opts:
         if mode:
             __fail()
         mode = "version"
+
+    elif opt == "--permanent":
+        permanent = True
 
     elif opt in [ "--reload", "--complete-reload", "--state",
                   "--get-default-zone", "--get-zones", "--get-active-zones",
@@ -237,17 +252,108 @@ for (opt, val) in opts:
 if not mode:
     __fail("No mode.")
 
-
 if timeout != 0:
     if mode[:3] != "add":
         __fail("Timeout only valid in add mode.")
 
-#print("ZONE='%s', ACTION='%s', MODE='%s'" % (zone, action, mode))
+
+if permanent:
+    if timeout != 0:
+        usage()
+        sys.exit(1)
+    if mode == "get-zones" and not zone:
+        pass
+    elif not zone or mode not in [
+        "add-service", "remove-service", "query-service", "list-services",
+        "add-port", "remove-port", "query-port", "list-ports",
+        "add-icmp-block", "remove-icmp-block", "query-icmp-block",
+        "list-icmp-blocks",
+        "add-forward-port", "remove-forward-port", "query-forward-port", 
+        "list-forward-ports"]:
+        usage()
+        sys.exit(1)
+
+#print("ZONE='%s', MODE='%s'" % (zone, mode))
 
 try:
     fw = FirewallClient()
 
-    if mode == "version":
+    if permanent:
+       if mode == "get-zones":
+           print(" ".join(fw.config().listZones()))
+       else:
+           fw_zone = fw.config().getZoneByName(zone)
+           fw_settings = fw_zone.getSettings()
+
+           # service
+           if mode == "list-services":
+               l = fw_settings.getServices()
+               if len(l) > 0:
+                   print(" ".join(l))
+               sys.exit(0)
+           elif mode == "add-service":
+               fw_settings.addService(value)
+           elif mode == "remove-service":
+               fw_settings.removeService(value)
+           elif mode == "query-service":
+               sys.exit(not value in fw_settings.getServices())
+
+           # port
+           elif mode == "list-ports":
+               l = fw_settings.getPorts()
+               if len(l) > 0:
+                   print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+               sys.exit(0)
+           elif mode == "add-port":
+               (port, proto) = __parse_port(value)
+               fw_settings.addPort(port, proto)
+           elif mode == "remove-port":
+               (port, proto) = __parse_port(value)
+               fw_settings.removePort(port, proto)
+           elif mode == "query-port":
+               (port, proto) = __parse_port(value)
+               sys.exit(not (port, proto) in fw_settings.getPorts())
+
+           # masquerade
+           elif mode == "add-masquerade":
+               fw_settings.addMasquerade()
+           elif mode == "remove-masquerade":
+               fw_settings.removeMasquerade()
+           elif mode == "query-masqueade":
+               sys.exit(not fw_settings.queryMasquerade())
+
+           # forward port
+           elif mode == "list-forward-ports":
+               l = fw_settings.getForwardPorts()
+               if len(l) > 0:
+                   print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+               sys.exit(0)
+           elif mode == "add-forward-port":
+               (port, protocol, toport, toaddr) = __parse_forward_port(value)
+               fw_settings.addForwardPort(port, protocol, toport, toaddr, timeout)
+           elif mode == "remove-forward-port":
+               (port, protocol, toport, toaddr) = __parse_forward_port(value)
+               fw_settings.removeForwardPort(port, protocol, toport, toaddr)
+           elif mode == "query-forward-port":
+               fwd_port = __parse_forward_port(value)
+               sys.exit(not fwd_port in fw_settings.getForwardPorts())
+
+           # block icmp
+           elif mode == "list-icmp-blocks":
+               l = fw_setings.getIcmpBlocks()
+               if len(l) > 0:
+                   print(" ".join(l))
+               sys.exit(0)
+           elif mode == "add-icmp-block":
+               fw_settings.addIcmpBlock(value)
+           elif mode == "remove-icmp-block":
+               fw_settings.removeIcmpBlock(value)
+           elif mode == "query-icmp-block":
+               sys.exit(not value in fw_settings.getIcmpBlocks())
+
+           fw_zone.update(fw_settings)
+
+    elif mode == "version":
         print(fw.get_property("version"))
         sys.exit(0)
     elif mode == "state":
@@ -362,7 +468,7 @@ try:
     elif mode == "query-masqueade":
         sys.exit(not fw.queryMasquerade(zone))
 
-    # forward port    
+    # forward port
     elif mode == "list-forward-ports":
         l = fw.getForwardPorts(zone)
         if len(l) > 0:
