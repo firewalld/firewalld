@@ -1,2 +1,15 @@
-- add documentation about all config files
-- add man pages
+- do not allow to over-load of immutable zones in config
+- do not allow to set settings in config for immutable zones
+- fix firewall-config-scfw to use proper zones for trust, masq, and 
+  forward_ports, think of NM also
+- create new zone in firewall-config-scfw if default zone is missing
+
+- add firewall-config
+
+- document icmptype, service and zone filenames:
+  name of item must match filename: "{name}.xml"
+
+- document unused icmptype, service and zone filenames:
+  ".{name}.xml"
+
+- check TODOs in code
