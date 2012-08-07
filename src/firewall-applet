@@ -94,6 +94,12 @@ class TrayApplet(object):
 #        item.set_sensitive(False)
 #        self.right_menu.append(item)
 
+        self.shieldsup_check = Gtk.CheckMenuItem.new_with_mnemonic(
+            _("Shields Up"))        
+        self.shieldsup_check.set_active(False)
+        self.shieldsup_check.connect('toggled', self.shieldsup_check_toggled)
+        self.right_menu.append(self.shieldsup_check)
+
         self.notification_check = Gtk.CheckMenuItem.new_with_mnemonic(
             _("Enable Notifications"))
         self.notification_check.set_active(self.settings.get_boolean(
@@ -101,7 +107,8 @@ class TrayApplet(object):
         self.settings.connect("changed::notifications",
                               self.settings_check_changed,
                               self.notification_check)
-        self.notification_check.connect('toggled', self.check_toggled,
+        self.notification_check.connect('toggled',
+                                        self.notification_check_toggled,
                                         self.settings, "notifications")
         self.right_menu.append(self.notification_check)
 
@@ -185,7 +192,15 @@ class TrayApplet(object):
     def settings_check_changed(self, settings, key, button):
         button.set_active(settings.get_boolean(key))
 
-    def check_toggled(self, button, settings, key):
+    def shieldsup_check_toggled(self, button):
+        print button
+        print button.get_active()
+        if button.get_active():
+            self.fw.setDefaultZone(self.settings.get_string("shields-up"))
+        else:
+            self.fw.setDefaultZone(self.settings.get_string("shields-down"))
+
+    def notification_check_toggled(self, button, settings, key):
         settings.set_boolean(key, button.get_active())
 
     def notify(self, msg, sender=None, urgency=Notify.Urgency.NORMAL):
@@ -233,6 +248,11 @@ class TrayApplet(object):
         active_zones = self.fw.getActiveZones()
         if active_zones:
             self.active_zones = active_zones
+        if self.fw.getDefaultZone() == self.settings.get_string("shields-up"):
+            self.shieldsup_check.set_active(True)
+        else:
+            self.shieldsup_check.set_active(False)
+
         self.update()
 
     def connection_to_firewalld_lost(self):
@@ -346,6 +366,11 @@ class TrayApplet(object):
                 self.notify(_("FirewallD has been reloaded."))
             elif signal == "DefaultZoneChanged":
                 self.notify(_("Default zone changed to '%s'.") % args[0])
+
+                if args[0] == self.settings.get_string("shields-up"):
+                    self.shieldsup_check.set_active(True)
+                else:
+                    self.shieldsup_check.set_active(False)
 
         if signal in [ "PanicModeEnabled", "PanicModeDisabled" ]:
             if signal == "PanicModeEnabled":
