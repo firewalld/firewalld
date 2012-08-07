@@ -2,8 +2,7 @@ sconfdir = $(sysconfdir)/firewalld
 prefixlibdir = ${prefix}/lib/firewalld
 dist_sconf_DATA = firewalld.conf
 
-desktop_FILES = firewall-applet.desktop.in
-#firewall-config.desktop.in
+desktop_FILES = firewall-applet.desktop.in firewall-config.desktop.in
 desktopdir = $(datadir)/applications
 dist_desktop_DATA = $(desktop_FILES:.in=)
 

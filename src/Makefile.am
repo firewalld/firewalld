@@ -1,5 +1,4 @@
-bin_SCRIPTS = firewall-applet firewall-cmd firewall-convert-scfw-config
-#firewall-config
+bin_SCRIPTS = firewall-applet firewall-cmd firewall-convert-scfw-config firewall-config
 sbin_SCRIPTS = firewalld
 
 icondir = $(datadir)/icons/hicolor
