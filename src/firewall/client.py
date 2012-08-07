@@ -312,7 +312,6 @@ class FirewallClientConfigIcmpTypeSettings(object):
         if destination in self.settings[3]:
             self.settings[3].remove(destination)
 
-
 # icmptype config
 
 class FirewallClientConfigIcmpType(object):
