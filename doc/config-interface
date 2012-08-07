@@ -1,0 +1,176 @@
+    /org/fedoraproject/FirewallD1/config
+    ====================================
+    
+      Interfaces
+      ----------
+        org.fedoraproject.FirewallD1.config
+    
+          Methods
+          -------
+            listZones() -> (Array of [Object Path] zones)
+            getZoneByName(String name) -> (Object Path zone)
+            addZone(String name, Dict of {String, Variant} zone_settings) -> (Ob
+    
+            listServices() -> (Array of [Object Path] services)
+            getServiceByName(String name) -> (Object Path service)
+            addService(String name, Dict of {String, Variant} service_settings) 
+    
+            listIcmpTypes() -> (Array of [Object Path] icmptypes)
+            getIcmpTypeByName(String name) -> (Object Path icmptype)
+            addIcmpType(String name, Dict of {String, Variant} icmptype_settings
+    
+          Signals
+          -------
+            ZoneAdded(Object Path zone)
+            ServiceAdded(Object Path service)
+            IcmpTypeAdded(Object Path icmptype)
+    
+    /org/fedoraproject/FirewallD1/config/zone/<id>
+    ==============================================
+    
+      Interfaces
+      ----------
+        org.fedoraproject.FirewallD1.config.zone
+    
+          Methods
+          -------
+            getSettings() -> (Struct of (
+          String version,
+          String short,
+          String description,
+          Boolean immutable,
+          String target,
+          Array of (String service) services,
+          Array of (Struct of (String port_range, String protocol)) ports,
+          Array of (String icmptype) icmp_blocks,
+          Boolean masquerade,
+          Array of (Struct of (String port_range, String protocol,
+                               String to_port_range, String to_addr)) forward_po
+            update(Struct of (
+              String version,
+              String short,
+              String description,
+              Boolean immutable,
+              String target,
+              Array of (String service) services,
+              Array of (Struct of (String port_range, String protocol)) ports,
+              Array of (String icmptype) icmp_blocks,
+              Boolean masquerade,
+              Array of (Struct of (String port_range, String protocol,
+                               String to_port_range, String to_addr)) forward_po
+            loadDefaults()
+            remove()
+            rename(String name)
+    
+          Properties
+          ----------
+            String name (ro)
+            String filename (ro)
+            String path (ro)
+            Boolean defaults (ro)
+    
+          Signals
+          -------
+            Updated()
+            Removed()
+            Renamed()
+    
+        org.freedesktop.DBus.Properties
+    
+          Methods
+          -------
+            Get(String interface, String, propname) -> (Variant value)
+            GetAll(String interface) -> (Dict of {String, Variant} props)
+            Set(String interface, String propname, Variant value)
+    
+    /org/fedoraproject/FirewallD1/config/service/<id>
+    =================================================
+    
+      Interfaces
+      ----------
+        org.fedoraproject.FirewallD1.config.service
+    
+          Methods
+          -------
+            getSettings() -> (Struct of (
+          String version,
+          String short,
+          String description,
+          Array of (Struct of (String port_range, String protocol)) ports,
+          Array of (String module) modules,
+          Dict of (String dest_type, String address) destination ) )
+            update((Struct of (
+          String version,
+          String short,
+          String description,
+          Array of (Struct of (String port_range, String protocol)) ports,
+          Array of (String module) modules,
+          Dict of (String dest_type, String address) destination ) ) settings)
+            loadDefaults()
+            remove()
+            rename(String name)
+    
+          Properties
+          ----------
+            String name (ro)
+            String filename (ro)
+            String path (ro)
+            Boolean defaults (ro)
+    
+          Signals
+          -------
+            Updated()
+            Removed()
+            Renamed()
+    
+        org.freedesktop.DBus.Properties
+    
+          Methods
+          -------
+            Get(String interface, String, propname) -> (Variant value)
+            GetAll(String interface) -> (Dict of {String, Variant} props)
+            Set(String interface, String propname, Variant value)
+    
+    /org/fedoraproject/FirewallD1/config/icmptype/<id>
+    ==================================================
+    
+      Interfaces
+      ----------
+        org.fedoraproject.FirewallD1.config.icmptype
+    
+          Methods
+          -------
+            getSettings() -> (Struct of (
+          String version,
+          String short,
+          String description,
+          Array of (String dest_type) destination ) )
+            update((Struct of (
+          String version,
+          String short,
+          String description,
+          Array of (String dest_type) destination ) ) settings)
+            loadDefaults()
+            remove()
+            rename(String name)
+    
+          Properties
+          ----------
+            String name (ro)
+            String filename (ro)
+            String path (ro)
+            Boolean defaults (ro)
+    
+          Signals
+          -------
+            Updated()
+            Removed()
+            Renamed()
+    
+        org.freedesktop.DBus.Properties
+    
+          Methods
+          -------
+            Get(String interface, String, propname) -> (Variant value)
+            GetAll(String interface) -> (Dict of {String, Variant} props)
+            Set(String interface, String propname, Variant value)
