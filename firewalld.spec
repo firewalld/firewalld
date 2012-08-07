@@ -2,7 +2,7 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.5
+Version: 0.2.6
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -19,6 +19,8 @@ BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
+Requires: python-decorator
+Requires: pygobject3
 Requires: iptables, ebtables
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -35,7 +37,7 @@ firewall with a D-BUS interface.
 Summary: Firewall panel applet
 Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
-#Requires: firewall-config = %{version}-%{release}
+Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
 Requires: pygobject3
@@ -44,18 +46,18 @@ Requires: pygobject3
 The firewall panel applet provides a status information of firewalld and also 
 the firewall settings.
 
-#%package -n firewall-config
-#Summary: Firewall configuration application
-#Group: System Environment/Base
-#Requires: %{name} = %{version}-%{release}
-#Requires: hicolor-icon-theme
-#Requires: pygtk2
-#Requires: pygtk2-libglade
-#Requires: gtk2 >= 2.6
-#
-#%description -n firewall-config
-#The firewall configuration application provides an configuration interface for 
-#firewalld.
+%package -n firewall-config
+Summary: Firewall configuration application
+Group: System Environment/Base
+Requires: %{name} = %{version}-%{release}
+Requires: hicolor-icon-theme
+Requires: pygtk2
+Requires: pygtk2-libglade
+Requires: gtk2 >= 2.6
+
+%description -n firewall-config
+The firewall configuration application provides an configuration interface for 
+firewalld.
 
 %prep
 %setup -q
@@ -72,9 +74,9 @@ make install DESTDIR=%{buildroot}
 desktop-file-install --delete-original \
   --dir %{buildroot}%{_datadir}/applications \
   %{buildroot}%{_datadir}/applications/firewall-applet.desktop
-#desktop-file-install --delete-original \
-#  --dir %{buildroot}%{_datadir}/applications \
-#  %{buildroot}%{_datadir}/applications/firewall-config.desktop
+desktop-file-install --delete-original \
+  --dir %{buildroot}%{_datadir}/applications \
+  %{buildroot}%{_datadir}/applications/firewall-config.desktop
 
 %find_lang %{name} --all-name
 
@@ -133,6 +135,7 @@ fi
 %doc COPYING
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
+%{_bindir}/firewall-convert-scfw-config
 %defattr(0640,root,root)
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/icmptypes
@@ -173,12 +176,12 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
 
-#%files -n firewall-config
-#%defattr(-,root,root)
-#%{_bindir}/firewall-config
-#%defattr(0644,root,root)
+%files -n firewall-config
+%defattr(-,root,root)
+%{_bindir}/firewall-config
+%defattr(0644,root,root)
 #%{_datadir}/firewalld/firewall-config.glade
-#%{_datadir}/applications/firewall-config.desktop
+%{_datadir}/applications/firewall-config.desktop
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
