@@ -1,19 +1,122 @@
 #!/usr/bin/python
+#
+# Copyright (C) 2011-2012 Red Hat, Inc.
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
 
-import pygtk
-pygtk.require("2.0")
-import gtk
-import gtk_label_autowrap
+from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient
 
-class FirewallConfig(object):       
-	def __init__(self):
-	    builder = gtk.Builder()
-	    builder.add_from_file("firewall-config.glade")
-	    builder.connect_signals({ "on_window_destroy" : gtk.main_quit })
-	    self.toplevel = builder.get_object("toplevel")
-	    gtk_label_autowrap.set_autowrap(self.toplevel)
-	    self.toplevel.show()
+import dbus
 
-if __name__ == "__main__":
-	app = FirewallConfig()
-	gtk.main()
+from firewall.config import *
+from firewall.config.dbus import *
+from firewall.client import FirewallClient
+
+FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
+
+class FirewallConfig(Gtk.Window):
+    def __init__(self):
+        Gtk.Window.__init__(self)
+
+        self.set_title(_("Firewall Config"))
+        self.set_border_width(6)
+        self.set_default_size(400, 200)
+        self.icon_name = "preferences-system-firewall" # TODO fix icon name
+
+        self.icon_theme = Gtk.IconTheme.get_default()
+        (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.MENU)
+        size = min(width, height)
+
+        self.icon = None
+        icon_info = self.icon_theme.lookup_icon(self.icon_name, size, 0)
+        if icon_info:
+            self.icon = icon_info.load_icon()
+        self.set_default_icon(self.icon)
+        self.set_icon(self.icon)
+
+        # settings
+
+        # accelgroup and actiongroup
+
+        self.accelgroup = Gtk.AccelGroup()
+        self.add_accel_group(self.accelgroup)
+        self.actiongroup = Gtk.ActionGroup("FirewallConfig")
+
+        # mainvbox
+
+        self.mainvbox = Gtk.VBox(spacing=6)
+
+        # global actions
+
+        self.quit_action = Gtk.Action.new(_("Quit"), _("_Quit"),
+                                          _("Quit the program"),
+                                          Gtk.STOCK_QUIT)
+        self.quit_action.connect("activate", self.quit)
+        self.actiongroup.add_action_with_accel(self.quit_action, None)
+        self.quit_action.set_accel_group(self.accelgroup)
+
+        # menubar
+
+        self.menubar = Gtk.MenuBar.new()
+
+        # file menu
+        action = Gtk.Action.new(_("File"), _("_File"), None, None)
+        action_item = action.create_menu_item()
+        self.actiongroup.add_action(action)
+        menu = Gtk.Menu.new()
+        action_item.set_submenu(menu)
+        self.menubar.append(action_item)
+        menu.append(self.quit_action.create_menu_item())
+
+        self.mainvbox.pack_start(self.menubar, False, True, 0)
+
+        # toolbar
+
+        self.toolbar = Gtk.Toolbar.new()
+        self.mainvbox.pack_start(self.toolbar, False, True, 0)
+
+        # statusbar
+        
+        # tooltips
+
+        for action in self.actiongroup.list_actions():
+            action.set_property('tooltip', action.get_property('tooltip'))
+
+        # main area
+
+        hbox = Gtk.HBox(spacing=6)
+        label = Gtk.Label(_("Please use the comand line tool firewall-cmd."))
+        label.set_alignment(0.5, 0.5)
+        hbox.add(label)
+        
+        self.mainvbox.pack_start(hbox, False, False, 0)
+
+        # show
+
+        self.add(self.mainvbox)
+        self.connect("delete-event", self.quit)
+        self.show_all()
+
+    def quit(self, *args):
+        # self cleanup
+        mainloop.quit()
+
+# MAIN
+
+mainloop = GObject.MainLoop()
+config = FirewallConfig()
+mainloop.run()
