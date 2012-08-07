@@ -18,7 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient
+from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient, \
+    NetworkManager
 
 import os
 import dbus.mainloop.glib
@@ -172,7 +173,7 @@ class TrayApplet(object):
 
         self.bus.add_signal_receiver(
             self.nm_signal_receiver,
-            dbus_interface="org.freedesktop.NetworkManager",
+            dbus_interface="NetworkManager.DBUS_INTERFACE",
             sender_keyword='sender')
 
         self.fw = None
@@ -429,20 +430,18 @@ class TrayApplet(object):
                 self.notify(_("Zone '%s' activated for interface '%s'") % \
                                 (zone, interface))
 
-
     def nm_signal_receiver(self, *args, **kwargs):
-#        print(args, kwargs)
+        #print("nm_signal_receiver", args, kwargs)
         self.connections.clear()
         try:
-            self.nmclient = NMClient.Client(\
-                dbus_path='/org/freedesktop/NetworkManager')
-            active = self.nmclient.get_active_connections()
-            for a in active:
-                obj = self.bus.get_object("org.freedesktop.NetworkManager",
-                                          a.get_connection())
+            self.nmclient = NMClient.Client()
+            for active in self.nmclient.get_active_connections():
+                obj = self.bus.get_object(NetworkManager.DBUS_INTERFACE,
+                                          active.get_connection())
                 connection = obj.GetSettings()['connection']['id']
-                for dev in a.get_devices():
-                    self.connections[dev.get_ip_iface()] = connection.encode("utf-8")
+                for dev in active.get_devices():
+                    self.connections[dev.get_ip_iface()] = \
+                        connection.encode("utf-8")
         except Exception as msg:
             print(msg)
 
