@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import glib
+from gi.repository import GLib
 import dbus
 import dbus.service
 import slip.dbus
@@ -85,7 +85,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeTimeout(self, zone, x):
         if zone in self._timeouts and x in self._timeouts[zone]:
-            glib.source_remove(self._timeouts[zone][x])
+            GLib.source_remove(self._timeouts[zone][x])
             del self._timeouts[zone][x]
 
     @dbus_handle_exceptions
@@ -93,7 +93,7 @@ class FirewallD(slip.dbus.service.Object):
         # cleanup timeouts
         for zone in self._timeouts:
             for x in self._timeouts[zone]:
-                glib.source_remove(self._timeouts[zone][x])
+                GLib.source_remove(self._timeouts[zone][x])
             self._timeouts[zone].clear()
         self._timeouts.clear()
 
@@ -470,7 +470,7 @@ class FirewallD(slip.dbus.service.Object):
         _zone = self.fw.zone.add_service(zone, service, timeout, sender)
 
         if timeout > 0:
-            tag = glib.timeout_add_seconds(timeout, self.disableTimedService,
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedService,
                                            _zone, service)
             self.addTimeout(_zone, service, tag)
 
@@ -550,7 +550,7 @@ class FirewallD(slip.dbus.service.Object):
         _zone = self.fw.zone.add_port(zone, port, protocol, timeout, sender)
 
         if timeout > 0:
-            tag = glib.timeout_add_seconds(timeout, self.disableTimedPort,
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedPort,
                                            _zone, port, protocol)
             self.addTimeout(_zone, (port, protocol), tag)
 
@@ -628,7 +628,7 @@ class FirewallD(slip.dbus.service.Object):
         _zone = self.fw.zone.add_masquerade(zone, timeout, sender)
         
         if timeout > 0:
-            tag = glib.timeout_add_seconds(timeout, self.disableTimedMasquerade,
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedMasquerade,
                                            _zone)
             self.addTimeout(_zone, "masquerade", tag)
 
@@ -697,7 +697,7 @@ class FirewallD(slip.dbus.service.Object):
                                               toaddr, timeout, sender)
 
         if timeout > 0:
-            tag = glib.timeout_add_seconds(timeout,
+            tag = GLib.timeout_add_seconds(timeout,
                                            self.disable_forward_port,
                                            _zone, port, protocol, toport,
                                            toaddr)
@@ -789,7 +789,7 @@ class FirewallD(slip.dbus.service.Object):
         _zone = self.fw.zone.add_icmp_block(zone, icmp, timeout, sender)
 
         if timeout > 0:
-            tag = glib.timeout_add_seconds(timeout, self.disableTimedIcmpBlock,
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedIcmpBlock,
                                            _zone, icmp, sender)
             self.addTimeout(_zone, icmp, tag)
 
