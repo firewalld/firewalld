@@ -185,6 +185,14 @@ fi
 #%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Aug  7 2012 Thomas Woerner <twoerner@redhat.com> 0.2.6-1
+- New D-BUS interface for persistent configuration
+- Aded support for persistent zone configuration in firewall-cmd
+- New Shields Up feature in firewall-applet
+- New requirements for python-decorator and pygobject3
+- New firewall-config sub-package
+- New firewall-convert-scfw-config config script
+
 * Fri Apr 20 2012 Thomas Woerner <twoerner@redhat.com> 0.2.5-1
 - Fixed traceback in firewall-cmd for failed or canceled authorization, 
   return proper error codes, new error codes NOT_RUNNING and NOT_AUTHORIZED
