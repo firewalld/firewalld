@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.or\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-20 21:24+0200\n"
+"POT-Creation-Date: 2012-08-07 13:08+0200\n"
 "PO-Revision-Date: 2011-01-16 20:43+0530\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya <Translation-team-or@lists.sourceforge.net>\n"
@@ -56,6 +56,20 @@ msgstr ""
 "\n"
 "\n"
 
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:55
+msgid "Firewall Applet"
+msgstr "ଅଗ୍ନିକବଚ ଆପଲେଟ"
+
+#: ../config/firewall-config.desktop.in.h:1
+#, fuzzy
+msgid "Firewall"
+msgstr "ଅଗ୍ନିକବଚ ଆପଲେଟ"
+
+#: ../config/firewall-config.desktop.in.h:2
+#, fuzzy
+msgid "Firewall Configuration"
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ବିନ୍ୟାସ"
+
 #
 #: ../src/firewall/config/__init__.py:43
 msgid ""
@@ -83,20 +97,17 @@ msgstr ""
 " ଆପଣ ଏହି ପ୍ରୋଗ୍ରାମ ସହିତ ଗ୍ନୁ ସାଧାରଣ ସାର୍ବଜନୀନ ଅନୁମତି ପତ୍ର ପାଈଥିବେ. ଯଦି ପାଇନାହାନ୍ତି ତେବେ "
 "ଏହାକୁ ଦେଖନ୍ତୁ <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall/core/io/icmptype.py:42
-#: ../src/firewall/core/io/service.py:44 ../src/firewall/core/io/zone.py:50
+#: ../src/firewall/core/io/io_object.py:149
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr ""
 
-#: ../src/firewall/core/io/icmptype.py:49
-#: ../src/firewall/core/io/service.py:51 ../src/firewall/core/io/zone.py:57
+#: ../src/firewall/core/io/io_object.py:156
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#: ../src/firewall/core/io/icmptype.py:57
-#: ../src/firewall/core/io/service.py:59 ../src/firewall/core/io/zone.py:65
+#: ../src/firewall/core/io/io_object.py:164
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
@@ -125,100 +136,128 @@ msgstr ""
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ଫର୍କ #1 ବିଫଳହୋଇଛି: %d (%s)"
 
-#: ../src/firewall-applet:54
-msgid "Firewall Applet"
-msgstr "ଅଗ୍ନିକବଚ ଆପଲେଟ"
+#: ../src/firewall-applet:98
+msgid "Shields Up"
+msgstr ""
 
-#: ../src/firewall-applet:97
+#: ../src/firewall-applet:104
 #, fuzzy
 msgid "Enable Notifications"
 msgstr "ସମସ୍ତ ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକୁ ସକ୍ରିୟ କରନ୍ତୁ"
 
-#: ../src/firewall-applet:109
+#: ../src/firewall-applet:117
 msgid "Edit Firewall Settings..."
 msgstr ""
 
-#: ../src/firewall-applet:119
+#: ../src/firewall-applet:127
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:151
+#: ../src/firewall-applet:159
 msgid "Not using slip"
 msgstr "ସୁପ୍ତ ଅବସ୍ଥାକୁ ବ୍ୟବହାର କରୁନାହିଁ"
 
-#: ../src/firewall-applet:215
+#: ../src/firewall-applet:231
 #, fuzzy
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD କୁ ସଂଯୋଗ ନଷ୍ଟ ହୋଇଛି"
 
-#: ../src/firewall-applet:216
+#: ../src/firewall-applet:232
 #, fuzzy
 msgid "Connection to FirewallD established."
 msgstr "FirewallD କୁ ସଂଯୋଗ ନଷ୍ଟ ହୋଇଛି"
 
-#: ../src/firewall-applet:304
+#: ../src/firewall-applet:325
 msgid "No connection to firewall daemon"
 msgstr "ଅଗ୍ନିକବଚ ଡେମନକୁ କୌଣସି ସଂଯୋଗ ନାହିଁ"
 
-#: ../src/firewall-applet:310
+#: ../src/firewall-applet:331
 msgid "PANIC MODE"
 msgstr "ଜଟିଳ ଅବସ୍ଥା"
 
-#: ../src/firewall-applet:322
+#: ../src/firewall-applet:343
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:325
+#: ../src/firewall-applet:346
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:333
+#: ../src/firewall-applet:354
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:345
+#: ../src/firewall-applet:366
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:347
+#: ../src/firewall-applet:368
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:367
+#: ../src/firewall-applet:393
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:368
+#: ../src/firewall-applet:394
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:398
+#: ../src/firewall-applet:424
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:399
+#: ../src/firewall-applet:425
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:402
+#: ../src/firewall-applet:428
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:407
+#: ../src/firewall-applet:433
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:429
+#: ../src/firewall-applet:455
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-cmd:226 ../src/firewall-cmd:228
-msgid "Wrong action and mode combination"
+#: ../src/firewall-config:35
+#, fuzzy
+msgid "Firewall Config"
+msgstr "ଅଗ୍ନିକବଚ ଡେମନ"
+
+#: ../src/firewall-config:65
+msgid "Quit"
+msgstr ""
+
+#: ../src/firewall-config:65
+msgid "_Quit"
+msgstr ""
+
+#: ../src/firewall-config:66
+msgid "Quit the program"
+msgstr ""
+
+#
+#: ../src/firewall-config:77
+#, fuzzy
+msgid "File"
+msgstr "ଫାଇଲ (_F)"
+
+#
+#: ../src/firewall-config:77
+msgid "_File"
+msgstr "ଫାଇଲ (_F)"
+
+#: ../src/firewall-config:102
+msgid "Please use the comand line tool firewall-cmd."
 msgstr ""
 
 #, fuzzy
@@ -281,9 +320,6 @@ msgstr ""
 #~ msgid "Custom Rules"
 #~ msgstr "ଇଚ୍ଛାରୂପଣ ନିୟମ ଗୁଡିକ"
 
-#~ msgid "Default Configuration"
-#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ବିନ୍ୟାସ"
-
 #
 #~ msgid "Edit"
 #~ msgstr "ସମ୍ପାଦନ କରନ୍ତୁ"
@@ -301,9 +337,6 @@ msgstr ""
 #~ "FTP ସୁଦୂର ଫାଇଲ ସ୍ଥାନାନ୍ତରଣ ପାଇଁ ବ୍ୟବହାର ହେଉଥିବା ଗୋଟିଏ ପ୍ରୋଟୋକଲ. ଯଦି ଆପଣଙ୍କର FTP "
 #~ "ସର୍ଭରକୁ ସମସ୍ତଙ୍କ ପାଇଁ ଉପଲବ୍ଧ କରାଇବାକୁ ଯୋଜନା କରୁଥାନ୍ତି, ତେବେ ଏହି ବିକଳ୍ପକୁ ସକ୍ରିୟକରନ୍ତୁ. ଏହି "
 #~ "ବିକଳ୍ପକୁ ଫଳପ୍ରଦକରିବା ପାଇଁ ଆପଣଙ୍କୁ vsftpd ପ୍ୟାକେଜ ସ୍ଥାପନ କରିବାକୁ ହେବ."
-
-#~ msgid "Firewall Daemon"
-#~ msgstr "ଅଗ୍ନିକବଚ ଡେମନ"
 
 #
 #~ msgid ""
@@ -465,10 +498,6 @@ msgstr ""
 
 #~ msgid "Work Zone"
 #~ msgstr "କାର୍ଯ୍ୟ କ୍ଷେତ୍ର"
-
-#
-#~ msgid "_File"
-#~ msgstr "ଫାଇଲ (_F)"
 
 #
 #~ msgid "_Help"

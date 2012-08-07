@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-20 21:24+0200\n"
+"POT-Creation-Date: 2012-08-07 13:08+0200\n"
 "PO-Revision-Date: 2011-02-16 09:25+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
@@ -18,6 +18,20 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:55
+msgid "Firewall Applet"
+msgstr "Aplet zapory sieciowej"
+
+#: ../config/firewall-config.desktop.in.h:1
+#, fuzzy
+msgid "Firewall"
+msgstr "Aplet zapory sieciowej"
+
+#: ../config/firewall-config.desktop.in.h:2
+#, fuzzy
+msgid "Firewall Configuration"
+msgstr "Domyślna konfiguracja"
 
 #
 #: ../src/firewall/config/__init__.py:43
@@ -50,20 +64,17 @@ msgstr ""
 "Powszechnej Licencji Publicznej GNU (GNU General Public License); jeśli nie "
 "- proszę odwiedzić stronę internetową <http://www.gnu.org/licenses/>."
 
-#: ../src/firewall/core/io/icmptype.py:42
-#: ../src/firewall/core/io/service.py:44 ../src/firewall/core/io/zone.py:50
+#: ../src/firewall/core/io/io_object.py:149
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr ""
 
-#: ../src/firewall/core/io/icmptype.py:49
-#: ../src/firewall/core/io/service.py:51 ../src/firewall/core/io/zone.py:57
+#: ../src/firewall/core/io/io_object.py:156
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#: ../src/firewall/core/io/icmptype.py:57
-#: ../src/firewall/core/io/service.py:59 ../src/firewall/core/io/zone.py:65
+#: ../src/firewall/core/io/io_object.py:164
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
@@ -92,100 +103,128 @@ msgstr "FirewallD nie zostanie uruchomione, ponieważ już działa."
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Rozdzielenie #1 nie powiodło się: %d (%s)"
 
-#: ../src/firewall-applet:54
-msgid "Firewall Applet"
-msgstr "Aplet zapory sieciowej"
+#: ../src/firewall-applet:98
+msgid "Shields Up"
+msgstr ""
 
-#: ../src/firewall-applet:97
+#: ../src/firewall-applet:104
 #, fuzzy
 msgid "Enable Notifications"
 msgstr "Włącz wszystkie powiadomienia"
 
-#: ../src/firewall-applet:109
+#: ../src/firewall-applet:117
 msgid "Edit Firewall Settings..."
 msgstr ""
 
-#: ../src/firewall-applet:119
+#: ../src/firewall-applet:127
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:151
+#: ../src/firewall-applet:159
 msgid "Not using slip"
 msgstr "Bez używania slip"
 
-#: ../src/firewall-applet:215
+#: ../src/firewall-applet:231
 #, fuzzy
 msgid "Connection to FirewallD lost."
 msgstr "Utracono połączenie z FirewallD"
 
-#: ../src/firewall-applet:216
+#: ../src/firewall-applet:232
 #, fuzzy
 msgid "Connection to FirewallD established."
 msgstr "Utracono połączenie z FirewallD"
 
-#: ../src/firewall-applet:304
+#: ../src/firewall-applet:325
 msgid "No connection to firewall daemon"
 msgstr "Brak połączenia z demonem zapory sieciowej"
 
-#: ../src/firewall-applet:310
+#: ../src/firewall-applet:331
 msgid "PANIC MODE"
 msgstr "TRYB PANIKI"
 
-#: ../src/firewall-applet:322
+#: ../src/firewall-applet:343
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:325
+#: ../src/firewall-applet:346
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:333
+#: ../src/firewall-applet:354
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:345
+#: ../src/firewall-applet:366
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:347
+#: ../src/firewall-applet:368
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:367
+#: ../src/firewall-applet:393
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:368
+#: ../src/firewall-applet:394
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:398
+#: ../src/firewall-applet:424
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:399
+#: ../src/firewall-applet:425
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:402
+#: ../src/firewall-applet:428
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:407
+#: ../src/firewall-applet:433
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:429
+#: ../src/firewall-applet:455
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-cmd:226 ../src/firewall-cmd:228
-msgid "Wrong action and mode combination"
+#: ../src/firewall-config:35
+#, fuzzy
+msgid "Firewall Config"
+msgstr "Demon zapory sieciowej"
+
+#: ../src/firewall-config:65
+msgid "Quit"
+msgstr ""
+
+#: ../src/firewall-config:65
+msgid "_Quit"
+msgstr ""
+
+#: ../src/firewall-config:66
+msgid "Quit the program"
+msgstr ""
+
+#
+#: ../src/firewall-config:77
+#, fuzzy
+msgid "File"
+msgstr "_Plik"
+
+#
+#: ../src/firewall-config:77
+msgid "_File"
+msgstr "_Plik"
+
+#: ../src/firewall-config:102
+msgid "Please use the comand line tool firewall-cmd."
 msgstr ""
 
 #, fuzzy
@@ -249,9 +288,6 @@ msgstr ""
 #~ msgid "Custom Rules"
 #~ msgstr "Własne reguły"
 
-#~ msgid "Default Configuration"
-#~ msgstr "Domyślna konfiguracja"
-
 #
 #~ msgid "Edit"
 #~ msgstr "Zmodyfikuj"
@@ -269,9 +305,6 @@ msgstr ""
 #~ "FTP jest protokołem używanym do zdalnego przesyłania plików. Jeśli "
 #~ "planowane jest publiczne udostępnianie serwera FTP, należy włączyć tę "
 #~ "opcję. Aby skorzystać z tej opcji musi być zainstalowany pakiet vsftpd."
-
-#~ msgid "Firewall Daemon"
-#~ msgstr "Demon zapory sieciowej"
 
 #
 #~ msgid ""
@@ -437,10 +470,6 @@ msgstr ""
 
 #~ msgid "Work Zone"
 #~ msgstr "Strefa robocza"
-
-#
-#~ msgid "_File"
-#~ msgstr "_Plik"
 
 #
 #~ msgid "_Help"

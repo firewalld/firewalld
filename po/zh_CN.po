@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-20 21:24+0200\n"
+"POT-Creation-Date: 2012-08-07 13:08+0200\n"
 "PO-Revision-Date: 2010-06-30 13:16+1000\n"
 "Last-Translator: Leah Liu <lliu@redhat.com>\n"
 "Language-Team: Wei Liu\n"
@@ -25,6 +25,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:55
+msgid "Firewall Applet"
+msgstr "防火墙小应用"
+
+#: ../config/firewall-config.desktop.in.h:1
+#, fuzzy
+msgid "Firewall"
+msgstr "防火墙小应用"
+
+#: ../config/firewall-config.desktop.in.h:2
+#, fuzzy
+msgid "Firewall Configuration"
+msgstr "默认配置"
 
 #: ../src/firewall/config/__init__.py:43
 msgid ""
@@ -49,20 +63,17 @@ msgstr ""
 "担保。更详细的情况请参阅GNU通用公共许可证。你应该已经和程序一起收到一份GNU通"
 "用公共许可证的副本。如果还没有， 请参考 <http://www.gnu.org/licenses/>。"
 
-#: ../src/firewall/core/io/icmptype.py:42
-#: ../src/firewall/core/io/service.py:44 ../src/firewall/core/io/zone.py:50
+#: ../src/firewall/core/io/io_object.py:149
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr ""
 
-#: ../src/firewall/core/io/icmptype.py:49
-#: ../src/firewall/core/io/service.py:51 ../src/firewall/core/io/zone.py:57
+#: ../src/firewall/core/io/io_object.py:156
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#: ../src/firewall/core/io/icmptype.py:57
-#: ../src/firewall/core/io/service.py:59 ../src/firewall/core/io/zone.py:65
+#: ../src/firewall/core/io/io_object.py:164
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
@@ -91,100 +102,126 @@ msgstr "不能启动FirewallD，已在运行。"
 msgid "Fork #1 failed: %d (%s)"
 msgstr "分支 #1 失败：%d （%s）"
 
-#: ../src/firewall-applet:54
-msgid "Firewall Applet"
-msgstr "防火墙小应用"
+#: ../src/firewall-applet:98
+msgid "Shields Up"
+msgstr ""
 
-#: ../src/firewall-applet:97
+#: ../src/firewall-applet:104
 #, fuzzy
 msgid "Enable Notifications"
 msgstr "应用所有修改"
 
-#: ../src/firewall-applet:109
+#: ../src/firewall-applet:117
 msgid "Edit Firewall Settings..."
 msgstr ""
 
-#: ../src/firewall-applet:119
+#: ../src/firewall-applet:127
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:151
+#: ../src/firewall-applet:159
 msgid "Not using slip"
 msgstr "不使用SLIP"
 
-#: ../src/firewall-applet:215
+#: ../src/firewall-applet:231
 #, fuzzy
 msgid "Connection to FirewallD lost."
 msgstr "丢失到FirewallD的连接"
 
-#: ../src/firewall-applet:216
+#: ../src/firewall-applet:232
 #, fuzzy
 msgid "Connection to FirewallD established."
 msgstr "丢失到FirewallD的连接"
 
-#: ../src/firewall-applet:304
+#: ../src/firewall-applet:325
 msgid "No connection to firewall daemon"
 msgstr "没有到防火墙守护进程的连接"
 
-#: ../src/firewall-applet:310
+#: ../src/firewall-applet:331
 msgid "PANIC MODE"
 msgstr "应急方式"
 
-#: ../src/firewall-applet:322
+#: ../src/firewall-applet:343
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:325
+#: ../src/firewall-applet:346
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:333
+#: ../src/firewall-applet:354
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:345
+#: ../src/firewall-applet:366
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:347
+#: ../src/firewall-applet:368
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:367
+#: ../src/firewall-applet:393
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:368
+#: ../src/firewall-applet:394
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:398
+#: ../src/firewall-applet:424
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:399
+#: ../src/firewall-applet:425
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:402
+#: ../src/firewall-applet:428
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:407
+#: ../src/firewall-applet:433
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:429
+#: ../src/firewall-applet:455
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-cmd:226 ../src/firewall-cmd:228
-msgid "Wrong action and mode combination"
+#: ../src/firewall-config:35
+#, fuzzy
+msgid "Firewall Config"
+msgstr "防火墙守护进程"
+
+#: ../src/firewall-config:65
+msgid "Quit"
+msgstr ""
+
+#: ../src/firewall-config:65
+msgid "_Quit"
+msgstr ""
+
+#: ../src/firewall-config:66
+msgid "Quit the program"
+msgstr ""
+
+#: ../src/firewall-config:77
+#, fuzzy
+msgid "File"
+msgstr "文件（_F）"
+
+#: ../src/firewall-config:77
+msgid "_File"
+msgstr "文件（_F）"
+
+#: ../src/firewall-config:102
+msgid "Please use the comand line tool firewall-cmd."
 msgstr ""
 
 #, fuzzy
@@ -238,9 +275,6 @@ msgstr ""
 #~ msgid "Custom Rules"
 #~ msgstr "定制规则"
 
-#~ msgid "Default Configuration"
-#~ msgstr "默认配置"
-
 #~ msgid "Edit"
 #~ msgstr "编辑"
 
@@ -254,9 +288,6 @@ msgstr ""
 #~ msgstr ""
 #~ "FTP 是用来进行远程文件传输的协议。如果您希望将您的 FTP 服务器向公众开放，"
 #~ "请启用此选项。要使此选项可用，您需要安装 vsftpd 软件包。"
-
-#~ msgid "Firewall Daemon"
-#~ msgstr "防火墙守护进程"
 
 #~ msgid ""
 #~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
@@ -394,9 +425,6 @@ msgstr ""
 
 #~ msgid "Work Zone"
 #~ msgstr "工作域"
-
-#~ msgid "_File"
-#~ msgstr "文件（_F）"
 
 #~ msgid "_Help"
 #~ msgstr "帮助（_H）"
