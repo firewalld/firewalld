@@ -113,7 +113,7 @@ class FirewallClientConfigZone(object):
         self.path = path
         self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
         self.fw_zone = dbus.Interface(self.dbus_obj,
-                                      dbus_interface=DBUS_INTERFACE_CONFIG)
+                                      dbus_interface=DBUS_INTERFACE_CONFIG_ZONE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         self._updated_cb = None
@@ -122,16 +122,16 @@ class FirewallClientConfigZone(object):
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG,
+        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_ZONE,
                                                      prop))
 
     @slip.dbus.polkit.enable_proxy
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG))
+        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_ZONE))
 
     @slip.dbus.polkit.enable_proxy
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG, prop, value)
+        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_ZONE, prop, value)
 
     @slip.dbus.polkit.enable_proxy
     def getSettings(self):
@@ -227,7 +227,7 @@ class FirewallClientConfigService(object):
         self.path = path
         self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
         self.fw_service = dbus.Interface(self.dbus_obj,
-                                         dbus_interface=DBUS_INTERFACE_CONFIG)
+                                         dbus_interface=DBUS_INTERFACE_CONFIG_SERVICE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         self._updated_cb = None
@@ -236,16 +236,16 @@ class FirewallClientConfigService(object):
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG,
+        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_SERVICE,
                                                      prop))
 
     @slip.dbus.polkit.enable_proxy
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG))
+        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_SERVICE))
 
     @slip.dbus.polkit.enable_proxy
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG, prop, value)
+        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_SERVICE, prop, value)
 
     @slip.dbus.polkit.enable_proxy
     def getSettings(self):
@@ -320,7 +320,7 @@ class FirewallClientConfigIcmpType(object):
         self.path = path
         self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
         self.fw_icmptype = dbus.Interface(self.dbus_obj,
-                                          dbus_interface=DBUS_INTERFACE_CONFIG)
+                                          dbus_interface=DBUS_INTERFACE_CONFIG_ICMPTYPE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         self._updated_cb = None
@@ -329,16 +329,16 @@ class FirewallClientConfigIcmpType(object):
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG,
+        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_ICMPTYPE,
                                                      prop))
 
     @slip.dbus.polkit.enable_proxy
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG))
+        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_ICMPTYPE))
 
     @slip.dbus.polkit.enable_proxy
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG, prop, value)
+        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_ICMPTYPE, prop, value)
 
     @slip.dbus.polkit.enable_proxy
     def getSettings(self):

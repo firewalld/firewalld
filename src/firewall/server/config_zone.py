@@ -71,7 +71,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         # get a property
         log.debug1("Get('%s', '%s')", interface_name, property_name)
 
-        if interface_name != DBUS_INTERFACE_CONFIG:
+        if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -96,7 +96,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     def GetAll(self, interface_name):
         log.debug1("GetAll('%s')", interface_name)
 
-        if interface_name != DBUS_INTERFACE_CONFIG:
+        if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -115,7 +115,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
                    new_value)
 
-        if interface_name != DBUS_INTERFACE_CONFIG:
+        if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -131,7 +131,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # S E T T I N G S
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG, out_signature=Zone.DBUS_SIGNATURE)
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getSettings(self, sender=None):
         """get settings for zone
@@ -139,7 +139,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("config.zone.%d.getSettings()", self.id)
         return self.config.get_zone_config(self.obj)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature=Zone.DBUS_SIGNATURE)
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def update(self, settings, sender=None):
         """update settings for zone
@@ -149,7 +149,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                                                dbus_to_python(settings))
         self.Updated()
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def loadDefaults(self, sender=None):
         """load default settings for builtin zone
@@ -158,7 +158,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.obj = self.config.load_zone_defaults(self.obj)
         self.Updated()
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def Updated(self):
         log.debug1("config.zone.%d.Updated()", self.id)
@@ -166,7 +166,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # R E M O V E
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def remove(self, sender=None):
         """remove zone
@@ -176,7 +176,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.Removed()
         self.unregister()
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def Removed(self):
         log.debug1("config.zone.%d.Removed()", self.id)
@@ -184,7 +184,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # R E N A M E
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='s')
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
     @dbus_handle_exceptions
     def rename(self, name, sender=None):
         """rename zone
@@ -193,7 +193,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.config.rename_zone(self.obj, dbus_to_python(name))
         self.Renamed()
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def Renamed(self):
         log.debug1("config.zone.%d.Renamed()", self.id)
