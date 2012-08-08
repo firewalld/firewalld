@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2009-2012 Red Hat, Inc.
 # Authors:
@@ -53,6 +54,8 @@ def usage():
                 { --zone=<zone> { --add-PERMANENT_ACTION |
                                   --remove-PERMANENT_ACTION |
                                   --query-PERMANENT_ACTION } } |
+                --get-services |
+                --get-icmptypes |
                 --get-zones
  PERMANENT_ACTION := { service=<service> |
                        port=<port>[-<port>]/<protocol> |
@@ -123,6 +126,7 @@ if "--direct" not in sys.argv[1:]:
                             "get-zones", "get-active-zones",
                             "get-zone-of-interface=",
                             "enable-panic", "disable-panic", "query-panic",
+                            "get-services", "get-icmptypes",
                             # zone
                             "zone=",
                             # permanent
@@ -256,12 +260,11 @@ if timeout != 0:
     if mode[:3] != "add":
         __fail("Timeout only valid in add mode.")
 
-
 if permanent:
     if timeout != 0:
         usage()
         sys.exit(1)
-    if mode == "get-zones" and not zone:
+    if mode in [ "get-zones", "get-services", "get-icmptypes" ] and not zone:
         pass
     elif not zone or mode not in [
         "add-service", "remove-service", "query-service", "list-services",
@@ -280,7 +283,29 @@ try:
 
     if permanent:
        if mode == "get-zones":
-           print(" ".join(fw.config().listZones()))
+           zones = fw.config().listZones()
+           l = [ ]
+           for zone in zones:
+               z = fw.config().getZone(zone)
+               l.append(z.get_property("name"))
+           if len(l) > 0:
+               print(" ".join(l))
+       elif mode == "get-services":
+           services = fw.config().listServices()
+           l = [ ]
+           for service in services:
+               s = fw.config().getService(service)
+               l.append(s.get_property("name"))
+           if len(l) > 0:
+               print(" ".join(l))
+       elif mode == "get-icmptypes":
+           icmptypes = fw.config().listIcmpTypes()
+           l = [ ]
+           for icmptype in icmptypes:
+               i = fw.config().getIcmpType(icmptype)
+               l.append(i.get_property("name"))
+           if len(l) > 0:
+               print(" ".join(l))
        else:
            fw_zone = fw.config().getZoneByName(zone)
            fw_settings = fw_zone.getSettings()
