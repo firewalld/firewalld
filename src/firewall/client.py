@@ -92,7 +92,7 @@ class FirewallClientConfigZoneSettings(object):
     def getMasquerade(self):
         return self.settings[8]
     def setMasquerade(self, masquerade):
-        self.settings[8] = masqerade
+        self.settings[8] = masquerade
 
     def getForwardPorts(self):
         return self.settings[9]
@@ -101,7 +101,7 @@ class FirewallClientConfigZoneSettings(object):
     def addForwardPort(self, port, protocol, to_port, to_addr):
         if (port,protocol,to_port,to_addr) not in self.settings[9]:
             self.settings[9].append((port,protocol,to_port,to_addr))
-    def removeForwardPort(self, port, protocol):
+    def removeForwardPort(self, port, protocol, to_port, to_addr):
         if (port,protocol,to_port,to_addr) in self.settings[9]:
             self.settings[9].remove((port,protocol,to_port,to_addr))
 
@@ -215,7 +215,7 @@ class FirewallClientConfigServiceSettings(object):
         self.settings[5] = destinations
     def setDestination(self, dest_type, address):
         self.settings[5][dest_type] = address
-    def removeModule(self, module):
+    def removeDestination(self, dest_type):
         if dest_type in self.settings[5]:
             del self.settings[5][dest_type]
 
