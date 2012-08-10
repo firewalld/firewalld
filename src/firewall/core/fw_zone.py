@@ -62,7 +62,7 @@ class FirewallZone:
 
         # apply default zone settings from config files
         for args in obj.icmp_blocks:
-            self.add_icmp_block(obj.name, *args)
+            self.add_icmp_block(obj.name, args)
         for args in obj.forward_ports:
             self.add_forward_port(obj.name, *args)
         for args in obj.services:
@@ -202,7 +202,7 @@ class FirewallZone:
                     if key == "interfaces":
                         self.add_interface(zone, args)
                     elif key == "icmp_blocks":
-                        self.add_icmp_block(zone, *args)
+                        self.add_icmp_block(zone, args)
                     elif key == "forward_ports":
                         self.add_forward_port(zone, *args)
                     elif key == "services":
@@ -758,7 +758,7 @@ class FirewallZone:
             self.remove_chain(zone, "filter", "INPUT")
             self.remove_chain(zone, "filter", "FORWARD_IN")
 
-    def add_icmp_block(self, zone, icmp, timeout, sender):
+    def add_icmp_block(self, zone, icmp, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
         self.check_immutable(_zone)
         self._fw.check_panic()
