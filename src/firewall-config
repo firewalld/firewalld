@@ -591,18 +591,19 @@ class FirewallConfig(object):
 
     def onRemoveForwardPort(self, *args):
         active_zone = self.zoneCombobox.get_active_text()
-        selection = self.portView.get_selection()
+        selection = self.forwardView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
             return
-        port = self.portStore.get_value(iter, 0)
-        proto = self.portStore.get_value(iter, 1)
-        to_port = self.portStore.get_value(iter, 2)
-        to_addr = self.portStore.get_value(iter, 3)
+        port = self.forwardStore.get_value(iter, 0)
+        proto = self.forwardStore.get_value(iter, 1)
+        to_port = self.forwardStore.get_value(iter, 2)
+        to_addr = self.forwardStore.get_value(iter, 3)
         model.remove(iter)
 
         if self.runtime_view:
-            self.fw.removePort(active_zone, port, proto, to_port, to_addr)
+            self.fw.removeForwardPort(active_zone, port, proto,
+                                      to_port, to_addr)
         else:
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
