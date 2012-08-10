@@ -98,7 +98,7 @@ class IO_Object(object):
                 raise FirewallError(INVALID_TYPE,
                                     "len('%s') != %d" % (config,
                                                          len(structure)))
-            for i in len(structure):
+            for i in xrange(len(structure)):
                 self._check_config_structure(config[i], structure[i])
         elif type(structure) == types.DictType:
             # only one key value pair in structure
