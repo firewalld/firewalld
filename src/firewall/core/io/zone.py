@@ -222,7 +222,7 @@ def zone_writer(zone, path=None):
         handler.ignorableWhitespace("\n")
 
     # forward-ports
-    for forward in set(zone.forward_ports):
+    for port in set(zone.forward_ports):
         handler.ignorableWhitespace("  ")
         attrs = { "port": port[0], "protocol": port[1] }
         if forward[2] and forward[2] != "" :
