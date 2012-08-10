@@ -717,7 +717,7 @@ class FirewallD(slip.dbus.service.Object):
         protocol = str(protocol)
         toport = str(toport)
         toaddr = str(toaddr)
-        log.debug1("zone.disableForwardPort('%s', '%s', '%s', '%s', '%s')" % \
+        log.debug1("zone.removeForwardPort('%s', '%s', '%s', '%s', '%s')" % \
                        (zone, port, protocol, toport, toaddr))
         _zone = self.fw.zone.remove_forward_port(zone, port, protocol, toport,
                                                  toaddr)
@@ -803,7 +803,7 @@ class FirewallD(slip.dbus.service.Object):
     def removeIcmpBlock(self, zone, icmp, sender=None):
         # removes icmpBlock from zone
         icmp = str(icmp)
-        log.debug1("zone.disableIcmpBlock('%s', '%s')" % (zone, icmp))
+        log.debug1("zone.removeIcmpBlock('%s', '%s')" % (zone, icmp))
         _zone = self.fw.zone.remove_icmp_block(zone, icmp)
 
         self.removeTimeout(_zone, icmp)
