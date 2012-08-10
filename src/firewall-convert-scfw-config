@@ -353,7 +353,7 @@ zone = "public" # default zone in case of missing config file
 
 _firewalld_conf = firewalld_conf(FIREWALLD_CONF)
 try:
-    self._firewalld_conf.read()
+    _firewalld_conf.read()
 except Exception, msg:
     # ignore read error, use default zone
     pass
@@ -407,13 +407,13 @@ if conf.block_icmp:
     for icmp in conf.block_icmp:
         if icmp not in obj.icmp_blocks:
             print("Adding icmpblock %s to default zone." % icmp)
-            obj.icmp_blocks.apend(icmp)
+            obj.icmp_blocks.append(icmp)
             changed = True
 
 if conf.forward_port:
     for fwd in conf.forward_port:
         # ignore interface, should belong to default zone
-        entry = (fwd["port"], fwd["proto"], fwd["toport"], fwdattrs["toaddr"])
+        entry = (fwd["port"], fwd["proto"], fwd["toport"], fwd["toaddr"])
         if entry not in obj.forward_ports:
             print("Adding forward port %s:%s:%s:%s to default zone." % \
                       (entry[0], entry[1], entry[2], entry[3]))

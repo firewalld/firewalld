@@ -271,6 +271,7 @@ if permanent:
         "add-port", "remove-port", "query-port", "list-ports",
         "add-icmp-block", "remove-icmp-block", "query-icmp-block",
         "list-icmp-blocks",
+        "add-masquerade", "remove-masquerade", "query-masquerade",
         "add-forward-port", "remove-forward-port", "query-forward-port", 
         "list-forward-ports"]:
         usage()
@@ -341,11 +342,11 @@ try:
 
            # masquerade
            elif mode == "add-masquerade":
-               fw_settings.addMasquerade()
+               fw_settings.setMasquerade(True)
            elif mode == "remove-masquerade":
-               fw_settings.removeMasquerade()
-           elif mode == "query-masqueade":
-               sys.exit(not fw_settings.queryMasquerade())
+               fw_settings.setMasquerade(False)
+           elif mode == "query-masquerade":
+               sys.exit(not fw_settings.getMasquerade())
 
            # forward port
            elif mode == "list-forward-ports":
@@ -355,7 +356,7 @@ try:
                sys.exit(0)
            elif mode == "add-forward-port":
                (port, protocol, toport, toaddr) = __parse_forward_port(value)
-               fw_settings.addForwardPort(port, protocol, toport, toaddr, timeout)
+               fw_settings.addForwardPort(port, protocol, toport, toaddr)
            elif mode == "remove-forward-port":
                (port, protocol, toport, toaddr) = __parse_forward_port(value)
                fw_settings.removeForwardPort(port, protocol, toport, toaddr)
@@ -365,7 +366,7 @@ try:
 
            # block icmp
            elif mode == "list-icmp-blocks":
-               l = fw_setings.getIcmpBlocks()
+               l = fw_settings.getIcmpBlocks()
                if len(l) > 0:
                    print(" ".join(l))
                sys.exit(0)
@@ -490,7 +491,7 @@ try:
         fw.addMasquerade(zone, timeout)
     elif mode == "remove-masquerade":
         fw.removeMasquerade(zone)
-    elif mode == "query-masqueade":
+    elif mode == "query-masquerade":
         sys.exit(not fw.queryMasquerade(zone))
 
     # forward port
