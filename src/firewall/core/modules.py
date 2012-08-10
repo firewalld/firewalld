@@ -98,6 +98,6 @@ class modules:
         (mods, deps) = self.loaded_modules()
 
         dependant = [ ]
-        self.get_deps(module, deps, depandant)
+        self.get_deps(module, deps, dependant)
 
-        return depandant
+        return dependant
