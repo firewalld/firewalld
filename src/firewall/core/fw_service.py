@@ -37,7 +37,7 @@ class FirewallService:
 
     def check_service(self, service):
         if service not in self._services:
-            raise FirewallError(INVALID_SERVICE)
+            raise FirewallError(INVALID_SERVICE, service)
 
     def get_service(self, service):
         self.check_service(service)
@@ -47,5 +47,5 @@ class FirewallService:
         self._services[obj.name] = obj
 
     def remove_service(self, service):
-        obj = self._services[service]
+        self.check_service(service)
         del self._services[service]

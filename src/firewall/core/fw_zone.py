@@ -711,7 +711,7 @@ class FirewallZone:
     # ICMP BLOCK
 
     def check_icmp_block(self, icmp):
-        self._fw.check_icmp_type(icmp)
+        self._fw.check_icmptype(icmp)
 
     def __icmp_block_id(self, icmp):
         self.check_icmp_block(icmp)

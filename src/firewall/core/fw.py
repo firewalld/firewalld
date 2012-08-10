@@ -395,9 +395,8 @@ class Firewall:
             raise FirewallError(INVALID_INTERFACE, interface)
 
     def check_service(self, service):
-        if not service in self.service.get_services():
-            raise FirewallError(INVALID_SERVICE, service)
-        
+        self.service.check_service(service)
+
     def check_port(self, port):
         range = functions.getPortRange(port)
 
@@ -423,9 +422,8 @@ class Firewall:
         if not functions.checkIP(ip):
             raise FirewallError(INVALID_ADDR, ip)
 
-    def check_icmp_type(self, icmp):
-        if not icmp in self.icmptype.get_icmptypes():
-            raise FirewallError(INVALID_ICMPTYPE, icmp)
+    def check_icmptype(self, icmp):
+        self.icmptype.check_icmptype(icmp)
 
     # RELOAD
 

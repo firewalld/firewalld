@@ -47,5 +47,5 @@ class FirewallIcmpType:
         self._icmptypes[obj.name] = obj
 
     def remove_icmptype(self, icmptype):
-        obj = self._icmptypes[icmptype]
+        self.check_icmptype(icmptype)
         del self._icmptypes[icmptype]
