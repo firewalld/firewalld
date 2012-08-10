@@ -166,7 +166,7 @@ class FirewallZone:
     def add_chain(self, zone, table, chain):
         self.__chain(zone, True, table, chain)
 
-    def remove_chain(zone, self, table, chain):
+    def remove_chain(self, zone, self, table, chain):
         # TODO: add config setting to remove chains optionally if 
         #       table,chain is not used for zone anymore
 #        self.__chain(zone, False, table, chain)

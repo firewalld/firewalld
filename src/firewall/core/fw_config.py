@@ -20,7 +20,7 @@
 import time
 import copy
 import os, os.path
-from firewall.config import ETC_FIREWALLD_ZONES
+from firewall.config import *
 from firewall.core.base import *
 from firewall.core.logger import log
 from firewall.core.io.icmptype import IcmpType, icmptype_reader, icmptype_writer
