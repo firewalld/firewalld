@@ -82,10 +82,10 @@ class FirewallClientConfigZoneSettings(object):
         return self.settings[7]
     def setIcmpBlocks(self, icmpblocks):
         self.settings[7] = icmpblocks
-    def addIcmBlock(self, icmptype):
+    def addIcmpBlock(self, icmptype):
         if icmptype not in self.settings[7]:
             self.settings[7].append(icmptype)
-    def removeIcmBlock(self, icmptype):
+    def removeIcmpBlock(self, icmptype):
         if icmptype in self.settings[7]:
             self.settings[7].remove(icmptype)
 
