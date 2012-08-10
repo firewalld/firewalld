@@ -77,7 +77,7 @@ class FirewallConfig:
             return self._icmptypes[name]
         elif name in self._default_icmptypes:
             return self._default_icmptypes[name]
-        raise FirewallError(INVALID_ICMPTYPE, icmptype)            
+        raise FirewallError(INVALID_ICMPTYPE, name)
 
     def icmptype_has_defaults(self, name):
         return (name in self._icmptypes and name in self._default_icmptypes)
@@ -110,11 +110,11 @@ class FirewallConfig:
 
     def new_icmptype(self, name, config):
         try:
-            x = self.get_icmptype(name)
+            self.get_icmptype(name)
         except:
             pass
         else:
-            raise FirewallError(ICMPTYPE_CONFLICT, name)
+            raise FirewallError(NAME_CONFLICT, name)
 
         x = IcmpType()
         x.check_name(name)
@@ -233,7 +233,7 @@ class FirewallConfig:
             return self._services[name]
         elif name in self._default_services:
             return self._default_services[name]
-        raise FirewallError(INVALID_SERVICE, service)            
+        raise FirewallError(INVALID_SERVICE, name)
 
     def service_has_defaults(self, name):
         return (name in self._services and name in self._default_services)
@@ -266,11 +266,11 @@ class FirewallConfig:
 
     def new_service(self, name, config):
         try:
-            x = self.get_service(name)
+            self.get_service(name)
         except:
             pass
         else:
-            raise FirewallError(SERVICE_CONFLICT, name)
+            raise FirewallError(NAME_CONFLICT, name)
 
         x = Service()
         x.check_name(name)
@@ -389,7 +389,7 @@ class FirewallConfig:
             return self._zones[name]
         elif name in self._default_zones:
             return self._default_zones[name]
-        raise FirewallError(INVALID_ZONE, zone)            
+        raise FirewallError(INVALID_ZONE, name)
 
     def zone_has_defaults(self, name):
         return (name in self._zones and name in self._default_zones)
@@ -422,11 +422,11 @@ class FirewallConfig:
 
     def new_zone(self, name, config):
         try:
-            x = self.get_zone(name)
+            self.get_zone(name)
         except:
             pass
         else:
-            raise FirewallError(ZONE_CONFLICT, name)
+            raise FirewallError(NAME_CONFLICT, name)
 
         x = Zone()
         x.check_name(name)
