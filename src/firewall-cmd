@@ -356,7 +356,7 @@ try:
                sys.exit(0)
            elif mode == "add-forward-port":
                (port, protocol, toport, toaddr) = __parse_forward_port(value)
-               fw_settings.addForwardPort(port, protocol, toport, toaddr, timeout)
+               fw_settings.addForwardPort(port, protocol, toport, toaddr)
            elif mode == "remove-forward-port":
                (port, protocol, toport, toaddr) = __parse_forward_port(value)
                fw_settings.removeForwardPort(port, protocol, toport, toaddr)
