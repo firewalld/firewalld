@@ -251,7 +251,7 @@ class Firewall:
                 (ipv, rule) = rules[i]
 
             # drop insert rule number if it exists
-            if insert and not enable and isinstance(rule[1], IntType):
+            if insert and not enable and isinstance(rule[1], int):
                 rule.pop(1)
 
             # run
