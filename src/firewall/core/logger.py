@@ -295,13 +295,6 @@ class Logger:
             return self._level[domain]
         return self.NOTHING
 
-    def getDebugLogLevel(self, domain="*"):
-        """ Get debug log level. """
-        self._checkDomain(domain)
-        if domain in self._debug_level:
-            return self._debug_level[domain]
-        return self.NO_DEBUG
-
     def setInfoLogLevel(self, level, domain="*"):
         """ Set log level [NOTHING .. INFO_MAX] """
         self._checkDomain(domain)
@@ -315,7 +308,7 @@ class Logger:
         """ Get debug log level. """
         self._checkDomain(domain)
         if domain in self._debug_level:
-            return self._debug_level[domain] - self.NO_DEBUG
+            return self._debug_level[domain] + self.NO_DEBUG
         return self.NO_DEBUG
 
     def setDebugLogLevel(self, level, domain="*"):
