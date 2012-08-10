@@ -107,9 +107,10 @@ def dbus_to_python(obj):
         return int(obj)
     elif isinstance(obj, dbus.types.Double):
         return float(obj)
-    elif isinstance(obj, dbus.types.Array) or \
-            isinstance(obj, dbus.types.Struct):
-        return [dbus_to_python(x) for x in obj]
+    elif isinstance(obj, dbus.types.Array):
+            return [dbus_to_python(x) for x in obj]
+    elif isinstance(obj, dbus.types.Struct):
+            return tuple([dbus_to_python(x) for x in obj])
     elif isinstance(obj, dbus.types.Dictionary):
         return {dbus_to_python(k):dbus_to_python(v) for k,v in obj.iteritems()}
     else:
