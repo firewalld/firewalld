@@ -366,7 +366,7 @@ try:
 
            # block icmp
            elif mode == "list-icmp-blocks":
-               l = fw_setings.getIcmpBlocks()
+               l = fw_settings.getIcmpBlocks()
                if len(l) > 0:
                    print(" ".join(l))
                sys.exit(0)
