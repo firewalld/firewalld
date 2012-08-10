@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2011-2012 Red Hat, Inc.
 # Authors:
@@ -18,105 +19,601 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient
-
+from gi.repository import Gtk, GObject
+import sys
 import dbus
 
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.client import FirewallClient
+from firewall.functions import *
 
-FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
+#FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
+CONFIG_NAME = "firewall-applet" # use firewall applet icon for now
 
-class FirewallConfig(Gtk.Window):
+class FirewallConfig(object):
     def __init__(self):
-        Gtk.Window.__init__(self)
+        builder = Gtk.Builder()
+        builder.add_from_file("firewall-config.glade")
+        builder.connect_signals(self)
 
-        self.set_title(_("Firewall Config"))
-        self.set_border_width(6)
-        self.set_default_size(400, 200)
-        self.icon_name = "preferences-system-firewall" # TODO fix icon name
-
-        self.icon_theme = Gtk.IconTheme.get_default()
-        (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.MENU)
+        # get icon and logo
+        (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
         size = min(width, height)
+        self.icon_theme = Gtk.IconTheme.get_default()
+        self.icon = self.icon_theme.load_icon(CONFIG_NAME, size, 0)
+        self.logo = self.icon_theme.load_icon(CONFIG_NAME, 48, 0)
 
-        self.icon = None
-        icon_info = self.icon_theme.lookup_icon(self.icon_name, size, 0)
-        if icon_info:
-            self.icon = icon_info.load_icon()
-        self.set_default_icon(self.icon)
-        self.set_icon(self.icon)
+        # get widgets
 
-        # settings
+        self.toplevel = builder.get_object("mainWindow")
+        self.toplevel.set_icon(self.icon)
 
-        # accelgroup and actiongroup
+        self.aboutDialog = builder.get_object("aboutDialog")
+        self.aboutDialog.set_version(VERSION)
+        self.aboutDialog.set_authors(AUTHORS)
+        self.aboutDialog.set_license(LICENSE)
+        self.aboutDialog.set_wrap_license(True)
+        self.aboutDialog.set_copyright(COPYRIGHT)
+        self.aboutDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.aboutDialog.set_transient_for(self.toplevel)
+        self.aboutDialog.set_modal(True)
+        self.aboutDialog.set_icon(self.icon)
+        self.aboutDialog.set_logo(self.logo)
 
-        self.accelgroup = Gtk.AccelGroup()
-        self.add_accel_group(self.accelgroup)
-        self.actiongroup = Gtk.ActionGroup("FirewallConfig")
+        self.currentViewLabel = builder.get_object("currentViewLabel")
 
-        # mainvbox
+        self.views = { True: _("Runtime Configuration"),
+                       False: _("Persistent Configuration"), }
+        self.runtime_view = True
+        self.currentViewLabel.set_markup(self.views[self.runtime_view])
 
-        self.mainvbox = Gtk.VBox(spacing=6)
+        self.zoneCombobox = builder.get_object("zoneComboboxtext")
 
-        # global actions
+        self.defaultZoneLabel = builder.get_object("defaultZoneLabel")
+        self.defaultZoneDialog = builder.get_object("defaultZoneDialog")
+        self.defaultZoneView = builder.get_object("defaultZoneView")
+        self.defaultZoneStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.defaultZoneView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.defaultZoneView.set_model(self.defaultZoneStore)
 
-        self.quit_action = Gtk.Action.new(_("Quit"), _("_Quit"),
-                                          _("Quit the program"),
-                                          Gtk.STOCK_QUIT)
-        self.quit_action.connect("activate", self.quit)
-        self.actiongroup.add_action_with_accel(self.quit_action, None)
-        self.quit_action.set_accel_group(self.accelgroup)
+        self.serviceView = builder.get_object("serviceView")
+        self.serviceStore = Gtk.ListStore(GObject.TYPE_BOOLEAN,
+                                          GObject.TYPE_STRING)
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.service_toggle_cb, self.serviceStore, 0)
+        self.serviceView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
+        self.serviceView.append_column(
+            Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=1))
+        self.serviceView.set_model(self.serviceStore)
+        self.serviceStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
-        # menubar
+        self.portView = builder.get_object("portView")
+        self.portStore = Gtk.ListStore(GObject.TYPE_STRING, GObject.TYPE_STRING)
+        self.portView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
+        self.portView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
+        self.portView.set_model(self.portStore)
+        self.portStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.portView.get_selection().connect("changed",
+                                              self.change_port_selection_cb)
 
-        self.menubar = Gtk.MenuBar.new()
+        self.editPortButton = builder.get_object("editPortButton")
+        self.removePortButton = builder.get_object("removePortButton")
 
-        # file menu
-        action = Gtk.Action.new(_("File"), _("_File"), None, None)
-        action_item = action.create_menu_item()
-        self.actiongroup.add_action(action)
-        menu = Gtk.Menu.new()
-        action_item.set_submenu(menu)
-        self.menubar.append(action_item)
-        menu.append(self.quit_action.create_menu_item())
+        self.portDialog = builder.get_object("portDialog")
+        self.portDialogPortEntry = builder.get_object("portDialogPortEntry")
+        self.portDialogProtoCombobox = \
+            builder.get_object("portDialogProtoCombobox")
 
-        self.mainvbox.pack_start(self.menubar, False, True, 0)
+        self.masqueradeCheck = builder.get_object("masqueradeCheck")
+        self.masqueradeCheck_handler_id = \
+            self.masqueradeCheck.connect("toggled", self.masquerade_check_cb)
 
-        # toolbar
+        self.forwardView = builder.get_object("forwardView")
+        self.forwardStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                          GObject.TYPE_STRING,
+                                          GObject.TYPE_STRING,
+                                          GObject.TYPE_STRING)
+        self.forwardView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
+        self.forwardView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
+        self.forwardView.append_column(
+            Gtk.TreeViewColumn(_("To Port"), Gtk.CellRendererText(), text=2))
+        self.forwardView.append_column(
+            Gtk.TreeViewColumn(_("To Address"), Gtk.CellRendererText(), text=3))
+        self.forwardView.set_model(self.forwardStore)
+        self.forwardStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.forwardView.get_selection().connect(\
+            "changed", self.change_forward_selection_cb)
 
-        self.toolbar = Gtk.Toolbar.new()
-        self.mainvbox.pack_start(self.toolbar, False, True, 0)
+        self.editForwardButton = builder.get_object("editForwardButton")
+        self.removeForwardButton = builder.get_object("removeForwardButton")
 
-        # statusbar
-        
-        # tooltips
+        self.forwardDialog = builder.get_object("forwardDialog")
+        self.forwardDialogPortEntry = \
+            builder.get_object("forwardDialogPortEntry")
+        self.forwardDialogProtoCombobox = \
+            builder.get_object("forwardDialogProtoCombobox")
+        self.forwardDialogToPortEntry = \
+            builder.get_object("forwardDialogToPortEntry")
+        self.forwardDialogToAddrEntry = \
+            builder.get_object("forwardDialogToAddrEntry")
 
-        for action in self.actiongroup.list_actions():
-            action.set_property('tooltip', action.get_property('tooltip'))
+        self.icmpView = builder.get_object("icmpView")
+        self.icmpStore = Gtk.ListStore(GObject.TYPE_BOOLEAN,
+                                          GObject.TYPE_STRING)
+        toggle = Gtk.CellRendererToggle()
+        toggle.connect("toggled", self.icmp_toggle_cb, self.icmpStore, 0)
+        self.icmpView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
+        self.icmpView.append_column(
+            Gtk.TreeViewColumn(_("Icmp Type"), Gtk.CellRendererText(), text=1))
+        self.icmpView.set_model(self.icmpStore)
+        self.icmpStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
-        # main area
+        # firewall client
 
-        hbox = Gtk.HBox(spacing=6)
-        label = Gtk.Label(_("Please use the comand line tool firewall-cmd."))
-        label.set_alignment(0.5, 0.5)
-        hbox.add(label)
-        
-        self.mainvbox.pack_start(hbox, False, False, 0)
+        self.fw = FirewallClient()
 
-        # show
+        # fill with life
 
-        self.add(self.mainvbox)
-        self.connect("delete-event", self.quit)
-        self.show_all()
+        self.load()
 
-    def quit(self, *args):
-        # self cleanup
-        mainloop.quit()
+        # mainloop
+
+        self.toplevel.show_all()
+        self.mainloop = GObject.MainLoop()
+        try:
+            self.mainloop.run()
+        except KeyboardInterrupt as msg:
+            self.onQuit()
+
+    def load(self):
+        default_zone = self.fw.getDefaultZone()
+        self.defaultZoneLabel.set_text(default_zone)
+        self.load_zones()
+
+    def load_zones(self):
+        active_zone = self.zoneCombobox.get_active_text()
+        model = self.zoneCombobox.get_model()
+        model.clear()
+
+        zones = [ ]
+        if self.runtime_view:
+            zones = sorted(self.fw.getZones())
+            i = 0
+            while i < len(zones):
+                if self.fw.isImmutable(zones[i]):
+                    zones.pop(i)
+                else:
+                    i += 1
+        else:
+            _zones = sorted(self.fw.config().listZones())
+            for zone in _zones:
+                z = self.fw.config().getZone(zone)
+                settings = z.getSettings()
+                if not settings.getImmutable():
+                    zones.append(z.get_property("name"))
+
+        # reset and fill notebook content according to view
+
+        self.serviceStore.clear()
+        self.icmpStore.clear()
+
+        if self.runtime_view:
+            for item in self.fw.listServices():
+                self.serviceStore.append([False, item])
+            for item in self.fw.listIcmpTypes():
+                self.icmpStore.append([False, item])
+        else:
+            items = self.fw.config().listServices()
+            for item in items:
+                obj = self.fw.config().getService(item)
+                self.serviceStore.append([False, obj.get_property("name")])
+            items = self.fw.config().listIcmpTypes()
+            for item in items:
+                obj = self.fw.config().getIcmpType(item)
+                self.icmpStore.append([False, obj.get_property("name")])
+
+        # zones
+
+        self.zones = sorted(zones)
+        for zone in zones:
+            self.zoneCombobox.append_text(zone)
+
+        if active_zone in zones:
+            _zone = active_zone
+        else:
+            _zone = self.defaultZoneLabel.get_text()
+
+        if _zone in zones:
+            self.zoneCombobox.set_active(zones.index(_zone))
+        else:
+            self.zoneCombobox.set_active(0)
+
+    def service_toggle_cb(self, toggle, row, model, col):
+        iter = model.get_iter(row)
+        old_val = model.get(iter, col)[0]
+        model.set(iter, col, not old_val)
+        name = model.get(iter, 1)[0]
+        active_zone = self.zoneCombobox.get_active_text()
+        if self.runtime_view:
+            if not old_val:
+                self.fw.addService(active_zone, name)
+            else:
+                self.fw.removeService(active_zone, name)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not old_val:
+                settings.addService(name)
+            else:
+                settings.removeService(name)
+            zone.update(settings)
+
+    def change_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editPortButton.set_sensitive(True)
+            self.removePortButton.set_sensitive(True)
+        else:
+            self.editPortButton.set_sensitive(False)
+            self.removePortButton.set_sensitive(False)
+
+    def change_forward_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editForwardButton.set_sensitive(True)
+            self.removeForwardButton.set_sensitive(True)
+        else:
+            self.editForwardButton.set_sensitive(False)
+            self.removeForwardButton.set_sensitive(False)
+
+    def masquerade_check_cb(self, check):
+        active_zone = self.zoneCombobox.get_active_text()
+        if self.runtime_view:
+            if check.get_active():
+                self.fw.addMasquerade(active_zone)
+            else:
+                self.fw.removeMasquerade(active_zone)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.setMasquerade(check.get_active())
+            zone.update(settings)
+
+    def icmp_toggle_cb(self, toggle, row, model, col):
+        iter = model.get_iter(row)
+        old_val = model.get(iter, col)[0]
+        model.set(iter, col, not old_val)
+        name = model.get(iter, 1)[0]
+        active_zone = self.zoneCombobox.get_active_text()
+        if self.runtime_view:
+            if not old_val:
+                self.fw.addIcmpBlock(active_zone, name)
+            else:
+                self.fw.removeIcmpBlock(active_zone, name)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not old_val:
+                settings.addIcmpBlock(name)
+            else:
+                settings.removeIcmpBlock(name)
+            zone.update(settings)
+
+    def combobox_select_text(self, combobox, value):
+        model = combobox.get_model()
+        iter = model.get_iter_first()
+        while iter:
+            if model.get_value(iter, 0) == value:
+                combobox.set_active_iter(iter)
+                return
+            iter = model.iter_next(iter)
+        combobox.set_active(0)
+
+    def onQuit(self, *args):
+        self.mainloop.quit()
+        sys.exit()
+
+    def onAbout(self, *args):
+        self.aboutDialog.show_all()
+        self.aboutDialog.run()
+        self.aboutDialog.hide()
+
+    def onReloadFirewalld(self, *args):
+        self.fw.reload()
+        self.onChangeZone()
+
+    def onChangeView(self, *args):
+        self.runtime_view = not self.runtime_view
+        self.currentViewLabel.set_markup(self.views[self.runtime_view])
+        self.load_zones()
+        self.onChangeZone()
+
+    def onChangeDefaultZone(self, *args):
+        self.defaultZoneStore.clear()
+        zones = sorted(self.fw.getZones())
+        default_zone = self.fw.getDefaultZone()
+        for zone in zones:
+            self.defaultZoneStore.append([zone])
+        selection = self.defaultZoneView.get_selection()
+        if default_zone in zones:
+            selection.select_path(zones.index(default_zone))
+        else:
+            selection.set_mode(gtk.SelectionMode.NONE)
+
+        self.defaultZoneDialog.show_all()
+        result = self.defaultZoneDialog.run()
+        self.defaultZoneDialog.hide()
+        if result == 1:
+            (model, iter) = selection.get_selected()
+            if not iter:
+                return
+            self.fw.setDefaultZone(model.get(iter, 0)[0])
+
+    def onChangeZone(self, *args):
+        active_zone = self.zoneCombobox.get_active_text()
+        if not active_zone:
+            return
+
+        ### load zone settings
+
+        self.portStore.clear()
+        self.forwardStore.clear()
+
+        self.serviceView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.portView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.forwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.icmpView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+
+        services = [ ]
+        ports = [ ]
+        masquerade = False
+        forward_ports = [ ]
+        icmpblocks = [ ]
+
+        if self.runtime_view:
+            # load runtime configuration
+
+            services = self.fw.getServices(active_zone)
+            ports = self.fw.getPorts(active_zone)
+            masquerade = self.fw.queryMasquerade(active_zone)
+            forward_ports = self.fw.getForwardPorts(active_zone)
+            icmpblocks = self.fw.getIcmpBlocks(active_zone)
+        else:
+            # load persistent configuration
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+
+            services = settings.getServices()
+            ports = settings.getPorts()
+            masquerade = settings.getMasquerade()
+            forward_ports = settings.getForwardPorts()
+            icmpblocks = settings.getIcmpBlocks()
+
+        # set services
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            name = self.serviceStore.get_value(iter, 1)
+            if name in services:
+                self.serviceStore.set_value(iter, 0, True)
+            else:
+                self.serviceStore.set_value(iter, 0, False)
+            iter = self.serviceStore.iter_next(iter)
+
+        # set ports
+        for item in ports:
+            self.portStore.append(item)
+
+        # set masquerade
+        self.masqueradeCheck.handler_block(self.masqueradeCheck_handler_id)
+        self.masqueradeCheck.set_active(masquerade)
+        self.masqueradeCheck.handler_unblock(self.masqueradeCheck_handler_id)
+
+        # set forward ports
+        for item in forward_ports:
+            self.forwardStore.append(item)
+
+        # set icmpblocks
+        iter = self.icmpStore.get_iter_first()
+        while iter:
+            name = self.icmpStore.get_value(iter, 1)
+            if name in icmpblocks:
+                self.icmpStore.set_value(iter, 0, True)
+            else:
+                self.icmpStore.set_value(iter, 0, False)
+            iter = self.icmpStore.iter_next(iter)
+
+        self.serviceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.portView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.forwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.icmpView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+
+    def onAddPort(self, *args):
+        self.add_edit_port(True)
+
+    def onEditPort(self, *args):
+        self.add_edit_port(False)
+
+    def add_edit_port(self, add):
+        active_zone = self.zoneCombobox.get_active_text()
+
+        old_port = None
+        old_proto = None
+        iter = None
+        if add:
+            self.portDialogPortEntry.set_text("")
+            self.portDialogProtoCombobox.set_active(0)
+        else:
+            selection = self.portView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_port = self.portStore.get_value(iter, 0)
+            old_proto = self.portStore.get_value(iter, 1)
+
+            self.portDialogPortEntry.set_text(old_port)
+            self.combobox_select_text(self.portDialogProtoCombobox, old_proto)
+            
+        self.portDialog.show_all()
+        result = self.portDialog.run()
+        self.portDialog.hide()
+
+        if result != 1:
+            return
+
+        port = self.portDialogPortEntry.get_text()
+        proto = self.portDialogProtoCombobox.get_active_text()
+        if not add and (old_port == port and old_proto == proto):
+            # nothing to change
+            return
+
+        if add:
+            self.portStore.append([port, proto])
+        else:
+            selection = self.portView.get_selection()
+            (model, iter) = selection.get_selected()
+            self.portStore.set_value(iter, 0, port)
+            self.portStore.set_value(iter, 1, proto)
+
+        if self.runtime_view:
+            if not add:
+                self.fw.removePort(active_zone, old_port, old_proto)
+                
+            self.fw.addPort(active_zone, port, proto)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not add:
+                settings.removePort(old_port, old_proto)
+            settings.addPort(port, proto)
+            zone.update(settings)
+
+    def onRemovePort(self, *args):
+        active_zone = self.zoneCombobox.get_active_text()
+        selection = self.portView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.portStore.get_value(iter, 0)
+        proto = self.portStore.get_value(iter, 1)
+        model.remove(iter)
+
+        if self.runtime_view:
+            self.fw.removePort(active_zone, port, proto)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.removePort(port, proto)
+            zone.update(settings)
+
+
+    def onAddForwardPort(self, *args):
+        self.add_edit_forward_port(True)
+
+    def onEditForwardPort(self, *args):
+        self.add_edit_forward_port(False)
+
+    def add_edit_forward_port(self, add):
+        active_zone = self.zoneCombobox.get_active_text()
+
+        old_port = None
+        old_proto = None
+        old_to_port = None
+        old_to_addr = None
+        iter = None
+        if add:
+            self.forwardDialogPortEntry.set_text("")
+            self.forwardDialogProtoCombobox.set_active(0)
+            self.forwardDialogToPortEntry.set_text("")
+            self.forwardDialogToAddrEntry.set_text("")
+        else:
+            selection = self.forwardView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_port = self.forwardStore.get_value(iter, 0)
+            old_proto = self.forwardStore.get_value(iter, 1)
+            old_to_port = self.forwardStore.get_value(iter, 2)
+            old_to_addr = self.forwardStore.get_value(iter, 3)
+
+            self.forwardDialogPortEntry.set_text(old_port)
+            self.combobox_select_text(self.forwardDialogProtoCombobox,
+                                      old_proto)
+            self.forwardDialogToPortEntry.set_text(old_to_port)
+            self.forwardDialogToAddrEntry.set_text(old_to_addr)
+            
+        self.forwardDialog.show_all()
+        result = self.forwardDialog.run()
+        self.forwardDialog.hide()
+
+        if result != 1:
+            return
+
+        port = self.forwardDialogPortEntry.get_text()
+        proto = self.forwardDialogProtoCombobox.get_active_text()
+        to_port = self.forwardDialogToPortEntry.get_text()
+        to_addr = self.forwardDialogToAddrEntry.get_text()
+
+        if not add and (old_port == port and old_proto == proto and \
+                            old_to_port == to_port and old_to_addr == to_addr):
+            # nothing to change
+            return
+
+        if add:
+            self.forwardStore.append([port, proto, to_port, to_addr])
+        else:
+            selection = self.forwardView.get_selection()
+            (model, iter) = selection.get_selected()
+            self.forwardStore.set_value(iter, 0, port)
+            self.forwardStore.set_value(iter, 1, proto)
+            self.forwardStore.set_value(iter, 2, to_port)
+            self.forwardStore.set_value(iter, 3, to_addr)
+
+        if self.runtime_view:
+            if not add:
+                self.fw.removeForwardPort(active_zone, old_port, old_proto,
+                                          old_to_port, old_to_addr)
+                
+            self.fw.addForwardPort(active_zone, port, proto, to_port, to_addr)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not add:
+                settings.addForwardPort(old_port, old_proto,
+                                        old_to_port, old_to_addr)
+            settings.addForwardPort(port, proto, to_port, to_addr)
+            zone.update(settings)
+
+    def onRemoveForwardPort(self, *args):
+        active_zone = self.zoneCombobox.get_active_text()
+        selection = self.portView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.portStore.get_value(iter, 0)
+        proto = self.portStore.get_value(iter, 1)
+        to_port = self.portStore.get_value(iter, 2)
+        to_addr = self.portStore.get_value(iter, 3)
+        model.remove(iter)
+
+        if self.runtime_view:
+            self.fw.removePort(active_zone, port, proto, to_port, to_addr)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.removeForwardPort(port, proto, to_port, to_addr)
+            zone.update(settings)
+
+
 
 # MAIN
 
 mainloop = GObject.MainLoop()
-config = FirewallConfig()
+app = FirewallConfig()
 mainloop.run()
+sys.exit(0)
