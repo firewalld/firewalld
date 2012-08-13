@@ -1,6 +1,9 @@
 bin_SCRIPTS = firewall-applet firewall-cmd firewall-convert-scfw-config firewall-config
 sbin_SCRIPTS = firewalld
 
+gladedir = $(pkgdatadir)
+glade_PYTHON = firewall-config.glade
+
 icondir = $(datadir)/icons/hicolor
 iconFILES = icons/*/apps/*
 
