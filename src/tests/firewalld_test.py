@@ -32,6 +32,11 @@ from firewall.dbus_utils import dbus_to_python
 from pprint import pprint
 
 class TestFirewallD(unittest.TestCase):
+    """
+    For testing of temporary changes, ie. those that disappear with restart:
+    adding/removing interfaces to zones, setting/changing of default zone
+    adding/removing of services, ports, forward ports, icmp blocks
+    """
     def setUp(self):
         unittest.TestCase.setUp(self)
         bus = dbus.SystemBus()
@@ -66,7 +71,7 @@ class TestFirewallD(unittest.TestCase):
         zone = "home"
 
         print ("\nAdding interface '%s' to '%s' zone" % (interface, zone))
-        ret = self.fw_zone.addInterface(zone, interface)
+        self.fw_zone.addInterface(zone, interface)
 
         print ("Getting active zones: ")
         ret = self.fw_zone.getActiveZones()

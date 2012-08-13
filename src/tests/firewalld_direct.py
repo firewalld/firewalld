@@ -101,7 +101,6 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
 
     def test_reload(self):
         self.fw.reload()
-        pass
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallDInterfaceDirect)
