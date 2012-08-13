@@ -193,8 +193,6 @@ class TrayApplet(object):
         button.set_active(settings.get_boolean(key))
 
     def shieldsup_check_toggled(self, button):
-        print button
-        print button.get_active()
         if button.get_active():
             self.fw.setDefaultZone(self.settings.get_string("shields-up"))
         else:
