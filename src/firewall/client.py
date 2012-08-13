@@ -468,6 +468,7 @@ class FirewallClientConfig(object):
 class FirewallClient(object):
     def __init__(self, bus=None):
         if not bus:
+            dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             try:
                 self.bus = slip.dbus.SystemBus()
                 self.bus.default_timeout = None
@@ -485,6 +486,47 @@ class FirewallClient(object):
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         self._config = FirewallClientConfig(self.bus)
+
+        self.bus.add_signal_receiver(
+            handler_function=self.dbus_connection_changed,
+            signal_name="NameOwnerChanged",
+            dbus_interface="org.freedesktop.DBus")
+
+        for interface in [ DBUS_INTERFACE,
+                           DBUS_INTERFACE_ZONE,
+                           DBUS_INTERFACE_DIRECT,
+                           DBUS_INTERFACE_CONFIG,
+                           DBUS_INTERFACE_CONFIG_ZONE,
+                           DBUS_INTERFACE_CONFIG_SERVICE,
+                           DBUS_INTERFACE_CONFIG_ICMPTYPE ]:
+            self.bus.add_signal_receiver(self.signal_receiver,
+                                         dbus_interface=interface,
+                                         interface_keyword='interface',
+                                         member_keyword='member',
+                                         path_keyword='path')
+
+    def dbus_connection_changed(self, name, old_owner, new_owner):
+        if name != DBUS_INTERFACE:
+            return
+
+        if new_owner:
+            # new connection
+            self.connect_to_firewalld()
+        else:
+            # lost connection
+            self.connection_to_firewalld_lost()
+
+    def connect_to_firewalld(self):
+        pass
+
+    def connection_to_firewalld_lost(self):
+        pass
+
+    def signal_receiver(self, *args, **kwargs):
+#        print("signal_receiver", args, kwargs)
+        if not "member" in kwargs:
+            return
+        signal = kwargs["member"]
 
     @slip.dbus.polkit.enable_proxy
     def config(self):
