@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-07 13:08+0200\n"
+"POT-Creation-Date: 2012-08-13 12:24+0200\n"
 "PO-Revision-Date: 2011-01-10 17:35+0200\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Fedora\n"
@@ -128,108 +128,712 @@ msgstr ""
 msgid "Not using slip"
 msgstr "Maak geen gebruik van slip"
 
-#: ../src/firewall-applet:231
+#: ../src/firewall-applet:229
 #, fuzzy
 msgid "Connection to FirewallD lost."
 msgstr "Verbinding met FirewallD verloren"
 
-#: ../src/firewall-applet:232
+#: ../src/firewall-applet:230
 #, fuzzy
 msgid "Connection to FirewallD established."
 msgstr "Verbinding met FirewallD verloren"
 
-#: ../src/firewall-applet:325
+#: ../src/firewall-applet:323
 msgid "No connection to firewall daemon"
 msgstr "Geen verbinding met firewall daemon"
 
-#: ../src/firewall-applet:331
+#: ../src/firewall-applet:329
 msgid "PANIC MODE"
 msgstr "PANIEK MODE"
 
-#: ../src/firewall-applet:343
+#: ../src/firewall-applet:341
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:346
+#: ../src/firewall-applet:344
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:354
+#: ../src/firewall-applet:352
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:366
+#: ../src/firewall-applet:364
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:368
+#: ../src/firewall-applet:366
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:393
+#: ../src/firewall-applet:391
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:394
+#: ../src/firewall-applet:392
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:424
+#: ../src/firewall-applet:422
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:425
+#: ../src/firewall-applet:423
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:428
+#: ../src/firewall-applet:426
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:433
+#: ../src/firewall-applet:431
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:453
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:35
+#: ../src/firewall-config:77
 #, fuzzy
-msgid "Firewall Config"
-msgstr "Firewall daemon"
+msgid "Runtime Configuration"
+msgstr "Actieve configuratie"
 
-#: ../src/firewall-config:65
-msgid "Quit"
+#: ../src/firewall-config:78
+#, fuzzy
+msgid "Persistent Configuration"
+msgstr "Selecteer configuratie"
+
+#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+#, fuzzy
+msgid "Service"
+msgstr "Services"
+
+#: ../src/firewall-config:112 ../src/firewall-config:138
+#, fuzzy
+msgid "Port"
+msgstr "Poorten"
+
+#: ../src/firewall-config:114 ../src/firewall-config:140
+msgid "Protocol"
 msgstr ""
 
-#: ../src/firewall-config:65
-msgid "_Quit"
+#: ../src/firewall-config:142
+#, fuzzy
+msgid "To Port"
+msgstr "Poorten"
+
+#: ../src/firewall-config:144
+msgid "To Address"
 msgstr ""
 
-#: ../src/firewall-config:66
-msgid "Quit the program"
+#: ../src/firewall-config:170
+msgid "Icmp Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:1
+msgid "System Default Zone"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:2
+msgid "Please select the system default zone from the list below."
 msgstr ""
 
 #
-#: ../src/firewall-config:77
+#: ../src/firewall-config.glade.h:3
+msgid "Port Forwarding"
+msgstr "Poort doorsturen"
+
+#: ../src/firewall-config.glade.h:4
+msgid ""
+"Please select the source and destination options according to your needs."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:5
 #, fuzzy
-msgid "File"
-msgstr "_Bestand"
+msgid "Port:"
+msgstr "Poorten"
+
+#: ../src/firewall-config.glade.h:6
+msgid "IP address:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:7
+msgid "Protocol:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:8
+msgid "<b>Destination</b>"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:9
+msgid "<b>Source</b>"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:10
+#, fuzzy
+msgid "tcp"
+msgstr "ftp"
+
+#: ../src/firewall-config.glade.h:11
+msgid "udp"
+msgstr ""
 
 #
-#: ../src/firewall-config:77
+#: ../src/firewall-config.glade.h:12
+#, fuzzy
+msgid "Local forwarding"
+msgstr "Poort doorsturen"
+
+#: ../src/firewall-config.glade.h:13
+msgid "Forward to another port"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:14
+msgid "Make sure to open the destination port on the remote system."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:15
+msgid ""
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:16
+msgid "Please configure base ICMP type settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:17
+msgid "Name:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:18
+msgid "Version:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:19
+msgid "Short:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:20
+msgid "Description:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:21
+msgid "Please configure the ICMP Type settings."
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:22
+#, fuzzy
+msgid "ICMP Type"
+msgstr "ICMP filter"
+
+#: ../src/firewall-config.glade.h:23
+msgid "Add ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:24
+msgid "Remove ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:25
+msgid "Edit ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:26
+msgid "Load ICMP Type Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:27
+msgctxt "yes"
+msgid "Destination addresses"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:28
+msgid "IPv4"
+msgstr "IPv4"
+
+#: ../src/firewall-config.glade.h:29
+msgid "IPv6"
+msgstr "IPv6"
+
+#: ../src/firewall-config.glade.h:30
+msgid "Destination"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:31
+#, fuzzy
+msgctxt "yes"
+msgid "Firewall Configuration"
+msgstr "Standaard configuratie"
+
+#
+#: ../src/firewall-config.glade.h:32
 msgid "_File"
 msgstr "_Bestand"
 
-#: ../src/firewall-config:102
-msgid "Please use the comand line tool firewall-cmd."
+#: ../src/firewall-config.glade.h:33
+#, fuzzy
+msgid "Reload Firewalld"
+msgstr "Firewall applet"
+
+#
+#: ../src/firewall-config.glade.h:34
+msgid "_Options"
+msgstr "_Opties"
+
+#: ../src/firewall-config.glade.h:35
+msgid "Change Default Zone"
 msgstr ""
+
+#: ../src/firewall-config.glade.h:36
+msgid "Change View"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:37
+msgid "_Help"
+msgstr "_Hulp"
+
+#: ../src/firewall-config.glade.h:38
+#, fuzzy
+msgid "Edit Services"
+msgstr "Services"
+
+#: ../src/firewall-config.glade.h:39
+msgid "Edit ICMP Types"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:40
+msgid "Current View:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:41
+msgid "label"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:42
+msgid "Default Zone:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:43
+#, fuzzy
+msgid "Zone"
+msgstr "Zones"
+
+#: ../src/firewall-config.glade.h:44
+msgid "Only mutable zones"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:45
+#, fuzzy
+msgid "Add Zone"
+msgstr "Vertrouwde zone"
+
+#
+#: ../src/firewall-config.glade.h:46
+#, fuzzy
+msgid "Remove Zone"
+msgstr "Verwijderen"
+
+#
+#: ../src/firewall-config.glade.h:47
+#, fuzzy
+msgid "Edit Zone"
+msgstr "Bewerken"
+
+#: ../src/firewall-config.glade.h:48
+msgid "Load Zone Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:49
+#, fuzzy
+msgid ""
+"Here you can define which services are trusted. Trusted services are "
+"accessible from all hosts and networks."
+msgstr ""
+"Hier kun je definiëren welke services vertrouwd worden. Vertrouwde services "
+"zijn toegankelijk vanaf alle hosts en netwerken in het geselecteerde netwerk "
+"protocol. Klik op <i>Toevoegen</i> om een item in de lijst met voor-"
+"gedefinieerde services te selecteren."
+
+#: ../src/firewall-config.glade.h:50
+#, fuzzy
+msgid "Services"
+msgstr "Services"
+
+#
+#: ../src/firewall-config.glade.h:51
+msgid ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks."
+msgstr ""
+"Voeg extra poorten of poort reeksen toe, die bereikbaar moeten zijn voor "
+"alle hosts of netwerken."
+
+#: ../src/firewall-config.glade.h:52
+msgid "Add Entry"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:53
+msgid "Edit Entry"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:54
+#, fuzzy
+msgid "Remove Entry"
+msgstr "Verwijderen"
+
+#: ../src/firewall-config.glade.h:55
+#, fuzzy
+msgid "Ports"
+msgstr "Poorten"
+
+#
+#: ../src/firewall-config.glade.h:56
+msgid ""
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr ""
+"Vermomming staat het instellen van een host of router toe die jouw lokale "
+"netwerk met het internet verbindt. Jouw lokale netwerk zal niet zichtbaar "
+"zijn en de hosts verschijnen als een enkel adres op het internet. Vermomming "
+"is alleen in IPv4 beschikbaar."
+
+#: ../src/firewall-config.glade.h:57
+#, fuzzy
+msgid "Masquerade zone"
+msgstr "Vermomd:"
+
+#
+#: ../src/firewall-config.glade.h:58
+#, fuzzy
+msgid ""
+"If you enable masquerading, IP forwarding will be enabled for your IPv4 "
+"networks."
+msgstr ""
+"Als je vermomming aanzet, zal IP doorzenden ook aangezet worden voor jouw "
+"IPv4 netwerken."
+
+#
+#: ../src/firewall-config.glade.h:59
+msgid "Masquerading"
+msgstr "Vermomming"
+
+#
+#: ../src/firewall-config.glade.h:60
+msgid ""
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
+msgstr ""
+"Voeg ingangen toe voor het doorsturen van een poort naar een andere poort op "
+"het lokale systeem of van het lokale systeem naar een ander systeem. "
+"Doorsturen naar een ander systeem is alleen nuttig als het interface vermomd "
+"is. Poorten doorsturen kan alleen met IPv4."
+
+#
+#: ../src/firewall-config.glade.h:61
+#, fuzzy
+msgctxt "yes"
+msgid ""
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
+msgstr ""
+"Het Internet Control Message Protocol (ICMP) wordt voornamelijk gebruikt om "
+"foutmeldingen te versturen tussen computers op het netwerk, maar bovendien "
+"voor informatieve boodschappen zoals ping verzoeken en antwoorden."
+
+#
+#: ../src/firewall-config.glade.h:62
+#, fuzzy
+msgctxt "yes"
+msgid ""
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
+msgstr ""
+"Markeer de ICMP types die geweigerd moeten worden in de lijst. Aan alle "
+"andere ICMP types is het toegestaan de firewall te passeren. De standaard is "
+"geen beperking."
+
+#
+#: ../src/firewall-config.glade.h:63
+msgid "ICMP Filter"
+msgstr "ICMP filter"
+
+#: ../src/firewall-config.glade.h:64
+msgid "modified label"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:65
+msgid "System without network access"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:66
+msgid "System with network access"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:67
+msgid "Beginner"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:68
+msgid "Expert"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:69
+msgid "Desktop"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:70
+#, fuzzy
+msgid "Server"
+msgstr "Services"
+
+#: ../src/firewall-config.glade.h:71
+msgid "Port and Protocol"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:72
+msgid "Please enter a port and protocol."
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:73
+#, fuzzy
+msgid "Port / Port Range:"
+msgstr "Poort doorsturen"
+
+#: ../src/firewall-config.glade.h:74
+msgid "Please configure base service settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:75
+msgid "Please configure the services settings."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:77
+#, fuzzy
+msgid "Add Service"
+msgstr "Services"
+
+#: ../src/firewall-config.glade.h:78
+#, fuzzy
+msgid "Remove Service"
+msgstr "Services"
+
+#: ../src/firewall-config.glade.h:79
+#, fuzzy
+msgid "Edit Service"
+msgstr "Services"
+
+#: ../src/firewall-config.glade.h:80
+msgid "Load Service Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:81
+msgid "Netfilter helper modules"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:82
+msgid "Modules"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:83
+#, fuzzy
+msgid "IPv4:"
+msgstr "IPv4"
+
+#: ../src/firewall-config.glade.h:84
+#, fuzzy
+msgid "IPv6:"
+msgstr "IPv6"
+
+#: ../src/firewall-config.glade.h:85
+msgid "Please configure base zone settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:86
+msgid "Target:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:87
+msgid "Immutable"
+msgstr ""
+
+#. The {zone|service|icmptype} '<name>' has changed
+#: ../src/firewall-config.glade.h:90
+#, no-c-format
+msgid "The %s '%s' has changed, applying new settings."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:54
+#, c-format
+msgid "port range %s is not unique."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:56
+#, c-format
+msgid "%s is not a valid range (start port >= end port)."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:61
+#, c-format
+msgid "%s is not a valid protocol."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:63
+#, c-format
+msgid "invalid port definition %s."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:73
+#: ../src/firewall-convert-scfw-config:83
+#, c-format
+msgid "Invalid argument %s"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:97
+msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:108
+msgid "option %(option)s: invalid forward_port '%(value)s'."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:115
+#, c-format
+msgid "invalid interface '%s'."
+msgstr ""
+
+#
+#: ../src/firewall-convert-scfw-config:135
+#, fuzzy
+msgid "Enable firewall (default)"
+msgstr "Firewall aanzetten"
+
+#
+#: ../src/firewall-convert-scfw-config:138
+#, fuzzy
+msgid "Disable firewall"
+msgstr "Firewall aanzetten"
+
+#: ../src/firewall-convert-scfw-config:141
+#: ../src/firewall-convert-scfw-config:145
+msgid "<module>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:142
+msgid "Enable an iptables module"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:146
+msgid "Disable an iptables module"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:150
+#, fuzzy
+msgid "<service>"
+msgstr "Services"
+
+#: ../src/firewall-convert-scfw-config:151
+msgid "Open the firewall for a service (e.g, ssh)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:154
+msgid "<port>[-<port>]:<protocol>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:156
+msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:160
+#: ../src/firewall-convert-scfw-config:164
+msgid "<interface>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:161
+msgid "Allow all traffic on the specified device"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:165
+msgid "Masquerades traffic from the specified device. This is IPv4 only."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:169
+msgid "Backwards compatibility, aliased to --enabled"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:172
+msgid "[<type>:][<table>:]<filename>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:174
+msgid ""
+"Specify a custom rules file for inclusion in the firewall, after the default "
+"rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:183
+msgid ""
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:187
+msgid ""
+"Forward the port with protocol for the interface to either another local "
+"destination port (no destination address given) or to an other destination "
+"address with an optional destination port. This is IPv4 only."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:196
+msgid "<icmp type>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:197
+msgid "Block this ICMP type. The default is to accept all ICMP types."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:209
+#, c-format
+msgid "no such option: %s"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:274
+#, c-format
+msgid "%s option requires an argument"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:277
+msgid "%(option)s option requires %(count)s arguments"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:291
+#, c-format
+msgid "%s option does not take a value"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Firewall Config"
+#~ msgstr "Firewall daemon"
+
+#
+#, fuzzy
+#~ msgid "File"
+#~ msgstr "_Bestand"
 
 #, fuzzy
 #~ msgid ""
@@ -238,10 +842,6 @@ msgstr ""
 #~ msgstr ""
 #~ "\n"
 #~ "Aangevraagd door: %s"
-
-#, fuzzy
-#~ msgid "Zones:"
-#~ msgstr "Zones"
 
 #~ msgid "21/TCP"
 #~ msgstr "21/TCP"
@@ -252,32 +852,9 @@ msgstr ""
 #~ msgid "80/TCP"
 #~ msgstr "80/TCP"
 
-#~ msgid "Active Configuration"
-#~ msgstr "Actieve configuratie"
-
 #
 #~ msgid "Add"
 #~ msgstr "Toevoegen"
-
-#
-#~ msgid ""
-#~ "Add additional ports or port ranges, which need to be accessible for all "
-#~ "hosts or networks."
-#~ msgstr ""
-#~ "Voeg extra poorten of poort reeksen toe, die bereikbaar moeten zijn voor "
-#~ "alle hosts of netwerken."
-
-#
-#~ msgid ""
-#~ "Add entries to forward ports either from one port to another on the local "
-#~ "system or from the local system to another system. Forwarding to another "
-#~ "system is only useful if the interface is masqueraded. Port forwarding is "
-#~ "IPv4 only."
-#~ msgstr ""
-#~ "Voeg ingangen toe voor het doorsturen van een poort naar een andere poort "
-#~ "op het lokale systeem of van het lokale systeem naar een ander systeem. "
-#~ "Doorsturen naar een ander systeem is alleen nuttig als het interface "
-#~ "vermomd is. Poorten doorsturen kan alleen met IPv4."
 
 #
 #~ msgid "Allow access to necessary ports or port ranges, only."
@@ -290,10 +867,6 @@ msgstr ""
 #
 #~ msgid "Custom Rules"
 #~ msgstr "Aangepaste regels"
-
-#
-#~ msgid "Edit"
-#~ msgstr "Bewerken"
 
 #
 #~ msgid "FTP"
@@ -328,65 +901,11 @@ msgstr ""
 #~ "Hier kun je de interfaces en netwerk gebieden definiëren die volledige "
 #~ "toegang tot het systeem hebben."
 
-#~ msgid ""
-#~ "Here you can define which services are trusted. Trusted services are "
-#~ "accessible from all hosts and networks in the selected network protocol. "
-#~ "Click on <i>Add</i> to select an item from the list of predefined "
-#~ "services."
-#~ msgstr ""
-#~ "Hier kun je definiëren welke services vertrouwd worden. Vertrouwde "
-#~ "services zijn toegankelijk vanaf alle hosts en netwerken in het "
-#~ "geselecteerde netwerk protocol. Klik op <i>Toevoegen</i> om een item in "
-#~ "de lijst met voor-gedefinieerde services te selecteren."
-
 #~ msgid "Home Zone"
 #~ msgstr "Thuiszone"
 
-#
-#~ msgid "ICMP Filter"
-#~ msgstr "ICMP filter"
-
-#~ msgid "IPv4"
-#~ msgstr "IPv4"
-
 #~ msgid "IPv4,IPv6"
 #~ msgstr "IPv4, IPv6"
-
-#~ msgid "IPv6"
-#~ msgstr "IPv6"
-
-#
-#~ msgid ""
-#~ "If you enable masquerading, IP forwarding will also be enabled for your "
-#~ "IPv4 networks."
-#~ msgstr ""
-#~ "Als je vermomming aanzet, zal IP doorzenden ook aangezet worden voor jouw "
-#~ "IPv4 netwerken."
-
-#
-#~ msgid ""
-#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
-#~ "types are allowed to pass the firewall. The default is no limitation."
-#~ msgstr ""
-#~ "Markeer de ICMP types die geweigerd moeten worden in de lijst. Aan alle "
-#~ "andere ICMP types is het toegestaan de firewall te passeren. De standaard "
-#~ "is geen beperking."
-
-#
-#~ msgid "Masquerading"
-#~ msgstr "Vermomming"
-
-#
-#~ msgid ""
-#~ "Masquerading allows you to set up a host or router that connects your "
-#~ "local network to the internet. Your local network will not be visible and "
-#~ "the hosts appear as a single address on the internet. Masquerading is "
-#~ "IPv4 only."
-#~ msgstr ""
-#~ "Vermomming staat het instellen van een host of router toe die jouw lokale "
-#~ "netwerk met het internet verbindt. Jouw lokale netwerk zal niet zichtbaar "
-#~ "zijn en de hosts verschijnen als een enkel adres op het internet. "
-#~ "Vermomming is alleen in IPv4 beschikbaar."
 
 #~ msgid ""
 #~ "Only allow full access for interfaces or network areas if you can trust "
@@ -399,20 +918,12 @@ msgstr ""
 #~ msgid "Other Ports"
 #~ msgstr "Andere poorten"
 
-#
-#~ msgid "Port Forwarding"
-#~ msgstr "Poort doorsturen"
-
 #~ msgid "Public Zone"
 #~ msgstr "Publieke zone"
 
 #
 #~ msgid "Reload"
 #~ msgstr "Herladen"
-
-#
-#~ msgid "Remove"
-#~ msgstr "Verwijderen"
 
 #~ msgid "Restart"
 #~ msgstr "Herstarten"
@@ -435,12 +946,6 @@ msgstr ""
 #~ "firewall, zet dan deze optie aan. Je moet het openssh-server pakket "
 #~ "geïnstalleerd hebben om van deze optie gebruik te kunnen maken."
 
-#~ msgid "Select Configuration"
-#~ msgstr "Selecteer configuratie"
-
-#~ msgid "Services"
-#~ msgstr "Services"
-
 #~ msgid "Start"
 #~ msgstr "Start"
 
@@ -453,22 +958,8 @@ msgstr ""
 #~ msgid "Switch firewall model"
 #~ msgstr "Schakel firewall model om"
 
-#
-#~ msgid ""
-#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
-#~ "messages between networked computers, but additionally for informational "
-#~ "messages like ping requests and replies."
-#~ msgstr ""
-#~ "Het Internet Control Message Protocol (ICMP) wordt voornamelijk gebruikt "
-#~ "om foutmeldingen te versturen tussen computers op het netwerk, maar "
-#~ "bovendien voor informatieve boodschappen zoals ping verzoeken en "
-#~ "antwoorden."
-
 #~ msgid "Trusted"
 #~ msgstr "Vertrouwd"
-
-#~ msgid "Trusted Zone"
-#~ msgstr "Vertrouwde zone"
 
 #
 #~ msgid "WWW (HTTP)"
@@ -477,22 +968,8 @@ msgstr ""
 #~ msgid "Work Zone"
 #~ msgstr "Werk zone"
 
-#
-#~ msgid "_Help"
-#~ msgstr "_Hulp"
-
-#
-#~ msgid "_Options"
-#~ msgstr "_Opties"
-
-#~ msgid "ftp"
-#~ msgstr "ftp"
-
 #~ msgid "- proof of concept implementation -"
 #~ msgstr "- bewijs van concept implementatie -"
-
-#~ msgid "Ports"
-#~ msgstr "Poorten"
 
 #~ msgid "Trusted Connections"
 #~ msgstr "Vertrouwde verbindingen"
@@ -502,10 +979,6 @@ msgstr ""
 
 #~ msgid "Panic Mode"
 #~ msgstr "Paniek mode"
-
-#
-#~ msgid "Enable Firewall"
-#~ msgstr "Firewall aanzetten"
 
 #~ msgid ""
 #~ "\n"
@@ -531,9 +1004,6 @@ msgstr ""
 
 #~ msgid "No Masqueraded."
 #~ msgstr "Geen vermomming."
-
-#~ msgid "Masqueraded:"
-#~ msgstr "Vermomd:"
 
 #~ msgid "No ICMP Blocks."
 #~ msgstr "Geen ICMP blokken."

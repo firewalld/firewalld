@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-07 13:08+0200\n"
+"POT-Creation-Date: 2012-08-13 12:24+0200\n"
 "PO-Revision-Date: 2011-01-10 23:38+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -119,108 +119,710 @@ msgstr ""
 msgid "Not using slip"
 msgstr "സ്ലിപ്പ് ഉപയോഗിയ്ക്കുന്നില്ല"
 
-#: ../src/firewall-applet:231
+#: ../src/firewall-applet:229
 #, fuzzy
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD-ലേക്കുള്ള കണക്ഷന്‍ നഷ്ടമായി"
 
-#: ../src/firewall-applet:232
+#: ../src/firewall-applet:230
 #, fuzzy
 msgid "Connection to FirewallD established."
 msgstr "FirewallD-ലേക്കുള്ള കണക്ഷന്‍ നഷ്ടമായി"
 
-#: ../src/firewall-applet:325
+#: ../src/firewall-applet:323
 msgid "No connection to firewall daemon"
 msgstr "ഫയര്‍വോള്‍ ഡെമണിലേക്കു് കണക്ഷന്‍ ലഭ്യമല്ല"
 
-#: ../src/firewall-applet:331
+#: ../src/firewall-applet:329
 msgid "PANIC MODE"
 msgstr "PANIC MODE"
 
-#: ../src/firewall-applet:343
+#: ../src/firewall-applet:341
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:346
+#: ../src/firewall-applet:344
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:354
+#: ../src/firewall-applet:352
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:366
+#: ../src/firewall-applet:364
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:368
+#: ../src/firewall-applet:366
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:393
+#: ../src/firewall-applet:391
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:394
+#: ../src/firewall-applet:392
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:424
+#: ../src/firewall-applet:422
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:425
+#: ../src/firewall-applet:423
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:428
+#: ../src/firewall-applet:426
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:433
+#: ../src/firewall-applet:431
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:453
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:35
+#: ../src/firewall-config:77
 #, fuzzy
-msgid "Firewall Config"
-msgstr "ഫയര്‍വോള്‍ ഡെമണ്‍"
+msgid "Runtime Configuration"
+msgstr "സജീവമായ ക്രമീകരണം"
 
-#: ../src/firewall-config:65
-msgid "Quit"
+#: ../src/firewall-config:78
+#, fuzzy
+msgid "Persistent Configuration"
+msgstr "ക്രമീകരണം തെരഞ്ഞെടുക്കുക"
+
+#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+#, fuzzy
+msgid "Service"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-config:112 ../src/firewall-config:138
+#, fuzzy
+msgid "Port"
+msgstr "പോര്‍ട്ടുകള്‍"
+
+#: ../src/firewall-config:114 ../src/firewall-config:140
+msgid "Protocol"
 msgstr ""
 
-#: ../src/firewall-config:65
-msgid "_Quit"
+#: ../src/firewall-config:142
+#, fuzzy
+msgid "To Port"
+msgstr "പോര്‍ട്ടുകള്‍"
+
+#: ../src/firewall-config:144
+msgid "To Address"
 msgstr ""
 
-#: ../src/firewall-config:66
-msgid "Quit the program"
+#: ../src/firewall-config:170
+msgid "Icmp Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:1
+msgid "System Default Zone"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:2
+msgid "Please select the system default zone from the list below."
 msgstr ""
 
 #
-#: ../src/firewall-config:77
+#: ../src/firewall-config.glade.h:3
+msgid "Port Forwarding"
+msgstr "പോര്‍ട്ട് ഫോര്‍‍വേര്‍‍ഡിംഗ്"
+
+#: ../src/firewall-config.glade.h:4
+msgid ""
+"Please select the source and destination options according to your needs."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:5
 #, fuzzy
-msgid "File"
-msgstr "ഫയല്‍ (_F)"
+msgid "Port:"
+msgstr "പോര്‍ട്ടുകള്‍"
+
+#: ../src/firewall-config.glade.h:6
+msgid "IP address:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:7
+msgid "Protocol:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:8
+msgid "<b>Destination</b>"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:9
+msgid "<b>Source</b>"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:10
+#, fuzzy
+msgid "tcp"
+msgstr "ftp"
+
+#: ../src/firewall-config.glade.h:11
+msgid "udp"
+msgstr ""
 
 #
-#: ../src/firewall-config:77
+#: ../src/firewall-config.glade.h:12
+#, fuzzy
+msgid "Local forwarding"
+msgstr "പോര്‍ട്ട് ഫോര്‍‍വേര്‍‍ഡിംഗ്"
+
+#: ../src/firewall-config.glade.h:13
+msgid "Forward to another port"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:14
+msgid "Make sure to open the destination port on the remote system."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:15
+msgid ""
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:16
+msgid "Please configure base ICMP type settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:17
+msgid "Name:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:18
+msgid "Version:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:19
+msgid "Short:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:20
+msgid "Description:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:21
+msgid "Please configure the ICMP Type settings."
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:22
+#, fuzzy
+msgid "ICMP Type"
+msgstr "ICMP ഫില്‍‌റ്റര്‍"
+
+#: ../src/firewall-config.glade.h:23
+msgid "Add ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:24
+msgid "Remove ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:25
+msgid "Edit ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:26
+msgid "Load ICMP Type Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:27
+msgctxt "yes"
+msgid "Destination addresses"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:28
+msgid "IPv4"
+msgstr "IPv4"
+
+#: ../src/firewall-config.glade.h:29
+msgid "IPv6"
+msgstr "IPv6"
+
+#: ../src/firewall-config.glade.h:30
+msgid "Destination"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:31
+#, fuzzy
+msgctxt "yes"
+msgid "Firewall Configuration"
+msgstr "സ്വതവേയുള്ള ക്രമീകരണം"
+
+#
+#: ../src/firewall-config.glade.h:32
 msgid "_File"
 msgstr "ഫയല്‍ (_F)"
 
-#: ../src/firewall-config:102
-msgid "Please use the comand line tool firewall-cmd."
+#: ../src/firewall-config.glade.h:33
+#, fuzzy
+msgid "Reload Firewalld"
+msgstr "ഫയര്‍വോള്‍ ആപ്ലെറ്റ്"
+
+#
+#: ../src/firewall-config.glade.h:34
+msgid "_Options"
+msgstr "ഐഛികങ്ങള്‍ (_O)"
+
+#: ../src/firewall-config.glade.h:35
+msgid "Change Default Zone"
 msgstr ""
+
+#: ../src/firewall-config.glade.h:36
+msgid "Change View"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:37
+msgid "_Help"
+msgstr "സഹായം (_H)"
+
+#: ../src/firewall-config.glade.h:38
+#, fuzzy
+msgid "Edit Services"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-config.glade.h:39
+msgid "Edit ICMP Types"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:40
+msgid "Current View:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:41
+msgid "label"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:42
+msgid "Default Zone:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:43
+#, fuzzy
+msgid "Zone"
+msgstr "മേഘലകള്‍"
+
+#: ../src/firewall-config.glade.h:44
+msgid "Only mutable zones"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:45
+#, fuzzy
+msgid "Add Zone"
+msgstr "വിശ്വസനീയമായ മേഘല"
+
+#
+#: ../src/firewall-config.glade.h:46
+#, fuzzy
+msgid "Remove Zone"
+msgstr "നീക്കം ചെയ്യുക"
+
+#
+#: ../src/firewall-config.glade.h:47
+#, fuzzy
+msgid "Edit Zone"
+msgstr "മാറ്റം വരുത്തുക"
+
+#: ../src/firewall-config.glade.h:48
+msgid "Load Zone Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:49
+#, fuzzy
+msgid ""
+"Here you can define which services are trusted. Trusted services are "
+"accessible from all hosts and networks."
+msgstr ""
+"വിശ്വസനീയമായ സര്‍വീസുകള്‍ നിങ്ങള്‍ക്കിവിടെ നിഷ്കര്‍ഷിയ്ക്കാം. തെരഞ്ഞെടുത്ത നെറ്റ്‌വര്‍ക്ക് "
+"പ്രോട്ടോക്കോളിലുള്ള എല്ലാ ഹോസ്റ്റുകളും നെറ്റ്‌വര്‍ക്കുകളിലും നിന്നു് വിശ്വസനീയമായ സര്‍വീസുകള്‍ "
+"ലഭ്യമാക്കുവാന്‍ സാധിയ്ക്കുന്നു. നിഷ്കര്‍ഷിച്ചിട്ടുള്ള സര്‍വീസുകളില്‍ നിന്നും ഒരു വസ്തു "
+"തെരഞ്ഞെടുക്കുന്നതിനായി <i>ചേര്‍ക്കുക</i> ക്ലിക്ക് ചെയ്യുക."
+
+#: ../src/firewall-config.glade.h:50
+#, fuzzy
+msgid "Services"
+msgstr "സര്‍വീസുകള്‍"
+
+#
+#: ../src/firewall-config.glade.h:51
+msgid ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks."
+msgstr ""
+"എല്ലാ ആതിഥേയര്‍ക്കും നെറ്റ്‌വര്‍‍ക്കുകള്‍ക്കും ലഭ്യ‌മാകേണ്ട കൂടുതല്‍ പോര്‍ട്ടുകളും പോര്‍‍ട്ട് പരിധികളും ചേര്‍‍ക്കുക."
+
+#: ../src/firewall-config.glade.h:52
+msgid "Add Entry"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:53
+msgid "Edit Entry"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:54
+#, fuzzy
+msgid "Remove Entry"
+msgstr "നീക്കം ചെയ്യുക"
+
+#: ../src/firewall-config.glade.h:55
+#, fuzzy
+msgid "Ports"
+msgstr "പോര്‍ട്ടുകള്‍"
+
+#
+#: ../src/firewall-config.glade.h:56
+msgid ""
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr ""
+"നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാ പ്രവര്‍ത്തനത്തിനെ ഇന്റര്‍നെറ്റുമായി ബന്ധപ്പെടുത്തുന്നതിനായി ഒരു "
+"ആതിഥേയന്‍ അല്ലെങ്കില്‍ റൂട്ടര്‍ നിങ്ങള്‍ ക്രമീകരിക്കുന്നു എങ്കില്‍ മാസ്ക്യുറേഡിംഗ് നിങ്ങള്‍ക്ക് "
+"പ്രയോജനകരമാകുന്നു. നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാകര്മ്മം  അദൃശ്യ‌മായിരിക്കും, മാത്രമല്ല, "
+"ഇന്റര്‍നെറ്റില്‍ ആതിഥേയനെ ഒരു വിലാസമായി കണക്കാക്കുന്നു. മാസ്ക്യുറേഡിംഗ് IPv4 മാത്രമാണ്."
+
+#: ../src/firewall-config.glade.h:57
+#, fuzzy
+msgid "Masquerade zone"
+msgstr "മാസ്ക്യുറേഡ് ചെയ്തിരിയ്ക്കുന്നവ:"
+
+#
+#: ../src/firewall-config.glade.h:58
+#, fuzzy
+msgid ""
+"If you enable masquerading, IP forwarding will be enabled for your IPv4 "
+"networks."
+msgstr ""
+"മാസ്ക്യുറേഡിംഗ് സജ്ജമാക്കുന്നു എങ്കില്‍, നിങ്ങളുടെ IPv4 ശൃംഖലാകര്‍മ്മങ്ങള്‍ക്കായി IP ഫോര്‍‍വേര്‍‍ഡിംഗും "
+"സജ്ജമാക്കപ്പെടുന്നു."
+
+#
+#: ../src/firewall-config.glade.h:59
+msgid "Masquerading"
+msgstr "മാസ്ക്യുറേഡിംഗ്"
+
+#
+#: ../src/firewall-config.glade.h:60
+msgid ""
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
+msgstr ""
+"ഒരു പ്രാദേശിക വ്യവ്സ്ഥയിലുള്ള പോര്‍ട്ടില്‍ നിന്നും മറ്റൊന്നിലേക്ക് അല്ലെങ്കില്‍ ഒരു പ്രാദേശിക "
+"വ്യ‌വസ്ഥയില്‍നിന്നും മറ്റൊന്നിലേക്ക് പോര്‍ട്ടുകള്‍ അയയ്ക്കുന്നതിനായി എന്ട്രികള്‍ നല്‍കുക. വിനിമയതലം "
+"മാസ്ക്യുറേഡ് ചെയ്തെങ്കില്‍ മാത്രമേ മറ്റൊരു സിസ്റ്റമിലേക്ക് അയയ്ക്കുന്നതില്‍ പ്രയോജനമുള്ളൂ. പോര്‍ട്ട് "
+"ഫോര്‍വേര്‍ഡിംഗ് IPv4 മാത്രമാണ്."
+
+#
+#: ../src/firewall-config.glade.h:61
+#, fuzzy
+msgctxt "yes"
+msgid ""
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
+msgstr ""
+"ശൃംഖലയിലെ കമ്പ്യൂട്ടറുകള്‍ക്ക് തമ്മില്‍ പിശക് അറിയിക്കുന്ന സന്ദേശങ്ങള്‍ അയയ്ക്കുന്നതിനാണ് പ്രധാനമായും "
+"ഇന്റര്‍നെറ്റ് കണ്ട്രോള്‍ മെസേജ് പ്രോട്ടോക്കോള്‍ (ICMP) ഉപയോഗിക്കുന്നത്. കൂടാതെ, വിവരങ്ങള്‍ "
+"ലഭ്യ‌മാക്കുവാന്‍ സഹായിക്കുന്ന പിങ് അപേക്ഷകള്‍ക്കും മറുപടികള്‍ക്കും ഇവ ഉപയോഗിക്കുന്നു."
+
+#
+#: ../src/firewall-config.glade.h:62
+#, fuzzy
+msgctxt "yes"
+msgid ""
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
+msgstr ""
+"പട്ടികയില്‍ നിന്നും വേണ്ട എന്ന് തീരുമാനിക്കേണ്ട ICMP തരത്തിലുള്ളവ അടയാളപ്പെടുത്തുക. മറ്റെല്ലാ "
+"ICMP തരത്തിലുള്ളവയും ഫയര്‍വോള്‍ കടക്കുന്നതിന് അനുവാദമുള്ളവയാണ്. പരിമിതികളില്ലാത്തതാണ് സഹജം."
+
+#
+#: ../src/firewall-config.glade.h:63
+msgid "ICMP Filter"
+msgstr "ICMP ഫില്‍‌റ്റര്‍"
+
+#: ../src/firewall-config.glade.h:64
+msgid "modified label"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:65
+msgid "System without network access"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:66
+msgid "System with network access"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:67
+msgid "Beginner"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:68
+msgid "Expert"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:69
+msgid "Desktop"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:70
+#, fuzzy
+msgid "Server"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-config.glade.h:71
+msgid "Port and Protocol"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:72
+msgid "Please enter a port and protocol."
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:73
+#, fuzzy
+msgid "Port / Port Range:"
+msgstr "പോര്‍ട്ട് ഫോര്‍‍വേര്‍‍ഡിംഗ്"
+
+#: ../src/firewall-config.glade.h:74
+msgid "Please configure base service settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:75
+msgid "Please configure the services settings."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:77
+#, fuzzy
+msgid "Add Service"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-config.glade.h:78
+#, fuzzy
+msgid "Remove Service"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-config.glade.h:79
+#, fuzzy
+msgid "Edit Service"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-config.glade.h:80
+msgid "Load Service Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:81
+msgid "Netfilter helper modules"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:82
+msgid "Modules"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:83
+#, fuzzy
+msgid "IPv4:"
+msgstr "IPv4"
+
+#: ../src/firewall-config.glade.h:84
+#, fuzzy
+msgid "IPv6:"
+msgstr "IPv6"
+
+#: ../src/firewall-config.glade.h:85
+msgid "Please configure base zone settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:86
+msgid "Target:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:87
+msgid "Immutable"
+msgstr ""
+
+#. The {zone|service|icmptype} '<name>' has changed
+#: ../src/firewall-config.glade.h:90
+#, no-c-format
+msgid "The %s '%s' has changed, applying new settings."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:54
+#, c-format
+msgid "port range %s is not unique."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:56
+#, c-format
+msgid "%s is not a valid range (start port >= end port)."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:61
+#, c-format
+msgid "%s is not a valid protocol."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:63
+#, c-format
+msgid "invalid port definition %s."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:73
+#: ../src/firewall-convert-scfw-config:83
+#, c-format
+msgid "Invalid argument %s"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:97
+msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:108
+msgid "option %(option)s: invalid forward_port '%(value)s'."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:115
+#, c-format
+msgid "invalid interface '%s'."
+msgstr ""
+
+#
+#: ../src/firewall-convert-scfw-config:135
+#, fuzzy
+msgid "Enable firewall (default)"
+msgstr "ഫയര്‍വോള്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുക"
+
+#
+#: ../src/firewall-convert-scfw-config:138
+#, fuzzy
+msgid "Disable firewall"
+msgstr "ഫയര്‍വോള്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുക"
+
+#: ../src/firewall-convert-scfw-config:141
+#: ../src/firewall-convert-scfw-config:145
+msgid "<module>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:142
+msgid "Enable an iptables module"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:146
+msgid "Disable an iptables module"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:150
+#, fuzzy
+msgid "<service>"
+msgstr "സര്‍വീസുകള്‍"
+
+#: ../src/firewall-convert-scfw-config:151
+msgid "Open the firewall for a service (e.g, ssh)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:154
+msgid "<port>[-<port>]:<protocol>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:156
+msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:160
+#: ../src/firewall-convert-scfw-config:164
+msgid "<interface>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:161
+msgid "Allow all traffic on the specified device"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:165
+msgid "Masquerades traffic from the specified device. This is IPv4 only."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:169
+msgid "Backwards compatibility, aliased to --enabled"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:172
+msgid "[<type>:][<table>:]<filename>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:174
+msgid ""
+"Specify a custom rules file for inclusion in the firewall, after the default "
+"rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:183
+msgid ""
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:187
+msgid ""
+"Forward the port with protocol for the interface to either another local "
+"destination port (no destination address given) or to an other destination "
+"address with an optional destination port. This is IPv4 only."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:196
+msgid "<icmp type>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:197
+msgid "Block this ICMP type. The default is to accept all ICMP types."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:209
+#, c-format
+msgid "no such option: %s"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:274
+#, c-format
+msgid "%s option requires an argument"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:277
+msgid "%(option)s option requires %(count)s arguments"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:291
+#, c-format
+msgid "%s option does not take a value"
+msgstr ""
+
+#, fuzzy
+#~ msgid "Firewall Config"
+#~ msgstr "ഫയര്‍വോള്‍ ഡെമണ്‍"
+
+#
+#, fuzzy
+#~ msgid "File"
+#~ msgstr "ഫയല്‍ (_F)"
 
 #, fuzzy
 #~ msgid ""
@@ -229,10 +831,6 @@ msgstr ""
 #~ msgstr ""
 #~ "\n"
 #~ "ആവശ്യപ്പെട്ടതു്: %s"
-
-#, fuzzy
-#~ msgid "Zones:"
-#~ msgstr "മേഘലകള്‍"
 
 #~ msgid "21/TCP"
 #~ msgstr "21/TCP"
@@ -243,32 +841,9 @@ msgstr ""
 #~ msgid "80/TCP"
 #~ msgstr "80/TCP"
 
-#~ msgid "Active Configuration"
-#~ msgstr "സജീവമായ ക്രമീകരണം"
-
 #
 #~ msgid "Add"
 #~ msgstr "ചേര്‍ക്കുക"
-
-#
-#~ msgid ""
-#~ "Add additional ports or port ranges, which need to be accessible for all "
-#~ "hosts or networks."
-#~ msgstr ""
-#~ "എല്ലാ ആതിഥേയര്‍ക്കും നെറ്റ്‌വര്‍‍ക്കുകള്‍ക്കും ലഭ്യ‌മാകേണ്ട കൂടുതല്‍ പോര്‍ട്ടുകളും പോര്‍‍ട്ട് പരിധികളും "
-#~ "ചേര്‍‍ക്കുക."
-
-#
-#~ msgid ""
-#~ "Add entries to forward ports either from one port to another on the local "
-#~ "system or from the local system to another system. Forwarding to another "
-#~ "system is only useful if the interface is masqueraded. Port forwarding is "
-#~ "IPv4 only."
-#~ msgstr ""
-#~ "ഒരു പ്രാദേശിക വ്യവ്സ്ഥയിലുള്ള പോര്‍ട്ടില്‍ നിന്നും മറ്റൊന്നിലേക്ക് അല്ലെങ്കില്‍ ഒരു പ്രാദേശിക "
-#~ "വ്യ‌വസ്ഥയില്‍നിന്നും മറ്റൊന്നിലേക്ക് പോര്‍ട്ടുകള്‍ അയയ്ക്കുന്നതിനായി എന്ട്രികള്‍ നല്‍കുക. വിനിമയതലം "
-#~ "മാസ്ക്യുറേഡ് ചെയ്തെങ്കില്‍ മാത്രമേ മറ്റൊരു സിസ്റ്റമിലേക്ക് അയയ്ക്കുന്നതില്‍ പ്രയോജനമുള്ളൂ. പോര്‍ട്ട് "
-#~ "ഫോര്‍വേര്‍ഡിംഗ് IPv4 മാത്രമാണ്."
 
 #
 #~ msgid "Allow access to necessary ports or port ranges, only."
@@ -281,10 +856,6 @@ msgstr ""
 #
 #~ msgid "Custom Rules"
 #~ msgstr "നിയമങ്ങള്‍ ഉണ്ടാക്കുക"
-
-#
-#~ msgid "Edit"
-#~ msgstr "മാറ്റം വരുത്തുക"
 
 #
 #~ msgid "FTP"
@@ -319,64 +890,11 @@ msgstr ""
 #~ "സിസ്റ്റത്തിലേക്കു് പ്രവേശനമുള്ള സംയോജക ഘടകങ്ങളും നെറ്റ്‌വര്‍ക്ക് സ്ഥലങ്ങളും നിങ്ങള്‍ക്കിവിടെ "
 #~ "നിഷ്കര്‍ഷിയ്ക്കാം."
 
-#~ msgid ""
-#~ "Here you can define which services are trusted. Trusted services are "
-#~ "accessible from all hosts and networks in the selected network protocol. "
-#~ "Click on <i>Add</i> to select an item from the list of predefined "
-#~ "services."
-#~ msgstr ""
-#~ "വിശ്വസനീയമായ സര്‍വീസുകള്‍ നിങ്ങള്‍ക്കിവിടെ നിഷ്കര്‍ഷിയ്ക്കാം. തെരഞ്ഞെടുത്ത നെറ്റ്‌വര്‍ക്ക് "
-#~ "പ്രോട്ടോക്കോളിലുള്ള എല്ലാ ഹോസ്റ്റുകളും നെറ്റ്‌വര്‍ക്കുകളിലും നിന്നു് വിശ്വസനീയമായ സര്‍വീസുകള്‍ "
-#~ "ലഭ്യമാക്കുവാന്‍ സാധിയ്ക്കുന്നു. നിഷ്കര്‍ഷിച്ചിട്ടുള്ള സര്‍വീസുകളില്‍ നിന്നും ഒരു വസ്തു "
-#~ "തെരഞ്ഞെടുക്കുന്നതിനായി <i>ചേര്‍ക്കുക</i> ക്ലിക്ക് ചെയ്യുക."
-
 #~ msgid "Home Zone"
 #~ msgstr "ആസ്ഥാന മേഘല"
 
-#
-#~ msgid "ICMP Filter"
-#~ msgstr "ICMP ഫില്‍‌റ്റര്‍"
-
-#~ msgid "IPv4"
-#~ msgstr "IPv4"
-
 #~ msgid "IPv4,IPv6"
 #~ msgstr "IPv4,IPv6"
-
-#~ msgid "IPv6"
-#~ msgstr "IPv6"
-
-#
-#~ msgid ""
-#~ "If you enable masquerading, IP forwarding will also be enabled for your "
-#~ "IPv4 networks."
-#~ msgstr ""
-#~ "മാസ്ക്യുറേഡിംഗ് സജ്ജമാക്കുന്നു എങ്കില്‍, നിങ്ങളുടെ IPv4 ശൃംഖലാകര്‍മ്മങ്ങള്‍ക്കായി IP "
-#~ "ഫോര്‍‍വേര്‍‍ഡിംഗും സജ്ജമാക്കപ്പെടുന്നു."
-
-#
-#~ msgid ""
-#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
-#~ "types are allowed to pass the firewall. The default is no limitation."
-#~ msgstr ""
-#~ "പട്ടികയില്‍ നിന്നും വേണ്ട എന്ന് തീരുമാനിക്കേണ്ട ICMP തരത്തിലുള്ളവ അടയാളപ്പെടുത്തുക. മറ്റെല്ലാ "
-#~ "ICMP തരത്തിലുള്ളവയും ഫയര്‍വോള്‍ കടക്കുന്നതിന് അനുവാദമുള്ളവയാണ്. പരിമിതികളില്ലാത്തതാണ് സഹജം."
-
-#
-#~ msgid "Masquerading"
-#~ msgstr "മാസ്ക്യുറേഡിംഗ്"
-
-#
-#~ msgid ""
-#~ "Masquerading allows you to set up a host or router that connects your "
-#~ "local network to the internet. Your local network will not be visible and "
-#~ "the hosts appear as a single address on the internet. Masquerading is "
-#~ "IPv4 only."
-#~ msgstr ""
-#~ "നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാ പ്രവര്‍ത്തനത്തിനെ ഇന്റര്‍നെറ്റുമായി ബന്ധപ്പെടുത്തുന്നതിനായി ഒരു "
-#~ "ആതിഥേയന്‍ അല്ലെങ്കില്‍ റൂട്ടര്‍ നിങ്ങള്‍ ക്രമീകരിക്കുന്നു എങ്കില്‍ മാസ്ക്യുറേഡിംഗ് നിങ്ങള്‍ക്ക് "
-#~ "പ്രയോജനകരമാകുന്നു. നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാകര്മ്മം  അദൃശ്യ‌മായിരിക്കും, മാത്രമല്ല, "
-#~ "ഇന്റര്‍നെറ്റില്‍ ആതിഥേയനെ ഒരു വിലാസമായി കണക്കാക്കുന്നു. മാസ്ക്യുറേഡിംഗ് IPv4 മാത്രമാണ്."
 
 #~ msgid ""
 #~ "Only allow full access for interfaces or network areas if you can trust "
@@ -389,20 +907,12 @@ msgstr ""
 #~ msgid "Other Ports"
 #~ msgstr "മറ്റ് പോര്‍ട്ടുകള്‍ "
 
-#
-#~ msgid "Port Forwarding"
-#~ msgstr "പോര്‍ട്ട് ഫോര്‍‍വേര്‍‍ഡിംഗ്"
-
 #~ msgid "Public Zone"
 #~ msgstr "പബ്ലിക് മേഘല"
 
 #
 #~ msgid "Reload"
 #~ msgstr "വീണ്ടും ലഭ്യ‌മാക്കുക"
-
-#
-#~ msgid "Remove"
-#~ msgstr "നീക്കം ചെയ്യുക"
 
 #~ msgid "Restart"
 #~ msgstr "വീണ്ടും ആരംഭിയ്ക്കുക"
@@ -424,12 +934,6 @@ msgstr ""
 #~ "പ്രവേശിയ്ക്കുന്നതിനായി, ഈ ഉപാധി സജ്ജമാക്കുക. ഇതിനായി openssh-server പാക്കേജ് "
 #~ "ഇന്‍സ്റ്റോള്‍ ചെയ്യേണ്ടതുണ്ടു്."
 
-#~ msgid "Select Configuration"
-#~ msgstr "ക്രമീകരണം തെരഞ്ഞെടുക്കുക"
-
-#~ msgid "Services"
-#~ msgstr "സര്‍വീസുകള്‍"
-
 #~ msgid "Start"
 #~ msgstr "ആരംഭിയ്ക്കുക"
 
@@ -442,21 +946,8 @@ msgstr ""
 #~ msgid "Switch firewall model"
 #~ msgstr "ഫയര്‍വോള്‍ മോഡലിലേക്ക് മാറുക"
 
-#
-#~ msgid ""
-#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
-#~ "messages between networked computers, but additionally for informational "
-#~ "messages like ping requests and replies."
-#~ msgstr ""
-#~ "ശൃംഖലയിലെ കമ്പ്യൂട്ടറുകള്‍ക്ക് തമ്മില്‍ പിശക് അറിയിക്കുന്ന സന്ദേശങ്ങള്‍ അയയ്ക്കുന്നതിനാണ് പ്രധാനമായും "
-#~ "ഇന്റര്‍നെറ്റ് കണ്ട്രോള്‍ മെസേജ് പ്രോട്ടോക്കോള്‍ (ICMP) ഉപയോഗിക്കുന്നത്. കൂടാതെ, വിവരങ്ങള്‍ "
-#~ "ലഭ്യ‌മാക്കുവാന്‍ സഹായിക്കുന്ന പിങ് അപേക്ഷകള്‍ക്കും മറുപടികള്‍ക്കും ഇവ ഉപയോഗിക്കുന്നു."
-
 #~ msgid "Trusted"
 #~ msgstr "വിശ്വസനീയം"
-
-#~ msgid "Trusted Zone"
-#~ msgstr "വിശ്വസനീയമായ മേഘല"
 
 #
 #~ msgid "WWW (HTTP)"
@@ -465,22 +956,8 @@ msgstr ""
 #~ msgid "Work Zone"
 #~ msgstr "ജോലിയുടെ മേഘല"
 
-#
-#~ msgid "_Help"
-#~ msgstr "സഹായം (_H)"
-
-#
-#~ msgid "_Options"
-#~ msgstr "ഐഛികങ്ങള്‍ (_O)"
-
-#~ msgid "ftp"
-#~ msgstr "ftp"
-
 #~ msgid "- proof of concept implementation -"
 #~ msgstr "- proof of concept implementation -"
-
-#~ msgid "Ports"
-#~ msgstr "പോര്‍ട്ടുകള്‍"
 
 #~ msgid "Trusted Connections"
 #~ msgstr "വിശ്വസനീയമായ കണക്ഷനുകള്‍"
@@ -490,10 +967,6 @@ msgstr ""
 
 #~ msgid "Panic Mode"
 #~ msgstr "പാനിക് മോഡ്"
-
-#
-#~ msgid "Enable Firewall"
-#~ msgstr "ഫയര്‍വോള്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുക"
 
 #~ msgid ""
 #~ "\n"
@@ -519,9 +992,6 @@ msgstr ""
 
 #~ msgid "No Masqueraded."
 #~ msgstr "മാസ്ക്യുറേഡഡ് ലഭ്യമല്ല."
-
-#~ msgid "Masqueraded:"
-#~ msgstr "മാസ്ക്യുറേഡ് ചെയ്തിരിയ്ക്കുന്നവ:"
 
 #~ msgid "No ICMP Blocks."
 #~ msgstr "ഐസിഎംപി ബ്ലോക്കുകള്‍ ലഭ്യമല്ല.ആ"

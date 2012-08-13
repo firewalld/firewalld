@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-07 13:08+0200\n"
+"POT-Creation-Date: 2012-08-13 12:24+0200\n"
 "PO-Revision-Date: 2010-09-15 15:05+0100\n"
 "Last-Translator: Robert Antoni Buj Gelonch <robert.buj@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -138,129 +138,685 @@ msgstr ""
 msgid "Not using slip"
 msgstr ""
 
-#: ../src/firewall-applet:231
+#: ../src/firewall-applet:229
 msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:232
+#: ../src/firewall-applet:230
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:325
+#: ../src/firewall-applet:323
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:331
+#: ../src/firewall-applet:329
 msgid "PANIC MODE"
 msgstr ""
 
-#: ../src/firewall-applet:343
+#: ../src/firewall-applet:341
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:346
+#: ../src/firewall-applet:344
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:354
+#: ../src/firewall-applet:352
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:366
+#: ../src/firewall-applet:364
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:368
+#: ../src/firewall-applet:366
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:393
+#: ../src/firewall-applet:391
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:394
+#: ../src/firewall-applet:392
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:424
+#: ../src/firewall-applet:422
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:425
+#: ../src/firewall-applet:423
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:428
+#: ../src/firewall-applet:426
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:433
+#: ../src/firewall-applet:431
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:453
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:35
-msgid "Firewall Config"
+#: ../src/firewall-config:77
+msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:65
-msgid "Quit"
+#: ../src/firewall-config:78
+msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:65
-msgid "_Quit"
+#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+msgid "Service"
 msgstr ""
 
-#: ../src/firewall-config:66
-msgid "Quit the program"
+#: ../src/firewall-config:112 ../src/firewall-config:138
+msgid "Port"
+msgstr ""
+
+#: ../src/firewall-config:114 ../src/firewall-config:140
+msgid "Protocol"
+msgstr ""
+
+#: ../src/firewall-config:142
+msgid "To Port"
+msgstr ""
+
+#: ../src/firewall-config:144
+msgid "To Address"
+msgstr ""
+
+#: ../src/firewall-config:170
+msgid "Icmp Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:1
+msgid "System Default Zone"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:2
+msgid "Please select the system default zone from the list below."
 msgstr ""
 
 #
-#: ../src/firewall-config:77
+#: ../src/firewall-config.glade.h:3
+msgid "Port Forwarding"
+msgstr "Reenviament de ports"
+
+#: ../src/firewall-config.glade.h:4
+msgid ""
+"Please select the source and destination options according to your needs."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:5
+msgid "Port:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:6
+msgid "IP address:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:7
+msgid "Protocol:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:8
+msgid "<b>Destination</b>"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:9
+msgid "<b>Source</b>"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:10
+msgid "tcp"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:11
+msgid "udp"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:12
 #, fuzzy
-msgid "File"
-msgstr "_Fitxer"
+msgid "Local forwarding"
+msgstr "Reenviament de ports"
+
+#: ../src/firewall-config.glade.h:13
+msgid "Forward to another port"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:14
+msgid "Make sure to open the destination port on the remote system."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:15
+msgid ""
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:16
+msgid "Please configure base ICMP type settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:17
+msgid "Name:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:18
+msgid "Version:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:19
+msgid "Short:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:20
+msgid "Description:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:21
+msgid "Please configure the ICMP Type settings."
+msgstr ""
 
 #
-#: ../src/firewall-config:77
+#: ../src/firewall-config.glade.h:22
+#, fuzzy
+msgid "ICMP Type"
+msgstr "Filtre ICMP"
+
+#: ../src/firewall-config.glade.h:23
+msgid "Add ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:24
+msgid "Remove ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:25
+msgid "Edit ICMP Type"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:26
+msgid "Load ICMP Type Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:27
+msgctxt "yes"
+msgid "Destination addresses"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:28
+msgid "IPv4"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:29
+msgid "IPv6"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:30
+msgid "Destination"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:31
+msgctxt "yes"
+msgid "Firewall Configuration"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:32
 msgid "_File"
 msgstr "_Fitxer"
 
-#: ../src/firewall-config:102
-msgid "Please use the comand line tool firewall-cmd."
+#
+#: ../src/firewall-config.glade.h:33
+#, fuzzy
+msgid "Reload Firewalld"
+msgstr "Habilita el tallafoc"
+
+#
+#: ../src/firewall-config.glade.h:34
+msgid "_Options"
+msgstr "_Opcions"
+
+#: ../src/firewall-config.glade.h:35
+msgid "Change Default Zone"
 msgstr ""
+
+#: ../src/firewall-config.glade.h:36
+msgid "Change View"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:37
+msgid "_Help"
+msgstr "A_juda"
+
+#: ../src/firewall-config.glade.h:38
+msgid "Edit Services"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:39
+msgid "Edit ICMP Types"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:40
+msgid "Current View:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:41
+msgid "label"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:42
+msgid "Default Zone:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:43
+msgid "Zone"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:44
+msgid "Only mutable zones"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:45
+msgid "Add Zone"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:46
+#, fuzzy
+msgid "Remove Zone"
+msgstr "Suprimeix"
+
+#
+#: ../src/firewall-config.glade.h:47
+#, fuzzy
+msgid "Edit Zone"
+msgstr "Edita"
+
+#: ../src/firewall-config.glade.h:48
+msgid "Load Zone Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:49
+msgid ""
+"Here you can define which services are trusted. Trusted services are "
+"accessible from all hosts and networks."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:50
+msgid "Services"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:51
+msgid ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks."
+msgstr ""
+"Afegiu ports o rangs de ports, que podran ser accedits per totes les "
+"màquines o xarxes."
+
+#: ../src/firewall-config.glade.h:52
+msgid "Add Entry"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:53
+msgid "Edit Entry"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:54
+#, fuzzy
+msgid "Remove Entry"
+msgstr "Suprimeix"
+
+#
+#: ../src/firewall-config.glade.h:55
+#, fuzzy
+msgid "Ports"
+msgstr "Altres ports"
+
+#
+#: ../src/firewall-config.glade.h:56
+msgid ""
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
+msgstr ""
+"L'emmascarat us permet configurar un servidor o encaminador que connecta la "
+"vostra xarxa local a internet. La vostra xarxa local no serà visible i "
+"apareixerà com a un servidor a internet. Només ho podeu fer servir amb IPv4."
+
+#
+#: ../src/firewall-config.glade.h:57
+#, fuzzy
+msgid "Masquerade zone"
+msgstr "Emmascarat"
+
+#
+#: ../src/firewall-config.glade.h:58
+#, fuzzy
+msgid ""
+"If you enable masquerading, IP forwarding will be enabled for your IPv4 "
+"networks."
+msgstr ""
+"Si habiliteu l'emmascarat, també se us habilitarà el reenviament IP per a "
+"les vostres xarxes IPv4."
+
+#
+#: ../src/firewall-config.glade.h:59
+msgid "Masquerading"
+msgstr "Emmascarat"
+
+#
+#: ../src/firewall-config.glade.h:60
+msgid ""
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
+msgstr ""
+"Afegeix entrades per reenviar ports des d'un port a un altre en el sistema "
+"local o cap a un altre sistema. El reenviament a un altre sistema és útil "
+"només si la interfície està enmascarada. Només es pot fer amb IPv4."
+
+#
+#: ../src/firewall-config.glade.h:61
+#, fuzzy
+msgctxt "yes"
+msgid ""
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
+msgstr ""
+"El protocol de missatges de control d'internet (ICMP) s'usa principlament "
+"per enviar missatges d'error entre ordinadors de xarxa, però també per a "
+"missatges d'informació com ara peticions de ping i respostes."
+
+#
+#: ../src/firewall-config.glade.h:62
+#, fuzzy
+msgctxt "yes"
+msgid ""
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
+msgstr ""
+"Marca els tipus d'ICMP a la llista, que haurien de ser rebutjats. Tots els "
+"altres tipus ICMP tenen permès passar pel tallafoc. Per defecte no hi ha "
+"límit."
+
+#
+#: ../src/firewall-config.glade.h:63
+msgid "ICMP Filter"
+msgstr "Filtre ICMP"
+
+#: ../src/firewall-config.glade.h:64
+msgid "modified label"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:65
+msgid "System without network access"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:66
+msgid "System with network access"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:67
+msgid "Beginner"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:68
+msgid "Expert"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:69
+msgid "Desktop"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:70
+msgid "Server"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:71
+msgid "Port and Protocol"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:72
+msgid "Please enter a port and protocol."
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:73
+#, fuzzy
+msgid "Port / Port Range:"
+msgstr "Reenviament de ports"
+
+#: ../src/firewall-config.glade.h:74
+msgid "Please configure base service settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:75
+msgid "Please configure the services settings."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:77
+msgid "Add Service"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:78
+#, fuzzy
+msgid "Remove Service"
+msgstr "Suprimeix"
+
+#: ../src/firewall-config.glade.h:79
+msgid "Edit Service"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:80
+msgid "Load Service Defaults"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:81
+msgid "Netfilter helper modules"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:82
+msgid "Modules"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:83
+msgid "IPv4:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:84
+msgid "IPv6:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:85
+msgid "Please configure base zone settings:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:86
+msgid "Target:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:87
+msgid "Immutable"
+msgstr ""
+
+#. The {zone|service|icmptype} '<name>' has changed
+#: ../src/firewall-config.glade.h:90
+#, no-c-format
+msgid "The %s '%s' has changed, applying new settings."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:54
+#, c-format
+msgid "port range %s is not unique."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:56
+#, c-format
+msgid "%s is not a valid range (start port >= end port)."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:61
+#, c-format
+msgid "%s is not a valid protocol."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:63
+#, c-format
+msgid "invalid port definition %s."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:73
+#: ../src/firewall-convert-scfw-config:83
+#, c-format
+msgid "Invalid argument %s"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:97
+msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:108
+msgid "option %(option)s: invalid forward_port '%(value)s'."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:115
+#, c-format
+msgid "invalid interface '%s'."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:135
+msgid "Enable firewall (default)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:138
+msgid "Disable firewall"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:141
+#: ../src/firewall-convert-scfw-config:145
+msgid "<module>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:142
+msgid "Enable an iptables module"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:146
+msgid "Disable an iptables module"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:150
+msgid "<service>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:151
+msgid "Open the firewall for a service (e.g, ssh)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:154
+msgid "<port>[-<port>]:<protocol>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:156
+msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:160
+#: ../src/firewall-convert-scfw-config:164
+msgid "<interface>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:161
+msgid "Allow all traffic on the specified device"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:165
+msgid "Masquerades traffic from the specified device. This is IPv4 only."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:169
+msgid "Backwards compatibility, aliased to --enabled"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:172
+msgid "[<type>:][<table>:]<filename>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:174
+msgid ""
+"Specify a custom rules file for inclusion in the firewall, after the default "
+"rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:183
+msgid ""
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:187
+msgid ""
+"Forward the port with protocol for the interface to either another local "
+"destination port (no destination address given) or to an other destination "
+"address with an optional destination port. This is IPv4 only."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:196
+msgid "<icmp type>"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:197
+msgid "Block this ICMP type. The default is to accept all ICMP types."
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:209
+#, c-format
+msgid "no such option: %s"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:274
+#, c-format
+msgid "%s option requires an argument"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:277
+msgid "%(option)s option requires %(count)s arguments"
+msgstr ""
+
+#: ../src/firewall-convert-scfw-config:291
+#, c-format
+msgid "%s option does not take a value"
+msgstr ""
+
+#
+#, fuzzy
+#~ msgid "File"
+#~ msgstr "_Fitxer"
 
 #
 #~ msgid "Add"
 #~ msgstr "Afegeix"
-
-#
-#~ msgid ""
-#~ "Add additional ports or port ranges, which need to be accessible for all "
-#~ "hosts or networks."
-#~ msgstr ""
-#~ "Afegiu ports o rangs de ports, que podran ser accedits per totes les "
-#~ "màquines o xarxes."
-
-#
-#~ msgid ""
-#~ "Add entries to forward ports either from one port to another on the local "
-#~ "system or from the local system to another system. Forwarding to another "
-#~ "system is only useful if the interface is masqueraded. Port forwarding is "
-#~ "IPv4 only."
-#~ msgstr ""
-#~ "Afegeix entrades per reenviar ports des d'un port a un altre en el "
-#~ "sistema local o cap a un altre sistema. El reenviament a un altre sistema "
-#~ "és útil només si la interfície està enmascarada. Només es pot fer amb "
-#~ "IPv4."
 
 #
 #~ msgid "Allow access to necessary ports or port ranges, only."
@@ -273,10 +829,6 @@ msgstr ""
 #
 #~ msgid "Custom Rules"
 #~ msgstr "Regles personalitzades"
-
-#
-#~ msgid "Edit"
-#~ msgstr "Edita"
 
 #
 #~ msgid "FTP"
@@ -304,80 +856,13 @@ msgstr ""
 #~ "fer-ne desenvolupament. "
 
 #
-#~ msgid "ICMP Filter"
-#~ msgstr "Filtre ICMP"
-
-#
-#~ msgid ""
-#~ "If you enable masquerading, IP forwarding will also be enabled for your "
-#~ "IPv4 networks."
-#~ msgstr ""
-#~ "Si habiliteu l'emmascarat, també se us habilitarà el reenviament IP per a "
-#~ "les vostres xarxes IPv4."
-
-#
-#~ msgid ""
-#~ "Mark the ICMP types in the list, which should be rejected. All other ICMP "
-#~ "types are allowed to pass the firewall. The default is no limitation."
-#~ msgstr ""
-#~ "Marca els tipus d'ICMP a la llista, que haurien de ser rebutjats. Tots "
-#~ "els altres tipus ICMP tenen permès passar pel tallafoc. Per defecte no hi "
-#~ "ha límit."
-
-#
-#~ msgid "Masquerading"
-#~ msgstr "Emmascarat"
-
-#
-#~ msgid ""
-#~ "Masquerading allows you to set up a host or router that connects your "
-#~ "local network to the internet. Your local network will not be visible and "
-#~ "the hosts appear as a single address on the internet. Masquerading is "
-#~ "IPv4 only."
-#~ msgstr ""
-#~ "L'emmascarat us permet configurar un servidor o encaminador que connecta "
-#~ "la vostra xarxa local a internet. La vostra xarxa local no serà visible i "
-#~ "apareixerà com a un servidor a internet. Només ho podeu fer servir amb "
-#~ "IPv4."
-
-#
-#~ msgid "Other Ports"
-#~ msgstr "Altres ports"
-
-#
-#~ msgid "Port Forwarding"
-#~ msgstr "Reenviament de ports"
-
-#
 #~ msgid "Reload"
 #~ msgstr "Torna a carregar"
-
-#
-#~ msgid "Remove"
-#~ msgstr "Suprimeix"
 
 #
 #~ msgid "SSH"
 #~ msgstr "SSH"
 
 #
-#~ msgid ""
-#~ "The Internet Control Message Protocol (ICMP) is mainly used to send error "
-#~ "messages between networked computers, but additionally for informational "
-#~ "messages like ping requests and replies."
-#~ msgstr ""
-#~ "El protocol de missatges de control d'internet (ICMP) s'usa principlament "
-#~ "per enviar missatges d'error entre ordinadors de xarxa, però també per a "
-#~ "missatges d'informació com ara peticions de ping i respostes."
-
-#
 #~ msgid "WWW (HTTP)"
 #~ msgstr "WWW (HTTP)"
-
-#
-#~ msgid "_Help"
-#~ msgstr "A_juda"
-
-#
-#~ msgid "_Options"
-#~ msgstr "_Opcions"
