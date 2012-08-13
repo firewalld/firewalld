@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.te\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 12:24+0200\n"
+"POT-Creation-Date: 2012-08-13 13:35+0200\n"
 "PO-Revision-Date: 2010-06-29 20:16+0530\n"
 "Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
 "Language-Team: Telugu <en@li.org>\n"
@@ -44,33 +44,6 @@ msgstr "ఫైర్‌వాల్ ను చేతనం చేయి"
 #: ../config/firewall-config.desktop.in.h:2
 msgid "Firewall Configuration"
 msgstr ""
-
-#
-#: ../src/firewall/config/__init__.py:43
-msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
-msgstr ""
-"ఈ ప్రోగ్రామ్ ఉచిత సాఫ్టువేర్; ఉచిత సాఫ్టువేర్ వ్యవస్థాపన నుండి ప్రచురింపబడిన GNU జనరల్ పబ్లిక్ లైసెన్సు "
-"తెలిపిన దానికి లోబడి మీరు ఈ ప్రోగ్రామ్ ను తిరిగిపంరిణీ చేయవచ్చు మరియు/లేదా సవరించవచ్చు; లైసెన్సు విడుదల 2 "
-"కాని, లేదా(మీ ఐచ్చికంగా) తర్వాతి ఏ విడుదల నైనా అవలంబించవచ్చు.\n"
-"\n"
-"ఈ ప్రోగ్రామ్ ఉపయోగపడుతుందనే నమ్మకం తో పంపిణీ చేయబడుతోంది, అయితే ఏ హామీ లేకుండా; వ్యాపారసంభందితంగా గాని "
-"లేదా ఒక ప్రయోజనం కొరకు సంపూర్ణతతో ఉందని గాని కూడా హామీ లేదు. ఎక్కువ సమాచారం కొరకు GNU జనరల్ "
-"పబ్లిక్ లైసెన్సు ను చూడండి.\n"
-"\n"
-"ఈ ప్రోగ్రామ్ తో మీరు ఒక GNU జనరల్ పబ్లిక్ లైసెన్సు నకలు ను పొందిఉన్నారు.పొందకపోతే, <http://www."
-"gnu.org/licenses/> ని చూడండి."
 
 #: ../src/firewall/core/io/io_object.py:149
 #, python-format
@@ -200,35 +173,39 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:65
+msgid "Failed to load icons."
+msgstr ""
+
+#: ../src/firewall-config:87
 msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:88
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+#: ../src/firewall-config:115 ../src/firewall-config.glade.h:76
 msgid "Service"
 msgstr ""
 
-#: ../src/firewall-config:112 ../src/firewall-config:138
+#: ../src/firewall-config:122 ../src/firewall-config:148
 msgid "Port"
 msgstr ""
 
-#: ../src/firewall-config:114 ../src/firewall-config:140
+#: ../src/firewall-config:124 ../src/firewall-config:150
 msgid "Protocol"
 msgstr ""
 
-#: ../src/firewall-config:142
+#: ../src/firewall-config:152
 msgid "To Port"
 msgstr ""
 
-#: ../src/firewall-config:144
+#: ../src/firewall-config:154
 msgid "To Address"
 msgstr ""
 
-#: ../src/firewall-config:170
+#: ../src/firewall-config:180
 msgid "Icmp Type"
 msgstr ""
 
@@ -797,6 +774,32 @@ msgstr ""
 #, c-format
 msgid "%s option does not take a value"
 msgstr ""
+
+#
+#~ msgid ""
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the "
+#~ "Free Software Foundation; either version 2 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
+#~ msgstr ""
+#~ "ఈ ప్రోగ్రామ్ ఉచిత సాఫ్టువేర్; ఉచిత సాఫ్టువేర్ వ్యవస్థాపన నుండి ప్రచురింపబడిన GNU జనరల్ పబ్లిక్ "
+#~ "లైసెన్సు తెలిపిన దానికి లోబడి మీరు ఈ ప్రోగ్రామ్ ను తిరిగిపంరిణీ చేయవచ్చు మరియు/లేదా సవరించవచ్చు; లైసెన్సు "
+#~ "విడుదల 2 కాని, లేదా(మీ ఐచ్చికంగా) తర్వాతి ఏ విడుదల నైనా అవలంబించవచ్చు.\n"
+#~ "\n"
+#~ "ఈ ప్రోగ్రామ్ ఉపయోగపడుతుందనే నమ్మకం తో పంపిణీ చేయబడుతోంది, అయితే ఏ హామీ లేకుండా; వ్యాపారసంభందితంగా "
+#~ "గాని లేదా ఒక ప్రయోజనం కొరకు సంపూర్ణతతో ఉందని గాని కూడా హామీ లేదు. ఎక్కువ సమాచారం కొరకు GNU "
+#~ "జనరల్ పబ్లిక్ లైసెన్సు ను చూడండి.\n"
+#~ "\n"
+#~ "ఈ ప్రోగ్రామ్ తో మీరు ఒక GNU జనరల్ పబ్లిక్ లైసెన్సు నకలు ను పొందిఉన్నారు.పొందకపోతే, <http://www."
+#~ "gnu.org/licenses/> ని చూడండి."
 
 #
 #, fuzzy

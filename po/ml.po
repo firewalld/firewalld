@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld.master.ml\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 12:24+0200\n"
+"POT-Creation-Date: 2012-08-13 13:35+0200\n"
 "PO-Revision-Date: 2011-01-10 23:38+0530\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -33,31 +33,6 @@ msgstr "ഫയര്‍വോള്‍ ആപ്ലെറ്റ്"
 #, fuzzy
 msgid "Firewall Configuration"
 msgstr "സ്വതവേയുള്ള ക്രമീകരണം"
-
-#
-#: ../src/firewall/config/__init__.py:43
-msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
-msgstr ""
-"ഇത് ഒരു സ്വതന്ത്ര സോഫ്റ്റ്‌വെയര്‍ ആണ്; നിങ്ങള്‍ക്ക് ഇത് ഫ്റീ സോഫ്റ്റ്‌വെയര്‍ഫൌണ്ടേഷന്‍ പ്രസിദ്ധീകണത്തിന്റെ "
-"GNU ജനറല്‍ പബ്ലിക് ലൈസന്‍സ്  ലക്കം-2 അല്ലെങ്കില്‍ അത് കഴിഞ്ഞുള്ളവയുടെ നിബന്ധനകള്‍ അനുസരിച്ച് വീണ്ടും "
-"വിതരണം ചെയ്യുകയോ മാറ്റം വരുത്തുകയോ ചെയ്യാവുന്നതാണ്.\n"
-"\n"
-"ഈ പ്രോഗ്രാമിന് വാറണ്ടി ലഭ്യ‌ല്ല. കൂടുതല്‍ വിവരങ്ങള്‍ക്കായി GNU ജനറല്‍ പബ്ലിക് ലൈസന്‍സ് കാണുക.\n"
-"\n"
-"ഈ പ്രോഗ്രാമിനൊപ്പം നിങ്ങള്‍ക്ക് GNU ജനറല്‍ പബ്ലിക് ലൈസന്‍സിന്റെ ഒരു പകര്‍പ്പും ലഭിച്ചിരിക്കണം. "
-"ഇല്ലായെങ്കില്‍, <http://www.gnu.org/licenses/> കാണുക.‌"
 
 #: ../src/firewall/core/io/io_object.py:149
 #, python-format
@@ -190,40 +165,44 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:65
+msgid "Failed to load icons."
+msgstr ""
+
+#: ../src/firewall-config:87
 #, fuzzy
 msgid "Runtime Configuration"
 msgstr "സജീവമായ ക്രമീകരണം"
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:88
 #, fuzzy
 msgid "Persistent Configuration"
 msgstr "ക്രമീകരണം തെരഞ്ഞെടുക്കുക"
 
-#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+#: ../src/firewall-config:115 ../src/firewall-config.glade.h:76
 #, fuzzy
 msgid "Service"
 msgstr "സര്‍വീസുകള്‍"
 
-#: ../src/firewall-config:112 ../src/firewall-config:138
+#: ../src/firewall-config:122 ../src/firewall-config:148
 #, fuzzy
 msgid "Port"
 msgstr "പോര്‍ട്ടുകള്‍"
 
-#: ../src/firewall-config:114 ../src/firewall-config:140
+#: ../src/firewall-config:124 ../src/firewall-config:150
 msgid "Protocol"
 msgstr ""
 
-#: ../src/firewall-config:142
+#: ../src/firewall-config:152
 #, fuzzy
 msgid "To Port"
 msgstr "പോര്‍ട്ടുകള്‍"
 
-#: ../src/firewall-config:144
+#: ../src/firewall-config:154
 msgid "To Address"
 msgstr ""
 
-#: ../src/firewall-config:170
+#: ../src/firewall-config:180
 msgid "Icmp Type"
 msgstr ""
 
@@ -814,6 +793,30 @@ msgstr ""
 #, c-format
 msgid "%s option does not take a value"
 msgstr ""
+
+#
+#~ msgid ""
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the "
+#~ "Free Software Foundation; either version 2 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
+#~ msgstr ""
+#~ "ഇത് ഒരു സ്വതന്ത്ര സോഫ്റ്റ്‌വെയര്‍ ആണ്; നിങ്ങള്‍ക്ക് ഇത് ഫ്റീ സോഫ്റ്റ്‌വെയര്‍ഫൌണ്ടേഷന്‍ "
+#~ "പ്രസിദ്ധീകണത്തിന്റെ GNU ജനറല്‍ പബ്ലിക് ലൈസന്‍സ്  ലക്കം-2 അല്ലെങ്കില്‍ അത് കഴിഞ്ഞുള്ളവയുടെ "
+#~ "നിബന്ധനകള്‍ അനുസരിച്ച് വീണ്ടും വിതരണം ചെയ്യുകയോ മാറ്റം വരുത്തുകയോ ചെയ്യാവുന്നതാണ്.\n"
+#~ "\n"
+#~ "ഈ പ്രോഗ്രാമിന് വാറണ്ടി ലഭ്യ‌ല്ല. കൂടുതല്‍ വിവരങ്ങള്‍ക്കായി GNU ജനറല്‍ പബ്ലിക് ലൈസന്‍സ് കാണുക.\n"
+#~ "\n"
+#~ "ഈ പ്രോഗ്രാമിനൊപ്പം നിങ്ങള്‍ക്ക് GNU ജനറല്‍ പബ്ലിക് ലൈസന്‍സിന്റെ ഒരു പകര്‍പ്പും ലഭിച്ചിരിക്കണം. "
+#~ "ഇല്ലായെങ്കില്‍, <http://www.gnu.org/licenses/> കാണുക.‌"
 
 #, fuzzy
 #~ msgid "Firewall Config"

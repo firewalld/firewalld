@@ -2,7 +2,7 @@
 
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.6
+Version: 0.2.7
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -180,11 +180,15 @@ fi
 %defattr(-,root,root)
 %{_bindir}/firewall-config
 %defattr(0644,root,root)
-#%{_datadir}/firewalld/firewall-config.glade
+%{_datadir}/firewalld/firewall-config.glade
 %{_datadir}/applications/firewall-config.desktop
-#%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
+%{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Aug 13 2012 Thomas Woerner <twoerner@redhat.com> 0.2.7-1
+- Update of firewall-config
+- Some bug fixes
+
 * Tue Aug  7 2012 Thomas Woerner <twoerner@redhat.com> 0.2.6-1
 - New D-BUS interface for persistent configuration
 - Aded support for persistent zone configuration in firewall-cmd

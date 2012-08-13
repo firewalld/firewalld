@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 12:24+0200\n"
+"POT-Creation-Date: 2012-08-13 13:35+0200\n"
 "PO-Revision-Date: 2010-09-15 15:05+0100\n"
 "Last-Translator: Robert Antoni Buj Gelonch <robert.buj@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -48,36 +48,6 @@ msgstr "Habilita el tallafoc"
 #: ../config/firewall-config.desktop.in.h:2
 msgid "Firewall Configuration"
 msgstr ""
-
-#
-#: ../src/firewall/config/__init__.py:43
-msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
-msgstr ""
-"Aquest és programari lliure; podeu redistribuir-lo i/o modificar-lo\n"
-"sota els termes de la Llicència Pública General GNU tal i com ha estat\n"
-"publicada per la Free Software Foundation; sota la versió 2 de la\n"
-"Llicència o (si ho preferiu) sota una de més recent.\n"
-"\n"
-"Aquest programa es distribueix amb l'expectativa de que serà útil,\n"
-"però SENSE CAP GARANTIA; fins i tot la garantia implícita de\n"
-"COMERCIABILITAT o ADEQUACIÓ PER UN PROPÒSIT PARTICULAR. Vegeu la\n"
-"Llicència Pública General GNU per obtenir-ne més detalls.\n"
-"\n"
-"Hauríeu d'haver rebut una còpia de la Llicència Pública General GNU\n"
-"juntament amb aquest programa; en cas contrari, consulteu <http://www.gnu."
-"org/licenses/>."
 
 #: ../src/firewall/core/io/io_object.py:149
 #, python-format
@@ -207,35 +177,39 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:65
+msgid "Failed to load icons."
+msgstr ""
+
+#: ../src/firewall-config:87
 msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:88
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+#: ../src/firewall-config:115 ../src/firewall-config.glade.h:76
 msgid "Service"
 msgstr ""
 
-#: ../src/firewall-config:112 ../src/firewall-config:138
+#: ../src/firewall-config:122 ../src/firewall-config:148
 msgid "Port"
 msgstr ""
 
-#: ../src/firewall-config:114 ../src/firewall-config:140
+#: ../src/firewall-config:124 ../src/firewall-config:150
 msgid "Protocol"
 msgstr ""
 
-#: ../src/firewall-config:142
+#: ../src/firewall-config:152
 msgid "To Port"
 msgstr ""
 
-#: ../src/firewall-config:144
+#: ../src/firewall-config:154
 msgid "To Address"
 msgstr ""
 
-#: ../src/firewall-config:170
+#: ../src/firewall-config:180
 msgid "Icmp Type"
 msgstr ""
 
@@ -808,6 +782,35 @@ msgstr ""
 #, c-format
 msgid "%s option does not take a value"
 msgstr ""
+
+#
+#~ msgid ""
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the "
+#~ "Free Software Foundation; either version 2 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
+#~ msgstr ""
+#~ "Aquest és programari lliure; podeu redistribuir-lo i/o modificar-lo\n"
+#~ "sota els termes de la Llicència Pública General GNU tal i com ha estat\n"
+#~ "publicada per la Free Software Foundation; sota la versió 2 de la\n"
+#~ "Llicència o (si ho preferiu) sota una de més recent.\n"
+#~ "\n"
+#~ "Aquest programa es distribueix amb l'expectativa de que serà útil,\n"
+#~ "però SENSE CAP GARANTIA; fins i tot la garantia implícita de\n"
+#~ "COMERCIABILITAT o ADEQUACIÓ PER UN PROPÒSIT PARTICULAR. Vegeu la\n"
+#~ "Llicència Pública General GNU per obtenir-ne més detalls.\n"
+#~ "\n"
+#~ "Hauríeu d'haver rebut una còpia de la Llicència Pública General GNU\n"
+#~ "juntament amb aquest programa; en cas contrari, consulteu <http://www.gnu."
+#~ "org/licenses/>."
 
 #
 #, fuzzy

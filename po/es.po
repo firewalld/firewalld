@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-13 12:24+0200\n"
+"POT-Creation-Date: 2012-08-13 13:35+0200\n"
 "PO-Revision-Date: 2010-06-27 12:46-0300\n"
 "Last-Translator: Claudio Rodrigo Pereyra Diaz <claudio@pereyradiaz.com.ar>\n"
 "Language-Team: Fedora Spanish <trans-es@lists.fedoraproject.org>\n"
@@ -44,35 +44,6 @@ msgstr "Demonio de firewall"
 #, fuzzy
 msgid "Firewall Configuration"
 msgstr "configuracion Predeterminada"
-
-#: ../src/firewall/config/__init__.py:43
-msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
-msgstr ""
-"Este programa es software libre; puede redistribuirlo y/o modificarlo bajo "
-"los términos de la Licencia Pública General de Bibliotecas de GNU, como "
-"fueron publicadas por la Fundación de Software Libre; ya sea la versión 2 o "
-"(a su elección) alguna posterior.\n"
-"\n"
-"Este programa se distribuye con la esperanza de que será útil, pero SIN "
-"NINGUNA GARANTÍA; sin siquiera la garantía MERCANTIL implícita o AJUSTE PARA "
-"UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General de Bibliotecas de "
-"GNU para más información.\n"
-"\n"
-"Debe haber recibido una copia de la Licencia Pública General de Bibliotecas "
-"de GNU junto con este programa; de lo contrario, consulte <http://www.gnu."
-"org/licenses/>."
 
 #: ../src/firewall/core/io/io_object.py:149
 #, python-format
@@ -205,40 +176,44 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:65
+msgid "Failed to load icons."
+msgstr ""
+
+#: ../src/firewall-config:87
 #, fuzzy
 msgid "Runtime Configuration"
 msgstr "Configuracion activa"
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:88
 #, fuzzy
 msgid "Persistent Configuration"
 msgstr "Seleccione configuracion"
 
-#: ../src/firewall-config:105 ../src/firewall-config.glade.h:76
+#: ../src/firewall-config:115 ../src/firewall-config.glade.h:76
 #, fuzzy
 msgid "Service"
 msgstr "Servicios"
 
-#: ../src/firewall-config:112 ../src/firewall-config:138
+#: ../src/firewall-config:122 ../src/firewall-config:148
 #, fuzzy
 msgid "Port"
 msgstr "Puertos"
 
-#: ../src/firewall-config:114 ../src/firewall-config:140
+#: ../src/firewall-config:124 ../src/firewall-config:150
 msgid "Protocol"
 msgstr ""
 
-#: ../src/firewall-config:142
+#: ../src/firewall-config:152
 #, fuzzy
 msgid "To Port"
 msgstr "Puertos"
 
-#: ../src/firewall-config:144
+#: ../src/firewall-config:154
 msgid "To Address"
 msgstr ""
 
-#: ../src/firewall-config:170
+#: ../src/firewall-config:180
 msgid "Icmp Type"
 msgstr ""
 
@@ -810,6 +785,34 @@ msgstr ""
 #, c-format
 msgid "%s option does not take a value"
 msgstr ""
+
+#~ msgid ""
+#~ "This program is free software; you can redistribute it and/or modify it "
+#~ "under the terms of the GNU General Public License as published by the "
+#~ "Free Software Foundation; either version 2 of the License, or (at your "
+#~ "option) any later version.\n"
+#~ "\n"
+#~ "This program is distributed in the hope that it will be useful, but "
+#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
+#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
+#~ "Public License for more details.\n"
+#~ "\n"
+#~ "You should have received a copy of the GNU General Public License along "
+#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
+#~ msgstr ""
+#~ "Este programa es software libre; puede redistribuirlo y/o modificarlo "
+#~ "bajo los términos de la Licencia Pública General de Bibliotecas de GNU, "
+#~ "como fueron publicadas por la Fundación de Software Libre; ya sea la "
+#~ "versión 2 o (a su elección) alguna posterior.\n"
+#~ "\n"
+#~ "Este programa se distribuye con la esperanza de que será útil, pero SIN "
+#~ "NINGUNA GARANTÍA; sin siquiera la garantía MERCANTIL implícita o AJUSTE "
+#~ "PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General de "
+#~ "Bibliotecas de GNU para más información.\n"
+#~ "\n"
+#~ "Debe haber recibido una copia de la Licencia Pública General de "
+#~ "Bibliotecas de GNU junto con este programa; de lo contrario, consulte "
+#~ "<http://www.gnu.org/licenses/>."
 
 #, fuzzy
 #~ msgid "Firewall Config"
