@@ -21,6 +21,7 @@
 
 from gi.repository import Gtk, GObject
 import sys
+sys.modules['gobject'] = GObject
 import dbus
 
 from firewall.config import *
@@ -46,8 +47,8 @@ class FirewallConfig(object):
 
         # get widgets
 
-        self.toplevel = builder.get_object("mainWindow")
-        self.toplevel.set_icon(self.icon)
+        self.mainWindow = builder.get_object("mainWindow")
+        self.mainWindow.set_icon(self.icon)
 
         self.aboutDialog = builder.get_object("aboutDialog")
         self.aboutDialog.set_version(VERSION)
@@ -56,7 +57,7 @@ class FirewallConfig(object):
         self.aboutDialog.set_wrap_license(True)
         self.aboutDialog.set_copyright(COPYRIGHT)
         self.aboutDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.aboutDialog.set_transient_for(self.toplevel)
+        self.aboutDialog.set_transient_for(self.mainWindow)
         self.aboutDialog.set_modal(True)
         self.aboutDialog.set_icon(self.icon)
         self.aboutDialog.set_logo(self.logo)
@@ -68,7 +69,13 @@ class FirewallConfig(object):
         self.runtime_view = True
         self.currentViewLabel.set_markup(self.views[self.runtime_view])
 
-        self.zoneCombobox = builder.get_object("zoneComboboxtext")
+        self.zoneView = builder.get_object("zoneView")
+        self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.zoneView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.zoneView.set_model(self.zoneStore)
+        self.zoneStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.zoneView.get_selection().connect("changed", self.onChangeZone)
 
         self.defaultZoneLabel = builder.get_object("defaultZoneLabel")
         self.defaultZoneDialog = builder.get_object("defaultZoneDialog")
@@ -164,7 +171,7 @@ class FirewallConfig(object):
 
         # mainloop
 
-        self.toplevel.show_all()
+        self.mainWindow.show_all()
         self.mainloop = GObject.MainLoop()
         try:
             self.mainloop.run()
@@ -177,9 +184,8 @@ class FirewallConfig(object):
         self.load_zones()
 
     def load_zones(self):
-        active_zone = self.zoneCombobox.get_active_text()
-        model = self.zoneCombobox.get_model()
-        model.clear()
+        active_zone = self.get_active_zone()
+        self.zoneStore.clear()
 
         zones = [ ]
         if self.runtime_view:
@@ -222,24 +228,29 @@ class FirewallConfig(object):
 
         self.zones = sorted(zones)
         for zone in zones:
-            self.zoneCombobox.append_text(zone)
+            self.zoneStore.append([zone])
 
         if active_zone in zones:
             _zone = active_zone
         else:
             _zone = self.defaultZoneLabel.get_text()
 
-        if _zone in zones:
-            self.zoneCombobox.set_active(zones.index(_zone))
-        else:
-            self.zoneCombobox.set_active(0)
+        selection = self.zoneView.get_selection()
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) == _zone:
+                selection.select_iter(iter)
+                return
+            iter = self.zoneStore.iter_next(iter)
+        # fallback
+        selection.select_path(0)
 
     def service_toggle_cb(self, toggle, row, model, col):
         iter = model.get_iter(row)
         old_val = model.get(iter, col)[0]
         model.set(iter, col, not old_val)
         name = model.get(iter, 1)[0]
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
         if self.runtime_view:
             if not old_val:
                 self.fw.addService(active_zone, name)
@@ -273,7 +284,7 @@ class FirewallConfig(object):
             self.removeForwardButton.set_sensitive(False)
 
     def masquerade_check_cb(self, check):
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
         if self.runtime_view:
             if check.get_active():
                 self.fw.addMasquerade(active_zone)
@@ -290,7 +301,7 @@ class FirewallConfig(object):
         old_val = model.get(iter, col)[0]
         model.set(iter, col, not old_val)
         name = model.get(iter, 1)[0]
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
         if self.runtime_view:
             if not old_val:
                 self.fw.addIcmpBlock(active_zone, name)
@@ -315,11 +326,20 @@ class FirewallConfig(object):
             iter = model.iter_next(iter)
         combobox.set_active(0)
 
+    def get_active_zone(self):
+        selection = self.zoneView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter:
+            return self.zoneStore.get_value(iter, 0)
+        return None
+
     def onQuit(self, *args):
         self.mainloop.quit()
         sys.exit()
 
     def onAbout(self, *args):
+        self.aboutDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.aboutDialog.set_transient_for(self.mainWindow)
         self.aboutDialog.show_all()
         self.aboutDialog.run()
         self.aboutDialog.hide()
@@ -346,6 +366,8 @@ class FirewallConfig(object):
         else:
             selection.set_mode(gtk.SelectionMode.NONE)
 
+        self.defaultZoneDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.defaultZoneDialog.set_transient_for(self.mainWindow)
         self.defaultZoneDialog.show_all()
         result = self.defaultZoneDialog.run()
         self.defaultZoneDialog.hide()
@@ -356,7 +378,7 @@ class FirewallConfig(object):
             self.fw.setDefaultZone(model.get(iter, 0)[0])
 
     def onChangeZone(self, *args):
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
         if not active_zone:
             return
 
@@ -440,7 +462,7 @@ class FirewallConfig(object):
         self.add_edit_port(False)
 
     def add_edit_port(self, add):
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
 
         old_port = None
         old_proto = None
@@ -459,6 +481,8 @@ class FirewallConfig(object):
             self.portDialogPortEntry.set_text(old_port)
             self.combobox_select_text(self.portDialogProtoCombobox, old_proto)
             
+        self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
         result = self.portDialog.run()
         self.portDialog.hide()
@@ -471,14 +495,6 @@ class FirewallConfig(object):
         if not add and (old_port == port and old_proto == proto):
             # nothing to change
             return
-
-        if add:
-            self.portStore.append([port, proto])
-        else:
-            selection = self.portView.get_selection()
-            (model, iter) = selection.get_selected()
-            self.portStore.set_value(iter, 0, port)
-            self.portStore.set_value(iter, 1, proto)
 
         if self.runtime_view:
             if not add:
@@ -493,15 +509,22 @@ class FirewallConfig(object):
             settings.addPort(port, proto)
             zone.update(settings)
 
+        if add:
+            self.portStore.append([port, proto])
+        else:
+            selection = self.portView.get_selection()
+            (model, iter) = selection.get_selected()
+            self.portStore.set_value(iter, 0, port)
+            self.portStore.set_value(iter, 1, proto)
+
     def onRemovePort(self, *args):
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
         selection = self.portView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
             return
         port = self.portStore.get_value(iter, 0)
         proto = self.portStore.get_value(iter, 1)
-        model.remove(iter)
 
         if self.runtime_view:
             self.fw.removePort(active_zone, port, proto)
@@ -511,6 +534,7 @@ class FirewallConfig(object):
             settings.removePort(port, proto)
             zone.update(settings)
 
+        model.remove(iter)
 
     def onAddForwardPort(self, *args):
         self.add_edit_forward_port(True)
@@ -519,7 +543,7 @@ class FirewallConfig(object):
         self.add_edit_forward_port(False)
 
     def add_edit_forward_port(self, add):
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
 
         old_port = None
         old_proto = None
@@ -547,6 +571,8 @@ class FirewallConfig(object):
             self.forwardDialogToPortEntry.set_text(old_to_port)
             self.forwardDialogToAddrEntry.set_text(old_to_addr)
             
+        self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.forwardDialog.set_transient_for(self.mainWindow)
         self.forwardDialog.show_all()
         result = self.forwardDialog.run()
         self.forwardDialog.hide()
@@ -564,16 +590,6 @@ class FirewallConfig(object):
             # nothing to change
             return
 
-        if add:
-            self.forwardStore.append([port, proto, to_port, to_addr])
-        else:
-            selection = self.forwardView.get_selection()
-            (model, iter) = selection.get_selected()
-            self.forwardStore.set_value(iter, 0, port)
-            self.forwardStore.set_value(iter, 1, proto)
-            self.forwardStore.set_value(iter, 2, to_port)
-            self.forwardStore.set_value(iter, 3, to_addr)
-
         if self.runtime_view:
             if not add:
                 self.fw.removeForwardPort(active_zone, old_port, old_proto,
@@ -589,8 +605,18 @@ class FirewallConfig(object):
             settings.addForwardPort(port, proto, to_port, to_addr)
             zone.update(settings)
 
+        if add:
+            self.forwardStore.append([port, proto, to_port, to_addr])
+        else:
+            selection = self.forwardView.get_selection()
+            (model, iter) = selection.get_selected()
+            self.forwardStore.set_value(iter, 0, port)
+            self.forwardStore.set_value(iter, 1, proto)
+            self.forwardStore.set_value(iter, 2, to_port)
+            self.forwardStore.set_value(iter, 3, to_addr)
+
     def onRemoveForwardPort(self, *args):
-        active_zone = self.zoneCombobox.get_active_text()
+        active_zone = self.get_active_zone()
         selection = self.forwardView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
@@ -599,7 +625,6 @@ class FirewallConfig(object):
         proto = self.forwardStore.get_value(iter, 1)
         to_port = self.forwardStore.get_value(iter, 2)
         to_addr = self.forwardStore.get_value(iter, 3)
-        model.remove(iter)
 
         if self.runtime_view:
             self.fw.removeForwardPort(active_zone, port, proto,
@@ -610,11 +635,9 @@ class FirewallConfig(object):
             settings.removeForwardPort(port, proto, to_port, to_addr)
             zone.update(settings)
 
-
+        model.remove(iter)
 
 # MAIN
 
-mainloop = GObject.MainLoop()
 app = FirewallConfig()
-mainloop.run()
 sys.exit(0)
