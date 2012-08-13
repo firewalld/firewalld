@@ -23,6 +23,7 @@ from gi.repository import Gtk, GObject
 import sys
 sys.modules['gobject'] = GObject
 import dbus
+import os
 
 from firewall.config import *
 from firewall.config.dbus import *
@@ -45,15 +46,24 @@ from firewall.functions import *
 class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
-        builder.add_from_file("firewall-config.glade")
+        builder.set_translation_domain("firewalld")
+        if os.getenv("FIREWALLD_DEVEL_ENV") != None:
+            path = "."
+        else:
+            path = DATADIR
+        builder.add_from_file("%s/%s" % (path, CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
         size = min(width, height)
         self.icon_theme = Gtk.IconTheme.get_default()
-        self.icon = self.icon_theme.load_icon(CONFIG_NAME, size, 0)
-        self.logo = self.icon_theme.load_icon(CONFIG_NAME, 48, 0)
+        try:
+            self.icon = self.icon_theme.load_icon(CONFIG_NAME, size, 0)
+            self.logo = self.icon_theme.load_icon(CONFIG_NAME, 48, 0)
+        except:
+            print(_("Failed to load icons."))
+            self.icon = self.logo = None
 
         # get widgets
 
