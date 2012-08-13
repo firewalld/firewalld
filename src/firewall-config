@@ -32,6 +32,17 @@ from firewall.functions import *
 #FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 CONFIG_NAME = "firewall-applet" # use firewall applet icon for now
 
+# TODO:
+#
+# - enable firewalld signals
+# - react on firewalld signals
+# - do not change settings in the UI directly, use firewalld signals
+# - add FirewallClient exception handling and error dialog for all uses
+# - enable connection_established and connection_lost for firewalld
+# - add dialog checks for ports, ip addresses, etc.
+# - enable OK button in dialogs only after changing content
+#
+
 class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
