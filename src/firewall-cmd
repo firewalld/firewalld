@@ -285,26 +285,17 @@ try:
     if permanent:
        if mode == "get-zones":
            zones = fw.config().listZones()
-           l = [ ]
-           for zone in zones:
-               z = fw.config().getZone(zone)
-               l.append(z.get_property("name"))
+           l = [fw.config().getZone(z).get_property("name") for z in zones]
            if len(l) > 0:
                print(" ".join(l))
        elif mode == "get-services":
            services = fw.config().listServices()
-           l = [ ]
-           for service in services:
-               s = fw.config().getService(service)
-               l.append(s.get_property("name"))
+           l = [fw.config().getService(s).get_property("name") for s in services]
            if len(l) > 0:
                print(" ".join(l))
        elif mode == "get-icmptypes":
            icmptypes = fw.config().listIcmpTypes()
-           l = [ ]
-           for icmptype in icmptypes:
-               i = fw.config().getIcmpType(icmptype)
-               l.append(i.get_property("name"))
+           l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
            if len(l) > 0:
                print(" ".join(l))
        else:
