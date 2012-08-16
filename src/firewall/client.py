@@ -135,12 +135,12 @@ class FirewallClientConfigZone(object):
 
     @slip.dbus.polkit.enable_proxy
     def getSettings(self):
-        return FirewallClientConfigZoneSettings(dbus_to_python(\
-                self.fw_zone.getSettings()))
+        return FirewallClientConfigZoneSettings(list(dbus_to_python(\
+                    self.fw_zone.getSettings())))
 
     @slip.dbus.polkit.enable_proxy
     def update(self, settings):
-        self.fw_zone.update(settings.settings)
+        self.fw_zone.update(tuple(settings.settings))
 
     @slip.dbus.polkit.enable_proxy
     def loadDefaults(self):
@@ -154,17 +154,17 @@ class FirewallClientConfigZone(object):
     def rename(self, name):
         self.fw_zone.rename(name)
 
-    @slip.dbus.polkit.enable_proxy
-    def setUpdatedCallback(self, callback):
-        self._updated_cb = callback
+    # callbacks
 
-    @slip.dbus.polkit.enable_proxy
-    def setRemovedCallback(self, callback):
-        self._removed_cb = callback
-
-    @slip.dbus.polkit.enable_proxy
-    def setRenamedCallback(self, callback):
-        self._renamed_cb = callback
+    def connect(self, name, callback, *args):
+        if name == "updated":
+            self._updated_cb = (callback, args)
+        elif name == "removed":
+            self._removed_cb = (callback, args)
+        elif name == "renamed":
+            self._renamed_cb = (callback, args)
+        else:
+            raise ValueError, "Unknown callback name '%s'" % name
 
 # service config settings
 
@@ -249,12 +249,12 @@ class FirewallClientConfigService(object):
 
     @slip.dbus.polkit.enable_proxy
     def getSettings(self):
-        return FirewallClientConfigServiceSettings(dbus_to_python(\
-                self.fw_service.getSettings()))
+        return FirewallClientConfigServiceSettings(list(dbus_to_python(\
+                    self.fw_service.getSettings())))
 
     @slip.dbus.polkit.enable_proxy
     def update(self, settings):
-        self.fw_service.update(settings.settings)
+        self.fw_service.update(tuple(settings.settings))
 
     @slip.dbus.polkit.enable_proxy
     def loadDefaults(self):
@@ -268,17 +268,17 @@ class FirewallClientConfigService(object):
     def rename(self, name):
         self.fw_service.rename(name)
 
-    @slip.dbus.polkit.enable_proxy
-    def setUpdatedCallback(self, callback):
-        self._updated_cb = callback
+    # callbacks
 
-    @slip.dbus.polkit.enable_proxy
-    def setRemovedCallback(self, callback):
-        self._removed_cb = callback
-
-    @slip.dbus.polkit.enable_proxy
-    def setRenamedCallback(self, callback):
-        self._renamed_cb = callback
+    def connect(self, name, callback, *args):
+        if name == "updated":
+            self._updated_cb = (callback, args)
+        elif name == "removed":
+            self._removed_cb = (callback, args)
+        elif name == "renamed":
+            self._renamed_cb = (callback, args)
+        else:
+            raise ValueError, "Unknown callback name '%s'" % name
 
 # icmptype config settings
 
@@ -342,12 +342,12 @@ class FirewallClientConfigIcmpType(object):
 
     @slip.dbus.polkit.enable_proxy
     def getSettings(self):
-        return FirewallClientConfigIcmpTypeSettings(dbus_to_python(\
-                self.fw_icmptype.getSettings()))
+        return FirewallClientConfigIcmpTypeSettings(list(dbus_to_python(\
+                    self.fw_icmptype.getSettings())))
 
     @slip.dbus.polkit.enable_proxy
     def update(self, settings):
-        self.fw_icmptype.update(settings.settings)
+        self.fw_icmptype.update(tuple(settings.settings))
 
     @slip.dbus.polkit.enable_proxy
     def loadDefaults(self):
@@ -361,17 +361,17 @@ class FirewallClientConfigIcmpType(object):
     def rename(self, name):
         self.fw_icmptype.rename(name)
 
-    @slip.dbus.polkit.enable_proxy
-    def setUpdatedCallback(self, callback):
-        self._updated_cb = callback
+    # callbacks
 
-    @slip.dbus.polkit.enable_proxy
-    def setRemovedCallback(self, callback):
-        self._removed_cb = callback
-
-    @slip.dbus.polkit.enable_proxy
-    def setRenamedCallback(self, callback):
-        self._renamed_cb = callback
+    def connect(self, name, callback, *args):
+        if name == "updated":
+            self._updated_cb = (callback, args)
+        elif name == "removed":
+            self._removed_cb = (callback, args)
+        elif name == "renamed":
+            self._renamed_cb = (callback, args)
+        else:
+            raise ValueError, "Unknown callback name '%s'" % name
 
 # config
 
@@ -382,9 +382,50 @@ class FirewallClientConfig(object):
                                             DBUS_PATH_CONFIG)
         self.fw_config = dbus.Interface(self.dbus_obj,
                                         dbus_interface=DBUS_INTERFACE_CONFIG)
-        self._zone_added_cb = None
-        self._service_added_cb = None
-        self._icmptype_added_cb = None
+        self._callback = { }
+        self._callbacks = {
+            "zone-added": "ZoneAdded",
+            "zone-updated": "ZoneUpdated",
+            "zone-removed": "ZoneRemoved",
+            "zone-renamed": "ZoneRenamed",
+            "service-added": "ServiceAdded",
+            "service-updated": "ServiceUpdated",
+            "service-removed": "ServiceRemoved",
+            "service-renamed": "ServiceRenamed",
+            "icmptype-added": "IcmpTypeAdded",
+            "icmptype-updated": "IcmpTypeUpdated",
+            "icmptype-removed": "IcmpTypeRemoved",
+            "icmptype-renamed": "IcmpTypeRenamed",
+            }
+
+    def signal_receiver(self, *args, **kwargs):
+        signal = kwargs["member"]
+        path = kwargs["path"]
+        interface = kwargs["interface"]
+
+        dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
+        properties = dbus.Interface(
+            dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+        what = dbus_to_python(properties.Get(interface, "name"))
+
+        if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
+            signal = "Zone" + signal
+        elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
+            signal = "Service" + signal
+        elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
+            signal = "IcmpType" + signal
+
+        cb = None
+        cb_args = [ ]
+        for callback in self._callbacks:
+            if self._callbacks[callback] == signal and \
+                    self._callbacks[callback] in self._callback:
+                cb = self._callback[self._callbacks[callback]]
+                cb_args.append(what)
+                cb_args.extend(args)
+                break
+
+        return (cb, cb_args)
 
     # zone
 
@@ -451,17 +492,11 @@ class FirewallClientConfig(object):
 
     # callbacks
 
-    @slip.dbus.polkit.enable_proxy
-    def setZoneAddedCallback(self, callback):
-        self._zone_added_cb = callback
-
-    @slip.dbus.polkit.enable_proxy
-    def setServiceAddedCallback(self, callback):
-        self._service_added_cb = callback
-
-    @slip.dbus.polkit.enable_proxy
-    def setIcmpTypeAddedCallback(self, callback):
-        self._icmptype_added_cb = callback
+    def connect(self, name, callback, *args):
+        if name in self._callbacks:
+            self._callback[self._callbacks[name]] = (callback, args)
+        else:
+            raise ValueError, "Unknown callback name '%s'" % name
 
 #
 
@@ -485,6 +520,7 @@ class FirewallClient(object):
                                         dbus_interface=DBUS_INTERFACE_DIRECT)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+
         self._config = FirewallClientConfig(self.bus)
 
         self.bus.add_signal_receiver(
@@ -505,6 +541,37 @@ class FirewallClient(object):
                                          member_keyword='member',
                                          path_keyword='path')
 
+        self._default_zone_changed_cb = None
+        self._panic_mode_enabled_cb = None
+        self._panic_mode_disabled_cb = None
+        self._reloaded_cb = None
+        self._callback = { }
+        self._callbacks = {
+            "default-zone-changed": "DefaultZoneChanged",
+            "panic-mode-enabled": "PanicModeEnabled",
+            "panic-mode-disabled": "PanicModeDisabled",
+            "reloaded": "Reloaded",
+            "service-added": "ServiceAdded",
+            "service-removed": "ServiceRemoved",
+            "port-added": "PortAdded",
+            "port-removed": "PortRemoved",
+            "masquerade-added": "MasqueradeAdded",
+            "masquerade-removed": "MasqueradeRemoved",
+            "forward-port-added": "ForwardPortAdded",
+            "forward-port-removed": "ForwardPortRemoved",
+            "icmp-block-added": "IcmpBlockAdded",
+            "icmp-block-removed": "IcmpBlockRemoved",
+            "interface-added": "InterfaceAdded",
+            "interface-removed": "InterfaceRemoved",
+            "zone-changed": "ZoneChanged",
+            }
+
+    def connect(self, name, callback, *args):
+        if name in self._callbacks:
+            self._callback[self._callbacks[name]] = (callback, args)
+        else:
+            raise ValueError, "Unknown callback name '%s'" % name
+
     def dbus_connection_changed(self, name, old_owner, new_owner):
         if name != DBUS_INTERFACE:
             return
@@ -523,10 +590,38 @@ class FirewallClient(object):
         pass
 
     def signal_receiver(self, *args, **kwargs):
-#        print("signal_receiver", args, kwargs)
+        _args = [ ]
+        for arg in args:
+            _args.append(dbus_to_python(arg))
+        args = _args
         if not "member" in kwargs:
             return
         signal = kwargs["member"]
+        interface = kwargs["interface"]
+
+        cb = None
+        cb_args = [ ]
+        if interface.startswith(DBUS_INTERFACE_CONFIG):
+            (cb,cb_args) = self._config.signal_receiver(*args, **kwargs)
+        else:
+            for callback in self._callbacks:
+                if self._callbacks[callback] == signal and \
+                        self._callbacks[callback] in self._callback:
+                    cb = self._callback[self._callbacks[callback]]
+                    cb_args = args
+                    break
+        if not cb:
+            return
+
+        # call back ...
+        try:
+            if cb[1]:
+                # add call data
+                cb_args.extend(cb[1])
+            # call back
+            cb[0](*cb_args)
+        except Exception as msg:
+            print(msg)
 
     @slip.dbus.polkit.enable_proxy
     def config(self):
