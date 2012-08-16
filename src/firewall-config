@@ -82,12 +82,10 @@ class FirewallConfig(object):
         self.aboutDialog.set_icon(self.icon)
         self.aboutDialog.set_logo(self.logo)
 
-        self.currentViewLabel = builder.get_object("currentViewLabel")
-
-        self.views = { True: _("Runtime Configuration"),
-                       False: _("Persistent Configuration"), }
+        self.currentViewCombobox = builder.get_object("currentViewCombobox")
+        self.currentViewCombobox.append_text(_("Runtime Configuration"))
+        self.currentViewCombobox.append_text(_("Persistent Configuration"))
         self.runtime_view = True
-        self.currentViewLabel.set_markup(self.views[self.runtime_view])
 
         self.zoneView = builder.get_object("zoneView")
         self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING)
@@ -131,13 +129,17 @@ class FirewallConfig(object):
         self.removePortButton = builder.get_object("removePortButton")
 
         self.portDialog = builder.get_object("portDialog")
+        self.portDialogOkButton = builder.get_object("portDialogOkButton")
+        self.portDialogCancelButton = \
+            builder.get_object("portDialogCancelButton")
         self.portDialogPortEntry = builder.get_object("portDialogPortEntry")
         self.portDialogProtoCombobox = \
             builder.get_object("portDialogProtoCombobox")
 
         self.masqueradeCheck = builder.get_object("masqueradeCheck")
-        self.masqueradeCheck_handler_id = \
-            self.masqueradeCheck.connect("toggled", self.masquerade_check_cb)
+        self.masqueradeEventbox = builder.get_object("masqueradeEventbox")
+        self.masqueradeEventbox.connect("button-press-event",
+                                        self.masquerade_check_cb)
 
         self.forwardView = builder.get_object("forwardView")
         self.forwardStore = Gtk.ListStore(GObject.TYPE_STRING,
@@ -161,12 +163,23 @@ class FirewallConfig(object):
         self.removeForwardButton = builder.get_object("removeForwardButton")
 
         self.forwardDialog = builder.get_object("forwardDialog")
+        self.forwardDialogOkButton = builder.get_object("forwardDialogOkButton")
+        self.forwardDialogCancelButton = \
+            builder.get_object("forwardDialogCancelButton")
         self.forwardDialogPortEntry = \
             builder.get_object("forwardDialogPortEntry")
         self.forwardDialogProtoCombobox = \
             builder.get_object("forwardDialogProtoCombobox")
+        self.forwardDialogLocalCheck = \
+            builder.get_object("forwardDialogLocalCheck")
+        self.forwardDialogToPortCheck = \
+            builder.get_object("forwardDialogToPortCheck")
+        self.forwardDialogToPortLabel = \
+            builder.get_object("forwardDialogToPortLabel")
         self.forwardDialogToPortEntry = \
             builder.get_object("forwardDialogToPortEntry")
+        self.forwardDialogToAddrLabel = \
+            builder.get_object("forwardDialogToAddrLabel")
         self.forwardDialogToAddrEntry = \
             builder.get_object("forwardDialogToAddrEntry")
 
@@ -185,9 +198,28 @@ class FirewallConfig(object):
 
         self.fw = FirewallClient()
 
+        self.fw.connect("default-zone-changed", self.default_zone_changed_cb)
+        self.fw.connect("reloaded", self.load)
+        self.fw.connect("service-added", self.service_added_cb)
+        self.fw.connect("service-removed", self.service_removed_cb)
+        self.fw.connect("port-added", self.port_added_cb)
+        self.fw.connect("port-removed", self.port_removed_cb)
+        self.fw.connect("masquerade-added", self.masquerade_added_cb)
+        self.fw.connect("masquerade-removed", self.masquerade_removed_cb)
+        self.fw.connect("forward-port-added", self.forward_port_added_cb)
+        self.fw.connect("forward-port-removed", self.forward_port_removed_cb)
+        self.fw.connect("icmp-block-added", self.icmp_added_cb)
+        self.fw.connect("icmp-block-removed", self.icmp_removed_cb)
+
+        self.fw.config().connect("zone-updated", self.conf_zone_updated_cb)
+#        self.fw.config().connect("service-updated", self.conf_service_updated_cb)
+#        self.fw.config().connect("icmptype-updated", self.conf_icmp_updated_cb)
+
         # fill with life
 
         self.load()
+
+        self.currentViewCombobox.set_active(0)
 
         # mainloop
 
@@ -265,10 +297,29 @@ class FirewallConfig(object):
         # fallback
         selection.select_path(0)
 
+    def service_added_cb(self, zone, service, timeout):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            if self.serviceStore.get_value(iter, 1) == service:
+                self.serviceStore.set_value(iter, 0, True)
+                break
+            iter = self.serviceStore.iter_next(iter)
+
+    def service_removed_cb(self, zone, service):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            if self.serviceStore.get_value(iter, 1) == service:
+                self.serviceStore.set_value(iter, 0, False)
+                break
+            iter = self.serviceStore.iter_next(iter)
+
     def service_toggle_cb(self, toggle, row, model, col):
         iter = model.get_iter(row)
         old_val = model.get(iter, col)[0]
-        model.set(iter, col, not old_val)
         name = model.get(iter, 1)[0]
         active_zone = self.get_active_zone()
         if self.runtime_view:
@@ -284,6 +335,8 @@ class FirewallConfig(object):
             else:
                 settings.removeService(name)
             zone.update(settings)
+
+#        model.set(iter, col, not old_val)
 
     def change_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
@@ -303,23 +356,32 @@ class FirewallConfig(object):
             self.editForwardButton.set_sensitive(False)
             self.removeForwardButton.set_sensitive(False)
 
-    def masquerade_check_cb(self, check):
+    def masquerade_check_cb(self, *args):
         active_zone = self.get_active_zone()
         if self.runtime_view:
-            if check.get_active():
+            if not self.masqueradeCheck.get_active():
                 self.fw.addMasquerade(active_zone)
             else:
                 self.fw.removeMasquerade(active_zone)
         else:
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
-            settings.setMasquerade(check.get_active())
+            settings.setMasquerade(not self.masqueradeCheck.get_active())
             zone.update(settings)
+
+    def masquerade_added_cb(self, zone, timeout):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        self.masqueradeCheck.set_active(True)
+
+    def masquerade_removed_cb(self, zone):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        self.masqueradeCheck.set_active(False)
 
     def icmp_toggle_cb(self, toggle, row, model, col):
         iter = model.get_iter(row)
         old_val = model.get(iter, col)[0]
-        model.set(iter, col, not old_val)
         name = model.get(iter, 1)[0]
         active_zone = self.get_active_zone()
         if self.runtime_view:
@@ -335,6 +397,30 @@ class FirewallConfig(object):
             else:
                 settings.removeIcmpBlock(name)
             zone.update(settings)
+#        model.set(iter, col, not old_val)
+
+    def icmp_added_cb(self, zone, icmp, timeout):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.icmpStore.get_iter_first()
+        while iter:
+            if self.icmpStore.get_value(iter, 1) == icmp:
+                self.icmpStore.set_value(iter, 0, True)
+                break
+            iter = self.icmpStore.iter_next(iter)
+
+    def icmp_removed_cb(self, zone, icmp):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.icmpStore.get_iter_first()
+        while iter:
+            if self.icmpStore.get_value(iter, 1) == icmp:
+                self.icmpStore.set_value(iter, 0, False)
+                break
+            iter = self.icmpStore.iter_next(iter)
+
+    def conf_zone_updated_cb(self, zone):
+        self.onChangeZone()
 
     def combobox_select_text(self, combobox, value):
         model = combobox.get_model()
@@ -369,8 +455,8 @@ class FirewallConfig(object):
         self.onChangeZone()
 
     def onChangeView(self, *args):
-        self.runtime_view = not self.runtime_view
-        self.currentViewLabel.set_markup(self.views[self.runtime_view])
+        self.runtime_view = (self.currentViewCombobox.get_active_text() == \
+                                 _("Runtime Configuration"))
         self.load_zones()
         self.onChangeZone()
 
@@ -395,7 +481,11 @@ class FirewallConfig(object):
             (model, iter) = selection.get_selected()
             if not iter:
                 return
-            self.fw.setDefaultZone(model.get(iter, 0)[0])
+            if model.get(iter, 0)[0] != default_zone:
+                self.fw.setDefaultZone(model.get(iter, 0)[0])
+
+    def default_zone_changed_cb(self, zone):
+        self.defaultZoneLabel.set_text(zone)
 
     def onChangeZone(self, *args):
         active_zone = self.get_active_zone()
@@ -452,9 +542,7 @@ class FirewallConfig(object):
             self.portStore.append(item)
 
         # set masquerade
-        self.masqueradeCheck.handler_block(self.masqueradeCheck_handler_id)
         self.masqueradeCheck.set_active(masquerade)
-        self.masqueradeCheck.handler_unblock(self.masqueradeCheck_handler_id)
 
         # set forward ports
         for item in forward_ports:
@@ -481,8 +569,18 @@ class FirewallConfig(object):
     def onEditPort(self, *args):
         self.add_edit_port(False)
 
+    def onPortEntryChanged(self, entry):
+        ports = getPortRange(entry.get_text())
+        if not ports or not (isinstance(ports, types.ListType) or \
+                                isinstance(ports, types.TupleType)):
+            self.portDialogOkButton.set_sensitive(False)
+        else:
+            self.portDialogOkButton.set_sensitive(True)
+
     def add_edit_port(self, add):
         active_zone = self.get_active_zone()
+
+        self.portDialogOkButton.set_sensitive(False)
 
         old_port = None
         old_proto = None
@@ -529,13 +627,37 @@ class FirewallConfig(object):
             settings.addPort(port, proto)
             zone.update(settings)
 
-        if add:
-            self.portStore.append([port, proto])
-        else:
-            selection = self.portView.get_selection()
-            (model, iter) = selection.get_selected()
-            self.portStore.set_value(iter, 0, port)
-            self.portStore.set_value(iter, 1, proto)
+#        if add:
+#            self.portStore.append([port, proto])
+#        else:
+#            selection = self.portView.get_selection()
+#            (model, iter) = selection.get_selected()
+#            self.portStore.set_value(iter, 0, port)
+#            self.portStore.set_value(iter, 1, proto)
+
+    def port_added_cb(self, zone, port, protocol, timeout):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.portStore.get_iter_first()
+        while iter:
+            if self.portStore.get_value(iter, 0) == port and \
+                    self.portStore.get_value(iter, 1) == protocol:
+                # already there
+                return
+            iter = self.portStore.iter_next(iter)
+        # nothing found, so add it
+        self.portStore.append([port, protocol])
+
+    def port_removed_cb(self, zone, port, protocol):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.portStore.get_iter_first()
+        while iter:
+            if self.portStore.get_value(iter, 0) == port and \
+                    self.portStore.get_value(iter, 1) == protocol:
+                self.portStore.remove(iter)
+                break
+            iter = self.portStore.iter_next(iter)
 
     def onRemovePort(self, *args):
         active_zone = self.get_active_zone()
@@ -554,7 +676,71 @@ class FirewallConfig(object):
             settings.removePort(port, proto)
             zone.update(settings)
 
-        model.remove(iter)
+#        model.remove(iter)
+
+    def onForwardDialogChecksToggled(self, check, *args):
+        val1 = self.forwardDialogLocalCheck.get_active()
+        val2 = self.forwardDialogToPortCheck.get_active()
+
+        self.forwardDialogToAddrLabel.set_sensitive(not val1)
+        self.forwardDialogToAddrEntry.set_sensitive(not val1)
+        self.forwardDialogToPortCheck.set_sensitive(not val1)
+        self.forwardDialogToPortLabel.set_sensitive(val1 or val2)
+        self.forwardDialogToPortEntry.set_sensitive(val1 or val2)
+
+        self.onForwardChanged(None)
+
+    def onForwardDialogToPortCheckToggled(self, check, *args):
+        toport = check.get_active()
+        self.forwardDialogToPortLabel.set_sensitive(toport)
+        self.forwardDialogToPortEntry.set_sensitive(toport)
+        self.onForwardChanged(None)
+
+    def _check_forward(self):
+        ports = self.forwardDialogPortEntry.get_text()
+        to_ports = self.forwardDialogToPortEntry.get_text()
+        to_addr = self.forwardDialogToAddrEntry.get_text()
+
+        local_check = self.forwardDialogLocalCheck.get_active()
+        to_port_check = self.forwardDialogToPortCheck.get_active()
+
+        ports = getPortRange(ports)
+        to_ports = getPortRange(to_ports)
+
+        ports_ok = False
+        if ports and (isinstance(ports, types.ListType) or \
+                          isinstance(ports, types.TupleType)):
+            ports_ok = True
+        to_ports_ok = False
+        if to_ports and (isinstance(to_ports, types.ListType) or \
+                          isinstance(to_ports, types.TupleType)):
+            to_ports_ok = True
+        to_addr_ok = False
+        if to_addr != "" and checkIP(to_addr):
+            to_addr_ok = True
+
+        ok = False
+        if ports_ok:
+            if local_check:
+                if to_ports_ok and ports != to_ports:
+                    ok = True
+            elif to_addr_ok:
+                if to_port_check:
+                    if to_ports_ok:
+                        ok = True
+                else:
+                    ok = True
+        return ok
+
+    def onForwardChanged(self, arg):
+        ok = False
+        if arg == self.forwardDialogProtoCombobox:
+            if self._check_forward():
+                ok = True
+        else:
+            ok = self._check_forward()
+        
+        self.forwardDialogOkButton.set_sensitive(ok)
 
     def onAddForwardPort(self, *args):
         self.add_edit_forward_port(True)
@@ -564,6 +750,11 @@ class FirewallConfig(object):
 
     def add_edit_forward_port(self, add):
         active_zone = self.get_active_zone()
+
+        self.forwardDialogOkButton.set_sensitive(False)
+        self.forwardDialogLocalCheck.set_active(True)
+        self.forwardDialogLocalCheck.set_active(False)
+        self.forwardDialogToPortCheck.set_active(False)
 
         old_port = None
         old_proto = None
@@ -589,6 +780,11 @@ class FirewallConfig(object):
             self.combobox_select_text(self.forwardDialogProtoCombobox,
                                       old_proto)
             self.forwardDialogToPortEntry.set_text(old_to_port)
+            if old_to_addr:
+                if old_to_port:
+                    self.forwardDialogToPortCheck.set_active(True)
+            else:
+                self.forwardDialogLocalCheck.set_active(True)
             self.forwardDialogToAddrEntry.set_text(old_to_addr)
             
         self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -602,8 +798,13 @@ class FirewallConfig(object):
 
         port = self.forwardDialogPortEntry.get_text()
         proto = self.forwardDialogProtoCombobox.get_active_text()
-        to_port = self.forwardDialogToPortEntry.get_text()
         to_addr = self.forwardDialogToAddrEntry.get_text()
+        to_port = self.forwardDialogToPortEntry.get_text()
+        if not self.forwardDialogLocalCheck.get_active():
+            if not self.forwardDialogToPortCheck.get_active():
+                to_port = ""
+        else:
+            to_addr = ""
 
         if not add and (old_port == port and old_proto == proto and \
                             old_to_port == to_port and old_to_addr == to_addr):
@@ -620,20 +821,57 @@ class FirewallConfig(object):
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
             if not add:
-                settings.addForwardPort(old_port, old_proto,
-                                        old_to_port, old_to_addr)
+                settings.removeForwardPort(old_port, old_proto,
+                                           old_to_port, old_to_addr)
             settings.addForwardPort(port, proto, to_port, to_addr)
             zone.update(settings)
 
-        if add:
-            self.forwardStore.append([port, proto, to_port, to_addr])
-        else:
-            selection = self.forwardView.get_selection()
-            (model, iter) = selection.get_selected()
-            self.forwardStore.set_value(iter, 0, port)
-            self.forwardStore.set_value(iter, 1, proto)
-            self.forwardStore.set_value(iter, 2, to_port)
-            self.forwardStore.set_value(iter, 3, to_addr)
+#        if add:
+#            self.forwardStore.append([port, proto, to_port, to_addr])
+#        else:
+#            selection = self.forwardView.get_selection()
+#            (model, iter) = selection.get_selected()
+#            self.forwardStore.set_value(iter, 0, port)
+#            self.forwardStore.set_value(iter, 1, proto)
+#            self.forwardStore.set_value(iter, 2, to_port)
+#            self.forwardStore.set_value(iter, 3, to_addr)
+
+    def forward_port_added_cb(self, zone, port, protocol, to_port, to_address,
+                              timeout):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        self._forward_port_added_cb(zone, port, protocol, to_port, to_address)
+
+    def forward_port_removed_cb(self, zone, port, protocol, to_port,
+                                to_address):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        self._forward_port_removed_cb(zone, port, protocol, to_port, to_address)
+
+    def _forward_port_added_cb(self, zone, port, protocol, to_port, to_address):
+        iter = self.forwardStore.get_iter_first()
+        while iter:
+            if self.forwardStore.get_value(iter, 0) == port and \
+                    self.forwardStore.get_value(iter, 1) == protocol and \
+                    self.forwardStore.get_value(iter, 2) == to_port and \
+                    self.forwardStore.get_value(iter, 3) == to_address:
+                # already there
+                return
+            iter = self.forwardStore.iter_next(iter)
+        # nothing found, so add it
+        self.forwardStore.append([port, protocol, to_port, to_address])
+
+    def _forward_port_removed_cb(self, zone, port, protocol, to_port,
+                                to_address):
+        iter = self.forwardStore.get_iter_first()
+        while iter:
+            if self.forwardStore.get_value(iter, 0) == port and \
+                    self.forwardStore.get_value(iter, 1) == protocol and \
+                    self.forwardStore.get_value(iter, 2) == to_port and \
+                    self.forwardStore.get_value(iter, 3) == to_address:
+                self.forwardStore.remove(iter)
+                break
+            iter = self.forwardStore.iter_next(iter)
 
     def onRemoveForwardPort(self, *args):
         active_zone = self.get_active_zone()

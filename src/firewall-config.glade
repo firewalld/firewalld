@@ -190,7 +190,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="forwardDialogOKButton">
+              <object class="GtkButton" id="forwardDialogOkButton">
                 <property name="label">gtk-ok</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
@@ -240,12 +240,12 @@
               <object class="GtkTable" id="table3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="n_rows">11</property>
+                <property name="n_rows">10</property>
                 <property name="n_columns">2</property>
                 <property name="column_spacing">6</property>
                 <property name="row_spacing">6</property>
                 <child>
-                  <object class="GtkLabel" id="forwardFwdPortLabel">
+                  <object class="GtkLabel" id="forwardDialogToPortLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">1</property>
@@ -259,7 +259,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="forwardFwdAddressLabel">
+                  <object class="GtkLabel" id="forwardDialogToAddrLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xalign">1</property>
@@ -358,6 +358,7 @@
                         <property name="activates_default">True</property>
                         <property name="width_chars">15</property>
                         <property name="invisible_char_set">True</property>
+                        <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -387,6 +388,7 @@
                         <property name="max_length">5</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">5</property>
+                        <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -418,6 +420,7 @@
                           <item translatable="yes">tcp</item>
                           <item translatable="yes">udp</item>
                         </items>
+                        <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -446,6 +449,7 @@
                         <property name="max_length">5</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">5</property>
+                        <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -467,7 +471,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkCheckButton" id="forwardLocalCheckButton">
+                      <object class="GtkCheckButton" id="forwardDialogLocalCheck">
                         <property name="label" translatable="yes">Local forwarding</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
@@ -478,6 +482,7 @@
                         <property name="focus_on_click">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="onForwardDialogChecksToggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -498,7 +503,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkCheckButton" id="forwardOtherPortCheckButton">
+                      <object class="GtkCheckButton" id="forwardDialogToPortCheck">
                         <property name="label" translatable="yes">Forward to another port</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
@@ -509,6 +514,7 @@
                         <property name="focus_on_click">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="onForwardDialogChecksToggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -522,49 +528,6 @@
                     <property name="top_attach">7</property>
                     <property name="bottom_attach">8</property>
                     <property name="y_options">GTK_FILL</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkHBox" id="forwardFwdAddressDescriptionHBox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">start</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkImage" id="image631">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="stock">gtk-dialog-warning</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="forwardFwdAddressDescription">
-                        <property name="width_request">296</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">Make sure to open the destination port on the remote system.</property>
-                        <property name="use_markup">True</property>
-                        <property name="wrap">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">True</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="right_attach">2</property>
-                    <property name="top_attach">10</property>
-                    <property name="bottom_attach">11</property>
-                    <property name="x_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
-                    <property name="y_options">GTK_EXPAND | GTK_SHRINK | GTK_FILL</property>
                   </packing>
                 </child>
                 <child>
@@ -614,8 +577,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-6">button15</action-widget>
-      <action-widget response="1">forwardDialogOKButton</action-widget>
+      <action-widget response="-1">button15</action-widget>
+      <action-widget response="1">forwardDialogOkButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="icmpBaseDialog">
@@ -632,7 +595,24 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="zoneChnagedDialogOkButton5">
+              <object class="GtkButton" id="icmpBaseDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="icmpBaseDialogOkButton">
                 <property name="label">gtk-ok</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
@@ -646,7 +626,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -829,7 +809,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">zoneChnagedDialogOkButton5</action-widget>
+      <action-widget response="-1">icmpBaseDialogCancelButton</action-widget>
+      <action-widget response="1">icmpBaseDialogOkButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="icmpDialog">
@@ -850,8 +831,8 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="zoneChnagedDialogOkButton2">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="icmpDialogCloseButton">
+                <property name="label">gtk-close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -1169,7 +1150,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">zoneChnagedDialogOkButton2</action-widget>
+      <action-widget response="1">icmpDialogCloseButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkImage" id="image1">
@@ -1257,17 +1238,6 @@
                         <property name="tooltip_text" translatable="yes">Change Default Zone</property>
                         <property name="label" translatable="yes">Change Default Zone</property>
                         <signal name="activate" handler="onChangeDefaultZone" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkMenuItem" id="menuitem5">
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Change View</property>
-                        <property name="label" translatable="yes">Change View</property>
-                        <property name="use_underline">True</property>
-                        <signal name="activate" handler="onChangeView" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -1371,23 +1341,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="toolbutton4">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Change View</property>
-                <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">Change View</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-preferences</property>
-                <signal name="clicked" handler="onChangeView" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkSeparatorToolItem" id="toolbutton7">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
@@ -1479,10 +1432,12 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="currentViewLabel">
+                  <object class="GtkComboBoxText" id="currentViewCombobox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">label</property>
+                    <property name="entry_text_column">0</property>
+                    <property name="id_column">1</property>
+                    <signal name="changed" handler="onChangeView" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1527,7 +1482,7 @@
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
@@ -1950,16 +1905,24 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkCheckButton" id="masqueradeCheck">
-                            <property name="label" translatable="yes">Masquerade zone</property>
-                            <property name="use_action_appearance">False</property>
+                          <object class="GtkEventBox" id="masqueradeEventbox">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="valign">start</property>
-                            <property name="use_action_appearance">False</property>
-                            <property name="xalign">0</property>
-                            <property name="draw_indicator">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="visible_window">False</property>
+                            <property name="above_child">True</property>
+                            <child>
+                              <object class="GtkCheckButton" id="masqueradeCheck">
+                                <property name="label" translatable="yes">Masquerade zone</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="valign">start</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -2514,6 +2477,7 @@
                         <property name="activates_default">True</property>
                         <property name="width_chars">5</property>
                         <property name="invisible_char_set">True</property>
+                        <signal name="changed" handler="onPortEntryChanged" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -2537,6 +2501,7 @@
                         <property name="right_attach">2</property>
                         <property name="top_attach">1</property>
                         <property name="bottom_attach">2</property>
+                        <property name="y_options">GTK_FILL</property>
                       </packing>
                     </child>
                   </object>
@@ -2576,7 +2541,24 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="zoneChnagedDialogOkButton4">
+              <object class="GtkButton" id="serviceBaseDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="serviceBaseDialogOkButton">
                 <property name="label">gtk-ok</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
@@ -2590,7 +2572,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -2773,7 +2755,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">zoneChnagedDialogOkButton4</action-widget>
+      <action-widget response="-1">serviceBaseDialogCancelButton</action-widget>
+      <action-widget response="1">serviceBaseDialogOkButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="serviceDialog">
@@ -2794,8 +2777,8 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="zoneChnagedDialogOkButton1">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="serviceDialogCloseButton">
+                <property name="label">gtk-close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -3439,7 +3422,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">zoneChnagedDialogOkButton1</action-widget>
+      <action-widget response="1">serviceDialogCloseButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="zoneBaseDialog">
@@ -3456,7 +3439,24 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="zoneChnagedDialogOkButton3">
+              <object class="GtkButton" id="zoneBaseDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="zoneBaseDialogOkButton">
                 <property name="label">gtk-ok</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
@@ -3470,7 +3470,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
@@ -3704,7 +3704,8 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">zoneChnagedDialogOkButton3</action-widget>
+      <action-widget response="-1">zoneBaseDialogCancelButton</action-widget>
+      <action-widget response="1">zoneBaseDialogOkButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkMessageDialog" id="zoneChangedDialog">
@@ -3729,7 +3730,7 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="zoneChnagedDialogOkButton">
-                <property name="label">gtk-ok</property>
+                <property name="label">gtk-close</property>
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
