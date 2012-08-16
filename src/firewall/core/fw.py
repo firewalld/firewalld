@@ -297,9 +297,9 @@ class Firewall:
                 self._module_refcount[module] += 1
             else:
                 if module in self._module_refcount:
-                     self._module_refcount[module] -= 1
-                     if self._module_refcount[module] == 0:
-                         del self._module_refcount[module]
+                    self._module_refcount[module] -= 1
+                    if self._module_refcount[module] == 0:
+                        del self._module_refcount[module]
         return None
 
     # apply default rules

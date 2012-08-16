@@ -24,7 +24,6 @@ from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient, \
 import os
 import dbus.mainloop.glib
 import slip.dbus
-import types
 
 from firewall.config import *
 from firewall.config.dbus import *
@@ -51,7 +50,7 @@ class TrayApplet(object):
     def position_function(menu, icon):
         return (Gtk.StatusIcon.position_menu(menu, icon))
 
-    def __init__(self, use_dbus=True):
+    def __init__(self):
         self.name = _("Firewall Applet")
 #        self.comment = _("")
         self.icon_name = "firewall-applet"

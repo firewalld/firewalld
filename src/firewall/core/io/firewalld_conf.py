@@ -101,43 +101,44 @@ class firewalld_conf:
             else:
                 f = None
         else:
-             for line in f.xreadlines():
-                 if not line: break
-                 # remove newline
-                 line = line.strip("\n")
+            for line in f.xreadlines():
+                if not line:
+                    break
+                # remove newline
+                line = line.strip("\n")
 
-                 if len(line) < 1:
-                     if not empty:
-                         os.write(temp_file, "\n")
-                         empty = True
-                 elif line[0] == '#':
-                     empty = False
-                     os.write(temp_file, line)
-                     os.write(temp_file, "\n")
-                 else:
-                     p = line.split("=")
-                     if len(p) != 2:
-                         empty = False
-                         os.write(temp_file, line+"\n")
-                         continue
-                     key = p[0].strip()
-                     value = p[1].strip()
-                     # check for modified key/value pairs
-                     if key not in done:
-                         if (key in self._config and \
-                                 self._config[key] != value):
-                             empty = False
-                             os.write(temp_file, '%s=%s\n' \
-                                          % (key, self._config[key]))
-                             modified = True
-                         elif key in self._deleted:
-                             modified = True
-                         else:
-                             empty = False
-                             os.write(temp_file, line+"\n")
-                         done.append(key)
-                     else:
-                         modified = True
+                if len(line) < 1:
+                    if not empty:
+                        os.write(temp_file, "\n")
+                        empty = True
+                elif line[0] == '#':
+                    empty = False
+                    os.write(temp_file, line)
+                    os.write(temp_file, "\n")
+                else:
+                    p = line.split("=")
+                    if len(p) != 2:
+                        empty = False
+                        os.write(temp_file, line+"\n")
+                        continue
+                    key = p[0].strip()
+                    value = p[1].strip()
+                    # check for modified key/value pairs
+                    if key not in done:
+                        if (key in self._config and \
+                                self._config[key] != value):
+                            empty = False
+                            os.write(temp_file, '%s=%s\n' \
+                                         % (key, self._config[key]))
+                            modified = True
+                        elif key in self._deleted:
+                            modified = True
+                        else:
+                            empty = False
+                            os.write(temp_file, line+"\n")
+                        done.append(key)
+                    else:
+                        modified = True
 
         # write remaining key/value pairs
         if len(self._config) > 0:

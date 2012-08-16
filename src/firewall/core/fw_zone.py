@@ -348,13 +348,13 @@ class FirewallZone:
                     rule += [ "-m", proto, "-p", proto ]
                 else:
                     if ipv == "ipv4":
-                         rule += [ "-p", proto ]
+                        rule += [ "-p", proto ]
                     else:
-                         rule += [ "-m", "ipv6header", "--header", proto ]
+                        rule += [ "-m", "ipv6header", "--header", proto ]
                 if port:
-                     rule += [ "--dport", "%s" % portStr(port) ]
+                    rule += [ "--dport", "%s" % portStr(port) ]
                 if ipv in svc.destination and svc.destination[ipv] != "":
-                     rule += [ "-d",  svc.destination[ipv] ]
+                    rule += [ "-d",  svc.destination[ipv] ]
                 rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
                 rule += [ "-j", "ACCEPT" ]
                 rules.append((ipv, rule))
@@ -427,7 +427,7 @@ class FirewallZone:
 
     def check_port(self, port, protocol):
         self._fw.check_port(port)
-        self._fw.check_protocol(protocol)        
+        self._fw.check_protocol(protocol)
 
     def __port_id(self, port, protocol):
         self.check_port(port, protocol)

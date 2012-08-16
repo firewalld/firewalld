@@ -208,7 +208,7 @@ def _parse_args(parser, args, options=None):
         for arg in _args:
             parser.error(_("no such option: %s") % arg)
     if parser._fw_exit:
-            sys.exit(2)
+        sys.exit(2)
     if not hasattr(_options, "filename"):
         _options.filename = None
     if not hasattr(_options, "converted"):

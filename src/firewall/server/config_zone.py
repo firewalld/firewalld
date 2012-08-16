@@ -162,7 +162,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Updated(self):
         log.debug1("config.zone.%d.Updated()", self.id)
-        pass
 
     # R E M O V E
 
@@ -180,7 +179,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Removed(self):
         log.debug1("config.zone.%d.Removed()", self.id)
-        pass
 
     # R E N A M E
 
@@ -197,4 +195,3 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Renamed(self):
         log.debug1("config.zone.%d.Renamed()", self.id)
-        pass

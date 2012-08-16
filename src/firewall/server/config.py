@@ -252,7 +252,6 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def IcmpTypeAdded(self, icmptype):
         log.debug1("config.IcmpTypeAdded('%s')" % (icmptype))
-        pass
 
     # S E R V I C E S
 
@@ -291,7 +290,6 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def ServiceAdded(self, service):
         log.debug1("config.ServiceAdded('%s')" % (service))
-        pass
 
     # Z O N E S
 
@@ -330,4 +328,3 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def ZoneAdded(self, zone):
         log.debug1("config.ZoneAdded('%s')" % (zone))
-        pass

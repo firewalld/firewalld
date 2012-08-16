@@ -91,4 +91,4 @@ def run_server():
         log.error("Exception %s: %s", e.__class__.__name__, str(e))
 
     if service:
-       service.stop()
+        service.stop()

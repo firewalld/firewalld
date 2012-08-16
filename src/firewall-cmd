@@ -283,92 +283,92 @@ try:
     fw = FirewallClient()
 
     if permanent:
-       if mode == "get-zones":
-           zones = fw.config().listZones()
-           l = [fw.config().getZone(z).get_property("name") for z in zones]
-           if len(l) > 0:
-               print(" ".join(l))
-       elif mode == "get-services":
-           services = fw.config().listServices()
-           l = [fw.config().getService(s).get_property("name") for s in services]
-           if len(l) > 0:
-               print(" ".join(l))
-       elif mode == "get-icmptypes":
-           icmptypes = fw.config().listIcmpTypes()
-           l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
-           if len(l) > 0:
-               print(" ".join(l))
-       else:
-           fw_zone = fw.config().getZoneByName(zone)
-           fw_settings = fw_zone.getSettings()
+        if mode == "get-zones":
+            zones = fw.config().listZones()
+            l = [fw.config().getZone(z).get_property("name") for z in zones]
+            if len(l) > 0:
+                print(" ".join(l))
+        elif mode == "get-services":
+            services = fw.config().listServices()
+            l = [fw.config().getService(s).get_property("name") for s in services]
+            if len(l) > 0:
+                print(" ".join(l))
+        elif mode == "get-icmptypes":
+            icmptypes = fw.config().listIcmpTypes()
+            l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
+            if len(l) > 0:
+                print(" ".join(l))
+        else:
+            fw_zone = fw.config().getZoneByName(zone)
+            fw_settings = fw_zone.getSettings()
 
-           # service
-           if mode == "list-services":
-               l = fw_settings.getServices()
-               if len(l) > 0:
-                   print(" ".join(l))
-               sys.exit(0)
-           elif mode == "add-service":
-               fw_settings.addService(value)
-           elif mode == "remove-service":
-               fw_settings.removeService(value)
-           elif mode == "query-service":
-               sys.exit(not value in fw_settings.getServices())
+            # service
+            if mode == "list-services":
+                l = fw_settings.getServices()
+                if len(l) > 0:
+                    print(" ".join(l))
+                sys.exit(0)
+            elif mode == "add-service":
+                fw_settings.addService(value)
+            elif mode == "remove-service":
+                fw_settings.removeService(value)
+            elif mode == "query-service":
+                sys.exit(not value in fw_settings.getServices())
 
-           # port
-           elif mode == "list-ports":
-               l = fw_settings.getPorts()
-               if len(l) > 0:
-                   print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
-               sys.exit(0)
-           elif mode == "add-port":
-               (port, proto) = __parse_port(value)
-               fw_settings.addPort(port, proto)
-           elif mode == "remove-port":
-               (port, proto) = __parse_port(value)
-               fw_settings.removePort(port, proto)
-           elif mode == "query-port":
-               (port, proto) = __parse_port(value)
-               sys.exit(not (port, proto) in fw_settings.getPorts())
+            # port
+            elif mode == "list-ports":
+                l = fw_settings.getPorts()
+                if len(l) > 0:
+                    print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+                sys.exit(0)
+            elif mode == "add-port":
+                (port, proto) = __parse_port(value)
+                fw_settings.addPort(port, proto)
+            elif mode == "remove-port":
+                (port, proto) = __parse_port(value)
+                fw_settings.removePort(port, proto)
+            elif mode == "query-port":
+                (port, proto) = __parse_port(value)
+                sys.exit(not (port, proto) in fw_settings.getPorts())
 
-           # masquerade
-           elif mode == "add-masquerade":
-               fw_settings.setMasquerade(True)
-           elif mode == "remove-masquerade":
-               fw_settings.setMasquerade(False)
-           elif mode == "query-masquerade":
-               sys.exit(not fw_settings.getMasquerade())
+            # masquerade
+            elif mode == "add-masquerade":
+                fw_settings.setMasquerade(True)
+            elif mode == "remove-masquerade":
+                fw_settings.setMasquerade(False)
+            elif mode == "query-masquerade":
+                sys.exit(not fw_settings.getMasquerade())
 
-           # forward port
-           elif mode == "list-forward-ports":
-               l = fw_settings.getForwardPorts()
-               if len(l) > 0:
-                   print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
-               sys.exit(0)
-           elif mode == "add-forward-port":
-               (port, protocol, toport, toaddr) = __parse_forward_port(value)
-               fw_settings.addForwardPort(port, protocol, toport, toaddr)
-           elif mode == "remove-forward-port":
-               (port, protocol, toport, toaddr) = __parse_forward_port(value)
-               fw_settings.removeForwardPort(port, protocol, toport, toaddr)
-           elif mode == "query-forward-port":
-               fwd_port = __parse_forward_port(value)
-               sys.exit(not fwd_port in fw_settings.getForwardPorts())
+            # forward port
+            elif mode == "list-forward-ports":
+                l = fw_settings.getForwardPorts()
+                if len(l) > 0:
+                    print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+                sys.exit(0)
+            elif mode == "add-forward-port":
+                (port, protocol, toport, toaddr) = __parse_forward_port(value)
+                fw_settings.addForwardPort(port, protocol, toport, toaddr)
+            elif mode == "remove-forward-port":
+                (port, protocol, toport, toaddr) = __parse_forward_port(value)
+                fw_settings.removeForwardPort(port, protocol, toport, toaddr)
+            elif mode == "query-forward-port":
+                fwd_port = __parse_forward_port(value)
+                sys.exit(not fwd_port in fw_settings.getForwardPorts())
 
-           # block icmp
-           elif mode == "list-icmp-blocks":
-               l = fw_settings.getIcmpBlocks()
-               if len(l) > 0:
-                   print(" ".join(l))
-               sys.exit(0)
-           elif mode == "add-icmp-block":
-               fw_settings.addIcmpBlock(value)
-           elif mode == "remove-icmp-block":
-               fw_settings.removeIcmpBlock(value)
-           elif mode == "query-icmp-block":
-               sys.exit(not value in fw_settings.getIcmpBlocks())
+            # block icmp
+            elif mode == "list-icmp-blocks":
+                l = fw_settings.getIcmpBlocks()
+                if len(l) > 0:
+                    print(" ".join(l))
+                sys.exit(0)
+            elif mode == "add-icmp-block":
+                fw_settings.addIcmpBlock(value)
+            elif mode == "remove-icmp-block":
+                fw_settings.removeIcmpBlock(value)
+            elif mode == "query-icmp-block":
+                sys.exit(not value in fw_settings.getIcmpBlocks())
 
-           fw_zone.update(fw_settings)
+            fw_zone.update(fw_settings)
 
     elif mode == "version":
         print(fw.get_property("version"))
@@ -535,10 +535,10 @@ try:
 
 
 except dbus.DBusException, e:
-    if e._dbus_error_name == 'org.freedesktop.DBus.Error.ServiceUnknown':
+    if "ServiceUnknown" in e.get_dbus_message():
         print("FirewallD is probably not running.")
         sys.exit(NOT_RUNNING)
-    elif "NotAuthorizedException" in e._dbus_error_name:
+    elif "NotAuthorizedException" in e.get_dbus_message():
         print("Authorization failed.")
         sys.exit(NOT_AUTHORIZED)
     else:

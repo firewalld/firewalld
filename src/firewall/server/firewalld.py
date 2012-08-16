@@ -200,7 +200,6 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Reloaded(self):
         log.debug1("Reloaded()")
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -243,13 +242,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def PanicModeEnabled(self):
         log.debug1("PanicModeEnabled()")
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE, signature='')
     @dbus_handle_exceptions
     def PanicModeDisabled(self):
         log.debug1("PanicModeDisabled()")
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -298,7 +295,6 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def DefaultZoneChanged(self, zone):
         log.debug1("DefaultZoneChanged('%s')" % (zone))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # ZONE INTERFACE
@@ -432,19 +428,16 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def InterfaceAdded(self, zone, interface):
         log.debug1("zone.InterfaceAdded('%s', '%s')" % (zone, interface))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ZoneChanged(self, zone, interface):
         log.debug1("zone.ZoneChanged('%s', '%s')" % (zone, interface))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def InterfaceRemoved(self, zone, interface):
         log.debug1("zone.InterfaceRemoved('%s', '%s')" % (zone, interface))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -516,13 +509,11 @@ class FirewallD(slip.dbus.service.Object):
     def ServiceAdded(self, zone, service, timeout):
         log.debug1("zone.ServiceAdded('%s', '%s', %d)" % \
                        (zone, service, timeout))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ServiceRemoved(self, zone, service):
         log.debug1("zone.ServiceRemoved('%s', '%s')" % (zone, service))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -598,14 +589,12 @@ class FirewallD(slip.dbus.service.Object):
     def PortAdded(self, zone, port, protocol, timeout=0):
         log.debug1("zone.PortAdded('%s', '%s', '%s', %d)" % \
                        (zone, port, protocol, timeout))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sss')
     @dbus_handle_exceptions
     def PortRemoved(self, zone, port, protocol):
         log.debug1("zone.PortRemoved('%s', '%s', '%s')" % \
                        (zone, port, protocol))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -661,13 +650,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def MasqueradeAdded(self, zone, timeout=0):
         log.debug1("zone.MasqueradeAdded('%s', %d)" % (zone, timeout))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='s')
     @dbus_handle_exceptions
     def MasqueradeRemoved(self, zone):
         log.debug1("zone.MasqueradeRemoved('%s')" % (zone))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -757,14 +744,12 @@ class FirewallD(slip.dbus.service.Object):
                          timeout=0):
         log.debug1("zone.ForwardPortAdded('%s', '%s', '%s', '%s', '%s', %d)" % \
                        (zone, port, protocol, toport, toaddr, timeout))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssss')
     @dbus_handle_exceptions
     def ForwardPortRemoved(self, zone, port, protocol, toport, toaddr):
         log.debug1("zone.ForwardPortRemoved('%s', '%s', '%s', '%s', '%s')" % \
                        (zone, port, protocol, toport, toaddr))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -834,13 +819,11 @@ class FirewallD(slip.dbus.service.Object):
     def IcmpBlockAdded(self, zone, icmp, timeout=0):
         log.debug1("zone.IcmpBlockAdded('%s', '%s', %d)" % \
                        (zone, icmp, timeout))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def IcmpBlockRemoved(self, zone, icmp):
         log.debug1("zone.IcmpBlockRemoved('%s', '%s')" % (zone, icmp))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # DIRECT INTERFACE
@@ -901,13 +884,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def ChainAdded(self, ipv, table, chain):
         log.debug1("direct.ChainAdded('%s', '%s', '%s')" % (ipv, table, chain))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sss')
     @dbus_handle_exceptions
     def ChainRemoved(self, ipv, table, chain):
         log.debug1("direct.ChainRemoved('%s', '%s', '%s')" % (ipv, table, chain))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -972,14 +953,12 @@ class FirewallD(slip.dbus.service.Object):
     def RuleAdded(self, ipv, table, chain, args):
         log.debug1("direct.RuleAdded('%s', '%s', '%s')" % (table, chain,
                    "','".join(args)))
-        pass
 
     @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssas')
     @dbus_handle_exceptions
     def RuleRemoved(self, ipv, table, chain, args):
         log.debug1("direct.RuleRemoved('%s', '%s', '%s')" % (table, chain,
                                                              "','".join(args)))
-        pass
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
