@@ -461,17 +461,18 @@ class Firewall:
                     _zone_settings[_old_dz]["interfaces"][iface]
                     del _zone_settings[_old_dz]["interfaces"][iface]
 
-        # restore zone settings
-        for zone in self.zone.get_zones():
-            if zone in _zone_settings:
-                self.zone.set_settings(zone, _zone_settings[zone])
-                del _zone_settings[zone]
-            else:
-                log.info1("New zone '%s'.", zone)
-        if len(_zone_settings) > 0:
-            for zone in _zone_settings:
-                log.info1("Lost zone '%s', settings dropped.", zone)
-        del _zone_settings
+# do not apply the old settings
+#        # restore zone settings
+#        for zone in self.zone.get_zones():
+#            if zone in _zone_settings:
+#                self.zone.set_settings(zone, _zone_settings[zone])
+#                del _zone_settings[zone]
+#            else:
+#                log.info1("New zone '%s'.", zone)
+#        if len(_zone_settings) > 0:
+#            for zone in _zone_settings:
+#                log.info1("Lost zone '%s', settings dropped.", zone)
+#        del _zone_settings
 
         # restore direct config
         self.direct.set_config(_direct_config)
