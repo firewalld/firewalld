@@ -124,10 +124,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 attrs["enabled"].lower() in [ "yes", "true" ]:
             self.item.masquerade = True
         elif name == "forward-port":
-            to_port = None
+            to_port = ""
             if "to-port" in attrs:
                 to_port = str(attrs["to-port"])
-            to_addr = None
+            to_addr = ""
             if "to-addr" in attrs:
                 to_addr = str(attrs["to-addr"])
             # TODO: fix port string according to fw_zone.__forward_port_id()
@@ -222,9 +222,9 @@ def zone_writer(zone, path=None):
         handler.ignorableWhitespace("\n")
 
     # forward-ports
-    for port in set(zone.forward_ports):
+    for forward in set(zone.forward_ports):
         handler.ignorableWhitespace("  ")
-        attrs = { "port": port[0], "protocol": port[1] }
+        attrs = { "port": forward[0], "protocol": forward[1] }
         if forward[2] and forward[2] != "" :
             attrs["to-port"] = forward[2]
         if forward[3] and forward[3] != "" :
