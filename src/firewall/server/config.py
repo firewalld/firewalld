@@ -142,6 +142,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             "%s/%d" % (DBUS_PATH_CONFIG_ICMPTYPE, self.icmptype_idx))
         self.icmptypes.append(config_icmptype)
         self.icmptype_idx += 1
+        return config_icmptype
 
     @handle_exceptions
     def _updateIcmpType(self, obj):
@@ -169,6 +170,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             "%s/%d" % (DBUS_PATH_CONFIG_SERVICE, self.service_idx))
         self.services.append(config_service)
         self.service_idx += 1
+        return config_service
 
     @handle_exceptions
     def _updateService(self, obj):
@@ -196,6 +198,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             "%s/%d" % (DBUS_PATH_CONFIG_ZONE, self.zone_idx))
         self.zones.append(config_zone)
         self.zone_idx += 1
+        return config_zone
 
     @handle_exceptions
     def _updateZone(self, obj):
@@ -247,8 +250,9 @@ class FirewallDConfig(slip.dbus.service.Object):
         icmptype = str(icmptype)
         log.debug1("config.addIcmpType('%s')", icmptype)
         obj = self.config.new_icmptype(icmptype, dbus_to_python(settings))
-        self._addIcmpType(obj)
+        config_icmptype = self._addIcmpType(obj)
         self.IcmpTypeAdded(icmptype)
+        return config_icmptype
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')
     @dbus_handle_exceptions
@@ -286,8 +290,9 @@ class FirewallDConfig(slip.dbus.service.Object):
         service = str(service)
         log.debug1("config.addService('%s')", service)
         obj = self.config.new_service(service, dbus_to_python(settings))
-        self._addService(obj)
+        config_service = self._addService(obj)
         self.ServiceAdded(service)
+        return config_service
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')
     @dbus_handle_exceptions
@@ -325,8 +330,9 @@ class FirewallDConfig(slip.dbus.service.Object):
         zone = str(zone)
         log.debug1("config.addZone('%s')", zone)
         obj = self.config.new_zone(zone, dbus_to_python(settings))
-        self._addZone(obj)
+        config_zone = self._addZone(obj)
         self.ZoneAdded(zone)
+        return config_zone
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')
     @dbus_handle_exceptions
