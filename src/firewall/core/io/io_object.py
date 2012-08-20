@@ -51,11 +51,17 @@ class IO_Object(object):
         self.check_config(config)
         for i in xrange(len(self.IMPORT_EXPORT_STRUCTURE)):
             x = self.IMPORT_EXPORT_STRUCTURE[i][0]
-            if isinstance(config[i], types.ListType):
-                # remove duplicates
-                setattr(self, x, copy.deepcopy(list(set(config[i]))))
+            if isinstance(config, tuple):
+                index = i
+            elif isinstance(config, dict):
+                index = x
             else:
-                setattr(self, x, copy.deepcopy(config[i]))
+                raise FirewallError(INVALID_TYPE, "structure type mismatch")
+            if isinstance(config[index], types.ListType):
+                # remove duplicates
+                setattr(self, x, copy.deepcopy(list(set(config[index]))))
+            else:
+                setattr(self, x, copy.deepcopy(config[index]))
 
     def check_name(self, name):
         if type(name) != type(""):
@@ -75,8 +81,15 @@ class IO_Object(object):
                     len(config), len(self.IMPORT_EXPORT_STRUCTURE)))
         for i in xrange(len(self.IMPORT_EXPORT_STRUCTURE)):
             x = self.IMPORT_EXPORT_STRUCTURE[i]
-            self._check_config_structure(config[i], x[1])
-            self._check_config(config[i], x[0])
+            if isinstance(config, tuple):
+                index = i
+            elif isinstance(config, dict):
+                index = x[0]
+            else:
+                raise FirewallError(INVALID_TYPE, "structure type mismatch")
+            self._check_config_structure(config[index], x[1])
+            self._check_config(config[index], x[0])
+
 
     def _check_config(self, config, item):
         # to be overloaded by sub classes
@@ -128,7 +141,7 @@ class IO_Object(object):
                     if x in _attrs:
                         _attrs.remove(x)
                     else:
-                        raise MissingAttributeError(name, x)                    
+                        raise MissingAttributeError(name, x)
         if name in self.PARSER_OPTIONAL_ELEMENT_ATTRS:
             found = True
             for x in self.PARSER_OPTIONAL_ELEMENT_ATTRS[name]:
