@@ -30,6 +30,7 @@ from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
 from firewall.errors import *
+from firewall.dbus_utils import dbus_to_python
 
 ############################################################################
 #
@@ -243,8 +244,9 @@ class FirewallDConfig(slip.dbus.service.Object):
     def addIcmpType(self, icmptype, settings, sender=None):
         """list icmptypes objects paths
         """
+        icmptype = str(icmptype)
         log.debug1("config.addIcmpType('%s')", icmptype)
-        obj = self.config.new_icmptype(icmptype, settings)
+        obj = self.config.new_icmptype(icmptype, dbus_to_python(settings))
         self._addIcmpType(obj)
         self.IcmpTypeAdded(icmptype)
 
@@ -281,8 +283,9 @@ class FirewallDConfig(slip.dbus.service.Object):
     def addService(self, service, settings, sender=None):
         """list services objects paths
         """
+        service = str(service)
         log.debug1("config.addService('%s')", service)
-        obj = self.config.new_service(service, settings)
+        obj = self.config.new_service(service, dbus_to_python(settings))
         self._addService(obj)
         self.ServiceAdded(service)
 
@@ -319,8 +322,9 @@ class FirewallDConfig(slip.dbus.service.Object):
     def addZone(self, zone, settings, sender=None):
         """list zones objects paths
         """
+        zone = str(zone)
         log.debug1("config.addZone('%s')", zone)
-        obj = self.config.new_zone(zone, settings)
+        obj = self.config.new_zone(zone, dbus_to_python(settings))
         self._addZone(obj)
         self.ZoneAdded(zone)
 
