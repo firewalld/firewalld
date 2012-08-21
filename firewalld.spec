@@ -1,14 +1,11 @@
-%{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(0)")}
-
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
 Version: 0.2.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
 Group: System Environment/Base
-BuildRoot: %(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)
 BuildArch: noarch
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
 BuildRequires: desktop-file-utils
@@ -67,8 +64,6 @@ firewalld.
 %configure --with-systemd-unitdir=%{_unitdir}
 
 %install
-rm -rf %{buildroot}
-
 make install DESTDIR=%{buildroot}
 
 desktop-file-install --delete-original \
@@ -80,26 +75,15 @@ desktop-file-install --delete-original \
 
 %find_lang %{name} --all-name
 
-%clean
-rm -rf %{buildroot}
-
 %post
-if [ $1 -eq 1 ] ; then # Initial installation
-   /bin/systemctl daemon-reload >/dev/null 2>&1 || :
-   /bin/systemctl enable firewalld.service >/dev/null 2>&1 || :
-fi
+%systemd_post firewalld.service
 
 %preun
-if [ $1 -eq 0 ]; then # Package removal, not upgrade
-   /bin/systemctl --no-reload disable firewalld.service > /dev/null 2>&1 || :
-   /bin/systemctl stop firewalld.service > /dev/null 2>&1 || :
-fi
+%systemd_preun firewalld.service
 
 %postun
-/bin/systemctl daemon-reload >/dev/null 2>&1 || :
-if [ $1 -ge 1 ] ; then # Package upgrade, not uninstall
-   /bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
-fi
+%systemd_postun_with_restart firewalld.service 
+
 
 %triggerun -- firewalld < 0.1.3-3
 # Save the current service runlevel info
@@ -131,7 +115,6 @@ fi
 
 
 %files -f %{name}.lang
-%defattr(-,root,root)
 %doc COPYING
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
@@ -169,7 +152,6 @@ fi
 %{_mandir}/man5/firewall*.5*
 
 %files -n firewall-applet
-%defattr(-,root,root)
 %{_bindir}/firewall-applet
 %defattr(0644,root,root)
 %{_datadir}/applications/firewall-applet.desktop
@@ -177,7 +159,6 @@ fi
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
 
 %files -n firewall-config
-%defattr(-,root,root)
 %{_bindir}/firewall-config
 %defattr(0644,root,root)
 %{_datadir}/firewalld/firewall-config.glade
@@ -185,6 +166,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Aug 21 2012 Jiri Popelka <jpopelka@redhat.com> 0.2.7-2
+- use new systemd-rpm macros (rhbz#850110)
+
 * Mon Aug 13 2012 Thomas Woerner <twoerner@redhat.com> 0.2.7-1
 - Update of firewall-config
 - Some bug fixes
