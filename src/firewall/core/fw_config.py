@@ -209,10 +209,10 @@ class FirewallConfig:
     def rename_icmptype(self, obj, name):
         if obj.defaults or obj.name in self._default_icmptypes:
             raise FirewallError(BUILTIN_ICMPTYPE, obj.name)
-        self.new_icmptype(name, obj.export_config())
+        self._copy_icmptype(obj, name)
         self._remove_icmptype(obj)
 
-    def copy_icmptype(self, obj, name):
+    def _copy_icmptype(self, obj, name):
         return self.new_icmptype(name, obj.export_config())
 
     # services
@@ -365,10 +365,10 @@ class FirewallConfig:
     def rename_service(self, obj, name):
         if obj.defaults or obj.name in self._default_services:
             raise FirewallError(BUILTIN_SERVICE, obj.name)
-        self.new_service(name, obj.export_config())
+        self._copy_service(obj, name)
         self._remove_service(obj)
 
-    def copy_service(self, obj, name):
+    def _copy_service(self, obj, name):
         return self.new_service(name, obj.export_config())
 
     # zones
@@ -521,8 +521,8 @@ class FirewallConfig:
     def rename_zone(self, obj, name):
         if obj.defaults or obj.name in self._default_zones:
             raise FirewallError(BUILTIN_ZONE, obj.name)
-        self.new_zone(name, obj.export_config())
+        self._copy_zone(obj, name)
         self._remove_zone(obj)
 
-    def copy_zone(self, obj, name):
+    def _copy_zone(self, obj, name):
         return self.new_zone(name, obj.export_config())
