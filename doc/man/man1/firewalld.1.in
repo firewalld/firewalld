@@ -24,19 +24,20 @@ Set the debug level for firewalld to \fIlevel\fR. The debug output will be writt
 Turn off daemon forking, firewalld runs in the foreground.
 
 .SH CONCEPTS
-firewalld has a D\-BUS interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D\-BUS can request changes to the firewall with the D-BUS interface directly. For more information on the firewalld D-BUS interface, please have a look at the \fBfirewalld.dbus\fR(5) man page. 
+firewalld has a D\-BUS interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D\-BUS can request changes to the firewall with the D-BUS interface directly. 
+.\" For more information on the firewalld D-BUS interface, please have a look at the \fBfirewalld.dbus\fR(5) man page. 
 
 firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and persistent configuration options.
 
 .SS Zones
-A network or firewall zone defines the trust level of the interface used for a connection. There are several pre\-defined zones provided by firewalld. Zone configuration options and generic information about zones are described in \fBfirewalld.zones\fR(5).
+A network or firewall zone defines the trust level of the interface used for a connection. There are several pre\-defined zones provided by firewalld. Zone configuration options and generic information about zones are described in \fBfirewalld.zone\fR(5).
 
 .SS Services
 A service can be a list of local ports and destinations and additionally also a list of firewall helper modules automatically loaded if a service is enabled.
-\fBfirewalld.services\fR(5). The use of predefined services makes it easier for the user to enable and disable access to a service.
+\fBfirewalld.service\fR(5). The use of predefined services makes it easier for the user to enable and disable access to a service.
 
 .SS ICMP types
-The Internet Control Message Protocol (ICMP) is used to exchange information and also error messages in the Internet Protocol (IP). ICMP types can be used in firewalld to limit the exchange of these messages. For more information, please have a look at \fBfirewalld.icmptypes\fR(5).
+The Internet Control Message Protocol (ICMP) is used to exchange information and also error messages in the Internet Protocol (IP). ICMP types can be used in firewalld to limit the exchange of these messages. For more information, please have a look at \fBfirewalld.icmptype\fR(5).
 
 .SS Runtime configuration
 The runtime configuration is not persistent and will only be restored for a reload. After restart or stop of the service or a system reboot, these options will be gone.
@@ -73,6 +74,7 @@ Reloads the complete firewall configuration. You can also use \fBfirewall\-cmd\ 
 \fIfirewalld.icmptype\fR(5), 
 \fIfirewalld.service\fR(5), 
 \fIfirewalld.zone\fR(5), 
+.\" \fIfirewalld.dbus\fR(5), 
 
 .SH AUTHOR
 \fBThomas Woerner\fR <twoerner@redhat.com>
