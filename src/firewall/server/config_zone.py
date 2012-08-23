@@ -84,6 +84,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             return self.obj.path
         elif property_name == "defaults":
             return self.obj.defaults
+        elif property_name == "builtin":
+            return self.config.is_builtin_zone(self.obj)
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
