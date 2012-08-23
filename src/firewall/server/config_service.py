@@ -45,8 +45,9 @@ class FirewallDConfigService(slip.dbus.service.Object):
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, config, service, id, *args, **kwargs):
+    def __init__(self, parent, config, service, id, *args, **kwargs):
         super(FirewallDConfigService, self).__init__(*args, **kwargs)
+        self.parent = parent
         self.config = config
         self.obj = service
         self.id = id
@@ -174,8 +175,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         """
         log.debug1("config.service.%d.removeService()", self.id)
         self.config.remove_service(self.obj)
-        self.Removed()
-        self.unregister()
+        self.parent.removeService(self.obj)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE)
     @dbus_handle_exceptions

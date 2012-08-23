@@ -45,8 +45,9 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, config, zone, id, *args, **kwargs):
+    def __init__(self, parent, config, zone, id, *args, **kwargs):
         super(FirewallDConfigZone, self).__init__(*args, **kwargs)
+        self.parent = parent
         self.config = config
         self.obj = zone
         self.id = id
@@ -174,8 +175,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         """
         log.debug1("config.zone.%d.removeZone()", self.id)
         self.config.remove_zone(self.obj)
-        self.Removed()
-        self.unregister()
+        self.parent.removeZone(self.obj)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions

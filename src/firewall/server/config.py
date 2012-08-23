@@ -141,7 +141,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @handle_exceptions
     def _addIcmpType(self, obj):
         # TODO: check for idx overflow
-        config_icmptype = FirewallDConfigIcmpType(\
+        config_icmptype = FirewallDConfigIcmpType(self, \
             self.config, obj, self.icmptype_idx, self.path,
             "%s/%d" % (DBUS_PATH_CONFIG_ICMPTYPE, self.icmptype_idx))
         self.icmptypes.append(config_icmptype)
@@ -169,7 +169,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @handle_exceptions
     def _addService(self, obj):
         # TODO: check for idx overflow
-        config_service = FirewallDConfigService(\
+        config_service = FirewallDConfigService(self, \
             self.config, obj, self.service_idx, self.path,
             "%s/%d" % (DBUS_PATH_CONFIG_SERVICE, self.service_idx))
         self.services.append(config_service)
@@ -197,7 +197,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @handle_exceptions
     def _addZone(self, obj):
         # TODO: check for idx overflow
-        config_zone = FirewallDConfigZone(\
+        config_zone = FirewallDConfigZone(self, \
             self.config, obj, self.zone_idx, self.path,
             "%s/%d" % (DBUS_PATH_CONFIG_ZONE, self.zone_idx))
         self.zones.append(config_zone)

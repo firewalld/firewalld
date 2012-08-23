@@ -45,8 +45,9 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, config, icmptype, id, *args, **kwargs):
+    def __init__(self, parent, config, icmptype, id, *args, **kwargs):
         super(FirewallDConfigIcmpType, self).__init__(*args, **kwargs)
+        self.parent = parent
         self.config = config
         self.obj = icmptype
         self.id = id
@@ -174,8 +175,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """
         log.debug1("config.icmptype.%d.removeIcmpType()", self.id)
         self.config.remove_icmptype(self.obj)
-        self.Removed()
-        self.unregister()
+        self.parent.removeIcmpType(self.obj)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE)
     @dbus_handle_exceptions
