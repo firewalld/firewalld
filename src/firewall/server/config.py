@@ -29,6 +29,10 @@ from firewall.server.decorators import *
 from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
+from firewall.core.io.zone import Zone
+from firewall.core.io.service import Service
+from firewall.core.io.icmptype import IcmpType
+from firewall.dbus_utils import dbus_to_python
 from firewall.errors import *
 from firewall.dbus_utils import dbus_to_python
 
@@ -241,7 +245,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 return obj
         raise FirewallError(INVALID_ICMPTYPE, icmptype)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='sa{sv}',
+    @dbus_service_method(DBUS_INTERFACE_CONFIG,
+                         in_signature='s'+IcmpType.DBUS_SIGNATURE,
                          out_signature='o')
     @dbus_handle_exceptions
     def addIcmpType(self, icmptype, settings, sender=None):
@@ -281,7 +286,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 return obj
         raise FirewallError(INVALID_SERVICE, service)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='sa{sv}',
+    @dbus_service_method(DBUS_INTERFACE_CONFIG,
+                         in_signature='s'+Service.DBUS_SIGNATURE,
                          out_signature='o')
     @dbus_handle_exceptions
     def addService(self, service, settings, sender=None):
@@ -321,7 +327,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 return obj
         raise FirewallError(INVALID_ZONE, zone)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='sa{sv}',
+    @dbus_service_method(DBUS_INTERFACE_CONFIG,
+                         in_signature='s'+Zone.DBUS_SIGNATURE,
                          out_signature='o')
     @dbus_handle_exceptions
     def addZone(self, zone, settings, sender=None):
