@@ -28,8 +28,11 @@ import dbus
 # zone config setings
 
 class FirewallClientConfigZoneSettings(object):
-    def __init__(self, settings):
-        self.settings = settings
+    def __init__(self, settings = None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = ["", "", "", False, "", [], [], [], False, []]
 
     def getVersion(self):
         return self.settings[0]
@@ -66,6 +69,8 @@ class FirewallClientConfigZoneSettings(object):
     def removeService(self, service):
         if service in self.settings[5]:
             self.settings[5].remove(service)
+    def queryService(self, service):
+        return service in self.settings[5]
 
     def getPorts(self):
         return self.settings[6]
@@ -77,6 +82,8 @@ class FirewallClientConfigZoneSettings(object):
     def removePort(self, port, protocol):
         if (port,protocol) in self.settings[6]:
             self.settings[6].remove((port,protocol))
+    def queryPort(self, port, protocol):
+        return (port,protocol) in self.settings[6]
 
     def getIcmpBlocks(self):
         return self.settings[7]
@@ -88,6 +95,8 @@ class FirewallClientConfigZoneSettings(object):
     def removeIcmpBlock(self, icmptype):
         if icmptype in self.settings[7]:
             self.settings[7].remove(icmptype)
+    def querayIcmpBlock(self, icmptype):
+        return icmptype in self.settings[7]
 
     def getMasquerade(self):
         return self.settings[8]
@@ -104,6 +113,8 @@ class FirewallClientConfigZoneSettings(object):
     def removeForwardPort(self, port, protocol, to_port, to_addr):
         if (port,protocol,to_port,to_addr) in self.settings[9]:
             self.settings[9].remove((port,protocol,to_port,to_addr))
+    def queryForwardPort(self, port, protocol, to_port, to_addr):
+        return (port,protocol,to_port,to_addr) in self.settings[9]
 
 # zone config
 
@@ -116,9 +127,6 @@ class FirewallClientConfigZone(object):
                                       dbus_interface=DBUS_INTERFACE_CONFIG_ZONE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        self._updated_cb = None
-        self._removed_cb = None
-        self._renamed_cb = None
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
@@ -154,23 +162,14 @@ class FirewallClientConfigZone(object):
     def rename(self, name):
         self.fw_zone.rename(name)
 
-    # callbacks
-
-    def connect(self, name, callback, *args):
-        if name == "updated":
-            self._updated_cb = (callback, args)
-        elif name == "removed":
-            self._removed_cb = (callback, args)
-        elif name == "renamed":
-            self._renamed_cb = (callback, args)
-        else:
-            raise ValueError, "Unknown callback name '%s'" % name
-
 # service config settings
 
 class FirewallClientConfigServiceSettings(object):
-    def __init__(self, settings):
-        self.settings = settings
+    def __init__(self, settings=None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = ["", "", "", [], [], []]
 
     def getVersion(self):
         return self.settings[0]
@@ -230,9 +229,6 @@ class FirewallClientConfigService(object):
                                          dbus_interface=DBUS_INTERFACE_CONFIG_SERVICE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        self._updated_cb = None
-        self._removed_cb = None
-        self._renamed_cb = None
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
@@ -268,23 +264,14 @@ class FirewallClientConfigService(object):
     def rename(self, name):
         self.fw_service.rename(name)
 
-    # callbacks
-
-    def connect(self, name, callback, *args):
-        if name == "updated":
-            self._updated_cb = (callback, args)
-        elif name == "removed":
-            self._removed_cb = (callback, args)
-        elif name == "renamed":
-            self._renamed_cb = (callback, args)
-        else:
-            raise ValueError, "Unknown callback name '%s'" % name
-
 # icmptype config settings
 
 class FirewallClientConfigIcmpTypeSettings(object):
-    def __init__(self, settings):
-        self.settings = settings
+    def __init__(self, settings=None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = ["", "", "", []]
 
     def getVersion(self):
         return self.settings[0]
@@ -323,9 +310,6 @@ class FirewallClientConfigIcmpType(object):
                                           dbus_interface=DBUS_INTERFACE_CONFIG_ICMPTYPE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        self._updated_cb = None
-        self._removed_cb = None
-        self._renamed_cb = None
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
@@ -361,18 +345,6 @@ class FirewallClientConfigIcmpType(object):
     def rename(self, name):
         self.fw_icmptype.rename(name)
 
-    # callbacks
-
-    def connect(self, name, callback, *args):
-        if name == "updated":
-            self._updated_cb = (callback, args)
-        elif name == "removed":
-            self._removed_cb = (callback, args)
-        elif name == "renamed":
-            self._renamed_cb = (callback, args)
-        else:
-            raise ValueError, "Unknown callback name '%s'" % name
-
 # config
 
 class FirewallClientConfig(object):
@@ -403,11 +375,6 @@ class FirewallClientConfig(object):
         path = kwargs["path"]
         interface = kwargs["interface"]
 
-        dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-        properties = dbus.Interface(
-            dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        what = dbus_to_python(properties.Get(interface, "name"))
-
         if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
             signal = "Zone" + signal
         elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
@@ -417,11 +384,21 @@ class FirewallClientConfig(object):
 
         cb = None
         cb_args = [ ]
+        if interface != DBUS_INTERFACE_CONFIG:
+            dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
+            properties = dbus.Interface(
+                dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+            try:
+                what = dbus_to_python(properties.Get(interface, "name"))
+            except:
+                pass
+            else:
+                cb_args.append(what)
+
         for callback in self._callbacks:
             if self._callbacks[callback] == signal and \
                     self._callbacks[callback] in self._callback:
                 cb = self._callback[self._callbacks[callback]]
-                cb_args.append(what)
                 cb_args.extend(args)
                 break
 
@@ -444,7 +421,7 @@ class FirewallClientConfig(object):
 
     @slip.dbus.polkit.enable_proxy
     def addZone(self, name, settings):
-        path = self.fw_config.addZone(name, settings)
+        path = self.fw_config.addZone(name, tuple(settings.settings))
         return FirewallClientConfigZone(self.bus, path)
 
     # service
@@ -464,7 +441,7 @@ class FirewallClientConfig(object):
 
     @slip.dbus.polkit.enable_proxy
     def addService(self, name, settings):
-        path = self.fw_config.addService(name, settings)
+        path = self.fw_config.addService(name, tuple(settings.settings))
         return FirewallClientConfigService(self.bus, path)
 
     # icmptype
@@ -484,7 +461,7 @@ class FirewallClientConfig(object):
 
     @slip.dbus.polkit.enable_proxy
     def addIcmpType(self, name, settings):
-        path = self.fw_config.addIcmpType(name, settings)
+        path = self.fw_config.addIcmpType(name, tuple(settings.settings))
         return FirewallClientConfigIcmpType(self.bus, path)
 
     # callbacks
@@ -538,10 +515,6 @@ class FirewallClient(object):
                                          member_keyword='member',
                                          path_keyword='path')
 
-        self._default_zone_changed_cb = None
-        self._panic_mode_enabled_cb = None
-        self._panic_mode_disabled_cb = None
-        self._reloaded_cb = None
         self._callback = { }
         self._callbacks = {
             "default-zone-changed": "DefaultZoneChanged",
