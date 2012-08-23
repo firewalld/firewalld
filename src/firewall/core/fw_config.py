@@ -201,14 +201,21 @@ class FirewallConfig:
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._icmptypes[obj.name]
 
-    def remove_icmptype(self, obj):
+    def is_builtin_icmptype(self, obj):
         if obj.defaults or obj.name in self._default_icmptypes:
+            return True
+        return False
+
+    def check_builtin_icmptype(self, obj):
+        if self.is_builtin_icmptype(obj):
             raise FirewallError(BUILTIN_ICMPTYPE, obj.name)
+
+    def remove_icmptype(self, obj):
+        self.check_builtin_icmptype(obj)
         self._remove_icmptype(obj)
 
     def rename_icmptype(self, obj, name):
-        if obj.defaults or obj.name in self._default_icmptypes:
-            raise FirewallError(BUILTIN_ICMPTYPE, obj.name)
+        self.check_builtin_icmptype(obj)
         self._copy_icmptype(obj, name)
         self._remove_icmptype(obj)
 
@@ -357,14 +364,21 @@ class FirewallConfig:
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._services[obj.name]
 
-    def remove_service(self, obj):
+    def is_builtin_service(self, obj):
         if obj.defaults or obj.name in self._default_services:
+            return True
+        return False
+
+    def check_builtin_service(self, obj):
+        if self.is_builtin_service(obj):
             raise FirewallError(BUILTIN_SERVICE, obj.name)
+
+    def remove_service(self, obj):
+        self.check_builtin_service(obj)
         self._remove_service(obj)
 
     def rename_service(self, obj, name):
-        if obj.defaults or obj.name in self._default_services:
-            raise FirewallError(BUILTIN_SERVICE, obj.name)
+        self.check_builtin_service(obj)
         self._copy_service(obj, name)
         self._remove_service(obj)
 
@@ -513,14 +527,21 @@ class FirewallConfig:
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._zones[obj.name]
 
-    def remove_zone(self, obj):
+    def is_builtin_zone(self, obj):
         if obj.defaults or obj.name in self._default_zones:
+            return True
+        return False
+
+    def check_builtin_zone(self, obj):
+        if self.is_builtin_zone(obj):
             raise FirewallError(BUILTIN_ZONE, obj.name)
+
+    def remove_zone(self, obj):
+        self.check_builtin_zone(obj)
         self._remove_zone(obj)
 
     def rename_zone(self, obj, name):
-        if obj.defaults or obj.name in self._default_zones:
-            raise FirewallError(BUILTIN_ZONE, obj.name)
+        self.check_builtin_zone(obj)
         self._copy_zone(obj, name)
         self._remove_zone(obj)
 
