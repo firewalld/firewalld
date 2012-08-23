@@ -108,7 +108,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self._addIcmpType(obj)
                 self.IcmpTypeAdded(obj.name)
             elif what == "remove":
-                self._removeIcmpType(obj)
+                self.removeIcmpType(obj)
             elif what == "update":
                 self._updateIcmpType(obj)
 
@@ -119,7 +119,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self._addService(obj)
                 self.ServiceAdded(obj.name)
             elif what == "remove":
-                self._removeService(obj)
+                self.removeService(obj)
             elif what == "update":
                 self._updateService(obj)
 
@@ -130,7 +130,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self._addZone(obj)
                 self.ZoneAdded(obj.name)
             elif what == "remove":
-                self._removeZone(obj)
+                self.removeZone(obj)
             elif what == "update":
                 self._updateZone(obj)
 
@@ -154,7 +154,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 icmptype.Updated()
 
     @handle_exceptions
-    def _removeIcmpType(self, obj):
+    def removeIcmpType(self, obj):
         for icmptype in self.icmptypes:
             if icmptype.obj == obj:
                 icmptype.unregister()
@@ -182,7 +182,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 service.Updated()
 
     @handle_exceptions
-    def _removeService(self, obj):
+    def removeService(self, obj):
         for service in self.services:
             if service.obj == obj:
                 service.unregister()
@@ -209,7 +209,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 zone.Updated()
 
     @handle_exceptions
-    def _removeZone(self, obj):
+    def removeZone(self, obj):
         for zone in self.zones:
             if zone.obj == obj:
                 zone.unregister()
