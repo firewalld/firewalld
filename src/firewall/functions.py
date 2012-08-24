@@ -148,6 +148,41 @@ def checkIP6(ip):
         return False
     return True
 
+def checkIPnMask(ip):
+    if "/" in ip:
+        addr = ip[:ip.index("/")]
+        mask = ip[ip.index("/")+1:]
+    else:
+        addr = ip
+        mask = None
+    if not checkIP(addr):
+        return False
+    if mask:
+        if "." in mask and checkIP(addr):
+            return False
+        else:
+            try:
+                i = int(mask)
+            except:
+                return False
+    return True
+
+def checkIP6nMask(ip):
+    if "/" in ip:
+        addr = ip[:ip.index("/")]
+        mask = ip[ip.index("/")+1:]
+    else:
+        addr = ip
+        mask = None
+    if not checkIP6(addr):
+        return False
+    if mask:
+        try:
+            i = int(mask)
+        except:
+            return False
+    return True
+
 def checkInterface(iface):
     """ Check interface string
 
