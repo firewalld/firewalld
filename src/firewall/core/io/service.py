@@ -90,6 +90,10 @@ class service_ContentHandler(IO_Object_ContentHandler):
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
+                    if x == "ipv4" and not functions.checkIP(str(attrs[x])):
+                        raise FirewallError(INVALID_DESTINATION, str(attrs[x]))
+                    if x == "ipv6" and not functions.checkIP6(str(attrs[x])):
+                        raise FirewallError(INVALID_DESTINATION, str(attrs[x]))
                     self.item.destination[x] = str(attrs[x])
         elif name == "module":
             self.item.modules.append(str(attrs["name"]))
