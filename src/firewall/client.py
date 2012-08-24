@@ -305,6 +305,8 @@ class FirewallClientConfigIcmpTypeSettings(object):
     def removeDestination(self, destination):
         if destination in self.settings[3]:
             self.settings[3].remove(destination)
+    def queryDestination(self, destination):
+        return destination in self.settings[3]
 
 # icmptype config
 
