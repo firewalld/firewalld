@@ -4,6 +4,9 @@ sbin_SCRIPTS = firewalld
 gladedir = $(pkgdatadir)
 glade_PYTHON = firewall-config.glade
 
+gtkextradir = $(pkgdatadir)
+gtkextra_PYTHON = gtk3_chooserbutton.py
+
 icondir = $(datadir)/icons/hicolor
 iconFILES = icons/*/apps/*
 
