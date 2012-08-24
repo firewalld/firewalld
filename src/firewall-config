@@ -27,8 +27,13 @@ import os
 
 from firewall.config import *
 from firewall.config.dbus import *
-from firewall.client import FirewallClient
+from firewall.client import *
 from firewall.functions import *
+from firewall.core.base import DEFAULT_ZONE_TARGET
+
+# import ChooserButton
+sys.path.append(DATADIR)
+from gtk3_chooserbutton import ChooserButton
 
 #FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 
@@ -54,6 +59,10 @@ class FirewallConfig(object):
         builder.add_from_file("%s/%s" % (path, CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
+        connected = _("Connected.")
+        no_connection = _("No connection.")
+        waiting = _("Waiting ...")
+
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
         size = min(width, height)
@@ -69,6 +78,17 @@ class FirewallConfig(object):
 
         self.mainWindow = builder.get_object("mainWindow")
         self.mainWindow.set_icon(self.icon)
+
+        # make the toolbar the primary toolbar - odd that this is needed at all
+        # glade-3 does not support this up to now.
+        self.mainToolbar = builder.get_object("mainToolbar")
+        sty = self.mainToolbar.get_style_context()
+        sty.add_class("primary-toolbar")
+
+        self.editServicesToolbutton = \
+            builder.get_object("editServicesToolbutton")
+        self.editIcmpTypesToolbutton = \
+            builder.get_object("editIcmpTypesToolbutton")
 
         self.aboutDialog = builder.get_object("aboutDialog")
         self.aboutDialog.set_version(VERSION)
@@ -93,7 +113,11 @@ class FirewallConfig(object):
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
         self.zoneView.set_model(self.zoneStore)
         self.zoneStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.zoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.zoneView.get_selection().connect("changed", self.onChangeZone)
+
+        self.immutableNotebook = builder.get_object("immutableNotebook")
+        self.mainNotebook = builder.get_object("mainNotebook")
 
         self.defaultZoneLabel = builder.get_object("defaultZoneLabel")
         self.defaultZoneDialog = builder.get_object("defaultZoneDialog")
@@ -102,6 +126,33 @@ class FirewallConfig(object):
         self.defaultZoneView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
         self.defaultZoneView.set_model(self.defaultZoneStore)
+
+        self.zoneEditBox = builder.get_object("zoneEditBox")
+        self.zoneEditLoadDefaultsButton = \
+            builder.get_object("zoneEditLoadDefaultsButton")
+        self.zoneEditEditButton = builder.get_object("zoneEditEditButton")
+        self.zoneEditRemoveButton = builder.get_object("zoneEditRemoveButton")
+
+        self.zoneBaseDialog = builder.get_object("zoneBaseDialog")
+        self.zoneBaseDialogOkButton = \
+            builder.get_object("zoneBaseDialogOkButton")
+
+        self.zoneBaseDialogNameEntry = \
+            builder.get_object("zoneBaseDialogNameEntry")
+        self.zoneBaseDialogVersionEntry = \
+            builder.get_object("zoneBaseDialogVersionEntry")
+        self.zoneBaseDialogShortEntry = \
+            builder.get_object("zoneBaseDialogShortEntry")
+        self.zoneBaseDialogDescText = \
+            builder.get_object("zoneBaseDialogDescText")
+        self.zoneBaseDialogDescText.get_buffer().connect(\
+            "changed", self.onZoneBaseDialogChanged)
+        self.zoneBaseDialogImmutableCheck = \
+            builder.get_object("zoneBaseDialogImmutableCheck")
+        self.zoneBaseDialogTargetCheck = \
+            builder.get_object("zoneBaseDialogTargetCheck")
+        self.zoneBaseDialogTargetCombobox = \
+            builder.get_object("zoneBaseDialogTargetCombobox")
 
         self.serviceView = builder.get_object("serviceView")
         self.serviceStore = Gtk.ListStore(GObject.TYPE_BOOLEAN,
@@ -194,6 +245,165 @@ class FirewallConfig(object):
         self.icmpView.set_model(self.icmpStore)
         self.icmpStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
+        self.portProtoDialog = builder.get_object("portProtoDialog")
+        self.portProtoDialogOkButton = \
+            builder.get_object("portProtoDialogOkButton")
+        self.portProtoDialogCancelButton = \
+            builder.get_object("portProtoDialogCancelButton")
+        self.portProtoDialogPortEntry = \
+            builder.get_object("portProtoDialogPortEntry")
+        self.portProtoDialogProtoCombobox = \
+            builder.get_object("portProtoDialogProtoCombobox")
+        self.portProtoDialogOtherProtoCheck = \
+            builder.get_object("portProtoDialogOtherProtoCheck")
+        self.portProtoDialogOtherProtoEntry = \
+            builder.get_object("portProtoDialogOtherProtoEntry")
+
+        self.serviceDialog = builder.get_object("serviceDialog")
+
+        self.serviceDialogServiceNotebook = \
+            builder.get_object("serviceDialogServiceNotebook")
+
+        self.serviceDialogEditServiceButton = \
+            builder.get_object("serviceDialogEditServiceButton")
+        self.serviceDialogRemoveServiceButton = \
+            builder.get_object("serviceDialogRemoveServiceButton")
+        self.serviceDialogLoadDefaultsServiceButton = \
+            builder.get_object("serviceDialogLoadDefaultsServiceButton")
+
+        self.serviceDialogServiceView = \
+            builder.get_object("serviceDialogServiceView")
+        self.serviceDialogServiceStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.serviceDialogServiceView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.serviceDialogServiceView.set_model(self.serviceDialogServiceStore)
+        self.serviceDialogServiceStore.set_sort_column_id(
+            0, Gtk.SortType.ASCENDING)
+        self.serviceDialogServiceView.get_selection().connect(\
+            "changed", self.onChangeService)
+
+        self.serviceDialogPortView = builder.get_object("serviceDialogPortView")
+        self.serviceDialogPortStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                                    GObject.TYPE_STRING)
+        self.serviceDialogPortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
+        self.serviceDialogPortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
+        self.serviceDialogPortView.set_model(self.serviceDialogPortStore)
+        self.serviceDialogPortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.serviceDialogPortView.get_selection().connect(\
+            "changed", self.change_service_dialog_port_selection_cb)
+
+        self.serviceDialogEditPortButton = \
+            builder.get_object("serviceDialogEditPortButton")
+        self.serviceDialogRemovePortButton = \
+            builder.get_object("serviceDialogRemovePortButton")
+
+        self.serviceDialogModuleView = \
+            builder.get_object("serviceDialogModuleView")
+        self.serviceDialogModuleStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.serviceDialogModuleView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.serviceDialogModuleView.set_model(self.serviceDialogModuleStore)
+        self.serviceDialogModuleStore.set_sort_column_id(
+            0, Gtk.SortType.ASCENDING)
+        self.serviceDialogModuleView.get_selection().connect(\
+            "changed", self.change_service_dialog_module_selection_cb)
+
+        self.serviceDialogEditModuleButton = \
+            builder.get_object("serviceDialogEditModuleButton")
+        self.serviceDialogRemoveModuleButton = \
+            builder.get_object("serviceDialogRemoveModuleButton")
+
+        self.serviceDialogDestIpv4Chooser = ChooserButton(
+            builder.get_object("serviceDialogDestIpv4Chooser"), "")
+        self.serviceDialogDestIpv6Chooser = ChooserButton(
+            builder.get_object("serviceDialogDestIpv6Chooser"), "")
+
+        self.moduleDialog = builder.get_object("moduleDialog")
+        self.moduleDialogOkButton = \
+            builder.get_object("moduleDialogOkButton")
+        self.moduleDialogCancelButton = \
+            builder.get_object("moduleDialogCancelButton")
+        self.moduleDialogModuleEntry = \
+            builder.get_object("moduleDialogModuleEntry")
+
+        self.addressDialog = builder.get_object("addressDialog")
+        self.addressDialogLabel = builder.get_object("addressDialogLabel")
+        self.addressDialogOkButton = \
+            builder.get_object("addressDialogOkButton")
+        self.addressDialogCancelButton = \
+            builder.get_object("addressDialogCancelButton")
+        self.addressDialogAddressEntry = \
+            builder.get_object("addressDialogAddressEntry")
+
+        self.serviceBaseDialog = builder.get_object("serviceBaseDialog")
+        self.serviceBaseDialogOkButton = \
+            builder.get_object("serviceBaseDialogOkButton")
+
+        self.serviceBaseDialogNameEntry = \
+            builder.get_object("serviceBaseDialogNameEntry")
+        self.serviceBaseDialogVersionEntry = \
+            builder.get_object("serviceBaseDialogVersionEntry")
+        self.serviceBaseDialogShortEntry = \
+            builder.get_object("serviceBaseDialogShortEntry")
+        self.serviceBaseDialogDescText = \
+            builder.get_object("serviceBaseDialogDescText")
+        self.serviceBaseDialogDescText.get_buffer().connect(\
+            "changed", self.onServiceBaseDialogChanged)
+
+        self.icmpDialog = builder.get_object("icmpDialog")
+
+        self.icmpDialogIcmpNotebook = \
+            builder.get_object("icmpDialogIcmpNotebook")
+
+        self.icmpDialogEditIcmpButton = \
+            builder.get_object("icmpDialogEditIcmpButton")
+        self.icmpDialogRemoveIcmpButton = \
+            builder.get_object("icmpDialogRemoveIcmpButton")
+        self.icmpDialogLoadDefaultsIcmpButton = \
+            builder.get_object("icmpDialogLoadDefaultsIcmpButton")
+
+        self.icmpDialogIcmpView = \
+            builder.get_object("icmpDialogIcmpView")
+        self.icmpDialogIcmpStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.icmpDialogIcmpView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.icmpDialogIcmpView.set_model(self.icmpDialogIcmpStore)
+        self.icmpDialogIcmpStore.set_sort_column_id(
+            0, Gtk.SortType.ASCENDING)
+        self.icmpDialogIcmpView.get_selection().connect(\
+            "changed", self.onChangeIcmp)
+
+        self.icmpDialogDestIpv4Check = \
+            builder.get_object("icmpDialogDestIpv4Check")
+        self.icmpDialogDestIpv6Check = \
+            builder.get_object("icmpDialogDestIpv6Check")
+
+        self.icmpDialogDestIpv4Eventbox = \
+            builder.get_object("icmpDialogDestIpv4Eventbox")
+        self.icmpDialogDestIpv4Eventbox.connect(\
+            "button-press-event", self.icmp_dialog_dest_ipv4_check_cb)
+        self.icmpDialogDestIpv6Eventbox = \
+            builder.get_object("icmpDialogDestIpv6Eventbox")
+        self.icmpDialogDestIpv6Eventbox.connect(\
+            "button-press-event", self.icmp_dialog_dest_ipv6_check_cb)
+
+        self.icmpBaseDialog = builder.get_object("icmpBaseDialog")
+        self.icmpBaseDialogOkButton = \
+            builder.get_object("icmpBaseDialogOkButton")
+
+        self.icmpBaseDialogNameEntry = \
+            builder.get_object("icmpBaseDialogNameEntry")
+        self.icmpBaseDialogVersionEntry = \
+            builder.get_object("icmpBaseDialogVersionEntry")
+        self.icmpBaseDialogShortEntry = \
+            builder.get_object("icmpBaseDialogShortEntry")
+        self.icmpBaseDialogDescText = \
+            builder.get_object("icmpBaseDialogDescText")
+        self.icmpBaseDialogDescText.get_buffer().connect(\
+            "changed", self.onIcmpBaseDialogChanged)
+
         # firewall client
 
         self.fw = FirewallClient()
@@ -212,8 +422,8 @@ class FirewallConfig(object):
         self.fw.connect("icmp-block-removed", self.icmp_removed_cb)
 
         self.fw.config().connect("zone-updated", self.conf_zone_updated_cb)
-#        self.fw.config().connect("service-updated", self.conf_service_updated_cb)
-#        self.fw.config().connect("icmptype-updated", self.conf_icmp_updated_cb)
+        self.fw.config().connect("service-updated", self.conf_service_updated_cb)
+        self.fw.config().connect("icmptype-updated", self.conf_icmp_updated_cb)
 
         # fill with life
 
@@ -230,6 +440,16 @@ class FirewallConfig(object):
         except KeyboardInterrupt as msg:
             self.onQuit()
 
+    def _warning(self, msg):        
+        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
+        dialog.set_markup("<b>" + _("Error") + "</b>")
+        dialog.format_secondary_markup(msg)
+        dialog.add_button("gtk-close", 1)
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+        dialog.run()
+        dialog.hide()
+
     def load(self):
         default_zone = self.fw.getDefaultZone()
         self.defaultZoneLabel.set_text(default_zone)
@@ -242,19 +462,20 @@ class FirewallConfig(object):
         zones = [ ]
         if self.runtime_view:
             zones = sorted(self.fw.getZones())
-            i = 0
-            while i < len(zones):
-                if self.fw.isImmutable(zones[i]):
-                    zones.pop(i)
-                else:
-                    i += 1
+#            i = 0
+#            while i < len(zones):
+#                if self.fw.isImmutable(zones[i]):
+#                    zones.pop(i)
+#                else:
+#                    i += 1
         else:
             _zones = sorted(self.fw.config().listZones())
             for zone in _zones:
                 z = self.fw.config().getZone(zone)
-                settings = z.getSettings()
-                if not settings.getImmutable():
-                    zones.append(z.get_property("name"))
+#                settings = z.getSettings()
+#                if not settings.getImmutable():
+#                    zones.append(z.get_property("name"))
+                zones.append(z.get_property("name"))
 
         # reset and fill notebook content according to view
 
@@ -278,7 +499,6 @@ class FirewallConfig(object):
 
         # zones
 
-        self.zones = sorted(zones)
         for zone in zones:
             self.zoneStore.append([zone])
 
@@ -295,6 +515,47 @@ class FirewallConfig(object):
                 return
             iter = self.zoneStore.iter_next(iter)
         # fallback
+        selection.select_path(0)
+
+    def get_active_service(self):
+        selection = self.serviceDialogServiceView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter:
+            return self.serviceDialogServiceStore.get_value(iter, 0)
+        return None
+
+    def load_services(self):
+        active_service = self.get_active_service()
+        self.serviceDialogServiceStore.clear()
+
+        services = [ ]
+        _services = sorted(self.fw.config().listServices())
+        for service in _services:
+            z = self.fw.config().getService(service)
+            settings = z.getSettings()
+            services.append(z.get_property("name"))
+
+        # reset and fill notebook content according to view
+
+        self.serviceDialogServiceStore.clear()
+
+        # services
+
+        for service in services:
+            self.serviceDialogServiceStore.append([service])
+
+        _service = None
+        if active_service in services:
+            _service = active_service
+
+        selection = self.serviceDialogServiceView.get_selection()
+        iter = self.serviceDialogServiceStore.get_iter_first()
+        while iter:
+            if self.serviceDialogServiceStore.get_value(iter, 0) == \
+                    active_service:
+                selection.select_iter(iter)
+                return
+            iter = self.serviceDialogServiceStore.iter_next(iter)
         selection.select_path(0)
 
     def service_added_cb(self, zone, service, timeout):
@@ -428,9 +689,10 @@ class FirewallConfig(object):
         while iter:
             if model.get_value(iter, 0) == value:
                 combobox.set_active_iter(iter)
-                return
+                return True
             iter = model.iter_next(iter)
         combobox.set_active(0)
+        return False
 
     def get_active_zone(self):
         selection = self.zoneView.get_selection()
@@ -457,6 +719,9 @@ class FirewallConfig(object):
     def onChangeView(self, *args):
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
                                  _("Runtime Configuration"))
+        self.editServicesToolbutton.set_sensitive(not self.runtime_view)
+        self.editIcmpTypesToolbutton.set_sensitive(not self.runtime_view)
+        self.zoneEditBox.set_sensitive(not self.runtime_view)
         self.load_zones()
         self.onChangeZone()
 
@@ -489,8 +754,6 @@ class FirewallConfig(object):
 
     def onChangeZone(self, *args):
         active_zone = self.get_active_zone()
-        if not active_zone:
-            return
 
         ### load zone settings
 
@@ -501,6 +764,15 @@ class FirewallConfig(object):
         self.portView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.forwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.icmpView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.mainNotebook.set_tooltip_markup("")
+
+        if not active_zone:
+            self.zoneEditBox.set_sensitive(False)
+            self.mainNotebook.set_sensitive(False)
+            return
+
+        self.zoneEditBox.set_sensitive(not self.runtime_view)
+        self.mainNotebook.set_sensitive(True)
 
         services = [ ]
         ports = [ ]
@@ -516,6 +788,9 @@ class FirewallConfig(object):
             masquerade = self.fw.queryMasquerade(active_zone)
             forward_ports = self.fw.getForwardPorts(active_zone)
             icmpblocks = self.fw.getIcmpBlocks(active_zone)
+            immutable = self.fw.isImmutable(active_zone)
+            defaults = False
+            builtin = False
         else:
             # load persistent configuration
             zone = self.fw.config().getZoneByName(active_zone)
@@ -526,6 +801,17 @@ class FirewallConfig(object):
             masquerade = settings.getMasquerade()
             forward_ports = settings.getForwardPorts()
             icmpblocks = settings.getIcmpBlocks()
+            immutable = settings.getImmutable()
+            defaults = zone.get_property("defaults")
+            builtin = zone.get_property("builtin")
+
+        self.mainNotebook.set_sensitive(not immutable)
+        if immutable:
+            self.mainNotebook.set_tooltip_markup(\
+                "Immutable zones are not customizable.")
+        self.zoneEditRemoveButton.set_sensitive(\
+            not builtin and not immutable)
+        self.zoneEditLoadDefaultsButton.set_sensitive(not defaults)
 
         # set services
         iter = self.serviceStore.get_iter_first()
@@ -563,14 +849,173 @@ class FirewallConfig(object):
         self.forwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.icmpView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
+    def onAddZone(self, *args):
+        if self.runtime_view:
+            return
+        self.add_edit_zone(True)
+
+    def onRemoveZone(self, *args):
+        if self.runtime_view:
+            return
+        active_zone = self.get_active_zone()
+        zone = self.fw.config().getZoneByName(active_zone)
+        zone.remove()
+        self.load_zones()
+        self.onChangeZone()
+
+    def onEditZone(self, *args):
+        if self.runtime_view:
+            return
+        self.add_edit_zone(False)
+
+    def onLoadDefaultsZone(self, *args):
+        if self.runtime_view:
+            return
+        active_zone = self.get_active_zone()
+        zone = self.fw.config().getZoneByName(active_zone)
+        zone.loadDefaults()
+        self.onChangeZone()
+
+    def onZoneBaseDialogChanged(self, *args):
+        self.zoneBaseDialogOkButton.set_sensitive(True)
+
+    def onZoneBaseDialogTargetCheckToggled(self, check):
+        val = check.get_active()
+        self.zoneBaseDialogTargetCombobox.set_sensitive(not val)
+
+    def add_edit_zone(self, add):
+        if add:
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_immutable = None
+            old_target = None
+
+            self.zoneBaseDialogNameEntry.set_text("")
+            self.zoneBaseDialogVersionEntry.set_text("")
+            self.zoneBaseDialogShortEntry.set_text("")
+            self.zoneBaseDialogDescText.get_buffer().set_text("")
+            self.zoneBaseDialogImmutableCheck.set_active(False)
+            self.zoneBaseDialogTargetCheck.set_active(True)
+            self.zoneBaseDialogTargetCombobox.set_active(0)
+        else:
+            active_zone = self.get_active_zone()
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            builtin = zone.get_property("builtin")
+    
+            old_name = zone.get_property("name")
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+            old_immutable = settings.getImmutable()
+            old_target = settings.getTarget()
+
+            self.zoneBaseDialogNameEntry.set_text(old_name)
+            self.zoneBaseDialogVersionEntry.set_text(old_version)
+            self.zoneBaseDialogShortEntry.set_text(old_short)
+            self.zoneBaseDialogDescText.get_buffer().set_text(old_desc)
+            self.zoneBaseDialogImmutableCheck.set_active(old_immutable)
+            if old_target == DEFAULT_ZONE_TARGET:
+                self.zoneBaseDialogTargetCheck.set_active(True)
+                self.zoneBaseDialogTargetCombobox.set_active(0)
+            else:
+                self.zoneBaseDialogTargetCheck.set_active(False)
+                self.combobox_select_text(self.zoneBaseDialogTargetCombobox,
+                                          old_target)
+
+        self.zoneBaseDialogOkButton.set_sensitive(False)
+        if builtin:
+            self.zoneBaseDialogNameEntry.set_tooltip_markup(\
+                _("Built-in zone, rename not supported."))
+        else:
+            self.zoneBaseDialogNameEntry.set_tooltip_markup("")
+        self.zoneBaseDialogNameEntry.set_sensitive(not builtin)
+
+        self.zoneBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.zoneBaseDialog.set_transient_for(self.mainWindow)
+        self.zoneBaseDialog.show_all()
+        result = self.zoneBaseDialog.run()
+        self.zoneBaseDialog.hide()
+
+        if result != 1:
+            return
+
+        name = self.zoneBaseDialogNameEntry.get_text()
+        version = self.zoneBaseDialogVersionEntry.get_text()
+        short = self.zoneBaseDialogShortEntry.get_text()
+        buffer = self.zoneBaseDialogDescText.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
+                               False)
+        immutable = self.zoneBaseDialogImmutableCheck.get_active()
+        target = DEFAULT_ZONE_TARGET
+        if not self.zoneBaseDialogTargetCheck.get_active():
+            target = self.zoneBaseDialogTargetCombobox.get_active_text()
+
+        if old_name == name and \
+                old_version == version and old_short == short and \
+                old_desc == desc and old_immutable == immutable and \
+                old_target == target:
+            # no changes
+            return
+
+        if not add:
+            active_zone = self.get_active_zone()
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+        else:
+            settings = FirewallClientConfigZoneSettings()
+
+        if old_version != version or old_short != short or \
+                old_desc != desc or old_immutable != immutable or \
+                old_target != target:
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            settings.setImmutable(immutable)
+            settings.setTarget(target)
+            if not add:
+                zone.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            zone.rename(name)
+        else:
+            self.fw.config().addZone(name, settings)
+
+        self.load_zones()
+        #TODO: change active zone
+        self.onChangeZone()
+
     def onAddPort(self, *args):
         self.add_edit_port(True)
 
     def onEditPort(self, *args):
         self.add_edit_port(False)
 
-    def onPortEntryChanged(self, entry):
-        ports = getPortRange(entry.get_text())
+    def onRemovePort(self, *args):
+        active_zone = self.get_active_zone()
+        selection = self.portView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.portStore.get_value(iter, 0)
+        proto = self.portStore.get_value(iter, 1)
+
+        if self.runtime_view:
+            self.fw.removePort(active_zone, port, proto)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.removePort(port, proto)
+            zone.update(settings)
+
+    def onPortChanged(self, *args):
+        ports = getPortRange(self.portDialogPortEntry.get_text())
         if not ports or not (isinstance(ports, types.ListType) or \
                                 isinstance(ports, types.TupleType)):
             self.portDialogOkButton.set_sensitive(False)
@@ -580,15 +1025,10 @@ class FirewallConfig(object):
     def add_edit_port(self, add):
         active_zone = self.get_active_zone()
 
-        self.portDialogOkButton.set_sensitive(False)
-
         old_port = None
         old_proto = None
         iter = None
-        if add:
-            self.portDialogPortEntry.set_text("")
-            self.portDialogProtoCombobox.set_active(0)
-        else:
+        if not add:
             selection = self.portView.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
@@ -596,9 +1036,17 @@ class FirewallConfig(object):
             old_port = self.portStore.get_value(iter, 0)
             old_proto = self.portStore.get_value(iter, 1)
 
+        self.portDialogPortEntry.set_text("")
+        self.portDialogProtoCombobox.set_active(0)
+
+        if old_port:
             self.portDialogPortEntry.set_text(old_port)
-            self.combobox_select_text(self.portDialogProtoCombobox, old_proto)
-            
+        if old_proto:
+            self.combobox_select_text(self.portDialogProtoCombobox,
+                                      old_proto)
+
+        self.portDialogOkButton.set_sensitive(False)
+
         self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
@@ -610,30 +1058,98 @@ class FirewallConfig(object):
 
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
-        if not add and (old_port == port and old_proto == proto):
+        if (old_port == port and old_proto == proto):
             # nothing to change
             return
 
         if self.runtime_view:
-            if not add:
-                self.fw.removePort(active_zone, old_port, old_proto)
-                
-            self.fw.addPort(active_zone, port, proto)
+            if not self.fw.queryPort(active_zone, port, proto):
+                self.fw.addPort(active_zone, port, proto)
+                if not add:
+                    self.fw.removePort(active_zone, old_port, old_proto)
         else:
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
+            if not settings.queryPort(port, proto):
+                if not add:
+                    settings.removePort(old_port, old_proto)
+                settings.addPort(port, proto)
+                zone.update(settings)
+
+    def onPortProtoChanged(self, *args):
+        ports = getPortRange(self.portProtoDialogPortEntry.get_text())
+        if ports and not (isinstance(ports, types.ListType) or \
+                              isinstance(ports, types.TupleType)):
+            self.portProtoDialogOkButton.set_sensitive(False)
+        else:
+            #TODO: check proto
+            if self.portProtoDialogOtherProtoCheck.get_active() and \
+                    self.portProtoDialogOtherProtoEntry.get_text() == "":
+                self.portProtoDialogOkButton.set_sensitive(False)
+            else:
+                self.portProtoDialogOkButton.set_sensitive(True)
+
+    def onPortProtoDialogOtherProtoCheckToggled(self, check, *args):
+        self.portProtoDialogProtoCombobox.set_sensitive(not check.get_active())
+        self.portProtoDialogOtherProtoEntry.set_sensitive(check.get_active())
+
+    def add_edit_port_proto(self, add):
+        active_service = self.get_active_service()
+
+        self.portProtoDialogPortEntry.set_text("")
+        self.portProtoDialogProtoCombobox.set_active(0)
+        self.portProtoDialogOtherProtoEntry.set_sensitive(True)
+        self.portProtoDialogOtherProtoEntry.set_text("")
+        self.portProtoDialogOtherProtoCheck.set_active(False)
+        self.portProtoDialogOtherProtoCheck.set_sensitive(True)
+
+        old_port = None
+        old_proto = None
+
+        if not add:
+            selection = self.serviceDialogPortView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_port = self.serviceDialogPortStore.get_value(iter, 0)
+            old_proto = self.serviceDialogPortStore.get_value(iter, 1)
+
+        if old_port:
+            self.portProtoDialogPortEntry.set_text(old_port)
+        if old_proto:
+            if not self.combobox_select_text(self.portProtoDialogProtoCombobox,
+                                             old_proto):
+                self.portProtoDialogOtherProtoEntry.set_text(old_proto)
+                self.portProtoDialogOtherProtoCheck.set_active(True)
+
+        self.portProtoDialogOkButton.set_sensitive(False)
+
+        self.portProtoDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.portProtoDialog.set_transient_for(self.mainWindow)
+        self.portProtoDialog.show_all()
+        result = self.portProtoDialog.run()
+        self.portProtoDialog.hide()
+
+        if result != 1:
+            return
+
+        port = self.portProtoDialogPortEntry.get_text()
+        if self.portProtoDialogOtherProtoCheck.get_active():
+            proto = self.portProtoDialogOtherProtoEntry.get_text()
+        else:
+            proto = self.portProtoDialogProtoCombobox.get_active_text()
+        
+        if (old_port == port and old_proto == proto):
+            # nothing to change
+            return
+
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+        if not settings.queryPort(port, proto):
             if not add:
                 settings.removePort(old_port, old_proto)
             settings.addPort(port, proto)
-            zone.update(settings)
-
-#        if add:
-#            self.portStore.append([port, proto])
-#        else:
-#            selection = self.portView.get_selection()
-#            (model, iter) = selection.get_selected()
-#            self.portStore.set_value(iter, 0, port)
-#            self.portStore.set_value(iter, 1, proto)
+            service.update(settings)
 
     def port_added_cb(self, zone, port, protocol, timeout):
         if not self.runtime_view or zone != self.get_active_zone():
@@ -658,25 +1174,6 @@ class FirewallConfig(object):
                 self.portStore.remove(iter)
                 break
             iter = self.portStore.iter_next(iter)
-
-    def onRemovePort(self, *args):
-        active_zone = self.get_active_zone()
-        selection = self.portView.get_selection()
-        (model, iter) = selection.get_selected()
-        if iter is None:
-            return
-        port = self.portStore.get_value(iter, 0)
-        proto = self.portStore.get_value(iter, 1)
-
-        if self.runtime_view:
-            self.fw.removePort(active_zone, port, proto)
-        else:
-            zone = self.fw.config().getZoneByName(active_zone)
-            settings = zone.getSettings()
-            settings.removePort(port, proto)
-            zone.update(settings)
-
-#        model.remove(iter)
 
     def onForwardDialogChecksToggled(self, check, *args):
         val1 = self.forwardDialogLocalCheck.get_active()
@@ -812,29 +1309,23 @@ class FirewallConfig(object):
             return
 
         if self.runtime_view:
-            if not add:
-                self.fw.removeForwardPort(active_zone, old_port, old_proto,
-                                          old_to_port, old_to_addr)
-                
-            self.fw.addForwardPort(active_zone, port, proto, to_port, to_addr)
+            if not self.fw.queryForwardPort(active_zone, port, proto,
+                                            to_port, to_addr):
+
+                self.fw.addForwardPort(active_zone, port, proto,
+                                       to_port, to_addr)
+                if not add:
+                    self.fw.removeForwardPort(active_zone, old_port, old_proto,
+                                              old_to_port, old_to_addr)
         else:
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
-            if not add:
-                settings.removeForwardPort(old_port, old_proto,
-                                           old_to_port, old_to_addr)
-            settings.addForwardPort(port, proto, to_port, to_addr)
-            zone.update(settings)
-
-#        if add:
-#            self.forwardStore.append([port, proto, to_port, to_addr])
-#        else:
-#            selection = self.forwardView.get_selection()
-#            (model, iter) = selection.get_selected()
-#            self.forwardStore.set_value(iter, 0, port)
-#            self.forwardStore.set_value(iter, 1, proto)
-#            self.forwardStore.set_value(iter, 2, to_port)
-#            self.forwardStore.set_value(iter, 3, to_addr)
+            if not settings.queryForwardPort(port, proto, to_port, to_addr):
+                if not add:
+                    settings.removeForwardPort(old_port, old_proto,
+                                               old_to_port, old_to_addr)
+                settings.addForwardPort(port, proto, to_port, to_addr)
+                zone.update(settings)
 
     def forward_port_added_cb(self, zone, port, protocol, to_port, to_address,
                               timeout):
@@ -894,6 +1385,586 @@ class FirewallConfig(object):
             zone.update(settings)
 
         model.remove(iter)
+
+    def onChangeService(self, *args):
+        active_service = self.get_active_service()
+
+        ### load service settings
+
+        self.serviceDialogPortStore.clear()
+        self.serviceDialogModuleStore.clear()
+        self.serviceDialogDestIpv4Chooser.set_text("")
+        self.serviceDialogDestIpv6Chooser.set_text("")
+
+        self.serviceDialogPortView.get_selection().set_mode(
+            Gtk.SelectionMode.NONE)
+        self.serviceDialogModuleView.get_selection().set_mode(
+            Gtk.SelectionMode.NONE)
+
+        if not active_service:
+            self.serviceDialogEditServiceButton.set_sensitive(False)
+            self.serviceDialogRemoveServiceButton.set_sensitive(False)
+            self.serviceDialogLoadDefaultsServiceButton.set_sensitive(False)
+            self.serviceDialogServiceNotebook.set_sensitive(False)
+            return
+
+        self.serviceDialogServiceNotebook.set_sensitive(True)
+
+        ports = [ ]
+        modules = [ ]
+        destination = { }
+
+        # load persistent configuration
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+
+        ports = settings.getPorts()
+        modules = settings.getModules()
+        destination = settings.getDestinations()
+        defaults = service.get_property("defaults")
+        builtin = service.get_property("builtin")
+
+        self.serviceDialogRemoveServiceButton.set_sensitive(not builtin)
+        self.serviceDialogLoadDefaultsServiceButton.set_sensitive(not defaults)
+
+        # set ports
+        for item in ports:
+            self.serviceDialogPortStore.append(item)
+
+        # set modules
+        for item in modules:
+            self.serviceDialogModuleStore.append([item])
+
+        # set destination
+        if "ipv4" in destination:
+            self.serviceDialogDestIpv4Chooser.set_text(destination["ipv4"])
+        if "ipv6" in destination:
+            self.serviceDialogDestIpv6Chooser.set_text(destination["ipv6"])
+
+        self.serviceDialogPortView.get_selection().set_mode(
+            Gtk.SelectionMode.SINGLE)
+        self.serviceDialogModuleView.get_selection().set_mode(
+            Gtk.SelectionMode.SINGLE)
+
+    def conf_service_updated_cb(self, zone):
+        self.onChangeService()
+
+    def onEditServices(self, *args):
+        self.serviceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.serviceDialog.set_transient_for(self.mainWindow)
+        self.load_services()
+        self.onChangeService()
+        self.serviceDialog.show_all()
+        self.serviceDialog.run()
+        self.serviceDialog.hide()
+
+    def onServiceDialogAddService(self, *args):
+        self.add_edit_service(True)
+
+    def onServiceDialogRemoveService(self, *args):
+        active_service = self.get_active_service()
+        service = self.fw.config().getServiceByName(active_service)
+        service.remove()
+        self.load_services()
+        self.onChangeService()
+
+    def onServiceDialogEditService(self, *args):
+        self.add_edit_service(False)
+
+    def onServiceBaseDialogChanged(self, *args):
+        self.serviceBaseDialogOkButton.set_sensitive(True)
+
+    def onServiceDialogAddPort(self, *args):
+        self.add_edit_port_proto(True)
+
+    def onServiceDialogEditPort(self, *args):
+        self.add_edit_port_proto(False)
+
+    def onServiceDialogRemovePort(self, *args):
+        active_service = self.get_active_service()
+        selection = self.serviceDialogPortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.serviceDialogPortStore.get_value(iter, 0)
+        proto = self.serviceDialogPortStore.get_value(iter, 1)
+
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+        settings.removePort(port, proto)
+        service.update(settings)
+
+    def change_service_dialog_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.serviceDialogEditPortButton.set_sensitive(True)
+            self.serviceDialogRemovePortButton.set_sensitive(True)
+        else:
+            self.serviceDialogEditPortButton.set_sensitive(False)
+            self.serviceDialogRemovePortButton.set_sensitive(False)
+
+    def add_edit_service(self, add):
+        if add:
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_immutable = None
+            old_target = None
+
+            self.serviceBaseDialogNameEntry.set_text("")
+            self.serviceBaseDialogVersionEntry.set_text("")
+            self.serviceBaseDialogShortEntry.set_text("")
+            self.serviceBaseDialogDescText.get_buffer().set_text("")
+        else:
+            active_service = self.get_active_service()
+            service = self.fw.config().getServiceByName(active_service)
+            settings = service.getSettings()
+            builtin = service.get_property("builtin")
+    
+            old_name = service.get_property("name")
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+
+            self.serviceBaseDialogNameEntry.set_text(old_name)
+            self.serviceBaseDialogVersionEntry.set_text(old_version)
+            self.serviceBaseDialogShortEntry.set_text(old_short)
+            self.serviceBaseDialogDescText.get_buffer().set_text(old_desc)
+
+        self.serviceBaseDialogOkButton.set_sensitive(False)
+        if builtin:
+            self.serviceBaseDialogNameEntry.set_tooltip_markup(\
+                _("Built-in service, rename not supported."))
+        else:
+            self.serviceBaseDialogNameEntry.set_tooltip_markup("")
+        self.serviceBaseDialogNameEntry.set_sensitive(not builtin)
+
+        self.serviceBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.serviceBaseDialog.set_transient_for(self.mainWindow)
+        self.serviceBaseDialog.show_all()
+        result = self.serviceBaseDialog.run()
+        self.serviceBaseDialog.hide()
+
+        if result != 1:
+            return
+
+        name = self.serviceBaseDialogNameEntry.get_text()
+        version = self.serviceBaseDialogVersionEntry.get_text()
+        short = self.serviceBaseDialogShortEntry.get_text()
+        buffer = self.serviceBaseDialogDescText.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
+                               False)
+
+        if old_name == name and \
+                old_version == version and old_short == short and \
+                old_desc == desc:
+            # no changes
+            return
+
+        if not add:
+            active_service = self.get_active_service()
+            service = self.fw.config().getServiceByName(active_service)
+            settings = service.getSettings()
+        else:
+            settings = FirewallClientConfigServiceSettings()
+
+        if old_version != version or old_short != short or \
+                old_desc != desc:
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            if not add:
+                service.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            service.rename(name)
+        else:
+            self.fw.config().addService(name, settings)
+
+        self.load_services()
+        #TODO: change active service
+        self.onChangeService()
+
+    def onServiceDialogLoadDefaultsService(self, *args):
+        active_service = self.get_active_service()
+        service = self.fw.config().getServiceByName(active_service)
+        service.loadDefaults()
+        self.onChangeService()
+
+    def onServiceDialogAddModule(self, *args):
+        self.add_edit_module(True)
+
+    def onServiceDialogEditModule(self, *args):
+        self.add_edit_module(False)
+
+    def onServiceDialogRemoveModule(self, *args):
+        active_service = self.get_active_service()
+        selection = self.serviceDialogModuleView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        module = self.serviceDialogModuleStore.get_value(iter, 0)
+
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+        settings.removeModule(module)
+        service.update(settings)
+
+    def onModuleChanged(self, *args):
+        self.moduleDialogOkButton.set_sensitive(True)
+
+    def change_service_dialog_module_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.serviceDialogEditModuleButton.set_sensitive(True)
+            self.serviceDialogRemoveModuleButton.set_sensitive(True)
+        else:
+            self.serviceDialogEditModuleButton.set_sensitive(False)
+            self.serviceDialogRemoveModuleButton.set_sensitive(False)
+
+    def add_edit_module(self, add):
+        active_service = self.get_active_service()
+
+        self.moduleDialogModuleEntry.set_text("")
+
+        old_module = None
+
+        if not add:
+            selection = self.serviceDialogModuleView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_module = self.serviceDialogModuleStore.get_value(iter, 0)
+
+        if old_module:
+            self.moduleDialogModuleEntry.set_text(old_module)
+
+        self.moduleDialogOkButton.set_sensitive(False)
+
+        self.moduleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.moduleDialog.set_transient_for(self.mainWindow)
+        self.moduleDialog.show_all()
+        result = self.moduleDialog.run()
+        self.moduleDialog.hide()
+
+        if result != 1:
+            return
+
+        module = self.moduleDialogModuleEntry.get_text()
+        
+        if (old_module == module and old_proto == proto):
+            # nothing to change
+            return
+
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+        if not settings.queryModule(module):
+            if not add:
+                settings.removeModule(old_module)
+            settings.addModule(module)
+            service.update(settings)
+
+    def onChangeServiceDialogDestIpv4(self, *args):
+        old_addr = self.serviceDialogDestIpv4Chooser.get_text()
+        addr = self._address_dialog("ipv4", old_addr)
+        if addr == None:
+            return
+        active_service = self.get_active_service()
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+        if not settings.queryDestination("ipv4", addr):
+            settings.setDestination("ipv4", addr)
+            service.update(settings)
+
+    def onChangeServiceDialogDestIpv6(self, *args):
+        old_addr = self.serviceDialogDestIpv6Chooser.get_text()
+        addr = self._address_dialog("ipv6", old_addr)
+        if addr == None:
+            return
+        active_service = self.get_active_service()
+        service = self.fw.config().getServiceByName(active_service)
+        settings = service.getSettings()
+        if not settings.queryDestination("ipv6", addr):
+            settings.setDestination("ipv6", addr)
+            service.update(settings)
+
+    def onAddressChanged(self, entry, addr_type):
+        text = entry.get_text()
+        self.addressDialogOkButton.set_sensitive(False)
+        if addr_type == "ipv4":
+            if checkIPnMask(text):
+                self.addressDialogOkButton.set_sensitive(True)
+        elif addr_type == "ipv6":
+            if checkIP6nMask(text):
+                self.addressDialogOkButton.set_sensitive(True)
+
+    def _address_dialog(self, addr_type, old_address):
+        active_service = self.get_active_service()
+        if addr_type == "ipv4":
+            self.addressDialogLabel.set_markup("Please enter an IPv4 address with the form address[/mask].\nThe mask can be a network mask or a number")
+        elif addr_type == "ipv6":
+            self.addressDialogLabel.set_markup("Please enter an IPv6 address with the form address[/mask].\nThe mask is a number.")
+
+        self.addressDialogAddressEntry.set_text(old_address)
+        handler_id = self.addressDialogAddressEntry.connect(\
+            "changed", self.onAddressChanged, addr_type)
+        self.addressDialogOkButton.set_sensitive(False)
+
+        self.addressDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.addressDialog.set_transient_for(self.mainWindow)
+        self.addressDialog.show_all()
+        result = self.addressDialog.run()
+        self.addressDialog.hide()
+
+        self.addressDialogAddressEntry.disconnect(handler_id)
+
+        address = self.addressDialogAddressEntry.get_text()
+        #TODO: addr check according to addr_type
+
+        if result != 1 or old_address == address:
+            return None
+        return address
+
+
+
+    def get_active_icmp(self):
+        selection = self.icmpDialogIcmpView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter:
+            return self.icmpDialogIcmpStore.get_value(iter, 0)
+        return None
+
+    def load_icmps(self):
+        active_icmp = self.get_active_icmp()
+        self.icmpDialogIcmpStore.clear()
+
+        icmps = [ ]
+        _icmps = sorted(self.fw.config().listIcmpTypes())
+        for icmp in _icmps:
+            z = self.fw.config().getIcmpType(icmp)
+            settings = z.getSettings()
+            icmps.append(z.get_property("name"))
+
+        # reset and fill notebook content according to view
+
+        self.icmpDialogIcmpStore.clear()
+
+        # icmps
+
+        for icmp in icmps:
+            self.icmpDialogIcmpStore.append([icmp])
+
+        _icmp = None
+        if active_icmp in icmps:
+            _icmp = active_icmp
+
+        selection = self.icmpDialogIcmpView.get_selection()
+        iter = self.icmpDialogIcmpStore.get_iter_first()
+        while iter:
+            if self.icmpDialogIcmpStore.get_value(iter, 0) == \
+                    active_icmp:
+                selection.select_iter(iter)
+                return
+            iter = self.icmpDialogIcmpStore.iter_next(iter)
+        selection.select_path(0)
+
+    def onChangeIcmp(self, *args):
+        active_icmp = self.get_active_icmp()
+
+        ### load service settings
+
+        self.icmpDialogDestIpv4Check.set_active(False)
+        self.icmpDialogDestIpv6Check.set_active(False)
+
+        if not active_icmp:
+            self.icmpDialogEditIcmpButton.set_sensitive(False)
+            self.icmpDialogRemoveIcmpButton.set_sensitive(False)
+            self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(False)
+            self.icmpDialogIcmpNotebook.set_sensitive(False)
+            return
+
+        self.icmpDialogIcmpNotebook.set_sensitive(True)
+
+        destination = [ ]
+
+        # load persistent configuration
+        icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        settings = icmp.getSettings()
+
+        destination = settings.getDestinations()
+        defaults = icmp.get_property("defaults")
+        builtin = icmp.get_property("builtin")
+
+        self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin)
+        self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not defaults)
+
+        # set destination
+        if "ipv4" in destination:
+            self.icmpDialogDestIpv4Check.set_active(True)
+        if "ipv6" in destination:
+            self.icmpDialogDestIpv6Check.set_active(True)
+
+    def onIcmpBaseDialogChanged(self, *args):
+        self.icmpBaseDialogOkButton.set_sensitive(True)
+
+    def onEditIcmps(self, *args):
+        self.icmpDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.icmpDialog.set_transient_for(self.mainWindow)
+        self.load_icmps()
+        self.onChangeIcmp()
+        self.icmpDialog.show_all()
+        self.icmpDialog.run()
+        self.icmpDialog.hide()
+
+    def onIcmpDialogAddIcmp(self, *args):
+        self.add_edit_icmp(True)
+
+    def onIcmpDialogRemoveIcmp(self, *args):
+        active_icmp = self.get_active_icmp()
+        icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        icmp.remove()
+        self.load_icmps()
+        self.onChangeIcmp()
+
+    def onIcmpDialogEditIcmp(self, *args):
+        self.add_edit_icmp(False)
+
+    def onIcmpBaseDialogChanged(self, *args):
+        self.icmpBaseDialogOkButton.set_sensitive(True)
+
+    def change_icmp_dialog_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.icmpDialogEditPortButton.set_sensitive(True)
+            self.icmpDialogRemovePortButton.set_sensitive(True)
+        else:
+            self.icmpDialogEditPortButton.set_sensitive(False)
+            self.icmpDialogRemovePortButton.set_sensitive(False)
+
+    def add_edit_icmp(self, add):
+        if add:
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_immutable = None
+            old_target = None
+
+            self.icmpBaseDialogNameEntry.set_text("")
+            self.icmpBaseDialogVersionEntry.set_text("")
+            self.icmpBaseDialogShortEntry.set_text("")
+            self.icmpBaseDialogDescText.get_buffer().set_text("")
+        else:
+            active_icmp = self.get_active_icmp()
+            icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+            settings = icmp.getSettings()
+            builtin = icmp.get_property("builtin")
+    
+            old_name = icmp.get_property("name")
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+
+            self.icmpBaseDialogNameEntry.set_text(old_name)
+            self.icmpBaseDialogVersionEntry.set_text(old_version)
+            self.icmpBaseDialogShortEntry.set_text(old_short)
+            self.icmpBaseDialogDescText.get_buffer().set_text(old_desc)
+
+        self.icmpBaseDialogOkButton.set_sensitive(False)
+        if builtin:
+            self.icmpBaseDialogNameEntry.set_tooltip_markup(\
+                _("Built-in icmp, rename not supported."))
+        else:
+            self.icmpBaseDialogNameEntry.set_tooltip_markup("")
+        self.icmpBaseDialogNameEntry.set_sensitive(not builtin)
+
+        self.icmpBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.icmpBaseDialog.set_transient_for(self.mainWindow)
+        self.icmpBaseDialog.show_all()
+        result = self.icmpBaseDialog.run()
+        self.icmpBaseDialog.hide()
+
+        if result != 1:
+            return
+
+        name = self.icmpBaseDialogNameEntry.get_text()
+        version = self.icmpBaseDialogVersionEntry.get_text()
+        short = self.icmpBaseDialogShortEntry.get_text()
+        buffer = self.icmpBaseDialogDescText.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
+                               False)
+
+        if old_name == name and \
+                old_version == version and old_short == short and \
+                old_desc == desc:
+            # no changes
+            return
+
+        if not add:
+            active_icmp = self.get_active_icmp()
+            icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+            settings = icmp.getSettings()
+        else:
+            settings = FirewallClientConfigIcmpTypeSettings()
+
+        if old_version != version or old_short != short or \
+                old_desc != desc:
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            if not add:
+                icmp.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            icmp.rename(name)
+        else:
+            self.fw.config().addIcmpType(name, settings)
+
+        self.load_icmps()
+        #TODO: change active icmp
+        self.onChangeIcmp()
+
+    def onIcmpDialogLoadDefaultsIcmp(self, *args):
+        active_icmp = self.get_active_icmp()
+        icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        icmp.loadDefaults()
+        self.onChangeIcmp()
+
+    def icmp_dialog_dest_ipv4_check_cb(self, *args):
+        active_icmp = self.get_active_icmp()
+        icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        settings = icmp.getSettings()
+        if self.icmpDialogDestIpv4Check.get_active():
+            if settings.queryDestination("ipv4"):
+                settings.removeDestination("ipv4")
+                icmp.update(settings)
+        elif not settings.queryDestination("ipv4"):
+            settings.addDestination("ipv4")
+            icmp.update(settings)
+
+    def icmp_dialog_dest_ipv6_check_cb(self, *args):
+        active_icmp = self.get_active_icmp()
+        icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        settings = icmp.getSettings()
+        if self.icmpDialogDestIpv6Check.get_active():
+            if settings.queryDestination("ipv6"):
+                settings.removeDestination("ipv6")
+                icmp.update(settings)
+        elif not settings.queryDestination("ipv6"):
+            settings.addDestination("ipv6")
+            icmp.update(settings)
+
+    def conf_icmp_updated_cb(self, zone):
+        self.onChangeIcmp()
 
 # MAIN
 
