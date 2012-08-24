@@ -135,6 +135,19 @@ def checkIP(ip):
                 return False
     return True
 
+def checkIP6(ip):
+    """ Check IPv6 address.
+    
+    @param ip address string
+    @return True if address is valid, else False
+    """
+
+    try:
+        socket.inet_pton(socket.AF_INET6, ip)
+    except socket.error as err:
+        return False
+    return True
+
 def checkInterface(iface):
     """ Check interface string
 
