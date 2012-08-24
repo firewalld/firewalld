@@ -1077,9 +1077,10 @@ class FirewallConfig(object):
                 zone.update(settings)
 
     def onPortProtoChanged(self, *args):
+        text = self.portProtoDialogPortEntry.get_text()
         ports = getPortRange(self.portProtoDialogPortEntry.get_text())
-        if ports and not (isinstance(ports, types.ListType) or \
-                              isinstance(ports, types.TupleType)):
+        if text != "" and not (isinstance(ports, types.ListType) or \
+                                   isinstance(ports, types.TupleType)):
             self.portProtoDialogOkButton.set_sensitive(False)
         else:
             #TODO: check proto
@@ -1100,6 +1101,7 @@ class FirewallConfig(object):
         self.portProtoDialogProtoCombobox.set_active(0)
         self.portProtoDialogOtherProtoEntry.set_sensitive(True)
         self.portProtoDialogOtherProtoEntry.set_text("")
+        self.portProtoDialogOtherProtoCheck.set_active(True)
         self.portProtoDialogOtherProtoCheck.set_active(False)
         self.portProtoDialogOtherProtoCheck.set_sensitive(True)
 
