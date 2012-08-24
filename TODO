@@ -4,14 +4,21 @@
   forward_ports, think of NM also
 - create new zone in firewall-config-scfw if default zone is missing
 
-- add firewall-config
+- add target check in firewall/core/io/zone, possible values: ACCEPT, %%REJECT%%, DROP, DEFAULT_ZONE_TARGET (empty) "{chain}_ZONE_{zone}"
 
 - add zone selection dialog for shields-up and shields-down
 
+? - no base edit of firewalld provided buitin zones, only customization
+
 - document icmptype, service and zone filenames:
   name of item must match filename: "{name}.xml"
+
+- add firewalld.dbus man page
 
 - document unused icmptype, service and zone filenames:
   ".{name}.xml"
 
 - check TODOs in code
+
+- FF: add copy zone/service/icmptype in the UI
+
