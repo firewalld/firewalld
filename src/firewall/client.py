@@ -196,6 +196,8 @@ class FirewallClientConfigServiceSettings(object):
     def removePort(self, port, protocol):
         if (port,protocol) in self.settings[3]:
             self.settings[3].remove((port,protocol))
+    def queryPort(self, port, protocol):
+        return (port,protocol) in self.settings[3]
 
     def getModules(self):
         return self.settings[4]
@@ -207,6 +209,8 @@ class FirewallClientConfigServiceSettings(object):
     def removeModule(self, module):
         if module in self.settings[4]:
             self.settings[4].remove(module)
+    def queryModule(self, module):
+        return module in self.settings[4]
 
     def getDestinations(self):
         return self.settings[5]
@@ -217,6 +221,9 @@ class FirewallClientConfigServiceSettings(object):
     def removeDestination(self, dest_type):
         if dest_type in self.settings[5]:
             del self.settings[5][dest_type]
+    def queryDestination(self, dest_type, address):
+        return (dest_type in self.settings[5] and \
+                    address == self.settings[5][dest_type])
 
 # service config
 
