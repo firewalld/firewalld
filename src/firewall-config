@@ -22,8 +22,13 @@
 from gi.repository import Gtk, GObject
 import sys
 sys.modules['gobject'] = GObject
-import dbus
 import os
+if os.getenv("FIREWALLD_DEVEL_ENV") != None:
+    datadir = os.getenv("FIREWALLD_DEVEL_ENV")
+else:
+    datadir = DATADIR
+sys.path.insert(0, datadir)
+import dbus
 
 from firewall.config import *
 from firewall.config.dbus import *
@@ -32,7 +37,6 @@ from firewall.functions import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
 
 # import ChooserButton
-sys.path.append(DATADIR)
 from gtk3_chooserbutton import ChooserButton
 
 #FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
@@ -52,11 +56,7 @@ class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
         builder.set_translation_domain("firewalld")
-        if os.getenv("FIREWALLD_DEVEL_ENV") != None:
-            path = "."
-        else:
-            path = DATADIR
-        builder.add_from_file("%s/%s" % (path, CONFIG_GLADE_NAME))
+        builder.add_from_file("%s/%s" % (datadir, CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
         connected = _("Connected.")
