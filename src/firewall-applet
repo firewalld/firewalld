@@ -270,9 +270,11 @@ class TrayApplet(object):
             sender_keyword='sender')
 
         self.fw = None
+        GLib.timeout_add_seconds(1, self.start)
+
+    def start(self, *args):
         self.nm_signal_receiver()
         self.connect_to_firewalld()
-
         self.update()
 
     def settings_check_changed(self, settings, key, button):
@@ -341,12 +343,14 @@ class TrayApplet(object):
             self.shields_down_combo.append_text(zone)
 
         if self.settings.get_string("shields-up") not in zones:
-            #TODO: error dialog
-            # reset shields-up zone to default value
+            self.warning("Shields Up zone '%s' not found" % \
+                             self.settings.get_string("shields-up"), 
+                         "Resetting to default value...")
             self.settings.reset("shields-up")
         if self.settings.get_string("shields-down") not in zones:
-            #TODO: error dialog
-            # reset shields-up zone to default value
+            self.warning("Shields Down zone '%s' not found" % \
+                             self.settings.get_string("shields-down"), 
+                         "Resetting to default value...")
             self.settings.reset("shields-down")
 
         if self.fw.getDefaultZone() == self.settings.get_string("shields-up"):
@@ -618,6 +622,27 @@ class TrayApplet(object):
             print(msg)
 
         self.update()
+
+    def warning(self, text, secondary_text=None):
+        self.message(text, secondary_text=secondary_text,
+                     msg_type=Gtk.MessageType.WARNING)
+
+    def error(self, text, secondary_text=None):
+        self.message(text, secondary_text=secondary_text,
+                     msg_type=Gtk.MessageType.ERROR)
+
+    def message(self, text, secondary_text=None, msg_type=Gtk.MessageType.INFO,
+                buttons=[ ("gtk-close", Gtk.ResponseType.CLOSE) ]):
+        dialog = Gtk.MessageDialog(None, 0, msg_type, None, text)
+        dialog.set_title(_("Firewall-applet"))
+        for (button, response) in buttons:
+            dialog.add_button(button, response)
+        if secondary_text != None:
+            dialog.format_secondary_text(secondary_text)
+        dialog.show_all()
+        result = dialog.run()
+        dialog.hide()
+        return result
 
 # MAIN
 
