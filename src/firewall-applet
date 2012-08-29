@@ -20,6 +20,8 @@
 
 from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient, \
     NetworkManager
+import sys
+sys.modules['gobject'] = GObject
 
 import os
 import dbus.mainloop.glib
@@ -99,6 +101,11 @@ class TrayApplet(object):
         self.shieldsup_check.connect('toggled', self.shieldsup_check_toggled)
         self.right_menu.append(self.shieldsup_check)
 
+        self.settings.connect("changed::shields-up",
+                              self.settings_shields_up_changed)
+        self.settings.connect("changed::shields-down",
+                              self.settings_shields_down_changed)
+
         self.notification_check = Gtk.CheckMenuItem.new_with_mnemonic(
             _("Enable Notifications"))
         self.notification_check.set_active(self.settings.get_boolean(
@@ -120,6 +127,11 @@ class TrayApplet(object):
 
         self.right_menu.append(item)
         
+        item = Gtk.MenuItem.new_with_mnemonic(_("Configure Shields UP/Down Zones..."))
+        item.connect("activate", self.configure_shields_cb)
+
+        self.right_menu.append(item)
+
         self.right_menu.append(Gtk.SeparatorMenuItem.new())
 
         self.panic_check = Gtk.CheckMenuItem.new_with_mnemonic(\
@@ -147,6 +159,81 @@ class TrayApplet(object):
         self.about_dialog.set_copyright(COPYRIGHT)
         self.about_dialog.set_authors(AUTHORS)
         self.about_dialog.set_logo_icon_name(self.icon_name)
+
+        # shields up/down configure dialog
+
+        self.shields_dialog = Gtk.Dialog(_("Configure Shields Up/Down Zones"))
+        self.shields_dialog.set_default_size(400, 100)
+        self.shields_dialog.set_property("width-request", 400)
+        self.shields_dialog.set_property("height-request", 100)
+        self.shields_dialog.add_buttons("gtk-close", 1)
+        self.shields_dialog.set_modal(True)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.set_border_width(12)
+        vbox.set_homogeneous(False)
+
+        label = Gtk.Label()
+        label.set_markup(_("Here you can select the zones used for Shields "
+                           "Up and Shields Down."))
+        label.set_line_wrap(True)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_alignment(0, 0.5)
+        vbox.pack_start(label, True, True, 0)
+
+        label = Gtk.Label()
+        label.set_markup(_("This feature is useful for people using the "
+                           "default zones mostly. For users, that are "
+                           "changing zones of connections, it might be of "
+                           "limited use."))
+        label.set_line_wrap(True)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_alignment(0, 0.5)
+        vbox.pack_start(label, True, True, 0)
+
+        grid = Gtk.Grid()
+        grid.set_row_spacing(6)
+        grid.set_column_spacing(6)
+        grid.set_border_width(6)
+
+        label = Gtk.Label()
+        label.set_markup(_("Shields Up Zone:"))
+        label.set_line_wrap(True)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_alignment(1, 0.5)
+        grid.attach(label, 0, 0, 1, 1)
+
+        self.shields_up_combo = Gtk.ComboBoxText()
+        self.shields_up_combo.connect("changed", self.shields_up_changed)
+        grid.attach(self.shields_up_combo, 1, 0, 1, 1)
+
+        label = Gtk.Label()
+        label.set_markup(_("Shields Down Zone:"))
+        label.set_line_wrap(True)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_alignment(1, 0.5)
+        grid.attach(label, 0, 1, 1, 1)
+
+        self.shields_down_combo = Gtk.ComboBoxText()
+        self.shields_down_combo.connect("changed", self.shields_down_changed)
+        grid.attach(self.shields_down_combo, 1, 1, 1, 1)
+
+        button = Gtk.Button("Set To Default")
+        button.connect("clicked", self.reset_shields_up_zone)
+        grid.attach(button, 2, 0, 1, 1)
+
+        button = Gtk.Button("Set To Default")
+        button.connect("clicked", self.reset_shields_down_zone)
+        grid.attach(button, 2, 1, 1, 1)
+
+        vbox.pack_start(grid, True, True, 0)
+
+        box = self.shields_dialog.get_content_area()
+#        box.add(vbox)
+        box.set_border_width(6)
+        box.set_homogeneous(False)
+        box.pack_start(vbox, False, True, 0)
+
+        # status icon
 
         self.statusicon.set_visible(True)
 
@@ -245,6 +332,23 @@ class TrayApplet(object):
         active_zones = self.fw.getActiveZones()
         if active_zones:
             self.active_zones = active_zones
+
+        self.shields_up_combo.get_model().clear()
+        self.shields_down_combo.get_model().clear()
+        zones = self.fw.getZones()
+        for zone in zones:
+            self.shields_up_combo.append_text(zone)
+            self.shields_down_combo.append_text(zone)
+
+        if self.settings.get_string("shields-up") not in zones:
+            #TODO: error dialog
+            # reset shields-up zone to default value
+            self.settings.reset("shields-up")
+        if self.settings.get_string("shields-down") not in zones:
+            #TODO: error dialog
+            # reset shields-up zone to default value
+            self.settings.reset("shields-down")
+
         if self.fw.getDefaultZone() == self.settings.get_string("shields-up"):
             self.shieldsup_check.set_active(True)
         else:
@@ -280,6 +384,53 @@ class TrayApplet(object):
 
     def configure_cb(self, widget):
         os.system("firewall-config &")
+
+    def combobox_select_text(self, combobox, value):
+        model = combobox.get_model()
+        iter = model.get_iter_first()
+        while iter:
+            if model.get_value(iter, 0) == value:
+                combobox.set_active_iter(iter)
+                return True
+            iter = model.iter_next(iter)
+        combobox.set_active(0)
+        return False
+
+    def shields_up_changed(self, *args):
+        text = self.shields_up_combo.get_active_text()
+        if text != self.settings.get_string("shields-up"):
+            self.settings.set_string("shields-up", text)
+
+    def shields_down_changed(self, *args):
+        text = self.shields_down_combo.get_active_text()
+        if text != self.settings.get_string("shields-down"):
+            self.settings.set_string("shields-down", text)
+
+    def settings_shields_up_changed(self, *args):
+        self.combobox_select_text(self.shields_up_combo,
+                                  self.settings.get_string("shields-up"))
+        #TODO: apply zone if shields-up enabled
+
+    def settings_shields_down_changed(self, *args):
+        self.combobox_select_text(self.shields_down_combo,
+                                  self.settings.get_string("shields-down"))
+        #TODO: apply zone if shields-down enabled?
+
+    def reset_shields_up_zone(self, *args):
+        self.settings.reset("shields-up")
+
+    def reset_shields_down_zone(self, *args):
+        self.settings.reset("shields-down")
+
+    def configure_shields_cb(self, widget):
+        self.combobox_select_text(self.shields_up_combo,
+                                  self.settings.get_string("shields-up"))
+        self.combobox_select_text(self.shields_down_combo,
+                                  self.settings.get_string("shields-down"))
+
+        self.shields_dialog.show_all()
+        self.shields_dialog.run()
+        self.shields_dialog.hide()
 
     def __blink(self, arg=None):
         if self.blink_count != 0:
@@ -353,7 +504,6 @@ class TrayApplet(object):
         self.statusicon.set_tooltip_markup(self.tooltip)
 
     def signal_receiver(self, *args, **kwargs):
-#        print(args, kwargs)
         if not "member" in kwargs:
             return
         signal = kwargs["member"]
