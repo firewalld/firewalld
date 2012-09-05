@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall.master.pa\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-05 15:50+0200\n"
+"POT-Creation-Date: 2012-09-05 18:55+0200\n"
 "PO-Revision-Date: 2011-02-01 08:58+0530\n"
 "Last-Translator: Jaswinder Singh <j.phulewala@gmail.com>\n"
 "Language-Team: PLTG\n"
@@ -232,7 +232,7 @@ msgstr "ਸਰਗਰਮ ਸੰਰਚਨਾ"
 msgid "Persistent Configuration"
 msgstr "ਸੰਰਚਨਾ ਚੁਣੋ"
 
-#: ../src/firewall-config:161 ../src/firewall-config.glade.h:92
+#: ../src/firewall-config:161 ../src/firewall-config.glade.h:90
 #, fuzzy
 msgid "Service"
 msgstr "ਸਰਵਿਸਾਂ"
@@ -246,7 +246,7 @@ msgstr "ਪੋਰਟਾਂ"
 #: ../src/firewall-config:170 ../src/firewall-config:200
 #: ../src/firewall-config:288
 msgid "Protocol"
-msgstr ""
+msgstr "Protocolo"
 
 #: ../src/firewall-config:202
 #, fuzzy
@@ -255,7 +255,7 @@ msgstr "ਪੋਰਟਾਂ"
 
 #: ../src/firewall-config:204
 msgid "To Address"
-msgstr ""
+msgstr "Para Endereço:"
 
 #: ../src/firewall-config:241
 msgid "Icmp Type"
@@ -263,7 +263,7 @@ msgstr ""
 
 #: ../src/firewall-config:442
 msgid "Error"
-msgstr ""
+msgstr "Erro"
 
 #: ../src/firewall-config:929
 msgid "Built-in zone, rename not supported."
@@ -316,6 +316,8 @@ msgstr "ਪੋਰਟ ਫਾਰਵਰਡਿੰਗ"
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
+"Por favor, seleccione as opções de origem e destino de acordo com as suas "
+"necessidades."
 
 #: ../src/firewall-config.glade.h:10
 #, fuzzy
@@ -324,230 +326,223 @@ msgstr "ਪੋਰਟਾਂ"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr ""
+msgstr "Endereço IP:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr ""
+msgstr "Protocolo:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "<b>Destination</b>"
-msgstr ""
+msgstr "<b>Destino</b>"
 
 #: ../src/firewall-config.glade.h:14
 msgid "<b>Source</b>"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:15
-#, fuzzy
-msgid "tcp"
-msgstr "ftp"
-
-#: ../src/firewall-config.glade.h:16
-msgid "udp"
-msgstr ""
+msgstr "<b>Fonte</b>"
 
 #
-#: ../src/firewall-config.glade.h:17
+#: ../src/firewall-config.glade.h:15
 #, fuzzy
 msgid "Local forwarding"
 msgstr "ਪੋਰਟ ਫਾਰਵਰਡਿੰਗ"
 
-#: ../src/firewall-config.glade.h:18
+#: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr ""
+msgstr "Reencaminhar para outro porto"
 
-#: ../src/firewall-config.glade.h:19
+#: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
+"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
+"tem de ser diferente do porto de origem."
 
-#: ../src/firewall-config.glade.h:20
+#: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:21
+#: ../src/firewall-config.glade.h:19
 msgid "Please configure base ICMP type settings:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:22
+#: ../src/firewall-config.glade.h:20
 msgid "Bold entries are mandatory, all others are optional."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:23
+#: ../src/firewall-config.glade.h:21
 msgid "Name:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:24
+#: ../src/firewall-config.glade.h:22
 msgid "Version:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:25
+#: ../src/firewall-config.glade.h:23
 msgid "Short:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:26
+#: ../src/firewall-config.glade.h:24
 msgid "Description:"
+msgstr ""
+
+#
+#: ../src/firewall-config.glade.h:25
+#, fuzzy
+msgid "ICMP Type Settings"
+msgstr "ICMP ਫਿਲਟਰ"
+
+#: ../src/firewall-config.glade.h:26
+msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
 #
 #: ../src/firewall-config.glade.h:27
 #, fuzzy
-msgid "ICMP Type Settings"
-msgstr "ICMP ਫਿਲਟਰ"
-
-#: ../src/firewall-config.glade.h:28
-msgid "Here you can configure the ICMP type settings used in zones."
-msgstr ""
-
-#
-#: ../src/firewall-config.glade.h:29
-#, fuzzy
 msgid "ICMP Type"
 msgstr "ICMP ਫਿਲਟਰ"
 
-#: ../src/firewall-config.glade.h:30
+#: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:31
+#: ../src/firewall-config.glade.h:29
 msgid "Edit ICMP Type"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:32
+#: ../src/firewall-config.glade.h:30
 msgid "Remove ICMP Type"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:33
+#: ../src/firewall-config.glade.h:31
 msgid "Load ICMP Type Defaults"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:34
+#: ../src/firewall-config.glade.h:32
 msgid ""
 "If you specify destination addresses, the ICMP Type entry will be limited to "
 "the destination."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:35
+#: ../src/firewall-config.glade.h:33
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:36
+#: ../src/firewall-config.glade.h:34
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:37
+#: ../src/firewall-config.glade.h:35
 msgid "Destination"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:38
+#: ../src/firewall-config.glade.h:36
 #, fuzzy
 msgctxt "yes"
 msgid "Firewall Configuration"
 msgstr "ਮੁਲ ਸੰਰਚਨਾ"
 
 #
-#: ../src/firewall-config.glade.h:39
+#: ../src/firewall-config.glade.h:37
 msgid "_File"
 msgstr "ਫਾਇਲ(_F)"
 
 #
-#: ../src/firewall-config.glade.h:40
+#: ../src/firewall-config.glade.h:38
 msgid "_Options"
 msgstr "ਚੋਣਾਂ(_O)"
 
-#: ../src/firewall-config.glade.h:41
+#: ../src/firewall-config.glade.h:39
 #, fuzzy
 msgid "Reload Firewalld"
 msgstr "ਫਾਇਰਵਾਲ ਐਪਲਿਟ"
 
-#: ../src/firewall-config.glade.h:42
+#: ../src/firewall-config.glade.h:40
 msgid "Change Default Zone"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:43
+#: ../src/firewall-config.glade.h:41
 #, fuzzy
 msgid "Edit Services"
 msgstr "ਸਰਵਿਸਾਂ"
 
-#: ../src/firewall-config.glade.h:44
+#: ../src/firewall-config.glade.h:42
 msgid "Edit ICMP Types"
 msgstr ""
 
 #
-#: ../src/firewall-config.glade.h:45
+#: ../src/firewall-config.glade.h:43
 msgid "_Help"
 msgstr "ਮਦਦ(_H)"
 
-#: ../src/firewall-config.glade.h:46
+#: ../src/firewall-config.glade.h:44
 msgid ""
 "Reloads firewalld: Current persistent configuration will become the new "
 "runtime configuration."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:47
+#: ../src/firewall-config.glade.h:45
 msgid "Change default zone of the system."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:48
+#: ../src/firewall-config.glade.h:46
 msgid "Edit service entries for use in zones."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:49
+#: ../src/firewall-config.glade.h:47
 msgid "Edit ICMP types for use as ICMP blocks in zones."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:50
+#: ../src/firewall-config.glade.h:48
 msgid "Current View:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:51
+#: ../src/firewall-config.glade.h:49
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Persistent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:52
+#: ../src/firewall-config.glade.h:50
 msgid "Default Zone:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:51
 msgid "Current default zone of the system."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:52
 msgid "label"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:55
+#: ../src/firewall-config.glade.h:53
 #, fuzzy
 msgid "Zone"
 msgstr "ਜ਼ੋਨ"
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:54
 #, fuzzy
 msgid "Add Zone"
 msgstr "ਭਰੋਸੇਯੋਗ ਜ਼ੋਨ"
 
 #
-#: ../src/firewall-config.glade.h:57
+#: ../src/firewall-config.glade.h:55
 #, fuzzy
 msgid "Edit Zone"
 msgstr "ਸੋਧ"
 
 #
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:56
 #, fuzzy
 msgid "Remove Zone"
 msgstr "ਹਟਾਓ"
 
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-config.glade.h:57
 msgid "Load Zone Defaults"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:58
 #, fuzzy
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
@@ -557,39 +552,39 @@ msgstr ""
 "accessible from all hosts and networks in the selected network protocol। "
 "Click on <i>Add</i> to select an item from the list of predefined services।"
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:59
 #, fuzzy
 msgid "Services"
 msgstr "ਸਰਵਿਸਾਂ"
 
 #
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:60
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
 msgstr "ਵਾਧੂ ਪੋਰਟਾਂ ਜਾਂ ਪੋਰਟ ਰੇਂਜਾਂ ਸ਼ਾਮਿਲ ਕਰੋ, ਜੋ ਸਭ ਮੇਜ਼ਬਾਨਾਂ ਜਾਂ ਨੈੱਟਵਰਕਾਂ ਤੋਂ ਵਰਤਣੀਆਂ ਹਨ।"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:61
 msgid "Add Entry"
-msgstr ""
+msgstr "Adicionar Entrada"
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:62
 msgid "Edit Entry"
-msgstr ""
+msgstr "Editar Entrada"
 
 #
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:63
 #, fuzzy
 msgid "Remove Entry"
 msgstr "ਹਟਾਓ"
 
-#: ../src/firewall-config.glade.h:66
+#: ../src/firewall-config.glade.h:64
 #, fuzzy
 msgid "Ports"
 msgstr "ਪੋਰਟਾਂ"
 
 #
-#: ../src/firewall-config.glade.h:67
+#: ../src/firewall-config.glade.h:65
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -599,13 +594,13 @@ msgstr ""
 "ਨਾਲ ਜੋੜਦਾ ਹੈ। ਤੁਹਾਡਾ ਲੋਕਲ ਨੈੱਟਵਰਕ ਦਿੱਖ ਹੋਵੇਗਾ ਅਤੇ ਇੰਟਰਨੈੱਟ ਲਈ ਮੇਜ਼ਬਾਨ ਇੱਕ ਵੱਖਰੇ ਐਡਰੈੱਸ ਵਾਂਗ ਦਿਸਦਾ "
 "ਹੈ। ਮਖੌਟਾ ਸਿਰਫ IPv4 ਹੈ।"
 
-#: ../src/firewall-config.glade.h:68
+#: ../src/firewall-config.glade.h:66
 #, fuzzy
 msgid "Masquerade zone"
 msgstr "ਮਖੌਟਾ:"
 
 #
-#: ../src/firewall-config.glade.h:69
+#: ../src/firewall-config.glade.h:67
 #, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
@@ -613,12 +608,12 @@ msgid ""
 msgstr "ਜੇ ਤੁਸੀਂ ਮਖੌਟਾ ਯੋਗ ਕੀਤਾ, IP ਫਾਰਵਰਡਿੰਗ ਵੀ ਤੁਹਾਡੇ IPv4 ਨੈੱਟਵਰਕ ਲਈ ਯੋਗ ਹੋ ਜਾਏਗੀ।"
 
 #
-#: ../src/firewall-config.glade.h:70
+#: ../src/firewall-config.glade.h:68
 msgid "Masquerading"
 msgstr "ਮਖੌਟਾ"
 
 #
-#: ../src/firewall-config.glade.h:71
+#: ../src/firewall-config.glade.h:69
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -630,7 +625,7 @@ msgstr ""
 "ਲਾਹੇਵੰਦ ਹੈ ਜੇ ਇੰਟਰਫੇਸ ਮਖੌਟਾ ਹੈ। ਪੋਰਟ ਫਾਰਵਰਡਿੰਗ ਸਿਰਫ IPv4 ਹੈ।"
 
 #
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:70
 #, fuzzy
 msgctxt "yes"
 msgid ""
@@ -642,7 +637,7 @@ msgstr ""
 "ਜਾਂਦਾ ਹੈ, ਪਰ ਨਾਲ ਹੀ ਵੀ ਭੇਜਦਾ ਹੈ ਜਿਵੇਂ ਪਿੰਗ ਬੇਨਤੀ ਅਤੇ ਜਵਾਬ।"
 
 #
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:71
 #, fuzzy
 msgctxt "yes"
 msgid ""
@@ -653,175 +648,162 @@ msgstr ""
 "ਵਿੱਚ ਲੰਘ ਸਕਦੀਆਂ ਹਨ। ਮੂਲ ਰੂਪ ਵਿੱਚ ਕੋਈ ਪਾਬੰਦੀ ਨਹੀਂ ਹੈ।"
 
 #
-#: ../src/firewall-config.glade.h:74
+#: ../src/firewall-config.glade.h:72
 msgid "ICMP Filter"
 msgstr "ICMP ਫਿਲਟਰ"
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:73
 msgid "System without network access"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:74
 msgid "System with network access"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:75
 msgid "Beginner"
-msgstr ""
+msgstr "Iniciado"
+
+#: ../src/firewall-config.glade.h:76
+msgid "Expert"
+msgstr "Especialista"
+
+#: ../src/firewall-config.glade.h:77
+msgid "Desktop"
+msgstr "Área de Trabalho"
 
 #: ../src/firewall-config.glade.h:78
-msgid "Expert"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:79
-msgid "Desktop"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:80
 #, fuzzy
 msgid "Server"
 msgstr "ਸਰਵਿਸਾਂ"
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:79
 msgid "Port and Protocol"
-msgstr ""
+msgstr "Porto e Protocolo"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:80
 msgid "Please enter the module name."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:81
 msgid "Please enter a port and protocol."
 msgstr ""
 
 #
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:82
 #, fuzzy
 msgid "Port / Port Range:"
 msgstr "ਪੋਰਟ ਫਾਰਵਰਡਿੰਗ"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:83
 msgid "Port and/or Protocol"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:84
 msgid "Please enter a port and/or a protocol."
 msgstr ""
 
 #
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:85
 #, fuzzy
 msgid "Other Protocol:"
 msgstr "ਹੋਰ ਪੋਰਟਾਂ"
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:86
 msgid "Base Service Settings"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.glade.h:87
 msgid "Please configure base service settings:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:88
 #, fuzzy
 msgid "Service Settings"
 msgstr "ਸਰਵਿਸਾਂ"
 
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-config.glade.h:89
 msgid "Here you can configure the services settings used in zones."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:91
 #, fuzzy
 msgid "Add Service"
 msgstr "ਸਰਵਿਸਾਂ"
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:92
 #, fuzzy
 msgid "Edit Service"
 msgstr "ਸਰਵਿਸਾਂ"
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:93
 #, fuzzy
 msgid "Remove Service"
 msgstr "ਸਰਵਿਸਾਂ"
 
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-config.glade.h:94
 msgid "Load Service Defaults"
 msgstr ""
 
 #
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:95
 #, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr "ਵਾਧੂ ਪੋਰਟਾਂ ਜਾਂ ਪੋਰਟ ਰੇਂਜਾਂ ਸ਼ਾਮਿਲ ਕਰੋ, ਜੋ ਸਭ ਮੇਜ਼ਬਾਨਾਂ ਜਾਂ ਨੈੱਟਵਰਕਾਂ ਤੋਂ ਵਰਤਣੀਆਂ ਹਨ।"
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:96
 msgid "Ports and Protocols"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:99
+#: ../src/firewall-config.glade.h:97
 msgid "Netfilter helper modules"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:98
 msgid "Modules"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:99
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:102
+#: ../src/firewall-config.glade.h:100
 #, fuzzy
 msgid "IPv4:"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:103
+#: ../src/firewall-config.glade.h:101
 #, fuzzy
 msgid "IPv6:"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:104
+#: ../src/firewall-config.glade.h:102
 msgid "Base Zone Settings"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:105
+#: ../src/firewall-config.glade.h:103
 msgid "Please configure base zone settings:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:106
+#: ../src/firewall-config.glade.h:104
 msgid "Target:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:107
+#: ../src/firewall-config.glade.h:105
 msgid "Default Target"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:108
-msgid "ACCEPT"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:109
-msgid "DROP"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:111
-#, no-c-format
-msgid "%%REJECT%%"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:106
 msgid "Immutable:"
 msgstr ""
 
 #. The {zone|service|icmptype} '<name>' has changed
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:109
 #, no-c-format
 msgid "The %s '%s' has changed, applying new settings."
 msgstr ""
@@ -829,41 +811,44 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr ""
+msgstr "intervalo portos %s não é único."
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr ""
+msgstr "%s não é um intervalo válido (porto início >= porto fim)."
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr ""
+msgstr "%s não é um protocolo válido."
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr ""
+msgstr "Definição de porto inválido %s."
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr ""
+msgstr "Argumento inválido %s"
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr ""
+"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr ""
+"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
+"'%(value)s'."
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr ""
+msgstr "Interface inválido '%s'."
 
 #
 #: ../src/firewall-convert-scfw-config:135
@@ -880,15 +865,15 @@ msgstr "ਫਾਇਰਵਾਲ ਯੋਗ"
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
-msgstr ""
+msgstr "<módulo>"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr ""
+msgstr "Activar um módulo do 'iptables'"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr ""
+msgstr "Desactivar um módulo do 'iptables'"
 
 #: ../src/firewall-convert-scfw-config:150
 #, fuzzy
@@ -897,36 +882,36 @@ msgstr "ਸਰਵਿਸਾਂ"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr ""
+msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr ""
+msgstr "<porto>[-<porto>]:<protocolo>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr ""
+msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
 msgid "<interface>"
-msgstr ""
+msgstr "<interface>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr ""
+msgstr "Autorizar todo o tráfego no dispositivo especificado"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr ""
+msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr ""
+msgstr "Retro-compatibilidade, substituído por --enabled"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
-msgstr ""
+msgstr "[<type>:][<table>:]<filename>"
 
 #: ../src/firewall-convert-scfw-config:174
 msgid ""
@@ -934,12 +919,18 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
+"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
+"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
+"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
+"ipv4_filter_as_minhas_regras)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
+"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
+"toaddr=<endereço de destino>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -947,33 +938,42 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
+"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
+"inserir endereço de destino) ou para outro endereço remoto com um porto de "
+"destino opcional. Apenas IPv4."
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr ""
+msgstr "<tipo icmp>"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
 msgstr ""
+"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
+"de pacotes ICMP."
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr ""
+msgstr "opção inválida: %s"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr ""
+msgstr "%s opção requer um argumento"
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr ""
+msgstr "%(option)s opção requer %(count)s argumentos"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr ""
+msgstr "%s opção não aceita um valor"
+
+#, fuzzy
+#~ msgid "tcp"
+#~ msgstr "ftp"
 
 #
 #~ msgid ""
