@@ -125,18 +125,20 @@ class IO_Object(object):
                     if x in _attrs:
                         _attrs.remove(x)
                     else:
-                        raise MissingAttributeError(name, x)                    
+                        raise FirewallError(
+                            PARSE_ERROR, "Missing attribute %s for %s" % 
+                            (x, name))
         if name in self.PARSER_OPTIONAL_ELEMENT_ATTRS:
             found = True
             for x in self.PARSER_OPTIONAL_ELEMENT_ATTRS[name]:
                 if x in _attrs:
                     _attrs.remove(x)
         if not found:
-            raise UnexpectedElementError(name)
-        # raise attributes[0]
+            raise FirewallError(PARSE_ERROR, "Unexpected element %s" % name)
+         # raise attributes[0]
         for x in _attrs:
-            raise UnexpectedAttributeError(name, x)
-
+            raise FirewallError(PARSE_ERROR, "Unexpected attribute %s" % name)
+ 
 # PARSER
 
 class UnexpectedElementError(Exception):
