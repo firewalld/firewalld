@@ -26,6 +26,7 @@ from firewall.config import _
 from firewall.errors import *
 from firewall import functions
 from firewall.core.io.io_object import *
+from firewall.core.logger import log
 
 class IcmpType(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
@@ -39,10 +40,10 @@ class IcmpType(IO_Object):
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
-        "icmptype": [ "name" ],
+        "icmptype": None,
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "icmptype": [ "version" ],
+        "icmptype": [ "name", "version" ],
         "destination": [ "ipv4", "ipv6" ],
         }
 
@@ -66,7 +67,9 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
         self.item.parser_check_element_attrs(name, attrs)
 
         if name == "icmptype":
-            self.item.name = str(attrs["name"])
+            if "name" in attrs:
+                log.warning("Ignoring deprecated attribute name='%s'" % 
+                            attrs["name"])
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
         elif name == "short":
@@ -82,14 +85,13 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 def icmptype_reader(filename, path):
     name = "%s/%s" % (path, filename)
     icmptype = IcmpType()
+    icmptype.name = filename.rstrip(".xml")
     icmptype.filename = filename
     icmptype.path = path
     handler = icmptype_ContentHandler(icmptype)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
-    if filename != ("%s.xml" % icmptype.name):
-        raise FirewallError(NAME_MISMATCH, "'%s' provides icmptype '%s'" % (filename, icmptype.name))
     return icmptype
 
 def icmptype_writer(icmptype, path=""):

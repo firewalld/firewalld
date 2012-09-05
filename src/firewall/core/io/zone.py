@@ -27,6 +27,7 @@ from firewall.errors import *
 from firewall import functions
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
+from firewall.core.logger import log
 
 class Zone(IO_Object):
     """ Zone class """
@@ -48,7 +49,7 @@ class Zone(IO_Object):
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
-        "zone": [ "name" ],
+        "zone": None,
         "service": [ "name" ],
         "port": [ "port", "protocol" ],
         "icmp-block": [ "name" ],
@@ -56,7 +57,7 @@ class Zone(IO_Object):
         "forward-port": [ "port", "protocol" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "zone": [ "immutable", "target", "version" ],
+        "zone": [ "name", "immutable", "target", "version" ],
         "forward-port": [ "to-port", "to-addr" ],
         }
 
@@ -97,7 +98,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         self.item.parser_check_element_attrs(name, attrs)
 
         if name == "zone":
-            self.item.name = str(attrs["name"])
+            if "name" in attrs:
+                log.warning("Ignoring deprecated attribute name='%s'" % 
+                            attrs["name"])
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
             if "immutable" in attrs and \
@@ -143,14 +146,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     zone = Zone()
+    zone.name = filename.rstrip(".xml")
     zone.filename = filename
     zone.path = path
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
-    if filename != ("%s.xml" % zone.name):
-        raise FirewallError(NAME_MISMATCH, "'%s' provides zone '%s'" % (filename, zone.name))
     return zone
 
 def zone_writer(zone, path=None):

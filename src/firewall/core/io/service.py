@@ -26,6 +26,7 @@ from firewall.config import _
 from firewall.errors import *
 from firewall import functions
 from firewall.core.io.io_object import *
+from firewall.core.logger import log
 
 class Service(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
@@ -41,10 +42,10 @@ class Service(IO_Object):
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
-        "service": [ "name" ],
+        "service": None,
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "service": [ "version" ],
+        "service": [ "name", "version" ],
         "port": [ "port", "protocol" ],
         "module": [ "name" ],
         "destination": [ "ipv4", "ipv6" ],
@@ -77,7 +78,9 @@ class service_ContentHandler(IO_Object_ContentHandler):
         self.item.parser_check_element_attrs(name, attrs)
 
         if name == "service":
-            self.item.name = str(attrs["name"])
+            if "name" in attrs:
+                log.warning("Ignoring deprecated attribute name='%s'" % 
+                            attrs["name"])
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
         elif name == "short":
@@ -102,14 +105,13 @@ class service_ContentHandler(IO_Object_ContentHandler):
 def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
     service = Service()
+    service.name = filename.rstrip(".xml")
     service.filename = filename
     service.path = path
     handler = service_ContentHandler(service)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
-    if filename != ("%s.xml" % service.name):
-        raise FirewallError(NAME_MISMATCH, "'%s' provides service '%s'" % (filename, service.name))
     return service
 
 def service_writer(service, path=""):
