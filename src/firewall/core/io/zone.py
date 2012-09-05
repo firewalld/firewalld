@@ -25,7 +25,7 @@ import shutil
 from firewall.config import _
 from firewall.errors import *
 from firewall import functions
-from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 
 class Zone(IO_Object):
@@ -104,7 +104,11 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     attrs["immutable"].lower() in [ "yes", "true" ]:
                 self.item.immutable = True
             if "target" in attrs:
-                self.item.target = str(attrs["target"])
+                target = str(attrs["target"])
+                if target not in ZONE_TARGETS:
+                    raise FirewallError(INVALID_TARGET, target)
+                if target != "" and target != DEFAULT_ZONE_TARGET:
+                    self.item.target = target
         elif name == "short":
             self._element = self.item.short
         elif name == "description":
