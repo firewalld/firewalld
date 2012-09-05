@@ -147,6 +147,7 @@ def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     zone = Zone()
     zone.name = filename.rstrip(".xml")
+    zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
     handler = zone_ContentHandler(zone)

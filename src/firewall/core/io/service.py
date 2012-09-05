@@ -106,6 +106,7 @@ def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
     service = Service()
     service.name = filename.rstrip(".xml")
+    service.check_name(service.name)
     service.filename = filename
     service.path = path
     handler = service_ContentHandler(service)
