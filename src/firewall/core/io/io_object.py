@@ -120,10 +120,7 @@ class IO_Object(object):
         found = False
         if name in self.PARSER_REQUIRED_ELEMENT_ATTRS:
             found = True
-            if self.PARSER_REQUIRED_ELEMENT_ATTRS[name] == None:
-                if len(_attrs) > 0:
-                    raise UnexpectedAttributeError(name, _attrs)
-            else:
+            if self.PARSER_REQUIRED_ELEMENT_ATTRS[name] != None:
                 for x in self.PARSER_REQUIRED_ELEMENT_ATTRS[name]:
                     if x in _attrs:
                         _attrs.remove(x)
