@@ -105,7 +105,7 @@ class service_ContentHandler(IO_Object_ContentHandler):
 def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
     service = Service()
-    service.name = filename.rstrip(".xml")
+    service.name = filename.replace(".xml", "")
     service.check_name(service.name)
     service.filename = filename
     service.path = path

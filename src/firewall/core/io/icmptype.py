@@ -85,7 +85,7 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 def icmptype_reader(filename, path):
     name = "%s/%s" % (path, filename)
     icmptype = IcmpType()
-    icmptype.name = filename.rstrip(".xml")
+    icmptype.name = filename.replace(".xml", "")
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename
     icmptype.path = path

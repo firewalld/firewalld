@@ -146,7 +146,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     zone = Zone()
-    zone.name = filename.rstrip(".xml")
+    zone.name = filename.replace(".xml", "")
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
