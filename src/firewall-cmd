@@ -148,7 +148,7 @@ if "--direct" not in sys.argv[1:]:
                             "list-forward-ports",
                             "list-all",
                             ])
-    except Exception, msg:
+    except Exception as msg:
         print(msg)
         usage()
         sys.exit(1)
@@ -248,7 +248,7 @@ for (opt, val) in opts:
     elif opt == "--timeout":
         try:
             timeout = int(val)
-        except Exception, msg:
+        except Exception as msg:
             usage()
             sys.exit(2)
         if timeout < 1:
@@ -534,7 +534,7 @@ try:
             print("icmp-blocks: " + " ".join(l))
 
 
-except dbus.DBusException, e:
+except dbus.DBusException as e:
     if "ServiceUnknown" in e.get_dbus_message():
         print("FirewallD is probably not running.")
         sys.exit(NOT_RUNNING)

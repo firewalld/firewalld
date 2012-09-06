@@ -91,7 +91,7 @@ class FirewallDirect:
 
         try:
             self._fw.rule(ipv, rule)
-        except Exception, msg:
+        except Exception as msg:
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)
 
@@ -167,7 +167,7 @@ class FirewallDirect:
 
         try:
             self._fw.rule(ipv, rule)
-        except Exception, msg:
+        except Exception as msg:
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)
 
@@ -228,6 +228,6 @@ class FirewallDirect:
     def passthrough(self, ipv, args):
         try:
             return self._fw.rule(ipv, args)
-        except Exception, msg:
+        except Exception as msg:
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)

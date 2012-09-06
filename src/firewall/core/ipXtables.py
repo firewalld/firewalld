@@ -178,7 +178,7 @@ class ipXtables:
         try:
             if self.ip6tables:
                 self.ip6tables.append_rule(rule)
-        except Exception, msg:
+        except Exception as msg:
             if self.ip4tables:
                 self.ip4tables.delete_rule(rule)
             raise Exception, msg
@@ -189,7 +189,7 @@ class ipXtables:
         try:
             if self.ip6tables:
                 self.ip6tables.delete_rule(rule)
-        except Exception, msg:
+        except Exception as msg:
             if self.ip4tables:
                 self.ip4tables.append_rule(rule)
             raise Exception, msg

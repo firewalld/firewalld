@@ -223,7 +223,7 @@ class FirewallZone:
                     if args in _obj.settings[key]:
                         _obj.settings[key][args] = settings[key][args]
 
-        except FirewallError, msg:
+        except FirewallError as msg:
             log.error(msg)
 
     # INTERFACES

@@ -861,7 +861,7 @@ if __name__ == '__main__':
 
     try:
         a = b
-    except Exception, e:
+    except Exception as e:
         log.exception()
 
 # vim:ts=4:sw=4:showmatch:expandtab

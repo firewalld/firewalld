@@ -116,19 +116,19 @@ try:
     from firewall.server import server
     server.run_server()
 
-except OSError, e: 
+except OSError as e:
     log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
     log.error(traceback.format_exc())
     os.remove(pid_file)
     sys.exit(1)
 
-except dbus.DBusException, e:
+except dbus.DBusException as e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
     os.remove(pid_file)
     sys.exit(1)
 
-except IOError, e:
+except IOError as e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
     os.remove(pid_file)

@@ -82,7 +82,7 @@ class Firewall:
         log.debug1("Loading firewalld config file '%s'", FIREWALLD_CONF)
         try:
             self._firewalld_conf.read()
-        except Exception, msg:
+        except Exception as msg:
             log.error("Failed to open firewalld config file '%s': %s",
                       FIREWALLD_CONF, msg)
         else:
@@ -92,7 +92,7 @@ class Firewall:
                 mark = self._firewalld_conf.get("MinimalMark")
                 try:
                     self._min_mark = int(mark)
-                except Exception, msg:
+                except Exception as msg:
                     log.error("MinimalMark %s is not valid, using default "
                               "value %d", mark, self._min_mark)
             if self._firewalld_conf.get("CleanupOnExit"):
@@ -197,10 +197,10 @@ class Firewall:
                     self.config.add_zone(copy.deepcopy(obj), default)
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
-            except FirewallError, msg:
+            except FirewallError as msg:
                 log.error("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
-            except Exception, msg:
+            except Exception as msg:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 
@@ -257,7 +257,7 @@ class Firewall:
             # run
             try:
                 self.rule(ipv, [ append_delete[enable], ] + rule)
-            except Exception, msg:
+            except Exception as msg:
                 log.error(msg)
                 return (rules[:i], msg) # cleanup rules and error message
         return None
@@ -272,7 +272,7 @@ class Firewall:
             (ipv, rule) = rules[i]
             try:
                 self.rule(ipv, [ new_delete[enable], ] + rule)
-            except Exception, msg:
+            except Exception as msg:
                 log.error(msg)
                 return (rules[:i], msg) # cleanup chains and error message
         return None
@@ -321,7 +321,7 @@ class Firewall:
                 self.rule(ipv, _rule)
 
 #                try:
-#                except Exception, msg:
+#                except Exception as msg:
 # TODO: better handling of init error
 #                    if "Chain already exists." in msg:
 #                        continue
@@ -491,7 +491,7 @@ class Firewall:
         # TODO: use rule in raw table not default chain policy
         try:
             self._set_policy("DROP", "all")
-        except Exception, msg:
+        except Exception as msg:
             raise FirewallError(COMMAND_FAILED, msg)
         self._panic = True
 
@@ -502,7 +502,7 @@ class Firewall:
         # TODO: use rule in raw table not default chain policy
         try:
             self._set_policy("ACCEPT", "all")
-        except Exception, msg:
+        except Exception as msg:
             raise FirewallError(COMMAND_FAILED, msg)
         self._panic = False
 

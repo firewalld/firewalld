@@ -36,9 +36,9 @@ def handle_exceptions(func, *args, **kwargs):
     """
     try:
         return func(*args, **kwargs)
-    except FirewallError, error:
+    except FirewallError as error:
         log.debug1(error)
-    except Exception, msg:
+    except Exception as msg:
         log.exception()
 
 @decorator
@@ -49,13 +49,13 @@ def dbus_handle_exceptions(func, *args, **kwargs):
     """
     try:
         return func(*args, **kwargs)
-    except FirewallError, error:
+    except FirewallError as error:
         log.debug1(str(error))
         raise DBusException(error)
-    except DBusException, e:
+    except DBusException as e:
         # only log DBusExceptions once
         raise DBusException(e)
-    except Exception, msg:
+    except Exception as msg:
         log.exception()
         raise DBusException(msg)
 
