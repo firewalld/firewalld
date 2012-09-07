@@ -162,6 +162,7 @@ fi
 %{_bindir}/firewall-config
 %defattr(0644,root,root)
 %{_datadir}/firewalld/firewall-config.glade
+%{_datadir}/firewalld/gtk3_chooserbutton.py*
 %{_datadir}/applications/firewall-config.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
