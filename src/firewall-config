@@ -455,7 +455,7 @@ class FirewallConfig(object):
         dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
         dialog.set_markup("<b>" + _("Error") + "</b>")
         dialog.format_secondary_markup(msg)
-        dialog.add_buttons("gtk-redo", 0,
+        dialog.add_buttons(_("Retry"), 0,
                            "gtk-quit", 1)
         dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         dialog.set_transient_for(self.mainWindow)
