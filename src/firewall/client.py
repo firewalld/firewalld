@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from gi.repository import GLib
 import dbus.mainloop.glib
 import slip.dbus
 from dbus.exceptions import DBusException
@@ -127,6 +128,8 @@ class FirewallClientConfigZone(object):
                                       dbus_interface=DBUS_INTERFACE_CONFIG_ZONE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+        #TODO: check interface version and revision (need to match client 
+        # version)
 
     @slip.dbus.polkit.enable_proxy
     def get_property(self, prop):
@@ -363,56 +366,6 @@ class FirewallClientConfig(object):
                                             DBUS_PATH_CONFIG)
         self.fw_config = dbus.Interface(self.dbus_obj,
                                         dbus_interface=DBUS_INTERFACE_CONFIG)
-        self._callback = { }
-        self._callbacks = {
-            "zone-added": "ZoneAdded",
-            "zone-updated": "ZoneUpdated",
-            "zone-removed": "ZoneRemoved",
-            "zone-renamed": "ZoneRenamed",
-            "service-added": "ServiceAdded",
-            "service-updated": "ServiceUpdated",
-            "service-removed": "ServiceRemoved",
-            "service-renamed": "ServiceRenamed",
-            "icmptype-added": "IcmpTypeAdded",
-            "icmptype-updated": "IcmpTypeUpdated",
-            "icmptype-removed": "IcmpTypeRemoved",
-            "icmptype-renamed": "IcmpTypeRenamed",
-            }
-
-    def signal_receiver(self, *args, **kwargs):
-        signal = kwargs["member"]
-        path = kwargs["path"]
-        interface = kwargs["interface"]
-
-        if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
-            signal = "Zone" + signal
-        elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
-            signal = "Service" + signal
-        elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
-            signal = "IcmpType" + signal
-
-        cb = None
-        cb_args = [ ]
-        if interface != DBUS_INTERFACE_CONFIG:
-            dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-            properties = dbus.Interface(
-                dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-            try:
-                what = dbus_to_python(properties.Get(interface, "name"))
-            except:
-                pass
-            else:
-                cb_args.append(what)
-
-        for callback in self._callbacks:
-            if self._callbacks[callback] == signal and \
-                    self._callbacks[callback] in self._callback:
-                cb = self._callback[self._callbacks[callback]]
-                cb_args.extend(args)
-                break
-
-        return (cb, cb_args)
-
     # zone
 
     @slip.dbus.polkit.enable_proxy
@@ -473,18 +426,10 @@ class FirewallClientConfig(object):
         path = self.fw_config.addIcmpType(name, tuple(settings.settings))
         return FirewallClientConfigIcmpType(self.bus, path)
 
-    # callbacks
-
-    def connect(self, name, callback, *args):
-        if name in self._callbacks:
-            self._callback[self._callbacks[name]] = (callback, args)
-        else:
-            raise ValueError, "Unknown callback name '%s'" % name
-
 #
 
 class FirewallClient(object):
-    def __init__(self, bus=None):
+    def __init__(self, bus=None, wait=0):
         if not bus:
             dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             try:
@@ -495,19 +440,9 @@ class FirewallClient(object):
                 self.bus = dbus.SystemBus()
         else:
             self.bus = bus
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, DBUS_PATH)
-        self.fw = dbus.Interface(self.dbus_obj, dbus_interface=DBUS_INTERFACE)
-        self.fw_zone = dbus.Interface(self.dbus_obj,
-                                      dbus_interface=DBUS_INTERFACE_ZONE)
-        self.fw_direct = dbus.Interface(self.dbus_obj,
-                                        dbus_interface=DBUS_INTERFACE_DIRECT)
-        self.fw_properties = dbus.Interface(
-            self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-
-        self._config = FirewallClientConfig(self.bus)
 
         self.bus.add_signal_receiver(
-            handler_function=self.dbus_connection_changed,
+            handler_function=self._dbus_connection_changed,
             signal_name="NameOwnerChanged",
             dbus_interface="org.freedesktop.DBus")
 
@@ -518,14 +453,20 @@ class FirewallClient(object):
                            DBUS_INTERFACE_CONFIG_ZONE,
                            DBUS_INTERFACE_CONFIG_SERVICE,
                            DBUS_INTERFACE_CONFIG_ICMPTYPE ]:
-            self.bus.add_signal_receiver(self.signal_receiver,
+            self.bus.add_signal_receiver(self._signal_receiver,
                                          dbus_interface=interface,
                                          interface_keyword='interface',
                                          member_keyword='member',
                                          path_keyword='path')
 
+        # callbacks
         self._callback = { }
         self._callbacks = {
+            # client callbacks
+            "connection-changed": "connection-changed",
+            "connection-established": "connection-established",
+            "connection-lost": "connection-lost",
+            # firewalld callbacks
             "default-zone-changed": "DefaultZoneChanged",
             "panic-mode-enabled": "PanicModeEnabled",
             "panic-mode-disabled": "PanicModeDisabled",
@@ -543,7 +484,37 @@ class FirewallClient(object):
             "interface-added": "InterfaceAdded",
             "interface-removed": "InterfaceRemoved",
             "zone-changed": "ZoneChanged",
+            # firewalld.config callbacks
+            "config:zone-added": "config:ZoneAdded",
+            "config:zone-updated": "config:ZoneUpdated",
+            "config:zone-removed": "config:ZoneRemoved",
+            "config:zone-renamed": "config:ZoneRenamed",
+            "config:service-added": "config:ServiceAdded",
+            "config:service-updated": "config:ServiceUpdated",
+            "config:service-removed": "config:ServiceRemoved",
+            "config:service-renamed": "config:ServiceRenamed",
+            "config:icmptype-added": "config:IcmpTypeAdded",
+            "config:icmptype-updated": "config:IcmpTypeUpdated",
+            "config:icmptype-removed": "config:IcmpTypeRemoved",
+            "config:icmptype-renamed": "config:IcmpTypeRenamed",
             }
+
+        # initialize variables used for connection
+        self._init_vars()
+
+        if wait > 0:
+            # connect in one second
+            GLib.timeout_add_seconds(wait, self._connection_established)
+        else:
+            self._connection_established()
+
+    def _init_vars(self):
+        self.fw = None
+        self.fw_zone = None
+        self.fw_direct = None
+        self.fw_properties = None
+        self._config = None
+        self.connected = False
 
     def connect(self, name, callback, *args):
         if name in self._callbacks:
@@ -551,24 +522,51 @@ class FirewallClient(object):
         else:
             raise ValueError, "Unknown callback name '%s'" % name
 
-    def dbus_connection_changed(self, name, old_owner, new_owner):
+    def _dbus_connection_changed(self, name, old_owner, new_owner):
         if name != DBUS_INTERFACE:
             return
 
         if new_owner:
-            # new connection
-            self.connect_to_firewalld()
+            # connection established
+            self._connection_established()
         else:
-            # lost connection
-            self.connection_to_firewalld_lost()
+            # connection lost
+            self._connection_lost()
 
-    def connect_to_firewalld(self):
-        pass
+    def _connection_established(self):
+        try:
+            self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, DBUS_PATH)
+            self.fw = dbus.Interface(self.dbus_obj,
+                                     dbus_interface=DBUS_INTERFACE)
+            self.fw_zone = dbus.Interface(self.dbus_obj,
+                                          dbus_interface=DBUS_INTERFACE_ZONE)
+            self.fw_direct = dbus.Interface(
+                self.dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
+            self.fw_properties = dbus.Interface(
+                self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+        except DBusException as e:
+            # ignore dbus errors
+            print "DBusException", e
+            return
+        except Exception as e:
+            print "Exception", e
+            return
 
-    def connection_to_firewalld_lost(self):
-        pass
+        self._config = FirewallClientConfig(self.bus)
+        self.connected = True
+        self._signal_receiver(member="connection-established",
+                              interface=DBUS_INTERFACE)
+        self._signal_receiver(member="connection-changed",
+                              interface=DBUS_INTERFACE)
 
-    def signal_receiver(self, *args, **kwargs):
+    def _connection_lost(self):
+        self._init_vars()
+        self._signal_receiver(member="connection-lost",
+                              interface=DBUS_INTERFACE)
+        self._signal_receiver(member="connection-changed",
+                              interface=DBUS_INTERFACE)
+
+    def _signal_receiver(self, *args, **kwargs):
         _args = [ ]
         for arg in args:
             _args.append(dbus_to_python(arg))
@@ -580,15 +578,36 @@ class FirewallClient(object):
 
         cb = None
         cb_args = [ ]
+
+        # config signals need special treatment
         if interface.startswith(DBUS_INTERFACE_CONFIG):
-            (cb,cb_args) = self._config.signal_receiver(*args, **kwargs)
-        else:
-            for callback in self._callbacks:
-                if self._callbacks[callback] == signal and \
-                        self._callbacks[callback] in self._callback:
-                    cb = self._callback[self._callbacks[callback]]
-                    cb_args = args
-                    break
+            # pimp signal name
+            if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
+                signal = "config:Zone" + signal
+            elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
+                signal = "config:Service" + signal
+            elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
+                signal = "config:IcmpType" + signal
+
+            # get zone/service/icmptype from path and add as first call arg
+            path = kwargs["path"]
+            if interface != DBUS_INTERFACE_CONFIG:
+                dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
+                properties = dbus.Interface(
+                    dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+                try:
+                    what = dbus_to_python(properties.Get(interface, "name"))
+                except:
+                    pass
+                else:
+                    cb_args.append(what)
+
+        for callback in self._callbacks:
+            if self._callbacks[callback] == signal and \
+                    self._callbacks[callback] in self._callback:
+                cb = self._callback[self._callbacks[callback]]
+                cb_args.extend(args)
+                break
         if not cb:
             return
 
