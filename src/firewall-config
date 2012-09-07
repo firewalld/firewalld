@@ -35,6 +35,9 @@ from firewall.client import *
 from firewall.functions import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
 
+if not datadir:
+    datadir = DATADIR
+    sys.path.insert(0, datadir)
 # import ChooserButton
 from gtk3_chooserbutton import ChooserButton
 
@@ -49,8 +52,6 @@ class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
         builder.set_translation_domain("firewalld")
-        if not datadir:
-            datadir = DATADIR
         builder.add_from_file("%s/%s" % (datadir, CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
