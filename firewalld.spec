@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.7
-Release: 2%{?dist}
+Version: 0.2.8
+Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -166,6 +166,22 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Fri Sep  7 2012 Thomas Woerner <twoerner@redhat.com> 0.2.8-1
+- Do not apply old settings to zones after reload
+- FirewallClient: Added callback structure for firewalld signals
+- New firewall-config with full zone, service and icmptype support
+- Added Shields Up/Down configuration dialog to firewall-applet
+- Name attribute of main tag deprecated for zones, services and icmptypes,
+  will be ignored if present
+- Fixed wrong references in firewalld man page
+- Unregister DBus interfaces after sending out the Removed signal
+- Use proper DBus signature in addIcmpType, addService and addZone
+- New builtin property for config interfaces
+- New test case for Config interface
+- spec: use new systemd-rpm macros (rhbz#850110)
+- More config file verifications
+- Lots of smaller fixes and enhancements
+
 * Tue Aug 21 2012 Jiri Popelka <jpopelka@redhat.com> 0.2.7-2
 - use new systemd-rpm macros (rhbz#850110)
 
