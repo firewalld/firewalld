@@ -1,24 +1,31 @@
 - do not allow to over-load of immutable zones in config
 - do not allow to set settings in config for immutable zones
+- document icmptype, service and zone filenames: "{name}.xml"
+- document unused icmptype, service and zone filenames: ".{name}.xml", ..
+- ui: visualize unknown services and icmptypes in zones
+- create configuration program for anaconda (kickstart firewall config)
 - fix firewall-config-scfw to use proper zones for trust, masq, and 
   forward_ports, think of NM also
 - create new zone in firewall-config-scfw if default zone is missing
+- log errors for zone, service and icmtype readers in config interface file 
+  update loader
+- nf_conntrack: automatic helper assignment is deprecated and it will be removed soon. Use the iptables CT target to attach helpers instead.
 
-- add target check in firewall/core/io/zone, possible values: ACCEPT, %%REJECT%%, DROP, DEFAULT_ZONE_TARGET (empty) "{chain}_ZONE_{zone}"
-
-- add zone selection dialog for shields-up and shields-down
-
-? - no base edit of firewalld provided buitin zones, only customization
-
-- document icmptype, service and zone filenames:
-  name of item must match filename: "{name}.xml"
+- check zone, service and icmptype names in UI
 
 - add firewalld.dbus man page
-
-- document unused icmptype, service and zone filenames:
-  ".{name}.xml"
+- firewall-applet man page
 
 - check TODOs in code
 
-- FF: add copy zone/service/icmptype in the UI
+Future Features:
+
+- reflect config changes in firewalld status? CONFIG_CHANGED/RELOAD_NEEDED?
+- add copy zone/service/icmptype in the UI
+- user management vi DBUS, polkit not sufficient
+- add simple user policies: USER_ALLOWED, USER_FORBIDDEN per main interfaces
+  direct, zone, config
+- ipset integration
+- direct interface also for zones
+- register applet functionality?
 
