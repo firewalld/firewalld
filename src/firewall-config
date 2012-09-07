@@ -44,8 +44,6 @@ from gtk3_chooserbutton import ChooserButton
 # TODO:
 #
 # - add FirewallClient exception handling and error dialog for all uses
-# - enable connection_established and connection_lost for firewalld
-# - add dbus error/info handling and dialog
 #
 
 class FirewallConfig(object):
@@ -55,9 +53,10 @@ class FirewallConfig(object):
         builder.add_from_file("%s/%s" % (datadir, CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
-        connected = _("Connected.")
-        no_connection = _("No connection.")
-        waiting = _("Waiting ...")
+        self.connected = _("Connected.")
+        self.no_connection = _("No connection.")
+        self.waiting = _("Waiting ...")
+        self.retrying = _("Retrying ...")
 
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
@@ -75,6 +74,9 @@ class FirewallConfig(object):
         self.mainWindow = builder.get_object("mainWindow")
         self.mainWindow.set_icon(self.icon)
 
+        self.statusLabel = builder.get_object("statusLabel")
+        self.modifiedLabel = builder.get_object("modifiedLabel")
+
         # make the toolbar the primary toolbar - odd that this is needed at all
         # glade-3 does not support this up to now.
         self.mainToolbar = builder.get_object("mainToolbar")
@@ -85,6 +87,9 @@ class FirewallConfig(object):
             builder.get_object("editServicesToolbutton")
         self.editIcmpTypesToolbutton = \
             builder.get_object("editIcmpTypesToolbutton")
+
+        self.mainVBox = builder.get_object("mainVBox")
+        self.optionMenuitem = builder.get_object("optionMenuitem")
 
         self.aboutDialog = builder.get_object("aboutDialog")
         self.aboutDialog.set_version(VERSION)
@@ -402,7 +407,9 @@ class FirewallConfig(object):
 
         # firewall client
 
-        self.fw = FirewallClient()
+        self.fw = FirewallClient(wait=1)
+
+        self.fw.connect("connection-changed", self.connection_changed)
 
         self.fw.connect("default-zone-changed", self.default_zone_changed_cb)
         self.fw.connect("reloaded", self.load)
@@ -417,15 +424,13 @@ class FirewallConfig(object):
         self.fw.connect("icmp-block-added", self.icmp_added_cb)
         self.fw.connect("icmp-block-removed", self.icmp_removed_cb)
 
-        self.fw.config().connect("zone-updated", self.conf_zone_updated_cb)
-        self.fw.config().connect("service-updated", self.conf_service_updated_cb)
-        self.fw.config().connect("icmptype-updated", self.conf_icmp_updated_cb)
+        self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
+        self.fw.connect("config:service-updated", self.conf_service_updated_cb)
+        self.fw.connect("config:icmptype-updated", self.conf_icmp_updated_cb)
 
-        # fill with life
+        # start with no connection
 
-        self.load()
-
-        self.currentViewCombobox.set_active(0)
+        self.connection_changed()
 
         # mainloop
 
@@ -438,13 +443,55 @@ class FirewallConfig(object):
 
     def _warning(self, msg):        
         dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
-        dialog.set_markup("<b>" + _("Error") + "</b>")
+        dialog.set_markup("<b>" + _("Warning") + "</b>")
         dialog.format_secondary_markup(msg)
         dialog.add_button("gtk-close", 1)
         dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         dialog.set_transient_for(self.mainWindow)
         dialog.run()
         dialog.hide()
+
+    def _error(self, msg):
+        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
+        dialog.set_markup("<b>" + _("Error") + "</b>")
+        dialog.format_secondary_markup(msg)
+        dialog.add_buttons("gtk-redo", 0,
+                           "gtk-quit", 1)
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+        result = dialog.run()
+        dialog.hide()
+        if result == 1:
+            self.onQuit()
+
+    def connection_changed(self):
+        if self.fw.connected:
+            # authorize
+            while 1:
+                try:
+                    self.fw.config().listZones()
+                except DBusException as e:
+                    if "NotAuthorizedException" in str(e):
+                        self._error(_("Authorization failed."))
+                    else:
+                        self._error(e)
+                except Exception as e:
+                    self._error(e)
+                else:
+                    # break the loop, continue with configuration
+                    break
+            self.statusLabel.set_text(self.connected)
+            self.modifiedLabel.set_text("")
+            # load
+            self.load()
+            self.currentViewCombobox.set_active(0)
+        else:
+            self.statusLabel.set_text(self.no_connection)
+            self.modifiedLabel.set_text(self.waiting)
+
+        self.mainToolbar.set_sensitive(self.fw.connected)
+        self.mainVBox.set_sensitive(self.fw.connected)
+        self.optionMenuitem.get_submenu().set_sensitive(self.fw.connected)
 
     def load(self):
         default_zone = self.fw.getDefaultZone()
@@ -458,19 +505,10 @@ class FirewallConfig(object):
         zones = [ ]
         if self.runtime_view:
             zones = sorted(self.fw.getZones())
-#            i = 0
-#            while i < len(zones):
-#                if self.fw.isImmutable(zones[i]):
-#                    zones.pop(i)
-#                else:
-#                    i += 1
         else:
             _zones = sorted(self.fw.config().listZones())
             for zone in _zones:
                 z = self.fw.config().getZone(zone)
-#                settings = z.getSettings()
-#                if not settings.getImmutable():
-#                    zones.append(z.get_property("name"))
                 zones.append(z.get_property("name"))
 
         # reset and fill notebook content according to view
