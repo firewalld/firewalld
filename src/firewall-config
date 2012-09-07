@@ -23,11 +23,10 @@ from gi.repository import Gtk, GObject
 import sys
 sys.modules['gobject'] = GObject
 import os
+datadir = None
 if os.getenv("FIREWALLD_DEVEL_ENV") != None:
     datadir = os.getenv("FIREWALLD_DEVEL_ENV")
-else:
-    datadir = DATADIR
-sys.path.insert(0, datadir)
+    sys.path.insert(0, datadir)
 import dbus
 
 from firewall.config import *
@@ -50,6 +49,8 @@ class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
         builder.set_translation_domain("firewalld")
+        if not datadir:
+            datadir = DATADIR
         builder.add_from_file("%s/%s" % (datadir, CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
