@@ -1,22 +1,23 @@
-# translation of firewalld.master.po to Japanese
-# FirewallD Japanese translation.
-# Copyright (C) Red Hat Inc. 2010, 2011
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
-# Hajime Taira <htaira@redhat.com>, 2010, 2011.
+# Translators:
+# Copyright (C) Red Hat Inc. 2010, 2011.
+# Hajime Taira <htaira@redhat.com>, 2010-2011.
+# Tomoyuki KATO <tomo@dream.daynight.jp>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall.master\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2011-02-20 15:13+0900\n"
-"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
-"Language-Team: Japanese\n"
-"Language: \n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-07 08:33+0000\n"
+"Last-Translator: Tomoyuki KATO <tomo@dream.daynight.jp>\n"
+"Language-Team: Japanese <trans-ja@lists.fedoraproject.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.4\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
@@ -24,44 +25,42 @@ msgid "Firewall Applet"
 msgstr "ファイアーウォール・アプレット"
 
 #: ../config/firewall-config.desktop.in.h:1
-#, fuzzy
 msgid "Firewall"
-msgstr "ファイアーウォール・アプレット"
+msgstr "ファイアウォール"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
-#, fuzzy
 msgid "Firewall Configuration"
-msgstr "デフォルトの設定"
+msgstr "ファイアウォールの設定"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
 msgid "Unexpected element '%s'"
-msgstr ""
+msgstr "予期しない要素 '%s'"
 
 #: ../src/firewall/core/io/io_object.py:155
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
-msgstr ""
+msgstr "要素 '%s': '%s' 属性がありません"
 
 #: ../src/firewall/core/io/io_object.py:163
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
-msgstr ""
+msgstr "要素 '%s': 予期しない属性 '%s'"
 
 #: ../src/firewalld:43
 #, c-format
 msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
-msgstr ""
+msgstr "使用法: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 
 #: ../src/firewalld:49
 #, c-format
 msgid "You need to be root to run %s."
-msgstr ""
+msgstr "%s を実行するには root になる必要があります。"
 
 #: ../src/firewalld:65
 #, c-format
 msgid "Unknown option '%s'"
-msgstr ""
+msgstr "未知のオプション '%s'"
 
 #: ../src/firewalld:92
 msgid "Not starting FirewallD, already running."
@@ -77,9 +76,8 @@ msgid "Shields Up"
 msgstr ""
 
 #: ../src/firewall-applet:110
-#, fuzzy
 msgid "Enable Notifications"
-msgstr "すべての通知を有効化"
+msgstr ""
 
 #: ../src/firewall-applet:123
 msgid "Edit Firewall Settings..."
@@ -120,14 +118,12 @@ msgid "Not using slip"
 msgstr "slip を利用しない"
 
 #: ../src/firewall-applet:324
-#, fuzzy
 msgid "Connection to FirewallD established."
-msgstr "FirewallD への接続が失われました。"
+msgstr ""
 
 #: ../src/firewall-applet:332
-#, fuzzy
 msgid "Connection to FirewallD lost."
-msgstr "FirewallD への接続が失われました。"
+msgstr ""
 
 #: ../src/firewall-applet:370
 msgid "FirewallD has been reloaded."
@@ -191,18 +187,16 @@ msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "ファイアーウォール・アプレット"
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
-msgstr ""
+msgstr "接続しました。"
 
 #: ../src/firewall-config:57
-#, fuzzy
 msgid "No connection."
-msgstr "信頼された接続"
+msgstr "接続されていません。"
 
 #: ../src/firewall-config:58
 msgid "Waiting ..."
@@ -217,51 +211,46 @@ msgid "Failed to load icons."
 msgstr ""
 
 #: ../src/firewall-config:107 ../src/firewall-config:755
-#, fuzzy
 msgid "Runtime Configuration"
-msgstr "アクティブな設定"
+msgstr ""
 
 #: ../src/firewall-config:108
-#, fuzzy
 msgid "Persistent Configuration"
-msgstr "設定を選択"
+msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
-#, fuzzy
 msgid "Service"
 msgstr "サービス"
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
-#, fuzzy
 msgid "Port"
 msgstr "ポート"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "プロトコル"
 
 #: ../src/firewall-config:206
-#, fuzzy
 msgid "To Port"
-msgstr "ポート"
+msgstr "宛先ポート"
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "宛先アドレス"
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
-msgstr ""
+msgstr "ICMP 種別"
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr "警告"
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr "エラー"
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -281,15 +270,15 @@ msgstr ""
 
 #: ../src/firewall-config:1918
 msgid "Built-in icmp, rename not supported."
-msgstr ""
+msgstr "組み込み ICMP、名前は変更できません。"
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr ""
+msgstr "アドレス"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Address:"
-msgstr ""
+msgstr "アドレス:"
 
 #: ../src/firewall-config.glade.h:3
 msgid "System Default Zone"
@@ -313,7 +302,6 @@ msgid ""
 "reload or restart."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
 msgstr "ポートフォワーディング"
@@ -321,50 +309,43 @@ msgstr "ポートフォワーディング"
 #: ../src/firewall-config.glade.h:9
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+msgstr "必要に応じた送り元と宛先のオプションを選択してください。"
 
-#
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "ポートフォワーディング"
+msgstr "ポート / ポート範囲:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP アドレス:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "プロトコル:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "ポートフォワーディング"
+msgstr "ローカルフォワーディング"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "他のポートへのフォワード"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"ローカルフォワーディングを有効にするなら、ポートを指定しなければなりません。"
+"これはソースポートとは異ならなければなりません。"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -394,21 +375,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "ICMP フィルター"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "ICMP フィルター"
+msgstr "ICMP タイプ"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -440,35 +417,30 @@ msgstr "IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
-#
 #: ../src/firewall-config.glade.h:36
 msgid "_File"
 msgstr "ファイル(_F)"
 
-#
 #: ../src/firewall-config.glade.h:37
 msgid "_Options"
 msgstr "オプション(_O)"
 
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "ファイアーウォール・アプレット"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:40
-#, fuzzy
 msgid "Edit Services"
-msgstr "サービス"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:41
 msgid "Edit ICMP Types"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:42
 msgid "_Help"
 msgstr "ヘルプ(_H)"
@@ -515,43 +487,33 @@ msgid "Zone"
 msgstr "ゾーン"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Add Zone"
-msgstr "ゾーン"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "編集"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"信頼されたサービスを定義することができます。信頼されたサービスはすべてのホス"
-"トおよびすべてのネットワークから指定されたネットワークプロトコルでアクセスす"
-"ることができます。「追加」ボタンをクリックして事前定義済サービス一覧から任意"
-"のサービスを選択してください。"
+"ここでどのサービスが信頼できるかを定義できます。信頼したサービスは全てのホス"
+"トやネットワークからアクセスできます。"
 
 #: ../src/firewall-config.glade.h:57
-#, fuzzy
 msgid "Services"
-msgstr "サービス"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:58
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -562,24 +524,20 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "エントリーの追加"
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "編集エントリー"
 
-#
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "削除"
+msgstr "エントリーの削除"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "ポート"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:63
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
@@ -592,26 +550,19 @@ msgstr ""
 "スカレーディングは IPv4 のみです。"
 
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "マスカレードされたもの:"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:65
-#, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも"
-"有効になります。"
 
-#
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
 msgstr "マスカレーディング"
 
-#
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
@@ -624,9 +575,7 @@ msgstr ""
 "そのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワー"
 "ドは IPv4 のみです。"
 
-#
 #: ../src/firewall-config.glade.h:68
-#, fuzzy
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -636,9 +585,7 @@ msgstr ""
 "タ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答"
 "などの情報メッセージにも使用されます。"
 
-#
 #: ../src/firewall-config.glade.h:69
-#, fuzzy
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -647,14 +594,13 @@ msgstr ""
 "はファイアーウォールの通過が許可されます。 デフォルトでは無制限になっていま"
 "す。"
 
-#
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
 msgstr "ICMP フィルター"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "ポートとプロトコル"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -672,11 +618,9 @@ msgstr ""
 msgid "Please enter a port and/or a protocol."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:76
-#, fuzzy
 msgid "Other Protocol:"
-msgstr "その他のポート"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:77
 msgid "Base Service Settings"
@@ -687,42 +631,34 @@ msgid "Please configure base service settings:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:79
-#, fuzzy
 msgid "Service Settings"
-msgstr "サービス"
+msgstr "サービス設定:"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:82
-#, fuzzy
 msgid "Add Service"
-msgstr "サービス"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:83
-#, fuzzy
 msgid "Edit Service"
-msgstr "サービス"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "サービス"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポー"
-"トの範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -734,7 +670,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Modules"
-msgstr ""
+msgstr "モジュール"
 
 #: ../src/firewall-config.glade.h:90
 msgid ""
@@ -744,14 +680,12 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "IPv4:"
-msgstr "IPv4"
+msgstr "IPv4:"
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "IPv6:"
-msgstr "IPv6"
+msgstr "IPv6:"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Base Zone Settings"
@@ -782,69 +716,63 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr "ポート範囲 '%s' は特有ではありません。"
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr "%s は正しい範囲ではありません (開始ポート >=  終了ポート)."
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr "%s は正しいプロトコルではありません。"
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr "不当なポート定義 %s "
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr "Argumento inválido %s"
+msgstr "不当な実引数 %s"
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
+msgstr "オプション %(option)s: 不当なフォワードポート '%(value)s': %(error)s。"
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
+msgstr "オプション %(option)s: 不当なフォワードポート '%(value)s'。"
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr "無効なインターフェイス '%s'"
 
-#
 #: ../src/firewall-convert-scfw-config:135
-#, fuzzy
 msgid "Enable firewall (default)"
-msgstr "ファイアーウォールを有効にする"
+msgstr "ファイアーウォールを有効にする (デフォルト)"
 
-#
 #: ../src/firewall-convert-scfw-config:138
-#, fuzzy
 msgid "Disable firewall"
-msgstr "ファイアーウォールを有効にする"
+msgstr "ファイアーウォールを無効にする"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
+#, fuzzy
 msgid "<module>"
-msgstr "<módulo>"
+msgstr "モジュール"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr "iptables モジュールを有効にする"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr "iptables モジュールを無効にする"
 
 #: ../src/firewall-convert-scfw-config:150
 #, fuzzy
@@ -853,15 +781,15 @@ msgstr "サービス"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr "ファイアーウォールで特定のサービスを開く(例 ssh)"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr "ファイアーウォールで特定のポートを開く(例 ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
@@ -870,15 +798,17 @@ msgstr "<interface>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "指定のデバイス上で全てのトラフィックを許可"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr ""
+"指定のデバイスからのトラフィックをマスカレードする。これは IPv4 のみ有効で"
+"す。"
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "下位互換、--enabled へのエイリアス"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
@@ -890,18 +820,17 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
+"ファイアーウォールでデフォルトのルールの後に取り込むカスタムルールファイルを"
+"指定します。 デフォルトタイプ: ipv4、 デフォルトテーブル: フィルター。 (例: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -909,314 +838,36 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
+"そのインターフェイスのためのポートとプロトコルを他のローカルポート(宛先アドレ"
+"ス指定なし)か、他の宛先アドレスにオプションの宛先ポート付きへフォワードする。"
+"これは IPv4 のみです。"
 
 #: ../src/firewall-convert-scfw-config:196
+#, fuzzy
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "ICMP 種別"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
 msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
+"この ICMP タイプをブロックします。デフォルトでは、全ての ICMP タイプを 許可し"
+"ます。"
 
 #: ../src/firewall-convert-scfw-config:209
-#, c-format
+#, fuzzy, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr "未知のオプション '%s'"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr "%s オプションには、引数が１つ必要です"
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr "%(option)s オプションには %(count)s の引数が必要となります"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#, fuzzy
-#~ msgid "Port:"
-#~ msgstr "ポート"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#, fuzzy
-#~ msgctxt "yes"
-#~ msgid "Firewall Configuration"
-#~ msgstr "デフォルトの設定"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#, fuzzy
-#~ msgid "Server"
-#~ msgstr "サービス"
-
-#, fuzzy
-#~ msgid "tcp"
-#~ msgstr "ftp"
-
-#
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-#~ msgstr ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-
-#, fuzzy
-#~ msgid "Firewall Config"
-#~ msgstr "ファイアーウォール・デーモン"
-
-#
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "ファイル(_F)"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "Requested by %s (%s)"
-#~ msgstr ""
-#~ "\n"
-#~ "次からの要求: %s"
-
-#, fuzzy
-#~ msgid "Zones:"
-#~ msgstr "ゾーン"
-
-#~ msgid "21/TCP"
-#~ msgstr "21/TCP"
-
-#~ msgid "22/TCP"
-#~ msgstr "22/TCP"
-
-#~ msgid "80/TCP"
-#~ msgstr "80/TCP"
-
-#
-#~ msgid "Add"
-#~ msgstr "追加"
-
-#
-#~ msgid "Allow access to necessary ports or port ranges, only."
-#~ msgstr "必要なポートやポート範囲へのみアクセスを許可する。"
-
-#
-#~ msgid "Allow access to necessary services, only."
-#~ msgstr "必要なサービスへのアクセスのみ許可する。"
-
-#
-#~ msgid "Custom Rules"
-#~ msgstr "カスタムルール"
-
-#
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#
-#~ msgid ""
-#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
-#~ "FTP server publicly available, enable this option. You need the vsftpd "
-#~ "package installed for this option to be useful."
-#~ msgstr ""
-#~ "FTP はリモートファイル転送に使用されるプロトコルです。FTP サーバーを公開す"
-#~ "る予定の場合はこのオプションを有効にします。このオプションが役に立つように"
-#~ "するには vsftpd パッケージをインストールする必要があります。"
-
-#
-#~ msgid ""
-#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
-#~ "Web server publicly available, enable this option. This option is not "
-#~ "required for viewing pages locally or developing Web pages."
-#~ msgstr ""
-#~ "HTTP は Web ページを提供するためのプロトコルです。Web ページを公開する予定"
-#~ "がある場合はこのオプションを有効にします。ページをローカルで表示したり、"
-#~ "Web ページの開発にはこのオプションは必要ありません。"
-
-#~ msgid ""
-#~ "Here you can define the interfaces and network areas that have fill "
-#~ "access to the system."
-#~ msgstr ""
-#~ "ここでは、システムに対してフルアクセスが許可されるインタフェースおよびネッ"
-#~ "トワークエリアを定義できます。"
-
-#~ msgid "Home Zone"
-#~ msgstr "自宅ゾーン"
-
-#~ msgid "IPv4,IPv6"
-#~ msgstr "IPv4,IPv6"
-
-#~ msgid ""
-#~ "Only allow full access for interfaces or network areas if you can trust "
-#~ "all participants part of these."
-#~ msgstr ""
-#~ "すべてに対してフルアクセスを許可したい場合、特定のインタフェースやネット"
-#~ "ワークエリアに対してのみ許可するにしてください。"
-
-#~ msgid "Public Zone"
-#~ msgstr "公共ゾーン"
-
-#
-#~ msgid "Reload"
-#~ msgstr "再読み込み"
-
-#~ msgid "Restart"
-#~ msgstr "再起動"
-
-#
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#~ msgid ""
-#~ "Secure Shell (SSH) is a protocol for logging into and executing commands "
-#~ "on remote machines. It provides secure encrypted comminucations. If you "
-#~ "plan on accessing your machine remotely via SSH over a firewalled "
-#~ "interface, enable this option. You need the openssh-server package "
-#~ "installed for this option to be useful. "
-#~ msgstr ""
-#~ "セキュアシェル (SSH) はリモートのコンピューターへログインしたり、コマンド"
-#~ "を発行したりします。SSH では暗号化された通信が使われます。もし、リモートの"
-#~ "コンピューターに対して SSH 経由での操作を行う計画している場合には、"
-#~ "firewalld インタフェースからオプションを有効にしてください。openssh-"
-#~ "server パッケージがインストールされている必要があります。"
-
-#~ msgid "Start"
-#~ msgstr "開始"
-
-#~ msgid "Stop"
-#~ msgstr "停止"
-
-#~ msgid "Switch Firewall Model"
-#~ msgstr "ファイアーウォールモデルの切り替え"
-
-#~ msgid "Switch firewall model"
-#~ msgstr "ファイアーウォールモデルの切り替え"
-
-#~ msgid "Trusted"
-#~ msgstr "信頼済み"
-
-#~ msgid "Trusted Zone"
-#~ msgstr "信頼済みゾーン"
-
-#
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
-
-#~ msgid "Work Zone"
-#~ msgstr "仕事用ゾーン"
-
-#~ msgid "- proof of concept implementation -"
-#~ msgstr "- 試験的な実装です。 -"
-
-#~ msgid "ICMP Blocking"
-#~ msgstr "ICMP ブロック中"
-
-#~ msgid "Panic Mode"
-#~ msgstr "パニックモード"
-
-#~ msgid ""
-#~ "\n"
-#~ "Timeout: %d seconds"
-#~ msgstr ""
-#~ "\n"
-#~ "タイムアウト: %d 秒"
-
-#~ msgid "No Open Services."
-#~ msgstr "公開されたサービスがありません。"
-
-#~ msgid "Open Services:"
-#~ msgstr "公開されたサービス:"
-
-#~ msgid "No Open Ports."
-#~ msgstr "公開されたポートがありません。"
-
-#~ msgid "No Trusted."
-#~ msgstr "信頼済みの接続がありません。"
-
-#~ msgid "Trusted:"
-#~ msgstr "信頼済み:"
-
-#~ msgid "No Masqueraded."
-#~ msgstr "マスカレードされたものがありません。"
-
-#~ msgid "No ICMP Blocks."
-#~ msgstr "非ICMP ブロック:"
-
-#~ msgid "ICMP Blocks:"
-#~ msgstr "ICMP ブロック:"
-
-#~ msgid "No Forward Ports."
-#~ msgstr "非転送ポート:"
-
-#~ msgid "Forward Ports:"
-#~ msgstr "転送ポート:"
-
-#~ msgid "No Custom Rules."
-#~ msgstr "非カスタムルール:"
-
-#~ msgid "Custom Rules:"
-#~ msgstr "カスタムルール:"
-
-#~ msgid "Panic mode"
-#~ msgstr "パニックモード"
-
-#~ msgid "Service '%s'"
-#~ msgstr "サービス '%s'"
-
-#~ msgid "Port '%s:%s'"
-#~ msgstr "ポート '%s:%s'"
-
-#~ msgid "Trusted '%s'"
-#~ msgstr "信頼済み '%s'"
-
-#~ msgid "Masquerade '%s'"
-#~ msgstr "マスカレード '%s'"
-
-#~ msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-#~ msgstr "転送ポート 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-
-#~ msgid "Block ICMP '%s'"
-#~ msgstr "ブロック ICMP '%s'"
-
-#~ msgid ""
-#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
-#~ msgstr ""
-#~ "カスタム 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto="
-#~ "%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr "%s オプションは値を取りません"

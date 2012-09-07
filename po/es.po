@@ -1,49 +1,43 @@
-# translation of system-config-firewall.master.es.po to Spanish
-# Fedora spanish translation of system-config-firewall.master
-# This file is distributed under the same license as the system-config-firewall.master package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
-# Yelitza Louze <ylouze@redhat.com>, 2003.
+# Translators:
+# Domingo Becker <domingobecker@gmail.com>, 2007-2008.
+# Eduardo Villagrán <eduardo.villagran@usach.cl>, 2006.
 # Francisco M.S. <franms@alkur.net>, 2004.
 # Francisco Muñoz Santoyo <franms@terra.es>, 2004.
-# Rodolfo M. Raya <rodolfo@heartsome.net>, 2004.
-# Hernan Mendez <hmendez@kur2.com>, 2005.
-# Eduardo Villagrán <eduardo.villagran@usach.cl>, 2006.
-# Manuel Ospina <mospina@redhat.com>, 2006.
-# Domingo Becker <domingobecker@gmail.com>, 2007, 2008.
-# Héctor Daniel Cabrera <logan@fedoraproject.org>, 2010.
 # Gladys Guerrero  <gguerrer@redhat.com>, 2010.
-#
+# Héctor Daniel Cabrera <logan@fedoraproject.org>, 2010.
+# Hernan Mendez <hmendez@kur2.com>, 2005.
+# Manuel Ospina <mospina@redhat.com>, 2006.
+# Rodolfo M. Raya <rodolfo@heartsome.net>, 2004.
+# Yelitza Louze <ylouze@redhat.com>, 2003.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall.master.es\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2010-06-27 12:46-0300\n"
-"Last-Translator: Claudio Rodrigo Pereyra Diaz <claudio@pereyradiaz.com.ar>\n"
-"Language-Team: Fedora Spanish <trans-es@lists.fedoraproject.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-06 11:07+0000\n"
+"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"Language-Team: Spanish <trans-es@lists.fedoraproject.org>\n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-Language: Spanish\n"
-"Generated-By: pygettext.py 1.4\n"
-"X-Poedit-Country: ARGENTINA\n"
-"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
 msgstr ""
 
 #: ../config/firewall-config.desktop.in.h:1
-#, fuzzy
 msgid "Firewall"
-msgstr "Demonio de firewall"
+msgstr "Cortafuego"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
-#, fuzzy
 msgid "Firewall Configuration"
-msgstr "configuracion Predeterminada"
+msgstr "Configuración del cortafuegos"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -89,9 +83,8 @@ msgid "Shields Up"
 msgstr ""
 
 #: ../src/firewall-applet:110
-#, fuzzy
 msgid "Enable Notifications"
-msgstr "Habilitar Todas las Notificaciones"
+msgstr ""
 
 #: ../src/firewall-applet:123
 msgid "Edit Firewall Settings..."
@@ -132,14 +125,12 @@ msgid "Not using slip"
 msgstr "No usar Dezlisamiento"
 
 #: ../src/firewall-applet:324
-#, fuzzy
 msgid "Connection to FirewallD established."
-msgstr "Se perdio conexion a FirewallID"
+msgstr ""
 
 #: ../src/firewall-applet:332
-#, fuzzy
 msgid "Connection to FirewallD lost."
-msgstr "Se perdio conexion a FirewallID"
+msgstr ""
 
 #: ../src/firewall-applet:370
 msgid "FirewallD has been reloaded."
@@ -203,18 +194,16 @@ msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "Demonio de firewall"
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
 msgstr ""
 
 #: ../src/firewall-config:57
-#, fuzzy
 msgid "No connection."
-msgstr "Conexiones  confiables"
+msgstr ""
 
 #: ../src/firewall-config:58
 msgid "Waiting ..."
@@ -229,25 +218,21 @@ msgid "Failed to load icons."
 msgstr ""
 
 #: ../src/firewall-config:107 ../src/firewall-config:755
-#, fuzzy
 msgid "Runtime Configuration"
-msgstr "Configuracion activa"
+msgstr ""
 
 #: ../src/firewall-config:108
-#, fuzzy
 msgid "Persistent Configuration"
-msgstr "Seleccione configuracion"
+msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
-#, fuzzy
 msgid "Service"
-msgstr "Servicios"
+msgstr "Servicio"
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
-#, fuzzy
 msgid "Port"
-msgstr "Puertos"
+msgstr "Puerto"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
@@ -255,13 +240,12 @@ msgid "Protocol"
 msgstr "Protocolo"
 
 #: ../src/firewall-config:206
-#, fuzzy
 msgid "To Port"
-msgstr "Puertos"
+msgstr "A Puerto"
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "A Dirección"
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
@@ -269,11 +253,11 @@ msgstr ""
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr "Advertencia"
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr "Error"
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -333,47 +317,43 @@ msgstr "Reenvío de Puerto"
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+"Por favor seleccione las opciones de origen y destino según sus necesidades."
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "Reenvío de Puerto"
+msgstr "Puerto / Rango de Puertos:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "Dirección IP:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "Protocolo"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "Reenvío de Puerto"
+msgstr "Reenvío local"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "Reenviar a otro puerto"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"Si habilita reenvío local, debe especificar un puerto. Este puerto debe ser "
+"diferente al puerto de origen."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -404,18 +384,16 @@ msgid "Description:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "Filtro ICMP"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "Filtro ICMP"
+msgstr "Tipo ICMP"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -456,18 +434,16 @@ msgid "_Options"
 msgstr "_Opciones"
 
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "Demonio de firewall"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:40
-#, fuzzy
 msgid "Edit Services"
-msgstr "Servicios"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:41
 msgid "Edit ICMP Types"
@@ -515,44 +491,36 @@ msgid "Current default zone of the system."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:51
-#, fuzzy
 msgid "Zone"
-msgstr "Zonas"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Add Zone"
-msgstr "Zona confiable"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "Editar"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "Eliminar"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"Aquí puedes definir los servicios confiables. Los servicios confiables son "
-"accesibles desde todos los hosts y redes en el protocolo de red "
-"seleccionado. click en <i>Add</i> para seleccionar un item desde la lista de "
-"servicios predefinidos."
+"Aquí puede definir qué servicios son confiables. Esto significa que estos "
+"servicios serán accesibles desde todos los equipos o redes."
 
 #: ../src/firewall-config.glade.h:57
-#, fuzzy
 msgid "Services"
-msgstr "Servicios"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:58
 msgid ""
@@ -564,21 +532,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "Agregar Entrada"
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
 msgstr "Editar Entrada"
 
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "Eliminar"
+msgstr "Eliminar Entrada"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "Puertos"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -591,18 +557,14 @@ msgstr ""
 "equipo a la Internet. Se enmascara solamente IPv4."
 
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "Enmascarable"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:65
-#, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"Si habilita el enmascarado, el reenvío de IP también estará habilitado para "
-"sus redes IPv4."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
@@ -621,7 +583,6 @@ msgstr ""
 "sólo para IPv4."
 
 #: ../src/firewall-config.glade.h:68
-#, fuzzy
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -632,7 +593,6 @@ msgstr ""
 "información adicional como pedidos de ping y sus respuestas."
 
 #: ../src/firewall-config.glade.h:69
-#, fuzzy
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -647,7 +607,7 @@ msgstr "Filtro ICMP"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "Puerto y Protocolo"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -666,9 +626,8 @@ msgid "Please enter a port and/or a protocol."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:76
-#, fuzzy
 msgid "Other Protocol:"
-msgstr "Otros Puertos"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:77
 msgid "Base Service Settings"
@@ -679,41 +638,34 @@ msgid "Please configure base service settings:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:79
-#, fuzzy
 msgid "Service Settings"
-msgstr "Servicios"
+msgstr "Configuración de Servicios"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:82
-#, fuzzy
 msgid "Add Service"
-msgstr "Servicios"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:83
-#, fuzzy
 msgid "Edit Service"
-msgstr "Servicios"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "Servicios"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"Agregue puertos adicionales o rangos de puertos, que necesiten ser "
-"accesibles desde todos los equipos o redes."
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -735,14 +687,12 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "IPv4:"
-msgstr "IPv4"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "IPv6:"
-msgstr "IPv6"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
 msgid "Base Zone Settings"
@@ -773,22 +723,22 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr "el rango de puertos %s no es único."
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr "%s no es un rango válido (puerto inicial >= puerto final)."
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr "%s no es un protocolo válido."
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr "definición de puerto inválido %s."
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
@@ -798,29 +748,24 @@ msgstr "Argumento inválido %s"
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
+msgstr "opción %(option)s: puerto de reenvío '%(value)s' inválido: %(error)s."
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
+msgstr "opción %(option)s: puerto de reenvío '%(value)s' inválido."
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr "interfaz inválido '%s'."
 
 #: ../src/firewall-convert-scfw-config:135
-#, fuzzy
 msgid "Enable firewall (default)"
-msgstr "Habilitar cortafuego"
+msgstr "Habilitar cortafuegos (por defecto)"
 
 #: ../src/firewall-convert-scfw-config:138
-#, fuzzy
 msgid "Disable firewall"
-msgstr "Habilitar cortafuego"
+msgstr "Inhabilitar cortafuegos"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
@@ -829,49 +774,51 @@ msgstr "<módulo>"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr "Habilitar un módulo iptables"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr "Inhabilitando un módulo de iptables"
 
 #: ../src/firewall-convert-scfw-config:150
 #, fuzzy
 msgid "<service>"
-msgstr "Servicios"
+msgstr "Servicio"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr "Abrir el cortafuegos para un servicio (por ejemplo, ssh)"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr "<puerto>[-<puerto>]:<protocolo>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr "Abrir puertos específicos en el cortafuegos (por ejemplo, ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
 msgid "<interface>"
-msgstr "<interface>"
+msgstr "<interfase>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "Permitir todo el tráfico en el dispositivo seleccionado"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr ""
+"Enmascarar el tráfico desde un dispositivo especificado. Esto es sólo para "
+"IPv4."
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "Compatibilidad hacia atrás, similar a --enabled"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
-msgstr "[<type>:][<table>:]<filename>"
+msgstr "[<tipo>:][<tabla>:]<nombre_de_archivo>"
 
 #: ../src/firewall-convert-scfw-config:174
 msgid ""
@@ -879,18 +826,17 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
+"Especifique un archivo de reglas personalizadas para incluir en el "
+"cortafuegos. Tipo por defecto: ipv4, tabla por defecto: filter. (Ejemplo: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interfase>:port=<puerto>:proto=<protocolo>[:toport=<puerto destino>][:"
+"toaddr=<dirección destino>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -898,281 +844,33 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
+"Reenvío de puerto con protocolo desde una interfase hacia otro puerto "
+"destino (sin entregar dirección de destino) o hacia otra dirección destino "
+"con un puerto de destino opcional. Esto es sólo para IPv4."
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
+msgstr "Bloquear este tipo ICMP. Por defecto se aceptan todos los tipos ICMP."
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr "no existe la opción: %s"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr "la opción %s requiere un argumento"
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr "la opción %(option)s requiere %(count)s argumentos"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#, fuzzy
-#~ msgid "Port:"
-#~ msgstr "Puertos"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#, fuzzy
-#~ msgctxt "yes"
-#~ msgid "Firewall Configuration"
-#~ msgstr "configuracion Predeterminada"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#, fuzzy
-#~ msgid "Server"
-#~ msgstr "Servicios"
-
-#, fuzzy
-#~ msgid "tcp"
-#~ msgstr "ftp"
-
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-#~ msgstr ""
-#~ "Este programa es software libre; puede redistribuirlo y/o modificarlo "
-#~ "bajo los términos de la Licencia Pública General de Bibliotecas de GNU, "
-#~ "como fueron publicadas por la Fundación de Software Libre; ya sea la "
-#~ "versión 2 o (a su elección) alguna posterior.\n"
-#~ "\n"
-#~ "Este programa se distribuye con la esperanza de que será útil, pero SIN "
-#~ "NINGUNA GARANTÍA; sin siquiera la garantía MERCANTIL implícita o AJUSTE "
-#~ "PARA UN PROPÓSITO PARTICULAR. Vea la Licencia Pública General de "
-#~ "Bibliotecas de GNU para más información.\n"
-#~ "\n"
-#~ "Debe haber recibido una copia de la Licencia Pública General de "
-#~ "Bibliotecas de GNU junto con este programa; de lo contrario, consulte "
-#~ "<http://www.gnu.org/licenses/>."
-
-#, fuzzy
-#~ msgid "Firewall Config"
-#~ msgstr "Demonio de firewall"
-
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "_Fichero"
-
-#~ msgid "21/TCP"
-#~ msgstr "21/TCP"
-
-#~ msgid "22/TCP"
-#~ msgstr "22/TCP"
-
-#~ msgid "80/TCP"
-#~ msgstr "80/TCP"
-
-#~ msgid "Add"
-#~ msgstr "Agregar"
-
-#~ msgid "Allow access to necessary ports or port ranges, only."
-#~ msgstr ""
-#~ "Permitir el acceso a los puertos o rango de puertos necesarios únicamente."
-
-#~ msgid "Allow access to necessary services, only."
-#~ msgstr "Permitir el acceso a los servicios necesarios únicamente."
-
-#~ msgid "Custom Rules"
-#~ msgstr "Archivos de Reglas Personalizadas"
-
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#~ msgid ""
-#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
-#~ "FTP server publicly available, enable this option. You need the vsftpd "
-#~ "package installed for this option to be useful."
-#~ msgstr ""
-#~ "FTP es un protocolo usado para la transferencia remota de archivos. Si "
-#~ "planea poner su servidor FTP a disposición pública, habilite esta opción. "
-#~ "Para que esta opción sea útil, necesitará tener instalado el paquete "
-#~ "vsftpd."
-
-#~ msgid ""
-#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
-#~ "Web server publicly available, enable this option. This option is not "
-#~ "required for viewing pages locally or developing Web pages."
-#~ msgstr ""
-#~ "HTTP es el protocolo usado para servir páginas web. Si planea poner su "
-#~ "servidor web a disposición pública, habilite esta opción. No se requiere "
-#~ "esta opción para ver páginas localmente o para desarrollar páginas web."
-
-#~ msgid ""
-#~ "Here you can define the interfaces and network areas that have fill "
-#~ "access to the system."
-#~ msgstr ""
-#~ "Aqui puedes definir las interfaces y areas de red que copan el acceso al "
-#~ "sistema"
-
-#~ msgid "Home Zone"
-#~ msgstr "Zon a casera"
-
-#~ msgid "IPv4,IPv6"
-#~ msgstr "IPv4,IPv6"
-
-#~ msgid ""
-#~ "Only allow full access for interfaces or network areas if you can trust "
-#~ "all participants part of these."
-#~ msgstr ""
-#~ "Permita acceso total solo a las interfaces o areas de red, si confia en "
-#~ "todos los componentes de esta.  "
-
-#~ msgid "Public Zone"
-#~ msgstr "Zona publica"
-
-#~ msgid "Reload"
-#~ msgstr "Recargar"
-
-#~ msgid "Restart"
-#~ msgstr "Reiniciar"
-
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#~ msgid ""
-#~ "Secure Shell (SSH) is a protocol for logging into and executing commands "
-#~ "on remote machines. It provides secure encrypted comminucations. If you "
-#~ "plan on accessing your machine remotely via SSH over a firewalled "
-#~ "interface, enable this option. You need the openssh-server package "
-#~ "installed for this option to be useful. "
-#~ msgstr ""
-#~ "Secure shell (SSH) es un protocolo para el acceso y ejecucion de comandos "
-#~ "en maquinas remotas. Este provee seguridad encriptando  las "
-#~ "comunicaciones. Si planea acceder a su maquina remotamente via SSH sobre "
-#~ "una interfaz de firewall, habilite esta opcion. Necesitara tener "
-#~ "instalado openssh-server para usar completamente esta opcion"
-
-#~ msgid "Start"
-#~ msgstr "Inicio"
-
-#~ msgid "Stop"
-#~ msgstr "Detener"
-
-#~ msgid "Trusted"
-#~ msgstr "Confiable"
-
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
-
-#~ msgid "Work Zone"
-#~ msgstr "Zona de trabajo"
-
-#~ msgid "ICMP Blocking"
-#~ msgstr "Bloquear ICMP"
-
-#~ msgid "Panic Mode"
-#~ msgstr "Modo Panico"
-
-#~ msgid ""
-#~ "\n"
-#~ "Timeout: %d seconds"
-#~ msgstr ""
-#~ "\n"
-#~ "Timeout: %d Segundos"
-
-#~ msgid "No Open Services."
-#~ msgstr "No hay Servicios Abiertos"
-
-#~ msgid "Open Services:"
-#~ msgstr "Servicios Abiertos"
-
-#~ msgid "No Open Ports."
-#~ msgstr "No Hay Puertos Abiertos"
-
-#~ msgid "No Trusted."
-#~ msgstr "No Confiable"
-
-#~ msgid "Trusted:"
-#~ msgstr "Confiable"
-
-#~ msgid "No Masqueraded."
-#~ msgstr "No Enmascarable"
-
-#~ msgid "No ICMP Blocks."
-#~ msgstr "No Hay Bloqueo ICMP"
-
-#~ msgid "ICMP Blocks:"
-#~ msgstr "Bloqueos ICMP"
-
-#~ msgid "No Forward Ports."
-#~ msgstr "No Hay Redireccion De Puertos"
-
-#~ msgid "Forward Ports:"
-#~ msgstr "Redireccion de Puertos"
-
-#~ msgid "No Custom Rules."
-#~ msgstr "Sin Reglas Personalizadas"
-
-#~ msgid "Custom Rules:"
-#~ msgstr "Reglas Personalizadas"
-
-#~ msgid "Panic mode"
-#~ msgstr "Modo Panico"
-
-#~ msgid "Service '%s'"
-#~ msgstr "Servicio '%s'"
-
-#~ msgid "Port '%s:%s'"
-#~ msgstr "Puerto '%s:%s'"
-
-#~ msgid "Trusted '%s'"
-#~ msgstr "Confiable '%s'"
-
-#~ msgid "Masquerade '%s'"
-#~ msgstr "Enmaascarado '%s'"
-
-#~ msgid "Forward Port 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-#~ msgstr "Redireciion de Puerto 'if=%s:port=%s:proto=%s:toport=%s:toaddr=%s'"
-
-#~ msgid "Block ICMP '%s'"
-#~ msgstr "Bloqueo ICMP '%s'"
-
-#~ msgid ""
-#~ "Custom 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:proto=%s:"
-#~ "iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
-#~ msgstr ""
-#~ "Personalizado 'table=%s:chain=%s:src=%s:src_port=%s:dst=%s:dst_port=%s:"
-#~ "proto=%s:iface_in=%s:iface_out=%s:physdev_in=%s:physdev_out=%s:target=%s'"
+msgstr "la opción %s no toma un valor"

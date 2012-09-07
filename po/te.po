@@ -1,49 +1,36 @@
-# translation of system-config-firewall.master.te.po to Telugu
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 #
+# Translators:
+# Krishna Babu K <kkrothap@redhat.com>, 2007-2010.
 # Sree Ganesh <sthottem@redhat.com>, 2006.
-# Krishna Babu K <kkrothap@redhat.com>, 2007, 2008, 2009, 2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall.master.te\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2010-06-29 20:16+0530\n"
-"Last-Translator: Krishna Babu K <kkrothap@redhat.com>\n"
-"Language-Team: Telugu <en@li.org>\n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-06 11:07+0000\n"
+"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"Language-Team: Telugu (http://www.transifex.com/projects/p/fedora/language/"
+"te/)\n"
 "Language: te\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
-"\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
 msgstr ""
 
-#
 #: ../config/firewall-config.desktop.in.h:1
-#, fuzzy
 msgid "Firewall"
-msgstr "ఫైర్‌వాల్ ను చేతనం చేయి"
+msgstr "ఫైర్‌వాల్"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
-msgstr "Configuração da Firewall"
+msgstr "Firewall ఆకృతీకరణ"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -199,11 +186,9 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "ఫైర్‌వాల్ ను చేతనం చేయి"
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
@@ -235,25 +220,25 @@ msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
 msgid "Service"
-msgstr "Serviço"
+msgstr "సేవ"
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
 msgid "Port"
-msgstr "Porto"
+msgstr "పోర్టును"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "చట్టం"
 
 #: ../src/firewall-config:206
 msgid "To Port"
-msgstr "Para Porto"
+msgstr "ఈ పోర్ట్‍‌కు"
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "పంపవలిసిన చిరునామా"
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
@@ -261,11 +246,11 @@ msgstr ""
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr "హెచ్చిరక"
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr "దోషము"
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -317,7 +302,6 @@ msgid ""
 "reload or restart."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
 msgstr "పోర్టు ఫార్వార్డింగ్"
@@ -325,50 +309,43 @@ msgstr "పోర్టు ఫార్వార్డింగ్"
 #: ../src/firewall-config.glade.h:9
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+msgstr "మీ అవసరములకు తగినట్లు ములం మరియు గమ్యం ఐచ్చికాలను దయచేసి ఎంపికచేసికొనుము."
 
-#
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "పోర్టు ఫార్వార్డింగ్"
+msgstr "పోర్టు/పోర్టు పరిమితి:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP చిరునామా:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "చట్టం:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "పోర్టు ఫార్వార్డింగ్"
+msgstr "స్థానిక ఫార్వార్డింగ్"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "వేరొక పోర్ట్‍‌కు పంపుము"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"మీరు స్థానిక ఫార్వార్డింగ్‌ను చేతనం చేస్తే, మీరు పోర్ట్‍‌ను తెలుపవలసి వుంటుంది. మూలం పోర్ట్‍‌కు ఈ పోర్ట్‍ "
+"భిన్నంగా వుండాలి."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -398,21 +375,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "ICMP వడపోత"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "ICMP వడపోత"
+msgstr "ICMP రకము"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -444,21 +417,17 @@ msgstr ""
 msgid "IPv6"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:36
 msgid "_File"
 msgstr "దస్త్రం (_F)"
 
-#
 #: ../src/firewall-config.glade.h:37
 msgid "_Options"
 msgstr "ఐచ్చికాలు (_O)"
 
-#
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "ఫైర్‌వాల్ ను చేతనం చేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
@@ -472,7 +441,6 @@ msgstr ""
 msgid "Edit ICMP Types"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:42
 msgid "_Help"
 msgstr "సహాయం (_H)"
@@ -522,17 +490,13 @@ msgstr ""
 msgid "Add Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "సరిచేయి"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
@@ -543,14 +507,13 @@ msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"Aqui pode definir que serviços são de confiança. Serviços de confiança são "
-"acessíveis a partir de qualquer máquina e rede."
+"ఏ సేవలు నమ్మదగినవో ఇక్కడ మీరు ప్రతిపాదించవచ్చు.దానర్ధం ఈ సేవలు అన్ని అతిధేయీలు లేక నెట్వర్క్సు నుండి "
+"వీలుగా ఉంటాయి."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:58
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -560,25 +523,20 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "ప్రవేశమును జతపరచుము"
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "ప్రవేశమును సరిచేయుము"
 
-#
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "తీసివేయి"
+msgstr "ప్రవేశమును తీసివేయి"
 
-#
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "ఇతర పోర్ట్సు"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:63
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
@@ -589,26 +547,20 @@ msgstr ""
 "మారువేషదారణ ఉపయోగకరంగా ఉంటుంది.మీ స్థానిక నెట్వర్కు కనిపించదు మరియు ఇంటర్‌నెట్ కు ఒక అతిధేయ లాగా "
 "కనబడుతుంది. మారువేషదారణ IPv4 మాత్రమే."
 
-#
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "Masquerading"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:65
-#, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr "మీరు మారువేషదారణ ను సాధ్య పరిస్తే, మీ IPv4 నెట్వర్కులకు IP ఫార్వార్డింగ్ కూడా సాధ్యమవుతుంది."
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
 msgstr "Masquerading"
 
-#
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
@@ -620,9 +572,7 @@ msgstr ""
 "పంపుటకు ప్రవేశాలను పోర్ట్స్‍‌కు జతచేయుము. వేరొక సిస్టమ్‌కు పంపుట ఇంటర్‌ఫేస్ మారువేషంలోవుంటేనే "
 "ఉపయోగకరంగా వుంటుంది. పోర్ట్‍ పంపుట IPv4 మాత్రమే."
 
-#
 #: ../src/firewall-config.glade.h:68
-#, fuzzy
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -632,9 +582,7 @@ msgstr ""
 "పంపుటకు ఉపయోగించబడుతుంది, అయితే అదనంగా పింగ్ అభ్యర్దనలు మరియు ప్రత్యుత్తరాలు వంటి సమాచార "
 "సందేశాలు కు."
 
-#
 #: ../src/firewall-config.glade.h:69
-#, fuzzy
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -642,14 +590,13 @@ msgstr ""
 "జాబితానందు ICMP రకాలను గుర్తుంచుము, ఏవైతే తిరస్కరించాలో. అన్ని ఇతర ICMP రకములు ఫైర్‌వాల్ దాటుటకు "
 "అనుమతించబడినవి. అప్రమేయంగా ఏ పరిమితి లేదు."
 
-#
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
 msgstr "ICMP వడపోత"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "పోర్ట్‍ మరియు నియమం"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -681,7 +628,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:79
 msgid "Service Settings"
-msgstr "Definições do Serviço"
+msgstr "సేవా అమరికలు"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
@@ -695,24 +642,19 @@ msgstr ""
 msgid "Edit Service"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"అదనపు పోర్ట్సు లేక పోర్ట రేంజస్ ను కలుపుము,ఏవైతే అన్ని అతిధేయీలను లేక వలయాలను వాడటానికి అవసరమో అవి."
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -770,81 +712,79 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr "పోర్ట్‍ వ్యాప్తి %s ఏకైకం కాదు."
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr "%s విలువైన వ్యాప్తికాదు (ప్రారంభ పోర్ట్‍ >= ముగింపు పోర్ట్‍)."
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr "%s చెల్లునటువంటి నియమంకాదు."
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr "చెల్లని పోర్ట్‍ నిర్వచనం %s."
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr "Argumento inválido %s"
+msgstr "చెల్లని ఆర్గుమెంట్ %s"
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
+msgstr "ఐచ్చికం %(option)s: చెల్లని forward_port '%(value)s': %(error)s."
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
+msgstr "ఐచ్చికం %(option)s: సరికాని forward_port '%(value)s'."
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr "చెల్లని యింటర్ఫేస్ '%s'."
 
 #: ../src/firewall-convert-scfw-config:135
 msgid "Enable firewall (default)"
-msgstr "Activar a firewall (por omissão)"
+msgstr "firewall సాధ్యం (సిద్ధం)"
 
 #: ../src/firewall-convert-scfw-config:138
 msgid "Disable firewall"
-msgstr "Desactivar a firewall"
+msgstr "firewall అసాధ్యం"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
-msgstr "<módulo>"
+msgstr "<module>"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr "iptables గుణకం సాధ్యం"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr "iptables గుణకం అసాధ్యం"
 
 #: ../src/firewall-convert-scfw-config:150
+#, fuzzy
 msgid "<service>"
-msgstr "<serviço>"
+msgstr "సేవ"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr "ఒక సేవ కొరకు ఫైర్‌వాల్‌ను తెరువుము (ఉ.దా, ssh)"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr "ఆ ప్రత్యేక పోర్టును firewall ద్వారా అనుమతించు (e.g, ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
@@ -853,15 +793,15 @@ msgstr "<interface>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "traffic అంతా తెలిపిన సాధనంలోకి అనుమతించు"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr "తెలుపబడిన పరికరమునుండి Masquerades రద్దీ. ఇది IPv4 మాత్రమే."
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "నేపధ్య సాధ్యత, aliasedకి --సాధ్యం"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
@@ -873,18 +813,17 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
+"firewall లో కలుపుటకు వినియోగదారుని నియమాల దస్త్రంను తెలుపండి. దీనిని సిద్దనియమాల తర్వాత కలపవలెను. "
+"అప్రమేయ నియమం రకము: ipv4, అప్రమేయ పట్టిక: వడపోత. (ఉదాహరణ: ipv4:filter:/etc/sysconfig/"
+"ipv4_filter_addon)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -892,136 +831,32 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
+"పోర్ట్‍‌ను నియమంతో ఇంటర్‌ఫేస్ కొరకు వేరొక స్థానిక గమ్యం పోర్ట్‍‌కు (గమ్యం చిరునామా ఇవ్వలేదు) గాని లేదా ఐచ్చిక "
+"గమ్యం పోర్ట్‍‌తో ఇతర గమ్యం చిరునామాకు పంపుము. ఇది IPv4 మాత్రమే."
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
+msgstr "ఈ ICMP రకమును బ్లాక్ చేయుము. అప్రమేయంగా అన్ని ICMP రకములను ఆమోదించుకు వుంటుంది."
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr "అటువంటి ఐచ్చికం లేదు: %s"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr "%s ఐచ్చికంకు ఒక ఆర్గుమెంటు అవసరము"
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr "%(option)s ఐచ్చికం %(count)s ఆర్గుమెంట్లు అవసరము"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#~ msgid "Port:"
-#~ msgstr "Porto:"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#~ msgid "Server"
-#~ msgstr "Servidor"
-
-#
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-#~ msgstr ""
-#~ "ఈ ప్రోగ్రామ్ ఉచిత సాఫ్టువేర్; ఉచిత సాఫ్టువేర్ వ్యవస్థాపన నుండి ప్రచురింపబడిన GNU జనరల్ పబ్లిక్ "
-#~ "లైసెన్సు తెలిపిన దానికి లోబడి మీరు ఈ ప్రోగ్రామ్ ను తిరిగిపంరిణీ చేయవచ్చు మరియు/లేదా సవరించవచ్చు; లైసెన్సు "
-#~ "విడుదల 2 కాని, లేదా(మీ ఐచ్చికంగా) తర్వాతి ఏ విడుదల నైనా అవలంబించవచ్చు.\n"
-#~ "\n"
-#~ "ఈ ప్రోగ్రామ్ ఉపయోగపడుతుందనే నమ్మకం తో పంపిణీ చేయబడుతోంది, అయితే ఏ హామీ లేకుండా; వ్యాపారసంభందితంగా "
-#~ "గాని లేదా ఒక ప్రయోజనం కొరకు సంపూర్ణతతో ఉందని గాని కూడా హామీ లేదు. ఎక్కువ సమాచారం కొరకు GNU "
-#~ "జనరల్ పబ్లిక్ లైసెన్సు ను చూడండి.\n"
-#~ "\n"
-#~ "ఈ ప్రోగ్రామ్ తో మీరు ఒక GNU జనరల్ పబ్లిక్ లైసెన్సు నకలు ను పొందిఉన్నారు.పొందకపోతే, <http://www."
-#~ "gnu.org/licenses/> ని చూడండి."
-
-#
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "దస్త్రం (_F)"
-
-#
-#~ msgid "Add"
-#~ msgstr "జతచేయి"
-
-#
-#~ msgid "Allow access to necessary ports or port ranges, only."
-#~ msgstr "అవసరిమైన పోర్టులకు లేదా పోర్టు పరిమితులకు మాత్రమే, వాడుకొను అనుమతిని కలిపించు."
-
-#
-#~ msgid "Allow access to necessary services, only."
-#~ msgstr "అవసరమైన సేవలకు మాత్రమే, వాడుకొను అనుమతిని కలిపించు."
-
-#
-#~ msgid "Custom Rules"
-#~ msgstr "వినియోగదారుని నియమాలు"
-
-#
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#
-#~ msgid ""
-#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
-#~ "FTP server publicly available, enable this option. You need the vsftpd "
-#~ "package installed for this option to be useful."
-#~ msgstr ""
-#~ "FTP రిమోట్ ఫైలు బదిలీకి ఉపయోగించే చట్టం. మీరు మీ FTP సర్వరును పబ్లిక్కుగా అందుబాటులో "
-#~ "ఉంచాలనుకుంటే, ఈ ఐచ్ఛికాన్ని సాధ్యంచేయండి.మీకు ఈ ఐచ్ఛికం సఫలంకావటానికి సంస్థాపించబడ్డ vsftpd "
-#~ "ప్యాకేజీ కావలసి ఉంది."
-
-#
-#~ msgid ""
-#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
-#~ "Web server publicly available, enable this option. This option is not "
-#~ "required for viewing pages locally or developing Web pages."
-#~ msgstr ""
-#~ "HTTP సర్వరు వెబ్ పుట కోసం ఉపయోగించే చట్టం. మీరు మీ వెబ్ సర్వరును అమందరికీ అందుబాటులో "
-#~ "ఉంచాలనుకుంటే,ఈ ఐచ్చికాన్ని సాధ్యం చేయండి. ఈ ఐచ్చికం పుటలను స్థానికంగా చూడటానికి లేదా వెబ్ పుటలను "
-#~ "అభివృద్ధి చేయటానికి కాదు."
-
-#
-#~ msgid "Reload"
-#~ msgstr "తిరిగితెచ్చు"
-
-#
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
+msgstr "%s ఐచ్చికం విలువను తీసుకోలేదు"

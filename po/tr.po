@@ -1,22 +1,24 @@
-# Turkish translations for PACKAGE package.
-# Copyright (C) 2004 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
 # Automatically generated, 2004.
 # Hasan Alp İNAN, 2011.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2011-02-04 17:07+0200\n"
-"Last-Translator: Hasan Alp İNAN\n"
-"Language-Team: Turkish <hasanalpinan@gmail.com>\n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-06 11:07+0000\n"
+"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"Language-Team: Turkish (http://www.transifex.com/projects/p/fedora/language/"
+"tr/)\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 1.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
@@ -25,12 +27,11 @@ msgstr ""
 #: ../config/firewall-config.desktop.in.h:1
 #, fuzzy
 msgid "Firewall"
-msgstr "Güvenlik Duvarı Artalan Süreci"
+msgstr "Güvenlik Duvarı yok"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
-#, fuzzy
 msgid "Firewall Configuration"
-msgstr "Ön Tanımlı Yapılandırma"
+msgstr "Güvenlik Duvarı Yapılandırması"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -76,9 +77,8 @@ msgid "Shields Up"
 msgstr ""
 
 #: ../src/firewall-applet:110
-#, fuzzy
 msgid "Enable Notifications"
-msgstr "Tüm Bildirimleri Etkinleştir"
+msgstr ""
 
 #: ../src/firewall-applet:123
 msgid "Edit Firewall Settings..."
@@ -119,14 +119,12 @@ msgid "Not using slip"
 msgstr ""
 
 #: ../src/firewall-applet:324
-#, fuzzy
 msgid "Connection to FirewallD established."
-msgstr "FirewallD bağlantısını kayıp"
+msgstr ""
 
 #: ../src/firewall-applet:332
-#, fuzzy
 msgid "Connection to FirewallD lost."
-msgstr "FirewallD bağlantısını kayıp"
+msgstr ""
 
 #: ../src/firewall-applet:370
 msgid "FirewallD has been reloaded."
@@ -190,9 +188,8 @@ msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "Güvenlik Duvarı Artalan Süreci"
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
@@ -215,39 +212,37 @@ msgid "Failed to load icons."
 msgstr ""
 
 #: ../src/firewall-config:107 ../src/firewall-config:755
-#, fuzzy
 msgid "Runtime Configuration"
-msgstr "Ön Tanımlı Yapılandırma"
+msgstr ""
 
 #: ../src/firewall-config:108
-#, fuzzy
 msgid "Persistent Configuration"
-msgstr "Ön Tanımlı Yapılandırma"
+msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
-#, fuzzy
 msgid "Service"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
 #, fuzzy
 msgid "Port"
-msgstr "Portlar"
+msgstr "Port Ekle"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
+#, fuzzy
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "Protokol:"
 
 #: ../src/firewall-config:206
 #, fuzzy
 msgid "To Port"
-msgstr "Portlar"
+msgstr "Port Ekle"
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr ""
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
@@ -255,11 +250,11 @@ msgstr ""
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr ""
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr ""
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -311,7 +306,6 @@ msgid ""
 "reload or restart."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
 msgstr "Port Yönlendirme"
@@ -320,49 +314,40 @@ msgstr "Port Yönlendirme"
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
 
-#
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "Port Yönlendirme"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "Protokol:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "Port Yönlendirme"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -392,21 +377,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "ICMP Filter"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "ICMP Filter"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -438,35 +419,30 @@ msgstr "IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
-#
 #: ../src/firewall-config.glade.h:36
 msgid "_File"
 msgstr "_Dosya"
 
-#
 #: ../src/firewall-config.glade.h:37
 msgid "_Options"
 msgstr "_Seçenekler"
 
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "Güvenlik Duvarı Artalan Süreci"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:40
-#, fuzzy
 msgid "Edit Services"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:41
 msgid "Edit ICMP Types"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:42
 msgid "_Help"
 msgstr "_Yardım"
@@ -509,26 +485,20 @@ msgid "Current default zone of the system."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:51
-#, fuzzy
 msgid "Zone"
-msgstr "Alanlar"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Add Zone"
-msgstr "Güvenilen Alan"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "Düzenle"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "Kaldır"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
@@ -539,13 +509,10 @@ msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"Aqui pode definir que serviços são de confiança. Serviços de confiança são "
-"acessíveis a partir de qualquer máquina e rede."
 
 #: ../src/firewall-config.glade.h:57
-#, fuzzy
 msgid "Services"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:58
 msgid ""
@@ -557,22 +524,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "Kaldır"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "Portlar"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -585,9 +549,8 @@ msgstr ""
 "na Internet com um único endereço. Masquerading é válido apenas em IPv4."
 
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "Maskelenmiş:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:65
 msgid ""
@@ -595,7 +558,6 @@ msgid ""
 "networks."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
 msgstr "Maskeleme"
@@ -618,26 +580,21 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"O protocolo ICMP (Internet Control Message Protocol) é utilizado "
-"principalmente para enviar mensagens de erro entre computadores em rede, mas "
-"adicionalmente para mensagens informativas como pedidos e respostas de ping."
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Marque os tipos ICMP, na lista, que devem ser rejeitados. Todos os outros "
-"tipos ICMP serão permitidos na firewall. Por omissão não existem limitações."
 
-#
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
 msgstr "ICMP Filter"
 
 #: ../src/firewall-config.glade.h:71
+#, fuzzy
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "Protokol:"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -655,11 +612,9 @@ msgstr ""
 msgid "Please enter a port and/or a protocol."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:76
-#, fuzzy
 msgid "Other Protocol:"
-msgstr "Diğer Portlar"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:77
 msgid "Base Service Settings"
@@ -672,26 +627,23 @@ msgstr ""
 #: ../src/firewall-config.glade.h:79
 #, fuzzy
 msgid "Service Settings"
-msgstr "Servisler"
+msgstr "SELinux Ayarları:"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:82
-#, fuzzy
 msgid "Add Service"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:83
-#, fuzzy
 msgid "Edit Service"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
@@ -723,14 +675,12 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "IPv4:"
-msgstr "IPv4"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "IPv6:"
-msgstr "IPv6"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
 msgid "Base Zone Settings"
@@ -761,107 +711,102 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr "Argumento inválido %s"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr ""
 
-#
 #: ../src/firewall-convert-scfw-config:135
-#, fuzzy
 msgid "Enable firewall (default)"
-msgstr "Güvenlik Duvarını Etkinleştir"
+msgstr "Güvenlik duvarını etkinleştirir (öntanımlı)"
 
-#
 #: ../src/firewall-convert-scfw-config:138
-#, fuzzy
 msgid "Disable firewall"
-msgstr "Güvenlik Duvarını Etkinleştir"
+msgstr "Güvenlik duvarı iptal edilir"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
-msgstr "<módulo>"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:150
-#, fuzzy
 msgid "<service>"
-msgstr "Servisler"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:151
+#, fuzzy
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr "Güvenlik duvarı üzerinden belli portlara izin verilir"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:156
+#, fuzzy
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr "Güvenlik duvarı üzerinden belli portlara izin verilir"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
 msgid "<interface>"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "Belirtilen aygıt üzerindeki tüm trafiğe izin verilir"
 
 #: ../src/firewall-convert-scfw-config:165
+#, fuzzy
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr "Belirtilen aygıt üzerindeki tüm trafiğe izin verilir"
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "Geriye doğru uyumluluk --enabled ile sağlandı"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
-msgstr "[<type>:][<table>:]<filename>"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:174
 msgid ""
@@ -869,18 +814,12 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -888,181 +827,30 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
 msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr ""
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#, fuzzy
-#~ msgid "Port:"
-#~ msgstr "Portlar"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#, fuzzy
-#~ msgctxt "yes"
-#~ msgid "Firewall Configuration"
-#~ msgstr "Ön Tanımlı Yapılandırma"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#, fuzzy
-#~ msgid "Server"
-#~ msgstr "Servisler"
-
-#, fuzzy
-#~ msgid "tcp"
-#~ msgstr "ftp"
-
-#, fuzzy
-#~ msgid "Firewall Config"
-#~ msgstr "Güvenlik Duvarı Artalan Süreci"
-
-#
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "_Dosya"
-
-#, fuzzy
-#~ msgid ""
-#~ "\n"
-#~ "Requested by %s (%s)"
-#~ msgstr ""
-#~ "\n"
-#~ "Talep eden: %s"
-
-#~ msgid "21/TCP"
-#~ msgstr "21/TCP"
-
-#~ msgid "22/TCP"
-#~ msgstr "22/TCP"
-
-#~ msgid "80/TCP"
-#~ msgstr "80/TCP"
-
-#
-#~ msgid "Add"
-#~ msgstr "Ekle"
-
-#
-#~ msgid "Custom Rules"
-#~ msgstr "Özel Kurallar"
-
-#
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#~ msgid "Home Zone"
-#~ msgstr "Ev Alanı"
-
-#~ msgid "IPv4,IPv6"
-#~ msgstr "IPv4,IPv6"
-
-#~ msgid "Public Zone"
-#~ msgstr "Kamu Alanı"
-
-#
-#~ msgid "Reload"
-#~ msgstr "Yeniden Yükle"
-
-#~ msgid "Restart"
-#~ msgstr "Yeniden Başlat"
-
-#
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#~ msgid "Start"
-#~ msgstr "Başlat"
-
-#~ msgid "Stop"
-#~ msgstr "Durdur"
-
-#~ msgid "Trusted"
-#~ msgstr "Güvenilen"
-
-#
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
-
-#~ msgid "Work Zone"
-#~ msgstr "İş Alanı"
-
-#~ msgid "Panic Mode"
-#~ msgstr "Panik Kipi"
-
-#~ msgid ""
-#~ "\n"
-#~ "Timeout: %d seconds"
-#~ msgstr ""
-#~ "\n"
-#~ "Zaman aşımı: %d saniye"
-
-#~ msgid "No Open Services."
-#~ msgstr "Açık Hizmet Yok."
-
-#~ msgid "Open Services:"
-#~ msgstr "Açık Hizmetler:"
-
-#~ msgid "No Open Ports."
-#~ msgstr "Açık Port Yok."
-
-#~ msgid "No Trusted."
-#~ msgstr "Güvenilmeyen."
-
-#~ msgid "Trusted:"
-#~ msgstr "Güvenilir:"
-
-#~ msgid "No Masqueraded."
-#~ msgstr "Maskelenmemiş."
-
-#~ msgid "ICMP Blocks:"
-#~ msgstr "ICMP Blokları:"
-
-#~ msgid "Forward Ports:"
-#~ msgstr "Yönlendirilen Portlar:"
-
-#~ msgid "Panic mode"
-#~ msgstr "Panik kipi"
-
-#~ msgid "Service '%s'"
-#~ msgstr "Servis '%s'"
-
-#~ msgid "Port '%s:%s'"
-#~ msgstr "Port '%s:%s'"
+msgstr ""

@@ -1,43 +1,40 @@
-# translation of ko.master.po to Korean
-# translation of ko.po to
-# translation of ko.po to
-# Copyright (C) 2002 Red Hat, Inc.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
-# Michelle Kim <mkim@redhat.com>, 2002.
-# Michelle J Kim <mkim@redhat.com>, 2003,2004.
-# Jinseok Seo <jsseo@postech.ac.kr>, 2004.
-# Michelle Ji Yeen Kim <mkim@redhat.com>, 2005, 2006.
-# Eunju Kim <eukim@redhat.com>, 2006, 2007, 2008, 2009.
+# Translators:
+# Eunju Kim <eukim@redhat.com>, 2006-2009.
 # Hyunsok Oh <hoh@redhat.com>, 2010.
+# Jinseok Seo <jsseo@postech.ac.kr>, 2004.
+# Michelle Ji Yeen Kim <mkim@redhat.com>, 2005-2006.
+# Michelle J Kim <mkim@redhat.com>, 2003-2004.
+# Michelle Kim <mkim@redhat.com>, 2002.
 msgid ""
 msgstr ""
-"Project-Id-Version: ko.master\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2010-04-28 13:48+1000\n"
-"Last-Translator: Hyunsok Oh <hoh@redhat.com>\n"
-"Language-Team: Korean <ko@li.org>\n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-06 11:07+0000\n"
+"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"Language-Team: Korean (http://www.transifex.com/projects/p/fedora/language/"
+"ko/)\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=1; plural=0;\n"
-"\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
 msgstr ""
 
-#
 #: ../config/firewall-config.desktop.in.h:1
-#, fuzzy
 msgid "Firewall"
-msgstr "방화벽 사용  "
+msgstr "방화벽"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
-msgstr "Configuração da Firewall"
+msgstr "방화벽 설정"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -193,11 +190,9 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "방화벽 사용  "
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
@@ -229,25 +224,25 @@ msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
 msgid "Service"
-msgstr "Serviço"
+msgstr "서비스"
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
 msgid "Port"
-msgstr "Porto"
+msgstr "포트"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "프로토콜"
 
 #: ../src/firewall-config:206
 msgid "To Port"
-msgstr "Para Porto"
+msgstr "목적 포트 "
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "목적 주소 "
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
@@ -255,11 +250,11 @@ msgstr ""
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr "경고 "
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr "오류 "
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -311,7 +306,6 @@ msgid ""
 "reload or restart."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
 msgstr "포트 포워딩"
@@ -319,50 +313,43 @@ msgstr "포트 포워딩"
 #: ../src/firewall-config.glade.h:9
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+msgstr "필요에 따라 소스 및 수신지 옵션을 선택하시기 바랍니다. "
 
-#
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "포트 포워딩"
+msgstr "포트 / 포트 범위:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP 주소: "
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "프로토콜:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "포트 포워딩"
+msgstr "로컬 포트 포워딩 "
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "다른 포트로 포워드 "
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"로컬 포워딩을 사용하실 경우, 포트를 지정하셔야 합니다. 이러한 포트는 소스 포"
+"트와 달라야 합니다. "
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -392,21 +379,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "ICMP 필터 "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "ICMP 필터 "
+msgstr "ICMP 유형 "
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -438,21 +421,17 @@ msgstr ""
 msgid "IPv6"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:36
 msgid "_File"
 msgstr "파일(_F)"
 
-#
 #: ../src/firewall-config.glade.h:37
 msgid "_Options"
 msgstr "옵션(_O)"
 
-#
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "방화벽 사용  "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
@@ -466,7 +445,6 @@ msgstr ""
 msgid "Edit ICMP Types"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:42
 msgid "_Help"
 msgstr "도움말(_H)"
@@ -516,17 +494,13 @@ msgstr ""
 msgid "Add Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "편집 "
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "삭제  "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
@@ -537,14 +511,13 @@ msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"Aqui pode definir que serviços são de confiança. Serviços de confiança são "
-"acessíveis a partir de qualquer máquina e rede."
+"여기서 신뢰하는 서비스를 지정할 수 있습니다. 지정하신 서비스는 모든 호스트 또"
+"는 네트워크에서 액세스 가능하게 됩니다."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:58
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -554,25 +527,20 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "항목 추가  "
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "항목 편집  "
 
-#
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "삭제  "
+msgstr "항목 삭제    "
 
-#
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "그 외의 포트"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:63
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
@@ -584,28 +552,20 @@ msgstr ""
 "넷에서 하나의 주소로 나타납니다. 마스커레이딩 (Masquerading) 기능은 IPv4에서"
 "만 해당됩니다.  "
 
-#
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "마스커레이딩 (Masquerading) "
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:65
-#, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"마스커레이딩 (Masquerading) 기능을 활성화하실 경우, IP 포워딩은 IPv4 네트워크"
-"에 대해 활성화됩니다. "
 
-#
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
 msgstr "마스커레이딩 (Masquerading) "
 
-#
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
@@ -618,9 +578,7 @@ msgstr ""
 "것은 인터페이스가 마스커레이딩되었을 경우에만 유용합니다. 포트 포워딩은 IPv4"
 "에서만 해당됩니다.   "
 
-#
 #: ../src/firewall-config.glade.h:68
-#, fuzzy
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -630,9 +588,7 @@ msgstr ""
 "류 메세지를 보내는 데 주로 사용되지만, 추가로 핑 요청 및 응답과 같은 알림 메"
 "세지를 보내는 데 사용될 수 있습니다. "
 
-#
 #: ../src/firewall-config.glade.h:69
-#, fuzzy
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -640,14 +596,13 @@ msgstr ""
 "목록에서 거부해야 할 ICMP 유형을 표시합니다. 그 외의 모든 ICMP 유형은 방화벽 "
 "통과를 허용합니다. 기본값은 제한 없음입니다. "
 
-#
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
 msgstr "ICMP 필터 "
 
 #: ../src/firewall-config.glade.h:71
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "포트 및 프로토콜 "
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -679,7 +634,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:79
 msgid "Service Settings"
-msgstr "Definições do Serviço"
+msgstr "서비스 설정"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
@@ -693,24 +648,19 @@ msgstr ""
 msgid "Edit Service"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "삭제  "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"모든 호스트 또는 네트워크에 액세스 가능한 포트 및 포트 범위를 추가합니다."
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -768,81 +718,79 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr "포트 범위 %s 이(가) 고유한 범위가 아닙니다."
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr "%s 은(는) 올바른 범위 (시작 포트 >= 마지막 포트)가 아닙니다."
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr "%s은(는) 잘못된 프로토콜입니다. "
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr "잘못된 포트 정의 %s."
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr "Argumento inválido %s"
+msgstr "잘못된 인수 %s "
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
+msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s': %(error)s. "
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
+msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s'. "
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr "잘못된 인터페이스 '%s'. "
 
 #: ../src/firewall-convert-scfw-config:135
 msgid "Enable firewall (default)"
-msgstr "Activar a firewall (por omissão)"
+msgstr "방화벽 사용 (기본)"
 
 #: ../src/firewall-convert-scfw-config:138
 msgid "Disable firewall"
-msgstr "Desactivar a firewall"
+msgstr "방화벽을 사용하지 않음"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
-msgstr "<módulo>"
+msgstr "<module>"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr "iptables 모듈 활성화"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr "iptables 모듈 비활성화"
 
 #: ../src/firewall-convert-scfw-config:150
+#, fuzzy
 msgid "<service>"
-msgstr "<serviço>"
+msgstr "서비스"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr "서비스의 방화벽 통과를 허용함 (예, ssh) "
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr "특정 포트의 방화벽 통과를 허용함 (예, ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
@@ -851,15 +799,17 @@ msgstr "<interface>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "특정 장치에서 들어오는 모든 트래픽을 허용"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr ""
+"특정 장치에서 들어오는 모든 트래픽을 마스커레이딩합니다. 이는 IPv4에서만 해당"
+"합니다."
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "이전 버전 호환성, --enabled로 별칭 지정"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
@@ -871,18 +821,17 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
+"방화벽 설정에 포함할 사용자 규칙 파일을 지정합니다. 이는 기본값 규칙 다음에 "
+"포함됩니다. 기본값 프로토콜 형식: ipv4, 기본값 테이블: filter. (예: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon) "
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -890,138 +839,33 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
+"다른 로컬 수신지 포트 (수신지 주소가 없을 경우) 또는 다른 수신지 주소로(수신"
+"지 포트 선택 지정 가능) 프로토콜과 함께 포트를 포워딩합니다. IPv4에서만 해당"
+"됩니다."
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
+msgstr "ICMP 유형이 차단되었습니다. 기본값으로 모든 ICMP 유형을 허용합니다. "
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr "해당 옵션이 없음: %s"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr "%s 옵션에는 인수가 필요함 "
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr "%(option)s 옵션에는 %(count)s 인수가 필요함"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#~ msgid "Port:"
-#~ msgstr "Porto:"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#~ msgid "Server"
-#~ msgstr "Servidor"
-
-#
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-#~ msgstr ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-
-#
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "파일(_F)"
-
-#
-#~ msgid "Add"
-#~ msgstr "추가 "
-
-#
-#~ msgid "Allow access to necessary ports or port ranges, only."
-#~ msgstr "필요한 포트 또느 포트 범위로만 액세스를 허용합니다. "
-
-#
-#~ msgid "Allow access to necessary services, only."
-#~ msgstr "필요한 서비스로만 액세스를 허용합니다. "
-
-#
-#~ msgid "Custom Rules"
-#~ msgstr "사용자 규칙"
-
-#
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#
-#~ msgid ""
-#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
-#~ "FTP server publicly available, enable this option. You need the vsftpd "
-#~ "package installed for this option to be useful."
-#~ msgstr ""
-#~ "FTP는 원격 파일을 전송하는데 사용되는 프로토콜입니다. 대중에게 열려있는 "
-#~ "FTP서버를 운영하려면, 이 옵션을 선택해야 합니다. vsftpd 패키지를 설치하면 "
-#~ "이 옵션을 더 유용하게 사용할 수 있습니다."
-
-#
-#~ msgid ""
-#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
-#~ "Web server publicly available, enable this option. This option is not "
-#~ "required for viewing pages locally or developing Web pages."
-#~ msgstr ""
-#~ "HTTP는 웹 페이지를 서비스하는데 사용되는 프로토콜입니다. 웹 서버를 운영하"
-#~ "려면 이 옵션을 선택하십시오. 웹 페이지를 보시거나 개발하기 위해서라면, 이 "
-#~ "옵션을 선택할 필요가 없습니다."
-
-#
-#~ msgid "Reload"
-#~ msgstr "새로 고침"
-
-#
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
+msgstr "%s 옵션 값을 갖지 않습니다 "

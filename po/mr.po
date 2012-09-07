@@ -1,42 +1,40 @@
-# translation of mr.po to Marathi
-# Marathi translations for PACKAGE package.
-# Copyright (C) 2004 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
+# Translators:
 # Automatically generated, 2004.
-# Rahul Bhalerao <rbhalera@redhat.com>, 2006.
 # Rahul Bhalerao <b.rahul.pm@gmail.com>, 2006.
-# sandeep shedmake <sandeep.shedmake@gmail.com>, 2007, 2008.
-# Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2008, 2009.
-# Sandeep Shedmake <sshedmak@redhat.com>, 2009, 2010.
+# Rahul Bhalerao <rbhalera@redhat.com>, 2006.
+# sandeep shedmake <sandeep.shedmake@gmail.com>, 2007-2008.
+# Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2008-2009.
+# Sandeep Shedmake <sshedmak@redhat.com>, 2009-2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: mr\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2010-07-26 14:38+0530\n"
-"Last-Translator: Sandeep Shedmake <sshedmak@redhat.com>\n"
-"Language-Team: Marathi <fedora-trans-mr@redhat.com>\n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-06 11:07+0000\n"
+"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"Language-Team: Marathi (http://www.transifex.com/projects/p/fedora/language/"
+"mr/)\n"
 "Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
 msgstr ""
 
-#
 #: ../config/firewall-config.desktop.in.h:1
-#, fuzzy
 msgid "Firewall"
-msgstr "फायरवॉल कार्यान्वीत करा"
+msgstr "फायरवॉल"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
-msgstr "Configuração da Firewall"
+msgstr "फायरवॉल संयोजना"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -192,11 +190,9 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "फायरवॉल कार्यान्वीत करा"
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
@@ -228,25 +224,25 @@ msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
 msgid "Service"
-msgstr "Serviço"
+msgstr "सेवा"
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
 msgid "Port"
-msgstr "Porto"
+msgstr "पोर्ट"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "शिष्टाचार"
 
 #: ../src/firewall-config:206
 msgid "To Port"
-msgstr "Para Porto"
+msgstr "प्रति पोर्ट"
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "प्रति पत्ता"
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
@@ -254,11 +250,11 @@ msgstr ""
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr "ताकीद"
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr "त्रुटी"
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -310,7 +306,6 @@ msgid ""
 "reload or restart."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
 msgstr "पोर्ट फॉरवर्डीग"
@@ -318,50 +313,43 @@ msgstr "पोर्ट फॉरवर्डीग"
 #: ../src/firewall-config.glade.h:9
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+msgstr "कृपया स्त्रोत व लक्ष्य पर्याय तुमच्या आवश्यकतेप्रणाणे वापरा."
 
-#
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "पोर्ट फॉरवर्डीग"
+msgstr "पोर्ट / पोर्ट क्षेत्र:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP पत्ता:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "प्रोटोकॉल:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "पोर्ट फॉरवर्डीग"
+msgstr "स्थानीक फॉरवर्डीग"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "पुढच्या पोर्ट करीता पाठवा"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"स्थानीक फॉर्वडींग कार्यान्वीत केल्यास, तुम्हाला पोर्ट निर्देशीत करावे लागेल. स्त्रोत पोर्ट "
+"करीता हे पोर्ट वेगळे असायला हवे."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -391,21 +379,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "ICMP फिल्टर"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "ICMP फिल्टर"
+msgstr "ICMP प्रकार"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -437,21 +421,17 @@ msgstr ""
 msgid "IPv6"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:36
 msgid "_File"
 msgstr "फाइल (_F)"
 
-#
 #: ../src/firewall-config.glade.h:37
 msgid "_Options"
 msgstr "पर्याय (_O)"
 
-#
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "फायरवॉल कार्यान्वीत करा"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
@@ -465,7 +445,6 @@ msgstr ""
 msgid "Edit ICMP Types"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:42
 msgid "_Help"
 msgstr "मदत (_H)"
@@ -515,17 +494,13 @@ msgstr ""
 msgid "Add Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "संपादन करा"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "हटवा"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
@@ -536,14 +511,13 @@ msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"Aqui pode definir que serviços são de confiança. Serviços de confiança são "
-"acessíveis a partir de qualquer máquina e rede."
+"येथे तुम्ही विश्वासर्ह सेवा व्याख्यीत करू शकता. विश्वासर्ह सेवा सर्व यजमान व जाळं पासून "
+"प्रवेशीय आहे."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:58
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -553,25 +527,20 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "नोंदणी समावेश करा"
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "नोंदणी संपादीत करा"
 
-#
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "हटवा"
+msgstr "नोंदणी हटवा"
 
-#
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "इतर पोर्ट"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:63
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
@@ -582,28 +551,20 @@ msgstr ""
 "परवानगी देतो. तुमचे स्थानीक संजाळ दिसणार नाही व इंटरनेटवर यजमान एक पत्ता म्हणूनच दिसून "
 "येईल. मास्क्युरेडींग फक्त IPv4 करीता आहे."
 
-#
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "मास्क्युरेडींग"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:65
-#, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"मास्क्युरेडींग कार्यान्वीत केल्यास, IP फोर्वडींग सुद्धा तुमच्या IPv4 संजाळाकरीता कार्यान्वीत "
-"केले जाईल."
 
-#
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
 msgstr "मास्क्युरेडींग"
 
-#
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
@@ -615,9 +576,7 @@ msgstr ""
 "इतर पोर्ट पर्यंत पोर्ट फॉर्वड करण्यासाठी नोंदणी जोडा. अन्य प्रणाली करीता फॉर्वडींग "
 "तेव्हाच उपयोगी ठरेल जेव्हा संवाद लपविला जाईल. पोर्ट फॉर्वडींग फक्त IPv4 करीता आहे."
 
-#
 #: ../src/firewall-config.glade.h:68
-#, fuzzy
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -627,9 +586,7 @@ msgstr ""
 "पाठविण्याकीरता केला जातो, पण अगाऊरित्या माहिती संदेश करीता देखील वापरला जातो जसे की "
 "पींग विनंती किंवा प्रतिसाद."
 
-#
 #: ../src/firewall-config.glade.h:69
-#, fuzzy
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -637,14 +594,13 @@ msgstr ""
 "यादीतील ICMP प्रकार, जे स्वीकारले नाही पाहिजे. इतर सर्व ICMP प्रकार फायरवॉल ला भेदून "
 "जाऊ शकतात. पूर्वनिर्धारीतवर मर्यादा नाही."
 
-#
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
 msgstr "ICMP फिल्टर"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "पोर्ट व शिष्टाचार"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -676,7 +632,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:79
 msgid "Service Settings"
-msgstr "Definições do Serviço"
+msgstr "सेवा रचना"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
@@ -690,24 +646,19 @@ msgstr ""
 msgid "Edit Service"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "हटवा"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"अगाऊ पोर्ट किंवा पोर्ट क्षेत्र जोडा, जी सर्व यजमान किंवा संजाळांकरीता प्रवेशीय असायला हवे."
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -765,81 +716,79 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr "पोर्ट क्षेत्र '%s' एकमेव नाही."
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr "%s वैध क्षेत्र नाही (पोर्ट प्रारंभ >= पोर्ट शेवट)."
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr "%s वैध शिष्टाचार नाही."
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr "अवैध पोर्ट व्याख्या %s."
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr "Argumento inválido %s"
+msgstr "अवैध बाब %s"
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
+msgstr "पर्याय %(option)s: अवैध forward_port '%(value)s': %(error)s."
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
+msgstr "पर्याय %(option)s: अवैध forward_port '%(value)s'."
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr "अवैध संवाद '%s'."
 
 #: ../src/firewall-convert-scfw-config:135
 msgid "Enable firewall (default)"
-msgstr "Activar a firewall (por omissão)"
+msgstr "फायरवॉल कार्यान्वीत (पूर्वनिर्धारीत)"
 
 #: ../src/firewall-convert-scfw-config:138
 msgid "Disable firewall"
-msgstr "Desactivar a firewall"
+msgstr "फायरवॉल अकार्यान्वीत"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
-msgstr "<módulo>"
+msgstr "<module>"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr "iptables मॉड्यूल कार्यान्वीत करा"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr "iptables मॉड्यूल अकार्यान्वीत करा"
 
 #: ../src/firewall-convert-scfw-config:150
+#, fuzzy
 msgid "<service>"
-msgstr "<serviço>"
+msgstr "सेवा"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr "सेवाकरीता फायरवॉल उघडा (उ.दा, ssh)"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr "फायरवॉल मध्ये विशिष्ट पोर्ट उघडा (उ.दा, ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
@@ -848,15 +797,15 @@ msgstr "<interface>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "विशिष्ट यंत्रावरील सर्व रहदारी संमत करा"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr "निर्देशीत साधन पासून ट्रॅफीक लपवीतो. हे फक्त IPv4 आहे."
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "पश्चगामी अनुरूपता, --enabled ला उपनाव करा"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
@@ -868,18 +817,17 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
+"फायरवॉल अंतर्गत समाविष्ट करण्याकरीता पूर्वनिर्धारीत नियम नंतर, इच्छिक नियम निश्चित "
+"करा. पूर्वनिर्धारीत शिष्टाचार प्रकार: ipv4, पूर्वनिर्धारीत तक्ता: फिल्टर. (उदाहरणार्थ: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<लक्ष्य पोर्ट>][:"
+"toaddr=<लक्ष्य पत्ता>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -887,139 +835,32 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
+"अन्य स्थानीक लक्ष्य पोर्ट (लक्ष्य पत्ता निर्धारीत नाही) करीता किंवा अन्य लक्ष्य पत्ता "
+"वैक्लपीक लक्ष्य पोर्टसक्षम संवाद करीता शिष्टाचाररहीत पोर्ट फॉर्वड करा. हे IPv4 आहे."
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
+msgstr "हा ICMP प्रकार बंधिस्त करा. पूर्वनिर्धारीतरित्या सर्व ICMP प्रकार स्वीकारतो."
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr "असे कुठलेच पर्याय नाही: %s"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr "%s पर्यायास घटकाची आवश्यकता आहे"
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr "%(option)s पर्यायास %(count)s बाबची आवश्यकता आहे"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#~ msgid "Port:"
-#~ msgstr "Porto:"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#~ msgid "Server"
-#~ msgstr "Servidor"
-
-#
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-#~ msgstr ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-
-#
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "फाइल (_F)"
-
-#
-#~ msgid "Add"
-#~ msgstr "जोडा"
-
-#
-#~ msgid "Allow access to necessary ports or port ranges, only."
-#~ msgstr "फक्त, आवश्यक पोर्ट किंवा पोर्ट क्षेत्रांकरीता प्रवेश द्या."
-
-#
-#~ msgid "Allow access to necessary services, only."
-#~ msgstr "फक्त, आवश्यक सेवांकरीता प्रवेश द्या."
-
-#
-#~ msgid "Custom Rules"
-#~ msgstr "नियम इच्छानुरूप करा"
-
-#
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#
-#~ msgid ""
-#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
-#~ "FTP server publicly available, enable this option. You need the vsftpd "
-#~ "package installed for this option to be useful."
-#~ msgstr ""
-#~ "FTP दूरस्थ फाइल परिवहनासाठी वापरला जातो. जर तुम्ही तुमचा FTP सेवक सार्वजनिकरित्या "
-#~ "उपलब्ध करू इच्छित असाल, तर हा पर्याय कार्यान्वीत करा. तुम्हास हा पर्याय वापरता "
-#~ "येण्यासाठी vsftpd संकुल प्रतिष्ठापित असणे गरजेचे आहे."
-
-#
-#~ msgid ""
-#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
-#~ "Web server publicly available, enable this option. This option is not "
-#~ "required for viewing pages locally or developing Web pages."
-#~ msgstr ""
-#~ "HTTP हा वेब पाने पुरवण्यासाठी वापरायचा प्रोटोकॉल आहे. जर तुम्ही तुमचा वेब सेवक "
-#~ "सार्वजनिकरित्या उपलब्ध करू इच्छित असाल, तर हा पर्याय कार्यान्वीत करा. हा पर्याय "
-#~ "पाने स्थानिकरित्या पाहण्यासाठी किंवा वेब पाने विकसित करण्यासाठी आवश्यक नाही. हा "
-#~ "पर्याय वापरण्यासाठी तुम्हास httpd संकुल प्रतिष्ठापित असण्याची गरज आहे."
-
-#
-#~ msgid "Reload"
-#~ msgstr "पुनःलोड करा"
-
-#
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
+msgstr "%s पर्याय मुल्य घेत नाही"

@@ -1,43 +1,36 @@
-# translation of system-config-firewall.master.po to Bengali INDIA
-# Bangla translation for system-config-firewall.
-# Copyright (C) 2004 Red Hat Inc.
-# This file is distributed under the same license as the system-config-firewall package.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
+# Translators:
 # Jamil Ahmed <jamil@bengalinux.org>, 2003.
-# Runa Bhattacharjee <runab@redhat.com>, 2004, 2005, 2006, 2007, 2008, 2009, 2010.
 # Runa Bhattacharjee <runab@fedoraproject.org>, 2008.
+# Runa Bhattacharjee <runab@redhat.com>, 2004-2010.
 msgid ""
 msgstr ""
-"Project-Id-Version: system-config-firewall.master\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 10:21+0200\n"
-"PO-Revision-Date: 2010-06-30 10:51+0530\n"
-"Last-Translator: Runa Bhattacharjee <runab@redhat.com>\n"
-"Language-Team: Bengali INDIA <anubad@lists.ankur.org.in>\n"
-"Language: \n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-09-06 11:07+0000\n"
+"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"Language-Team: Bengali (India) <anubad@lists.ankur.org.in>\n"
+"Language: bn_IN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: pygettext.py 1.4\n"
-"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"\n"
-"\n"
-"\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
 msgstr ""
 
-#
 #: ../config/firewall-config.desktop.in.h:1
-#, fuzzy
 msgid "Firewall"
-msgstr "ফায়ারওয়াল সষ্ক্রিয় করা হবে"
+msgstr "ফায়ারওয়াল"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
-msgstr "Configuração da Firewall"
+msgstr "ফায়ারওয়াল কনফিগারেশন"
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -193,11 +186,9 @@ msgstr ""
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#
 #: ../src/firewall-applet:591
-#, fuzzy
 msgid "Firewall-applet"
-msgstr "ফায়ারওয়াল সষ্ক্রিয় করা হবে"
+msgstr ""
 
 #: ../src/firewall-config:56
 msgid "Connected."
@@ -229,25 +220,25 @@ msgstr ""
 
 #: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
 msgid "Service"
-msgstr "Serviço"
+msgstr "পরিসেবা"
 
 #: ../src/firewall-config:172 ../src/firewall-config:202
 #: ../src/firewall-config:290
 msgid "Port"
-msgstr "Porto"
+msgstr "পোর্ট"
 
 #: ../src/firewall-config:174 ../src/firewall-config:204
 #: ../src/firewall-config:292
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "প্রোটোকল"
 
 #: ../src/firewall-config:206
 msgid "To Port"
-msgstr "Para Porto"
+msgstr "উদ্দিষ্ট পোর্ট"
 
 #: ../src/firewall-config:208
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "উদ্দিষ্ট ঠিকানা"
 
 #: ../src/firewall-config:245
 msgid "Icmp Type"
@@ -255,11 +246,11 @@ msgstr ""
 
 #: ../src/firewall-config:446
 msgid "Warning"
-msgstr "Aviso"
+msgstr "সতর্কবার্তা"
 
 #: ../src/firewall-config:456
 msgid "Error"
-msgstr "Erro"
+msgstr "ত্রুটি"
 
 #: ../src/firewall-config:458
 msgid "Retry"
@@ -311,7 +302,6 @@ msgid ""
 "reload or restart."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
 msgstr "পোর্ট ফরওয়ার্ডিং"
@@ -319,50 +309,43 @@ msgstr "পোর্ট ফরওয়ার্ডিং"
 #: ../src/firewall-config.glade.h:9
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+msgstr "প্রয়োজন অনুসারে উৎস ও গন্তব্য সংক্রান্ত বিবিধ বিকল্পগুলি নির্বাচন করুন।"
 
-#
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Port / Port Range:"
-msgstr "পোর্ট ফরওয়ার্ডিং"
+msgstr "পোর্ট / পোর্টের সীমা:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP ঠিকানা:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "প্রোটোকল:"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Destination"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:14
-#, fuzzy
 msgid "Source"
-msgstr "<b>Fonte</b>"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:15
-#, fuzzy
 msgid "Local forwarding"
-msgstr "পোর্ট ফরওয়ার্ডিং"
+msgstr "স্থানীয়রূপে ফরওয়ার্ডিং"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "কোনো পৃথক পোর্টে ফরওয়ার্ড করা হবে"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"স্থানীয়রূপে ফরওয়ার্ডিং করতে ইচ্ছুক হলে, একটি পোর্ট নির্দেশ করা আবশ্যক। উদ্দিষ্ট পোর্টটি "
+"উৎস পোর্টের থেকে পৃথক হওয়া আবশ্যক।"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -392,21 +375,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:25
-#, fuzzy
 msgid "ICMP Type Settings"
-msgstr "ICMP ফিল্টার"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:26
 msgid "Here you can configure the ICMP type settings used in zones."
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:27
-#, fuzzy
 msgid "ICMP Type"
-msgstr "ICMP ফিল্টার"
+msgstr "ICMP প্রকৃতি"
 
 #: ../src/firewall-config.glade.h:28
 msgid "Add ICMP Type"
@@ -438,21 +417,17 @@ msgstr ""
 msgid "IPv6"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:36
 msgid "_File"
 msgstr "ফাইল (_F)"
 
-#
 #: ../src/firewall-config.glade.h:37
 msgid "_Options"
 msgstr "বিবিধ বিকল্প (_O)"
 
-#
 #: ../src/firewall-config.glade.h:38
-#, fuzzy
 msgid "Reload Firewalld"
-msgstr "ফায়ারওয়াল সষ্ক্রিয় করা হবে"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "Change Default Zone"
@@ -466,7 +441,6 @@ msgstr ""
 msgid "Edit ICMP Types"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:42
 msgid "_Help"
 msgstr "সাহায্য (_H)"
@@ -516,17 +490,13 @@ msgstr ""
 msgid "Add Zone"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:53
-#, fuzzy
 msgid "Edit Zone"
-msgstr "সম্পাদনা"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:54
-#, fuzzy
 msgid "Remove Zone"
-msgstr "অপসারণ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Load Zone Defaults"
@@ -537,14 +507,13 @@ msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
 msgstr ""
-"Aqui pode definir que serviços são de confiança. Serviços de confiança são "
-"acessíveis a partir de qualquer máquina e rede."
+"এই স্থানে বিশ্বস্ত পরিসেবা নির্ধারণ করা যাবে। বিশ্বস্ত পরিসেবাগুলি সব হোস্ট ও "
+"নেটওয়ার্ক থেকে ব্যবহার করা যাবে।"
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:58
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -554,25 +523,20 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "এনট্রি যোগ করুন"
 
 #: ../src/firewall-config.glade.h:60
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "এনট্রি সম্পাদনা"
 
-#
 #: ../src/firewall-config.glade.h:61
-#, fuzzy
 msgid "Remove Entry"
-msgstr "অপসারণ"
+msgstr "এনট্রি অপসারণ"
 
-#
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Ports"
-msgstr "অন্যান্য পোর্ট"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:63
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
@@ -583,28 +547,20 @@ msgstr ""
 "Masquerading সহয়াক। আপনার স্থানীয় নেটওয়ার্ক প্রকাশিত হবে না ও ইন্টারনেটে একটি "
 "হোস্ট রূপে প্রস্তুত করা হবে। Masquerading শুধুমাত্র IPv4-র ক্ষেত্রে প্রযোজ্য।"
 
-#
 #: ../src/firewall-config.glade.h:64
-#, fuzzy
 msgid "Masquerade zone"
-msgstr "Masquerading"
+msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:65
-#, fuzzy
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
-"masquerading সক্রিয় করা হলে, আপনার IPv4 নেটওয়ার্কের ক্ষেত্রে IP ফরওয়ার্ডিং ব্যবস্থা "
-"সক্রিয় করা হবে।"
 
-#
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
 msgstr "Masquerading"
 
-#
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
@@ -616,9 +572,7 @@ msgstr ""
 "ফরওয়ার্ড করার জন্য মান লিখুন। ইন্টারফেস masquerade করা থাকলে পৃথক সিস্টেমে পোর্ট "
 "ফরওয়ার্ড করা উপকারী হবে। পোর্ট ফরওয়ার্ডিং ব্যবস্থা শুধুমাত্র IPv4-র ক্ষেত্রে প্রযোজ্য।"
 
-#
 #: ../src/firewall-config.glade.h:68
-#, fuzzy
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -628,9 +582,7 @@ msgstr ""
 "কম্পিউটারগুলির মধ্যে ত্রুটি বার্তা আদান প্রদান করা হয়। উপরন্তু, বিবিধ তথ্য যেমন ping-র "
 "অনুরোধ ও উত্তর প্রভৃতিও বিনিময় করার জন্য এটি ব্যবহৃত হয়।"
 
-#
 #: ../src/firewall-config.glade.h:69
-#, fuzzy
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -639,14 +591,13 @@ msgstr ""
 "র ধরনগুলি ফায়ারওয়ালের মধ্যে প্রবেশ করতে সক্ষম হবে। ডিফল্টরূপে কোনো প্রতিরোধ করা হয় "
 "না।"
 
-#
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
 msgstr "ICMP ফিল্টার"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "পোর্ট এবং প্রোটোকল"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Please enter the module name."
@@ -678,7 +629,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:79
 msgid "Service Settings"
-msgstr "Definições do Serviço"
+msgstr "পরিসেবা সংক্রান্ত বৈশিষ্ট্য"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Here you can configure the services settings used in zones."
@@ -692,24 +643,19 @@ msgstr ""
 msgid "Edit Service"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:84
-#, fuzzy
 msgid "Remove Service"
-msgstr "অপসারণ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:85
 msgid "Load Service Defaults"
 msgstr ""
 
-#
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"সব হোস্ট অথবা নেটওয়ার্ক দ্বারা ব্যবহারযোগ্য অতিরিক্ত পোর্ট অথবা পোর্টের সীমা যোগ করুন।"
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -767,81 +713,82 @@ msgstr ""
 #: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
-msgstr "intervalo portos %s não é único."
+msgstr "পোর্টের সীমা %s স্বতন্ত্র নয়।"
 
 #: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s não é um intervalo válido (porto início >= porto fim)."
+msgstr "%s বৈধ সীমা নয় (প্রারম্ভিক পোর্ট >= অন্তিম পোর্ট)।"
 
 #: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
-msgstr "%s não é um protocolo válido."
+msgstr "%s বৈধ প্রোটোকল নয়।"
 
 #: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
-msgstr "Definição de porto inválido %s."
+msgstr "পোর্টের ব্যাখ্যা %s বৈধ নয়।"
 
 #: ../src/firewall-convert-scfw-config:73
 #: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
-msgstr "Argumento inválido %s"
+msgstr "অবৈধ আর্গুমেন্ট %s"
 
 #: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"opção %(option)s: porto de reencaminhamento inválido '%(value)s': %(error)s."
+msgstr "বিকল্প %(option)s: অবৈধ forward_port '%(value)s': %(error)s।"
 
 #: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr ""
-"opção %(option)s: reencaminhamento de porto (\"forward_port\") inválido "
-"'%(value)s'."
+msgstr "বিকল্প %(option)s: অবৈধ forward_port '%(value)s'।"
 
 #: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
-msgstr "Interface inválido '%s'."
+msgstr "অবৈধ ইন্টারফেস '%s'।"
 
 #: ../src/firewall-convert-scfw-config:135
 msgid "Enable firewall (default)"
-msgstr "Activar a firewall (por omissão)"
+msgstr "ফায়ারওয়াল সক্রিয় করা হবে (ডিফল্ট)"
 
 #: ../src/firewall-convert-scfw-config:138
 msgid "Disable firewall"
-msgstr "Desactivar a firewall"
+msgstr "ফায়ারওয়াল নিষ্ক্রিয় করা হবে"
 
 #: ../src/firewall-convert-scfw-config:141
 #: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
-msgstr "<módulo>"
+msgstr "<module>"
 
 #: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
-msgstr "Activar um módulo do 'iptables'"
+msgstr "একটি iptables মডিউল সক্রিয় করা হবে"
 
 #: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
-msgstr "Desactivar um módulo do 'iptables'"
+msgstr "একটি iptables মডিউল নিষ্ক্রিয় করা হবে"
 
 #: ../src/firewall-convert-scfw-config:150
+#, fuzzy
 msgid "<service>"
-msgstr "<serviço>"
+msgstr "পরিসেবা"
 
 #: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
-msgstr "Permitir um serviço através da firewall (exemplo: ssh)"
+msgstr ""
+"কোনো পরিসেবার জন্য ফায়ারওয়ালে প্রবেশ করার অনুমতি প্রদান করুন (উদাহরণস্বরূপ, ssh)"
 
 #: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porto>[-<porto>]:<protocolo>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
-msgstr "Permitir portos específicos através da firewall (exemplo: ssh:tcp)"
+msgstr ""
+"ফায়ারওয়ালের মধ্যে দিয়ে নির্দিষ্ট কিছু পোর্টের যোগাযোগ অনুমোদন করা হবে (উদাহরণস্বরূপ, "
+"ssh:tcp)"
 
 #: ../src/firewall-convert-scfw-config:160
 #: ../src/firewall-convert-scfw-config:164
@@ -850,15 +797,17 @@ msgstr "<interface>"
 
 #: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
-msgstr "Autorizar todo o tráfego no dispositivo especificado"
+msgstr "উল্লিখিত ডিভাইসের সাথে সংশ্লিষ্ট সকল যোগাযোগ অনুমোদন করা হবে"
 
 #: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr "Mascara o tráfego do dispositivo especificado. Isto é apenas IPv4."
+msgstr ""
+"নিদিষ্ট ডিভাইস থেকে উৎপন্ন ট্রাফিক masquerade করা হবে। শুধুমাত্র IPv4-র ক্ষেত্রে "
+"প্রযোজ্য।"
 
 #: ../src/firewall-convert-scfw-config:169
 msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Retro-compatibilidade, substituído por --enabled"
+msgstr "পূর্ববর্তী সংস্করণের সাথে সামঞ্জস্য, নির্দেশ করছে --enabled নামক অপশন"
 
 #: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
@@ -870,18 +819,17 @@ msgid ""
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
-"Especifique um ficheiro com regras personalizadas para incluir na firewall a "
-"seguir às regras por omissão. Tipo de protocolo por omissão: ipv4, tabela "
-"por omissão: filter. (Exemplo: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_as_minhas_regras)"
+"ফায়ারওয়ালের মধ্যে অন্তর্ভুক্ত করার জন্য স্বনির্ধারিত নিয়মের একটি ফাইল উল্লেখ করুন। "
+"ডিফল্ট নিয়মগুলির পরে এইগুলি যোগ করা হবে। ডিফল্ট প্রোটোকলের বিন্যাস: ipv4, default "
+"table: filter। (উদাহরণ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-convert-scfw-config:183
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porto>:proto=<protocolo>[:toport=<porto de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-convert-scfw-config:187
 msgid ""
@@ -889,138 +837,33 @@ msgid ""
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
 msgstr ""
-"Reencaminhar o porto mantendo o protocolo para outro porto local (sem "
-"inserir endereço de destino) ou para outro endereço remoto com um porto de "
-"destino opcional. Apenas IPv4."
+"ইন্টারফেসের প্রোটোকল সহ পোর্টিটি একটি পৃথক স্থানীয় পোর্ট (কোনো উদ্দিষ্ট ঠিকানা উল্লেখ "
+"না করা হলে) অথবা পৃথক গন্তব্যস্থলের ঠিকানা ও ঐচ্ছিকরূপে উদ্দিষ্ট পোর্ট সহ ফরওয়ার্ড করা "
+"হবে। শুধুমাত্র IPv4-র ক্ষেত্রে প্রযোজ্য।"
 
 #: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr ""
-"Bloquear este tipo de  pacotes ICMP. Por omissão, são aceites todos os tipos "
-"de pacotes ICMP."
+msgstr "এই ICMP ধরন অবরুদ্ধ করা হবে। ডিফল্টরূপে সকল ICMP-র ধরন গ্রহণ করা হয়।"
 
 #: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
-msgstr "opção inválida: %s"
+msgstr "এই ধরনের বিকল্প অনুপস্থিত: %s"
 
 #: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
-msgstr "%s opção requer um argumento"
+msgstr "%s বিকল্পের ক্ষেত্রে একটি আর্গুমেন্ট আবশ্যক"
 
 #: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s opção requer %(count)s argumentos"
+msgstr "%(option)s বিকল্পের ক্ষেত্রে %(count)s-টি আর্গুমেন্ট আবশ্যক"
 
 #: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
-msgstr "%s opção não aceita um valor"
-
-#~ msgid "Port:"
-#~ msgstr "Porto:"
-
-#~ msgid "<b>Destination</b>"
-#~ msgstr "<b>Destino</b>"
-
-#~ msgid "Beginner"
-#~ msgstr "Iniciado"
-
-#~ msgid "Expert"
-#~ msgstr "Especialista"
-
-#~ msgid "Desktop"
-#~ msgstr "Área de Trabalho"
-
-#~ msgid "Server"
-#~ msgstr "Servidor"
-
-#
-#~ msgid ""
-#~ "This program is free software; you can redistribute it and/or modify it "
-#~ "under the terms of the GNU General Public License as published by the "
-#~ "Free Software Foundation; either version 2 of the License, or (at your "
-#~ "option) any later version.\n"
-#~ "\n"
-#~ "This program is distributed in the hope that it will be useful, but "
-#~ "WITHOUT ANY WARRANTY; without even the implied warranty of "
-#~ "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General "
-#~ "Public License for more details.\n"
-#~ "\n"
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with this program.  If not, see <http://www.gnu.org/licenses/>."
-#~ msgstr ""
-#~ "এই প্রোগ্রামটি একটি মুক্ত সফ্টওয়্যার; Free Software Foundation দ্বারা প্রকাশিত "
-#~ "GNU General Public License-র শর্তানুযায়ী এটি বিতরণ ও পরিবর্তন করা যাবে; "
-#~ "লাইসেন্সের সংস্করণ ২ অথবা (আপনার সুবিধানুযায়ী) ঊর্ধ্বতন কোনো সংস্করণের অধীন।\n"
-#~ "\n"
-#~ "এটি বিতরণ করার মূল উদ্দেশ্য যে ব্যবহারকারীরা এর দ্বারা উপকৃত হবেন, কিন্তু এটির "
-#~ "জন্য কোনো সুস্পষ্ট ওয়ারেন্টি উপস্থিত নেই; বাণিজ্যিক ও কোনো সুনির্দিষ্ট কর্ম সাধনের "
-#~ "জন্য অন্তর্নিহীত ওয়ারেন্টিও অনুপস্থিত। অধিক জানতে GNU General Public License "
-#~ "পড়ুন।\n"
-#~ "\n"
-#~ "এই প্রোগ্রামের সাথে GNU General Public License-র একটি প্রতিলিপি উপলব্ধ হওয়া "
-#~ "উচিত। না থাকলে <http://www.gnu.org/licenses/> দেখুন।"
-
-#
-#, fuzzy
-#~ msgid "File"
-#~ msgstr "ফাইল (_F)"
-
-#
-#~ msgid "Add"
-#~ msgstr "যোগ করুন"
-
-#
-#~ msgid "Allow access to necessary ports or port ranges, only."
-#~ msgstr "শুধমাত্র আবশ্যক পোর্ট অথবা পোর্টের সীমার ক্ষেত্রে অনুমতি প্রদান করা হবে।"
-
-#
-#~ msgid "Allow access to necessary services, only."
-#~ msgstr "শুধুমাত্র আবশ্যক পরিসেবার ক্ষেত্রে অনুমোদন করা হবে।"
-
-#
-#~ msgid "Custom Rules"
-#~ msgstr "স্বনির্বাচিত নিয়ম"
-
-#
-#~ msgid "FTP"
-#~ msgstr "FTP"
-
-#
-#~ msgid ""
-#~ "FTP is a protocol used for remote file transfer. If you plan to make your "
-#~ "FTP server publicly available, enable this option. You need the vsftpd "
-#~ "package installed for this option to be useful."
-#~ msgstr ""
-#~ "FTP প্রোটোকলের সাহায্যে নেটওয়ার্কের বাইরে অবস্থিত দূরবর্তী কম্পিউটারের মধ্যে ফাইল "
-#~ "বিনিময় করা হয়।  যদি আপনার FTP সার্ভার সকলের ব্যবহারের জন্য উন্মুক্ত রাখতে চান, "
-#~ "তবে এই অপশনটি সক্রিয় করুন। এই বিকল্পটি বলবত‌ করতে vsftpd প্যাকেজটি ইনস্টল করা "
-#~ "আবশ্যক।"
-
-#
-#~ msgid ""
-#~ "HTTP is the protocol used to serve Web pages. If you plan to make your "
-#~ "Web server publicly available, enable this option. This option is not "
-#~ "required for viewing pages locally or developing Web pages."
-#~ msgstr ""
-#~ "HTTP প্রোটোকলের সাহায্যে ওয়েবপেজ প্রস্তুত করা হয়।  সার্বজনীন রূপে ব্যবহারের জন্য "
-#~ "ওয়েব সার্ভার উন্মুক্ত রাখতে হলে এই অপশনটি সক্রিয় করুন।  তবে স্থানীয় কম্পিউটার "
-#~ "থেকে ওয়েবপেজ দেখতে অথবা তৈরি করার জন্য এই অপশনটির প্রয়োজন নেই।"
-
-#
-#~ msgid "Reload"
-#~ msgstr "পুনরায় লোড"
-
-#
-#~ msgid "SSH"
-#~ msgstr "SSH"
-
-#
-#~ msgid "WWW (HTTP)"
-#~ msgstr "WWW (HTTP)"
+msgstr "%s বিকল্প দ্বারা কোনো মান গ্রহণ করা হয় না"
