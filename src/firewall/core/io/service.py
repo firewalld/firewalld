@@ -105,7 +105,9 @@ class service_ContentHandler(IO_Object_ContentHandler):
 def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
     service = Service()
-    service.name = filename.replace(".xml", "")
+    if not filename.endswith(".xml"):
+        raise FirewallError(INVALID_NAME, filename)
+    service.name = filename[:-4]
     service.check_name(service.name)
     service.filename = filename
     service.path = path

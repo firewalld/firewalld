@@ -85,7 +85,9 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 def icmptype_reader(filename, path):
     name = "%s/%s" % (path, filename)
     icmptype = IcmpType()
-    icmptype.name = filename.replace(".xml", "")
+    if not filename.endswith(".xml"):
+        raise FirewallError(INVALID_NAME, filename)
+    icmptype.name = filename[:-4]
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename
     icmptype.path = path

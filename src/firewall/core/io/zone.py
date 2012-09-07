@@ -146,7 +146,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     zone = Zone()
-    zone.name = filename.replace(".xml", "")
+    if not filename.endswith(".xml"):
+        raise FirewallError(INVALID_NAME, filename)
+    zone.name = filename[:-4]
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
