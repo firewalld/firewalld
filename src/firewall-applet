@@ -233,6 +233,10 @@ class TrayApplet(object):
         box.set_homogeneous(False)
         box.pack_start(vbox, False, True, 0)
 
+        # init notification
+
+        Notify.init(self.name)
+
         # status icon
 
         self.statusicon.set_visible(True)
@@ -245,37 +249,25 @@ class TrayApplet(object):
             print(_("Not using slip"), msg)
             self.bus = dbus.SystemBus()
 
-        self.bus.add_signal_receiver(
-            handler_function=self.dbus_connection_changed,
-            signal_name="NameOwnerChanged",
-            dbus_interface="org.freedesktop.DBus")
+        self.fw = FirewallClient(self.bus, wait=1)
+        self.set_mode("error")
+        self.update()
 
-        self.bus.add_signal_receiver(
-            self.signal_receiver,
-            dbus_interface=DBUS_INTERFACE_ZONE,
-            interface_keyword='interface',
-            member_keyword='member',
-            path_keyword='path')
-
-        self.bus.add_signal_receiver(
-            self.signal_receiver,
-            dbus_interface=DBUS_INTERFACE,
-            interface_keyword='interface',
-            member_keyword='member',
-            path_keyword='path')
+        self.fw.connect("connection-established", self.connection_established)
+        self.fw.connect("connection-lost", self.connection_lost)
+        self.fw.connect("reloaded", self.reloaded),
+        self.fw.connect("default-zone-changed", self.default_zone_changed)
+        self.fw.connect("panic-mode-enabled", self.panic_mode_enabled)
+        self.fw.connect("panic-mode-disabled", self.panic_mode_disabled)
+        self.fw.connect("interface-added", self.interface_added)
+        self.fw.connect("interface-removed", self.interface_removed)
+        self.fw.connect("zone-changed", self.zone_changed)
 
         self.bus.add_signal_receiver(
             self.nm_signal_receiver,
             dbus_interface="NetworkManager.DBUS_INTERFACE",
             sender_keyword='sender')
-
-        self.fw = None
-        GLib.timeout_add_seconds(1, self.start)
-
-    def start(self, *args):
         self.nm_signal_receiver()
-        self.connect_to_firewalld()
-        self.update()
 
     def settings_check_changed(self, settings, key, button):
         button.set_active(settings.get_boolean(key))
@@ -297,38 +289,7 @@ class TrayApplet(object):
         except:
             pass
 
-    def dbus_connection_changed(self, name, old_owner, new_owner):
-        if name != DBUS_INTERFACE:
-            return
-
-        if new_owner:
-            # new connection
-            self.connect_to_firewalld()
-        else:
-            # lost connection
-            self.connection_to_firewalld_lost()
-
-        # no change, no notification
-        if new_owner and not self.fw:
-            return
-        if not new_owner and self.fw:
-            return
-
-        ed = { 1: _("Connection to FirewallD lost."),
-               0: _("Connection to FirewallD established.") }
-        self.notify(ed[self.fw == None], urgency=Notify.Urgency.CRITICAL)
-
-    def connect_to_firewalld(self):
-        try:
-            self.fw = FirewallClient(self.bus)
-        except dbus.DBusException as e:
-            if e._dbus_error_name == \
-                    'org.freedesktop.DBus.Error.ServiceUnknown':
-                # no connection
-                return
-            else:
-                raise
-
+    def connection_established(self, first=False):
         self.set_mode("normal")
         self.active_zones.clear()
         active_zones = self.fw.getActiveZones()
@@ -359,13 +320,17 @@ class TrayApplet(object):
             self.shieldsup_check.set_active(False)
 
         self.update()
+        if self.notification_check.get_active():
+            self.notify(_("Connection to FirewallD established."),
+                        urgency=Notify.Urgency.CRITICAL)
 
-    def connection_to_firewalld_lost(self):
-        if self.fw:
-            self.fw = None
-            self.active_zones.clear()
-            self.set_mode("error")
+    def connection_lost(self):
+        self.active_zones.clear()
+        self.set_mode("error")
         self.update()
+        if self.notification_check.get_active():
+            self.notify(_("Connection to FirewallD lost."),
+                        urgency=Notify.Urgency.CRITICAL)
 
     def panic_mode_cb(self, check):
         if not self.fw:
@@ -400,14 +365,18 @@ class TrayApplet(object):
         combobox.set_active(0)
         return False
 
+    def reloaded(self):
+        if self.notification_check.get_active():
+            self.notify(_("FirewallD has been reloaded."))
+
     def shields_up_changed(self, *args):
         text = self.shields_up_combo.get_active_text()
-        if text != self.settings.get_string("shields-up"):
+        if text and text != self.settings.get_string("shields-up"):
             self.settings.set_string("shields-up", text)
 
     def shields_down_changed(self, *args):
         text = self.shields_down_combo.get_active_text()
-        if text != self.settings.get_string("shields-down"):
+        if text and text != self.settings.get_string("shields-down"):
             self.settings.set_string("shields-down", text)
 
     def settings_shields_up_changed(self, *args):
@@ -448,6 +417,9 @@ class TrayApplet(object):
         else:
             self.statusicon.set_from_pixbuf(self.icons["normal"])
 
+    def get_mode(self):
+        return self.mode
+
     def set_mode(self, mode, count=5):
         if self.mode != mode:
             if self.timer:
@@ -471,8 +443,7 @@ class TrayApplet(object):
             self.__blink()
 
     def update(self):
-        if not self.fw:
-            self.set_mode("error")
+        if self.get_mode() == "error":
             self.tooltip = "<span color='#FF0000'>" + \
                 _("No connection to firewall daemon") + "</span>"
             self.statusicon.set_tooltip_markup(self.tooltip)
@@ -507,104 +478,87 @@ class TrayApplet(object):
 
         self.statusicon.set_tooltip_markup(self.tooltip)
 
-    def signal_receiver(self, *args, **kwargs):
-        if not "member" in kwargs:
-            return
-        signal = kwargs["member"]
+    def default_zone_changed(self, zone):
+        if self.notification_check.get_active():
+            self.notify(_("Default zone changed to '%s'.") % zone)
+
+    def _panic_mode(self, enable):
+        self.panic_check.handler_block(self.panic_check_id)
+        self.panic_check.set_active(enable)
+        self.panic_check.handler_unblock(self.panic_check_id)
+
+        self.update()
+
+        if enable:
+            self.set_mode("panic")
+        else:
+            self.set_mode("normal")
 
         if self.notification_check.get_active():
-            if signal == "Reloaded":
-                self.notify(_("FirewallD has been reloaded."))
-            elif signal == "DefaultZoneChanged":
-                self.notify(_("Default zone changed to '%s'.") % args[0])
+            ed = { 1: _("All network traffic is blocked."),
+                   0: _("Network traffic is not blocked anymore.") }
+            self.notify(ed[enable], urgency=Notify.Urgency.CRITICAL)
 
-                if args[0] == self.settings.get_string("shields-up"):
-                    self.shieldsup_check.set_active(True)
-                else:
-                    self.shieldsup_check.set_active(False)
+    def panic_mode_enabled(self):
+        self._panic_mode(True)
 
-        if signal in [ "PanicModeEnabled", "PanicModeDisabled" ]:
-            if signal == "PanicModeEnabled":
-                enable = True
+    def panic_mode_disabled(self):
+        self._panic_mode(False)
+
+    def _interface(self, zone, interface, enable):
+        if enable:
+            if zone not in self.active_zones:
+                self.active_zones[zone] = [ ]
+            if interface not in self.active_zones[zone]:
+                self.active_zones[zone].append(interface)
+        else:
+            try:
+                self.active_zones[zone].remove(interface)
+                if len(self.active_zones[zone]) < 1:
+                    del self.active_zones[zone]
+            except Exception as msg:
+                print(msg)
+
+        self.update()
+
+        # send notification if enabled
+        if self.notification_check.get_active():
+            ed = { 1: _("activated"),
+                   0: _("deactivated") }
+            if interface in self.connections:
+                connection = self.connections[interface]
+                text = _("Zone '{zone}' {activated_deactivated} for "
+                         "connection '{connection}' on "
+                         "interface '{interface}'")
             else:
-                enable = False
+                connection = None
+                text = _("Zone '{zone}' {activated_deactivated} for "
+                         "interface '{interface}'")
+            self.notify(text.format(zone=zone,
+                                    activated_deactivated=ed[enable],
+                                    connection=connection,
+                                    interface=interface))
 
-            self.panic_check.handler_block(self.panic_check_id)
-            self.panic_check.set_active(enable == 1)
-            self.panic_check.handler_unblock(self.panic_check_id)
+    def interface_added(self, zone, interface):
+        self._interface(zone, interface, True)
 
-            self.update()
+    def interface_removed(self, zone, interface):
+        self._interface(zone, interface, False)
 
-            if enable:
-                self.set_mode("panic")
-            else:
-                self.set_mode("normal")
+    def zone_changed(self, zone, interface):
+        for _zone in self.active_zones:
+            if interface in self.active_zones[zone]:
+                self.active_zones[zone].remove(str(interface))
+                if len(self.active_zones[zone]) < 1:
+                    del self.active_zones[zone]
+                    break
 
-            if self.notification_check.get_active():
-                ed = { 1: _("All network traffic is blocked."),
-                       0: _("Network traffic is not blocked anymore.") }
-                self.notify(ed[enable], urgency=Notify.Urgency.CRITICAL)
+        self.update()
 
-        elif signal in [ "InterfaceAdded", "InterfaceRemoved" ]:
-            if signal == "InterfaceAdded":
-                enable = True
-            else:
-                enable = False
-
-            # interface signal
-            zone = str(args[0])
-            interface = str(args[1])
-
-            if enable:
-                if zone not in self.active_zones:
-                    self.active_zones[zone] = [ ]
-                if interface not in self.active_zones[zone]:
-                    self.active_zones[zone].append(interface)
-            else:
-                try:
-                    self.active_zones[zone].remove(interface)
-                    if len(self.active_zones[zone]) < 1:
-                        del self.active_zones[zone]
-                except Exception as msg:
-                    print(msg)
-
-            self.update()
-
-            # send notification if enabled
-            if self.notification_check.get_active():
-                ed = { 1: _("activated"),
-                       0: _("deactivated") }
-                if interface in self.connections:
-                    connection = self.connections[interface]
-                    text = _("Zone '{zone}' {activated_deactivated} for "
-                             "connection '{connection}' on "
-                             "interface '{interface}'")
-                else:
-                    connection = None
-                    text = _("Zone '{zone}' {activated_deactivated} for "
-                             "interface '{interface}'")
-                self.notify(text.format(zone=zone,
-                                        activated_deactivated=ed[enable],
-                                        connection=connection,
-                                        interface=interface))
-
-        elif signal == "ZoneChanged":
-            zone = args[0]
-            interface = args[1]
-
-            for _zone in self.active_zones:
-                if interface in self.active_zones[zone]:
-                    self.active_zones[zone].remove(str(interface))
-                    if len(self.active_zones[zone]) < 1:
-                        del self.active_zones[zone]
-                        break
-
-            self.update()
-
-            self.active_zones.setdefault(zone, [ ]).append(str(interface))
-            if self.notification_check.get_active():
-                self.notify(_("Zone '%s' activated for interface '%s'") % \
-                                (zone, interface))
+        self.active_zones.setdefault(zone, [ ]).append(str(interface))
+        if self.notification_check.get_active():
+            self.notify(_("Zone '%s' activated for interface '%s'") % \
+                            (zone, interface))
 
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
@@ -649,5 +603,4 @@ class TrayApplet(object):
 if __name__ == "__main__":
     mainloop = GObject.MainLoop()
     applet = TrayApplet()
-    Notify.init(applet.name)
     mainloop.run()
