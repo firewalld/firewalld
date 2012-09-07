@@ -25,7 +25,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: system-config-firewall\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-06 13:03+0200\n"
+"POT-Creation-Date: 2012-09-07 10:21+0200\n"
 "PO-Revision-Date: 2010-09-15 15:05+0100\n"
 "Last-Translator: Robert Antoni Buj Gelonch <robert.buj@gmail.com>\n"
 "Language-Team: Catalan <fedora@softcatala.net>\n"
@@ -130,152 +130,164 @@ msgstr ""
 msgid "Shields Down Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:245
+#: ../src/firewall-applet:249
 msgid "Not using slip"
 msgstr ""
 
-#: ../src/firewall-applet:317
-msgid "Connection to FirewallD lost."
-msgstr ""
-
-#: ../src/firewall-applet:318
+#: ../src/firewall-applet:324
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:477
+#: ../src/firewall-applet:332
+msgid "Connection to FirewallD lost."
+msgstr ""
+
+#: ../src/firewall-applet:370
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:448
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:483
+#: ../src/firewall-applet:454
 msgid "PANIC MODE"
 msgstr ""
 
-#: ../src/firewall-applet:495
+#: ../src/firewall-applet:466
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:498
+#: ../src/firewall-applet:469
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:506
+#: ../src/firewall-applet:477
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:517
-msgid "FirewallD has been reloaded."
-msgstr ""
-
-#: ../src/firewall-applet:519
+#: ../src/firewall-applet:483
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:544
+#: ../src/firewall-applet:498
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:545
+#: ../src/firewall-applet:499
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:575
+#: ../src/firewall-applet:526
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:576
+#: ../src/firewall-applet:527
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:579
+#: ../src/firewall-applet:530
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:584
+#: ../src/firewall-applet:535
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:606
+#: ../src/firewall-applet:560
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
 #
-#: ../src/firewall-applet:637
+#: ../src/firewall-applet:591
 #, fuzzy
 msgid "Firewall-applet"
 msgstr "Habilita el tallafoc"
 
-#: ../src/firewall-config:58
+#: ../src/firewall-config:56
 msgid "Connected."
 msgstr ""
 
-#: ../src/firewall-config:59
+#: ../src/firewall-config:57
 msgid "No connection."
 msgstr ""
 
-#: ../src/firewall-config:60
+#: ../src/firewall-config:58
 msgid "Waiting ..."
 msgstr ""
 
-#: ../src/firewall-config:61
+#: ../src/firewall-config:59
 msgid "Retrying ..."
 msgstr ""
 
-#: ../src/firewall-config:71
+#: ../src/firewall-config:69
 msgid "Failed to load icons."
 msgstr ""
 
-#: ../src/firewall-config:103 ../src/firewall-config:718
+#: ../src/firewall-config:107 ../src/firewall-config:755
 msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:104
+#: ../src/firewall-config:108
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:161 ../src/firewall-config.glade.h:81
+#: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
 msgid "Service"
 msgstr "Serviço"
 
-#: ../src/firewall-config:168 ../src/firewall-config:198
-#: ../src/firewall-config:286
+#: ../src/firewall-config:172 ../src/firewall-config:202
+#: ../src/firewall-config:290
 msgid "Port"
 msgstr "Porto"
 
-#: ../src/firewall-config:170 ../src/firewall-config:200
-#: ../src/firewall-config:288
+#: ../src/firewall-config:174 ../src/firewall-config:204
+#: ../src/firewall-config:292
 msgid "Protocol"
 msgstr "Protocolo"
 
-#: ../src/firewall-config:202
+#: ../src/firewall-config:206
 msgid "To Port"
 msgstr "Para Porto"
 
-#: ../src/firewall-config:204
+#: ../src/firewall-config:208
 msgid "To Address"
 msgstr "Para Endereço:"
 
-#: ../src/firewall-config:241
+#: ../src/firewall-config:245
 msgid "Icmp Type"
 msgstr ""
 
-#: ../src/firewall-config:442
+#: ../src/firewall-config:446
+msgid "Warning"
+msgstr "Aviso"
+
+#: ../src/firewall-config:456
 msgid "Error"
 msgstr "Erro"
 
-#: ../src/firewall-config:929
+#: ../src/firewall-config:458
+msgid "Retry"
+msgstr ""
+
+#: ../src/firewall-config:475
+msgid "Authorization failed."
+msgstr ""
+
+#: ../src/firewall-config:966
 msgid "Built-in zone, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1538
+#: ../src/firewall-config:1575
 msgid "Built-in service, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1881
+#: ../src/firewall-config:1918
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 
