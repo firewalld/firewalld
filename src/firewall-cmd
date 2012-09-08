@@ -52,7 +52,8 @@ def usage():
                --list-icmp-blocks | --list-forward-ports |
                --list-all } |
              --get-services |
-             --get-icmptypes }
+             --get-icmptypes |
+             --list-all-zones }
  PERMANENT := --permanent
                 { --zone=<zone> { --add-PERMANENT_ACTION |
                                   --remove-PERMANENT_ACTION |
@@ -119,6 +120,20 @@ def __parse_forward_port(value):
         __fail("missing destination")
     return (port, protocol, toport, toaddr)
 
+def __list_all(fw, zone):
+    interfaces = fw.getInterfaces(zone)
+    services = fw.getServices(zone)
+    ports = fw.getPorts(zone)
+    forward_ports = fw.getForwardPorts(zone)
+    icmp_blocks = fw.getIcmpBlocks(zone)
+
+    print(zone if zone != "" else fw.getDefaultZone())
+    print("  interfaces: " + " ".join(interfaces))
+    print("  services: " + " ".join(services))
+    print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
+    print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
+    print("  icmp-blocks: " + " ".join(icmp_blocks))
+
 if "--direct" not in sys.argv[1:]:
     try:
         (opts, args) = \
@@ -129,7 +144,7 @@ if "--direct" not in sys.argv[1:]:
                             "get-zones", "get-active-zones",
                             "get-zone-of-interface=",
                             "enable-panic", "disable-panic", "query-panic",
-                            "get-services", "get-icmptypes",
+                            "get-services", "get-icmptypes", "list-all-zones",
                             # zone
                             "zone=",
                             # permanent
@@ -217,9 +232,11 @@ for (opt, val) in opts:
     elif opt in [ "--reload", "--complete-reload", "--state",
                   "--get-default-zone", "--get-zones", "--get-active-zones",
                   "--enable-panic", "--disable-panic", "--query-panic",
+
                   "--list-services", "--list-ports", "--list-interfaces", 
                   "--list-icmp-blocks", "--list-forward-ports",
-                  "--list-all", "--get-services", "--get-icmptypes",
+                  "--list-all",
+                  "--get-services", "--get-icmptypes", "--list-all-zones",
                   "--add-masquerade", "--remove-masquerade",
                   "--query-masquerade", ]:
         if mode:
@@ -263,11 +280,19 @@ if timeout != 0:
     if mode[:3] != "add":
         __fail("Timeout only valid in add mode.")
 
+if zone and mode in [ "state", "reload", "complete-reload",
+                      "enable-panic", "disable-panic", "query-panic",
+                      "get-default-zone", "set-default-zone",
+                      "get-zones", "get-active-zones", "get-zone-of-interface",
+                      "get-services", "get-icmptypes", "list-all-zones", ]:
+    usage()
+    sys.exit(2)
+
 if permanent:
     if timeout != 0:
         usage()
         sys.exit(1)
-    if mode in [ "get-zones", "get-services", "get-icmptypes" ] and not zone:
+    if mode in [ "get-zones", "get-services", "get-icmptypes" ] and zone:
         pass
     elif not zone or mode not in [
         "add-service", "remove-service", "query-service", "list-services",
@@ -277,6 +302,10 @@ if permanent:
         "add-masquerade", "remove-masquerade", "query-masquerade",
         "add-forward-port", "remove-forward-port", "query-forward-port", 
         "list-forward-ports"]:
+        usage()
+        sys.exit(1)
+else:
+    if mode in [ "get-services", "get-icmptypes", "list-all-zones" ] and zone:
         usage()
         sys.exit(1)
 
@@ -518,23 +547,16 @@ try:
         sys.exit(not fw.queryIcmpBlock(zone, value))
 
 
+    # list all
     elif mode == "list-all":
-        print("zone: " + (zone if zone != "" else fw.getDefaultZone()))
-        l = fw.getInterfaces(zone)
-        if len(l) > 0:
-            print("interfaces: " + " ".join(l))
-        l = fw.getServices(zone)
-        if len(l) > 0:
-            print("services: " + " ".join(l))
-        l = fw.getPorts(zone)
-        if len(l) > 0:
-            print("ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in l]))
-        l = fw.getForwardPorts(zone)
-        if len(l) > 0:
-            print("forward-ports: " + "\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
-        l = fw.getIcmpBlocks(zone)
-        if len(l) > 0:
-            print("icmp-blocks: " + " ".join(l))
+        __list_all(fw, zone)
+
+
+    # list everything
+    elif mode == "list-all-zones":
+        for zone in fw.getZones():
+            __list_all(fw, zone)
+            print("")
 
 
 except dbus.DBusException as e:
