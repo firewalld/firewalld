@@ -18,8 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gtk, GLib, GObject, Gio, Notify, NMClient, \
-    NetworkManager
+from gi.repository import Gtk, GLib, GObject, Gio, Notify, NetworkManager
 import sys
 sys.modules['gobject'] = GObject
 
@@ -30,6 +29,7 @@ import slip.dbus
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.client import FirewallClient
+from firewall.dbus_utils import dbus_to_python
 import dbus
 
 
@@ -265,8 +265,9 @@ class TrayApplet(object):
 
         self.bus.add_signal_receiver(
             self.nm_signal_receiver,
-            dbus_interface="NetworkManager.DBUS_INTERFACE",
-            sender_keyword='sender')
+            dbus_interface=NetworkManager.DBUS_INTERFACE,
+            signal_name='PropertiesChanged',
+            member_keyword='member')
         self.nm_signal_receiver()
 
     def settings_check_changed(self, settings, key, button):
@@ -563,15 +564,46 @@ class TrayApplet(object):
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
         self.connections.clear()
+
+        # do not use NMClient could result in python core dump
+
+        NM_IF = NetworkManager.DBUS_INTERFACE
+        NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
+        NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
+        NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
+        NM_PATH = NetworkManager.DBUS_PATH
+        DBUS_PROP = 'org.freedesktop.DBus.Properties'
+
         try:
-            self.nmclient = NMClient.Client()
-            for active in self.nmclient.get_active_connections():
-                obj = self.bus.get_object(NetworkManager.DBUS_INTERFACE,
-                                          active.get_connection())
-                connection = obj.GetSettings()['connection']['id']
-                for dev in active.get_devices():
-                    self.connections[dev.get_ip_iface()] = \
-                        connection.encode("utf-8")
+            # get active connections
+            obj = self.bus.get_object(NM_IF, NM_PATH)
+            props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+            connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
+
+            # for all active connections:
+            for active in connections:
+                # get connection and devices from active connection
+                obj = self.bus.get_object(NM_IF, active)
+                props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
+                devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
+
+                # get name (id) from connection
+                obj = self.bus.get_object(NM_IF, connection)
+                iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
+                settings = dbus_to_python(iface.GetSettings())
+                name = settings["connection"]["id"]
+
+                # for all devices:
+                for device in devices:
+                    obj = self.bus.get_object(NM_IF, device)
+                    props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                    # get interface from device (first try: IpInterface)
+                    iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
+                    if iface == "":
+                        iface = dbus_to_python(props.Get(NM_IF_D, "Interface"))
+                    self.connections[iface] = name
+
         except Exception as msg:
             print(msg)
 
