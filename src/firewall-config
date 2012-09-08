@@ -90,6 +90,11 @@ class FirewallConfig(object):
         self.editIcmpTypesToolbutton = \
             builder.get_object("editIcmpTypesToolbutton")
 
+        self.editServicesMenuitem = \
+            builder.get_object("editServicesMenuitem")
+        self.editIcmpTypesMenuitem = \
+            builder.get_object("editIcmpTypesMenuitem")
+
         self.mainVBox = builder.get_object("mainVBox")
         self.optionMenuitem = builder.get_object("optionMenuitem")
 
@@ -757,6 +762,8 @@ class FirewallConfig(object):
                                  _("Runtime Configuration"))
         self.editServicesToolbutton.set_sensitive(not self.runtime_view)
         self.editIcmpTypesToolbutton.set_sensitive(not self.runtime_view)
+        self.editServicesMenuitem.set_sensitive(not self.runtime_view)
+        self.editIcmpTypesMenuitem.set_sensitive(not self.runtime_view)
         self.zoneEditBox.set_sensitive(not self.runtime_view)
         self.load_zones()
         self.onChangeZone()
