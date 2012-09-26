@@ -19,7 +19,12 @@
 
 # translation
 import locale
-locale.setlocale(locale.LC_ALL, "")
+try:
+    locale.setlocale(locale.LC_ALL, "")
+except locale.Error:
+    import os
+    os.environ['LC_ALL'] = 'C'
+    locale.setlocale(locale.LC_ALL, "")
 
 DOMAIN = 'firewalld'
 import gettext
