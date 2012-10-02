@@ -430,10 +430,10 @@ class Firewall:
     def reload(self, stop=False):
         _panic = self._panic
 
-        # save zone settings
-        _zone_settings = { }
+        # save zone interfaces
+        _zone_interfaces = { }
         for zone in self.zone.get_zones():
-            _zone_settings[zone] = self.zone.get_settings(zone)
+            _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
         # save direct config
         _direct_config = self.direct.get_config()
         _old_dz = self.get_default_zone()
@@ -452,27 +452,30 @@ class Firewall:
 
         _new_dz = self.get_default_zone()
         if _new_dz != _old_dz:
-            # default zone changed. Move interfaces from old default zone to the new one.
-            for iface, settings in _zone_settings[_old_dz]["interfaces"].items():
+            # default zone changed. Move interfaces from old default zone to 
+            # the new one.
+            for iface, settings in _zone_interfaces[_old_dz].items():
                 if settings["__default__"]:
                     # move only those that were added to default zone
-                    # (not those that were added to specific zone same as default)
-                    _zone_settings[_new_dz]["interfaces"][iface] = \
-                    _zone_settings[_old_dz]["interfaces"][iface]
-                    del _zone_settings[_old_dz]["interfaces"][iface]
+                    # (not those that were added to specific zone same as 
+                    # default)
+                    _zone_interfaces[_new_dz][iface] = \
+                        _zone_interfaces[_old_dz][iface]
+                    del _zone_interfaces[_old_dz][iface]
 
-# do not apply the old settings
-#        # restore zone settings
-#        for zone in self.zone.get_zones():
-#            if zone in _zone_settings:
-#                self.zone.set_settings(zone, _zone_settings[zone])
-#                del _zone_settings[zone]
-#            else:
-#                log.info1("New zone '%s'.", zone)
-#        if len(_zone_settings) > 0:
-#            for zone in _zone_settings:
-#                log.info1("Lost zone '%s', settings dropped.", zone)
-#        del _zone_settings
+        # add interfaces to zones again
+        for zone in self.zone.get_zones():
+            if zone in _zone_interfaces:
+                self.zone.set_settings(zone, { "interfaces":
+                                                   _zone_interfaces[zone] })
+                del _zone_interfaces[zone]
+
+            else:
+                log.info1("New zone '%s'.", zone)
+        if len(_zone_interfaces) > 0:
+            for zone in _zone_interfaces:
+                log.info1("Lost zone '%s', zone interfaces dropped.", zone)
+        del _zone_interfaces
 
         # restore direct config
         self.direct.set_config(_direct_config)
