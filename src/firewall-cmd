@@ -313,6 +313,9 @@ else:
 
 try:
     fw = FirewallClient()
+    if fw.connected == False:
+        print("Couldn't connect to FirewallD, it's probably not running.")
+        sys.exit(NOT_RUNNING)
 
     if permanent:
         if mode == "get-zones":
@@ -560,10 +563,7 @@ try:
 
 
 except dbus.DBusException as e:
-    if "ServiceUnknown" in e.get_dbus_message():
-        print("FirewallD is probably not running.")
-        sys.exit(NOT_RUNNING)
-    elif "NotAuthorizedException" in e.get_dbus_message():
+    if "NotAuthorizedException" in e.get_dbus_message():
         print("Authorization failed.")
         sys.exit(NOT_AUTHORIZED)
     else:
