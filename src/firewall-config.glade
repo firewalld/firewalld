@@ -1528,6 +1528,7 @@
                         <property name="tooltip_text" translatable="yes">Change Default Zone</property>
                         <property name="image">image15</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="onChangeDefaultZone" swapped="no"/>
                       </object>
                     </child>
                     <child>
