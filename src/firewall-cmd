@@ -246,7 +246,7 @@ for (opt, val) in opts:
     elif opt in [ "--set-default-zone", "--get-zone-of-interface",
                   "--add-service", "--remove-service", "--query-service",
                   "--add-port", "--remove-port", "--query-port",
-                  "--add-interface", "--remove-interface=",
+                  "--add-interface", "--remove-interface",
                   "--query-interface",
                   "--change-interface",
                   "--add-icmp-block", "--remove-icmp-block",
