@@ -250,6 +250,15 @@ class FirewallZone:
                     src_chain = INTERFACE_ZONE_SRC[chain]
                     target = self._zones[zone].target.format(
                         chain=SHORTCUTS[chain], zone=zone)
+                    if target in [ "REJECT", "%%REJECT%%" ] and \
+                            src_chain not in [ "INPUT", "FORWARD", "OUTPUT" ]:
+                        # REJECT is only valid in the INPUT, FORWARD and
+                        # OUTPUT chains, and user-defined chains which are 
+                        # only called from those chains
+                        continue
+                    if target == "DROP" and table == "nat":
+                        # DROP is not supported in nat table
+                        continue
                     rules.append((ipv, [ "%s_ZONES" % src_chain, "-t", table,
                                          opt, interface, "-j", target ]))
 
