@@ -166,8 +166,6 @@ class firewalld_conf:
                 os.remove(temp)
                 raise IOError, "Backup of '%s' failed: %s" % (self.filename,
                                                               msg)
-            else:
-                os.system("restorecon '%s.old'" % self.filename)
 
         # copy tempfile
         try:
@@ -177,4 +175,3 @@ class firewalld_conf:
             raise IOError, "Failed to create '%s': %s" % (self.filename, msg)
         else:
             os.chmod(self.filename, 0600)
-            os.system("restorecon '%s'" % self.filename)
