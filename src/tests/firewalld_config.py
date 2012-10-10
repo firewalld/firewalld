@@ -22,9 +22,10 @@
 # To use in git tree: PYTHONPATH=.. python firewalld-test.py
 
 import unittest
-
+import time
 import firewall
-from firewall.client import FirewallClient
+from firewall.client import FirewallClient, FirewallClientConfigZoneSettings
+from firewall.core.base import DEFAULT_ZONE_TARGET
 
 class TestFirewallDInterfaceConfig(unittest.TestCase):
     """
@@ -52,39 +53,38 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         """
 
         print ("\nChecking what zones we have")
-        self.assertRaisesRegexp(Exception, 'INVALID_ZONE', self.fw.config().getZoneByName, "dummyname") 
+        self.assertRaisesRegexp(Exception, 'INVALID_ZONE', self.fw.config().getZoneByName, "dummyname")
+
         zone_version = "1.0"
         zone_short = "Testing"
         zone_description = "this is just a testing zone"
         zone_immutable = False
-        zone_target = "{chain}_ZONE_{zone}"
+        zone_target = DEFAULT_ZONE_TARGET
         zone_services = ["dhcpv6-client", "ssh"]
         zone_ports = [("123", "tcp"), ("666-667", "udp")]
-        zone_icmp_blocks = ["redirect", "echo-reply"]
+        zone_icmpblocks = ["redirect", "echo-reply"]
         zone_masquerade = False
         zone_forward_ports = [("443", "tcp", "441", "192.168.0.2"), ("123", "udp", "321", "192.168.1.1")]
-        zone_settings = {"version" : zone_version,
-                         "short" : zone_short,
-                         "description" : zone_description,
-                         "immutable" : zone_immutable,
-                         "target" : zone_target,
-                         "services" : zone_services,
-                         "ports" : zone_ports,
-                         "icmp_blocks" : zone_icmp_blocks,
-                         "masquerade" : zone_masquerade,
-                         "forward_ports" : zone_forward_ports}
+        settings = FirewallClientConfigZoneSettings()
+        settings.setVersion(zone_version)
+        settings.setShort(zone_short)
+        settings.setDescription(zone_description)
+        settings.setImmutable(zone_immutable)
+        settings.setTarget(zone_target)
+        settings.setServices(zone_services)
+        settings.setPorts(zone_ports)
+        settings.setIcmpBlocks(zone_icmpblocks)
+        settings.setMasquerade(zone_masquerade)
+        settings.setForwardPorts(zone_forward_ports)
 
         print ("Adding some malformed zones")
         print ("Adding zone with name that already exists")
-        self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', self.fw.config().addZone, "home", zone_settings)
+        self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', self.fw.config().addZone, "home", settings)
         print ("Adding zone with empty name")
-        self.assertRaisesRegexp(Exception, 'INVALID_NAME', self.fw.config().addZone, "", zone_settings)
-        print ("Adding zone with empty settings")
+        self.assertRaisesRegexp(Exception, 'INVALID_NAME', self.fw.config().addZone, "", settings)
         zone_name = "test"
-        self.assertRaisesRegexp(Exception, 'INVALID_TYPE', self.fw.config().addZone, zone_name, {})
-        
         print ("Adding proper zone")
-        self.fw.config().addZone (zone_name, zone_settings)
+        self.fw.config().addZone (zone_name, settings)
 
         print ("Checking the saved (persistent) settings")
         config_zone = self.fw.config().getZoneByName(zone_name)
@@ -98,7 +98,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(zone_settings.getTarget(), zone_target)
         self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
         self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
-        self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmp_blocks.sort())
+        self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
         self.assertEquals(zone_settings.getMasquerade(), zone_masquerade)
         self.assertEquals(zone_settings.getForwardPorts().sort(), zone_forward_ports.sort())
 
@@ -114,20 +114,20 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertTrue(zone_name in self.fw.getZones())
         self.assertEquals(self.fw.getServices(zone_name).sort(), zone_services.sort())
         self.assertEquals(self.fw.getPorts(zone_name).sort(), zone_ports.sort())
-        self.assertEquals(self.fw.getIcmpBlocks(zone_name).sort(), zone_icmp_blocks.sort())
+        self.assertEquals(self.fw.getIcmpBlocks(zone_name).sort(), zone_icmpblocks.sort())
         self.assertEquals(self.fw.queryMasquerade(zone_name), zone_masquerade)
         self.assertEquals(self.fw.getForwardPorts(zone_name).sort(), zone_forward_ports.sort())
 
         print ("Renaming zone to name that already exists")
         config_zone = self.fw.config().getZoneByName(zone_name)
         self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', config_zone.rename, "home")
-        print ("Renaming zone to proper name")
         new_zone_name = "renamed"
+        print ("Renaming zone '%s' to '%s'" % (zone_name, new_zone_name))
         config_zone.rename(new_zone_name)
-        self.fw.reload() # TODO: rename() shouldn't require reload(), right ?
-        print ("Checking whether the old zone is accessible (it shouldn't be)")
+        #self.fw.reload() # to new_zone_name become accessible and zone_name stop being accessible
+        print ("Checking whether the zone '%s' is accessible (it shouldn't be)" % zone_name)
         self.assertRaisesRegexp(Exception, 'INVALID_ZONE', self.fw.config().getZoneByName, zone_name)
-        print ("The same with new zone name")
+        print ("Checking whether the zone '%s' is accessible" % new_zone_name)
         config_zone = self.fw.config().getZoneByName(new_zone_name)
         zone_settings = config_zone.getSettings()
         self.assertEquals(zone_settings.getVersion(), zone_version)
@@ -137,12 +137,13 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(zone_settings.getTarget(), zone_target)
         self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
         self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
-        self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmp_blocks.sort())
+        self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
         self.assertEquals(zone_settings.getMasquerade(), zone_masquerade)
         self.assertEquals(zone_settings.getForwardPorts().sort(), zone_forward_ports.sort())
 
-        config_zone.remove() # TODO: remove() shouldn't require reload(), right ?
-        self.fw.reload()
+        print ("Removing the zone '%s'" % new_zone_name)
+        config_zone.remove()
+        print ("Checking whether the removed zone is accessible (it shouldn't be)")
         self.assertRaisesRegexp(Exception, 'INVALID_ZONE', self.fw.config().getZoneByName, new_zone_name)
 
         # TODO test loadDefaults() ?
