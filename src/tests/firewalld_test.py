@@ -303,7 +303,15 @@ class TestFirewallD(unittest.TestCase):
         self.assertFalse(self.fw_zone.queryIcmpBlock(zone, icmp))
 
     def test_reload(self):
+        interface = "foo"
+        zone = "work"
+
+        self.fw_zone.addInterface(zone, interface)
         self.fw.reload()
+        print ("\nChecking if interface remains in zone after service reload: ")
+        self.assertTrue(self.fw_zone.queryInterface(zone, interface))
+
+        self.fw_zone.removeInterface(zone, interface) #cleanup
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallD)
