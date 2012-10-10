@@ -27,3 +27,15 @@ install-data-local:
 
 	install -d $(DESTDIR)/$(icondir)
 	cp -fpR icons/* $(DESTDIR)/$(icondir)
+
+	@echo "Fixing python shebang"
+	@list='$(bin_SCRIPTS)'; \
+	for p in $$list; do \
+	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
+	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
+	done
+	@list='$(sbin_SCRIPTS)'; \
+	for p in $$list; do \
+	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
+	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
+	done
