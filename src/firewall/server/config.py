@@ -110,7 +110,6 @@ class FirewallDConfig(slip.dbus.service.Object):
             (what, obj) = self.config.update_icmptype_from_path(name)
             if what == "new":
                 self._addIcmpType(obj)
-                self.IcmpTypeAdded(obj.name)
             elif what == "remove":
                 self.removeIcmpType(obj)
             elif what == "update":
@@ -121,7 +120,6 @@ class FirewallDConfig(slip.dbus.service.Object):
             (what, obj) = self.config.update_service_from_path(name)
             if what == "new":
                 self._addService(obj)
-                self.ServiceAdded(obj.name)
             elif what == "remove":
                 self.removeService(obj)
             elif what == "update":
@@ -132,7 +130,6 @@ class FirewallDConfig(slip.dbus.service.Object):
             (what, obj) = self.config.update_zone_from_path(name)
             if what == "new":
                 self._addZone(obj)
-                self.ZoneAdded(obj.name)
             elif what == "remove":
                 self.removeZone(obj)
             elif what == "update":
@@ -146,6 +143,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             "%s/%d" % (DBUS_PATH_CONFIG_ICMPTYPE, self.icmptype_idx))
         self.icmptypes.append(config_icmptype)
         self.icmptype_idx += 1
+        self.IcmpTypeAdded(obj.name)
         return config_icmptype
 
     @handle_exceptions
@@ -174,6 +172,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             "%s/%d" % (DBUS_PATH_CONFIG_SERVICE, self.service_idx))
         self.services.append(config_service)
         self.service_idx += 1
+        self.ServiceAdded(obj.name)
         return config_service
 
     @handle_exceptions
@@ -202,6 +201,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             "%s/%d" % (DBUS_PATH_CONFIG_ZONE, self.zone_idx))
         self.zones.append(config_zone)
         self.zone_idx += 1
+        self.ZoneAdded(obj.name)
         return config_zone
 
     @handle_exceptions
@@ -256,7 +256,6 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.addIcmpType('%s')", icmptype)
         obj = self.config.new_icmptype(icmptype, dbus_to_python(settings))
         config_icmptype = self._addIcmpType(obj)
-        self.IcmpTypeAdded(icmptype)
         return config_icmptype
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')
@@ -297,7 +296,6 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.addService('%s')", service)
         obj = self.config.new_service(service, dbus_to_python(settings))
         config_service = self._addService(obj)
-        self.ServiceAdded(service)
         return config_service
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')
@@ -338,7 +336,6 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.addZone('%s')", zone)
         obj = self.config.new_zone(zone, dbus_to_python(settings))
         config_zone = self._addZone(obj)
-        self.ZoneAdded(zone)
         return config_zone
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')

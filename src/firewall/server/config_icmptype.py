@@ -193,7 +193,6 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         new_icmptype = self.config.rename_icmptype(self.obj, dbus_to_python(name))
         self.Renamed()
         self.parent._addIcmpType(new_icmptype)
-        self.parent.IcmpTypeAdded(new_icmptype.name)
         self.parent.removeIcmpType(self.obj)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE)

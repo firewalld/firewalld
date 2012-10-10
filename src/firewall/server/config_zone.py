@@ -193,7 +193,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         new_zone = self.config.rename_zone(self.obj, dbus_to_python(name))
         self.Renamed()
         self.parent._addZone(new_zone)
-        self.parent.ZoneAdded(new_zone.name)
         self.parent.removeZone(self.obj)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
