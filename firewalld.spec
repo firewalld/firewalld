@@ -118,7 +118,7 @@ fi
 %doc COPYING
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
-%{_bindir}/firewall-convert-scfw-config
+%{_bindir}/firewall-offline-cmd
 %defattr(0640,root,root)
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/icmptypes

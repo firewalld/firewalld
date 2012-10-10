@@ -1,4 +1,4 @@
-bin_SCRIPTS = firewall-applet firewall-cmd firewall-convert-scfw-config firewall-config
+bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config
 sbin_SCRIPTS = firewalld
 
 gladedir = $(pkgdatadir)
