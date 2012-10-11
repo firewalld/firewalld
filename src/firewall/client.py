@@ -588,6 +588,8 @@ class FirewallClient(object):
                 signal = "config:Service" + signal
             elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
                 signal = "config:IcmpType" + signal
+            elif interface == DBUS_INTERFACE_CONFIG:
+                signal = "config:" + signal
 
             # get zone/service/icmptype from path and add as first call arg
             path = kwargs["path"]
