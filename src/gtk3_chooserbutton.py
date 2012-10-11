@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python -Es
 #
 # Copyright (C) 2008,2012 Red Hat, Inc.
 # Authors:
