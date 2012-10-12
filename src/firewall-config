@@ -511,7 +511,6 @@ class FirewallConfig(object):
 
     def load_zones(self):
         active_zone = self.get_active_zone()
-        self.zoneStore.clear()
 
         zones = [ ]
         if self.runtime_view:
@@ -524,6 +523,7 @@ class FirewallConfig(object):
 
         # reset and fill notebook content according to view
 
+        self.zoneStore.clear()
         self.serviceStore.clear()
         self.icmpStore.clear()
 
@@ -571,7 +571,6 @@ class FirewallConfig(object):
 
     def load_services(self):
         active_service = self.get_active_service()
-        self.serviceDialogServiceStore.clear()
 
         services = [ ]
         _services = sorted(self.fw.config().listServices())
@@ -588,10 +587,6 @@ class FirewallConfig(object):
 
         for service in services:
             self.serviceDialogServiceStore.append([service])
-
-        _service = None
-        if active_service in services:
-            _service = active_service
 
         selection = self.serviceDialogServiceView.get_selection()
         iter = self.serviceDialogServiceStore.get_iter_first()
@@ -1811,7 +1806,6 @@ class FirewallConfig(object):
 
     def load_icmps(self):
         active_icmp = self.get_active_icmp()
-        self.icmpDialogIcmpStore.clear()
 
         icmps = [ ]
         _icmps = sorted(self.fw.config().listIcmpTypes())
@@ -1828,10 +1822,6 @@ class FirewallConfig(object):
 
         for icmp in icmps:
             self.icmpDialogIcmpStore.append([icmp])
-
-        _icmp = None
-        if active_icmp in icmps:
-            _icmp = active_icmp
 
         selection = self.icmpDialogIcmpView.get_selection()
         iter = self.icmpDialogIcmpStore.get_iter_first()
