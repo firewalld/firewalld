@@ -600,6 +600,7 @@ class FirewallClient(object):
                 try:
                     what = dbus_to_python(properties.Get(interface, "name"))
                 except:
+                    # in case of e.g. Removed() signal the object is already gone
                     pass
                 else:
                     cb_args.append(what)

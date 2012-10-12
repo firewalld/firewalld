@@ -177,10 +177,10 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.config.remove_zone(self.obj)
         self.parent.removeZone(self.obj)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE, signature='s')
     @dbus_handle_exceptions
-    def Removed(self):
-        log.debug1("config.zone.%d.Removed()", self.id)
+    def Removed(self, name):
+        log.debug1("config.zone.%d.Removed('%s')" % (self.id, name))
 
     # R E N A M E
 

@@ -177,10 +177,10 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         self.config.remove_icmptype(self.obj)
         self.parent.removeIcmpType(self.obj)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')
     @dbus_handle_exceptions
-    def Removed(self):
-        log.debug1("config.icmptype.%d.Removed()", self.id)
+    def Removed(self, name):
+        log.debug1("config.icmptype.%d.Removed('%s')" % (self.id, name))
 
     # R E N A M E
 

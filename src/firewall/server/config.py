@@ -159,7 +159,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def removeIcmpType(self, obj):
         for icmptype in self.icmptypes:
             if icmptype.obj == obj:
-                icmptype.Removed()
+                icmptype.Removed(obj.name)
                 icmptype.unregister()
                 self.icmptypes.remove(icmptype)
                 del icmptype
@@ -188,7 +188,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def removeService(self, obj):
         for service in self.services:
             if service.obj == obj:
-                service.Removed()
+                service.Removed(obj.name)
                 service.unregister()
                 self.services.remove(service)
                 del service
@@ -216,7 +216,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def removeZone(self, obj):
         for zone in self.zones:
             if zone.obj == obj:
-                zone.Removed()
+                zone.Removed(obj.name)
                 zone.unregister()
                 self.zones.remove(zone)
                 del zone
