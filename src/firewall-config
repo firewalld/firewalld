@@ -163,8 +163,8 @@ class FirewallConfig(object):
             builder.get_object("zoneBaseDialogTargetCombobox")
 
         self.serviceView = builder.get_object("serviceView")
-        self.serviceStore = Gtk.ListStore(GObject.TYPE_BOOLEAN,
-                                          GObject.TYPE_STRING)
+        self.serviceStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, # checked
+                                          GObject.TYPE_STRING)  # name
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.service_toggle_cb, self.serviceStore, 0)
         self.serviceView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
@@ -243,8 +243,8 @@ class FirewallConfig(object):
             builder.get_object("forwardDialogToAddrEntry")
 
         self.icmpView = builder.get_object("icmpView")
-        self.icmpStore = Gtk.ListStore(GObject.TYPE_BOOLEAN,
-                                          GObject.TYPE_STRING)
+        self.icmpStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, # checked
+                                       GObject.TYPE_STRING)  # name
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.icmp_toggle_cb, self.icmpStore, 0)
         self.icmpView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
@@ -432,8 +432,12 @@ class FirewallConfig(object):
         self.fw.connect("icmp-block-removed", self.icmp_removed_cb)
 
         self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
+        self.fw.connect("config:service-added", self.conf_service_added_cb)
         self.fw.connect("config:service-updated", self.conf_service_updated_cb)
+        self.fw.connect("config:service-removed", self.conf_service_removed_cb)
+        self.fw.connect("config:icmptype-added", self.conf_icmp_added_cb)
         self.fw.connect("config:icmptype-updated", self.conf_icmp_updated_cb)
+        self.fw.connect("config:icmptype-removed", self.conf_icmp_removed_cb)
 
         # start with no connection
 
@@ -1491,8 +1495,23 @@ class FirewallConfig(object):
         self.serviceDialogModuleView.get_selection().set_mode(
             Gtk.SelectionMode.SINGLE)
 
+    def conf_service_added_cb(self, service):
+        if self.runtime_view:
+            return
+        self.serviceStore.append([False, service])
+
     def conf_service_updated_cb(self, zone):
         self.onChangeService()
+
+    def conf_service_removed_cb(self, service):
+        if self.runtime_view:
+            return
+        iter = self.serviceStore.get_iter_first()
+        while iter:
+            if self.serviceStore.get_value(iter, 1) == service:
+                self.serviceStore.remove(iter)
+                break
+            iter = self.serviceStore.iter_next(iter)
 
     def onEditServices(self, *args):
         self.serviceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -2008,8 +2027,23 @@ class FirewallConfig(object):
             settings.addDestination("ipv6")
             icmp.update(settings)
 
+    def conf_icmp_added_cb(self, icmp):
+        if self.runtime_view:
+            return
+        self.icmpStore.append([False, icmp])
+
     def conf_icmp_updated_cb(self, zone):
         self.onChangeIcmp()
+
+    def conf_icmp_removed_cb(self, icmp):
+        if self.runtime_view:
+            return
+        iter = self.icmpStore.get_iter_first()
+        while iter:
+            if self.icmpStore.get_value(iter, 1) == icmp:
+                self.icmpStore.remove(iter)
+                break
+            iter = self.icmpStore.iter_next(iter)
 
 # MAIN
 
