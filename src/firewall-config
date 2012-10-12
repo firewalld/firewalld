@@ -840,7 +840,10 @@ class FirewallConfig(object):
             builtin = False
         else:
             # load persistent configuration
-            zone = self.fw.config().getZoneByName(active_zone)
+            try:
+                zone = self.fw.config().getZoneByName(active_zone)
+            except:
+                return
             settings = zone.getSettings()
 
             services = settings.getServices()
@@ -1464,7 +1467,10 @@ class FirewallConfig(object):
         destination = { }
 
         # load persistent configuration
-        service = self.fw.config().getServiceByName(active_service)
+        try:
+            service = self.fw.config().getServiceByName(active_service)
+        except:
+            return
         settings = service.getSettings()
 
         ports = settings.getPorts()
@@ -1857,7 +1863,10 @@ class FirewallConfig(object):
         destination = [ ]
 
         # load persistent configuration
-        icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        try:
+            icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+        except:
+            return
         settings = icmp.getSettings()
 
         destination = settings.getDestinations()
