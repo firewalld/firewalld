@@ -450,6 +450,8 @@ class Firewall:
         if _panic:
             self.enable_panic_mode()
 
+        # handle interfaces in the default zone and move them to the new 
+        # default zone if it changed
         _new_dz = self.get_default_zone()
         if _new_dz != _old_dz:
             # default zone changed. Move interfaces from old default zone to 
@@ -469,12 +471,12 @@ class Firewall:
                 self.zone.set_settings(zone, { "interfaces":
                                                    _zone_interfaces[zone] })
                 del _zone_interfaces[zone]
-
             else:
                 log.info1("New zone '%s'.", zone)
         if len(_zone_interfaces) > 0:
             for zone in _zone_interfaces:
                 log.info1("Lost zone '%s', zone interfaces dropped.", zone)
+                del _zone_interfaces[zone]
         del _zone_interfaces
 
         # restore direct config
