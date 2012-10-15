@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2010-2012 Red Hat, Inc.
 # Authors:
@@ -66,6 +67,7 @@ class TrayApplet(object):
 
         self.active_zones = { }
         self.connections = { }
+        self.default_zone = None
 
         self.statusicon = Gtk.StatusIcon.new()
 #        self.statusicon.connect("delete_event", Gtk.main_quit)
@@ -98,7 +100,9 @@ class TrayApplet(object):
         self.shieldsup_check = Gtk.CheckMenuItem.new_with_mnemonic(
             _("Shields Up"))        
         self.shieldsup_check.set_active(False)
-        self.shieldsup_check.connect('toggled', self.shieldsup_check_toggled)
+        self.shieldsup_check_id = \
+            self.shieldsup_check.connect('toggled',
+                                         self.shieldsup_check_toggled)
         self.right_menu.append(self.shieldsup_check)
 
         self.settings.connect("changed::shields-up",
@@ -120,16 +124,18 @@ class TrayApplet(object):
 
         self.right_menu.append(Gtk.SeparatorMenuItem.new())
 
-        item = Gtk.MenuItem.new_with_mnemonic(_("Edit Firewall Settings..."))
+        item = Gtk.ImageMenuItem.new_with_mnemonic(_("Edit Firewall Settings..."))
+        item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
+                                                Gtk.IconSize.MENU))
         item.connect("activate", self.configure_cb)
         if not search_app("firewall-config"):
             item.set_sensitive(False)
-
         self.right_menu.append(item)
         
-        item = Gtk.MenuItem.new_with_mnemonic(_("Configure Shields UP/Down Zones..."))
+        item = Gtk.ImageMenuItem.new_with_mnemonic(_("Configure Shields UP/Down Zones..."))
+        item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
+                                                Gtk.IconSize.MENU))
         item.connect("activate", self.configure_shields_cb)
-
         self.right_menu.append(item)
 
         self.right_menu.append(Gtk.SeparatorMenuItem.new())
@@ -290,12 +296,16 @@ class TrayApplet(object):
         except:
             pass
 
-    def connection_established(self, first=False):
-        self.set_mode("normal")
+    def update_active_zones(self):
         self.active_zones.clear()
         active_zones = self.fw.getActiveZones()
         if active_zones:
             self.active_zones = active_zones
+
+    def connection_established(self, first=False):
+        self.set_mode("normal")
+        self.default_zone = self.fw.getDefaultZone()
+        self.update_active_zones()
 
         self.shields_up_combo.get_model().clear()
         self.shields_down_combo.get_model().clear()
@@ -315,10 +325,12 @@ class TrayApplet(object):
                          "Resetting to default value...")
             self.settings.reset("shields-down")
 
+        self.shieldsup_check.handler_block(self.shieldsup_check_id)
         if self.fw.getDefaultZone() == self.settings.get_string("shields-up"):
             self.shieldsup_check.set_active(True)
         else:
             self.shieldsup_check.set_active(False)
+        self.shieldsup_check.handler_unblock(self.shieldsup_check_id)
 
         self.update()
         if self.notification_check.get_active():
@@ -326,6 +338,7 @@ class TrayApplet(object):
                         urgency=Notify.Urgency.CRITICAL)
 
     def connection_lost(self):
+        self.default_zone = None
         self.active_zones.clear()
         self.set_mode("error")
         self.update()
@@ -456,9 +469,11 @@ class TrayApplet(object):
             self.statusicon.set_tooltip_markup(self.tooltip)
             return
         
-        self.tooltip = ""
-
         messages = [ ]
+
+        if self.default_zone:
+            messages.append(_("Default Zone: %s" % self.default_zone))
+
         if len(self.active_zones) > 0:
             for zone in sorted(self.active_zones):
                 for interface in sorted(self.active_zones[zone]):
@@ -473,15 +488,19 @@ class TrayApplet(object):
                     messages.append(text.format(zone=zone,
                                                 connection=connection,
                                                 interface=interface))
-            self.tooltip = "\n".join(messages)
         else:
-            self.tooltip = _("No Active Zones.")
+            messages.append(_("No Active Zones."))
+
+        self.tooltip = "\n".join(messages)
 
         self.statusicon.set_tooltip_markup(self.tooltip)
 
     def default_zone_changed(self, zone):
+        self.default_zone = zone
+        self.update_active_zones()
         if self.notification_check.get_active():
             self.notify(_("Default zone changed to '%s'.") % zone)
+        self.update()
 
     def _panic_mode(self, enable):
         self.panic_check.handler_block(self.panic_check_id)
