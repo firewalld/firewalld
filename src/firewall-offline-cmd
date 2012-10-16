@@ -30,6 +30,11 @@ from optparse import Option, OptionError, OptionParser, Values, \
 from firewall.functions import getPortID, getPortRange, getServiceName, \
     checkIP, checkInterface
 
+# check for root user
+if os.getuid() != 0:
+    print(_("You need to be root to run %s.") % sys.argv[0])
+    sys.exit(-1)
+
 def usage():
     print("Usage: %s -h | --help" % sys.argv[0])
 
@@ -61,7 +66,7 @@ def _check_port(option, opt, value):
             raise OptionError(_("%s is not a valid protocol.") % protocol, opt)
     if failure:
         raise OptionError(_("invalid port definition %s.") % value, opt)
-    return (range, protocol)
+    return (ports.strip(), protocol)
 
 def _check_forward_port(option, opt, value):
     result = { }
@@ -78,7 +83,7 @@ def _check_forward_port(option, opt, value):
                 (key == "toaddr" and checkIP(val)):
             result[key] = val
         elif (key == "port" or key == "toport") and getPortRange(val) > 0:
-            result[key] = getPortRange(val)
+            result[key] = val
         else:
             error = _("Invalid argument %s") % splits[0]
             break
@@ -296,7 +301,7 @@ class _OptionParser(OptionParser):
         option.process(opt, value, values, self)
 
 def _gen_parser(source=None):
-    parser = _OptionParser(add_help_option=False, option_class=_Option)
+    parser = _OptionParser(option_class=_Option)
     parser._fw_source = source
     parser._fw_exit = False
     return parser
@@ -341,11 +346,12 @@ def read_sysconfig_config(merge_config=None):
         return merge_config
     return parse_sysconfig_args(args[0], merge_config, args[1])
 
-# open system-config-firewall config
-
-conf = read_sysconfig_config()
-if not conf:
-    sys.exit(0)
+if len(sys.argv) > 1:
+    # Parse the cmdline args and setup the initial firewall state
+    conf = parse_sysconfig_args(None)
+else:
+    # open system-config-firewall config
+    conf = read_sysconfig_config()
 
 # open firewalld config file to get default zone
 
@@ -361,7 +367,7 @@ else:
     zone = _firewalld_conf.get("DefaultZone")
 
 obj = None
-for path in [ FIREWALLD_ZONES, ETC_FIREWALLD_ZONES ]:
+for path in [ ETC_FIREWALLD_ZONES, FIREWALLD_ZONES ]:
     filename = "%s.xml" % zone
     if os.path.exists("%s/%s" %(path, filename)):
         obj = zone_reader(filename, path)
