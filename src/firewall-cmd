@@ -573,7 +573,11 @@ except dbus.DBusException as e:
             code = UNKNOWN_ERROR
             print("Error: %s" % e)
         else:
-            print("Error: %s" % e.message)
+            if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
+                print("Warning: %s" % e.message)
+                sys.exit(0)
+            else:
+                print("Error: %s" % e.message)
         sys.exit(code)
 
 sys.exit(0)
