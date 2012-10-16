@@ -169,9 +169,6 @@ def _addStandardOptions(parser):
                       metavar=_("<interface>"), callback=_append_unique,
                       help=_("Masquerades traffic from the specified device. "
                              "This is IPv4 only."))
-    parser.add_option( "--high", "--medium",
-                      action="store_true", dest="enabled",
-                      help=_("Backwards compatibility, aliased to --enabled"))
     parser.add_option("--custom-rules",
                       action="callback", dest="custom_rules", type="rulesfile",
                       metavar=_("[<type>:][<table>:]<filename>"),
@@ -389,7 +386,15 @@ if conf.trust:
 # no custom rules
 if conf.custom_rules and len(conf.custom_rules) > 0:
     for custom in conf.custom_rules:
-        print("Ignoring custom-rule=%s\n" % ":".join(custom))
+        print("Ignoring custom-rule '%s'\n" % ":".join(custom))
+
+# no modules
+if conf.add_module and len(conf.add_module) > 0:
+    for module in conf.add_module:
+        print("Ignoring addmodule '%s'\n" % module)
+if conf.remove_module and len(conf.remove_module) > 0:
+    for module in conf.remove_module:
+        print("Ignoring removemodule '%s'\n" % module)
 
 if conf.masq:
     for dev in conf.masq:
