@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Juhani Numminen <juhaninumminen0@gmail.com>, 2012.
 # Lauri Nurmi <lanurmi@iki.fi>, 2004.
@@ -10,17 +10,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"POT-Creation-Date: 2012-10-16 15:24+0200\n"
 "PO-Revision-Date: 2012-09-08 15:54+0000\n"
 "Last-Translator: Juhani Numminen <juhaninumminen0@gmail.com>\n"
-"Language-Team: Finnish (http://www.transifex.com/projects/p/fedora/language/fi/)\n"
+"Language-Team: Finnish (http://www.transifex.com/projects/p/fedora/language/"
+"fi/)\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:57
 msgid "Firewall Applet"
 msgstr "Palomuurisovelma"
 
@@ -31,6 +32,22 @@ msgstr "Palomuuri"
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
 msgstr "Palomuuriasetukset"
+
+#: ../src/firewall/config/__init__.py:48
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -52,7 +69,7 @@ msgstr "Elementti \"%s\": odottamaton attribuutti \"%s\""
 msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr "Käyttö: %s [-h|--help] [--debug[=<taso>]] [--nofork]"
 
-#: ../src/firewalld:49
+#: ../src/firewalld:49 ../src/firewall-offline-cmd:35
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "Vain pääkäyttäjä voi suorittaa %s:n."
@@ -71,205 +88,209 @@ msgstr "Ei käynnistetä FirewallD:tä, se on jo käynnissä."
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:99
+#: ../src/firewall-applet:101
 msgid "Shields Up"
 msgstr ""
 
-#: ../src/firewall-applet:110
+#: ../src/firewall-applet:114
 msgid "Enable Notifications"
 msgstr "Ota huomautukset käyttöön"
 
-#: ../src/firewall-applet:123
+#: ../src/firewall-applet:127
 msgid "Edit Firewall Settings..."
 msgstr "Muokkaa palomuurin asetuksia..."
 
-#: ../src/firewall-applet:130
+#: ../src/firewall-applet:135
 msgid "Configure Shields UP/Down Zones..."
 msgstr ""
 
-#: ../src/firewall-applet:138
+#: ../src/firewall-applet:144
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:165
+#: ../src/firewall-applet:171
 msgid "Configure Shields Up/Down Zones"
 msgstr ""
 
-#: ../src/firewall-applet:176
+#: ../src/firewall-applet:182
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 
-#: ../src/firewall-applet:184
+#: ../src/firewall-applet:190
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
 msgstr ""
 
-#: ../src/firewall-applet:199
+#: ../src/firewall-applet:205
 msgid "Shields Up Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:210
+#: ../src/firewall-applet:216
 msgid "Shields Down Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:249
+#: ../src/firewall-applet:255
 msgid "Not using slip"
 msgstr "slip ei käytössä"
 
-#: ../src/firewall-applet:324
+#: ../src/firewall-applet:337
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:346
 msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:370
+#: ../src/firewall-applet:384
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:448
+#: ../src/firewall-applet:462
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:454
+#: ../src/firewall-applet:468
 msgid "PANIC MODE"
 msgstr "PANIIKKITILA"
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:475
+#, fuzzy, c-format
+msgid "Default Zone: %s"
+msgstr "Oletuskohde"
+
+#: ../src/firewall-applet:482
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:469
+#: ../src/firewall-applet:485
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:477
+#: ../src/firewall-applet:492
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:483
+#: ../src/firewall-applet:502
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:498
+#: ../src/firewall-applet:518
 msgid "All network traffic is blocked."
 msgstr "Kaikki verkkoliikenne estetty."
 
-#: ../src/firewall-applet:499
+#: ../src/firewall-applet:519
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:526
+#: ../src/firewall-applet:546
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:527
+#: ../src/firewall-applet:547
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:530
+#: ../src/firewall-applet:550
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:535
+#: ../src/firewall-applet:555
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:560
+#: ../src/firewall-applet:580
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:591
+#: ../src/firewall-applet:642
 msgid "Firewall-applet"
 msgstr ""
 
-#: ../src/firewall-config:56
+#: ../src/firewall-config:58
 msgid "Connected."
 msgstr "Yhdistetty."
 
-#: ../src/firewall-config:57
+#: ../src/firewall-config:59
 msgid "No connection."
 msgstr "Ei yhteyttä."
 
-#: ../src/firewall-config:58
+#: ../src/firewall-config:60
 msgid "Waiting ..."
 msgstr "Odotetaan..."
 
-#: ../src/firewall-config:59
+#: ../src/firewall-config:61
 msgid "Retrying ..."
 msgstr "Yritetään uudestaan..."
 
-#: ../src/firewall-config:69
+#: ../src/firewall-config:71
 msgid "Failed to load icons."
 msgstr ""
 
-#: ../src/firewall-config:107 ../src/firewall-config:755
+#: ../src/firewall-config:114 ../src/firewall-config:761
 msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:108
+#: ../src/firewall-config:115
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
+#: ../src/firewall-config:172 ../src/firewall-config.glade.h:81
 msgid "Service"
 msgstr "Palvelu"
 
-#: ../src/firewall-config:172 ../src/firewall-config:202
-#: ../src/firewall-config:290
+#: ../src/firewall-config:179 ../src/firewall-config:209
+#: ../src/firewall-config:297
 msgid "Port"
 msgstr "Portti"
 
-#: ../src/firewall-config:174 ../src/firewall-config:204
-#: ../src/firewall-config:292
+#: ../src/firewall-config:181 ../src/firewall-config:211
+#: ../src/firewall-config:299
 msgid "Protocol"
 msgstr "Protokolla"
 
-#: ../src/firewall-config:206
+#: ../src/firewall-config:213
 msgid "To Port"
 msgstr "Porttiin"
 
-#: ../src/firewall-config:208
+#: ../src/firewall-config:215
 msgid "To Address"
 msgstr "Osoitteeseen"
 
-#: ../src/firewall-config:245
+#: ../src/firewall-config:252
 msgid "Icmp Type"
 msgstr ""
 
-#: ../src/firewall-config:446
+#: ../src/firewall-config:457
 msgid "Warning"
 msgstr "Varoitus"
 
-#: ../src/firewall-config:456
+#: ../src/firewall-config:467
 msgid "Error"
 msgstr "Virhe"
 
-#: ../src/firewall-config:458
+#: ../src/firewall-config:469
 msgid "Retry"
 msgstr "Yritä uudelleen"
 
-#: ../src/firewall-config:475
+#: ../src/firewall-config:486
 msgid "Authorization failed."
 msgstr "Tunnistautuminen epäonnistui."
 
-#: ../src/firewall-config:966
+#: ../src/firewall-config:977
 msgid "Built-in zone, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1575
+#: ../src/firewall-config:1604
 msgid "Built-in service, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1918
+#: ../src/firewall-config:1945
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 
@@ -342,9 +363,11 @@ msgstr "Edelleenohjaa toiseen porttiin"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "Jos paikallinen edelleenohjaus otetaan käyttöön, on määritettävä portti. Tämä portti on oltava eri kuin lähdeportti."
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"Jos paikallinen edelleenohjaus otetaan käyttöön, on määritettävä portti. "
+"Tämä portti on oltava eri kuin lähdeportti."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -404,8 +427,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:32
 msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to"
-" the destination."
+"If you specify destination addresses, the ICMP Type entry will be limited to "
+"the destination."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:33
@@ -505,7 +528,9 @@ msgstr ""
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
-msgstr "Tässä voi määrittää luotetut palvelut. Nämä palvelut ovat käytettävissä kaikista koneista tai verkoista."
+msgstr ""
+"Tässä voi määrittää luotetut palvelut. Nämä palvelut ovat käytettävissä "
+"kaikista koneista tai verkoista."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
@@ -515,7 +540,9 @@ msgstr ""
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
-msgstr "Lisää portteja tai porttialueita, joihin on oltava pääsy kaikilta koneilta tai verkoista."
+msgstr ""
+"Lisää portteja tai porttialueita, joihin on oltava pääsy kaikilta koneilta "
+"tai verkoista."
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
@@ -538,7 +565,10 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "Osoitteenmuunnos mahdollistaa paikallisen verkon Internetiin yhdistävän koneen tai reitittimen pystyttämisen. Paikallinen verkko näkyy yhtenä osoitteena Internetiin päin. Osoitteenmuunnos toimii vain IPv4:ssä."
+msgstr ""
+"Osoitteenmuunnos mahdollistaa paikallisen verkon Internetiin yhdistävän "
+"koneen tai reitittimen pystyttämisen. Paikallinen verkko näkyy yhtenä "
+"osoitteena Internetiin päin. Osoitteenmuunnos toimii vain IPv4:ssä."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Masquerade zone"
@@ -560,20 +590,30 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "Lisää merkintöjä porttien edelleenohjaamiseksi joko portista toiseen paikallisessa järjestelmässä tai paikallisesta järjestelmästä toiseen järjestelmään. Edelleenohjaaminen toiseen järjestelmään on hyödyllistä vain jos liitännässä on käytössä osoitteenmuunnos. Porttien edelleenohjaaminen on mahdollista vain IPv4:ssä."
+msgstr ""
+"Lisää merkintöjä porttien edelleenohjaamiseksi joko portista toiseen "
+"paikallisessa järjestelmässä tai paikallisesta järjestelmästä toiseen "
+"järjestelmään. Edelleenohjaaminen toiseen järjestelmään on hyödyllistä vain "
+"jos liitännässä on käytössä osoitteenmuunnos. Porttien edelleenohjaaminen on "
+"mahdollista vain IPv4:ssä."
 
 #: ../src/firewall-config.glade.h:68
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "Internet Control Message -protokollaa (ICMP) käytetään yleensä virheviestien lähettämiseksi verkotettujen tietokoneiden välillä, mutta sitä voidaan käyttää myös tietoviesteihin, kuten ping-pyyntöihin ja -vastauksiin."
+msgstr ""
+"Internet Control Message -protokollaa (ICMP) käytetään yleensä virheviestien "
+"lähettämiseksi verkotettujen tietokoneiden välillä, mutta sitä voidaan "
+"käyttää myös tietoviesteihin, kuten ping-pyyntöihin ja -vastauksiin."
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "Merkitse hylättävät ICMP-tyypit luettelosta. Kaikki muut ICMP-tyypit päästetään läpi palomuurista. Oletuksena ei ole rajoituksia."
+msgstr ""
+"Merkitse hylättävät ICMP-tyypit luettelosta. Kaikki muut ICMP-tyypit "
+"päästetään läpi palomuurista. Oletuksena ei ole rajoituksia."
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
@@ -694,146 +734,150 @@ msgstr "Muuttumaton:"
 msgid "The %s '%s' has changed, applying new settings."
 msgstr "%s \"%s\" on muuttunut, otetaan käyttöön uudet asetukset."
 
-#: ../src/firewall-convert-scfw-config:54
+#: ../src/firewall-offline-cmd:59
 #, c-format
 msgid "port range %s is not unique."
 msgstr "porttialue %s ei ole uniikki.."
 
-#: ../src/firewall-convert-scfw-config:56
+#: ../src/firewall-offline-cmd:61
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
 msgstr "%s ei ole kelvollinen alue (alkuportti >= loppuportti)."
 
-#: ../src/firewall-convert-scfw-config:61
+#: ../src/firewall-offline-cmd:66
 #, c-format
 msgid "%s is not a valid protocol."
 msgstr "%s ei ole kelvollinen protokolla."
 
-#: ../src/firewall-convert-scfw-config:63
+#: ../src/firewall-offline-cmd:68
 #, c-format
 msgid "invalid port definition %s."
 msgstr "virheellinen porttimäärittely %s."
 
-#: ../src/firewall-convert-scfw-config:73
-#: ../src/firewall-convert-scfw-config:83
+#: ../src/firewall-offline-cmd:78 ../src/firewall-offline-cmd:88
 #, c-format
 msgid "Invalid argument %s"
 msgstr "Virheellinen argumentti %s"
 
-#: ../src/firewall-convert-scfw-config:97
+#: ../src/firewall-offline-cmd:102
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr "valitsin %(option)s: virheellinen forward_port ”%(value)s”: %(error)s."
 
-#: ../src/firewall-convert-scfw-config:108
+#: ../src/firewall-offline-cmd:113
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr "valitsin %(option)s: virheellinen forward_port ”%(value)s”."
 
-#: ../src/firewall-convert-scfw-config:115
+#: ../src/firewall-offline-cmd:120
 #, c-format
 msgid "invalid interface '%s'."
 msgstr "virheellinen verkkolaite ”%s”."
 
-#: ../src/firewall-convert-scfw-config:135
+#: ../src/firewall-offline-cmd:140
 msgid "Enable firewall (default)"
 msgstr "Käynnistä palomuuri (oletus)"
 
-#: ../src/firewall-convert-scfw-config:138
+#: ../src/firewall-offline-cmd:143
 msgid "Disable firewall"
 msgstr "Poista palomuuri käytöstä"
 
-#: ../src/firewall-convert-scfw-config:141
-#: ../src/firewall-convert-scfw-config:145
+#: ../src/firewall-offline-cmd:146 ../src/firewall-offline-cmd:150
 msgid "<module>"
 msgstr "<moduuli>"
 
-#: ../src/firewall-convert-scfw-config:142
+#: ../src/firewall-offline-cmd:147
 msgid "Enable an iptables module"
 msgstr "Ota käyttöön iptables-moduuli"
 
-#: ../src/firewall-convert-scfw-config:146
+#: ../src/firewall-offline-cmd:151
 msgid "Disable an iptables module"
 msgstr "Ota iptables-moduuli pois käytöstä"
 
-#: ../src/firewall-convert-scfw-config:150
+#: ../src/firewall-offline-cmd:155
 msgid "<service>"
 msgstr "<serviço>"
 
-#: ../src/firewall-convert-scfw-config:151
+#: ../src/firewall-offline-cmd:156
 msgid "Open the firewall for a service (e.g, ssh)"
 msgstr "Avaa palomuuri palvelulle (esim. ssh)"
 
-#: ../src/firewall-convert-scfw-config:154
+#: ../src/firewall-offline-cmd:159
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<portti>[-<portti>]:<protokolla>"
 
-#: ../src/firewall-convert-scfw-config:156
+#: ../src/firewall-offline-cmd:161
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
 msgstr "Avaa tietyt portit palomuurista (esim. ssh:tcp)"
 
-#: ../src/firewall-convert-scfw-config:160
-#: ../src/firewall-convert-scfw-config:164
+#: ../src/firewall-offline-cmd:165 ../src/firewall-offline-cmd:169
 msgid "<interface>"
 msgstr "<verkkoliitäntä>"
 
-#: ../src/firewall-convert-scfw-config:161
+#: ../src/firewall-offline-cmd:166
 msgid "Allow all traffic on the specified device"
 msgstr "Salli kaikki liikenne määritellylle laitteelle"
 
-#: ../src/firewall-convert-scfw-config:165
+#: ../src/firewall-offline-cmd:170
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
 msgstr "Tekee määritetyn laitteen liikenteelle osoitteenmuunnoksen. Vain IPv4."
 
-#: ../src/firewall-convert-scfw-config:169
-msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Taaksepäin yhteensopivuus, käytössä valitsimella --enabled"
-
-#: ../src/firewall-convert-scfw-config:172
+#: ../src/firewall-offline-cmd:174
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<tyyppi>:][<taulu>:]<tiedostonimi>"
 
-#: ../src/firewall-convert-scfw-config:174
+#: ../src/firewall-offline-cmd:176
 msgid ""
-"Specify a custom rules file for inclusion in the firewall, after the default"
-" rules. Default protocol type: ipv4, default table: filter. (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr "Määritä mukautettu sääntötiedosto, joka lisätään palomuuriin. Lisäys tehdään oletussääntöjen jälkeen. Oletusprotokollatyyppi: ipv4, oletustaulu: filter. (Esimerkki: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+"Specify a custom rules file for inclusion in the firewall, after the default "
+"rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+"Määritä mukautettu sääntötiedosto, joka lisätään palomuuriin. Lisäys tehdään "
+"oletussääntöjen jälkeen. Oletusprotokollatyyppi: ipv4, oletustaulu: filter. "
+"(Esimerkki: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-convert-scfw-config:183
+#: ../src/firewall-offline-cmd:185
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<liitäntä>:port=<portti>:proto=<protokolla>[:toport=<kohdeportti>][:toaddr=<kohdeosoite>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<liitäntä>:port=<portti>:proto=<protokolla>[:toport=<kohdeportti>][:"
+"toaddr=<kohdeosoite>]"
 
-#: ../src/firewall-convert-scfw-config:187
+#: ../src/firewall-offline-cmd:189
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
-msgstr "Edelleenohjaa liitännän portti protokollan kanssa joko toiseen paikalliseen porttiin (kohdeosoitetta ei anneta) tai toiseen kohdeosoitteeseen (valinnainen kohdeportti). Vain IPv4."
+msgstr ""
+"Edelleenohjaa liitännän portti protokollan kanssa joko toiseen paikalliseen "
+"porttiin (kohdeosoitetta ei anneta) tai toiseen kohdeosoitteeseen "
+"(valinnainen kohdeportti). Vain IPv4."
 
-#: ../src/firewall-convert-scfw-config:196
+#: ../src/firewall-offline-cmd:198
 msgid "<icmp type>"
 msgstr "<icmp-tyyppi>"
 
-#: ../src/firewall-convert-scfw-config:197
+#: ../src/firewall-offline-cmd:199
 msgid "Block this ICMP type. The default is to accept all ICMP types."
 msgstr "Estä tämä ICMP-tyyppi. Oletus on hyväksyä kaikki ICMP-tyypit."
 
-#: ../src/firewall-convert-scfw-config:209
+#: ../src/firewall-offline-cmd:211
 #, c-format
 msgid "no such option: %s"
 msgstr "tuntematon valinta: %s"
 
-#: ../src/firewall-convert-scfw-config:274
+#: ../src/firewall-offline-cmd:276
 #, c-format
 msgid "%s option requires an argument"
 msgstr "valitsin %s vaatii argumentin"
 
-#: ../src/firewall-convert-scfw-config:277
+#: ../src/firewall-offline-cmd:279
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "valitsin %(option)s vaatii %(count)s argumenttia"
 
-#: ../src/firewall-convert-scfw-config:291
+#: ../src/firewall-offline-cmd:293
 #, c-format
 msgid "%s option does not take a value"
 msgstr "valitsimelle %s ei voi asettaa arvoa"
+
+#~ msgid "Backwards compatibility, aliased to --enabled"
+#~ msgstr "Taaksepäin yhteensopivuus, käytössä valitsimella --enabled"

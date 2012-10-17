@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 17:38+0200\n"
+"POT-Creation-Date: 2012-10-16 15:24+0200\n"
 "PO-Revision-Date: 2012-09-06 11:07+0000\n"
 "Last-Translator: twoerner <twoerner@redhat.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/fedora/language/"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:57
 msgid "Firewall Applet"
 msgstr ""
 
@@ -33,7 +33,7 @@ msgstr "Firewall"
 msgid "Firewall Configuration"
 msgstr "Nastavenia firewallu"
 
-#: ../src/firewall/config/__init__.py:43
+#: ../src/firewall/config/__init__.py:48
 msgid ""
 "This program is free software; you can redistribute it and/or modify it "
 "under the terms of the GNU General Public License as published by the Free "
@@ -69,7 +69,7 @@ msgstr ""
 msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr ""
 
-#: ../src/firewalld:49
+#: ../src/firewalld:49 ../src/firewall-offline-cmd:35
 #, c-format
 msgid "You need to be root to run %s."
 msgstr ""
@@ -88,122 +88,127 @@ msgstr ""
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:99
+#: ../src/firewall-applet:101
 msgid "Shields Up"
 msgstr ""
 
-#: ../src/firewall-applet:110
+#: ../src/firewall-applet:114
 msgid "Enable Notifications"
 msgstr ""
 
-#: ../src/firewall-applet:123
+#: ../src/firewall-applet:127
 msgid "Edit Firewall Settings..."
 msgstr ""
 
-#: ../src/firewall-applet:130
+#: ../src/firewall-applet:135
 msgid "Configure Shields UP/Down Zones..."
 msgstr ""
 
-#: ../src/firewall-applet:138
+#: ../src/firewall-applet:144
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:165
+#: ../src/firewall-applet:171
 msgid "Configure Shields Up/Down Zones"
 msgstr ""
 
-#: ../src/firewall-applet:176
+#: ../src/firewall-applet:182
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 
-#: ../src/firewall-applet:184
+#: ../src/firewall-applet:190
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
 
-#: ../src/firewall-applet:199
+#: ../src/firewall-applet:205
 msgid "Shields Up Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:210
+#: ../src/firewall-applet:216
 msgid "Shields Down Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:249
+#: ../src/firewall-applet:255
 msgid "Not using slip"
 msgstr ""
 
-#: ../src/firewall-applet:324
+#: ../src/firewall-applet:337
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:346
 msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:370
+#: ../src/firewall-applet:384
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:448
+#: ../src/firewall-applet:462
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:454
+#: ../src/firewall-applet:468
 msgid "PANIC MODE"
 msgstr ""
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:475
+#, c-format
+msgid "Default Zone: %s"
+msgstr ""
+
+#: ../src/firewall-applet:482
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:469
+#: ../src/firewall-applet:485
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:477
+#: ../src/firewall-applet:492
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:483
+#: ../src/firewall-applet:502
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:498
+#: ../src/firewall-applet:518
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:499
+#: ../src/firewall-applet:519
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:526
+#: ../src/firewall-applet:546
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:527
+#: ../src/firewall-applet:547
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:530
+#: ../src/firewall-applet:550
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:535
+#: ../src/firewall-applet:555
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:560
+#: ../src/firewall-applet:580
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:591
+#: ../src/firewall-applet:642
 msgid "Firewall-applet"
 msgstr ""
 
@@ -227,65 +232,65 @@ msgstr ""
 msgid "Failed to load icons."
 msgstr ""
 
-#: ../src/firewall-config:109 ../src/firewall-config:757
+#: ../src/firewall-config:114 ../src/firewall-config:761
 msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:110
+#: ../src/firewall-config:115
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:167 ../src/firewall-config.glade.h:81
+#: ../src/firewall-config:172 ../src/firewall-config.glade.h:81
 msgid "Service"
 msgstr "Služba"
 
-#: ../src/firewall-config:174 ../src/firewall-config:204
-#: ../src/firewall-config:292
+#: ../src/firewall-config:179 ../src/firewall-config:209
+#: ../src/firewall-config:297
 msgid "Port"
 msgstr "Port"
 
-#: ../src/firewall-config:176 ../src/firewall-config:206
-#: ../src/firewall-config:294
+#: ../src/firewall-config:181 ../src/firewall-config:211
+#: ../src/firewall-config:299
 msgid "Protocol"
 msgstr "Protokol"
 
-#: ../src/firewall-config:208
+#: ../src/firewall-config:213
 msgid "To Port"
 msgstr "Cieľový port"
 
-#: ../src/firewall-config:210
+#: ../src/firewall-config:215
 msgid "To Address"
 msgstr "Cieľová adresa"
 
-#: ../src/firewall-config:247
+#: ../src/firewall-config:252
 msgid "Icmp Type"
 msgstr ""
 
-#: ../src/firewall-config:448
+#: ../src/firewall-config:457
 msgid "Warning"
 msgstr "Varovanie"
 
-#: ../src/firewall-config:458
+#: ../src/firewall-config:467
 msgid "Error"
 msgstr "Chyba"
 
-#: ../src/firewall-config:460
+#: ../src/firewall-config:469
 msgid "Retry"
 msgstr ""
 
-#: ../src/firewall-config:477
+#: ../src/firewall-config:486
 msgid "Authorization failed."
 msgstr ""
 
-#: ../src/firewall-config:968
+#: ../src/firewall-config:977
 msgid "Built-in zone, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1577
+#: ../src/firewall-config:1604
 msgid "Built-in service, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1920
+#: ../src/firewall-config:1945
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 
@@ -728,105 +733,98 @@ msgstr ""
 msgid "The %s '%s' has changed, applying new settings."
 msgstr ""
 
-#: ../src/firewall-convert-scfw-config:54
+#: ../src/firewall-offline-cmd:59
 #, c-format
 msgid "port range %s is not unique."
 msgstr "rozsah portov %s nie je jedinečný."
 
-#: ../src/firewall-convert-scfw-config:56
+#: ../src/firewall-offline-cmd:61
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
 msgstr "%s nie je platný rozsah (počiatočný port >= konečný port)"
 
-#: ../src/firewall-convert-scfw-config:61
+#: ../src/firewall-offline-cmd:66
 #, c-format
 msgid "%s is not a valid protocol."
 msgstr "%s nie je platný protokol."
 
-#: ../src/firewall-convert-scfw-config:63
+#: ../src/firewall-offline-cmd:68
 #, c-format
 msgid "invalid port definition %s."
 msgstr "neplatná definícia portu %s."
 
-#: ../src/firewall-convert-scfw-config:73
-#: ../src/firewall-convert-scfw-config:83
+#: ../src/firewall-offline-cmd:78 ../src/firewall-offline-cmd:88
 #, c-format
 msgid "Invalid argument %s"
 msgstr "Neplatný argument %s"
 
-#: ../src/firewall-convert-scfw-config:97
+#: ../src/firewall-offline-cmd:102
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr "možnosť %(option)s: neplatný forward_port '%(value)s': %(error)s."
 
-#: ../src/firewall-convert-scfw-config:108
+#: ../src/firewall-offline-cmd:113
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr "možnosť %(option)s: neplatný forward_port '%(value)s'."
 
-#: ../src/firewall-convert-scfw-config:115
+#: ../src/firewall-offline-cmd:120
 #, c-format
 msgid "invalid interface '%s'."
 msgstr "neplatné rozhranie '%s'."
 
-#: ../src/firewall-convert-scfw-config:135
+#: ../src/firewall-offline-cmd:140
 msgid "Enable firewall (default)"
 msgstr "Povoliť firewall (predvolené)"
 
-#: ../src/firewall-convert-scfw-config:138
+#: ../src/firewall-offline-cmd:143
 msgid "Disable firewall"
 msgstr "Zakázať firewall"
 
-#: ../src/firewall-convert-scfw-config:141
-#: ../src/firewall-convert-scfw-config:145
+#: ../src/firewall-offline-cmd:146 ../src/firewall-offline-cmd:150
 msgid "<module>"
 msgstr "<module>"
 
-#: ../src/firewall-convert-scfw-config:142
+#: ../src/firewall-offline-cmd:147
 msgid "Enable an iptables module"
 msgstr "Povoliť modul iptables"
 
-#: ../src/firewall-convert-scfw-config:146
+#: ../src/firewall-offline-cmd:151
 msgid "Disable an iptables module"
 msgstr "Zakázať modul iptables"
 
-#: ../src/firewall-convert-scfw-config:150
+#: ../src/firewall-offline-cmd:155
 #, fuzzy
 msgid "<service>"
 msgstr "Služba"
 
-#: ../src/firewall-convert-scfw-config:151
+#: ../src/firewall-offline-cmd:156
 msgid "Open the firewall for a service (e.g, ssh)"
 msgstr "Otvoriť firewall pre službu (napr. ssh)"
 
-#: ../src/firewall-convert-scfw-config:154
+#: ../src/firewall-offline-cmd:159
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-convert-scfw-config:156
+#: ../src/firewall-offline-cmd:161
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
 msgstr "Otvoriť konkrétne porty vo firewalle (napr. ssh:tcp)"
 
-#: ../src/firewall-convert-scfw-config:160
-#: ../src/firewall-convert-scfw-config:164
+#: ../src/firewall-offline-cmd:165 ../src/firewall-offline-cmd:169
 msgid "<interface>"
 msgstr "<interface>"
 
-#: ../src/firewall-convert-scfw-config:161
+#: ../src/firewall-offline-cmd:166
 msgid "Allow all traffic on the specified device"
 msgstr "Povoliť všetky prenosy na konkrétnom zariadení"
 
-#: ../src/firewall-convert-scfw-config:165
+#: ../src/firewall-offline-cmd:170
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
 msgstr "Robí maškarádu prenosu z konkrétneho zariadenia. Len pre IPv4."
 
-#: ../src/firewall-convert-scfw-config:169
-msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Spätná kompatibilita, alias pre --enabled"
-
-#: ../src/firewall-convert-scfw-config:172
+#: ../src/firewall-offline-cmd:174
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-convert-scfw-config:174
+#: ../src/firewall-offline-cmd:176
 msgid ""
 "Specify a custom rules file for inclusion in the firewall, after the default "
 "rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
@@ -836,7 +834,7 @@ msgstr ""
 "zaradené za predvolené pravidlá. Predvolený typ protokolu: ipv4, predvolená "
 "tabuľka: filter. (Napr.: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-convert-scfw-config:183
+#: ../src/firewall-offline-cmd:185
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
@@ -844,7 +842,7 @@ msgstr ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 
-#: ../src/firewall-convert-scfw-config:187
+#: ../src/firewall-offline-cmd:189
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
@@ -854,29 +852,32 @@ msgstr ""
 "cieľovej adresy) alebo na inú adresu s možnosťou uviesť aj cieľový port. Len "
 "pre IPv4."
 
-#: ../src/firewall-convert-scfw-config:196
+#: ../src/firewall-offline-cmd:198
 msgid "<icmp type>"
 msgstr "<icmp type>"
 
-#: ../src/firewall-convert-scfw-config:197
+#: ../src/firewall-offline-cmd:199
 msgid "Block this ICMP type. The default is to accept all ICMP types."
 msgstr "Blokovať tento typ ICMP. Predvolené je akceptovať všetky typy ICMP."
 
-#: ../src/firewall-convert-scfw-config:209
+#: ../src/firewall-offline-cmd:211
 #, c-format
 msgid "no such option: %s"
 msgstr "neexistuje možnosť: %s"
 
-#: ../src/firewall-convert-scfw-config:274
+#: ../src/firewall-offline-cmd:276
 #, c-format
 msgid "%s option requires an argument"
 msgstr "%s možnosť vyžaduje argument"
 
-#: ../src/firewall-convert-scfw-config:277
+#: ../src/firewall-offline-cmd:279
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "možnosť %(option)s vyžaduje %(count)s argumentov"
 
-#: ../src/firewall-convert-scfw-config:291
+#: ../src/firewall-offline-cmd:293
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s možnosť neprijíma hodnotu"
+
+#~ msgid "Backwards compatibility, aliased to --enabled"
+#~ msgstr "Spätná kompatibilita, alias pre --enabled"

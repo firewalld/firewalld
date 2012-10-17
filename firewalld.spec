@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.8
+Version: 0.2.9
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -167,6 +167,36 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Wed Oct 17 2012 Thomas Woerner <twoerner@redhat.com> 0.2.9-1
+- firewall-config: some UI usability changes
+- firewall-cmd: New option --list-all-zones, output of --list-all changed,
+  more option combination checks
+- firewall-applet: Replaced NMClient by direct DBUS calls to fix python core
+  dumps in case of connection activates/deactivates
+- Use fallback 'C' locale if current locale isn't supported (RHBZ#860278)
+- Add interfaces to zones again after reload
+- firewall-cmd: use FirewallClient().connected value
+- firewall-cmd: --remove-interface was not working due to a typo
+- Do not use restorecon for new and backup files
+- Fixed use of properties REJECT and DROP
+- firewalld_test.py: check interfaces after reload
+- Translation updates
+- Renamed firewall-convert-scfw-config to firewall-offline-cmd, used by
+  anaconda for firewall configuration (e.g. kickstart)
+- Fix python shebang to use -Es at installation time for bin_SCRIPTS and
+  sbin_SCRIPTS and at all times in gtk3_chooserbutton.py
+- tests/firewalld_config.py: update test_zones() test case
+- Config interface: improve renaming of zones/services/icmp_types
+- Move emiting of Added signals closer to source.
+- FirewallClient(): config:ServiceAdded signal was wrongly mapped
+- Add argument 'name' to Removed signal
+- firewall-config: Add callbacks for config:[service|icmp]-[added|removed]
+- firewall-config: catch INVALID_X error when removing zone/service/icmp_type
+- firewall-config: remove unused code
+- Revert "Neutralize _xmlplus instead of conforming it"
+- firewall-applet: some UI usability changes
+- firewall-cmd: ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET are warnings
+
 * Fri Sep  7 2012 Thomas Woerner <twoerner@redhat.com> 0.2.8-1
 - Do not apply old settings to zones after reload
 - FirewallClient: Added callback structure for firewalld signals

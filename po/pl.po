@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Andrzej Olszewski <andrzej.olszewski@ifj.edu.pl>, 2004.
 # Piotr Drąg <piotrdrag@gmail.com>, 2007.
@@ -12,17 +12,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"POT-Creation-Date: 2012-10-16 15:24+0200\n"
 "PO-Revision-Date: 2012-09-09 18:06+0000\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <trans-pl@lists.fedoraproject.org>\n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pl\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:57
 msgid "Firewall Applet"
 msgstr "Aplet zapory sieciowej"
 
@@ -33,6 +34,22 @@ msgstr "Zapora sieciowa"
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
 msgstr "Konfiguracja zapory sieciowej"
+
+#: ../src/firewall/config/__init__.py:48
+msgid ""
+"This program is free software; you can redistribute it and/or modify it "
+"under the terms of the GNU General Public License as published by the Free "
+"Software Foundation; either version 2 of the License, or (at your option) "
+"any later version.\n"
+"\n"
+"This program is distributed in the hope that it will be useful, but WITHOUT "
+"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
+"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"this program.  If not, see <http://www.gnu.org/licenses/>."
+msgstr ""
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -54,7 +71,7 @@ msgstr "Element \"%s\": nieoczekiwany atrybut \"%s\""
 msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr "Użycie: %s [-h|--help] [--debug[=<poziom>]] [--nofork]"
 
-#: ../src/firewalld:49
+#: ../src/firewalld:49 ../src/firewall-offline-cmd:35
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "Należy być rootem, aby uruchomić %s."
@@ -73,205 +90,218 @@ msgstr "Usługa FirewallD nie zostanie uruchomiona, ponieważ już działa."
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Rozdzielenie #1 nie powiodło się: %d (%s)"
 
-#: ../src/firewall-applet:99
+#: ../src/firewall-applet:101
 msgid "Shields Up"
 msgstr "Ochrona wysyłania"
 
-#: ../src/firewall-applet:110
+#: ../src/firewall-applet:114
 msgid "Enable Notifications"
 msgstr "Powiadomienia"
 
-#: ../src/firewall-applet:123
+#: ../src/firewall-applet:127
 msgid "Edit Firewall Settings..."
 msgstr "Modyfikuj ustawienia zapory sieciowej..."
 
-#: ../src/firewall-applet:130
+#: ../src/firewall-applet:135
 msgid "Configure Shields UP/Down Zones..."
 msgstr "Skonfiguruj strefy ochrony wysyłania/pobierania..."
 
-#: ../src/firewall-applet:138
+#: ../src/firewall-applet:144
 msgid "Block all network traffic"
 msgstr "Blokowanie całego ruchu sieciowego"
 
-#: ../src/firewall-applet:165
+#: ../src/firewall-applet:171
 msgid "Configure Shields Up/Down Zones"
 msgstr "Konfiguracja stref ochrony wysyłania/pobierania"
 
-#: ../src/firewall-applet:176
+#: ../src/firewall-applet:182
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr "Tutaj można wybrać strefy używane do ochrony wysyłania/pobierania"
 
-#: ../src/firewall-applet:184
+#: ../src/firewall-applet:190
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
-msgstr "Ta funkcja jest przydatna głównie dla użytkowników domyślnych stref. Przydatność dla użytkowników zmieniających strefy połączeń może być ograniczona."
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
+msgstr ""
+"Ta funkcja jest przydatna głównie dla użytkowników domyślnych stref. "
+"Przydatność dla użytkowników zmieniających strefy połączeń może być "
+"ograniczona."
 
-#: ../src/firewall-applet:199
+#: ../src/firewall-applet:205
 msgid "Shields Up Zone:"
 msgstr "Strefa ochrony wysyłania:"
 
-#: ../src/firewall-applet:210
+#: ../src/firewall-applet:216
 msgid "Shields Down Zone:"
 msgstr "Strefa ochrony pobierania:"
 
-#: ../src/firewall-applet:249
+#: ../src/firewall-applet:255
 msgid "Not using slip"
 msgstr "Bez używania slip"
 
-#: ../src/firewall-applet:324
+#: ../src/firewall-applet:337
 msgid "Connection to FirewallD established."
 msgstr "Nawiązano połączenie z usługą FirewallD."
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:346
 msgid "Connection to FirewallD lost."
 msgstr "Utracono połączenie z usługą FirewallD."
 
-#: ../src/firewall-applet:370
+#: ../src/firewall-applet:384
 msgid "FirewallD has been reloaded."
 msgstr "Ponownie uruchomiono usługę FirewallD."
 
-#: ../src/firewall-applet:448
+#: ../src/firewall-applet:462
 msgid "No connection to firewall daemon"
 msgstr "Brak połączenia z usługą zapory sieciowej"
 
-#: ../src/firewall-applet:454
+#: ../src/firewall-applet:468
 msgid "PANIC MODE"
 msgstr "TRYB PANIKI"
 
-#: ../src/firewall-applet:466
-msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
-msgstr "Strefa \"{zone}\" jest aktywna dla połączenia \"{connection}\" na interfejsie \"{interface}\""
+#: ../src/firewall-applet:475
+#, fuzzy, c-format
+msgid "Default Zone: %s"
+msgstr "Domyślna strefa:"
 
-#: ../src/firewall-applet:469
+#: ../src/firewall-applet:482
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
+"Strefa \"{zone}\" jest aktywna dla połączenia \"{connection}\" na "
+"interfejsie \"{interface}\""
+
+#: ../src/firewall-applet:485
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "Strefa \"{zone}\" jest aktywna dla interfejsu \"{interface}\""
 
-#: ../src/firewall-applet:477
+#: ../src/firewall-applet:492
 msgid "No Active Zones."
 msgstr "Brak aktywnych stref."
 
-#: ../src/firewall-applet:483
+#: ../src/firewall-applet:502
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Zmieniono domyślną strefę na \"%s\"."
 
-#: ../src/firewall-applet:498
+#: ../src/firewall-applet:518
 msgid "All network traffic is blocked."
 msgstr "Cały ruch sieciowy jest zablokowany."
 
-#: ../src/firewall-applet:499
+#: ../src/firewall-applet:519
 msgid "Network traffic is not blocked anymore."
 msgstr "Ruch sieciowy nie jest już zablokowany."
 
-#: ../src/firewall-applet:526
+#: ../src/firewall-applet:546
 msgid "activated"
 msgstr "aktywowana"
 
-#: ../src/firewall-applet:527
+#: ../src/firewall-applet:547
 msgid "deactivated"
 msgstr "deaktywowana"
 
-#: ../src/firewall-applet:530
+#: ../src/firewall-applet:550
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "Strefa \"'{zone}\" została {activated_deactivated} dla połączenia \"{connection}\"  na interfejsie \"{interface}\""
+msgstr ""
+"Strefa \"'{zone}\" została {activated_deactivated} dla połączenia "
+"\"{connection}\"  na interfejsie \"{interface}\""
 
-#: ../src/firewall-applet:535
+#: ../src/firewall-applet:555
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "Strefa \"'{zone}\" została {activated_deactivated} dla interfejsu \"{interface}\""
+msgstr ""
+"Strefa \"'{zone}\" została {activated_deactivated} dla interfejsu "
+"\"{interface}\""
 
-#: ../src/firewall-applet:560
+#: ../src/firewall-applet:580
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Strefa \"%s\" została aktywowana dla interfejsu \"%s\""
 
-#: ../src/firewall-applet:591
+#: ../src/firewall-applet:642
 msgid "Firewall-applet"
 msgstr "Aplet zapory sieciowej"
 
-#: ../src/firewall-config:56
+#: ../src/firewall-config:58
 msgid "Connected."
 msgstr "Połączono."
 
-#: ../src/firewall-config:57
+#: ../src/firewall-config:59
 msgid "No connection."
 msgstr "Brak połączenia."
 
-#: ../src/firewall-config:58
+#: ../src/firewall-config:60
 msgid "Waiting ..."
 msgstr "Oczekiwanie..."
 
-#: ../src/firewall-config:59
+#: ../src/firewall-config:61
 msgid "Retrying ..."
 msgstr "Próbowanie ponownie..."
 
-#: ../src/firewall-config:69
+#: ../src/firewall-config:71
 msgid "Failed to load icons."
 msgstr "Wczytanie ikon się nie powiodło."
 
-#: ../src/firewall-config:107 ../src/firewall-config:755
+#: ../src/firewall-config:114 ../src/firewall-config:761
 msgid "Runtime Configuration"
 msgstr "Konfiguracja podczas uruchamiania"
 
-#: ../src/firewall-config:108
+#: ../src/firewall-config:115
 msgid "Persistent Configuration"
 msgstr "Trwała konfiguracja"
 
-#: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
+#: ../src/firewall-config:172 ../src/firewall-config.glade.h:81
 msgid "Service"
 msgstr "Usługa"
 
-#: ../src/firewall-config:172 ../src/firewall-config:202
-#: ../src/firewall-config:290
+#: ../src/firewall-config:179 ../src/firewall-config:209
+#: ../src/firewall-config:297
 msgid "Port"
 msgstr "Port"
 
-#: ../src/firewall-config:174 ../src/firewall-config:204
-#: ../src/firewall-config:292
+#: ../src/firewall-config:181 ../src/firewall-config:211
+#: ../src/firewall-config:299
 msgid "Protocol"
 msgstr "Protokół"
 
-#: ../src/firewall-config:206
+#: ../src/firewall-config:213
 msgid "To Port"
 msgstr "Do portu"
 
-#: ../src/firewall-config:208
+#: ../src/firewall-config:215
 msgid "To Address"
 msgstr "Do adresu"
 
-#: ../src/firewall-config:245
+#: ../src/firewall-config:252
 msgid "Icmp Type"
 msgstr "Typ ICMP"
 
-#: ../src/firewall-config:446
+#: ../src/firewall-config:457
 msgid "Warning"
 msgstr "Ostrzeżenie"
 
-#: ../src/firewall-config:456
+#: ../src/firewall-config:467
 msgid "Error"
 msgstr "Błąd"
 
-#: ../src/firewall-config:458
+#: ../src/firewall-config:469
 msgid "Retry"
 msgstr "Ponów"
 
-#: ../src/firewall-config:475
+#: ../src/firewall-config:486
 msgid "Authorization failed."
 msgstr "Upoważnienie się nie powiodło."
 
-#: ../src/firewall-config:966
+#: ../src/firewall-config:977
 msgid "Built-in zone, rename not supported."
 msgstr "Strefa wbudowana, zmiana nazwy nie jest obsługiwana."
 
-#: ../src/firewall-config:1575
+#: ../src/firewall-config:1604
 msgid "Built-in service, rename not supported."
 msgstr "Usługa wbudowana, zmiana nazwy nie jest obsługiwana."
 
-#: ../src/firewall-config:1918
+#: ../src/firewall-config:1945
 msgid "Built-in icmp, rename not supported."
 msgstr "ICMP wbudowane, zmiana nazwy nie jest obsługiwana."
 
@@ -303,7 +333,9 @@ msgstr "Wbudowane, usunięcie nie jest możliwe."
 msgid ""
 "If you remove system settings, the default configuration will be used after "
 "reload or restart."
-msgstr "Jeśli ustawienia systemu zostaną usunięte, to domyślna konfiguracja zostanie użyta po ponownym wczytaniu lub uruchomieniu."
+msgstr ""
+"Jeśli ustawienia systemu zostaną usunięte, to domyślna konfiguracja zostanie "
+"użyta po ponownym wczytaniu lub uruchomieniu."
 
 #: ../src/firewall-config.glade.h:8
 msgid "Port Forwarding"
@@ -344,9 +376,11 @@ msgstr "Przekierowanie do innego portu"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "Jeśli włączono lokalne przekierowanie, to należy podać port. Ten port musi być różny od portu źródłowego."
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"Jeśli włączono lokalne przekierowanie, to należy podać port. Ten port musi "
+"być różny od portu źródłowego."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -406,9 +440,10 @@ msgstr "Wczytaj domyślne ustawienia typu ICMP"
 
 #: ../src/firewall-config.glade.h:32
 msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to"
-" the destination."
-msgstr "Jeśli podano adresy docelowe, to wpis typu ICMP zostanie ograniczony do celu."
+"If you specify destination addresses, the ICMP Type entry will be limited to "
+"the destination."
+msgstr ""
+"Jeśli podano adresy docelowe, to wpis typu ICMP zostanie ograniczony do celu."
 
 #: ../src/firewall-config.glade.h:33
 msgid "IPv4"
@@ -450,7 +485,9 @@ msgstr "Pomo_c"
 msgid ""
 "Reloads firewalld: Current persistent configuration will become the new "
 "runtime configuration."
-msgstr "Ponownie wczytuje usługę FirewallD: trwała konfiguracja stanie się nową konfiguracją podczas uruchamiania."
+msgstr ""
+"Ponownie wczytuje usługę FirewallD: trwała konfiguracja stanie się nową "
+"konfiguracją podczas uruchamiania."
 
 #: ../src/firewall-config.glade.h:44
 msgid "Change default zone of the system."
@@ -473,7 +510,10 @@ msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Persistent configuration will be active after service or "
 "system reload or restart."
-msgstr "Obecnie widoczna konfiguracja. Konfiguracja podczas uruchamiania jest właściwą aktywną konfiguracją. Trwała konfiguracja stanie się aktywną po ponownym wczytaniu lub uruchomieniu usługi lub systemu."
+msgstr ""
+"Obecnie widoczna konfiguracja. Konfiguracja podczas uruchamiania jest "
+"właściwą aktywną konfiguracją. Trwała konfiguracja stanie się aktywną po "
+"ponownym wczytaniu lub uruchomieniu usługi lub systemu."
 
 #: ../src/firewall-config.glade.h:49
 msgid "Default Zone:"
@@ -507,7 +547,9 @@ msgstr "Wczytaj domyślne ustawienia strefy"
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
-msgstr "Tutaj można określić zaufane usługi. Oznacza to, że te usługi będą dostępne ze wszystkich komputerów i sieci."
+msgstr ""
+"Tutaj można określić zaufane usługi. Oznacza to, że te usługi będą dostępne "
+"ze wszystkich komputerów i sieci."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
@@ -517,7 +559,9 @@ msgstr "Usługi"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
-msgstr "Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne dla wszystkich komputerów i sieci."
+msgstr ""
+"Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne dla "
+"wszystkich komputerów i sieci."
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
@@ -540,7 +584,10 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "Maskarada umożliwia ustawienie komputera lub routera łączącego lokalny komputer z Internetem. Lokalna sieć nie będzie widoczna i będzie występować w Internecie jako jeden adres. Maskaradę można ustawić tylko dla IPv4."
+msgstr ""
+"Maskarada umożliwia ustawienie komputera lub routera łączącego lokalny "
+"komputer z Internetem. Lokalna sieć nie będzie widoczna i będzie występować "
+"w Internecie jako jeden adres. Maskaradę można ustawić tylko dla IPv4."
 
 #: ../src/firewall-config.glade.h:64
 msgid "Masquerade zone"
@@ -550,7 +597,9 @@ msgstr "Strefa maskarady"
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr "Jeśli włączono maskaradę, to przekierowanie IP zostanie włączone dla sieci IPv4."
+msgstr ""
+"Jeśli włączono maskaradę, to przekierowanie IP zostanie włączone dla sieci "
+"IPv4."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Masquerading"
@@ -562,20 +611,31 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "Można dodać wpisy, aby przekierowywać porty w obrębie lokalnego systemu lub z lokalnego systemu do innego. Przekierowanie do innego systemu jest przydatne tylko, jeśli interfejs jest za maskaradą. Przekierowanie portów działa tylko dla IPv4."
+msgstr ""
+"Można dodać wpisy, aby przekierowywać porty w obrębie lokalnego systemu lub "
+"z lokalnego systemu do innego. Przekierowanie do innego systemu jest "
+"przydatne tylko, jeśli interfejs jest za maskaradą. Przekierowanie portów "
+"działa tylko dla IPv4."
 
 #: ../src/firewall-config.glade.h:68
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "Internetowy protokół kontroli komunikatów (ICMP) jest używany głównie do wysyłania komunikatów błędów między komputerami sieciowymi, ale także dodatkowo do komunikatów informacyjnych, takich jak żądania i odpowiedzi ping."
+msgstr ""
+"Internetowy protokół kontroli komunikatów (ICMP) jest używany głównie do "
+"wysyłania komunikatów błędów między komputerami sieciowymi, ale także "
+"dodatkowo do komunikatów informacyjnych, takich jak żądania i odpowiedzi "
+"ping."
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "Można zaznaczyć typy ICMP na liście, które powinny być odrzucane. Wszystkie inne typy ICMP będą mogły przechodzić przez zaporę sieciową. Domyślnie nie ma ograniczeń."
+msgstr ""
+"Można zaznaczyć typy ICMP na liście, które powinny być odrzucane. Wszystkie "
+"inne typy ICMP będą mogły przechodzić przez zaporę sieciową. Domyślnie nie "
+"ma ograniczeń."
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
@@ -641,7 +701,10 @@ msgstr "Wczytaj domyślne ustawienia usługi"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr "Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne dla wszystkich komputerów i sieci. Można także dodać protokoły bez określonych portów."
+msgstr ""
+"Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne dla "
+"wszystkich komputerów i sieci. Można także dodać protokoły bez określonych "
+"portów."
 
 #: ../src/firewall-config.glade.h:87
 msgid "Ports and Protocols"
@@ -660,7 +723,9 @@ msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr "Jeśli podano adresy docelowe, to wpis usługi zostanie ograniczony do adresu docelowego i typu. Jeśli oba wpisy są puste, to nie ma ograniczenia."
+msgstr ""
+"Jeśli podano adresy docelowe, to wpis usługi zostanie ograniczony do adresu "
+"docelowego i typu. Jeśli oba wpisy są puste, to nie ma ograniczenia."
 
 #: ../src/firewall-config.glade.h:91
 msgid "IPv4:"
@@ -696,146 +761,151 @@ msgstr "Chroniona:"
 msgid "The %s '%s' has changed, applying new settings."
 msgstr "%s \"%s\" została zmieniona, zastosowywanie nowych ustawień."
 
-#: ../src/firewall-convert-scfw-config:54
+#: ../src/firewall-offline-cmd:59
 #, c-format
 msgid "port range %s is not unique."
 msgstr "zakres portów %s nie jest unikalny."
 
-#: ../src/firewall-convert-scfw-config:56
+#: ../src/firewall-offline-cmd:61
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
 msgstr "%s nie jest prawidłowym zakresem (port początkowy >= port końcowy)."
 
-#: ../src/firewall-convert-scfw-config:61
+#: ../src/firewall-offline-cmd:66
 #, c-format
 msgid "%s is not a valid protocol."
 msgstr "%s nie jest prawidłowym protokołem."
 
-#: ../src/firewall-convert-scfw-config:63
+#: ../src/firewall-offline-cmd:68
 #, c-format
 msgid "invalid port definition %s."
 msgstr "nieprawidłowe określenie portu %s."
 
-#: ../src/firewall-convert-scfw-config:73
-#: ../src/firewall-convert-scfw-config:83
+#: ../src/firewall-offline-cmd:78 ../src/firewall-offline-cmd:88
 #, c-format
 msgid "Invalid argument %s"
 msgstr "Nieprawidłowy parametr %s"
 
-#: ../src/firewall-convert-scfw-config:97
+#: ../src/firewall-offline-cmd:102
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr "opcja %(option)s: nieprawidłowe forward_port \"%(value)s\": %(error)s."
 
-#: ../src/firewall-convert-scfw-config:108
+#: ../src/firewall-offline-cmd:113
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr "opcja %(option)s: nieprawidłowe forward_port \"%(value)s\"."
 
-#: ../src/firewall-convert-scfw-config:115
+#: ../src/firewall-offline-cmd:120
 #, c-format
 msgid "invalid interface '%s'."
 msgstr "nieprawidłowy interfejs \"%s\"."
 
-#: ../src/firewall-convert-scfw-config:135
+#: ../src/firewall-offline-cmd:140
 msgid "Enable firewall (default)"
 msgstr "Włączenie zapory sieciowej (domyślnie)"
 
-#: ../src/firewall-convert-scfw-config:138
+#: ../src/firewall-offline-cmd:143
 msgid "Disable firewall"
 msgstr "Wyłączenie zapory sieciowej"
 
-#: ../src/firewall-convert-scfw-config:141
-#: ../src/firewall-convert-scfw-config:145
+#: ../src/firewall-offline-cmd:146 ../src/firewall-offline-cmd:150
 msgid "<module>"
 msgstr "<moduł>"
 
-#: ../src/firewall-convert-scfw-config:142
+#: ../src/firewall-offline-cmd:147
 msgid "Enable an iptables module"
 msgstr "Włączenie modułu iptables"
 
-#: ../src/firewall-convert-scfw-config:146
+#: ../src/firewall-offline-cmd:151
 msgid "Disable an iptables module"
 msgstr "Wyłączenie modułu iptables"
 
-#: ../src/firewall-convert-scfw-config:150
+#: ../src/firewall-offline-cmd:155
 msgid "<service>"
 msgstr "<usługa>"
 
-#: ../src/firewall-convert-scfw-config:151
+#: ../src/firewall-offline-cmd:156
 msgid "Open the firewall for a service (e.g, ssh)"
 msgstr "Otwarcie zapory sieciowej dla usługi (np. ssh)"
 
-#: ../src/firewall-convert-scfw-config:154
+#: ../src/firewall-offline-cmd:159
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protokół>"
 
-#: ../src/firewall-convert-scfw-config:156
+#: ../src/firewall-offline-cmd:161
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
 msgstr "Otwarcie podanych portów przez zaporę sieciową (np. ssh:tcp)"
 
-#: ../src/firewall-convert-scfw-config:160
-#: ../src/firewall-convert-scfw-config:164
+#: ../src/firewall-offline-cmd:165 ../src/firewall-offline-cmd:169
 msgid "<interface>"
 msgstr "<interfejs>"
 
-#: ../src/firewall-convert-scfw-config:161
+#: ../src/firewall-offline-cmd:166
 msgid "Allow all traffic on the specified device"
 msgstr "Zezwolenie na cały ruch na podanym urządzeniu"
 
-#: ../src/firewall-convert-scfw-config:165
+#: ../src/firewall-offline-cmd:170
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
 msgstr "Maskuje ruch z podanego urządzenia. Tylko dla IPv4."
 
-#: ../src/firewall-convert-scfw-config:169
-msgid "Backwards compatibility, aliased to --enabled"
-msgstr "Zgodność wsteczna, alias dla --enabled"
-
-#: ../src/firewall-convert-scfw-config:172
+#: ../src/firewall-offline-cmd:174
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<typ>:][<tablica>:]<nazwa_pliku>"
 
-#: ../src/firewall-convert-scfw-config:174
+#: ../src/firewall-offline-cmd:176
 msgid ""
-"Specify a custom rules file for inclusion in the firewall, after the default"
-" rules. Default protocol type: ipv4, default table: filter. (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr "Można podać własny plik reguł do dołączenia do zapory po domyślnych regułach. Domyślny typ protokołu: ipv4, domyślna tablica: filter (przykład: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)."
+"Specify a custom rules file for inclusion in the firewall, after the default "
+"rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+"Można podać własny plik reguł do dołączenia do zapory po domyślnych "
+"regułach. Domyślny typ protokołu: ipv4, domyślna tablica: filter (przykład: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)."
 
-#: ../src/firewall-convert-scfw-config:183
+#: ../src/firewall-offline-cmd:185
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<interfejs>:port=<port>:proto=<protokół>[:toport=<port docelowy>][:toaddr=<adres docelowy>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<interfejs>:port=<port>:proto=<protokół>[:toport=<port docelowy>][:"
+"toaddr=<adres docelowy>]"
 
-#: ../src/firewall-convert-scfw-config:187
+#: ../src/firewall-offline-cmd:189
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
-msgstr "Przekierowanie portu za pomocą protokołu dla interfejsu do innego lokalnego portu docelowego (nie podano adresu docelowego) lub innego adresu docelowego z opcjonalnym portem docelowym. Tylko dla IPv4."
+msgstr ""
+"Przekierowanie portu za pomocą protokołu dla interfejsu do innego lokalnego "
+"portu docelowego (nie podano adresu docelowego) lub innego adresu docelowego "
+"z opcjonalnym portem docelowym. Tylko dla IPv4."
 
-#: ../src/firewall-convert-scfw-config:196
+#: ../src/firewall-offline-cmd:198
 msgid "<icmp type>"
 msgstr "<typ ICMP>"
 
-#: ../src/firewall-convert-scfw-config:197
+#: ../src/firewall-offline-cmd:199
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr "Zablokowanie tego typu ICMP. Domyślnie wszystkie typy ICMP są akceptowane."
+msgstr ""
+"Zablokowanie tego typu ICMP. Domyślnie wszystkie typy ICMP są akceptowane."
 
-#: ../src/firewall-convert-scfw-config:209
+#: ../src/firewall-offline-cmd:211
 #, c-format
 msgid "no such option: %s"
 msgstr "nie ma takiej opcji: %s"
 
-#: ../src/firewall-convert-scfw-config:274
+#: ../src/firewall-offline-cmd:276
 #, c-format
 msgid "%s option requires an argument"
 msgstr "Opcja %s wymaga parametru"
 
-#: ../src/firewall-convert-scfw-config:277
+#: ../src/firewall-offline-cmd:279
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "Opcja %(option)s wymaga %(count)s parametrów"
 
-#: ../src/firewall-convert-scfw-config:291
+#: ../src/firewall-offline-cmd:293
 #, c-format
 msgid "%s option does not take a value"
 msgstr "Opcja %s nie przyjmuje wartości"
+
+#~ msgid "Backwards compatibility, aliased to --enabled"
+#~ msgstr "Zgodność wsteczna, alias dla --enabled"
