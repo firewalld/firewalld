@@ -180,7 +180,7 @@ def zone_writer(zone, path=None):
     handler.startDocument()
 
     # start zone element
-    attrs = { "name": zone.name }
+    attrs = {}
     if zone.version and zone.version != "":
         attrs["version"] = zone.version
     if zone.immutable:

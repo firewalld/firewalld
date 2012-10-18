@@ -139,7 +139,7 @@ def service_writer(service, path=""):
     handler.startDocument()
 
     # start service element
-    attrs = { "name": service.name }
+    attrs = {}
     if service.version and service.version != "":
         attrs["version"] = service.version
     handler.startElement("service", attrs)

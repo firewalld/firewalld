@@ -119,7 +119,7 @@ def icmptype_writer(icmptype, path=""):
     handler.startDocument()
 
     # start icmptype element
-    attrs = { "name": icmptype.name }
+    attrs = {}
     if icmptype.version and icmptype.version != "":
         attrs["version"] = icmptype.version
     handler.startElement("icmptype", attrs)
