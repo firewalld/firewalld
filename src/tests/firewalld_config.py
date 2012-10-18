@@ -24,7 +24,10 @@
 import unittest
 import time
 import firewall
-from firewall.client import FirewallClient, FirewallClientConfigZoneSettings
+from firewall.client import FirewallClient, \
+                            FirewallClientConfigZoneSettings, \
+                            FirewallClientConfigServiceSettings, \
+                            FirewallClientConfigIcmpTypeSettings
 from firewall.core.base import DEFAULT_ZONE_TARGET
 
 class TestFirewallDInterfaceConfig(unittest.TestCase):
@@ -52,7 +55,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
            remove()
         """
 
-        print ("\nChecking what zones we have")
+        print ("\nGetting invalid zone")
         self.assertRaisesRegexp(Exception, 'INVALID_ZONE', self.fw.config().getZoneByName, "dummyname")
 
         zone_version = "1.0"
@@ -77,7 +80,6 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         settings.setMasquerade(zone_masquerade)
         settings.setForwardPorts(zone_forward_ports)
 
-        print ("Adding some malformed zones")
         print ("Adding zone with name that already exists")
         self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', self.fw.config().addZone, "home", settings)
         print ("Adding zone with empty name")
@@ -124,7 +126,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         new_zone_name = "renamed"
         print ("Renaming zone '%s' to '%s'" % (zone_name, new_zone_name))
         config_zone.rename(new_zone_name)
-        #self.fw.reload() # to new_zone_name become accessible and zone_name stop being accessible
+
         print ("Checking whether the zone '%s' is accessible (it shouldn't be)" % zone_name)
         self.assertRaisesRegexp(Exception, 'INVALID_ZONE', self.fw.config().getZoneByName, zone_name)
         print ("Checking whether the zone '%s' is accessible" % new_zone_name)
@@ -162,7 +164,76 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
            rename()
            remove()
         """
-        pass
+
+        print ("\nGetting invalid service")
+        self.assertRaisesRegexp(Exception, 'INVALID_SERVICE', self.fw.config().getServiceByName, "dummyname")
+
+        service_version = "1.0"
+        service_short = "Testing"
+        service_description = "this is just a testing service"
+        service_ports = [("123", "tcp"), ("666-667", "udp")]
+        service_modules = ["nf_test_first", "nf_test_second"]
+        service_destinations = {'ipv4': '1.2.3.4', 'ipv6': 'dead::beef'}
+        settings = FirewallClientConfigServiceSettings() # ["", "", "", [], [], {}]
+        settings.setVersion(service_version)
+        settings.setShort(service_short)
+        settings.setDescription(service_description)
+        settings.setPorts(service_ports)
+        settings.setModules(service_modules)
+        settings.setDestinations(service_destinations)
+
+        print ("Adding service with name that already exists")
+        self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', self.fw.config().addService, "mdns", settings)
+        print ("Adding service with empty name")
+        self.assertRaisesRegexp(Exception, 'INVALID_NAME', self.fw.config().addService, "", settings)
+        service_name = "test"
+        print ("Adding proper service")
+        self.fw.config().addService (service_name, settings)
+
+        print ("Checking the saved (persistent) settings")
+        config_service = self.fw.config().getServiceByName(service_name)
+        self.assertIsInstance(config_service, firewall.client.FirewallClientConfigService)
+        service_settings = config_service.getSettings()
+        self.assertIsInstance(service_settings, firewall.client.FirewallClientConfigServiceSettings)
+
+        print ("Updating settings")
+        service_modules.append("nf_test_third")
+        service_destinations["ipv6"] = "3ffe:501:ffff::"
+        service_settings.setModules(service_modules)
+        service_settings.setDestinations(service_destinations)
+        config_service.update(service_settings)
+        self.assertEquals(service_settings.getVersion(), service_version)
+        self.assertEquals(service_settings.getShort(), service_short)
+        self.assertEquals(service_settings.getDescription(), service_description)
+        self.assertEquals(service_settings.getPorts().sort(), service_ports.sort())
+        self.assertEquals(service_settings.getModules().sort(), service_modules.sort())
+        self.assertDictEqual(service_settings.getDestinations(), service_destinations)
+
+        print ("Renaming service to name that already exists")
+        config_service = self.fw.config().getServiceByName(service_name)
+        self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', config_service.rename, "mdns")
+        new_service_name = "renamed"
+        print ("Renaming service '%s' to '%s'" % (service_name, new_service_name))
+        config_service.rename(new_service_name)
+
+        print ("Checking whether the service '%s' is accessible (it shouldn't be)" % service_name)
+        self.assertRaisesRegexp(Exception, 'INVALID_SERVICE', self.fw.config().getServiceByName, service_name)
+        print ("Checking whether the service '%s' is accessible" % new_service_name)
+        config_service = self.fw.config().getServiceByName(new_service_name)
+        service_settings = config_service.getSettings()
+        self.assertEquals(service_settings.getVersion(), service_version)
+        self.assertEquals(service_settings.getShort(), service_short)
+        self.assertEquals(service_settings.getDescription(), service_description)
+        self.assertEquals(service_settings.getPorts().sort(), service_ports.sort())
+        self.assertEquals(service_settings.getModules().sort(), service_modules.sort())
+        self.assertDictEqual(service_settings.getDestinations(), service_destinations)
+
+        print ("Removing the service '%s'" % new_service_name)
+        config_service.remove()
+        print ("Checking whether the removed service is accessible (it shouldn't be)")
+        self.assertRaisesRegexp(Exception, 'INVALID_SERVICE', self.fw.config().getServiceByName, new_service_name)
+
+        # TODO test loadDefaults() ?
 
     def test_icmptypes(self):
         """
@@ -178,7 +249,66 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
            rename()
            remove()
         """
-        pass
+        print ("\nGetting invalid icmp-type")
+        self.assertRaisesRegexp(Exception, 'INVALID_ICMPTYPE', self.fw.config().getIcmpTypeByName, "dummyname")
+
+        icmptype_version = "1.0"
+        icmptype_short = "Testing"
+        icmptype_description = "this is just a testing icmp type"
+        icmptype_destinations = ['ipv4']
+        settings = FirewallClientConfigIcmpTypeSettings() # ["", "", "", []]
+        settings.setVersion(icmptype_version)
+        settings.setShort(icmptype_short)
+        settings.setDescription(icmptype_description)
+        settings.setDestinations(icmptype_destinations)
+
+        print ("Adding icmp type with name that already exists")
+        self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', self.fw.config().addIcmpType, "echo-reply", settings)
+        print ("Adding icmp type with empty name")
+        self.assertRaisesRegexp(Exception, 'INVALID_NAME', self.fw.config().addIcmpType, "", settings)
+        icmptype_name = "test"
+        print ("Adding proper icmp type")
+        self.fw.config().addIcmpType (icmptype_name, settings)
+
+        print ("Checking the saved (persistent) settings")
+        config_icmptype = self.fw.config().getIcmpTypeByName(icmptype_name)
+        self.assertIsInstance(config_icmptype, firewall.client.FirewallClientConfigIcmpType)
+        icmptype_settings = config_icmptype.getSettings()
+        self.assertIsInstance(icmptype_settings, firewall.client.FirewallClientConfigIcmpTypeSettings)
+
+        print ("Updating settings")
+        icmptype_destinations.append("ipv6")
+        icmptype_settings.setDestinations(icmptype_destinations)
+        config_icmptype.update(icmptype_settings)
+        self.assertEquals(icmptype_settings.getVersion(), icmptype_version)
+        self.assertEquals(icmptype_settings.getShort(), icmptype_short)
+        self.assertEquals(icmptype_settings.getDescription(), icmptype_description)
+        self.assertEquals(icmptype_settings.getDestinations().sort(), icmptype_destinations.sort())
+
+        print ("Renaming icmp type to name that already exists")
+        config_icmptype = self.fw.config().getIcmpTypeByName(icmptype_name)
+        self.assertRaisesRegexp(Exception, 'NAME_CONFLICT', config_icmptype.rename, "echo-reply")
+        new_icmptype_name = "renamed"
+        print ("Renaming icmp type '%s' to '%s'" % (icmptype_name, new_icmptype_name))
+        config_icmptype.rename(new_icmptype_name)
+
+        print ("Checking whether the icmp type '%s' is accessible (it shouldn't be)" % icmptype_name)
+        self.assertRaisesRegexp(Exception, 'INVALID_ICMPTYPE', self.fw.config().getIcmpTypeByName, icmptype_name)
+        print ("Checking whether the icmp type '%s' is accessible" % new_icmptype_name)
+        config_icmptype = self.fw.config().getIcmpTypeByName(new_icmptype_name)
+        icmptype_settings = config_icmptype.getSettings()
+        self.assertEquals(icmptype_settings.getVersion(), icmptype_version)
+        self.assertEquals(icmptype_settings.getShort(), icmptype_short)
+        self.assertEquals(icmptype_settings.getDescription(), icmptype_description)
+        self.assertEquals(icmptype_settings.getDestinations().sort(), icmptype_destinations.sort())
+
+        print ("Removing the icmp type '%s'" % new_icmptype_name)
+        config_icmptype.remove()
+        print ("Checking whether the removed icmp type is accessible (it shouldn't be)")
+        self.assertRaisesRegexp(Exception, 'INVALID_ICMPTYPE', self.fw.config().getIcmpTypeByName, new_icmptype_name)
+
+        # TODO test loadDefaults() ?
+
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallDInterfaceConfig)
