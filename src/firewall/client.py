@@ -172,7 +172,7 @@ class FirewallClientConfigServiceSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", [], [], []]
+            self.settings = ["", "", "", [], [], {}]
 
     def getVersion(self):
         return self.settings[0]
