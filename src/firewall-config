@@ -99,6 +99,7 @@ class FirewallConfig(object):
         self.optionMenuitem = builder.get_object("optionMenuitem")
 
         self.aboutDialog = builder.get_object("aboutDialog")
+        self.aboutDialog.set_program_name(CONFIG_NAME)
         self.aboutDialog.set_version(VERSION)
         self.aboutDialog.set_authors(AUTHORS)
         self.aboutDialog.set_license(LICENSE)
