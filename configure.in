@@ -21,7 +21,7 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AM_PATH_PYTHON
 
-m4_define([FWD_ERROR_CODES], m4_esyscmd(grep "=\W*\-" src/firewall/errors.py))
+m4_define([FWD_ERROR_CODES], m4_esyscmd([grep "=\s*[0-9]\+$" src/firewall/errors.py]))
 AC_SUBST([FIREWALLD_ERROR_CODES], '[FWD_ERROR_CODES]')
 
 GLIB_GSETTINGS
