@@ -1,5 +1,7 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2011-2012 Red Hat, Inc.
+#
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 #

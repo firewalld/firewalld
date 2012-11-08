@@ -1,6 +1,8 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2012 Red Hat, Inc.
+#
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 # Jiri Popelka <jpopelka@redhat.com>
