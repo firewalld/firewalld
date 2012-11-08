@@ -4,11 +4,11 @@ dist_sconf_DATA = firewalld.conf
 
 desktop_FILES = firewall-applet.desktop.in firewall-config.desktop.in
 desktopdir = $(datadir)/applications
-dist_desktop_DATA = $(desktop_FILES:.in=)
+desktop_DATA = $(desktop_FILES:.in=)
 
 polkit1_action_FILES = org.fedoraproject.FirewallD1.policy.in
 polkit1_actiondir = $(datadir)/polkit-1/actions
-dist_polkit1_action_DATA = $(polkit1_action_FILES:.in=)
+polkit1_action_DATA = $(polkit1_action_FILES:.in=)
 
 dbus_policydir = $(sysconfdir)/dbus-1/system.d
 dist_dbus_policy_DATA = FirewallD.conf
@@ -16,28 +16,32 @@ dist_dbus_policy_DATA = FirewallD.conf
 gsettings_in_file = org.fedoraproject.FirewallApplet.gschema.xml.in
 gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
+BUILT_SOURCES = \
+	$(desktop_DATA) \
+	$(polkit1_action_DATA) \
+	$(gsettings_SCHEMAS)
+
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_POLICY_RULE@
 @INTLTOOL_XML_NOMERGE_RULE@
 @GSETTINGS_RULES@
 
-all: $(dist_desktop_DATA) $(dist_polkit1_action_DATA)
+all: $(desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
 CLEANFILES = *~ *\# .\#*
 
 DISTCLEANFILES = \
-	$(dist_desktop_DATA) \
-	$(dist_polkit1_action_DATA)
+	$(desktop_DATA) \
+	$(polkit1_action_DATA) \
+	$(gsettings_SCHEMAS)
 
 EXTRA_DIST = \
-	$(pam_FILES) \
-	$(console_FILES) \
 	$(desktop_FILES) \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
-	icmptypes/*.xml \
-	services/*.xml \
-	zones/*.xml \
+	icmptypes \
+	services \
+	zones \
 	firewalld.init \
 	firewalld.service \
 	firewalld.sysconfig
@@ -53,33 +57,35 @@ UNINSTALL_TARGETS += uninstall-init
 endif
 
 install-sysconfig:
-	mkdir -p $(DESTDIR)$(sysconfdir)/sysconfig
-	$(INSTALL) firewalld.sysconfig $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
+	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/sysconfig
+	$(INSTALL_DATA) $(srcdir)/firewalld.sysconfig $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
 
 uninstall-sysconfig:
 	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
+	rmdir $(DESTDIR)$(sysconfdir)/sysconfig || :
 
-install-init: firewalld.init firewalld.sysconfig
-	mkdir -p $(DESTDIR)$(sysconfdir)/rc.d/init.d
-	$(INSTALL_SCRIPT) firewalld.init $(DESTDIR)$(sysconfdir)/rc.d/init.d/firewalld
+install-init: install-sysconfig
+	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/rc.d/init.d
+	$(INSTALL_SCRIPT) $(srcdir)/firewalld.init $(DESTDIR)$(sysconfdir)/rc.d/init.d/firewalld
 
-uninstall-init:
+uninstall-init: uninstall-sysconfig
 	rm -f $(DESTDIR)$(sysconfdir)/rc.d/init.d/firewalld
-	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
+	rmdir $(DESTDIR)$(sysconfdir)/rc.d/init.d || :
 
-install-service:
-	mkdir -p $(DESTDIR)$(SYSTEMD_UNITDIR)
-	$(INSTALL) firewalld.service $(DESTDIR)$(SYSTEMD_UNITDIR)
+install-service: install-sysconfig
+	$(MKDIR_P) $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR)
+	$(INSTALL_DATA) $(srcdir)/firewalld.service $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR)/firewalld.service
 
-uninstall-service:
-	rm -f $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
+uninstall-service: uninstall-sysconfig
+	rm -f $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR)/firewalld.service
+	rmdir $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR) || :
 
 install-config:
-	mkdir -p $(DESTDIR)$(sconfdir)
-	mkdir -p $(DESTDIR)$(sconfdir)/icmptypes
-	mkdir -p $(DESTDIR)$(sconfdir)/services
-	mkdir -p $(DESTDIR)$(sconfdir)/zones
-	mkdir -p $(DESTDIR)$(prefixlibdir)
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/icmptypes
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/services
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
+	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
 	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
 	cp -r services $(DESTDIR)$(prefixlibdir)
 	cp -r zones $(DESTDIR)$(prefixlibdir)
