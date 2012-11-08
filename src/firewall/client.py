@@ -19,10 +19,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import GLib
+from gi.repository import GLib, GObject
+
+# force use of pygobject3 in python-slip
+import sys
+sys.modules['gobject'] = GObject
+
 import dbus.mainloop.glib
 import slip.dbus
 from dbus.exceptions import DBusException
+
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python

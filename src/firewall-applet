@@ -21,6 +21,8 @@
 #
 
 from gi.repository import Gtk, GLib, GObject, Gio, Notify, NetworkManager
+
+# force use of pygobject3 in python-slip
 import sys
 sys.modules['gobject'] = GObject
 

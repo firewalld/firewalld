@@ -28,9 +28,10 @@
 import os, sys
 import signal
 
+# force use of pygobject3 in python-slip
 from gi.repository import GObject
-# fix use of gobject in python-slip, crashes in Gio use
 sys.modules['gobject'] = GObject
+
 import dbus
 import dbus.service
 import dbus.mainloop.glib

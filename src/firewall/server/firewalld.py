@@ -18,7 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from gi.repository import GLib
+from gi.repository import GLib, GObject
+
+# force use of pygobject3 in python-slip
+import sys
+sys.modules['gobject'] = GObject
+
 import dbus
 import dbus.service
 import slip.dbus
