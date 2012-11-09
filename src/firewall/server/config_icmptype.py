@@ -77,7 +77,8 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Get(self, interface_name, property_name):
         # get a property
-        log.debug1("Get('%s', '%s')", interface_name, property_name)
+        log.debug1("config.icmptype.%d.Get('%s', '%s')", self.id,
+                   interface_name, property_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
@@ -104,7 +105,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
                          out_signature='a{sv}')
     @dbus_handle_exceptions
     def GetAll(self, interface_name):
-        log.debug1("GetAll('%s')", interface_name)
+        log.debug1("config.icmptype.%d.GetAll('%s')", self.id, interface_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
@@ -122,8 +123,8 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
     @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value):
-        log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
-                   new_value)
+        log.debug1("config.icmptype.%d.Set('%s', '%s', '%s')", self.id,
+                   interface_name, property_name, new_value)
 
         if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
