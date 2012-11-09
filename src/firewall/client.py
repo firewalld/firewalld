@@ -588,39 +588,40 @@ class FirewallClient(object):
         cb_args = [ ]
 
         # config signals need special treatment
-        if interface.startswith(DBUS_INTERFACE_CONFIG):
-            # pimp signal name
-            if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
-                signal = "config:Zone" + signal
-            elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
-                signal = "config:Service" + signal
-            elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
-                signal = "config:IcmpType" + signal
-            elif interface == DBUS_INTERFACE_CONFIG:
-                signal = "config:" + signal
-
-            # get zone/service/icmptype from path and add as first call arg
-            path = kwargs["path"]
-            if interface != DBUS_INTERFACE_CONFIG:
-                dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-                properties = dbus.Interface(
-                    dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-                try:
-                    what = dbus_to_python(properties.Get(interface, "name"))
-                except:
-                    # in case of e.g. Removed() signal the object is already gone
-                    pass
-                else:
-                    cb_args.append(what)
+        # pimp signal name
+        if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
+            signal = "config:Zone" + signal
+        elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
+            signal = "config:Service" + signal
+        elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
+            signal = "config:IcmpType" + signal
+        elif interface == DBUS_INTERFACE_CONFIG:
+            signal = "config:" + signal
 
         for callback in self._callbacks:
             if self._callbacks[callback] == signal and \
                     self._callbacks[callback] in self._callback:
                 cb = self._callback[self._callbacks[callback]]
-                cb_args.extend(args)
-                break
         if not cb:
             return
+
+        # get zone/service/icmptype from path and add as first call arg
+        if interface.startswith(DBUS_INTERFACE_CONFIG) and \
+                interface != DBUS_INTERFACE_CONFIG:
+            path = kwargs["path"]
+            dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
+            properties = dbus.Interface(
+                dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+            try:
+                what = dbus_to_python(properties.Get(interface, "name"))
+            except:
+                # in case of e.g. Removed() signal the object is already gone
+                # and Removed provides the name as first argument
+                pass
+            else:
+                cb_args.append(what)
+
+        cb_args.extend(args)
 
         # call back ...
         try:
