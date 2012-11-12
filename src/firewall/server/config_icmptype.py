@@ -158,7 +158,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         log.debug1("config.icmptype.%d.update('...')", self.id)
         self.obj = self.config.set_icmptype_config(self.obj,
                                                 dbus_to_python(settings))
-        self.Updated()
+        self.Updated(self.obj.name)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE)
     @dbus_handle_exceptions
@@ -167,12 +167,12 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """
         log.debug1("config.icmptype.%d.loadDefaults()", self.id)
         self.obj = self.config.load_icmptype_defaults(self.obj)
-        self.Updated()
+        self.Updated(self.obj.name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')
     @dbus_handle_exceptions
-    def Updated(self):
-        log.debug1("config.icmptype.%d.Updated()", self.id)
+    def Updated(self, name):
+        log.debug1("config.icmptype.%d.Updated('%s')" % (self.id, name))
 
     # R E M O V E
 
@@ -199,11 +199,11 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """
         log.debug1("config.icmptype.%d.rename('%s')", self.id, name)
         new_icmptype = self.config.rename_icmptype(self.obj, dbus_to_python(name))
-        self.Renamed()
         self.parent._addIcmpType(new_icmptype)
         self.parent.removeIcmpType(self.obj)
+        self.Renamed(name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')
     @dbus_handle_exceptions
-    def Renamed(self):
-        log.debug1("config.icmptype.%d.Renamed()", self.id)
+    def Renamed(self, name):
+        log.debug1("config.icmptype.%d.Renamed('%s')" % (self.id, name))

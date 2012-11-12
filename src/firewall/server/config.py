@@ -160,7 +160,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                     icmptype.obj.path == obj.path and \
                     icmptype.obj.filename == obj.filename:
                 icmptype.obj = obj
-                icmptype.Updated()
+                icmptype.Updated(obj.name)
 
     @handle_exceptions
     def removeIcmpType(self, obj):
@@ -189,7 +189,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                     service.obj.path == obj.path and \
                     service.obj.filename == obj.filename:
                 service.obj = obj
-                service.Updated()
+                service.Updated(obj.name)
 
     @handle_exceptions
     def removeService(self, obj):
@@ -217,7 +217,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             if zone.obj.name == obj.name and zone.obj.path == obj.path and \
                     zone.obj.filename == obj.filename:
                 zone.obj = obj
-                zone.Updated()
+                zone.Updated(obj.name)
 
     @handle_exceptions
     def removeZone(self, obj):

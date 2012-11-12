@@ -158,7 +158,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("config.zone.%d.update('...')", self.id)
         self.obj = self.config.set_zone_config(self.obj,
                                                dbus_to_python(settings))
-        self.Updated()
+        self.Updated(self.obj.name)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
@@ -167,12 +167,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         """
         log.debug1("config.zone.%d.loadDefaults()", self.id)
         self.obj = self.config.load_zone_defaults(self.obj)
-        self.Updated()
+        self.Updated(self.obj.name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE, signature='s')
     @dbus_handle_exceptions
-    def Updated(self):
-        log.debug1("config.zone.%d.Updated()", self.id)
+    def Updated(self, name):
+        log.debug1("config.zone.%d.Updated('%s')" % (self.id, name))
 
     # R E M O V E
 
@@ -199,11 +199,11 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         """
         log.debug1("config.zone.%d.rename('%s')", self.id, name)
         new_zone = self.config.rename_zone(self.obj, dbus_to_python(name))
-        self.Renamed()
         self.parent._addZone(new_zone)
         self.parent.removeZone(self.obj)
+        self.Renamed(name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE, signature='s')
     @dbus_handle_exceptions
-    def Renamed(self):
-        log.debug1("config.zone.%d.Renamed()", self.id)
+    def Renamed(self, name):
+        log.debug1("config.zone.%d.Renamed('%s')" % (self.id, name))

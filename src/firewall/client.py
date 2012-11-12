@@ -605,22 +605,6 @@ class FirewallClient(object):
         if not cb:
             return
 
-        # get zone/service/icmptype from path and add as first call arg
-        if interface.startswith(DBUS_INTERFACE_CONFIG) and \
-                interface != DBUS_INTERFACE_CONFIG:
-            path = kwargs["path"]
-            dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-            properties = dbus.Interface(
-                dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-            try:
-                what = dbus_to_python(properties.Get(interface, "name"))
-            except:
-                # in case of e.g. Removed() signal the object is already gone
-                # and Removed provides the name as first argument
-                pass
-            else:
-                cb_args.append(what)
-
         cb_args.extend(args)
 
         # call back ...

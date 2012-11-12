@@ -158,7 +158,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         log.debug1("config.service.%d.update('...')", self.id)
         self.obj = self.config.set_service_config(self.obj,
                                                 dbus_to_python(settings))
-        self.Updated()
+        self.Updated(self.obj.name)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE)
     @dbus_handle_exceptions
@@ -167,12 +167,12 @@ class FirewallDConfigService(slip.dbus.service.Object):
         """
         log.debug1("config.service.%d.loadDefaults()", self.id)
         self.obj = self.config.load_service_defaults(self.obj)
-        self.Updated()
+        self.Updated(self.obj.name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE, signature='s')
     @dbus_handle_exceptions
-    def Updated(self):
-        log.debug1("config.service.%d.Updated()", self.id)
+    def Updated(self, name):
+        log.debug1("config.service.%d.Updated('%s')" % (self.id, name))
 
     # R E M O V E
 
@@ -199,11 +199,11 @@ class FirewallDConfigService(slip.dbus.service.Object):
         """
         log.debug1("config.service.%d.rename('%s')", self.id, name)
         new_service = self.config.rename_service(self.obj, dbus_to_python(name))
-        self.Renamed()
         self.parent._addService(new_service)
         self.parent.removeService(self.obj)
+        self.Renamed(name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE)
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE, signature='s')
     @dbus_handle_exceptions
-    def Renamed(self):
-        log.debug1("config.service.%d.Renamed()", self.id)
+    def Renamed(self, name):
+        log.debug1("config.service.%d.Renamed('%s')" % (self.id, name))
