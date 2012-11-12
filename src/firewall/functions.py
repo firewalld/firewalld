@@ -194,7 +194,7 @@ def checkInterface(iface):
 
     if not iface or len(iface) > 16:
         return False
-    for ch in [ ' ', '/', '!', ':', '*' ]:
+    for ch in [ ' ', '/', '!', '*' ]:
         # !:* are limits for iptables <= 1.4.5
         if ch in iface:
             return False
