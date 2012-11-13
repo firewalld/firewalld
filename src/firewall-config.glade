@@ -1069,111 +1069,67 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box13">
+                      <object class="GtkToolbar" id="icmpDialogIcmpEditBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="show_arrow">False</property>
+                        <property name="icon_size">1</property>
                         <child>
-                          <object class="GtkBox" id="box15">
+                          <object class="GtkToolButton" id="toolbutton4">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="homogeneous">True</property>
-                            <child>
-                              <object class="GtkButton" id="button9">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Add ICMP Type</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onIcmpDialogAddIcmp" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image10">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-add</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="icmpDialogEditIcmpButton">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Edit ICMP Type</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onIcmpDialogEditIcmp" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image13">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-edit</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="icmpDialogRemoveIcmpButton">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Remove ICMP Type</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onIcmpDialogRemoveIcmp" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image12">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-remove</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="icmpDialogLoadDefaultsIcmpButton">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Load ICMP Type Defaults</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onIcmpDialogLoadDefaultsIcmp" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image14">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-revert-to-saved</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">3</property>
-                              </packing>
-                            </child>
+                            <property name="tooltip_markup" translatable="yes">Add ICMP Type</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-add</property>
+                            <signal name="clicked" handler="onIcmpDialogAddIcmp" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="icmpDialogEditIcmpButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Edit ICMP Type</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-edit</property>
+                            <signal name="clicked" handler="onIcmpDialogEditIcmp" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="icmpDialogRemoveIcmpButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Remove ICMP Type</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-remove</property>
+                            <signal name="clicked" handler="onIcmpDialogRemoveIcmp" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="icmpDialogLoadDefaultsIcmpButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Load ICMP Type Defaults</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-revert-to-saved</property>
+                            <signal name="clicked" handler="onIcmpDialogLoadDefaultsIcmp" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
                           </packing>
                         </child>
                       </object>
@@ -1319,6 +1275,7 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-edit</property>
   </object>
+  <object class="GtkTextBuffer" id="logTextBuffer"/>
   <object class="GtkWindow" id="mainWindow">
     <property name="width_request">700</property>
     <property name="height_request">500</property>
@@ -1695,108 +1652,67 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="zoneEditBox">
+                      <object class="GtkToolbar" id="zoneEditBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="show_arrow">False</property>
+                        <property name="icon_size">1</property>
                         <child>
-                          <object class="GtkBox" id="box9">
+                          <object class="GtkToolButton" id="toolbutton3">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="homogeneous">True</property>
-                            <child>
-                              <object class="GtkButton" id="button1">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Add Zone</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onAddZone" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image2">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-add</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="zoneEditEditButton">
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Edit Zone</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onEditZone" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image4">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-edit</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="zoneEditRemoveButton">
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Remove Zone</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onRemoveZone" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image3">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-remove</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="zoneEditLoadDefaultsButton">
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Load Zone Defaults</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onLoadDefaultsZone" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image5">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-revert-to-saved</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">3</property>
-                              </packing>
-                            </child>
+                            <property name="tooltip_markup" translatable="yes">Add Zone</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-add</property>
+                            <signal name="clicked" handler="onAddZone" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="zoneEditEditButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Edit Zone</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-edit</property>
+                            <signal name="clicked" handler="onEditZone" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="zoneEditRemoveButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Remove Zone</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-remove</property>
+                            <signal name="clicked" handler="onRemoveZone" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="zoneEditLoadDefaultsButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Load Zone Defaults</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-revert-to-saved</property>
+                            <signal name="clicked" handler="onLoadDefaultsZone" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
                           </packing>
                         </child>
                       </object>
@@ -3238,111 +3154,67 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="box10">
+                      <object class="GtkToolbar" id="serviceDialogServiceEditBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="has_tooltip">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="show_arrow">False</property>
+                        <property name="icon_size">1</property>
                         <child>
-                          <object class="GtkBox" id="box14">
+                          <object class="GtkToolButton" id="toolbutton5">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="homogeneous">True</property>
-                            <child>
-                              <object class="GtkButton" id="button5">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Add Service</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onServiceDialogAddService" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image6">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-add</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="serviceDialogEditServiceButton">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Edit Service</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onServiceDialogEditService" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image8">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-edit</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="serviceDialogRemoveServiceButton">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Remove Service</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onServiceDialogRemoveService" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image7">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-remove</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="serviceDialogLoadDefaultsServiceButton">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <property name="tooltip_markup" translatable="yes">Load Service Defaults</property>
-                                <property name="relief">none</property>
-                                <signal name="clicked" handler="onServiceDialogLoadDefaultsService" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image9">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-revert-to-saved</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
-                                <property name="position">3</property>
-                              </packing>
-                            </child>
+                            <property name="tooltip_markup" translatable="yes">Add Service</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-add</property>
+                            <signal name="clicked" handler="onServiceDialogAddService" swapped="no"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="serviceDialogEditServiceButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Edit Service</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-edit</property>
+                            <signal name="clicked" handler="onServiceDialogEditService" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="serviceDialogRemoveServiceButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Remove Service</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-remove</property>
+                            <signal name="clicked" handler="onServiceDialogRemoveService" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkToolButton" id="serviceDialogLoadDefaultsServiceButton">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="tooltip_markup" translatable="yes">Load Service Defaults</property>
+                            <property name="use_underline">True</property>
+                            <property name="stock_id">gtk-revert-to-saved</property>
+                            <signal name="clicked" handler="onServiceDialogLoadDefaultsService" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="homogeneous">True</property>
                           </packing>
                         </child>
                       </object>
