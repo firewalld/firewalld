@@ -454,7 +454,7 @@ class FirewallConfig(object):
         except KeyboardInterrupt as msg:
             self.onQuit()
 
-    def _warning(self, msg):        
+    def _warning(self, msg):
         dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
         dialog.set_markup("<b>" + _("Warning") + "</b>")
         dialog.format_secondary_markup(msg)
@@ -920,8 +920,12 @@ class FirewallConfig(object):
             return
         active_zone = self.get_active_zone()
         zone = self.fw.config().getZoneByName(active_zone)
-        zone.loadDefaults()
-        self.onChangeZone()
+        try:
+            zone.loadDefaults()
+            self.onChangeZone()
+        except DBusException:
+            # no default settings
+            pass
 
     def onZoneBaseDialogChanged(self, *args):
         self.zoneBaseDialogOkButton.set_sensitive(True)
@@ -1660,8 +1664,12 @@ class FirewallConfig(object):
     def onServiceDialogLoadDefaultsService(self, *args):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
-        service.loadDefaults()
-        self.onChangeService()
+        try:
+            service.loadDefaults()
+            self.onChangeService()
+        except DBusException:
+            # no default settings
+            pass
 
     def onServiceDialogAddModule(self, *args):
         self.add_edit_module(True)
@@ -2001,8 +2009,12 @@ class FirewallConfig(object):
     def onIcmpDialogLoadDefaultsIcmp(self, *args):
         active_icmp = self.get_active_icmp()
         icmp = self.fw.config().getIcmpTypeByName(active_icmp)
-        icmp.loadDefaults()
-        self.onChangeIcmp()
+        try:
+            icmp.loadDefaults()
+            self.onChangeIcmp()
+        except DBusException:
+            # no default settings
+            pass
 
     def icmp_dialog_dest_ipv4_check_cb(self, *args):
         active_icmp = self.get_active_icmp()
