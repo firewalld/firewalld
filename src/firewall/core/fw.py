@@ -48,12 +48,12 @@ class Firewall:
     def __init__(self):
         self._firewalld_conf = firewalld_conf(FIREWALLD_CONF)
 
-        # TODO: check if ipv4 is enabled:
         self._ip4tables = ipXtables.ip4tables()
-        # TODO: check if ipv6 is enabled:
+        self.ip4tables_enabled = True
         self._ip6tables = ipXtables.ip6tables()
-
+        self.ip6tables_enabled = True
         self._ebtables = ebtables.ebtables()
+        self.ebtables_enabled = True
 
         self._modules = modules.modules()
 
@@ -75,6 +75,28 @@ class Firewall:
         self.cleanup_on_exit = True
 
     def start(self):
+        # check if iptables, ip6tables and ebtables are usable, else disable
+
+        try:
+            self.rule("ipv4", [ "-L" ])
+        except:
+            log.warning("iptables not usable, disabling IPv4 firewall.")
+            self.ip4tables_enabled = False
+        try:
+            self.rule("ipv6", [ "-L" ])
+        except:
+            log.warning("ip6tables not usable, disabling IPv6 firewall.")
+            self.ip6tables_enabled = False
+        try:
+            self.rule("eb", [ "-L" ])
+        except:
+            log.error("ebtables not usable, disabling ethernet bridge firewall.")
+            self.ebtables_enabled = False
+
+        if not self.ip4tables_enabled and not self.ip6tables_enabled:
+            log.fatal("No IPv4 and IPv6 firewall.")            
+            sys.exit(1)
+
         # initialize firewall
         self._flush()
         self._set_policy("ACCEPT")
@@ -369,11 +391,17 @@ class Firewall:
                 raise FirewallError(INVALID_IPV, ipv)
 
         if ipv == "ipv4":
-            return self._ip4tables.set_rule(rule)
+            # do not call if disabled
+            if self.ip4tables_enabled:
+                return self._ip4tables.set_rule(rule)
         elif ipv == "ipv6":
-            return self._ip6tables.set_rule(rule)
+            # do not call if disabled
+            if self.ip6tables_enabled:
+                return self._ip6tables.set_rule(rule)
         elif ipv == "eb":
-            return self._ebtables.set_rule(rule)
+            # do not call if disabled
+            if self.ebtables_enabled:
+                return self._ebtables.set_rule(rule)
         else:
             raise FirewallError(INVALID_IPV, ipv)
 

@@ -115,6 +115,16 @@ class FirewallD(slip.dbus.service.Object):
                               DBUS_INTERFACE_REVISION)
         elif prop == "state":
             return self.fw.get_state()
+
+        elif prop == "IPv4":
+            return self.fw.ip4tables_enabled
+
+        elif prop == "IPv6":
+            return self.fw.ip6tables_enabled
+
+        elif prop == "EB":
+            return self.fw.ebtables_enabled
+
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -149,6 +159,9 @@ class FirewallD(slip.dbus.service.Object):
             'version': self._get_property("version"),
             'interface_version': self._get_property("interface_version"),
             'state': self._get_property("state"),
+            'ip4tables': self._get_property("ip4tables"),
+            'ip6tables': self._get_property("ip6tables"),
+            'ebtables': self._get_property("ebtables"),
         }
         
 
