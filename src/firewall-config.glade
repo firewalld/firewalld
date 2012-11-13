@@ -48,12 +48,10 @@
             <child>
               <object class="GtkButton" id="addressDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -65,13 +63,11 @@
             <child>
               <object class="GtkButton" id="addressDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -195,12 +191,10 @@
             <child>
               <object class="GtkButton" id="portDialogCancelButton1">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -212,13 +206,11 @@
             <child>
               <object class="GtkButton" id="portDialogOkButton1">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -293,100 +285,6 @@
       <action-widget response="1">portDialogOkButton1</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkDialog" id="dialog1">
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="type_hint">dialog</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox13">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area13">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="box8">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkLabel" id="label14">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Zone is immutable, no customization possible.</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label37">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Builtin, remove not possible.</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label38">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">If you remove system settings, the default configuration will be used after reload or restart.</property>
-                <property name="wrap">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-  </object>
   <object class="GtkDialog" id="forwardDialog">
     <property name="width_request">200</property>
     <property name="height_request">350</property>
@@ -408,12 +306,10 @@
             <child>
               <object class="GtkButton" id="button15">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -425,13 +321,11 @@
             <child>
               <object class="GtkButton" id="forwardDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -712,11 +606,9 @@
                     <child>
                       <object class="GtkCheckButton" id="forwardDialogLocalCheck">
                         <property name="label" translatable="yes">Local forwarding</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="xalign">0</property>
@@ -744,11 +636,9 @@
                     <child>
                       <object class="GtkCheckButton" id="forwardDialogToPortCheck">
                         <property name="label" translatable="yes">Forward to another port</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="focus_on_click">False</property>
                         <property name="xalign">0</property>
@@ -837,12 +727,10 @@
             <child>
               <object class="GtkButton" id="icmpBaseDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -854,13 +742,11 @@
             <child>
               <object class="GtkButton" id="icmpBaseDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -1091,13 +977,11 @@
             <child>
               <object class="GtkButton" id="icmpDialogCloseButton">
                 <property name="label">gtk-close</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -1195,12 +1079,10 @@
                             <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkButton" id="button9">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Add ICMP Type</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onIcmpDialogAddIcmp" swapped="no"/>
                                 <child>
@@ -1220,12 +1102,10 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="icmpDialogEditIcmpButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Edit ICMP Type</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onIcmpDialogEditIcmp" swapped="no"/>
                                 <child>
@@ -1245,12 +1125,10 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="icmpDialogRemoveIcmpButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Remove ICMP Type</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onIcmpDialogRemoveIcmp" swapped="no"/>
                                 <child>
@@ -1270,12 +1148,10 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="icmpDialogLoadDefaultsIcmpButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Load ICMP Type Defaults</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onIcmpDialogLoadDefaultsIcmp" swapped="no"/>
                                 <child>
@@ -1348,11 +1224,9 @@
                             <child>
                               <object class="GtkCheckButton" id="icmpDialogDestIpv4Check">
                                 <property name="label" translatable="yes">IPv4</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
@@ -1373,11 +1247,9 @@
                             <child>
                               <object class="GtkCheckButton" id="icmpDialogDestIpv6Check">
                                 <property name="label" translatable="yes">IPv6</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
@@ -1465,7 +1337,6 @@
             <property name="can_focus">False</property>
             <child>
               <object class="GtkMenuItem" id="menuitem1">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_File</property>
@@ -1477,7 +1348,6 @@
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem5">
                         <property name="label">gtk-quit</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
@@ -1491,7 +1361,6 @@
             </child>
             <child>
               <object class="GtkMenuItem" id="optionMenuitem">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Options</property>
@@ -1503,7 +1372,6 @@
                     <child>
                       <object class="GtkImageMenuItem" id="menuitem6">
                         <property name="label" translatable="yes">Reload Firewalld</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Reload Firewalld</property>
@@ -1514,7 +1382,6 @@
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="menuitem7">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -1522,7 +1389,6 @@
                     <child>
                       <object class="GtkImageMenuItem" id="menuitem2">
                         <property name="label" translatable="yes">Change Default Zone</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Change Default Zone</property>
@@ -1533,7 +1399,6 @@
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="menuitem9">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -1541,7 +1406,6 @@
                     <child>
                       <object class="GtkImageMenuItem" id="editServicesMenuitem">
                         <property name="label" translatable="yes">Edit Services</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Edit Services</property>
@@ -1553,7 +1417,6 @@
                     <child>
                       <object class="GtkImageMenuItem" id="editIcmpTypesMenuitem">
                         <property name="label" translatable="yes">Edit ICMP Types</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="image">image17</property>
@@ -1567,7 +1430,6 @@
             </child>
             <child>
               <object class="GtkMenuItem" id="menuitem4">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Help</property>
@@ -1579,7 +1441,6 @@
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="label">gtk-about</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
@@ -1605,11 +1466,9 @@
             <property name="toolbar_style">both</property>
             <child>
               <object class="GtkToolButton" id="toolbutton1">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_markup" translatable="yes">Reloads firewalld: Current persistent configuration will become the new runtime configuration.</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Reload Firewalld</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-refresh</property>
@@ -1622,10 +1481,8 @@
             </child>
             <child>
               <object class="GtkSeparatorToolItem" id="toolbutton2">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1634,11 +1491,9 @@
             </child>
             <child>
               <object class="GtkToolButton" id="toolbutton6">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_markup" translatable="yes">Change default zone of the system.</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Change Default Zone</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-preferences</property>
@@ -1651,10 +1506,8 @@
             </child>
             <child>
               <object class="GtkSeparatorToolItem" id="toolbutton7">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1663,12 +1516,10 @@
             </child>
             <child>
               <object class="GtkToolButton" id="editServicesToolbutton">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_markup" translatable="yes">Edit service entries for use in zones.</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Edit Services</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-edit</property>
@@ -1681,12 +1532,10 @@
             </child>
             <child>
               <object class="GtkToolButton" id="editIcmpTypesToolbutton">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">False</property>
                 <property name="tooltip_markup" translatable="yes">Edit ICMP types for use as ICMP blocks in zones.</property>
-                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Edit ICMP Types</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-edit</property>
@@ -1856,12 +1705,10 @@
                             <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkButton" id="button1">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Add Zone</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onAddZone" swapped="no"/>
                                 <child>
@@ -1881,11 +1728,9 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="zoneEditEditButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Edit Zone</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onEditZone" swapped="no"/>
                                 <child>
@@ -1905,11 +1750,9 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="zoneEditRemoveButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Remove Zone</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onRemoveZone" swapped="no"/>
                                 <child>
@@ -1929,11 +1772,9 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="zoneEditLoadDefaultsButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Load Zone Defaults</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onLoadDefaultsZone" swapped="no"/>
                                 <child>
@@ -2089,14 +1930,12 @@
                                 <child>
                                   <object class="GtkButton" id="addPortButton">
                                     <property name="label">gtk-add</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Add Entry</property>
                                     <property name="tooltip_text" translatable="yes">Add Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onAddPort" swapped="no"/>
@@ -2110,7 +1949,6 @@
                                 <child>
                                   <object class="GtkButton" id="editPortButton">
                                     <property name="label">gtk-edit</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -2118,7 +1956,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Edit Entry</property>
                                     <property name="tooltip_text" translatable="yes">Edit Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onEditPort" swapped="no"/>
@@ -2132,7 +1969,6 @@
                                 <child>
                                   <object class="GtkButton" id="removePortButton">
                                     <property name="label">gtk-remove</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -2140,7 +1976,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Remove Entry</property>
                                     <property name="tooltip_text" translatable="yes">Remove Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onRemovePort" swapped="no"/>
@@ -2211,12 +2046,10 @@
                             <child>
                               <object class="GtkCheckButton" id="masqueradeCheck">
                                 <property name="label" translatable="yes">Masquerade zone</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="valign">start</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="xalign">0</property>
                                 <property name="draw_indicator">True</property>
                               </object>
@@ -2316,14 +2149,12 @@
                                 <child>
                                   <object class="GtkButton" id="addForwardButton">
                                     <property name="label">gtk-add</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Add Entry</property>
                                     <property name="tooltip_text" translatable="yes">Add Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onAddForwardPort" swapped="no"/>
@@ -2337,7 +2168,6 @@
                                 <child>
                                   <object class="GtkButton" id="editForwardButton">
                                     <property name="label">gtk-edit</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -2345,7 +2175,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Edit Entry</property>
                                     <property name="tooltip_text" translatable="yes">Edit Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onEditForwardPort" swapped="no"/>
@@ -2359,7 +2188,6 @@
                                 <child>
                                   <object class="GtkButton" id="removeForwardButton">
                                     <property name="label">gtk-remove</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -2367,7 +2195,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Remove Entry</property>
                                     <property name="tooltip_text" translatable="yes">Remove Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onRemoveForwardPort" swapped="no"/>
@@ -2579,12 +2406,10 @@
             <child>
               <object class="GtkButton" id="moduleDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -2596,13 +2421,11 @@
             <child>
               <object class="GtkButton" id="moduleDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -2687,12 +2510,10 @@
             <child>
               <object class="GtkButton" id="portDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -2704,13 +2525,11 @@
             <child>
               <object class="GtkButton" id="portDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -2863,12 +2682,10 @@
             <child>
               <object class="GtkButton" id="portProtoDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -2880,13 +2697,11 @@
             <child>
               <object class="GtkButton" id="portProtoDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -3001,13 +2816,11 @@
                     <child>
                       <object class="GtkCheckButton" id="portProtoDialogOtherProtoCheck">
                         <property name="label" translatable="yes">Other Protocol:</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="halign">end</property>
                         <property name="valign">start</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">1</property>
                         <property name="image_position">right</property>
                         <property name="draw_indicator">True</property>
@@ -3079,12 +2892,10 @@
             <child>
               <object class="GtkButton" id="serviceBaseDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -3096,13 +2907,11 @@
             <child>
               <object class="GtkButton" id="serviceBaseDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -3336,13 +3145,11 @@
             <child>
               <object class="GtkButton" id="serviceDialogCloseButton">
                 <property name="label">gtk-close</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -3441,12 +3248,10 @@
                             <property name="homogeneous">True</property>
                             <child>
                               <object class="GtkButton" id="button5">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Add Service</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onServiceDialogAddService" swapped="no"/>
                                 <child>
@@ -3466,12 +3271,10 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="serviceDialogEditServiceButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Edit Service</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onServiceDialogEditService" swapped="no"/>
                                 <child>
@@ -3491,12 +3294,10 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="serviceDialogRemoveServiceButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Remove Service</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onServiceDialogRemoveService" swapped="no"/>
                                 <child>
@@ -3516,12 +3317,10 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="serviceDialogLoadDefaultsServiceButton">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip_markup" translatable="yes">Load Service Defaults</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="relief">none</property>
                                 <signal name="clicked" handler="onServiceDialogLoadDefaultsService" swapped="no"/>
                                 <child>
@@ -3622,14 +3421,12 @@
                                 <child>
                                   <object class="GtkButton" id="serviceDialogAddPortButton">
                                     <property name="label">gtk-add</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Add Entry</property>
                                     <property name="tooltip_text" translatable="yes">Add Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onServiceDialogAddPort" swapped="no"/>
@@ -3643,7 +3440,6 @@
                                 <child>
                                   <object class="GtkButton" id="serviceDialogEditPortButton">
                                     <property name="label">gtk-edit</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -3651,7 +3447,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Edit Entry</property>
                                     <property name="tooltip_text" translatable="yes">Edit Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onServiceDialogEditPort" swapped="no"/>
@@ -3665,7 +3460,6 @@
                                 <child>
                                   <object class="GtkButton" id="serviceDialogRemovePortButton">
                                     <property name="label">gtk-remove</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -3673,7 +3467,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Remove Entry</property>
                                     <property name="tooltip_text" translatable="yes">Remove Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onServiceDialogRemovePort" swapped="no"/>
@@ -3769,14 +3562,12 @@
                                 <child>
                                   <object class="GtkButton" id="serviceDialogAddModuleButton">
                                     <property name="label">gtk-add</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Add Entry</property>
                                     <property name="tooltip_text" translatable="yes">Add Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onServiceDialogAddModule" swapped="no"/>
@@ -3790,7 +3581,6 @@
                                 <child>
                                   <object class="GtkButton" id="serviceDialogEditModuleButton">
                                     <property name="label">gtk-edit</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -3798,7 +3588,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Edit Entry</property>
                                     <property name="tooltip_text" translatable="yes">Edit Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onServiceDialogEditModule" swapped="no"/>
@@ -3812,7 +3601,6 @@
                                 <child>
                                   <object class="GtkButton" id="serviceDialogRemoveModuleButton">
                                     <property name="label">gtk-remove</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
@@ -3820,7 +3608,6 @@
                                     <property name="has_tooltip">True</property>
                                     <property name="tooltip_markup" translatable="yes">Remove Entry</property>
                                     <property name="tooltip_text" translatable="yes">Remove Entry</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onServiceDialogRemoveModule" swapped="no"/>
@@ -3916,11 +3703,9 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="serviceDialogDestIpv4Chooser">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="onChangeServiceDialogDestIpv4" swapped="no"/>
                                 <child>
@@ -3978,11 +3763,9 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="serviceDialogDestIpv6Chooser">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="onChangeServiceDialogDestIpv6" swapped="no"/>
                                 <child>
@@ -4104,12 +3887,10 @@
             <child>
               <object class="GtkButton" id="zoneBaseDialogCancelButton">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -4121,13 +3902,11 @@
             <child>
               <object class="GtkButton" id="zoneBaseDialogOkButton">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -4302,11 +4081,9 @@
                     <child>
                       <object class="GtkCheckButton" id="zoneBaseDialogImmutableCheck">
                         <property name="label"> </property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="onZoneBaseDialogChanged" swapped="no"/>
@@ -4361,11 +4138,9 @@
                     <child>
                       <object class="GtkCheckButton" id="zoneBaseDialogTargetCheck">
                         <property name="label" translatable="yes">Default Target</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="onZoneBaseDialogTargetCheckToggled" swapped="no"/>
@@ -4435,58 +4210,6 @@
     <action-widgets>
       <action-widget response="-1">zoneBaseDialogCancelButton</action-widget>
       <action-widget response="1">zoneBaseDialogOkButton</action-widget>
-    </action-widgets>
-  </object>
-  <object class="GtkMessageDialog" id="zoneChangedDialog">
-    <property name="width_request">200</property>
-    <property name="height_request">100</property>
-    <property name="can_focus">False</property>
-    <property name="border_width">5</property>
-    <property name="default_width">200</property>
-    <property name="default_height">100</property>
-    <property name="type_hint">dialog</property>
-    <property name="skip_taskbar_hint">True</property>
-    <property name="text" translatable="yes" comments="The {zone|service|icmptype} '&lt;name&gt;' has changed">The %s '%s' has changed, applying new settings.</property>
-    <property name="use_markup">True</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="messagedialog-vbox1">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox" id="messagedialog-action_area1">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="zoneChnagedDialogOkButton">
-                <property name="label">gtk-close</property>
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="can_default">True</property>
-                <property name="has_default">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-      </object>
-    </child>
-    <action-widgets>
-      <action-widget response="1">zoneChnagedDialogOkButton</action-widget>
     </action-widgets>
   </object>
 </interface>
