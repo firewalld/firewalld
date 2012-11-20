@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.9
+Version: 0.2.10
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -167,6 +167,31 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Nov 20 2012 Thomas Woerner <twoerner@redhat.com> 0.2.10-1
+- tests/firewalld_config.py: tests for config.service and config.icmptype
+- FirewallClientConfigServiceSettings(): destinations are dict not list
+- service/zone/icmptype: do not write deprecated name attribute
+- New service ntp
+- firewall-config: Fixed name of about dialog
+- configure.in: Fixed getting of error codes
+- Added coding to all pyhton files
+- Fixed copyright years
+- Beautified file headers
+- Force use of pygobject3 in python-slip (RHBZ#874378)
+- Log: firewall.server.config_icmptype, firewall.server.config_service and
+  firewall.server.config_zone: Prepend full path
+- Allow ":" in interface names for interface aliases
+- Add name argument to Updated and Renamed signal
+- Disable IPv4, IPv6 and EB tables if missing - for IPv4/IPv6 only environments
+- firewall-config.glade file cleanup
+- firewall-config: loadDefaults() can throw exception
+- Use toolbars for Add/Edit/Remove/LoadDefaults buttons for zones, services
+  and icmp types
+- New vnc-server service, opens ports for displays :0 to :3 (RHBZ#877035)
+- firewall-cmd: Fix typo in help output, allow default zone usage for
+  permanenent options
+- Translation updates: cs, fr, ja, pt_BR and zh_CN
+
 * Wed Oct 17 2012 Thomas Woerner <twoerner@redhat.com> 0.2.9-1
 - firewall-config: some UI usability changes
 - firewall-cmd: New option --list-all-zones, output of --list-all changed,
