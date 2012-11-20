@@ -56,9 +56,9 @@ def usage():
              --get-icmptypes |
              --list-all-zones }
  PERMANENT := --permanent
-                { --zone=<zone> { --add-PERMANENT_ACTION |
-                                  --remove-PERMANENT_ACTION |
-                                  --query-PERMANENT_ACTION } } |
+                { [ --zone=<zone> ] { --add-PERMANENT_ACTION |
+                                      --remove-PERMANENT_ACTION |
+                                      --query-PERMANENT_ACTION } } |
                 --get-services |
                 --get-icmptypes |
                 --get-zones
@@ -69,7 +69,7 @@ def usage():
                        forward-port=port=<port>[-<port>]:proto=<protocol> { 
                          :toport=<port>[-<port>] | :toaddr=<address> | 
                          :toport=<port>[-<port>]:toaddr=<address> } }
- ACTION := { PERMANENT_ACION | interface=<interface> }
+ ACTION := { PERMANENT_ACTION | interface=<interface> }
  DIRECT := --direct
              {--passthrough TOOL <args> } |
              { { --add-chain | --remove-chain | --query-chain } TOOL <table>
@@ -293,9 +293,9 @@ if permanent:
     if timeout != 0:
         usage()
         sys.exit(1)
-    if mode in [ "get-zones", "get-services", "get-icmptypes" ] and zone:
+    if mode in [ "get-zones", "get-services", "get-icmptypes" ] and not zone:
         pass
-    elif not zone or mode not in [
+    elif mode in [
         "add-service", "remove-service", "query-service", "list-services",
         "add-port", "remove-port", "query-port", "list-ports",
         "add-icmp-block", "remove-icmp-block", "query-icmp-block",
@@ -303,6 +303,8 @@ if permanent:
         "add-masquerade", "remove-masquerade", "query-masquerade",
         "add-forward-port", "remove-forward-port", "query-forward-port", 
         "list-forward-ports"]:
+        pass
+    else:
         usage()
         sys.exit(1)
 else:
@@ -335,6 +337,8 @@ try:
             if len(l) > 0:
                 print(" ".join(l))
         else:
+            if not zone:
+                zone = fw.getDefaultZone()
             fw_zone = fw.config().getZoneByName(zone)
             fw_settings = fw_zone.getSettings()
 
