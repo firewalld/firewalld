@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Copyright (C) Red Hat Inc. 2010, 2011.
 # Hajime Taira <htaira@redhat.com>, 2010-2011.
@@ -10,17 +10,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-17 16:47+0200\n"
-"PO-Revision-Date: 2012-09-24 02:57+0000\n"
+"POT-Creation-Date: 2012-09-07 13:37+0200\n"
+"PO-Revision-Date: 2012-11-18 22:13+0000\n"
 "Last-Translator: Tomoyuki KATO <tomo@dream.daynight.jp>\n"
 "Language-Team: Japanese <trans-ja@lists.fedoraproject.org>\n"
-"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:57
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:56
 msgid "Firewall Applet"
 msgstr "ファイアーウォール・アプレット"
 
@@ -31,22 +31,6 @@ msgstr "ファイアウォール"
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:35
 msgid "Firewall Configuration"
 msgstr "ファイアウォールの設定"
-
-#: ../src/firewall/config/__init__.py:48
-msgid ""
-"This program is free software; you can redistribute it and/or modify it "
-"under the terms of the GNU General Public License as published by the Free "
-"Software Foundation; either version 2 of the License, or (at your option) "
-"any later version.\n"
-"\n"
-"This program is distributed in the hope that it will be useful, but WITHOUT "
-"ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or "
-"FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"this program.  If not, see <http://www.gnu.org/licenses/>."
-msgstr ""
 
 #: ../src/firewall/core/io/io_object.py:148
 #, python-format
@@ -68,7 +52,7 @@ msgstr "要素 '%s': 予期しない属性 '%s'"
 msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 msgstr "使用法: %s [-h|--help] [--debug[=<level>]] [--nofork]"
 
-#: ../src/firewalld:49 ../src/firewall-offline-cmd:35
+#: ../src/firewalld:49
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "%s を実行するには root になる必要があります。"
@@ -87,209 +71,205 @@ msgstr "すでに FirewallD は実行中です。"
 msgid "Fork #1 failed: %d (%s)"
 msgstr "fork #1 失敗: %d (%s)"
 
-#: ../src/firewall-applet:101
+#: ../src/firewall-applet:99
 msgid "Shields Up"
 msgstr ""
 
-#: ../src/firewall-applet:114
+#: ../src/firewall-applet:110
 msgid "Enable Notifications"
 msgstr "通知の有効化"
 
-#: ../src/firewall-applet:127
+#: ../src/firewall-applet:123
 msgid "Edit Firewall Settings..."
 msgstr "ファイアウォール設定の編集..."
 
-#: ../src/firewall-applet:135
+#: ../src/firewall-applet:130
 msgid "Configure Shields UP/Down Zones..."
 msgstr ""
 
-#: ../src/firewall-applet:144
+#: ../src/firewall-applet:138
 msgid "Block all network traffic"
 msgstr "すべてのネットワーク・トラフィックのブロック"
 
-#: ../src/firewall-applet:171
+#: ../src/firewall-applet:165
 msgid "Configure Shields Up/Down Zones"
 msgstr ""
 
-#: ../src/firewall-applet:182
+#: ../src/firewall-applet:176
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 
-#: ../src/firewall-applet:190
+#: ../src/firewall-applet:184
 msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
+"This feature is useful for people using the default zones mostly. For users,"
+" that are changing zones of connections, it might be of limited use."
 msgstr ""
 
-#: ../src/firewall-applet:205
+#: ../src/firewall-applet:199
 msgid "Shields Up Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:216
+#: ../src/firewall-applet:210
 msgid "Shields Down Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:255
+#: ../src/firewall-applet:249
 msgid "Not using slip"
 msgstr "slip を利用しない"
 
-#: ../src/firewall-applet:337
+#: ../src/firewall-applet:324
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:346
+#: ../src/firewall-applet:332
 msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:384
+#: ../src/firewall-applet:370
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:462
+#: ../src/firewall-applet:448
 msgid "No connection to firewall daemon"
 msgstr "ファイアーウォール・デーモンへの接続がありません。"
 
-#: ../src/firewall-applet:468
+#: ../src/firewall-applet:454
 msgid "PANIC MODE"
 msgstr "パニックモード"
 
-#: ../src/firewall-applet:475
-#, c-format
-msgid "Default Zone: %s"
-msgstr ""
-
-#: ../src/firewall-applet:482
+#: ../src/firewall-applet:466
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:485
+#: ../src/firewall-applet:469
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:492
+#: ../src/firewall-applet:477
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:502
+#: ../src/firewall-applet:483
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:518
+#: ../src/firewall-applet:498
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:519
+#: ../src/firewall-applet:499
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:546
+#: ../src/firewall-applet:526
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:547
+#: ../src/firewall-applet:527
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:550
+#: ../src/firewall-applet:530
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:555
+#: ../src/firewall-applet:535
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:580
+#: ../src/firewall-applet:560
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:642
+#: ../src/firewall-applet:591
 msgid "Firewall-applet"
 msgstr "ファイアウォール・アプレット"
 
-#: ../src/firewall-config:58
+#: ../src/firewall-config:56
 msgid "Connected."
 msgstr "接続しました。"
 
-#: ../src/firewall-config:59
+#: ../src/firewall-config:57
 msgid "No connection."
 msgstr "接続されていません。"
 
-#: ../src/firewall-config:60
+#: ../src/firewall-config:58
 msgid "Waiting ..."
-msgstr ""
+msgstr "待機中 ..."
 
-#: ../src/firewall-config:61
+#: ../src/firewall-config:59
 msgid "Retrying ..."
-msgstr ""
+msgstr "再試行中 ..."
 
-#: ../src/firewall-config:71
+#: ../src/firewall-config:69
 msgid "Failed to load icons."
-msgstr ""
+msgstr "アイコンの読み込みに失敗しました。"
 
-#: ../src/firewall-config:114 ../src/firewall-config:761
+#: ../src/firewall-config:107 ../src/firewall-config:755
 msgid "Runtime Configuration"
-msgstr ""
+msgstr "実行時の設定"
 
-#: ../src/firewall-config:115
+#: ../src/firewall-config:108
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:172 ../src/firewall-config.glade.h:81
+#: ../src/firewall-config:165 ../src/firewall-config.glade.h:81
 msgid "Service"
 msgstr "サービス"
 
-#: ../src/firewall-config:179 ../src/firewall-config:209
-#: ../src/firewall-config:297
+#: ../src/firewall-config:172 ../src/firewall-config:202
+#: ../src/firewall-config:290
 msgid "Port"
 msgstr "ポート"
 
-#: ../src/firewall-config:181 ../src/firewall-config:211
-#: ../src/firewall-config:299
+#: ../src/firewall-config:174 ../src/firewall-config:204
+#: ../src/firewall-config:292
 msgid "Protocol"
 msgstr "プロトコル"
 
-#: ../src/firewall-config:213
+#: ../src/firewall-config:206
 msgid "To Port"
 msgstr "宛先ポート"
 
-#: ../src/firewall-config:215
+#: ../src/firewall-config:208
 msgid "To Address"
 msgstr "宛先アドレス"
 
-#: ../src/firewall-config:252
+#: ../src/firewall-config:245
 msgid "Icmp Type"
 msgstr "ICMP 種別"
 
-#: ../src/firewall-config:457
+#: ../src/firewall-config:446
 msgid "Warning"
 msgstr "警告"
 
-#: ../src/firewall-config:467
+#: ../src/firewall-config:456
 msgid "Error"
 msgstr "エラー"
 
-#: ../src/firewall-config:469
+#: ../src/firewall-config:458
 msgid "Retry"
 msgstr "再試行"
 
-#: ../src/firewall-config:486
+#: ../src/firewall-config:475
 msgid "Authorization failed."
 msgstr "認証に失敗しました。"
 
-#: ../src/firewall-config:977
+#: ../src/firewall-config:966
 msgid "Built-in zone, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1604
+#: ../src/firewall-config:1575
 msgid "Built-in service, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1945
+#: ../src/firewall-config:1918
 msgid "Built-in icmp, rename not supported."
 msgstr "組み込み ICMP、名前は変更できません。"
 
@@ -311,11 +291,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Zone is immutable, no customization possible."
-msgstr ""
+msgstr "ゾーンは変更できません。"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Builtin, remove not possible."
-msgstr ""
+msgstr "組み込みです、削除できません。"
 
 #: ../src/firewall-config.glade.h:7
 msgid ""
@@ -362,11 +342,9 @@ msgstr "他のポートへのフォワード"
 
 #: ../src/firewall-config.glade.h:17
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to "
-"be different to the source port."
-msgstr ""
-"ローカルフォワーディングを有効にするなら、ポートを指定しなければなりません。"
-"これはソースポートとは異ならなければなりません。"
+"If you enable local forwarding, you have to specify a port. This port has to"
+" be different to the source port."
+msgstr "ローカルフォワーディングを有効にするなら、ポートを指定しなければなりません。これはソースポートとは異ならなければなりません。"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Base ICMP Type Settings"
@@ -426,8 +404,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:32
 msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to "
-"the destination."
+"If you specify destination addresses, the ICMP Type entry will be limited to"
+" the destination."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:33
@@ -527,9 +505,7 @@ msgstr ""
 msgid ""
 "Here you can define which services are trusted. Trusted services are "
 "accessible from all hosts and networks."
-msgstr ""
-"ここでどのサービスが信頼できるかを定義できます。信頼したサービスは全てのホス"
-"トやネットワークからアクセスできます。"
+msgstr "ここでどのサービスが信頼できるかを定義できます。信頼したサービスは全てのホストやネットワークからアクセスできます。"
 
 #: ../src/firewall-config.glade.h:57
 msgid "Services"
@@ -539,9 +515,7 @@ msgstr "サービス"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks."
-msgstr ""
-"全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポー"
-"トの範囲を追加します。"
+msgstr "全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポートの範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Add Entry"
@@ -564,11 +538,7 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"マスカレーディングによりローカルネットワークをインターネットと接続しているホ"
-"ストやルーターをセットアップすることができます。あなたのローカルネットワーク"
-"はインターネットからは見えず、インターネット上の一つのアドレスに見えます。マ"
-"スカレーディングは IPv4 のみです。"
+msgstr "マスカレーディングによりローカルネットワークをインターネットと接続しているホストやルーターをセットアップすることができます。あなたのローカルネットワークはインターネットからは見えず、インターネット上の一つのアドレスに見えます。マスカレーディングは IPv4 のみです。"
 
 #: ../src/firewall-config.glade.h:64
 msgid "Masquerade zone"
@@ -590,30 +560,20 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr ""
-"ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他"
-"のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードは"
-"そのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワー"
-"ドは IPv4 のみです。"
+msgstr "ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードはそのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワードは IPv4 のみです。"
 
 #: ../src/firewall-config.glade.h:68
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr ""
-"ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュー"
-"タ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答"
-"などの情報メッセージにも使用されます。"
+msgstr "ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュータ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答などの情報メッセージにも使用されます。"
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプ"
-"はファイアーウォールの通過が許可されます。 デフォルトでは無制限になっていま"
-"す。"
+msgstr "一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプはファイアーウォールの通過が許可されます。 デフォルトでは無制限になっています。"
 
 #: ../src/firewall-config.glade.h:70
 msgid "ICMP Filter"
@@ -734,154 +694,146 @@ msgstr ""
 msgid "The %s '%s' has changed, applying new settings."
 msgstr "%s '%s' を変更しました、新しい設定を適用しています。"
 
-#: ../src/firewall-offline-cmd:59
+#: ../src/firewall-convert-scfw-config:54
 #, c-format
 msgid "port range %s is not unique."
 msgstr "ポート範囲 '%s' は特有ではありません。"
 
-#: ../src/firewall-offline-cmd:61
+#: ../src/firewall-convert-scfw-config:56
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
 msgstr "%s は正しい範囲ではありません (開始ポート >=  終了ポート)."
 
-#: ../src/firewall-offline-cmd:66
+#: ../src/firewall-convert-scfw-config:61
 #, c-format
 msgid "%s is not a valid protocol."
 msgstr "%s は正しいプロトコルではありません。"
 
-#: ../src/firewall-offline-cmd:68
+#: ../src/firewall-convert-scfw-config:63
 #, c-format
 msgid "invalid port definition %s."
 msgstr "不当なポート定義 %s "
 
-#: ../src/firewall-offline-cmd:78 ../src/firewall-offline-cmd:88
+#: ../src/firewall-convert-scfw-config:73
+#: ../src/firewall-convert-scfw-config:83
 #, c-format
 msgid "Invalid argument %s"
 msgstr "不当な実引数 %s"
 
-#: ../src/firewall-offline-cmd:102
+#: ../src/firewall-convert-scfw-config:97
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr "オプション %(option)s: 不当なフォワードポート '%(value)s': %(error)s。"
 
-#: ../src/firewall-offline-cmd:113
+#: ../src/firewall-convert-scfw-config:108
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr "オプション %(option)s: 不当なフォワードポート '%(value)s'。"
 
-#: ../src/firewall-offline-cmd:120
+#: ../src/firewall-convert-scfw-config:115
 #, c-format
 msgid "invalid interface '%s'."
 msgstr "無効なインターフェイス '%s'"
 
-#: ../src/firewall-offline-cmd:140
+#: ../src/firewall-convert-scfw-config:135
 msgid "Enable firewall (default)"
 msgstr "ファイアーウォールを有効にする (デフォルト)"
 
-#: ../src/firewall-offline-cmd:143
+#: ../src/firewall-convert-scfw-config:138
 msgid "Disable firewall"
 msgstr "ファイアーウォールを無効にする"
 
-#: ../src/firewall-offline-cmd:146 ../src/firewall-offline-cmd:150
+#: ../src/firewall-convert-scfw-config:141
+#: ../src/firewall-convert-scfw-config:145
 msgid "<module>"
 msgstr "<module>"
 
-#: ../src/firewall-offline-cmd:147
+#: ../src/firewall-convert-scfw-config:142
 msgid "Enable an iptables module"
 msgstr "iptables モジュールを有効にする"
 
-#: ../src/firewall-offline-cmd:151
+#: ../src/firewall-convert-scfw-config:146
 msgid "Disable an iptables module"
 msgstr "iptables モジュールを無効にする"
 
-#: ../src/firewall-offline-cmd:155
+#: ../src/firewall-convert-scfw-config:150
 msgid "<service>"
 msgstr "<service>"
 
-#: ../src/firewall-offline-cmd:156
+#: ../src/firewall-convert-scfw-config:151
 msgid "Open the firewall for a service (e.g, ssh)"
 msgstr "ファイアーウォールで特定のサービスを開く(例 ssh)"
 
-#: ../src/firewall-offline-cmd:159
+#: ../src/firewall-convert-scfw-config:154
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:161
+#: ../src/firewall-convert-scfw-config:156
 msgid "Open specific ports in the firewall (e.g, ssh:tcp)"
 msgstr "ファイアーウォールで特定のポートを開く(例 ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:165 ../src/firewall-offline-cmd:169
+#: ../src/firewall-convert-scfw-config:160
+#: ../src/firewall-convert-scfw-config:164
 msgid "<interface>"
 msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:166
+#: ../src/firewall-convert-scfw-config:161
 msgid "Allow all traffic on the specified device"
 msgstr "指定のデバイス上で全てのトラフィックを許可"
 
-#: ../src/firewall-offline-cmd:170
+#: ../src/firewall-convert-scfw-config:165
 msgid "Masquerades traffic from the specified device. This is IPv4 only."
-msgstr ""
-"指定のデバイスからのトラフィックをマスカレードする。これは IPv4 のみ有効で"
-"す。"
+msgstr "指定のデバイスからのトラフィックをマスカレードする。これは IPv4 のみ有効です。"
 
-#: ../src/firewall-offline-cmd:174
+#: ../src/firewall-convert-scfw-config:169
+msgid "Backwards compatibility, aliased to --enabled"
+msgstr "下位互換、--enabled へのエイリアス"
+
+#: ../src/firewall-convert-scfw-config:172
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:176
+#: ../src/firewall-convert-scfw-config:174
 msgid ""
-"Specify a custom rules file for inclusion in the firewall, after the default "
-"rules. Default protocol type: ipv4, default table: filter. (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr ""
-"ファイアーウォールでデフォルトのルールの後に取り込むカスタムルールファイルを"
-"指定します。 デフォルトタイプ: ipv4、 デフォルトテーブル: フィルター。 (例: "
+"Specify a custom rules file for inclusion in the firewall, after the default"
+" rules. Default protocol type: ipv4, default table: filter. (Example: "
 "ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr "ファイアーウォールでデフォルトのルールの後に取り込むカスタムルールファイルを指定します。 デフォルトタイプ: ipv4、 デフォルトテーブル: フィルター。 (例: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-offline-cmd:185
+#: ../src/firewall-convert-scfw-config:183
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
+"port>][:toaddr=<destination address>]"
+msgstr "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:189
+#: ../src/firewall-convert-scfw-config:187
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This is IPv4 only."
-msgstr ""
-"そのインターフェイスのためのポートとプロトコルを他のローカルポート(宛先アドレ"
-"ス指定なし)か、他の宛先アドレスにオプションの宛先ポート付きへフォワードする。"
-"これは IPv4 のみです。"
+msgstr "そのインターフェイスのためのポートとプロトコルを他のローカルポート(宛先アドレス指定なし)か、他の宛先アドレスにオプションの宛先ポート付きへフォワードする。これは IPv4 のみです。"
 
-#: ../src/firewall-offline-cmd:198
+#: ../src/firewall-convert-scfw-config:196
 msgid "<icmp type>"
 msgstr "<tipo icmp>"
 
-#: ../src/firewall-offline-cmd:199
+#: ../src/firewall-convert-scfw-config:197
 msgid "Block this ICMP type. The default is to accept all ICMP types."
-msgstr ""
-"この ICMP タイプをブロックします。デフォルトでは、全ての ICMP タイプを 許可し"
-"ます。"
+msgstr "この ICMP タイプをブロックします。デフォルトでは、全ての ICMP タイプを 許可します。"
 
-#: ../src/firewall-offline-cmd:211
+#: ../src/firewall-convert-scfw-config:209
 #, c-format
 msgid "no such option: %s"
 msgstr "opção inválida: %s"
 
-#: ../src/firewall-offline-cmd:276
+#: ../src/firewall-convert-scfw-config:274
 #, c-format
 msgid "%s option requires an argument"
 msgstr "%s オプションには、引数が１つ必要です"
 
-#: ../src/firewall-offline-cmd:279
+#: ../src/firewall-convert-scfw-config:277
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "%(option)s オプションには %(count)s の引数が必要となります"
 
-#: ../src/firewall-offline-cmd:293
+#: ../src/firewall-convert-scfw-config:291
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s オプションは値を取りません"
-
-#~ msgid "Backwards compatibility, aliased to --enabled"
-#~ msgstr "下位互換、--enabled へのエイリアス"
