@@ -73,12 +73,12 @@ uninstall-init: uninstall-sysconfig
 	rmdir $(DESTDIR)$(sysconfdir)/rc.d/init.d || :
 
 install-service: install-sysconfig
-	$(MKDIR_P) $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR)
-	$(INSTALL_DATA) $(srcdir)/firewalld.service $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR)/firewalld.service
+	$(MKDIR_P) $(DESTDIR)$(SYSTEMD_UNITDIR)
+	$(INSTALL_DATA) $(srcdir)/firewalld.service $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
 
 uninstall-service: uninstall-sysconfig
-	rm -f $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR)/firewalld.service
-	rmdir $(DESTDIR)$(prefix)$(SYSTEMD_UNITDIR) || :
+	rm -f $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
+	rmdir $(DESTDIR)$(SYSTEMD_UNITDIR) || :
 
 install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)
