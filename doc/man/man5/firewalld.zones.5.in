@@ -1,0 +1,109 @@
+.TH firewalld.zones 5 "@VERSION@" "firewalld.zones" "firewalld.zones"
+.nh
+.ad l
+
+.SH NAME
+firewalld.zones \- firewalld zones
+
+.SH DESCRIPTION
+
+.SS What is a zone?
+
+A network zone defines the level of trust for network connections. This is a one to many relation, which means that a connection can only be part of one zone, but a zone can be used for many network connections.
+
+The zone defines the firewall features that are enabled in this zone:
+
+.TP
+Predefined services
+A service is a combination of port and/or protocol entries. Optionally netfilter helper modules can be added and also a IPv4 and IPv6 destination address.
+
+.TP
+Ports and protocols
+Definition of \fItcp\fR or \fIudp\fR ports, where ports can be a single port or a port range.
+
+.TP
+ICMP blocks
+Blocks selected Internet Control Message Protocol (ICMP) messages. These messages are either information requests or created as replys to information requests or in error conditions.
+
+.TP
+Masquerading
+The addresses of a private network a mapped to and hidden behind a public IP address. This is a form of address translation.
+
+.TP
+Forward ports
+A port is either mapped to another port and/or to another host.
+
+.PP
+Most zones are mutable, but there are also \fBimmutable\fR zones. Immutable zones are not customizable and there is no way to overload them.
+
+For more information on the zone file format, please have a look at \fIfirewalld.zone\fR(5).
+
+.SS Which zones are available?
+
+Here are the zones provided by firewalld sorted according to the default trust level of the zones from untrusted to trusted:
+
+.TP
+drop \fI(immutable)\fR
+Any incoming network packets are dropped, there is no reply. Only outgoing network connections are possible.
+
+.TP
+block \fI(immutable)\fR
+Any incoming network connections are rejected with an icmp-host-prohibited message for IPv4 and icmp6-adm-prohibited for IPv6 . Only network connections initiated within this system are possible.
+
+.TP
+public
+For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+
+.TP
+external
+For use on external networks with masquerading enabled especially for routers. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+
+.TP
+dmz
+For computers in your demilitarized zone that are publicly-accessible with limited access to your internal network. Only selected incoming connections are accepted.
+
+.TP
+work 
+For use in work areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+
+.TP
+home
+For use in home areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+
+.TP
+internal
+For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.
+
+.TP
+trusted \fI(immutable)\fR
+All network connections are accepted.
+
+.SS Which zone should be used?
+A public WIFI network connection for example should be mainly untrusted, a wired home network connection should be fairly trusted. Select the zone that best matches the network you are using.
+
+.SS How to configure or add zones?
+To configure or add zones you can either use one of the firewalld interfaces to handle and change the configuration: These are the graphical configuration tool \fIfirewall-config\fR, the command line tool \fIfirewall-cmd\fR or the D\-BUS interface. Or you can create or copy a zone file in one of the configuration directories. \fI@SYSCONFDIR@/firewalld/zones\fR is used for default and fallback configurations and \fI@PREFIX@/lib/firewalld/zones\fR is used for user created and customized configuration files.
+
+.SS How to set or change a zone for a connection
+The zone is stored into the \fIifcfg\fR of the connection with the ZONE= option. If the option is missing or empty, the default zone set in firewalld is used.
+
+If the connection is controlled by NetworkManager, you can also use \fInm-connection-editor\fR to change the zone.
+
+
+.SH SEE ALSO
+\fIfirewalld\fR(1), 
+\fIfirewall-cmd\fR(1)
+\fIfirewalld.dbus\fR(5), 
+\fIfirewalld.icmptype\fR(5), 
+\fIfirewalld.service\fR(5), 
+\fIfirewalld.zone\fR(5), 
+
+.SH AUTHOR
+\fBThomas Woerner\fR <twoerner@redhat.com>
+.br
+\fBJiri Popelka\fR <jpopelka@redhat.com>
+
+.SH NOTES
+Firewalld home page at fedorahosted.org
+.RS 4
+\fBhttp://fedorahosted.org/firewalld/\fR

@@ -71,12 +71,12 @@ Is an optional empty-element tag and can be used several times to have more than
 
 \fIport="\fR<string>\fI"\fR
 .RS 4
-The port or port range string to be enabled. The value is of the form \fI<port>[-<port>]\fR, where port is a port id.
+The port or port range string to be enabled. The value is of the form \fI<port>[-<port>]\fR, where port is a port id. It can also be empty for a protocol only match.
 .RE
 
 \fIprotocol="\fR<string>\fI"\fR
 .RS 4
-The protocol value can either be \fI"tcp"\fR or \fI"udp"\fR.
+The protocol value can be \fI"tcp"\fR and \fI"udp"\fR if port is not set \fI"ah"\fR and \fI"esp"\fR.
 .RE
 
 .SS icmp-block
