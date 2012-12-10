@@ -131,6 +131,10 @@ class FirewallClientConfigZoneSettings(object):
         if (port,protocol,to_port,to_addr) in self.settings[9]:
             self.settings[9].remove((port,protocol,to_port,to_addr))
     def queryForwardPort(self, port, protocol, to_port, to_addr):
+        if to_port == None:
+            to_port = ''
+        if to_addr == None:
+            to_addr = ''
         return (port,protocol,to_port,to_addr) in self.settings[9]
 
 # zone config
