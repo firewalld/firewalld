@@ -392,8 +392,8 @@ try:
                 (port, protocol, toport, toaddr) = __parse_forward_port(value)
                 fw_settings.removeForwardPort(port, protocol, toport, toaddr)
             elif mode == "query-forward-port":
-                fwd_port = __parse_forward_port(value)
-                sys.exit(not fwd_port in fw_settings.getForwardPorts())
+                (port, protocol, toport, toaddr) = __parse_forward_port(value)
+                sys.exit(not fw_settings.queryForwardPort(port, protocol, toport, toaddr))
 
             # block icmp
             elif mode == "list-icmp-blocks":
