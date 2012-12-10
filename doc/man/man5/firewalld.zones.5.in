@@ -23,15 +23,15 @@ Definition of \fItcp\fR or \fIudp\fR ports, where ports can be a single port or 
 
 .TP
 ICMP blocks
-Blocks selected Internet Control Message Protocol (ICMP) messages. These messages are either information requests or created as replys to information requests or in error conditions.
+Blocks selected Internet Control Message Protocol (ICMP) messages. These messages are either information requests or created as a reply to information requests or in error conditions.
 
 .TP
 Masquerading
-The addresses of a private network a mapped to and hidden behind a public IP address. This is a form of address translation.
+The addresses of a private network are mapped to and hidden behind a public IP address. This is a form of address translation.
 
 .TP
 Forward ports
-A port is either mapped to another port and/or to another host.
+A port is either mapped to the same port on another host or to another port on the same host or to another port on another host.
 
 .PP
 Most zones are mutable, but there are also \fBimmutable\fR zones. Immutable zones are not customizable and there is no way to overload them.
