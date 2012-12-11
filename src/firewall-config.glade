@@ -1275,6 +1275,12 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-edit</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="xalign">0.49000000953674316</property>
+    <property name="stock">gtk-preferences</property>
+  </object>
   <object class="GtkTextBuffer" id="logTextBuffer"/>
   <object class="GtkWindow" id="mainWindow">
     <property name="width_request">700</property>
@@ -1341,6 +1347,17 @@
                       <object class="GtkSeparatorMenuItem" id="menuitem7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="changeZonesConnectionMenuitem">
+                        <property name="label" translatable="yes">Change Zones of Connections</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Change Zones of Connections</property>
+                        <property name="image">image2</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="onChangeConnectionsZone" swapped="no"/>
                       </object>
                     </child>
                     <child>

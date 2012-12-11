@@ -42,6 +42,8 @@ if not datadir:
 # import ChooserButton
 from gtk3_chooserbutton import ChooserButton
 
+NM_CONNECTION_EDITOR = "/usr/bin/nm-connection-editor"
+
 #FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 
 # TODO:
@@ -85,6 +87,15 @@ class FirewallConfig(object):
         self.mainToolbar = builder.get_object("mainToolbar")
         sty = self.mainToolbar.get_style_context()
         sty.add_class("primary-toolbar")
+
+        self.changeZonesConnectionMenuitem = \
+            builder.get_object("changeZonesConnectionMenuitem")
+        if os.path.isfile(NM_CONNECTION_EDITOR):
+            self.changeZonesConnectionMenuitem.set_sensitive(True)
+        else:
+            self.changeZonesConnectionMenuitem.set_tooltip_markup(\
+                _("%s is missing") % NM_CONNECTION_EDITOR)
+            self.changeZonesConnectionMenuitem.set_sensitive(False)
 
         self.editServicesToolbutton = \
             builder.get_object("editServicesToolbutton")
@@ -768,6 +779,9 @@ class FirewallConfig(object):
         self.zoneEditBox.set_sensitive(not self.runtime_view)
         self.load_zones()
         self.onChangeZone()
+
+    def onChangeConnectionsZone(self, *args):
+        os.system("%s &" % NM_CONNECTION_EDITOR)
 
     def onChangeDefaultZone(self, *args):
         self.defaultZoneStore.clear()
