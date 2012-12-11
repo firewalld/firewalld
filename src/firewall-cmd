@@ -26,60 +26,13 @@ sys.modules['gobject'] = GObject
 
 import getopt
 import dbus
+import os
 
 from firewall.client import FirewallClient
 from firewall.errors import *
 
 def usage():
-    print("Usage: %s { HELP | STATUS | PANIC | ZONE | MODE | PERMANENT | DIRECT }" % sys.argv[0])
-    print(
-"""
- HELP   := { -h | --help | 
-             -v | --version }
- STATUS := { --state |
-             --reload |
-             --complete-reload }
- PANIC  := { --enable-panic | --disable-panic | --query-panic }
- ZONE   := { --get-default-zone |
-             --set-default-zone=<zone> |
-             --get-zones |
-             --get-active-zones |
-             --get-zone-of-interface=<interface> }
- MODE   := { [ --zone=<zone> ] {
-               { { --add-ACTION [--timeout=<seconds>] } | 
-                   --remove-ACTION | --query-ACTION } |
-               --change-interface<interface> |
-               --list-services | --list-ports | --list-interfaces | 
-               --list-icmp-blocks | --list-forward-ports |
-               --list-all } |
-             --get-services |
-             --get-icmptypes |
-             --list-all-zones }
- PERMANENT := --permanent
-                { [ --zone=<zone> ] { --add-PERMANENT_ACTION |
-                                      --remove-PERMANENT_ACTION |
-                                      --query-PERMANENT_ACTION } } |
-                --get-services |
-                --get-icmptypes |
-                --get-zones
- PERMANENT_ACTION := { service=<service> |
-                       port=<port>[-<port>]/<protocol> |
-                       masquerade | 
-                       icmp-block=<icmptype> |
-                       forward-port=port=<port>[-<port>]:proto=<protocol> { 
-                         :toport=<port>[-<port>] | :toaddr=<address> | 
-                         :toport=<port>[-<port>]:toaddr=<address> } }
- ACTION := { PERMANENT_ACTION | interface=<interface> }
- DIRECT := --direct
-             {--passthrough TOOL <args> } |
-             { { --add-chain | --remove-chain | --query-chain } TOOL <table>
-               <chain> } |
-             { --get-chains TOOL <table> } |
-             { --add-rule TOOL <table> <chain> <priority> <args> } |
-             { { --remove-rule | --query-rule } TOOL <table> <chain> <args> } |
-             { --get-rules TOOL <table> <chain> }
- TOOL := { ipv4 | ipv6 | eb }
-""")
+    os.system("man firewall-cmd")
 
 def __fail(msg=None):
     if msg:
