@@ -1446,31 +1446,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="toolbutton6">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Change default zone of the system.</property>
-                <property name="label" translatable="yes">Change Default Zone</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-preferences</property>
-                <signal name="clicked" handler="onChangeDefaultZone" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton7">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToolButton" id="editServicesToolbutton">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
