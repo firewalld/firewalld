@@ -50,6 +50,7 @@ def search_app(app):
     return None
 
 APPLET_SCHEMA = "org.fedoraproject.FirewallApplet"
+NM_CONNECTION_EDITOR = "/usr/bin/nm-connection-editor"
 
 class TrayApplet(object):
     @staticmethod
@@ -70,7 +71,13 @@ class TrayApplet(object):
 
         self.active_zones = { }
         self.connections = { }
+        self.connections_uuid = { }
         self.default_zone = None
+
+        if os.path.isfile(NM_CONNECTION_EDITOR):
+            self.has_nm_connection_editor = True
+        else:
+            self.has_nm_connection_editor = False
 
         self.statusicon = Gtk.StatusIcon.new()
 #        self.statusicon.connect("delete_event", Gtk.main_quit)
@@ -92,6 +99,17 @@ class TrayApplet(object):
                 print("Icon 'firewall-applet-%s' could not be loaded" % _type)
             else:
                 self.icons[_type] = info.load_icon()
+
+        self.left_menu = Gtk.Menu.new()
+        self.left_menu.set_reserve_toggle_size(False)
+
+        item = Gtk.MenuItem.new()
+        label = Gtk.Label()
+        label.set_markup("<b>"+_("Active Connections")+"</b>")
+        label.set_alignment(0, 0.5)
+        item.add(label)
+        item.connect("select", self.no_select)
+        self.left_menu.append(item)
 
         self.right_menu = Gtk.Menu.new()
 
@@ -135,6 +153,13 @@ class TrayApplet(object):
             item.set_sensitive(False)
         self.right_menu.append(item)
         
+        item = Gtk.ImageMenuItem.new_with_mnemonic(_("Change Zones of Connections..."))
+        item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
+                                                Gtk.IconSize.MENU))
+        item.connect("activate", self.nm_connection_editor)
+        item.set_sensitive(self.has_nm_connection_editor)
+        self.right_menu.append(item)
+
         item = Gtk.ImageMenuItem.new_with_mnemonic(_("Configure Shields UP/Down Zones..."))
         item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
                                                 Gtk.IconSize.MENU))
@@ -156,6 +181,9 @@ class TrayApplet(object):
         item.connect('activate', self.about_cb)
         self.right_menu.append(item)
 
+        if self.has_nm_connection_editor:
+            self.statusicon.connect("activate", self.left_menu_cb,
+                                    self.left_menu)
         self.statusicon.connect("popup-menu", self.right_menu_cb,
                                 self.right_menu)
 
@@ -305,6 +333,46 @@ class TrayApplet(object):
         if active_zones:
             self.active_zones = active_zones
 
+        # update left menu if nm_connection_editor exists
+        if not self.has_nm_connection_editor:
+            return
+
+        # remove all but the first entry (title)
+        left_menu_children = self.left_menu.get_children()
+        for child in left_menu_children[1:]:
+            self.left_menu.remove(child)
+            child.destroy()
+
+        # add new entries
+        for zone in sorted(self.active_zones):
+            # get first interface 
+            if len(self.active_zones) < 1:
+                continue
+            interface = self.active_zones[zone][0]
+            if interface not in self.connections:
+                continue
+            connection = self.connections[interface]
+            if connection not in self.connections_uuid:
+                continue
+            uuid = self.connections_uuid[connection]
+
+            item = Gtk.MenuItem.new()
+            hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+            label = Gtk.Label()
+            label.set_markup("%s\n  <small>%s: %s</small>" % \
+                                 (connection, _("Zone"), zone))
+            label.set_alignment(0, 0.5)
+            hbox.pack_start(label, True, True, 0)
+            item.add(hbox)
+            item.connect("activate", self.nm_connection_editor, uuid)
+            self.left_menu.append(item)
+
+    def nm_connection_editor(self, item, uuid=None):
+        if uuid:
+            os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
+        else:
+            os.system("%s &" % NM_CONNECTION_EDITOR)
+
     def connection_established(self, first=False):
         self.set_mode("normal")
         self.default_zone = self.fw.getDefaultZone()
@@ -357,12 +425,20 @@ class TrayApplet(object):
         else:
             self.fw.disablePanicMode()
         
+    def left_menu_cb(self, widget, menu):
+        menu.show_all()
+        menu.popup(None, None, self.position_function,
+                   self.statusicon, 1, Gtk.get_current_event_time())
+
     def right_menu_cb(self, widget, button, time, menu):
         if button != 3:
             return
         menu.show_all()
         menu.popup(None, None, self.position_function,
                    self.statusicon, button, time)
+
+    def no_select(self, item):
+        item.deselect()
 
     def about_cb(self, widget):
         self.about_dialog.run()
@@ -586,6 +662,7 @@ class TrayApplet(object):
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
         self.connections.clear()
+        self.connections_uuid.clear()
 
         # do not use NMClient could result in python core dump
 
@@ -615,6 +692,8 @@ class TrayApplet(object):
                 iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
                 settings = dbus_to_python(iface.GetSettings())
                 name = settings["connection"]["id"]
+                uuid = settings["connection"]["uuid"]
+                self.connections_uuid[name] = uuid
 
                 # for all devices:
                 for device in devices:
