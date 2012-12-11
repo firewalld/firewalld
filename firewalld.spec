@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.10
+Version: 0.2.11
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -167,6 +167,19 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Dec 11 2012 Thomas Woerner <twoerner@redhat.com> 0.2.11-1
+- Fixed more _xmlplus (PyXML) incompatibilities to python xml
+- Several man page updates
+- Fixed error in addForwardPort, removeForwardPort and queryForwardPort
+- firewall-cmd: use already existing queryForwardPort()
+- Update firewall.cmd man page, use man page as firewall-cmd usage (rhbz#876394)
+- firewall-config: Do not force to show labels in the main toolbar
+- firewall-config: Dropped "Change default zone" from toolbar
+- firewall-config: Added menu entry to change zones of connections
+- firewall-applet: Zones can be changed now using nm-connection-editor
+  (rhbz#876661)
+- translation updates: cs, hu, ja
+
 * Tue Nov 20 2012 Thomas Woerner <twoerner@redhat.com> 0.2.10-1
 - tests/firewalld_config.py: tests for config.service and config.icmptype
 - FirewallClientConfigServiceSettings(): destinations are dict not list
