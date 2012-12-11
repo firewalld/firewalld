@@ -35,7 +35,7 @@ if "_xmlplus" in xml.__file__:
         # this is missing:
         def __XMLGenerator_write(self, text):
             self._out.write(text)
-        # add it using the name __contains__
+        # add it using the name _write
         setattr(XMLGenerator, "_write", __XMLGenerator_write)
         
     
