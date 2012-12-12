@@ -91,7 +91,7 @@ def __list_all(fw, zone):
 if "--direct" not in sys.argv[1:]:
     try:
         (opts, args) = \
-            getopt.getopt(sys.argv[1:], "hv", 
+            getopt.getopt(sys.argv[1:], "hV", 
                           [ "help", "version", "timeout=",
                             "reload", "complete-reload", "state",
                             "get-default-zone", "set-default-zone=",
@@ -175,7 +175,7 @@ for (opt, val) in opts:
     if opt in ["-h", "--help"]:
         usage()
         sys.exit(0)
-    elif opt in ["-v", "--version"]:
+    elif opt in ["-V", "--version"]:
         if mode:
             __fail()
         mode = "version"
