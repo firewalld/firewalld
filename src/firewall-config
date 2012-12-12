@@ -736,6 +736,14 @@ class FirewallConfig(object):
     def conf_zone_updated_cb(self, zone):
         self.onChangeZone()
 
+    def _check_name_exception(self, exception, name):
+        if "INVALID_NAME" in exception:
+            self._warning(_("Invalid name: %s " % name))
+        elif "NAME_CONFLICT" in exception:
+            self._warning(_("Name '%s' already exists" % name))
+        else:
+            self._warning(exception)
+
     def combobox_select_text(self, combobox, value):
         model = combobox.get_model()
         iter = model.get_iter_first()
@@ -1050,7 +1058,11 @@ class FirewallConfig(object):
                 return
             zone.rename(name)
         else:
-            self.fw.config().addZone(name, settings)
+            try:
+                self.fw.config().addZone(name, settings)
+            except DBusException as e:
+                self._check_name_exception(str(e), name)
+                return
 
         self.load_zones()
         #TODO: change active zone
@@ -1669,7 +1681,12 @@ class FirewallConfig(object):
                 return
             service.rename(name)
         else:
-            self.fw.config().addService(name, settings)
+            try:
+                self.fw.config().addService(name, settings)
+            except DBusException as e:
+                self._check_name_exception(str(e), name)
+                return
+
 
         self.load_services()
         #TODO: change active service
@@ -2014,7 +2031,11 @@ class FirewallConfig(object):
                 return
             icmp.rename(name)
         else:
-            self.fw.config().addIcmpType(name, settings)
+            try:
+                self.fw.config().addIcmpType(name, settings)
+            except DBusException as e:
+                self._check_name_exception(str(e), name)
+                return
 
         self.load_icmps()
         #TODO: change active icmp
