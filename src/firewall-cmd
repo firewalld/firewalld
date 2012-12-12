@@ -371,8 +371,7 @@ try:
         if state != "RUNNING":
             sys.exit(1)
     elif mode == "reload":
-        if not fw.reload():
-            sys.exit(1)
+        fw.reload()
     elif mode == "complete-reload":
         fw.complete_reload()
     elif mode == "passthrough":
