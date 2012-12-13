@@ -348,9 +348,15 @@ def read_sysconfig_config(merge_config=None):
 if len(sys.argv) > 1:
     # Parse the cmdline args and setup the initial firewall state
     conf = parse_sysconfig_args(None)
+    if not conf:
+        print ("Error: problem parsing arguments.")
+        sys.exit(1)
 else:
     # open system-config-firewall config
     conf = read_sysconfig_config()
+    if not conf:
+        print ("Error: problem reading system-config-firewall config file.")
+        sys.exit(1)
 
 # open firewalld config file to get default zone
 
