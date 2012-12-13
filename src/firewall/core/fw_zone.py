@@ -55,10 +55,8 @@ class FirewallZone:
         return self._zones[z]
 
     def add_zone(self, obj):
-        obj.settings = { }
-        for x in [ "interfaces", "services", "ports", "masquerade",
-                   "forward_ports", "icmp_blocks" ]:
-            obj.settings[x] = { }
+        obj.settings = { x : {} for x in [ "interfaces", "services", "ports",
+                               "masquerade", "forward_ports", "icmp_blocks" ] }
 
         self._zones[obj.name] = obj
 
@@ -81,6 +79,20 @@ class FirewallZone:
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
+        try:
+            for args in obj.icmp_blocks:
+                self.remove_icmp_block(obj.name, args)
+            for args in obj.forward_ports:
+                self.remove_forward_port(obj.name, *args)
+            for args in obj.services:
+                self.remove_service(obj.name, args)
+            for args in obj.ports:
+                self.remove_port(obj.name, *args)
+            if obj.masquerade:
+                self.remove_masquerade(obj.name)
+        except FirewallError as msg:
+            log.warning("%s: %s" % (obj.name, msg))
+
         obj.settings.clear()
         del self._zones[zone]
 

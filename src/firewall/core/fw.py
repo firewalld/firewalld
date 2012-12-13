@@ -192,7 +192,7 @@ class Firewall:
                         log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
-
+                        self.icmptype.remove_icmptype(orig_obj.name)
                     self.icmptype.add_icmptype(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_icmptype(copy.deepcopy(obj), default)
@@ -203,6 +203,7 @@ class Firewall:
                         log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
+                        self.service.remove_service(orig_obj.name)
                     self.service.add_service(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_service(copy.deepcopy(obj), default)
@@ -215,6 +216,7 @@ class Firewall:
                         log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
+                        self.zone.remove_zone(orig_obj.name)
                     self.zone.add_zone(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_zone(copy.deepcopy(obj), default)
