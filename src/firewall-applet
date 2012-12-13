@@ -20,10 +20,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gtk, GLib, GObject, Gio, Notify, NetworkManager
+import sys
+
+try:
+    from gi.repository import Gtk
+except RuntimeError as e:
+    print ("firewall-applet: %s" % e)
+    print ("This is a graphical application and requires DISPLAY to be set.")
+    sys.exit (1)
+
+from gi.repository import GLib, GObject, Gio, Notify, NetworkManager
 
 # force use of pygobject3 in python-slip
-import sys
 sys.modules['gobject'] = GObject
 
 import os

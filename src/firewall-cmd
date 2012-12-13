@@ -520,8 +520,9 @@ try:
 
 
 except dbus.DBusException as e:
-    if "NotAuthorizedException" in e.get_dbus_message():
-        print("Authorization failed.")
+    if "NotAuthorizedException" in str(e):
+        print ("Authorization failed.")
+        print ("Make sure polkit agent is running or run firewall-cmd as superuser.")
         sys.exit(NOT_AUTHORIZED)
     else:
         try:

@@ -20,8 +20,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from gi.repository import Gtk, GObject
 import sys
+
+try:
+    from gi.repository import Gtk
+except RuntimeError as e:
+    print ("firewall-config: %s" % e)
+    print ("This is a graphical application and requires DISPLAY to be set.")
+    sys.exit (1)
+
+from gi.repository import GObject
 sys.modules['gobject'] = GObject
 import os
 datadir = None
