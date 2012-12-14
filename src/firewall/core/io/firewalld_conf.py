@@ -25,6 +25,8 @@ import shutil
 
 from firewall.core.logger import log
 
+valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit"]
+
 class firewalld_conf:
     def __init__(self, filename):
         self.filename = filename
@@ -35,10 +37,7 @@ class firewalld_conf:
         self._deleted = [ ]
 
     def get(self, key):
-        _key = key.strip()
-        if _key in self._config:
-            return self._config[_key]
-        return None
+        self._config.get(key.strip())
 
     def set(self, key, value):
         _key = key.strip()
@@ -69,11 +68,21 @@ class firewalld_conf:
             line = line.strip()
             if len(line) < 1 or line[0] in ['#', ';']:
                 continue
-            # get key/value pairs
-            p = line.split("=")
-            if len(p) != 2:
+            # get key/value pair
+            pair = [ x.strip() for x in line.split("=") ]
+            if len(pair) != 2:
+                log.error("Invalid option definition: '%s'", line.strip())
                 continue
-            self._config[p[0].strip()] = p[1].strip()
+            elif pair[0] not in valid_keys:
+                log.error("Invalid option: '%s'", line.strip())
+                continue
+            elif pair[1] == '':
+                log.error("Missing value: '%s'", line.strip())
+                continue
+            elif self._config.get(pair[0]) != None:
+                log.error("Duplicate option definition: '%s'", line.strip())
+                continue
+            self._config[pair[0]] = pair[1]
         f.close()
 
     # save to self.filename if there are key/value changes
