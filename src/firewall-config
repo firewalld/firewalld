@@ -293,6 +293,8 @@ class FirewallConfig(object):
         self.serviceDialogServiceNotebook = \
             builder.get_object("serviceDialogServiceNotebook")
 
+        self.serviceDialogServiceEditBox = \
+            builder.get_object("serviceDialogServiceEditBox")
         self.serviceDialogEditServiceButton = \
             builder.get_object("serviceDialogEditServiceButton")
         self.serviceDialogRemoveServiceButton = \
@@ -386,6 +388,8 @@ class FirewallConfig(object):
         self.icmpDialogIcmpNotebook = \
             builder.get_object("icmpDialogIcmpNotebook")
 
+        self.icmpDialogIcmpEditBox = \
+            builder.get_object("icmpDialogIcmpEditBox")
         self.icmpDialogEditIcmpButton = \
             builder.get_object("icmpDialogEditIcmpButton")
         self.icmpDialogRemoveIcmpButton = \
@@ -1489,12 +1493,11 @@ class FirewallConfig(object):
             Gtk.SelectionMode.NONE)
 
         if not active_service:
-            self.serviceDialogEditServiceButton.set_sensitive(False)
-            self.serviceDialogRemoveServiceButton.set_sensitive(False)
-            self.serviceDialogLoadDefaultsServiceButton.set_sensitive(False)
+            self.serviceDialogServiceEditBox.set_sensitive(False)
             self.serviceDialogServiceNotebook.set_sensitive(False)
             return
 
+        self.serviceDialogServiceEditBox.set_sensitive(True)
         self.serviceDialogServiceNotebook.set_sensitive(True)
 
         ports = [ ]
@@ -1891,12 +1894,11 @@ class FirewallConfig(object):
         self.icmpDialogDestIpv6Check.set_active(False)
 
         if not active_icmp:
-            self.icmpDialogEditIcmpButton.set_sensitive(False)
-            self.icmpDialogRemoveIcmpButton.set_sensitive(False)
-            self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(False)
+            self.icmpDialogIcmpEditBox.set_sensitive(False)
             self.icmpDialogIcmpNotebook.set_sensitive(False)
             return
 
+        self.icmpDialogIcmpEditBox.set_sensitive(True)
         self.icmpDialogIcmpNotebook.set_sensitive(True)
 
         destination = [ ]
