@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
 Version: 0.2.11
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -17,7 +17,11 @@ BuildRequires: systemd-units
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
 Requires: python-decorator
+%if 0%{?fedora} > 17
+Requires: pygobject3-base
+%else
 Requires: pygobject3
+%endif
 Requires: iptables, ebtables
 Requires(post): chkconfig
 Requires(preun): chkconfig
@@ -37,7 +41,11 @@ Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
+%if 0%{?fedora} > 17
+Requires: pygobject3-base
+%else
 Requires: pygobject3
+%endif
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also 
@@ -49,7 +57,11 @@ Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
+%if 0%{?fedora} > 17
+Requires: pygobject3-base
+%else
 Requires: pygobject3
+%endif
 
 %description -n firewall-config
 The firewall configuration application provides an configuration interface for 
@@ -166,6 +178,11 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Thu Dec 13 2012 Thomas Woerner <twoerner@redhat.com> 0.2.11-2
+- require pygobject3-base instead of pygobject3 (no cairo needed) (RHBZ#874378)
+- fixed dependencies of firewall-config to use gtk3 with pygobject3-base and 
+  not pygtk2
+
 * Tue Dec 11 2012 Thomas Woerner <twoerner@redhat.com> 0.2.11-1
 - Fixed more _xmlplus (PyXML) incompatibilities to python xml
 - Several man page updates
