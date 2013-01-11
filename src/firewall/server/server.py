@@ -84,13 +84,13 @@ def run_server():
         slip.dbus.service.set_mainloop(mainloop)
         mainloop.run()
 
-    except KeyboardInterrupt, e:
-        log.warning("KeyboardInterrupt in run_server")
+    except KeyboardInterrupt as e:
+        log.info1("Stopping..")
 
-    except SystemExit, e:
+    except SystemExit as e:
         log.error("Raising SystemExit in run_server")
 
-    except Exception, e:
+    except Exception as e:
         log.error("Exception %s: %s", e.__class__.__name__, str(e))
 
     if service:
