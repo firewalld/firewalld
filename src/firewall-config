@@ -478,7 +478,7 @@ class FirewallConfig(object):
             self.onQuit()
 
     def _warning(self, msg):
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
+        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.WARNING)
         dialog.set_markup("<b>" + _("Warning") + "</b>")
         dialog.format_secondary_markup(msg)
         dialog.add_button("gtk-close", 1)
