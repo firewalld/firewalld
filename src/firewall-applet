@@ -67,7 +67,6 @@ class TrayApplet(object):
 
     def __init__(self):
         self.name = _("Firewall Applet")
-#        self.comment = _("")
         self.icon_name = "firewall-applet"
         self.settings = Gio.Settings.new(APPLET_SCHEMA)
 
@@ -88,7 +87,6 @@ class TrayApplet(object):
             self.has_nm_connection_editor = False
 
         self.statusicon = Gtk.StatusIcon.new()
-#        self.statusicon.connect("delete_event", Gtk.main_quit)
         self.statusicon.set_from_icon_name(self.icon_name)
 
         theme = Gtk.IconTheme.get_default()
@@ -120,11 +118,6 @@ class TrayApplet(object):
         self.left_menu.append(item)
 
         self.right_menu = Gtk.Menu.new()
-
-#        item = Gtk.CheckMenuItem.new_with_mnemonic(_("Enable Firewall"))
-#        item.set_active(True)
-#        item.set_sensitive(False)
-#        self.right_menu.append(item)
 
         self.shieldsup_check = Gtk.CheckMenuItem.new_with_mnemonic(
             _("Shields Up"))        
@@ -198,7 +191,6 @@ class TrayApplet(object):
         self.about_dialog = Gtk.AboutDialog.new()
         self.about_dialog.set_name(self.name)
         self.about_dialog.set_version(VERSION)
-#        self.about_dialog.set_comments(self.comment)
         self.about_dialog.set_license(LICENSE)
         self.about_dialog.set_wrap_license(True)
         self.about_dialog.set_copyright(COPYRIGHT)
@@ -273,7 +265,6 @@ class TrayApplet(object):
         vbox.pack_start(grid, True, True, 0)
 
         box = self.shields_dialog.get_content_area()
-#        box.add(vbox)
         box.set_border_width(6)
         box.set_homogeneous(False)
         box.pack_start(vbox, False, True, 0)
