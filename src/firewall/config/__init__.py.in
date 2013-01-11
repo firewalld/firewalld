@@ -73,3 +73,7 @@ FIREWALLD_ICMPTYPES = USR_LIB_FIREWALLD + '/icmptypes'
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
 SYSCTL_CONFIG = '/etc/sysctl.conf'
+
+# fallbacks: will be overloaded by firewalld.conf
+FALLBACK_ZONE = "public"
+FALLBACK_MINIMAL_MARK = 100

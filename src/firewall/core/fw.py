@@ -68,10 +68,10 @@ class Firewall:
     def __init_vars(self):
         self._state = "INIT"
         self._panic = False
-        self._default_zone = "public" # initial default, will be overloaded by firewalld.conf
+        self._default_zone = FALLBACK_ZONE # will be overloaded by firewalld.conf
         self._module_refcount = { }
         self._marks = [ ]
-        self._min_mark = 100 # initial default, will be overloaded by firewalld.conf
+        self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
 
     def start(self):
