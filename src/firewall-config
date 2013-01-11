@@ -477,6 +477,24 @@ class FirewallConfig(object):
         except KeyboardInterrupt as msg:
             self.onQuit()
 
+    def _dialog(self, text, msg=None, title=None,
+                message_type=Gtk.MessageType.INFO,
+                buttons=("gtk-close", 1)):
+        dialog = Gtk.MessageDialog(None, 0, message_type)
+        dialog.set_markup(text)
+        if title:
+            dialog.set_title(title)
+        if msg:
+            dialog.format_secondary_markup(msg)
+        if len(buttons) > 0:
+            for button,id in buttons:
+                dialog.add_button(button, id)
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+        result = dialog.run()
+        dialog.hide()
+        return result
+
     def _warning(self, msg):
         dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.WARNING)
         dialog.set_markup("<b>" + _("Warning") + "</b>")
@@ -895,14 +913,30 @@ class FirewallConfig(object):
         self.zoneEditLoadDefaultsButton.set_sensitive(not defaults)
 
         # set services
+        _services = services[:]
         iter = self.serviceStore.get_iter_first()
         while iter:
             name = self.serviceStore.get_value(iter, 1)
             if name in services:
                 self.serviceStore.set_value(iter, 0, True)
+                _services.remove(name)
             else:
                 self.serviceStore.set_value(iter, 0, False)
             iter = self.serviceStore.iter_next(iter)
+
+        # handle unknown services
+        for name in _services:
+            text = _("Zone '%s': Service '%s' is not available.") % \
+                (active_zone, name)
+            result = self._dialog(text, message_type=Gtk.MessageType.WARNING,
+                                  title=_("Warning"),
+                                  buttons=((_("Remove"), 1),(_("Ignore"), 2)))
+            if result == 1:
+                if self.runtime_view:
+                    self.fw.removeService(active_zone, name)
+                else:
+                    settings.removeService(name)
+                    zone.update(settings)
 
         # set ports
         for item in ports:
@@ -916,14 +950,30 @@ class FirewallConfig(object):
             self.forwardStore.append(item)
 
         # set icmpblocks
+        _icmpblocks = icmpblocks[:]
         iter = self.icmpStore.get_iter_first()
         while iter:
             name = self.icmpStore.get_value(iter, 1)
             if name in icmpblocks:
                 self.icmpStore.set_value(iter, 0, True)
+                _icmpblocks.remove(name)
             else:
                 self.icmpStore.set_value(iter, 0, False)
             iter = self.icmpStore.iter_next(iter)
+
+        # handle unknown icmpblocks
+        for name in _icmpblocks:
+            text = _("Zone '%s': ICMP type '%s' is not available.") % \
+                (active_zone, name)
+            result = self._dialog(text, message_type=Gtk.MessageType.WARNING,
+                                  title=_("Warning"),
+                                  buttons=((_("Remove"), 1),(_("Ignore"), 2)))
+            if result == 1:
+                if self.runtime_view:
+                    self.fw.removeIcmpBlock(active_zone, name)
+                else:
+                    settings.removeIcmpBlock(name)
+                    zone.update(settings)
 
         self.serviceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.portView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
