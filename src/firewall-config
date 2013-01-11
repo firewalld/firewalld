@@ -105,15 +105,12 @@ class FirewallConfig(object):
                 _("%s is missing") % NM_CONNECTION_EDITOR)
             self.changeZonesConnectionMenuitem.set_sensitive(False)
 
-        self.editServicesToolbutton = \
-            builder.get_object("editServicesToolbutton")
-        self.editIcmpTypesToolbutton = \
-            builder.get_object("editIcmpTypesToolbutton")
-
-        self.editServicesMenuitem = \
-            builder.get_object("editServicesMenuitem")
-        self.editIcmpTypesMenuitem = \
-            builder.get_object("editIcmpTypesMenuitem")
+        self.editServicesButton = \
+            builder.get_object("editServicesButton")
+        self.editServicesButton.hide()
+        self.editIcmpTypesButton = \
+            builder.get_object("editIcmpTypesButton")
+        self.editIcmpTypesButton.hide()
 
         self.mainVBox = builder.get_object("mainVBox")
         self.optionMenuitem = builder.get_object("optionMenuitem")
@@ -158,6 +155,7 @@ class FirewallConfig(object):
         self.defaultZoneView.set_model(self.defaultZoneStore)
 
         self.zoneEditBox = builder.get_object("zoneEditBox")
+        self.zoneEditBox.hide()
         self.zoneEditLoadDefaultsButton = \
             builder.get_object("zoneEditLoadDefaultsButton")
         self.zoneEditEditButton = builder.get_object("zoneEditEditButton")
@@ -471,7 +469,7 @@ class FirewallConfig(object):
 
         # mainloop
 
-        self.mainWindow.show_all()
+        self.mainWindow.show()
         self.mainloop = GObject.MainLoop()
         try:
             self.mainloop.run()
@@ -687,8 +685,6 @@ class FirewallConfig(object):
                 settings.removeService(name)
             zone.update(settings)
 
-#        model.set(iter, col, not old_val)
-
     def change_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
@@ -748,7 +744,6 @@ class FirewallConfig(object):
             else:
                 settings.removeIcmpBlock(name)
             zone.update(settings)
-#        model.set(iter, col, not old_val)
 
     def icmp_added_cb(self, zone, icmp, timeout):
         if not self.runtime_view or zone != self.get_active_zone():
@@ -816,11 +811,19 @@ class FirewallConfig(object):
     def onChangeView(self, *args):
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
                                  _("Runtime Configuration"))
-        self.editServicesToolbutton.set_sensitive(not self.runtime_view)
-        self.editIcmpTypesToolbutton.set_sensitive(not self.runtime_view)
-        self.editServicesMenuitem.set_sensitive(not self.runtime_view)
-        self.editIcmpTypesMenuitem.set_sensitive(not self.runtime_view)
+
+        self.editServicesButton.set_sensitive(not self.runtime_view)
+        self.editIcmpTypesButton.set_sensitive(not self.runtime_view)
         self.zoneEditBox.set_sensitive(not self.runtime_view)
+        if self.runtime_view:
+            self.editServicesButton.hide()
+            self.editIcmpTypesButton.hide()
+            self.zoneEditBox.hide()
+        else:
+            self.editServicesButton.show()
+            self.editIcmpTypesButton.show()
+            self.zoneEditBox.show()
+
         self.load_zones()
 
     def onChangeConnectionsZone(self, *args):
@@ -1901,8 +1904,6 @@ class FirewallConfig(object):
         if result != 1 or old_address == address:
             return None
         return address
-
-
 
     def get_active_icmp(self):
         selection = self.icmpDialogIcmpView.get_selection()

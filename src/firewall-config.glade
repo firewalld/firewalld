@@ -1265,16 +1265,6 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-preferences</property>
   </object>
-  <object class="GtkImage" id="image16">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-edit</property>
-  </object>
-  <object class="GtkImage" id="image17">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-edit</property>
-  </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1371,33 +1361,6 @@
                         <signal name="activate" handler="onChangeDefaultZone" swapped="no"/>
                       </object>
                     </child>
-                    <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem9">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="editServicesMenuitem">
-                        <property name="label" translatable="yes">Edit Services</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Edit Services</property>
-                        <property name="image">image16</property>
-                        <property name="use_stock">False</property>
-                        <signal name="activate" handler="onEditServices" swapped="no"/>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImageMenuItem" id="editIcmpTypesMenuitem">
-                        <property name="label" translatable="yes">Edit ICMP Types</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="image">image17</property>
-                        <property name="use_stock">False</property>
-                        <signal name="activate" handler="onEditIcmps" swapped="no"/>
-                      </object>
-                    </child>
                   </object>
                 </child>
               </object>
@@ -1446,48 +1409,6 @@
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-refresh</property>
                 <signal name="clicked" handler="onReloadFirewalld" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton2">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="editServicesToolbutton">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Edit service entries for use in zones.</property>
-                <property name="label" translatable="yes">Edit Services</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-edit</property>
-                <signal name="clicked" handler="onEditServices" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToolButton" id="editIcmpTypesToolbutton">
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Edit ICMP types for use as ICMP blocks in zones.</property>
-                <property name="label" translatable="yes">Edit ICMP Types</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-edit</property>
-                <signal name="clicked" handler="onEditIcmps" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1746,19 +1667,58 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow" id="scrolledwindow1">
+                          <object class="GtkBox" id="box2">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="shadow_type">out</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">6</property>
                             <child>
-                              <object class="GtkTreeView" id="serviceView">
+                              <object class="GtkScrolledWindow" id="scrolledwindow1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="rules_hint">True</property>
-                                <child internal-child="selection">
-                                  <object class="GtkTreeSelection" id="treeview-selection"/>
+                                <property name="shadow_type">out</property>
+                                <child>
+                                  <object class="GtkTreeView" id="serviceView">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="rules_hint">True</property>
+                                    <child internal-child="selection">
+                                      <object class="GtkTreeSelection" id="treeview-selection4"/>
+                                    </child>
+                                  </object>
                                 </child>
                               </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox" id="box8">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkButton" id="editServicesButton">
+                                    <property name="label" translatable="yes">Edit Services</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Edit Services is only available for persistent configuration view.</property>
+                                    <signal name="clicked" handler="onEditServices" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
                             </child>
                           </object>
                           <packing>
@@ -1841,8 +1801,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Add Entry</property>
-                                    <property name="tooltip_text" translatable="yes">Add Entry</property>
+                                    <property name="tooltip_markup" translatable="yes">Add Port</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onAddPort" swapped="no"/>
@@ -1861,8 +1820,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Edit Entry</property>
-                                    <property name="tooltip_text" translatable="yes">Edit Entry</property>
+                                    <property name="tooltip_markup" translatable="yes">Edit Port</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onEditPort" swapped="no"/>
@@ -1881,8 +1839,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Remove Entry</property>
-                                    <property name="tooltip_text" translatable="yes">Remove Entry</property>
+                                    <property name="tooltip_markup" translatable="yes">Remove Port</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onRemovePort" swapped="no"/>
@@ -2060,8 +2017,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Add Entry</property>
-                                    <property name="tooltip_text" translatable="yes">Add Entry</property>
+                                    <property name="tooltip_markup" translatable="yes">Add Forward Port</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onAddForwardPort" swapped="no"/>
@@ -2080,8 +2036,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Edit Entry</property>
-                                    <property name="tooltip_text" translatable="yes">Edit Entry</property>
+                                    <property name="tooltip_markup" translatable="yes">Edit Forward Port</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onEditForwardPort" swapped="no"/>
@@ -2100,8 +2055,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Remove Entry</property>
-                                    <property name="tooltip_text" translatable="yes">Remove Entry</property>
+                                    <property name="tooltip_markup" translatable="yes">Remove Forward Port</property>
                                     <property name="use_stock">True</property>
                                     <property name="focus_on_click">False</property>
                                     <signal name="clicked" handler="onRemoveForwardPort" swapped="no"/>
@@ -2179,19 +2133,58 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkScrolledWindow" id="icmpScrolledWindow">
+                          <object class="GtkBox" id="box9">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="shadow_type">out</property>
+                            <property name="can_focus">False</property>
+                            <property name="spacing">6</property>
                             <child>
-                              <object class="GtkTreeView" id="icmpView">
+                              <object class="GtkScrolledWindow" id="icmpScrolledWindow">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="rules_hint">True</property>
-                                <child internal-child="selection">
-                                  <object class="GtkTreeSelection" id="treeview-selection6"/>
+                                <property name="shadow_type">out</property>
+                                <child>
+                                  <object class="GtkTreeView" id="icmpView">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="rules_hint">True</property>
+                                    <child internal-child="selection">
+                                      <object class="GtkTreeSelection" id="treeview-selection9"/>
+                                    </child>
+                                  </object>
                                 </child>
                               </object>
+                              <packing>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkBox" id="box10">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="orientation">vertical</property>
+                                <child>
+                                  <object class="GtkButton" id="editIcmpTypesButton">
+                                    <property name="label" translatable="yes">Edit ICMP Types</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <property name="tooltip_markup" translatable="yes">Edit ICMP Types is only available for persistent configuration view.</property>
+                                    <signal name="clicked" handler="onEditIcmps" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
                             </child>
                           </object>
                           <packing>
@@ -3133,7 +3126,7 @@
                             <property name="headers_visible">False</property>
                             <property name="rules_hint">True</property>
                             <child internal-child="selection">
-                              <object class="GtkTreeSelection" id="treeview-selection9"/>
+                              <object class="GtkTreeSelection" id="treeview-selection13"/>
                             </child>
                           </object>
                         </child>
