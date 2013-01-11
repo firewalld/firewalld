@@ -68,7 +68,7 @@ class Firewall:
     def __init_vars(self):
         self._state = "INIT"
         self._panic = False
-        self._default_zone = FALLBACK_ZONE # will be overloaded by firewalld.conf
+        self._default_zone = ""
         self._module_refcount = { }
         self._marks = [ ]
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
@@ -101,6 +101,8 @@ class Firewall:
         self._flush()
         self._set_policy("ACCEPT")
 
+        default_zone = FALLBACK_ZONE
+
         # load firewalld config
         log.debug1("Loading firewalld config file '%s'", FIREWALLD_CONF)
         try:
@@ -110,7 +112,7 @@ class Firewall:
                       FIREWALLD_CONF, msg)
         else:
             if self._firewalld_conf.get("DefaultZone"):
-                self._default_zone = self._firewalld_conf.get("DefaultZone")
+                default_zone = self._firewalld_conf.get("DefaultZone")
             if self._firewalld_conf.get("MinimalMark"):
                 mark = self._firewalld_conf.get("MinimalMark")
                 try:
@@ -158,7 +160,7 @@ class Firewall:
             sys.exit(1)
 
         # check if default_zone is a valid zone
-        if self._default_zone not in self.zone.get_zones():
+        if default_zone not in self.zone.get_zones():
             if "public" in self.zone.get_zones():
                 zone = "public"
             elif "external" in self.zone.get_zones():
@@ -167,10 +169,12 @@ class Firewall:
                 zone = "block" # block is a base zone, therefore it has to exist
 
             log.error("Default zone '%s' is not valid. Using '%s'.",
-                      self._default_zone, zone)
-            self._default_zone = zone
+                      default_zone, zone)
+            default_zone = zone
         else:
-            log.debug1("Using default zone '%s'", self._default_zone)
+            log.debug1("Using default zone '%s'", default_zone)
+
+        self.set_default_zone(default_zone)
 
         self._state = "RUNNING"
 
@@ -557,6 +561,9 @@ class Firewall:
             self._default_zone = _zone
             self._firewalld_conf.set("DefaultZone", _zone)
             self._firewalld_conf.write()
+
+            # remove old default zone from ZONES and add new default zone
+            self.zone.change_default_zone(_old_dz, _zone)
 
             # Move interfaces from old default zone to the new one.
             _old_dz_settings = self.zone.get_settings(_old_dz)

@@ -249,7 +249,7 @@ class FirewallZone:
         self.check_interface(interface)
         return interface
 
-    def __interface(self, enable, zone, interface):
+    def __interface(self, enable, zone, interface, append=False):
         rules = [ ]
         for table in ZONE_CHAINS:
             for chain in ZONE_CHAINS[table]:
@@ -273,11 +273,14 @@ class FirewallZone:
                     if target == "DROP" and table == "nat":
                         # DROP is not supported in nat table
                         continue
-                    rules.append((ipv, [ "%s_ZONES" % src_chain, "-t", table,
-                                         opt, interface, "-j", target ]))
+                    rule = [ "%s_ZONES" % src_chain, "-t", table,
+                             opt, interface, "-j", target ]
+                    if enable and not append:
+                        rule.insert(1, "1")
+                    rules.append((ipv, rule))
 
         # handle rules
-        ret = self._fw.handle_rules(rules, enable)
+        ret = self._fw.handle_rules(rules, enable, not append)
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
@@ -320,6 +323,13 @@ class FirewallZone:
             self.remove_interface(_old_zone, interface)
 
         return self.add_interface(zone, interface, sender)
+
+    def change_default_zone(self, old_zone, new_zone):
+        self._fw.check_panic()
+
+        self.__interface(True, new_zone, "+", True)
+        if old_zone != None and old_zone != "":
+            self.__interface(False, old_zone, "+", True)
 
     def remove_interface(self, zone, interface):
         self._fw.check_panic()
