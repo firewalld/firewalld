@@ -314,7 +314,7 @@ class FirewallZone:
         _new_zone = self._fw.check_zone(zone)
 
         if _new_zone == _old_zone:
-            raise FirewallError(ZONE_ALREADY_SET)
+            return _old_zone
 
         if _old_zone != None:
             self.remove_interface(_old_zone, interface)
