@@ -143,7 +143,8 @@ class FirewallConfig(object):
         self.zoneView.set_model(self.zoneStore)
         self.zoneStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.zoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
-        self.zoneView.get_selection().connect("changed", self.onChangeZone)
+        self.zoneView_selection_changed_handler_id = \
+            self.zoneView.get_selection().connect("changed", self.onChangeZone)
 
         self.immutableNotebook = builder.get_object("immutableNotebook")
         self.mainNotebook = builder.get_object("mainNotebook")
@@ -536,8 +537,8 @@ class FirewallConfig(object):
                     break
             self.statusLabel.set_text(self.connected)
             self.modifiedLabel.set_text("")
-            # load
-            self.load()
+            default_zone = self.fw.getDefaultZone()
+            self.defaultZoneLabel.set_text(default_zone)
             self.currentViewCombobox.set_active(0)
         else:
             self.statusLabel.set_text(self.no_connection)
@@ -566,6 +567,9 @@ class FirewallConfig(object):
 
         # reset and fill notebook content according to view
 
+        self.zoneView.get_selection().handler_block( \
+            self.zoneView_selection_changed_handler_id)
+
         self.zoneStore.clear()
         self.serviceStore.clear()
         self.icmpStore.clear()
@@ -589,6 +593,9 @@ class FirewallConfig(object):
 
         for zone in zones:
             self.zoneStore.append([zone])
+
+        self.zoneView.get_selection().handler_unblock( \
+            self.zoneView_selection_changed_handler_id)
 
         if active_zone in zones:
             _zone = active_zone
@@ -805,7 +812,6 @@ class FirewallConfig(object):
 
     def onReloadFirewalld(self, *args):
         self.fw.reload()
-        self.onChangeZone()
 
     def onChangeView(self, *args):
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
@@ -816,7 +822,6 @@ class FirewallConfig(object):
         self.editIcmpTypesMenuitem.set_sensitive(not self.runtime_view)
         self.zoneEditBox.set_sensitive(not self.runtime_view)
         self.load_zones()
-        self.onChangeZone()
 
     def onChangeConnectionsZone(self, *args):
         os.system("%s &" % NM_CONNECTION_EDITOR)
