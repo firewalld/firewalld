@@ -77,7 +77,26 @@ List all actions added for or all zones. The output format is:
 
  ..
 
+.SS Options to Handle Interfaces
+An interface name is a string up to 16 characters long, that may not contain \fI' '\fR, \fI'/'\fR, \fI'!'\fR and \fI'*'\fR.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-interfaces\fR
+List interfaces that belong to the zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--add-interface\fR=\fI<interface>\fR
+Add \fIinterface\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] { \fB--change-interface\fR=\fI<interface>\fR | \fB--change-zone\fR=\fI<interface>\fR }
+Change the zone the interface \fIinterface\fR belongs to to zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the old and th new zone are the same, the call will be ignored without an error. If the interface does not belong to a zone, it will behave like \fI--add-interface\fR.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--query-interface\fR=\fI<interface>\fR
+Query if the interface \fIinterface\fR belongs to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--remove-interface\fR=\fI<interface>\fR
+Remove the interface \fIinterface\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+
 .SS Options to Adapt and Query Zones
+For the possible actions, please have a look at the action options further down.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR]
 Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds. Afterward it will be removed automatically.
@@ -103,9 +122,6 @@ List added services for zone \fI<zone>\fR as a space separated list. If zone is 
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-ports\fR
 List ports added for zone \fI<zone>\fR as a space separated list. A port is of the form \fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR, it can be either a port and protocol pair or a port range with a protocol. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] \fB--list-interfaces\fR
-List interfaces added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
-.TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-icmp-blocks\fR
 List Internet Control Message Protocol (ICMP) type blocks added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined icmptypes use \fI--get-icmptypes\fR.
 .TP
@@ -121,16 +137,13 @@ List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, 
 \fB--get-icmptypes\fR
  List all predefined icmptypes known by firewalld as a space separated list.
 
-.SS Action options for use with options to adapt and query zones
+.SS Action Options for Use with Options to Adapt and Query Zones
 .TP
 \fBservice\fR=\fI<service>\fR
 Use one of the predefined services. For a list of all predefined services use \fI--get-services\fR.
 .TP
 \fBport\fR=\fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR
 Use a port \fI<port>\fR or port range \fI<port>-<port>\fR altogether with a protocol. A port is a port number \fI[1..65535]\fR. The protocol can be either \fItcp\fR or \fIudp\fR.
-.TP
-\fBinterface\fR=\fI<interface>\fR
-Use an interface name. The inteface name is a string up to 16 characters long, that may not contain \fI' '\fR, \fI'/'\fR, \fI'!'\fR, \fI':'\fR, \fI'*'\fR.
 .TP
 \fBicmp-block\fR=\fI<icmptype>\fR
 Use one of the predefined ICMP types. For a list of all predefined ICMP types use \fI--get-icmptypes\fR.
@@ -145,7 +158,21 @@ Forward from the local port \fIport\fR to the same port on host \fItoaddr\fR.
 \fBforward-port\fR=port=\fI<port>\fR[-\fI<port>\fR]:proto=\fI<protocol>\fR:toport=\fI<port>\fR[-\fI<port>\fR]:toaddr=\fI<address>\fR
 Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR.
 
-.SS Direct Option
+.SS Permanent Options
+The permanent option can be used to set options permanently. These options will be restored with a service restart and system reboot. The following options are possible to be used:
+
+.TP
+\fB--permanent\fR { \fB--get-zones\fR | \fB--get-services\fR | \fB--get-icmptypes\fR }
+.TP
+\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--list-services\fR | \fB--list-ports\fR | \fB--list-icmp-blocks\fR | \fB--list-forward-ports\fR }
+.TP
+\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--add-\fR\fIACTION\fR | \fB--remove-\fR\fIACTION\fR | \fB--query-\fR\fIACTION\fR }
+.TP
+\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--add-masquerade\fR | \fB--remove-masquerade\fR | \fB--query-masquerade\fR }
+
+For a detailed description, please have a look at the non-permanent options.
+
+.SS Direct Options
 The direct options give a more direct access to the firewall. With \fIipv4\fR it will be for IPv4 (\fIiptables\fR(8)), with \fIipv6\fR for IPv6 (\fIip6tables\fR(8)) and with \fIeb\fR for ethernet bridges (\fIebtables\fR(8)).
 
 .TP

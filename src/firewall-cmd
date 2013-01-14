@@ -110,7 +110,7 @@ if "--direct" not in sys.argv[1:]:
                             "list-ports",
                             "add-interface=", "remove-interface=",
                             "query-interface=", "list-interfaces",
-                            "change-interface=",
+                            "change-interface=", "change-zone=",
                             "add-masquerade", "remove-masquerade",
                             "query-masquerade",
                             "add-icmp-block=", "remove-icmp-block=",
@@ -202,7 +202,7 @@ for (opt, val) in opts:
                   "--add-port", "--remove-port", "--query-port",
                   "--add-interface", "--remove-interface",
                   "--query-interface",
-                  "--change-interface",
+                  "--change-interface", "--change-zone",
                   "--add-icmp-block", "--remove-icmp-block",
                   "--query-icmp-block",
                   "--add-forward-port", "--remove-forward-port",
@@ -435,7 +435,7 @@ try:
             print(" ".join(l))
     elif mode == "add-interface":
         fw.addInterface(zone, value)
-    elif mode == "change-interface":
+    elif mode in [ "change-interface", "change-zone" ]:
         fw.changeZone(zone, value)
     elif mode == "remove-interface":
         fw.removeInterface(zone, value)
