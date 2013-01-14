@@ -82,9 +82,9 @@ All network connections are accepted.
 A public WIFI network connection for example should be mainly untrusted, a wired home network connection should be fairly trusted. Select the zone that best matches the network you are using.
 
 .SS How to configure or add zones?
-To configure or add zones you can either use one of the firewalld interfaces to handle and change the configuration: These are the graphical configuration tool \fIfirewall-config\fR, the command line tool \fIfirewall-cmd\fR or the D\-BUS interface. Or you can create or copy a zone file in one of the configuration directories. \fI@SYSCONFDIR@/firewalld/zones\fR is used for default and fallback configurations and \fI@PREFIX@/lib/firewalld/zones\fR is used for user created and customized configuration files.
+To configure or add zones you can either use one of the firewalld interfaces to handle and change the configuration: These are the graphical configuration tool \fIfirewall-config\fR, the command line tool \fIfirewall-cmd\fR or the D\-BUS interface. Or you can create or copy a zone file in one of the configuration directories. \fI@PREFIX@/lib/firewalld/zones\fR is used for default and fallback configurations and \fI@SYSCONFDIR@/firewalld/zones\fR is used for user created and customized configuration files.
 
-.SS How to set or change a zone for a connection
+.SS How to set or change a zone for a connection?
 The zone is stored into the \fIifcfg\fR of the connection with the ZONE= option. If the option is missing or empty, the default zone set in firewalld is used.
 
 If the connection is controlled by NetworkManager, you can also use \fInm-connection-editor\fR to change the zone.

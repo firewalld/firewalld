@@ -11,7 +11,7 @@ firewall-cmd \- firewalld command line client
 .IP \fBfirewall-cmd\fR\ \fB[OPTIONS..]\fR
 
 .SH DESCRIPTION
-\fBfirewall-cmd\fR is the command line client of the firewall daemon. It provides a simple interface to manage the runtime firewall. Persistent configuration needs to be done according to \fIfirewalld\fR(1).
+\fBfirewall-cmd\fR is the command line client of the firewalld daemon. It provides interface to manage runtime and persistent configuration.
 
 .SH OPTIONS
 
@@ -28,13 +28,13 @@ Print the version string of firewalld.
 .SS Status Options
 .TP
 \fB--state\fR
-Return the status of the daemon, see \fIEXIT CODES\fR. There is no output. To get a visual state use: \fIfirewall-cmd --state && echo "Running" || echo "Not running"\fR
+Return status of the daemon, see \fIEXIT CODES\fR. This option has output. To get a visual state use: \fIfirewall-cmd --state && echo "Running" || echo "Not running"\fR
 .TP
 \fB--reload\fR
-Reload the firewall rules and keep state information.
+Reload firewall rules and keep state information.
 .TP
 \fB--complete-reload\fR
-Reload the firewall completely, even netfilter kernel modules. This will most likely terminate active connections, because state information is lost. This option should only be used in case of severe firewall problems for example if there are state information problems that no connection can be established with correct firewall rules.
+Reload firewall completely, even netfilter kernel modules. This will most likely terminate active connections, because state information is lost. This option should only be used in case of severe firewall problems. For example if there are state information problems that no connection can be established with correct firewall rules.
 
 .SS Panic Options
 .TP
@@ -50,21 +50,21 @@ Returns 0 if panic mode is enabled, 1 otherwise.
 .SS Zone Options
 .TP
 \fB--get-default-zone\fR
-Print the default zone for connections and interfaces. By default this is \fIpublic\fR.
+Print default zone for connections and interfaces. By default this is \fIpublic\fR.
 .TP
 \fB--set-default-zone\fR=\fI<zone>\fR
-Set the default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a persistent change.
+Set default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a persistent change.
 .TP
 \fB--get-zones\fR
-Print a space separated list of the supported zones as a space separated list.
+Print supported zones as a space separated list.
 .TP
 \fB--get-active-zones\fR
-Print the currently active zones altogether with the interfaces in the zones. The output format is:
+Print currently active zones altogether with interfaces in these zones. The output format is:
  <zone1>: <interface1> <interface2> ..
  <zone2>: <interface3> ..
 .TP
 \fB--get-zone-of-interface\fR=\fI<interface>\fR
-Print the zone of the interface \fI<interface>\fR or nothing if the interface does not belong to a zone.
+Print a zone of the interface \fI<interface>\fR or nothing if the interface does not belong to a zone.
 .TP
 \fB--list-all-zones\fR
 List all actions added for or all zones. The output format is:
@@ -84,28 +84,28 @@ An interface name is a string up to 16 characters long, that may not contain \fI
 List interfaces that belong to the zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-interface\fR=\fI<interface>\fR
-Add \fIinterface\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+Add interface \fI<interface>\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] { \fB--change-interface\fR=\fI<interface>\fR | \fB--change-zone\fR=\fI<interface>\fR }
-Change the zone the interface \fIinterface\fR belongs to the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the interface does not belong to a zone, it will behave like \fI--add-interface\fR.
+Change the zone the interface \fI<interface>\fR belongs to to zone \fI<zone>\fR. If zone is omitted, default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the interface has not belonged to a zone previously, it will behave like \fI--add-interface\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-interface\fR=\fI<interface>\fR
-Query if the interface \fIinterface\fR belongs to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
+Query whether the interface \fI<interface>\fR belongs to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--remove-interface\fR=\fI<interface>\fR
-Remove the interface \fIinterface\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+Remove the interface \fI<interface>\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 
 .SS Options to Adapt and Query Zones
 For the possible actions, please have a look at the action options further down.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR]
-Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds. Afterward it will be removed automatically.
+Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds and will be removed automatically afterwards.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--remove-\fR\fIACTION\fR
 Remove an \fIACTION\fR from the zone \fI<zone>\fR again. If zone is omitted, the default zone will be used. If the ACTION was added with a timeout, it will be removed also.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-\fR\fIACTION\fR
-Return if an \fIACTION\fR has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+Return whether an \fIACTION\fR has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-masquerade\fR [\fB--timeout\fR=\fI<seconds>\fR]
 Enable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If a timeout is supplied, masquerading will be active for the amount of seconds. Masquerading is useful if the machine is a router and machines connected over an interface in another zone should be able to use the first connection.
@@ -114,10 +114,10 @@ Enable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone wi
 Disable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the masquerading was enabled with a timeout, it will be disabled also.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-masquerade\fR
-Return if masquerading has been enabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+Return whether masquerading has been enabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-services\fR
-List added services for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+List services added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined services use \fI--get-services\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-ports\fR
 List ports added for zone \fI<zone>\fR as a space separated list. A port is of the form \fI<port>\fR[-\fI<port>\fR]/\fI<protocol>\fR, it can be either a port and protocol pair or a port range with a protocol. If zone is omitted, the default zone will be used.
@@ -131,7 +131,7 @@ List forward port added for zone \fI<zone>\fR as a space separated list. If zone
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-all\fR
 List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
-\fB--get-service\fR
+\fB--get-services\fR
  List all predefined services known by firewalld as a space separated list.
 .TP
 \fB--get-icmptypes\fR
@@ -159,7 +159,7 @@ Forward from the local port \fIport\fR to the same port on host \fItoaddr\fR.
 Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR.
 
 .SS Permanent Options
-The permanent option can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. The following options are possible to be used:
+The permanent options can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. The following options are possible to be used:
 
 .TP
 \fB--permanent\fR { \fB--get-zones\fR | \fB--get-services\fR | \fB--get-icmptypes\fR }
@@ -186,7 +186,7 @@ Add a new chain with name \fI<chain>\fR to table \fI<table>\fR.
 Remove a chain with name \fI<chain>\fR from table \fI<table>\fR.
 .TP
 \fB--direct\fR \fB--query-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
-Return if a chain with name \fI<chain>\fR exists in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
+Return whether a chain with name \fI<chain>\fR exists in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
 .TP
 \fB--direct\fR \fB--get-chains\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR
 Get all chains added to table \fI<table>\fR as a space separated list.
@@ -198,7 +198,7 @@ Add a rule with the arguments \fI<args>\fR to chain \fI<chain>\fR in table \fI<t
 Remove a rule with the arguments \fI<args>\fR from chain \fI<chain>\fR in table \fI<table>\fR.
 .TP
 \fB--direct\fR \fB--query-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR
-Return if a rule with the arguments \fI<args>\fR exists in chain \fI<chain>\fR in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
+Return whether a rule with the arguments \fI<args>\fR exists in chain \fI<chain>\fR in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
 .TP
 \fB--direct\fR \fB--get-rules\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Get all rules added to chain \fI<chain>\fR in table \fI<table>\fR as a newline separated list of arguments.
