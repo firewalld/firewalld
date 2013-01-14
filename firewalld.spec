@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.11
-Release: 2%{?dist}
+Version: 0.2.12
+Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -71,7 +71,6 @@ firewalld.
 %setup -q
 
 %build
-./autogen.sh
 %configure --with-systemd-unitdir=%{_unitdir}
 
 %install
@@ -178,6 +177,39 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Mon Jan 14 2013 Thomas Woerner <twoerner@redhat.com> 0.2.12-1
+- firewall-cmd: use -V instead of -v for version info (RHBZ#886477)
+- firewall-cmd: don't check reload()'s return value (RHBZ#886461)
+- actually install firewalld.zones.5
+- firewall-config: treat exceptions when adding new zone/service/icmp
+  (RHBZ#886602)
+- firewalld.spec: Fixed requirements of firewall-config to use gtk2 and
+  pygobject3
+- Fail gracefully when running in non X environment.(RHBZ#886551)
+- offline-cmd: fail gracefully when no s-c-f config
+- fix duplicated iptables rules (RHBZ#886515)
+- detect errors and duplicates in config file (RHBZ#886581)
+- firewall-config: don't make 'Edit Service' and 'Edit ICMP Type' insensitive
+- firewalld.spec: fixed requirements, require pygobject3-base
+- frewall-applet: Unused code cleanup
+- firewall-applet: several usability fixes and enhancements
+  (RHBZ#886531) (RHBZ#886534)
+- firewall/server/server.py: fixed KeyboardInterrupt message (RHBZ#886558)
+- Moved fallback zone and minimal_mark to firewall.config.__init__
+- Do not raise ZONE_ALREADY_SET in change_zone if old zone is set again
+  (RHBZ#886432)
+- Make default zone default for all unset connections/interfaces
+  (RHBZ#888288) (RHBZ#882736)
+- firewall-config: Use Gtk.MessageType.WARNING for warning dialog
+- firewall-config: Handle unknown services and icmptypes in persistent mode
+- firewall-config: Do not load settings more than once
+- firewall-config: UI cleanup and fixes (RHBZ#888242)
+- firewall-cmd: created alias --change-zone for --change-interface
+- firewall-cmd man page updates (RHBZ#806511)
+- Merged branch 'build-cleanups'
+- dropped call to autogen.sh in build stage, not needed anymore due to 
+  'build-cleanups' merge
+
 * Thu Dec 13 2012 Thomas Woerner <twoerner@redhat.com> 0.2.11-2
 - require pygobject3-base instead of pygobject3 (no cairo needed) (RHBZ#874378)
 - fixed dependencies of firewall-config to use gtk3 with pygobject3-base and 
