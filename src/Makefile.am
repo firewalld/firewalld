@@ -1,33 +1,25 @@
-bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config
-sbin_SCRIPTS = firewalld
+SUBDIRS = icons
+
+dist_bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config
+dist_sbin_SCRIPTS = firewalld
 
 gladedir = $(pkgdatadir)
-glade_PYTHON = firewall-config.glade
+dist_glade_DATA = firewall-config.glade
 
 gtkextradir = $(pkgdatadir)
-gtkextra_PYTHON = gtk3_chooserbutton.py
+dist_gtkextra_DATA = gtk3_chooserbutton.py
 
-icondir = $(datadir)/icons/hicolor
-iconFILES = icons/*/apps/*
+nobase_dist_python_DATA = \
+	$(wildcard firewall/*.py) \
+	$(wildcard firewall/*/*.py) \
+	$(wildcard firewall/*/*/*.py)
 
-EXTRA_DIST = $(bin_SCRIPTS) \
-	$(sbin_SCRIPTS) \
-	firewall/*.py \
-	firewall/*/*.py \
-	firewall/*/*.py.in \
-	firewall/*/*/*.py \
-	$(iconFILES)
+EXTRA_DIST = \
+	firewall/config/__init__.py.in
 
 CLEANFILES = *~ *\# .\#* *.py?
 
 install-data-local:
-	install -d $(DESTDIR)/$(pythondir)
-	cp -fpR firewall $(DESTDIR)/$(pythondir)
-	find $(DESTDIR)/$(pythondir) -name "*.in" -exec rm {} \;
-
-	install -d $(DESTDIR)/$(icondir)
-	cp -fpR icons/* $(DESTDIR)/$(icondir)
-
 	@echo "Fixing python shebang"
 	@list='$(bin_SCRIPTS)'; \
 	for p in $$list; do \

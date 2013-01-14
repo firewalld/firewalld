@@ -35,8 +35,8 @@ AM_CONDITIONAL(USE_SYSTEMD, test x$use_systemd = xyes)
 AC_SUBST(USE_SYSTEMD)
 
 AC_ARG_WITH([systemd-unitdir],
-       AS_HELP_STRING([--with-systemd-unitdir], [Specify systemd unitdir]),
-       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="/lib/systemd/system"])
+       AS_HELP_STRING([--with-systemd-unitdir], [Directory for systemd service files]),
+       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="\$(prefix)/lib/systemd/system"])
 AC_SUBST(SYSTEMD_UNITDIR)
 
 #############################################################
@@ -68,5 +68,6 @@ AC_CONFIG_FILES([Makefile
 		 doc/man/man5/firewalld.zones.5
 		 po/Makefile.in
 		 src/firewall/config/__init__.py
-		 src/Makefile])
+		 src/Makefile
+         src/icons/Makefile])
 AC_OUTPUT

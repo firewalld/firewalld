@@ -3,7 +3,8 @@ SUBDIRS = config doc po src
 EXTRA_DIST = \
 	COPYING \
 	autogen.sh \
-	${PACKAGE_NAME}.spec 
+	${PACKAGE_NAME}.spec \
+	fix_python_shebang.sh
 
 CLEANFILES = *~ *\# .\#* *.tar*
 
