@@ -87,7 +87,7 @@ List interfaces that belong to the zone \fI<zone>\fR as a space separated list. 
 Add \fIinterface\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] { \fB--change-interface\fR=\fI<interface>\fR | \fB--change-zone\fR=\fI<interface>\fR }
-Change the zone the interface \fIinterface\fR belongs to to zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the old and th new zone are the same, the call will be ignored without an error. If the interface does not belong to a zone, it will behave like \fI--add-interface\fR.
+Change the zone the interface \fIinterface\fR belongs to the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the interface does not belong to a zone, it will behave like \fI--add-interface\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-interface\fR=\fI<interface>\fR
 Query if the interface \fIinterface\fR belongs to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
@@ -159,7 +159,7 @@ Forward from the local port \fIport\fR to the same port on host \fItoaddr\fR.
 Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR.
 
 .SS Permanent Options
-The permanent option can be used to set options permanently. These options will be restored with a service restart and system reboot. The following options are possible to be used:
+The permanent option can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. The following options are possible to be used:
 
 .TP
 \fB--permanent\fR { \fB--get-zones\fR | \fB--get-services\fR | \fB--get-icmptypes\fR }
