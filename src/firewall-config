@@ -839,7 +839,7 @@ class FirewallConfig(object):
         if default_zone in zones:
             selection.select_path(zones.index(default_zone))
         else:
-            selection.set_mode(gtk.SelectionMode.NONE)
+            selection.set_mode(Gtk.SelectionMode.NONE)
 
         self.defaultZoneDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.defaultZoneDialog.set_transient_for(self.mainWindow)
