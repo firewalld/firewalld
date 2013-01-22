@@ -37,7 +37,7 @@ class firewalld_conf:
         self._deleted = [ ]
 
     def get(self, key):
-        self._config.get(key.strip())
+        return self._config.get(key.strip())
 
     def set(self, key, value):
         _key = key.strip()
