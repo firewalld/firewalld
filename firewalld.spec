@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
 Version: 0.2.12
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -185,6 +185,12 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Jan 22 2013 Jiri Popelka <jpopelka@redhat.com> - 0.2.12-2
+- Default zone in firewalld.conf was reseted with every restart (RHBZ#902845)
+- Add icon cache related scriptlets for firewall-config (RHBZ#902680)
+- Fix typo in firewall-config (RHBZ#895812)
+- Fix few mistakes in firewall-cmd(1) man page
+
 * Mon Jan 14 2013 Thomas Woerner <twoerner@redhat.com> 0.2.12-1
 - firewall-cmd: use -V instead of -v for version info (RHBZ#886477)
 - firewall-cmd: don't check reload()'s return value (RHBZ#886461)
