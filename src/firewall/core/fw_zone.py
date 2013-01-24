@@ -117,7 +117,7 @@ class FirewallZone:
 
         chains = [ ]
         rules = [ ]
-        zones = [ self._zones[zone].target.format(chain=SHORTCUTS[chain],
+        zones = [ DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                   zone=zone) ]
 
         # TODO: simplify for one zone only
@@ -379,7 +379,7 @@ class FirewallZone:
 
             # handle rules
             for (port,proto) in svc.ports:
-                target = self._zones[zone].target.format(
+                target = DEFAULT_ZONE_TARGET.format(
                     chain=SHORTCUTS["INPUT"], zone=zone)
                 rule = [ "%s_allow" % (target), "-t", "filter" ]
                 if proto in [ "tcp", "udp" ]:
@@ -477,7 +477,7 @@ class FirewallZone:
 
         rules = [ ]
         for ipv in [ "ipv4", "ipv6" ]:
-            target = self._zones[zone].target.format(chain=SHORTCUTS["INPUT"],
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                      zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "filter",
@@ -548,12 +548,12 @@ class FirewallZone:
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!
-            target = self._zones[zone].target.format(
+            target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["POSTROUTING"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "nat", "-j", "MASQUERADE" ]))
             # FORWARD_OUT
-            target = self._zones[zone].target.format(
+            target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "filter", "-j", "ACCEPT" ]))
@@ -650,7 +650,7 @@ class FirewallZone:
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!
-            target = self._zones[zone].target.format(
+            target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["PREROUTING"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "mangle",
@@ -664,7 +664,7 @@ class FirewallZone:
 
             if not toaddr:
                 # local only
-                target = self._zones[zone].target.format(
+                target = DEFAULT_ZONE_TARGET.format(
                     chain=SHORTCUTS["INPUT"], zone=zone)
                 rules.append((ipv, [ "%s_allow" % (target),
                                      "-t", "filter", 
@@ -672,7 +672,7 @@ class FirewallZone:
                                   mark + [ "-j", "ACCEPT" ]))
             else:
                 # FORWARD_IN
-                target = self._zones[zone].target.format(
+                target = DEFAULT_ZONE_TARGET.format(
                     chain=SHORTCUTS["FORWARD_IN"], zone=zone)
                 rules.append((ipv, [ "%s_allow" % (target),
                                      "-t", "filter",
@@ -774,12 +774,12 @@ class FirewallZone:
                 proto = [ "-p", "ipv6-icmp" ]
                 match = [ "-m", "icmp6", "--icmpv6-type", icmp ]
 
-            target = self._zones[zone].target.format(chain=SHORTCUTS["INPUT"],
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                      zone=zone)
             rules.append((ipv, [ "%s_deny" % (target),
                                  "-t", "filter", ] + proto + \
                               match + [ "-j", "%%REJECT%%" ]))
-            target = self._zones[zone].target.format(
+            target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_IN"], zone=zone)
             rules.append((ipv, [ "%s_deny" % (target),
                                  "-t", "filter", ] + proto + \
