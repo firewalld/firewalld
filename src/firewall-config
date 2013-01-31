@@ -127,6 +127,7 @@ class FirewallConfig(object):
         self.aboutDialog.set_modal(True)
         self.aboutDialog.set_icon(self.icon)
         self.aboutDialog.set_logo(self.logo)
+        self.aboutDialog.set_website(WEBSITE)
 
         self.currentViewCombobox = builder.get_object("currentViewCombobox")
         self.currentViewCombobox.append_text(_("Runtime Configuration"))
