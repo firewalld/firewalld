@@ -56,7 +56,13 @@ Print default zone for connections and interfaces. By default this is \fIpublic\
 Set default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a persistent change.
 .TP
 \fB--get-zones\fR
-Print supported zones as a space separated list.
+Print predefined zones as a space separated list.
+.TP
+\fB--get-services\fR
+Print predefined services as a space separated list.
+.TP
+\fB--get-icmptypes\fR
+Print predefined icmptypes as a space separated list.
 .TP
 \fB--get-active-zones\fR
 Print currently active zones altogether with interfaces in these zones. The output format is:
@@ -78,6 +84,10 @@ List all actions added for or all zones. The output format is:
  ..
 
 .SS Options to Handle Interfaces
+Options in this and the following section affect only one particular zone.
+If used with \fB--zone\fR=\fI<zone>\fR, they affect zone \fI<zone>\fR.
+If \fB--zone\fR=\fI<zone>\fR is omitted, they affect default zone (see \fB--get-default-zone\fR).
+For a list of predefined zones use \fI--get-zones\fR.
 An interface name is a string up to 16 characters long, that may not contain \fI' '\fR, \fI'/'\fR, \fI'!'\fR and \fI'*'\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-interfaces\fR
@@ -130,12 +140,6 @@ List forward port added for zone \fI<zone>\fR as a space separated list. If zone
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-all\fR
 List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
-.TP
-\fB--get-services\fR
- List all predefined services known by firewalld as a space separated list.
-.TP
-\fB--get-icmptypes\fR
- List all predefined icmptypes known by firewalld as a space separated list.
 
 .SS Action Options for Use with Options to Adapt and Query Zones
 .TP
