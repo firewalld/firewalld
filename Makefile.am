@@ -1,4 +1,4 @@
-SUBDIRS = config doc po src
+SUBDIRS = config doc po shell-completion src
 
 EXTRA_DIST = \
 	COPYING \

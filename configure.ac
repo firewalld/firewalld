@@ -67,6 +67,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/man/man5/firewalld.zone.5
 		 doc/man/man5/firewalld.zones.5
 		 po/Makefile.in
+		 shell-completion/Makefile
 		 src/firewall/config/__init__.py
 		 src/Makefile
          src/icons/Makefile])
