@@ -89,7 +89,7 @@ _firewall_cmd()
         fi
         ;;
     --*-interface|--change-zone)
-        _available_interfaces -a
+        _available_interfaces
         ;;
     --permanent)
         COMPREPLY=( $( compgen -W "${OPTIONS_PERMANENT}" -- "$cur" ) )
