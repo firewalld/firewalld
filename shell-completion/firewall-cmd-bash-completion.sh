@@ -82,7 +82,11 @@ _firewall_cmd()
         COMPREPLY=( $( compgen -W '`firewall-cmd --get-icmptypes`' -- "$cur" ) )
         ;;
     --add-service=*|--add-port=*|--add-icmp-block=*|--add-forward-port=*|--add-masquerade)
-        COMPREPLY=( $( compgen -W "--timeout=" -- "$cur" ) )
+        if [[ ${words[@]} == *--permanent* ]]; then
+            return 0
+        else
+            COMPREPLY=( $( compgen -W "--timeout=" -- "$cur" ) )
+        fi
         ;;
     --*-interface|--change-zone)
         _available_interfaces -a
