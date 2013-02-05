@@ -106,7 +106,7 @@ Query whether the interface \fI<interface>\fR belongs to the zone \fI<zone>\fR. 
 Remove the interface \fI<interface>\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 
 .SS Options to Adapt and Query Zones
-For the possible actions, please have a look at the action options further down.
+For possible \fIACTION\fRs, please have a look at the \fBAction Options for Use with Options to Adapt and Query Zones\fR section further down.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR]
 Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds and will be removed automatically afterwards.
@@ -142,6 +142,7 @@ List forward port added for zone \fI<zone>\fR as a space separated list. If zone
 List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 
 .SS Action Options for Use with Options to Adapt and Query Zones
+These \fIACTION\fRs are used in \fB--add-\fR\fIACTION\fR, \fB--remove-\fR\fIACTION\fR and \fB--query-\fR\fIACTION\fR as described in previous section.
 .TP
 \fBservice\fR=\fI<service>\fR
 Use one of the predefined services. For a list of all predefined services use \fI--get-services\fR.
