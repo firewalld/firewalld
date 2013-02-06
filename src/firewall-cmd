@@ -101,49 +101,49 @@ parser_group_standalone.add_argument("--enable-panic", action="store_true")
 parser_group_standalone.add_argument("--disable-panic", action="store_true")
 parser_group_standalone.add_argument("--query-panic", action="store_true")
 parser_group_standalone.add_argument("--get-default-zone", action="store_true")
-parser_group_standalone.add_argument("--set-default-zone")
+parser_group_standalone.add_argument("--set-default-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--get-zones", action="store_true")
 parser_group_standalone.add_argument("--get-services", action="store_true")
 parser_group_standalone.add_argument("--get-icmptypes", action="store_true")
 parser_group_standalone.add_argument("--get-active-zones", action="store_true")
-parser_group_standalone.add_argument("--get-zone-of-interface")
+parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>")
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
 
 parser.add_argument("--permanent", action="store_true")
-parser.add_argument("--zone", default="")
+parser.add_argument("--zone", default="", metavar="<zone>")
+parser.add_argument("--timeout", default=0, type=int, metavar="<seconds>")
 
 parser_group_zone = parser.add_mutually_exclusive_group()
-parser_group_zone.add_argument("--add-interface")
-parser_group_zone.add_argument("--remove-interface")
-parser_group_zone.add_argument("--query-interface")
-parser_group_zone.add_argument("--change-interface", "--change-zone")
+parser_group_zone.add_argument("--add-interface", metavar="<iface>")
+parser_group_zone.add_argument("--remove-interface", metavar="<iface>")
+parser_group_zone.add_argument("--query-interface", metavar="<iface>")
+parser_group_zone.add_argument("--change-interface", "--change-zone", metavar="<iface>")
 parser_group_zone.add_argument("--list-interfaces", action="store_true")
-parser_group_zone.add_argument("--add-service")
-parser_group_zone.add_argument("--remove-service")
-parser_group_zone.add_argument("--query-service")
-parser_group_zone.add_argument("--add-port")
-parser_group_zone.add_argument("--remove-port")
-parser_group_zone.add_argument("--query-port")
-parser_group_zone.add_argument("--add-masquerade")
-parser_group_zone.add_argument("--remove-masquerade")
-parser_group_zone.add_argument("--query-masquerade")
-parser_group_zone.add_argument("--add-icmp-block")
-parser_group_zone.add_argument("--remove-icmp-block")
-parser_group_zone.add_argument("--query-icmp-block")
-parser_group_zone.add_argument("--add-forward-port")
-parser_group_zone.add_argument("--remove-forward-port")
-parser_group_zone.add_argument("--query-forward-port")
+parser_group_zone.add_argument("--add-service", metavar="<service>")
+parser_group_zone.add_argument("--remove-service", metavar="<zone>")
+parser_group_zone.add_argument("--query-service", metavar="<zone>")
+parser_group_zone.add_argument("--add-port", metavar="<port>")
+parser_group_zone.add_argument("--remove-port", metavar="<port>")
+parser_group_zone.add_argument("--query-port", metavar="<port>")
+parser_group_zone.add_argument("--add-masquerade", action="store_true")
+parser_group_zone.add_argument("--remove-masquerade", action="store_true")
+parser_group_zone.add_argument("--query-masquerade", action="store_true")
+parser_group_zone.add_argument("--add-icmp-block", metavar="<icmptype>")
+parser_group_zone.add_argument("--remove-icmp-block", metavar="<icmptype>")
+parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>")
+parser_group_zone.add_argument("--add-forward-port", metavar="<port>")
+parser_group_zone.add_argument("--remove-forward-port", metavar="<port>")
+parser_group_zone.add_argument("--query-forward-port", metavar="<port>")
 parser_group_zone.add_argument("--list-services", action="store_true")
 parser_group_zone.add_argument("--list-ports", action="store_true")
 parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
 parser_group_zone.add_argument("--list-forward-ports", action="store_true")
 parser_group_zone.add_argument("--list-all", action="store_true")
-parser_group_zone.add_argument("--timeout", default=0, type=int)
 
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
-parser_direct.add_argument("--passthrough", nargs="+",
+parser_direct.add_argument("--passthrough", nargs=argparse.REMAINDER,
                     metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--add-chain", nargs=3,
                     metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
@@ -153,11 +153,11 @@ parser_direct.add_argument("--query-chain", nargs=3,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--get-chains", nargs=2,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>"))
-parser_direct.add_argument("--add-rule", nargs="+",
+parser_direct.add_argument("--add-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
-parser_direct.add_argument("--remove-rule", nargs="+",
+parser_direct.add_argument("--remove-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <args>"))
-parser_direct.add_argument("--query-rule", nargs="+",
+parser_direct.add_argument("--query-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <args>"))
 parser_direct.add_argument("--get-rules", nargs=3,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
@@ -209,7 +209,7 @@ if not (options_standalone or options_zone or \
 if options_standalone and (options_zone or options_permanent or options_direct):
     __fail("Can't use stand-alone options with other options.")
 if options_direct and (options_zone or options_permanent):
-    __fail("Can't use direct options with other options.")
+    __fail("Can't use 'direct' options with other options.")
 
 if options_config and options_zone:
     __fail("Wrong usage of --get-zones | --get-services | --get-icmptypes.")
@@ -228,6 +228,7 @@ if a.permanent:
     else:
         __fail("Wrong --permanent usage.")
 
+zone = a.zone
 try:
     fw = FirewallClient()
     if fw.connected == False:
@@ -251,10 +252,8 @@ try:
             if len(l) > 0:
                 print(" ".join(l))
         else:
-            if a.zone == "":
+            if zone == "":
                 zone = fw.getDefaultZone()
-            else:
-                zone = a.zone
             fw_zone = fw.config().getZoneByName(zone)
             fw_settings = fw_zone.getSettings()
 
@@ -338,25 +337,27 @@ try:
     elif a.complete_reload:
         fw.complete_reload()
     elif a.passthrough:
-        print(fw.passthrough(direct_ipv, direct_args))
+        print(fw.passthrough(a.passthrough[0], a.passthrough[1:]))
     elif a.add_chain:
-        fw.addChain(direct_ipv, direct_table, direct_chain)
+        fw.addChain(a.add_chain[0], a.add_chain[1], a.add_chain[2])
     elif a.remove_chain:
-        fw.removeChain(direct_ipv, direct_table, direct_chain)
+        fw.removeChain(a.remove_chain[0], a.remove_chain[1], a.remove_chain[2])
     elif a.query_chain:
-        sys.exit(not fw.queryChain(direct_ipv, direct_table, direct_chain))
+        sys.exit(not fw.queryChain(a.query_chain[0], a.query_chain[1],
+                                   a.query_chain[2]))
     elif a.get_chains:
-        print(" ".join(fw.getChains(direct_ipv, direct_table)))
+        print(" ".join(fw.getChains(a.get_chains[0], a.get_chains[1])))
     elif a.add_rule:
-        fw.addRule(direct_ipv, direct_table, direct_chain, direct_priority,
-                   direct_args)
+        fw.addRule(a.add_rule[0], a.add_rule[1], a.add_rule[2], int(a.add_rule[3]),
+                   a.add_rule[4:])
     elif a.remove_rule:
-        fw.removeRule(direct_ipv, direct_table, direct_chain, direct_args)
+        fw.removeRule(a.remove_rule[0], a.remove_rule[1], a.remove_rule[2],
+                      a.remove_rule[3:])
     elif a.query_rule:
-        sys.exit(not fw.queryRule(direct_ipv, direct_table, direct_chain,
-                                  direct_args))
+        sys.exit(not fw.queryRule(a.query_rule[0], a.query_rule[1],
+                                  a.query_rule[2], a.query_rule[3:]))
     elif a.get_rules:
-        rules = fw.getRules(direct_ipv, direct_table, direct_chain)
+        rules = fw.getRules(a.get_rules[0], a.get_rules[1], a.get_rules[2])
         for rule in rules:
             print(" ".join(rule)) 
     elif a.get_default_zone:
@@ -411,11 +412,11 @@ try:
         if len(l) > 0:
             print(" ".join(l))
     elif a.add_service:
-        fw.addService(zone, value, timeout)
+        fw.addService(zone, a.add_service, a.timeout)
     elif a.remove_service:
-        fw.removeService(zone, value)
+        fw.removeService(zone, a.remove_service)
     elif a.query_service:
-        sys.exit(not fw.queryService(zone, value))
+        sys.exit(not fw.queryService(zone, a.query_service))
 
     # port
     elif a.list_ports:
@@ -423,18 +424,18 @@ try:
         if len(l) > 0:
             print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
     elif a.add_port:
-        (port, proto) = __parse_port(value)
-        fw.addPort(zone, port, proto, timeout)
+        (port, proto) = __parse_port(a.add_port)
+        fw.addPort(zone, port, proto, a.timeout)
     elif a.remove_port:
-        (port, proto) = __parse_port(value)
+        (port, proto) = __parse_port(a.remove_port)
         fw.removePort(zone, port, proto)
     elif a.query_port:
-        (port, proto) = __parse_port(value)
+        (port, proto) = __parse_port(a.query_port)
         sys.exit(not fw.queryPort(zone, port, proto))
 
     # masquerade
     elif a.add_masquerade:
-        fw.addMasquerade(zone, timeout)
+        fw.addMasquerade(zone, a.timeout)
     elif a.remove_masquerade:
         fw.removeMasquerade(zone)
     elif a.query_masquerade:
@@ -447,13 +448,13 @@ try:
             print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
 
     elif a.add_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(value)
-        fw.addForwardPort(zone, port, protocol, toport, toaddr, timeout)
+        (port, protocol, toport, toaddr) = __parse_forward_port(a.add_forward_port)
+        fw.addForwardPort(zone, port, protocol, toport, toaddr, a.timeout)
     elif a.remove_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(value)
+        (port, protocol, toport, toaddr) = __parse_forward_port(a.remove_forward_port)
         fw.removeForwardPort(zone, port, protocol, toport, toaddr)
     elif a.query_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(value)
+        (port, protocol, toport, toaddr) = __parse_forward_port(a.query_forward_port)
         sys.exit(not fw.queryForwardPort(zone, port, protocol,
                                          toport, toaddr))
 
@@ -463,11 +464,11 @@ try:
         if len(l) > 0:
             print(" ".join(l))
     elif a.add_icmp_block:
-        fw.addIcmpBlock(zone, value, timeout)
+        fw.addIcmpBlock(zone, a.add_icmp_block, a.timeout)
     elif a.remove_icmp_block:
-        fw.removeIcmpBlock(zone, value)
+        fw.removeIcmpBlock(zone, a.remove_icmp_block)
     elif a.query_icmp_block:
-        sys.exit(not fw.queryIcmpBlock(zone, value))
+        sys.exit(not fw.queryIcmpBlock(zone, a.query_icmp_block))
 
 
     # list all
