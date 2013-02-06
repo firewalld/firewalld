@@ -88,7 +88,8 @@ def __list_all(fw, zone):
     print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
     print("  icmp-blocks: " + " ".join(icmp_blocks))
 
-parser = argparse.ArgumentParser(description='firewalld command line client', add_help=False)
+parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
+                                 add_help=False)
 
 parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
