@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009-2012 Red Hat, Inc.
+# Copyright (C) 2009-2013 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
+# Jiri Popelka <jpopelka@redhat.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,13 +32,9 @@ import os
 from firewall.client import FirewallClient
 from firewall.errors import *
 
-def usage():
-    os.system("man firewall-cmd")
-
 def __fail(msg=None):
     if msg:
         print(msg)
-#    usage()
     sys.exit(2)
 
 def __parse_port(value):
@@ -165,10 +162,6 @@ parser_direct.add_argument("--get-rules", nargs=3,
 
 a = parser.parse_args()
 
-if a.help:
-    usage()
-    sys.exit(0)
-
 options_standalone = a.help or a.version or \
                      a.state or a.reload or a.complete_reload or \
                      a.enable_panic or a.disable_panic or a.query_panic or \
@@ -205,29 +198,37 @@ options_direct = a.direct or a.passthrough or \
 
 if not (options_standalone or options_zone or \
         options_permanent or options_direct):
-    __fail("No option specified.")
+    __fail(parser.format_usage() + "No option specified.")
 
 if options_standalone and (options_zone or options_permanent or options_direct):
-    __fail("Can't use stand-alone options with other options.")
+    __fail(parser.format_usage() +
+           "Can't use stand-alone options with other options.")
 if options_direct and (options_zone or options_permanent):
-    __fail("Can't use 'direct' options with other options.")
+    __fail(parser.format_usage() +
+           "Can't use 'direct' options with other options.")
 
 if options_config and options_zone:
-    __fail("Wrong usage of --get-zones | --get-services | --get-icmptypes.")
+    __fail(parser.format_usage() +
+           "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
 
 if a.timeout and not (a.add_service or a.add_port or a.add_icmp_block or \
                       a.add_forward_port or a.add_masquerade):
-    __fail("Wrong --timeout usage")
+    __fail(parser.format_usage() + "Wrong --timeout usage")
 
 if a.permanent:
     if a.timeout != 0:
-        __fail("Can't specify timeout for permanent action.")
+        __fail(parser.format_usage() +
+               "Can't specify timeout for permanent action.")
     if options_config and not a.zone:
         pass
     elif options_zone_action_action or options_zone_adapt_query:
         pass
     else:
-        __fail("Wrong --permanent usage.")
+        __fail(parser.format_usage() + "Wrong --permanent usage.")
+
+if a.help:
+    os.system("man firewall-cmd")
+    sys.exit(0)
 
 zone = a.zone
 try:
