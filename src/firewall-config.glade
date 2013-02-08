@@ -518,7 +518,7 @@
                       <object class="GtkEntry" id="forwardDialogPortEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="max_length">5</property>
+                        <property name="max_length">11</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">5</property>
                         <signal name="changed" handler="onForwardChanged" swapped="no"/>
@@ -579,7 +579,7 @@
                       <object class="GtkEntry" id="forwardDialogToPortEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="max_length">5</property>
+                        <property name="max_length">11</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">5</property>
                         <signal name="changed" handler="onForwardChanged" swapped="no"/>
