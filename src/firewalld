@@ -96,6 +96,27 @@ try:
         os.setsid()
         os.umask(os.umask(0077) | 0022)
 
+        import resource          # Resource usage information.
+        maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
+        if (maxfd == resource.RLIM_INFINITY):
+            maxfd = 1024
+
+        # Iterate through and close all file descriptors.
+        for fd in xrange(0, maxfd):
+            try:
+                os.close(fd)
+            except OSError:      # ERROR, fd wasn't open to begin with (ignored)
+                pass
+
+        # Redirect the standard I/O file descriptors to /dev/null
+        if (hasattr(os, "devnull")):
+            REDIRECT_TO = os.devnull
+        else:
+            REDIRECT_TO = "/dev/null"
+        os.open(REDIRECT_TO, os.O_RDWR) # standard input (0)
+        os.dup2(0, 1)                   # standard output (1)
+        os.dup2(0, 2)                   # standard error (2)
+
     if not args.nopid:
         # write the pid file
         pid_file = "/var/run/firewalld.pid"
