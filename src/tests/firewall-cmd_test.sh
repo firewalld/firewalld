@@ -89,16 +89,20 @@ assert_good "--query-panic"
 assert_good "--disable-panic"
 assert_bad  "--query-panic"
 
-old=$(firewall-cmd --get-default-zone)
+default_zone=$(firewall-cmd --get-default-zone)
 assert_good_notempty "--get-default-zone"
 assert_good          "--set-default-zone=home"
 assert_good_equals   "--get-default-zone" "home"
-assert_good          "--set-default-zone=${old}"
+assert_good          "--set-default-zone=${default_zone}"
 assert_bad           "--set-default-zone" # missing argument
 
 assert_good_notempty "--get-zones"
 assert_good_notempty "--get-services"
 assert_good_notempty "--get-icmptypes"
+
+assert_good_notempty "--permanent --get-zones"
+assert_good_notempty "--permanent --get-services"
+assert_good_notempty "--permanent --get-icmptypes"
 
 assert_good "--list-all-zones"
 assert_good "--list-all"
@@ -126,63 +130,93 @@ assert_bad           "--zone=${zone} --get-default-zone" # impossible combinatio
 assert_bad           "--zone=${zone} --set-default-zone" # impossible combination
 assert_bad           "--zone=${zone} --get-zone-of-interface" # impossible combination
 
-assert_good    "--add-service=dns --timeout 60"
-assert_good  "--query-service dns"
+assert_good "   --add-service=dns --timeout 60 --zone=${default_zone}"
+assert_good " --query-service dns"
 assert_good "--remove-service=dns"
-assert_bad   "--query-service=dns"
-assert_bad     "--add-service=dns --timeout" # missing argument
-assert_bad     "--add-service=dns --add-interface=dummy0" # impossible combination
+assert_bad  " --query-service=dns"
+assert_bad  "   --add-service=smtps" # bad service name
+assert_bad  "   --add-service=dns --timeout" # missing argument
+assert_bad  "   --add-service=dns --add-interface=dummy0" # impossible combination
 
-assert_bad     "--add-port=666" # no protocol
-assert_bad     "--add-port=666/dummy" # bad protocol
-assert_good    "--add-port=666/tcp"
+assert_bad           "--permanent --zone=external --add-service=dns --timeout 60" # impossible combination
+assert_good          "--permanent --zone=external --add-service dns"
+assert_good_contains "--permanent --zone=external --list-services" "dns"
+assert_good          "--permanent --zone=external --query-service dns"
+assert_good          "--permanent --zone=external --remove-service=dns"
+assert_bad           "--permanent --zone=external --query-service=dns" # removed
+assert_bad           "--permanent --zone=external --add-service=smtps" # bad service name
+assert_bad           "--permanent --zone=external --add-service=dns --add-interface=dummy0" # impossible combination
+
+assert_bad  "   --add-port=666" # no protocol
+assert_bad  "   --add-port=666/dummy" # bad protocol
+assert_good "   --add-port=666/tcp --zone=${default_zone}"
 assert_good "--remove-port=666/tcp"
-assert_good    "--add-port=111-222/udp"
-assert_good  "--query-port=111-222/udp"
+assert_good "   --add-port=111-222/udp"
+assert_good " --query-port=111-222/udp --zone=${default_zone}"
 assert_good "--remove-port 111-222/udp"
-assert_bad   "--query-port=111-222/udp"
+assert_bad  " --query-port=111-222/udp"
 
-assert_good "--add-masquerade"
-assert_good "--query-masquerade"
+assert_bad  "--permanent    --add-port=666" # no protocol
+assert_bad  "--permanent    --add-port=666/dummy" # bad protocol
+assert_good "--permanent    --add-port=666/tcp"
+assert_good "--permanent --remove-port=666/tcp     --zone=${default_zone}"
+assert_good "--permanent    --add-port=111-222/udp --zone=${default_zone}"
+assert_good "--permanent  --query-port=111-222/udp"
+assert_good "--permanent --remove-port 111-222/udp"
+assert_bad  "--permanent  --query-port=111-222/udp"
+
+assert_good "   --add-masquerade --zone=${default_zone}"
+assert_good " --query-masquerade "
 assert_good "--remove-masquerade"
-assert_bad  "--query-masquerade"
+assert_bad  " --query-masquerade"
 
-assert_bad  "--zone=block --add-icmp-block=redirect"
-assert_good "--zone=external --add-icmp-block=redirect"
-assert_good "--zone=external --query-icmp-block=redirect"
-assert_good "--remove-icmp-block redirect --zone=external"
-assert_bad  "--zone=external --query-icmp-block=redirect"
+assert_good "--permanent    --add-masquerade"
+assert_good "--permanent  --query-masquerade --zone=${default_zone}"
+assert_good "--permanent --remove-masquerade --zone=${default_zone}"
+assert_bad  "--permanent  --query-masquerade"
 
-assert_bad  "--add-forward-port=666" # no protocol
-assert_good    "--add-forward-port=port=11:proto=tcp:toport=22"
-assert_good "--remove-forward-port=port=11:proto=tcp:toport=22"
-assert_bad  "--add-forward-port=port=33:proto=tcp:toaddr=4444" # bad address
-assert_good    "--add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4"
+assert_bad  "--zone=external    --add-icmp-block=dummyblock" # invalid icmp type
+assert_bad  "--zone=block       --add-icmp-block=redirect" # immutable zone
+assert_good "--zone=external    --add-icmp-block=redirect"
+assert_good "--zone=external  --query-icmp-block=redirect"
+assert_good "--zone=external --remove-icmp-block redirect"
+assert_bad  "--zone=external  --query-icmp-block=redirect"
+
+assert_bad  "--permanent --zone=external    --add-icmp-block=dummyblock" # invalid icmp type
+assert_good "--permanent --zone=external    --add-icmp-block=redirect"
+assert_good "--permanent --zone=external  --query-icmp-block=redirect"
+assert_good "--permanent --zone=external --remove-icmp-block redirect"
+assert_bad  "--permanent --zone=external  --query-icmp-block=redirect"
+
+assert_bad  "   --add-forward-port=666" # no protocol
+assert_good "   --add-forward-port=port=11:proto=tcp:toport=22"
+assert_good "--remove-forward-port=port=11:proto=tcp:toport=22 --zone=${default_zone}"
+assert_bad  "   --add-forward-port=port=33:proto=tcp:toaddr=4444" # bad address
+assert_good "   --add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4 --zone=${default_zone}"
 assert_good "--remove-forward-port=port=33:proto=tcp:toaddr=4.4.4.4"
-assert_good    "--add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
-assert_good  "--query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_good "   --add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_good " --query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7 --zone=${default_zone}"
 assert_good "--remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
-assert_bad   "--query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_bad  " --query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+
+assert_bad  "--permanent         --add-forward-port=666" # no protocol
+assert_good "--permanent    --add-forward-port=port=11:proto=tcp:toport=22 --zone=${default_zone}"
+assert_good "--permanent --remove-forward-port=port=11:proto=tcp:toport=22"
+assert_bad  "--permanent    --add-forward-port=port=33:proto=tcp:toaddr=4444" # bad address
+assert_good "--permanent    --add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4"
+assert_good "--permanent --remove-forward-port=port=33:proto=tcp:toaddr=4.4.4.4 --zone=${default_zone}"
+assert_good "--permanent    --add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_good "--permanent  --query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_good "--permanent --remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_bad  "--permanent  --query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 
 assert_good_contains "--zone=home --list-services" "ssh"
 assert_good          "--zone home --list-ports"
 assert_good          "--list-icmp-blocks"
 assert_good          "--zone=home --list-forward-ports"
 
-# ... --permanent ...
-assert_good_notempty "--permanent --get-zones"
-assert_good_notempty "--permanent --get-services"
-assert_good_notempty "--permanent --get-icmptypes"
-
 assert_good_contains "--permanent --zone=work --list-services" "ssh"
 assert_good          "--permanent --list-forward-ports"
-
-assert_good          "--permanent --zone=external --add-service=pop3s"
-assert_good_contains "--permanent --zone=external --list-services" "pop3s"
-assert_good          "--permanent --zone=external --remove-service=pop3s"
-assert_bad           "--permanent --zone=external --add-service=dns --timeout 10" # impossible combination
-assert_good          "--permanent --zone=external --add-port=123-456/tcp"
-assert_good          "--permanent --zone=external --remove-port=123-456/tcp"
 
 assert_bad           "--permanent --complete-reload" # impossible combination
 assert_bad           "--permanent --zone=work --add-interface=dummy0" # impossible combination
