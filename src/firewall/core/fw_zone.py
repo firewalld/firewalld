@@ -54,44 +54,43 @@ class FirewallZone:
         z = self._fw.check_zone(zone)
         return self._zones[z]
 
+    def _error2warning(self, f, name, *args):
+        # transform errors into warnings
+        try:
+            f(name, *args)
+        except FirewallError as msg:
+            log.warning("%s: %s" % (name, msg))
+
     def add_zone(self, obj):
         obj.settings = { x : {} for x in [ "interfaces", "services", "ports",
                                "masquerade", "forward_ports", "icmp_blocks" ] }
 
         self._zones[obj.name] = obj
 
-        # transform errors into warnings here, load zone in case of 
-        # missing services, icmptypes etc.
-        try:
-            # apply default zone settings from config files
-            for args in obj.icmp_blocks:
-                self.add_icmp_block(obj.name, args)
-            for args in obj.forward_ports:
-                self.add_forward_port(obj.name, *args)
-            for args in obj.services:
-                self.add_service(obj.name, args)
-            for args in obj.ports:
-                self.add_port(obj.name, *args)
-            if obj.masquerade:
-                self.add_masquerade(obj.name)
-        except FirewallError as msg:
-            log.warning("%s: %s" % (obj.name, msg))
+        # load zone in case of missing services, icmptypes etc.
+        for args in obj.icmp_blocks:
+            self._error2warning(self.add_icmp_block, obj.name, args)
+        for args in obj.forward_ports:
+            self._error2warning(self.add_forward_port, obj.name, *args)
+        for args in obj.services:
+            self._error2warning(self.add_service, obj.name, args)
+        for args in obj.ports:
+            self._error2warning(self.add_port, obj.name, *args)
+        if obj.masquerade:
+            self._error2warning(self.add_masquerade, obj.name)
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
-        try:
-            for args in obj.icmp_blocks:
-                self.remove_icmp_block(obj.name, args)
-            for args in obj.forward_ports:
-                self.remove_forward_port(obj.name, *args)
-            for args in obj.services:
-                self.remove_service(obj.name, args)
-            for args in obj.ports:
-                self.remove_port(obj.name, *args)
-            if obj.masquerade:
-                self.remove_masquerade(obj.name)
-        except FirewallError as msg:
-            log.warning("%s: %s" % (obj.name, msg))
+        for args in obj.icmp_blocks:
+            self._error2warning(self.remove_icmp_block, obj.name, args)
+        for args in obj.forward_ports:
+            self._error2warning(self.remove_forward_port, obj.name, *args)
+        for args in obj.services:
+            self._error2warning(self.remove_service, obj.name, args)
+        for args in obj.ports:
+            self._error2warning(self.remove_port, obj.name, *args)
+        if obj.masquerade:
+            self._error2warning(self.remove_masquerade, obj.name)
 
         obj.settings.clear()
         del self._zones[zone]
