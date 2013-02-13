@@ -66,7 +66,7 @@ class Service(IO_Object):
             for port in config:
                 check_port(port[0])
                 check_protocol(port[1])
-        if item == "destination":
+        elif item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
                     raise FirewallError(INVALID_DESTINATION, destination)

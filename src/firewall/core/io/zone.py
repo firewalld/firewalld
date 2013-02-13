@@ -74,13 +74,24 @@ class Zone(IO_Object):
         self.icmp_blocks = [ ]
         self.masquerade = False
         self.forward_ports = [ ]
+        self.fw_config = None # to be able to check services and a icmp_blocks
 
     def _check_config(self, config, item):
-        if item == "ports":
+        if item == "services" and self.fw_config:
+            existing_services = self.fw_config.get_services()
+            for service in config:
+                if not service in existing_services:
+                    raise FirewallError(INVALID_SERVICE, service)
+        elif item == "ports":
             for port in config:
                 check_port(port[0])
                 check_protocol(port[1])
-        if item == "forward_ports":
+        elif item == "icmp_blocks" and self.fw_config:
+            existing_icmptypes = self.fw_config.get_icmptypes()
+            for icmptype in config:
+                if not icmptype in existing_icmptypes:
+                    raise FirewallError(INVALID_ICMPTYPE, icmptype)
+        elif item == "forward_ports":
             for fwd_port in config:
                 check_port(fwd_port[0])
                 check_protocol(fwd_port[1])

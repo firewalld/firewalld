@@ -451,6 +451,7 @@ class FirewallConfig:
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ZONES
+        x.fw_config = self
 
         zone_writer(x)
         self.add_zone(x, False)
@@ -491,6 +492,7 @@ class FirewallConfig:
         # new or updated file
 
         obj = zone_reader(filename, path)
+        obj.fw_config = self
         obj.defaults = False
 
         # new zone
