@@ -427,12 +427,14 @@ class FirewallConfig:
     def set_zone_config(self, obj, config):
         if obj.defaults:
             x = copy.copy(obj)
+            x.fw_config = self
             x.import_config(config)
             x.path = ETC_FIREWALLD_ZONES
             self.add_zone(x, False)
             zone_writer(x)
             return x
         else:
+            obj.fw_config = self
             obj.import_config(config)
             zone_writer(obj)
             return obj
@@ -447,11 +449,11 @@ class FirewallConfig:
 
         x = Zone()
         x.check_name(name)
+        x.fw_config = self
         x.import_config(config)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ZONES
-        x.fw_config = self
 
         zone_writer(x)
         self.add_zone(x, False)

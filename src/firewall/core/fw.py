@@ -213,7 +213,6 @@ class Firewall:
                     self.config.add_service(copy.deepcopy(obj), default)
                 elif reader_type == "zone":
                     obj = zone_reader(filename, path)
-                    obj.fw_config = self.config
                     if obj.name in self.zone.get_zones():
                         orig_obj = self.zone.get_zone(obj.name)
                         if orig_obj.immutable:
