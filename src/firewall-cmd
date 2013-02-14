@@ -117,20 +117,20 @@ parser_group_zone.add_argument("--remove-interface", metavar="<iface>")
 parser_group_zone.add_argument("--query-interface", metavar="<iface>")
 parser_group_zone.add_argument("--change-interface", "--change-zone", metavar="<iface>")
 parser_group_zone.add_argument("--list-interfaces", action="store_true")
-parser_group_zone.add_argument("--add-service", metavar="<service>")
-parser_group_zone.add_argument("--remove-service", metavar="<zone>")
+parser_group_zone.add_argument("--add-service", metavar="<service>", action='append')
+parser_group_zone.add_argument("--remove-service", metavar="<zone>", action='append')
 parser_group_zone.add_argument("--query-service", metavar="<zone>")
-parser_group_zone.add_argument("--add-port", metavar="<port>")
-parser_group_zone.add_argument("--remove-port", metavar="<port>")
+parser_group_zone.add_argument("--add-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--remove-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--query-port", metavar="<port>")
 parser_group_zone.add_argument("--add-masquerade", action="store_true")
 parser_group_zone.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone.add_argument("--query-masquerade", action="store_true")
-parser_group_zone.add_argument("--add-icmp-block", metavar="<icmptype>")
-parser_group_zone.add_argument("--remove-icmp-block", metavar="<icmptype>")
+parser_group_zone.add_argument("--add-icmp-block", metavar="<icmptype>", action='append')
+parser_group_zone.add_argument("--remove-icmp-block", metavar="<icmptype>", action='append')
 parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>")
-parser_group_zone.add_argument("--add-forward-port", metavar="<port>")
-parser_group_zone.add_argument("--remove-forward-port", metavar="<port>")
+parser_group_zone.add_argument("--add-forward-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--remove-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--query-forward-port", metavar="<port>")
 parser_group_zone.add_argument("--list-services", action="store_true")
 parser_group_zone.add_argument("--list-ports", action="store_true")
@@ -266,9 +266,11 @@ try:
                     print(" ".join(l))
                 sys.exit(0)
             elif a.add_service:
-                fw_settings.addService(a.add_service)
+                for s in a.add_service:
+                    fw_settings.addService(s)
             elif a.remove_service:
-                fw_settings.removeService(a.remove_service)
+                for s in a.remove_service:
+                    fw_settings.removeService(s)
             elif a.query_service:
                 sys.exit(not a.query_service in fw_settings.getServices())
 
@@ -279,11 +281,13 @@ try:
                     print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
                 sys.exit(0)
             elif a.add_port:
-                (port, proto) = __parse_port(a.add_port)
-                fw_settings.addPort(port, proto)
+                for port_proto in a.add_port:
+                    (port, proto) = __parse_port(port_proto)
+                    fw_settings.addPort(port, proto)
             elif a.remove_port:
-                (port, proto) = __parse_port(a.remove_port)
-                fw_settings.removePort(port, proto)
+                for port_proto in a.remove_port:
+                    (port, proto) = __parse_port(port_proto)
+                    fw_settings.removePort(port, proto)
             elif a.query_port:
                 (port, proto) = __parse_port(a.query_port)
                 sys.exit(not (port, proto) in fw_settings.getPorts())
@@ -303,11 +307,13 @@ try:
                     print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
                 sys.exit(0)
             elif a.add_forward_port:
-                (port, protocol, toport, toaddr) = __parse_forward_port(a.add_forward_port)
-                fw_settings.addForwardPort(port, protocol, toport, toaddr)
+                for fp in a.add_forward_port:
+                    (port, protocol, toport, toaddr) = __parse_forward_port(fp)
+                    fw_settings.addForwardPort(port, protocol, toport, toaddr)
             elif a.remove_forward_port:
-                (port, protocol, toport, toaddr) = __parse_forward_port(a.remove_forward_port)
-                fw_settings.removeForwardPort(port, protocol, toport, toaddr)
+                for fp in a.remove_forward_port:
+                    (port, protocol, toport, toaddr) = __parse_forward_port(fp)
+                    fw_settings.removeForwardPort(port, protocol, toport, toaddr)
             elif a.query_forward_port:
                 (port, protocol, toport, toaddr) = __parse_forward_port(a.query_forward_port)
                 sys.exit(not fw_settings.queryForwardPort(port, protocol, toport, toaddr))
@@ -319,9 +325,11 @@ try:
                     print(" ".join(l))
                 sys.exit(0)
             elif a.add_icmp_block:
-                fw_settings.addIcmpBlock(a.add_icmp_block)
+                for ib in a.add_icmp_block: 
+                    fw_settings.addIcmpBlock(ib)
             elif a.remove_icmp_block:
-                fw_settings.removeIcmpBlock(a.remove_icmp_block)
+                for ib in a.remove_icmp_block:
+                    fw_settings.removeIcmpBlock(ib)
             elif a.query_icmp_block:
                 sys.exit(not a.query_icmp_block in fw_settings.getIcmpBlocks())
 
@@ -414,9 +422,11 @@ try:
         if len(l) > 0:
             print(" ".join(l))
     elif a.add_service:
-        fw.addService(zone, a.add_service, a.timeout)
+        for s in a.add_service:
+            fw.addService(zone, s, a.timeout)
     elif a.remove_service:
-        fw.removeService(zone, a.remove_service)
+        for s in a.remove_service:
+            fw.removeService(zone, s)
     elif a.query_service:
         sys.exit(not fw.queryService(zone, a.query_service))
 
@@ -426,11 +436,13 @@ try:
         if len(l) > 0:
             print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
     elif a.add_port:
-        (port, proto) = __parse_port(a.add_port)
-        fw.addPort(zone, port, proto, a.timeout)
+        for port_proto in a.add_port:
+            (port, proto) = __parse_port(port_proto)
+            fw.addPort(zone, port, proto, a.timeout)
     elif a.remove_port:
-        (port, proto) = __parse_port(a.remove_port)
-        fw.removePort(zone, port, proto)
+        for port_proto in a.remove_port:
+            (port, proto) = __parse_port(port_proto)
+            fw.removePort(zone, port, proto)
     elif a.query_port:
         (port, proto) = __parse_port(a.query_port)
         sys.exit(not fw.queryPort(zone, port, proto))
@@ -450,11 +462,13 @@ try:
             print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
 
     elif a.add_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(a.add_forward_port)
-        fw.addForwardPort(zone, port, protocol, toport, toaddr, a.timeout)
+        for fp in a.add_forward_port:
+            (port, protocol, toport, toaddr) = __parse_forward_port(fp)
+            fw.addForwardPort(zone, port, protocol, toport, toaddr, a.timeout)
     elif a.remove_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(a.remove_forward_port)
-        fw.removeForwardPort(zone, port, protocol, toport, toaddr)
+        for fp in a.remove_forward_port:
+            (port, protocol, toport, toaddr) = __parse_forward_port(fp)
+            fw.removeForwardPort(zone, port, protocol, toport, toaddr)
     elif a.query_forward_port:
         (port, protocol, toport, toaddr) = __parse_forward_port(a.query_forward_port)
         sys.exit(not fw.queryForwardPort(zone, port, protocol,
@@ -466,9 +480,11 @@ try:
         if len(l) > 0:
             print(" ".join(l))
     elif a.add_icmp_block:
-        fw.addIcmpBlock(zone, a.add_icmp_block, a.timeout)
+        for ib in a.add_icmp_block:
+            fw.addIcmpBlock(zone, ib, a.timeout)
     elif a.remove_icmp_block:
-        fw.removeIcmpBlock(zone, a.remove_icmp_block)
+        for ib in a.remove_icmp_block:
+            fw.removeIcmpBlock(zone, ib)
     elif a.query_icmp_block:
         sys.exit(not fw.queryIcmpBlock(zone, a.query_icmp_block))
 

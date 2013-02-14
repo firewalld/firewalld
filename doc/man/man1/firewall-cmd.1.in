@@ -109,10 +109,10 @@ Remove the interface \fI<interface>\fR from zone \fI<zone>\fR. If zone is omitte
 For possible \fIACTION\fRs, please have a look at the \fBAction Options for Use with Options to Adapt and Query Zones\fR section further down.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR]
-Add \fIACTION\fR for zone \fI<zone>\fR. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the ACTION will be active for the amount of seconds and will be removed automatically afterwards.
+Add \fIACTION\fR for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the \fIACTION\fR(s) will be active for the amount of seconds and will be removed automatically afterwards.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--remove-\fR\fIACTION\fR
-Remove an \fIACTION\fR from the zone \fI<zone>\fR again. If zone is omitted, the default zone will be used. If the ACTION was added with a timeout, it will be removed also.
+Remove an \fIACTION\fR from the zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. If the \fIACTION\fR was added with a timeout, it will be removed also.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-\fR\fIACTION\fR
 Return whether an \fIACTION\fR has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.

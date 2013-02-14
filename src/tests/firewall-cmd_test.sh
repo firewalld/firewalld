@@ -147,6 +147,20 @@ assert_bad           "--permanent --zone=external --query-service=dns" # removed
 assert_bad           "--permanent --zone=external --add-service=smtps" # bad service name
 assert_bad           "--permanent --zone=external --add-service=dns --add-interface=dummy0" # impossible combination
 
+assert_good "   --add-service=http --add-service=nfs"
+assert_good " --query-service http"
+assert_good " --query-service=nfs --zone=${default_zone}"
+assert_good "--remove-service=nfs --remove-service=http"
+assert_bad  " --query-service http"
+assert_bad  " --query-service nfs"
+
+assert_good "--permanent    --add-service=http --add-service=nfs"
+assert_good "--permanent  --query-service http"
+assert_good "--permanent  --query-service=nfs --zone=${default_zone}"
+assert_good "--permanent --remove-service=nfs --remove-service=http"
+assert_bad  "--permanent  --query-service http"
+assert_bad  "--permanent  --query-service nfs"
+
 assert_bad  "   --add-port=666" # no protocol
 assert_bad  "   --add-port=666/dummy" # bad protocol
 assert_good "   --add-port=666/tcp --zone=${default_zone}"
@@ -164,6 +178,20 @@ assert_good "--permanent    --add-port=111-222/udp --zone=${default_zone}"
 assert_good "--permanent  --query-port=111-222/udp"
 assert_good "--permanent --remove-port 111-222/udp"
 assert_bad  "--permanent  --query-port=111-222/udp"
+
+assert_good "   --add-port=80/tcp --add-port 443-444/udp"
+assert_good " --query-port=80/tcp --zone=${default_zone}"
+assert_good " --query-port=443-444/udp"
+assert_good "--remove-port 80/tcp --remove-port=443-444/udp"
+assert_bad  " --query-port=80/tcp"
+assert_bad  " --query-port=443-444/udp"
+
+assert_good "--permanent    --add-port=80/tcp --add-port 443-444/udp"
+assert_good "--permanent  --query-port=80/tcp --zone=${default_zone}"
+assert_good "--permanent  --query-port=443-444/udp"
+assert_good "--permanent --remove-port 80/tcp --remove-port=443-444/udp"
+assert_bad  "--permanent  --query-port=80/tcp"
+assert_bad  "--permanent  --query-port=443-444/udp"
 
 assert_good "   --add-masquerade --zone=${default_zone}"
 assert_good " --query-masquerade "
@@ -188,6 +216,20 @@ assert_good "--permanent --zone=external  --query-icmp-block=redirect"
 assert_good "--permanent --zone=external --remove-icmp-block redirect"
 assert_bad  "--permanent --zone=external  --query-icmp-block=redirect"
 
+assert_good "--zone=external    --add-icmp-block=echo-reply --add-icmp-block=router-solicitation"
+assert_good "--zone=external  --query-icmp-block=echo-reply"
+assert_good "--zone=external  --query-icmp-block=router-solicitation"
+assert_good "--zone=external --remove-icmp-block echo-reply --remove-icmp-block=router-solicitation"
+assert_bad  "--zone=external  --query-icmp-block=echo-reply"
+assert_bad  "--zone=external  --query-icmp-block=router-solicitation"
+
+assert_good "--permanent --zone=external    --add-icmp-block=echo-reply --add-icmp-block=router-solicitation"
+assert_good "--permanent --zone=external  --query-icmp-block=echo-reply"
+assert_good "--permanent --zone=external  --query-icmp-block=router-solicitation"
+assert_good "--permanent --zone=external --remove-icmp-block echo-reply --remove-icmp-block=router-solicitation"
+assert_bad  "--permanent --zone=external  --query-icmp-block=echo-reply"
+assert_bad  "--permanent --zone=external  --query-icmp-block=router-solicitation"
+
 assert_bad  "   --add-forward-port=666" # no protocol
 assert_good "   --add-forward-port=port=11:proto=tcp:toport=22"
 assert_good "--remove-forward-port=port=11:proto=tcp:toport=22 --zone=${default_zone}"
@@ -209,6 +251,20 @@ assert_good "--permanent    --add-forward-port=port=55:proto=tcp:toport=66:toadd
 assert_good "--permanent  --query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 assert_good "--permanent --remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 assert_bad  "--permanent  --query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+
+assert_good "   --add-forward-port=port=88:proto=udp:toport=99 --add-forward-port port=100:proto=tcp:toport=200"
+assert_good " --query-forward-port=port=100:proto=tcp:toport=200"
+assert_good " --query-forward-port=port=88:proto=udp:toport=99 --zone=${default_zone}"
+assert_good "--remove-forward-port port=100:proto=tcp:toport=200 --remove-forward-port=port=88:proto=udp:toport=99"
+assert_bad  " --query-forward-port port=100:proto=tcp:toport=200"
+assert_bad  " --query-forward-port=port=88:proto=udp:toport=99"
+
+assert_good "--permanent    --add-forward-port=port=88:proto=udp:toport=99 --add-forward-port port=100:proto=tcp:toport=200"
+assert_good "--permanent  --query-forward-port=port=100:proto=tcp:toport=200"
+assert_good "--permanent  --query-forward-port=port=88:proto=udp:toport=99 --zone=${default_zone}"
+assert_good "--permanent --remove-forward-port port=100:proto=tcp:toport=200 --remove-forward-port=port=88:proto=udp:toport=99"
+assert_bad  "--permanent  --query-forward-port port=100:proto=tcp:toport=200"
+assert_bad  "--permanent  --query-forward-port=port=88:proto=udp:toport=99"
 
 assert_good_contains "--zone=home --list-services" "ssh"
 assert_good          "--zone home --list-ports"
