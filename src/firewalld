@@ -29,43 +29,31 @@ import sys
 import dbus
 import syslog
 import traceback
+import argparse
 
 from firewall import config
 from firewall.errors import *
 from firewall.functions import firewalld_is_active
 from firewall.core.logger import log, FileLog
 
-debug = 0
-fork = True
-
-args = sys.argv[1:]
-
-def usage(code):
-    print(_("Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]") % \
-              sys.argv[0])
-    sys.exit(code)
+parser = argparse.ArgumentParser()
+parser.add_argument('--debug',
+                    nargs='?', const=1, default=0, type=int,
+                    choices=range(1, log.DEBUG_MAX+1),
+                    help="""Enable logging of debug messages.
+                            Additional argument in range 1..%s can be used
+                            to specify log level.""" % log.DEBUG_MAX,
+                    metavar="level")
+parser.add_argument('--nofork',
+                    help="""Force firewalld to run as a foreground process
+                            instead of as a daemon in the background.""",
+                    action="store_true")
+args = parser.parse_args()
 
 # check for root user
 if os.getuid() != 0:
     print(_("You need to be root to run %s.") % sys.argv[0])
     sys.exit(-1)
-
-for arg in args:
-    if arg in ["-h", "--help"]:
-        usage(0)
-    elif arg == "--debug":
-        debug = 1
-    elif arg[:8] == "--debug=":
-        try:
-            debug = int(arg[8:])
-        except:
-            usage(1)
-    elif arg == "--nofork":
-        fork = False
-    else:
-        print(_("Unknown option '%s'") % arg)
-        usage(2)
-
 
 log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
 log.setDateFormat("%Y-%m-%d %H:%M:%S")
@@ -77,24 +65,21 @@ log.setDebugLogLevel(log.NO_INFO)
 log.setDebugLogLevel(log.NO_DEBUG)
 log.setDebugLogging("*", log_file, [ i for i in xrange(1, log.DEBUG_MAX+1) ])
 
-if debug:
-    if debug > log.DEBUG_MAX:
-        debug = log.DEBUG_MAX
+if args.debug:
     log.setInfoLogLevel(log.INFO_MAX)
-    log.setDebugLogLevel(debug)
+    log.setDebugLogLevel(args.debug)
     log.addInfoLogging("*", log_file)
     log.addDebugLogging("*", log_file)
-    if not fork:
+    if args.nofork:
         log.addInfoLogging("*", log.stdout)
         log.addDebugLogging("*", log.stdout)
-        
 
 if firewalld_is_active():
     log.fatal(_("Not starting FirewallD, already running."))
     sys.exit(1)
 
 try:
-    if fork:
+    if not args.nofork:
         # do the UNIX double-fork magic, see Stevens' "Advanced 
         # Programming in the UNIX Environment" for details (ISBN 0201563177)
         pid = os.fork()
