@@ -232,9 +232,12 @@ if a.help:
 
 zone = a.zone
 try:
-    fw = FirewallClient()
+    fw = FirewallClient(quiet=True)
     if fw.connected == False:
-        print("Couldn't connect to FirewallD, it's probably not running.")
+        if a.state:
+            print "not running"
+        else:
+            print "FirewallD is not running"
         sys.exit(NOT_RUNNING)
 
     if a.permanent:
@@ -340,8 +343,11 @@ try:
         sys.exit(0)
     elif a.state:
         state = fw.get_property("state")
-        if state != "RUNNING":
-            sys.exit(1)
+        if state == "RUNNING":
+            print "running"
+        else:
+            print "not running"
+            sys.exit(NOT_RUNNING)
     elif a.reload:
         fw.reload()
     elif a.complete_reload:

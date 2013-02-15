@@ -449,7 +449,7 @@ class FirewallClientConfig(object):
 #
 
 class FirewallClient(object):
-    def __init__(self, bus=None, wait=0):
+    def __init__(self, bus=None, wait=0, quiet=False):
         if not bus:
             dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             try:
@@ -522,6 +522,8 @@ class FirewallClient(object):
         # initialize variables used for connection
         self._init_vars()
 
+        self.quiet = quiet
+
         if wait > 0:
             # connect in one second
             GLib.timeout_add_seconds(wait, self._connection_established)
@@ -566,10 +568,12 @@ class FirewallClient(object):
                 self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         except DBusException as e:
             # ignore dbus errors
-            print "DBusException", e
+            if not self.quiet:
+                print "DBusException", e
             return
         except Exception as e:
-            print "Exception", e
+            if not self.quiet:
+                print "Exception", e
             return
 
         self._config = FirewallClientConfig(self.bus)

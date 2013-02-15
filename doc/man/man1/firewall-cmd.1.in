@@ -28,7 +28,7 @@ Print the version string of firewalld.
 .SS Status Options
 .TP
 \fB--state\fR
-Return status of the daemon, see \fIEXIT CODES\fR. This option has output. To get a visual state use: \fIfirewall-cmd --state && echo "Running" || echo "Not running"\fR
+Check whether the firewalld daemon is active (i.e. running). Returns an exit code 0 if it is active, \fINOT_RUNNING\fR (see \fIEXIT CODES\fR) otherwise. This will also print the state to STDOUT.
 .TP
 \fB--reload\fR
 Reload firewall rules and keep state information.
