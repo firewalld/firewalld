@@ -16,7 +16,7 @@ assert_good() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status)"
-    exit 2
+    failures=$((++failures))
   fi
 }
 
@@ -27,7 +27,7 @@ assert_good_notempty() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or empty return value)"
-    exit 2
+    failures=$((++failures))
   fi
 }
 
@@ -38,7 +38,7 @@ assert_good_empty() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or non-empty return value)"
-    exit 2
+    failures=$((++failures))
   fi
 }
 
@@ -50,7 +50,7 @@ assert_good_equals() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or '${ret}' != '${value}')"
-    exit 2
+    failures=$((++failures))
   fi
 }
 
@@ -62,7 +62,7 @@ assert_good_contains() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or '${ret}' does not contain '${value}')"
-    exit 2
+    failures=$((++failures))
   fi
 }
 
@@ -73,11 +73,13 @@ assert_bad() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (zero exit status)"
-    exit 2
+    failures=$((++failures))
   fi
 }
 
-# ... standalone options ...
+
+# MAIN
+failures=0
 
 assert_good "-h"
 assert_good "--help"
@@ -310,6 +312,10 @@ assert_bad           "--direct --permanent --list-all" # impossible combination
 assert_bad           "--direct --passthrough --get-chains ipv4 filter" # impossible combination
 
 echo "----------------------------------------------------------------------"
-echo "Everything's OK, you rock :-)"
-
-exit 0
+if [ ${failures} -eq 0 ]; then
+    echo "Everything's OK, you rock :-)"
+    exit 0
+else
+    echo "FAILED (failures=${failures})"
+    exit 2
+fi
