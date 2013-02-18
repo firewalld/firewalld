@@ -28,6 +28,7 @@ firewalld has a D\-BUS interface for firewall configuration of services and appl
 For more information on the firewalld D\-BUS interface, please have a look at the \fBfirewalld.dbus\fR(5) man page. 
 
 firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and persistent configuration options.
+Persistent configuration is loaded from XML files in /usr/lib/firewalld or /etc/firewalld (see \fBDIRECTORIES\fR).
 
 If NetworkManager is not used, there are some limitations: firewalld will not get notified about network device renames. If firewalld gets started after the network is already up, the connections are not bound to a zone. 
 Manually created interfaces are not bound to a zone. Please add them to a zone with \fIfirewall-cmd --zone=<zone> --add--interface=<interface>\fR.
@@ -87,5 +88,9 @@ Reloads the complete firewall configuration. You can also use \fBfirewall\-cmd\ 
 
 .SH NOTES
 Firewalld home page at fedorahosted.org
-.RS 4
+.RS
 \fBhttp://fedorahosted.org/firewalld/\fR
+.RE
+More documentation with examples
+.RS
+\fBhttp://fedoraproject.org/wiki/FirewallD/\fR
