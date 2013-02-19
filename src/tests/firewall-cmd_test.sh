@@ -16,7 +16,7 @@ assert_good() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status)"
-    failures=$((++failures))
+    ((failures++))
   fi
 }
 
@@ -27,7 +27,7 @@ assert_good_notempty() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or empty return value)"
-    failures=$((++failures))
+    ((failures++))
   fi
 }
 
@@ -38,7 +38,7 @@ assert_good_empty() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or non-empty return value)"
-    failures=$((++failures))
+    ((failures++))
   fi
 }
 
@@ -50,7 +50,7 @@ assert_good_equals() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or '${ret}' != '${value}')"
-    failures=$((++failures))
+    ((failures++))
   fi
 }
 
@@ -62,7 +62,7 @@ assert_good_contains() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (non-zero exit status or '${ret}' does not contain '${value}')"
-    failures=$((++failures))
+    ((failures++))
   fi
 }
 
@@ -73,7 +73,7 @@ assert_bad() {
     echo "${args} ... OK"
   else
     echo "${args} ... FAILED (zero exit status)"
-    failures=$((++failures))
+    ((failures++))
   fi
 }
 
