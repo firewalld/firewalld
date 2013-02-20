@@ -174,7 +174,8 @@ class Firewall:
         else:
             log.debug1("Using default zone '%s'", default_zone)
 
-        self.set_default_zone(default_zone)
+        self._default_zone = self.check_zone(default_zone)
+        self.zone.change_default_zone(None, self._default_zone)
 
         self._state = "RUNNING"
 
