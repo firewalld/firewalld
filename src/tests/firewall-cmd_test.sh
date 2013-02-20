@@ -92,9 +92,10 @@ assert_good "--disable-panic"
 assert_bad  "--query-panic"
 
 default_zone=$(firewall-cmd --get-default-zone)
+zone="home"
 assert_good_notempty "--get-default-zone"
-assert_good          "--set-default-zone=home"
-assert_good_equals   "--get-default-zone" "home"
+assert_good          "--set-default-zone=${zone}"
+assert_good_equals   "--get-default-zone" "${zone}"
 assert_good          "--set-default-zone=${default_zone}"
 assert_bad           "--set-default-zone" # missing argument
 
@@ -131,6 +132,21 @@ assert_bad           "--zone=${zone} --get-services" # impossible combination
 assert_bad           "--zone=${zone} --get-default-zone" # impossible combination
 assert_bad           "--zone=${zone} --set-default-zone" # impossible combination
 assert_bad           "--zone=${zone} --get-zone-of-interface" # impossible combination
+
+iface1="foo"
+iface2="bar"
+zone="trusted"
+assert_good        "--add-interface=${iface1}"
+assert_good        "--add-interface=${iface2} --zone=${default_zone}"
+assert_good        "--set-default-zone=${zone}"
+assert_good_equals "--get-default-zone" "${zone}"
+# check that changing default zone moves interfaces in that zone
+assert_good        "--query-interface ${iface1} --zone=${zone}"
+# check that *only* iface1 was moved to new default zone
+assert_good        "--query-interface ${iface2} --zone=${default_zone}"
+assert_good        "--set-default-zone=${default_zone}"
+assert_good        "--remove-interface=${iface1}"
+assert_good        "--remove-interface=${iface2}"
 
 assert_good "   --add-service=dns --timeout 60 --zone=${default_zone}"
 assert_good " --query-service dns"
