@@ -810,6 +810,18 @@ class FirewallConfig(object):
         self.fw.reload()
 
     def onChangeView(self, *args):
+        # Fix interaction problem of changed event of gtk combobox with 
+        # polkit-kde by processing all remaining events.
+        #
+        # The changed callback is signaled before the popup window has been
+        # destroyed and before the focus (keyboard and mouse) has been reset.
+        # This results in a deadlock in KDE and Qt, because the polkit KDE
+        # agent can not get the focus and the user has no chance to enter the
+        # desired password into the agent and is also not able to close the
+        # agent with the mouse. The focus is still on the combobox popup.
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
                                  _("Runtime Configuration"))
 
