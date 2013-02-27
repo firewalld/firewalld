@@ -38,10 +38,10 @@ Reload firewall completely, even netfilter kernel modules. This will most likely
 
 .SS Panic Options
 .TP
-\fB--enable-panic\fR
+\fB--panic-on\fR
 Enable panic mode. All incoming and outgoing packets are dropped, active connections will be terminated after a while of activity. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.
 .TP
-\fB--disable-panic\fR
+\fB--panic-off\fR
 Disable panic mode again. After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time.
 .TP
 \fB--query-panic\fR

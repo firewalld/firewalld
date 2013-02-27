@@ -51,7 +51,7 @@ OPTIONS_DIRECT="--passthrough \
 # these all can be used as a "first" option
 OPTIONS_GENERAL="--help --version \
                  --state --reload --complete-reload \
-                 --enable-panic --disable-panic --query-panic \
+                 --panic-on --panic-off --query-panic \
                  --get-default-zone --set-default-zone= \
                  --get-active-zones --get-zone-of-interface= --list-all-zones \
                  ${OPTIONS_CONFIG} \

@@ -95,8 +95,8 @@ parser_group_standalone.add_argument("-V", "--version", action="store_true")
 parser_group_standalone.add_argument("--state", action="store_true")
 parser_group_standalone.add_argument("--reload", action="store_true")
 parser_group_standalone.add_argument("--complete-reload", action="store_true")
-parser_group_standalone.add_argument("--enable-panic", action="store_true")
-parser_group_standalone.add_argument("--disable-panic", action="store_true")
+parser_group_standalone.add_argument("--panic-on", action="store_true")
+parser_group_standalone.add_argument("--panic-off", action="store_true")
 parser_group_standalone.add_argument("--query-panic", action="store_true")
 parser_group_standalone.add_argument("--get-default-zone", action="store_true")
 parser_group_standalone.add_argument("--set-default-zone", metavar="<zone>")
@@ -164,7 +164,7 @@ a = parser.parse_args()
 
 options_standalone = a.help or a.version or \
                      a.state or a.reload or a.complete_reload or \
-                     a.enable_panic or a.disable_panic or a.query_panic or \
+                     a.panic_on or a.panic_off or a.query_panic or \
                      a.get_default_zone or a.set_default_zone or \
                      a.get_active_zones or a.get_zone_of_interface or \
                      a.list_all_zones
@@ -401,9 +401,9 @@ try:
             print(" ".join(l))
 
     # panic
-    elif a.enable_panic:
+    elif a.panic_on:
         fw.enablePanicMode()
-    elif a.disable_panic:
+    elif a.panic_off:
         fw.disablePanicMode()
     elif a.query_panic:
         sys.exit(not fw.queryPanicMode())

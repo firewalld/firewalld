@@ -86,9 +86,9 @@ assert_good "--help"
 assert_good "-V"
 assert_good "--reload"
 assert_good "--complete-reload"
-assert_good "--enable-panic"
+assert_good "--panic-on"
 assert_good "--query-panic"
-assert_good "--disable-panic"
+assert_good "--panic-off"
 assert_bad  "--query-panic"
 
 default_zone=$(firewall-cmd --get-default-zone)
