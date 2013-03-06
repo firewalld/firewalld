@@ -633,6 +633,8 @@ class FirewallZone:
         if toaddr:
             to += toaddr
 
+        filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
+
         if toport and toport != "":
             toport_str = portStr(toport)
             dest = [ "--dport", toport_str ]
@@ -643,10 +645,7 @@ class FirewallZone:
         if enable:
             self.add_chain(zone, "mangle", "PREROUTING")
             self.add_chain(zone, "nat", "PREROUTING")
-            if not toaddr:
-                self.add_chain(zone, "filter", "INPUT")
-            else:
-                self.add_chain(zone, "filter", "FORWARD_IN")
+            self.add_chain(zone, "filter", filter_chain)
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!
@@ -662,22 +661,12 @@ class FirewallZone:
                                  "-p", protocol ] + mark + \
                               [ "-j", "DNAT", "--to-destination", to ]))
 
-            if not toaddr:
-                # local only
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["INPUT"], zone=zone)
-                rules.append((ipv, [ "%s_allow" % (target),
-                                     "-t", "filter", 
-                                     "-m", "conntrack", "--ctstate", "NEW" ] + \
-                                  mark + [ "-j", "ACCEPT" ]))
-            else:
-                # FORWARD_IN
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["FORWARD_IN"], zone=zone)
-                rules.append((ipv, [ "%s_allow" % (target),
-                                     "-t", "filter",
-                                     "-m", "conntrack", "--ctstate", "NEW" ] + \
-                                  mark + [ "-j", "ACCEPT" ]))
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
+                                                zone=zone)
+            rules.append((ipv, [ "%s_allow" % (target),
+                                 "-t", "filter",
+                                 "-m", "conntrack", "--ctstate", "NEW" ] + \
+                               mark + [ "-j", "ACCEPT" ]))
 
         # handle rules
         ret = self._fw.handle_rules(rules, enable)
@@ -691,10 +680,7 @@ class FirewallZone:
         if not enable:
             self.remove_chain(zone, "mangle", "PREROUTING")
             self.remove_chain(zone, "nat", "PREROUTING")
-            if not toaddr:
-                self.remove_chain(zone, "filter", "INPUT")
-            else:
-                self.remove_chain(zone, "filter", "FORWARD_IN")
+            self.remove_chain(zone, "filter", filter_chain)
 
     def add_forward_port(self, zone, port, protocol, toport=None,
                          toaddr=None, timeout=0, sender=None):
