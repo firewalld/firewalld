@@ -264,7 +264,7 @@ class FirewallZone:
                     target = self._zones[zone].target.format(
                         chain=SHORTCUTS[chain], zone=zone)
                     if target in [ "REJECT", "%%REJECT%%" ] and \
-                            src_chain not in [ "INPUT", "FORWARD", "OUTPUT" ]:
+                            src_chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                         # REJECT is only valid in the INPUT, FORWARD and
                         # OUTPUT chains, and user-defined chains which are 
                         # only called from those chains

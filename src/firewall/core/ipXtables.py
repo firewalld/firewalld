@@ -83,14 +83,16 @@ DEFAULT_RULES["filter"] = [
     "-I INPUT 6 -j %%REJECT%%",
 
     "-N FORWARD_direct",
-    "-N FORWARD_ZONES",
+    "-N FORWARD_IN_ZONES",
+    "-N FORWARD_OUT_ZONES",
 
     "-I FORWARD 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
     "-I FORWARD 2 -i lo -j ACCEPT",
     "-I FORWARD 3 -j FORWARD_direct",
-    "-I FORWARD 4 -j FORWARD_ZONES",
-    "-I FORWARD 5 -p %%ICMP%% -j ACCEPT",
-    "-I FORWARD 6 -j %%REJECT%%",
+    "-I FORWARD 4 -j FORWARD_IN_ZONES",
+    "-I FORWARD 5 -j FORWARD_OUT_ZONES",
+    "-I FORWARD 6 -p %%ICMP%% -j ACCEPT",
+    "-I FORWARD 7 -j %%REJECT%%",
 
     "-N OUTPUT_direct",
 
