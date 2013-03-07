@@ -40,15 +40,6 @@ INTERFACE_ZONE_OPTS = {
     "OUTPUT": "-o",
 }
 
-INTERFACE_ZONE_SRC = {
-    "PREROUTING": "PREROUTING",
-    "POSTROUTING": "POSTROUTING",
-    "INPUT": "INPUT",
-    "FORWARD_IN": "FORWARD_IN",
-    "FORWARD_OUT": "FORWARD_OUT",
-    "OUTPUT": "OUTPUT",
-}
-
 ZONE_CHAINS = {
     "filter": {
         "INPUT": [ "ipv4", "ipv6" ],

@@ -260,11 +260,10 @@ class FirewallZone:
                     # handle trust and block zone directly, accept or reject
                     # others will be placed into the proper zone chains
                     opt = INTERFACE_ZONE_OPTS[chain]
-                    src_chain = INTERFACE_ZONE_SRC[chain]
                     target = self._zones[zone].target.format(
                         chain=SHORTCUTS[chain], zone=zone)
                     if target in [ "REJECT", "%%REJECT%%" ] and \
-                            src_chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                            chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                         # REJECT is only valid in the INPUT, FORWARD and
                         # OUTPUT chains, and user-defined chains which are 
                         # only called from those chains
@@ -273,7 +272,7 @@ class FirewallZone:
                         # DROP is not supported in nat table
                         continue
                     action = "-g" if "_ZONE_" in target else "-j"
-                    rule = [ "%s_ZONES" % src_chain, "-t", table,
+                    rule = [ "%s_ZONES" % chain, "-t", table,
                              opt, interface, action, target ]
                     if enable and not append:
                         rule.insert(1, "1")
