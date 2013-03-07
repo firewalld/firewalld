@@ -21,7 +21,10 @@ Prints a short help text and exists.
 Set the debug level for firewalld to \fIlevel\fR. The debug output will be written to the firewalld log file \fI/var/log/firewalld\fR.
 .TP
 \fB\-\-nofork\fR
-Turn off daemon forking, firewalld runs in the foreground.
+Turn off daemon forking. Force firewalld to run as a foreground process instead of as a daemon in the background.
+.TP
+\fB\-\-nopid\fR
+Disable writing pid file. By default the program will write a pid file. If the program is invoked with this option it will not check for an existing server process.
 
 .SH CONCEPTS
 firewalld has a D\-BUS interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D\-BUS can request changes to the firewall with the D\-BUS interface directly. 

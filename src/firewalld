@@ -45,8 +45,12 @@ parser.add_argument('--debug',
                             to specify log level.""" % log.DEBUG_MAX,
                     metavar="level")
 parser.add_argument('--nofork',
-                    help="""Force firewalld to run as a foreground process
-                            instead of as a daemon in the background.""",
+                    help="""Turn off daemon forking,
+                            run as a foreground process.""",
+                    action="store_true")
+parser.add_argument('--nopid',
+                    help="""Disable writing pid file and don't check
+                            for existing server process.""",
                     action="store_true")
 args = parser.parse_args()
 
@@ -74,7 +78,7 @@ if args.debug:
         log.addInfoLogging("*", log.stdout)
         log.addDebugLogging("*", log.stdout)
 
-if firewalld_is_active():
+if not args.nopid and firewalld_is_active():
     log.fatal(_("Not starting FirewallD, already running."))
     sys.exit(1)
 
@@ -91,34 +95,40 @@ try:
         os.chdir("/")
         os.setsid()
         os.umask(os.umask(0077) | 0022)
-    
-    # write the pid file
-    pid_file = "/var/run/firewalld.pid"
-    f = open(pid_file, "w")
-    f.write(str(os.getpid()))
-    f.close()
+
+    if not args.nopid:
+        # write the pid file
+        pid_file = "/var/run/firewalld.pid"
+        f = open(pid_file, "w")
+        f.write(str(os.getpid()))
+        f.close()
 
     # import here
     from firewall.server import server
     server.run_server()
 
+    if not args.nopid:
+        os.remove(pid_file)
+
 except OSError as e:
     log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
     log.error(traceback.format_exc())
-    os.remove(pid_file)
+    if not args.nopid:
+        os.remove(pid_file)
     sys.exit(1)
 
 except dbus.DBusException as e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
-    os.remove(pid_file)
+    if not args.nopid:
+        os.remove(pid_file)
     sys.exit(1)
 
 except IOError as e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
-    os.remove(pid_file)
+    if not args.nopid:
+        os.remove(pid_file)
     sys.exit(1)
 
-os.remove(pid_file)
 sys.exit(0)
