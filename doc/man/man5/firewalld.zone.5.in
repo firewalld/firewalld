@@ -16,7 +16,7 @@ This example configuration file shows the structure of a zone configuration file
 
 .nf
 <?xml version="1.0" encoding="utf-8"?>
-<zone name="\fImyzone\fR" version="\fI1.0\fR" immutable="\fIFalse\fR">
+<zone version="\fI1.0\fR" immutable="\fIFalse\fR">
   <short>\fIMy Zone\fR</short>
   <description>\fIdescription\fR</description>
   <service name="\fIssh\fR"/>
@@ -31,16 +31,7 @@ This example configuration file shows the structure of a zone configuration file
 The config can contain these tags and attributes. Some of them are mandatory, others optional.
 
 .SS zone
-The mandatory zone start and end tag defines the zone. This tag can only be used once in a zone configuration file. There are mandatory and also optional attributes for zones:
-
-Mandatory attributes:
-
-\fIname="\fR<string>\fI"\fR
-.RS 4
-defines the name of the zone as a string. This name is used by firewalld and firewall-cmd.
-.RE
-
-Optional attributes:
+The mandatory zone start and end tag defines the zone. This tag can only be used once in a zone configuration file. There are optional attributes for zones:
 
 \fIversion="\fR<string>\fI"\fR
 .RS 4
@@ -50,6 +41,11 @@ To give the zone a version.
 \fIimmutable="\fR<bool>\fI"\fR
 .RS 4
 Can be used to mark a zone as immutable. That means that the zone can not get modified. Possible values are \fIyes\fR or \fItrue\fR, the default value is \fIfalse\fR.
+.RE
+
+\fItarget="\fR[ACCEPT|%%REJECT%%|DROP]\fI"\fR
+.RS 4
+Can be used to accept, reject or drop every packet. \fIACCEPT\fR target is used in \fItrusted\fR zone, \fI%%REJECT%%\fR in \fIblock\fR zone and \fIDROP\fR in \fIdrop\fR zone.
 .RE
 
 .SS short
