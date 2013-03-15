@@ -16,7 +16,7 @@ This example configuration file shows the structure of a service configuration f
 
 .nf
 <?xml version="1.0" encoding="utf-8"?>
-<service name="\fImyservice\fR" version="\fI1.0\fR">
+<service version="\fI1.0\fR">
   <short>\fIMy Service\fR</short>
   <description>\fIdescription\fR</description>
   <port port="\fI137\fR" protocol="\fItcp\fR"/>
@@ -29,16 +29,7 @@ This example configuration file shows the structure of a service configuration f
 The config can contain these tags and attributes. Some of them are mandatory, others optional.
 
 .SS service
-The mandatory service start and end tag defines the service. This tag can only be used once in a service configuration file. There are mandatory and also optional attributes for services:
-
-Mandatory attributes:
-
-\fIname="\fR<string>\fI"\fR
-.RS 4
-defines the name of the service as a string. This name is used by firewalld and firewall-cmd.
-.RE
-
-Optional attributes:
+The mandatory service start and end tag defines the service. This tag can only be used once in a service configuration file. There are optional attributes for services:
 
 \fIversion="\fR<string>\fI"\fR
 .RS 4

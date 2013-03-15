@@ -16,7 +16,7 @@ This example configuration file shows the structure of an Internet Control Messa
 
 .nf
 <?xml version="1.0" encoding="utf-8"?>
-<icmptype name="\fImyicmptype\fR" version="\fI1.0\fR">
+<icmptype version="\fI1.0\fR">
   <short>\fIMy Icmptype\fR</short>
   <description>\fIdescription\fR</description>
   <destination ipv4="\fIyes\fR" ipv6="\fIyes\fR"/>
@@ -27,16 +27,7 @@ This example configuration file shows the structure of an Internet Control Messa
 The config can contain these tags and attributes. Some of them are mandatory, others optional.
 
 .SS icmptype
-The mandatory icmptype start and end tag defines the icmptype. This tag can only be used once in an icmptype configuration file. This tag has mandatory and also optional attributes:
-
-Mandatory attributes:
-
-\fIname="\fR<string>\fI"\fR
-.RS 4
-defines the name of the icmptype as a string. This name is used by firewalld and firewall-cmd.
-.RE
-
-Optional attributes:
+The mandatory icmptype start and end tag defines the icmptype. This tag can only be used once in an icmptype configuration file. This tag has optional attributes:
 
 \fIversion="\fR<string>\fI"\fR
 .RS 4
