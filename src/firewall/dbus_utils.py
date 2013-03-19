@@ -53,7 +53,7 @@ def uid_of_sender(bus, sender):
     dbus_iface = dbus.Interface(dbus_obj, 'org.freedesktop.DBus')
 
     try:
-        uid = dbus_iface.GetConnectionUnixUser(sender)
+        uid = int(dbus_iface.GetConnectionUnixUser(sender))
     except:
         return None
     return uid
@@ -78,7 +78,8 @@ def context_of_sender(bus, sender):
         context =  dbus_iface.GetConnectionSELinuxSecurityContext(sender)
     except:
         return None
-    return context
+
+    return "".join(map(chr, dbus_to_python(context)))
 
 def command_of_sender(bus, sender):
     """ Return command of D-BUS sender """
