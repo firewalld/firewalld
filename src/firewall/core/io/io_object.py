@@ -138,7 +138,8 @@ class IO_Object(object):
             raise FirewallError(PARSE_ERROR, "Unexpected element %s" % name)
          # raise attributes[0]
         for x in _attrs:
-            raise FirewallError(PARSE_ERROR, "Unexpected attribute %s" % name)
+            raise FirewallError(PARSE_ERROR, "%s: Unexpected attribute %s" % 
+                                (name, x))
  
 # PARSER
 
@@ -171,7 +172,7 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
     def startDocument(self):
         self._element = None
 
-    def endElement(self, name): 
+    def endElement(self, name):
         if name == "short":
             self.item.short = self._element
             self._element = None
