@@ -19,6 +19,9 @@ This example configuration file shows the structure of a zone configuration file
 <zone version="\fI1.0\fR" immutable="\fIFalse\fR">
   <short>\fIMy Zone\fR</short>
   <description>\fIdescription\fR</description>
+  <interface name="\fIeth29\fR"/>
+  <source family="\fIipv4\fR" address="\fI192.168.0.0/24\fR"/>
+  <source family="\fIipv6\fR" address="\fI1:2:3:4::\fR"/>
   <service name="\fIssh\fR"/>
   <port port="\fI21\fR" protocol="\fItcp\fR"/>
   <icmp-block name="\fIsource-quench\fR"/>
@@ -53,6 +56,27 @@ Is an optional start and end tag and is used to give a zone a more readable name
 
 .SS description
 Is an optional start and end tag to have a description for a zone.
+
+.SS interface
+Is an optional empty-element tag and can be used several times. It can be used to bind an interface to a zone. An interface entry has exactly one attribute:
+
+\fIname="\fR<string>\fI"\fR
+.RS 4
+The name of the interface to be bound to the zone.
+.RE
+
+.SS source
+Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. A source entry has exactly two attributes:
+
+\fIfamily="\fRipv4|ipv6\fI"\fR
+.RS 4
+The family of the address. It can be either \fIipv4\fR or \fIipv6\fR.
+.RE
+
+\fIaddress="\fR<string>\fI"\fR
+.RS 4
+The address or address range.
+.RE
 
 .SS service
 Is an optional empty-element tag and can be used several times to have more than one service entry enabled. A service entry has exactly one attribute:
