@@ -198,6 +198,7 @@ Get all chains added to table \fI<table>\fR as a space separated list.
 .TP
 \fB--direct\fR \fB--add-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR
 Add a rule with the arguments \fI<args>\fR to chain \fI<chain>\fR in table \fI<table>\fR with priority \fI<priority>\fR.
+The \fI<priority>\fR is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
 .TP
 \fB--direct\fR \fB--remove-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR
 Remove a rule with the arguments \fI<args>\fR from chain \fI<chain>\fR in table \fI<table>\fR.
