@@ -22,7 +22,9 @@
 import time
 from firewall.core.base import *
 from firewall.core.logger import log
-from firewall.functions import portStr, checkIPnMask, checkIP6nMask
+from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
+    checkProtocol
+from firewall.core.rich import *
 from firewall.errors import *
 
 class FirewallZone:
@@ -73,7 +75,7 @@ class FirewallZone:
         obj.settings = { x : {} for x in [ "interfaces", "sources",
                                            "services", "ports",
                                            "masquerade", "forward_ports",
-                                           "icmp_blocks" ] }
+                                           "icmp_blocks", "rules" ] }
 
         self._zones[obj.name] = obj
 
@@ -92,6 +94,8 @@ class FirewallZone:
             self._error2warning(self.add_port, obj.name, *args)
         if obj.masquerade:
             self._error2warning(self.add_masquerade, obj.name)
+        for args in obj.rules:
+            self._error2warning(self.add_rule, obj.name, args)
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
@@ -109,6 +113,8 @@ class FirewallZone:
             self._error2warning(self.remove_port, obj.name, *args)
         if obj.masquerade:
             self._error2warning(self.remove_masquerade, obj.name)
+        for args in obj.rules:
+            self._error2warning(self.remove_rule, obj.name, args)
 
         obj.settings.clear()
         del self._zones[zone]
@@ -144,11 +150,14 @@ class FirewallZone:
 
             for ipv in ipvs:
                 chains.append((ipv, [ _zone, "-t", table ]))
+                chains.append((ipv, [ "%s_log" % (_zone), "-t", table ]))
                 chains.append((ipv, [ "%s_deny" % (_zone), "-t", table ]))
                 chains.append((ipv, [ "%s_allow" % (_zone), "-t", table ]))
                 rules.append((ipv, [ _zone, 1, "-t", table,
-                                     "-j", "%s_deny" % (_zone) ]))
+                                     "-j", "%s_log" % (_zone) ]))
                 rules.append((ipv, [ _zone, 2, "-t", table,
+                                     "-j", "%s_deny" % (_zone) ]))
+                rules.append((ipv, [ _zone, 3, "-t", table,
                                      "-j", "%s_allow" % (_zone) ]))
 
         if create:
@@ -255,6 +264,51 @@ class FirewallZone:
 
         except FirewallError as msg:
             log.error(msg)
+
+    # handle chains, modules and rules for a zone
+    def handle_cmr(self, zone, chains, modules, rules, enable):
+        cleanup_chains = None
+        cleanup_modules = None
+        cleanup_rules = None
+        
+        # handle chains
+        if enable:
+            for (table, chain) in chains:
+                self.add_chain(zone, table, chain)
+
+        # handle modules
+        module_return = self._fw.handle_modules(modules, enable)
+        if module_return == None:
+            # handle rules
+            rules_return = self._fw.handle_rules2(rules, enable)
+            if rules_return != None:
+                (cleanup_rules, msg) = rules_return
+            cleanup_chains = chains
+            cleanup_modules = modules
+        else:
+            # error loading modules
+            (cleanup_modules, msg) = module_return
+
+        # error case:
+        if cleanup_chains != None or cleanup_modules != None or \
+                cleanup_rules != None:
+            # cleanup chains
+            for (table, chain) in cleanup_chains:
+                if enable:
+                    self.remove_chain(zone, table, chain)
+                else:
+                    self.add_chain(zone, table, chain)
+            # cleanup modules
+            if cleanup_modules != None:
+                self._fw.handle_modules(cleanup_modules, not enable)
+            # cleanup rules
+            if cleanup_rules != None:
+                self._fw.handle_rules2(cleanup_rules, not enable)
+
+        # cleanup chains last
+        if not enable:
+            for (table, chain) in chains:
+                self.remove_chain(zone, table, chain)
 
     # INTERFACES
 
@@ -491,6 +545,361 @@ class FirewallZone:
     def get_sources(self, zone):
         return self.get_settings(zone)["sources"].keys()
 
+    # RICH LANGUAGE
+
+    def check_rule(self, rule):
+        rule.check()
+
+    def __rule_id(self, rule):
+        self.check_rule(rule)
+        return (str(rule))
+
+    def __rule_source(self, source, command):
+        if source:
+            if source.invert:
+                command.append("!")
+            command += [ "-s", source.addr ]
+
+    def __rule_destination(self, destination, command):
+        if destination:
+            if destination.invert:
+                command.append("!")
+            command += [ "-s", destination.addr ]
+
+    def __rule_limit(self, limit):
+        if limit:
+            return [ "-m", "limit", "--limit", limit.value ]
+        return [ ]
+
+    def __rule_log(self, ipv, table, target, rule, command, rules):
+        if not rule.log:
+            return
+        chain = "%s_log" % target
+        _command = command[:]
+        _command += [ "-j", "LOG" ]
+        if rule.log.prefix:
+            _command += [ "--log-prefix", '%s' % rule.log.prefix ]
+        if rule.log.level:
+            _command += [ "--log-level", '%s' % rule.log.level ]
+        _command += self.__rule_limit(rule.log.limit)
+        rules.append((ipv, table, chain, _command))
+
+    def __rule_audit(self, ipv, table, target, rule, command, rules):
+        if not rule.audit:
+            return
+        chain = "%s_log" % target
+        _command = command[:]
+        _command += [ "-j", "AUDIT", "--type", rule.audit.type ]
+        _command += self.__rule_limit(rule.audit.limit)
+        rules.append((ipv, table, chain, _command))
+
+    def __rule_action(self, ipv, table, target, rule, command, rules):
+        if not rule.action:
+            return
+        _command = command[:]
+        if type(rule.action) == Rich_Accept:
+            chain = "%s_allow" % target
+            _command += [ "-j", "ACCEPT" ]
+        elif type(rule.action) == Rich_Reject:
+            chain = "%s_deny" % target
+            _command += [ "-j", "REJECT" ]
+            if rule.action.type:
+                _command += [ "--reject-with", rule.action.type ]
+        elif type(rule.action) ==  Rich_Drop:
+            chain = "%s_deny" % target
+            _command += [ "-j", "DROP" ]
+        else:
+            raise FirewallError(INVALID_RULE,
+                                "Unknown action %s" % type(rule.action))
+        _command += self.__rule_limit(rule.action.limit)
+        rules.append((ipv, table, chain, _command))
+
+    def __rule(self, enable, zone, rule, mark_id):
+                       
+        chains = [ ]
+        modules = [ ]
+        rules = [ ]
+
+        if rule.family != None:
+            ipvs = [ rule.family ]
+        else:
+            ipvs = [ "ipv4", "ipv6" ]
+
+        for ipv in ipvs:
+
+            # SERVICE
+            if type(rule.element) == Rich_Service:
+                svc = self._fw.service.get_service(rule.element.name)
+
+                if len(svc.destination) > 0:
+                    if ipv not in svc.destination:
+                        # destination is set, only use if it contains ipv
+                        raise FirewallError(INVALID_RULE,
+                                            "Service %s is not usable with %s" % 
+                                            (rule.element.name, ipv))
+                    if svc.destination[ipv] != "" and rule.destination:
+                        # we can not use two destinations at the same time
+                        raise FirewallError(INVALID_RULE,
+                                            "Destination conflict with service.")
+
+                table = "filter"
+                chains.append([table, "INPUT" ])
+                modules += svc.modules
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                    zone=zone)
+
+                # create rules
+                for (port,proto) in svc.ports:
+                    table = "filter"
+                    command = [ ]
+                    self.__rule_source(rule.source, command)
+                    self.__rule_destination(rule.destination, command)
+
+                    if proto in [ "tcp", "udp" ]:
+                        command += [ "-m", proto, "-p", proto ]
+                    else:
+                        if ipv == "ipv4":
+                            command += [ "-p", proto ]
+                        else:
+                            command += [ "-m", "ipv6header", "--header", proto ]
+                    if port:
+                        command += [ "--dport", "%s" % portStr(port) ]
+                    if ipv in svc.destination and svc.destination[ipv] != "":
+                        command += [ "-d",  svc.destination[ipv] ]
+                    command += [ "-m", "conntrack", "--ctstate", "NEW" ]
+
+                    self.__rule_log(ipv, table, target, rule, command, rules)
+                    self.__rule_audit(ipv, table, target, rule, command, rules)
+                    self.__rule_action(ipv, table, target, rule, command, rules)
+
+            # PORT
+            elif type(rule.element) == Rich_Port:
+                port = rule.element.port
+                protocol = rule.element.protocol
+                self.check_port(port, protocol)
+
+                table = "filter"
+                chains.append([ table, "INPUT" ])
+                target = self._zones[zone].target.format(chain=SHORTCUTS["INPUT"],
+                                                         zone=zone)
+
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
+                command += [ "-m", protocol, "-p", protocol,
+                           "--dport", portStr(port),
+                           "-m", "conntrack", "--ctstate", "NEW" ]
+
+                self.__rule_log(ipv, table, target, rule, command, rules)
+                self.__rule_audit(ipv, table, target, rule, command, rules)
+                self.__rule_action(ipv, table, target, rule, command, rules)
+
+            # PROTOCOL
+            elif type(rule.element) == Rich_Protocol:
+                protocol = rule.element.value
+                self.check_protocol(protocol)
+
+                table = "filter"
+                chains.append([ table, "INPUT" ])
+                target = self._zones[zone].target.format(chain=SHORTCUTS["INPUT"],
+                                                         zone=zone)
+
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
+                command += [ "-p", protocol, 
+                             "-m", "conntrack", "--ctstate", "NEW" ]
+
+                self.__rule_log(ipv, table, target, rule, command, rules)
+                self.__rule_audit(ipv, table, target, rule, command, rules)
+                self.__rule_action(ipv, table, target, rule, command, rules)
+
+            # MASQUERADE
+            elif type(rule.element) == Rich_Masquerade:
+                chains.append([ "nat", "POSTROUTING" ])
+                chains.append([ "filter", "FORWARD_OUT" ])
+
+                # POSTROUTING
+                target = DEFAULT_ZONE_TARGET.format(
+                    chain=SHORTCUTS["POSTROUTING"], zone=zone)
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
+                command += [ "-j", "MASQUERADE" ]
+                rules.append((ipv, "nat", "%s_allow" % target, command))
+
+                # FORWARD_OUT
+                target = DEFAULT_ZONE_TARGET.format(
+                    chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
+                command = [ ]
+                # reverse source/destination !
+                self.__rule_source(rule.destination, command)
+                self.__rule_destination(rule.source, command)
+                command += [ "-j", "ACCEPT" ]
+                rules.append((ipv, "filter", "%s_allow" % target, command))
+
+            # FORWARD PORT
+            elif type(rule.element) == Rich_ForwardPort:
+                port = rule.element.port
+                protocol = rule.element.protocol
+                toport = rule.element.to_port
+                toaddr = rule.element.to_address
+                self.check_forward_port(ipv, port, protocol, toport, toaddr)
+
+                if enable:
+                    mark_id = self._fw.new_mark()
+
+                filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
+
+                chains.append([ "mangle", "PREROUTING" ])
+                chains.append([ "nat", "PREROUTING" ])
+                chains.append([ "filter", filter_chain ])
+
+                mark_str = "0x%x" % mark_id
+                port_str = portStr(port)
+
+                dest = [ ]
+                to = ""
+                if toaddr:
+                    to += toaddr
+
+                if toport and toport != "":
+                    toport_str = portStr(toport)
+                    dest = [ "--dport", toport_str ]
+                    to += ":%s" % portStr(toport, "-")
+
+                mark = [ "-m", "mark", "--mark", mark_str ]
+
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
+                                                    zone=zone)
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                command += [ "-p", protocol, "--dport", port_str,
+                             "-j", "MARK", "--set-mark", mark_str ]
+                rules.append((ipv, "mangle", "%s_allow" % target, command))
+
+                # local and remote
+                command = [ "-p", protocol ] + mark + \
+                    [ "-j", "DNAT", "--to-destination", to ]
+                rules.append((ipv, "nat", "%s_allow" % target, command))
+
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
+                                                    zone=zone)
+                command = [ "-m", "conntrack", "--ctstate", "NEW" ] + \
+                    mark + [ "-j", "ACCEPT" ]
+                rules.append((ipv, "filter", "%s_allow" % target, command))
+
+                if not enable:
+                    self._fw.del_mark(mark_id)
+
+            # ICMP BLOCK
+            elif type(rule.element) == Rich_IcmpBlock:
+                ict = self._fw.icmptype.get_icmptype(rule.element.name)
+
+                if rule.action and type(rule.action) == Rich_Accept:
+                    # icmp block might have reject or drop action, but not accept
+                    raise FirewallError(INVALID_RULE,
+                                        "IcmpBlock not usable with accept action")
+                if ict.destination and ipv not in ict.destination:
+                    raise FirewallError(INVALID_RULE,
+                                        "IcmpBlock %s not usable with %s" % 
+                                        (rule.element.name, ipv))
+
+                table = "filter"
+                chains.append([ table, "INPUT" ])
+                chains.append([ table, "FORWARD_IN" ])
+
+                if ipv == "ipv4":
+                    proto = [ "-p", "icmp" ]
+                    match = [ "-m", "icmp", "--icmp-type", rule.element.name ]
+                else:
+                    proto = [ "-p", "ipv6-icmp" ]
+                    match = [ "-m", "icmp6", "--icmpv6-type", rule.element.name ]
+
+
+                # INPUT
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                    zone=zone)
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
+                command += proto + match
+                self.__rule_log(ipv, table, target, rule, command, rules)
+                self.__rule_audit(ipv, table, target, rule, command, rules)
+                if rule.action:
+                    self.__rule_action(ipv, table, target, rule, command, rules)
+                else:
+                    command += [ "-j", "%%REJECT%%" ]
+                    rules.append((ipv, table, "%s_deny" % target, command))
+
+                # FORWARD_IN
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_IN"],
+                                                    zone=zone)
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
+                command += proto + match
+                self.__rule_log(ipv, table, target, rule, command, rules)
+                self.__rule_audit(ipv, table, target, rule, command, rules)
+                if rule.action:
+                    self.__rule_action(ipv, table, target, rule, command, rules)
+                else:
+                    command += [ "-j", "%%REJECT%%" ]
+                    rules.append((ipv, table, "%s_deny" % target, command))
+
+            # EVERYTHING ELSE
+            else:
+                raise FirewallError(INVALID_RULE, "Unknown element %s" % 
+                                    type(rule.element))
+
+        self.handle_cmr(zone, chains, modules, rules, enable)
+
+
+    def add_rule(self, zone, rule, timeout=0, sender=None):
+        _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        rule_id = self.__rule_id(rule)
+        if rule_id in _obj.settings["rules"]:
+            raise FirewallError(ALREADY_ENABLED)
+
+        mark = None
+        self.__rule(True, _zone, rule, mark)
+
+        _obj.settings["rules"][rule_id] = \
+            self.__gen_settings(timeout, sender, mark=mark)
+
+        return _zone
+
+    def remove_rule(self, zone, rule):
+        _zone = self._fw.check_zone(zone)
+        self.check_immutable(_zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        rule_id = self.__rule_id(rule)
+        if not rule_id in _obj.settings["rules"]:
+            raise FirewallError(NOT_ENABLED)
+
+        if "mark" in _obj.settings["rules"][rule_id]:
+            mark = _obj.settings["rules"][rule_id]["mark"]
+        else:
+            mark = None
+        self.__rule(False, _zone, rule, mark)
+
+        if rule_id in _obj.settings["rules"]:
+            del _obj.settings["rules"][rule_id]
+
+        return _zone
+
+    def query_rule(self, zone, rule):
+        return self.__rule_id(rule) in self.get_settings(zone)["rules"]
+
+    def get_rules(self, zone):
+        return self.get_settings(zone)["rules"].keys()
+
     # SERVICES
 
     def check_service(self, service):
@@ -671,6 +1080,12 @@ class FirewallZone:
     def get_ports(self, zone):
         return self.get_settings(zone)["ports"].keys()
 
+    # PROTOCOLS
+
+    def check_protocol(self, protocol):
+        if not checkProtocol(protocol):
+            raise FirewallError(INVALID_PROTOCOL, protocol)
+
     # MASQUERADE
 
     def __masquerade_id(self):
@@ -743,18 +1158,18 @@ class FirewallZone:
 
     # PORT FORWARDING
 
-    def check_forward_port(self, port, protocol, toport=None, toaddr=None):
+    def check_forward_port(self, ipv, port, protocol, toport=None, toaddr=None):
         self._fw.check_port(port)
         self._fw.check_protocol(protocol)
         if toport:
             self._fw.check_port(toport)
         if toaddr:
-            self._fw.check_ip(toaddr)
+            self._fw.check_address(ipv, toaddr)
         if not toport and not toaddr:
             raise FirewallError(INVALID_FORWARD)
 
     def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
-        self.check_forward_port(port, protocol, toport, toaddr)
+        self.check_forward_port("ipv4", port, protocol, toport, toaddr)
         return (portStr(port, "-"), protocol,
                 portStr(toport, "-"), str(toaddr))
 

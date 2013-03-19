@@ -185,6 +185,21 @@ def checkIP6nMask(ip):
             return False
     return True
 
+def checkProtocol(protocol):
+    try:
+        i = int(protocol)
+    except:
+        # string
+        try:
+            socket.getprotobyname(protocol)
+        except:
+            return False
+    else:
+        if i < 0 or i > 255:
+            return False
+
+    return True
+
 def checkInterface(iface):
     """ Check interface string
 

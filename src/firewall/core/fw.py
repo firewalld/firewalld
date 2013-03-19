@@ -292,6 +292,34 @@ class Firewall:
                 return (rules[:i], msg) # cleanup rules and error message
         return None
 
+    def handle_rules2(self, rules, enable, insert=False):
+        if insert:
+            append_delete = { True: "-I", False: "-D", }
+        else:
+            append_delete = { True: "-A", False: "-D", }
+
+        # appends rules
+        # returns None if all worked, else (cleanup rules, error message)
+        i = 0
+        for i in xrange(len(rules)):
+            if len(rules[i]) == 5:
+                (ipv, table, chain, rule, insert) = rules[i]
+            else:
+                (ipv, table, chain, rule) = rules[i]
+
+            # drop insert rule number if it exists
+            if insert and not enable and isinstance(rule[1], int):
+                rule.pop(1)
+
+            # run
+            try:
+                self.rule(ipv, [ "-t", table,
+                                 append_delete[enable], chain, ] + rule)
+            except Exception as msg:
+                log.error(msg)
+                return (rules[:i], msg) # cleanup rules and error message
+        return None
+
     def handle_chains(self, rules, enable):
         new_delete = { True: "-N", False: "-X" }
 
@@ -453,6 +481,16 @@ class Firewall:
     def check_ip(self, ip):
         if not functions.checkIP(ip):
             raise FirewallError(INVALID_ADDR, ip)
+
+    def check_address(self, ipv, source):
+        if ipv == "ipv4":
+            if not functions.checkIPnMask(source):
+                raise FirewallError(INVALID_ADDR, source)
+        elif ipv == "ipv6":
+            if not functions.checkIP6nMask(source):
+                raise FirewallError(INVALID_ADDR, source)
+        else:
+            raise FirewallError(INVALID_IPV)
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
