@@ -25,7 +25,7 @@ import shutil
 
 from firewall.core.logger import log
 
-valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit"]
+valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown"]
 
 class firewalld_conf:
     def __init__(self, filename):

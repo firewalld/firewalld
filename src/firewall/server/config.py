@@ -39,9 +39,9 @@ from firewall.server.config_zone import FirewallDConfigZone
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
-from firewall.dbus_utils import dbus_to_python
+from firewall.dbus_utils import dbus_to_python, \
+    command_of_sender, context_of_sender, uid_of_sender, user_of_uid
 from firewall.errors import *
-from firewall.dbus_utils import dbus_to_python
 
 ############################################################################
 #
@@ -228,6 +228,29 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.zones.remove(zone)
                 del zone
 
+    # access check
+
+    @dbus_handle_exceptions
+    def accessCheck(self, sender):
+        if self.config.lockdown_enabled():
+            if sender == None:
+                log.error("Lockdown not possible, sender not set.")
+                return
+            bus = dbus.SystemBus()
+            context = context_of_sender(bus, sender)
+            if self.config.access_check("context", context):
+                return
+            uid = uid_of_sender(bus, sender)
+            if self.config.access_check("uid", uid):
+                return
+            user = user_of_uid(uid)
+            if self.config.access_check("user", user):
+                return
+            command = command_of_sender(bus, sender)
+            if self.config.access_check("command", command):
+                return
+            raise FirewallError(ACCESS_DENIED, "lockdown is enabled")
+
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # I C M P T Y P E S
@@ -261,6 +284,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         icmptype = str(icmptype)
         log.debug1("config.addIcmpType('%s')", icmptype)
+        self.accessCheck(sender)
         obj = self.config.new_icmptype(icmptype, dbus_to_python(settings))
         config_icmptype = self._addIcmpType(obj)
         return config_icmptype
@@ -301,6 +325,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         service = str(service)
         log.debug1("config.addService('%s')", service)
+        self.accessCheck(sender)
         obj = self.config.new_service(service, dbus_to_python(settings))
         config_service = self._addService(obj)
         return config_service
@@ -341,6 +366,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         zone = str(zone)
         log.debug1("config.addZone('%s')", zone)
+        self.accessCheck(sender)
         obj = self.config.new_zone(zone, dbus_to_python(settings))
         config_zone = self._addZone(obj)
         return config_zone

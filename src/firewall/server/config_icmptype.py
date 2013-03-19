@@ -72,10 +72,10 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
 
     # P R O P E R T I E S
 
-    @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='ss',
+    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
     @dbus_handle_exceptions
-    def Get(self, interface_name, property_name):
+    def Get(self, interface_name, property_name, sender=None):
         # get a property
         log.debug1("config.icmptype.%d.Get('%s', '%s')", self.id,
                    interface_name, property_name)
@@ -101,10 +101,10 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
                 "Property '%s' isn't exported (or may not exist)" % \
                     property_name)
 
-    @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='s',
+    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
     @dbus_handle_exceptions
-    def GetAll(self, interface_name):
+    def GetAll(self, interface_name, sender=None):
         log.debug1("config.icmptype.%d.GetAll('%s')", self.id, interface_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
@@ -120,11 +120,12 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus.service.method(dbus.PROPERTIES_IFACE, in_signature='ssv')
+    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
-    def Set(self, interface_name, property_name, new_value):
+    def Set(self, interface_name, property_name, new_value, sender=None):
         log.debug1("config.icmptype.%d.Set('%s', '%s', '%s')", self.id,
                    interface_name, property_name, new_value)
+        self.parent.accessCheck(sender)
 
         if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
@@ -156,6 +157,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """update settings for icmptype
         """
         log.debug1("config.icmptype.%d.update('...')", self.id)
+        self.parent.accessCheck(sender)
         self.obj = self.config.set_icmptype_config(self.obj,
                                                 dbus_to_python(settings))
         self.Updated(self.obj.name)
@@ -166,6 +168,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """load default settings for builtin icmptype
         """
         log.debug1("config.icmptype.%d.loadDefaults()", self.id)
+        self.parent.accessCheck(sender)
         self.obj = self.config.load_icmptype_defaults(self.obj)
         self.Updated(self.obj.name)
 
@@ -182,6 +185,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """remove icmptype
         """
         log.debug1("config.icmptype.%d.removeIcmpType()", self.id)
+        self.parent.accessCheck(sender)
         self.config.remove_icmptype(self.obj)
         self.parent.removeIcmpType(self.obj)
 
@@ -198,6 +202,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         """rename icmptype
         """
         log.debug1("config.icmptype.%d.rename('%s')", self.id, name)
+        self.parent.accessCheck(sender)
         new_icmptype = self.config.rename_icmptype(self.obj, dbus_to_python(name))
         self.parent._addIcmpType(new_icmptype)
         self.parent.removeIcmpType(self.obj)

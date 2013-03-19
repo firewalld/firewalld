@@ -61,6 +61,14 @@ class FirewallConfig:
 
         self.__init_vars()
 
+    # access check
+
+    def lockdown_enabled(self):
+        return self._fw.lockdown_enabled()
+
+    def access_check(self, key, value):
+        return self._fw.access_check(key, value)
+
     # icmptypes
 
     def get_icmptypes(self):
