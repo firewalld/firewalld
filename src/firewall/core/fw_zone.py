@@ -43,9 +43,9 @@ class FirewallZone:
         return self._zones.keys()
 
     def get_zone_of_interface(self, interface):
-        self.check_interface(interface)
+        interface_id = self.__interface_id(interface)
         for zone in self._zones:
-            if interface in self._zones[zone].settings["interfaces"]:
+            if interface_id in self._zones[zone].settings["interfaces"]:
                 # an interface can only be part of one zone
                 return zone
         return None
@@ -346,7 +346,6 @@ class FirewallZone:
         return _zone
 
     def query_interface(self, zone, interface):
-        self._fw.check_interface(interface)
         return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
     def get_interfaces(self, zone):
