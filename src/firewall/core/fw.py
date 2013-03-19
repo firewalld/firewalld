@@ -341,10 +341,6 @@ class Firewall:
             default_rules = ebtables.DEFAULT_RULES
 
         for table in default_rules:
-            if ipv == "ipv6" and table == "nat":
-                # no nat for IPv6 for now
-                continue
-
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
                 _rule = prefix + rule.split()

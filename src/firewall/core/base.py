@@ -47,10 +47,10 @@ ZONE_CHAINS = {
         "FORWARD_OUT": [ "ipv4", "ipv6" ],
         },
     "nat": {
-        "PREROUTING": [ "ipv4" ],
-        "POSTROUTING": [ "ipv4" ],
+        "PREROUTING": [ "ipv4", "ipv6" ],
+        "POSTROUTING": [ "ipv4", "ipv6" ],
         },
     "mangle": {
-        "PREROUTING": [ "ipv4" ],
+        "PREROUTING": [ "ipv4", "ipv6" ],
         },
 }
