@@ -40,7 +40,7 @@ import dbus
 
 from firewall.config import *
 from firewall.config.dbus import *
-from firewall.client import *
+import firewall.client as client
 from firewall.functions import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
 
@@ -439,7 +439,8 @@ class FirewallConfig(object):
 
         # firewall client
 
-        self.fw = FirewallClient(wait=1)
+        client.exception_handler = self._error
+        self.fw = client.FirewallClient(wait=1)
 
         self.fw.connect("connection-changed", self.connection_changed)
 
@@ -506,20 +507,14 @@ class FirewallConfig(object):
         dialog.hide()
 
     def _error(self, msg):
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.ERROR)
-        dialog.set_markup("<b>" + _("Error") + "</b>")
-        dialog.format_secondary_markup(msg)
-        dialog.add_buttons(_("Retry"), 0,
-                           "gtk-quit", 1)
-        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        dialog.set_transient_for(self.mainWindow)
-        result = dialog.run()
-        dialog.hide()
-        if result == 1:
+        if self._dialog("<b>"+_("Error")+"</b>",
+                        message_type=Gtk.MessageType.ERROR, msg=msg, 
+                        buttons=((_("Retry"), 0),("gtk-quit", 1))) == 1:
             self.onQuit()
 
     def connection_changed(self):
         if self.fw.connected:
+            """
             # authorize
             while 1:
                 try:
@@ -534,6 +529,7 @@ class FirewallConfig(object):
                 else:
                     # break the loop, continue with configuration
                     break
+            """
             self.statusLabel.set_text(self.connected)
             self.modifiedLabel.set_text("")
             default_zone = self.fw.getDefaultZone()
@@ -1121,7 +1117,7 @@ class FirewallConfig(object):
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
         else:
-            settings = FirewallClientConfigZoneSettings()
+            settings = client.FirewallClientConfigZoneSettings()
 
         if old_version != version or old_short != short or \
                 old_desc != desc or old_immutable != immutable or \
@@ -1746,7 +1742,7 @@ class FirewallConfig(object):
             service = self.fw.config().getServiceByName(active_service)
             settings = service.getSettings()
         else:
-            settings = FirewallClientConfigServiceSettings()
+            settings = client.FirewallClientConfigServiceSettings()
 
         if old_version != version or old_short != short or \
                 old_desc != desc:
@@ -2093,7 +2089,7 @@ class FirewallConfig(object):
             icmp = self.fw.config().getIcmpTypeByName(active_icmp)
             settings = icmp.getSettings()
         else:
-            settings = FirewallClientConfigIcmpTypeSettings()
+            settings = client.FirewallClientConfigIcmpTypeSettings()
 
         if old_version != version or old_short != short or \
                 old_desc != desc:
