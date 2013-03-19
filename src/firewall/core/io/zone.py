@@ -56,10 +56,13 @@ class Zone(IO_Object):
         "icmp-block": [ "name" ],
         "masquerade": [ "enabled" ],
         "forward-port": [ "port", "protocol" ],
+        "interface": [ "name" ],
+        "source": [ "address" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "zone": [ "name", "immutable", "target", "version" ],
         "forward-port": [ "to-port", "to-addr" ],
+        "source": [ "not", "family" ],
         }
 
     def __init__(self):
@@ -74,6 +77,8 @@ class Zone(IO_Object):
         self.icmp_blocks = [ ]
         self.masquerade = False
         self.forward_ports = [ ]
+        self.interfaces = [ ]
+        self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
 
     def _check_config(self, config, item):
@@ -155,6 +160,31 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if entry not in self.item.forward_ports:
                 self.item.forward_ports.append(entry)
 
+        elif name == "interface":
+            # zone bound to interface
+            if not "name" in attrs:
+                log.error('Invalid interface: Name missing.')
+                self._rule_error = True
+                return
+            name = str(attrs["name"])
+            if name not in self.item.interfaces:
+                self.item.interfaces.append(name)
+
+        elif name == "source":
+            # zone bound to source
+            if not "address" in attrs:
+                log.error('Invalid source: Address missing.')
+                return
+            if not "family" in attrs:
+                log.error('Invalid source: Family missing.')
+                return
+            if "not" in attrs:
+                log.error('Invalid source: Invertion not allowed here.')
+                return
+            entry = (str(attrs["family"]), str(attrs["address"]))
+            if entry not in self.item.sources:
+                self.item.sources.append(entry)
+
 def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     zone = Zone()
@@ -216,6 +246,19 @@ def zone_writer(zone, path=None):
         handler.startElement("description", { })
         handler.characters(zone.description)
         handler.endElement("description")
+        handler.ignorableWhitespace("\n")
+
+    # interfaces
+    for interface in set(zone.interfaces):
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("interface", { "name": interface })
+        handler.ignorableWhitespace("\n")
+
+    # source
+    for source in set(zone.sources):
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("source", { "family": source[0],
+                                          "address": source[1] })
         handler.ignorableWhitespace("\n")
 
     # services

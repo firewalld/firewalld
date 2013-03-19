@@ -22,7 +22,7 @@
 import time
 from firewall.core.base import *
 from firewall.core.logger import log
-from firewall.functions import portStr
+from firewall.functions import portStr, checkIPnMask, checkIP6nMask
 from firewall.errors import *
 
 class FirewallZone:
@@ -50,6 +50,14 @@ class FirewallZone:
                 return zone
         return None
 
+    def get_zone_of_source(self, ipv, source):
+        source_id = self.__source_id(ipv, source)
+        for zone in self._zones:
+            if source_id in self._zones[zone].settings["sources"]:
+                # a source_id can only be part of one zone
+                return zone
+        return None        
+
     def get_zone(self, zone):
         z = self._fw.check_zone(zone)
         return self._zones[z]
@@ -62,12 +70,18 @@ class FirewallZone:
             log.warning("%s: %s" % (name, msg))
 
     def add_zone(self, obj):
-        obj.settings = { x : {} for x in [ "interfaces", "services", "ports",
-                               "masquerade", "forward_ports", "icmp_blocks" ] }
+        obj.settings = { x : {} for x in [ "interfaces", "sources",
+                                           "services", "ports",
+                                           "masquerade", "forward_ports",
+                                           "icmp_blocks" ] }
 
         self._zones[obj.name] = obj
 
         # load zone in case of missing services, icmptypes etc.
+        for args in obj.interfaces:
+            self._error2warning(self.add_interface, obj.name, args)
+        for args in obj.sources:
+            self._error2warning(self.add_source, obj.name, *args)
         for args in obj.icmp_blocks:
             self._error2warning(self.add_icmp_block, obj.name, args)
         for args in obj.forward_ports:
@@ -81,6 +95,10 @@ class FirewallZone:
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
+        for args in obj.interfaces:
+            self._error2warning(self.remove_interface, obj.name, args)
+        for args in obj.sources:
+            self._error2warning(self.remove_source, obj.name, *args)
         for args in obj.icmp_blocks:
             self._error2warning(self.remove_icmp_block, obj.name, args)
         for args in obj.forward_ports:
@@ -215,7 +233,9 @@ class FirewallZone:
                         # sender and timeout
                         continue
                     if key == "interfaces":
-                        self.add_interface(zone, args)
+                        self.change_zone_of_interface(zone, args)
+                    elif key == "sources":
+                        self.change_zone_of_source(zone, args)
                     elif key == "icmp_blocks":
                         self.add_icmp_block(zone, args)
                     elif key == "forward_ports":
@@ -350,6 +370,126 @@ class FirewallZone:
 
     def get_interfaces(self, zone):
         return self.get_settings(zone)["interfaces"].keys()
+
+    # SOURCES
+
+    def check_source(self, ipv, source):
+        if ipv == "ipv4":
+            if not checkIPnMask(source):
+                raise FirewallError(INVALID_ADDR, source)
+        elif ipv == "ipv6":
+            if not checkIP6nMask(source):
+                raise FirewallError(INVALID_ADDR, source)
+        else:
+            raise FirewallError(INVALID_IPV)
+
+    def __source_id(self, ipv, source):
+        self.check_source(ipv, source)
+        return (ipv, source)
+
+    def __source(self, enable, zone, ipv, source):
+        rules = [ ]
+
+        for table in ZONE_CHAINS:
+            for chain in ZONE_CHAINS[table]:
+                # create needed chains if not done already
+                if enable:
+                    self.add_chain(zone, table, chain)
+
+                # handle trust and block zone directly, accept or reject
+                # others will be placed into the proper zone chains
+                opt = INTERFACE_ZONE_OPTS[chain]
+
+                # transform INTERFACE_ZONE_OPTS for source address
+                if opt == "-i":
+                    opt = "-s"
+                if opt == "-o":
+                    opt = "-d"
+
+                target = self._zones[zone].target.format(
+                    chain=SHORTCUTS[chain], zone=zone)
+                if target in [ "REJECT", "%%REJECT%%" ] and \
+                        chain not in [ "INPUT", "FORWARD", "OUTPUT" ]:
+                    # REJECT is only valid in the INPUT, FORWARD and
+                    # OUTPUT chains, and user-defined chains which are 
+                    # only called from those chains
+                    continue
+                if target == "DROP" and table == "nat":
+                    # DROP is not supported in nat table
+                    continue
+                # append rule
+                rule = [ "%s_ZONES" % chain, "-t", table,
+                         opt, source, "-j", target ]
+                rules.append((ipv, rule))
+
+        # handle rules
+        ret = self._fw.handle_rules(rules, enable)
+        if ret:
+            (cleanup_rules, msg) = ret
+            self._fw.handle_rules(cleanup_rules, not enable)
+            log.debug2(msg)
+            raise FirewallError(COMMAND_FAILED, msg)
+
+        if not enable:
+            self.remove_chain(zone, table, chain)
+
+    def add_source(self, zone, ipv, source, sender=None):
+        self._fw.check_panic()
+        _zone = self._fw.check_zone(zone)
+        _obj = self._zones[_zone]
+
+        source_id = self.__source_id(ipv, source)
+
+        if source_id in _obj.settings["sources"]:
+            raise FirewallError(ZONE_ALREADY_SET)
+        if self.get_zone_of_source(ipv, source) != None:
+            raise FirewallError(ZONE_CONFLICT)
+
+        self.__source(True, _zone, ipv, source)
+
+        _obj.settings["sources"][source_id] = \
+            self.__gen_settings(0, sender)
+        # add information whether we add to default or specific zone
+        _obj.settings["sources"][source_id]["__default__"] = (not zone or zone == "")
+
+        return _zone
+
+    def change_zone_of_source(self, zone, ipv, source, sender=None):
+        self._fw.check_panic()
+        _old_zone = self.get_zone_of_source(ipv, source)
+        _new_zone = self._fw.check_zone(zone)
+
+        if _new_zone == _old_zone:
+            return _old_zone
+
+        if _old_zone != None:
+            self.remove_source(_old_zone, ipv, interface)
+
+        return self.add_source(zone, ipv, source, sender)
+
+    def remove_source(self, zone, ipv, source):
+        self._fw.check_panic()
+        zos = self.get_zone_of_source(ipv, source)
+        if zos == None:
+            raise FirewallError(UNKNOWN_SOURCE, source)
+        _zone = zos if zone == "" else self._fw.check_zone(zone)
+        if zos != _zone:
+            raise FirewallError(ZONE_CONFLICT)
+
+        _obj = self._zones[_zone]
+        source_id = self.__source_id(ipv, source)
+        self.__source(False, _zone, ipv, source)
+
+        if source_id in _obj.settings["sources"]:
+            del _obj.settings["sources"][source_id]
+
+        return _zone
+
+    def query_source(self, zone, ipv, source):
+        return self.__source_id(ipv, source) in self.get_settings(zone)["sources"]
+
+    def get_sources(self, zone):
+        return self.get_settings(zone)["sources"].keys()
 
     # SERVICES
 
