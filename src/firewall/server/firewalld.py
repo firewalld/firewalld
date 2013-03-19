@@ -401,7 +401,7 @@ class FirewallD(slip.dbus.service.Object):
         """
         interface = str(interface)
         log.debug1("zone.changeZone('%s', '%s')" % (zone, interface))
-        _zone = self.fw.zone.change_zone(zone, interface, sender)
+        _zone = self.fw.zone.change_zone_of_interface(zone, interface, sender)
 
         self.ZoneChanged(_zone, interface)
         return _zone

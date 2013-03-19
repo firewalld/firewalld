@@ -307,7 +307,7 @@ class FirewallZone:
 
         return _zone
 
-    def change_zone(self, zone, interface, sender=None):
+    def change_zone_of_interface(self, zone, interface, sender=None):
         self._fw.check_panic()
         _old_zone = self.get_zone_of_interface(interface)
         _new_zone = self._fw.check_zone(zone)

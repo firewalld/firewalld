@@ -568,6 +568,6 @@ class Firewall:
                 if settings["__default__"]:
                     # move only those that were added to default zone
                     # (not those that were added to specific zone same as default)
-                    self.zone.change_zone("", iface)
+                    self.zone.change_zone_of_interface("", iface)
         else:
             raise FirewallError(ZONE_ALREADY_SET, _zone)
