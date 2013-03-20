@@ -223,7 +223,6 @@ class FirewallD(slip.dbus.service.Object):
         """Reload the firewall rules.
         """
         log.debug1("reload()")
-        self.accessCheck(sender)
 
         self.fw.reload()
         self.config.reload()
@@ -241,7 +240,6 @@ class FirewallD(slip.dbus.service.Object):
         starts the firewall again.
         """
         log.debug1("completeReload()")
-        self.accessCheck(sender)
 
         self.fw.reload(True)
         self.Reloaded()
