@@ -1,6 +1,6 @@
 sconfdir = $(sysconfdir)/firewalld
 prefixlibdir = ${prefix}/lib/firewalld
-dist_sconf_DATA = firewalld.conf
+dist_sconf_DATA = firewalld.conf lockdown-whitelist.xml
 
 desktop_FILES = firewall-applet.desktop.in firewall-config.desktop.in
 desktopdir = $(datadir)/applications
