@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-14 15:11+0100\n"
+"POT-Creation-Date: 2013-03-20 17:51+0100\n"
 "PO-Revision-Date: 2012-09-06 11:07+0000\n"
 "Last-Translator: twoerner <twoerner@redhat.com>\n"
 "Language-Team: Portuguese <trans-pt@lists.fedoraproject.org>\n"
@@ -30,41 +30,35 @@ msgstr "Firewall"
 msgid "Firewall Configuration"
 msgstr "Configuração da Firewall"
 
-#: ../src/firewall/core/io/io_object.py:149
+#: ../src/firewall/client.py:51 ../src/firewall-config:524
+msgid "Authorization failed."
+msgstr ""
+
+#: ../src/firewall/core/io/io_object.py:148
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr ""
 
-#: ../src/firewall/core/io/io_object.py:156
+#: ../src/firewall/core/io/io_object.py:155
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#: ../src/firewall/core/io/io_object.py:164
+#: ../src/firewall/core/io/io_object.py:163
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
 
-#: ../src/firewalld:44
-#, c-format
-msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
-msgstr ""
-
-#: ../src/firewalld:50 ../src/firewall-offline-cmd:37
+#: ../src/firewalld:59 ../src/firewall-offline-cmd:37
 #, c-format
 msgid "You need to be root to run %s."
 msgstr ""
 
-#: ../src/firewalld:66
-#, c-format
-msgid "Unknown option '%s'"
-msgstr ""
-
-#: ../src/firewalld:93
+#: ../src/firewalld:82
 msgid "Not starting FirewallD, already running."
 msgstr ""
 
-#: ../src/firewalld:121
+#: ../src/firewalld:135
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
@@ -241,95 +235,91 @@ msgstr ""
 msgid "%s is missing"
 msgstr ""
 
-#: ../src/firewall-config:132 ../src/firewall-config:813
+#: ../src/firewall-config:133 ../src/firewall-config:821
 msgid "Runtime Configuration"
 msgstr ""
 
-#: ../src/firewall-config:133
+#: ../src/firewall-config:134
 msgid "Persistent Configuration"
 msgstr ""
 
-#: ../src/firewall-config:192 ../src/firewall-config.glade.h:82
+#: ../src/firewall-config:193 ../src/firewall-config.glade.h:82
 msgid "Service"
 msgstr "Serviço"
 
-#: ../src/firewall-config:199 ../src/firewall-config:229
-#: ../src/firewall-config:319
+#: ../src/firewall-config:200 ../src/firewall-config:230
+#: ../src/firewall-config:320
 msgid "Port"
 msgstr "Porto"
 
-#: ../src/firewall-config:201 ../src/firewall-config:231
-#: ../src/firewall-config:321
+#: ../src/firewall-config:202 ../src/firewall-config:232
+#: ../src/firewall-config:322
 msgid "Protocol"
 msgstr "Protocolo"
 
-#: ../src/firewall-config:233
+#: ../src/firewall-config:234
 msgid "To Port"
 msgstr "Para Porto"
 
-#: ../src/firewall-config:235
+#: ../src/firewall-config:236
 msgid "To Address"
 msgstr "Para Endereço:"
 
-#: ../src/firewall-config:272
+#: ../src/firewall-config:273
 msgid "Icmp Type"
 msgstr ""
 
-#: ../src/firewall-config:499 ../src/firewall-config:940
-#: ../src/firewall-config:977
+#: ../src/firewall-config:501 ../src/firewall-config:948
+#: ../src/firewall-config:985
 msgid "Warning"
 msgstr "Aviso"
 
-#: ../src/firewall-config:509
+#: ../src/firewall-config:510
 msgid "Error"
 msgstr "Erro"
 
-#: ../src/firewall-config:511
+#: ../src/firewall-config:512
 msgid "Retry"
 msgstr ""
 
-#: ../src/firewall-config:528
-msgid "Authorization failed."
-msgstr ""
-
-#: ../src/firewall-config:773
+#: ../src/firewall-config:770
 #, fuzzy, c-format
 msgid "Invalid name: %s "
 msgstr "Argumento inválido %s"
 
-#: ../src/firewall-config:775
+#: ../src/firewall-config:772
 #, c-format
 msgid "Name '%s' already exists"
 msgstr ""
 
-#: ../src/firewall-config:937
+#: ../src/firewall-config:945
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr ""
 
-#: ../src/firewall-config:941 ../src/firewall-config:978
+#: ../src/firewall-config:949 ../src/firewall-config:986
 #, fuzzy
 msgid "Remove"
 msgstr "Remover entrada"
 
-#: ../src/firewall-config:941 ../src/firewall-config:978
+#: ../src/firewall-config:949 ../src/firewall-config:986
 msgid "Ignore"
 msgstr ""
 
-#: ../src/firewall-config:974
+#: ../src/firewall-config:982
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr ""
 
-#: ../src/firewall-config:1075
+#: ../src/firewall-config:1083
 msgid "Built-in zone, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:1705
+#: ../src/firewall-config:1713
 msgid "Built-in service, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:2052
+#: ../src/firewall-config:2060
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 

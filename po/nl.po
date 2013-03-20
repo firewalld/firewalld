@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-14 15:11+0100\n"
+"POT-Creation-Date: 2013-03-20 17:51+0100\n"
 "PO-Revision-Date: 2012-09-18 11:24+0000\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/fedora/language/"
@@ -35,41 +35,35 @@ msgstr "Firewall"
 msgid "Firewall Configuration"
 msgstr "Firewall configuratie"
 
-#: ../src/firewall/core/io/io_object.py:149
+#: ../src/firewall/client.py:51 ../src/firewall-config:524
+msgid "Authorization failed."
+msgstr "Autorisatie is mislukt."
+
+#: ../src/firewall/core/io/io_object.py:148
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "Onverwacht element '%s'"
 
-#: ../src/firewall/core/io/io_object.py:156
+#: ../src/firewall/core/io/io_object.py:155
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "Element '%s': ontbrekend '%s' attribuut"
 
-#: ../src/firewall/core/io/io_object.py:164
+#: ../src/firewall/core/io/io_object.py:163
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "Element '%s': onverwacht  attribuut '%s'"
 
-#: ../src/firewalld:44
-#, c-format
-msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
-msgstr "Gebruik: %s [-h|--help] [--debug[=<level>]] [--nofork]"
-
-#: ../src/firewalld:50 ../src/firewall-offline-cmd:37
+#: ../src/firewalld:59 ../src/firewall-offline-cmd:37
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "Je moet root zijn om %s uit te voeren."
 
-#: ../src/firewalld:66
-#, c-format
-msgid "Unknown option '%s'"
-msgstr "Onbekende optie '%s'"
-
-#: ../src/firewalld:93
+#: ../src/firewalld:82
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD wordt niet gestart, het draait al."
 
-#: ../src/firewalld:121
+#: ../src/firewalld:135
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Afsplitsing #1 faalde: %d (%s)"
@@ -254,95 +248,91 @@ msgstr "Iconen laden is mislukt."
 msgid "%s is missing"
 msgstr ""
 
-#: ../src/firewall-config:132 ../src/firewall-config:813
+#: ../src/firewall-config:133 ../src/firewall-config:821
 msgid "Runtime Configuration"
 msgstr "Runtime configuratie"
 
-#: ../src/firewall-config:133
+#: ../src/firewall-config:134
 msgid "Persistent Configuration"
 msgstr "Persistente configuratie"
 
-#: ../src/firewall-config:192 ../src/firewall-config.glade.h:82
+#: ../src/firewall-config:193 ../src/firewall-config.glade.h:82
 msgid "Service"
 msgstr "Service"
 
-#: ../src/firewall-config:199 ../src/firewall-config:229
-#: ../src/firewall-config:319
+#: ../src/firewall-config:200 ../src/firewall-config:230
+#: ../src/firewall-config:320
 msgid "Port"
 msgstr "Poort"
 
-#: ../src/firewall-config:201 ../src/firewall-config:231
-#: ../src/firewall-config:321
+#: ../src/firewall-config:202 ../src/firewall-config:232
+#: ../src/firewall-config:322
 msgid "Protocol"
 msgstr "Protocol"
 
-#: ../src/firewall-config:233
+#: ../src/firewall-config:234
 msgid "To Port"
 msgstr "Naar poort"
 
-#: ../src/firewall-config:235
+#: ../src/firewall-config:236
 msgid "To Address"
 msgstr "Naar adres"
 
-#: ../src/firewall-config:272
+#: ../src/firewall-config:273
 msgid "Icmp Type"
 msgstr "Icmp type"
 
-#: ../src/firewall-config:499 ../src/firewall-config:940
-#: ../src/firewall-config:977
+#: ../src/firewall-config:501 ../src/firewall-config:948
+#: ../src/firewall-config:985
 msgid "Warning"
 msgstr "Waarschuwing"
 
-#: ../src/firewall-config:509
+#: ../src/firewall-config:510
 msgid "Error"
 msgstr "Fout"
 
-#: ../src/firewall-config:511
+#: ../src/firewall-config:512
 msgid "Retry"
 msgstr "Opnieuw proberen"
 
-#: ../src/firewall-config:528
-msgid "Authorization failed."
-msgstr "Autorisatie is mislukt."
-
-#: ../src/firewall-config:773
+#: ../src/firewall-config:770
 #, fuzzy, c-format
 msgid "Invalid name: %s "
 msgstr "Ongeldig argument %s"
 
-#: ../src/firewall-config:775
+#: ../src/firewall-config:772
 #, c-format
 msgid "Name '%s' already exists"
 msgstr ""
 
-#: ../src/firewall-config:937
+#: ../src/firewall-config:945
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr ""
 
-#: ../src/firewall-config:941 ../src/firewall-config:978
+#: ../src/firewall-config:949 ../src/firewall-config:986
 #, fuzzy
 msgid "Remove"
 msgstr "Verwijder zone"
 
-#: ../src/firewall-config:941 ../src/firewall-config:978
+#: ../src/firewall-config:949 ../src/firewall-config:986
 msgid "Ignore"
 msgstr ""
 
-#: ../src/firewall-config:974
+#: ../src/firewall-config:982
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr ""
 
-#: ../src/firewall-config:1075
+#: ../src/firewall-config:1083
 msgid "Built-in zone, rename not supported."
 msgstr "Ingebouwde zone, hernoemen niet ondersteund"
 
-#: ../src/firewall-config:1705
+#: ../src/firewall-config:1713
 msgid "Built-in service, rename not supported."
 msgstr "Ingebouwde service, hernoemen niet ondersteund"
 
-#: ../src/firewall-config:2052
+#: ../src/firewall-config:2060
 msgid "Built-in icmp, rename not supported."
 msgstr "Ingebouwde icmp, hernoemen niet ondersteund"
 
@@ -954,6 +944,12 @@ msgstr "%(option)s optie vereist %(count)s argumenten"
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s optie verwacht geen waarde"
+
+#~ msgid "Usage: %s [-h|--help] [--debug[=<level>]] [--nofork]"
+#~ msgstr "Gebruik: %s [-h|--help] [--debug[=<level>]] [--nofork]"
+
+#~ msgid "Unknown option '%s'"
+#~ msgstr "Onbekende optie '%s'"
 
 #~ msgid "Edit service entries for use in zones."
 #~ msgstr "Bewerk service ingangen voor gebruik in zones."

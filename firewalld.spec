@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.2.12
-Release: 2%{?dist}
+Version: 0.3.0
+Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 ExclusiveOS: Linux
@@ -149,6 +149,7 @@ fi
 %{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
+%config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
@@ -187,6 +188,44 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Wed Mar 20 2013 Thomas Woerner <twoerner@redhat.com> 0.3.0-1
+- Added rich language support
+- Added lockdown feature
+- Allow to bind interfaces and sources to zones permanently
+- Enabled IPv6 NAT support
+  masquerading and port/packet forwarding for IPv6 only with rich language
+- Handle polkit errors in client class and firewall-config
+- Added priority description for --direct --add-rule in firewall-cmd man page
+- Add XML Schemas for zones/services/icmptypes XMLs
+- Don't keep file descriptors open when forking
+- Introduce --nopid option for firewalld
+- New FORWARD_IN_ZONES and FORWARD_OUT_ZONES chains (RHBZ#912782)
+- Update cluster-suite service (RHBZ#885257)
+- firewall-cmd: rename --enable/disable-panic to --panic-on/off (RHBZ#874912)
+- Fix interaction problem of changed event of gtk combobox with polkit-kde
+  by processing all remaining events (RHBZ#915892)
+- Stop default zone rules being applied to all zones (RHBZ#912782)
+- Firewall.start(): don't call set_default_zone()
+- Add wiki's URL to firewalld(1) and firewall-cmd(1) man pages
+- firewalld-cmd: make --state verbose (RHBZ#886484)
+- improve firewalld --help (RHBZ#910492)
+- firewall-cmd: --add/remove-* can be used multiple times (RHBZ#879834)
+- Continue loading zone in case of wrong service/port etc. (RHBZ#909466)
+- Check also services and icmptypes in Zone() (RHBZ#909466)
+- Increase the maximum length of the port forwarding fields from 5 to 11 in
+  firewall-config
+- firewall-cmd: add usage to fail message
+- firewall-cmd: redefine usage to point to man page
+- firewall-cmd: fix visible problems with arg. parsing
+- Use argparse module for parsing command line options and arguments
+- firewall-cmd.1: better clarify where to find ACTIONs
+- firewall-cmd Bash completion
+- firewall-cmd.1: comment --zone=<zone> usage and move some options
+- Use zone's target only in %s_ZONES chains
+- default zone in firewalld.conf was set to public with every restart (#902845)
+- man page cleanup
+- code cleanup
+
 * Tue Jan 22 2013 Jiri Popelka <jpopelka@redhat.com> - 0.2.12-2
 - Default zone in firewalld.conf was reseted with every restart (RHBZ#902845)
 - Add icon cache related scriptlets for firewall-config (RHBZ#902680)
