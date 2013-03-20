@@ -46,10 +46,6 @@ elementFormDefault="qualified">
   </xs:restriction>
 </xs:simpleType>
 
-<xs:complexType name="enabledtype">
-  <xs:attribute name="enabled" type="booltype" use="required"/>
-</xs:complexType>
-
 <xs:complexType name="fwporttype">
   <xs:attribute name="port" type="porttyperestrict" use="required"/>
   <xs:attribute name="protocol" type="xs:string" use="required"/>
@@ -64,12 +60,6 @@ elementFormDefault="qualified">
   </xs:restriction>
 </xs:simpleType>
 
-<xs:simpleType name="booltype">
-  <xs:restriction base="xs:string">
-    <xs:pattern value="[Yy]es|[Nn]o|[Tt]rue|[Ff]alse"/>
-  </xs:restriction>
-</xs:simpleType>
-
 <xs:simpleType name="zonetargettype">
   <xs:restriction base="xs:string">
     <xs:pattern value="ACCEPT|DROP|%%REJECT%%"/>
@@ -81,20 +71,30 @@ elementFormDefault="qualified">
     <xs:element name="service" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
     <xs:element name="icmp-block" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="masquerade" type="enabledtype" minOccurs="0"/>
+    <xs:element name="masquerade" type="emptytype" minOccurs="0"/>
     <xs:element name="forward-port" type="fwporttype" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
 </xs:group>
 
+<xs:complexType name="emptytype">
+</xs:complexType>
+
 <xs:complexType name="ruletype">
   <xs:sequence>
     <xs:element name="source" type="sourcetype" minOccurs="0" maxOccurs="unbounded"/>
+    <xs:element name="protocol" type="protocoltype" minOccurs="0" maxOccurs="unbounded"/>
     <xs:group ref="rulegroup"/>
-    <xs:element name="log" type="logtype" minOccurs="0"/>
-      <!-- TODO: allow either one of these or none -->
-      <xs:element name="accept" type="targettype" minOccurs="0"/>
-      <xs:element name="drop" type="targettype" minOccurs="0"/>
-      <xs:element name="reject" type="targettype" minOccurs="0"/>
+    <xs:choice>
+      <xs:element name="log" type="logtype"/>
+      <xs:element name="audit" type="audittype"/>
+      <xs:sequence></xs:sequence>
+    </xs:choice>
+    <xs:choice>
+      <xs:element name="accept" type="targettype"/>
+      <xs:element name="drop" type="targettype"/>
+      <xs:element name="reject" type="targettype"/>
+      <xs:sequence></xs:sequence>
+    </xs:choice>
   </xs:sequence>
   <xs:attribute name="family" type="familyrestrict"/>
 </xs:complexType>
@@ -103,12 +103,23 @@ elementFormDefault="qualified">
   <xs:attribute name="address" type="ipaddrtype" use="required"/>
 </xs:complexType>
 
+<xs:complexType name="protocoltype">
+  <xs:attribute name="value" type="xs:string" use="required"/>
+</xs:complexType>
+
 <xs:complexType name="logtype">
   <xs:sequence>
     <xs:element name="limit" type="limittype" minOccurs="0"/>
   </xs:sequence>
   <xs:attribute name="prefix" type="xs:string"/>
   <xs:attribute name="level" type="xs:string"/>
+</xs:complexType>
+
+<xs:complexType name="audittype">
+  <xs:sequence>
+    <xs:element name="limit" type="limittype" minOccurs="0"/>
+  </xs:sequence>
+  <xs:attribute name="type" type="xs:string"/>
 </xs:complexType>
 
 <xs:complexType name="targettype">
