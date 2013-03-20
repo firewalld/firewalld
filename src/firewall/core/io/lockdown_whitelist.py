@@ -128,8 +128,6 @@ class LockdownWhitelist(IO_Object):
     def match_command(self, command):
         for _command in self._commands:
             if _command.endswith("*"):
-                print '"%s".endswith("*")' % _command
-                print '"%s" vs. "%s"' % (command, _command[:-1])
                 if command.startswith(_command[:-1]):
                     return True
             else:
