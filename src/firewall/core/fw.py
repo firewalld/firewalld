@@ -294,12 +294,11 @@ class Firewall:
 
         # appends rules
         # returns None if all worked, else (cleanup rules, error message)
-        i = 0
-        for i in xrange(len(rules)):
-            if len(rules[i]) == 3:
-                (ipv, rule, insert) = rules[i]
+        for i,value in enumerate(rules):
+            if len(value) == 3:
+                (ipv, rule, insert) = value
             else:
-                (ipv, rule) = rules[i]
+                (ipv, rule) = value
 
             # drop insert rule number if it exists
             if insert and not enable and isinstance(rule[1], int):
@@ -321,12 +320,11 @@ class Firewall:
 
         # appends rules
         # returns None if all worked, else (cleanup rules, error message)
-        i = 0
-        for i in xrange(len(rules)):
-            if len(rules[i]) == 5:
-                (ipv, table, chain, rule, insert) = rules[i]
+        for i,value in enumerate(rules):
+            if len(value) == 5:
+                (ipv, table, chain, rule, insert) = value
             else:
-                (ipv, table, chain, rule) = rules[i]
+                (ipv, table, chain, rule) = value
 
             # drop insert rule number if it exists
             if insert and not enable and isinstance(rule[1], int):
@@ -346,9 +344,7 @@ class Firewall:
 
         # appends chains
         # returns None if all worked, else (cleanup chains, error message)
-        i = 0
-        for i in xrange(len(rules)):
-            (ipv, rule) = rules[i]
+        for i,(ipv, rule) in enumerate(rules):
             try:
                 self.rule(ipv, [ new_delete[enable], ] + rule)
             except Exception as msg:
@@ -357,8 +353,7 @@ class Firewall:
         return None
 
     def handle_modules(self, modules, enable):
-        for i in xrange(len(modules)):
-            module = modules[i]
+        for i,module in enumerate(modules):
             if enable:
                 (status, msg) = self._modules.load_module(module)
             else:

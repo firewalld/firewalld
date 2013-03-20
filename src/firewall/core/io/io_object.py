@@ -50,13 +50,12 @@ class IO_Object(object):
 
     def import_config(self, config):
         self.check_config(config)
-        for i in xrange(len(self.IMPORT_EXPORT_STRUCTURE)):
-            x = self.IMPORT_EXPORT_STRUCTURE[i][0]
+        for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(config[i], types.ListType):
                 # remove duplicates
-                setattr(self, x, copy.deepcopy(list(set(config[i]))))
+                setattr(self, element, copy.deepcopy(list(set(config[i]))))
             else:
-                setattr(self, x, copy.deepcopy(config[i]))
+                setattr(self, element, copy.deepcopy(config[i]))
 
     def check_name(self, name):
         if type(name) != type(""):
@@ -74,10 +73,9 @@ class IO_Object(object):
             raise FirewallError(INVALID_TYPE,
                                 "structure size mismatch %d != %d" % (\
                     len(config), len(self.IMPORT_EXPORT_STRUCTURE)))
-        for i in xrange(len(self.IMPORT_EXPORT_STRUCTURE)):
-            x = self.IMPORT_EXPORT_STRUCTURE[i]
-            self._check_config_structure(config[i], x[1])
-            self._check_config(config[i], x[0])
+        for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+            self._check_config_structure(config[i], value)
+            self._check_config(config[i], element)
 
     def _check_config(self, config, item):
         # to be overloaded by sub classes
@@ -99,8 +97,8 @@ class IO_Object(object):
                 raise FirewallError(INVALID_TYPE,
                                     "len('%s') != %d" % (config,
                                                          len(structure)))
-            for i in xrange(len(structure)):
-                self._check_config_structure(config[i], structure[i])
+            for i,value in enumerate(structure):
+                self._check_config_structure(config[i], value)
         elif type(structure) == types.DictType:
             # only one key value pair in structure
             (skey, svalue) = structure.items()[0]

@@ -128,9 +128,9 @@ def checkIP(ip):
         splits = ip.split(".")
         if len(splits) != 4:
             return False
-        for i in xrange(len(splits)):
+        for split in splits:
             try:
-                l = int(splits[i])
+                l = int(split)
             except:
                 return False
             if l < 0 or l > 255:
