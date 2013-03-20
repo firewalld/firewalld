@@ -42,8 +42,7 @@ tag:
 	git push --all
 	git push --tags
 
-archive: update-po $(desktop_DATA) tag
-	git archive --format=tar --prefix="${PACKAGE_NAME}-$(PACKAGE_VERSION)/" "$(PACKAGE_TAG)" | bzip2 >${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2
+archive: update-po $(desktop_DATA) tag dist
 	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
 	@echo "Also have a look at https://fedorahosted.org/released/${PACKAGE_NAME}/"
