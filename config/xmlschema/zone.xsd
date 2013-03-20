@@ -11,7 +11,11 @@ elementFormDefault="qualified">
       <xs:element name="description" type="xs:string" minOccurs="0"/>
       <xs:element name="interface" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="source" type="sourcefamilytype" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:group ref="rulegroup"/>
+      <xs:element name="service" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="icmp-block" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="masquerade" type="emptytype" minOccurs="0"/>
+      <xs:element name="forward-port" type="fwporttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="rule" type="ruletype" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="version" type="xs:string"/>
@@ -66,24 +70,20 @@ elementFormDefault="qualified">
   </xs:restriction>
 </xs:simpleType>
 
-<xs:group name="rulegroup">
-  <xs:sequence>
-    <xs:element name="service" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="icmp-block" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="masquerade" type="emptytype" minOccurs="0"/>
-    <xs:element name="forward-port" type="fwporttype" minOccurs="0" maxOccurs="unbounded"/>
-  </xs:sequence>
-</xs:group>
-
 <xs:complexType name="emptytype">
 </xs:complexType>
 
 <xs:complexType name="ruletype">
   <xs:sequence>
-    <xs:element name="source" type="sourcetype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:element name="protocol" type="protocoltype" minOccurs="0" maxOccurs="unbounded"/>
-    <xs:group ref="rulegroup"/>
+    <xs:element name="source" type="sourcetype" minOccurs="0"/>
+    <xs:choice>
+      <xs:element name="protocol" type="protocoltype"/>
+      <xs:element name="service" type="nametype"/>
+      <xs:element name="port" type="porttype"/>
+      <xs:element name="icmp-block" type="nametype"/>
+      <xs:element name="masquerade" type="emptytype"/>
+      <xs:element name="forward-port" type="fwporttype"/>
+    </xs:choice>
     <xs:choice>
       <xs:element name="log" type="logtype"/>
       <xs:element name="audit" type="audittype"/>
