@@ -73,6 +73,8 @@ FIREWALLD_ICMPTYPES = USR_LIB_FIREWALLD + '/icmptypes'
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
+LOCKDOWN_WHITELIST = ETC_FIREWALLD + '/lockdown-whitelist.xml'
+
 SYSCTL_CONFIG = '/etc/sysctl.conf'
 
 # fallbacks: will be overloaded by firewalld.conf
