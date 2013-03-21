@@ -71,7 +71,7 @@ firewalld.
 %setup -q
 
 %build
-%configure --with-systemd-unitdir=%{_unitdir}
+%configure
 
 %install
 make install DESTDIR=%{buildroot}
