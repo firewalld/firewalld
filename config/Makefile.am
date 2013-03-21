@@ -19,7 +19,8 @@ gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 BUILT_SOURCES = \
 	$(desktop_DATA) \
 	$(polkit1_action_DATA) \
-	$(gsettings_SCHEMAS)
+	$(gsettings_SCHEMAS) \
+	firewalld.service
 
 @INTLTOOL_DESKTOP_RULE@
 @INTLTOOL_POLICY_RULE@
@@ -28,7 +29,7 @@ BUILT_SOURCES = \
 
 all: $(desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
-CLEANFILES = *~ *\# .\#*
+CLEANFILES = *~ *\# .\#* firewalld.service
 
 DISTCLEANFILES = \
 	$(desktop_DATA) \
@@ -43,7 +44,7 @@ EXTRA_DIST = \
 	services \
 	zones \
 	firewalld.init \
-	firewalld.service \
+	firewalld.service.in \
 	firewalld.sysconfig
 
 INSTALL_TARGETS = install-config install-sysconfig
@@ -55,6 +56,15 @@ else
 INSTALL_TARGETS += install-init
 UNINSTALL_TARGETS += uninstall-init
 endif
+
+edit = sed \
+	-e 's|@bindir[@]|$(bindir)|g' \
+	-e 's|@sbindir[@]|$(sbindir)|g' \
+	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
+	-e 's|@localstatedir[@]|$(localstatedir)|g'
+
+firewalld.service: firewalld.service.in
+	$(edit) $< >$@
 
 install-sysconfig:
 	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/sysconfig
@@ -74,7 +84,7 @@ uninstall-init: uninstall-sysconfig
 
 install-service: install-sysconfig
 	$(MKDIR_P) $(DESTDIR)$(SYSTEMD_UNITDIR)
-	$(INSTALL_DATA) $(srcdir)/firewalld.service $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
+	$(INSTALL_DATA) firewalld.service $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
 
 uninstall-service: uninstall-sysconfig
 	rm -f $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
