@@ -36,8 +36,13 @@ AC_SUBST(USE_SYSTEMD)
 
 AC_ARG_WITH([systemd-unitdir],
        AS_HELP_STRING([--with-systemd-unitdir], [Directory for systemd service files]),
-       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="\$(prefix)/lib/systemd/system"])
+       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="${prefix}/lib/systemd/system"])
 AC_SUBST(SYSTEMD_UNITDIR)
+
+AC_ARG_WITH([bashcompletiondir],
+       AS_HELP_STRING([--with-bashcompletiondir=DIR], [Bash completions directory]),
+       [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
+AC_SUBST(BASHCOMPLETIONDIR)
 
 #############################################################
 

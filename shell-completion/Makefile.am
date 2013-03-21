@@ -1,5 +1,5 @@
-bashcompletiondir=$(sysconfdir)/bash_completion.d
+bashcompletiondir=@BASHCOMPLETIONDIR@
 dist_bashcompletion_DATA = \
-	firewall-cmd-bash-completion.sh
+	bash/firewall-cmd
 
 CLEANFILES = *~ *\# .\#*

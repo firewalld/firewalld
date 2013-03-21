@@ -137,8 +137,8 @@ fi
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
-%dir %{_sysconfdir}/bash_completion.d
-%{_sysconfdir}/bash_completion.d/firewall-cmd-bash-completion.sh
+%dir %{_datadir}/bash-completion/completions
+%{_datadir}/bash-completion/completions/firewall-cmd
 %defattr(0640,root,root)
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/icmptypes
