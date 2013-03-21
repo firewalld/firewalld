@@ -1,7 +1,5 @@
 [Unit]
 Description=firewalld - dynamic firewall daemon
-After=syslog.target
-After=dbus.target
 Before=network.target
 Before=libvirtd.service
 Before=NetworkManager.service
