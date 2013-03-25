@@ -35,6 +35,7 @@ PROC_IPxTABLE_NAMES = {
 }
 
 CHAINS = {
+    "security": [ "INPUT", "OUTPUT", "FORWARD" ],
     "raw": [ "PREROUTING", "OUTPUT" ],
     "mangle": [ "PREROUTING", "POSTROUTING", "INPUT", "OUTPUT", "FORWARD" ],
     "nat": [ "PREROUTING", "POSTROUTING", "OUTPUT" ],
