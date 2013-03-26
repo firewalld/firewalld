@@ -71,7 +71,7 @@ firewalld.
 %setup -q
 
 %build
-%configure
+%configure --enable-sysconfig
 
 %install
 make install DESTDIR=%{buildroot}

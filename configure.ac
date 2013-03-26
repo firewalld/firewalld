@@ -29,10 +29,16 @@ GLIB_GSETTINGS
 #############################################################
 
 AC_ARG_ENABLE([systemd],
-       AS_HELP_STRING([--disable-systemd], [Enable systemd support]),
+       AS_HELP_STRING([--disable-systemd], [Disable systemd support]),
        [use_systemd=$enableval], [use_systemd=yes])
 AM_CONDITIONAL(USE_SYSTEMD, test x$use_systemd = xyes)
 AC_SUBST(USE_SYSTEMD)
+
+AC_ARG_ENABLE([sysconfig],
+    [AS_HELP_STRING([--enable-sysconfig], [Install sysconfig file])],
+    [INSTALL_SYSCONFIG="${enableval}"], [INSTALL_SYSCONFIG='no'])
+AM_CONDITIONAL(INSTALL_SYSCONFIG, [test x$INSTALL_SYSCONFIG = xyes])
+AC_SUBST(INSTALL_SYSCONFIG)
 
 AC_ARG_WITH([systemd-unitdir],
        AS_HELP_STRING([--with-systemd-unitdir], [Directory for systemd service files]),

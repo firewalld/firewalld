@@ -47,14 +47,20 @@ EXTRA_DIST = \
 	firewalld.service.in \
 	firewalld.sysconfig
 
-INSTALL_TARGETS = install-config install-sysconfig
-UNINSTALL_TARGETS = uninstall-config uninstall-sysconfig
+INSTALL_TARGETS = install-config
+UNINSTALL_TARGETS = uninstall-config
+
 if USE_SYSTEMD
 INSTALL_TARGETS += install-service
 UNINSTALL_TARGETS += uninstall-service
 else
 INSTALL_TARGETS += install-init
 UNINSTALL_TARGETS += uninstall-init
+endif
+
+if INSTALL_SYSCONFIG
+INSTALL_TARGETS += install-sysconfig
+UNINSTALL_TARGETS += uninstall-sysconfig
 endif
 
 edit = sed \
