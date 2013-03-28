@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.0
+Version: 0.3.1
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -188,6 +188,27 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Thu Mar 28 2013 Thomas Woerner <twoerner@redhat.com> 0.3.1-1
+- Use explicit file lists for make dist
+- New rich rule validation check code
+- New global check_port and check_address functions
+- Allow source white and black listing with the rich rule
+- Fix error handling in case of unsupported family in rich rule
+- Enable ip_forwarding in masquerade and forward-port
+- New functions to read and write simple files using filename and content
+- Add --enable-sysconfig to install Fedora-specific sysconfig config file.
+- Add chains for security table (RHBZ#927015)
+- firewalld.spec: no need to specify --with-systemd-unitdir
+- firewalld.service: remove syslog.target and dbus.target
+- firewalld.service: replace hard-coded paths
+- Move bash-completion to new location.
+- Revert "Added configure for new build env"
+- Revert "Added Makefile.in files"
+- Revert "Added po/Makefile.in.in"
+- Revert "Added po/LINGUAS"
+- Revert "Added aclocal.m4"
+- Amend zone XML Schema
+
 * Wed Mar 20 2013 Thomas Woerner <twoerner@redhat.com> 0.3.0-1
 - Added rich language support
 - Added lockdown feature
