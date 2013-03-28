@@ -19,7 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from firewall.core.logger import log
+from firewall import functions
+from firewall.errors import *
 
 class Rich_Source(object):
     def __init__(self, addr, invert=False):
@@ -135,37 +136,30 @@ class Rich_Limit(object):
     def check(self):
         splits = None
         if "/" in self.value:
-            splits = value.split("/")
+            splits = self.value.split("/")
         if not splits or len(splits) != 2:
-            raise FirewallError(INVALID_LIMIT,
-                                "Invalid value (rate/duration): %s" % 
-                                self.value)
+            raise FirewallError(INVALID_LIMIT, self.value)
         (rate, duration) = splits
         try:
             rate = int(rate)
         except:
-            raise FirewallError(INVALID_LIMIT, "Invalid rate: %s" % rate)
-        if rate < 0:
-            raise FirewallError(INVALID_LIMIT, "Invalid rate: %s" % rate)
+            raise FirewallError(INVALID_LIMIT, self.value)
 
-        if duration not in [ "s", "m", "h", "d" ]:
-            raise FirewallError(INVALID_LIMIT, "Invalid duration: %s" %
-                                duration)
+        if rate < 0 or duration not in [ "s", "m", "h", "d" ]:
+            raise FirewallError(INVALID_LIMIT, self.value)
 
         mult = 1
-        if self.duration == "s":
+        if duration == "s":
             mult = 1
-        elif self.duration == "m":
+        elif duration == "m":
             mult = 60
-        elif self.duration == "h":
+        elif duration == "h":
             mult = 60*60
-        elif self.duration == "d":
+        elif duration == "d":
             mult = 24*60*60
 
-        if 10000 * mult / r == 0:
-            raise FirewallError(INVALID_LIMIT,
-                                "Limit rate/duration too fast %d/%s" % \
-                                    (rate, duration))
+        if 10000 * mult / rate == 0:
+            raise FirewallError(INVALID_LIMIT, "%s too fast" % self.value)
 
     def __str__(self):
         return 'limit rate="%s"' % (self.value)
@@ -189,19 +183,110 @@ class Rich_Rule(object):
 
     def check(self):
         if self.family != None and self.family not in [ "ipv4", "ipv6" ]:
-            log.error('Invalid family "%s"' % self.family)
-            return False
+            raise FirewallError(INVALID_FAMILY, self.family)
+        if self.family == None:
+            if self.source != None or self.destination != None:
+                raise FirewallError(MISSING_FAMILY)
+            if type(self.element) == Rich_ForwardPort:
+                raise FirewallError(MISSING_FAMILY)
 
-        if self.log == None and self.audit == None and \
-                self.action == None and \
-                type(self.element) not in [ Rich_IcmpBlock,
-                                            Rich_ForwardPort,
-                                            Rich_Masquerade ]:
-            log.error("Invalid rule: %s: No action, log or audit" % \
-                          str(self._rule))
-            return False
+        if self.element == None:
+            if self.action == None:
+                raise FirewallError(INVALID_RULE, "no element, no action")
+            if self.source == None:
+                raise FirewallError(INVALID_RULE, "no element, no source")
+            if self.destination != None:
+                raise FirewallError(INVALID_RULE, "destination action")
 
-        return True
+        if type(self.element) not in [ Rich_IcmpBlock,
+                                       Rich_ForwardPort,
+                                       Rich_Masquerade ]:
+            if self.log == None and self.audit == None and \
+                    self.action == None:
+                raise FirewallError(INVALID_RULE, "no action, no log, no audit")
+
+        # source
+        if self.source != None:
+            if self.source.addr != None and \
+                    not functions.check_address(self.family,
+                                                self.source.addr):
+                raise FirewallError(INVALID_ADDR, self.source.addr)
+
+        # destination
+        if self.destination != None:
+            if self.destination.addr != None and \
+                    not functions.check_address(self.family,
+                                                self.destination.addr):
+                raise FirewallError(INVALID_ADDR, self.destination.addr)
+
+        # service
+        if type(self.element) == Rich_Service:
+            # service availability needs to be checked in Firewall, here is no
+            # knowledge about this
+            pass
+
+        # port
+        elif type(self.element) == Rich_Port:
+            if not functions.check_port(self.element.port):
+                raise FirewallError(INVALID_PORT, self.element.port)
+            if not self.element.protocol in [ "tcp", "udp" ]:
+                raise FirewallError(INVALID_PROTOCOL, self.element.protocol)
+
+        # protocol
+        elif type(self.element) == Rich_Protocol:
+            if not functions.checkProtocol(self.element.value):
+                raise FirewallError(INVALID_PROTOCOL, self.element.value)
+
+        # masquerade
+        elif type(self.element) == Rich_Masquerade:
+            if self.destination != None:
+                raise FirewallError(INVALID_RULE, "masquerade and destination")
+
+        # icmp-block
+        elif type(self.element) == Rich_IcmpBlock:
+            # icmp type availability needs to be checked in Firewall, here is no
+            # knowledge about this
+            pass
+
+        # forward-port
+        elif type(self.element) == Rich_ForwardPort:
+            if not functions.check_port(self.element.port):
+                raise FirewallError(INVALID_PORT, self.element.port)
+            if not self.element.protocol in [ "tcp", "udp" ]:
+                raise FirewallError(INVALID_PROTOCOL, self.element.protocol)
+            if self.element.to_port == None and self.element.to_address == None:
+                raise FirewallError(INVALID_PORT, self.element.to_port)
+            if self.element.to_port != None and \
+                    not functions.check_port(self.element.to_port):
+                raise FirewallError(INVALID_PORT, self.element.to_port)
+            if self.element.to_address != None and \
+                    not functions.check_address(self.family,
+                                                self.element.to_address):
+                raise FirewallError(INVALID_ADDR, self.element.to_address)
+
+        # other element and not empty?
+        elif self.element != None:
+            raise FirewallError(INVALID_RULE, "Unknown element %s" % 
+                                type(self.element))
+
+        # log
+        if self.log != None:
+            if self.log.level not in [ "emerg", "alert", "crit", "err",
+                                       "warn", "notice", "info", "debug" ]:
+                raise FirewallError(INVALID_LOG_LEVEL, self.log.level)
+
+            if self.log.limit != None:
+                self.log.limit.check()
+
+        # audit
+        if self.audit != None:
+            if self.audit.type not in [ "ACCEPT", "REJECT", "DROP" ]:
+                raise FirewallError(INVALID_AUDIT_TYPE, self.audit.type)
+
+        # action
+        if self.action != None:
+            if self.action.limit != None:
+                self.action.limit.check()
 
     def __str__(self):
         ret = "rule "

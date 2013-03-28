@@ -377,9 +377,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         IO_Object_ContentHandler.endElement(self, name)
 
         if name == "rule":
-            if not self._rule_error and not self._rule.check():
-                self._rule_error = True
-            if self._rule_error:
+            if not self._rule_error:
+                try:
+                    self._rule.check()
+                except Exception as e:
+                    log.error("%s: %s" % (e, str(self._rule)))
+                    self._rule_error = True
+            if self._rule_error and self._rule in self.item.rules:
                 self.item.rules.remove(self._rule)
             self._rule = None
             self._rule_error = False
