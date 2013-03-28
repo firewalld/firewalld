@@ -40,9 +40,53 @@ EXTRA_DIST = \
 	$(desktop_FILES) \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
-	icmptypes \
-	services \
-	zones \
+	icmptypes/destination-unreachable.xml \
+	icmptypes/echo-reply.xml \
+	icmptypes/echo-request.xml \
+	icmptypes/parameter-problem.xml \
+	icmptypes/redirect.xml \
+	icmptypes/router-advertisement.xml \
+	icmptypes/router-solicitation.xml \
+	icmptypes/source-quench.xml \
+	icmptypes/time-exceeded.xml \
+	services/amanda-client.xml \
+	services/cluster-suite.xml \
+	services/ftp.xml \
+	services/imaps.xml \
+	services/ipsec.xml \
+	services/mdns.xml \
+	services/openvpn.xml \
+	services/samba-client.xml \
+	services/ssh.xml \
+	services/tftp.xml \
+	services/bacula-client.xml \
+	services/dhcpv6-client.xml \
+	services/https.xml \
+	services/ipp-client.xml \
+	services/libvirt-tls.xml \
+	services/nfs.xml \
+	services/pop3s.xml \
+	services/samba.xml \
+	services/telnet.xml \
+	services/vnc-server.xml \
+	services/bacula.xml \
+	services/dns.xml \
+	services/http.xml \
+	services/ipp.xml \
+	services/libvirt.xml \
+	services/ntp.xml \
+	services/radius.xml \
+	services/smtp.xml \
+	services/tftp-client.xml \
+	zones/block.xml \
+	zones/dmz.xml \
+	zones/drop.xml \
+	zones/external.xml \
+	zones/home.xml \
+	zones/internal.xml \
+	zones/public.xml \
+	zones/trusted.xml \
+	zones/work.xml \
 	firewalld.init \
 	firewalld.service.in \
 	firewalld.sysconfig
