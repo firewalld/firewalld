@@ -22,6 +22,7 @@
 import socket
 import types
 import os.path
+from firewall.core.logger import log
 
 def getPortID(port):
     """ Check and Get port id from port string or port id using socket.getservbyname
@@ -249,3 +250,23 @@ def firewalld_is_active():
         return True
 
     return False
+
+def readfile(filename):
+    try:
+        with open(filename, "r") as f:
+            line = "".join(f.readlines())
+            f.close()
+    except Exception as e:
+        log.error('Failed to read file "%s": %s' % (filename, e))
+        return None
+    return line
+
+def writefile(filename, line):
+    try:
+        with open(filename, "w") as f:
+            f.write(line)
+            f.close()
+    except Exception as e:
+        log.error('Failed to write to file "%s": %s' % (filename, e))
+        return False
+    return True
