@@ -212,7 +212,8 @@ class Rich_Rule(object):
             ret += "%s " % self.source
         if self.destination:
             ret += "%s " % self.destination
-        ret += "%s " % self.element
+        if self.element:
+            ret += "%s " % self.element
         if self.log:
             ret += "%s " % self.log
         if self.audit:

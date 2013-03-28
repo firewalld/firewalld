@@ -853,6 +853,18 @@ class FirewallZone:
                     command += [ "-j", "%%REJECT%%" ]
                     rules.append((ipv, table, "%s_deny" % target, command))
 
+            elif rule.element == None:
+                # source action
+                table = "filter"
+                chains.append([ table, "INPUT" ])
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                    zone=zone)
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_log(ipv, table, target, rule, command, rules)
+                self.__rule_audit(ipv, table, target, rule, command, rules)
+                self.__rule_action(ipv, table, target, rule, command, rules)
+
             # EVERYTHING ELSE
             else:
                 raise FirewallError(INVALID_RULE, "Unknown element %s" % 
