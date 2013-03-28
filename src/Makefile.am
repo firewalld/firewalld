@@ -16,6 +16,7 @@ nobase_dist_python_DATA = \
 	firewall/functions.py \
 	firewall/__init__.py \
 	firewall/config/dbus.py \
+	firewall/config/__init__.py \
 	firewall/core/base.py \
 	firewall/core/ebtables.py \
 	firewall/core/fw_config.py \
