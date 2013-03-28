@@ -134,7 +134,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         self._limit_ok = None
 
     def startElement(self, name, attrs):
-        if self._rule != None and self._rule_error:
+        if self._rule_error:
             return
 
         self.item.parser_check_element_attrs(name, attrs)
