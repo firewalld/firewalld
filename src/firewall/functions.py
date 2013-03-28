@@ -277,3 +277,29 @@ def enable_ip_forwarding(ipv):
     elif ipv == "ipv6":
         return writefile("/proc/sys/net/ipv6/conf/all/forwarding", "1\n")
     return False
+
+def check_port(port):
+    range = getPortRange(port)
+    if range == -2 or range == -1 or range == None or \
+            (len(range) == 2 and range[0] >= range[1]):
+        if range == -2:
+            log.debug2("'%s': port > 65535" % port)
+        elif range == -1:
+            log.debug2("'%s': port is invalid" % port)
+        elif range == None:
+            log.debug2("'%s': port is ambiguous" % port)
+        elif len(range) == 2 and range[0] >= range[1]:
+            log.debug2("'%s': range start >= end" % port)
+        return False
+    return True
+
+def check_address(ipv, source):
+    if ipv == "ipv4":
+        if not checkIPnMask(source):
+            return False
+    elif ipv == "ipv6":
+        if not checkIP6nMask(source):
+            return False
+    else:
+        return False
+    return True
