@@ -23,7 +23,7 @@ import time
 from firewall.core.base import *
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
-    checkProtocol
+    checkProtocol, enable_ip_forwarding
 from firewall.core.rich import *
 from firewall.errors import *
 
@@ -716,6 +716,9 @@ class FirewallZone:
 
             # MASQUERADE
             elif type(rule.element) == Rich_Masquerade:
+                if enable:
+                    enable_ip_forwarding(ipv)
+
                 chains.append([ "nat", "POSTROUTING" ])
                 chains.append([ "filter", "FORWARD_OUT" ])
 
@@ -740,6 +743,9 @@ class FirewallZone:
 
             # FORWARD PORT
             elif type(rule.element) == Rich_ForwardPort:
+                if enable:
+                    enable_ip_forwarding(ipv)
+
                 port = rule.element.port
                 protocol = rule.element.protocol
                 toport = rule.element.to_port
@@ -1095,6 +1101,7 @@ class FirewallZone:
         if enable:
             self.add_chain(zone, "nat", "POSTROUTING")
             self.add_chain(zone, "filter", "FORWARD_OUT")
+            enable_ip_forwarding("ipv4")
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!
@@ -1196,6 +1203,7 @@ class FirewallZone:
             self.add_chain(zone, "mangle", "PREROUTING")
             self.add_chain(zone, "nat", "PREROUTING")
             self.add_chain(zone, "filter", filter_chain)
+            enable_ip_forwarding("ipv4")
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!

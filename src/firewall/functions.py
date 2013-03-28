@@ -270,3 +270,10 @@ def writefile(filename, line):
         log.error('Failed to write to file "%s": %s' % (filename, e))
         return False
     return True
+
+def enable_ip_forwarding(ipv):
+    if ipv == "ipv4":
+        return writefile("/proc/sys/net/ipv4/ip_forward", "1\n")
+    elif ipv == "ipv6":
+        return writefile("/proc/sys/net/ipv6/conf/all/forwarding", "1\n")
+    return False
