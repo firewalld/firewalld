@@ -204,7 +204,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         elif name == "masquerade":
             if self._rule:
                 if "enabled" in attrs:
-                    log.warning('Invalid rule: Masquerade attribute ignores in rule.')
+                    log.warning('Invalid rule: Masquerade attribute ignored in rule.')
                 if self._rule.element:
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
