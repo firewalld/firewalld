@@ -76,6 +76,7 @@ elementFormDefault="qualified">
 <xs:complexType name="ruletype">
   <xs:sequence>
     <xs:element name="source" type="sourcetype" minOccurs="0"/>
+    <xs:element name="destination" type="sourcetype" minOccurs="0"/>
     <xs:choice>
       <xs:element name="protocol" type="protocoltype"/>
       <xs:element name="service" type="nametype"/>
@@ -92,7 +93,7 @@ elementFormDefault="qualified">
     <xs:choice>
       <xs:element name="accept" type="targettype"/>
       <xs:element name="drop" type="targettype"/>
-      <xs:element name="reject" type="targettype"/>
+      <xs:element name="reject" type="rejecttype"/>
       <xs:sequence></xs:sequence>
     </xs:choice>
   </xs:sequence>
@@ -101,7 +102,14 @@ elementFormDefault="qualified">
 
 <xs:complexType name="sourcetype">
   <xs:attribute name="address" type="ipaddrtype" use="required"/>
+  <xs:attribute name="invert" type="booltype"/>
 </xs:complexType>
+
+<xs:simpleType name="booltype">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="[Yy]es|[Nn]o|[Tt]rue|[Ff]alse"/>
+  </xs:restriction>
+</xs:simpleType>
 
 <xs:complexType name="protocoltype">
   <xs:attribute name="value" type="xs:string" use="required"/>
@@ -112,15 +120,27 @@ elementFormDefault="qualified">
     <xs:element name="limit" type="limittype" minOccurs="0"/>
   </xs:sequence>
   <xs:attribute name="prefix" type="xs:string"/>
-  <xs:attribute name="level" type="xs:string"/>
+  <xs:attribute name="level" type="logtypelevelrestrict"/>
 </xs:complexType>
+
+<xs:simpleType name="logtypelevelrestrict">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="emerg|alert|crit|err|warn|notice|info|debug"/>
+  </xs:restriction>
+</xs:simpleType>
 
 <xs:complexType name="audittype">
   <xs:sequence>
     <xs:element name="limit" type="limittype" minOccurs="0"/>
   </xs:sequence>
-  <xs:attribute name="type" type="xs:string"/>
+  <xs:attribute name="type" type="audittyperestrict" use="required"/>
 </xs:complexType>
+
+<xs:simpleType name="audittyperestrict">
+  <xs:restriction base="xs:string">
+    <xs:pattern value="ACCEPT|DROP|REJECT"/>
+  </xs:restriction>
+</xs:simpleType>
 
 <xs:complexType name="targettype">
   <xs:sequence>
@@ -137,6 +157,10 @@ elementFormDefault="qualified">
     <xs:pattern value="[0-9]+/[a-z]+"/>
   </xs:restriction>
 </xs:simpleType>
+
+<xs:complexType name="rejecttype">
+  <xs:attribute name="type" type="xs:string"/>
+</xs:complexType>
 
 </xs:schema>
 
