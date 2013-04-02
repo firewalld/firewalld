@@ -45,8 +45,10 @@ class Zone(IO_Object):
         ( "icmp_blocks", [ "", ], ),                   # as
         ( "masquerade", False ),                       # b
         ( "forward_ports", [ ( "", "", "", "" ), ], ), # a(ssss)
+        ( "interfaces", [ "" ] ),                      # as
+        ( "sources", [ ( "", "" ) ] )                  # a(ss)
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss))'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "_" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
