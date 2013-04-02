@@ -105,5 +105,12 @@ class FirewallError(Exception):
             ecode = msg[:idx]
         else:
             ecode = msg
-        return FirewallError.codes[ecode]
+
+        try:
+            code = FirewallError.codes[ecode]
+        except KeyError:
+            code = UNKNOWN_ERROR
+
+        return code
+
     get_code = staticmethod(get_code)

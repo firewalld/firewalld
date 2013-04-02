@@ -513,17 +513,12 @@ except dbus.DBusException as e:
         print ("Make sure polkit agent is running or run firewall-cmd as superuser.")
         sys.exit(NOT_AUTHORIZED)
     else:
-        try:
-            code = FirewallError.get_code(e.message)
-        except:
-            code = UNKNOWN_ERROR
-            print("Error: %s" % e)
+        code = FirewallError.get_code(e.message)
+        if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
+            print("Warning: %s" % e.message)
+            sys.exit(0)
         else:
-            if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
-                print("Warning: %s" % e.message)
-                sys.exit(0)
-            else:
-                print("Error: %s" % e.message)
+            print("Error: %s" % e.message)
         sys.exit(code)
 
 sys.exit(0)
