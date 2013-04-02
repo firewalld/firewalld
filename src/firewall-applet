@@ -42,6 +42,7 @@ from firewall.config import *
 from firewall.config.dbus import *
 from firewall.client import FirewallClient
 from firewall.dbus_utils import dbus_to_python
+from firewall.errors import *
 import dbus
 
 
@@ -370,9 +371,15 @@ class TrayApplet(object):
 
     def shieldsup_check_toggled(self, button):
         if button.get_active():
-            self.fw.setDefaultZone(self.settings.get_string("shields-up"))
+            zone = self.settings.get_string("shields-up")
         else:
-            self.fw.setDefaultZone(self.settings.get_string("shields-down"))
+            zone = self.settings.get_string("shields-down")
+
+        if self.fw.connected and self.fw.getDefaultZone() != zone:
+            try:
+                self.fw.setDefaultZone(zone)
+            except dbus.DBusException as e:
+                print("Error: %s" % e.message)
 
     def notification_check_toggled(self, button, settings, key):
         settings.set_boolean(key, button.get_active())
@@ -519,7 +526,7 @@ class TrayApplet(object):
             self.settings.reset("shields-down")
 
         self.shieldsup_check.handler_block(self.shieldsup_check_id)
-        if self.fw.getDefaultZone() == self.settings.get_string("shields-up"):
+        if self.default_zone == self.settings.get_string("shields-up"):
             self.shieldsup_check.set_active(True)
         else:
             self.shieldsup_check.set_active(False)
@@ -703,6 +710,13 @@ class TrayApplet(object):
             self.notify(_("Default zone changed to '%s'.") % zone)
         self.update_active_zones()
         self.update_tooltip()
+
+        # in case something else changes default zone
+        if self.default_zone == self.settings.get_string("shields-up"):
+            self.shieldsup_check.set_active(True)
+        else:
+            self.shieldsup_check.set_active(False)
+
 
     def _panic_mode(self, enable):
         self.panic_check.handler_block(self.panic_check_id)
