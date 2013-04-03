@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <service>
   <short>Red Hat Cluster Suite</short>
-  <description>This option allows you to use the Red Hat Cluster Suite. Ports are opened for corosync, pcsd and dlm. You need the Red Hat Cluster Suite installed for this option to be useful.</description>
+  <description>This option allows you to use the Red Hat Cluster Suite. Ports are opened for corosync, pcsd, pacemaker_remote and dlm. You need the Red Hat Cluster Suite installed for this option to be useful.</description>
+  <port protocol="tcp" port="2224"/>
+  <port protocol="tcp" port="3121"/>
   <port protocol="udp" port="5404"/>
   <port protocol="udp" port="5405"/>
-  <port protocol="tcp" port="2224"/>
   <port protocol="tcp" port="21064"/>
 </service>
