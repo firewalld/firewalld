@@ -21,6 +21,7 @@
 #
 
 import sys
+import string
 
 try:
     from gi.repository import Gtk, Gdk
@@ -43,6 +44,9 @@ from firewall.config.dbus import *
 import firewall.client as client
 from firewall.functions import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.io.zone import Zone
+from firewall.core.io.service import Service
+from firewall.core.io.icmptype import IcmpType
 
 if not datadir:
     datadir = DATADIR
@@ -1027,7 +1031,21 @@ class FirewallConfig(object):
             # no default settings
             pass
 
+    def entry_changed(self, entry, allowed_chars):
+        "Remove all disallowed characters."
+        origtext = entry.get_text()
+        newtext = origtext
+        for char in origtext:
+            if char not in allowed_chars:
+                newtext = newtext.replace(char, "")
+        if newtext != origtext:
+            entry.set_text(newtext)
+
     def onZoneBaseDialogChanged(self, *args):
+        if args and (args[0] == self.zoneBaseDialogNameEntry):
+            additional_chars = "".join(Zone.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.letters+string.digits+additional_chars
+            self.entry_changed(args[0], allowed_chars)
         self.zoneBaseDialogOkButton.set_sensitive(True)
 
     def onZoneBaseDialogTargetCheckToggled(self, check):
@@ -1646,6 +1664,11 @@ class FirewallConfig(object):
         self.add_edit_service(False)
 
     def onServiceBaseDialogChanged(self, *args):
+        if args and (args[0] == self.serviceBaseDialogNameEntry):
+            additional_chars = "".join(Service.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.letters+string.digits+additional_chars
+            self.entry_changed(args[0], allowed_chars)
+
         self.serviceBaseDialogOkButton.set_sensitive(True)
 
     def onServiceDialogAddPort(self, *args):
@@ -1987,9 +2010,6 @@ class FirewallConfig(object):
         if "ipv6" in destination:
             self.icmpDialogDestIpv6Check.set_active(True)
 
-    def onIcmpBaseDialogChanged(self, *args):
-        self.icmpBaseDialogOkButton.set_sensitive(True)
-
     def onEditIcmps(self, *args):
         self.icmpDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.icmpDialog.set_transient_for(self.mainWindow)
@@ -2013,6 +2033,11 @@ class FirewallConfig(object):
         self.add_edit_icmp(False)
 
     def onIcmpBaseDialogChanged(self, *args):
+        if args and (args[0] == self.icmpBaseDialogNameEntry):
+            additional_chars = "".join(IcmpType.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.letters+string.digits+additional_chars
+            self.entry_changed(args[0], allowed_chars)
+
         self.icmpBaseDialogOkButton.set_sensitive(True)
 
     def change_icmp_dialog_port_selection_cb(self, selection):
