@@ -527,9 +527,9 @@ class FirewallConfig(object):
                     if "NotAuthorizedException" in str(e):
                         self._error(_("Authorization failed."))
                     else:
-                        self._error(e)
+                        self._error(str(e))
                 except Exception as e:
-                    self._error(e)
+                    self._error(str(e))
                 else:
                     # break the loop, continue with configuration
                     break
@@ -769,13 +769,13 @@ class FirewallConfig(object):
     def conf_zone_updated_cb(self, zone):
         self.onChangeZone()
 
-    def _check_name_exception(self, exception, name):
-        if "INVALID_NAME" in exception:
+    def _check_name_exception(self, exception_message, name):
+        if "INVALID_NAME" in exception_message:
             self._warning(_("Invalid name: %s " % name))
-        elif "NAME_CONFLICT" in exception:
+        elif "NAME_CONFLICT" in exception_message:
             self._warning(_("Name '%s' already exists" % name))
         else:
-            self._warning(exception)
+            self._warning(exception_message)
 
     def combobox_select_text(self, combobox, value):
         model = combobox.get_model()

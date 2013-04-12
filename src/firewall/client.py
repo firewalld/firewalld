@@ -50,12 +50,12 @@ def handle_exceptions(func, *args, **kwargs):
             if "NotAuthorizedException" in str(e):
                 exception_handler(_("Authorization failed."))
             else:
-                exception_handler(e)
-        except Exception as msg:
+                exception_handler(str(e))
+        except Exception as e:
             if not exception_handler:
                 raise
             else:
-                exception_handler(e)
+                exception_handler(str(e))
 
 # zone config setings
 
