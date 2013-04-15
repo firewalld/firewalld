@@ -508,17 +508,19 @@ try:
 
 
 except dbus.DBusException as e:
-    if "NotAuthorizedException" in str(e):
+    dbus_message = e.get_dbus_message()
+    dbus_name = e.get_dbus_name()
+    if "NotAuthorizedException" in dbus_name:
         print ("Authorization failed.")
         print ("Make sure polkit agent is running or run firewall-cmd as superuser.")
         sys.exit(NOT_AUTHORIZED)
     else:
-        code = FirewallError.get_code(e.message)
+        code = FirewallError.get_code(dbus_message)
         if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
-            print("Warning: %s" % e.message)
+            print("Warning: %s" % dbus_message)
             sys.exit(0)
         else:
-            print("Error: %s" % e.message)
+            print("Error: %s" % dbus_message)
         sys.exit(code)
 
 sys.exit(0)
