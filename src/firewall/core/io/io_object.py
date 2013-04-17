@@ -187,7 +187,10 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         saxutils.XMLGenerator.__init__(self, out, "utf-8")
 
     def simpleElement(self, name, attrs):
-        self.startElement(name, attrs)
+        self._write('<' + name)
+        for (name, value) in attrs.items():
+            self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
+        self._write('/>')
 
 def check_port(port):
     port_range = functions.getPortRange(port)
