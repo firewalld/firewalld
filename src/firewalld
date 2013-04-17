@@ -138,7 +138,7 @@ except OSError as e:
         os.remove(pid_file)
     sys.exit(1)
 
-except dbus.DBusException as e:
+except dbus.exceptions.DBusException as e:
     log.fatal(str(e))
     log.error(traceback.format_exc())
     if not args.nopid:

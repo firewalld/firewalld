@@ -38,6 +38,7 @@ if os.getenv("FIREWALLD_DEVEL_ENV") != None:
     datadir = os.getenv("FIREWALLD_DEVEL_ENV")
     sys.path.insert(0, datadir)
 import dbus
+from dbus.exceptions import DBusException
 
 from firewall.config import *
 from firewall.config.dbus import *
@@ -1157,7 +1158,7 @@ class FirewallConfig(object):
             try:
                 self.fw.config().addZone(name, settings)
             except DBusException as e:
-                self._check_name_exception(str(e), name)
+                self._check_name_exception(e.get_dbus_message(), name)
                 return
 
         self.load_zones()
@@ -1784,7 +1785,7 @@ class FirewallConfig(object):
             try:
                 self.fw.config().addService(name, settings)
             except DBusException as e:
-                self._check_name_exception(str(e), name)
+                self._check_name_exception(e.get_dbus_message(), name)
                 return
 
 
@@ -2133,7 +2134,7 @@ class FirewallConfig(object):
             try:
                 self.fw.config().addIcmpType(name, settings)
             except DBusException as e:
-                self._check_name_exception(str(e), name)
+                self._check_name_exception(e.get_dbus_message(), name)
                 return
 
         self.load_icmps()

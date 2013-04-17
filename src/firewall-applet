@@ -378,8 +378,8 @@ class TrayApplet(object):
         if self.fw.connected and self.fw.getDefaultZone() != zone:
             try:
                 self.fw.setDefaultZone(zone)
-            except dbus.DBusException as e:
-                print("Error: %s" % e.message)
+            except dbus.exceptions.DBusException as e:
+                print("Error: %s" % e.get_dbus_message())
 
     def notification_check_toggled(self, button, settings, key):
         settings.set_boolean(key, button.get_active())

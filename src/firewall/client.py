@@ -27,7 +27,6 @@ sys.modules['gobject'] = GObject
 
 import dbus.mainloop.glib
 import slip.dbus
-from dbus.exceptions import DBusException
 
 from firewall.config import *
 from firewall.config.dbus import *
@@ -44,13 +43,18 @@ def handle_exceptions(func, *args, **kwargs):
     while 1:
         try:
             return func(*args, **kwargs)
-        except DBusException as e:
+        except dbus.exceptions.DBusException as e:
+            dbus_message = e.get_dbus_message()
+            dbus_name = e.get_dbus_name()
             if not exception_handler:
                 raise
-            if "NotAuthorizedException" in str(e):
+            if "NotAuthorizedException" in dbus_name:
                 exception_handler(_("Authorization failed."))
             else:
-                exception_handler(str(e))
+                if dbus_message:
+                    exception_handler(dbus_message)
+                else:
+                    exception_handler(str(e))
         except Exception as e:
             if not exception_handler:
                 raise
@@ -700,16 +704,15 @@ class FirewallClient(object):
                 self.dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
             self.fw_properties = dbus.Interface(
                 self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        except DBusException as e:
+        except dbus.exceptions.DBusException as e:
             # ignore dbus errors
             if not self.quiet:
-                print "DBusException", e
+                print "DBusException", e.get_dbus_message()
             return
         except Exception as e:
             if not self.quiet:
                 print "Exception", e
             return
-
         self._config = FirewallClientConfig(self.bus)
         self.connected = True
         self._signal_receiver(member="connection-established",

@@ -507,7 +507,7 @@ try:
             print("")
 
 
-except dbus.DBusException as e:
+except dbus.exceptions.DBusException as e:
     dbus_message = e.get_dbus_message()
     dbus_name = e.get_dbus_name()
     if "NotAuthorizedException" in dbus_name:
