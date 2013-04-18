@@ -444,7 +444,7 @@ class FirewallConfig(object):
 
         # firewall client
 
-        client.exception_handler = self._error
+        client.exception_handler = self._exception_handler
         self.fw = client.FirewallClient(wait=1)
 
         self.fw.connect("connection-changed", self.connection_changed)
@@ -514,7 +514,7 @@ class FirewallConfig(object):
     def _error(self, msg):
         if self._dialog("<b>"+_("Error")+"</b>",
                         message_type=Gtk.MessageType.ERROR, msg=msg, 
-                        buttons=((_("Retry"), 0),("gtk-quit", 1))) == 1:
+                        buttons=((_("gtk-ok"), 0),("gtk-quit", 1))) == 1:
             self.onQuit()
 
     def connection_changed(self):
@@ -770,13 +770,17 @@ class FirewallConfig(object):
     def conf_zone_updated_cb(self, zone):
         self.onChangeZone()
 
-    def _check_name_exception(self, exception_message, name):
+    def _exception_handler(self, exception_message):
         if "INVALID_NAME" in exception_message:
-            self._warning(_("Invalid name: %s " % name))
+            msg = exception_message.replace("INVALID_NAME", _("Invalid name"))
+            self._warning(msg)
         elif "NAME_CONFLICT" in exception_message:
-            self._warning(_("Name '%s' already exists" % name))
+            msg = exception_message.replace("NAME_CONFLICT", _("Name already exists"))
+            self._warning(msg)
+        elif "NO_DEFAULTS" in exception_message:
+            pass
         else:
-            self._warning(exception_message)
+            self._error(exception_message)
 
     def combobox_select_text(self, combobox, value):
         model = combobox.get_model()
@@ -1025,12 +1029,8 @@ class FirewallConfig(object):
             return
         active_zone = self.get_active_zone()
         zone = self.fw.config().getZoneByName(active_zone)
-        try:
-            zone.loadDefaults()
-            self.onChangeZone()
-        except DBusException:
-            # no default settings
-            pass
+        zone.loadDefaults()
+        self.onChangeZone()
 
     def entry_changed(self, entry, allowed_chars):
         "Remove all disallowed characters."
@@ -1155,11 +1155,7 @@ class FirewallConfig(object):
                 return
             zone.rename(name)
         else:
-            try:
-                self.fw.config().addZone(name, settings)
-            except DBusException as e:
-                self._check_name_exception(e.get_dbus_message(), name)
-                return
+            self.fw.config().addZone(name, settings)
 
         self.load_zones()
         #TODO: change active zone
@@ -1782,12 +1778,7 @@ class FirewallConfig(object):
                 return
             service.rename(name)
         else:
-            try:
-                self.fw.config().addService(name, settings)
-            except DBusException as e:
-                self._check_name_exception(e.get_dbus_message(), name)
-                return
-
+            self.fw.config().addService(name, settings)
 
         self.load_services()
         #TODO: change active service
@@ -1796,12 +1787,8 @@ class FirewallConfig(object):
     def onServiceDialogLoadDefaultsService(self, *args):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
-        try:
-            service.loadDefaults()
-            self.onChangeService()
-        except DBusException:
-            # no default settings
-            pass
+        service.loadDefaults()
+        self.onChangeService()
 
     def onServiceDialogAddModule(self, *args):
         self.add_edit_module(True)
@@ -2131,11 +2118,7 @@ class FirewallConfig(object):
                 return
             icmp.rename(name)
         else:
-            try:
-                self.fw.config().addIcmpType(name, settings)
-            except DBusException as e:
-                self._check_name_exception(e.get_dbus_message(), name)
-                return
+            self.fw.config().addIcmpType(name, settings)
 
         self.load_icmps()
         #TODO: change active icmp
@@ -2144,12 +2127,8 @@ class FirewallConfig(object):
     def onIcmpDialogLoadDefaultsIcmp(self, *args):
         active_icmp = self.get_active_icmp()
         icmp = self.fw.config().getIcmpTypeByName(active_icmp)
-        try:
-            icmp.loadDefaults()
-            self.onChangeIcmp()
-        except DBusException:
-            # no default settings
-            pass
+        icmp.loadDefaults()
+        self.onChangeIcmp()
 
     def icmp_dialog_dest_ipv4_check_cb(self, *args):
         active_icmp = self.get_active_icmp()

@@ -40,26 +40,26 @@ exception_handler = None
 def handle_exceptions(func, *args, **kwargs):
     """Decorator to handle exceptions
     """
-    while 1:
-        try:
-            return func(*args, **kwargs)
-        except dbus.exceptions.DBusException as e:
-            dbus_message = e.get_dbus_message()
-            dbus_name = e.get_dbus_name()
-            if not exception_handler:
-                raise
-            if "NotAuthorizedException" in dbus_name:
-                exception_handler(_("Authorization failed."))
-            else:
-                if dbus_message:
-                    exception_handler(dbus_message)
-                else:
-                    exception_handler(str(e))
-        except Exception as e:
-            if not exception_handler:
-                raise
+    #while 1:
+    try:
+        return func(*args, **kwargs)
+    except dbus.exceptions.DBusException as e:
+        dbus_message = e.get_dbus_message()
+        dbus_name = e.get_dbus_name()
+        if not exception_handler:
+            raise
+        if "NotAuthorizedException" in dbus_name:
+            exception_handler(_("Authorization failed."))
+        else:
+            if dbus_message:
+                exception_handler(dbus_message)
             else:
                 exception_handler(str(e))
+    except Exception as e:
+        if not exception_handler:
+            raise
+        else:
+            exception_handler(str(e))
 
 # zone config setings
 
