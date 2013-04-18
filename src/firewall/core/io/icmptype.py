@@ -23,7 +23,7 @@ import xml.sax as sax
 import os
 import shutil
 
-from firewall.config import _
+from firewall.config import _, ETC_FIREWALLD
 from firewall.errors import *
 from firewall import functions
 from firewall.core.io.io_object import *
@@ -92,17 +92,15 @@ def icmptype_reader(filename, path):
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename
     icmptype.path = path
+    icmptype.default = False if path.startswith(ETC_FIREWALLD) else True
     handler = icmptype_ContentHandler(icmptype)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
     return icmptype
 
-def icmptype_writer(icmptype, path=""):
-    if path:
-        _path = path
-    else:
-        _path = icmptype.path
+def icmptype_writer(icmptype, path=None):
+    _path = path if path else icmptype.path
 
     if icmptype.filename:
         name = "%s/%s" % (_path, icmptype.filename)

@@ -906,7 +906,7 @@ class FirewallConfig(object):
             forward_ports = self.fw.getForwardPorts(active_zone)
             icmpblocks = self.fw.getIcmpBlocks(active_zone)
             immutable = self.fw.isImmutable(active_zone)
-            defaults = False
+            default = False
             builtin = False
         else:
             # load persistent configuration
@@ -922,7 +922,7 @@ class FirewallConfig(object):
             forward_ports = settings.getForwardPorts()
             icmpblocks = settings.getIcmpBlocks()
             immutable = settings.getImmutable()
-            defaults = zone.get_property("defaults")
+            default = zone.get_property("default")
             builtin = zone.get_property("builtin")
 
         self.mainNotebook.set_sensitive(not immutable)
@@ -931,7 +931,7 @@ class FirewallConfig(object):
                 "Immutable zones are not customizable.")
         self.zoneEditRemoveButton.set_sensitive(\
             not builtin and not immutable)
-        self.zoneEditLoadDefaultsButton.set_sensitive(not defaults)
+        self.zoneEditLoadDefaultsButton.set_sensitive(not default)
 
         # set services
         _services = services[:]
@@ -1599,11 +1599,11 @@ class FirewallConfig(object):
         ports = settings.getPorts()
         modules = settings.getModules()
         destination = settings.getDestinations()
-        defaults = service.get_property("defaults")
+        default = service.get_property("default")
         builtin = service.get_property("builtin")
 
         self.serviceDialogRemoveServiceButton.set_sensitive(not builtin)
-        self.serviceDialogLoadDefaultsServiceButton.set_sensitive(not defaults)
+        self.serviceDialogLoadDefaultsServiceButton.set_sensitive(not default)
 
         # set ports
         for item in ports:
@@ -1999,11 +1999,11 @@ class FirewallConfig(object):
         settings = icmp.getSettings()
 
         destination = settings.getDestinations()
-        defaults = icmp.get_property("defaults")
+        default = icmp.get_property("default")
         builtin = icmp.get_property("builtin")
 
         self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin)
-        self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not defaults)
+        self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not default)
 
         # set destination
         if "ipv4" in destination:

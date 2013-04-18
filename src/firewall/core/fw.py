@@ -147,21 +147,21 @@ class Firewall:
                           LOCKDOWN_WHITELIST, msg)
 
         # load icmptype files
-        self._loader(FIREWALLD_ICMPTYPES, "icmptype", True)
+        self._loader(FIREWALLD_ICMPTYPES, "icmptype")
         self._loader(ETC_FIREWALLD_ICMPTYPES, "icmptype")
 
         if len(self.icmptype.get_icmptypes()) == 0:
             log.error("No icmptypes found.")
 
         # load service files
-        self._loader(FIREWALLD_SERVICES, "service", True)
+        self._loader(FIREWALLD_SERVICES, "service")
         self._loader(ETC_FIREWALLD_SERVICES, "service")
 
         if len(self.service.get_services()) == 0:
             log.error("No services found.")
 
         # load zone files
-        self._loader(FIREWALLD_ZONES, "zone", True)
+        self._loader(FIREWALLD_ZONES, "zone")
         self._loader(ETC_FIREWALLD_ZONES, "zone")
 
         if len(self.zone.get_zones()) == 0:
@@ -197,7 +197,7 @@ class Firewall:
 
         self._state = "RUNNING"
 
-    def _loader(self, path, reader_type, default=False):
+    def _loader(self, path, reader_type):
         if not os.path.isdir(path):
             return
 
@@ -218,7 +218,7 @@ class Firewall:
                         self.icmptype.remove_icmptype(orig_obj.name)
                     self.icmptype.add_icmptype(obj)
                     # add a deep copy to the configuration interface
-                    self.config.add_icmptype(copy.deepcopy(obj), default)
+                    self.config.add_icmptype(copy.deepcopy(obj))
                 elif reader_type == "service":
                     obj = service_reader(filename, path)
                     if obj.name in self.service.get_services():
@@ -229,7 +229,7 @@ class Firewall:
                         self.service.remove_service(orig_obj.name)
                     self.service.add_service(obj)
                     # add a deep copy to the configuration interface
-                    self.config.add_service(copy.deepcopy(obj), default)
+                    self.config.add_service(copy.deepcopy(obj))
                 elif reader_type == "zone":
                     obj = zone_reader(filename, path)
                     if obj.name in self.zone.get_zones():
@@ -242,7 +242,7 @@ class Firewall:
                         self.zone.remove_zone(orig_obj.name)
                     self.zone.add_zone(obj)
                     # add a deep copy to the configuration interface
-                    self.config.add_zone(copy.deepcopy(obj), default)
+                    self.config.add_zone(copy.deepcopy(obj))
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:

@@ -91,8 +91,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             return self.obj.filename
         elif property_name == "path":
             return self.obj.path
-        elif property_name == "defaults":
-            return self.obj.defaults
+        elif property_name == "default":
+            return self.obj.default
         elif property_name == "builtin":
             return self.config.is_builtin_zone(self.obj)
         else:
@@ -116,7 +116,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             'name': self.obj.name,
             'filename': self.obj.filename,
             'path': self.obj.path,
-            'defaults': self.obj.defaults,
+            'default': self.obj.default,
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)

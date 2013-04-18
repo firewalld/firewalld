@@ -74,9 +74,8 @@ class FirewallConfig:
     def get_icmptypes(self):
         return list(set(self._icmptypes.keys() + self._default_icmptypes.keys()))
 
-    def add_icmptype(self, obj, default):
-        obj.defaults = default
-        if default:
+    def add_icmptype(self, obj):
+        if obj.default:
             self._default_icmptypes[obj.name] = obj
         else:
             self._icmptypes[obj.name] = obj
@@ -105,11 +104,12 @@ class FirewallConfig:
         return obj.export_config()
 
     def set_icmptype_config(self, obj, config):
-        if obj.defaults:
+        if obj.default:
             x = copy.copy(obj)
             x.import_config(config)
             x.path = ETC_FIREWALLD_ICMPTYPES
-            self.add_icmptype(x, False)
+            x.default = False
+            self.add_icmptype(x)
             icmptype_writer(x)
             return x
         else:
@@ -131,9 +131,10 @@ class FirewallConfig:
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ICMPTYPES
+        x.default = False
 
         icmptype_writer(x)
-        self.add_icmptype(x, False)
+        self.add_icmptype(x)
         return x
 
     def update_icmptype_from_path(self, name):
@@ -171,14 +172,10 @@ class FirewallConfig:
         # new or updated file
 
         obj = icmptype_reader(filename, path)
-        obj.defaults = False
 
         # new icmptype
         if obj.name not in self._default_icmptypes and obj.name not in self._icmptypes:
-            if path == ETC_FIREWALLD_ICMPTYPES:
-                self.add_icmptype(obj, False)
-            else:
-                self.add_icmptype(obj, True)
+            self.add_icmptype(obj)
             return ("new", obj)
 
         # updated icmptype
@@ -212,7 +209,7 @@ class FirewallConfig:
         del self._icmptypes[obj.name]
 
     def is_builtin_icmptype(self, obj):
-        if obj.defaults or obj.name in self._default_icmptypes:
+        if obj.default or obj.name in self._default_icmptypes:
             return True
         return False
 
@@ -238,9 +235,8 @@ class FirewallConfig:
     def get_services(self):
         return list(set(self._services.keys() + self._default_services.keys()))
 
-    def add_service(self, obj, default):
-        obj.defaults = default
-        if default:
+    def add_service(self, obj):
+        if obj.default:
             self._default_services[obj.name] = obj
         else:
             self._services[obj.name] = obj
@@ -269,11 +265,12 @@ class FirewallConfig:
         return obj.export_config()
 
     def set_service_config(self, obj, config):
-        if obj.defaults:
+        if obj.default:
             x = copy.copy(obj)
             x.import_config(config)
             x.path = ETC_FIREWALLD_SERVICES
-            self.add_service(x, False)
+            x.default = False
+            self.add_service(x)
             service_writer(x)
             return x
         else:
@@ -295,9 +292,10 @@ class FirewallConfig:
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_SERVICES
+        x.default = False
 
         service_writer(x)
-        self.add_service(x, False)
+        self.add_service(x)
         return x
 
     def update_service_from_path(self, name):
@@ -335,14 +333,10 @@ class FirewallConfig:
         # new or updated file
 
         obj = service_reader(filename, path)
-        obj.defaults = False
 
         # new service
         if obj.name not in self._default_services and obj.name not in self._services:
-            if path == ETC_FIREWALLD_SERVICES:
-                self.add_service(obj, False)
-            else:
-                self.add_service(obj, True)
+            self.add_service(obj)
             return ("new", obj)
 
         # updated service
@@ -376,7 +370,7 @@ class FirewallConfig:
         del self._services[obj.name]
 
     def is_builtin_service(self, obj):
-        if obj.defaults or obj.name in self._default_services:
+        if obj.default or obj.name in self._default_services:
             return True
         return False
 
@@ -402,9 +396,8 @@ class FirewallConfig:
     def get_zones(self):
         return list(set(self._zones.keys() + self._default_zones.keys()))
 
-    def add_zone(self, obj, default):
-        obj.defaults = default
-        if default:
+    def add_zone(self, obj):
+        if obj.default:
             self._default_zones[obj.name] = obj
         else:
             self._zones[obj.name] = obj
@@ -433,12 +426,13 @@ class FirewallConfig:
         return obj.export_config()
 
     def set_zone_config(self, obj, config):
-        if obj.defaults:
+        if obj.default:
             x = copy.copy(obj)
             x.fw_config = self
             x.import_config(config)
             x.path = ETC_FIREWALLD_ZONES
-            self.add_zone(x, False)
+            x.default = False
+            self.add_zone(x)
             zone_writer(x)
             return x
         else:
@@ -462,9 +456,10 @@ class FirewallConfig:
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ZONES
+        x.default = False
 
         zone_writer(x)
-        self.add_zone(x, False)
+        self.add_zone(x)
         return x
 
     def update_zone_from_path(self, name):
@@ -503,14 +498,10 @@ class FirewallConfig:
 
         obj = zone_reader(filename, path)
         obj.fw_config = self
-        obj.defaults = False
 
         # new zone
         if obj.name not in self._default_zones and obj.name not in self._zones:
-            if path == ETC_FIREWALLD_ZONES:
-                self.add_zone(obj, False)
-            else:
-                self.add_zone(obj, True)
+            self.add_zone(obj)
             return ("new", obj)
 
         # updated zone
@@ -544,7 +535,7 @@ class FirewallConfig:
         del self._zones[obj.name]
 
     def is_builtin_zone(self, obj):
-        if obj.defaults or obj.name in self._default_zones:
+        if obj.default or obj.name in self._default_zones:
             return True
         return False
 

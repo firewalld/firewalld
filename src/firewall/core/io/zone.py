@@ -23,7 +23,7 @@ import xml.sax as sax
 import os
 import shutil
 
-from firewall.config import _
+from firewall.config import _, ETC_FIREWALLD
 from firewall.errors import *
 from firewall import functions
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
@@ -399,6 +399,7 @@ def zone_reader(filename, path):
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
+    zone.default = False if path.startswith(ETC_FIREWALLD) else True
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
@@ -406,10 +407,7 @@ def zone_reader(filename, path):
     return zone
 
 def zone_writer(zone, path=None):
-    if path:
-        _path = path
-    else:
-        _path = zone.path
+    _path = path if path else zone.path
 
     if zone.filename:
         name = "%s/%s" % (_path, zone.filename)

@@ -23,7 +23,7 @@ import xml.sax as sax
 import os
 import shutil
 
-from firewall.config import _
+from firewall.config import _, ETC_FIREWALLD
 from firewall.errors import *
 from firewall import functions
 from firewall.core.io.io_object import *
@@ -112,17 +112,15 @@ def service_reader(filename, path):
     service.check_name(service.name)
     service.filename = filename
     service.path = path
+    service.default = False if path.startswith(ETC_FIREWALLD) else True
     handler = service_ContentHandler(service)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
     parser.parse(name)
     return service
 
-def service_writer(service, path=""):
-    if path:
-        _path = path
-    else:
-        _path = service.path
+def service_writer(service, path=None):
+    _path = path if path else service.path
 
     if service.filename:
         name = "%s/%s" % (_path, service.filename)
