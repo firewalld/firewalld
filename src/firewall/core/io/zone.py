@@ -46,9 +46,10 @@ class Zone(IO_Object):
         ( "masquerade", False ),                       # b
         ( "forward_ports", [ ( "", "", "", "" ), ], ), # a(ssss)
         ( "interfaces", [ "" ] ),                      # as
-        ( "sources", [ ( "", "" ) ] )                  # a(ss)
+        ( "sources", [ ( "", "" ) ] ),                 # a(ss)
+        ( "rules_str", [ "" ] ),                       # as
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asa(ss))'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asa(ss)as)'
     ADDITIONAL_ALNUM_CHARS = [ "_" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -75,8 +76,8 @@ class Zone(IO_Object):
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
-        "source": [ "not", "family" ],
-        "destination": [ "not" ],
+        "source": [ "invert", "family" ],
+        "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
         }
@@ -98,6 +99,19 @@ class Zone(IO_Object):
         self.fw_config = None # to be able to check services and a icmp_blocks
 
         self.rules = [ ]
+
+    def __getattr__(self, name):
+        if name == "rules_str":
+            rules_str = [str(rule) for rule in self.rules]
+            return rules_str
+        else:
+            return object.__getattr__(self, name)
+
+    def __setattr__(self, name, value):
+        if name == "rules_str":
+            self.rules = [Rich_Rule(rule_str=str) for str in value]
+        else:
+            object.__setattr__(self, name, value)
 
     def _check_config(self, config, item):
         if item == "services" and self.fw_config:
@@ -271,7 +285,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if not "family" in attrs:
                 log.error('Invalid source: Family missing.')
                 return
-            if "not" in attrs:
+            if "invert" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
             entry = (str(attrs["family"]), str(attrs["address"]))
