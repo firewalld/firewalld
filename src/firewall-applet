@@ -24,6 +24,7 @@ import sys
 
 try:
     from gi.repository import Gtk
+    Gtk.init (sys.argv)
 except RuntimeError as e:
     print ("firewall-applet: %s" % e)
     print ("This is a graphical application and requires DISPLAY to be set.")

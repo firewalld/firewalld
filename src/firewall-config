@@ -25,6 +25,7 @@ import string
 
 try:
     from gi.repository import Gtk, Gdk
+    Gtk.init (sys.argv)
 except RuntimeError as e:
     print ("firewall-config: %s" % e)
     print ("This is a graphical application and requires DISPLAY to be set.")
