@@ -40,8 +40,8 @@ def __fail(msg=None):
 def __parse_port(value):
     try:
         (port, proto) = value.split("/")
-    except Exception as msg:
-        __fail(msg)
+    except Exception as e:
+        __fail("bad port (most likely missing protocol)")
     return (port, proto)
 
 def __parse_forward_port(value):
