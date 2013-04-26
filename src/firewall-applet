@@ -344,7 +344,7 @@ class TrayApplet(object):
             self.bus = slip.dbus.SystemBus()
             self.bus.default_timeout = None
         except Exception as msg:
-            print(_("Not using slip"), msg)
+            print("Not using slip", msg)
             self.bus = dbus.SystemBus()
 
         self.fw = FirewallClient(self.bus, wait=1)

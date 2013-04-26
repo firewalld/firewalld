@@ -515,7 +515,7 @@ class FirewallConfig(object):
     def _error(self, msg):
         if self._dialog("<b>"+_("Error")+"</b>",
                         message_type=Gtk.MessageType.ERROR, msg=msg, 
-                        buttons=((_("gtk-ok"), 0),("gtk-quit", 1))) == 1:
+                        buttons=(("gtk-ok", 0),("gtk-quit", 1))) == 1:
             self.onQuit()
 
     def connection_changed(self):
