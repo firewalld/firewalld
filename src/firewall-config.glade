@@ -1404,7 +1404,7 @@
               <object class="GtkToolButton" id="toolbutton1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Reloads firewalld: Current persistent configuration will become the new runtime configuration.</property>
+                <property name="tooltip_markup" translatable="yes">Reloads firewalld: Current permanent configuration will become the new runtime configuration.</property>
                 <property name="label" translatable="yes">Reload Firewalld</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-refresh</property>
@@ -1453,7 +1453,7 @@
                   <object class="GtkComboBoxText" id="currentViewCombobox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="tooltip_markup" translatable="yes">Currently visible configuration. Runtime configuration is the actual active configuration. Persistent configuration will be active after service or system reload or restart.</property>
+                    <property name="tooltip_markup" translatable="yes">Currently visible configuration. Runtime configuration is the actual active configuration. Permanent configuration will be active after service or system reload or restart.</property>
                     <property name="entry_text_column">0</property>
                     <property name="id_column">1</property>
                     <signal name="changed" handler="onChangeView" swapped="no"/>
@@ -1704,7 +1704,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Edit Services is only available for persistent configuration view.</property>
+                                    <property name="tooltip_markup" translatable="yes">Edit Services is only available for permanent configuration view.</property>
                                     <signal name="clicked" handler="onEditServices" swapped="no"/>
                                   </object>
                                   <packing>
@@ -2170,7 +2170,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <property name="tooltip_markup" translatable="yes">Edit ICMP Types is only available for persistent configuration view.</property>
+                                    <property name="tooltip_markup" translatable="yes">Edit ICMP Types is only available for permanent configuration view.</property>
                                     <signal name="clicked" handler="onEditIcmps" swapped="no"/>
                                   </object>
                                   <packing>

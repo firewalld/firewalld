@@ -9,7 +9,7 @@ firewalld \- Dynamic Firewall Manager
 .IP \fBfirewalld\ \fR\fB[OPTIONS...]\fR\
 
 .SH DESCRIPTION
-\fBfirewalld\fR provides a dynamically managed firewall with support for network/firewall zones to define the trust level of network connections or interfaces. It has support for IPv4, IPv6 firewall settings and for ethernet bridges and has a separation of runtime and persistent configuration options. It also supports an interface for services or applications to add firewall rules directly.
+\fBfirewalld\fR provides a dynamically managed firewall with support for network/firewall zones to define the trust level of network connections or interfaces. It has support for IPv4, IPv6 firewall settings and for ethernet bridges and has a separation of runtime and permanent configuration options. It also supports an interface for services or applications to add firewall rules directly.
 
 .SH OPTIONS
 These are the command line options of firewalld:
@@ -30,8 +30,8 @@ Disable writing pid file. By default the program will write a pid file. If the p
 firewalld has a D\-BUS interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D\-BUS can request changes to the firewall with the D\-BUS interface directly. 
 For more information on the firewalld D\-BUS interface, please have a look at the \fBfirewalld.dbus\fR(5) man page. 
 
-firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and persistent configuration options.
-Persistent configuration is loaded from XML files in /usr/lib/firewalld or /etc/firewalld (see \fBDIRECTORIES\fR).
+firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options.
+Permanent configuration is loaded from XML files in /usr/lib/firewalld or /etc/firewalld (see \fBDIRECTORIES\fR).
 
 If NetworkManager is not used, there are some limitations: firewalld will not get notified about network device renames. If firewalld gets started after the network is already up, the connections are not bound to a zone. 
 Manually created interfaces are not bound to a zone. Please add them to a zone with \fIfirewall-cmd --zone=<zone> --add--interface=<interface>\fR.
@@ -47,13 +47,13 @@ A service can be a list of local ports and destinations and additionally also a 
 The Internet Control Message Protocol (ICMP) is used to exchange information and also error messages in the Internet Protocol (IP). ICMP types can be used in firewalld to limit the exchange of these messages. For more information, please have a look at \fBfirewalld.icmptype\fR(5).
 
 .SS Runtime configuration
-The runtime configuration is not persistent and will only be restored for a reload. After restart or stop of the service or a system reboot, these options will be gone.
+The runtime configuration is not permanent and will only be restored for a reload. After restart or stop of the service or a system reboot, these options will be gone.
 
-.SS Persistent configuration
-The persistent configuration is stored in config files and will be restored with every machine boot or service reload or restart.
+.SS Permanent configuration
+The permanent configuration is stored in config files and will be restored with every machine boot or service reload or restart.
 
 .SS Direct interface
-The direct interface is mainly used by services or applications to add specific firewall rules. The rules are not persistent and need to get applied after receiving the \fIstart\fR, \fIrestart\fR or \fIreload\fR message from firewalld using D\-BUS.
+The direct interface is mainly used by services or applications to add specific firewall rules. The rules are not permanent and need to get applied after receiving the \fIstart\fR, \fIrestart\fR or \fIreload\fR message from firewalld using D\-BUS.
 
 .SH DIRECTORIES
 firewalld supports two configuration directories:
@@ -74,7 +74,7 @@ For more information on icmptypes, please have a look at the \fIfirewalld.icmpty
 Currently only SIGHUP is supported.
 
 .SS SIGHUP
-Reloads the complete firewall configuration. You can also use \fBfirewall\-cmd\ \-\-reload\fR. All runtime configuration settings will be restored. Persistent configuration will change according to options defined in the configuration files.
+Reloads the complete firewall configuration. You can also use \fBfirewall\-cmd\ \-\-reload\fR. All runtime configuration settings will be restored. Permanent configuration will change according to options defined in the configuration files.
 
 .SH SEE ALSO
 \fIfirewalld.conf\fR(5), 

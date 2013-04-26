@@ -34,7 +34,7 @@ from firewall.core.base import DEFAULT_ZONE_TARGET
 
 class TestFirewallDInterfaceConfig(unittest.TestCase):
     """
-    For testing of persistent changes, ie. those that survive restart:
+    For testing of permanent changes, ie. those that survive restart:
     """
     def setUp(self):
         unittest.TestCase.setUp(self)
@@ -90,7 +90,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         print ("Adding proper zone")
         self.fw.config().addZone (zone_name, settings)
 
-        print ("Checking the saved (persistent) settings")
+        print ("Checking the saved (permanent) settings")
         config_zone = self.fw.config().getZoneByName(zone_name)
         self.assertIsInstance(config_zone, firewall.client.FirewallClientConfigZone)
         zone_settings = config_zone.getSettings()
@@ -192,7 +192,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         print ("Adding proper service")
         self.fw.config().addService (service_name, settings)
 
-        print ("Checking the saved (persistent) settings")
+        print ("Checking the saved (permanent) settings")
         config_service = self.fw.config().getServiceByName(service_name)
         self.assertIsInstance(config_service, firewall.client.FirewallClientConfigService)
         service_settings = config_service.getSettings()
@@ -272,7 +272,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         print ("Adding proper icmp type")
         self.fw.config().addIcmpType (icmptype_name, settings)
 
-        print ("Checking the saved (persistent) settings")
+        print ("Checking the saved (permanent) settings")
         config_icmptype = self.fw.config().getIcmpTypeByName(icmptype_name)
         self.assertIsInstance(config_icmptype, firewall.client.FirewallClientConfigIcmpType)
         icmptype_settings = config_icmptype.getSettings()

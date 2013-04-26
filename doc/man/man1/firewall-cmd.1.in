@@ -11,7 +11,7 @@ firewall-cmd \- firewalld command line client
 .IP \fBfirewall-cmd\fR\ \fB[OPTIONS..]\fR
 
 .SH DESCRIPTION
-\fBfirewall-cmd\fR is the command line client of the firewalld daemon. It provides interface to manage runtime and persistent configuration.
+\fBfirewall-cmd\fR is the command line client of the firewalld daemon. It provides interface to manage runtime and permanent configuration.
 
 .SH OPTIONS
 
@@ -53,7 +53,7 @@ Returns 0 if panic mode is enabled, 1 otherwise.
 Print default zone for connections and interfaces. By default this is \fIpublic\fR.
 .TP
 \fB--set-default-zone\fR=\fI<zone>\fR
-Set default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a persistent change.
+Set default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a permanent change.
 .TP
 \fB--get-zones\fR
 Print predefined zones as a space separated list.

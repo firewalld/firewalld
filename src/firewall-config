@@ -137,7 +137,7 @@ class FirewallConfig(object):
 
         self.currentViewCombobox = builder.get_object("currentViewCombobox")
         self.currentViewCombobox.append_text(_("Runtime Configuration"))
-        self.currentViewCombobox.append_text(_("Persistent Configuration"))
+        self.currentViewCombobox.append_text(_("Permanent Configuration"))
         self.runtime_view = True
 
         self.zoneView = builder.get_object("zoneView")
@@ -914,7 +914,7 @@ class FirewallConfig(object):
             default = False
             builtin = False
         else:
-            # load persistent configuration
+            # load permanent configuration
             try:
                 zone = self.fw.config().getZoneByName(active_zone)
             except:
@@ -1586,7 +1586,7 @@ class FirewallConfig(object):
         modules = [ ]
         destination = { }
 
-        # load persistent configuration
+        # load permanent configuration
         try:
             service = self.fw.config().getServiceByName(active_service)
         except:
@@ -1979,7 +1979,7 @@ class FirewallConfig(object):
 
         destination = [ ]
 
-        # load persistent configuration
+        # load permanent configuration
         try:
             icmp = self.fw.config().getIcmpTypeByName(active_icmp)
         except:
