@@ -29,7 +29,7 @@ import os, sys
 import signal
 
 # force use of pygobject3 in python-slip
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 sys.modules['gobject'] = GObject
 
 import dbus
@@ -43,20 +43,15 @@ from firewall.server.firewalld import FirewallD
 
 ############################################################################
 #
-# signal handler
+# signal handlers
 #
 ############################################################################
 
-def sighandler(signum, frame):
-    """ signal handler
-    """
-    # reloading over dbus is not working server is not responding anymore
-    # therefore using external firewall-cmd 
-    if signum == signal.SIGHUP:
-        os.system("firewall-cmd --reload &")
-        return
+def sighup(data):
+    os.system("firewall-cmd --reload &")
 
-    sys.exit()
+def sigterm(mainloop):
+    mainloop.quit()
 
 ############################################################################
 #
@@ -67,11 +62,6 @@ def sighandler(signum, frame):
 def run_server():
     """ Main function for firewall server. Handles D-BUS and GLib mainloop.
     """
-    signal.signal(signal.SIGHUP, sighandler)
-    signal.signal(signal.SIGQUIT, sighandler)
-    signal.signal(signal.SIGTERM, sighandler)
-    signal.signal(signal.SIGALRM, sighandler)
-
     service = None
 
     try:
@@ -82,6 +72,18 @@ def run_server():
 
         mainloop = GObject.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)
+
+        # use unix_signal_add if available, else unix_signal_add_full
+        if hasattr(GLib, 'unix_signal_add'):
+            unix_signal_add = GLib.unix_signal_add
+        else:
+            unix_signal_add = GLib.unix_signal_add_full
+
+        unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGHUP,
+                        sighup, None)
+        unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGTERM,
+                        sigterm, mainloop)
+
         mainloop.run()
 
     except KeyboardInterrupt as e:
