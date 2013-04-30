@@ -50,34 +50,44 @@ EXTRA_DIST = \
 	icmptypes/source-quench.xml \
 	icmptypes/time-exceeded.xml \
 	services/amanda-client.xml \
-	services/cluster-suite.xml \
-	services/ftp.xml \
-	services/imaps.xml \
-	services/ipsec.xml \
-	services/mdns.xml \
-	services/openvpn.xml \
-	services/samba-client.xml \
-	services/ssh.xml \
-	services/tftp.xml \
 	services/bacula-client.xml \
-	services/dhcpv6-client.xml \
-	services/https.xml \
-	services/ipp-client.xml \
-	services/libvirt-tls.xml \
-	services/nfs.xml \
-	services/pop3s.xml \
-	services/samba.xml \
-	services/telnet.xml \
-	services/vnc-server.xml \
 	services/bacula.xml \
+	services/cluster-suite.xml \
+	services/dhcpv6-client.xml \
 	services/dns.xml \
+	services/ftp.xml \
+	services/https.xml \
 	services/http.xml \
+	services/imaps.xml \
+	services/ipp-client.xml \
 	services/ipp.xml \
+	services/ipsec.xml \
+	services/kerberos.xml \
+	services/kpasswd.xml \
+	services/ldaps.xml \
+	services/ldap.xml \
+	services/libvirt-tls.xml \
 	services/libvirt.xml \
+	services/mdns.xml \
+	services/mountd.xml \
+	services/ms-wbt.xml \
+	services/mysql.xml \
+	services/nfs.xml \
 	services/ntp.xml \
+	services/openvpn.xml \
+	services/pop3s.xml \
+	services/postgresql.xml \
 	services/radius.xml \
+	services/rpc-bind.xml \
+	services/samba-client.xml \
+	services/samba.xml \
 	services/smtp.xml \
+	services/ssh.xml \
+	services/telnet.xml \
 	services/tftp-client.xml \
+	services/tftp.xml \
+	services/transmission-client.xml \
+	services/vnc-server.xml \
 	zones/block.xml \
 	zones/dmz.xml \
 	zones/drop.xml \
