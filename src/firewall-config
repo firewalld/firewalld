@@ -914,13 +914,18 @@ class FirewallConfig(object):
             default = False
             builtin = False
         else:
-            # load permanent configuration
+            old_handler = client.exception_handler
+            # we want to handle exceptions ourselves
+            client.exception_handler = None
             try:
                 zone = self.fw.config().getZoneByName(active_zone)
             except:
+                client.exception_handler = old_handler
                 return
-            settings = zone.getSettings()
+            client.exception_handler = old_handler
 
+            # load permanent configuration
+            settings = zone.getSettings()
             services = settings.getServices()
             ports = settings.getPorts()
             masquerade = settings.getMasquerade()
@@ -1586,13 +1591,18 @@ class FirewallConfig(object):
         modules = [ ]
         destination = { }
 
-        # load permanent configuration
+        old_handler = client.exception_handler
+        # we want to handle exceptions ourselves
+        client.exception_handler = None
         try:
             service = self.fw.config().getServiceByName(active_service)
         except:
+            client.exception_handler = old_handler
             return
-        settings = service.getSettings()
+        client.exception_handler = old_handler
 
+        # load permanent configuration
+        settings = service.getSettings()
         ports = settings.getPorts()
         modules = settings.getModules()
         destination = settings.getDestinations()
@@ -1979,13 +1989,18 @@ class FirewallConfig(object):
 
         destination = [ ]
 
-        # load permanent configuration
+        old_handler = client.exception_handler
+        # we want to handle exceptions ourselves
+        client.exception_handler = None
         try:
             icmp = self.fw.config().getIcmpTypeByName(active_icmp)
         except:
+            client.exception_handler = old_handler
             return
-        settings = icmp.getSettings()
+        client.exception_handler = old_handler
 
+        # load permanent configuration
+        settings = icmp.getSettings()
         destination = settings.getDestinations()
         default = icmp.get_property("default")
         builtin = icmp.get_property("builtin")
