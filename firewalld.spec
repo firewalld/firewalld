@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.1
+Version: 0.3.2
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -188,6 +188,26 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Tue Apr 30 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.2-1
+- Fix signal handling for SIGTERM
+- Additional service files (RHBZ#914859)
+- Updated po files
+- s/persistent/permanent/ (Trac Ticket #7)
+- Better behaviour when running without valid DISPLAY (RHBZ#955414)
+- client.handle_exceptions(): do not loop forever
+- Set Zone.defaults in zone_reader (RHBZ#951747)
+- client: do not pass the dbus exception name to handler
+- IO_Object_XMLGenerator: make it work with Python 2.7.4 (RHBZ#951741)
+- firewall-cmd: do not use deprecated BaseException.message
+- client.py: fix handle_exceptions() (RHBZ#951314)
+- firewall-config: check zone/service/icmptype name (RHBZ#947820)
+- Allow 3121/tcp (pacemaker_remote) in cluster-suite service. (RHBZ#885257)
+- firewall-applet: fix default zone hangling in 'shields-up' (RHBZ#947230)
+- FirewallError.get_code(): check for unknown error
+
+* Wed Apr 17 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.1-2
+- Make permanenent changes work with Python 2.7.4 (RHBZ#951741)
+
 * Thu Mar 28 2013 Thomas Woerner <twoerner@redhat.com> 0.3.1-1
 - Use explicit file lists for make dist
 - New rich rule validation check code
@@ -246,6 +266,15 @@ fi
 - default zone in firewalld.conf was set to public with every restart (#902845)
 - man page cleanup
 - code cleanup
+
+* Thu Mar 07 2013 Jiri Popelka <jpopelka@redhat.com> - 0.2.12-5
+- Another fix for RHBZ#912782
+
+* Wed Feb 20 2013 Jiri Popelka <jpopelka@redhat.com> - 0.2.12-4
+- Stop default zone rules being applied to all zones (RHBZ#912782)
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.2.12-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
 * Tue Jan 22 2013 Jiri Popelka <jpopelka@redhat.com> - 0.2.12-2
 - Default zone in firewalld.conf was reseted with every restart (RHBZ#902845)
