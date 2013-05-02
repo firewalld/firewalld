@@ -164,6 +164,15 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     @handle_exceptions
     def removeIcmpType(self, obj):
+        index = 7 # see IMPORT_EXPORT_STRUCTURE in class Zone(IO_Object)
+        for zone in self.zones:
+            settings = zone.getSettings()
+            # if this IcmpType is used in a zone remove it from that zone first
+            if obj.name in settings[index]:
+                settings[index].remove(obj.name)
+                zone.obj = self.config.set_zone_config(zone.obj, settings)
+                zone.Updated(zone.obj.name)
+
         for icmptype in self.icmptypes:
             if icmptype.obj == obj:
                 icmptype.Removed(obj.name)
@@ -193,6 +202,15 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     @handle_exceptions
     def removeService(self, obj):
+        index = 5 # see IMPORT_EXPORT_STRUCTURE in class Zone(IO_Object)
+        for zone in self.zones:
+            settings = zone.getSettings()
+            # if this Service is used in a zone remove it from that zone first
+            if obj.name in settings[index]:
+                settings[index].remove(obj.name)
+                zone.obj = self.config.set_zone_config(zone.obj, settings)
+                zone.Updated(zone.obj.name)
+
         for service in self.services:
             if service.obj == obj:
                 service.Removed(obj.name)
