@@ -710,9 +710,11 @@ class FirewallConfig(object):
         active_zone = self.get_active_zone()
         if self.runtime_view:
             if not self.masqueradeCheck.get_active():
-                self.fw.addMasquerade(active_zone)
+                if not self.fw.queryMasquerade(active_zone):
+                    self.fw.addMasquerade(active_zone)
             else:
-                self.fw.removeMasquerade(active_zone)
+                if self.fw.queryMasquerade(active_zone):
+                    self.fw.removeMasquerade(active_zone)
         else:
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
