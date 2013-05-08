@@ -518,7 +518,7 @@ class FirewallZone:
             return _old_zone
 
         if _old_zone != None:
-            self.remove_source(_old_zone, ipv, interface)
+            self.remove_source(_old_zone, ipv, source)
 
         return self.add_source(zone, ipv, source, sender)
 
