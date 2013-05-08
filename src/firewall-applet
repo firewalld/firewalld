@@ -358,7 +358,8 @@ class TrayApplet(object):
         self.fw.connect("panic-mode-disabled", self.panic_mode_disabled)
         self.fw.connect("interface-added", self.interface_added)
         self.fw.connect("interface-removed", self.interface_removed)
-        self.fw.connect("zone-changed", self.zone_changed)
+        self.fw.connect("zone-of-interface-changed",
+                        self.zone_of_interface_changed)
 
         self.bus.add_signal_receiver(
             self.nm_signal_receiver,
@@ -770,7 +771,7 @@ class TrayApplet(object):
     def interface_removed(self, zone, interface):
         self._interface(zone, interface, False)
 
-    def zone_changed(self, zone, interface):
+    def zone_of_interface_changed(self, zone, interface):
         # update zone editor
         if interface in self.zone_editors:
             self.zone_editors[interface].set_zone(zone)

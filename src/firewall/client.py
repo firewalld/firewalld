@@ -637,7 +637,8 @@ class FirewallClient(object):
             "icmp-block-removed": "IcmpBlockRemoved",
             "interface-added": "InterfaceAdded",
             "interface-removed": "InterfaceRemoved",
-            "zone-changed": "ZoneChanged",
+            "zone-changed": "ZoneOfInterfaceChanged", # DEPRECATED, use zone-of-interface-changed instead
+            "zone-of-interface-changed": "ZoneOfInterfaceChanged",
             # firewalld.config callbacks
             "config:zone-added": "config:ZoneAdded",
             "config:zone-updated": "config:ZoneUpdated",
@@ -872,8 +873,14 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def changeZone(self, zone, interface):
+    def changeZone(self, zone, interface): # DEPRECATED
         return dbus_to_python(self.fw_zone.changeZone(zone, interface))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def changeZoneOfInterface(self, zone, interface):
+        return dbus_to_python(self.fw_zone.changeZoneOfInterface(zone,
+                                                                 interface))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions

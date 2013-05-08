@@ -416,7 +416,7 @@ try:
     elif a.add_interface:
         fw.addInterface(zone, a.add_interface)
     elif a.change_interface:
-        fw.changeZone(zone, a.change_interface)
+        fw.changeZoneOfInterface(zone, a.change_interface)
     elif a.remove_interface:
         fw.removeInterface(zone, a.remove_interface)
     elif a.query_interface:

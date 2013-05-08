@@ -430,13 +430,25 @@ class FirewallD(slip.dbus.service.Object):
     def changeZone(self, zone, interface, sender=None):
         """Change a zone an interface is part of.
         If zone is empty, use default zone.
+
+        This function is deprecated, use changeZoneOfInterface instead
+        """
+        return self.changeZoneOfInterface(zone, interface, sender)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def changeZoneOfInterface(self, zone, interface, sender=None):
+        """Change a zone an interface is part of.
+        If zone is empty, use default zone.
         """
         interface = str(interface)
-        log.debug1("zone.changeZone('%s', '%s')" % (zone, interface))
+        log.debug1("zone.changeZoneOfInterface('%s', '%s')" % (zone, interface))
         self.accessCheck(sender)
         _zone = self.fw.zone.change_zone_of_interface(zone, interface, sender)
 
-        self.ZoneChanged(_zone, interface)
+        self.ZoneOfInterfaceChanged(_zone, interface)
         return _zone
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
@@ -486,7 +498,17 @@ class FirewallD(slip.dbus.service.Object):
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ZoneChanged(self, zone, interface):
+        """
+        This signal is deprecated.
+        """
         log.debug1("zone.ZoneChanged('%s', '%s')" % (zone, interface))
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def ZoneOfInterfaceChanged(self, zone, interface):
+        log.debug1("zone.ZoneOfInterfaceChanged('%s', '%s')" % (zone,
+                                                                interface))
+        self.ZoneChanged(zone, interface)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
