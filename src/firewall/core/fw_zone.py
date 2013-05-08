@@ -435,7 +435,8 @@ class FirewallZone:
             if not checkIP6nMask(source):
                 raise FirewallError(INVALID_ADDR, source)
         else:
-            raise FirewallError(INVALID_IPV)
+            # raise INVALID_FAMILY, not INVALID_IPV
+            raise FirewallError(INVALID_FAMILY, ipv)
 
     def __source_id(self, ipv, source):
         self.check_source(ipv, source)
