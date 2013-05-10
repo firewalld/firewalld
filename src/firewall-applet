@@ -73,6 +73,12 @@ def combobox_select_text(combobox, value):
     combobox.set_active(0)
     return False
 
+def escape(text):
+    text = text.replace('&', '&amp;')
+    text = text.replace('>', '&gt;')
+    text = text.replace('<', '&lt;')
+    return text
+
 class ZoneEditor(Gtk.Dialog):
     def __init__(self, fw, interface, zone):
         self.fw = fw
@@ -95,7 +101,7 @@ class ZoneEditor(Gtk.Dialog):
         vbox.set_homogeneous(False)
 
         label = Gtk.Label()
-        label.set_markup(self.title)
+        label.set_text(self.title)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0, 0.5)
@@ -272,18 +278,18 @@ class TrayApplet(object):
         vbox.set_homogeneous(False)
 
         label = Gtk.Label()
-        label.set_markup(_("Here you can select the zones used for Shields "
-                           "Up and Shields Down."))
+        label.set_text(_("Here you can select the zones used for Shields "
+                         "Up and Shields Down."))
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0, 0.5)
         vbox.pack_start(label, True, True, 0)
 
         label = Gtk.Label()
-        label.set_markup(_("This feature is useful for people using the "
-                           "default zones mostly. For users, that are "
-                           "changing zones of connections, it might be of "
-                           "limited use."))
+        label.set_text(_("This feature is useful for people using the "
+                         "default zones mostly. For users, that are "
+                         "changing zones of connections, it might be of "
+                         "limited use."))
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(0, 0.5)
@@ -295,7 +301,7 @@ class TrayApplet(object):
         grid.set_border_width(6)
 
         label = Gtk.Label()
-        label.set_markup(_("Shields Up Zone:"))
+        label.set_text(_("Shields Up Zone:"))
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(1, 0.5)
@@ -306,7 +312,7 @@ class TrayApplet(object):
         grid.attach(self.shields_up_combo, 1, 0, 1, 1)
 
         label = Gtk.Label()
-        label.set_markup(_("Shields Down Zone:"))
+        label.set_text(_("Shields Down Zone:"))
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.LEFT)
         label.set_alignment(1, 0.5)
@@ -406,7 +412,7 @@ class TrayApplet(object):
         # add connecitons entry
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
-        label.set_markup("<b>"+_("Connections")+"</b>")
+        label.set_markup("<b>"+escape(_("Connections"))+"</b>")
         label.set_alignment(0, 0.5)
         item.add(label)
         item.connect("select", self.no_select)
@@ -443,7 +449,7 @@ class TrayApplet(object):
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             label = Gtk.Label()
             label.set_markup("%s\n<small>%s: %s</small>" % \
-                                 (connection, _("Zone"), zone))
+                                 (connection, escape(_("Zone")), zone))
             label.set_alignment(0, 0.5)
             label.set_padding(12, 0)
             hbox.pack_start(label, True, True, 0)
@@ -459,7 +465,7 @@ class TrayApplet(object):
 
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
-        label.set_markup("<b>"+_("Interfaces")+"</b>")
+        label.set_markup("<b>"+escape(_("Interfaces"))+"</b>")
         label.set_alignment(0, 0.5)
         item.add(label)
         item.connect("select", self.no_select)
@@ -473,7 +479,7 @@ class TrayApplet(object):
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             label = Gtk.Label()
             label.set_markup("%s\n<small>%s: %s</small>" % \
-                                 (interface, _("Zone"), zone))
+                                 (interface, escape(_("Zone")), zone))
             label.set_alignment(0, 0.5)
             label.set_padding(12, 0)
             hbox.pack_start(label, True, True, 0)
@@ -683,7 +689,7 @@ class TrayApplet(object):
         messages = [ ]
 
         if self.default_zone:
-            messages.append(_("Default Zone: %s" % self.default_zone))
+            messages.append(_("Default Zone: %s") % self.default_zone)
 
         if len(self.active_zones) > 0:
             for zone in sorted(self.active_zones):
