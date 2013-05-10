@@ -37,6 +37,13 @@ def __fail(msg=None):
         print(msg)
     sys.exit(2)
 
+def __parse_family_n_source(value):
+    try:
+        (family, source) = value.split(":", 1)
+    except Exception as e:
+        __fail("bad source (most likely missing family)")
+    return (family, source)
+
 def __parse_port(value):
     try:
         (port, proto) = value.split("/")
@@ -73,6 +80,7 @@ def __parse_forward_port(value):
 
 def __list_all(fw, zone):
     interfaces = fw.getInterfaces(zone)
+    sources = fw.getSources(zone)
     services = fw.getServices(zone)
     ports = fw.getPorts(zone)
     forward_ports = fw.getForwardPorts(zone)
@@ -80,6 +88,7 @@ def __list_all(fw, zone):
 
     print(zone if zone != "" else fw.getDefaultZone())
     print("  interfaces: " + " ".join(interfaces))
+    print("  sources: " + " ".join(["%s:%s" % (source[0], source[1]) for source in sources]))
     print("  services: " + " ".join(services))
     print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
     print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
@@ -105,6 +114,7 @@ parser_group_standalone.add_argument("--get-services", action="store_true")
 parser_group_standalone.add_argument("--get-icmptypes", action="store_true")
 parser_group_standalone.add_argument("--get-active-zones", action="store_true")
 parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>")
+parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>")
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
 
 parser.add_argument("--permanent", action="store_true")
@@ -117,6 +127,11 @@ parser_group_zone.add_argument("--remove-interface", metavar="<iface>")
 parser_group_zone.add_argument("--query-interface", metavar="<iface>")
 parser_group_zone.add_argument("--change-interface", "--change-zone", metavar="<iface>")
 parser_group_zone.add_argument("--list-interfaces", action="store_true")
+parser_group_zone.add_argument("--add-source", metavar="<source>")
+parser_group_zone.add_argument("--remove-source", metavar="<source>")
+parser_group_zone.add_argument("--query-source", metavar="<source>")
+parser_group_zone.add_argument("--change-source", metavar="<source>")
+parser_group_zone.add_argument("--list-sources", action="store_true")
 parser_group_zone.add_argument("--add-service", metavar="<service>", action='append')
 parser_group_zone.add_argument("--remove-service", metavar="<zone>", action='append')
 parser_group_zone.add_argument("--query-service", metavar="<zone>")
@@ -167,12 +182,16 @@ options_standalone = a.help or a.version or \
                      a.panic_on or a.panic_off or a.query_panic or \
                      a.get_default_zone or a.set_default_zone or \
                      a.get_active_zones or a.get_zone_of_interface or \
+                     a.get_zone_of_source or \
                      a.list_all_zones
 
 options_config = a.get_zones or a.get_services or a.get_icmptypes
 
 options_zone_interfaces = a.list_interfaces or a.change_interface or \
                    a.add_interface or a.remove_interface or a.query_interface
+
+options_zone_sources = a.list_sources or a.change_source or \
+                   a.add_source or a.remove_source or a.query_source
 
 options_zone_action_action = \
                     a.add_service or a.remove_service or a.query_service or \
@@ -184,7 +203,8 @@ options_zone_adapt_query = \
             a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
  a.list_services or a.list_ports or a.list_icmp_blocks or a.list_forward_ports
 
-options_zone = a.zone or options_zone_interfaces or a.list_all or a.timeout or \
+options_zone = a.zone or options_zone_interfaces or options_zone_sources or \
+    a.list_all or a.timeout or \
                options_zone_action_action or options_zone_adapt_query
 
 options_permanent = a.permanent or options_config or a.zone or \
@@ -385,10 +405,18 @@ try:
     elif a.get_active_zones:
         zones = fw.getActiveZones()
         for zone in zones:
-            print("%s: %s" % (zone, " ".join(zones[zone])))
+            print("%s" % (zone))
+            for x in [ "interfaces", "sources" ]:
+                if x in zones[zone]:
+                    print("  %s: %s" % (x, " ".join(zones[zone][x])))
     elif a.get_zone_of_interface:
         try:
             print(fw.getZoneOfInterface(a.get_zone_of_interface))
+        except:
+            pass
+    elif a.get_zone_of_source:
+        try:
+            print(fw.getZoneOfSource(a.get_zone_of_source))
         except:
             pass
     elif a.get_services:
@@ -421,6 +449,24 @@ try:
         fw.removeInterface(zone, a.remove_interface)
     elif a.query_interface:
         sys.exit(not fw.queryInterface(zone, a.query_interface))
+
+    # source
+    elif a.list_sources:
+        l = fw.getSources(zone)
+        if len(l) > 0:
+            print(" ".join(l))
+    elif a.add_source:
+        (family, address) = __parse_family_n_source(a.add_source)
+        fw.addSource(zone, family, address)
+    elif a.change_source:
+        (family, address) = __parse_family_n_source(a.change_source)
+        fw.changeZoneOfSource(zone, family, address)
+    elif a.remove_source:
+        (family, address) = __parse_family_n_source(a.remove_source)
+        fw.removeSource(zone, family, address)
+    elif a.query_source:
+        (family, address) = __parse_family_n_source(a.query_source)
+        sys.exit(not fw.querySource(zone, family, address))
 
     # service
     elif a.list_services:

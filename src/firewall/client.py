@@ -639,6 +639,9 @@ class FirewallClient(object):
             "interface-removed": "InterfaceRemoved",
             "zone-changed": "ZoneOfInterfaceChanged", # DEPRECATED, use zone-of-interface-changed instead
             "zone-of-interface-changed": "ZoneOfInterfaceChanged",
+            "source-added": "SourceAdded",
+            "source-removed": "SourceRemoved",
+            "zone-of-source-changed": "ZoneOfSourceChanged",
             # firewalld.config callbacks
             "config:zone-added": "config:ZoneAdded",
             "config:zone-updated": "config:ZoneUpdated",
@@ -896,6 +899,34 @@ class FirewallClient(object):
     @handle_exceptions
     def removeInterface(self, zone, interface):
         return dbus_to_python(self.fw_zone.removeInterface(zone, interface))
+
+    # sources
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addSource(self, zone, family, source):
+        return dbus_to_python(self.fw_zone.addSource(zone, family, source))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def changeZoneOfSource(self, zone, family, source):
+        return dbus_to_python(self.fw_zone.changeZoneOfSource(zone, family, 
+                                                              source))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSources(self, zone):
+        return dbus_to_python(self.fw_zone.getSources(zone))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def querySource(self, zone, family, source):
+        return dbus_to_python(self.fw_zone.querySource(zone, family, source))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeSource(self, zone, family, source):
+        return dbus_to_python(self.fw_zone.removeSource(zone, family, source))
 
     # services
 

@@ -364,7 +364,7 @@ class FirewallD(slip.dbus.service.Object):
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
-                         out_signature='a{sas}')
+                         out_signature='a{sa{sas}}')
     @dbus_handle_exceptions
     def getActiveZones(self, sender=None):
         # returns the list of active zones
@@ -372,8 +372,14 @@ class FirewallD(slip.dbus.service.Object):
         zones = { }
         for zone in self.fw.zone.get_zones():
             interfaces = self.fw.zone.get_interfaces(zone)
-            if len(interfaces) > 0:
-                zones[zone] = interfaces
+            sources = self.fw.zone.get_sources(zone)
+            if len(interfaces) + len(sources) > 0:
+                zones[zone] = { }
+                if len(interfaces) > 0:
+                    zones[zone]["interfaces"] = interfaces
+                if len(sources) > 0:
+                    zones[zone]["sources"] = [ "%s:%s" % (source[0], source[1])
+                                               for source in sources ]
         return zones
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
@@ -514,6 +520,106 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def InterfaceRemoved(self, zone, interface):
         log.debug1("zone.InterfaceRemoved('%s', '%s')" % (zone, interface))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # SOURCES
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addSource(self, zone, family, source, sender=None):
+        """Add a source to a zone.
+        If zone is empty, use default zone.
+        """
+        family = str(family)
+        source = str(source)
+        log.debug1("zone.addSource('%s', '%s', '%s')" % (zone, family, source))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.add_source(zone, family, source, sender)
+
+        self.SourceAdded(_zone, family, source)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def changeZoneOfSource(self, zone, family, source, sender=None):
+        """Change a zone an source is part of.
+        If zone is empty, use default zone.
+        """
+        family = str(family)
+        source = str(source)
+        log.debug1("zone.changeZoneOfSource('%s', '%s', '%s')" % (zone, family,
+                                                                  source))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.change_zone_of_source(zone, family, source, sender)
+
+        self.ZoneOfSourceChanged(_zone, family, source)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeSource(self, zone, family, source, sender=None):
+        """Remove source from a zone.
+        If zone is empty, remove from zone the source belongs to.
+        """
+        family = str(family)
+        source = str(source)
+        log.debug1("zone.removeSource('%s', '%s', '%s')" % (zone, family,
+                                                            source))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.remove_source(zone, family, source)
+
+        self.SourceRemoved(_zone, family, source)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def querySource(self, zone, family, source, sender=None):
+        """Return true if an source is in a zone.
+        If zone is empty, use default zone.
+        """
+        family = str(family)
+        source = str(source)
+        log.debug1("zone.querySource('%s', '%s', '%s')" % (zone, family,
+                                                           source))
+        return self.fw.zone.query_source(zone, family, source)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='a(ss)')
+    @dbus_handle_exceptions
+    def getSources(self, zone, sender=None):
+        """Return the list of sources of a zone.
+        If zone is empty, use default zone.
+        """
+        log.debug1("zone.getSources('%s')" % (zone))
+        return self.fw.zone.get_sources(zone)
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sss')
+    @dbus_handle_exceptions
+    def SourceAdded(self, zone, family, source):
+        log.debug1("zone.SourceAdded('%s', '%s', '%s')" % (zone, source,
+                                                           family))
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sss')
+    @dbus_handle_exceptions
+    def ZoneOfSourceChanged(self, zone, family, source):
+        log.debug1("zone.ZoneOfSourceChanged('%s', '%s', '%s')" % \
+                       (zone, family, source))
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sss')
+    @dbus_handle_exceptions
+    def SourceRemoved(self, zone, family, source):
+        log.debug1("zone.SourceRemoved('%s', '%s', '%s')" % (zone, source,
+                                                             family))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

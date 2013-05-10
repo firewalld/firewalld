@@ -79,14 +79,70 @@ def escape(text):
     text = text.replace('<', '&lt;')
     return text
 
-class ZoneEditor(Gtk.Dialog):
+class ZoneInterfaceEditor(Gtk.Dialog):
     def __init__(self, fw, interface, zone):
         self.fw = fw
         self.interface = interface
         self.zone = zone
         self.title = _("Select zone for interface '%s'") % self.interface
 
-        super(ZoneEditor, self).__init__(self.title)
+        super(ZoneInterfaceEditor, self).__init__(self.title)
+
+        self.set_property("width-request", 100)
+        self.resize_to_geometry(100, 50)
+        self.set_resizable(True)
+
+        self.add_button("gtk-close", 1)
+        self.ok_button = self.add_button("gtk-ok", 2)
+        self.ok_button.set_sensitive(False)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.set_border_width(12)
+        vbox.set_homogeneous(False)
+
+        label = Gtk.Label()
+        label.set_text(self.title)
+        label.set_line_wrap(True)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_alignment(0, 0.5)
+        vbox.pack_start(label, True, True, 0)
+
+        self.combo = Gtk.ComboBoxText()
+        zones = self.fw.getZones()
+        for zone in zones:
+            self.combo.append_text(zone)
+        vbox.pack_start(self.combo, True, True, 0)
+
+        box = self.get_content_area()
+        box.set_border_width(6)
+        box.set_homogeneous(False)
+        box.pack_start(vbox, False, True, 0)
+
+        combobox_select_text(self.combo, self.zone)
+        self.combo.connect("changed", self.combo_changed)
+
+    def combo_changed(self, combo):
+        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
+
+    def set_zone(self, zone):
+        old_zone = self.zone
+        self.zone = zone
+        if self.combo.get_active_text() == old_zone:
+            combobox_select_text(self.combo, self.zone)
+        else:
+            self.combo_changed(None)
+
+    def get_zone(self):
+        return self.combo.get_active_text()
+
+class ZoneSourceEditor(Gtk.Dialog):
+    def __init__(self, fw, source, zone):
+        self.fw = fw
+        self.source = source
+        self.zone = zone
+        self.title = _("Select zone for source %s: %s") % self.source
+
+        super(ZoneSourceEditor, self).__init__(self.title)
 
         self.set_property("width-request", 100)
         self.resize_to_geometry(100, 50)
@@ -157,7 +213,8 @@ class TrayApplet(object):
         self.connections = { }
         self.connections_uuid = { }
         self.default_zone = None
-        self.zone_editors = { }
+        self.zone_interface_editors = { }
+        self.zone_source_editors = { }
 
         if os.path.isfile(NM_CONNECTION_EDITOR):
             self.has_nm_connection_editor = True
@@ -366,6 +423,10 @@ class TrayApplet(object):
         self.fw.connect("interface-removed", self.interface_removed)
         self.fw.connect("zone-of-interface-changed",
                         self.zone_of_interface_changed)
+        self.fw.connect("source-added", self.source_added)
+        self.fw.connect("source-removed", self.source_removed)
+        self.fw.connect("zone-of-source-changed",
+                        self.zone_of_source_changed)
 
         self.bus.add_signal_receiver(
             self.nm_signal_receiver,
@@ -428,18 +489,23 @@ class TrayApplet(object):
         # get all active connections (NM) and interfaces
         connections = { }
         interfaces = { }
+        sources = { }
         for zone in sorted(self.active_zones):
-            for interface in sorted(self.active_zones[zone]):
-                if interface not in self.connections:
-                    interfaces[interface] = zone
-                else:
-                    # NM controlled
-                    connection = self.connections[interface]
-                    if connection not in self.connections_uuid:
-                        uuid = None
+            if "interfaces" in self.active_zones[zone]:
+                for interface in sorted(self.active_zones[zone]["interfaces"]):
+                    if interface not in self.connections:
+                        interfaces[interface] = zone
                     else:
-                        uuid = self.connections_uuid[connection]
-                    connections[connection] = [ zone, uuid ]
+                        # NM controlled
+                        connection = self.connections[interface]
+                        if connection not in self.connections_uuid:
+                            uuid = None
+                        else:
+                            uuid = self.connections_uuid[connection]
+                        connections[connection] = [ zone, uuid ]
+            if "sources" in self.active_zones[zone]:
+                for source in sorted(self.active_zones[zone]["sources"]):
+                    sources[tuple(source.split(":", 1))] = zone
 
         # add NM controlled entries
         for connection in sorted(connections):
@@ -460,33 +526,55 @@ class TrayApplet(object):
             item.connect("activate", self.nm_connection_editor, uuid)
             self.left_menu.append(item)
 
-        if len(interfaces) < 1:
-            return
-
-        item = Gtk.MenuItem.new()
-        label = Gtk.Label()
-        label.set_markup("<b>"+escape(_("Interfaces"))+"</b>")
-        label.set_alignment(0, 0.5)
-        item.add(label)
-        item.connect("select", self.no_select)
-        self.left_menu.append(item)
-
-        # add other interfaces
-        for interface in sorted(interfaces):
-            zone = interfaces[interface]
-            
+        if len(interfaces) > 0:
             item = Gtk.MenuItem.new()
-            hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             label = Gtk.Label()
-            label.set_markup("%s\n<small>%s: %s</small>" % \
-                                 (interface, escape(_("Zone")), zone))
+            label.set_markup("<b>"+escape(_("Interfaces"))+"</b>")
             label.set_alignment(0, 0.5)
-            label.set_padding(12, 0)
-            hbox.pack_start(label, True, True, 0)
-            item.add(hbox)
-            item.connect("activate", self.change_zone_editor, interface, zone)
+            item.add(label)
+            item.connect("select", self.no_select)
             self.left_menu.append(item)
 
+            # add other interfaces
+            for interface in sorted(interfaces):
+                zone = interfaces[interface]
+
+                item = Gtk.MenuItem.new()
+                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+                label = Gtk.Label()
+                label.set_markup("%s\n<small>%s: %s</small>" % \
+                                     (interface, escape(_("Zone")), zone))
+                label.set_alignment(0, 0.5)
+                label.set_padding(12, 0)
+                hbox.pack_start(label, True, True, 0)
+                item.add(hbox)
+                item.connect("activate", self.change_zone_interface_editor, interface, zone)
+                self.left_menu.append(item)
+
+        if len(sources) > 0:
+            item = Gtk.MenuItem.new()
+            label = Gtk.Label()
+            label.set_markup("<b>"+escape(_("Sources"))+"</b>")
+            label.set_alignment(0, 0.5)
+            item.add(label)
+            item.connect("select", self.no_select)
+            self.left_menu.append(item)
+
+            for source in sorted(sources):
+                zone = sources[source]
+
+                item = Gtk.MenuItem.new()
+                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+                label = Gtk.Label()
+                label.set_markup("%s: %s\n<small>%s: %s</small>" % \
+                                     (source[0], source[1], escape(_("Zone")),
+                                      zone))
+                label.set_alignment(0, 0.5)
+                label.set_padding(12, 0)
+                hbox.pack_start(label, True, True, 0)
+                item.add(hbox)
+                item.connect("activate", self.change_zone_source_editor, source, zone)
+                self.left_menu.append(item)
 
     def nm_connection_editor(self, item, uuid=None):
         if uuid:
@@ -494,20 +582,35 @@ class TrayApplet(object):
         else:
             os.system("%s &" % NM_CONNECTION_EDITOR)
 
-    def change_zone_editor(self, item, interface, zone):
-        if interface in self.zone_editors:
-            return self.zone_editors[interface].present()
+    def change_zone_interface_editor(self, item, interface, zone):
+        if interface in self.zone_interface_editors:
+            return self.zone_interface_editors[interface].present()
 
-        editor = ZoneEditor(self.fw, interface, zone)
+        editor = ZoneInterfaceEditor(self.fw, interface, zone)
         editor.set_icon_name(self.icon_name)
-        self.zone_editors[interface] = editor
+        self.zone_interface_editors[interface] = editor
 
         editor.show_all()
         result = editor.run()
         editor.hide()
         if result == 2:
-            self.fw.changeZone(editor.get_zone(), interface)
-        del self.zone_editors[interface]
+            self.fw.changeZoneOfInterface(editor.get_zone(), interface)
+        del self.zone_interface_editors[interface]
+
+    def change_zone_source_editor(self, item, source, zone):
+        if source in self.zone_source_editors:
+            return self.zone_source_editors[source].present()
+
+        editor = ZoneSourceEditor(self.fw, source, zone)
+        editor.set_icon_name(self.icon_name)
+        self.zone_source_editors[source] = editor
+
+        editor.show_all()
+        result = editor.run()
+        editor.hide()
+        if result == 2:
+            self.fw.changeZoneOfSource(editor.get_zone(), source[0], source[1])
+        del self.zone_source_editors[source]
 
     def connection_established(self, first=False):
         self.set_mode("normal")
@@ -689,22 +792,31 @@ class TrayApplet(object):
         messages = [ ]
 
         if self.default_zone:
-            messages.append(_("Default Zone: %s") % self.default_zone)
+            messages.append(_("Default Zone: '%s'" % self.default_zone))
 
         if len(self.active_zones) > 0:
             for zone in sorted(self.active_zones):
-                for interface in sorted(self.active_zones[zone]):
-                    if interface in self.connections:
-                        connection = self.connections[interface]
-                        text = _("Zone '{zone}' active for connection "
-                                 "'{connection}' on interface '{interface}'")
-                    else:
-                        text = _("Zone '{zone}' active for interface "
-                                 "'{interface}'")
+                if "interfaces" in self.active_zones[zone]:
+                    for interface in sorted(self.active_zones[zone]["interfaces"]):
+                        if interface in self.connections:
+                            connection = self.connections[interface]
+                            text = _("Zone '{zone}' active for connection "
+                                     "'{connection}' on interface '{interface}'")
+                        else:
+                            text = _("Zone '{zone}' active for interface "
+                                     "'{interface}'")
+                            connection = None
+                        messages.append(text.format(zone=zone,
+                                                    connection=connection,
+                                                    interface=interface))
+                if "sources" in self.active_zones[zone]:
+                    for source in sorted(self.active_zones[zone]["sources"]):
+                        (family, address) = source.split(":", 1)
+                        text = _("Zone '{zone}' active for source "
+                                 "{family}: {address}")
                         connection = None
-                    messages.append(text.format(zone=zone,
-                                                connection=connection,
-                                                interface=interface))
+                        messages.append(text.format(zone=zone, family=family, 
+                                                    address=address))
         else:
             messages.append(_("No Active Zones."))
 
@@ -779,8 +891,8 @@ class TrayApplet(object):
 
     def zone_of_interface_changed(self, zone, interface):
         # update zone editor
-        if interface in self.zone_editors:
-            self.zone_editors[interface].set_zone(zone)
+        if interface in self.zone_interface_editors:
+            self.zone_interface_editors[interface].set_zone(zone)
 
         self.update_active_zones()
         self.update_tooltip()
@@ -788,6 +900,42 @@ class TrayApplet(object):
         if self.notification_check.get_active():
             self.notify(_("Zone '%s' activated for interface '%s'") % \
                             (zone, interface))
+
+    def _source(self, zone, family, source, enable):
+        self.update_active_zones()
+        self.update_tooltip()
+
+        # send notification if enabled
+        if self.notification_check.get_active():
+            ed = { 1: _("activated"),
+                   0: _("deactivated") }
+            connection = None
+            text = _("Zone '{zone}' {activated_deactivated} for "
+                     "source '{family}:{source}'")
+            self.notify(text.format(zone=zone,
+                                    activated_deactivated=ed[enable],
+                                    connection=connection,
+                                    family=family, source=source))
+
+    def source_added(self, zone, family, source):
+        self._source(zone, family, source, True)
+
+    def source_removed(self, zone, family, source):
+        self._source(zone, family, source, False)
+
+    def zone_of_source_changed(self, zone, family, source):
+        index = (family, source)
+
+        # update zone editor
+        if index in self.zone_interface_editors:
+            self.zone_interface_editors[index].set_zone(zone)
+
+        self.update_active_zones()
+        self.update_tooltip()
+
+        if self.notification_check.get_active():
+            self.notify(_("Zone '%s' activated for source '%s: %s'") % \
+                            (zone, family, source))
 
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
