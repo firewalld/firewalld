@@ -22,6 +22,7 @@
 import os.path
 from firewall.config import *
 from firewall import functions
+from firewall.fw_types import *
 from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core import modules
@@ -47,8 +48,8 @@ class FirewallDirect:
         self.__init_vars()
 
     def __init_vars(self):
-        self._chains = { }
-        self._rules = { }
+        self._chains = LastUpdatedOrderedDict()
+        self._rules = LastUpdatedOrderedDict()
         self._rule_priority_positions = { }
 
     def cleanup(self):
@@ -174,7 +175,7 @@ class FirewallDirect:
 
         if enable:
             if not chain_id in self._rules:
-                self._rules[chain_id] = { }
+                self._rules[chain_id] = LastUpdatedOrderedDict()
             self._rules[chain_id][args] = priority
             if chain_id not in self._rule_priority_positions:
                 self._rule_priority_positions[chain_id] = { }
