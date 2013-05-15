@@ -69,10 +69,7 @@ class FirewallD(slip.dbus.service.Object):
         # tests if iptables and ip6tables are usable using test functions
         # loads default firewall rules for iptables and ip6tables
         log.debug1("start()")
-        self._by_key = { }
-        self._enabled_services = { }
         self._timeouts = { }
-
         return self.fw.start()
 
     @handle_exceptions
