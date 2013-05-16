@@ -73,6 +73,8 @@ FIREWALLD_ICMPTYPES = USR_LIB_FIREWALLD + '/icmptypes'
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
+FIREWALLD_DIRECT = ETC_FIREWALLD + '/direct.xml'
+
 LOCKDOWN_WHITELIST = ETC_FIREWALLD + '/lockdown-whitelist.xml'
 
 SYSCTL_CONFIG = '/etc/sysctl.conf'

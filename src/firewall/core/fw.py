@@ -178,6 +178,10 @@ class Firewall:
         if error:
             sys.exit(1)
 
+#        # load direct rules
+#        log.debug1("Loading direct rules")
+#        obj = Direct(FIREWALLD_DIRECT)
+
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():
             if "public" in self.zone.get_zones():
