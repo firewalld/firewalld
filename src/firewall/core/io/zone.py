@@ -96,8 +96,8 @@ class Zone(IO_Object):
         self.interfaces = [ ]
         self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
-
         self.rules = [ ]
+        self.combined = False
 
     def _check_config(self, config, item):
         if item == "services" and self.fw_config:
@@ -125,6 +125,31 @@ class Zone(IO_Object):
                 if fwd_port[3]:
                     if not functions.checkIP(fwd_port[3]):
                         raise FirewallError(INVALID_ADDR, fwd_port[3])
+
+    def combine(self, zone):
+        self.combined = True
+        self.filename = None
+        self.version = ""
+        self.short = ""
+        self.description = ""
+        self.immutable = False
+
+        for interface in zone.interfaces:
+            if interface not in self.interfaces:
+                self.interfaces.append(interface)
+        for source in zone.sources:
+            if source not in self.sources:
+                self.sources.append(source)
+        for icmp in zone.icmp_blocks:
+            if icmp not in self.icmp_blocks:
+                self.icmp_blocks.append(icmp)
+        if zone.masquerade:
+            self.masquerade = True
+        for forward in zone.forward_ports:
+            if forward not in self.forward_ports:
+                self.forward_ports.append(forward)
+        for rule in zone.rules:
+            self.rules.append(rule)
 
 # PARSER
 
@@ -454,35 +479,64 @@ def zone_writer(zone, path=None):
         handler.ignorableWhitespace("\n")
 
     # interfaces
-    for interface in set(zone.interfaces):
+    handled = [ ]
+    for interface in zone.interfaces:
+        if interface in handled:
+            continue
+        else:
+            handled.append(interface)
         handler.ignorableWhitespace("  ")
         handler.simpleElement("interface", { "name": interface })
         handler.ignorableWhitespace("\n")
 
     # source
-    for source in set(zone.sources):
+    handled = [ ]
+    for source in zone.sources:
+        if source in handled:
+            continue
+        else:
+            handled.append(source)
         handler.ignorableWhitespace("  ")
         handler.simpleElement("source", { "family": source[0],
                                           "address": source[1] })
         handler.ignorableWhitespace("\n")
+    del handled
 
     # services
-    for service in set(zone.services):
+    handled = [ ]
+    for service in zone.services:
+        if service in handled:
+            continue
+        else:
+            handled.append(service)
         handler.ignorableWhitespace("  ")
         handler.simpleElement("service", { "name": service })
         handler.ignorableWhitespace("\n")
+    del handled
 
     # ports
-    for port in set(zone.ports):
+    handled = [ ]
+    for port in zone.ports:
+        if port in handled:
+            continue
+        else:
+            handled.append(port)
         handler.ignorableWhitespace("  ")
         handler.simpleElement("port", { "port": port[0], "protocol": port[1] })
         handler.ignorableWhitespace("\n")
+    del handled
 
     # icmp-blocks
-    for icmp in set(zone.icmp_blocks):
+    handled = [ ]
+    for icmp in zone.icmp_blocks:
+        if icmp in handled:
+            continue
+        else:
+            handled.append(icmp)
         handler.ignorableWhitespace("  ")
         handler.simpleElement("icmp-block", { "name": icmp })
         handler.ignorableWhitespace("\n")
+    del handled
 
     # masquerade
     if zone.masquerade:
@@ -491,7 +545,12 @@ def zone_writer(zone, path=None):
         handler.ignorableWhitespace("\n")
 
     # forward-ports
-    for forward in set(zone.forward_ports):
+    handled = [ ]
+    for forward in zone.forward_ports:
+        if forward in handled:
+            continue
+        else:
+            handled.append(forward)
         handler.ignorableWhitespace("  ")
         attrs = { "port": forward[0], "protocol": forward[1] }
         if forward[2] and forward[2] != "" :
@@ -500,6 +559,7 @@ def zone_writer(zone, path=None):
             attrs["to-addr"] = forward[3]
         handler.simpleElement("forward-port", attrs)
         handler.ignorableWhitespace("\n")
+    del handled
 
     # rules
     for rule in zone.rules:

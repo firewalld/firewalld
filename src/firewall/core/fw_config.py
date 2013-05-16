@@ -402,6 +402,12 @@ class FirewallConfig:
         else:
             self._zones[obj.name] = obj
 
+    def forget_zone(self, name):
+        if name in self._default_zones:
+            del self._default_zones[name]
+        if name in self._zones:
+            del self._zones[name]
+
     def get_zone(self, name):
         if name in self._zones:
             return self._zones[name]

@@ -34,9 +34,10 @@ from firewall.core.fw_config import FirewallConfig
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
+from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
-from firewall.core.io.zone import zone_reader
+from firewall.core.io.zone import zone_reader, Zone
 from firewall.errors import *
 
 ############################################################################
@@ -197,12 +198,28 @@ class Firewall:
 
         self._state = "RUNNING"
 
-    def _loader(self, path, reader_type):
+    def _loader(self, path, reader_type, combine=False):
+        # combine: several zone files are getting combined into one obj
         if not os.path.isdir(path):
             return
 
-        for filename in os.listdir(path):
+        if combine == True:
+            if path.startswith(ETC_FIREWALLD) and reader_type == "zone":
+                combined_zone = Zone()
+                combined_zone.name = os.path.basename(path)
+                combined_zone.check_name(combined_zone.name)
+                combined_zone.path = path
+                combined_zone.default = False
+            else:
+                combine = False
+
+        for filename in sorted(os.listdir(path)):
             if not filename.endswith(".xml"):
+                if path.startswith(ETC_FIREWALLD) and \
+                        reader_type == "zone" and \
+                        os.path.isdir("%s/%s" % (path, filename)):
+                    self._loader("%s/%s" % (path, filename), reader_type,
+                                 combine=True)
                 continue
 
             name = "%s/%s" % (path, filename)
@@ -232,17 +249,25 @@ class Firewall:
                     self.config.add_service(copy.deepcopy(obj))
                 elif reader_type == "zone":
                     obj = zone_reader(filename, path)
-                    if obj.name in self.zone.get_zones():
-                        orig_obj = self.zone.get_zone(obj.name)
-                        if orig_obj.immutable:
-                            raise FirewallError(NOT_OVERLOADABLE, obj.name)
-                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
-                                   orig_obj.name, orig_obj.path,
-                                   orig_obj.filename)
-                        self.zone.remove_zone(orig_obj.name)
-                    self.zone.add_zone(obj)
-                    # add a deep copy to the configuration interface
-                    self.config.add_zone(copy.deepcopy(obj))
+                    if not combine:
+                        if obj.name in self.zone.get_zones():
+                            orig_obj = self.zone.get_zone(obj.name)
+                            if orig_obj.immutable:
+                                raise FirewallError(NOT_OVERLOADABLE, obj.name)
+                            if orig_obj.combined:
+                                raise FirewallError(NOT_OVERLOADABLE,
+                                                    "%s is a combined zone" % \
+                                                        obj.name)
+                            log.debug1("  Overloads %s '%s' ('%s/%s')",
+                                       reader_type,
+                                       orig_obj.name, orig_obj.path,
+                                       orig_obj.filename)
+                            self.zone.remove_zone(orig_obj.name)
+                        self.zone.add_zone(obj)
+                        # add a deep copy to the configuration interface
+                        self.config.add_zone(copy.deepcopy(obj))
+                    else:
+                        combined_zone.combine(obj)
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:
@@ -251,6 +276,19 @@ class Firewall:
             except Exception as msg:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
+
+        if combine == True and combined_zone.combined == True:
+            if combined_zone.name in self.zone.get_zones():
+                orig_obj = self.zone.get_zone(combined_zone.name)
+                log.debug1("  Overloading and deactivating %s '%s' ('%s/%s')",
+                           reader_type, orig_obj.name, orig_obj.path,
+                           orig_obj.filename)
+                try:
+                    self.zone.remove_zone(combined_zone.name)
+                except:
+                    pass
+                self.config.forget_zone(combined_zone.name)
+            self.zone.add_zone(combined_zone)
 
     def cleanup(self):
         self.__init_vars()
@@ -585,7 +623,7 @@ class Firewall:
             else:
                 log.info1("New zone '%s'.", zone)
         if len(_zone_interfaces) > 0:
-            for zone in _zone_interfaces:
+            for zone in _zone_interfaces.keys():
                 log.info1("Lost zone '%s', zone interfaces dropped.", zone)
                 del _zone_interfaces[zone]
         del _zone_interfaces
