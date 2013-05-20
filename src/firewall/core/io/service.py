@@ -180,5 +180,6 @@ def service_writer(service, path=None):
 
     # end service element
     handler.endElement('service')
+    handler.ignorableWhitespace("\n")
     handler.endDocument()
     fd.close()

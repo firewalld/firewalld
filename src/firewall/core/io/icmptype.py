@@ -151,5 +151,6 @@ def icmptype_writer(icmptype, path=None):
 
     # end icmptype element
     handler.endElement('icmptype')
+    handler.ignorableWhitespace("\n")
     handler.endDocument()
     fd.close()
