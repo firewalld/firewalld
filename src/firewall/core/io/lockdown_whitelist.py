@@ -116,14 +116,14 @@ class LockdownWhitelist(IO_Object):
         if command not in self._commands:
             self._commands.append(command)
 
-    def has_command(self, command):
-        return (command in self._commands)
-
     def remove_command(self, command):
         if command in self._commands:
             self._commands.remove(command)
         else:
             raise ValueError, 'Command "%s" not in whitelist.' % command
+
+    def has_command(self, command):
+        return (command in self._commands)
 
     def match_command(self, command):
         for _command in self._commands:
@@ -135,14 +135,14 @@ class LockdownWhitelist(IO_Object):
                     return True
         return False
 
+    def get_commands(self):
+        return self._commands
+
     # user ids
 
     def add_uid(self, uid):
         if uid not in self._uids:
             self._uids.append(uid)
-
-    def has_uid(self, uid):
-        return (uid in self._uids)
 
     def remove_uid(self, uid):
         if uid in self._uids:
@@ -150,8 +150,14 @@ class LockdownWhitelist(IO_Object):
         else:
             raise ValueError, 'Uid "%s" not in whitelist.' % uid
 
+    def has_uid(self, uid):
+        return (uid in self._uids)
+
     def match_uid(self, uid):
         return (uid in self._uids)
+
+    def get_uids(self):
+        return self._uids
 
     # users
 
@@ -159,17 +165,20 @@ class LockdownWhitelist(IO_Object):
         if user not in self._users:
             self._users.append(user)
 
-    def has_user(self, user):
-        return (user in self._users)
-
     def remove_user(self, user):
         if user in self._users:
             self._users.remove(user)
         else:
             raise ValueError, 'User "%s" not in whitelist.' % user
 
+    def has_user(self, user):
+        return (user in self._users)
+
     def match_user(self, user):
         return (user in self._users)
+
+    def get_users(self):
+        return self._users
 
     # selinux contexts
 
@@ -177,17 +186,20 @@ class LockdownWhitelist(IO_Object):
         if context not in self._contexts:
             self._contexts.append(context)
 
-    def has_context(self, context):
-        return (context in self._contexts)
-
     def remove_context(self, context):
         if context in self._contexts:
             self._contexts.remove(context)
         else:
             raise ValueError, 'Context "%s" not in whitelist.' % context
 
+    def has_context(self, context):
+        return (context in self._contexts)
+
     def match_context(self, context):
         return (context in self._contexts)
+
+    def get_contexts(self):
+        return self._contexts
 
     # read and write
 
@@ -216,16 +228,29 @@ class LockdownWhitelist(IO_Object):
         handler.startElement("whitelist", { })
         handler.ignorableWhitespace("\n")
 
-        # interfaces
+        # commands
         for command in set(self._commands):
             handler.ignorableWhitespace("  ")
             handler.simpleElement("command", { "name": command })
             handler.ignorableWhitespace("\n")
 
-        # TODO: add user, context
+        for uid in set(self._uids):
+            handler.ignorableWhitespace("  ")
+            handler.simpleElement("user", { "id": str(uid) })
+            handler.ignorableWhitespace("\n")
 
-        # end zone element
-        handler.endElement("zone")
+        for user in set(self._users):
+            handler.ignorableWhitespace("  ")
+            handler.simpleElement("user", { "name": user })
+            handler.ignorableWhitespace("\n")
+
+        for context in set(self._contexts):
+            handler.ignorableWhitespace("  ")
+            handler.simpleElement("selinux", { "context": context })
+            handler.ignorableWhitespace("\n")
+
+        # end whitelist element
+        handler.endElement("whitelist")
         handler.ignorableWhitespace("\n")
         handler.endDocument()
         fd.close()
