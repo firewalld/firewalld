@@ -3,8 +3,8 @@
 #set -x
 
 # BEWARE:
-# some tests modify default zone and will fail if default zone is immutable,
-# i.e. block, drop, trusted
+# some tests modify default zone and will fail if default zone is
+# set to immutable one, i.e. to block, drop, trusted
 
 #path="/usr/bin/"
 path="../"
@@ -132,6 +132,22 @@ assert_bad           "--zone=${zone} --get-services" # impossible combination
 assert_bad           "--zone=${zone} --get-default-zone" # impossible combination
 assert_bad           "--zone=${zone} --set-default-zone" # impossible combination
 assert_bad           "--zone=${zone} --get-zone-of-interface" # impossible combination
+
+zone="public"
+sources=( "dead:beef::babe" "3ffe:501:ffff::/64" "1.2.3.4" "192.168.1.0/24" )
+for (( i=0;i<${#sources[@]};i++)); do
+  source=${sources[${i}]}
+  assert_good          "--zone=${zone} --add-source=${source}"
+  assert_good_equals   "--get-zone-of-source=${source}" "${zone}"
+  assert_good_contains "--zone=${zone} --list-sources" "${source}"
+  assert_good_contains "--zone=${zone} --list-all" "${source}"
+  assert_good_contains "--get-active-zones" "${source}"
+  assert_good          "--zone ${zone} --query-source=${source}"
+  assert_good          "--zone=${zone} --remove-source=${source}"
+  assert_bad           "--zone ${zone} --query-source=${source}"
+  assert_good_empty    "--get-zone-of-source=${source}"
+  assert_bad           "--get-zone-of-source" # missing argument
+done 
 
 iface1="foo"
 iface2="bar"

@@ -26,6 +26,8 @@ OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes"
 
 OPTIONS_ZONE_INTERFACES="--list-interfaces --change-interface= --change-zone= \
                          --add-interface= --remove-interface= --query-interface= "
+OPTIONS_ZONE_SOURCES="--add-source= --remove-source= --query-source= \
+                      --change-source= --list-sources"
 OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
                        --add-port= --remove-port= --query-port= \
                        --add-icmp-block= --remove-icmp-block= --query-icmp-block= \
@@ -34,7 +36,7 @@ OPTIONS_ZONE_ADAPT_QUERY="--add-masquerade --remove-masquerade --query-masquerad
                     --list-services --list-ports --list-icmp-blocks \
                     --list-forward-ports"
 # these all can be used with/without preceding --zone=<zone>
-OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES} --list-all \
+OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES} ${OPTIONS_ZONE_SOURCES} --list-all \
               ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}"
 # ${OPTIONS_ZONE_INTERFACES} can not be used after --permanent
 # for example --permanent --zone=... --add-interface=...
@@ -52,8 +54,9 @@ OPTIONS_DIRECT="--passthrough \
 OPTIONS_GENERAL="--help --version \
                  --state --reload --complete-reload \
                  --panic-on --panic-off --query-panic \
-                 --get-default-zone --set-default-zone= \
-                 --get-active-zones --get-zone-of-interface= --list-all-zones \
+                 --get-default-zone --set-default-zone= --get-active-zones \
+                 --get-zone-of-interface= --get-zone-of-interface= \
+                 --list-all-zones \
                  ${OPTIONS_CONFIG} \
                  --zone= ${OPTIONS_ZONE} \
                  --permanent --direct"
