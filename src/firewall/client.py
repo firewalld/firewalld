@@ -864,6 +864,11 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
+    def getZoneOfSource(self, source):
+        return dbus_to_python(self.fw_zone.getZoneOfSource(source))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
     def isImmutable(self, zone):
         return dbus_to_python(self.fw_zone.isImmutable(zone))
 
