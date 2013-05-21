@@ -452,9 +452,10 @@ try:
 
     # source
     elif a.list_sources:
-        l = fw.getSources(zone)
-        if len(l) > 0:
-            print(" ".join(l))
+        # list of tuples (family, address)
+        sources = fw.getSources(zone)
+        if len(sources) > 0:
+            print(" ".join(["%s:%s" % (s[0], s[1]) for s in sources]))
     elif a.add_source:
         (family, address) = __parse_family_n_source(a.add_source)
         fw.addSource(zone, family, address)
