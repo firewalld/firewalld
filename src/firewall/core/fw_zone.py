@@ -52,13 +52,13 @@ class FirewallZone:
                 return zone
         return None
 
-    def get_zone_of_source(self, ipv, source):
-        source_id = self.__source_id(ipv, source)
+    def get_zone_of_source(self, source):
+        source_id = self.__source_id(source)
         for zone in self._zones:
             if source_id in self._zones[zone].settings["sources"]:
                 # a source_id can only be part of one zone
                 return zone
-        return None        
+        return None
 
     def get_zone(self, zone):
         z = self._fw.check_zone(zone)
@@ -83,7 +83,7 @@ class FirewallZone:
         for args in obj.interfaces:
             self._error2warning(self.add_interface, obj.name, args)
         for args in obj.sources:
-            self._error2warning(self.add_source, obj.name, *args)
+            self._error2warning(self.add_source, obj.name, args)
         for args in obj.icmp_blocks:
             self._error2warning(self.add_icmp_block, obj.name, args)
         for args in obj.forward_ports:
@@ -427,19 +427,16 @@ class FirewallZone:
 
     # SOURCES
 
-    def check_source(self, ipv, source):
-        if ipv == "ipv4":
-            if not checkIPnMask(source):
-                raise FirewallError(INVALID_ADDR, source)
-        elif ipv == "ipv6":
-            if not checkIP6nMask(source):
-                raise FirewallError(INVALID_ADDR, source)
+    def check_source(self, source):
+        if checkIPnMask(source):
+            return "ipv4"
+        elif checkIP6nMask(source):
+            return "ipv6"
         else:
-            # raise INVALID_FAMILY, not INVALID_IPV
-            raise FirewallError(INVALID_FAMILY, ipv)
+            raise FirewallError(INVALID_ADDR, source)
 
-    def __source_id(self, ipv, source):
-        self.check_source(ipv, source)
+    def __source_id(self, source):
+        ipv = self.check_source(source)
         return (ipv, source)
 
     def __source(self, enable, zone, ipv, source):
@@ -488,19 +485,18 @@ class FirewallZone:
         if not enable:
             self.remove_chain(zone, table, chain)
 
-    def add_source(self, zone, ipv, source, sender=None):
+    def add_source(self, zone, source, sender=None):
         self._fw.check_panic()
         _zone = self._fw.check_zone(zone)
         _obj = self._zones[_zone]
-
-        source_id = self.__source_id(ipv, source)
+        source_id = self.__source_id(source)
 
         if source_id in _obj.settings["sources"]:
             raise FirewallError(ZONE_ALREADY_SET)
-        if self.get_zone_of_source(ipv, source) != None:
+        if self.get_zone_of_source(source) != None:
             raise FirewallError(ZONE_CONFLICT)
 
-        self.__source(True, _zone, ipv, source)
+        self.__source(True, _zone, source_id[0], source_id[1])
 
         _obj.settings["sources"][source_id] = \
             self.__gen_settings(0, sender)
@@ -509,22 +505,22 @@ class FirewallZone:
 
         return _zone
 
-    def change_zone_of_source(self, zone, ipv, source, sender=None):
+    def change_zone_of_source(self, zone, source, sender=None):
         self._fw.check_panic()
-        _old_zone = self.get_zone_of_source(ipv, source)
+        _old_zone = self.get_zone_of_source(source)
         _new_zone = self._fw.check_zone(zone)
 
         if _new_zone == _old_zone:
             return _old_zone
 
         if _old_zone != None:
-            self.remove_source(_old_zone, ipv, source)
+            self.remove_source(_old_zone, source)
 
-        return self.add_source(zone, ipv, source, sender)
+        return self.add_source(zone, source, sender)
 
-    def remove_source(self, zone, ipv, source):
+    def remove_source(self, zone, source):
         self._fw.check_panic()
-        zos = self.get_zone_of_source(ipv, source)
+        zos = self.get_zone_of_source(source)
         if zos == None:
             raise FirewallError(UNKNOWN_SOURCE, source)
         _zone = zos if zone == "" else self._fw.check_zone(zone)
@@ -532,19 +528,19 @@ class FirewallZone:
             raise FirewallError(ZONE_CONFLICT)
 
         _obj = self._zones[_zone]
-        source_id = self.__source_id(ipv, source)
-        self.__source(False, _zone, ipv, source)
+        source_id = self.__source_id(source)
+        self.__source(False, _zone, source_id[0], source_id[1])
 
         if source_id in _obj.settings["sources"]:
             del _obj.settings["sources"][source_id]
 
         return _zone
 
-    def query_source(self, zone, ipv, source):
-        return self.__source_id(ipv, source) in self.get_settings(zone)["sources"]
+    def query_source(self, zone, source):
+        return self.__source_id(source) in self.get_settings(zone)["sources"]
 
     def get_sources(self, zone):
-        return self.get_settings(zone)["sources"].keys()
+        return [ k[1] for k in self.get_settings(zone)["sources"].keys() ]
 
     # RICH LANGUAGE
 

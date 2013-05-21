@@ -904,14 +904,13 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def addSource(self, zone, family, source):
-        return dbus_to_python(self.fw_zone.addSource(zone, family, source))
+    def addSource(self, zone, source):
+        return dbus_to_python(self.fw_zone.addSource(zone, source))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def changeZoneOfSource(self, zone, family, source):
-        return dbus_to_python(self.fw_zone.changeZoneOfSource(zone, family, 
-                                                              source))
+    def changeZoneOfSource(self, zone, source):
+        return dbus_to_python(self.fw_zone.changeZoneOfSource(zone, source))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -920,13 +919,13 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def querySource(self, zone, family, source):
-        return dbus_to_python(self.fw_zone.querySource(zone, family, source))
+    def querySource(self, zone, source):
+        return dbus_to_python(self.fw_zone.querySource(zone, source))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def removeSource(self, zone, family, source):
-        return dbus_to_python(self.fw_zone.removeSource(zone, family, source))
+    def removeSource(self, zone, source):
+        return dbus_to_python(self.fw_zone.removeSource(zone, source))
 
     # services
 

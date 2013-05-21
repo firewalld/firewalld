@@ -505,7 +505,7 @@ class TrayApplet(object):
                         connections[connection] = [ zone, uuid ]
             if "sources" in self.active_zones[zone]:
                 for source in sorted(self.active_zones[zone]["sources"]):
-                    sources[tuple(source.split(":", 1))] = zone
+                    sources[source] = zone
 
         # add NM controlled entries
         for connection in sorted(connections):
@@ -811,12 +811,9 @@ class TrayApplet(object):
                                                     interface=interface))
                 if "sources" in self.active_zones[zone]:
                     for source in sorted(self.active_zones[zone]["sources"]):
-                        (family, address) = source.split(":", 1)
-                        text = _("Zone '{zone}' active for source "
-                                 "{family}: {address}")
+                        text = _("Zone '{zone}' active for source {source}")
                         connection = None
-                        messages.append(text.format(zone=zone, family=family, 
-                                                    address=address))
+                        messages.append(text.format(zone=zone, source=source))
         else:
             messages.append(_("No Active Zones."))
 

@@ -46,9 +46,9 @@ class Zone(IO_Object):
         ( "masquerade", False ),                       # b
         ( "forward_ports", [ ( "", "", "", "" ), ], ), # a(ssss)
         ( "interfaces", [ "" ] ),                      # as
-        ( "sources", [ ( "", "" ) ] )                  # a(ss)
+        ( "sources", [ "" ] )                          # as
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asa(ss))'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asas)'
     ADDITIONAL_ALNUM_CHARS = [ "_" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -75,7 +75,7 @@ class Zone(IO_Object):
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
-        "source": [ "not", "family" ],
+        "source": [ "not" ],
         "destination": [ "not" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
@@ -293,13 +293,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if not "address" in attrs:
                 log.error('Invalid source: Address missing.')
                 return
-            if not "family" in attrs:
-                log.error('Invalid source: Family missing.')
-                return
             if "not" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
-            entry = (str(attrs["family"]), str(attrs["address"]))
+            entry = str(attrs["address"])
             if entry not in self.item.sources:
                 self.item.sources.append(entry)
 
@@ -497,8 +494,7 @@ def zone_writer(zone, path=None):
         else:
             handled.append(source)
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("source", { "family": source[0],
-                                          "address": source[1] })
+        handler.simpleElement("source", { "address": source })
         handler.ignorableWhitespace("\n")
     del handled
 

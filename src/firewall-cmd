@@ -37,13 +37,6 @@ def __fail(msg=None):
         print(msg)
     sys.exit(2)
 
-def __parse_family_n_source(value):
-    try:
-        (family, source) = value.split(":", 1)
-    except Exception as e:
-        __fail("bad source (most likely missing family)")
-    return (family, source)
-
 def __parse_port(value):
     try:
         (port, proto) = value.split("/")
@@ -88,7 +81,7 @@ def __list_all(fw, zone):
 
     print(zone if zone != "" else fw.getDefaultZone())
     print("  interfaces: " + " ".join(interfaces))
-    print("  sources: " + " ".join(["%s:%s" % (source[0], source[1]) for source in sources]))
+    print("  sources: " + " ".join(sources))
     print("  services: " + " ".join(services))
     print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
     print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
@@ -455,19 +448,15 @@ try:
         # list of tuples (family, address)
         sources = fw.getSources(zone)
         if len(sources) > 0:
-            print(" ".join(["%s:%s" % (s[0], s[1]) for s in sources]))
+            print(" ".join(sources))
     elif a.add_source:
-        (family, address) = __parse_family_n_source(a.add_source)
-        fw.addSource(zone, family, address)
+        fw.addSource(zone, a.add_source)
     elif a.change_source:
-        (family, address) = __parse_family_n_source(a.change_source)
-        fw.changeZoneOfSource(zone, family, address)
+        fw.changeZoneOfSource(zone, a.change_source)
     elif a.remove_source:
-        (family, address) = __parse_family_n_source(a.remove_source)
-        fw.removeSource(zone, family, address)
+        fw.removeSource(zone, a.remove_source)
     elif a.query_source:
-        (family, address) = __parse_family_n_source(a.query_source)
-        sys.exit(not fw.querySource(zone, family, address))
+        sys.exit(not fw.querySource(zone, a.query_source))
 
     # service
     elif a.list_services:
