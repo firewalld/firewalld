@@ -53,7 +53,7 @@ class FirewallZone:
         return None
 
     def get_zone_of_source(self, source):
-        source_id = self.__source_id(str(source))
+        source_id = self.__source_id(source)
         for zone in self._zones:
             if source_id in self._zones[zone].settings["sources"]:
                 # a source_id can only be part of one zone

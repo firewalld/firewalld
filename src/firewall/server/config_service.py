@@ -77,6 +77,8 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Get(self, interface_name, property_name, sender=None):
         # get a property
+        interface_name = str(interface_name)
+        property_name = str(property_name)
         log.debug1("config.service.%d.Get('%s', '%s')", self.id,
                    interface_name, property_name)
 
@@ -105,6 +107,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
                          out_signature='a{sv}')
     @dbus_handle_exceptions
     def GetAll(self, interface_name, sender=None):
+        interface_name = str(interface_name)
         log.debug1("config.service.%d.GetAll('%s')", self.id, interface_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_SERVICE:
@@ -123,6 +126,9 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
+        interface_name = str(interface_name)
+        property_name = str(property_name)
+        new_value = dbus_to_python(new_value)
         log.debug1("config.service.%d.Set('%s', '%s', '%s')", self.id,
                    interface_name, property_name, new_value)
         self.parent.accessCheck(sender)
@@ -156,10 +162,10 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def update(self, settings, sender=None):
         """update settings for service
         """
+        settings = dbus_to_python(settings)
         log.debug1("config.service.%d.update('...')", self.id)
         self.parent.accessCheck(sender)
-        self.obj = self.config.set_service_config(self.obj,
-                                                dbus_to_python(settings))
+        self.obj = self.config.set_service_config(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE)
@@ -201,9 +207,10 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def rename(self, name, sender=None):
         """rename service
         """
+        name = str(name)
         log.debug1("config.service.%d.rename('%s')", self.id, name)
         self.parent.accessCheck(sender)
-        new_service = self.config.rename_service(self.obj, dbus_to_python(name))
+        new_service = self.config.rename_service(self.obj, name)
         self.parent._addService(new_service)
         self.parent.removeService(self.obj)
         self.Renamed(name)

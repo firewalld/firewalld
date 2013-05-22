@@ -77,6 +77,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Get(self, interface_name, property_name, sender=None):
         # get a property
+        interface_name = str(interface_name)
+        property_name = str(property_name)
         log.debug1("config.zone.%d.Get('%s', '%s')", self.id,
                    interface_name, property_name)
 
@@ -105,6 +107,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                          out_signature='a{sv}')
     @dbus_handle_exceptions
     def GetAll(self, interface_name, sender=None):
+        interface_name = str(interface_name)
         log.debug1("config.zone.%d.GetAll('%s')", self.id, interface_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
@@ -123,6 +126,9 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
+        interface_name = str(interface_name)
+        property_name = str(property_name)
+        new_value = dbus_to_python(new_value)
         log.debug1("config.zone.%d.Set('%s', '%s', '%s')", self.id,
                    interface_name, property_name, new_value)
         self.parent.accessCheck(sender)
@@ -156,10 +162,10 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     def update(self, settings, sender=None):
         """update settings for zone
         """
+        settings = dbus_to_python(settings)
         log.debug1("config.zone.%d.update('...')", self.id)
         self.parent.accessCheck(sender)
-        self.obj = self.config.set_zone_config(self.obj,
-                                               dbus_to_python(settings))
+        self.obj = self.config.set_zone_config(self.obj, settings)
         self.Updated(self.obj.name)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
@@ -201,9 +207,10 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     def rename(self, name, sender=None):
         """rename zone
         """
+        name = str(name)
         log.debug1("config.zone.%d.rename('%s')", self.id, name)
         self.parent.accessCheck(sender)
-        new_zone = self.config.rename_zone(self.obj, dbus_to_python(name))
+        new_zone = self.config.rename_zone(self.obj, name)
         self.parent._addZone(new_zone)
         self.parent.removeZone(self.obj)
         self.Renamed(name)
