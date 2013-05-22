@@ -343,8 +343,8 @@ class FirewallD(slip.dbus.service.Object):
         # set the system default zone
         zone = str(zone)
         log.debug1("setDefaultZone('%s')" % zone)
-        self.fw.set_default_zone(zone)
         self.accessCheck(sender)
+        self.fw.set_default_zone(zone)
         self.DefaultZoneChanged(zone)
 
     @dbus.service.signal(DBUS_INTERFACE, signature='s')
