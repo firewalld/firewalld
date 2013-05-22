@@ -140,6 +140,12 @@ class Zone(IO_Object):
         for source in zone.sources:
             if source not in self.sources:
                 self.sources.append(source)
+        for service in zone.services:
+            if service not in self.services:
+                self.services.append(service)
+        for port in zone.ports:
+            if port not in self.ports:
+                self.ports.append(port)
         for icmp in zone.icmp_blocks:
             if icmp not in self.icmp_blocks:
                 self.icmp_blocks.append(icmp)
