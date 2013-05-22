@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import _, ETC_FIREWALLD
 from firewall.errors import *
-from firewall import functions
+from firewall.functions import checkIP, uniqify
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -123,7 +123,7 @@ class Zone(IO_Object):
                 if fwd_port[2]:
                     check_port(fwd_port[2])
                 if fwd_port[3]:
-                    if not functions.checkIP(fwd_port[3]):
+                    if not checkIP(fwd_port[3]):
                         raise FirewallError(INVALID_ADDR, fwd_port[3])
 
     def combine(self, zone):
@@ -476,63 +476,34 @@ def zone_writer(zone, path=None):
         handler.ignorableWhitespace("\n")
 
     # interfaces
-    handled = [ ]
-    for interface in zone.interfaces:
-        if interface in handled:
-            continue
-        else:
-            handled.append(interface)
+    for interface in uniqify(zone.interfaces):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("interface", { "name": interface })
         handler.ignorableWhitespace("\n")
 
     # source
-    handled = [ ]
-    for source in zone.sources:
-        if source in handled:
-            continue
-        else:
-            handled.append(source)
+    for source in uniqify(zone.sources):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("source", { "address": source })
         handler.ignorableWhitespace("\n")
-    del handled
 
     # services
-    handled = [ ]
-    for service in zone.services:
-        if service in handled:
-            continue
-        else:
-            handled.append(service)
+    for service in uniqify(zone.services):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("service", { "name": service })
         handler.ignorableWhitespace("\n")
-    del handled
 
     # ports
-    handled = [ ]
-    for port in zone.ports:
-        if port in handled:
-            continue
-        else:
-            handled.append(port)
+    for port in uniqify(zone.ports):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("port", { "port": port[0], "protocol": port[1] })
         handler.ignorableWhitespace("\n")
-    del handled
 
     # icmp-blocks
-    handled = [ ]
-    for icmp in zone.icmp_blocks:
-        if icmp in handled:
-            continue
-        else:
-            handled.append(icmp)
+    for icmp in uniqify(zone.icmp_blocks):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("icmp-block", { "name": icmp })
         handler.ignorableWhitespace("\n")
-    del handled
 
     # masquerade
     if zone.masquerade:
@@ -541,12 +512,7 @@ def zone_writer(zone, path=None):
         handler.ignorableWhitespace("\n")
 
     # forward-ports
-    handled = [ ]
-    for forward in zone.forward_ports:
-        if forward in handled:
-            continue
-        else:
-            handled.append(forward)
+    for forward in uniqify(zone.forward_ports):
         handler.ignorableWhitespace("  ")
         attrs = { "port": forward[0], "protocol": forward[1] }
         if forward[2] and forward[2] != "" :
@@ -555,7 +521,6 @@ def zone_writer(zone, path=None):
             attrs["to-addr"] = forward[3]
         handler.simpleElement("forward-port", attrs)
         handler.ignorableWhitespace("\n")
-    del handled
 
     # rules
     for rule in zone.rules:

@@ -27,6 +27,7 @@ from firewall.config import _
 from firewall.errors import *
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
+from firewall.functions import uniqify
 
 class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
@@ -229,22 +230,22 @@ class LockdownWhitelist(IO_Object):
         handler.ignorableWhitespace("\n")
 
         # commands
-        for command in set(self._commands):
+        for command in uniqify(self._commands):
             handler.ignorableWhitespace("  ")
             handler.simpleElement("command", { "name": command })
             handler.ignorableWhitespace("\n")
 
-        for uid in set(self._uids):
+        for uid in uniqify(self._uids):
             handler.ignorableWhitespace("  ")
             handler.simpleElement("user", { "id": str(uid) })
             handler.ignorableWhitespace("\n")
 
-        for user in set(self._users):
+        for user in uniqify(self._users):
             handler.ignorableWhitespace("  ")
             handler.simpleElement("user", { "name": user })
             handler.ignorableWhitespace("\n")
 
-        for context in set(self._contexts):
+        for context in uniqify(self._contexts):
             handler.ignorableWhitespace("  ")
             handler.simpleElement("selinux", { "context": context })
             handler.ignorableWhitespace("\n")

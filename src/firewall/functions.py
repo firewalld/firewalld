@@ -303,3 +303,11 @@ def check_address(ipv, source):
     else:
         return False
     return True
+
+def uniqify(input):
+    # removes duplicates from list, whilst preserving order
+    output = []
+    for x in input:
+        if x not in output:
+            output.append(x)
+    return output
