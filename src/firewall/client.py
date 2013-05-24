@@ -583,7 +583,7 @@ class FirewallClientConfig(object):
 
 class FirewallClient(object):
     @handle_exceptions
-    def __init__(self, bus=None, wait=0, quiet=False):
+    def __init__(self, bus=None, wait=0, quiet=True):
         if not bus:
             dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             try:

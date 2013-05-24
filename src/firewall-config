@@ -39,7 +39,6 @@ if os.getenv("FIREWALLD_DEVEL_ENV") != None:
     datadir = os.getenv("FIREWALLD_DEVEL_ENV")
     sys.path.insert(0, datadir)
 import dbus
-from dbus.exceptions import DBusException
 
 from firewall.config import *
 from firewall.config.dbus import *
@@ -481,7 +480,7 @@ class FirewallConfig(object):
         self.mainloop = GObject.MainLoop()
         try:
             self.mainloop.run()
-        except KeyboardInterrupt as msg:
+        except KeyboardInterrupt:
             self.onQuit()
 
     def _dialog(self, text, msg=None, title=None,
@@ -520,22 +519,6 @@ class FirewallConfig(object):
 
     def connection_changed(self):
         if self.fw.connected:
-            """
-            # authorize
-            while 1:
-                try:
-                    self.fw.config().listZones()
-                except DBusException as e:
-                    if "NotAuthorizedException" in str(e):
-                        self._error(_("Authorization failed."))
-                    else:
-                        self._error(str(e))
-                except Exception as e:
-                    self._error(str(e))
-                else:
-                    # break the loop, continue with configuration
-                    break
-            """
             self.statusLabel.set_text(self.connected)
             self.modifiedLabel.set_text("")
             default_zone = self.fw.getDefaultZone()

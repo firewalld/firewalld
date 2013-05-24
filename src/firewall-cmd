@@ -245,7 +245,7 @@ if a.help:
 
 zone = a.zone
 try:
-    fw = FirewallClient(quiet=True)
+    fw = FirewallClient()
     if fw.connected == False:
         if a.state:
             print "not running"
