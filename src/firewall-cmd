@@ -445,7 +445,6 @@ try:
 
     # source
     elif a.list_sources:
-        # list of tuples (family, address)
         sources = fw.getSources(zone)
         if len(sources) > 0:
             print(" ".join(sources))

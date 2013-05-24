@@ -566,8 +566,8 @@ class TrayApplet(object):
                 item = Gtk.MenuItem.new()
                 hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
                 label = Gtk.Label()
-                label.set_markup("%s: %s\n<small>%s: %s</small>" % \
-                                     (source[0], source[1], escape(_("Zone")),
+                label.set_markup("%s\n<small>%s: %s</small>" % \
+                                     (source, escape(_("Zone")),
                                       zone))
                 label.set_alignment(0, 0.5)
                 label.set_padding(12, 0)
@@ -609,7 +609,7 @@ class TrayApplet(object):
         result = editor.run()
         editor.hide()
         if result == 2:
-            self.fw.changeZoneOfSource(editor.get_zone(), source[0], source[1])
+            self.fw.changeZoneOfSource(editor.get_zone(), source)
         del self.zone_source_editors[source]
 
     def connection_established(self, first=False):
@@ -898,7 +898,7 @@ class TrayApplet(object):
             self.notify(_("Zone '%s' activated for interface '%s'") % \
                             (zone, interface))
 
-    def _source(self, zone, family, source, enable):
+    def _source(self, zone, source, enable):
         self.update_active_zones()
         self.update_tooltip()
 
@@ -908,20 +908,19 @@ class TrayApplet(object):
                    0: _("deactivated") }
             connection = None
             text = _("Zone '{zone}' {activated_deactivated} for "
-                     "source '{family}:{source}'")
+                     "source '{source}'")
             self.notify(text.format(zone=zone,
                                     activated_deactivated=ed[enable],
-                                    connection=connection,
-                                    family=family, source=source))
+                                    source=source))
 
-    def source_added(self, zone, family, source):
-        self._source(zone, family, source, True)
+    def source_added(self, zone, source):
+        self._source(zone, source, True)
 
-    def source_removed(self, zone, family, source):
-        self._source(zone, family, source, False)
+    def source_removed(self, zone, source):
+        self._source(zone, source, False)
 
-    def zone_of_source_changed(self, zone, family, source):
-        index = (family, source)
+    def zone_of_source_changed(self, zone, source):
+        index = source
 
         # update zone editor
         if index in self.zone_interface_editors:
@@ -931,8 +930,8 @@ class TrayApplet(object):
         self.update_tooltip()
 
         if self.notification_check.get_active():
-            self.notify(_("Zone '%s' activated for source '%s: %s'") % \
-                            (zone, family, source))
+            self.notify(_("Zone '%s' activated for source '%s'") % \
+                            (zone, source))
 
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
