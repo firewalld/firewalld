@@ -21,8 +21,8 @@
     <description>Firewall configuration</description>
     <message>System policy prevents to change the firewall configuration</message>
     <defaults>
-      <allow_any>auth_admin</allow_any>
-      <allow_inactive>auth_admin</allow_inactive>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
   </action>
@@ -31,8 +31,8 @@
     <description>Firewall direct interface</description>
     <message>System policy prevents to use the firewall direct interface</message>
     <defaults>
-      <allow_any>auth_admin</allow_any>
-      <allow_inactive>auth_admin</allow_inactive>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
   </action>
