@@ -37,4 +37,14 @@
     </defaults>
   </action>
 
+   <action id="org.fedoraproject.FirewallD1.policies">
+    <description>Firewall policies interface</description>
+    <message>System policy prevents to use the firewall policies interface</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+  </action>
+
 </policyconfig>

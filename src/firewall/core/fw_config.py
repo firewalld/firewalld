@@ -67,7 +67,7 @@ class FirewallConfig:
         return self._fw.lockdown_enabled()
 
     def access_check(self, key, value):
-        return self._fw.access_check(key, value)
+        return self._fw.policies.access_check(key, value)
 
     # icmptypes
 

@@ -84,22 +84,22 @@ class FirewallD(slip.dbus.service.Object):
 
     @dbus_handle_exceptions
     def accessCheck(self, sender):
-        if self.fw.lockdown_enabled():
+        if self.fw.policies.query_lockdown():
             if sender == None:
                 log.error("Lockdown not possible, sender not set.")
                 return
             bus = dbus.SystemBus()
             context = context_of_sender(bus, sender)
-            if self.fw.access_check("context", context):
+            if self.fw.policies.access_check("context", context):
                 return
             uid = uid_of_sender(bus, sender)
-            if self.fw.access_check("uid", uid):
+            if self.fw.policies.access_check("uid", uid):
                 return
             user = user_of_uid(uid)
-            if self.fw.access_check("user", user):
+            if self.fw.policies.access_check("user", user):
                 return
             command = command_of_sender(bus, sender)
-            if self.fw.access_check("command", command):
+            if self.fw.policies.access_check("command", command):
                 return
             raise FirewallError(ACCESS_DENIED, "lockdown is enabled")
 
@@ -252,6 +252,315 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Reloaded(self):
         log.debug1("Reloaded()")
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # POLICIES
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # lockdown
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def enableLockdown(self, sender=None):
+        """Enable lockdown policies
+        """
+        log.debug1("poicies.enableLockdown()")
+        self.accessCheck(sender)
+        self.fw.policies.enable_lockdown()
+        self.LockdownEnabled()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def disableLockdown(self, sender=None):
+        """Disable lockdown policies
+        """
+        log.debug1("poicies.disableLockdown()")
+        self.accessCheck(sender)
+        self.fw.policies.disable_lockdown()
+        self.LockdownDisabled()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdown(self, sender=None):
+        """Retuns True if lockdown is enabled
+        """
+        log.debug1("poicies.queryLockdown()")
+        self.accessCheck(sender)
+        return self.fw.policies.query_lockdown()
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='')
+    @dbus_handle_exceptions
+    def LockdownEnabled(self):
+        log.debug1("LockdownEnabled()")
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='')
+    @dbus_handle_exceptions
+    def LockdownDisabled(self):
+        log.debug1("LockdownDisabled()")
+
+    # lockdown whitelist
+
+    # command
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistCommand(self, command, sender=None):
+        """Add lockdown command
+        """
+        command = str(command)
+        log.debug1("poicies.addLockdownWhitelistCommand('%s')" % command)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.add_command(command)
+        self.LockdownWhitelistCommandAdded(command)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistCommand(self, command, sender=None):
+        """Remove lockdown command
+        """
+        command = str(command)
+        log.debug1("poicies.removeLockdownWhitelistCommand('%s')" % command)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.remove_command(command)
+        self.LockdownWhitelistCommandRemoved(command)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistCommand(self, command, sender=None):
+        """Query lockdown command
+        """
+        command = str(command)
+        log.debug1("poicies.queryLockdownWhitelistCommand('%s')" % command)
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.has_command(command)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistCommandMatch(self, command, sender=None):
+        """Query lockdown command match
+        """
+        command = str(command)
+        log.debug1("poicies.queryLockdownWhitelistCommandMatch('%s')" % command)
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.match_command(command)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistCommands(self, sender=None):
+        """Add lockdown command
+        """
+        log.debug1("poicies.getLockdownWhitelistCommands()")
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.get_commands()
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus_handle_exceptions
+    def LockdownWhitelistCommandAdded(self, command):
+        log.debug1("LockdownWhitelistCommandAdded('%s')" % command)
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus_handle_exceptions
+    def LockdownWhitelistCommandRemoved(self, command):
+        log.debug1("LockdownWhitelistCommandRemoved('%s')" % command)
+
+    # uid
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistUid(self, uid, sender=None):
+        """Add lockdown uid
+        """
+        uid = int(uid)
+        log.debug1("poicies.addLockdownWhitelistUid('%s')" % uid)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.add_uid(uid)
+        self.LockdownWhitelistUidAdded(uid)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistUid(self, uid, sender=None):
+        """Remove lockdown uid
+        """
+        uid = int(uid)
+        log.debug1("poicies.removeLockdownWhitelistUid('%s')" % uid)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.remove_uid(uid)
+        self.LockdownWhitelistUidRemoved(uid)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistUid(self, uid, sender=None):
+        """Query lockdown uid
+        """
+        uid = int(uid)
+        log.debug1("poicies.queryLockdownWhitelistUid('%s')" % uid)
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.has_uid(uid)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='ai')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistUids(self, sender=None):
+        """Add lockdown uid
+        """
+        log.debug1("poicies.getLockdownWhitelistUids()")
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.get_uids()
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='i')
+    @dbus_handle_exceptions
+    def LockdownWhitelistUidAdded(self, uid):
+        log.debug1("LockdownWhitelistUidAdded(%d)" % uid)
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='i')
+    @dbus_handle_exceptions
+    def LockdownWhitelistUidRemoved(self, uid):
+        log.debug1("LockdownWhitelistUidRemoved(%d)" % uid)
+
+    # user
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistUser(self, user, sender=None):
+        """Add lockdown user
+        """
+        user = str(user)
+        log.debug1("poicies.addLockdownWhitelistUser('%s')" % user)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.add_user(user)
+        self.LockdownWhitelistUserAdded(user)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistUser(self, user, sender=None):
+        """Remove lockdown user
+        """
+        user = str(user)
+        log.debug1("poicies.removeLockdownWhitelistUser('%s')" % user)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.remove_user(user)
+        self.LockdownWhitelistUserRemoved(user)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistUser(self, user, sender=None):
+        """Query lockdown user
+        """
+        user = str(user)
+        log.debug1("poicies.queryLockdownWhitelistUser('%s')" % user)
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.has_user(user)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistUsers(self, sender=None):
+        """Add lockdown user
+        """
+        log.debug1("poicies.getLockdownWhitelistUsers()")
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.get_users()
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus_handle_exceptions
+    def LockdownWhitelistUserAdded(self, user):
+        log.debug1("LockdownWhitelistUserAdded('%s')" % user)
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus_handle_exceptions
+    def LockdownWhitelistUserRemoved(self, user):
+        log.debug1("LockdownWhitelistUserRemoved('%s')" % user)
+
+    # context
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistContext(self, context, sender=None):
+        """Add lockdown context
+        """
+        context = str(context)
+        log.debug1("poicies.addLockdownWhitelistContext('%s')" % context)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.add_context(context)
+        self.LockdownWhitelistContextAdded(context)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistContext(self, context, sender=None):
+        """Remove lockdown context
+        """
+        context = str(context)
+        log.debug1("poicies.removeLockdownWhitelistContext('%s')" % context)
+        self.accessCheck(sender)
+        self.fw.policies.lockdown_whitelist.remove_context(context)
+        self.LockdownWhitelistContextRemoved(context)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistContext(self, context, sender=None):
+        """Query lockdown context
+        """
+        context = str(context)
+        log.debug1("poicies.queryLockdownWhitelistContext('%s')" % context)
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.has_context(context)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistContexts(self, sender=None):
+        """Add lockdown context
+        """
+        log.debug1("poicies.getLockdownWhitelistContexts()")
+        self.accessCheck(sender)
+        return self.fw.policies.lockdown_whitelist.get_contexts()
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus_handle_exceptions
+    def LockdownWhitelistContextAdded(self, context):
+        log.debug1("LockdownWhitelistContextAdded('%s')" % context)
+
+    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus_handle_exceptions
+    def LockdownWhitelistContextRemoved(self, context):
+        log.debug1("LockdownWhitelistContextRemoved('%s')" % context)
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

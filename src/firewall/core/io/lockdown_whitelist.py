@@ -121,7 +121,8 @@ class LockdownWhitelist(IO_Object):
         if command in self._commands:
             self._commands.remove(command)
         else:
-            raise ValueError, 'Command "%s" not in whitelist.' % command
+            raise FirewallError(NOT_ENABLED,
+                                'Command "%s" not in whitelist.' % command)
 
     def has_command(self, command):
         return (command in self._commands)
@@ -149,7 +150,8 @@ class LockdownWhitelist(IO_Object):
         if uid in self._uids:
             self._uids.remove(uid)
         else:
-            raise ValueError, 'Uid "%s" not in whitelist.' % uid
+            raise FirewallError(NOT_ENABLED,
+                                'Uid "%s" not in whitelist.' % uid)
 
     def has_uid(self, uid):
         return (uid in self._uids)
@@ -170,7 +172,8 @@ class LockdownWhitelist(IO_Object):
         if user in self._users:
             self._users.remove(user)
         else:
-            raise ValueError, 'User "%s" not in whitelist.' % user
+            raise FirewallError(NOT_ENABLED,
+                                'User "%s" not in whitelist.' % user)
 
     def has_user(self, user):
         return (user in self._users)
@@ -191,7 +194,8 @@ class LockdownWhitelist(IO_Object):
         if context in self._contexts:
             self._contexts.remove(context)
         else:
-            raise ValueError, 'Context "%s" not in whitelist.' % context
+            raise FirewallError(NOT_ENABLED,
+                                'Context "%s" not in whitelist.' % context)
 
     def has_context(self, context):
         return (context in self._contexts)

@@ -31,9 +31,9 @@ from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
+from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
-from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
@@ -64,7 +64,7 @@ class Firewall:
         self.zone = FirewallZone(self)
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
-        self.lockdown_whitelist = LockdownWhitelist(LOCKDOWN_WHITELIST)
+        self.policies = FirewallPolicies(self)
 
         self.__init_vars()
 
@@ -76,7 +76,6 @@ class Firewall:
         self._marks = [ ]
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
-        self.lockdown = False
 
     def start(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -133,19 +132,18 @@ class Firewall:
                 value = self._firewalld_conf.get("Lockdown")
                 if value.lower() in [ "yes", "true" ]:
                     log.debug1("Lockdown is enabled")
-                    self.lockdown = True
+                    self.policies.enable_lockdown()
 
         # apply default rules
         self._apply_default_rules()
 
         # load lockdown whitelist
-        if self.lockdown:
-            log.debug1("Loading lockdown whitelist")
-            try:
-                self.lockdown_whitelist.read()
-            except Exception as msg:
-                log.error("Failed to load lockdown whitelist '%s': %s",
-                          LOCKDOWN_WHITELIST, msg)
+        log.debug1("Loading lockdown whitelist")
+        try:
+            self.policies.lockdown_whitelist.read()
+        except Exception as msg:
+            log.error("Failed to load lockdown whitelist '%s': %s",
+                      self.policies.lockdown_whitelist.filename, msg)
 
         # load icmptype files
         self._loader(FIREWALLD_ICMPTYPES, "icmptype")
@@ -309,9 +307,6 @@ class Firewall:
             self._modules.unload_firewall_modules()
 
         self.cleanup()
-
-    def lockdown_enabled(self):
-        return self.lockdown
 
     # marks
 
@@ -552,31 +547,6 @@ class Firewall:
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
-
-    # access check
-
-    def access_check(self, key, value):
-        if key == "context":
-            log.debug2('Doing access check for context "%s"' % value)
-            if self.lockdown_whitelist.match_context(value):
-                log.debug3('context matches.')
-                return True
-        elif key == "uid":
-            log.debug2('Doing access check for uid %d' % value)
-            if self.lockdown_whitelist.match_uid(value):
-                log.debug3('uid matches.')
-                return True
-        elif key == "user":
-            log.debug2('Doing access check for user "%s"' % value)
-            if self.lockdown_whitelist.match_user(value):
-                log.debug3('user matches.')
-                return True
-        elif key == "command":
-            log.debug2('Doing access check for command "%s"' % value)
-            if self.lockdown_whitelist.match_command(value):
-                log.debug3('command matches.')
-                return True
-        return False
 
     # RELOAD
 
