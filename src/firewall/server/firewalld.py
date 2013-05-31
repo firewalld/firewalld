@@ -144,11 +144,8 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "IPv6":
             return self.fw.ip6tables_enabled
 
-        elif prop == "EB":
+        elif prop == "BRIDGE":
             return self.fw.ebtables_enabled
-
-        elif prop == "Lockdown":
-            return self.fw.lockdown_enabled()
 
         else:
             raise dbus.exceptions.DBusException(
@@ -187,9 +184,9 @@ class FirewallD(slip.dbus.service.Object):
             'version': self._get_property("version"),
             'interface_version': self._get_property("interface_version"),
             'state': self._get_property("state"),
-            'ip4tables': self._get_property("ip4tables"),
-            'ip6tables': self._get_property("ip6tables"),
-            'ebtables': self._get_property("ebtables"),
+            'IPv4': self._get_property("ip4tables"),
+            'IPv6': self._get_property("ip6tables"),
+            'BRIDGE': self._get_property("ebtables"),
         }
         
 
