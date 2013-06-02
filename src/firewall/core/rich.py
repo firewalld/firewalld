@@ -99,14 +99,12 @@ class Rich_Log(object):
              " { %s }" % self.limit if self.limit else "")
 
 class Rich_Audit(object):
-    def __init__(self, _type):
+    def __init__(self):
         #TODO check default level in iptables
-        self.type = str(_type)
         self.limit = None
 
     def __str__(self):
-        return 'audit type="%s"%s' % \
-            (self.type, " { %s }" % self.limit if self.limit else "")
+        return 'audit%s' % (" { %s }" % self.limit if self.limit else "")
 
 class Rich_Accept(object):
     def __init__(self):
@@ -280,8 +278,8 @@ class Rich_Rule(object):
 
         # audit
         if self.audit != None:
-            if self.audit.type not in [ "ACCEPT", "REJECT", "DROP" ]:
-                raise FirewallError(INVALID_AUDIT_TYPE, self.audit.type)
+            if type(self.action) not in [ Rich_Accept, Rich_Reject, Rich_Drop ]:
+                raise FirewallError(INVALID_AUDIT_TYPE, type(self.action))
 
         # action
         if self.action != None:

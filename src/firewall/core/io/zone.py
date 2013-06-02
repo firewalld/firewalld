@@ -64,7 +64,7 @@ class Zone(IO_Object):
         "destination": [ "address" ],
         "protocol": [ "value" ],
         "log":  None,
-        "audit": [ "type" ],
+        "audit": None,
         "accept": None,
         "reject": None,
         "drop": None,
@@ -367,12 +367,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.error('Invalid rule: More than one audit')
                 self._rule_error = True
                 return            
-            _type = str(attrs["type"])
-            if _type not in [ "ACCEPT", "REJECT", "DROP" ]:
-                log.error('Invalid rule: Invalid audit type "%s"' % _type)
-                self._rule_error = True
-                return
-            self._rule.audit = Rich_Audit(_type)
+            self._rule.audit = Rich_Audit()
             self._limit_ok = self._rule.audit
 
         elif name == "rule":
@@ -614,10 +609,9 @@ def zone_writer(zone, path=None):
 
         # audit
         if rule.audit:
-            attrs = { "type": rule.audit.type }
             if rule.audit.limit:
                 handler.ignorableWhitespace("    ")
-                handler.startElement("audit", attrs)
+                handler.startElement("audit", { })
                 handler.ignorableWhitespace("\n      ")
                 handler.simpleElement("limit",
                                       { "value": rule.audit.limit.value })

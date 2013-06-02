@@ -586,7 +586,15 @@ class FirewallZone:
             return
         chain = "%s_log" % target
         _command = command[:]
-        _command += [ "-j", "AUDIT", "--type", rule.audit.type ]
+        if type(rule.action) == Rich_Accept:
+            _type = "accept"
+        elif type(rule.action) == Rich_Reject:
+            _type = "reject"
+        elif type(rule.action) ==  Rich_Drop:
+            _type = "drop"
+        else:
+            _type = "unknown"
+        _command += [ "-j", "AUDIT", "--type", _type ]
         _command += self.__rule_limit(rule.audit.limit)
         rules.append((ipv, table, chain, _command))
 
