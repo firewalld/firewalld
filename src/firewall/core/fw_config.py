@@ -42,6 +42,8 @@ class FirewallConfig:
         self._default_icmptypes = { }
         self._default_services = { }
         self._default_zones = { }
+        self._firewalld_conf = None
+        self._policies = None
 
     def cleanup(self):
         for x in self._default_icmptypes.keys():
@@ -64,10 +66,35 @@ class FirewallConfig:
     # access check
 
     def lockdown_enabled(self):
-        return self._fw.lockdown_enabled()
+        return self._fw.policies.query_lockdown()
 
     def access_check(self, key, value):
         return self._fw.policies.access_check(key, value)
+
+    # firewalld_conf
+
+    def set_firewalld_conf(self, conf):
+        self.firewalld_conf = conf
+
+    def get_firewalld_conf(self):
+        return self.firewalld_conf
+
+    def enable_lockdown(self):
+        self.firewalld_conf.set("lockdown", "yes")
+        self.firewalld_conf.write()
+
+    def disable_lockdown(self):
+        self.firewalld_conf.set("lockdown", "no")
+        self.firewalld_conf.write()
+
+    # policies
+
+    def set_policies(self, policies):
+        self.policies = policies
+        print self.policies
+
+    def get_policies(self):
+        return self.policies
 
     # icmptypes
 

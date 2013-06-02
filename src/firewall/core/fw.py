@@ -118,21 +118,24 @@ class Firewall:
                 default_zone = self._firewalld_conf.get("DefaultZone")
             if self._firewalld_conf.get("MinimalMark"):
                 mark = self._firewalld_conf.get("MinimalMark")
-                try:
-                    self._min_mark = int(mark)
-                except Exception as msg:
-                    log.error("MinimalMark %s is not valid, using default "
-                              "value %d", mark, self._min_mark)
+                if mark != None:
+                    try:
+                        self._min_mark = int(mark)
+                    except Exception as msg:
+                        log.error("MinimalMark %s is not valid, using default "
+                                  "value %d", mark, self._min_mark)
             if self._firewalld_conf.get("CleanupOnExit"):
                 value = self._firewalld_conf.get("CleanupOnExit")
-                if value.lower() in [ "no", "false" ]:
+                if value != None and value.lower() in [ "no", "false" ]:
                     self.cleanup_on_exit = False
 
             if self._firewalld_conf.get("Lockdown"):
                 value = self._firewalld_conf.get("Lockdown")
-                if value.lower() in [ "yes", "true" ]:
+                if value != None and value.lower() in [ "yes", "true" ]:
                     log.debug1("Lockdown is enabled")
                     self.policies.enable_lockdown()
+
+        self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
         # apply default rules
         self._apply_default_rules()
@@ -144,6 +147,9 @@ class Firewall:
         except Exception as msg:
             log.error("Failed to load lockdown whitelist '%s': %s",
                       self.policies.lockdown_whitelist.filename, msg)
+
+        # copy policies to config interface
+        self.config.set_policies(copy.deepcopy(self.policies))
 
         # load icmptype files
         self._loader(FIREWALLD_ICMPTYPES, "icmptype")

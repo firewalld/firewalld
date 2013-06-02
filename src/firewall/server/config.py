@@ -39,6 +39,7 @@ from firewall.server.config_zone import FirewallDConfigZone
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
+from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid
 from firewall.errors import *
@@ -268,6 +269,138 @@ class FirewallDConfig(slip.dbus.service.Object):
             if self.config.access_check("command", command):
                 return
             raise FirewallError(ACCESS_DENIED, "lockdown is enabled")
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # P R O P E R T I E S
+
+    @dbus_handle_exceptions
+    def _get_property(self, prop):
+        if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
+                     "Lockdown" ]:
+            value = self.config.firewalld_conf.get(prop)
+            if prop == "MinimalMark":
+                value = int(value)
+            if value != None:
+                return value
+            if prop == "DefaultZone":
+                return FALLBACK_ZONE
+            elif prop == "MinimalMark":
+                return FALLBACK_MINIMAL_MARK
+            elif prop == "CleanupOnExit":
+                return "yes"
+            elif prop == "Lockdown":
+                return "no"
+        else:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.AccessDenied: "
+                "Property '%s' isn't exported (or may not exist)" % prop)
+
+    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
+                         out_signature='v')
+    @dbus_handle_exceptions
+    def Get(self, interface_name, property_name, sender=None):
+        # get a property
+        interface_name = str(interface_name)
+        property_name = str(property_name)
+        log.debug1("config.Get('%s', '%s')", interface_name, property_name)
+
+        if interface_name != DBUS_INTERFACE_CONFIG:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "FirewallD does not implement %s" % interface_name)
+
+        return self._get_property(property_name)
+
+    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
+                         out_signature='a{sv}')
+    @dbus_handle_exceptions
+    def GetAll(self, interface_name, sender=None):
+        interface_name = str(interface_name)
+        log.debug1("config.GetAll('%s')", interface_name)
+
+        if interface_name != DBUS_INTERFACE_CONFIG:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "FirewallD does not implement %s" % interface_name)
+
+        return {
+            'DefaultZone': self._get_property("DefaultZone"),
+            'MinimalMark': self._get_property("MinimalMark"),
+            'CleanupOnExit': self._get_property("CleanupOnExit"),
+            'Lockdown': self._get_property("Lockdown"),
+        }
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
+    @dbus_handle_exceptions
+    def Set(self, interface_name, property_name, new_value, sender=None):
+        interface_name = str(interface_name)
+        property_name = str(property_name)
+        new_value = dbus_to_python(new_value)
+        log.debug1("config.Set('%s', '%s', '%s')", interface_name,
+                   property_name, new_value)
+        self.accessCheck(sender)
+
+        if interface_name != DBUS_INTERFACE_CONFIG:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "FirewallD does not implement %s" % interface_name)
+
+        if property_name in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
+                              "Lockdown" ]:
+            if property_name == "MinimalMark":
+                try:
+                    foo = int(new_value)
+                except:
+                    raise FirewallError(INVALID_MARK, new_value)
+            try:
+                new_value = str(new_value)
+            except:
+                raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
+                                            (new_value, property_name))
+            if property_name in [ "CleanupOnExit", "Lockdown" ]:
+                if new_value.lower() not in [ "yes", "no", "true", "false" ]:
+                    raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
+                                            (new_value, property_name))
+            self.config.firewalld_conf.set(property_name, new_value)
+            self.config.firewalld_conf.write()
+            self.PropertiesChanged(interface_name,
+                                   { property_name: new_value }, [ ])
+        else:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.AccessDenied: "
+                "Property '%s' does not exist" % prop)
+
+    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
+    def PropertiesChanged(self, interface_name, changed_properties,
+                          invalidated_properties):
+        pass
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # policies
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES,
+                         out_signature=LockdownWhitelist.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getLockdownWhitelistSettings(self, sender=None):
+        log.debug1("config.getLockdownWhitelistSettings()")
+        return self.config.policies.lockdown_whitelist.export_config()
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, 
+                         in_signature=LockdownWhitelist.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def updateLockdownWhitelist(self, settings, sender=None):
+        log.debug1("config.setLockdownWhitelistSettings(...)")
+        settings = dbus_to_python(settings)
+        self.config.policies.lockdown_whitelist.import_config(settings)
+        self.LockdownWhitelistUpdated()
+
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_POLICIES,)
+    @dbus_handle_exceptions
+    def LockdownWhitelistUpdated(self):
+        log.debug1("config.LockdownWhitelistUpdated()")
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
