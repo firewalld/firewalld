@@ -32,6 +32,7 @@ import slip.dbus.service
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.core.fw import Firewall
+from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
 from firewall.server.decorators import *
 from firewall.server.config import FirewallDConfig
@@ -947,6 +948,85 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def SourceRemoved(self, zone, source):
         log.debug1("zone.SourceRemoved('%s', '%s')" % (zone, source))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # RICH RULES
+
+    @dbus_handle_exceptions
+    def disableTimedRichRule(self, zone, rule):
+        log.debug1("zone.disableTimedRichRule('%s', '%s')" % (zone, rule))
+        del self._timeouts[zone][rule]
+        obj = Rich_Rule(rule_str=rule)
+        self.fw.zone.remove_rule(zone, obj)
+        self.RichRuleRemoved(zone, rule)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addRichRule(self, zone, rule, timeout, sender=None):
+        # timeout not possible for masquerade
+        zone = str(zone)
+        rule = str(rule)
+        log.debug1("zone.addRichRule('%s', '%s')" % (zone, rule))
+        obj = Rich_Rule(rule_str=rule)
+        _zone = self.fw.zone.add_rule(zone, obj)
+
+        if timeout > 0:
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedRichRule,
+                                           _zone, rule)
+            self.addTimeout(_zone, rule, tag)
+
+        self.RichRuleAdded(_zone, rule, timeout)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeRichRule(self, zone, rule, sender=None):
+        # timeout not possible for masquerade
+        zone = str(zone)
+        rule = str(rule)
+        log.debug1("zone.removeRichRule('%s', '%s')" % (zone, rule))
+        obj = Rich_Rule(rule_str=rule)
+        _zone = self.fw.zone.remove_rule(zone, obj)
+        self.removeTimeout(_zone, rule)
+        self.RichRuleRemoved(_zone, rule)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryRichRule(self, zone, rule, sender=None):
+        # timeout not possible for masquerade
+        zone = str(zone)
+        rule = str(rule)
+        log.debug1("zone.queryRichRule('%s', '%s')" % (zone, rule))
+        obj = Rich_Rule(rule_str=rule)
+        return self.fw.zone.query_rule(zone, obj)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getRichRules(self, zone, sender=None):
+        # returns the list of enabled services for zone
+        zone = str(zone)
+        log.debug1("zone.getServices('%s')" % (zone))
+        return self.fw.zone.get_rules(zone)
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus_handle_exceptions
+    def RichRuleAdded(self, zone, rule, timeout):
+        log.debug1("zone.RichRuleAdded('%s', '%s', %d)" % (zone, rule, timeout))
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def RichRuleRemoved(self, zone, rule):
+        log.debug1("zone.RichRuleRemoved('%s', '%s')" % (zone, rule))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
