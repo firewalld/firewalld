@@ -264,7 +264,7 @@ class FirewallD(slip.dbus.service.Object):
     def enableLockdown(self, sender=None):
         """Enable lockdown policies
         """
-        log.debug1("poicies.enableLockdown()")
+        log.debug1("policies.enableLockdown()")
         self.accessCheck(sender)
         self.fw.policies.enable_lockdown()
         self.LockdownEnabled()
@@ -276,7 +276,7 @@ class FirewallD(slip.dbus.service.Object):
     def disableLockdown(self, sender=None):
         """Disable lockdown policies
         """
-        log.debug1("poicies.disableLockdown()")
+        log.debug1("policies.disableLockdown()")
         self.accessCheck(sender)
         self.fw.policies.disable_lockdown()
         self.LockdownDisabled()
@@ -288,8 +288,8 @@ class FirewallD(slip.dbus.service.Object):
     def queryLockdown(self, sender=None):
         """Retuns True if lockdown is enabled
         """
-        log.debug1("poicies.queryLockdown()")
-        self.accessCheck(sender)
+        log.debug1("policies.queryLockdown()")
+        # no access check here
         return self.fw.policies.query_lockdown()
 
     @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='')
@@ -314,7 +314,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown command
         """
         command = str(command)
-        log.debug1("poicies.addLockdownWhitelistCommand('%s')" % command)
+        log.debug1("policies.addLockdownWhitelistCommand('%s')" % command)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_command(command)
         self.LockdownWhitelistCommandAdded(command)
@@ -327,7 +327,7 @@ class FirewallD(slip.dbus.service.Object):
         """Remove lockdown command
         """
         command = str(command)
-        log.debug1("poicies.removeLockdownWhitelistCommand('%s')" % command)
+        log.debug1("policies.removeLockdownWhitelistCommand('%s')" % command)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_command(command)
         self.LockdownWhitelistCommandRemoved(command)
@@ -340,7 +340,7 @@ class FirewallD(slip.dbus.service.Object):
         """Query lockdown command
         """
         command = str(command)
-        log.debug1("poicies.queryLockdownWhitelistCommand('%s')" % command)
+        log.debug1("policies.queryLockdownWhitelistCommand('%s')" % command)
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.has_command(command)
 
@@ -352,7 +352,7 @@ class FirewallD(slip.dbus.service.Object):
         """Query lockdown command match
         """
         command = str(command)
-        log.debug1("poicies.queryLockdownWhitelistCommandMatch('%s')" % command)
+        log.debug1("policies.queryLockdownWhitelistCommandMatch('%s')" % command)
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.match_command(command)
 
@@ -363,7 +363,7 @@ class FirewallD(slip.dbus.service.Object):
     def getLockdownWhitelistCommands(self, sender=None):
         """Add lockdown command
         """
-        log.debug1("poicies.getLockdownWhitelistCommands()")
+        log.debug1("policies.getLockdownWhitelistCommands()")
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.get_commands()
 
@@ -387,7 +387,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown uid
         """
         uid = int(uid)
-        log.debug1("poicies.addLockdownWhitelistUid('%s')" % uid)
+        log.debug1("policies.addLockdownWhitelistUid('%s')" % uid)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_uid(uid)
         self.LockdownWhitelistUidAdded(uid)
@@ -400,7 +400,7 @@ class FirewallD(slip.dbus.service.Object):
         """Remove lockdown uid
         """
         uid = int(uid)
-        log.debug1("poicies.removeLockdownWhitelistUid('%s')" % uid)
+        log.debug1("policies.removeLockdownWhitelistUid('%s')" % uid)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_uid(uid)
         self.LockdownWhitelistUidRemoved(uid)
@@ -413,7 +413,7 @@ class FirewallD(slip.dbus.service.Object):
         """Query lockdown uid
         """
         uid = int(uid)
-        log.debug1("poicies.queryLockdownWhitelistUid('%s')" % uid)
+        log.debug1("policies.queryLockdownWhitelistUid('%s')" % uid)
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.has_uid(uid)
 
@@ -424,7 +424,7 @@ class FirewallD(slip.dbus.service.Object):
     def getLockdownWhitelistUids(self, sender=None):
         """Add lockdown uid
         """
-        log.debug1("poicies.getLockdownWhitelistUids()")
+        log.debug1("policies.getLockdownWhitelistUids()")
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.get_uids()
 
@@ -448,7 +448,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown user
         """
         user = str(user)
-        log.debug1("poicies.addLockdownWhitelistUser('%s')" % user)
+        log.debug1("policies.addLockdownWhitelistUser('%s')" % user)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_user(user)
         self.LockdownWhitelistUserAdded(user)
@@ -461,7 +461,7 @@ class FirewallD(slip.dbus.service.Object):
         """Remove lockdown user
         """
         user = str(user)
-        log.debug1("poicies.removeLockdownWhitelistUser('%s')" % user)
+        log.debug1("policies.removeLockdownWhitelistUser('%s')" % user)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_user(user)
         self.LockdownWhitelistUserRemoved(user)
@@ -474,7 +474,7 @@ class FirewallD(slip.dbus.service.Object):
         """Query lockdown user
         """
         user = str(user)
-        log.debug1("poicies.queryLockdownWhitelistUser('%s')" % user)
+        log.debug1("policies.queryLockdownWhitelistUser('%s')" % user)
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.has_user(user)
 
@@ -485,7 +485,7 @@ class FirewallD(slip.dbus.service.Object):
     def getLockdownWhitelistUsers(self, sender=None):
         """Add lockdown user
         """
-        log.debug1("poicies.getLockdownWhitelistUsers()")
+        log.debug1("policies.getLockdownWhitelistUsers()")
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.get_users()
 
@@ -509,7 +509,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown context
         """
         context = str(context)
-        log.debug1("poicies.addLockdownWhitelistContext('%s')" % context)
+        log.debug1("policies.addLockdownWhitelistContext('%s')" % context)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_context(context)
         self.LockdownWhitelistContextAdded(context)
@@ -522,7 +522,7 @@ class FirewallD(slip.dbus.service.Object):
         """Remove lockdown context
         """
         context = str(context)
-        log.debug1("poicies.removeLockdownWhitelistContext('%s')" % context)
+        log.debug1("policies.removeLockdownWhitelistContext('%s')" % context)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_context(context)
         self.LockdownWhitelistContextRemoved(context)
@@ -535,7 +535,7 @@ class FirewallD(slip.dbus.service.Object):
         """Query lockdown context
         """
         context = str(context)
-        log.debug1("poicies.queryLockdownWhitelistContext('%s')" % context)
+        log.debug1("policies.queryLockdownWhitelistContext('%s')" % context)
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.has_context(context)
 
@@ -546,7 +546,7 @@ class FirewallD(slip.dbus.service.Object):
     def getLockdownWhitelistContexts(self, sender=None):
         """Add lockdown context
         """
-        log.debug1("poicies.getLockdownWhitelistContexts()")
+        log.debug1("policies.getLockdownWhitelistContexts()")
         self.accessCheck(sender)
         return self.fw.policies.lockdown_whitelist.get_contexts()
 
