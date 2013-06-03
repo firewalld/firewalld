@@ -99,14 +99,12 @@ class Rich_Log(object):
              " %s" % self.limit if self.limit else "")
 
 class Rich_Audit(object):
-    def __init__(self, _type, limit=None):
+    def __init__(self, limit=None):
         #TODO check default level in iptables
-        self.type = str(_type)
         self.limit = limit
 
     def __str__(self):
-        return 'audit type="%s"%s' % \
-            (self.type, " %s" % self.limit if self.limit else "")
+        return 'audit%s' % (" %s" % self.limit if self.limit else "")
 
 class Rich_Accept(object):
     def __init__(self, limit=None):
@@ -378,12 +376,10 @@ class Rich_Rule(object):
                     attrs.clear()
                     index = index -1 # return token to input
             elif in_element == 'audit':
-                if attr_name == 'type':
-                    attrs[attr_name] = attr_value
-                elif element == 'limit':
+                if element == 'limit':
                     in_elements.append('limit')
                 else:
-                    self.audit = Rich_Audit(attrs.get('type'), attrs.get('limit'))
+                    self.audit = Rich_Audit(attrs.get('limit'))
                     in_elements.pop() # audit
                     attrs.clear()
                     index = index -1 # return token to input
@@ -533,21 +529,21 @@ class Rich_Rule(object):
                 self.action.limit.check()
 
     def __str__(self):
-        ret = 'rule '
+        ret = 'rule'
         if self.family:
-            ret += 'family="%s" ' % self.family
+            ret += ' family="%s"' % self.family
         if self.source:
-            ret += "%s " % self.source
+            ret += " %s" % self.source
         if self.destination:
-            ret += "%s " % self.destination
+            ret += " %s" % self.destination
         if self.element:
-            ret += "%s " % self.element
+            ret += " %s" % self.element
         if self.log:
-            ret += "%s " % self.log
+            ret += " %s" % self.log
         if self.audit:
-            ret += "%s " % self.audit
+            ret += " %s" % self.audit
         if self.action:
-            ret += "%s " % self.action
+            ret += " %s" % self.action
         return ret
 
 #class Rich_RawRule(object):
