@@ -313,9 +313,6 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if not "address" in attrs:
                 log.error('Invalid source: Address missing.')
                 return
-            if not "family" in attrs:
-                log.error('Invalid source: Family missing.')
-                return
             if "invert" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
