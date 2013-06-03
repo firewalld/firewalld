@@ -69,7 +69,8 @@ class FirewallClientConfigZoneSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", False, "", [], [], [], False, []]
+            self.settings = ["", "", "", False, "", [], [], [], False, [],
+                             [], [], []]
 
     @handle_exceptions
     def getVersion(self):
@@ -196,6 +197,61 @@ class FirewallClientConfigZoneSettings(object):
         if to_addr == None:
             to_addr = ''
         return (port,protocol,to_port,to_addr) in self.settings[9]
+
+    @handle_exceptions
+    def getInterfaces(self):
+        return self.settings[10]
+    @handle_exceptions
+    def setInterfaces(self, interfaces):
+        self.settings[10] = interfaces
+    @handle_exceptions
+    def addInterface(self, interface):
+        if interface not in self.settings[10]:
+            self.settings[10].append(interface)
+    @handle_exceptions
+    def removeInterface(self, interface):
+        if interface in self.settings[10]:
+            self.settings[10].remove(interface)
+    @handle_exceptions
+    def queryInterface(self, interface):
+        return interface in self.settings[10]
+
+    @handle_exceptions
+    def getSources(self):
+        return self.settings[11]
+    @handle_exceptions
+    def setSources(self, sources):
+        self.settings[11] = sources
+    @handle_exceptions
+    def addSource(self, source):
+        if source not in self.settings[11]:
+            self.settings[11].append(source)
+    @handle_exceptions
+    def removeSource(self, source):
+        if source in self.settings[11]:
+            self.settings[11].remove(source)
+    @handle_exceptions
+    def querySource(self, source):
+        return source in self.settings[11]
+
+    @handle_exceptions
+    def getRichRules(self):
+        return self.settings[12]
+    @handle_exceptions
+    def setRichRules(self, rules):
+        self.settings[12] = rules
+    @handle_exceptions
+    def addRichRule(self, rule):
+        if rule not in self.settings[12]:
+            self.settings[12].append(rule)
+    @handle_exceptions
+    def removeRichRule(self, rule):
+        if rule in self.settings[12]:
+            self.settings[12].remove(rule)
+    @handle_exceptions
+    def queryRichRule(self, rule):
+        return rule in self.settings[12]
+
 
 # zone config
 
@@ -497,6 +553,112 @@ class FirewallClientConfigIcmpType(object):
     def rename(self, name):
         self.fw_icmptype.rename(name)
 
+# config.policies lockdown whitelist
+
+class FirewallClientConfigPoliciesLockdownWhitelist(object):
+    @handle_exceptions
+    def __init__(self, settings=None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = [ [], [], [], [] ]
+
+    @handle_exceptions
+    def getCommands(self):
+        return self.settings[0]
+    @handle_exceptions
+    def setCommands(self, commands):
+        self.settings[0] = commands
+    @handle_exceptions
+    def addCommand(self, command):
+        if command not in self.settings[0]:
+            self.settings[0].append(command)
+    @handle_exceptions
+    def removeCommand(self, command):
+        if command in self.settings[0]:
+            self.settings[0].remove(command)
+    @handle_exceptions
+    def queryCommand(self, command):
+        return command in self.settings[0]
+
+    @handle_exceptions
+    def getContexts(self):
+        return self.settings[1]
+    @handle_exceptions
+    def setContexts(self, contexts):
+        self.settings[1] = contexts
+    @handle_exceptions
+    def addContext(self, context):
+        if context not in self.settings[1]:
+            self.settings[1].append(context)
+    @handle_exceptions
+    def removeContext(self, context):
+        if context in self.settings[1]:
+            self.settings[1].remove(context)
+    @handle_exceptions
+    def queryContext(self, context):
+        return context in self.settings[1]
+
+    @handle_exceptions
+    def getUsers(self):
+        return self.settings[2]
+    @handle_exceptions
+    def setUsers(self, users):
+        self.settings[2] = users
+    @handle_exceptions
+    def addUser(self, user):
+        if user not in self.settings[2]:
+            self.settings[2].append(user)
+    @handle_exceptions
+    def removeUser(self, user):
+        if user in self.settings[2]:
+            self.settings[2].remove(user)
+    @handle_exceptions
+    def queryUser(self, user):
+        return user in self.settings[2]
+
+    @handle_exceptions
+    def getUids(self):
+        return self.settings[3]
+    @handle_exceptions
+    def setUids(self, uids):
+        self.settings[3] = uids
+    @handle_exceptions
+    def addUid(self, uid):
+        if uid not in self.settings[3]:
+            self.settings[3].append(uid)
+    @handle_exceptions
+    def removeUid(self, uid):
+        if uid in self.settings[3]:
+            self.settings[3].remove(uid)
+    @handle_exceptions
+    def queryUid(self, uid):
+        return uid in self.settings[3]
+
+# config.policies
+
+class FirewallClientConfigPolicies(object):
+    @handle_exceptions
+    def __init__(self, bus):
+        self.bus = bus
+        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE,
+                                            DBUS_PATH_CONFIG_POLICIES)
+        self.fw_policies = dbus.Interface( \
+            self.dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG_POLICIES)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelist(self):
+        return FirewallClientConfigPoliciesLockdownWhitelist( \
+            list(dbus_to_python(self.fw_policies.getLockdownWhitelist())))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setLockdownWhitelist(self, settings):
+        self.fw_policies.setLockdownWhitelist(tuple(settings.settings))
+
+    # TODO: LockdownWhitelistUpdated signal handling
+
 # config
 
 class FirewallClientConfig(object):
@@ -507,6 +669,27 @@ class FirewallClientConfig(object):
                                             DBUS_PATH_CONFIG)
         self.fw_config = dbus.Interface(self.dbus_obj,
                                         dbus_interface=DBUS_INTERFACE_CONFIG)
+        self.fw_properties = dbus.Interface(
+            self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+
+    # properties
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def get_property(self, prop):
+        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG,
+                                                     prop))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def get_properties(self):
+        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def set_property(self, prop, value):
+        self.fw_properties.Set(DBUS_INTERFACE_CONFIG, prop, value)
+
     # zone
 
     @slip.dbus.polkit.enable_proxy
@@ -642,7 +825,26 @@ class FirewallClient(object):
             "source-added": "SourceAdded",
             "source-removed": "SourceRemoved",
             "zone-of-source-changed": "ZoneOfSourceChanged",
+            # direct callbacks
+# TODO
+            "direct-chain-added": "ChainAdded",
+            "direct-chain-removed": "ChainRemoved",
+            "direct-rule-added": "RuleAdded",
+            "direct-rule-removed": "RuleRemoved",
+            # policy callbacks
+# TODO
+            "lockdown-enabled": "LockdownEnabled",
+            "lockdown-disabled": "LockdownDisabled",
+            "lockdown-whitelist-command-added": "LockdownWhitelistCommandAdded",
+            "lockdown-whitelist-command-removed": "LockdownWhitelistCommandRemoved",
+            "lockdown-whitelist-context-added": "LockdownWhitelistContextAdded",
+            "lockdown-whitelist-context-removed": "LockdownWhitelistContextRemoved",
+            "lockdown-whitelist-uid-added": "LockdownWhitelistUidAdded",
+            "lockdown-whitelist-uid-removed": "LockdownWhitelistUidRemoved",
+            "lockdown-whitelist-user-added": "LockdownWhitelistUserAdded",
+            "lockdown-whitelist-user-removed": "LockdownWhitelistUserRemoved",
             # firewalld.config callbacks
+            "config:policies:lockdown-whitelist-updated": "config:policies:LockdownWhitelistUpdated",
             "config:zone-added": "config:ZoneAdded",
             "config:zone-updated": "config:ZoneUpdated",
             "config:zone-removed": "config:ZoneRemoved",
@@ -706,6 +908,8 @@ class FirewallClient(object):
                                           dbus_interface=DBUS_INTERFACE_ZONE)
             self.fw_direct = dbus.Interface(
                 self.dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
+            self.fw_policies = dbus.Interface(
+                self.dbus_obj, dbus_interface=DBUS_INTERFACE_POLICIES)
             self.fw_properties = dbus.Interface(
                 self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         except dbus.exceptions.DBusException as e:
@@ -756,6 +960,8 @@ class FirewallClient(object):
             signal = "config:IcmpType" + signal
         elif interface == DBUS_INTERFACE_CONFIG:
             signal = "config:" + signal
+        elif interface == DBUS_INTERFACE_CONFIG_POLICIES:
+            signal = "config:policies:" + signal
 
         for callback in self._callbacks:
             if self._callbacks[callback] == signal and \
@@ -932,6 +1138,28 @@ class FirewallClient(object):
     def removeSource(self, zone, source):
         return dbus_to_python(self.fw_zone.removeSource(zone, source))
 
+    # rich rules
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addRichRule(self, zone, rule, timeout=0):
+        return dbus_to_python(self.fw_zone.addRichRule(zone, rule, timeout))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getRichRules(self, zone):
+        return dbus_to_python(self.fw_zone.getRichRules(zone))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryRichRule(self, zone, rule):
+        return dbus_to_python(self.fw_zone.queryRichRule(zone, rule))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeRichRule(self, zone, rule):
+        return dbus_to_python(self.fw_zone.removeRichRule(zone, rule))
+
     # services
 
     @slip.dbus.polkit.enable_proxy
@@ -1105,4 +1333,102 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def passthrough(self, ipv, args):
-        return self.fw_direct.passthrough(ipv, args)
+        return dbus_to_python(self.fw_direct.passthrough(ipv, args))
+
+    # lockdown
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def enableLockdown(self):
+        self.fw_policies.enableLockdown()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def disableLockdown(self):
+        self.fw_policies.disableLockdown()
+    
+    # policies
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistCommand(self, command):
+        self.fw_policies.addLockdownWhitelistCommand(command)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistCommands(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistCommands())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistCommand(self, command):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistCommand(command))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistCommand(self, command):
+        self.fw_policies.removeLockdownWhitelistCommand(command)
+
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistContext(self, context):
+        self.fw_policies.addLockdownWhitelistContext(context)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistContexts(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistContexts())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistContext(self, context):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistContext(context))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistContext(self, context):
+        self.fw_policies.removeLockdownWhitelistContext(context)
+
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistUid(self, uid):
+        self.fw_policies.addLockdownWhitelistUid(uid)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistUids(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistUids())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistUid(self, uid):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUid(uid))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistUid(self, uid):
+        self.fw_policies.removeLockdownWhitelistUid(uid)
+
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistUser(self, user):
+        self.fw_policies.addLockdownWhitelistUser(user)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistUsers(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistUsers())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistUser(self, user):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUser(user))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistUser(self, user):
+        self.fw_policies.removeLockdownWhitelistUser(user)
+
