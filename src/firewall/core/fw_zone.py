@@ -283,8 +283,8 @@ class FirewallZone:
             rules_return = self._fw.handle_rules2(rules, enable)
             if rules_return != None:
                 (cleanup_rules, msg) = rules_return
-            cleanup_chains = chains
-            cleanup_modules = modules
+                cleanup_chains = chains
+                cleanup_modules = modules
         else:
             # error loading modules
             (cleanup_modules, msg) = module_return
@@ -309,6 +309,14 @@ class FirewallZone:
         if not enable:
             for (table, chain) in chains:
                 self.remove_chain(zone, table, chain)
+
+        # report error case
+        if cleanup_chains != None or cleanup_modules != None or \
+                cleanup_rules != None:
+            log.error(msg)
+            return msg
+
+        return None
 
     # INTERFACES
 
@@ -875,8 +883,10 @@ class FirewallZone:
                 raise FirewallError(INVALID_RULE, "Unknown element %s" % 
                                     type(rule.element))
 
-        self.handle_cmr(zone, chains, modules, rules, enable)
+        if self.handle_cmr(zone, chains, modules, rules, enable) != None:
+            raise FirewallError(COMMAND_FAILED, msg)
 
+        return mark_id
 
     def add_rule(self, zone, rule, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
@@ -888,8 +898,7 @@ class FirewallZone:
         if rule_id in _obj.settings["rules"]:
             raise FirewallError(ALREADY_ENABLED)
 
-        mark = None
-        self.__rule(True, _zone, rule, mark)
+        mark = self.__rule(True, _zone, rule, None)
 
         _obj.settings["rules"][rule_id] = \
             self.__gen_settings(timeout, sender, mark=mark)
