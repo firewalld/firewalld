@@ -78,6 +78,7 @@ def __list_all(fw, zone):
     ports = fw.getPorts(zone)
     forward_ports = fw.getForwardPorts(zone)
     icmp_blocks = fw.getIcmpBlocks(zone)
+    rules = fw.getRichRules(zone)
 
     print(zone if zone != "" else fw.getDefaultZone())
     print("  interfaces: " + " ".join(interfaces))
@@ -86,6 +87,7 @@ def __list_all(fw, zone):
     print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
     print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
     print("  icmp-blocks: " + " ".join(icmp_blocks))
+    print("  rich rules: \n\t" + "\n\t".join(rules))
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
@@ -100,6 +102,32 @@ parser_group_standalone.add_argument("--complete-reload", action="store_true")
 parser_group_standalone.add_argument("--panic-on", action="store_true")
 parser_group_standalone.add_argument("--panic-off", action="store_true")
 parser_group_standalone.add_argument("--query-panic", action="store_true")
+parser_group_standalone.add_argument("--lockdown-on", action="store_true")
+parser_group_standalone.add_argument("--lockdown-off", action="store_true")
+parser_group_standalone.add_argument("--query-lockdown", action="store_true")
+
+parser_group_standalone.add_argument("--list-lockdown-whitelist-commands", action="store_true")
+parser_group_standalone.add_argument("--add-lockdown-whitelist-command", metavar="<command>")
+parser_group_standalone.add_argument("--remove-lockdown-whitelist-command", metavar="<command>")
+parser_group_standalone.add_argument("--query-lockdown-whitelist-command", metavar="<command>")
+
+parser_group_standalone.add_argument("--list-lockdown-whitelist-contexts", action="store_true")
+parser_group_standalone.add_argument("--add-lockdown-whitelist-context", metavar="<context>")
+parser_group_standalone.add_argument("--remove-lockdown-whitelist-context", metavar="<context>")
+parser_group_standalone.add_argument("--query-lockdown-whitelist-context", metavar="<context>")
+
+
+parser_group_standalone.add_argument("--list-lockdown-whitelist-uids", action="store_true")
+parser_group_standalone.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>")
+parser_group_standalone.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>")
+parser_group_standalone.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>")
+
+parser_group_standalone.add_argument("--list-lockdown-whitelist-users", action="store_true")
+parser_group_standalone.add_argument("--add-lockdown-whitelist-user", metavar="<user>")
+parser_group_standalone.add_argument("--remove-lockdown-whitelist-user", metavar="<user>")
+parser_group_standalone.add_argument("--query-lockdown-whitelist-user", metavar="<user>")
+
+
 parser_group_standalone.add_argument("--get-default-zone", action="store_true")
 parser_group_standalone.add_argument("--set-default-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--get-zones", action="store_true")
@@ -125,6 +153,9 @@ parser_group_zone.add_argument("--remove-source", metavar="<source>")
 parser_group_zone.add_argument("--query-source", metavar="<source>")
 parser_group_zone.add_argument("--change-source", metavar="<source>")
 parser_group_zone.add_argument("--list-sources", action="store_true")
+parser_group_zone.add_argument("--add-rich-rule", metavar="<service>", action='append')
+parser_group_zone.add_argument("--remove-rich-rule", metavar="<zone>", action='append')
+parser_group_zone.add_argument("--query-rich-rule", metavar="<zone>")
 parser_group_zone.add_argument("--add-service", metavar="<service>", action='append')
 parser_group_zone.add_argument("--remove-service", metavar="<zone>", action='append')
 parser_group_zone.add_argument("--query-service", metavar="<zone>")
@@ -140,6 +171,7 @@ parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>")
 parser_group_zone.add_argument("--add-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--query-forward-port", metavar="<port>")
+parser_group_zone.add_argument("--list-rich-rules", action="store_true")
 parser_group_zone.add_argument("--list-services", action="store_true")
 parser_group_zone.add_argument("--list-ports", action="store_true")
 parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
@@ -171,34 +203,49 @@ parser_direct.add_argument("--get-rules", nargs=3,
 a = parser.parse_args()
 
 options_standalone = a.help or a.version or \
-                     a.state or a.reload or a.complete_reload or \
-                     a.panic_on or a.panic_off or a.query_panic or \
-                     a.get_default_zone or a.set_default_zone or \
-                     a.get_active_zones or a.get_zone_of_interface or \
-                     a.get_zone_of_source or \
-                     a.list_all_zones
+    a.state or a.reload or a.complete_reload or \
+    a.panic_on or a.panic_off or a.query_panic or \
+    a.get_default_zone or a.set_default_zone or \
+    a.get_active_zones or a.get_zone_of_interface or \
+    a.get_zone_of_source or \
+    a.list_all_zones
 
-options_config = a.get_zones or a.get_services or a.get_icmptypes
+options_lockdown_whitelist = \
+    a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
+    a.remove_lockdown_whitelist_command or \
+    a.query_lockdown_whitelist_command or \
+    a.list_lockdown_whitelist_contexts or a.add_lockdown_whitelist_context or \
+    a.remove_lockdown_whitelist_context or \
+    a.query_lockdown_whitelist_context or \
+    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid or \
+    a.remove_lockdown_whitelist_uid or \
+    a.query_lockdown_whitelist_uid or \
+    a.list_lockdown_whitelist_users or a.add_lockdown_whitelist_user or \
+    a.remove_lockdown_whitelist_user or \
+    a.query_lockdown_whitelist_user
 
-options_zone_interfaces = a.list_interfaces or a.change_interface or \
-                   a.add_interface or a.remove_interface or a.query_interface
-
-options_zone_sources = a.list_sources or a.change_source or \
-                   a.add_source or a.remove_source or a.query_source
+options_config = a.get_zones or a.get_services or a.get_icmptypes or \
+    a.lockdown_on or a.lockdown_off or a.query_lockdown or \
+    options_lockdown_whitelist
 
 options_zone_action_action = \
-                    a.add_service or a.remove_service or a.query_service or \
-                             a.add_port or a.remove_port or a.query_port or \
-           a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
-          a.add_forward_port or a.remove_forward_port or a.query_forward_port
+    a.add_service or a.remove_service or a.query_service or \
+    a.add_port or a.remove_port or a.query_port or \
+    a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
+    a.add_forward_port or a.remove_forward_port or a.query_forward_port or \
+    a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
+    a.list_interfaces or a.change_interface or \
+    a.add_interface or a.remove_interface or a.query_interface or \
+    a.list_sources or a.change_source or \
+    a.add_source or a.remove_source or a.query_source
 
 options_zone_adapt_query = \
             a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
- a.list_services or a.list_ports or a.list_icmp_blocks or a.list_forward_ports
+ a.list_services or a.list_ports or a.list_icmp_blocks or \
+ a.list_forward_ports or a.list_rich_rules
 
-options_zone = a.zone or options_zone_interfaces or options_zone_sources or \
-    a.list_all or a.timeout or \
-               options_zone_action_action or options_zone_adapt_query
+options_zone = a.zone or a.list_all or a.timeout or \
+    options_zone_action_action or options_zone_adapt_query
 
 options_permanent = a.permanent or options_config or a.zone or \
                     options_zone_action_action or options_zone_adapt_query
@@ -225,7 +272,8 @@ if options_config and options_zone:
            "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
 
 if a.timeout and not (a.add_service or a.add_port or a.add_icmp_block or \
-                      a.add_forward_port or a.add_masquerade):
+                          a.add_forward_port or a.add_masquerade or \
+                          a.add_rich_rule):
     __fail(parser.format_usage() + "Wrong --timeout usage")
 
 if a.permanent:
@@ -269,11 +317,144 @@ try:
             l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
             if len(l) > 0:
                 print(" ".join(l))
+
+        # lockdown
+        elif a.lockdown_on:
+            fw.config().set_property("Lockdown", "yes")
+        elif a.lockdown_off:
+            fw.config().set_property("Lockdown", "no")
+        elif a.query_lockdown:
+            lockdown = fw.config().get_property("Lockdown")
+            sys.exit(not lockdown.lower() in [ "yes", "true" ])
+
+        # lockdown whitelist
+
+        elif options_lockdown_whitelist:
+            whitelist = fw.config().policies.getLockdownWhitelist()
+                
+            # commands
+            if a.list_lockdown_whitelist_commands:
+                l = whitelist.getCommands()
+                if len(l) > 0:
+                    print("\n".join(l))
+                sys.exit(0)
+            elif a.add_lockdown_whitelist_command:
+                whitelist.addCommand(a.add_lockdown_whitelist_command) 
+            elif a.remove_lockdown_whitelist_command:
+                whitelist.removeCommand(a.remove_lockdown_whitelist_command)
+            elif a.query_lockdown_whitelist_command:
+                sys.exit(not whitelist.queryCommand( \
+                        a.query_lockdown_whitelist_command))
+
+            # contexts
+            elif a.list_lockdown_whitelist_contexts:
+                l = whitelist.getContexts()
+                if len(l) > 0:
+                    print("\n".join(l))
+                sys.exit(0)
+            elif a.add_lockdown_whitelist_context:
+                whitelist.addContext(a.add_lockdown_whitelist_context) 
+            elif a.remove_lockdown_whitelist_context:
+                whitelist.removeContext(a.remove_lockdown_whitelist_context)
+            elif a.query_lockdown_whitelist_context:
+                sys.exit(not whitelist.queryContext( \
+                        a.query_lockdown_whitelist_context))
+
+            # uids
+            elif a.list_lockdown_whitelist_uids:
+                l = whitelist.getUids()
+                if len(l) > 0:
+                    print(" ".join(map(str, l)))
+                sys.exit(0)
+            elif a.add_lockdown_whitelist_uid:
+                try:
+                    i = int(a.add_lockdown_whitelist_uid)
+                except Exception as msg:
+                    print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
+                    sys.exit(1)
+                whitelist.addUid(i) 
+            elif a.remove_lockdown_whitelist_uid:
+                try:
+                    i = int(a.remove_lockdown_whitelist_uid)
+                except Exception as msg:
+                    print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
+                    sys.exit(1)
+                whitelist.removeUid(i)
+            elif a.query_lockdown_whitelist_uid:
+                try:
+                    i = int(a.query_lockdown_whitelist_uid)
+                except Exception as msg:
+                    print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
+                    sys.exit(1)
+                sys.exit(not whitelist.queryUid(i))
+
+            # users
+            elif a.list_lockdown_whitelist_users:
+                l = whitelist.getUsers()
+                if len(l) > 0:
+                    print("\n".join(l))
+                sys.exit(0)
+            elif a.add_lockdown_whitelist_user:
+                whitelist.addUser(a.add_lockdown_whitelist_user) 
+            elif a.remove_lockdown_whitelist_user:
+                whitelist.removeUser(a.remove_lockdown_whitelist_user)
+            elif a.query_lockdown_whitelist_user:
+                sys.exit(not whitelist.queryUser( \
+                        a.query_lockdown_whitelist_user))
+
+            # apply whitelist changes
+            fw.config().policies.setLockdownWhitelist(whitelist)
+
         else:
             if zone == "":
                 zone = fw.getDefaultZone()
             fw_zone = fw.config().getZoneByName(zone)
             fw_settings = fw_zone.getSettings()
+
+            # interface
+            if a.list_interfaces:
+                l = fw_settings.getInterfaces()
+                if len(l) > 0:
+                    print(" ".join(l))
+                sys.exit(0)
+            elif a.add_interface:
+                fw_settings.addInterface(a.add_interface)
+            elif a.change_interface:
+                fw_settings.changeZoneOfInterface(a.change_interface)
+            elif a.remove_interface:
+                fw_settings.removeInterface(a.remove_interface)
+            elif a.query_interface:
+                sys.exit(not fw_settings.queryInterface(a.query_interface))
+
+            # source
+            if a.list_sources:
+                sources = fw_settings.getSources()
+                if len(sources) > 0:
+                    print(" ".join(sources))
+                sys.exit(0)
+            elif a.add_source:
+                fw_settings.addSource(a.add_source)
+            elif a.change_source:
+                fw_settings.changeZoneOfSource(a.change_source)
+            elif a.remove_source:
+                fw_settings.removeSource(a.remove_source)
+            elif a.query_source:
+                sys.exit(not fw_settings.querySource(a.query_source))
+
+            # rich rules
+            if a.list_rich_rules:
+                l = fw_settings.getRichRules()
+                if len(l) > 0:
+                    print("\n".join(l))
+                sys.exit(0)
+            elif a.add_rich_rule:
+                for s in a.add_rich_rule:
+                    fw_settings.addRichRule(s)
+            elif a.remove_rich_rule:
+                for s in a.remove_rich_rule:
+                    fw_settings.removeRichRule(s)
+            elif a.query_rich_rule:
+                sys.exit(not fw_settings.queryRichRule(a.query_rich_rule))
 
             # service
             if a.list_services:
@@ -288,7 +469,7 @@ try:
                 for s in a.remove_service:
                     fw_settings.removeService(s)
             elif a.query_service:
-                sys.exit(not a.query_service in fw_settings.getServices())
+                sys.exit(not fw_settings.queryService(a.query_service))
 
             # port
             elif a.list_ports:
@@ -306,7 +487,7 @@ try:
                     fw_settings.removePort(port, proto)
             elif a.query_port:
                 (port, proto) = __parse_port(a.query_port)
-                sys.exit(not (port, proto) in fw_settings.getPorts())
+                sys.exit(not fw_settings.queryPort(port, proto))
 
             # masquerade
             elif a.add_masquerade:
@@ -347,7 +528,7 @@ try:
                 for ib in a.remove_icmp_block:
                     fw_settings.removeIcmpBlock(ib)
             elif a.query_icmp_block:
-                sys.exit(not a.query_icmp_block in fw_settings.getIcmpBlocks())
+                sys.exit(not fw_settings.queryIcmpBlock(a.query_icmp_block))
 
             fw_zone.update(fw_settings)
 
@@ -429,6 +610,82 @@ try:
     elif a.query_panic:
         sys.exit(not fw.queryPanicMode())
 
+    # lockdown
+    elif a.lockdown_on:
+        fw.enableLockdown()
+    elif a.lockdown_off:
+        fw.disableLockdown()
+    elif a.query_lockdown:
+        sys.exit(not fw.queryLockdown())
+
+    # lockdown whitelist
+
+    # commands
+    elif a.list_lockdown_whitelist_commands:
+        l = fw.getLockdownWhitelistCommands()
+        if len(l) > 0:
+            print("\n".join(l))
+    elif a.add_lockdown_whitelist_command:
+        fw.addLockdownWhitelistCommand(a.add_lockdown_whitelist_command)
+    elif a.remove_lockdown_whitelist_command:
+        fw.removeLockdownWhitelistCommand(a.remove_lockdown_whitelist_command)
+    elif a.query_lockdown_whitelist_command:
+        sys.exit(not fw.queryLockdownWhitelistCommand( \
+                a.query_lockdown_whitelist_command))
+
+    # contexts
+    elif a.list_lockdown_whitelist_contexts:
+        l = fw.getLockdownWhitelistContexts()
+        if len(l) > 0:
+            print("\n".join(l))
+    elif a.add_lockdown_whitelist_context:
+        fw.addLockdownWhitelistContext(a.add_lockdown_whitelist_context)
+    elif a.remove_lockdown_whitelist_context:
+        fw.removeLockdownWhitelistContext(a.remove_lockdown_whitelist_context)
+    elif a.query_lockdown_whitelist_context:
+        sys.exit(not fw.queryLockdownWhitelistContext( \
+                a.query_lockdown_whitelist_context))
+
+    # uids
+    elif a.list_lockdown_whitelist_uids:
+        l = fw.getLockdownWhitelistUids()
+        if len(l) > 0:
+            print(" ".join(map(str, l)))
+    elif a.add_lockdown_whitelist_uid:
+        try:
+            i = int(a.add_lockdown_whitelist_uid)
+        except Exception as msg:
+            print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
+            sys.exit(1)
+        fw.addLockdownWhitelistUid(i)
+    elif a.remove_lockdown_whitelist_uid:
+        try:
+            i = int(a.remove_lockdown_whitelist_uid)
+        except Exception as msg:
+            print("Error: uid %s not valid" % a.remove_lockdown_whitelist_uid)
+            sys.exit(1)
+        fw.removeLockdownWhitelistUid(i)
+    elif a.query_lockdown_whitelist_uid:
+        try:
+            i = int(a.remove_lockdown_whitelist_uid)
+        except Exception as msg:
+            print("Error: uid %s not valid" % a.remove_lockdown_whitelist_uid)
+            sys.exit(1)
+        sys.exit(not fw.queryLockdownWhitelistUid(i))
+
+    # users
+    elif a.list_lockdown_whitelist_users:
+        l = fw.getLockdownWhitelistUsers()
+        if len(l) > 0:
+            print(" ".join(l))
+    elif a.add_lockdown_whitelist_user:
+        fw.addLockdownWhitelistUser(a.add_lockdown_whitelist_user)
+    elif a.remove_lockdown_whitelist_user:
+        fw.removeLockdownWhitelistUser(a.remove_lockdown_whitelist_user)
+    elif a.query_lockdown_whitelist_user:
+        sys.exit(not fw.queryLockdownWhitelistUser( \
+                a.query_lockdown_whitelist_user))
+
     # interface
     elif a.list_interfaces:
         l = fw.getInterfaces(zone)
@@ -456,6 +713,20 @@ try:
         fw.removeSource(zone, a.remove_source)
     elif a.query_source:
         sys.exit(not fw.querySource(zone, a.query_source))
+
+    # rich rules
+    elif a.list_rich_rules:
+        l = fw.getRichRules(zone)
+        if len(l) > 0:
+            print("\n".join(l))
+    elif a.add_rich_rule:
+        for s in a.add_rich_rule:
+            fw.addRichRule(zone, s, a.timeout)
+    elif a.remove_rich_rule:
+        for s in a.remove_rich_rule:
+            fw.removeRichRule(zone, s)
+    elif a.query_rich_rule:
+        sys.exit(not fw.queryRichRule(zone, a.query_rich_rule))
 
     # service
     elif a.list_services:
