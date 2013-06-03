@@ -83,48 +83,50 @@ class Rich_ForwardPort(object):
         return 'forward-port port="%s" protocol="%s"%s%s' % \
             (self.port, self.protocol,
              ' to-port="%s"' % self.to_port if self.to_port != "" else '',
-             ' to-address="%s"' % self.to_address if self.to_address != "" else '')
+             ' to-addr="%s"' % self.to_address if self.to_address != "" else '')
 
 class Rich_Log(object):
-    def __init__(self, prefix=None, level=None):
+    def __init__(self, prefix=None, level=None, limit=None):
         #TODO check default level in iptables
         self.prefix = prefix
         self.level = level
-        self.limit = None
+        self.limit = limit
 
     def __str__(self):
         return 'log%s%s%s' % \
             (' prefix="%s"' % (self.prefix) if self.prefix else "",
              ' level="%s"' % (self.level) if self.level else "",
-             " { %s }" % self.limit if self.limit else "")
+             " %s" % self.limit if self.limit else "")
 
 class Rich_Audit(object):
-    def __init__(self):
+    def __init__(self, _type, limit=None):
         #TODO check default level in iptables
-        self.limit = None
+        self.type = str(_type)
+        self.limit = limit
 
     def __str__(self):
-        return 'audit%s' % (" { %s }" % self.limit if self.limit else "")
+        return 'audit type="%s"%s' % \
+            (self.type, " %s" % self.limit if self.limit else "")
 
 class Rich_Accept(object):
-    def __init__(self):
-        self.limit = None
+    def __init__(self, limit=None):
+        self.limit = limit
 
     def __str__(self):
-        return "accept%s" % (" { %s }" % self.limit if self.limit else "")
+        return "accept%s" % (" %s" % self.limit if self.limit else "")
 
 class Rich_Reject(object):
-    def __init__(self, _type=None):
+    def __init__(self, _type=None, limit=None):
         self.type = _type
-        self.limit = None
+        self.limit = limit
 
     def __str__(self):
         return "reject%s%s" % (' type="%s"' if self.type else "",
-                               " { %s }" % self.limit if self.limit else "")
+                               " %s" % self.limit if self.limit else "")
 
 class Rich_Drop(Rich_Accept):
     def __str__(self):
-        return "drop%s" % (" { %s }" % self.limit if self.limit else "")
+        return "drop%s" % (" %s" % self.limit if self.limit else "")
 
 
 class Rich_Limit(object):
@@ -160,13 +162,13 @@ class Rich_Limit(object):
             raise FirewallError(INVALID_LIMIT, "%s too fast" % self.value)
 
     def __str__(self):
-        return 'limit rate="%s"' % (self.value)
+        return 'limit value="%s"' % (self.value)
 
     def command(self):
         return ''
 
 class Rich_Rule(object):
-    def __init__(self, family=None):
+    def __init__(self, family=None, rule_str=None):
         if family != None:
             self.family = str(family)
         else:
@@ -178,6 +180,250 @@ class Rich_Rule(object):
         self.log = None
         self.audit = None
         self.action = None
+
+        if rule_str:
+            self._import_from_string(rule_str)
+
+    def _lexer(self, rule_str):
+        """Lexical analysis
+           rule_str.split() would be easier, but we need to take spaces
+           in attribute values into consideration
+        """
+        tokens = []
+        _dict = {}
+        _str = ''
+        state = 'element'
+
+        for c in rule_str:
+            if state == 'element':
+                if c == ' ':
+                    tokens.append({'element':_str})
+                    _str = ''
+                elif c == '=':
+                    _dict['attr_name'] = _str
+                    _str = ''
+                    state = 'attribute_value'
+                else:
+                    _str = _str + c
+            elif state == 'attribute_value':
+                if c == ' ':
+                    _dict['attr_value'] = _str
+                    tokens.append(_dict)
+                    _str = ''; _dict = {}
+                    state = 'element'
+                elif c == '"':
+                    state = 'attribute_value_quoted'
+                else:
+                    _str = _str + c
+            elif state == 'attribute_value_quoted':
+                if c == '"':
+                    state = 'attribute_value'
+                else:
+                    _str = _str + c
+
+        if state == 'element' and _str:
+            tokens.append({'element':_str})
+        elif state == 'attribute_value' and _str:
+            _dict['attr_value'] = _str
+            tokens.append(_dict)
+        elif state == 'attribute_value_quoted':
+            raise FirewallError(INVALID_RULE, 'missing quote')
+
+        tokens.append({'element':'EOL'})
+        # sanity check: each token has to be either element or attribute, not both
+        for d in tokens:
+            if (d.get('element') and d.get('attr_name')) or \
+               (d.get('element') and d.get('attr_value')) or \
+               (d.get('attr_name') and not d.get('attr_value')) or \
+               (d.get('attr_value') and not d.get('attr_name')) or not d:
+                raise FirewallError(INVALID_RULE, 'internal error in _lexer()')
+
+        return tokens
+
+    def _import_from_string(self, rule_str):
+        if not rule_str:
+            raise FirewallError(INVALID_RULE, 'empty rule')
+
+        self.family = None
+        self.source = None
+        self.destination = None
+        self.element = None
+        self.log = None
+        self.audit = None
+        self.action = None
+
+        #tokens = rule_str.split()
+        tokens = self._lexer(rule_str)
+        if tokens and tokens[0].get('element')  == 'EOL':
+            raise FirewallError(INVALID_RULE, 'empty rule')
+
+        attrs = {}       # attributes of elements
+        in_elements = [] # stack with elements we are in
+        index = 0        # index into tokens
+        while not (tokens[index].get('element')  == 'EOL' and in_elements == ['rule']):
+            element = tokens[index].get('element')
+            attr_name = tokens[index].get('attr_name')
+            attr_value = tokens[index].get('attr_value')
+            #print "in_elements: ", in_elements
+            #print "index: %s, element: %s, attribute: %s=%s" % (index, element, attr_name, attr_value)
+            if attr_name:     # attribute
+                if attr_name not in ['family', 'address', 'invert', 'value', \
+                                 'port', 'protocol', 'to-port', 'to-addr', \
+                                 'name', 'prefix', 'level', 'type']:
+                    raise FirewallError(INVALID_RULE, "bad attribute '%s'" % attr_name)
+            else:             # element
+                if element in ['rule', 'source', 'destination', 'protocol', \
+                             'service', 'port', 'icmp-block', 'masquerade', \
+                             'forward-port', 'log', 'audit', \
+                             'accept', 'drop', 'reject', 'limit', 'NOT', 'EOL']:
+                    if element == 'source' and self.source:
+                        raise FirewallError(INVALID_RULE, "more than one 'source' element")
+                    elif element == 'destination' and self.destination:
+                        raise FirewallError(INVALID_RULE, "more than one 'destination' element")
+                    elif element in ['protocol', 'service', 'port', 'icmp-block', \
+                                  'masquerade', 'forward-port'] and self.element:
+                        raise FirewallError(INVALID_RULE, "more than one element")
+                    elif element == 'log' and self.log:
+                        raise FirewallError(INVALID_RULE, "more than one 'log' element")
+                    elif element == 'audit' and self.audit:
+                        raise FirewallError(INVALID_RULE, "more than one 'audit' element")
+                    elif element in ['accept', 'drop', 'reject'] and self.action:
+                        raise FirewallError(INVALID_RULE, "more than one 'action' element")
+                else:
+                    raise FirewallError(INVALID_RULE, "unknown element %s" % element)
+
+            in_element = in_elements[len(in_elements)-1] if len(in_elements) > 0 else ''
+
+            if in_element == '':
+                if 'rule' not in element:
+                    raise FirewallError(INVALID_RULE, "'%s' outside of rule" % element)
+                else:
+                    in_elements.append('rule') # push into stack
+            elif in_element == 'rule':
+                if attr_name == 'family':
+                    if attr_value not in ['ipv4', 'ipv6']:
+                        raise FirewallError(INVALID_RULE, "bad 'family' attribute")
+                    self.family = attr_value
+                elif attr_name:
+                    raise FirewallError(INVALID_RULE, "attribute '%s' outside of element" % attr_name)
+                else:
+                    in_elements.append(element) # push into stack
+            elif in_element == 'source':
+                if attr_name in ['address', 'invert']:
+                    attrs[attr_name] = attr_value
+                elif element == 'NOT':
+                    attrs['invert'] = True
+                else:
+                    self.source = Rich_Source(attrs.get('address'), attrs.get('invert'))
+                    in_elements.pop() # source
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'destination':
+                if attr_name in ['address', 'invert']:
+                    attrs[attr_name] = attr_value
+                elif element == 'NOT':
+                    attrs['invert'] = True
+                else:
+                    self.destination = Rich_Destination(attrs.get('address'), attrs.get('invert'))
+                    in_elements.pop() # destination
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'protocol':
+                if attr_name == 'value':
+                    self.element = Rich_Protocol(attr_value)
+                    in_elements.pop() # protocol
+                else:
+                    raise FirewallError(INVALID_RULE, "invalid 'protocol' element")
+            elif in_element == 'service':
+                if attr_name == 'name':
+                    self.element = Rich_Service(attr_value)
+                    in_elements.pop() # service
+                else:
+                    raise FirewallError(INVALID_RULE, "invalid 'service' element")
+            elif in_element == 'port':
+                if attr_name in ['port', 'protocol']:
+                    attrs[attr_name] = attr_value
+                else:
+                    self.element = Rich_Port(attrs.get('port'), attrs.get('protocol'))
+                    in_elements.pop() # port
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'icmp-block':
+                if attr_name == 'name':
+                    self.element = Rich_IcmpBlock(attr_value)
+                    in_elements.pop() # icmp-block
+                else:
+                    raise FirewallError(INVALID_RULE, "invalid 'icmp-block' element")
+            elif in_element == 'masquerade':
+                self.element = Rich_Masquerade()
+                in_elements.pop()
+                attrs.clear()
+                index = index -1 # return token to input
+            elif in_element == 'forward-port':
+                if attr_name in ['port', 'protocol', 'to-port', 'to-addr']:
+                    attrs[attr_name] = attr_value
+                else:
+                    self.element = Rich_ForwardPort(attrs.get('port'), attrs.get('protocol'), attrs.get('to-port'), attrs.get('to-addr'))
+                    in_elements.pop() # forward-port
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'log':
+                if attr_name in ['prefix', 'level']:
+                    attrs[attr_name] = attr_value
+                elif element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.log = Rich_Log(attrs.get('prefix'), attrs.get('level'), attrs.get('limit'))
+                    in_elements.pop() # log
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'audit':
+                if attr_name == 'type':
+                    attrs[attr_name] = attr_value
+                elif element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.audit = Rich_Audit(attrs.get('type'), attrs.get('limit'))
+                    in_elements.pop() # audit
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'accept':
+                if element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.action = Rich_Accept(attrs.get('limit'))
+                    in_elements.pop() # accept
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'drop':
+                if element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.action = Rich_Drop(attrs.get('limit'))
+                    in_elements.pop() # drop
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'reject':
+                if attr_name == 'type':
+                    attrs[attr_name] = attr_value
+                if element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.action = Rich_Reject(attrs.get('type'), attrs.get('limit'))
+                    in_elements.pop() # accept
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'limit':
+                if attr_name == 'value':
+                    attrs['limit'] = Rich_Limit(attr_value)
+                    in_elements.pop() # limit
+                else:
+                    raise FirewallError(INVALID_RULE, "invalid 'limit' element")
+
+            index = index + 1
+
+        if not self.element:
+            raise FirewallError(INVALID_RULE, "no element")
 
     def check(self):
         if self.family != None and self.family not in [ "ipv4", "ipv6" ]:
@@ -287,10 +533,9 @@ class Rich_Rule(object):
                 self.action.limit.check()
 
     def __str__(self):
-        ret = "rule "
+        ret = 'rule '
         if self.family:
             ret += 'family="%s" ' % self.family
-        ret += "{ "
         if self.source:
             ret += "%s " % self.source
         if self.destination:
@@ -303,8 +548,6 @@ class Rich_Rule(object):
             ret += "%s " % self.audit
         if self.action:
             ret += "%s " % self.action
-        ret += "}"
-
         return ret
 
 #class Rich_RawRule(object):
