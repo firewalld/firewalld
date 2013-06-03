@@ -642,7 +642,7 @@ class FirewallClientConfigPolicies(object):
     def __init__(self, bus):
         self.bus = bus
         self.dbus_obj = self.bus.get_object(DBUS_INTERFACE,
-                                            DBUS_PATH_CONFIG_POLICIES)
+                                            DBUS_PATH_CONFIG)
         self.fw_policies = dbus.Interface( \
             self.dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG_POLICIES)
 
@@ -671,6 +671,7 @@ class FirewallClientConfig(object):
                                         dbus_interface=DBUS_INTERFACE_CONFIG)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+        self.policies = FirewallClientConfigPolicies(self.bus)
 
     # properties
 
@@ -1346,8 +1347,15 @@ class FirewallClient(object):
     @handle_exceptions
     def disableLockdown(self):
         self.fw_policies.disableLockdown()
-    
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdown(self):
+        return dbus_to_python(self.fw_policies.queryLockdown())
+
     # policies
+
+    # lockdown white list commands
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1369,6 +1377,7 @@ class FirewallClient(object):
     def removeLockdownWhitelistCommand(self, command):
         self.fw_policies.removeLockdownWhitelistCommand(command)
 
+    # lockdown white list contexts
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1390,6 +1399,7 @@ class FirewallClient(object):
     def removeLockdownWhitelistContext(self, context):
         self.fw_policies.removeLockdownWhitelistContext(context)
 
+    # lockdown white list uids
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1411,6 +1421,7 @@ class FirewallClient(object):
     def removeLockdownWhitelistUid(self, uid):
         self.fw_policies.removeLockdownWhitelistUid(uid)
 
+    # lockdown white list users
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
