@@ -395,6 +395,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.setLockdownWhitelistSettings(...)")
         settings = dbus_to_python(settings)
         self.config.policies.lockdown_whitelist.import_config(settings)
+        self.config.policies.lockdown_whitelist.write()
         self.LockdownWhitelistUpdated()
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_POLICIES,)
