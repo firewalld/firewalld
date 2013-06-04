@@ -387,6 +387,7 @@ changed = False
 # fields that can not get converted into a zone, needs NM work
 if conf.enabled == False:
     print("Firewall was disabled, unable to convert to zone.")
+    os.system("systemctl disable firewalld")
 if conf.trust:
     for dev in conf.trust:
         print("Device %s was trusted, unable to convert to zone." % dev)
