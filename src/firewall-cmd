@@ -120,9 +120,9 @@ parser_group_standalone.add_argument("--query-lockdown-whitelist-context", metav
 
 
 parser_group_standalone.add_argument("--list-lockdown-whitelist-uids", action="store_true")
-parser_group_standalone.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>")
-parser_group_standalone.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>")
-parser_group_standalone.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>")
+parser_group_standalone.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>", type=int)
+parser_group_standalone.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>", type=int)
+parser_group_standalone.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>", type=int)
 
 parser_group_standalone.add_argument("--list-lockdown-whitelist-users", action="store_true")
 parser_group_standalone.add_argument("--add-lockdown-whitelist-user", metavar="<user>")
@@ -341,7 +341,7 @@ try:
                     print("\n".join(l))
                 sys.exit(0)
             elif a.add_lockdown_whitelist_command:
-                whitelist.addCommand(a.add_lockdown_whitelist_command) 
+                whitelist.addCommand(a.add_lockdown_whitelist_command)
             elif a.remove_lockdown_whitelist_command:
                 whitelist.removeCommand(a.remove_lockdown_whitelist_command)
             elif a.query_lockdown_whitelist_command:
@@ -369,26 +369,11 @@ try:
                     print(" ".join(map(str, l)))
                 sys.exit(0)
             elif a.add_lockdown_whitelist_uid:
-                try:
-                    i = int(a.add_lockdown_whitelist_uid)
-                except Exception as msg:
-                    print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
-                    sys.exit(1)
-                whitelist.addUid(i) 
+                whitelist.addUid(a.add_lockdown_whitelist_uid)
             elif a.remove_lockdown_whitelist_uid:
-                try:
-                    i = int(a.remove_lockdown_whitelist_uid)
-                except Exception as msg:
-                    print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
-                    sys.exit(1)
-                whitelist.removeUid(i)
+                whitelist.removeUid(a.remove_lockdown_whitelist_uid)
             elif a.query_lockdown_whitelist_uid:
-                try:
-                    i = int(a.query_lockdown_whitelist_uid)
-                except Exception as msg:
-                    print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
-                    sys.exit(1)
-                sys.exit(not whitelist.queryUid(i))
+                sys.exit(not whitelist.queryUid(a.query_lockdown_whitelist_uid))
 
             # users
             elif a.list_lockdown_whitelist_users:
@@ -421,8 +406,6 @@ try:
                 sys.exit(0)
             elif a.add_interface:
                 fw_settings.addInterface(a.add_interface)
-            elif a.change_interface:
-                fw_settings.changeZoneOfInterface(a.change_interface)
             elif a.remove_interface:
                 fw_settings.removeInterface(a.remove_interface)
             elif a.query_interface:
@@ -436,8 +419,6 @@ try:
                 sys.exit(0)
             elif a.add_source:
                 fw_settings.addSource(a.add_source)
-            elif a.change_source:
-                fw_settings.changeZoneOfSource(a.change_source)
             elif a.remove_source:
                 fw_settings.removeSource(a.remove_source)
             elif a.query_source:
@@ -654,26 +635,11 @@ try:
         if len(l) > 0:
             print(" ".join(map(str, l)))
     elif a.add_lockdown_whitelist_uid:
-        try:
-            i = int(a.add_lockdown_whitelist_uid)
-        except Exception as msg:
-            print("Error: uid %s not valid" % a.add_lockdown_whitelist_uid)
-            sys.exit(1)
-        fw.addLockdownWhitelistUid(i)
+        fw.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
     elif a.remove_lockdown_whitelist_uid:
-        try:
-            i = int(a.remove_lockdown_whitelist_uid)
-        except Exception as msg:
-            print("Error: uid %s not valid" % a.remove_lockdown_whitelist_uid)
-            sys.exit(1)
-        fw.removeLockdownWhitelistUid(i)
+        fw.removeLockdownWhitelistUid(a.remove_lockdown_whitelist_uid)
     elif a.query_lockdown_whitelist_uid:
-        try:
-            i = int(a.remove_lockdown_whitelist_uid)
-        except Exception as msg:
-            print("Error: uid %s not valid" % a.remove_lockdown_whitelist_uid)
-            sys.exit(1)
-        sys.exit(not fw.queryLockdownWhitelistUid(i))
+        sys.exit(not fw.queryLockdownWhitelistUid(a.query_lockdown_whitelist_uid))
 
     # users
     elif a.list_lockdown_whitelist_users:
