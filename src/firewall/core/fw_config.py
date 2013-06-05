@@ -74,27 +74,27 @@ class FirewallConfig:
     # firewalld_conf
 
     def set_firewalld_conf(self, conf):
-        self.firewalld_conf = conf
+        self._firewalld_conf = conf
 
     def get_firewalld_conf(self):
-        return self.firewalld_conf
+        return self._firewalld_conf
 
     def enable_lockdown(self):
-        self.firewalld_conf.set("lockdown", "yes")
-        self.firewalld_conf.write()
+        self._firewalld_conf.set("lockdown", "yes")
+        self._firewalld_conf.write()
 
     def disable_lockdown(self):
-        self.firewalld_conf.set("lockdown", "no")
-        self.firewalld_conf.write()
+        self._firewalld_conf.set("lockdown", "no")
+        self._firewalld_conf.write()
 
     # policies
 
     def set_policies(self, policies):
-        self.policies = policies
-        print self.policies
+        self._policies = policies
+        print self._policies
 
     def get_policies(self):
-        return self.policies
+        return self._policies
 
     # icmptypes
 

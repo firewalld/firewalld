@@ -278,7 +278,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _get_property(self, prop):
         if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
                      "Lockdown" ]:
-            value = self.config.firewalld_conf.get(prop)
+            value = self.config.get_firewalld_conf().get(prop)
             if prop == "MinimalMark":
                 value = int(value)
             if value != None:
@@ -363,8 +363,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 if new_value.lower() not in [ "yes", "no", "true", "false" ]:
                     raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
-            self.config.firewalld_conf.set(property_name, new_value)
-            self.config.firewalld_conf.write()
+            self.config.get_firewalld_conf().set(property_name, new_value)
+            self.config.get_firewalld_conf().write()
             self.PropertiesChanged(interface_name,
                                    { property_name: new_value }, [ ])
         else:
@@ -386,7 +386,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getLockdownWhitelist(self, sender=None):
         log.debug1("config.getLockdownWhitelist()")
-        return self.config.policies.lockdown_whitelist.export_config()
+        return self.config.get_policies().lockdown_whitelist.export_config()
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, 
                          in_signature=LockdownWhitelist.DBUS_SIGNATURE)
@@ -394,8 +394,8 @@ class FirewallDConfig(slip.dbus.service.Object):
     def setLockdownWhitelist(self, settings, sender=None):
         log.debug1("config.setLockdownWhitelistSettings(...)")
         settings = dbus_to_python(settings)
-        self.config.policies.lockdown_whitelist.import_config(settings)
-        self.config.policies.lockdown_whitelist.write()
+        self.config.get_policies().lockdown_whitelist.import_config(settings)
+        self.config.get_policies().lockdown_whitelist.write()
         self.LockdownWhitelistUpdated()
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_POLICIES,)
