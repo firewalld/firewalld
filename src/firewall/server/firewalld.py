@@ -341,7 +341,7 @@ class FirewallD(slip.dbus.service.Object):
         """
         command = str(command)
         log.debug1("policies.queryLockdownWhitelistCommand('%s')" % command)
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.has_command(command)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
@@ -353,7 +353,7 @@ class FirewallD(slip.dbus.service.Object):
         """
         command = str(command)
         log.debug1("policies.queryLockdownWhitelistCommandMatch('%s')" % command)
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.match_command(command)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
@@ -364,7 +364,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown command
         """
         log.debug1("policies.getLockdownWhitelistCommands()")
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.get_commands()
 
     @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
@@ -414,8 +414,20 @@ class FirewallD(slip.dbus.service.Object):
         """
         uid = int(uid)
         log.debug1("policies.queryLockdownWhitelistUid('%s')" % uid)
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.has_uid(uid)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistUidMatch(self, uid, sender=None):
+        """Query lockdown uid match
+        """
+        uid = str(uid)
+        log.debug1("policies.queryLockdownWhitelistUIdMatch('%s')" % uid)
+        # no access check here
+        return self.fw.policies.lockdown_whitelist.match_uid(uid)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
@@ -425,7 +437,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown uid
         """
         log.debug1("policies.getLockdownWhitelistUids()")
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.get_uids()
 
     @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='i')
@@ -475,8 +487,20 @@ class FirewallD(slip.dbus.service.Object):
         """
         user = str(user)
         log.debug1("policies.queryLockdownWhitelistUser('%s')" % user)
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.has_user(user)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistUserMatch(self, user, sender=None):
+        """Query lockdown user match
+        """
+        user = str(user)
+        log.debug1("policies.queryLockdownWhitelistUserMatch('%s')" % user)
+        # no access check here
+        return self.fw.policies.lockdown_whitelist.match_user(user)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
@@ -486,7 +510,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown user
         """
         log.debug1("policies.getLockdownWhitelistUsers()")
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.get_users()
 
     @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
@@ -536,8 +560,20 @@ class FirewallD(slip.dbus.service.Object):
         """
         context = str(context)
         log.debug1("policies.queryLockdownWhitelistContext('%s')" % context)
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.has_context(context)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistContextMatch(self, context, sender=None):
+        """Query lockdown context match
+        """
+        context = str(context)
+        log.debug1("policies.queryLockdownWhitelistContextMatch('%s')" % context)
+        # no access check here
+        return self.fw.policies.lockdown_whitelist.match_context(context)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
@@ -547,7 +583,7 @@ class FirewallD(slip.dbus.service.Object):
         """Add lockdown context
         """
         log.debug1("policies.getLockdownWhitelistContexts()")
-        self.accessCheck(sender)
+        # no access check here
         return self.fw.policies.lockdown_whitelist.get_contexts()
 
     @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
@@ -969,6 +1005,7 @@ class FirewallD(slip.dbus.service.Object):
         # timeout not possible for masquerade
         zone = str(zone)
         rule = str(rule)
+        timeout = int(timeout)
         log.debug1("zone.addRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
         _zone = self.fw.zone.add_rule(zone, obj)
