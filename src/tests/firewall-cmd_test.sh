@@ -90,6 +90,11 @@ assert_good "--panic-on"
 assert_good "--query-panic"
 assert_good "--panic-off"
 assert_bad  "--query-panic"
+#assert_good "--lockdown-on"
+#assert_good "--query-lockdown"
+#assert_good "--lockdown-off"
+#assert_bad  "--query-lockdown"
+
 
 default_zone=$(firewall-cmd --get-default-zone)
 zone="home"
@@ -133,6 +138,30 @@ assert_bad           "--zone=${zone} --get-default-zone" # impossible combinatio
 assert_bad           "--zone=${zone} --set-default-zone" # impossible combination
 assert_bad           "--zone=${zone} --get-zone-of-interface" # impossible combination
 
+iface="perm_dummy0"
+zone="work"
+assert_good          "--permanent --zone=${zone} --add-interface=${iface}"
+assert_good          "--permanent --zone ${zone} --query-interface=${iface}"
+assert_good_contains "--permanent --zone=${zone} --list-interfaces" "${iface}"
+assert_good          "--permanent --zone=${zone} --remove-interface=${iface}"
+assert_bad           "--permanent --zone=${zone} --query-interface ${iface}"
+
+
+iface1="foo"
+iface2="bar"
+zone="trusted"
+assert_good        "--add-interface=${iface1}"
+assert_good        "--add-interface=${iface2} --zone=${default_zone}"
+assert_good        "--set-default-zone=${zone}"
+assert_good_equals "--get-default-zone" "${zone}"
+# check that changing default zone moves interfaces in that zone
+assert_good        "--query-interface ${iface1} --zone=${zone}"
+# check that *only* iface1 was moved to new default zone
+assert_good        "--query-interface ${iface2} --zone=${default_zone}"
+assert_good        "--set-default-zone=${default_zone}"
+assert_good        "--remove-interface=${iface1}"
+assert_good        "--remove-interface=${iface2}"
+
 zone="public"
 sources=( "dead:beef::babe" "3ffe:501:ffff::/64" "1.2.3.4" "192.168.1.0/24" )
 for (( i=0;i<${#sources[@]};i++)); do
@@ -149,20 +178,16 @@ for (( i=0;i<${#sources[@]};i++)); do
   assert_bad           "--get-zone-of-source" # missing argument
 done 
 
-iface1="foo"
-iface2="bar"
-zone="trusted"
-assert_good        "--add-interface=${iface1}"
-assert_good        "--add-interface=${iface2} --zone=${default_zone}"
-assert_good        "--set-default-zone=${zone}"
-assert_good_equals "--get-default-zone" "${zone}"
-# check that changing default zone moves interfaces in that zone
-assert_good        "--query-interface ${iface1} --zone=${zone}"
-# check that *only* iface1 was moved to new default zone
-assert_good        "--query-interface ${iface2} --zone=${default_zone}"
-assert_good        "--set-default-zone=${default_zone}"
-assert_good        "--remove-interface=${iface1}"
-assert_good        "--remove-interface=${iface2}"
+zone="public"
+sources=( "dead:beef::babe" "3ffe:501:ffff::/64" "1.2.3.4" "192.168.1.0/24" )
+for (( i=0;i<${#sources[@]};i++)); do
+  source=${sources[${i}]}
+  assert_good          "--permanent --zone=${zone} --add-source=${source}"
+  assert_good_contains "--permanent --zone=${zone} --list-sources" "${source}"
+  assert_good          "--permanent --zone ${zone} --query-source=${source}"
+  assert_good          "--permanent --zone=${zone} --remove-source=${source}"
+  assert_bad           "--permanent --zone ${zone} --query-source=${source}"
+done
 
 assert_good "   --add-service=dns --timeout 60 --zone=${default_zone}"
 assert_good " --query-service dns"
@@ -309,8 +334,6 @@ assert_good_contains "--permanent --zone=work --list-services" "ssh"
 assert_good          "--permanent --list-forward-ports"
 
 assert_bad           "--permanent --complete-reload" # impossible combination
-assert_bad           "--permanent --zone=work --add-interface=dummy0" # impossible combination
-assert_bad           "--permanent --add-interface=dummy0" # impossible combination
 assert_bad           "--permanent --list-all" # impossible combination
 
 # ... --direct  ...
@@ -342,6 +365,65 @@ assert_bad           "--direct --get-default-zone" # impossible combination
 assert_bad           "--direct --zone=home --list-services" # impossible combination
 assert_bad           "--direct --permanent --list-all" # impossible combination
 assert_bad           "--direct --passthrough --get-chains ipv4 filter" # impossible combination
+
+# lockdown
+
+cmd="/usr/bin/command"
+ctxt="system_u:system_r:MadDaemon_t:s0"
+uid="6666"
+user="theboss"
+
+assert_good          "--add-lockdown-whitelist-command ${cmd}"
+assert_good          "--query-lockdown-whitelist-command ${cmd}"
+assert_good_contains "--list-lockdown-whitelist-commands" "${cmd}"
+assert_good          "--remove-lockdown-whitelist-command ${cmd}"
+assert_bad           "--query-lockdown-whitelist-command ${cmd}"  # already removed
+
+assert_good          "--add-lockdown-whitelist-context ${ctxt}"
+assert_good          "--query-lockdown-whitelist-context ${ctxt}"
+assert_good_contains "--list-lockdown-whitelist-contexts" "${ctxt}"
+assert_good          "--remove-lockdown-whitelist-context ${ctxt}"
+assert_bad           "--query-lockdown-whitelist-context ${ctxt}"  # already removed
+
+assert_good          "--add-lockdown-whitelist-uid ${uid}"
+assert_good          "--query-lockdown-whitelist-uid ${uid}"
+assert_good_contains "--list-lockdown-whitelist-uids" "${uid}"
+assert_good          "--remove-lockdown-whitelist-uid ${uid}"
+assert_bad           "--query-lockdown-whitelist-uid ${uid}"   # already removed
+assert_bad           "--add-lockdown-whitelist-uid ${uid}x"    # bad uid
+
+assert_good          "--add-lockdown-whitelist-user ${user}"
+assert_good          "--query-lockdown-whitelist-user ${user}"
+assert_good_contains "--list-lockdown-whitelist-users" "${user}"
+assert_good          "--remove-lockdown-whitelist-user ${user}"
+assert_bad           "--query-lockdown-whitelist-user ${user}"  # already removed
+
+assert_good          "--permanent --add-lockdown-whitelist-command ${cmd}"
+assert_good          "--permanent --query-lockdown-whitelist-command ${cmd}"
+assert_good_contains "--permanent --list-lockdown-whitelist-commands" "${cmd}"
+assert_good          "--permanent --remove-lockdown-whitelist-command ${cmd}"
+assert_bad           "--permanent --query-lockdown-whitelist-command ${cmd}"  # already removed
+
+assert_good          "--permanent --add-lockdown-whitelist-context ${ctxt}"
+assert_good          "--permanent --query-lockdown-whitelist-context ${ctxt}"
+assert_good_contains "--permanent --list-lockdown-whitelist-contexts" "${ctxt}"
+assert_good          "--permanent --remove-lockdown-whitelist-context ${ctxt}"
+assert_bad           "--permanent --query-lockdown-whitelist-context ${ctxt}"  # already removed
+
+assert_good          "--permanent --add-lockdown-whitelist-uid ${uid}"
+assert_good          "--permanent --query-lockdown-whitelist-uid ${uid}"
+assert_good_contains "--permanent --list-lockdown-whitelist-uids" "${uid}"
+assert_good          "--permanent --remove-lockdown-whitelist-uid ${uid}"
+assert_bad           "--permanent --query-lockdown-whitelist-uid ${uid}"   # already removed
+assert_bad           "--permanent --add-lockdown-whitelist-uid ${uid}x"    # bad uid
+
+assert_good          "--permanent --add-lockdown-whitelist-user ${user}"
+assert_good          "--permanent --query-lockdown-whitelist-user ${user}"
+assert_good_contains "--permanent --list-lockdown-whitelist-users" "${user}"
+assert_good          "--permanent --remove-lockdown-whitelist-user ${user}"
+assert_bad           "--permanent --query-lockdown-whitelist-user ${user}"  # already removed
+
+
 
 echo "----------------------------------------------------------------------"
 if [ ${failures} -eq 0 ]; then

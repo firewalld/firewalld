@@ -158,7 +158,7 @@ class FirewallClientConfigZoneSettings(object):
         if icmptype in self.settings[7]:
             self.settings[7].remove(icmptype)
     @handle_exceptions
-    def querayIcmpBlock(self, icmptype):
+    def queryIcmpBlock(self, icmptype):
         return icmptype in self.settings[7]
 
     @handle_exceptions
