@@ -47,6 +47,100 @@ Disable panic mode again. After disabling panic mode established connections mig
 \fB--query-panic\fR
 Returns 0 if panic mode is enabled, 1 otherwise.
 
+.SS Lockdown Options
+Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt) or are authenticated using PolicyKit. With this feature the administator can lock the firewall configuration so that only applications that are in the lockdown whitelist are able to request firewall changes.
+
+The lockdown access check limits D-Bus methods that are changing firewall rules. Query, list and get methods are not limited.
+
+The lockdown feature is a very light version of user and application policies for firewalld and is turned off by default.
+
+.TP
+\fB--lockdown-on\fR
+Enable lockdown.
+.TP
+\fB--lockdown-off\fR
+Disable lockdown.
+.TP
+\fB--query-lockdown\fR
+Query if lockdown is enabled. Returns 0 if lockdown is enabled, 1 otherwise.
+
+.SS Lockdown Whitelist Options
+The lockdown whitelist can contain \fIcommands\fR, \fIcontexts\fR, \fIusers\fR and \fIuser ids\fR.
+
+If a command entry in the whitelit ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.
+
+Commands for user root and others is not always the same. Example: As root /bin/firewall-cmd is used, as a normal user /usr/bin/firewall-cmd is be used on Fedora. 
+
+The context is the cntext of a running application or service. To get the context of a running application use
+
+ps -e --context 
+
+Warning: If the context is unconfined, then this will open access for more than the desired application. 
+
+.TP
+\fB--list-lockdown-whitelist-commands\fR
+List all command lines that are in the whitelist. 
+
+.TP
+\fB--add-lockdown-whitelist-command\fR=\fI<command>\fR
+Add the command \fI<command>\fR to the whitelist.
+
+.TP
+\fB--remove-lockdown-whitelist-command\fR=\fI<command>\fR
+Remove the command \fI<command>\fR from the whitelist.
+
+.TP
+\fB--query-lockdown-whitelist-command\fR=\fI<command>\fR
+Query if the command \fI<command>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+
+.TP
+\fB--list-lockdown-whitelist-contexts\fR
+List all contexts that are in the whitelist.
+
+.TP
+\fB--add-lockdown-whitelist-context\fR=\fI<context>\fR
+Add the context \fI<context>\fR to the whitelist.
+
+.TP
+\fB--remove-lockdown-whitelist-context\fR=\fI<context>\fR
+Remove the context \fI<context>\fR from the whitelist.
+
+.TP
+\fB--query-lockdown-whitelist-context\fR=\fI<context>\fR
+Query if the context \fI<context>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+
+.TP
+\fB--list-lockdown-whitelist-uids\fR
+List all user ids that are in the whitelist.
+
+.TP
+\fB--add-lockdown-whitelist-uid\fR=\fI<uid>\fR
+Add the user id \fI<uid>\fR to the whitelist.
+
+.TP
+\fB--remove-lockdown-whitelist-uid\fR=\fI<uid>\fR
+Remove the user id \fI<uid>\fR from the whitelist.
+
+.TP
+\fB--query-lockdown-whitelist-uid\fR=\fI<uid>\fR
+Query if the user id \fI<uid>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+
+.TP
+\fB--list-lockdown-whitelist-users\fR
+List all user names that are in the whitelist.
+
+.TP
+\fB--add-lockdown-whitelist-user\fR=\fI<user>\fR
+Add the user name \fI<user>\fR to the whitelist.
+
+.TP
+\fB--remove-lockdown-whitelist-user\fR=\fI<user>\fR
+Remove the user name \fI<user>\fR from the whitelist.
+
+.TP
+\fB--query-lockdown-whitelist-user\fR=\fI<user>\fR
+Query if the user name \fI<user>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+
 .SS Zone Options
 .TP
 \fB--get-default-zone\fR
@@ -83,7 +177,7 @@ List all actions added for or all zones. The output format is:
 
  ..
 
-.SS Options to Handle Interfaces
+.SS Options to Handle Bindings of Interfaces
 Options in this and the following section affect only one particular zone.
 If used with \fB--zone\fR=\fI<zone>\fR, they affect zone \fI<zone>\fR.
 If \fB--zone\fR=\fI<zone>\fR is omitted, they affect default zone (see \fB--get-default-zone\fR).
@@ -91,22 +185,54 @@ For a list of predefined zones use \fI--get-zones\fR.
 An interface name is a string up to 16 characters long, that may not contain \fI' '\fR, \fI'/'\fR, \fI'!'\fR and \fI'*'\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-interfaces\fR
-List interfaces that belong to the zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+List interfaces that are bound to the zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-interface\fR=\fI<interface>\fR
-Add interface \fI<interface>\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+Bind interface \fI<interface>\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 .TP
-[\fB--zone\fR=\fI<zone>\fR] { \fB--change-interface\fR=\fI<interface>\fR | \fB--change-zone\fR=\fI<interface>\fR }
-Change the zone the interface \fI<interface>\fR belongs to to zone \fI<zone>\fR. If zone is omitted, default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the interface has not belonged to a zone previously, it will behave like \fI--add-interface\fR.
+[\fB--zone\fR=\fI<zone>\fR] \fB--change-interface\fR=\fI<interface>\fR
+Change the zone the interface \fI<interface>\fR is bound to to zone \fI<zone>\fR. If zone is omitted, default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the interface has not been bound to a zone before, it will behave like \fI--add-interface\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-interface\fR=\fI<interface>\fR
-Query whether the interface \fI<interface>\fR belongs to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
+Query whether the interface \fI<interface>\fR is bound to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--remove-interface\fR=\fI<interface>\fR
-Remove the interface \fI<interface>\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+Remove the binding of interface \fI<interface>\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+
+
+.SS Options to Handle Bindings of Sources
+Options in this and the following section affect only one particular zone.
+If used with \fB--zone\fR=\fI<zone>\fR, they affect zone \fI<zone>\fR.
+If \fB--zone\fR=\fI<zone>\fR is omitted, they affect default zone (see \fB--get-default-zone\fR).
+For a list of predefined zones use \fI--get-zones\fR.
+A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-sources\fR
+List source addresses that are bound to the zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--add-source\fR=\fI<source>\fR
+Bind source\fI<source>\fR to zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--change-source\fR=\fI<source>\fR
+Change the zone the source \fI<source>\fR is bound to to zone \fI<zone>\fR. If zone is omitted, the default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the source has not been bound to a zone before, it will behave like \fI--add-source\fR.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--query-source\fR=\fI<source>\fR
+Query whether the source \fI<source>\fR is bound to the zone \fI<zone>\fR. Returns 0 if true, 1 otherwise.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--remove-source\fR=\fI<source>\fR
+Remove the binding for source \fI<source>\fR from zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
 
 .SS Options to Adapt and Query Zones
-For possible \fIACTION\fRs, please have a look at the \fBAction Options for Use with Options to Adapt and Query Zones\fR section further down.
+For possible \fIACTION\fRs, please have a look at the \fBAction Options for Use with Options to Adapt and Query Zones\fR section further down. For rich language rules, please have a look at the section \fBRich Language\fR.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--add-rich-rule\fR='\fI<rule>\fR' [\fB--timeout\fR=\fI<seconds>\fR]
+Add rich language rule '\fI<rule\fR' for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the \fI<rule>\fR(s) will be active for the amount of seconds and will be removed automatically afterwards.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--remove-rich-rule\fR='\fI<rule>\fR'
+Remove rich language rule '\fI<rule\fR' for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the \fIACTION\fR(s) will be active for the amount of seconds and will be removed automatically afterwards.
+.TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--query-rich-rule\fR='\fI<rule>\fR'
+Return whether a rich language rule '\fI<rule>\fR' has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--add-\fR\fIACTION\fR [\fB--timeout\fR=\fI<seconds>\fR]
 Add \fIACTION\fR for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the \fIACTION\fR(s) will be active for the amount of seconds and will be removed automatically afterwards.
@@ -140,6 +266,152 @@ List forward port added for zone \fI<zone>\fR as a space separated list. If zone
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-all\fR
 List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
+
+.SS Rich Language
+
+With the rich language more complex firewall rules can be created in an easy to understand way. The language will use keywords with values and will be an abstract representation of ip*tables rules. Zones can be configured using this language, the current configuration will still be supported. 
+
+The rich language extends the current zone elements (service, port, icmp-block, masquerade and forward-port) with additional source and destination addresses, logging, actions and limits for logs and actions. 
+
+rule [family="<rule family>"]
+  [ source address="<address>" [invert="True"] ]
+  [ destination address="<address>" [invert="True"] ]
+  [ <element> ]
+  [ log [prefix="<prefix text>"] [level="<log level>"] ]
+  [ audit type="<audit type>" ]
+  <action>
+
+A rule is part of a zone. A zone can contain several rules. If some rules interact/contradict, the first rule that matches the packet "wins". If the rule family is provided, it can be either "ipv4" or "ipv6", which limits the rule to IPv4 or IPv6. If the rule family is not provided, the rule will be added for IPv4 and IPv6. If source or destination addresses are used in a rule, then the rule family need to be provided. This is also the case for port/packet forwarding.
+
+\fBSource\fR
+
+With the source address the origin of a connection attempt can be limited to the source address. A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported. It is possible to invert the sense of an address by adding \fBinvert\fR=\fI"true"\fR or \fBinvert\fR=\fI"yes"\fR. All but the used address with match.
+
+\fBDestination\fR
+
+With the destination address the target can be limited to the destination address. The destination address is using the same syntax as the source address.
+
+The use of source and destination addresses is optional and the use of a destination addresses is not possible with all elements. This depends on the use of destination addresses for example in service entries.
+
+The element can be exactly one of the element types \fIservice\fR, \fIport\fR, \fIprotocol\fR, \fImasquerade\fR, \fIicmp-block\fR and \fIforward-port\fR. 
+
+\fBService\fR
+
+service name="<service name>"
+
+The service <service name> will be added to the rule. The service name is one of the firewalld provided services. To get a list of the supported services, use firewall-cmd \fI--get-services\fR.
+
+If a service provides a destination address, it will conflict with a destination address in the rule and will result in an error. The services using destination addresses internally are mostly services using multicast.
+
+\fBPort\fR
+
+port port="<port value>" protocol="tcp|udp"
+
+The port <value> can either be a single port number or a port range <id>-<id>. The protocol can either be \fI"tcp"\fR or \fI"udp"\fR.
+
+\fBProtocol\fR
+
+protocol value="<protocol value>"
+
+The protocol value can be either a protocol id number or a protocol name. For allowed protocol entries, please have a look at \fI/etc/protocols\fR.
+
+\fBICMP-Block\fR
+
+icmp-block name="<icmtype name>"
+
+The icmptype is the one of the icmp types firewalld supports. To get a listing of supported icmp types: firewall-cmd --get-icmptypes
+
+It is not allowed to specify an action here. icmp-block uses the action reject internally.
+
+\fBMasquerade\fR
+
+masquerade
+
+Turn on masquerading in the rule. A source address can be provided to limit masquerading to this area, but not a destination address.
+
+It is not allowed to specify an action here.
+
+\fBForward-Port\fR
+
+forward-port port="<port value>" protocol="tcp|udp" to-port="<port value>" to-address="<address>"
+
+Forward port/packets from local port <value> with protocol "tcp" or "udp" to either another port locally or to another machine or to another port on another machine.
+
+The port <value> can either be a single port number or a port range <id>-<id>. The destination address is a simple ip address.
+
+It is not allowed to specify an action here. forward-port uses the action accept internally.
+
+\fBLog\fR
+
+Log new connection attempts to the rule with kernel logging for example in syslog. You can define a prefix text that will be added to the log message as a prefix. Log level can be one of "emerg", "alert", "crit", "err", "warn", "notice", "info" or "debug". The use of log is optional.
+
+It is possible to limit logging:
+
+log [prefix="<prefix text>"] [level="<log level>"] limit value="<rate/duration>"
+
+The rate is a natural positive number [1, ..], the duration of of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days. The maximum limit value is "1/d" which means at maximum one log entry per day.
+
+\fBAudit\fR
+
+Audit provides an alternative way for logging using audit records sent to the service auditd. The audit type can be one of "ACCEPT", "REJECT" or "DROP". The use of audit is optional.
+
+Also audit can be limited using the limit tag.
+
+\fBActions\fR
+
+An action can be one of \fIaccept\fR, \fIreject\fR or \fIdrop\fR.
+
+The rule can either contain an element or also a source only. If the rule contains an element, then new connection matching the element will be handled with the action. If the rule does not contain an element, then everything from the source address will be handled with the action (requires firewalld version 0.3.1).
+
+accept | reject [type="<reject type>"] | drop
+
+With accept all new connection attempts will be granted. With reject they will not be accepted and there source will get a reject message. The reject type can be set to use an other value. With drop all packets will be dropped immediately, there is no information sent to the source.
+
+\fBInformation about logging and actions\fR
+
+Logging can be done with the LOG and also with audit. A new chain is added to all zones: <zone>_log. This will be jumped into before the deny chain to be able to have a proper ordering.
+
+The rules or parts of them are placed in separate chains according to the action of the rule:
+
+ <zone>_log
+ <zone>_deny
+ <zone>_allow
+
+Then all logging rules will be placed in the <zone>_log chain, which will be walked first. All reject and drop rules will be placed in the <zone>_deny chain, which will be walked after the log chain. All accept rules will be placed in the <zone>_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
+
+\fBExample 1:\fR Enable new IPv4 and IPv6 connections for protocol \fI'ah'\fR
+
+rule protocol value="ah" accept
+
+\fBExample 2:\fR Allow new IPv4 and IPv6 connections for service ftp and log 1 per minute using audit
+
+rule service name="ftp" audit type="ACCEPT" limit value="1/m" audit accept
+
+\fBExample 3:\fR Allow new IPv4 connections from address 192.168.0.0/24 for service tftp and log 1 per minutes using syslog
+
+rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept
+
+\fBExample 4:\fR New IPv6 connections from 1:2:3:4:6:: to service radius are all rejected and logged at a rate of 3 per minute. New IPv6 connections from other sources are accepted.
+
+rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject
+rule family="ipv6" service name="radius" accept
+
+\fBExample 5:\fR Forward IPv6 port/packets receiving from 1:2:3:4:6:: on port 4011 with protocol tcp to 1::2:3:4:7 on port 4012
+
+rule family="ipv6" source address="1:2:3:4:6::" forward-port to-addr="1::2:3:4:7" to-port="4012" protocol="tcp" port="4011"
+
+\fBExample 6:\fR White-list source address to allow all connections from this source
+
+rule family="ipv4" source address="192.168.2.2" accept
+
+\fBExample 7:\fR Black-list source address to reject all connections from this source
+
+rule family="ipv4" source address="192.168.2.3" reject
+
+\fBExample 8:\fR Black-list source address to drop all connections from this source
+
+rule family="ipv4" source address="192.168.2.4" drop
+
 
 .SS Action Options for Use with Options to Adapt and Query Zones
 These \fIACTION\fRs are used in \fB--add-\fR\fIACTION\fR, \fB--remove-\fR\fIACTION\fR and \fB--query-\fR\fIACTION\fR as described in previous section.
