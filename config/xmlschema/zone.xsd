@@ -87,7 +87,7 @@ elementFormDefault="qualified">
     </xs:choice>
     <xs:choice>
       <xs:element name="log" type="logtype"/>
-      <xs:element name="audit" type="audittype"/>
+      <xs:element name="audit" type="targettype"/>
       <xs:sequence></xs:sequence>
     </xs:choice>
     <xs:choice>
@@ -128,13 +128,6 @@ elementFormDefault="qualified">
     <xs:pattern value="emerg|alert|crit|err|warn|notice|info|debug"/>
   </xs:restriction>
 </xs:simpleType>
-
-<xs:complexType name="audittype">
-  <xs:sequence>
-    <xs:element name="limit" type="limittype" minOccurs="0"/>
-  </xs:sequence>
-  <xs:attribute name="type" type="audittyperestrict" use="required"/>
-</xs:complexType>
 
 <xs:simpleType name="audittyperestrict">
   <xs:restriction base="xs:string">

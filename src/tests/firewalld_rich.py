@@ -34,7 +34,7 @@ dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH_CONFIG)
 fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
 fw_config = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG)
 
-rule = ['rule service name=ftp audit type=ACCEPT limit value="1/m" accept ',
+rule = ['rule service name=ftp audit limit value="1/m" accept ',
         'rule protocol value=ah accept ',
         'rule protocol value=esp accept ']
 settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]

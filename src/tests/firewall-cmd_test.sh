@@ -1,7 +1,5 @@
 #!/bin/bash
 
-#set -x
-
 # BEWARE:
 # some tests modify default zone and will fail if default zone is
 # set to immutable one, i.e. to block, drop, trusted
@@ -76,7 +74,6 @@ assert_bad() {
     ((failures++))
   fi
 }
-
 
 # MAIN
 failures=0
@@ -178,8 +175,6 @@ for (( i=0;i<${#sources[@]};i++)); do
   assert_bad           "--get-zone-of-source" # missing argument
 done 
 
-zone="public"
-sources=( "dead:beef::babe" "3ffe:501:ffff::/64" "1.2.3.4" "192.168.1.0/24" )
 for (( i=0;i<${#sources[@]};i++)); do
   source=${sources[${i}]}
   assert_good          "--permanent --zone=${zone} --add-source=${source}"
@@ -424,6 +419,38 @@ assert_good          "--permanent --remove-lockdown-whitelist-user ${user}"
 assert_bad           "--permanent --query-lockdown-whitelist-user ${user}"  # already removed
 
 
+# rich rules
+
+rules=('rule service name="ftp" audit limit value="1/m" accept'
+       'rule protocol value="ah" accept'
+       'rule protocol value="esp" accept'
+       'rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept'
+       'rule family="ipv4" source NOT address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" accept '
+       'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject limit value="20/m" '
+       'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop '
+       'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7" '
+       'rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m" '
+       'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirect" level="info" limit value="4/m" '
+       'rule family="ipv4" source address="192.168.1.0/24" masquerade '
+       'rule family="ipv6" masquerade ')
+
+#for (( i=0;i<${#rules[@]};i++)); do
+#  rule=${rules[${i}]}
+#  assert_good          "--add-rich-rule ${rule}"
+#  assert_good          "--query-rich-rule ${rule}"
+#  assert_good_contains "--list-rich-rules" ${rule}
+#  assert_good          "--remove-rich-rule ${rule}"
+#  assert_bad           "--query-rich-rule ${rule}"
+#done
+
+#for (( i=0;i<${#rules[@]};i++)); do
+#  rule=${rules[${i}]}
+#  assert_good          "--permanent --add-rich-rule ${rule}"
+#  assert_good          "--permanent --query-rich-rule ${rule}"
+#  assert_good_contains "--permanent --list-rich-rules" ${rule}
+#  assert_good          "--permanent --remove-rich-rule ${rule}"
+#  assert_bad           "--permanent --query-rich-rule ${rule}"
+#done
 
 echo "----------------------------------------------------------------------"
 if [ ${failures} -eq 0 ]; then
