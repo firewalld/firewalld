@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.2
+Version: 0.3.3
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -188,6 +188,62 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Thu Jun  6 2013 Thomas Woerner <twoerner@redhat.com> 0.3.3-1
+- new service files
+- relicensed logger.py under GPLv2+
+- firewall-config: sometimes we don't want to use client's exception handler
+- When removing Service/IcmpType remove it from zones too (RHBZ#958401)
+- firewall-config: work-around masquerade_check_cb() being called more times
+- Zone(IO): add interfaces/sources to D-Bus signature
+- Added missing UNKNOWN_SOURCE error code
+- fw_zone.check_source: Raise INVALID_FAMILY if family is invalid
+- New changeZoneOfInterface method, marked changeZone as deprecated
+- Fixed firewall-cmd man page entry for --panic-on
+- firewall-applet: Fixed possible problems of unescaped strings used for markup
+- New support to bind zones to source addresses and ranges (D-BUS, cmd, applet
+- Cleanup of unused variables in FirewallD.start
+- New firewall/fw_types.py with LastUpdatedOrderedDict
+- direct.chains, direct.rules: Using LastUpdatedOrderedDict
+- Support splitted zone files
+- New reader and writer for stored direct chains and rules
+- LockdownWhitelist: fix write(), add get_commands/uids/users/contexts()
+- fix service_writer() and icmptype_writer() to put newline at end of file
+- firewall-cmd: fix --list-sources
+- No need to specify whether source address family is IPv4 or IPv6
+- add getZoneOfSource() to D-Bus interface
+- Add tests and bash-completion for the new "source" operations
+- Convert all input args in D-Bus methods
+- setDefaultZone() was calling accessCheck() *after* the action
+- New uniqify() function to remove duplicates from list whilst preserving order
+- Zone.combine() merge also services and ports
+- config/applet: silence DBusException during start when FirewallD is not running (RHBZ#966518)
+- firewall-applet: more fixes to make the address sources family agnostic
+- Better defaults for lockdown white list
+- Use auth_admin_keep for allow_any and allow_inactive also
+- New D-Bus API for lockdown policies
+- Use IPv4, IPv6 and BRIDGE for FirewallD properties
+- Use rich rule action as audit type
+- Prototype of string-only D-Bus interface for rich language
+- Fixed wrongly merged source family check in firewall/core/io/zone.py
+- handle_cmr: report errors, cleanup modules in error case only, mark handling
+- Use audit type from rule action, fixed rule output
+- Fixed lockdown whitelist D-Bus handling method names
+- New rich rule handling in runtime D-Bus interface
+- Added interface, source and rich rule handling (runtime and permanent)
+- Fixed dbus_obj in FirewallClientConfigPolicies, added queryLockdown
+- Write changes in setLockdownWhitelist
+- Fixed typo in policies log message in method calls
+- firewall-cmd: Added rich rule, lockdown and lockdown whitelist handling
+- Don't check access in query/getLockdownWhitelist*()
+- firewall-cmd: Also output masquerade flag in --list-all
+- firewall-cmd: argparse is able to convert argument to desired type itself
+- firewall-cmd_test.sh: tests for permanent interfaces/sources and lockdown whitelist
+- Makefile.am: add missing files
+- firewall-cmd_test.sh: tests for rich rules
+- Added lockdown, source, interface and rich rule docs to firewall-cmd
+- Do not masquerade lo if masquerade is enabled in the default zone (RHBZ#904098)
+- Use <rule> in metavar for firewall-cmd parser
+
 * Tue Apr 30 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.2-1
 - Fix signal handling for SIGTERM
 - Additional service files (RHBZ#914859)
