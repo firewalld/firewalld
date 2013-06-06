@@ -1133,7 +1133,7 @@ class FirewallZone:
         for ipv in [ "ipv4" ]: # IPv4 only!
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["POSTROUTING"], zone=zone)
-            rules.append((ipv, [ "%s_allow" % (target),
+            rules.append((ipv, [ "%s_allow" % (target), "!", "-i", "lo",
                                  "-t", "nat", "-j", "MASQUERADE" ]))
             # FORWARD_OUT
             target = DEFAULT_ZONE_TARGET.format(
