@@ -48,7 +48,7 @@ Disable panic mode again. After disabling panic mode established connections mig
 Returns 0 if panic mode is enabled, 1 otherwise.
 
 .SS Lockdown Options
-Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt) or are authenticated using PolicyKit. With this feature the administator can lock the firewall configuration so that only applications that are in the lockdown whitelist are able to request firewall changes.
+Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt) or are authenticated using PolicyKit. With this feature administrator can lock the firewall configuration so that only applications on lockdown whitelist are able to request firewall changes.
 
 The lockdown access check limits D-Bus methods that are changing firewall rules. Query, list and get methods are not limited.
 
@@ -62,16 +62,16 @@ Enable lockdown.
 Disable lockdown.
 .TP
 \fB--query-lockdown\fR
-Query if lockdown is enabled. Returns 0 if lockdown is enabled, 1 otherwise.
+Query whether lockdown is enabled. Returns 0 if lockdown is enabled, 1 otherwise.
 
 .SS Lockdown Whitelist Options
 The lockdown whitelist can contain \fIcommands\fR, \fIcontexts\fR, \fIusers\fR and \fIuser ids\fR.
 
-If a command entry in the whitelit ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.
+If a command entry on the whitelist ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.
 
 Commands for user root and others is not always the same. Example: As root /bin/firewall-cmd is used, as a normal user /usr/bin/firewall-cmd is be used on Fedora. 
 
-The context is the cntext of a running application or service. To get the context of a running application use
+The context is the security context of a running application or service. To get the context of a running application use
 
 ps -e --context 
 
@@ -79,7 +79,7 @@ Warning: If the context is unconfined, then this will open access for more than 
 
 .TP
 \fB--list-lockdown-whitelist-commands\fR
-List all command lines that are in the whitelist. 
+List all command lines that are on the whitelist. 
 
 .TP
 \fB--add-lockdown-whitelist-command\fR=\fI<command>\fR
@@ -91,11 +91,11 @@ Remove the command \fI<command>\fR from the whitelist.
 
 .TP
 \fB--query-lockdown-whitelist-command\fR=\fI<command>\fR
-Query if the command \fI<command>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+Query whether the command \fI<command>\fR is on the whitelist. Returns 0 if true, 1 otherwise.
 
 .TP
 \fB--list-lockdown-whitelist-contexts\fR
-List all contexts that are in the whitelist.
+List all contexts that are on the whitelist.
 
 .TP
 \fB--add-lockdown-whitelist-context\fR=\fI<context>\fR
@@ -107,11 +107,11 @@ Remove the context \fI<context>\fR from the whitelist.
 
 .TP
 \fB--query-lockdown-whitelist-context\fR=\fI<context>\fR
-Query if the context \fI<context>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+Query whether the context \fI<context>\fR is on the whitelist. Returns 0 if true, 1 otherwise.
 
 .TP
 \fB--list-lockdown-whitelist-uids\fR
-List all user ids that are in the whitelist.
+List all user ids that are on the whitelist.
 
 .TP
 \fB--add-lockdown-whitelist-uid\fR=\fI<uid>\fR
@@ -123,11 +123,11 @@ Remove the user id \fI<uid>\fR from the whitelist.
 
 .TP
 \fB--query-lockdown-whitelist-uid\fR=\fI<uid>\fR
-Query if the user id \fI<uid>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+Query whether the user id \fI<uid>\fR is on the whitelist. Returns 0 if true, 1 otherwise.
 
 .TP
 \fB--list-lockdown-whitelist-users\fR
-List all user names that are in the whitelist.
+List all user names that are on the whitelist.
 
 .TP
 \fB--add-lockdown-whitelist-user\fR=\fI<user>\fR
@@ -139,7 +139,7 @@ Remove the user name \fI<user>\fR from the whitelist.
 
 .TP
 \fB--query-lockdown-whitelist-user\fR=\fI<user>\fR
-Query if the user name \fI<user>\fR is in the whitelist. Returns 0 if true, 1 otherwise.
+Query whether the user name \fI<user>\fR is on the whitelist. Returns 0 if true, 1 otherwise.
 
 .SS Zone Options
 .TP
@@ -317,7 +317,7 @@ The protocol value can be either a protocol id number or a protocol name. For al
 
 \fBICMP-Block\fR
 
-icmp-block name="<icmtype name>"
+icmp-block name="<icmptype name>"
 
 The icmptype is the one of the icmp types firewalld supports. To get a listing of supported icmp types: firewall-cmd --get-icmptypes
 
