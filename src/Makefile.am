@@ -14,6 +14,7 @@ nobase_dist_python_DATA = \
 	firewall/dbus_utils.py \
 	firewall/errors.py \
 	firewall/functions.py \
+	firewall/fw_types.py \
 	firewall/__init__.py \
 	firewall/config/dbus.py \
 	firewall/config/__init__.py \
@@ -22,6 +23,7 @@ nobase_dist_python_DATA = \
 	firewall/core/fw_config.py \
 	firewall/core/fw_direct.py \
 	firewall/core/fw_icmptype.py \
+	firewall/core/fw_policies.py \
 	firewall/core/fw.py \
 	firewall/core/fw_service.py \
 	firewall/core/fw_zone.py \
