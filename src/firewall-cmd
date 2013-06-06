@@ -252,7 +252,7 @@ options_zone = a.zone or a.list_all or a.timeout or \
 options_permanent = a.permanent or options_config or a.zone or \
                     options_zone_action_action or options_zone_adapt_query
 
-options_direct = a.direct or a.passthrough or \
+options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
                  a.add_rule or a.remove_rule or a.query_rule or a.get_rules
 
@@ -265,9 +265,14 @@ if not (options_standalone or options_zone or \
 if options_standalone and (options_zone or options_permanent or options_direct):
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
+
 if options_direct and (options_zone or options_permanent):
     __fail(parser.format_usage() +
            "Can't use 'direct' options with other options.")
+
+if (a.direct and not options_direct) or (options_direct and not a.direct):
+    __fail(parser.format_usage() +
+           "Wrong usage of 'direct' options.")
 
 if options_config and options_zone:
     __fail(parser.format_usage() +
@@ -529,30 +534,32 @@ try:
         fw.reload()
     elif a.complete_reload:
         fw.complete_reload()
-    elif a.passthrough:
-        print(fw.passthrough(a.passthrough[0], a.passthrough[1:]))
-    elif a.add_chain:
-        fw.addChain(a.add_chain[0], a.add_chain[1], a.add_chain[2])
-    elif a.remove_chain:
-        fw.removeChain(a.remove_chain[0], a.remove_chain[1], a.remove_chain[2])
-    elif a.query_chain:
-        sys.exit(not fw.queryChain(a.query_chain[0], a.query_chain[1],
-                                   a.query_chain[2]))
-    elif a.get_chains:
-        print(" ".join(fw.getChains(a.get_chains[0], a.get_chains[1])))
-    elif a.add_rule:
-        fw.addRule(a.add_rule[0], a.add_rule[1], a.add_rule[2], int(a.add_rule[3]),
-                   a.add_rule[4:])
-    elif a.remove_rule:
-        fw.removeRule(a.remove_rule[0], a.remove_rule[1], a.remove_rule[2],
-                      a.remove_rule[3:])
-    elif a.query_rule:
-        sys.exit(not fw.queryRule(a.query_rule[0], a.query_rule[1],
-                                  a.query_rule[2], a.query_rule[3:]))
-    elif a.get_rules:
-        rules = fw.getRules(a.get_rules[0], a.get_rules[1], a.get_rules[2])
-        for rule in rules:
-            print(" ".join(rule)) 
+    elif a.direct:
+        if a.passthrough:
+            print(fw.passthrough(a.passthrough[0], a.passthrough[1:]))
+        elif a.add_chain:
+            fw.addChain(a.add_chain[0], a.add_chain[1], a.add_chain[2])
+        elif a.remove_chain:
+            fw.removeChain(a.remove_chain[0], a.remove_chain[1],
+                           a.remove_chain[2])
+        elif a.query_chain:
+            sys.exit(not fw.queryChain(a.query_chain[0], a.query_chain[1],
+                                       a.query_chain[2]))
+        elif a.get_chains:
+            print(" ".join(fw.getChains(a.get_chains[0], a.get_chains[1])))
+        elif a.add_rule:
+            fw.addRule(a.add_rule[0], a.add_rule[1], a.add_rule[2],
+                       int(a.add_rule[3]), a.add_rule[4:])
+        elif a.remove_rule:
+            fw.removeRule(a.remove_rule[0], a.remove_rule[1], a.remove_rule[2],
+                          a.remove_rule[3:])
+        elif a.query_rule:
+            sys.exit(not fw.queryRule(a.query_rule[0], a.query_rule[1],
+                                      a.query_rule[2], a.query_rule[3:]))
+        elif a.get_rules:
+            rules = fw.getRules(a.get_rules[0], a.get_rules[1], a.get_rules[2])
+            for rule in rules:
+                print(" ".join(rule))
     elif a.get_default_zone:
         print(fw.getDefaultZone())
     elif a.set_default_zone:
