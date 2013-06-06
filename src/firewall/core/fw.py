@@ -34,7 +34,7 @@ from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
-from firewall.core.io.direct import Direct
+#from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
