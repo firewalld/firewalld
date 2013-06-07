@@ -71,6 +71,11 @@ def __parse_forward_port(value):
         __fail("missing destination")
     return (port, protocol, toport, toaddr)
 
+def _check_ipv(value):
+    if value != "ipv4" and value != "ipv6" and value != "eb":
+        __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
+    return value
+
 def __list_all(fw, zone):
     interfaces = fw.getInterfaces(zone)
     sources = fw.getSources(zone)
@@ -538,34 +543,38 @@ try:
         if a.passthrough:
             if len (a.passthrough) < 2:
                 __fail("usage: --direct --passthrough { ipv4 | ipv6 | eb } <args>")
-            print(fw.passthrough(a.passthrough[0], a.passthrough[1:]))
+            print(fw.passthrough(_check_ipv(a.passthrough[0]),
+                                 a.passthrough[1:]))
         elif a.add_chain:
-            fw.addChain(a.add_chain[0], a.add_chain[1], a.add_chain[2])
+            fw.addChain(_check_ipv(a.add_chain[0]),
+                        a.add_chain[1], a.add_chain[2])
         elif a.remove_chain:
-            fw.removeChain(a.remove_chain[0], a.remove_chain[1],
-                           a.remove_chain[2])
+            fw.removeChain(_check_ipv(a.remove_chain[0]),
+                           a.remove_chain[1], a.remove_chain[2])
         elif a.query_chain:
-            sys.exit(not fw.queryChain(a.query_chain[0], a.query_chain[1],
-                                       a.query_chain[2]))
+            sys.exit(not fw.queryChain(_check_ipv(a.query_chain[0]),
+                                       a.query_chain[1], a.query_chain[2]))
         elif a.get_chains:
-            print(" ".join(fw.getChains(a.get_chains[0], a.get_chains[1])))
+            print(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
+                                        a.get_chains[1])))
         elif a.add_rule:
             if len (a.add_rule) < 5:
                 __fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            fw.addRule(a.add_rule[0], a.add_rule[1], a.add_rule[2],
+            fw.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
                        int(a.add_rule[3]), a.add_rule[4:])
         elif a.remove_rule:
             if len (a.remove_rule) < 4:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <args>")
-            fw.removeRule(a.remove_rule[0], a.remove_rule[1], a.remove_rule[2],
-                          a.remove_rule[3:])
+            fw.removeRule(_check_ipv(a.remove_rule[0]),
+                          a.remove_rule[1], a.remove_rule[2], a.remove_rule[3:])
         elif a.query_rule:
             if len (a.query_rule) < 4:
                 __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <args>")
-            sys.exit(not fw.queryRule(a.query_rule[0], a.query_rule[1],
-                                      a.query_rule[2], a.query_rule[3:]))
+            sys.exit(not fw.queryRule(_check_ipv(a.query_rule[0]),
+                                      a.query_rule[1], a.query_rule[2], a.query_rule[3:]))
         elif a.get_rules:
-            rules = fw.getRules(a.get_rules[0], a.get_rules[1], a.get_rules[2])
+            rules = fw.getRules(_check_ipv(a.get_rules[0]),
+                                a.get_rules[1], a.get_rules[2])
             for rule in rules:
                 print(" ".join(rule))
     elif a.get_default_zone:
