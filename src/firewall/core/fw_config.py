@@ -91,7 +91,6 @@ class FirewallConfig:
 
     def set_policies(self, policies):
         self._policies = policies
-        print self._policies
 
     def get_policies(self):
         return self._policies
