@@ -450,36 +450,50 @@ The permanent options can be used to set options permanently. These changes are 
 For a detailed description, please have a look at the non-permanent options.
 
 .SS Direct Options
-The direct options give a more direct access to the firewall. With \fIipv4\fR it will be for IPv4 (\fIiptables\fR(8)), with \fIipv6\fR for IPv6 (\fIip6tables\fR(8)) and with \fIeb\fR for ethernet bridges (\fIebtables\fR(8)).
+The direct options give a more direct access to the firewall.
+These options require user to know basic \fIiptables\fR concepts,
+i.e. \fItable\fRs (filter/mangle/nat/...), \fIchain\fRs (INPUT/OUTPUT/FORWARD/...), commands (-A/-D/-I/...), parameters (-p/-s/-d/-j/...) and targets (ACCEPT/DROP/REJECT/...).
+Direct options should be used only as a last resort when it's not possible to use for example \fB--add-\fR\fIACTION\fR or \fB--add-rich-rule\fR='\fI<rule>\fR'.
 
-.TP
-\fB--direct\fR \fB--passthrough\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<args>\fR
-Pass a command through to the firewall. \fI<args>\fR can be all iptables, ip6tables and ebtables command line arguments.
+The first argument of each option has be \fIipv4\fR or \fIipv6\fR or \fIeb\fR.
+With \fIipv4\fR it will be for IPv4 (\fIiptables\fR(8)), with \fIipv6\fR for IPv6 (\fIip6tables\fR(8)) and with \fIeb\fR for ethernet bridges (\fIebtables\fR(8)).
+
 .TP
 \fB--direct\fR \fB--add-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Add a new chain with name \fI<chain>\fR to table \fI<table>\fR.
 .TP
 \fB--direct\fR \fB--remove-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Remove a chain with name \fI<chain>\fR from table \fI<table>\fR.
+This option concerns only chains previously added with \fB--direct\fR \fB--add-chain\fR.
 .TP
 \fB--direct\fR \fB--query-chain\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Return whether a chain with name \fI<chain>\fR exists in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
+This option concerns only chains previously added with \fB--direct\fR \fB--add-chain\fR.
 .TP
 \fB--direct\fR \fB--get-chains\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR
 Get all chains added to table \fI<table>\fR as a space separated list.
+This option concerns only chains previously added with \fB--direct\fR \fB--add-chain\fR.
 .TP
 \fB--direct\fR \fB--add-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<priority>\fR \fI<args>\fR
 Add a rule with the arguments \fI<args>\fR to chain \fI<chain>\fR in table \fI<table>\fR with priority \fI<priority>\fR.
 The \fI<priority>\fR is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
+There already exist basic chains to use with direct options, for example \fIINPUT_direct\fR chain (see \fIiptables-save | grep direct\fR output for all of them).
+These chains are accessed before chains for zones, i.e. every rule put into \fIINPUT_direct\fR will be checked before rules in zones.
 .TP
 \fB--direct\fR \fB--remove-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR
 Remove a rule with the arguments \fI<args>\fR from chain \fI<chain>\fR in table \fI<table>\fR.
+This option concerns only rules previously added with \fB--direct\fR \fB--add-rule\fR.
 .TP
 \fB--direct\fR \fB--query-rule\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR \fI<args>\fR
 Return whether a rule with the arguments \fI<args>\fR exists in chain \fI<chain>\fR in table \fI<table>\fR. Returns 0 if true, 1 otherwise.
+This option concerns only rules previously added with \fB--direct\fR \fB--add-rule\fR.
 .TP
 \fB--direct\fR \fB--get-rules\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<table>\fR \fI<chain>\fR
 Get all rules added to chain \fI<chain>\fR in table \fI<table>\fR as a newline separated list of arguments.
+This option concerns only rules previously added with \fB--direct\fR \fB--add-rule\fR.
+.TP
+\fB--direct\fR \fB--passthrough\fR { \fIipv4\fR | \fIipv6\fR | \fIeb\fR } \fI<args>\fR
+Pass a command through to the firewall. \fI<args>\fR can be all \fIiptables\fR, \fIip6tables\fR and \fIebtables\fR command line arguments.
 
 .SH EXIT CODES
 
