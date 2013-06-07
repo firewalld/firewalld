@@ -418,8 +418,7 @@ class Rich_Rule(object):
 
             index = index + 1
 
-        if not self.element:
-            raise FirewallError(INVALID_RULE, "no element")
+        self.check()
 
     def check(self):
         if self.family != None and self.family not in [ "ipv4", "ipv6" ]:
