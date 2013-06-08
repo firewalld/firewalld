@@ -140,7 +140,7 @@ class ZoneSourceEditor(Gtk.Dialog):
         self.fw = fw
         self.source = source
         self.zone = zone
-        self.title = _("Select zone for source %s: %s") % self.source
+        self.title = _("Select zone for source %s") % self.source
 
         super(ZoneSourceEditor, self).__init__(self.title)
 
