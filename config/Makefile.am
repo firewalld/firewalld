@@ -75,6 +75,10 @@ EXTRA_DIST = \
 	services/nfs.xml \
 	services/ntp.xml \
 	services/openvpn.xml \
+	services/pmcd.xml \
+	services/pmproxy.xml \
+	services/pmwebapi.xml \
+	services/pmwebapis.xml \
 	services/pop3s.xml \
 	services/postgresql.xml \
 	services/radius.xml \
