@@ -20,8 +20,8 @@ This example configuration file shows the structure of a zone configuration file
   <short>\fIMy Zone\fR</short>
   <description>\fIdescription\fR</description>
   <interface name="\fIeth29\fR"/>
-  <source family="\fIipv4\fR" address="\fI192.168.0.0/24\fR"/>
-  <source family="\fIipv6\fR" address="\fI1:2:3:4::\fR"/>
+  <source address="\fI192.168.0.0/24\fR"/>
+  <source address="\fI1:2:3:4::\fR"/>
   <service name="\fIssh\fR"/>
   <port port="\fI21\fR" protocol="\fItcp\fR"/>
   <icmp-block name="\fIsource-quench\fR"/>
@@ -66,12 +66,7 @@ The name of the interface to be bound to the zone.
 .RE
 
 .SS source
-Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. A source entry has exactly two attributes:
-
-\fIfamily="\fRipv4|ipv6\fI"\fR
-.RS 4
-The family of the address. It can be either \fIipv4\fR or \fIipv6\fR.
-.RE
+Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. A source entry has exactly one attribute:
 
 \fIaddress="\fR<string>\fI"\fR
 .RS 4
