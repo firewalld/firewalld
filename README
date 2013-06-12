@@ -1,0 +1,55 @@
+README for firewalld
+====================
+
+firewalld provides a dynamically managed firewall with support for network or 
+firewall zones to define the trust level of network connections or interfaces. 
+It has support for IPv4, IPv6 firewall settings and for ethernet bridges and a 
+separation of runtime and permanent configuration options. It also provides an 
+interface for services or applications to add ip*tables and ebtables rules 
+directly. 
+
+
+Development:
+------------
+To check out the source repository, you can use:
+
+  git clone git://git.fedorahosted.org/git/firewalld
+
+This will create a local copy of the repository.
+
+
+Working With The Source Repository:
+-----------------------------------
+You can use the source repository directly to test out changes. Change into the 
+firewalld base directory and set the following environment variables.
+
+  export FIREWALLD_DEVEL_ENV=$(pwd)/src
+  export PYTHONPATH=$FIREWALLD_DEVEL_ENV
+
+
+Links:
+------
+Homepage:        https://fedorahosted.org/firewalld/
+Git repo:        http://git.fedorahosted.org/git/firewalld.git
+Documentation:   https://fedoraproject.org/wiki/FirewallD
+
+
+Directory Structure:
+--------------------
+config/                 Configuration files
+config/icmptypes/       Predefined ICMP types
+config/services/        Predefined services
+config/xmlschema/       XML Schema checks for config files
+config/zones/           Predefined zones
+doc/                    Documentation
+doc/man/                Base directory for man pages
+doc/man/man1/           Man(1) pages
+doc/man/man5/           Man(5) pages
+patches/                Common patches
+po/                     Translations
+shell-completion/       Base directory for auto completion scripts
+shell-completion/bash/  Bash auto completion scripts
+src/                    Source tree
+src/firewall/           Import tree for the sevice and all applications
+src/icons/              Icons in the sizes: 16, 22, 24, 32, 48 and scalable
+src/tests/              Test scripts
