@@ -71,7 +71,7 @@ If a command entry on the whitelist ends with an asterisk '*', then all command 
 
 Commands for user root and others is not always the same. Example: As root /bin/firewall-cmd is used, as a normal user /usr/bin/firewall-cmd is be used on Fedora. 
 
-The context is the security context of a running application or service. To get the context of a running application use
+The context is the security (SELinux) context of a running application or service. To get the context of a running application use
 
 ps -e --context 
 
@@ -229,7 +229,7 @@ For possible \fIACTION\fRs, please have a look at the \fBAction Options for Use 
 Add rich language rule '\fI<rule\fR' for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the \fI<rule>\fR(s) will be active for the amount of seconds and will be removed automatically afterwards.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--remove-rich-rule\fR='\fI<rule>\fR'
-Remove rich language rule '\fI<rule\fR' for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR. If a timeout is supplied, the \fIACTION\fR(s) will be active for the amount of seconds and will be removed automatically afterwards.
+Remove rich language rule '\fI<rule\fR' for zone \fI<zone>\fR. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use \fB--get-default-zone\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-rich-rule\fR='\fI<rule>\fR'
 Return whether a rich language rule '\fI<rule>\fR' has been added for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
@@ -400,15 +400,15 @@ rule family="ipv6" service name="radius" accept
 
 rule family="ipv6" source address="1:2:3:4:6::" forward-port to-addr="1::2:3:4:7" to-port="4012" protocol="tcp" port="4011"
 
-\fBExample 6:\fR White-list source address to allow all connections from this source
+\fBExample 6:\fR White-list source address to allow all connections from 192.168.2.2
 
 rule family="ipv4" source address="192.168.2.2" accept
 
-\fBExample 7:\fR Black-list source address to reject all connections from this source
+\fBExample 7:\fR Black-list source address to reject all connections from 192.168.2.3
 
 rule family="ipv4" source address="192.168.2.3" reject
 
-\fBExample 8:\fR Black-list source address to drop all connections from this source
+\fBExample 8:\fR Black-list source address to drop all connections from 192.168.2.4
 
 rule family="ipv4" source address="192.168.2.4" drop
 
