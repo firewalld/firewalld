@@ -252,6 +252,9 @@ Disable masquerade for zone \fI<zone>\fR. If zone is omitted, the default zone w
 [\fB--zone\fR=\fI<zone>\fR] \fB--query-masquerade\fR
 Return whether masquerading has been enabled for the zone \fI<zone>\fR. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
 .TP
+[\fB--zone\fR=\fI<zone>\fR] \fB--list-rich-rules\fR
+List rich language rules added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+.TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-services\fR
 List services added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined services use \fI--get-services\fR.
 .TP
@@ -262,7 +265,7 @@ List ports added for zone \fI<zone>\fR as a space separated list. A port is of t
 List Internet Control Message Protocol (ICMP) type blocks added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined icmptypes use \fI--get-icmptypes\fR.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-forward-ports\fR
-List forward port added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
+List forward ports added for zone \fI<zone>\fR as a space separated list. If zone is omitted, the default zone will be used.
 .TP
 [\fB--zone\fR=\fI<zone>\fR] \fB--list-all\fR
 List all actions added for or enabled in zone \fI<zone>\fR. If zone is omitted, the default zone will be used.
@@ -441,7 +444,7 @@ The permanent options can be used to set options permanently. These changes are 
 .TP
 \fB--permanent\fR { \fB--get-zones\fR | \fB--get-services\fR | \fB--get-icmptypes\fR }
 .TP
-\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--list-services\fR | \fB--list-ports\fR | \fB--list-icmp-blocks\fR | \fB--list-forward-ports\fR }
+\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--list-rich-rules\fR | \fB--list-services\fR | \fB--list-ports\fR | \fB--list-icmp-blocks\fR | \fB--list-forward-ports\fR }
 .TP
 \fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--add-\fR\fIACTION\fR | \fB--remove-\fR\fIACTION\fR | \fB--query-\fR\fIACTION\fR }
 .TP
