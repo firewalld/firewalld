@@ -32,9 +32,12 @@ import os
 from firewall.client import FirewallClient
 from firewall.errors import *
 
-def __fail(msg=None):
-    if msg:
+def __print(msg=None):
+    if msg and not a.quiet:
         print(msg)
+
+def __fail(msg=None):
+    __print(msg)
     sys.exit(2)
 
 def __parse_port(value):
@@ -77,15 +80,15 @@ def _check_ipv(value):
     return value
 
 def __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules):
-    print(zone)
-    print("  interfaces: " + " ".join(interfaces))
-    print("  sources: " + " ".join(sources))
-    print("  services: " + " ".join(services))
-    print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
-    print("  masquerade: %s" % ("yes" if masquerade else "no"))
-    print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
-    print("  icmp-blocks: " + " ".join(icmp_blocks))
-    print("  rich rules: \n\t" + "\n\t".join(rules))
+    __print(zone)
+    __print("  interfaces: " + " ".join(interfaces))
+    __print("  sources: " + " ".join(sources))
+    __print("  services: " + " ".join(services))
+    __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
+    __print("  masquerade: %s" % ("yes" if masquerade else "no"))
+    __print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
+    __print("  icmp-blocks: " + " ".join(icmp_blocks))
+    __print("  rich rules: \n\t" + "\n\t".join(rules))
 
 def __list_all(fw, zone):
     interfaces = fw.getInterfaces(zone)
@@ -112,6 +115,9 @@ def __list_all_permanent(fw_settings, zone):
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
+
+#parser.add_argument("-v", "--verbose", action="store_true")
+parser.add_argument("-q", "--quiet", action="store_true")
 
 parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
@@ -324,9 +330,9 @@ try:
     fw = FirewallClient()
     if fw.connected == False:
         if a.state:
-            print "not running"
+            __print ("not running")
         else:
-            print "FirewallD is not running"
+            __print ("FirewallD is not running")
         sys.exit(NOT_RUNNING)
 
     if a.permanent:
@@ -334,17 +340,17 @@ try:
             zones = fw.config().listZones()
             l = [fw.config().getZone(z).get_property("name") for z in zones]
             if len(l) > 0:
-                print(" ".join(l))
+                __print(" ".join(l))
         elif a.get_services:
             services = fw.config().listServices()
             l = [fw.config().getService(s).get_property("name") for s in services]
             if len(l) > 0:
-                print(" ".join(l))
+                __print(" ".join(l))
         elif a.get_icmptypes:
             icmptypes = fw.config().listIcmpTypes()
             l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
             if len(l) > 0:
-                print(" ".join(l))
+                __print(" ".join(l))
 
         # lockdown
         elif a.lockdown_on:
@@ -364,7 +370,7 @@ try:
             if a.list_lockdown_whitelist_commands:
                 l = whitelist.getCommands()
                 if len(l) > 0:
-                    print("\n".join(l))
+                    __print("\n".join(l))
                 sys.exit(0)
             elif a.add_lockdown_whitelist_command:
                 whitelist.addCommand(a.add_lockdown_whitelist_command)
@@ -378,7 +384,7 @@ try:
             elif a.list_lockdown_whitelist_contexts:
                 l = whitelist.getContexts()
                 if len(l) > 0:
-                    print("\n".join(l))
+                    __print("\n".join(l))
                 sys.exit(0)
             elif a.add_lockdown_whitelist_context:
                 whitelist.addContext(a.add_lockdown_whitelist_context) 
@@ -392,7 +398,7 @@ try:
             elif a.list_lockdown_whitelist_uids:
                 l = whitelist.getUids()
                 if len(l) > 0:
-                    print(" ".join(map(str, l)))
+                    __print(" ".join(map(str, l)))
                 sys.exit(0)
             elif a.add_lockdown_whitelist_uid:
                 whitelist.addUid(a.add_lockdown_whitelist_uid)
@@ -405,7 +411,7 @@ try:
             elif a.list_lockdown_whitelist_users:
                 l = whitelist.getUsers()
                 if len(l) > 0:
-                    print("\n".join(l))
+                    __print("\n".join(l))
                 sys.exit(0)
             elif a.add_lockdown_whitelist_user:
                 whitelist.addUser(a.add_lockdown_whitelist_user) 
@@ -428,7 +434,7 @@ try:
             if a.list_interfaces:
                 l = fw_settings.getInterfaces()
                 if len(l) > 0:
-                    print(" ".join(l))
+                    __print(" ".join(l))
                 sys.exit(0)
             elif a.add_interface:
                 fw_settings.addInterface(a.add_interface)
@@ -441,7 +447,7 @@ try:
             if a.list_sources:
                 sources = fw_settings.getSources()
                 if len(sources) > 0:
-                    print(" ".join(sources))
+                    __print(" ".join(sources))
                 sys.exit(0)
             elif a.add_source:
                 fw_settings.addSource(a.add_source)
@@ -454,7 +460,7 @@ try:
             if a.list_rich_rules:
                 l = fw_settings.getRichRules()
                 if len(l) > 0:
-                    print("\n".join(l))
+                    __print("\n".join(l))
                 sys.exit(0)
             elif a.add_rich_rule:
                 for s in a.add_rich_rule:
@@ -469,7 +475,7 @@ try:
             if a.list_services:
                 l = fw_settings.getServices()
                 if len(l) > 0:
-                    print(" ".join(l))
+                    __print(" ".join(l))
                 sys.exit(0)
             elif a.add_service:
                 for s in a.add_service:
@@ -484,7 +490,7 @@ try:
             elif a.list_ports:
                 l = fw_settings.getPorts()
                 if len(l) > 0:
-                    print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+                    __print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
                 sys.exit(0)
             elif a.add_port:
                 for port_proto in a.add_port:
@@ -510,7 +516,7 @@ try:
             elif a.list_forward_ports:
                 l = fw_settings.getForwardPorts()
                 if len(l) > 0:
-                    print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+                    __print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
                 sys.exit(0)
             elif a.add_forward_port:
                 for fp in a.add_forward_port:
@@ -528,7 +534,7 @@ try:
             elif a.list_icmp_blocks:
                 l = fw_settings.getIcmpBlocks()
                 if len(l) > 0:
-                    print(" ".join(l))
+                    __print(" ".join(l))
                 sys.exit(0)
             elif a.add_icmp_block:
                 for ib in a.add_icmp_block: 
@@ -552,19 +558,19 @@ try:
                     fw_zone = fw.config().getZoneByName(zone)
                     fw_settings = fw_zone.getSettings()
                     __list_all_permanent(fw_settings, zone)
-                    print("")
+                    __print("")
 
             fw_zone.update(fw_settings)
 
     elif a.version:
-        print(fw.get_property("version"))
+        __print(fw.get_property("version"))
         sys.exit(0)
     elif a.state:
         state = fw.get_property("state")
         if state == "RUNNING":
-            print "running"
+            __print ("running")
         else:
-            print "not running"
+            __print ("not running")
             sys.exit(NOT_RUNNING)
     elif a.reload:
         fw.reload()
@@ -574,7 +580,7 @@ try:
         if a.passthrough:
             if len (a.passthrough) < 2:
                 __fail("usage: --direct --passthrough { ipv4 | ipv6 | eb } <args>")
-            print(fw.passthrough(_check_ipv(a.passthrough[0]),
+            __print(fw.passthrough(_check_ipv(a.passthrough[0]),
                                  a.passthrough[1:]))
         elif a.add_chain:
             fw.addChain(_check_ipv(a.add_chain[0]),
@@ -586,7 +592,7 @@ try:
             sys.exit(not fw.queryChain(_check_ipv(a.query_chain[0]),
                                        a.query_chain[1], a.query_chain[2]))
         elif a.get_chains:
-            print(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
+            __print(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
                                         a.get_chains[1])))
         elif a.add_rule:
             if len (a.add_rule) < 5:
@@ -607,38 +613,38 @@ try:
             rules = fw.getRules(_check_ipv(a.get_rules[0]),
                                 a.get_rules[1], a.get_rules[2])
             for rule in rules:
-                print(" ".join(rule))
+                __print(" ".join(rule))
     elif a.get_default_zone:
-        print(fw.getDefaultZone())
+        __print(fw.getDefaultZone())
     elif a.set_default_zone:
         fw.setDefaultZone(a.set_default_zone)
     elif a.get_zones:
-        print(" ".join(fw.getZones()))
+        __print(" ".join(fw.getZones()))
     elif a.get_active_zones:
         zones = fw.getActiveZones()
         for zone in zones:
-            print("%s" % (zone))
+            __print("%s" % (zone))
             for x in [ "interfaces", "sources" ]:
                 if x in zones[zone]:
-                    print("  %s: %s" % (x, " ".join(zones[zone][x])))
+                    __print("  %s: %s" % (x, " ".join(zones[zone][x])))
     elif a.get_zone_of_interface:
         try:
-            print(fw.getZoneOfInterface(a.get_zone_of_interface))
+            __print(fw.getZoneOfInterface(a.get_zone_of_interface))
         except:
             pass
     elif a.get_zone_of_source:
         try:
-            print(fw.getZoneOfSource(a.get_zone_of_source))
+            __print(fw.getZoneOfSource(a.get_zone_of_source))
         except:
             pass
     elif a.get_services:
         l = fw.listServices()
         if len(l) > 0:
-            print(" ".join(l))
+            __print(" ".join(l))
     elif a.get_icmptypes:
         l = fw.listIcmpTypes()
         if len(l) > 0:
-            print(" ".join(l))
+            __print(" ".join(l))
 
     # panic
     elif a.panic_on:
@@ -662,7 +668,7 @@ try:
     elif a.list_lockdown_whitelist_commands:
         l = fw.getLockdownWhitelistCommands()
         if len(l) > 0:
-            print("\n".join(l))
+            __print("\n".join(l))
     elif a.add_lockdown_whitelist_command:
         fw.addLockdownWhitelistCommand(a.add_lockdown_whitelist_command)
     elif a.remove_lockdown_whitelist_command:
@@ -675,7 +681,7 @@ try:
     elif a.list_lockdown_whitelist_contexts:
         l = fw.getLockdownWhitelistContexts()
         if len(l) > 0:
-            print("\n".join(l))
+            __print("\n".join(l))
     elif a.add_lockdown_whitelist_context:
         fw.addLockdownWhitelistContext(a.add_lockdown_whitelist_context)
     elif a.remove_lockdown_whitelist_context:
@@ -688,7 +694,7 @@ try:
     elif a.list_lockdown_whitelist_uids:
         l = fw.getLockdownWhitelistUids()
         if len(l) > 0:
-            print(" ".join(map(str, l)))
+            __print(" ".join(map(str, l)))
     elif a.add_lockdown_whitelist_uid:
         fw.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
     elif a.remove_lockdown_whitelist_uid:
@@ -700,7 +706,7 @@ try:
     elif a.list_lockdown_whitelist_users:
         l = fw.getLockdownWhitelistUsers()
         if len(l) > 0:
-            print(" ".join(l))
+            __print(" ".join(l))
     elif a.add_lockdown_whitelist_user:
         fw.addLockdownWhitelistUser(a.add_lockdown_whitelist_user)
     elif a.remove_lockdown_whitelist_user:
@@ -713,7 +719,7 @@ try:
     elif a.list_interfaces:
         l = fw.getInterfaces(zone)
         if len(l) > 0:
-            print(" ".join(l))
+            __print(" ".join(l))
     elif a.add_interface:
         fw.addInterface(zone, a.add_interface)
     elif a.change_interface:
@@ -727,7 +733,7 @@ try:
     elif a.list_sources:
         sources = fw.getSources(zone)
         if len(sources) > 0:
-            print(" ".join(sources))
+            __print(" ".join(sources))
     elif a.add_source:
         fw.addSource(zone, a.add_source)
     elif a.change_source:
@@ -741,7 +747,7 @@ try:
     elif a.list_rich_rules:
         l = fw.getRichRules(zone)
         if len(l) > 0:
-            print("\n".join(l))
+            __print("\n".join(l))
     elif a.add_rich_rule:
         for s in a.add_rich_rule:
             fw.addRichRule(zone, s, a.timeout)
@@ -755,7 +761,7 @@ try:
     elif a.list_services:
         l = fw.getServices(zone)
         if len(l) > 0:
-            print(" ".join(l))
+            __print(" ".join(l))
     elif a.add_service:
         for s in a.add_service:
             fw.addService(zone, s, a.timeout)
@@ -769,7 +775,7 @@ try:
     elif a.list_ports:
         l = fw.getPorts(zone)
         if len(l) > 0:
-            print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            __print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
     elif a.add_port:
         for port_proto in a.add_port:
             (port, proto) = __parse_port(port_proto)
@@ -794,7 +800,7 @@ try:
     elif a.list_forward_ports:
         l = fw.getForwardPorts(zone)
         if len(l) > 0:
-            print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+            __print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
 
     elif a.add_forward_port:
         for fp in a.add_forward_port:
@@ -813,7 +819,7 @@ try:
     elif a.list_icmp_blocks:
         l = fw.getIcmpBlocks(zone)
         if len(l) > 0:
-            print(" ".join(l))
+            __print(" ".join(l))
     elif a.add_icmp_block:
         for ib in a.add_icmp_block:
             fw.addIcmpBlock(zone, ib, a.timeout)
@@ -831,23 +837,23 @@ try:
     elif a.list_all_zones:
         for zone in fw.getZones():
             __list_all(fw, zone)
-            print("")
+            __print("")
 
 
 except dbus.exceptions.DBusException as e:
     dbus_message = e.get_dbus_message()
     dbus_name = e.get_dbus_name()
     if "NotAuthorizedException" in dbus_name:
-        print ("Authorization failed.")
-        print ("Make sure polkit agent is running or run firewall-cmd as superuser.")
+        __print ("Authorization failed.")
+        __print ("Make sure polkit agent is running or run firewall-cmd as superuser.")
         sys.exit(NOT_AUTHORIZED)
     else:
         code = FirewallError.get_code(dbus_message)
         if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
-            print("Warning: %s" % dbus_message)
+            __print("Warning: %s" % dbus_message)
             sys.exit(0)
         else:
-            print("Error: %s" % dbus_message)
+            __print("Error: %s" % dbus_message)
         sys.exit(code)
 
 sys.exit(0)
