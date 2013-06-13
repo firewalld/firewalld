@@ -272,12 +272,12 @@ options_zone_adapt_query = \
     a.list_services or a.list_ports or a.list_icmp_blocks or \
     a.list_forward_ports or a.list_rich_rules or a.list_all
 
-options_zone = a.zone or a.timeout or options_zone_interfaces_sources or \
+options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
 
-options_permanent = a.permanent or options_config or a.zone or \
-                    options_zone_interfaces_sources or \
-                    options_zone_action_action or options_zone_adapt_query
+options_zone = a.zone or a.timeout or options_zone_ops
+
+options_permanent = a.permanent or options_config or a.zone or options_zone_ops
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
@@ -334,6 +334,12 @@ try:
         else:
             __print ("FirewallD is not running")
         sys.exit(NOT_RUNNING)
+
+    if options_zone_ops and not zone and \
+       fw.getDefaultZone() not in fw.getActiveZones():
+        __print ("""You're performing an operation over default zone ('%s'),
+but your connections/interfaces are in zone(s) '%s' (see --get-active-zones)
+You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), ",".join(fw.getActiveZones())))
 
     if a.permanent:
         if a.get_zones:
