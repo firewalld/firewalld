@@ -442,9 +442,9 @@ Forward from the local port \fIport\fR to port \fItoport\fR on host \fItoaddr\fR
 The permanent options can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. The following options are possible to be used:
 
 .TP
-\fB--permanent\fR { \fB--get-zones\fR | \fB--get-services\fR | \fB--get-icmptypes\fR }
+\fB--permanent\fR { \fB--get-zones\fR | \fB--get-services\fR | \fB--get-icmptypes\fR | \fB--list-all-zones\fR }
 .TP
-\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--list-rich-rules\fR | \fB--list-services\fR | \fB--list-ports\fR | \fB--list-icmp-blocks\fR | \fB--list-forward-ports\fR }
+\fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--list-rich-rules\fR | \fB--list-services\fR | \fB--list-ports\fR | \fB--list-icmp-blocks\fR | \fB--list-forward-ports\fR | \fB--list-all\fR }
 .TP
 \fB--permanent\fR [\fB--zone\fR=\fI<zone>\fR] { \fB--add-\fR\fIACTION\fR | \fB--remove-\fR\fIACTION\fR | \fB--query-\fR\fIACTION\fR }
 .TP

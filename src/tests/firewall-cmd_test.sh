@@ -109,8 +109,10 @@ assert_good_notempty "--permanent --get-zones"
 assert_good_notempty "--permanent --get-services"
 assert_good_notempty "--permanent --get-icmptypes"
 
-assert_good "--list-all-zones"
-assert_good "--list-all"
+assert_good             "--list-all-zones"
+assert_good             "--list-all"
+assert_good "--permanent --list-all-zones"
+assert_good "--permanent --list-all"
 
 iface="dummy0"
 zone="work"
@@ -329,7 +331,6 @@ assert_good_contains "--permanent --zone=work --list-services" "ssh"
 assert_good          "--permanent --list-forward-ports"
 
 assert_bad           "--permanent --complete-reload" # impossible combination
-assert_bad           "--permanent --list-all" # impossible combination
 
 # ... --direct  ...
 assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_ZONE_home_allow"

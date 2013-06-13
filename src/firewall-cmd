@@ -76,6 +76,17 @@ def _check_ipv(value):
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
     return value
 
+def __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules):
+    print(zone)
+    print("  interfaces: " + " ".join(interfaces))
+    print("  sources: " + " ".join(sources))
+    print("  services: " + " ".join(services))
+    print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
+    print("  masquerade: %s" % ("yes" if masquerade else "no"))
+    print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
+    print("  icmp-blocks: " + " ".join(icmp_blocks))
+    print("  rich rules: \n\t" + "\n\t".join(rules))
+
 def __list_all(fw, zone):
     interfaces = fw.getInterfaces(zone)
     sources = fw.getSources(zone)
@@ -85,16 +96,19 @@ def __list_all(fw, zone):
     forward_ports = fw.getForwardPorts(zone)
     icmp_blocks = fw.getIcmpBlocks(zone)
     rules = fw.getRichRules(zone)
+    __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules)
 
-    print(zone if zone != "" else fw.getDefaultZone())
-    print("  interfaces: " + " ".join(interfaces))
-    print("  sources: " + " ".join(sources))
-    print("  services: " + " ".join(services))
-    print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
-    print("  masquerade: %s" % ("yes" if masquerade else "no"))
-    print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
-    print("  icmp-blocks: " + " ".join(icmp_blocks))
-    print("  rich rules: \n\t" + "\n\t".join(rules))
+def __list_all_permanent(fw_settings, zone):
+    interfaces = fw_settings.getInterfaces()
+    sources = fw_settings.getSources()
+    services = fw_settings.getServices()
+    ports = fw_settings.getPorts()
+    masquerade = fw_settings.getMasquerade()
+    forward_ports = fw_settings.getForwardPorts()
+    icmp_blocks = fw_settings.getIcmpBlocks()
+    rules = fw_settings.getRichRules()
+    __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules)
+
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
@@ -212,10 +226,10 @@ a = parser.parse_args()
 options_standalone = a.help or a.version or \
     a.state or a.reload or a.complete_reload or \
     a.panic_on or a.panic_off or a.query_panic or \
+    a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
     a.get_active_zones or a.get_zone_of_interface or \
-    a.get_zone_of_source or \
-    a.list_all_zones
+    a.get_zone_of_source
 
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
@@ -232,29 +246,31 @@ options_lockdown_whitelist = \
     a.query_lockdown_whitelist_user
 
 options_config = a.get_zones or a.get_services or a.get_icmptypes or \
-    a.lockdown_on or a.lockdown_off or a.query_lockdown or \
-    options_lockdown_whitelist
+                 options_lockdown_whitelist or a.list_all_zones
 
 options_zone_action_action = \
     a.add_service or a.remove_service or a.query_service or \
     a.add_port or a.remove_port or a.query_port or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
-    a.add_forward_port or a.remove_forward_port or a.query_forward_port or \
-    a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
+    a.add_forward_port or a.remove_forward_port or a.query_forward_port
+
+options_zone_interfaces_sources = \
     a.list_interfaces or a.change_interface or \
     a.add_interface or a.remove_interface or a.query_interface or \
     a.list_sources or a.change_source or \
     a.add_source or a.remove_source or a.query_source
 
 options_zone_adapt_query = \
-            a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
- a.list_services or a.list_ports or a.list_icmp_blocks or \
- a.list_forward_ports or a.list_rich_rules
+    a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
+    a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
+    a.list_services or a.list_ports or a.list_icmp_blocks or \
+    a.list_forward_ports or a.list_rich_rules or a.list_all
 
-options_zone = a.zone or a.list_all or a.timeout or \
-    options_zone_action_action or options_zone_adapt_query
+options_zone = a.zone or a.timeout or options_zone_interfaces_sources or \
+               options_zone_action_action or options_zone_adapt_query
 
 options_permanent = a.permanent or options_config or a.zone or \
+                    options_zone_interfaces_sources or \
                     options_zone_action_action or options_zone_adapt_query
 
 options_direct = a.passthrough or \
@@ -294,7 +310,7 @@ if a.permanent:
                "Can't specify timeout for permanent action.")
     if options_config and not a.zone:
         pass
-    elif options_zone_action_action or options_zone_adapt_query:
+    elif options_permanent:
         pass
     else:
         __fail(parser.format_usage() + "Wrong --permanent usage.")
@@ -522,6 +538,21 @@ try:
                     fw_settings.removeIcmpBlock(ib)
             elif a.query_icmp_block:
                 sys.exit(not fw_settings.queryIcmpBlock(a.query_icmp_block))
+
+            # list all zone settings
+            elif a.list_all:
+                __list_all_permanent(fw_settings, zone if zone else fw.getDefaultZone())
+                sys.exit(0)
+
+            # list everything
+            elif a.list_all_zones:
+                zones = fw.config().listZones()
+                names = [fw.config().getZone(z).get_property("name") for z in zones]
+                for zone in names:
+                    fw_zone = fw.config().getZoneByName(zone)
+                    fw_settings = fw_zone.getSettings()
+                    __list_all_permanent(fw_settings, zone)
+                    print("")
 
             fw_zone.update(fw_settings)
 
@@ -792,11 +823,9 @@ try:
     elif a.query_icmp_block:
         sys.exit(not fw.queryIcmpBlock(zone, a.query_icmp_block))
 
-
     # list all
     elif a.list_all:
-        __list_all(fw, zone)
-
+        __list_all(fw, zone if zone else fw.getDefaultZone())
 
     # list everything
     elif a.list_all_zones:

@@ -22,13 +22,24 @@
 
 # TODO: find a way how to get the following options from firewall-cmd
 
-OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes"
+OPTIONS_LOCKDOWN="--add-lockdown-whitelist-command= --remove-lockdown-whitelist-command= \
+       --query-lockdown-whitelist-command= --list-lockdown-whitelist-commands \
+       --add-lockdown-whitelist-context= --remove-lockdown-whitelist-context= \
+       --query-lockdown-whitelist-context= --list-lockdown-whitelist-contexts \
+       --add-lockdown-whitelist-uid= --remove-lockdown-whitelist-uid= \
+       --query-lockdown-whitelist-uid= --list-lockdown-whitelist-uids  \
+       --add-lockdown-whitelist-user= --remove-lockdown-whitelist-user= \
+       --query-lockdown-whitelist-user= --list-lockdown-whitelist-users"
 
-OPTIONS_ZONE_INTERFACES="--list-interfaces --change-interface= --change-zone= \
-                         --add-interface= --remove-interface= --query-interface= "
+# can be used as standalone or with --permanent
+OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes
+                ${OPTIONS_LOCKDOWN} --list-all-zones"
 
-OPTIONS_ZONE_SOURCES="--add-source= --remove-source= --query-source= \
-                      --change-source= --list-sources"
+OPTIONS_ZONE_INTERFACES_SOURCES="\
+            --add-interface= --remove-interface= --query-interface= \
+            --list-interfaces --change-interface= --change-zone= \
+            --add-source= --remove-source= --query-source= \
+            --change-source= --list-sources"
 
 OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
                        --add-port= --remove-port= --query-port= \
@@ -41,7 +52,7 @@ OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule --remove-rich-rule --query-rich-rule \
                     --list-forward-ports --list-rich-rules --list-all"
 
 # can be used with/without preceding --zone=<zone>
-OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES} ${OPTIONS_ZONE_SOURCES} \
+OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
               ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}"
 
 # can be used after --permanent
@@ -51,24 +62,13 @@ OPTIONS_DIRECT="--passthrough \
                 --add-chain --remove-chain --query-chain --get-chains \
                 --add-rule --remove-rule --query-rule --get-rules"
 
-OPTIONS_LOCKDOWN="--add-lockdown-whitelist-command= --remove-lockdown-whitelist-command= \
-       --query-lockdown-whitelist-command= --list-lockdown-whitelist-commands \
-       --add-lockdown-whitelist-context= --remove-lockdown-whitelist-context= \
-       --query-lockdown-whitelist-context= --list-lockdown-whitelist-contexts \
-       --add-lockdown-whitelist-uid= --remove-lockdown-whitelist-uid= \
-       --query-lockdown-whitelist-uid= --list-lockdown-whitelist-uids  \
-       --add-lockdown-whitelist-user= --remove-lockdown-whitelist-user= \
-       --query-lockdown-whitelist-user= --list-lockdown-whitelist-users"
-
 # these all can be used as a "first" option
 OPTIONS_GENERAL="--help --version \
                  --state --reload --complete-reload \
                  --panic-on --panic-off --query-panic \
                  --lockdown-on --lockdown-off --query-lockdown \
-                 ${OPTIONS_LOCKDOWN} \
                  --get-default-zone --set-default-zone= --get-active-zones \
                  --get-zone-of-interface= --get-zone-of-interface= \
-                 --list-all-zones \
                  ${OPTIONS_CONFIG} \
                  --zone= ${OPTIONS_ZONE} \
                  --permanent --direct"
