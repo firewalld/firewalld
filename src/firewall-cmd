@@ -603,8 +603,12 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
         elif a.add_rule:
             if len (a.add_rule) < 5:
                 __fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            try:
+                priority = int(a.add_rule[3])
+            except ValueError:
+                __fail("wrong priority\nusage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             fw.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
-                       int(a.add_rule[3]), a.add_rule[4:])
+                       priority, a.add_rule[4:])
         elif a.remove_rule:
             if len (a.remove_rule) < 4:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <args>")
