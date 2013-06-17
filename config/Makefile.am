@@ -54,6 +54,7 @@ EXTRA_DIST = \
 	services/bacula.xml \
 	services/cluster-suite.xml \
 	services/dhcpv6-client.xml \
+	services/dhcpv6.xml \
 	services/dns.xml \
 	services/ftp.xml \
 	services/https.xml \
