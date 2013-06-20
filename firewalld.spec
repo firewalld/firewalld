@@ -4,10 +4,9 @@ Version: 0.3.3
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
-ExclusiveOS: Linux
 Group: System Environment/Base
-BuildArch: noarch
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
+BuildArch: noarch
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
 BuildRequires: intltool
@@ -25,10 +24,9 @@ Requires: pygobject3
 Requires: iptables, ebtables
 Requires(post): chkconfig
 Requires(preun): chkconfig
-Requires(post): systemd-sysv
-Requires(post): systemd-units
-Requires(preun): systemd-units
-Requires(postun): systemd-units
+Requires(post): systemd
+Requires(preun): systemd
+Requires(postun): systemd
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
@@ -94,16 +92,6 @@ desktop-file-install --delete-original \
 %postun
 %systemd_postun_with_restart firewalld.service 
 
-
-%triggerun -- firewalld < 0.1.3-3
-# Save the current service runlevel info
-# User must manually run systemd-sysv-convert --apply firewalld
-# to migrate them to systemd targets
-/usr/bin/systemd-sysv-convert --save firewalld >/dev/null 2>&1 ||:
-
-# Run these because the SysV package being removed won't do them
-/sbin/chkconfig --del firewalld >/dev/null 2>&1 || :
-/bin/systemctl try-restart firewalld.service >/dev/null 2>&1 || :
 
 %post -n firewall-applet
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -188,6 +176,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+- Remove migrating to a systemd unit file from a SysV initscript
+- Remove pointless "ExclusiveOS" tag
+
 * Thu Jun  6 2013 Thomas Woerner <twoerner@redhat.com> 0.3.3-1
 - new service files
 - relicensed logger.py under GPLv2+
