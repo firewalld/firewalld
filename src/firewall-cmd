@@ -283,6 +283,15 @@ options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
                  a.add_rule or a.remove_rule or a.query_rule or a.get_rules
 
+# these are supposed to only write out some output
+options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
+ a.list_lockdown_whitelist_commands or a.list_lockdown_whitelist_contexts or \
+ a.list_lockdown_whitelist_uids or a.list_lockdown_whitelist_users or \
+ a.list_services or a.list_ports or a.list_icmp_blocks or a.list_forward_ports \
+ or a.list_rich_rules or a.list_interfaces or a.list_sources or \
+ a.get_default_zone or a.get_active_zones or a.get_zone_of_interface or \
+ a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes
+
 # Check various impossible combinations of options
 
 if not (options_standalone or options_zone or \
@@ -320,6 +329,11 @@ if a.permanent:
         pass
     else:
         __fail(parser.format_usage() + "Wrong --permanent usage.")
+
+if a.quiet and options_list_get:
+    # it makes no sense to use --quiet with these options
+    a.quiet = False
+    __fail("-q/--quiet can't be used with this option(s)")
 
 if a.help:
     os.system("man firewall-cmd")
