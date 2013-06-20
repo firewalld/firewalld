@@ -234,8 +234,7 @@ options_standalone = a.help or a.version or \
     a.panic_on or a.panic_off or a.query_panic or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
-    a.get_active_zones or a.get_zone_of_interface or \
-    a.get_zone_of_source
+    a.get_active_zones
 
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
@@ -252,7 +251,8 @@ options_lockdown_whitelist = \
     a.query_lockdown_whitelist_user
 
 options_config = a.get_zones or a.get_services or a.get_icmptypes or \
-                 options_lockdown_whitelist or a.list_all_zones
+                 options_lockdown_whitelist or a.list_all_zones or \
+                 a.get_zone_of_interface or a.get_zone_of_source
 
 options_zone_action_action = \
     a.add_service or a.remove_service or a.query_service or \
@@ -456,6 +456,29 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
                 if len(l) > 0:
                     __print(" ".join(l))
                 sys.exit(0)
+            elif a.get_zone_of_interface:
+                for zone_path in fw.config().listZones():
+                    zone_obj = fw.config().getZone(zone_path)
+                    zone_name = zone_obj.get_property("name")
+                    zone_settings = zone_obj.getSettings()
+                    if a.get_zone_of_interface in zone_settings.getInterfaces():
+                        __print(zone_name)
+                sys.exit(0)
+            elif a.change_interface:
+                for zone_path in fw.config().listZones():
+                    removed = False; added = False
+                    zone_obj = fw.config().getZone(zone_path)
+                    zone_name = zone_obj.get_property("name")
+                    zone_settings = zone_obj.getSettings()
+                    if a.change_interface in zone_settings.getInterfaces():
+                        removed = True
+                        zone_settings.removeInterface(a.change_interface)
+                    if zone_name == zone:
+                        added = True
+                        zone_settings.addInterface(a.change_interface)
+                    if removed != added: # (either added or removed, not both)
+                         zone_obj.update(zone_settings)
+                sys.exit(0)
             elif a.add_interface:
                 fw_settings.addInterface(a.add_interface)
             elif a.remove_interface:
@@ -468,6 +491,28 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
                 sources = fw_settings.getSources()
                 if len(sources) > 0:
                     __print(" ".join(sources))
+                sys.exit(0)
+            elif a.get_zone_of_source:
+                for zone_path in fw.config().listZones():
+                    zone_obj = fw.config().getZone(zone_path)
+                    fw_settings = zone_obj.getSettings()
+                    if a.get_zone_of_source in fw_settings.getSources():
+                        __print(zone_obj.get_property("name"))
+                sys.exit(0)
+            elif a.change_source:
+                for zone_path in fw.config().listZones():
+                    removed = False; added = False
+                    zone_obj = fw.config().getZone(zone_path)
+                    zone_name = zone_obj.get_property("name")
+                    zone_settings = zone_obj.getSettings()
+                    if a.change_source in zone_settings.getSources():
+                        removed = True
+                        zone_settings.removeSource(a.change_source)
+                    if zone_name == zone:
+                        added = True
+                        zone_settings.addSource(a.change_source)
+                    if removed != added: # (either added or removed, not both)
+                         zone_obj.update(zone_settings)
                 sys.exit(0)
             elif a.add_source:
                 fw_settings.addSource(a.add_source)
@@ -579,6 +624,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
                     fw_settings = fw_zone.getSettings()
                     __list_all_permanent(fw_settings, zone)
                     __print("")
+                sys.exit(0)
 
             fw_zone.update(fw_settings)
 
@@ -651,16 +697,6 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             for x in [ "interfaces", "sources" ]:
                 if x in zones[zone]:
                     __print("  %s: %s" % (x, " ".join(zones[zone][x])))
-    elif a.get_zone_of_interface:
-        try:
-            __print(fw.getZoneOfInterface(a.get_zone_of_interface))
-        except:
-            pass
-    elif a.get_zone_of_source:
-        try:
-            __print(fw.getZoneOfSource(a.get_zone_of_source))
-        except:
-            pass
     elif a.get_services:
         l = fw.listServices()
         if len(l) > 0:
@@ -744,6 +780,11 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
         l = fw.getInterfaces(zone)
         if len(l) > 0:
             __print(" ".join(l))
+    elif a.get_zone_of_interface:
+        try:
+            __print(fw.getZoneOfInterface(a.get_zone_of_interface))
+        except:
+            pass
     elif a.add_interface:
         fw.addInterface(zone, a.add_interface)
     elif a.change_interface:
@@ -758,6 +799,11 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
         sources = fw.getSources(zone)
         if len(sources) > 0:
             __print(" ".join(sources))
+    elif a.get_zone_of_source:
+        try:
+            __print(fw.getZoneOfSource(a.get_zone_of_source))
+        except:
+            pass
     elif a.add_source:
         fw.addSource(zone, a.add_source)
     elif a.change_source:

@@ -140,8 +140,12 @@ assert_bad           "--zone=${zone} --get-zone-of-interface" # impossible combi
 iface="perm_dummy0"
 zone="work"
 assert_good          "--permanent --zone=${zone} --add-interface=${iface}"
+assert_good_equals   "--permanent --get-zone-of-interface=${iface}" "${zone}"
 assert_good          "--permanent --zone ${zone} --query-interface=${iface}"
 assert_good_contains "--permanent --zone=${zone} --list-interfaces" "${iface}"
+zone="public"
+assert_good          "--permanent --zone=${zone} --change-interface=${iface}"
+assert_good_equals   "--permanent --get-zone-of-interface=${iface}" "${zone}"
 assert_good          "--permanent --zone=${zone} --remove-interface=${iface}"
 assert_bad           "--permanent --zone=${zone} --query-interface ${iface}"
 
@@ -161,9 +165,9 @@ assert_good        "--set-default-zone=${default_zone}"
 assert_good        "--remove-interface=${iface1}"
 assert_good        "--remove-interface=${iface2}"
 
-zone="public"
 sources=( "dead:beef::babe" "3ffe:501:ffff::/64" "1.2.3.4" "192.168.1.0/24" )
 for (( i=0;i<${#sources[@]};i++)); do
+  zone="public"
   source=${sources[${i}]}
   assert_good          "--zone=${zone} --add-source=${source}"
   assert_good_equals   "--get-zone-of-source=${source}" "${zone}"
@@ -171,6 +175,9 @@ for (( i=0;i<${#sources[@]};i++)); do
   assert_good_contains "--zone=${zone} --list-all" "${source}"
   assert_good_contains "--get-active-zones" "${source}"
   assert_good          "--zone ${zone} --query-source=${source}"
+  zone="work"
+  assert_good          "--zone=${zone} --change-source=${source}"
+  assert_good_equals   "--get-zone-of-source=${source}" "${zone}"
   assert_good          "--zone=${zone} --remove-source=${source}"
   assert_bad           "--zone ${zone} --query-source=${source}"
   assert_good_empty    "--get-zone-of-source=${source}"
@@ -178,10 +185,16 @@ for (( i=0;i<${#sources[@]};i++)); do
 done 
 
 for (( i=0;i<${#sources[@]};i++)); do
+  zone="public"
   source=${sources[${i}]}
   assert_good          "--permanent --zone=${zone} --add-source=${source}"
+  assert_good_equals   "--permanent --get-zone-of-source=${source}" "${zone}"
   assert_good_contains "--permanent --zone=${zone} --list-sources" "${source}"
+  assert_good_contains "--permanent --zone=${zone} --list-all" "${source}"
   assert_good          "--permanent --zone ${zone} --query-source=${source}"
+  zone="work"
+  assert_good          "--permanent --zone=${zone} --change-source=${source}"
+  assert_good_equals   "--permanent --get-zone-of-source=${source}" "${zone}"
   assert_good          "--permanent --zone=${zone} --remove-source=${source}"
   assert_bad           "--permanent --zone ${zone} --query-source=${source}"
 done
