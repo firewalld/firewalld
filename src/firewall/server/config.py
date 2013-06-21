@@ -419,7 +419,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          out_signature='o')
     @dbus_handle_exceptions
     def getIcmpTypeByName(self, icmptype, sender=None):
-        """list icmptypes objects paths
+        """object path of icmptype with given name
         """
         icmptype = str(icmptype)
         log.debug1("config.getIcmpTypeByName('%s')", icmptype)
@@ -433,7 +433,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          out_signature='o')
     @dbus_handle_exceptions
     def addIcmpType(self, icmptype, settings, sender=None):
-        """list icmptypes objects paths
+        """add icmptype with given name and settings
         """
         icmptype = str(icmptype)
         settings = dbus_to_python(settings)
@@ -462,7 +462,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          out_signature='o')
     @dbus_handle_exceptions
     def getServiceByName(self, service, sender=None):
-        """list services objects paths
+        """object path of service with given name
         """
         service = str(service)
         log.debug1("config.getServiceByName('%s')", service)
@@ -476,7 +476,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          out_signature='o')
     @dbus_handle_exceptions
     def addService(self, service, settings, sender=None):
-        """list services objects paths
+        """add service with given name and settings
         """
         service = str(service)
         settings = dbus_to_python(settings)
@@ -505,7 +505,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          out_signature='o')
     @dbus_handle_exceptions
     def getZoneByName(self, zone, sender=None):
-        """list zones objects paths
+        """object path of zone with given name
         """
         zone = str(zone)
         log.debug1("config.getZoneByName('%s')", zone)
@@ -514,12 +514,38 @@ class FirewallDConfig(slip.dbus.service.Object):
                 return obj
         raise FirewallError(INVALID_ZONE, zone)
 
+    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getZoneOfInterface(self, iface, sender=None):
+        """name of zone the given interface belongs to
+        """
+        iface = str(iface)
+        log.debug1("config.getZoneOfInterface('%s')", iface)
+        for obj in self.zones:
+            if iface in obj.obj.interfaces:
+                return obj.obj.name
+        raise FirewallError(UNKNOWN_INTERFACE, iface)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getZoneOfSource(self, source, sender=None):
+        """name of zone the given source belongs to
+        """
+        source = str(source)
+        log.debug1("config.getZoneOfSource('%s')", source)
+        for obj in self.zones:
+            if source in obj.obj.sources:
+                return obj.obj.name
+        raise FirewallError(UNKNOWN_SOURCE, source)
+
     @dbus_service_method(DBUS_INTERFACE_CONFIG,
                          in_signature='s'+Zone.DBUS_SIGNATURE,
                          out_signature='o')
     @dbus_handle_exceptions
     def addZone(self, zone, settings, sender=None):
-        """list zones objects paths
+        """add zone with given name and settings
         """
         zone = str(zone)
         settings = dbus_to_python(settings)

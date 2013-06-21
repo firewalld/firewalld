@@ -465,28 +465,15 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
                     __print(" ".join(l))
                 sys.exit(0)
             elif a.get_zone_of_interface:
-                for zone_path in fw.config().listZones():
-                    zone_obj = fw.config().getZone(zone_path)
-                    zone_name = zone_obj.get_property("name")
-                    zone_settings = zone_obj.getSettings()
-                    if a.get_zone_of_interface in zone_settings.getInterfaces():
-                        __print(zone_name)
+                __print(fw.config().getZoneOfInterface(a.get_zone_of_interface))
                 sys.exit(0)
             elif a.change_interface:
-                for zone_path in fw.config().listZones():
-                    removed = False; added = False
-                    zone_obj = fw.config().getZone(zone_path)
-                    zone_name = zone_obj.get_property("name")
-                    zone_settings = zone_obj.getSettings()
-                    if a.change_interface in zone_settings.getInterfaces():
-                        removed = True
-                        zone_settings.removeInterface(a.change_interface)
-                    if zone_name == zone:
-                        added = True
-                        zone_settings.addInterface(a.change_interface)
-                    if removed != added: # (either added or removed, not both)
-                         zone_obj.update(zone_settings)
-                sys.exit(0)
+                old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
+                old_zone_obj = fw.config().getZoneByName(old_zone_name)
+                old_zone_settings = old_zone_obj.getSettings()
+                old_zone_settings.removeInterface(a.change_interface)  # remove from old
+                old_zone_obj.update(old_zone_settings)
+                fw_settings.addInterface(a.change_interface)           # add to new
             elif a.add_interface:
                 fw_settings.addInterface(a.add_interface)
             elif a.remove_interface:
@@ -501,27 +488,15 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
                     __print(" ".join(sources))
                 sys.exit(0)
             elif a.get_zone_of_source:
-                for zone_path in fw.config().listZones():
-                    zone_obj = fw.config().getZone(zone_path)
-                    fw_settings = zone_obj.getSettings()
-                    if a.get_zone_of_source in fw_settings.getSources():
-                        __print(zone_obj.get_property("name"))
+                __print(fw.config().getZoneOfSource(a.get_zone_of_source))
                 sys.exit(0)
             elif a.change_source:
-                for zone_path in fw.config().listZones():
-                    removed = False; added = False
-                    zone_obj = fw.config().getZone(zone_path)
-                    zone_name = zone_obj.get_property("name")
-                    zone_settings = zone_obj.getSettings()
-                    if a.change_source in zone_settings.getSources():
-                        removed = True
-                        zone_settings.removeSource(a.change_source)
-                    if zone_name == zone:
-                        added = True
-                        zone_settings.addSource(a.change_source)
-                    if removed != added: # (either added or removed, not both)
-                         zone_obj.update(zone_settings)
-                sys.exit(0)
+                old_zone_name = fw.config().getZoneOfSource(a.change_source)
+                old_zone_obj = fw.config().getZoneByName(old_zone_name)
+                old_zone_settings = old_zone_obj.getSettings()
+                old_zone_settings.removeSource(a.change_source)  # remove from old
+                old_zone_obj.update(old_zone_settings)
+                fw_settings.addSource(a.change_source)           # add to new
             elif a.add_source:
                 fw_settings.addSource(a.add_source)
             elif a.remove_source:

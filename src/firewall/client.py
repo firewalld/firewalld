@@ -711,6 +711,16 @@ class FirewallClientConfig(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
+    def getZoneOfInterface(self, iface):
+        return dbus_to_python(self.fw_config.getZoneOfInterface(iface))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getZoneOfSource(self, source):
+        return dbus_to_python(self.fw_config.getZoneOfSource(source))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
     def addZone(self, name, settings):
         path = self.fw_config.addZone(name, tuple(settings.settings))
         return FirewallClientConfigZone(self.bus, path)
