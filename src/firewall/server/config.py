@@ -525,7 +525,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         for obj in self.zones:
             if iface in obj.obj.interfaces:
                 return obj.obj.name
-        raise FirewallError(UNKNOWN_INTERFACE, iface)
+        return ""
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='s',
                          out_signature='s')
@@ -538,7 +538,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         for obj in self.zones:
             if source in obj.obj.sources:
                 return obj.obj.name
-        raise FirewallError(UNKNOWN_SOURCE, source)
+        return ""
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG,
                          in_signature='s'+Zone.DBUS_SIGNATURE,

@@ -75,6 +75,12 @@ assert_bad() {
   fi
 }
 
+${path}firewall-cmd --state --quiet
+if [ $? != 0 ]; then
+  echo "FirewallD is not running"
+  exit $?
+fi
+
 # MAIN
 failures=0
 
@@ -144,6 +150,7 @@ assert_good_equals   "--permanent --get-zone-of-interface=${iface}" "${zone}"
 assert_good          "--permanent --zone ${zone} --query-interface=${iface}"
 assert_good_contains "--permanent --zone=${zone} --list-interfaces" "${iface}"
 zone="public"
+assert_bad           "--permanent --zone=${zone} --add-interface=${iface}" # already in another zone
 assert_good          "--permanent --zone=${zone} --change-interface=${iface}"
 assert_good_equals   "--permanent --get-zone-of-interface=${iface}" "${zone}"
 assert_good          "--permanent --zone=${zone} --remove-interface=${iface}"
@@ -193,6 +200,7 @@ for (( i=0;i<${#sources[@]};i++)); do
   assert_good_contains "--permanent --zone=${zone} --list-all" "${source}"
   assert_good          "--permanent --zone ${zone} --query-source=${source}"
   zone="work"
+  assert_bad           "--permanent --zone=${zone} --add-source=${source}" # already in another zone
   assert_good          "--permanent --zone=${zone} --change-source=${source}"
   assert_good_equals   "--permanent --get-zone-of-source=${source}" "${zone}"
   assert_good          "--permanent --zone=${zone} --remove-source=${source}"

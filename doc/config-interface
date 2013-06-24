@@ -9,6 +9,8 @@
           -------
             listZones() -> (Array of [Object Path] zones)
             getZoneByName(String name) -> (Object Path zone)
+            getZoneOfInterface(String iface) -> (String zone)
+            getZoneOfSource(String source) -> (String zone)
             addZone(String name, Dict of {String, Variant} zone_settings) -> (Ob
     
             listServices() -> (Array of [Object Path] services)
