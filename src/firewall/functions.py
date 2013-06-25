@@ -304,6 +304,17 @@ def check_address(ipv, source):
         return False
     return True
 
+def check_single_address(ipv, source):
+    if ipv == "ipv4":
+        if not checkIPn(source):
+            return False
+    elif ipv == "ipv6":
+        if not checkIP6(source):
+            return False
+    else:
+        return False
+    return True
+
 def uniqify(input):
     # removes duplicates from list, whilst preserving order
     output = []

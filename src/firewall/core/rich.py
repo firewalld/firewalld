@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ -*- coding: utf-8 -*-
 #
 # Copyright (C) 2013 Red Hat, Inc.
 #
@@ -499,8 +499,8 @@ class Rich_Rule(object):
                     not functions.check_port(self.element.to_port):
                 raise FirewallError(INVALID_PORT, self.element.to_port)
             if self.element.to_address != None and \
-                    not functions.check_address(self.family,
-                                                self.element.to_address):
+                    not functions.check_single_address(self.family,
+                                                       self.element.to_address):
                 raise FirewallError(INVALID_ADDR, self.element.to_address)
 
         # other element and not empty?
