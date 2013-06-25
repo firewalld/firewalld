@@ -23,7 +23,7 @@ import time
 from firewall.core.base import *
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
-    checkProtocol, enable_ip_forwarding
+    checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
 
@@ -1197,7 +1197,7 @@ class FirewallZone:
         if toport:
             self._fw.check_port(toport)
         if toaddr:
-            self._fw.check_single_address(ipv, toaddr)
+            check_single_address(ipv, toaddr)
         if not toport and not toaddr:
             raise FirewallError(INVALID_FORWARD)
 
