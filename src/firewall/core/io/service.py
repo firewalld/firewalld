@@ -64,13 +64,21 @@ class Service(IO_Object):
     def _check_config(self, config, item):
         if item == "ports":
             for port in config:
-                check_port(port[0])
-                check_protocol(port[1])
+                if port[0] != "":
+                    check_port(port[0])
+                    check_protocol(port[1])
+                else:
+                    # only protocol
+                    if not functions.checkProtocol(port[1]):
+                        raise FirewallError(INVALID_PROTOCOL, port[1])
+
         elif item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
                     raise FirewallError(INVALID_DESTINATION, destination)
-                # TODO: check IP address
+                if not functions.check_address(destination, config[destination]):
+                    raise FirewallError(INVALID_ADDRESS, config[destination])
+                    
 
 # PARSER
 
