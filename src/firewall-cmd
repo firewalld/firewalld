@@ -36,9 +36,16 @@ def __print(msg=None):
     if msg and not a.quiet:
         print(msg)
 
-def __fail(msg=None):
+def __print_and_exit(msg=None, exit_code=0):
     __print(msg)
-    sys.exit(2)
+    sys.exit(exit_code)
+
+def __fail(msg=None):
+    __print_and_exit(msg, 2)
+
+def __print_if_verbose(msg=None):
+    if msg and a.verbose:
+        print(msg)
 
 def __parse_port(value):
     try:
@@ -80,6 +87,13 @@ def _check_ipv(value):
     return value
 
 def __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules):
+    attributes = []
+    if zone == fw.getDefaultZone():
+        attributes.append("default")
+    if interfaces:
+        attributes.append("active")
+    if attributes:
+        zone = zone + " (%s)" % ", ".join(attributes)
     __print(zone)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
@@ -114,17 +128,16 @@ def __list_all_permanent(fw_settings, zone):
 
 def __print_query_result(value):
     if value:
-        __print("yes")
+        __print_and_exit("yes")
     else:
-        __print("no")
-    sys.exit(not value)
-
+        __print_and_exit("no", 1)
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
 
-#parser.add_argument("-v", "--verbose", action="store_true")
-parser.add_argument("-q", "--quiet", action="store_true")
+parser_group_output = parser.add_mutually_exclusive_group()
+parser_group_output.add_argument("-v", "--verbose", action="store_true")
+parser_group_output.add_argument("-q", "--quiet", action="store_true")
 
 parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
@@ -351,33 +364,32 @@ try:
     fw = FirewallClient()
     if fw.connected == False:
         if a.state:
-            __print ("not running")
+            __print_and_exit ("not running", NOT_RUNNING)
         else:
-            __print ("FirewallD is not running")
-        sys.exit(NOT_RUNNING)
+            __print_and_exit ("FirewallD is not running", NOT_RUNNING)
 
-    if options_zone_ops and not zone and \
-       fw.getDefaultZone() not in fw.getActiveZones():
-        __print ("""You're performing an operation over default zone ('%s'),
-but your connections/interfaces are in zone(s) '%s' (see --get-active-zones)
-You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), ",".join(fw.getActiveZones())))
+    if options_zone_ops and not zone:
+        default = fw.getDefaultZone()
+        __print_if_verbose("No zone specified, using default zone, i.e. '%s'" % default)
+        active = fw.getActiveZones().keys()
+        if active and default not in active:
+            __print ("""You're performing an operation over default zone ('%s'),
+but your connections/interfaces are in zone '%s' (see --get-active-zones)
+You most likely need to use --zone=%s option.\n""" % (default, ",".join(active), active[0]))
 
     if a.permanent:
         if a.get_zones:
             zones = fw.config().listZones()
             l = [fw.config().getZone(z).get_property("name") for z in zones]
-            if len(l) > 0:
-                __print(" ".join(l))
+            __print_and_exit(" ".join(l))
         elif a.get_services:
             services = fw.config().listServices()
             l = [fw.config().getService(s).get_property("name") for s in services]
-            if len(l) > 0:
-                __print(" ".join(l))
+            __print_and_exit(" ".join(l))
         elif a.get_icmptypes:
             icmptypes = fw.config().listIcmpTypes()
             l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
-            if len(l) > 0:
-                __print(" ".join(l))
+            __print_and_exit(" ".join(l))
 
         # lockdown
         elif a.lockdown_on:
@@ -396,9 +408,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # commands
             if a.list_lockdown_whitelist_commands:
                 l = whitelist.getCommands()
-                if len(l) > 0:
-                    __print("\n".join(l))
-                sys.exit(0)
+                __print_and_exit("\n".join(l))
             elif a.add_lockdown_whitelist_command:
                 whitelist.addCommand(a.add_lockdown_whitelist_command)
             elif a.remove_lockdown_whitelist_command:
@@ -410,9 +420,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # contexts
             elif a.list_lockdown_whitelist_contexts:
                 l = whitelist.getContexts()
-                if len(l) > 0:
-                    __print("\n".join(l))
-                sys.exit(0)
+                __print_and_exit("\n".join(l))
             elif a.add_lockdown_whitelist_context:
                 whitelist.addContext(a.add_lockdown_whitelist_context) 
             elif a.remove_lockdown_whitelist_context:
@@ -424,9 +432,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # uids
             elif a.list_lockdown_whitelist_uids:
                 l = whitelist.getUids()
-                if len(l) > 0:
-                    __print(" ".join(map(str, l)))
-                sys.exit(0)
+                __print_and_exit(" ".join(map(str, l)))
             elif a.add_lockdown_whitelist_uid:
                 whitelist.addUid(a.add_lockdown_whitelist_uid)
             elif a.remove_lockdown_whitelist_uid:
@@ -438,9 +444,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # users
             elif a.list_lockdown_whitelist_users:
                 l = whitelist.getUsers()
-                if len(l) > 0:
-                    __print("\n".join(l))
-                sys.exit(0)
+                __print_and_exit("\n".join(l))
             elif a.add_lockdown_whitelist_user:
                 whitelist.addUser(a.add_lockdown_whitelist_user) 
             elif a.remove_lockdown_whitelist_user:
@@ -461,12 +465,9 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # interface
             if a.list_interfaces:
                 l = fw_settings.getInterfaces()
-                if len(l) > 0:
-                    __print(" ".join(l))
-                sys.exit(0)
+                __print_and_exit(" ".join(l))
             elif a.get_zone_of_interface:
-                __print(fw.config().getZoneOfInterface(a.get_zone_of_interface))
-                sys.exit(0)
+                __print_and_exit(fw.config().getZoneOfInterface(a.get_zone_of_interface))
             elif a.change_interface:
                 old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
                 old_zone_obj = fw.config().getZoneByName(old_zone_name)
@@ -484,12 +485,9 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # source
             if a.list_sources:
                 sources = fw_settings.getSources()
-                if len(sources) > 0:
-                    __print(" ".join(sources))
-                sys.exit(0)
+                __print_and_exit(" ".join(sources))
             elif a.get_zone_of_source:
-                __print(fw.config().getZoneOfSource(a.get_zone_of_source))
-                sys.exit(0)
+                __print_and_exit(fw.config().getZoneOfSource(a.get_zone_of_source))
             elif a.change_source:
                 old_zone_name = fw.config().getZoneOfSource(a.change_source)
                 old_zone_obj = fw.config().getZoneByName(old_zone_name)
@@ -507,9 +505,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # rich rules
             if a.list_rich_rules:
                 l = fw_settings.getRichRules()
-                if len(l) > 0:
-                    __print("\n".join(l))
-                sys.exit(0)
+                __print_and_exit("\n".join(l))
             elif a.add_rich_rule:
                 for s in a.add_rich_rule:
                     fw_settings.addRichRule(s)
@@ -522,9 +518,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # service
             if a.list_services:
                 l = fw_settings.getServices()
-                if len(l) > 0:
-                    __print(" ".join(l))
-                sys.exit(0)
+                __print_and_exit(" ".join(l))
             elif a.add_service:
                 for s in a.add_service:
                     fw_settings.addService(s)
@@ -537,9 +531,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # port
             elif a.list_ports:
                 l = fw_settings.getPorts()
-                if len(l) > 0:
-                    __print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
-                sys.exit(0)
+                __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
             elif a.add_port:
                 for port_proto in a.add_port:
                     (port, proto) = __parse_port(port_proto)
@@ -563,9 +555,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # forward port
             elif a.list_forward_ports:
                 l = fw_settings.getForwardPorts()
-                if len(l) > 0:
-                    __print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
-                sys.exit(0)
+                __print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
             elif a.add_forward_port:
                 for fp in a.add_forward_port:
                     (port, protocol, toport, toaddr) = __parse_forward_port(fp)
@@ -581,9 +571,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             # block icmp
             elif a.list_icmp_blocks:
                 l = fw_settings.getIcmpBlocks()
-                if len(l) > 0:
-                    __print(" ".join(l))
-                sys.exit(0)
+                __print_and_exit(" ".join(l))
             elif a.add_icmp_block:
                 for ib in a.add_icmp_block: 
                     fw_settings.addIcmpBlock(ib)
@@ -612,15 +600,13 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             fw_zone.update(fw_settings)
 
     elif a.version:
-        __print(fw.get_property("version"))
-        sys.exit(0)
+        __print_and_exit(fw.get_property("version"))
     elif a.state:
         state = fw.get_property("state")
         if state == "RUNNING":
-            __print ("running")
+            __print_and_exit ("running")
         else:
-            __print ("not running")
-            sys.exit(NOT_RUNNING)
+            __print_and_exit ("not running", NOT_RUNNING)
     elif a.reload:
         fw.reload()
     elif a.complete_reload:
@@ -641,7 +627,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             __print_query_result(fw.queryChain(_check_ipv(a.query_chain[0]),
                                        a.query_chain[1], a.query_chain[2]))
         elif a.get_chains:
-            __print(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
+            __print_and_exit(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
                                         a.get_chains[1])))
         elif a.add_rule:
             if len (a.add_rule) < 5:
@@ -667,12 +653,13 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
                                 a.get_rules[1], a.get_rules[2])
             for rule in rules:
                 __print(" ".join(rule))
+            sys.exit(0)
     elif a.get_default_zone:
-        __print(fw.getDefaultZone())
+        __print_and_exit(fw.getDefaultZone())
     elif a.set_default_zone:
         fw.setDefaultZone(a.set_default_zone)
     elif a.get_zones:
-        __print(" ".join(fw.getZones()))
+        __print_and_exit(" ".join(fw.getZones()))
     elif a.get_active_zones:
         zones = fw.getActiveZones()
         for zone in zones:
@@ -680,14 +667,13 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
             for x in [ "interfaces", "sources" ]:
                 if x in zones[zone]:
                     __print("  %s: %s" % (x, " ".join(zones[zone][x])))
+        sys.exit(0)
     elif a.get_services:
         l = fw.listServices()
-        if len(l) > 0:
-            __print(" ".join(l))
+        __print_and_exit(" ".join(l))
     elif a.get_icmptypes:
         l = fw.listIcmpTypes()
-        if len(l) > 0:
-            __print(" ".join(l))
+        __print_and_exit(" ".join(l))
 
     # panic
     elif a.panic_on:
@@ -710,8 +696,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # commands
     elif a.list_lockdown_whitelist_commands:
         l = fw.getLockdownWhitelistCommands()
-        if len(l) > 0:
-            __print("\n".join(l))
+        __print_and_exit("\n".join(l))
     elif a.add_lockdown_whitelist_command:
         fw.addLockdownWhitelistCommand(a.add_lockdown_whitelist_command)
     elif a.remove_lockdown_whitelist_command:
@@ -723,8 +708,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # contexts
     elif a.list_lockdown_whitelist_contexts:
         l = fw.getLockdownWhitelistContexts()
-        if len(l) > 0:
-            __print("\n".join(l))
+        __print_and_exit("\n".join(l))
     elif a.add_lockdown_whitelist_context:
         fw.addLockdownWhitelistContext(a.add_lockdown_whitelist_context)
     elif a.remove_lockdown_whitelist_context:
@@ -736,8 +720,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # uids
     elif a.list_lockdown_whitelist_uids:
         l = fw.getLockdownWhitelistUids()
-        if len(l) > 0:
-            __print(" ".join(map(str, l)))
+        __print_and_exit(" ".join(map(str, l)))
     elif a.add_lockdown_whitelist_uid:
         fw.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
     elif a.remove_lockdown_whitelist_uid:
@@ -749,8 +732,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # users
     elif a.list_lockdown_whitelist_users:
         l = fw.getLockdownWhitelistUsers()
-        if len(l) > 0:
-            __print(" ".join(l))
+        __print_and_exit(" ".join(l))
     elif a.add_lockdown_whitelist_user:
         fw.addLockdownWhitelistUser(a.add_lockdown_whitelist_user)
     elif a.remove_lockdown_whitelist_user:
@@ -762,13 +744,12 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # interface
     elif a.list_interfaces:
         l = fw.getInterfaces(zone)
-        if len(l) > 0:
-            __print(" ".join(l))
+        __print_and_exit(" ".join(l))
     elif a.get_zone_of_interface:
         try:
-            __print(fw.getZoneOfInterface(a.get_zone_of_interface))
+            __print_and_exit(fw.getZoneOfInterface(a.get_zone_of_interface))
         except:
-            pass
+            sys.exit(0)
     elif a.add_interface:
         fw.addInterface(zone, a.add_interface)
     elif a.change_interface:
@@ -781,13 +762,12 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # source
     elif a.list_sources:
         sources = fw.getSources(zone)
-        if len(sources) > 0:
-            __print(" ".join(sources))
+        __print_and_exit(" ".join(sources))
     elif a.get_zone_of_source:
         try:
-            __print(fw.getZoneOfSource(a.get_zone_of_source))
+            __print_and_exit(fw.getZoneOfSource(a.get_zone_of_source))
         except:
-            pass
+            sys.exit(0)
     elif a.add_source:
         fw.addSource(zone, a.add_source)
     elif a.change_source:
@@ -800,8 +780,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # rich rules
     elif a.list_rich_rules:
         l = fw.getRichRules(zone)
-        if len(l) > 0:
-            __print("\n".join(l))
+        __print_and_exit("\n".join(l))
     elif a.add_rich_rule:
         for s in a.add_rich_rule:
             fw.addRichRule(zone, s, a.timeout)
@@ -814,8 +793,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # service
     elif a.list_services:
         l = fw.getServices(zone)
-        if len(l) > 0:
-            __print(" ".join(l))
+        __print_and_exit(" ".join(l))
     elif a.add_service:
         for s in a.add_service:
             fw.addService(zone, s, a.timeout)
@@ -828,8 +806,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # port
     elif a.list_ports:
         l = fw.getPorts(zone)
-        if len(l) > 0:
-            __print(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+        __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
     elif a.add_port:
         for port_proto in a.add_port:
             (port, proto) = __parse_port(port_proto)
@@ -853,9 +830,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # forward port
     elif a.list_forward_ports:
         l = fw.getForwardPorts(zone)
-        if len(l) > 0:
-            __print("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
-
+        __print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
     elif a.add_forward_port:
         for fp in a.add_forward_port:
             (port, protocol, toport, toaddr) = __parse_forward_port(fp)
@@ -872,8 +847,7 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # block icmp
     elif a.list_icmp_blocks:
         l = fw.getIcmpBlocks(zone)
-        if len(l) > 0:
-            __print(" ".join(l))
+        __print_and_exit(" ".join(l))
     elif a.add_icmp_block:
         for ib in a.add_icmp_block:
             fw.addIcmpBlock(zone, ib, a.timeout)
@@ -886,12 +860,14 @@ You most likely need to use --zone=<zone> option.\n""" % (fw.getDefaultZone(), "
     # list all
     elif a.list_all:
         __list_all(fw, zone if zone else fw.getDefaultZone())
+        sys.exit(0)
 
     # list everything
     elif a.list_all_zones:
         for zone in fw.getZones():
             __list_all(fw, zone)
             __print("")
+        sys.exit(0)
 
 
 except dbus.exceptions.DBusException as e:
@@ -904,10 +880,8 @@ except dbus.exceptions.DBusException as e:
     else:
         code = FirewallError.get_code(dbus_message)
         if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
-            __print("Warning: %s" % dbus_message)
-            sys.exit(0)
+            __print_and_exit("Warning: %s" % dbus_message)
         else:
-            __print("Error: %s" % dbus_message)
-        sys.exit(code)
+            __print_and_exit("Error: %s" % dbus_message, code)
 
-sys.exit(0)
+__print_and_exit("success")
