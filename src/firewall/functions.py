@@ -125,17 +125,10 @@ def checkIP(ip):
     @return True if address is valid, else False
     """
 
-    if ip != "":
-        splits = ip.split(".")
-        if len(splits) != 4:
-            return False
-        for split in splits:
-            try:
-                l = int(split)
-            except:
-                return False
-            if l < 0 or l > 255:
-                return False
+    try:
+        socket.inet_pton(socket.AF_INET, ip)
+    except socket.error as err:
+        return False
     return True
 
 def checkIP6(ip):
@@ -168,6 +161,8 @@ def checkIPnMask(ip):
                 i = int(mask)
             except:
                 return False
+            if i < 0 or i > 32:
+                return False
     return True
 
 def checkIP6nMask(ip):
@@ -184,6 +179,9 @@ def checkIP6nMask(ip):
             i = int(mask)
         except:
             return False
+        if i < 0 or i > 128:
+            return False
+
     return True
 
 def checkProtocol(protocol):
