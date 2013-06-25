@@ -467,7 +467,11 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
                 l = fw_settings.getInterfaces()
                 __print_and_exit(" ".join(l))
             elif a.get_zone_of_interface:
-                __print_and_exit(fw.config().getZoneOfInterface(a.get_zone_of_interface))
+                zone = fw.config().getZoneOfInterface(a.get_zone_of_interface)
+                if zone:
+                    __print_and_exit(zone)
+                else:
+                    __print_and_exit("no zone", 2)
             elif a.change_interface:
                 old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
                 old_zone_obj = fw.config().getZoneByName(old_zone_name)
@@ -487,7 +491,11 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
                 sources = fw_settings.getSources()
                 __print_and_exit(" ".join(sources))
             elif a.get_zone_of_source:
-                __print_and_exit(fw.config().getZoneOfSource(a.get_zone_of_source))
+                zone = fw.config().getZoneOfSource(a.get_zone_of_source)
+                if zone:
+                    __print_and_exit(zone)
+                else:
+                    __print_and_exit("no zone", 2)
             elif a.change_source:
                 old_zone_name = fw.config().getZoneOfSource(a.change_source)
                 old_zone_obj = fw.config().getZoneByName(old_zone_name)
@@ -746,10 +754,11 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
         l = fw.getInterfaces(zone)
         __print_and_exit(" ".join(l))
     elif a.get_zone_of_interface:
-        try:
-            __print_and_exit(fw.getZoneOfInterface(a.get_zone_of_interface))
-        except:
-            sys.exit(0)
+        zone = fw.getZoneOfInterface(a.get_zone_of_interface)
+        if zone:
+            __print_and_exit(zone)
+        else:
+            __print_and_exit("no zone", 2)
     elif a.add_interface:
         fw.addInterface(zone, a.add_interface)
     elif a.change_interface:
@@ -764,10 +773,11 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
         sources = fw.getSources(zone)
         __print_and_exit(" ".join(sources))
     elif a.get_zone_of_source:
-        try:
-            __print_and_exit(fw.getZoneOfSource(a.get_zone_of_source))
-        except:
-            sys.exit(0)
+        zone = fw.getZoneOfSource(a.get_zone_of_source)
+        if zone:
+            __print_and_exit(zone)
+        else:
+            __print_and_exit("no zone", 2)
     elif a.add_source:
         fw.addSource(zone, a.add_source)
     elif a.change_source:

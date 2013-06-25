@@ -135,7 +135,7 @@ assert_good_equals   "--get-zone-of-interface=${iface}" "${zone}"
 assert_good_contains "--zone=${zone} --list-interfaces" "${iface}"
 assert_good          "--zone=${zone} --remove-interface=${iface}"
 assert_bad           "--zone=${zone} --query-interface ${iface}"
-assert_good_empty    "--get-zone-of-interface=${iface}"
+assert_bad           "--get-zone-of-interface=${iface}" # in no zone
 assert_bad           "--get-zone-of-interface" # missing argument
 assert_bad           "--zone=${zone} --get-zones" # impossible combination
 assert_bad           "--zone=${zone} --get-services" # impossible combination
@@ -187,7 +187,7 @@ for (( i=0;i<${#sources[@]};i++)); do
   assert_good_equals   "--get-zone-of-source=${source}" "${zone}"
   assert_good          "--zone=${zone} --remove-source=${source}"
   assert_bad           "--zone ${zone} --query-source=${source}"
-  assert_good_empty    "--get-zone-of-source=${source}"
+  assert_bad           "--get-zone-of-source=${source}" # in no zone
   assert_bad           "--get-zone-of-source" # missing argument
 done 
 

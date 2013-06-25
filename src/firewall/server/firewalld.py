@@ -698,7 +698,7 @@ class FirewallD(slip.dbus.service.Object):
         zone = self.fw.zone.get_zone_of_interface(str(interface))
         if zone:
             return zone
-        raise FirewallError(UNKNOWN_INTERFACE, interface)
+        return ""
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
@@ -711,7 +711,7 @@ class FirewallD(slip.dbus.service.Object):
         zone = self.fw.zone.get_zone_of_source(source)
         if zone:
             return zone
-        raise FirewallError(UNKNOWN_SOURCE, source)
+        return ""
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
