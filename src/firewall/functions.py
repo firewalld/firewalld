@@ -306,7 +306,7 @@ def check_address(ipv, source):
 
 def check_single_address(ipv, source):
     if ipv == "ipv4":
-        if not checkIPn(source):
+        if not checkIP(source):
             return False
     elif ipv == "ipv6":
         if not checkIP6(source):
