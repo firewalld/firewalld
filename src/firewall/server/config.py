@@ -522,10 +522,15 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         iface = str(iface)
         log.debug1("config.getZoneOfInterface('%s')", iface)
+        ret = []
         for obj in self.zones:
             if iface in obj.obj.interfaces:
-                return obj.obj.name
-        return ""
+                ret.append(obj.obj.name)
+        if len(ret) > 1:
+            # Even it shouldn't happen, it's actually possible that
+            # the same interface is in several zone XML files
+            return " ".join(ret) + "  (ERROR: interface '%s' is in %s zone XML files, can be only in one)" % (iface, len(ret))
+        return ret[0] if ret else ""
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='s',
                          out_signature='s')
@@ -535,10 +540,15 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         source = str(source)
         log.debug1("config.getZoneOfSource('%s')", source)
+        ret = []
         for obj in self.zones:
             if source in obj.obj.sources:
-                return obj.obj.name
-        return ""
+                ret.append(obj.obj.name)
+        if len(ret) > 1:
+            # Even it shouldn't happen, it's actually possible that
+            # the same source is in several zone XML files
+            return " ".join(ret) + "  (ERROR: source '%s' is in %s zone XML files, can be only in one)" % (iface, len(ret))
+        return ret[0] if ret else ""
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG,
                          in_signature='s'+Zone.DBUS_SIGNATURE,
