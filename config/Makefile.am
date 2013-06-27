@@ -2,9 +2,13 @@ sconfdir = $(sysconfdir)/firewalld
 prefixlibdir = ${prefix}/lib/firewalld
 dist_sconf_DATA = firewalld.conf lockdown-whitelist.xml
 
-desktop_FILES = firewall-applet.desktop.in firewall-config.desktop.in
+desktop_FILES = firewall-config.desktop.in
 desktopdir = $(datadir)/applications
 desktop_DATA = $(desktop_FILES:.in=)
+
+applet_desktop_FILES = firewall-applet.desktop.in
+applet_desktopdir = $(sysconfdir)/xdg/autostart
+applet_desktop_DATA = $(applet_desktop_FILES:.in=)
 
 polkit1_action_FILES = org.fedoraproject.FirewallD1.policy.in
 polkit1_actiondir = $(datadir)/polkit-1/actions
@@ -18,6 +22,7 @@ gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
 BUILT_SOURCES = \
 	$(desktop_DATA) \
+	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS) \
 	firewalld.service
@@ -27,17 +32,19 @@ BUILT_SOURCES = \
 @INTLTOOL_XML_NOMERGE_RULE@
 @GSETTINGS_RULES@
 
-all: $(desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
+all: $(desktop_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
 CLEANFILES = *~ *\# .\#* firewalld.service
 
 DISTCLEANFILES = \
 	$(desktop_DATA) \
+	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS)
 
 EXTRA_DIST = \
 	$(desktop_FILES) \
+	$(applet_desktop_DATA) \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
 	icmptypes/destination-unreachable.xml \

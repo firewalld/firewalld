@@ -75,8 +75,8 @@ firewalld.
 make install DESTDIR=%{buildroot}
 
 desktop-file-install --delete-original \
-  --dir %{buildroot}%{_datadir}/applications \
-  %{buildroot}%{_datadir}/applications/firewall-applet.desktop
+  --dir %{buildroot}%{_sysconfdir}/xdg/autostart \
+  %{buildroot}%{_sysconfdir}/xdg/autostart/firewall-applet.desktop
 desktop-file-install --delete-original \
   --dir %{buildroot}%{_datadir}/applications \
   %{buildroot}%{_datadir}/applications/firewall-config.desktop
@@ -163,7 +163,7 @@ fi
 %files -n firewall-applet
 %{_bindir}/firewall-applet
 %defattr(0644,root,root)
-%{_datadir}/applications/firewall-applet.desktop
+%{_sysconfdir}/xdg/autostart/firewall-applet.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
 
