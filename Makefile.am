@@ -2,6 +2,7 @@ SUBDIRS = config doc po shell-completion src
 
 EXTRA_DIST = \
 	COPYING \
+	README \
 	autogen.sh \
 	${PACKAGE_NAME}.spec \
 	fix_python_shebang.sh
