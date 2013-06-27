@@ -176,6 +176,7 @@ fi
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
 
 %changelog
+* Thu Jun 20 2013  Jiri Popelka <jpopelka@redhat.com>
 - Remove migrating to a systemd unit file from a SysV initscript
 - Remove pointless "ExclusiveOS" tag
 
