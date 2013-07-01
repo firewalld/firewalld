@@ -53,13 +53,13 @@ def dbus_handle_exceptions(func, *args, **kwargs):
         return func(*args, **kwargs)
     except FirewallError as error:
         log.debug1(str(error))
-        raise DBusException(error)
+        raise DBusException(str(error))
     except DBusException as e:
         # only log DBusExceptions once
-        raise DBusException(e)
-    except Exception as msg:
+        raise e
+    except Exception as e:
         log.exception()
-        raise DBusException(msg)
+        raise DBusException(str(e))
 
 def dbus_service_method(*args, **kwargs):
     kwargs.setdefault("sender_keyword", "sender")
