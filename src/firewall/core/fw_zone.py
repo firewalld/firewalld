@@ -569,7 +569,7 @@ class FirewallZone:
         if destination:
             if destination.invert:
                 command.append("!")
-            command += [ "-s", destination.addr ]
+            command += [ "-d", destination.addr ]
 
     def __rule_limit(self, limit):
         if limit:
