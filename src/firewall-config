@@ -2175,5 +2175,13 @@ class FirewallConfig(object):
 
 # MAIN
 
+if len(sys.argv) > 1:
+    print("""Usage: %s [options]
+
+Options:
+  -h, --help     show this help message and exit
+"""  % sys.argv[0])
+    sys.exit(1)
+
 app = FirewallConfig()
 sys.exit(0)
