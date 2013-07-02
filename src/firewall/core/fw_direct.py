@@ -138,17 +138,18 @@ class FirewallDirect:
             _chain = "%s_direct" % (chain)
 
         chain_id = (ipv, table, _chain)
+        rule_id = (priority, args)
 
         if enable:
             if chain_id in self._rules and \
-                    args in self._rules[chain_id]:
+                    rule_id in self._rules[chain_id]:
                 raise FirewallError(ALREADY_ENABLED)
         else:
             if not chain_id in self._rules or \
-                    not args in self._rules[chain_id]:
+                    not rule_id in self._rules[chain_id]:
                 raise FirewallError(NOT_ENABLED)
             # get priority of rule
-            priority = self._rules[chain_id][args]
+            priority = self._rules[chain_id][rule_id]
 
         # sum number of rules for all positions up to position (including)
         # sort used positions
@@ -176,7 +177,7 @@ class FirewallDirect:
         if enable:
             if not chain_id in self._rules:
                 self._rules[chain_id] = LastUpdatedOrderedDict()
-            self._rules[chain_id][args] = priority
+            self._rules[chain_id][rule_id] = priority
             if chain_id not in self._rule_priority_positions:
                 self._rule_priority_positions[chain_id] = { }
 
@@ -185,7 +186,7 @@ class FirewallDirect:
             else:
                 self._rule_priority_positions[chain_id][priority] = 1
         else:
-            del self._rules[chain_id][args]
+            del self._rules[chain_id][rule_id]
             if len(self._rules[chain_id]) == 0:
                 del self._rules[chain_id]
             self._rule_priority_positions[chain_id][priority] -= 1
@@ -193,11 +194,10 @@ class FirewallDirect:
     def add_rule(self, ipv, table, chain, priority, args):
         self.__rule(True, ipv, table, chain, priority, args)
 
-    def remove_rule(self, ipv, table, chain, args):
-        # priority of rule will be gathered in __rule
-        self.__rule(False, ipv, table, chain, 0, args)
+    def remove_rule(self, ipv, table, chain, priority, args):
+        self.__rule(False, ipv, table, chain, priority, args)
 
-    def query_rule(self, ipv, table, chain, args):
+    def query_rule(self, ipv, table, chain, priority, args):
         _chain = chain
         # use "%s_chain" for built-in chains
         if ipv in [ "ipv4", "ipv6" ]:
@@ -222,6 +222,7 @@ class FirewallDirect:
         chain_id = (ipv, table, _chain)
 
         if chain_id in self._rules:
+            print self._rules[chain_id]
             return self._rules[chain_id]
         return [ ]
 

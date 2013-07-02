@@ -1514,45 +1514,46 @@ class FirewallD(slip.dbus.service.Object):
         chain = str(chain)
         priority = int(priority)
         args = tuple( str(i) for i in args )
-        log.debug1("direct.addRule('%s', '%s', '%s', '%s')" % \
-                       (ipv, table, chain, "','".join(args)))
+        log.debug1("direct.addRule('%s', '%s', '%s', %d, '%s')" % \
+                       (ipv, table, chain, priority, "','".join(args)))
         self.accessCheck(sender)
         self.fw.direct.add_rule(ipv, table, chain, priority, args)
-        self.RuleAdded(ipv, table, chain, args)
+        self.RuleAdded(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssas',
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='')
     @dbus_handle_exceptions
-    def removeRule(self, ipv, table, chain, args, sender=None):
+    def removeRule(self, ipv, table, chain, priority, args, sender=None):
         # removes direct rule
         ipv = str(ipv)
         table = str(table)
         chain = str(chain)
+        priority = int(priority)
         args = tuple( str(i) for i in args )
-        log.debug1("direct.removeRule('%s', '%s', '%s', '%s')" % \
-                       (ipv, table, chain, "','".join(args)))
+        log.debug1("direct.removeRule('%s', '%s', '%s', %d, '%s')" % \
+                       (ipv, table, chain, priority, "','".join(args)))
         self.accessCheck(sender)
-        self.fw.direct.remove_rule(ipv, table, chain, args)
-        self.RuleRemoved(ipv, table, chain, args)
+        self.fw.direct.remove_rule(ipv, table, chain, priority, args)
+        self.RuleRemoved(ipv, table, chain, priority, args)
     
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssas',
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='b')
     @dbus_handle_exceptions
-    def queryRule(self, ipv, table, chain, args, sender=None):
+    def queryRule(self, ipv, table, chain, priority, args, sender=None):
         # returns true if a rule is enabled
         ipv = str(ipv)
         table = str(table)
         chain = str(chain)
         args = tuple( str(i) for i in args )
-        log.debug1("directQueryRule('%s','%s', '%s')" % (table, chain,
-                                                         "','".join(args)))
-        return self.fw.direct.query_rule(ipv, table, chain, args)
+        log.debug1("directQueryRule('%s','%s', %d, '%s')" % \
+                       (table, chain, priority, "','".join(args)))
+        return self.fw.direct.query_rule(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
-                         out_signature='aas')
+                         out_signature='a(ias)')
     @dbus_handle_exceptions
     def getRules(self, ipv, table, chain, sender=None):
         # returns list of added rules
@@ -1562,17 +1563,17 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getRules('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.get_rules(ipv, table, chain)
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssas')
+    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
-    def RuleAdded(self, ipv, table, chain, args):
-        log.debug1("direct.RuleAdded('%s', '%s', '%s')" % (table, chain,
-                   "','".join(args)))
+    def RuleAdded(self, ipv, table, chain, priority, args):
+        log.debug1("direct.RuleAdded('%s', '%s', %d, '%s')" % \
+                       (table, chain, priority, "','".join(args)))
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssas')
+    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
-    def RuleRemoved(self, ipv, table, chain, args):
-        log.debug1("direct.RuleRemoved('%s', '%s', '%s')" % (table, chain,
-                                                             "','".join(args)))
+    def RuleRemoved(self, ipv, table, chain, priority, args):
+        log.debug1("direct.RuleRemoved('%s', '%s', %d, '%s')" % \
+                       (table, chain, priority, "','".join(args)))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

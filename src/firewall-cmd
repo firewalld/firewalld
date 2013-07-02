@@ -659,8 +659,8 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
         elif a.get_rules:
             rules = fw.getRules(_check_ipv(a.get_rules[0]),
                                 a.get_rules[1], a.get_rules[2])
-            for rule in rules:
-                __print(" ".join(rule))
+            for (priority, rule) in rules:
+                __print("%d %s" % (priority, " ".join(rule)))
             sys.exit(0)
     elif a.get_default_zone:
         __print_and_exit(fw.getDefaultZone())
