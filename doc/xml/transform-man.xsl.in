@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="1.0"
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:exsl="http://exslt.org/common"
+		extension-element-prefixes="exsl">
+
+  <xsl:import href="http://docbook.sourceforge.net/release/xsl/current/manpages/docbook.xsl"/>
+
+  <!-- no date in TH header -->
+  <xsl:template name="get.refentry.date">
+  </xsl:template>
+
+  <!-- use external source in TH header -->
+  <xsl:template name="get.refentry.source">
+    <xsl:text>@PACKAGE_STRING@</xsl:text>
+  </xsl:template>
+
+  <!-- sysconfdir -->
+  <xsl:template match="config.sysconfdir">
+    <xsl:text>@SYSCONFDIR@</xsl:text>
+  </xsl:template>
+
+  <!-- prefix -->
+  <xsl:template match="config.prefix">
+    <xsl:text>@PREFIX@</xsl:text>
+  </xsl:template>
+
+  <!-- italic filenames -->
+  <xsl:template match="//filename">
+    <xsl:text>\fI</xsl:text><xsl:apply-templates/><xsl:text>\fR</xsl:text>
+  </xsl:template>
+
+  <!-- italic filenames -->
+  <xsl:template match="//literal">
+    <xsl:text>\fI</xsl:text><xsl:apply-templates/><xsl:text>\fR</xsl:text>
+  </xsl:template>
+
+  <!-- directory uses italic filename with class directory -->
+  <xsl:template match="//directory">
+    <xsl:text>\fI</xsl:text><filename class="directory"><xsl:copy-of select="."/></filename><xsl:text>\fR</xsl:text>
+  </xsl:template>
+
+</xsl:stylesheet>

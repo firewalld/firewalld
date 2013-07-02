@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+<!ENTITY errorcodes SYSTEM "errorcodes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewall-offline-cmd">
+
+  <refentryinfo>
+    <title>firewall-offline-cmd</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewall-offline-cmd</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewall-offline-cmd</refname>
+    <refpurpose>firewalld offline command line client</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>firewall-offline-cmd</command> <arg choice="opt" rep="repeat">OPTIONS</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+    <para>
+      firewall-offline-cmd is an offline command line client of the firewalld daemon. It should be used only if the firewalld service is not running. For example to migrate from system-config-firewall/lokkit or in the install environment to configure firewall settings with kickstart.
+    </para>
+    <para>
+      Some lokkit options can not be automatically converted for firewalld, they will result in an error or warning message. This tool tries to convert as much as possible, but there are limitations for example with custom rules, modules and masquerading.
+    </para>
+    <para>
+      Check the firewall configuration after using this tool.
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      The options for <command>firewall-offline-cmd</command> are nearly identical to the options of <command>lokkit</command>. 
+    </para>
+    <para>
+      The following options are supported:
+    </para>
+
+    <refsect2 id="help_options">
+      <title>Help Options</title>
+      <variablelist>
+	<varlistentry>
+          <term><option>-h</option></term>
+          <term><option>--help</option></term>
+          <listitem>
+	    <para>
+	      Prints a short help text and exists.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="status_options">
+      <title>Status Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--enabled</option></term>
+	  <listitem>
+	    <para>
+	      Enable the firewall. This option is a default option and will activate the firewall if not already enabled as long as the option <option>--disabled</option> is not given.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--disabled</option></term>
+	  <listitem>
+	    <para>
+	      Disable the firewall by disabling the firewalld service.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="genernal_options">
+      <title>General Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--addmodule</option>=<replaceable>module</replaceable></term>
+	  <listitem>
+	    <para>
+	      This option will result in a warning message and will be ignored.
+	    </para>
+	    <para>
+	      Handling of netfilter helpers has been merged into services completely. Adding or removing netfilter helpers outside of services is therefore not needed anymore. For more information on handling netfilter helpers in services, please have a look at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--remove-module</option></term>
+	  <listitem>
+	    <para>
+	      This option will result in a warning message and will be ignored.
+	    </para>
+	    <para>
+	      Handling of netfilter helpers has been merged into services completely. Adding or removing netfilter helpers outside of services is therefore not needed anymore. For more information on handling netfilter helpers in services, please have a look at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>-s</option> <replaceable>service</replaceable></term>
+          <term><option>--service</option>=<replaceable>service</replaceable></term>
+          <listitem>
+	    <para>
+	      Add a service to the default zone. This option can be specified multiple times. 
+	    </para>
+	    <para>
+	      The service is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>-p</option> <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:<replaceable>protocol</replaceable></term>
+          <term><option>--port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:<replaceable>protocol</replaceable></term>
+          <listitem>
+	    <para>
+	      Add the port to the default zone. This option can be specified multiple times.
+	    </para>
+	    <para>
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>-t</option> <replaceable>interface</replaceable></term>
+          <term><option>--trust</option>=<replaceable>interface</replaceable></term>
+          <listitem>
+	    <para>
+	      This option will result in a warning message.
+	    </para>
+	    <para>
+	      Mark an interface as trusted. This option can be specified multiple times. The interface will be will be bound to the trusted zone.
+	    </para>
+	    <para>
+	      If the interface is used for a connection with NetworkManager or if there is an ifcfg file for this interface, the zone will be changed to the zone defined in the configuration as soon as it gets activated. To change the zone of a connection use <command>nm-connection-editor</command> and set the zone to trusted, for an ifcfg file, use an editor and add "ZONE=trusted". If the zone is not defined in the ifcfg file, the firewalld default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>-m</option> <replaceable>interface</replaceable></term>
+          <term><option>--masq</option>=<replaceable>interface</replaceable></term>
+          <listitem>
+	    <para>
+	      This option will result in a warning message.
+	    </para>
+	    <para>
+	      Masquerading will be enabled in the default zone. The interface argument will be ignored. This is for <emphasis>IPv4</emphasis> only.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--custom-rules</option>=<optional><replaceable>type</replaceable>:</optional><optional><replaceable>table</replaceable>:</optional><replaceable>filename</replaceable></term>
+          <listitem>
+	    <para>
+	      This option will result in a warning message and will be ignored.
+	    </para>
+	    <para>
+	      Custom rule files are not supoprted by firewalld.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--forward-port</option>=if=<replaceable>interface</replaceable>:port=<replaceable>port</replaceable>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>table</replaceable>:</optional><optional>:toaddr=<replaceable>filename</replaceable></optional></term>
+          <listitem>
+	    <para>
+	      This option will result in a warning message.
+	    </para>
+	    <para>
+	      Add the <emphasis>IPv4</emphasis> forward port in the default zone. This option can be specified multiple times. 
+	    </para>
+	    <para>
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is a simple IP address.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--block-icmp</option>=<replaceable>icmptype</replaceable></term>
+          <listitem>
+	    <para>
+	      This option will result in a warning message.
+	    </para>
+	    <para>
+	      Add an ICMP block for <replaceable>icmptype</replaceable> in the default zone. This option can be specified multiple times.
+	    </para>
+	    <para>
+	      The <replaceable>icmptype</replaceable> is the one of the icmp types firewalld supports. To get a listing of supported icmp types: <command>firewall-cmd --get-icmptypes</command>
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

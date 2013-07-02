@@ -69,14 +69,9 @@ AC_CONFIG_FILES([Makefile
 		 doc/Makefile
 		 doc/man/Makefile
 		 doc/man/man1/Makefile
-		 doc/man/man1/firewall-cmd.1
-		 doc/man/man1/firewalld.1
 		 doc/man/man5/Makefile
-		 doc/man/man5/firewalld.conf.5
-		 doc/man/man5/firewalld.icmptype.5
-		 doc/man/man5/firewalld.service.5
-		 doc/man/man5/firewalld.zone.5
-		 doc/man/man5/firewalld.zones.5
+		 doc/xml/transform-html.xsl
+		 doc/xml/transform-man.xsl
 		 po/Makefile.in
 		 shell-completion/Makefile
 		 src/firewall/config/__init__.py

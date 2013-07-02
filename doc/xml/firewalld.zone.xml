@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.zone">
+
+  <refentryinfo>
+    <title>firewalld.zone</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.zone</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.zone</refname>
+    <refpurpose>firewalld zone configuration files</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/zones/zone.xml</filename>
+<filename><config.prefix/>/lib/firewalld/zones/zone.xml</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      A firewalld zone configuration file contains the information for a zone. These are the zone name, services, ports, icmp-blocks, masquerade, forward-ports and rich language rules in an XML file format.
+    </para>
+    <para>
+       This is the structure of a zone configuration file:
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;zone [version="<replaceable>versionstring</replaceable>"] [immutable="<replaceable>bool</replaceable>"] [target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"]&gt;
+  [ &lt;short&gt;<replaceable>short description</replaceable>&lt;/short&gt; ]
+  [ &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt; ]
+  [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
+  [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"/&gt; ]
+  [ &lt;service name="<replaceable>string</replaceable>"/&gt; ]
+  [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
+  [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
+  [ &lt;masquerade enabled="<replaceable>bool</replaceable>"/&gt; ]
+  [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
+  [
+    &lt;rule [invert="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
+    [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
+    [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
+    [
+      &lt;service name="<replaceable>string</replaceable>"/&gt; |
+      &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
+      &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
+      &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
+      &lt;masquerade/&gt; |
+      &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
+    ]
+    [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
+    [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
+    [ &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt; ]
+    &lt;/rule&gt;
+  ]
+&lt;/zone&gt;
+      </programlisting>
+    </para>
+
+    <para>
+      The config can contain these tags and attributes. Some of them are mandatory, others optional.
+    </para>
+
+    <refsect2 id="zone">
+      <title>zone</title>
+      <para>
+	The mandatory zone start and end tag defines the zone. This tag can only be used once in a zone configuration file. There are optional attributes for zones:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>version="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              To give the zone a version.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>immutable="<replaceable>bool</replaceable>"</term>
+          <listitem>
+	    <para>
+	      Can be used to mark a zone as immutable. That means that the zone can not get modified. Possible values are yes or true, the default value is false.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"</term>
+          <listitem>
+	    <para>
+	      Can be used to accept, reject or drop every packet. The <literal>ACCEPT</literal> target is used in the trusted zone, every packet will be accepted. The <literal>%%REJECT%%</literal> target is used in the block zone, every packet will be rejected with the default firewalld reject type. The <literal>DROP</literal> target is used in the drop zone, every packet will be dropped. The default target is <literal>{chain}_ZONE_{zone}</literal> and will be used if the target is not specified.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="short">
+      <title>short</title>
+      <para>
+	Is an optional start and end tag and is used to give a zone a more readable name.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_description">
+      <title>description</title>
+      <para>
+	Is an optional start and end tag to have a description for a zone.
+      </para>
+    </refsect2>
+
+    <refsect2 id="interface">
+      <title>interface</title>
+      <para>
+	Is an optional empty-element tag and can be used several times. It can be used to bind an interface to a zone. An interface entry has exactly one attribute:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>name="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              The name of the interface to be bound to the zone.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+
+    <refsect2 id="source">
+      <title>source</title>
+      <para>
+	Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. A source entry has exactly one attribute:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>address="<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional>"</term>
+          <listitem>
+	    <para>
+	      The source to be bound to the zone. The source is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="service">
+      <title>service</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one service entry enabled. A service entry has exactly one attribute:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>name="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The name of the service to be enabled. To get a list of valid service names <command>firewall-cmd --list=services</command> can be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="port">
+      <title>port</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one port entry. All attributes of a port entry are mandatory:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>port="<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>"</term>
+          <listitem>
+	    <para>
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+          <listitem>
+	    <para>
+	      The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="icmp-block">
+      <title>icmp-block</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one icmp-block entry. Each icmp-block tag has exactly one mandatory attribute:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>name="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The name of the Internet Control Message Protocol (ICMP) type to be blocked. To get a list of valid ICMP types <command>firewall-cmd --list=icmptypes</command> can be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="masquerade">
+      <title>masquerade</title>
+      <para>
+	Is an optional empty-element tag and can be used only once in a zone configuration. This is not usable for IPv6. The masquerade tag entry has exactly one mandatory attribute:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>enabled="<replaceable>bool</replaceable>"</term>
+          <listitem>
+	    <para>
+	      If set to <literal>yes</literal> or <literal>true</literal>, masquerading is enabled for the zone. If set to <literal>no</literal> or <literal>false</literal>, the masquerade tag has no effect and can be removed from the config file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="forward-port">
+      <title>forward-port</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one port or packet forward entry. This is for IPv4 only. Use rich language rules for IPv6. There are mandatory and also optional attributes for forward ports:
+      </para>
+
+      <refsect3>
+	<title>Mandatory attributes:</title>
+	<para>
+	  The local port and protocol to be forwarded.
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>port="<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>"</term>
+            <listitem>
+	      <para>
+		The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+            <listitem>
+	      <para>
+		The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+      </refsect3>
+      <refsect3>
+	<title>Optional attributes:</title>
+	<para>
+	  The destination of the forward. For local forwarding add <option>to-port</option> only. For remote forwarding add <option>to-addr</option> and use <option>to-port</option> optionally if the destination port on the destination machine should be different.
+	</para>
+	<variablelist>
+	  <varlistentry>
+	    <term>to-port="<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>"</term>
+            <listitem>
+	      <para>
+		The estination port or port range to forward to. If omitted, the value of the port= attribute will be used altogether with the to-addr attribute.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>to-addr="<replaceable>address</replaceable>"</term>
+            <listitem>
+	      <para>
+		The destination IPv4 IP address.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="rule">
+      <title>rule</title>
+      <para>
+	Is an optional element tag and can be used several times to have more than one rich language rule entry. 
+      </para>
+      <para>
+	The general rule structure:
+      </para>
+      <programlisting>
+&lt;rule [invert="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
+  [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
+  [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
+  [
+    &lt;service name="<replaceable>string</replaceable>"/&gt; |
+    &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
+    &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
+    &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
+    &lt;masquerade/&gt; |
+    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
+  ]
+  [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
+  [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
+  [ &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt; ]
+&lt;/rule&gt;
+      </programlisting>
+      <para>
+	Rule structure for source black or white listing:
+      </para>
+      <programlisting>
+&lt;rule [invert="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
+  &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt;
+  [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
+  [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
+  &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt;
+&lt;/rule&gt;
+      </programlisting>
+
+      <para>
+	For a full description on rich language rules, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

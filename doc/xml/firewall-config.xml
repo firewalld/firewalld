@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+<!ENTITY errorcodes SYSTEM "errorcodes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewall-config">
+
+  <refentryinfo>
+    <title>firewall-config</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewall-config</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewall-config</refname>
+    <refpurpose>firewalld GUI configuration tool</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>firewall-config</command> <arg choice="opt" rep="repeat">OPTIONS</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+    <para>
+      firewall-config is the GUI configuration tool for firewalld.
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      <command>firewall-config</command> does not support and special options. The only options that can be used with it are the general options that Gtk are used for Gtk application initialization. For more information on these options, please have a look at the runtime documentation for Gtk.
+    </para>
+    <para>
+      The following options are supported:
+    </para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>-h</option></term>
+        <term><option>--help</option></term>
+        <listitem>
+	  <para>
+	    Prints a short help text and exists.
+	  </para>
+	</listitem>
+      </varlistentry>
+    </variablelist>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.lockdown-whitelist">
+
+  <refentryinfo>
+    <title>firewalld.lockdown-whitelist</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.lockdown-whitelist</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.lockdown-whitelist</refname>
+    <refpurpose>firewalld lockdown whitelist configuration files</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/lockdown-whitelists.xml</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      The firewalld lockdown-whitelist configuration file contains the selinux contexts, commands, users and user ids, that are white listed if the firewalld lockdown feature is enabled (see <citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry> and <citerefentry><refentrytitle>firewall-cmd</refentrytitle><manvolnum>1</manvolnum></citerefentry>).
+    </para>
+ 
+    <para>
+      This example configuration file shows the structure of an lockdown-whitelist file:
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;whitelist&gt;
+  &lt;selinux context="<replaceable>selinuxcontext</replaceable>"/&gt;
+  &lt;command name="<replaceable>commandline</replaceable>[*]"/&gt;
+  &lt;user {name="<replaceable>username</replaceable>|id="<replaceable>userid</replaceable>"}/&gt;
+&lt;/whitelist&gt;
+      </programlisting>
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      The config can contain these tags and attributes. Some of them are mandatory, others optional.
+    </para>
+
+    <refsect2 id="options_whitelist">
+      <title>whitelist</title>
+      <para>
+	The mandatory whitelist start and end tag defines the lockdown-whitelist. This tag can only be used once in a lockdown-whitelist configuration file. There are no attributes for this.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_selinux">
+      <title>selinux</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one selinux contexts entries. A selinuxe entry has exactly one attribute:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>context="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The context is the security (SELinux) context of a running application or service.
+	    </para>
+	    <para>
+	      To get the context of a running application use <command>ps -e --context</command> and search for the application that should be white listed.
+	    </para>
+	    <para>
+	      Warning: If the context of an application is unconfined, then this will open access for more than the desired application. 
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_command">
+      <title>command</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one command entry. A command entry has exactly one attribute:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>name="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The command <replaceable>string</replaceable> is a complete command line including path and also attributes.
+	    </para>
+	    <para>
+	      If a command entry ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.
+	    </para>
+	    <para>
+	      Commands for user root and others is not always the same, the used path depends on the use of the <envar>PATH</envar> environment variable.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_user">
+      <title>user</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to white list more than one user. A user entry has exactly one attribute of these:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>name="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The user with the name <replaceable>string</replaceable> will be white listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>id="<replaceable>integer</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The user with the id <replaceable>userid</replaceable> will be white listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

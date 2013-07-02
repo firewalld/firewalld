@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet version="1.0"
+		xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+
+<xsl:import href="http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl"/>
+
+  <!-- sysconfdir -->
+  <xsl:template match="config.sysconfdir">
+    <xsl:text>@SYSCONFDIR@</xsl:text>
+  </xsl:template>
+
+  <!-- prefix -->
+  <xsl:template match="config.prefix">
+    <xsl:text>@PREFIX@</xsl:text>
+  </xsl:template>
+
+</xsl:stylesheet>

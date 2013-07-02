@@ -1,0 +1,1062 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+                   "http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<!-- lifted from man+troff by doclifter -->
+<refentry id='foo6718man'>
+  <refentryinfo><date>0.3.3</date></refentryinfo>
+  <refmeta>
+    <refentrytitle>firewall-cmd</refentrytitle>
+    <manvolnum>1</manvolnum>
+    <refmiscinfo class='date'>0.3.3</refmiscinfo>
+    <refmiscinfo class='manual'>FirewallD Utilities</refmiscinfo>
+  </refmeta>
+  <refnamediv>
+    <refname>firewall-cmd</refname>
+    <refpurpose>firewalld command line client</refpurpose>
+  </refnamediv>
+  <!-- body begins here -->
+  <refsynopsisdiv id='synopsis'>
+    <cmdsynopsis>
+      <command>firewall-cmd</command>    <arg choice='opt'><replaceable>OPTIONS..</replaceable></arg>
+      <sbr/>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id='description'><title>DESCRIPTION</title>
+  <para><command>firewall-cmd</command> is the command line client of the firewalld daemon. It provides interface to manage runtime and permanent configuration.</para>
+
+  </refsect1>
+
+  <refsect1 id='options'><title>OPTIONS</title>
+  <para>The following options are supported:</para>
+
+
+  <refsect2 id='help_options'><title>Help Options</title>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term><option>-h</option>, <option>--help</option></term>
+      <listitem>
+	<para>Print a description of the options of firewall-cmd.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>-V</option>, <option>--version</option></term>
+      <listitem>
+	<para>Print the version string of firewalld.</para>
+	
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect2>
+  
+  <refsect2 id='status_options'><title>Status Options</title>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term><option>--state</option></term>
+      <listitem>
+	<para>Check whether the firewalld daemon is active (i.e. running). Returns an exit code 0 if it is active, <emphasis remap='I'>NOT_RUNNING</emphasis> (see <emphasis remap='I'>EXIT CODES</emphasis>) otherwise. This will also print the state to STDOUT.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--reload</option></term>
+      <listitem>
+	<para>Reload firewall rules and keep state information.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--complete-reload</option></term>
+      <listitem>
+	<para>Reload firewall completely, even netfilter kernel modules. This will most likely terminate active connections, because state information is lost. This option should only be used in case of severe firewall problems. For example if there are state information problems that no connection can be established with correct firewall rules.</para>
+	
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect2>
+
+  <refsect2 id='panic_options'><title>Panic Options</title>
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term><option>--panic-on</option></term>
+      <listitem>
+	<para>Enable panic mode. All incoming and outgoing packets are dropped, active connections will expire. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--panic-off</option></term>
+      <listitem>
+	<para>Disable panic mode again. After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--query-panic</option></term>
+      <listitem>
+	<para>Returns 0 if panic mode is enabled, 1 otherwise.</para>
+	
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect2>
+  
+  <refsect2 id='lockdown_options'><title>Lockdown Options</title>
+  <para>Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt) or are authenticated using PolicyKit. With this feature administrator can lock the firewall configuration so that only applications on lockdown whitelist are able to request firewall changes.</para>
+  
+  <para>The lockdown access check limits D-Bus methods that are changing firewall rules. Query, list and get methods are not limited.</para>
+  
+  <para>The lockdown feature is a very light version of user and application policies for firewalld and is turned off by default.</para>
+  
+  <variablelist remap='TP'>
+    <varlistentry>
+      <term><option>--lockdown-on</option></term>
+      <listitem>
+	<para>Enable lockdown.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--lockdown-off</option></term>
+      <listitem>
+	<para>Disable lockdown.</para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--query-lockdown</option></term>
+      <listitem>
+	<para>Query whether lockdown is enabled. Returns 0 if lockdown is enabled, 1 otherwise.</para>
+	
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  </refsect2>
+  
+  <refsect2 id='lockdown_whitelist_options'><title>Lockdown Whitelist Options</title>
+  <para>The lockdown whitelist can contain <emphasis remap='I'>commands</emphasis>, <emphasis remap='I'>contexts</emphasis>, <emphasis remap='I'>users</emphasis> and <emphasis remap='I'>user ids</emphasis>.</para>
+
+<para>If a command entry on the whitelist ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.</para>
+
+<para>Commands for user root and others is not always the same. Example: As root /bin/firewall-cmd is used, as a normal user /usr/bin/firewall-cmd is be used on Fedora.</para> 
+
+<para>The context is the security context of a running application or service. To get the context of a running application use</para>
+
+<para>ps -e --context</para> 
+
+<para>Warning: If the context is unconfined, then this will open access for more than the desired application.</para> 
+
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><option>--list-lockdown-whitelist-commands</option></term>
+  <listitem>
+<para>List all command lines that are on the whitelist.</para> 
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--add-lockdown-whitelist-command</option>=<emphasis remap='I'>&lt;command&gt;</emphasis></term>
+  <listitem>
+<para>Add the file <command>&lt;command&gt;</command> to the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--remove-lockdown-whitelist-command</option>=<emphasis remap='I'>&lt;command&gt;</emphasis></term>
+  <listitem>
+<para>Remove the file <command>&lt;command&gt;</command> from the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--query-lockdown-whitelist-command</option>=<emphasis remap='I'>&lt;command&gt;</emphasis></term>
+  <listitem>
+<para>Query whether the file <command>&lt;command&gt;</command> is on the whitelist. Returns 0 if true, 1 otherwise.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--list-lockdown-whitelist-contexts</option></term>
+  <listitem>
+<para>List all contexts that are on the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--add-lockdown-whitelist-context</option>=<emphasis remap='I'>&lt;context&gt;</emphasis></term>
+  <listitem>
+<para>Add the context <emphasis remap='I'>&lt;context&gt;</emphasis> to the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--remove-lockdown-whitelist-context</option>=<emphasis remap='I'>&lt;context&gt;</emphasis></term>
+  <listitem>
+<para>Remove the context <emphasis remap='I'>&lt;context&gt;</emphasis> from the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--query-lockdown-whitelist-context</option>=<emphasis remap='I'>&lt;context&gt;</emphasis></term>
+  <listitem>
+<para>Query whether the context <emphasis remap='I'>&lt;context&gt;</emphasis> is on the whitelist. Returns 0 if true, 1 otherwise.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--list-lockdown-whitelist-uids</option></term>
+  <listitem>
+<para>List all user ids that are on the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--add-lockdown-whitelist-uid</option>=<emphasis remap='I'>&lt;uid&gt;</emphasis></term>
+  <listitem>
+<para>Add the user id <emphasis remap='I'>&lt;uid&gt;</emphasis> to the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--remove-lockdown-whitelist-uid</option>=<emphasis remap='I'>&lt;uid&gt;</emphasis></term>
+  <listitem>
+<para>Remove the user id <emphasis remap='I'>&lt;uid&gt;</emphasis> from the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--query-lockdown-whitelist-uid</option>=<emphasis remap='I'>&lt;uid&gt;</emphasis></term>
+  <listitem>
+<para>Query whether the user id <emphasis remap='I'>&lt;uid&gt;</emphasis> is on the whitelist. Returns 0 if true, 1 otherwise.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--list-lockdown-whitelist-users</option></term>
+  <listitem>
+<para>List all user names that are on the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--add-lockdown-whitelist-user</option>=<emphasis remap='I'>&lt;user&gt;</emphasis></term>
+  <listitem>
+<para>Add the user name <emphasis remap='I'>&lt;user&gt;</emphasis> to the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--remove-lockdown-whitelist-user</option>=<emphasis remap='I'>&lt;user&gt;</emphasis></term>
+  <listitem>
+<para>Remove the user name <emphasis remap='I'>&lt;user&gt;</emphasis> from the whitelist.</para>
+
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--query-lockdown-whitelist-user</option>=<emphasis remap='I'>&lt;user&gt;</emphasis></term>
+  <listitem>
+<para>Query whether the user name <emphasis remap='I'>&lt;user&gt;</emphasis> is on the whitelist. Returns 0 if true, 1 otherwise.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='zone_options'><title>Zone Options</title>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><option>--get-default-zone</option></term>
+  <listitem>
+<para>Print default zone for connections and interfaces. By default this is <emphasis remap='I'>public</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--set-default-zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis></term>
+  <listitem>
+<para>Set default zone for connections and interfaces where no zone has been selected. Setting the default zone changes the zone for the connections or interfaces, that are using the default zone. This is a permanent change.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--get-zones</option></term>
+  <listitem>
+<para>Print predefined zones as a space separated list.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--get-services</option></term>
+  <listitem>
+<para>Print predefined services as a space separated list.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--get-icmptypes</option></term>
+  <listitem>
+<para>Print predefined icmptypes as a space separated list.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--get-active-zones</option></term>
+  <listitem>
+<para>Print currently active zones altogether with interfaces in these zones. The output format is:
+ &lt;zone1&gt;: &lt;interface1&gt; &lt;interface2&gt; ..
+ &lt;zone2&gt;: &lt;interface3&gt; ..</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--get-zone-of-interface</option>=<emphasis remap='I'>&lt;interface&gt;</emphasis></term>
+  <listitem>
+<para>Print a zone of the interface <emphasis remap='I'>&lt;interface&gt;</emphasis> or nothing if the interface does not belong to a zone.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--list-all-zones</option></term>
+  <listitem>
+<para>List all actions added for or all zones. The output format is:
+ &lt;zone&gt;
+   interfaces: &lt;interface1&gt; ..
+   services: &lt;service1&gt; ..
+   ports: &lt;port1&gt; ..
+   forward-ports: &lt;forward port1&gt; ..
+   icmp-blocks: &lt;icmp type1&gt; ..</para>
+
+<para> ..</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='options_to_handle_bindings_of_interfaces'><title>Options to Handle Bindings of Interfaces</title>
+<para>Options in this and the following section affect only one particular zone.
+If used with <option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>, they affect zone <emphasis remap='I'>&lt;zone&gt;</emphasis>.
+If <option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis> is omitted, they affect default zone (see <option>--get-default-zone</option>).
+For a list of predefined zones use <option>--get-zones</option>.
+An interface name is a string up to 16 characters long, that may not contain <emphasis remap='I'>' '</emphasis>, <emphasis remap='I'>'/'</emphasis>, <emphasis remap='I'>'!'</emphasis> and <emphasis remap='I'>'*'</emphasis>.</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-interfaces</option></term>
+  <listitem>
+<para>List interfaces that are bound to the zone <emphasis remap='I'>&lt;zone&gt;</emphasis> as a space separated list. If zone is omitted, the default zone will be used.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--add-interface</option>=<emphasis remap='I'>&lt;interface&gt;</emphasis></term>
+  <listitem>
+<para>Bind interface <emphasis remap='I'>&lt;interface&gt;</emphasis> to zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--change-interface</option>=<emphasis remap='I'>&lt;interface&gt;</emphasis></term>
+  <listitem>
+<para>Change the zone the interface <emphasis remap='I'>&lt;interface&gt;</emphasis> is bound to to zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the interface has not been bound to a zone before, it will behave like <option>--add-interface</option>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--query-interface</option>=<emphasis remap='I'>&lt;interface&gt;</emphasis></term>
+  <listitem>
+<para>Query whether the interface <emphasis remap='I'>&lt;interface&gt;</emphasis> is bound to the zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--remove-interface</option>=<emphasis remap='I'>&lt;interface&gt;</emphasis></term>
+  <listitem>
+<para>Remove the binding of interface <emphasis remap='I'>&lt;interface&gt;</emphasis> from zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used.</para>
+
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='options_to_handle_bindings_of_sources'><title>Options to Handle Bindings of Sources</title>
+<para>Options in this and the following section affect only one particular zone.
+If used with <option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>, they affect zone <emphasis remap='I'>&lt;zone&gt;</emphasis>.
+If <option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis> is omitted, they affect default zone (see <option>--get-default-zone</option>).
+For a list of predefined zones use <option>--get-zones</option>.
+A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number.</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-sources</option></term>
+  <listitem>
+<para>List source addresses that are bound to the zone <emphasis remap='I'>&lt;zone&gt;</emphasis> as a space separated list. If zone is omitted, the default zone will be used.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--add-source</option>=<emphasis remap='I'>&lt;source&gt;</emphasis></term>
+  <listitem>
+<para>Bind source<emphasis remap='I'>&lt;source&gt;</emphasis> to zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--change-source</option>=<emphasis remap='I'>&lt;source&gt;</emphasis></term>
+  <listitem>
+<para>Change the zone the source <emphasis remap='I'>&lt;source&gt;</emphasis> is bound to to zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used. If the old and the new zone are the same, the call will be ignored without an error. If the source has not been bound to a zone before, it will behave like <option>--add-source</option>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--query-source</option>=<emphasis remap='I'>&lt;source&gt;</emphasis></term>
+  <listitem>
+<para>Query whether the source <emphasis remap='I'>&lt;source&gt;</emphasis> is bound to the zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--remove-source</option>=<emphasis remap='I'>&lt;source&gt;</emphasis></term>
+  <listitem>
+<para>Remove the binding for source <emphasis remap='I'>&lt;source&gt;</emphasis> from zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='options_to_adapt_and_query_zones'><title>Options to Adapt and Query Zones</title>
+<para>For possible <emphasis remap='I'>ACTION</emphasis>s, please have a look at the <emphasis remap='B'>Action Options for Use with Options to Adapt and Query Zones</emphasis> section further down. For rich language rules, please have a look at the section <emphasis remap='B'>Rich Language</emphasis>.</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--add-rich-rule</option>='<emphasis remap='I'>&lt;rule&gt;</emphasis>' [<option>--timeout</option>=<emphasis remap='I'>&lt;seconds&gt;</emphasis>]</term>
+  <listitem>
+<para>Add rich language rule '<emphasis remap='I'>&lt;rule</emphasis>' for zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use <option>--get-default-zone</option>. If a timeout is supplied, the <emphasis remap='I'>&lt;rule&gt;</emphasis>(s) will be active for the amount of seconds and will be removed automatically afterwards.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--remove-rich-rule</option>='<emphasis remap='I'>&lt;rule&gt;</emphasis>'</term>
+  <listitem>
+<para>Remove rich language rule '<emphasis remap='I'>&lt;rule</emphasis>' for zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use <option>--get-default-zone</option>. If a timeout is supplied, the <emphasis remap='I'>ACTION</emphasis>(s) will be active for the amount of seconds and will be removed automatically afterwards.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--query-rich-rule</option>='<emphasis remap='I'>&lt;rule&gt;</emphasis>'</term>
+  <listitem>
+<para>Return whether a rich language rule '<emphasis remap='I'>&lt;rule&gt;</emphasis>' has been added for the zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--add-</option><replaceable>ACTION</replaceable> [<option>--timeout</option>=<emphasis remap='I'>&lt;seconds&gt;</emphasis>]</term>
+  <listitem>
+<para>Add <emphasis remap='I'>ACTION</emphasis> for zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. This option can be specified multiple times. If zone is omitted, the default zone will be used. To get the default zone use <option>--get-default-zone</option>. If a timeout is supplied, the <emphasis remap='I'>ACTION</emphasis>(s) will be active for the amount of seconds and will be removed automatically afterwards.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--remove-</option><replaceable>ACTION</replaceable></term>
+  <listitem>
+<para>Remove an <emphasis remap='I'>ACTION</emphasis> from the zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. This option can be specified multiple times. If zone is omitted, the default zone will be used. If the <emphasis remap='I'>ACTION</emphasis> was added with a timeout, it will be removed also.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--query-</option><replaceable>ACTION</replaceable></term>
+  <listitem>
+<para>Return whether an <emphasis remap='I'>ACTION</emphasis> has been added for the zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--add-masquerade</option> [<option>--timeout</option>=<emphasis remap='I'>&lt;seconds&gt;</emphasis>]</term>
+  <listitem>
+<para>Enable masquerade for zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used. If a timeout is supplied, masquerading will be active for the amount of seconds. Masquerading is useful if the machine is a router and machines connected over an interface in another zone should be able to use the first connection.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--remove-masquerade</option></term>
+  <listitem>
+<para>Disable masquerade for zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used. If the masquerading was enabled with a timeout, it will be disabled also.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--query-masquerade</option></term>
+  <listitem>
+<para>Return whether masquerading has been enabled for the zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used. There is no output. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-services</option></term>
+  <listitem>
+<para>List services added for zone <emphasis remap='I'>&lt;zone&gt;</emphasis> as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined services use <option>--get-services</option>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-ports</option></term>
+  <listitem>
+<para>List ports added for zone <emphasis remap='I'>&lt;zone&gt;</emphasis> as a space separated list. A port is of the form <emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]/<emphasis remap='I'>&lt;protocol&gt;</emphasis>, it can be either a port and protocol pair or a port range with a protocol. If zone is omitted, the default zone will be used.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-icmp-blocks</option></term>
+  <listitem>
+<para>List Internet Control Message Protocol (ICMP) type blocks added for zone <emphasis remap='I'>&lt;zone&gt;</emphasis> as a space separated list. If zone is omitted, the default zone will be used. For a list of all predefined icmptypes use <option>--get-icmptypes</option>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-forward-ports</option></term>
+  <listitem>
+<para>List forward port added for zone <emphasis remap='I'>&lt;zone&gt;</emphasis> as a space separated list. If zone is omitted, the default zone will be used.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term>[<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] <option>--list-all</option></term>
+  <listitem>
+<para>List all actions added for or enabled in zone <emphasis remap='I'>&lt;zone&gt;</emphasis>. If zone is omitted, the default zone will be used.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='rich_language'><title>Rich Language</title>
+
+<para>With the rich language more complex firewall rules can be created in an easy to understand way. The language will use keywords with values and will be an abstract representation of ip*tables rules. Zones can be configured using this language, the current configuration will still be supported.</para> 
+
+<para>The rich language extends the current zone elements (service, port, icmp-block, masquerade and forward-port) with additional source and destination addresses, logging, actions and limits for logs and actions.</para> 
+
+<para>rule [family="&lt;rule family&gt;"]
+  [ source address="&lt;address&gt;" [invert="True"] ]
+  [ destination address="&lt;address&gt;" [invert="True"] ]
+  [ &lt;element&gt; ]
+  [ log [prefix="&lt;prefix text&gt;"] [level="&lt;log level&gt;"] ]
+  [ audit type="&lt;audit type&gt;" ]
+  &lt;action&gt;</para>
+
+<para>A rule is part of a zone. A zone can contain several rules. If some rules interact/contradict, the first rule that matches the packet "wins". If the rule family is provided, it can be either "ipv4" or "ipv6", which limits the rule to IPv4 or IPv6. If the rule family is not provided, the rule will be added for IPv4 and IPv6. If source or destination addresses are used in a rule, then the rule family need to be provided. This is also the case for port/packet forwarding.</para>
+
+<para><emphasis remap='B'>Source</emphasis></para>
+
+<para>With the source address the origin of a connection attempt can be limited to the source address. A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported. It is possible to invert the sense of an address by adding <emphasis remap='B'>invert</emphasis>=<emphasis remap='I'>"true"</emphasis> or <emphasis remap='B'>invert</emphasis>=<emphasis remap='I'>"yes"</emphasis>. All but the used address with match.</para>
+
+<para><emphasis remap='B'>Destination</emphasis></para>
+
+<para>With the destination address the target can be limited to the destination address. The destination address is using the same syntax as the source address.</para>
+
+<para>The use of source and destination addresses is optional and the use of a destination addresses is not possible with all elements. This depends on the use of destination addresses for example in service entries.</para>
+
+<para>The element can be exactly one of the element types <emphasis remap='I'>service</emphasis>, <emphasis remap='I'>port</emphasis>, <emphasis remap='I'>protocol</emphasis>, <emphasis remap='I'>masquerade</emphasis>, <emphasis remap='I'>icmp-block</emphasis> and <emphasis remap='I'>forward-port</emphasis>.</para> 
+
+<para><emphasis remap='B'>Service</emphasis></para>
+
+<para>service name="&lt;service name&gt;"</para>
+
+<para>The service &lt;service name&gt; will be added to the rule. The service name is one of the firewalld provided services. To get a list of the supported services, use firewall-cmd <option>--get-services</option>.</para>
+
+<para>If a service provides a destination address, it will conflict with a destination address in the rule and will result in an error. The services using destination addresses internally are mostly services using multicast.</para>
+
+<para><emphasis remap='B'>Port</emphasis></para>
+
+<para>port port="&lt;port value&gt;" protocol="tcp|udp"</para>
+
+<para>The port &lt;value&gt; can either be a single port number or a port range &lt;id&gt;-&lt;id&gt;. The protocol can either be <emphasis remap='I'>"tcp"</emphasis> or <emphasis remap='I'>"udp"</emphasis>.</para>
+
+<para><emphasis remap='B'>Protocol</emphasis></para>
+
+<para>protocol value="&lt;protocol value&gt;"</para>
+
+<para>The protocol value can be either a protocol id number or a protocol name. For allowed protocol entries, please have a look at <filename>/etc/protocols</filename>.</para>
+
+<para><emphasis remap='B'>ICMP-Block</emphasis></para>
+
+<para>icmp-block name="&lt;icmptype name&gt;"</para>
+
+<para>The icmptype is the one of the icmp types firewalld supports. To get a listing of supported icmp types: firewall-cmd --get-icmptypes</para>
+
+<para>It is not allowed to specify an action here. icmp-block uses the action reject internally.</para>
+
+<para><emphasis remap='B'>Masquerade</emphasis></para>
+
+<para>masquerade</para>
+
+<para>Turn on masquerading in the rule. A source address can be provided to limit masquerading to this area, but not a destination address.</para>
+
+<para>It is not allowed to specify an action here.</para>
+
+<para><emphasis remap='B'>Forward-Port</emphasis></para>
+
+<para>forward-port port="&lt;port value&gt;" protocol="tcp|udp" to-port="&lt;port value&gt;" to-address="&lt;address&gt;"</para>
+
+<para>Forward port/packets from local port &lt;value&gt; with protocol "tcp" or "udp" to either another port locally or to another machine or to another port on another machine.</para>
+
+<para>The port &lt;value&gt; can either be a single port number or a port range &lt;id&gt;-&lt;id&gt;. The destination address is a simple ip address.</para>
+
+<para>It is not allowed to specify an action here. forward-port uses the action accept internally.</para>
+
+<para><emphasis remap='B'>Log</emphasis></para>
+
+<para>Log new connection attempts to the rule with kernel logging for example in syslog. You can define a prefix text that will be added to the log message as a prefix. Log level can be one of "emerg", "alert", "crit", "err", "warn", "notice", "info" or "debug". The use of log is optional.</para>
+
+<para>It is possible to limit logging:</para>
+
+<para>log [prefix="&lt;prefix text&gt;"] [level="&lt;log level&gt;"] limit value="&lt;rate/duration&gt;"</para>
+
+<para>The rate is a natural positive number [1, ..], the duration of of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days. The maximum limit value is "1/d" which means at maximum one log entry per day.</para>
+
+<para><emphasis remap='B'>Audit</emphasis></para>
+
+<para>Audit provides an alternative way for logging using audit records sent to the service auditd. The audit type can be one of "ACCEPT", "REJECT" or "DROP". The use of audit is optional.</para>
+
+<para>Also audit can be limited using the limit tag.</para>
+
+<para><emphasis remap='B'>Actions</emphasis></para>
+
+<para>An action can be one of <emphasis remap='I'>accept</emphasis>, <emphasis remap='I'>reject</emphasis> or <emphasis remap='I'>drop</emphasis>.</para>
+
+<para>The rule can either contain an element or also a source only. If the rule contains an element, then new connection matching the element will be handled with the action. If the rule does not contain an element, then everything from the source address will be handled with the action (requires firewalld version 0.3.1).</para>
+
+<para>accept | reject [type="&lt;reject type&gt;"] | drop</para>
+
+<para>With accept all new connection attempts will be granted. With reject they will not be accepted and there source will get a reject message. The reject type can be set to use an other value. With drop all packets will be dropped immediately, there is no information sent to the source.</para>
+
+<para><emphasis remap='B'>Information about logging and actions</emphasis></para>
+
+<para>Logging can be done with the LOG and also with audit. A new chain is added to all zones: &lt;zone&gt;_log. This will be jumped into before the deny chain to be able to have a proper ordering.</para>
+
+<para>The rules or parts of them are placed in separate chains according to the action of the rule:</para>
+
+<para> &lt;zone&gt;_log
+ &lt;zone&gt;_deny
+ &lt;zone&gt;_allow</para>
+
+<para>Then all logging rules will be placed in the &lt;zone&gt;_log chain, which will be walked first. All reject and drop rules will be placed in the &lt;zone&gt;_deny chain, which will be walked after the log chain. All accept rules will be placed in the &lt;zone&gt;_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.</para>
+
+<para><emphasis remap='B'>Example 1:</emphasis> Enable new IPv4 and IPv6 connections for protocol <emphasis remap='I'>'ah'</emphasis></para>
+
+<para>rule protocol value="ah" accept</para>
+
+<para><emphasis remap='B'>Example 2:</emphasis> Allow new IPv4 and IPv6 connections for service ftp and log 1 per minute using audit</para>
+
+<para>rule service name="ftp" audit type="ACCEPT" limit value="1/m" audit accept</para>
+
+<para><emphasis remap='B'>Example 3:</emphasis> Allow new IPv4 connections from address 192.168.0.0/24 for service tftp and log 1 per minutes using syslog</para>
+
+<para>rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept</para>
+
+<para><emphasis remap='B'>Example 4:</emphasis> New IPv6 connections from 1:2:3:4:6:: to service radius are all rejected and logged at a rate of 3 per minute. New IPv6 connections from other sources are accepted.</para>
+
+<para>rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject
+rule family="ipv6" service name="radius" accept</para>
+
+<para><emphasis remap='B'>Example 5:</emphasis> Forward IPv6 port/packets receiving from 1:2:3:4:6:: on port 4011 with protocol tcp to 1::2:3:4:7 on port 4012</para>
+
+<para>rule family="ipv6" source address="1:2:3:4:6::" forward-port to-addr="1::2:3:4:7" to-port="4012" protocol="tcp" port="4011"</para>
+
+<para><emphasis remap='B'>Example 6:</emphasis> White-list source address to allow all connections from this source</para>
+
+<para>rule family="ipv4" source address="192.168.2.2" accept</para>
+
+<para><emphasis remap='B'>Example 7:</emphasis> Black-list source address to reject all connections from this source</para>
+
+<para>rule family="ipv4" source address="192.168.2.3" reject</para>
+
+<para><emphasis remap='B'>Example 8:</emphasis> Black-list source address to drop all connections from this source</para>
+
+<para>rule family="ipv4" source address="192.168.2.4" drop</para>
+
+
+</refsect2>
+
+<refsect2 id='action_options_for_use_with_options_to_a'><title>Action Options for Use with Options to Adapt and Query Zones</title>
+<para>These <emphasis remap='I'>ACTION</emphasis>s are used in <option>--add-</option><replaceable>ACTION</replaceable>, <option>--remove-</option><replaceable>ACTION</replaceable> and <option>--query-</option><replaceable>ACTION</replaceable> as described in previous section.</para>
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><emphasis remap='B'>service</emphasis>=<emphasis remap='I'>&lt;service&gt;</emphasis></term>
+  <listitem>
+<para>Use one of the predefined services. For a list of all predefined services use <option>--get-services</option>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>port</emphasis>=<emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]/<emphasis remap='I'>&lt;protocol&gt;</emphasis></term>
+  <listitem>
+<para>Use a port <emphasis remap='I'>&lt;port&gt;</emphasis> or port range <emphasis remap='I'>&lt;port&gt;-&lt;port&gt;</emphasis> altogether with a protocol. A port is a port number <emphasis remap='I'>[1..65535]</emphasis>. The protocol can be either <emphasis remap='I'>tcp</emphasis> or <emphasis remap='I'>udp</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>icmp-block</emphasis>=<emphasis remap='I'>&lt;icmptype&gt;</emphasis></term>
+  <listitem>
+<para>Use one of the predefined ICMP types. For a list of all predefined ICMP types use <option>--get-icmptypes</option>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>forward-port</emphasis>=port=<emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]:proto=<emphasis remap='I'>&lt;protocol&gt;</emphasis>:toport=<emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]</term>
+  <listitem>
+<para>Use port or packet forwarding. The source and the destination ports are a port or port range altogether with a protocol. The protocol can be either <emphasis remap='I'>tcp</emphasis> or <emphasis remap='I'>udp</emphasis>.
+Forward from the local port <emphasis remap='I'>port</emphasis> to the local port <emphasis remap='I'>toport</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>forward-port</emphasis>=port=<emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]:proto=<emphasis remap='I'>&lt;protocol&gt;</emphasis>:toaddr=<emphasis remap='I'>&lt;address&gt;</emphasis></term>
+  <listitem>
+<para>Forward from the local port <emphasis remap='I'>port</emphasis> to the same port on host <emphasis remap='I'>toaddr</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><emphasis remap='B'>forward-port</emphasis>=port=<emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]:proto=<emphasis remap='I'>&lt;protocol&gt;</emphasis>:toport=<emphasis remap='I'>&lt;port&gt;</emphasis>[-<emphasis remap='I'>&lt;port&gt;</emphasis>]:toaddr=<emphasis remap='I'>&lt;address&gt;</emphasis></term>
+  <listitem>
+<para>Forward from the local port <emphasis remap='I'>port</emphasis> to port <emphasis remap='I'>toport</emphasis> on host <emphasis remap='I'>toaddr</emphasis>.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='permanent_options'><title>Permanent Options</title>
+<para>The permanent options can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. The following options are possible to be used:</para>
+
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><option>--permanent</option> { <option>--get-zones</option> | <option>--get-services</option> | <option>--get-icmptypes</option> }</term>
+  <term><option>--permanent</option> [<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] { <option>--list-services</option> | <option>--list-ports</option> | <option>--list-icmp-blocks</option> | <option>--list-forward-ports</option> }</term>
+  <term><option>--permanent</option> [<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] { <option>--add-</option><replaceable>ACTION</replaceable> | <option>--remove-</option><replaceable>ACTION</replaceable> | <option>--query-</option><replaceable>ACTION</replaceable> }</term>
+  <term><option>--permanent</option> [<option>--zone</option>=<emphasis remap='I'>&lt;zone&gt;</emphasis>] { <option>--add-masquerade</option> | <option>--remove-masquerade</option> | <option>--query-masquerade</option> }</term>
+  <listitem>
+
+<para>For a detailed description, please have a look at the non-permanent options.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+
+<refsect2 id='direct_options'><title>Direct Options</title>
+<para>The direct options give a more direct access to the firewall. With <emphasis remap='I'>ipv4</emphasis> it will be for IPv4 (<citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>), with <emphasis remap='I'>ipv6</emphasis> for IPv6 (<citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>) and with <emphasis remap='I'>eb</emphasis> for ethernet bridges (<citerefentry><refentrytitle>ebtables</refentrytitle><manvolnum>8</manvolnum></citerefentry>).</para>
+
+<variablelist remap='TP'>
+  <varlistentry>
+  <term><option>--direct</option> <option>--passthrough</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;args&gt;</emphasis></term>
+  <listitem>
+<para>Pass a command through to the firewall. <emphasis remap='I'>&lt;args&gt;</emphasis> can be all iptables, ip6tables and ebtables command line arguments.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--add-chain</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis></term>
+  <listitem>
+<para>Add a new chain with name <emphasis remap='I'>&lt;chain&gt;</emphasis> to table <emphasis remap='I'>&lt;table&gt;</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--remove-chain</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis></term>
+  <listitem>
+<para>Remove a chain with name <emphasis remap='I'>&lt;chain&gt;</emphasis> from table <emphasis remap='I'>&lt;table&gt;</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--query-chain</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis></term>
+  <listitem>
+<para>Return whether a chain with name <emphasis remap='I'>&lt;chain&gt;</emphasis> exists in table <emphasis remap='I'>&lt;table&gt;</emphasis>. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--get-chains</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis></term>
+  <listitem>
+<para>Get all chains added to table <emphasis remap='I'>&lt;table&gt;</emphasis> as a space separated list.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--add-rule</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis> <emphasis remap='I'>&lt;priority&gt;</emphasis> <emphasis remap='I'>&lt;args&gt;</emphasis></term>
+  <listitem>
+<para>Add a rule with the arguments <emphasis remap='I'>&lt;args&gt;</emphasis> to chain <emphasis remap='I'>&lt;chain&gt;</emphasis> in table <emphasis remap='I'>&lt;table&gt;</emphasis> with priority <emphasis remap='I'>&lt;priority&gt;</emphasis>.
+The <emphasis remap='I'>&lt;priority&gt;</emphasis> is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--remove-rule</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis> <emphasis remap='I'>&lt;args&gt;</emphasis></term>
+  <listitem>
+<para>Remove a rule with the arguments <emphasis remap='I'>&lt;args&gt;</emphasis> from chain <emphasis remap='I'>&lt;chain&gt;</emphasis> in table <emphasis remap='I'>&lt;table&gt;</emphasis>.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--query-rule</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis> <emphasis remap='I'>&lt;args&gt;</emphasis></term>
+  <listitem>
+<para>Return whether a rule with the arguments <emphasis remap='I'>&lt;args&gt;</emphasis> exists in chain <emphasis remap='I'>&lt;chain&gt;</emphasis> in table <emphasis remap='I'>&lt;table&gt;</emphasis>. Returns 0 if true, 1 otherwise.</para>
+  </listitem>
+  </varlistentry>
+  <varlistentry>
+  <term><option>--direct</option> <option>--get-rules</option> { <emphasis remap='I'>ipv4</emphasis> | <emphasis remap='I'>ipv6</emphasis> | <emphasis remap='I'>eb</emphasis> } <emphasis remap='I'>&lt;table&gt;</emphasis> <emphasis remap='I'>&lt;chain&gt;</emphasis></term>
+  <listitem>
+<para>Get all rules added to chain <emphasis remap='I'>&lt;chain&gt;</emphasis> in table <emphasis remap='I'>&lt;table&gt;</emphasis> as a newline separated list of arguments.</para>
+
+  </listitem>
+  </varlistentry>
+</variablelist>
+</refsect2>
+</refsect1>
+
+<refsect1 id='exit_codes'><title>EXIT CODES</title>
+<para>On success 0 is returned. In case of error one of the following error codes:</para>
+
+<informaltable pgwide='0' frame='all'>
+  <tgroup cols='2' align='center' colsep='1' rowsep='1'>
+    <colspec colname='c1'/>
+    <colspec colname='c2'/>
+    <tbody>
+      <row>
+        <entry align='left'><emphasis remap='B'>String</emphasis> </entry>
+        <entry align='right'> <emphasis remap='B'>Code</emphasis></entry>
+      </row>
+      <row>
+        <entry align='left'>ALREADY_ENABLED     </entry>
+        <entry align='right'>   11</entry>
+      </row>
+      <row>
+        <entry align='left'>NOT_ENABLED         </entry>
+        <entry align='right'>   12</entry>
+      </row>
+      <row>
+        <entry align='left'>COMMAND_FAILED      </entry>
+        <entry align='right'>   13</entry>
+      </row>
+      <row>
+        <entry align='left'>NO_IPV6_NAT         </entry>
+        <entry align='right'>   14</entry>
+      </row>
+      <row>
+        <entry align='left'>PANIC_MODE          </entry>
+        <entry align='right'>   15</entry>
+      </row>
+      <row>
+        <entry align='left'>ZONE_ALREADY_SET    </entry>
+        <entry align='right'>   16</entry>
+      </row>
+      <row>
+        <entry align='left'>UNKNOWN_INTERFACE   </entry>
+        <entry align='right'>   17</entry>
+      </row>
+      <row>
+        <entry align='left'>ZONE_CONFLICT       </entry>
+        <entry align='right'>   18</entry>
+      </row>
+      <row>
+        <entry align='left'>IMMUTABLE           </entry>
+        <entry align='right'>   19</entry>
+      </row>
+      <row>
+        <entry align='left'>BUILTIN_CHAIN       </entry>
+        <entry align='right'>   20</entry>
+      </row>
+      <row>
+        <entry align='left'>EBTABLES_NO_REJECT  </entry>
+        <entry align='right'>   21</entry>
+      </row>
+      <row>
+        <entry align='left'>NOT_OVERLOADABLE    </entry>
+        <entry align='right'>   22</entry>
+      </row>
+      <row>
+        <entry align='left'>NO_DEFAULTS         </entry>
+        <entry align='right'>   23</entry>
+      </row>
+      <row>
+        <entry align='left'>BUILTIN_ZONE        </entry>
+        <entry align='right'>   24</entry>
+      </row>
+      <row>
+        <entry align='left'>BUILTIN_SERVICE     </entry>
+        <entry align='right'>   25</entry>
+      </row>
+      <row>
+        <entry align='left'>BUILTIN_ICMPTYPE    </entry>
+        <entry align='right'>   26</entry>
+      </row>
+      <row>
+        <entry align='left'>NAME_CONFLICT       </entry>
+        <entry align='right'>   27</entry>
+      </row>
+      <row>
+        <entry align='left'>NAME_MISMATCH       </entry>
+        <entry align='right'>   28</entry>
+      </row>
+      <row>
+        <entry align='left'>PARSE_ERROR         </entry>
+        <entry align='right'>   29</entry>
+      </row>
+      <row>
+        <entry align='left'>ACCESS_DENIED       </entry>
+        <entry align='right'>   30</entry>
+      </row>
+      <row>
+        <entry align='left'>UNKNOWN_SOURCE      </entry>
+        <entry align='right'>   31</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_ACTION      </entry>
+        <entry align='right'>  100</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_SERVICE     </entry>
+        <entry align='right'>  101</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_PORT        </entry>
+        <entry align='right'>  102</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_PROTOCOL    </entry>
+        <entry align='right'>  103</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_INTERFACE   </entry>
+        <entry align='right'>  104</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_ADDR        </entry>
+        <entry align='right'>  105</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_FORWARD     </entry>
+        <entry align='right'>  106</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_ICMPTYPE    </entry>
+        <entry align='right'>  107</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_TABLE       </entry>
+        <entry align='right'>  108</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_CHAIN       </entry>
+        <entry align='right'>  109</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_TARGET      </entry>
+        <entry align='right'>  110</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_IPV         </entry>
+        <entry align='right'>  111</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_ZONE        </entry>
+        <entry align='right'>  112</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_PROPERTY    </entry>
+        <entry align='right'>  113</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_VALUE       </entry>
+        <entry align='right'>  114</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_OBJECT      </entry>
+        <entry align='right'>  115</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_NAME        </entry>
+        <entry align='right'>  116</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_FILENAME    </entry>
+        <entry align='right'>  117</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_DIRECTORY   </entry>
+        <entry align='right'>  118</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_TYPE        </entry>
+        <entry align='right'>  119</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_SETTING     </entry>
+        <entry align='right'>  120</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_DESTINATION </entry>
+        <entry align='right'>  121</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_RULE        </entry>
+        <entry align='right'>  122</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_LIMIT       </entry>
+        <entry align='right'>  123</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_FAMILY      </entry>
+        <entry align='right'>  124</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_LOG_LEVEL   </entry>
+        <entry align='right'>  125</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_AUDIT_TYPE  </entry>
+        <entry align='right'>  126</entry>
+      </row>
+      <row>
+        <entry align='left'>INVALID_MARK        </entry>
+        <entry align='right'>  127</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_TABLE       </entry>
+        <entry align='right'>  200</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_CHAIN       </entry>
+        <entry align='right'>  201</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_PORT        </entry>
+        <entry align='right'>  202</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_PROTOCOL    </entry>
+        <entry align='right'>  203</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_ADDR        </entry>
+        <entry align='right'>  204</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_NAME        </entry>
+        <entry align='right'>  205</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_SETTING     </entry>
+        <entry align='right'>  206</entry>
+      </row>
+      <row>
+        <entry align='left'>MISSING_FAMILY      </entry>
+        <entry align='right'>  207</entry>
+      </row>
+      <row>
+        <entry align='left'>NOT_RUNNING         </entry>
+        <entry align='right'>  252</entry>
+      </row>
+      <row>
+        <entry align='left'>NOT_AUTHORIZED      </entry>
+        <entry align='right'>  253</entry>
+      </row>
+      <row>
+        <entry align='left'>UNKNOWN_ERROR       </entry>
+        <entry align='right'>  254</entry>
+      </row>
+      <row>
+        <entry align='left'></entry>
+        <entry align='right'></entry>
+      </row>
+    </tbody>
+  </tgroup>
+</informaltable>
+
+
+
+</refsect1>
+
+<refsect1 id='see_also'><title>SEE ALSO</title>
+<para><citerefentry><refentrytitle>firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry>, 
+<citerefentry><refentrytitle>firewalld.conf</refentrytitle><manvolnum>5</manvolnum></citerefentry>, 
+<citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>, 
+<citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>, 
+<citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry></para>
+
+</refsect1>
+
+<refsect1 id='author'><title>AUTHOR</title>
+<para><emphasis remap='B'>Thomas Woerner</emphasis> &lt;twoerner@redhat.com&gt;
+<!-- br -->
+<emphasis remap='B'>Jiri Popelka</emphasis> &lt;jpopelka@redhat.com&gt;</para>
+
+</refsect1>
+
+<refsect1 id='notes'><title>NOTES</title>
+<para>Firewalld home page at fedorahosted.org</para>
+<literallayout remap='RS'>
+<emphasis remap='B'><ulink url='http://fedorahosted.org/firewalld/'>http://fedorahosted.org/firewalld/</ulink></emphasis>
+</literallayout> <!-- remap='RE' -->
+<para>More documentation with examples</para>
+  <blockquote remap='RS'>
+<para><emphasis remap='B'><ulink url='http://fedoraproject.org/wiki/FirewallD/'>http://fedoraproject.org/wiki/FirewallD/</ulink></emphasis>
+  </para></blockquote>
+</refsect1>
+</refentry>
+

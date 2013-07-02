@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.richlanguage">
+
+  <refentryinfo>
+    <title>firewalld.conf</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.conf</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.conf</refname>
+    <refpurpose>firewalld configuration file</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/firewalld.conf</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      firewalld.conf is loaded by firewalld during the initialization process. The file contains the basic configuration options for firewalld.
+    </para>
+
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+
+    <para>
+      These are the options that can be set in the config file:
+    </para>
+
+    <variablelist>
+      <varlistentry>
+	<term><option>DefaultZone</option></term>
+        <listitem>
+	  <para>
+	    This sets the default zone for connections or interfaces if the zone is not selected or specified by NetworkManager, initscripts or command line tool. The default zone is public.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>MinimalMark</option></term>
+        <listitem>
+	  <para>
+            For some firewall settings several rules are needed in different tables to be able to handle packets in the correct way. To achieve that these packets are marked using the MARK target <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry> and <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>. With the MinimalMark option a block of marks can be reserved for private use; only marks over this value are used. The default MinimalMark value is 100.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>CleanupOnExit</option></term>
+        <listitem>
+	  <para>
+            If firewalld stops, it cleans up all firewall rules. Setting this option to no or false leaves the current firewall rules untouched. The default value is yes or true.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+	<term><option>Lockdown</option></term>
+        <listitem>
+	  <para>
+	    If this option is enabled, firewall changes with the D-Bus interface will be limited to applications that are listed in the lockdown whitelist (see <citerefentry><refentrytitle>firewalld.lockdownwhitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>). The default value is no or false.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

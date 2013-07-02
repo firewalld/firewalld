@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.icmptype">
+
+  <refentryinfo>
+    <title>firewalld.icmptype</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.icmptype</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.icmptype</refname>
+    <refpurpose>firewalld icmptype configuration files</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/icmptypes/icmptype.xml</filename>
+<filename><config.prefix/>/lib/firewalld/icmptypes/icmptype.xml</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      A firewalld icmptype configuration file provides the information for an Internet Control Message Protocol (ICMP) type for firewalld.
+    </para>
+ 
+    <para>
+      This example configuration file shows the structure of an icmptype configuration file:
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;icmptype&gt;
+  &lt;short&gt;<replaceable>My Icmptype</replaceable>&lt;/short&gt;
+  &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
+  &lt;destination ipv4="<replaceable>yes</replaceable>" ipv6="<replaceable>yes</replaceable>"/&gt;
+&lt;/icmptype&gt;
+      </programlisting>
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      The config can contain these tags and attributes. Some of them are mandatory, others optional.
+    </para>
+
+    <refsect2 id="options_icmptype">
+      <title>icmptype</title>
+      <para>
+	The mandatory icmptype start and end tag defines the icmptype. This tag can only be used once in an icmptype configuration file. This tag has optional attributes:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>version="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              To give the icmptype a version.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_short">
+      <title>short</title>
+      <para>
+	Is an optional start and end tag and is used to give an icmptype a more	readable name.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_description">
+      <title>description</title>
+      <para>
+	Is an optional start and end tag to have a description for a icmptype.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_destination">
+      <title>destination</title>
+      <para>
+	Is an optional empty-element tag and can be used only once. The destination tag specifies if an icmptype entry is available for IPv4 and/or IPv6. The default is IPv4 and IPv6, where this tag can be missing.
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>ipv4="<replaceable>bool</replaceable>"</term>
+          <listitem>
+	    <para>
+              Describes if the icmptype is available for IPv4.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>ipv6="<replaceable>bool</replaceable>"</term>
+          <listitem>
+	    <para>
+              Describes if the icmptype is available for IPv6.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

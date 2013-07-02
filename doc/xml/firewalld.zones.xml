@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.zones">
+
+  <refentryinfo>
+    <title>firewalld.zones</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.zones</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.zones</refname>
+    <refpurpose>firewalld zones</refpurpose>
+  </refnamediv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <refsect2 id="whatisazone">
+      <title>What is a zone?</title>
+
+      <para>
+	A network zone defines the level of trust for network connections. This is a one to many relation, which means that a connection can only be part of one zone, but a zone can be used for many network connections.
+      </para>
+
+      <para>
+	The zone defines the firewall features that are enabled in this zone:
+      </para>
+
+      <refsect3>
+	<title>Predefined services</title>
+	<para>
+	  A service is a combination of port and/or protocol entries. Optionally netfilter helper modules can be added and also a IPv4 and IPv6 destination address.
+	</para>
+      </refsect3>
+
+      <refsect3>
+	<title>Ports and protocols</title>
+	<para>
+	  Definition of <literal>tcp</literal> or <literal>udp</literal> ports, where ports can be a single port or a port range.
+	</para>
+      </refsect3>
+
+      <refsect3>
+	<title>ICMP blocks</title>
+	<para>
+	  Blocks selected Internet Control Message Protocol (ICMP) messages. These messages are either information requests or created as a reply to information requests or in error conditions.
+	</para>
+      </refsect3>
+
+      <refsect3>
+	<title>Masquerading</title>
+	<para>
+	  The addresses of a private network are mapped to and hidden behind a public IP address. This is a form of address translation.
+	</para>
+      </refsect3>
+
+      <refsect3>
+	<title>Forward ports</title>
+	<para>
+	  A forward port is either mapped to the same port on another host or to another port on the same host or to another port on another host.
+	</para>
+      </refsect3>
+
+      <refsect3>
+	<title>Rich language rules</title>
+	<para>
+	  The rich language extends the elements (service, port, icmp-block, masquerade and forward-port) with additional source and destination addresses, logging, actions and limits for logs and actions. It can also be used for host or network white and black listing (for more informaiton, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>).
+	</para>
+      </refsect3>
+
+      <para>
+	Most zones are mutable, but there are also <emphasis>immutable</emphasis> zones. Immutable zones are not customizable and there is no way to overload them.
+      </para>
+
+      <para>
+	For more information on the zone file format, please have a look at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+    </refsect2>
+
+    <refsect2 id="whichzonesareavailable">
+      <title>Which zones are available?</title>
+
+      <para>
+	Here are the zones provided by firewalld sorted according to the default trust level of the zones from untrusted to trusted:
+      </para>
+
+	<variablelist>
+	  <varlistentry>
+	    <term>drop <emphasis>(immutable)</emphasis></term>
+            <listitem>
+	      <para>
+		Any incoming network packets are dropped, there is no reply. Only outgoing network connections are possible.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>block <emphasis>(immutable)</emphasis></term>
+            <listitem>
+	      <para>
+		Any incoming network connections are rejected with an <literal>icmp-host-prohibited</literal> message for IPv4 and <literal>icmp6-adm-prohibited</literal> for IPv6. Only network connections initiated within this system are possible.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>public</term>
+            <listitem>
+	      <para>
+		For use in public areas. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>external</term>
+            <listitem>
+	      <para>
+		For use on external networks with masquerading enabled especially for routers. You do not trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>dmz</term>
+            <listitem>
+	      <para>
+		For computers in your demilitarized zone that are publicly-accessible with limited access to your internal network. Only selected incoming connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>work</term>
+            <listitem>
+	      <para>
+		For use in work areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>home</term>
+            <listitem>
+	      <para>
+		For use in home areas. You mostly trust the other computers on networks to not harm your computer. Only selected incoming connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>internal</term>
+            <listitem>
+	      <para>
+		For use on internal networks. You mostly trust the other computers on the networks to not harm your computer. Only selected incoming connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+
+	  <varlistentry>
+	    <term>trusted <emphasis>(immutable)</emphasis></term>
+            <listitem>
+	      <para>
+		All network connections are accepted.
+	      </para>
+	    </listitem>
+	  </varlistentry>
+	</variablelist>
+
+    </refsect2>
+
+    <refsect2 id="whichzonesshouldbeused">
+      <title>Which zone should be used?</title>
+
+      <para>
+	A public WIFI network connection for example should be mainly untrusted, a wired home network connection should be fairly trusted. Select the zone that best matches the network you are using.
+      </para>
+    </refsect2>
+
+    <refsect2 id="howtoconfigureoraddzones">
+      <title>How to configure or add zones?</title>
+
+      <para>
+	To configure or add zones you can either use one of the firewalld interfaces to handle and change the configuration: These are the graphical configuration tool firewall-config, the command line tool <command>firewall-cmd</command> or the D-BUS interface. Or you can create or copy a zone file in one of the configuration directories. <filename class="directory"><config.prefix/>/lib/firewalld/zones</filename> is used for default and fallback configurations and <filename class="directory"><config.sysconfdir/>/firewalld/zones</filename> is used for user created and customized configuration files.
+      </para>
+    </refsect2>
+
+    <refsect2 id="howtosetorchangeazone">
+      <title>How to set or change a zone for a connection?</title>
+
+      <para>
+	The zone is stored into the ifcfg of the connection with <option>ZONE=option</option>. If the option is missing or empty, the default zone set in firewalld is used.
+      </para>
+      <para>
+       If the connection is controlled by NetworkManager, you can also use <command>nm-connection-editor</command> to change the zone.
+      </para>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

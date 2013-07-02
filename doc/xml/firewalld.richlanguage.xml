@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.richlanguage">
+
+  <refentryinfo>
+    <title>firewalld.richlanguage</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.richlanguage</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.richlanguage</refname>
+    <refpurpose>Rich Language Documentation</refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>Description</title>
+
+    <para>
+      With the rich language more complex firewall rules can be created in an easy to understand way. The language will use keywords with values and will be an abstract representation of ip*tables rules. Zones can be configured using this language, the current configuration will still be supported. 
+    </para>
+
+    <para>
+      The rich language extends the current zone elements (service, port, icmp-block, masquerade and forward-port) with additional source and destination addresses, logging, actions and limits for logs and actions. 
+    </para>
+
+    <para>
+      This page describes the rich language used in the command line client and D-Bus interface. For information about the rich language representation used in the the zone configuration files, please have a look at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+    </para>
+
+    <para>
+      A rule is part of a zone. A zone can contain several rules. If some rules interact/contradict, the first rule that matches "wins". 
+    </para>
+
+    <para>
+      <emphasis role="bold">General rule structure</emphasis>
+      <programlisting>
+rule
+  [source]
+  [destination]
+  service|port|protocol|icmp-block|masquerade|forward-port
+  [log]
+  [audit]
+  [accept|reject|drop]
+      </programlisting>
+      The complete rule is provided as a single line string. A destination is allowed here as long as it does not conflict with the destination of a service and is not allowed for masquerade at all.
+    </para>
+
+    <para>
+      <emphasis role="bold">Rule structure for source black or white listing</emphasis>
+      <programlisting>
+rule
+  source
+  [log]
+  [audit]
+  accept|reject|drop
+      </programlisting>
+      This is used to grant or limit access from a source to this machine or machines that are reachable by this machine. A destination is not allowed here.
+    </para>
+
+    <para>
+      <emphasis role="bold">Important information about element options:</emphasis>
+	Options for elements in a rule need to be added exactly after the element. If the option is placed somewhere else it might be used for another element as far as ut matches the options of the other element or will result in a rule error.
+    </para>
+
+    <refsect2>
+      <title>Rule</title>
+      <para>
+	  <programlisting>
+rule [family="ipv4|ipv6"]
+	  </programlisting>
+      If the rule family is provided, it can be either "ipv4" or "ipv6", which limits the rule to IPv4 or IPv6. If the rule family is not provided, the rule will be added for IPv4 and IPv6. If source or destination addresses are used in a rule, then the rule family need to be provided. This is also the case for port/packet forwarding.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Source</title>
+      <para>
+	  <programlisting>
+source address="address[/mask]" [invert="True"]
+	  </programlisting>
+	With the source address the origin of a connection attempt can be limited to the source address. A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported. It is possible to invert the sense of an address by adding <option>inverty</option>="<replaceable>true</replaceable>" or <option>invert</option>="<replaceable>yes</replaceable>". All but the used address with match.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Destination</title>
+      <para>
+	<programlisting>
+destination address="address[/mask]" invert="True"
+	</programlisting>
+	With the destination address the target can be limited to the destination address. The destination address is using the same syntax as the source address.
+      </para>
+      <para>
+	The use of source and destination addresses is optional and the use of a destination addresses is not possible with all elements. This depends on the use of destination addresses for example in service entries.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Service</title>
+      <para>
+	<programlisting>
+service name="service name"
+	</programlisting>
+      </para>
+      <para>
+	The service <replaceable>service name</replaceable> will be added to the rule. The service name is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
+      </para>
+      <para>
+	If a service provides a destination address, it will conflict with a destination address in the rule and will result in an error. The services using destination addresses internally are mostly services using multicast.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Port</title>
+      <para>
+	<programlisting>
+port port="port value" protocol="tcp|udp"
+	</programlisting>
+      </para>
+      <para>
+	The port <replaceable>port value</replaceable> can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Protocol</title>
+      <para>
+	<programlisting>
+protocol value="protocol value"
+	</programlisting>
+      </para>
+      <para>
+	The protocol value can be either a protocol id number or a protocol name. For allowed protocol entries, please have a look at <filename class="directory">/etc/protocols</filename>.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>ICMP-Block</title>
+      <para>
+	<programlisting>
+icmp-block name="icmptype name"
+	</programlisting>
+      </para>
+      <para>
+	The icmptype is the one of the icmp types firewalld supports. To get a listing of supported icmp types: <command>firewall-cmd --get-icmptypes</command>
+      </para>
+      <para>
+	It is not allowed to specify an action here. icmp-block uses the action reject internally.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Masquerade</title>
+      <para>
+	<programlisting>
+masquerade
+	</programlisting>
+      </para>
+      <para>
+	Turn on masquerading in the rule. A source address can be provided to limit masquerading to this area, but not a destination address.
+      </para>
+      <para>
+	It is not allowed to specify an action here.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Forward-Port</title>
+      <para>
+	<programlisting>
+forward-port port="port value" protocol="tcp|udp" to-port="port value" to-addr="address"
+	</programlisting>
+      </para>
+      <para>
+	Forward port/packets from local port value with protocol "tcp" or "udp" to either another port locally or to another machine or to another port on another machine.
+      </para>
+      <para>
+	The port value can either be a single port number or a port range id-id. The destination address is a simple ip address.
+      </para>
+      <para>
+	It is not allowed to specify an action here. forward-port uses the action accept internally.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Log</title>
+      <para>
+	<programlisting>
+log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
+	</programlisting>
+      </para>
+      <para>
+	Log new connection attempts to the rule with kernel logging for example in syslog. You can define a prefix text that will be added to the log message as a prefix. Log level can be one of "<option>emerg</option>", "<option>alert</option>", "<option>crit</option>", "<option>err</option>", "<option>warn</option>", "<option>notice</option>", "<option>info</option>" or "<option>debug</option>". The use of log is optional.
+      </para>
+      <para>
+	It is possible to limit logging: The rate is a natural positive number [1, ..], the duration of of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days. The maximum limit value is "1/d" which means at maximum one log entry per day.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Audit</title>
+      <para>
+	Audit provides an alternative way for logging using audit records sent to the service auditd. The audit type will be discovered from the rule action automatically. The use of audit is optional.
+      </para>
+      <para>
+	Also audit can be limited using the limit tag.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Action</title>
+      <para>
+	An action can be one of <option>accept</option>, <option>reject</option> or <option>drop</option>.
+      </para>
+      <para>
+	The rule can either contain an element or also a source only. If the rule contains an element, then new connection matching the element will be handled with the action. If the rule does not contain an element, then everything from the source address will be handled with the action (requires firewalld version 0.3.1).
+      </para>
+      <para>
+	<programlisting>
+accept | reject [type="reject type"] | drop
+	</programlisting>
+      </para>
+      <para>
+	With accept all new connection attempts will be granted. With reject they will not be accepted and there source will get a reject message. The reject type can be set to use an other value. With drop all packets will be dropped immediately, there is no information sent to the source.
+      </para>
+      <para>
+	Also an action can be limited using the limit tag.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Information about logging and actions</title>
+      <para>
+	Logging can be done with the LOG and also with audit. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
+      </para>
+      <para>
+	The rules or parts of them are placed in separate chains according to the action of the rule:
+      </para>
+      <para>
+	<programlisting>
+<replaceable>zone</replaceable>_log
+<replaceable>zone</replaceable>_deny
+<replaceable>zone</replaceable>_allow
+	</programlisting>
+      </para>
+      <para>
+	Then all logging rules will be placed in the zone_log chain, which will be walked first. All reject and drop rules will be placed in the zone_deny chain, which will be walked after the log chain. All accept rules will be placed in the zone_allow chain, which will be walked after the deny chain. If a rule contains log and also deny or allow actions, the parts are placed in the matching chains.
+      </para>
+    </refsect2>
+  </refsect1>
+
+  <refsect1>
+    <title>Examples</title>
+
+    <refsect2>
+      <title>Example 1</title>
+      <para>
+	Enable new IPv4 and IPv6 connections for protocol 'ah'
+      </para>
+      <para>
+	<programlisting>
+rule protocol value="ah" accept
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 2</title>
+      <para>
+	Allow new IPv4 and IPv6 connections for service ftp and log 1 per minute using audit
+      </para>
+      <para>
+	<programlisting>
+rule service name="ftp" log limit value="1/m" audit accept
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 3</title>
+      <para>
+	Allow new IPv4 connections from address 192.168.0.0/24 for service tftp and log 1 per minutes using syslog
+      </para>
+      <para>
+	<programlisting>
+rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 4</title>
+      <para>
+	New IPv6 connections from 1:2:3:4:6:: to service radius are all rejected and logged at a rate of 3 per minute. New IPv6 connections from other sources are accepted.
+      </para>
+      <para>
+	<programlisting>
+rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject
+rule family="ipv6" service name="radius" accept
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 5</title>
+      <para>
+	Forward IPv6 port/packets receiving from 1:2:3:4:6:: on port 4011 with protocol tcp to 1::2:3:4:7 on port 4012
+      </para>
+      <para>
+	<programlisting>
+rule family="ipv6" source address="1:2:3:4:6::" forward-port to-addr="1::2:3:4:7" to-port="4012" protocol="tcp" port="4011"
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 6</title>
+      <para>
+	White-list source address to allow all connections from 192.168.2.2
+      </para>
+      <para>
+	<programlisting>
+rule family="ipv4" source address="192.168.2.2" accept
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 7</title>
+      <para>
+	Black-list source address to reject all connections from 192.168.2.3
+      </para>
+      <para>
+	<programlisting>
+rule family="ipv4" source address="192.168.2.3" reject
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 8</title>
+      <para>
+	Black-list source address to drop all connections from 192.168.2.4
+      </para>
+      <para>
+	<programlisting>
+rule family="ipv4" source address="192.168.2.4" drop
+	</programlisting>
+      </para>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>
