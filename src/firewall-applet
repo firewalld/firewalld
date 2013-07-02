@@ -1007,7 +1007,14 @@ class TrayApplet(object):
 
 # MAIN
 
-if __name__ == "__main__":
-    mainloop = GObject.MainLoop()
-    applet = TrayApplet()
-    mainloop.run()
+if len(sys.argv) > 1:
+    print("""Usage: %s [options]
+
+Options:
+  -h, --help     show this help message and exit
+"""  % sys.argv[0])
+    sys.exit(1)
+
+mainloop = GObject.MainLoop()
+applet = TrayApplet()
+mainloop.run()
