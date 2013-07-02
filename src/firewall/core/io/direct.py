@@ -153,16 +153,18 @@ class Direct(IO_Object):
         print "chains"
         for key in self.chains:
             print "  (%s, %s): %s" % (key[0], key[1], ",".join(self.chains[key]))
-        print "\nrules"
+        print "rules"
         for key in self.rules:
             print "  (%s, %s, %s):" % (key[0], key[1], key[2])
-            for (priority, args) in self.rules[key]:
-                print "    (%s, ('%s'))" % (priority, "','".join(args))
-#        print "\npassthroughs"
+            for (priority,args) in self.rules[key]:
+                print "    (%d, ('%s'))" % (priority, "','".join(args))
+#        print "passthroughs"
 #        for key in self.passthroughs:
 #            print "  %s:" % (key)
 #            for args in self.passthroughs[key]:
 #                print "    ('%s')" % ("','".join(args))
+
+    # chains
 
     def add_chain(self, ipv, table, chain):
         key = (ipv, table)
@@ -198,36 +200,39 @@ class Direct(IO_Object):
             raise ValueError, "No chains for table '%s' with ipv '%s'" % \
                 (table, ipv)
 
+    def get_all_chains(self):
+        return self.chains
+
+    # rules
 
     def add_rule(self, ipv, table, chain, priority, args):
         key = (ipv, table, chain)
         if key not in self.rules:
-            self.rules[key] = [ ]
-        value = (priority, args)
+            self.rules[key] = LastUpdatedOrderedDict()
+        value = (priority, tuple(args))
         if value not in self.rules[key]:
-            self.rules[key].append(value)
+            self.rules[key][value] = priority
         else:
             log.warning("Rule '%s' for table '%s' and chain '%s' " % \
                             ("',".join(args), table, chain)
-                        + "with ipv '%s' and priority %d" % (ipv, priority)
+                        + "with ipv '%s' and priority %d " % (ipv, priority)
                         + "already in list, ignoring")
 
     def remove_rule(self, ipv, table, chain, priority, args):
         key = (ipv, table, chain)
-        value = (priority, args)
+        value = (priority, tuple(args))
         if key in self.rules and value in self.rules[key]:
-            self.rules[key].remove(value)
+            del self.rules[key][value]
             if len(self.rules[key]) == 0:
                 del self.rules[key]
         else:
             raise ValueError, "Rule '%s' for table '%s' and chain '%s' " % \
                 ("',".join(args), table, chain) + \
-                "with ipv '%s' and priority %d" % (ipv, priority) + \
-                "not in list"
+                "with ipv '%s' and priority %d not in list" % (ipv, priority)
 
     def query_rule(self, ipv, table, chain, priority, args):
         key = (ipv, table, chain)
-        value = (priority, args)
+        value = (priority, tuple(args))
         return (key in self.rules and value in self.rules[key])
 
     def get_rules(self, ipv, table, chain):
@@ -238,7 +243,11 @@ class Direct(IO_Object):
             raise ValueError, "No rules for table '%s' and chain '%s' " %\
                 (table, chain) + "with ipv '%s'" % (ipv)
 
+    def get_all_rules(self):
+        return self.rules
 
+#    # passthrough
+#
 #    def add_passthrough(self, ipv, args):
 #        if ipv not in self.passthroughs:
 #            self.passthroughs[ipv] = [ ]
@@ -266,7 +275,11 @@ class Direct(IO_Object):
 #            return self.passthroughs[ipv]
 #        else:
 #            raise ValueError, "No passthroughs for ipv '%s'" % (ipv)
+#
+#    def get_all_passthroughs(self):
+#        return self.passthroughs
 
+    # read
 
     def read(self):
         self.clear()
@@ -305,8 +318,7 @@ class Direct(IO_Object):
         # rules
         for key in self.rules:
             (ipv, table, chain) = key
-            for value in self.rules[key]:
-                (priority, args) = value
+            for (priority, args) in self.rules[key]:
                 if len(args) < 1:
                     continue
                 handler.ignorableWhitespace("  ")
