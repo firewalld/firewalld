@@ -70,6 +70,7 @@ AC_CONFIG_FILES([Makefile
 		 doc/man/Makefile
 		 doc/man/man1/Makefile
 		 doc/man/man5/Makefile
+		 doc/xml/Makefile
 		 doc/xml/transform-html.xsl
 		 doc/xml/transform-man.xsl
 		 po/Makefile.in
