@@ -92,7 +92,7 @@ rule
 
     <para>
       <emphasis role="bold">Important information about element options:</emphasis>
-	Options for elements in a rule need to be added exactly after the element. If the option is placed somewhere else it might be used for another element as far as ut matches the options of the other element or will result in a rule error.
+	Options for elements in a rule need to be added exactly after the element. If the option is placed somewhere else it might be used for another element as far as it matches the options of the other element or will result in a rule error.
     </para>
 
     <refsect2>
@@ -111,7 +111,7 @@ rule [family="ipv4|ipv6"]
 	  <programlisting>
 source address="address[/mask]" [invert="True"]
 	  </programlisting>
-	With the source address the origin of a connection attempt can be limited to the source address. A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported. It is possible to invert the sense of an address by adding <option>inverty</option>="<replaceable>true</replaceable>" or <option>invert</option>="<replaceable>yes</replaceable>". All but the used address with match.
+	With the source address the origin of a connection attempt can be limited to the source address. A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported. It is possible to invert the sense of an address by adding <option>invert</option>="<replaceable>true</replaceable>" or <option>invert</option>="<replaceable>yes</replaceable>". All but the used address with match.
       </para>
     </refsect2>
 
@@ -208,7 +208,7 @@ forward-port port="port value" protocol="tcp|udp" to-port="port value" to-addr="
 	Forward port/packets from local port value with protocol "tcp" or "udp" to either another port locally or to another machine or to another port on another machine.
       </para>
       <para>
-	The port value can either be a single port number or a port range id-id. The destination address is a simple ip address.
+	The port value can either be a single port number or a port range portid-portid. The destination address is an IP address.
       </para>
       <para>
 	It is not allowed to specify an action here. forward-port uses the action accept internally.
@@ -264,7 +264,7 @@ accept | reject [type="reject type"] | drop
     <refsect2>
       <title>Information about logging and actions</title>
       <para>
-	Logging can be done with the LOG and also with audit. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
+	Logging can be done with the log and also with audit. A new chain is added to all zones: zone_log. This will be jumped into before the deny chain to be able to have a proper ordering.
       </para>
       <para>
 	The rules or parts of them are placed in separate chains according to the action of the rule:

@@ -129,7 +129,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--remove-module</option></term>
+	  <term><option>--removemodule</option></term>
 	  <listitem>
 	    <para>
 	      This option will result in a warning message and will be ignored.
@@ -174,10 +174,10 @@
 	      This option will result in a warning message.
 	    </para>
 	    <para>
-	      Mark an interface as trusted. This option can be specified multiple times. The interface will be will be bound to the trusted zone.
+	      Mark an interface as trusted. This option can be specified multiple times. The interface will be bound to the trusted zone.
 	    </para>
 	    <para>
-	      If the interface is used for a connection with NetworkManager or if there is an ifcfg file for this interface, the zone will be changed to the zone defined in the configuration as soon as it gets activated. To change the zone of a connection use <command>nm-connection-editor</command> and set the zone to trusted, for an ifcfg file, use an editor and add "ZONE=trusted". If the zone is not defined in the ifcfg file, the firewalld default zone will be used.
+	      If the interface is used in a NetworkManager managed connection or if there is an ifcfg file for this interface, the zone will be changed to the zone defined in the configuration as soon as it gets activated. To change the zone of a connection use <command>nm-connection-editor</command> and set the zone to trusted, for an ifcfg file, use an editor and add "ZONE=trusted". If the zone is not defined in the ifcfg file, the firewalld default zone will be used.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -208,7 +208,7 @@
 	</varlistentry>
 
 	<varlistentry>
-          <term><option>--forward-port</option>=if=<replaceable>interface</replaceable>:port=<replaceable>port</replaceable>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>table</replaceable>:</optional><optional>:toaddr=<replaceable>filename</replaceable></optional></term>
+          <term><option>--forward-port</option>=if=<replaceable>interface</replaceable>:port=<replaceable>port</replaceable>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>destination port</replaceable>:</optional><optional>:toaddr=<replaceable>destination address</replaceable></optional></term>
           <listitem>
 	    <para>
 	      This option will result in a warning message.
@@ -217,7 +217,7 @@
 	      Add the <emphasis>IPv4</emphasis> forward port in the default zone. This option can be specified multiple times. 
 	    </para>
 	    <para>
-	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is a simple IP address.
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is an IP address.
 	    </para>
 	  </listitem>
 	</varlistentry>
