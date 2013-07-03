@@ -44,7 +44,7 @@ DISTCLEANFILES = \
 
 EXTRA_DIST = \
 	$(desktop_FILES) \
-	$(applet_desktop_DATA) \
+	$(applet_desktop_FILES) \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
 	icmptypes/destination-unreachable.xml \
