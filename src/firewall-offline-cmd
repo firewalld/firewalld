@@ -389,7 +389,7 @@ if not obj:
     sys.exit(1)
 
 if obj.target != DEFAULT_ZONE_TARGET:
-    error(_("Zone '%s' has non-default target, i.e. {ACCEPT/REJECT/DROP}, exiting.") % default_zone)
+    error(_("Zone '%s' has non-default target, i.e. {ACCEPT|REJECT|DROP}, exiting.") % default_zone)
     # create new zone?
     sys.exit(1)
 

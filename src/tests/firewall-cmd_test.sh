@@ -212,6 +212,7 @@ assert_good " --query-service dns"
 assert_good "--remove-service=dns"
 assert_bad  " --query-service=dns"
 assert_bad  "   --add-service=smtps" # bad service name
+assert_bad  "   --add-service=dns --zone=trusted" # immutable
 assert_bad  "   --add-service=dns --timeout" # missing argument
 assert_bad  "   --add-service=dns --add-interface=dummy0" # impossible combination
 
@@ -255,6 +256,7 @@ assert_good "--permanent    --add-port=111-222/udp --zone=${default_zone}"
 assert_good "--permanent  --query-port=111-222/udp"
 assert_good "--permanent --remove-port 111-222/udp"
 assert_bad  "--permanent  --query-port=111-222/udp"
+assert_bad  "--permanent    --add-port=111-222/udp --zone drop" # immutable
 
 assert_good "   --add-port=80/tcp --add-port 443-444/udp"
 assert_good " --query-port=80/tcp --zone=${default_zone}"

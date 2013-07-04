@@ -72,7 +72,7 @@ class FirewallZone:
             msg = str(error)
             code = FirewallError.get_code(msg)
             if code in [ IMMUTABLE ]:
-                log.warning("Setting ignored because zone's target is {ACCEPT/REJECT/DROP}.")
+                log.warning("Setting ignored because zone's target is {ACCEPT|REJECT|DROP}.")
             else:
                 log.warning("%s: %s" % (name, msg))
 

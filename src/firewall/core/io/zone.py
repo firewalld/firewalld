@@ -82,6 +82,13 @@ class Zone(IO_Object):
         "reject": [ "type" ],
         }
 
+    @staticmethod
+    def index_of (element):
+        for i, (el, val) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
+            if el == element:
+                return i
+        raise FirewallError(UNKNOWN_ERROR)
+
     def __init__(self):
         super(Zone, self).__init__()
         self.version = ""
