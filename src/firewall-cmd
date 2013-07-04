@@ -647,15 +647,23 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
             fw.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
                        priority, a.add_rule[4:])
         elif a.remove_rule:
-            if len (a.remove_rule) < 4:
-                __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <args>")
+            if len (a.remove_rule) < 5:
+                __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            try:
+                priority = int(a.remove_rule[3])
+            except ValueError:
+                __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             fw.removeRule(_check_ipv(a.remove_rule[0]),
-                          a.remove_rule[1], a.remove_rule[2], a.remove_rule[3:])
+                          a.remove_rule[1], a.remove_rule[2], priority, a.remove_rule[4:])
         elif a.query_rule:
-            if len (a.query_rule) < 4:
-                __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <args>")
+            if len (a.query_rule) < 5:
+                __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            try:
+                priority = int(a.query_rule[3])
+            except ValueError:
+                __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             __print_query_result(fw.queryRule(_check_ipv(a.query_rule[0]),
-                                      a.query_rule[1], a.query_rule[2], a.query_rule[3:]))
+                                      a.query_rule[1], a.query_rule[2], priority, a.query_rule[4:]))
         elif a.get_rules:
             rules = fw.getRules(_check_ipv(a.get_rules[0]),
                                 a.get_rules[1], a.get_rules[2])

@@ -1326,13 +1326,13 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def removeRule(self, ipv, table, chain, args):
-        self.fw_direct.removeRule(ipv, table, chain, args)
+    def removeRule(self, ipv, table, chain, priority, args):
+        self.fw_direct.removeRule(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def queryRule(self, ipv, table, chain, args):
-        return dbus_to_python(self.fw_direct.queryRule(ipv, table, chain, args))
+    def queryRule(self, ipv, table, chain, priority, args):
+        return dbus_to_python(self.fw_direct.queryRule(ipv, table, chain, priority, args))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
