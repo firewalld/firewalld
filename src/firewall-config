@@ -181,8 +181,6 @@ class FirewallConfig(object):
             builder.get_object("zoneBaseDialogDescText")
         self.zoneBaseDialogDescText.get_buffer().connect(\
             "changed", self.onZoneBaseDialogChanged)
-        self.zoneBaseDialogImmutableCheck = \
-            builder.get_object("zoneBaseDialogImmutableCheck")
         self.zoneBaseDialogTargetCheck = \
             builder.get_object("zoneBaseDialogTargetCheck")
         self.zoneBaseDialogTargetCombobox = \
@@ -916,7 +914,7 @@ class FirewallConfig(object):
             masquerade = settings.getMasquerade()
             forward_ports = settings.getForwardPorts()
             icmpblocks = settings.getIcmpBlocks()
-            immutable = settings.getImmutable()
+            immutable = settings.isImmutable()
             default = zone.get_property("default")
             builtin = zone.get_property("builtin")
 
@@ -1051,14 +1049,12 @@ class FirewallConfig(object):
             old_version = None
             old_short = None
             old_desc = None
-            old_immutable = None
             old_target = None
 
             self.zoneBaseDialogNameEntry.set_text("")
             self.zoneBaseDialogVersionEntry.set_text("")
             self.zoneBaseDialogShortEntry.set_text("")
             self.zoneBaseDialogDescText.get_buffer().set_text("")
-            self.zoneBaseDialogImmutableCheck.set_active(False)
             self.zoneBaseDialogTargetCheck.set_active(True)
             self.zoneBaseDialogTargetCombobox.set_active(0)
         else:
@@ -1071,14 +1067,12 @@ class FirewallConfig(object):
             old_version = settings.getVersion()
             old_short = settings.getShort()
             old_desc = settings.getDescription()
-            old_immutable = settings.getImmutable()
             old_target = settings.getTarget()
 
             self.zoneBaseDialogNameEntry.set_text(old_name)
             self.zoneBaseDialogVersionEntry.set_text(old_version)
             self.zoneBaseDialogShortEntry.set_text(old_short)
             self.zoneBaseDialogDescText.get_buffer().set_text(old_desc)
-            self.zoneBaseDialogImmutableCheck.set_active(old_immutable)
             if old_target == DEFAULT_ZONE_TARGET:
                 self.zoneBaseDialogTargetCheck.set_active(True)
                 self.zoneBaseDialogTargetCombobox.set_active(0)
@@ -1110,15 +1104,13 @@ class FirewallConfig(object):
         buffer = self.zoneBaseDialogDescText.get_buffer()
         desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
                                False)
-        immutable = self.zoneBaseDialogImmutableCheck.get_active()
         target = DEFAULT_ZONE_TARGET
         if not self.zoneBaseDialogTargetCheck.get_active():
             target = self.zoneBaseDialogTargetCombobox.get_active_text()
 
         if old_name == name and \
                 old_version == version and old_short == short and \
-                old_desc == desc and old_immutable == immutable and \
-                old_target == target:
+                old_desc == desc and old_target == target:
             # no changes
             return
 
@@ -1130,13 +1122,11 @@ class FirewallConfig(object):
             settings = client.FirewallClientConfigZoneSettings()
 
         if old_version != version or old_short != short or \
-                old_desc != desc or old_immutable != immutable or \
-                old_target != target:
+                old_desc != desc or old_target != target:
             # settings
             settings.setVersion(version)
             settings.setShort(short)
             settings.setDescription(desc)
-            settings.setImmutable(immutable)
             settings.setTarget(target)
             if not add:
                 zone.update(settings)
@@ -1700,7 +1690,6 @@ class FirewallConfig(object):
             old_version = None
             old_short = None
             old_desc = None
-            old_immutable = None
             old_target = None
 
             self.serviceBaseDialogNameEntry.set_text("")
@@ -2045,7 +2034,6 @@ class FirewallConfig(object):
             old_version = None
             old_short = None
             old_desc = None
-            old_immutable = None
             old_target = None
 
             self.icmpBaseDialogNameEntry.set_text("")

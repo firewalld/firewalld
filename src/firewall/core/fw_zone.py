@@ -68,8 +68,13 @@ class FirewallZone:
         # transform errors into warnings
         try:
             f(name, *args)
-        except FirewallError as msg:
-            log.warning("%s: %s" % (name, msg))
+        except FirewallError as error:
+            msg = str(error)
+            code = FirewallError.get_code(msg)
+            if code in [ IMMUTABLE ]:
+                log.warning("Setting ignored because zone's target is {ACCEPT/REJECT/DROP}.")
+            else:
+                log.warning("%s: %s" % (name, msg))
 
     def add_zone(self, obj):
         obj.settings = { x : {} for x in [ "interfaces", "sources",
@@ -121,7 +126,7 @@ class FirewallZone:
 
     def is_immutable(self, zone):
         z = self._fw.check_zone(zone)
-        return self._zones[z].immutable
+        return self._zones[z].target != DEFAULT_ZONE_TARGET
 
     def check_immutable(self, zone):
         if self.is_immutable(zone):

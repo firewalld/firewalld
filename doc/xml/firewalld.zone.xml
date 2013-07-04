@@ -65,7 +65,7 @@
 
       <programlisting>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;zone [version="<replaceable>versionstring</replaceable>"] [immutable="<replaceable>bool</replaceable>"] [target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"]&gt;
+&lt;zone [version="<replaceable>versionstring</replaceable>"] [target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"]&gt;
   [ &lt;short&gt;<replaceable>short description</replaceable>&lt;/short&gt; ]
   [ &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt; ]
   [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
@@ -117,19 +117,15 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term>immutable="<replaceable>bool</replaceable>"</term>
-          <listitem>
-	    <para>
-	      Can be used to mark a zone as immutable. That means that the zone can not get modified. Possible values are yes or true, the default value is false.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
 	  <term>target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"</term>
           <listitem>
 	    <para>
-	      Can be used to accept, reject or drop every packet. The <literal>ACCEPT</literal> target is used in the trusted zone, every packet will be accepted. The <literal>%%REJECT%%</literal> target is used in the block zone, every packet will be rejected with the default firewalld reject type. The <literal>DROP</literal> target is used in the drop zone, every packet will be dropped. The default target is <literal>{chain}_ZONE_{zone}</literal> and will be used if the target is not specified.
+	      Can be used to accept, reject or drop every packet.
+	      The <literal>ACCEPT</literal> target is used in the trusted zone, every packet will be accepted.
+	      The <literal>%%REJECT%%</literal> target is used in the block zone, every packet will be rejected with the default firewalld reject type.
+	      The <literal>DROP</literal> target is used in the drop zone, every packet will be dropped.
+	      The default target is <literal>{chain}_ZONE_{zone}</literal> and will be used if the target is not specified.
+	      If other than the default target is used, all settings except interface and source are ignored, because there's only one rule created in firewall for this zone - 'jump to <replaceable>target</replaceable>'.
 	    </para>
 	  </listitem>
 	</varlistentry>

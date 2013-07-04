@@ -102,10 +102,6 @@
       </refsect3>
 
       <para>
-	Most zones are mutable, but there are also <emphasis>immutable</emphasis> zones. Immutable zones are not customizable and there is no way to overload them.
-      </para>
-
-      <para>
 	For more information on the zone file format, please have a look at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
       </para>
     </refsect2>
@@ -119,7 +115,7 @@
 
 	<variablelist>
 	  <varlistentry>
-	    <term>drop <emphasis>(immutable)</emphasis></term>
+	    <term>drop</term>
             <listitem>
 	      <para>
 		Any incoming network packets are dropped, there is no reply. Only outgoing network connections are possible.
@@ -128,7 +124,7 @@
 	  </varlistentry>
 
 	  <varlistentry>
-	    <term>block <emphasis>(immutable)</emphasis></term>
+	    <term>block</term>
             <listitem>
 	      <para>
 		Any incoming network connections are rejected with an <literal>icmp-host-prohibited</literal> message for IPv4 and <literal>icmp6-adm-prohibited</literal> for IPv6. Only network connections initiated within this system are possible.
@@ -191,7 +187,7 @@
 	  </varlistentry>
 
 	  <varlistentry>
-	    <term>trusted <emphasis>(immutable)</emphasis></term>
+	    <term>trusted</term>
             <listitem>
 	      <para>
 		All network connections are accepted.

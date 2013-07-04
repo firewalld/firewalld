@@ -186,10 +186,6 @@
       </para>
 
       <para>
-	It is not possible to overload immutable zones, because these may not get changed. If you are loading the defaults for a zone that has a default or fallback file, the file in <filename class="directory">/etc/firewalld</filename> will be renamed to file.old and the fallback will be used again.
-      </para>
-
-      <para>
 	For more information on icmptypes, please have a look at the <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry> man page, for services at <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry> and for zones at <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
       </para>
     </refsect2>

@@ -38,7 +38,7 @@ class Zone(IO_Object):
         ( "version",  "" ),                            # s
         ( "short", "" ),                               # s
         ( "description", "" ),                         # s
-        ( "immutable", False ),                        # b
+        ( "UNUSED", False ),                           # b
         ( "target", "" ),                              # s
         ( "services", [ "", ], ),                      # as
         ( "ports", [ ( "", "" ), ], ),                 # a(ss)
@@ -72,7 +72,7 @@ class Zone(IO_Object):
         "limit": [ "value" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "zone": [ "name", "immutable", "target", "version" ],
+        "zone": [ "name", "target", "version" ],
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
@@ -87,7 +87,7 @@ class Zone(IO_Object):
         self.version = ""
         self.short = ""
         self.description = ""
-        self.immutable = False
+        self.UNUSED = False
         self.target = DEFAULT_ZONE_TARGET
         self.services = [ ]
         self.ports = [ ]
@@ -146,7 +146,6 @@ class Zone(IO_Object):
         self.version = ""
         self.short = ""
         self.description = ""
-        self.immutable = False
 
         for interface in zone.interfaces:
             if interface not in self.interfaces:
@@ -192,9 +191,6 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                             attrs["name"])
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
-            if "immutable" in attrs and \
-                    attrs["immutable"].lower() in [ "yes", "true" ]:
-                self.item.immutable = True
             if "target" in attrs:
                 target = str(attrs["target"])
                 if target not in ZONE_TARGETS:
@@ -467,8 +463,6 @@ def zone_writer(zone, path=None):
     attrs = {}
     if zone.version and zone.version != "":
         attrs["version"] = zone.version
-    if zone.immutable:
-        attrs["immutable"] = "yes"
     if zone.target != DEFAULT_ZONE_TARGET:
         attrs["target"] = zone.target
     handler.startElement("zone", attrs)
