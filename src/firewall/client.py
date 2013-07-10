@@ -70,7 +70,8 @@ class FirewallClientConfigZoneSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", "", [], [], [], False, [], [], [], []]
+            self.settings = ["", "", "", False, "", [], [], [], False, [],
+                             [], [], []]
 
     @handle_exceptions
     def getVersion(self):
@@ -93,161 +94,163 @@ class FirewallClientConfigZoneSettings(object):
     def setDescription(self, description):
         self.settings[2] = description
 
+    # self.settings[3] was used for 'immutable'
+
     @handle_exceptions
     def isImmutable(self):
         return self.getTarget() != DEFAULT_ZONE_TARGET
 
     @handle_exceptions
     def getTarget(self):
-        return self.settings[3]
+        return self.settings[4]
     @handle_exceptions
     def setTarget(self, target):
-        self.settings[3] = target
+        self.settings[4] = target
 
     @handle_exceptions
     def getServices(self):
-        return self.settings[4]
+        return self.settings[5]
     @handle_exceptions
     def setServices(self, services):
-        self.settings[4] = services
+        self.settings[5] = services
     @handle_exceptions
     def addService(self, service):
-        if service not in self.settings[4]:
-            self.settings[4].append(service)
+        if service not in self.settings[5]:
+            self.settings[5].append(service)
     @handle_exceptions
     def removeService(self, service):
-        if service in self.settings[4]:
-            self.settings[4].remove(service)
+        if service in self.settings[5]:
+            self.settings[5].remove(service)
     @handle_exceptions
     def queryService(self, service):
-        return service in self.settings[4]
+        return service in self.settings[5]
 
     @handle_exceptions
     def getPorts(self):
-        return self.settings[5]
+        return self.settings[6]
     @handle_exceptions
     def setPorts(self, ports):
-        self.settings[5] = ports
+        self.settings[6] = ports
     @handle_exceptions
     def addPort(self, port, protocol):
-        if (port,protocol) not in self.settings[5]:
-            self.settings[5].append((port,protocol))
+        if (port,protocol) not in self.settings[6]:
+            self.settings[6].append((port,protocol))
     @handle_exceptions
     def removePort(self, port, protocol):
-        if (port,protocol) in self.settings[5]:
-            self.settings[5].remove((port,protocol))
+        if (port,protocol) in self.settings[6]:
+            self.settings[6].remove((port,protocol))
     @handle_exceptions
     def queryPort(self, port, protocol):
-        return (port,protocol) in self.settings[5]
+        return (port,protocol) in self.settings[6]
 
     @handle_exceptions
     def getIcmpBlocks(self):
-        return self.settings[6]
+        return self.settings[7]
     @handle_exceptions
     def setIcmpBlocks(self, icmpblocks):
-        self.settings[6] = icmpblocks
+        self.settings[7] = icmpblocks
     @handle_exceptions
     def addIcmpBlock(self, icmptype):
-        if icmptype not in self.settings[6]:
-            self.settings[6].append(icmptype)
+        if icmptype not in self.settings[7]:
+            self.settings[7].append(icmptype)
     @handle_exceptions
     def removeIcmpBlock(self, icmptype):
-        if icmptype in self.settings[6]:
-            self.settings[6].remove(icmptype)
+        if icmptype in self.settings[7]:
+            self.settings[7].remove(icmptype)
     @handle_exceptions
     def queryIcmpBlock(self, icmptype):
-        return icmptype in self.settings[6]
+        return icmptype in self.settings[7]
 
     @handle_exceptions
     def getMasquerade(self):
-        return self.settings[7]
+        return self.settings[8]
     @handle_exceptions
     def setMasquerade(self, masquerade):
-        self.settings[7] = masquerade
+        self.settings[8] = masquerade
 
     @handle_exceptions
     def getForwardPorts(self):
-        return self.settings[8]
+        return self.settings[9]
     @handle_exceptions
     def setForwardPorts(self, ports):
-        self.settings[8] = ports
+        self.settings[9] = ports
     @handle_exceptions
     def addForwardPort(self, port, protocol, to_port, to_addr):
         if to_port == None:
             to_port = ''
         if to_addr == None:
             to_addr = ''
-        if (port,protocol,to_port,to_addr) not in self.settings[8]:
-            self.settings[8].append((port,protocol,to_port,to_addr))
+        if (port,protocol,to_port,to_addr) not in self.settings[9]:
+            self.settings[9].append((port,protocol,to_port,to_addr))
     @handle_exceptions
     def removeForwardPort(self, port, protocol, to_port, to_addr):
         if to_port == None:
             to_port = ''
         if to_addr == None:
             to_addr = ''
-        if (port,protocol,to_port,to_addr) in self.settings[8]:
-            self.settings[8].remove((port,protocol,to_port,to_addr))
+        if (port,protocol,to_port,to_addr) in self.settings[9]:
+            self.settings[9].remove((port,protocol,to_port,to_addr))
     @handle_exceptions
     def queryForwardPort(self, port, protocol, to_port, to_addr):
         if to_port == None:
             to_port = ''
         if to_addr == None:
             to_addr = ''
-        return (port,protocol,to_port,to_addr) in self.settings[8]
+        return (port,protocol,to_port,to_addr) in self.settings[9]
 
     @handle_exceptions
     def getInterfaces(self):
-        return self.settings[9]
+        return self.settings[10]
     @handle_exceptions
     def setInterfaces(self, interfaces):
-        self.settings[9] = interfaces
+        self.settings[10] = interfaces
     @handle_exceptions
     def addInterface(self, interface):
-        if interface not in self.settings[9]:
-            self.settings[9].append(interface)
+        if interface not in self.settings[10]:
+            self.settings[10].append(interface)
     @handle_exceptions
     def removeInterface(self, interface):
-        if interface in self.settings[9]:
-            self.settings[9].remove(interface)
+        if interface in self.settings[10]:
+            self.settings[10].remove(interface)
     @handle_exceptions
     def queryInterface(self, interface):
-        return interface in self.settings[9]
+        return interface in self.settings[10]
 
     @handle_exceptions
     def getSources(self):
-        return self.settings[10]
+        return self.settings[11]
     @handle_exceptions
     def setSources(self, sources):
-        self.settings[10] = sources
+        self.settings[11] = sources
     @handle_exceptions
     def addSource(self, source):
-        if source not in self.settings[10]:
-            self.settings[10].append(source)
+        if source not in self.settings[11]:
+            self.settings[11].append(source)
     @handle_exceptions
     def removeSource(self, source):
-        if source in self.settings[10]:
-            self.settings[10].remove(source)
+        if source in self.settings[11]:
+            self.settings[11].remove(source)
     @handle_exceptions
     def querySource(self, source):
-        return source in self.settings[10]
+        return source in self.settings[11]
 
     @handle_exceptions
     def getRichRules(self):
-        return self.settings[11]
+        return self.settings[12]
     @handle_exceptions
     def setRichRules(self, rules):
-        self.settings[11] = rules
+        self.settings[12] = rules
     @handle_exceptions
     def addRichRule(self, rule):
-        if rule not in self.settings[11]:
-            self.settings[11].append(rule)
+        if rule not in self.settings[12]:
+            self.settings[12].append(rule)
     @handle_exceptions
     def removeRichRule(self, rule):
-        if rule in self.settings[11]:
-            self.settings[11].remove(rule)
+        if rule in self.settings[12]:
+            self.settings[12].remove(rule)
     @handle_exceptions
     def queryRichRule(self, rule):
-        return rule in self.settings[11]
+        return rule in self.settings[12]
 
 
 # zone config

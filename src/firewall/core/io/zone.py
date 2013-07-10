@@ -38,6 +38,7 @@ class Zone(IO_Object):
         ( "version",  "" ),                            # s
         ( "short", "" ),                               # s
         ( "description", "" ),                         # s
+        ( "UNUSED", False ),                           # b
         ( "target", "" ),                              # s
         ( "services", [ "", ], ),                      # as
         ( "ports", [ ( "", "" ), ], ),                 # a(ss)
@@ -48,7 +49,7 @@ class Zone(IO_Object):
         ( "sources", [ "" ] ),                         # as
         ( "rules_str", [ "" ] ),                       # as
         )
-    DBUS_SIGNATURE = '(ssssasa(ss)asba(ssss)asasas)'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasas)'
     ADDITIONAL_ALNUM_CHARS = [ "_" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -93,6 +94,7 @@ class Zone(IO_Object):
         self.version = ""
         self.short = ""
         self.description = ""
+        self.UNUSED = False
         self.target = DEFAULT_ZONE_TARGET
         self.services = [ ]
         self.ports = [ ]
