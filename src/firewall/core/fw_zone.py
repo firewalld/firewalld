@@ -71,10 +71,7 @@ class FirewallZone:
         except FirewallError as error:
             msg = str(error)
             code = FirewallError.get_code(msg)
-            if code in [ IMMUTABLE ]:
-                log.warning("Setting ignored because zone's target is {ACCEPT|REJECT|DROP}.")
-            else:
-                log.warning("%s: %s" % (name, msg))
+            log.warning("%s: %s" % (name, msg))
 
     def add_zone(self, obj):
         obj.settings = { x : {} for x in [ "interfaces", "sources",
@@ -124,23 +121,11 @@ class FirewallZone:
         obj.settings.clear()
         del self._zones[zone]
 
-    def is_immutable(self, zone):
-        z = self._fw.check_zone(zone)
-        return self._zones[z].target != DEFAULT_ZONE_TARGET
-
-    def check_immutable(self, zone):
-        if self.is_immutable(zone):
-            raise FirewallError(IMMUTABLE, zone)
-
     # dynamic chain handling
 
     def __chain(self, zone, create, table, chain):
         if zone in self._chains and table in self._chains[zone] and \
                 chain in self._chains[zone][table]:
-            return
-
-        # do not create chains for immuable zones
-        if self.is_immutable(zone):
             return
 
         chains = [ ]
@@ -895,7 +880,6 @@ class FirewallZone:
 
     def add_rule(self, zone, rule, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -912,7 +896,6 @@ class FirewallZone:
 
     def remove_rule(self, zone, rule):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1004,7 +987,6 @@ class FirewallZone:
 
     def add_service(self, zone, service, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1021,7 +1003,6 @@ class FirewallZone:
 
     def remove_service(self, zone, service):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1079,7 +1060,6 @@ class FirewallZone:
 
     def add_port(self, zone, port, protocol, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1096,7 +1076,6 @@ class FirewallZone:
 
     def remove_port(self, zone, port, protocol):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1159,7 +1138,6 @@ class FirewallZone:
 
     def add_masquerade(self, zone, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1176,7 +1154,6 @@ class FirewallZone:
 
     def remove_masquerade(self, zone):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1274,7 +1251,6 @@ class FirewallZone:
     def add_forward_port(self, zone, port, protocol, toport=None,
                          toaddr=None, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1294,7 +1270,6 @@ class FirewallZone:
     def remove_forward_port(self, zone, port, protocol, toport=None,
                             toaddr=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1373,7 +1348,6 @@ class FirewallZone:
 
     def add_icmp_block(self, zone, icmp, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1390,7 +1364,6 @@ class FirewallZone:
 
     def remove_icmp_block(self, zone, icmp):
         _zone = self._fw.check_zone(zone)
-        self.check_immutable(_zone)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 

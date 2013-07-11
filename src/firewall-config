@@ -149,7 +149,6 @@ class FirewallConfig(object):
         self.zoneView_selection_changed_handler_id = \
             self.zoneView.get_selection().connect("changed", self.onChangeZone)
 
-        self.immutableNotebook = builder.get_object("immutableNotebook")
         self.mainNotebook = builder.get_object("mainNotebook")
 
         self.defaultZoneLabel = builder.get_object("defaultZoneLabel")
@@ -893,7 +892,6 @@ class FirewallConfig(object):
             masquerade = self.fw.queryMasquerade(active_zone)
             forward_ports = self.fw.getForwardPorts(active_zone)
             icmpblocks = self.fw.getIcmpBlocks(active_zone)
-            immutable = self.fw.isImmutable(active_zone)
             default = False
             builtin = False
         else:
@@ -914,16 +912,10 @@ class FirewallConfig(object):
             masquerade = settings.getMasquerade()
             forward_ports = settings.getForwardPorts()
             icmpblocks = settings.getIcmpBlocks()
-            immutable = settings.isImmutable()
             default = zone.get_property("default")
             builtin = zone.get_property("builtin")
 
-        self.mainNotebook.set_sensitive(not immutable)
-        if immutable:
-            self.mainNotebook.set_tooltip_markup(\
-                "Immutable zones are not customizable.")
-        self.zoneEditRemoveButton.set_sensitive(\
-            not builtin and not immutable)
+        self.zoneEditRemoveButton.set_sensitive(not builtin)
         self.zoneEditLoadDefaultsButton.set_sensitive(not default)
 
         # set services

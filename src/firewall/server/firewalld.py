@@ -713,16 +713,6 @@ class FirewallD(slip.dbus.service.Object):
             return zone
         return ""
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
-                         out_signature='b')
-    @dbus_handle_exceptions
-    def isImmutable(self, zone, sender=None):
-        # immutable zones: block, drop, trusted
-        zone = str(zone)
-        log.debug1("zone.isImmutable('%s')" % zone)
-        return self.fw.zone.is_immutable(zone)
-
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # INTERFACES

@@ -899,8 +899,6 @@ except dbus.exceptions.DBusException as e:
         code = FirewallError.get_code(dbus_message)
         if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
             __print_and_exit("Warning: %s" % dbus_message)
-        elif code in [ IMMUTABLE ]:
-            __print_and_exit("Error: Setting ignored because zone's target is {ACCEPT|REJECT|DROP}.", code)
         else:
             __print_and_exit("Error: %s" % dbus_message, code)
 

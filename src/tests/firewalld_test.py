@@ -86,14 +86,6 @@ class TestFirewallD(unittest.TestCase):
         z = self.fw_zone.getZones()
         print ("\nZones:"); pprint(dbus_to_python(z))
 
-    def test_zone_isImmutable(self):
-        zone = "trusted"
-        print ("\nChecking if zone '%s' is immutable" % zone)
-        self.assertTrue(self.fw_zone.isImmutable(zone))
-        zone = "internal"
-        print ("Checking if zone '%s' is immutable" % zone)
-        self.assertFalse(self.fw_zone.isImmutable(zone))
-
     def test_zone_add_remove_queryInterface(self):
         interface = "foo"
         zone = "trusted"

@@ -31,7 +31,6 @@ import slip.dbus.service
 from firewall.config import *
 from firewall.dbus_utils import dbus_to_python
 from firewall.config.dbus import *
-from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.fw import Firewall
 from firewall.core.io.zone import Zone
 from firewall.core.logger import log
@@ -158,31 +157,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("config.zone.%d.getSettings()", self.id)
         return self.config.get_zone_config(self.obj)
 
-    def _checkImmutable(self, settings):
-        """ Do not allow to change services/ports etc. when the target is other
-            than default (i.e. zone is immutable) because these changes would
-            be ignored anyway when zone gets loaded.
-        """
-        old_settings = self.config.get_zone_config(self.obj)
-        idx_target = Zone.index_of("target")
-        if old_settings[idx_target] != DEFAULT_ZONE_TARGET: # immutable
-            # we don't want to change the following as they'd be ignored
-            idx_s = Zone.index_of("services")
-            idx_p = Zone.index_of("ports")
-            idx_ib = Zone.index_of("icmp_blocks")
-            idx_m = Zone.index_of("masquerade")
-            idx_fp = Zone.index_of("forward_ports")
-            idx_r = Zone.index_of("rules_str")
-            added_sources = set(settings[idx_s]) - set(old_settings[idx_s])
-            added_ports = set(settings[idx_p]) - set(old_settings[idx_p])
-            added_icmp = set(settings[idx_ib]) - set(old_settings[idx_ib])
-            changed_masq = settings[idx_m] != old_settings[idx_m]
-            added_fports = set(settings[idx_fp]) - set(old_settings[idx_fp])
-            added_rules = set(settings[idx_r]) - set(old_settings[idx_r])
-            if added_sources or added_ports or added_icmp or \
-               changed_masq or added_fports or added_rules:
-                raise FirewallError(IMMUTABLE)
-
     def _checkDuplicateInterfacesSources(self, settings):
         """Assignment of interfaces/sources to zones is different from other
            zone settings in the sense that particular interface/zone can be
@@ -209,7 +183,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings = dbus_to_python(settings)
         log.debug1("config.zone.%d.update('...')", self.id)
         self.parent.accessCheck(sender)
-        self._checkImmutable(settings)
         self._checkDuplicateInterfacesSources(settings)
         self.obj = self.config.set_zone_config(self.obj, settings)
         self.Updated(self.obj.name)

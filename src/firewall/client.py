@@ -28,7 +28,6 @@ sys.modules['gobject'] = GObject
 import dbus.mainloop.glib
 import slip.dbus
 
-from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
@@ -95,10 +94,6 @@ class FirewallClientConfigZoneSettings(object):
         self.settings[2] = description
 
     # self.settings[3] was used for 'immutable'
-
-    @handle_exceptions
-    def isImmutable(self):
-        return self.getTarget() != DEFAULT_ZONE_TARGET
 
     @handle_exceptions
     def getTarget(self):

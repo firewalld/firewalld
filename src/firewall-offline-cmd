@@ -25,7 +25,6 @@ import os, os.path
 from copy import copy
 
 from firewall.config import *
-from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.zone import Zone, zone_reader, zone_writer
 from optparse import Option, OptionError, OptionParser, Values, \
@@ -385,11 +384,6 @@ for path in [ ETC_FIREWALLD_ZONES, FIREWALLD_ZONES ]:
 
 if not obj:
     error(_("Unable to open default zone '%s', exiting.") % default_zone)
-    # create new zone?
-    sys.exit(1)
-
-if obj.target != DEFAULT_ZONE_TARGET:
-    error(_("Zone '%s' has non-default target, i.e. {ACCEPT|REJECT|DROP}, exiting.") % default_zone)
     # create new zone?
     sys.exit(1)
 
