@@ -72,7 +72,7 @@ class Zone(IO_Object):
         "limit": [ "value" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "zone": [ "name", "target", "version" ],
+        "zone": [ "name", "immutable", "target", "version" ],
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
@@ -198,6 +198,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                             attrs["name"])
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
+            if "immutable" in attrs:
+                log.warning("Ignoring deprecated attribute immutable='%s'" % 
+                            attrs["immutable"])
             if "target" in attrs:
                 target = str(attrs["target"])
                 if target not in ZONE_TARGETS:
