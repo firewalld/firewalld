@@ -42,7 +42,8 @@ import slip.dbus
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.client import FirewallClient
-from firewall.dbus_utils import dbus_to_python
+from firewall.dbus_utils import dbus_to_python, command_of_pid
+from firewall.functions import ppid_of_pid
 from firewall.errors import *
 import dbus
 
@@ -58,6 +59,17 @@ def search_app(app):
         if os.path.exists(_app):
             return _app
     return None
+
+def check_gnome3():
+    pid = os.getpid()
+    while pid != None:
+        ppid = ppid_of_pid(pid)
+        if ppid:
+            cmd = command_of_pid(ppid)
+            if cmd != None and "gnome-shell" in cmd:
+                return True
+        pid = ppid
+    return False
 
 APPLET_SCHEMA = "org.fedoraproject.FirewallApplet"
 NM_CONNECTION_EDITOR = "/usr/bin/nm-connection-editor"
@@ -205,8 +217,7 @@ class TrayApplet(object):
         self.timer = None
         self.mode = None
         self._blink = False
-        self.blink_count = 0
-
+        self._blink_count = 0
         self.connected = False
 
         self.active_zones = { }
@@ -216,30 +227,26 @@ class TrayApplet(object):
         self.zone_interface_editors = { }
         self.zone_source_editors = { }
 
+        # fix gnome 3 applet icon handling?
+        self.fix_gnome3 = check_gnome3()
+
+        # get blink bool and blink count from user settings
+        self.blink_enabled = self.settings.get_boolean("blink")
+        self.settings.connect("changed::blink",
+                              self.bool_changed, self.blink_enabled)
+        self.blink_count = self.settings.get_int("blink-count")
+        self.settings.connect("changed::blink-count",
+                              self.int_changed, self.blink_count)
+
         if os.path.isfile(NM_CONNECTION_EDITOR):
             self.has_nm_connection_editor = True
         else:
             self.has_nm_connection_editor = False
 
+        self.icontheme = Gtk.IconTheme.get_default()
+
         self.statusicon = Gtk.StatusIcon.new()
         self.statusicon.set_from_icon_name(self.icon_name)
-
-        theme = Gtk.IconTheme.get_default()
-        # Gtk.IconSize.MENU
-        size = 24
-
-        info = theme.lookup_icon("firewall-applet", size, 0)
-        if not info:
-            print("Icon 'firewall-applet' could not be loaded")
-        else:
-            self.icons["normal"] = info.load_icon()
-
-        for _type in [ "error", "panic" ]:
-            info = theme.lookup_icon("firewall-applet-%s" % _type, size, 0)
-            if not info:
-                print("Icon 'firewall-applet-%s' could not be loaded" % _type)
-            else:
-                self.icons[_type] = info.load_icon()
 
         self.left_menu = Gtk.Menu.new()
         self.left_menu.set_reserve_toggle_size(False)
@@ -313,6 +320,7 @@ class TrayApplet(object):
                                 self.left_menu)
         self.statusicon.connect("popup-menu", self.right_menu_cb,
                                 self.right_menu)
+        self.statusicon.connect("size-changed", self.size_changed)
 
         self.about_dialog = Gtk.AboutDialog.new()
         self.about_dialog.set_name(self.name)
@@ -400,7 +408,7 @@ class TrayApplet(object):
 
         # status icon
 
-        self.statusicon.set_visible(True)
+        self.show_icon()
 
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         try:
@@ -435,8 +443,33 @@ class TrayApplet(object):
             member_keyword='member')
         self.nm_signal_receiver()
 
+    def set_icon(self, mode):
+        self.statusicon.set_from_pixbuf(self.icons[mode])
+        if self.fix_gnome3:
+            self.hide_icon()
+            self.show_icon()
+
+    def size_changed(self, statusicon, size):
+        _dict = { "normal": "",
+                  "error": "-error",
+                  "panic": "-panic" }
+        for _type in _dict:
+            name = "firewall-applet%s" % _dict[_type]
+            info = self.icontheme.lookup_icon(name, size, 0)
+            if info:
+                self.icons[_type] = info.load_icon()
+            else:
+                print("Icon '%s' could not be loaded" % name)
+        self.set_icon(self.mode)
+
     def settings_check_changed(self, settings, key, button):
         button.set_active(settings.get_boolean(key))
+
+    def bool_changed(self, settings, key, item):
+        item = settings.get_boolean(key)
+
+    def int_changed(self, settings, key, item):
+        item = settings.get_int(key)
 
     def shieldsup_check_toggled(self, button):
         if button.get_active():
@@ -453,13 +486,27 @@ class TrayApplet(object):
     def notification_check_toggled(self, button, settings, key):
         settings.set_boolean(key, button.get_active())
 
-    def notify(self, msg, sender=None, urgency=Notify.Urgency.NORMAL):
+    def notify(self, msg, sender=None, urgency=Notify.Urgency.NORMAL,
+               timeout=5):
         n = Notify.Notification.new(self.name, msg, self.icon_name)
         n.set_urgency(urgency)
         try:
             n.show()
         except:
-            pass
+            return
+        if self.fix_gnome3:
+            GLib.timeout_add_seconds(timeout, self.close_notification, n)
+
+    def close_notification(self, n):
+        n.close()
+        self.hide_icon()
+        self.show_icon()
+
+    def hide_icon(self):
+        self.statusicon.set_visible(False)
+
+    def show_icon(self):
+        self.statusicon.set_visible(True)
 
     def update_active_zones(self):
         self.active_zones.clear()
@@ -645,8 +692,7 @@ class TrayApplet(object):
 
         self.update_tooltip()
         if self.notification_check.get_active():
-            self.notify(_("Connection to FirewallD established."),
-                        urgency=Notify.Urgency.NORMAL)
+            self.notify(_("Connection to FirewallD established."))
 
     def connection_lost(self):
         self.connected = False
@@ -655,8 +701,7 @@ class TrayApplet(object):
         self.update_active_zones()
         self.update_tooltip()
         if self.notification_check.get_active():
-            self.notify(_("Connection to FirewallD lost."),
-                        urgency=Notify.Urgency.NORMAL)
+            self.notify(_("Connection to FirewallD lost."))
 
     def panic_mode_cb(self, check):
         if not self.fw or not self.connected:
@@ -740,21 +785,20 @@ class TrayApplet(object):
         self.shields_dialog.hide()
 
     def __blink(self, arg=None):
-        if self.blink_count != 0:
-            if self.blink_count > 0 and self._blink:
-                self.blink_count -= 1
+        if self._blink_count != 0:
+            if self._blink_count > 0 and self._blink:
+                self._blink_count -= 1
             self._blink = not self._blink
             self.timer = GLib.timeout_add_seconds(1, self.__blink, None)
-
         if not self._blink:
-            self.statusicon.set_from_pixbuf(self.icons[self.mode])
+            self.set_icon(self.mode)
         else:
-            self.statusicon.set_from_pixbuf(self.icons["normal"])
+            self.set_icon("normal")
 
     def get_mode(self):
         return self.mode
 
-    def set_mode(self, mode, count=5):
+    def set_mode(self, mode):
         if self.mode != mode:
             if self.timer:
                 GLib.source_remove(self.timer)
@@ -763,17 +807,17 @@ class TrayApplet(object):
             self.mode = mode
 
         elif self.mode == mode and self.timer:
-            if self.blink_count == 0:
-                self.blink_count += 1
+            if self._blink_count == 0:
+                self._blink_count += 1
             return
 
         if mode == "normal":
-            self.statusicon.set_from_pixbuf(self.icons[mode])
+            self.set_icon(mode)
             return
 
-        if count != 0:
+        if self.blink_enabled and self.blink_count != 0:
             self._blink = True
-            self.blink_count = count
+            self._blink_count = self.blink_count
             self.__blink()
 
     def update_tooltip(self):
@@ -850,7 +894,7 @@ class TrayApplet(object):
         if self.notification_check.get_active():
             ed = { 1: _("All network traffic is blocked."),
                    0: _("Network traffic is not blocked anymore.") }
-            self.notify(ed[enable], urgency=Notify.Urgency.NORMAL)
+            self.notify(ed[enable])
 
     def panic_mode_enabled(self):
         self._panic_mode(True)
