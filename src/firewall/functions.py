@@ -320,3 +320,13 @@ def uniqify(input):
         if x not in output:
             output.append(x)
     return output
+
+def ppid_of_pid(pid):
+    """ Get parent for pid """
+    try:
+        f = os.popen("ps -o ppid -h -p %d 2>/dev/null" % pid)
+        pid = int(f.readlines()[0].strip())
+        f.close()
+    except:
+        return None
+    return pid
