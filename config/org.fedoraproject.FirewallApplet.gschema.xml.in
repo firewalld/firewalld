@@ -17,5 +17,13 @@
       <default>'public'</default>
       <summary>Shields-down zone</summary>
     </key>
+    <key type="b" name="blink">
+      <default>false</default>
+      <summary>Applet icon blinks if true blink-count times</summary>
+    </key>
+    <key type="i" name="blink-count">
+      <default>5</default>
+      <summary>Applet icon blink count</summary>
+    </key>
   </schema>
 </schemalist>
