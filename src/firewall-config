@@ -1036,7 +1036,7 @@ class FirewallConfig(object):
     def onZoneBaseDialogChanged(self, *args):
         if args and (args[0] == self.zoneBaseDialogNameEntry):
             additional_chars = "".join(Zone.ADDITIONAL_ALNUM_CHARS)
-            allowed_chars = string.letters+string.digits+additional_chars
+            allowed_chars = string.ascii_letters+string.digits+additional_chars
             self.entry_changed(args[0], allowed_chars)
         self.zoneBaseDialogOkButton.set_sensitive(True)
 
@@ -1659,7 +1659,7 @@ class FirewallConfig(object):
     def onServiceBaseDialogChanged(self, *args):
         if args and (args[0] == self.serviceBaseDialogNameEntry):
             additional_chars = "".join(Service.ADDITIONAL_ALNUM_CHARS)
-            allowed_chars = string.letters+string.digits+additional_chars
+            allowed_chars = string.ascii_letters+string.digits+additional_chars
             self.entry_changed(args[0], allowed_chars)
 
         self.serviceBaseDialogOkButton.set_sensitive(True)
@@ -2024,7 +2024,7 @@ class FirewallConfig(object):
     def onIcmpBaseDialogChanged(self, *args):
         if args and (args[0] == self.icmpBaseDialogNameEntry):
             additional_chars = "".join(IcmpType.ADDITIONAL_ALNUM_CHARS)
-            allowed_chars = string.letters+string.digits+additional_chars
+            allowed_chars = string.ascii_letters+string.digits+additional_chars
             self.entry_changed(args[0], allowed_chars)
 
         self.icmpBaseDialogOkButton.set_sensitive(True)
