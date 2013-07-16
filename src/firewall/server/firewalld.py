@@ -158,8 +158,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Get(self, interface_name, property_name, sender=None):
         # get a property
-        interface_name = str(interface_name)
-        property_name = str(property_name)
+        interface_name = dbus_to_python(interface_name)
+        property_name = dbus_to_python(property_name)
         log.debug1("Get('%s', '%s')", interface_name, property_name)
 
         if interface_name != DBUS_INTERFACE:
@@ -173,7 +173,7 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='a{sv}')
     @dbus_handle_exceptions
     def GetAll(self, interface_name, sender=None):
-        interface_name = str(interface_name)
+        interface_name = dbus_to_python(interface_name)
         log.debug1("GetAll('%s')", interface_name)
 
         if interface_name != DBUS_INTERFACE:
@@ -195,8 +195,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
-        interface_name = str(interface_name)
-        property_name = str(property_name)
+        interface_name = dbus_to_python(interface_name)
+        property_name = dbus_to_python(property_name)
         new_value = dbus_to_python(new_value)
         log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
                    new_value)
@@ -313,7 +313,7 @@ class FirewallD(slip.dbus.service.Object):
     def addLockdownWhitelistCommand(self, command, sender=None):
         """Add lockdown command
         """
-        command = str(command)
+        command = dbus_to_python(command)
         log.debug1("policies.addLockdownWhitelistCommand('%s')" % command)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_command(command)
@@ -326,7 +326,7 @@ class FirewallD(slip.dbus.service.Object):
     def removeLockdownWhitelistCommand(self, command, sender=None):
         """Remove lockdown command
         """
-        command = str(command)
+        command = dbus_to_python(command)
         log.debug1("policies.removeLockdownWhitelistCommand('%s')" % command)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_command(command)
@@ -339,7 +339,7 @@ class FirewallD(slip.dbus.service.Object):
     def queryLockdownWhitelistCommand(self, command, sender=None):
         """Query lockdown command
         """
-        command = str(command)
+        command = dbus_to_python(command)
         log.debug1("policies.queryLockdownWhitelistCommand('%s')" % command)
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_command(command)
@@ -435,7 +435,7 @@ class FirewallD(slip.dbus.service.Object):
     def addLockdownWhitelistUser(self, user, sender=None):
         """Add lockdown user
         """
-        user = str(user)
+        user = dbus_to_python(user)
         log.debug1("policies.addLockdownWhitelistUser('%s')" % user)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_user(user)
@@ -448,7 +448,7 @@ class FirewallD(slip.dbus.service.Object):
     def removeLockdownWhitelistUser(self, user, sender=None):
         """Remove lockdown user
         """
-        user = str(user)
+        user = dbus_to_python(user)
         log.debug1("policies.removeLockdownWhitelistUser('%s')" % user)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_user(user)
@@ -461,7 +461,7 @@ class FirewallD(slip.dbus.service.Object):
     def queryLockdownWhitelistUser(self, user, sender=None):
         """Query lockdown user
         """
-        user = str(user)
+        user = dbus_to_python(user)
         log.debug1("policies.queryLockdownWhitelistUser('%s')" % user)
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_user(user)
@@ -496,7 +496,7 @@ class FirewallD(slip.dbus.service.Object):
     def addLockdownWhitelistContext(self, context, sender=None):
         """Add lockdown context
         """
-        context = str(context)
+        context = dbus_to_python(context)
         log.debug1("policies.addLockdownWhitelistContext('%s')" % context)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.add_context(context)
@@ -509,7 +509,7 @@ class FirewallD(slip.dbus.service.Object):
     def removeLockdownWhitelistContext(self, context, sender=None):
         """Remove lockdown context
         """
-        context = str(context)
+        context = dbus_to_python(context)
         log.debug1("policies.removeLockdownWhitelistContext('%s')" % context)
         self.accessCheck(sender)
         self.fw.policies.lockdown_whitelist.remove_context(context)
@@ -522,7 +522,7 @@ class FirewallD(slip.dbus.service.Object):
     def queryLockdownWhitelistContext(self, context, sender=None):
         """Query lockdown context
         """
-        context = str(context)
+        context = dbus_to_python(context)
         log.debug1("policies.queryLockdownWhitelistContext('%s')" % context)
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_context(context)
@@ -636,7 +636,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def setDefaultZone(self, zone, sender=None):
         # set the system default zone
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("setDefaultZone('%s')" % zone)
         self.accessCheck(sender)
         self.fw.set_default_zone(zone)
@@ -693,9 +693,9 @@ class FirewallD(slip.dbus.service.Object):
                 Name of the interface
         :Returns: str. The name of the zone.
         """
-        interface = str(interface)
+        interface = dbus_to_python(interface)
         log.debug1("zone.getZoneOfInterface('%s')" % interface)
-        zone = self.fw.zone.get_zone_of_interface(str(interface))
+        zone = self.fw.zone.get_zone_of_interface(interface)
         if zone:
             return zone
         return ""
@@ -706,7 +706,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getZoneOfSource(self, source, sender=None):
         #Return the zone an source belongs to.
-        source = str(source)
+        source = dbus_to_python(source)
         log.debug1("zone.getZoneOfSource('%s')" % source)
         zone = self.fw.zone.get_zone_of_source(source)
         if zone:
@@ -719,7 +719,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def isImmutable(self, zone, sender=None):
         # immutable zones: block, drop, trusted
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.isImmutable('%s')" % zone)
         return self.fw.zone.is_immutable(zone)
 
@@ -735,8 +735,8 @@ class FirewallD(slip.dbus.service.Object):
         """Add an interface to a zone.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
-        interface = str(interface)
+        zone = dbus_to_python(zone)
+        interface = dbus_to_python(interface)
         log.debug1("zone.addInterface('%s', '%s')" % (zone, interface))
         self.accessCheck(sender)
         _zone = self.fw.zone.add_interface(zone, interface, sender)
@@ -754,8 +754,8 @@ class FirewallD(slip.dbus.service.Object):
 
         This function is deprecated, use changeZoneOfInterface instead
         """
-        zone = str(zone)
-        interface = str(interface)
+        zone = dbus_to_python(zone)
+        interface = dbus_to_python(interface)
         return self.changeZoneOfInterface(zone, interface, sender)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
@@ -766,8 +766,8 @@ class FirewallD(slip.dbus.service.Object):
         """Change a zone an interface is part of.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
-        interface = str(interface)
+        zone = dbus_to_python(zone)
+        interface = dbus_to_python(interface)
         log.debug1("zone.changeZoneOfInterface('%s', '%s')" % (zone, interface))
         self.accessCheck(sender)
         _zone = self.fw.zone.change_zone_of_interface(zone, interface, sender)
@@ -783,8 +783,8 @@ class FirewallD(slip.dbus.service.Object):
         """Remove interface from a zone.
         If zone is empty, remove from zone the interface belongs to.
         """
-        zone = str(zone)
-        interface = str(interface)
+        zone = dbus_to_python(zone)
+        interface = dbus_to_python(interface)
         log.debug1("zone.removeInterface('%s', '%s')" % (zone, interface))
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_interface(zone, interface)
@@ -800,8 +800,8 @@ class FirewallD(slip.dbus.service.Object):
         """Return true if an interface is in a zone.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
-        interface = str(interface)
+        zone = dbus_to_python(zone)
+        interface = dbus_to_python(interface)
         log.debug1("zone.queryInterface('%s', '%s')" % (zone, interface))
         return self.fw.zone.query_interface(zone, interface)
 
@@ -813,7 +813,7 @@ class FirewallD(slip.dbus.service.Object):
         """Return the list of interfaces of a zone.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getInterfaces('%s')" % (zone))
         return self.fw.zone.get_interfaces(zone)
 
@@ -854,8 +854,8 @@ class FirewallD(slip.dbus.service.Object):
         """Add a source to a zone.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
-        source = str(source)
+        zone = dbus_to_python(zone)
+        source = dbus_to_python(source)
         log.debug1("zone.addSource('%s', '%s')" % (zone, source))
         self.accessCheck(sender)
         _zone = self.fw.zone.add_source(zone, source, sender)
@@ -871,8 +871,8 @@ class FirewallD(slip.dbus.service.Object):
         """Change a zone an source is part of.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
-        source = str(source)
+        zone = dbus_to_python(zone)
+        source = dbus_to_python(source)
         log.debug1("zone.changeZoneOfSource('%s', '%s')" % (zone, source))
         self.accessCheck(sender)
         _zone = self.fw.zone.change_zone_of_source(zone, source, sender)
@@ -888,8 +888,8 @@ class FirewallD(slip.dbus.service.Object):
         """Remove source from a zone.
         If zone is empty, remove from zone the source belongs to.
         """
-        zone = str(zone)
-        source = str(source)
+        zone = dbus_to_python(zone)
+        source = dbus_to_python(source)
         log.debug1("zone.removeSource('%s', '%s')" % (zone, source))
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_source(zone, source)
@@ -905,8 +905,8 @@ class FirewallD(slip.dbus.service.Object):
         """Return true if an source is in a zone.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
-        source = str(source)
+        zone = dbus_to_python(zone)
+        source = dbus_to_python(source)
         log.debug1("zone.querySource('%s', '%s')" % (zone, source))
         return self.fw.zone.query_source(zone, source)
 
@@ -918,7 +918,7 @@ class FirewallD(slip.dbus.service.Object):
         """Return the list of sources of a zone.
         If zone is empty, use default zone.
         """
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getSources('%s')" % (zone))
         return self.fw.zone.get_sources(zone)
 
@@ -955,9 +955,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addRichRule(self, zone, rule, timeout, sender=None):
         # timeout not possible for masquerade
-        zone = str(zone)
-        rule = str(rule)
-        timeout = int(timeout)
+        zone = dbus_to_python(zone)
+        rule = dbus_to_python(rule)
+        timeout = dbus_to_python(timeout)
         log.debug1("zone.addRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
         _zone = self.fw.zone.add_rule(zone, obj)
@@ -976,8 +976,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeRichRule(self, zone, rule, sender=None):
         # timeout not possible for masquerade
-        zone = str(zone)
-        rule = str(rule)
+        zone = dbus_to_python(zone)
+        rule = dbus_to_python(rule)
         log.debug1("zone.removeRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
         _zone = self.fw.zone.remove_rule(zone, obj)
@@ -991,8 +991,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryRichRule(self, zone, rule, sender=None):
         # timeout not possible for masquerade
-        zone = str(zone)
-        rule = str(rule)
+        zone = dbus_to_python(zone)
+        rule = dbus_to_python(rule)
         log.debug1("zone.queryRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
         return self.fw.zone.query_rule(zone, obj)
@@ -1003,7 +1003,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getRichRules(self, zone, sender=None):
         # returns the list of enabled services for zone
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getServices('%s')" % (zone))
         return self.fw.zone.get_rules(zone)
 
@@ -1034,9 +1034,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addService(self, zone, service, timeout, sender=None):
         # enables service <service> if not enabled already for zone
-        zone = str(zone)
-        service = str(service)
-        timeout = int(timeout)
+        zone = dbus_to_python(zone)
+        service = dbus_to_python(service)
+        timeout = dbus_to_python(timeout)
         log.debug1("zone.addService('%s', '%s', %d)" % (zone, service, timeout))
         self.accessCheck(sender)
 
@@ -1056,8 +1056,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeService(self, zone, service, sender=None):
         # disables service for zone
-        zone = str(zone)
-        service = str(service)
+        zone = dbus_to_python(zone)
+        service = dbus_to_python(service)
         log.debug1("zone.removeService('%s', '%s')" % (zone, service))
         self.accessCheck(sender)
 
@@ -1073,8 +1073,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryService(self, zone, service, sender=None):
         # returns true if a service is enabled for zone
-        zone = str(zone)
-        service = str(service)
+        zone = dbus_to_python(zone)
+        service = dbus_to_python(service)
         log.debug1("zone.queryService('%s', '%s')" % (zone, service))
         return self.fw.zone.query_service(zone, service)
 
@@ -1084,7 +1084,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getServices(self, zone, sender=None):
         # returns the list of enabled services for zone
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getServices('%s')" % (zone))
         return self.fw.zone.get_services(zone)
 
@@ -1117,10 +1117,10 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addPort(self, zone, port, protocol, timeout, sender=None):
         # adds port <port> <protocol> if not enabled already to zone
-        zone = str(zone)
-        port = str(port)
-        protocol = str(protocol)
-        timeout = int(timeout)
+        zone = dbus_to_python(zone)
+        port = dbus_to_python(port)
+        protocol = dbus_to_python(protocol)
+        timeout = dbus_to_python(timeout)
         log.debug1("zone.enablePort('%s', '%s', '%s')" % \
                        (zone, port, protocol))
         self.accessCheck(sender)
@@ -1140,9 +1140,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removePort(self, zone, port, protocol, sender=None):
         # removes port<port> <protocol> if enabled from zone
-        zone = str(zone)
-        port = str(port)
-        protocol = str(protocol)
+        zone = dbus_to_python(zone)
+        port = dbus_to_python(port)
+        protocol = dbus_to_python(protocol)
         log.debug1("zone.removePort('%s', '%s', '%s')" % \
                        (zone, port, protocol))
         self.accessCheck(sender)
@@ -1158,9 +1158,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryPort(self, zone, port, protocol, sender=None):
         # returns true if a port is enabled for zone
-        zone = str(zone)
-        port = str(port)
-        protocol = str(protocol)
+        zone = dbus_to_python(zone)
+        port = dbus_to_python(port)
+        protocol = dbus_to_python(protocol)
         log.debug1("zone.queryPort('%s', '%s', '%s')" % (zone, port, protocol))
         return self.fw.zone.query_port(zone, port, protocol)
 
@@ -1170,7 +1170,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getPorts(self, zone, sender=None):
         # returns the list of enabled ports
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getPorts('%s')" % (zone))
         return self.fw.zone.get_ports(zone)
 
@@ -1202,7 +1202,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addMasquerade(self, zone, timeout, sender=None):
         # adds masquerade if not added already
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         timeout = int(timeout)
         log.debug1("zone.addMasquerade('%s')" % (zone))
         self.accessCheck(sender)
@@ -1222,7 +1222,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeMasquerade(self, zone, sender=None):
         # removes masquerade
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.removeMasquerade('%s')" % (zone))
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_masquerade(zone)
@@ -1237,7 +1237,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryMasquerade(self, zone, sender=None):
         # returns true if a masquerade is added
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.queryMasquerade('%s')" % (zone))
         return self.fw.zone.query_masquerade(zone)
 
@@ -1268,12 +1268,12 @@ class FirewallD(slip.dbus.service.Object):
     def addForwardPort(self, zone, port, protocol, toport, toaddr, timeout,
                        sender=None):
         # add forward port if not enabled already for zone
-        zone = str(zone)
-        port = str(port)
-        protocol = str(protocol)
-        toport = str(toport)
-        toaddr = str(toaddr)
-        timeout = int(timeout)
+        zone = dbus_to_python(zone)
+        port = dbus_to_python(port)
+        protocol = dbus_to_python(protocol)
+        toport = dbus_to_python(toport)
+        toaddr = dbus_to_python(toaddr)
+        timeout = dbus_to_python(timeout)
         log.debug1("zone.addForwardPort('%s', '%s', '%s', '%s', '%s')" % \
                        (zone, port, protocol, toport, toaddr))
         self.accessCheck(sender)
@@ -1297,11 +1297,11 @@ class FirewallD(slip.dbus.service.Object):
     def removeForwardPort(self, zone, port, protocol, toport, toaddr,
                           sender=None):
         # remove forward port from zone
-        zone = str(zone)
-        port = str(port)
-        protocol = str(protocol)
-        toport = str(toport)
-        toaddr = str(toaddr)
+        zone = dbus_to_python(zone)
+        port = dbus_to_python(port)
+        protocol = dbus_to_python(protocol)
+        toport = dbus_to_python(toport)
+        toaddr = dbus_to_python(toaddr)
         log.debug1("zone.removeForwardPort('%s', '%s', '%s', '%s', '%s')" % \
                        (zone, port, protocol, toport, toaddr))
         self.accessCheck(sender)
@@ -1319,11 +1319,11 @@ class FirewallD(slip.dbus.service.Object):
     def queryForwardPort(self, zone, port, protocol, toport, toaddr,
                          sender=None):
         # returns true if a forward port is enabled for zone
-        zone = str(zone)
-        port = str(port)
-        protocol = str(protocol)
-        toport = str(toport)
-        toaddr = str(toaddr)
+        zone = dbus_to_python(zone)
+        port = dbus_to_python(port)
+        protocol = dbus_to_python(protocol)
+        toport = dbus_to_python(toport)
+        toaddr = dbus_to_python(toaddr)
         log.debug1("zone.queryForwardPort('%s', '%s', '%s', '%s', '%s')" % \
                        (zone, port, protocol, toport, toaddr))
         return self.fw.zone.query_forward_port(zone, port, protocol, toport,
@@ -1335,7 +1335,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getForwardPorts(self, zone, sender=None):
         # returns the list of enabled ports for zone
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getForwardPorts('%s')" % (zone))
         return self.fw.zone.get_forward_ports(zone)
 
@@ -1369,9 +1369,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addIcmpBlock(self, zone, icmp, timeout, sender=None):
         # add icmpblock <icmp> if not enabled already for zone
-        zone = str(zone)
-        icmp = str(icmp)
-        timeout = int(timeout)
+        zone = dbus_to_python(zone)
+        icmp = dbus_to_python(icmp)
+        timeout = dbus_to_python(timeout)
         log.debug1("zone.enableIcmpBlock('%s', '%s')" % (zone, icmp))
         self.accessCheck(sender)
         _zone = self.fw.zone.add_icmp_block(zone, icmp, timeout, sender)
@@ -1390,8 +1390,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeIcmpBlock(self, zone, icmp, sender=None):
         # removes icmpBlock from zone
-        zone = str(zone)
-        icmp = str(icmp)
+        zone = dbus_to_python(zone)
+        icmp = dbus_to_python(icmp)
         log.debug1("zone.removeIcmpBlock('%s', '%s')" % (zone, icmp))
         self.accessCheck(sender)
         _zone = self.fw.zone.remove_icmp_block(zone, icmp)
@@ -1406,8 +1406,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryIcmpBlock(self, zone, icmp, sender=None):
         # returns true if a icmp is enabled for zone
-        zone = str(zone)
-        icmp = str(icmp)
+        zone = dbus_to_python(zone)
+        icmp = dbus_to_python(icmp)
         log.debug1("zone.queryIcmpBlock('%s', '%s')" % (zone, icmp))
         return self.fw.zone.query_icmp_block(zone, icmp)
 
@@ -1417,7 +1417,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getIcmpBlocks(self, zone, sender=None):
         # returns the list of enabled icmpblocks
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("zone.getIcmpBlocks('%s')" % (zone))
         return self.fw.zone.get_icmp_blocks(zone)
 
@@ -1444,9 +1444,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addChain(self, ipv, table, chain, sender=None):
         # inserts direct chain
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
         log.debug1("direct.addChain('%s', '%s', '%s')" % (ipv, table, chain))
         self.accessCheck(sender)
         self.fw.direct.add_chain(ipv, table, chain)
@@ -1458,9 +1458,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeChain(self, ipv, table, chain, sender=None):
         # removes direct chain
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
         log.debug1("direct.removeChain('%s', '%s', '%s')" % (ipv, table, chain))
         self.accessCheck(sender)
         self.fw.direct.remove_chain(ipv, table, chain)
@@ -1472,9 +1472,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryChain(self, ipv, table, chain, sender=None):
         # returns true if a chain is enabled
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
         log.debug1("direct.queryChain('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.query_chain(ipv, table, chain)
 
@@ -1484,8 +1484,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getChains(self, ipv, table, sender=None):
         # returns list of added chains
-        ipv = str(ipv)
-        table = str(table)
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
         log.debug1("direct.getChains('%s', '%s')" % (ipv, table))
         return self.fw.direct.get_chains(ipv, table)
 
@@ -1509,11 +1509,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addRule(self, ipv, table, chain, priority, args, sender=None):
         # inserts direct rule
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
-        priority = int(priority)
-        args = tuple( str(i) for i in args )
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        priority = dbus_to_python(priority)
+        args = tuple( dbus_to_python(i) for i in args )
         log.debug1("direct.addRule('%s', '%s', '%s', %d, '%s')" % \
                        (ipv, table, chain, priority, "','".join(args)))
         self.accessCheck(sender)
@@ -1526,11 +1526,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeRule(self, ipv, table, chain, priority, args, sender=None):
         # removes direct rule
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
-        priority = int(priority)
-        args = tuple( str(i) for i in args )
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        priority = dbus_to_python(priority)
+        args = tuple( dbus_to_python(i) for i in args )
         log.debug1("direct.removeRule('%s', '%s', '%s', %d, '%s')" % \
                        (ipv, table, chain, priority, "','".join(args)))
         self.accessCheck(sender)
@@ -1543,10 +1543,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryRule(self, ipv, table, chain, priority, args, sender=None):
         # returns true if a rule is enabled
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
-        args = tuple( str(i) for i in args )
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        priority = dbus_to_python(priority)
+        args = tuple( dbus_to_python(i) for i in args )
         log.debug1("directQueryRule('%s','%s', %d, '%s')" % \
                        (table, chain, priority, "','".join(args)))
         return self.fw.direct.query_rule(ipv, table, chain, priority, args)
@@ -1557,9 +1558,9 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getRules(self, ipv, table, chain, sender=None):
         # returns list of added rules
-        ipv = str(ipv)
-        table = str(table)
-        chain = str(chain)
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
         log.debug1("direct.getRules('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.get_rules(ipv, table, chain)
 
@@ -1585,8 +1586,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def passthrough(self, ipv, args, sender=None):
         # inserts direct rule
-        ipv = str(ipv)
-        args = tuple( str(i) for i in args )
+        ipv = dbus_to_python(ipv)
+        args = tuple( dbus_to_python(i) for i in args )
         log.debug1("direct.passthrough('%s', '%s')" % (ipv, "','".join(args)))
         self.accessCheck(sender)
         return self.fw.direct.passthrough(ipv, args)

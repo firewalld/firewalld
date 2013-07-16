@@ -301,8 +301,8 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Get(self, interface_name, property_name, sender=None):
         # get a property
-        interface_name = str(interface_name)
-        property_name = str(property_name)
+        interface_name = dbus_to_python(interface_name)
+        property_name = dbus_to_python(property_name)
         log.debug1("config.Get('%s', '%s')", interface_name, property_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG:
@@ -316,7 +316,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          out_signature='a{sv}')
     @dbus_handle_exceptions
     def GetAll(self, interface_name, sender=None):
-        interface_name = str(interface_name)
+        interface_name = dbus_to_python(interface_name)
         log.debug1("config.GetAll('%s')", interface_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG:
@@ -335,8 +335,8 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
-        interface_name = str(interface_name)
-        property_name = str(property_name)
+        interface_name = dbus_to_python(interface_name)
+        property_name = dbus_to_python(property_name)
         new_value = dbus_to_python(new_value)
         log.debug1("config.Set('%s', '%s', '%s')", interface_name,
                    property_name, new_value)
@@ -421,7 +421,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def getIcmpTypeByName(self, icmptype, sender=None):
         """object path of icmptype with given name
         """
-        icmptype = str(icmptype)
+        icmptype = dbus_to_python(icmptype)
         log.debug1("config.getIcmpTypeByName('%s')", icmptype)
         for obj in self.icmptypes:
             if obj.obj.name == icmptype:
@@ -435,7 +435,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def addIcmpType(self, icmptype, settings, sender=None):
         """add icmptype with given name and settings
         """
-        icmptype = str(icmptype)
+        icmptype = dbus_to_python(icmptype)
         settings = dbus_to_python(settings)
         log.debug1("config.addIcmpType('%s')", icmptype)
         self.accessCheck(sender)
@@ -464,7 +464,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def getServiceByName(self, service, sender=None):
         """object path of service with given name
         """
-        service = str(service)
+        service = dbus_to_python(service)
         log.debug1("config.getServiceByName('%s')", service)
         for obj in self.services:
             if obj.obj.name == service:
@@ -478,7 +478,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def addService(self, service, settings, sender=None):
         """add service with given name and settings
         """
-        service = str(service)
+        service = dbus_to_python(service)
         settings = dbus_to_python(settings)
         log.debug1("config.addService('%s')", service)
         self.accessCheck(sender)
@@ -507,7 +507,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def getZoneByName(self, zone, sender=None):
         """object path of zone with given name
         """
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         log.debug1("config.getZoneByName('%s')", zone)
         for obj in self.zones:
             if obj.obj.name == zone:
@@ -520,7 +520,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def getZoneOfInterface(self, iface, sender=None):
         """name of zone the given interface belongs to
         """
-        iface = str(iface)
+        iface = dbus_to_python(iface)
         log.debug1("config.getZoneOfInterface('%s')", iface)
         ret = []
         for obj in self.zones:
@@ -538,7 +538,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def getZoneOfSource(self, source, sender=None):
         """name of zone the given source belongs to
         """
-        source = str(source)
+        source = dbus_to_python(source)
         log.debug1("config.getZoneOfSource('%s')", source)
         ret = []
         for obj in self.zones:
@@ -557,7 +557,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def addZone(self, zone, settings, sender=None):
         """add zone with given name and settings
         """
-        zone = str(zone)
+        zone = dbus_to_python(zone)
         settings = dbus_to_python(settings)
         log.debug1("config.addZone('%s')", zone)
         self.accessCheck(sender)

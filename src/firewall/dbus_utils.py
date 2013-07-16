@@ -92,27 +92,34 @@ def user_of_sender(bus, sender):
 def dbus_to_python(obj):
     if obj == None:
         return obj
-    elif isinstance(obj, dbus.types.Boolean):
+    elif isinstance(obj, dbus.Boolean):
         return obj == True
-    elif isinstance(obj, dbus.types.String) or \
-            isinstance(obj, dbus.types.UTF8String) or \
-            isinstance(obj, dbus.types.ObjectPath):
+    elif isinstance(obj, dbus.String):
+        return obj.encode('utf-8')
+    elif isinstance(obj, dbus.UTF8String) or \
+         isinstance(obj, dbus.ObjectPath):
         return str(obj)
-    elif isinstance(obj, dbus.types.Byte) or \
-            isinstance(obj, dbus.types.Int16) or \
-            isinstance(obj, dbus.types.Int32) or \
-            isinstance(obj, dbus.types.Int64) or \
-            isinstance(obj, dbus.types.UInt16) or \
-            isinstance(obj, dbus.types.UInt32) or \
-            isinstance(obj, dbus.types.UInt64):
+    elif isinstance(obj, dbus.Byte) or \
+            isinstance(obj, dbus.Int16) or \
+            isinstance(obj, dbus.Int32) or \
+            isinstance(obj, dbus.Int64) or \
+            isinstance(obj, dbus.UInt16) or \
+            isinstance(obj, dbus.UInt32) or \
+            isinstance(obj, dbus.UInt64):
         return int(obj)
-    elif isinstance(obj, dbus.types.Double):
+    elif isinstance(obj, dbus.Double):
         return float(obj)
-    elif isinstance(obj, dbus.types.Array):
+    elif isinstance(obj, dbus.Array):
         return [dbus_to_python(x) for x in obj]
-    elif isinstance(obj, dbus.types.Struct):
+    elif isinstance(obj, dbus.Struct):
         return tuple([dbus_to_python(x) for x in obj])
-    elif isinstance(obj, dbus.types.Dictionary):
+    elif isinstance(obj, dbus.Dictionary):
         return {dbus_to_python(k):dbus_to_python(v) for k,v in obj.iteritems()}
+    elif isinstance(obj, bool) or \
+         isinstance(obj, str) or isinstance(obj, bytes) or \
+         isinstance(obj, int) or isinstance(obj, float) or \
+         isinstance(obj, list) or isinstance(obj, tuple) or \
+         isinstance(obj, dict):
+        return obj
     else:
         raise TypeError, "Unhandled %s" % obj
