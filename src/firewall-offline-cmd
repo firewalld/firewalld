@@ -410,9 +410,9 @@ changed_trusted = False
 
 # fields that can not get converted into a zone, need NM work
 if conf.enabled == False:
-    os.system("systemctl disable firewalld")
+    os.system("systemctl disable firewalld.service")
 else:
-    os.system("systemctl enable firewalld")
+    os.system("systemctl enable firewalld.service")
 
 if conf.trust:
     if trusted_obj:
