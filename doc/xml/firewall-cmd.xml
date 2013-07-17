@@ -137,44 +137,6 @@
       </variablelist>
     </refsect2>
 
-    <refsect2 id="panic_options">
-      <title>Panic Options</title>
-      <variablelist>
-	<varlistentry>
-	  <term><option>--panic-on</option></term>
-	  <listitem>
-	    <para>
-	      Enable panic mode. All incoming and outgoing packets are dropped, active connections will expire. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.
-	    </para>
-	    <para>
-	      This is a runtime only change.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><option>--panic-off</option></term>
-	  <listitem>
-	    <para>
-	      Disable panic mode. After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time.
-	    </para>
-	    <para>
-	      This is a runtime only change.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><option>--query-panic</option></term>
-	  <listitem>
-	    <para>
-	      Returns 0 if panic mode is enabled, 1 otherwise.
-	    </para>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-    </refsect2>
-
     <refsect2 id="permanent_options">
       <title>Permanent Options</title>
       <variablelist>
@@ -303,130 +265,6 @@
         ..
 ..
               </programlisting>
-	    </para>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-    </refsect2>
-
-    <refsect2 id="options_to_handle_bindings_of_interfaces">
-      <title>Options to Handle Bindings of Interfaces</title>
-      <para>
-	Binding an interface to a zone means that this zone settings are used to restrict traffic via the interface.
-      </para>
-      <para>
-	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
-      </para>
-      <para>
-	For a list of predefined zones use <command>firewall-cmd --get-zones</command>.
-      </para>
-      <para>
-	An interface name is a string up to 16 characters long, that may not contain <option>' '</option>, <option>'/'</option>, <option>'!'</option> and <option>'*'</option>.
-      </para>
-      <variablelist>
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-interfaces</option></term>
-	  <listitem>
-	    <para>
-	      List interfaces that are bound to zone <replaceable>zone</replaceable> as a space separated list. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-interface</option>=<replaceable>interface</replaceable></term>
-	  <listitem>
-	    <para>
-	      Bind interface <replaceable>interface</replaceable> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-interface</option>=<replaceable>interface</replaceable></term>
-	  <listitem>
-	    <para>
-	      Change zone the interface <replaceable>interface</replaceable> is bound to to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If old and new zone are the same, the call will be ignored without an error. If the interface has not been bound to a zone before, it will behave like <option>--add-interface</option>.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-interface</option>=<replaceable>interface</replaceable></term>
-	  <listitem>
-	    <para>
-	      Query whether interface <replaceable>interface</replaceable> is bound to zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-interface</option>=<replaceable>interface</replaceable></term>
-	  <listitem>
-	    <para>
-	      Remove binding of interface <replaceable>interface</replaceable> from zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-      </variablelist>
-    </refsect2>
-
-    <refsect2 id="options_to_handle_bindings_of_sources">
-      <title>Options to Handle Bindings of Sources</title>
-      <para>
-	Binding a source to a zone means that this zone settings will be used to restrict traffic from this source.
-      </para>
-      <para>
-	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
-      </para>
-      <para>
-	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
-      </para>
-      <para>
-	For a list of predefined zones use <command>firewall-cmd <optional><option>--permanent</option></optional> --get-zones</command>.
-      </para>
-      <variablelist>
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-sources</option></term>
-	  <listitem>
-	    <para>
-	      List sources that are bound to zone <replaceable>zone</replaceable> as a space separated list. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
-	  <listitem>
-	    <para>
-	      Bind source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
-	  <listitem>
-	    <para>
-	      Change zone the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If old and new zone are the same, the call will be ignored without an error. If the source has not been bound to a zone before, it will behave like <option>--add-source</option>.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
-	  <listitem>
-	    <para>
-	      Query whether the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to the zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
-	  <listitem>
-	    <para>
-	      Remove binding of source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> from zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -724,6 +562,130 @@
 	  </listitem>
 	</varlistentry>
 
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_to_handle_bindings_of_interfaces">
+      <title>Options to Handle Bindings of Interfaces</title>
+      <para>
+	Binding an interface to a zone means that this zone settings are used to restrict traffic via the interface.
+      </para>
+      <para>
+	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
+      </para>
+      <para>
+	For a list of predefined zones use <command>firewall-cmd --get-zones</command>.
+      </para>
+      <para>
+	An interface name is a string up to 16 characters long, that may not contain <option>' '</option>, <option>'/'</option>, <option>'!'</option> and <option>'*'</option>.
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-interfaces</option></term>
+	  <listitem>
+	    <para>
+	      List interfaces that are bound to zone <replaceable>zone</replaceable> as a space separated list. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-interface</option>=<replaceable>interface</replaceable></term>
+	  <listitem>
+	    <para>
+	      Bind interface <replaceable>interface</replaceable> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-interface</option>=<replaceable>interface</replaceable></term>
+	  <listitem>
+	    <para>
+	      Change zone the interface <replaceable>interface</replaceable> is bound to to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If old and new zone are the same, the call will be ignored without an error. If the interface has not been bound to a zone before, it will behave like <option>--add-interface</option>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-interface</option>=<replaceable>interface</replaceable></term>
+	  <listitem>
+	    <para>
+	      Query whether interface <replaceable>interface</replaceable> is bound to zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-interface</option>=<replaceable>interface</replaceable></term>
+	  <listitem>
+	    <para>
+	      Remove binding of interface <replaceable>interface</replaceable> from zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_to_handle_bindings_of_sources">
+      <title>Options to Handle Bindings of Sources</title>
+      <para>
+	Binding a source to a zone means that this zone settings will be used to restrict traffic from this source.
+      </para>
+      <para>
+	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+      </para>
+      <para>
+	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
+      </para>
+      <para>
+	For a list of predefined zones use <command>firewall-cmd <optional><option>--permanent</option></optional> --get-zones</command>.
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-sources</option></term>
+	  <listitem>
+	    <para>
+	      List sources that are bound to zone <replaceable>zone</replaceable> as a space separated list. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Bind source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Change zone the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If old and new zone are the same, the call will be ignored without an error. If the source has not been bound to a zone before, it will behave like <option>--add-source</option>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Query whether the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to the zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Remove binding of source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> from zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 
@@ -1062,6 +1024,44 @@
       </variablelist>
     </refsect2>
   </refsect1>
+
+    <refsect2 id="panic_options">
+      <title>Panic Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--panic-on</option></term>
+	  <listitem>
+	    <para>
+	      Enable panic mode. All incoming and outgoing packets are dropped, active connections will expire. Enable this only if there are serious problems with your network environment. For example if the machine is getting hacked in.
+	    </para>
+	    <para>
+	      This is a runtime only change.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--panic-off</option></term>
+	  <listitem>
+	    <para>
+	      Disable panic mode. After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time.
+	    </para>
+	    <para>
+	      This is a runtime only change.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--query-panic</option></term>
+	  <listitem>
+	    <para>
+	      Returns 0 if panic mode is enabled, 1 otherwise.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
 
   <refsect1 id="exit_codes">
     <title>Exit Codes</title>
