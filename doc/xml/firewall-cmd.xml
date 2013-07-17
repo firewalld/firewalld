@@ -292,47 +292,6 @@
 	  </listitem>
 	</varlistentry>
 
-	<!-- list/add/remove/query rich rule -->
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-rich-rules</option></term>
-	  <listitem>
-	    <para>
-	      List rich language rules added for <replaceable>zone</replaceable> as a newline separated list. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-rich-rule</option>='<replaceable>rule</replaceable>' <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
-	  <listitem>
-	    <para>
-	      Add rich language rule '<replaceable>rule</replaceable>' for <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used. If a timeout is supplied, the <replaceable>rule</replaceable> will be active for the amount of seconds and will be removed automatically afterwards.
-	    </para>
-	    <para>
-	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-rich-rule</option>='<replaceable>rule</replaceable>'</term>
-	  <listitem>
-	    <para>
-	      Remove rich language rule '<replaceable>rule</replaceable>' from <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
-	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-rich-rule</option>='<replaceable>rule</replaceable>'</term>
-	  <listitem>
-	    <para>
-	      Return whether a rich language rule '<replaceable>rule</replaceable>' has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
-	    </para>
-	  </listitem>
-	</varlistentry>
-
 	<!-- list/add/remove/query service -->
 
 	<varlistentry>
@@ -558,6 +517,47 @@
 	    </para>
 	    <para>
 	      For <emphasis>IPv6</emphasis> masquerading, please use the rich language.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<!-- list/add/remove/query rich rule -->
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-rich-rules</option></term>
+	  <listitem>
+	    <para>
+	      List rich language rules added for <replaceable>zone</replaceable> as a newline separated list. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-rich-rule</option>='<replaceable>rule</replaceable>' <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Add rich language rule '<replaceable>rule</replaceable>' for <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used. If a timeout is supplied, the <replaceable>rule</replaceable> will be active for the amount of seconds and will be removed automatically afterwards.
+	    </para>
+	    <para>
+	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-rich-rule</option>='<replaceable>rule</replaceable>'</term>
+	  <listitem>
+	    <para>
+	      Remove rich language rule '<replaceable>rule</replaceable>' from <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-rich-rule</option>='<replaceable>rule</replaceable>'</term>
+	  <listitem>
+	    <para>
+	      Return whether a rich language rule '<replaceable>rule</replaceable>' has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
