@@ -59,7 +59,7 @@ class ebtables:
         self.__run([ "-D" ] + rule)
 
     def used_tables(self):
-        return CHAINS.keys()
+        return list(CHAINS.keys())
 
     def flush(self):
         tables = self.used_tables()
@@ -74,7 +74,7 @@ class ebtables:
         if which == "used":
             tables = self.used_tables()
         else:
-            tables = CHAINS.keys()
+            tables = list(CHAINS.keys())
 
         if "nat" in tables:
             tables.remove("nat") # nat can not set policies in nat table

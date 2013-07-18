@@ -371,7 +371,7 @@ try:
     if options_zone_ops and not zone:
         default = fw.getDefaultZone()
         __print_if_verbose("No zone specified, using default zone, i.e. '%s'" % default)
-        active = fw.getActiveZones().keys()
+        active = list(fw.getActiveZones().keys())
         if active and default not in active:
             __print ("""You're performing an operation over default zone ('%s'),
 but your connections/interfaces are in zone '%s' (see --get-active-zones)

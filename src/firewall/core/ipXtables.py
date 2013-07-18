@@ -152,7 +152,7 @@ class ip4tables:
         if which == "used":
             tables = self.used_tables()
         else:
-            tables = CHAINS.keys()
+            tables = list(CHAINS.keys())
 
         if "nat" in tables:
             tables.remove("nat") # nat can not set policies in nat table

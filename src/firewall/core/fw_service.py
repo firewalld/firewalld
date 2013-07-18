@@ -35,7 +35,7 @@ class FirewallService:
     # zones
 
     def get_services(self):
-        return self._services.keys()
+        return list(self._services.keys())
 
     def check_service(self, service):
         if service not in self._services:

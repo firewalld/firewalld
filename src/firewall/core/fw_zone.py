@@ -42,7 +42,7 @@ class FirewallZone:
     # zones
 
     def get_zones(self):
-        return self._zones.keys()
+        return list(self._zones.keys())
 
     def get_zone_of_interface(self, interface):
         interface_id = self.__interface_id(interface)
@@ -431,7 +431,7 @@ class FirewallZone:
         return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
     def get_interfaces(self, zone):
-        return self.get_settings(zone)["interfaces"].keys()
+        return list(self.get_settings(zone)["interfaces"].keys())
 
     # SOURCES
 
@@ -930,7 +930,7 @@ class FirewallZone:
         return self.__rule_id(rule) in self.get_settings(zone)["rules"]
 
     def get_rules(self, zone):
-        return self.get_settings(zone)["rules"].keys()
+        return list(self.get_settings(zone)["rules"].keys())
 
     # SERVICES
 
@@ -1035,7 +1035,7 @@ class FirewallZone:
         return (self.__service_id(service) in self.get_settings(zone)["services"])
 
     def get_services(self, zone):
-        return self.get_settings(zone)["services"].keys()
+        return list(self.get_settings(zone)["services"].keys())
 
     # PORTS
 
@@ -1110,7 +1110,7 @@ class FirewallZone:
         return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
 
     def get_ports(self, zone):
-        return self.get_settings(zone)["ports"].keys()
+        return list(self.get_settings(zone)["ports"].keys())
 
     # PROTOCOLS
 
@@ -1314,7 +1314,7 @@ class FirewallZone:
         return forward_id in self.get_settings(zone)["forward_ports"]
 
     def get_forward_ports(self, zone):
-        return self.get_settings(zone)["forward_ports"].keys()
+        return list(self.get_settings(zone)["forward_ports"].keys())
 
     # ICMP BLOCK
 
@@ -1404,4 +1404,4 @@ class FirewallZone:
         return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
 
     def get_icmp_blocks(self, zone):
-        return self.get_settings(zone)["icmp_blocks"].keys()
+        return list(self.get_settings(zone)["icmp_blocks"].keys())
