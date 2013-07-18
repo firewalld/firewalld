@@ -58,9 +58,9 @@ class firewalld_conf:
         self.clear()
         try:
             f = open(self.filename, "r")
-        except Exception, msg:
+        except Exception as msg:
             log.error("Failed to open '%s': %s" % (self.filename, msg))
-            raise Exception, msg
+            raise
 
         for line in f.xreadlines():
             if not line:
@@ -97,18 +97,18 @@ class firewalld_conf:
         try:
             (temp_file, temp) = tempfile.mkstemp(prefix="%s." % os.path.basename(self.filename),
                                                  dir=os.path.dirname(self.filename))
-        except Exception, msg:
+        except Exception as msg:
             log.error("Failed to open temporary file: %s" % msg)
-            raise Exception, msg
+            raise
 
         modified = False
         empty = False
         try:
             f = open(self.filename, "r")
-        except Exception, msg:
+        except Exception as msg:
             if os.path.exists(self.filename):
                 log.error("Failed to open '%s': %s" % (self.filename, msg))
-                raise Exception, msg
+                raise
             else:
                 f = None
         else:
@@ -173,16 +173,15 @@ class firewalld_conf:
         if os.path.exists(self.filename):
             try:
                 shutil.copy2(self.filename, "%s.old" % self.filename)
-            except Exception, msg:
+            except Exception as msg:
                 os.remove(temp)
-                raise IOError, "Backup of '%s' failed: %s" % (self.filename,
-                                                              msg)
+                raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
         # copy tempfile
         try:
             shutil.move(temp, self.filename)
-        except Exception, msg:
+        except Exception as msg:
             os.remove(temp)
-            raise IOError, "Failed to create '%s': %s" % (self.filename, msg)
+            raise IOError("Failed to create '%s': %s" % (self.filename, msg))
         else:
             os.chmod(self.filename, 0600)

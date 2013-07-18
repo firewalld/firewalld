@@ -50,7 +50,7 @@ class ChooserButton:
             hbox.pack_end(arrow, False, False, 0)
             button.add(hbox)
         if not self.label:
-            raise ValueError, "%s is not a ChooserButton" % button.get_name()
+            raise ValueError("%s is not a ChooserButton" % button.get_name())
         self.connect("clicked", self._show_menu)
         self.reset()
 

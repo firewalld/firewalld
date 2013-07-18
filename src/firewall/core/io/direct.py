@@ -150,19 +150,19 @@ class Direct(IO_Object):
 #        self.passthroughs = LastUpdatedOrderedDict()
 
     def output(self):
-        print "chains"
+        print ("chains")
         for key in self.chains:
-            print "  (%s, %s): %s" % (key[0], key[1], ",".join(self.chains[key]))
-        print "rules"
+            print ("  (%s, %s): %s" % (key[0], key[1], ",".join(self.chains[key])))
+        print ("rules")
         for key in self.rules:
-            print "  (%s, %s, %s):" % (key[0], key[1], key[2])
+            print ("  (%s, %s, %s):" % (key[0], key[1], key[2]))
             for (priority,args) in self.rules[key]:
-                print "    (%d, ('%s'))" % (priority, "','".join(args))
-#        print "passthroughs"
+                print ("    (%d, ('%s'))" % (priority, "','".join(args)))
+#        print ("passthroughs")
 #        for key in self.passthroughs:
-#            print "  %s:" % (key)
+#            print ("  %s:" % (key))
 #            for args in self.passthroughs[key]:
-#                print "    ('%s')" % ("','".join(args))
+#                print ("    ('%s')" % ("','".join(args)))
 
     # chains
 
@@ -184,9 +184,9 @@ class Direct(IO_Object):
             if len(self.chains[key]) == 0:
                 del self.chains[key]
         else:
-            raise ValueError, \
+            raise ValueError( \
                 "Chain '%s' with table '%s' with ipv '%s' not in list" % \
-                (chain, table, ipv)
+                (chain, table, ipv))
 
     def query_chain(self, ipv, table, chain):
         key = (ipv, table)
@@ -197,8 +197,8 @@ class Direct(IO_Object):
         if key in self.chains:
             return self.chains[key]
         else:
-            raise ValueError, "No chains for table '%s' with ipv '%s'" % \
-                (table, ipv)
+            raise ValueError("No chains for table '%s' with ipv '%s'" % \
+                             (table, ipv))
 
     def get_all_chains(self):
         return self.chains
@@ -226,9 +226,9 @@ class Direct(IO_Object):
             if len(self.rules[key]) == 0:
                 del self.rules[key]
         else:
-            raise ValueError, "Rule '%s' for table '%s' and chain '%s' " % \
+            raise ValueError("Rule '%s' for table '%s' and chain '%s' " % \
                 ("',".join(args), table, chain) + \
-                "with ipv '%s' and priority %d not in list" % (ipv, priority)
+                "with ipv '%s' and priority %d not in list" % (ipv, priority))
 
     def query_rule(self, ipv, table, chain, priority, args):
         key = (ipv, table, chain)
@@ -240,8 +240,8 @@ class Direct(IO_Object):
         if key in self.rules:
             return self.rules[key]
         else:
-            raise ValueError, "No rules for table '%s' and chain '%s' " %\
-                (table, chain) + "with ipv '%s'" % (ipv)
+            raise ValueError("No rules for table '%s' and chain '%s' " %\
+                             (table, chain) + "with ipv '%s'" % (ipv))
 
     def get_all_rules(self):
         return self.rules
@@ -294,9 +294,8 @@ class Direct(IO_Object):
         if os.path.exists(self.filename):
             try:
                 shutil.copy2(self.filename, "%s.old" % self.filename)
-            except Exception, msg:
-                raise IOError, "Backup of '%s' failed: %s" % (self.filename,
-                                                              msg)
+            except Exception as msg:
+                raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
         fd = open(self.filename, "w")
         handler = IO_Object_XMLGenerator(fd)

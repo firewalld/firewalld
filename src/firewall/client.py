@@ -895,7 +895,7 @@ class FirewallClient(object):
         if name in self._callbacks:
             self._callback[self._callbacks[name]] = (callback, args)
         else:
-            raise ValueError, "Unknown callback name '%s'" % name
+            raise ValueError("Unknown callback name '%s'" % name)
 
     @handle_exceptions
     def _dbus_connection_changed(self, name, old_owner, new_owner):
@@ -926,11 +926,11 @@ class FirewallClient(object):
         except dbus.exceptions.DBusException as e:
             # ignore dbus errors
             if not self.quiet:
-                print "DBusException", e.get_dbus_message()
+                print ("DBusException", e.get_dbus_message())
             return
         except Exception as e:
             if not self.quiet:
-                print "Exception", e
+                print ("Exception", e)
             return
         self._config = FirewallClientConfig(self.bus)
         self.connected = True

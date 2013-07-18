@@ -262,8 +262,8 @@ class Rich_Rule(object):
             element = tokens[index].get('element')
             attr_name = tokens[index].get('attr_name')
             attr_value = tokens[index].get('attr_value')
-            #print "in_elements: ", in_elements
-            #print "index: %s, element: %s, attribute: %s=%s" % (index, element, attr_name, attr_value)
+            #print ("in_elements: ", in_elements)
+            #print ("index: %s, element: %s, attribute: %s=%s" % (index, element, attr_name, attr_value))
             if attr_name:     # attribute
                 if attr_name not in ['family', 'address', 'invert', 'value', \
                                  'port', 'protocol', 'to-port', 'to-addr', \

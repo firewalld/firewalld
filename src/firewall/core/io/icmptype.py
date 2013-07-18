@@ -111,7 +111,7 @@ def icmptype_writer(icmptype, path=None):
         try:
             shutil.copy2(name, "%s.old" % name)
         except Exception, msg:
-            raise IOError, "Backup of '%s' failed: %s" % (name, msg)
+            raise IOError("Backup of '%s' failed: %s" % (name, msg))
 
     fd = open(name, "w")
     handler = IO_Object_XMLGenerator(fd)

@@ -20,7 +20,6 @@
 #
 
 import socket
-import types
 import os.path
 from firewall.core.logger import log
 
@@ -31,7 +30,7 @@ def getPortID(port):
     @return Port id if valid, -1 if port can not be found and -2 if port is too big
     """
     
-    if isinstance(port, types.IntType):
+    if isinstance(port, int):
         id = port
     else:
         if port:
@@ -54,7 +53,7 @@ def getPortRange(ports):
     @return Array containing start and end port id for a valid range or -1 if port can not be found and -2 if port is too big for integer input or -1 for invalid ranges or None if the range is ambiguous.
     """
 
-    if isinstance(ports, types.IntType):
+    if isinstance(ports, int):
         id = getPortID(ports)
         if id >= 0:
             return (id,)
@@ -97,7 +96,7 @@ def portStr(port, delimiter=":"):
         return ""
 
     range = getPortRange(port)
-    if isinstance(range, types.IntType) and range < 0:
+    if isinstance(range, int) and range < 0:
         return None
     elif len(range) == 1:
         return "%s" % range

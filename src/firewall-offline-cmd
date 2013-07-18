@@ -20,6 +20,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import print_function
 import sys
 import os, os.path
 from copy import copy
@@ -235,7 +236,7 @@ class _OptionParser(OptionParser):
         pass
     def exit(self, status=0, msg=None):
         if msg:
-            print >>sys.stderr, msg
+            print(msg, file=sys.stderr)
         sys.exit(status)
     def error(self, msg):
         if self._fw_source:
@@ -244,7 +245,7 @@ class _OptionParser(OptionParser):
             text = str(msg)
         self.exit(2, msg=text)
     def _match_long_opt(self, opt):
-        if self._long_opt.has_key(opt):
+        if opt in self._long_opt:
             return opt
         raise BadOptionError(opt)
     def _process_long_opt(self, rargs, values):

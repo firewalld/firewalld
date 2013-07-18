@@ -45,8 +45,8 @@ class ebtables:
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
         (status, ret) = runProg(self._command, _args)
         if status != 0:
-            raise ValueError, "'%s %s' failed: %s" % (self._command, 
-                                                      " ".join(args), ret)
+            raise ValueError("'%s %s' failed: %s" % (self._command,
+                                                     " ".join(args), ret))
         return ret
 
     def set_rule(self, rule):

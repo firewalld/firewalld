@@ -36,13 +36,13 @@ class LogTarget:
         self.fd = None
 
     def write(self, data, level, logger):
-        raise NotImplementedError, "LogTarget.write is an abstract method"
+        raise NotImplementedError("LogTarget.write is an abstract method")
 
     def flush(self):
-        raise NotImplementedError, "LogTarget.flush is an abstract method"
+        raise NotImplementedError("LogTarget.flush is an abstract method")
 
     def close(self):
-        raise NotImplementedError, "LogTarget.close is an abstract method"
+        raise NotImplementedError("LogTarget.close is an abstract method")
 
 # ---------------------------------------------------------------------------
 
@@ -237,9 +237,9 @@ class Logger:
 
         # INFO1 is required for standard log level
         if info_max < 1:
-            raise ValueError, "Logger: info_max %d is too low" % info_max
+            raise ValueError("Logger: info_max %d is too low" % info_max)
         if debug_max < 0:
-            raise ValueError, "Logger: debug_max %d is too low" % debug_max
+            raise ValueError("Logger: debug_max %d is too low" % debug_max)
 
         self.NO_INFO   = self.WARNING # = 0
         self.INFO_MAX  = info_max
@@ -439,26 +439,24 @@ class Logger:
 
     def _checkLogLevel(self, level, min, max):
         if level < min or level > max:
-            raise ValueError, "Level %d out of range, should be [%d..%d]." % \
-                  (level, min, max)
+            raise ValueError("Level %d out of range, should be [%d..%d]." % \
+                             (level, min, max))
 
     def _checkKWargs(self, kwargs):
         if not kwargs:
             return
         for key in kwargs.keys():
             if key not in [ "nl", "fmt", "nofmt" ]:
-                raise ValueError, \
-                      "Key '%s' is not allowed as argument for logging." % key
+                raise ValueError("Key '%s' is not allowed as argument for logging." % key)
 
     def _checkDomain(self, domain):
         if not domain or domain == "":
-            raise ValueError, "Domain '%s' is not valid." % domain
+            raise ValueError("Domain '%s' is not valid." % domain)
 
     def _getLevels(self, level, is_debug=0):
         """ Generate log level array. """
         if level != self.ALL:
-            if isinstance(level, types.ListType) or \
-                   isinstance(level, types.TupleType):
+            if isinstance(level, list) or isinstance(level, tuple):
                 levels = level
             else:
                 levels = [ level ]
@@ -477,15 +475,14 @@ class Logger:
 
     def _getTargets(self, target):
         """ Generate target array. """
-        if isinstance(target, types.ListType) or \
-               isinstance(target, types.TupleType):
+        if isinstance(target, list) or isinstance(target, tuple):
             targets = target
         else:
             targets = [ target ]
         for _target in targets:
             if not issubclass(_target.__class__, LogTarget):
-                raise ValueError, "'%s' is no valid logging target." % \
-                      _target.__class__.__name__
+                raise ValueError("'%s' is no valid logging target." % \
+                      _target.__class__.__name__)
         return targets
 
     def _genDomains(self, is_debug=0):
@@ -560,9 +557,9 @@ class Logger:
                         del _logging[_level]
                         continue
                 if level != self.ALL:
-                    raise ValueError, "No mathing logging for " \
+                    raise ValueError("No mathing logging for " \
                           "level %d, domain %s, target %s and format %s." % \
-                          (_level, domain, target.__class__.__name__, fmt)
+                          (_level, domain, target.__class__.__name__, fmt))
         self._genDomains(is_debug)
 
     def _isLoggingHere(self, level, is_debug=0):
@@ -723,7 +720,7 @@ class Logger:
             f = f.f_back
 
         if not f:
-            raise ValueError, "Frame information not available."
+            raise ValueError("Frame information not available.")
 
         # get module name
         module_name = f.f_globals["__name__"]

@@ -1177,8 +1177,8 @@ class FirewallConfig(object):
 
     def onPortChanged(self, *args):
         ports = getPortRange(self.portDialogPortEntry.get_text())
-        if not ports or not (isinstance(ports, types.ListType) or \
-                                isinstance(ports, types.TupleType)):
+        if not ports or not (isinstance(ports, list) or \
+                             isinstance(ports, tuple)):
             self.portDialogOkButton.set_sensitive(False)
         else:
             self.portDialogOkButton.set_sensitive(True)
@@ -1240,8 +1240,8 @@ class FirewallConfig(object):
     def onPortProtoChanged(self, *args):
         text = self.portProtoDialogPortEntry.get_text()
         ports = getPortRange(self.portProtoDialogPortEntry.get_text())
-        if text != "" and not (isinstance(ports, types.ListType) or \
-                                   isinstance(ports, types.TupleType)):
+        if text != "" and not (isinstance(ports, list) or \
+                               isinstance(ports, tuple)):
             self.portProtoDialogOkButton.set_sensitive(False)
         else:
             #TODO: check proto
@@ -1368,12 +1368,12 @@ class FirewallConfig(object):
         to_ports = getPortRange(to_ports)
 
         ports_ok = False
-        if ports and (isinstance(ports, types.ListType) or \
-                          isinstance(ports, types.TupleType)):
+        if ports and (isinstance(ports, list) or \
+                      isinstance(ports, tuple)):
             ports_ok = True
         to_ports_ok = False
-        if to_ports and (isinstance(to_ports, types.ListType) or \
-                          isinstance(to_ports, types.TupleType)):
+        if to_ports and (isinstance(to_ports, list) or \
+                         isinstance(to_ports, tuple)):
             to_ports_ok = True
         to_addr_ok = False
         if to_addr != "" and checkIP(to_addr):

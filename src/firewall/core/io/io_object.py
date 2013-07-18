@@ -22,7 +22,6 @@
 import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
-import types
 
 from firewall.config import _
 from firewall.errors import *
@@ -51,7 +50,7 @@ class IO_Object(object):
     def import_config(self, config):
         self.check_config(config)
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
-            if isinstance(config[i], types.ListType):
+            if isinstance(config[i], list):
                 # remove duplicates
                 setattr(self, element, copy.deepcopy(list(set(config[i]))))
             else:
@@ -86,20 +85,20 @@ class IO_Object(object):
             raise FirewallError(INVALID_TYPE,
                                 "'%s' not of type %s, but %s" % (\
                     config, type(structure), type(config)))
-        if type(structure) == types.ListType:
+        if type(structure) == list:
             # same type elements, else struct
             if len(structure) != 1:
                 raise FirewallError(INVALID_TYPE, "len('%s') != 1" % structure)
             for x in config:
                 self._check_config_structure(x, structure[0])
-        elif type(structure) == types.TupleType:
+        elif type(structure) == tuple:
             if len(structure) != len(config):
                 raise FirewallError(INVALID_TYPE,
                                     "len('%s') != %d" % (config,
                                                          len(structure)))
             for i,value in enumerate(structure):
                 self._check_config_structure(config[i], value)
-        elif type(structure) == types.DictType:
+        elif type(structure) == dict:
             # only one key value pair in structure
             (skey, svalue) = structure.items()[0]
             for (key, value) in config.items():

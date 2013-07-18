@@ -271,8 +271,7 @@ class LockdownWhitelist(IO_Object):
             try:
                 shutil.copy2(self.filename, "%s.old" % self.filename)
             except Exception, msg:
-                raise IOError, "Backup of '%s' failed: %s" % (self.filename,
-                                                              msg)
+                raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
         fd = open(self.filename, "w")
         handler = IO_Object_XMLGenerator(fd)

@@ -86,8 +86,8 @@ class modules:
         for module in to_unload:
             (status, ret) = self.unload_module(module)
             if status != 0:
-                raise ValueError, "Unable to unload module %s: %s" % (module,
-                                                                      ret)
+                raise ValueError("Unable to unload module %s: %s" % (module,
+                                                                     ret))
 
     def unload_firewall_modules(self):
         for module in self.get_firewall_modules():

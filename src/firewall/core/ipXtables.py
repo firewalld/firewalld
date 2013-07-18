@@ -112,8 +112,8 @@ class ip4tables:
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
         (status, ret) = runProg(self._command, _args)
         if status != 0:
-            raise ValueError, "'%s %s' failed: %s" % (self._command, 
-                                                      " ".join(_args), ret)
+            raise ValueError("'%s %s' failed: %s" % (self._command,
+                                                     " ".join(_args), ret))
         return ret
 
     def set_rule(self, rule):
@@ -174,7 +174,7 @@ class ipXtables:
         if ipv6:
             self.ip6tables = ip6tables()
         if not ipv4 and not ipv6:
-            raise ValueError, "ipv4 and ipv6 disabled."
+            raise ValueError("ipv4 and ipv6 disabled.")
 
     def append_rule(self, rule):
         if self.ip4tables:
@@ -185,7 +185,7 @@ class ipXtables:
         except Exception as msg:
             if self.ip4tables:
                 self.ip4tables.delete_rule(rule)
-            raise Exception, msg
+            raise
 
     def delete_rule(self, rule):
         if self.ip4tables:
@@ -196,7 +196,7 @@ class ipXtables:
         except Exception as msg:
             if self.ip4tables:
                 self.ip4tables.append_rule(rule)
-            raise Exception, msg
+            raise
 
     def used_tables(self):
         tables = [ ]

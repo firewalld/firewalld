@@ -122,4 +122,4 @@ def dbus_to_python(obj):
          isinstance(obj, dict):
         return obj
     else:
-        raise TypeError, "Unhandled %s" % obj
+        raise TypeError("Unhandled %s" % obj)
