@@ -154,6 +154,8 @@ def service_writer(service, path=None):
 
     # short
     if service.short and service.short != "":
+        if isinstance(zone.short, bytes):
+            zone.short = zone.short.decode('utf-8')
         handler.ignorableWhitespace("  ")
         handler.startElement("short", { })
         handler.characters(service.short)
@@ -162,6 +164,8 @@ def service_writer(service, path=None):
 
     # description
     if service.description and service.description != "":
+        if isinstance(zone.description, bytes):
+            zone.description = zone.description.decode('utf-8')
         handler.ignorableWhitespace("  ")
         handler.startElement("description", { })
         handler.characters(service.description)

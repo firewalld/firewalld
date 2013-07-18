@@ -179,15 +179,21 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
 
     def characters(self, content):
         if self._element != None:
-            self._element += str(content.replace('\n', ' '))
+            self._element += content.replace('\n', ' ')
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):
         saxutils.XMLGenerator.__init__(self, out, "utf-8")
 
     def simpleElement(self, name, attrs):
+        if isinstance(name, bytes):
+            name = name.decode('utf-8')
         self._write(u'<' + name)
         for (name, value) in attrs.items():
+            if isinstance(name, bytes):
+                name = name.decode('utf-8')
+            if isinstance(value, bytes):
+                value = value.decode('utf-8')
             self._write(u' %s=%s' % (name, saxutils.quoteattr(value)))
         self._write(u'/>')
 
