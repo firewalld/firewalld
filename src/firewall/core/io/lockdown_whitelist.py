@@ -23,7 +23,6 @@ import xml.sax as sax
 import os
 import shutil
 
-from firewall.config import _
 from firewall.errors import *
 from firewall.core.io.io_object import *
 from firewall.core.logger import log

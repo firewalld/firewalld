@@ -23,7 +23,7 @@ import xml.sax as sax
 import os
 import shutil
 
-from firewall.config import _, ETC_FIREWALLD
+from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
 from firewall.functions import checkIP, uniqify
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS

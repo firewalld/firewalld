@@ -29,9 +29,7 @@ except locale.Error:
 
 DOMAIN = 'firewalld'
 import gettext
-_ = lambda x: gettext.ldgettext(DOMAIN, x)
-import __builtin__
-__builtin__.__dict__['_'] = _
+gettext.install(domain=DOMAIN)
 
 # configuration
 DAEMON_NAME = 'firewalld'

@@ -23,7 +23,7 @@ import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
 
-from firewall.config import _
+from firewall.config import *
 from firewall.errors import *
 from firewall import functions
 
