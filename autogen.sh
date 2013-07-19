@@ -12,9 +12,9 @@ rm -f $srcdir/config.*
 # create po/LINGUAS
 ls po/*.po | sed -e 's/.po//' | sed -e 's/po\///' > po/LINGUAS
 
-intltoolize --copy -f --automake
+intltoolize --force --automake
 
-autoreconf -v --install || exit 1
+autoreconf --force -v --install --symlink || exit 1
 cd $ORIGDIR || exit $?
 
 $srcdir/configure "$@"

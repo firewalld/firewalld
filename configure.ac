@@ -1,15 +1,17 @@
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ([2.63])
+AC_PREREQ([2.69])
 
 m4_define([PKG_NAME], firewalld)
 m4_define([PKG_VERSION], m4_bpatsubst(m4_esyscmd([grep "Version:" firewalld.spec]), [Version:\W\([0-9.]*\)\W], [\1]))
 m4_define([PKG_RELEASE], m4_bpatsubst(m4_esyscmd([grep "Release:" firewalld.spec]), [Release:\W\([0-9.]*\).*\W], [\1]))
 m4_define([PKG_TAG], m4_bpatsubst(m4_format(r%s-%s, PKG_VERSION, PKG_RELEASE), [\.], [_]))
 
-AC_INIT(PKG_NAME, PKG_VERSION)
+AC_INIT([PKG_NAME],[PKG_VERSION])
 AC_CONFIG_SRCDIR([src/firewalld])
-AM_INIT_AUTOMAKE([1.9 tar-ustar no-define foreign dist-bzip2 no-dist-gzip])
+AC_PREFIX_DEFAULT([/usr])
+
+AM_INIT_AUTOMAKE([1.11 tar-ustar no-define foreign dist-bzip2 no-dist-gzip])
 
 AC_SUBST([PACKAGE_RELEASE], '[PKG_RELEASE]')
 AC_DEFINE_UNQUOTED([PACKAGE_RELEASE], ["$PACKAGE_RELEASE"])
@@ -18,11 +20,15 @@ AC_DEFINE_UNQUOTED([PACKAGE_TAG], ["$PACKAGE_TAG"])
 
 AC_PROG_INSTALL
 AC_PROG_LN_S
+AC_PROG_MKDIR_P
+AC_PROG_SED
+AC_PROG_GREP
+AC_PROG_AWK
 AC_PROG_MAKE_SET
 AM_PATH_PYTHON
 
-m4_define([FWD_ERROR_CODES], m4_esyscmd([grep "=\s*[0-9]\+$" src/firewall/errors.py]))
-AC_SUBST([FIREWALLD_ERROR_CODES], '[FWD_ERROR_CODES]')
+AC_PATH_PROG([XSLTPROC], [xsltproc])
+AC_PATH_PROG([KILL], [kill], [/usr/bin/kill])
 
 GLIB_GSETTINGS
 
@@ -77,5 +83,5 @@ AC_CONFIG_FILES([Makefile
 		 shell-completion/Makefile
 		 src/firewall/config/__init__.py
 		 src/Makefile
-         src/icons/Makefile])
+		 src/icons/Makefile])
 AC_OUTPUT
