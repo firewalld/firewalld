@@ -16,7 +16,7 @@ BuildRequires: systemd-units
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
 Requires: python-decorator
-%if 0%{?fedora} > 17
+%if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
 %else
 Requires: pygobject3
@@ -39,7 +39,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
-%if 0%{?fedora} > 17
+%if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
 %else
 Requires: pygobject3
@@ -55,7 +55,7 @@ Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
-%if 0%{?fedora} > 17
+%if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
 %else
 Requires: pygobject3
