@@ -26,6 +26,29 @@ firewalld base directory and set the following environment variables.
   export FIREWALLD_DEVEL_ENV=$(pwd)/src
   export PYTHONPATH=$FIREWALLD_DEVEL_ENV
 
+Install the following requirements or packages:
+
+  desktop-file-utils: /usr/bin/desktop-file-install
+  gettext
+  intltool
+  glib2: /usr/bin/glib-compile-schemas
+  glib2-devel: /usr/share/aclocal/gsettings.m4
+  systemd-units
+  dbus-python
+  python-slip-dbus (http://fedorahosted.org/python-slip)
+  python-decorator
+  pygobject3-base (non-cairo parts of pygobject3)
+  iptables
+  ebtables
+
+Use
+
+  ./autogen.sh
+
+in the base directory to create for example src/firewall/config/__init__.py
+
+Now your are done.
+
 
 Links:
 ------
