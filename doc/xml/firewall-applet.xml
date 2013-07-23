@@ -82,6 +82,130 @@
 
   </refsect1>
 
+  <refsect1 id="gsettings">
+    <title>GSettings</title>
+    <para>
+      <command>firewall-applet</command> has additional settings to adapt the look and feel. The used backend depends on the distribution and can be either dconf or GConf. The path to the settings is <filename class="directory">org.fedoraproject.FirewallApplet</filename>. You can use <command>dconf-editor</command> or <command>gconf-editor</command> to see and modify them.
+    </para>
+    <para>
+      The following settings are supported:
+    </para>
+
+    <variablelist>
+      <varlistentry>
+        <term><option>notifications</option></term>
+        <listitem>
+	  <para>
+	    The applet shows notifications if enabled. This setting can be enabled also in the applet with the "Enable Notifications" checkbox in the right mouse menu.
+	  </para>
+	  <para>
+	    This setting defaults to <option>false</option>.
+	  </para>
+	  <para>
+	    If notifications are shown for these actions if enabled:
+
+	    <itemizedlist>
+	      <listitem>
+		<para>Connection to firewalld established</para>
+	      </listitem>
+	      <listitem>
+		<para>Connecton to firewalld lost</para>
+	      </listitem>
+	      <listitem>
+		<para>Firewall has been reloaded</para>
+	      </listitem>
+	      <listitem>
+		<para>Default zone has been changed</para>
+	      </listitem>
+	      <listitem>
+		<para>Panic mode has been enabled or disabled</para>
+	      </listitem>
+	      <listitem>
+		<para>Activation, deactivation or change of zones bound to interfaces</para>
+	      </listitem>
+	      <listitem>
+		<para>Activation, deactivation or change of zones bound to sources adresses</para>
+	      </listitem>
+	    </itemizedlist>
+
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>show-inactive</option></term>
+        <listitem>
+	  <para>
+	    Show applet also if firewalld is not running. If firewalld has been stopped or is not running the applet will be hidden and not visible in the applet tray. Enable this setting to see the applet all the time for example to be sure that the firewall is active.
+	  </para>
+	  <para>
+	    This setting defaults to <option>false</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>shields-up</option></term>
+        <listitem>
+	  <para>
+	    The shields-up zone name to be used if shields-up is enabled.
+	  </para>
+	  <para>
+	    This setting defaults to '<option>block</option>'.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>shields-down</option></term>
+        <listitem>
+	  <para>
+	    The shields-down zone name to be used if shields-up has been deactivated again.
+	  </para>
+	  <para>
+	    This setting defaults to '<option>public</option>'.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>blink</option></term>
+        <listitem>
+	  <para>
+	    If enabled, the applet icon blinks in these cases:
+
+	    <itemizedlist>
+	      <listitem>
+		<para>Connecton to firewalld lost</para>
+	      </listitem>
+	      <listitem>
+		<para>Panic mode has been enabled or disabled</para>
+	      </listitem>
+	    </itemizedlist>
+	  </para>
+	  <para>
+	    This setting defaults to <option>false</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>blink-count</option></term>
+        <listitem>
+	  <para>
+	    The number of blinks if <option>blink</option> is enabled.
+	  </para>
+	  <para>
+	    This setting defaults to <option>5</option>.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+
   &seealso;
 
   &notes;
