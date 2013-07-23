@@ -238,6 +238,10 @@ class TrayApplet(object):
         self.settings.connect("changed::blink-count",
                               self.int_changed, self.blink_count)
 
+        self.show_inactive = self.settings.get_boolean("show-inactive")
+        self.settings.connect("changed::show-inactive",
+                              self.show_inactive_changed)
+
         if os.path.isfile(NM_CONNECTION_EDITOR):
             self.has_nm_connection_editor = True
         else:
@@ -408,8 +412,6 @@ class TrayApplet(object):
 
         # status icon
 
-        self.show_icon()
-
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         try:
             self.bus = slip.dbus.SystemBus()
@@ -420,6 +422,8 @@ class TrayApplet(object):
 
         self.fw = FirewallClient(self.bus, wait=1)
         self.set_mode("error")
+        if not self.show_inactive:
+            self.hide_icon()
 
         self.fw.connect("connection-established", self.connection_established)
         self.fw.connect("connection-lost", self.connection_lost)
@@ -445,7 +449,7 @@ class TrayApplet(object):
 
     def set_icon(self, mode):
         self.statusicon.set_from_pixbuf(self.icons[mode])
-        if self.fix_gnome3:
+        if self.fix_gnome3 and (self.fw.connected or self.show_inactive):
             self.hide_icon()
             self.show_icon()
 
@@ -467,6 +471,14 @@ class TrayApplet(object):
 
     def bool_changed(self, settings, key, item):
         item = settings.get_boolean(key)
+
+    def show_inactive_changed(self, settings, key):
+        self.show_inactive = settings.get_boolean(key)
+        if not self.fw.connected:
+            if self.show_inactive:
+                self.show_icon()
+            else:
+                self.hide_icon()
 
     def int_changed(self, settings, key, item):
         item = settings.get_int(key)
@@ -660,6 +672,7 @@ class TrayApplet(object):
         del self.zone_source_editors[source]
 
     def connection_established(self, first=False):
+        self.show_icon()
         self.set_mode("normal")
         self.default_zone = self.fw.getDefaultZone()
         self.connected = True
@@ -702,6 +715,8 @@ class TrayApplet(object):
         self.update_tooltip()
         if self.notification_check.get_active():
             self.notify(_("Connection to FirewallD lost."))
+        if not self.show_inactive:
+            self.hide_icon()
 
     def panic_mode_cb(self, check):
         if not self.fw or not self.connected:
