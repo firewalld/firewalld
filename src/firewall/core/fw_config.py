@@ -79,14 +79,6 @@ class FirewallConfig:
     def get_firewalld_conf(self):
         return self._firewalld_conf
 
-    def enable_lockdown(self):
-        self._firewalld_conf.set("lockdown", "yes")
-        self._firewalld_conf.write()
-
-    def disable_lockdown(self):
-        self._firewalld_conf.set("lockdown", "no")
-        self._firewalld_conf.write()
-
     # policies
 
     def set_policies(self, policies):

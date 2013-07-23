@@ -153,28 +153,6 @@ parser_group_standalone.add_argument("--lockdown-on", action="store_true")
 parser_group_standalone.add_argument("--lockdown-off", action="store_true")
 parser_group_standalone.add_argument("--query-lockdown", action="store_true")
 
-parser_group_standalone.add_argument("--list-lockdown-whitelist-commands", action="store_true")
-parser_group_standalone.add_argument("--add-lockdown-whitelist-command", metavar="<command>")
-parser_group_standalone.add_argument("--remove-lockdown-whitelist-command", metavar="<command>")
-parser_group_standalone.add_argument("--query-lockdown-whitelist-command", metavar="<command>")
-
-parser_group_standalone.add_argument("--list-lockdown-whitelist-contexts", action="store_true")
-parser_group_standalone.add_argument("--add-lockdown-whitelist-context", metavar="<context>")
-parser_group_standalone.add_argument("--remove-lockdown-whitelist-context", metavar="<context>")
-parser_group_standalone.add_argument("--query-lockdown-whitelist-context", metavar="<context>")
-
-
-parser_group_standalone.add_argument("--list-lockdown-whitelist-uids", action="store_true")
-parser_group_standalone.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>", type=int)
-parser_group_standalone.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>", type=int)
-parser_group_standalone.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>", type=int)
-
-parser_group_standalone.add_argument("--list-lockdown-whitelist-users", action="store_true")
-parser_group_standalone.add_argument("--add-lockdown-whitelist-user", metavar="<user>")
-parser_group_standalone.add_argument("--remove-lockdown-whitelist-user", metavar="<user>")
-parser_group_standalone.add_argument("--query-lockdown-whitelist-user", metavar="<user>")
-
-
 parser_group_standalone.add_argument("--get-default-zone", action="store_true")
 parser_group_standalone.add_argument("--set-default-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--get-zones", action="store_true")
@@ -184,6 +162,27 @@ parser_group_standalone.add_argument("--get-active-zones", action="store_true")
 parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>")
 parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>")
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
+
+parser_group_lockdown_whitelist = parser.add_mutually_exclusive_group()
+parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-commands", action="store_true")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-command", metavar="<command>")
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-command", metavar="<command>")
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-command", metavar="<command>")
+
+parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-contexts", action="store_true")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-context", metavar="<context>")
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-context", metavar="<context>")
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-context", metavar="<context>")
+
+parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-uids", action="store_true")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>", type=int)
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>", type=int)
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>", type=int)
+
+parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-users", action="store_true")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-user", metavar="<user>")
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-user", metavar="<user>")
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-user", metavar="<user>")
 
 parser.add_argument("--permanent", action="store_true")
 parser.add_argument("--zone", default="", metavar="<zone>")
@@ -390,15 +389,6 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
             icmptypes = fw.config().listIcmpTypes()
             l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
             __print_and_exit(" ".join(l))
-
-        # lockdown
-        elif a.lockdown_on:
-            fw.config().set_property("Lockdown", "yes")
-        elif a.lockdown_off:
-            fw.config().set_property("Lockdown", "no")
-        elif a.query_lockdown:
-            lockdown = fw.config().get_property("Lockdown")
-            __print_query_result(lockdown.lower() in [ "yes", "true" ])
 
         # lockdown whitelist
 
@@ -701,11 +691,15 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
 
     # lockdown
     elif a.lockdown_on:
-        fw.enableLockdown()
+        fw.enableLockdown()                           # runtime
+        fw.config().set_property("Lockdown", "yes")   # permanent
     elif a.lockdown_off:
-        fw.disableLockdown()
+        fw.disableLockdown()                          # runtime
+        fw.config().set_property("Lockdown", "no")    # permanent
     elif a.query_lockdown:
-        __print_query_result(fw.queryLockdown())
+        __print_query_result(fw.queryLockdown())      # runtime
+        #lockdown = fw.config().get_property("Lockdown")
+        #__print_query_result(lockdown.lower() in [ "yes", "true" ])
 
     # lockdown whitelist
 
