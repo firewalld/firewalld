@@ -133,7 +133,11 @@ class Firewall:
                 value = self._firewalld_conf.get("Lockdown")
                 if value != None and value.lower() in [ "yes", "true" ]:
                     log.debug1("Lockdown is enabled")
-                    self.policies.enable_lockdown()
+                    try:
+                        self.policies.enable_lockdown()
+                    except FirewallError:
+                        # already enabled, this is probably reload
+                        pass
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
