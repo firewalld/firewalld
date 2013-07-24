@@ -60,8 +60,10 @@ for chain in CHAINS["mangle"]:
     DEFAULT_RULES["mangle"].append("-I %s 1 -j %s_direct" % (chain, chain))
 
     if chain == "PREROUTING":
+        DEFAULT_RULES["mangle"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["mangle"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES" % (chain, chain))
+        DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
+        DEFAULT_RULES["mangle"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
 
 DEFAULT_RULES["nat"] = [ ]
 for chain in CHAINS["nat"]:
@@ -69,31 +71,39 @@ for chain in CHAINS["nat"]:
     DEFAULT_RULES["nat"].append("-I %s 1 -j %s_direct" % (chain, chain))
 
     if chain in [ "PREROUTING", "POSTROUTING" ]:
+        DEFAULT_RULES["nat"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["nat"].append("-N %s_ZONES" % chain)
-        DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES" % (chain, chain))
+        DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
+        DEFAULT_RULES["nat"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
 
 DEFAULT_RULES["filter"] = [
     "-N INPUT_direct",
+    "-N INPUT_ZONES_SOURCE",
     "-N INPUT_ZONES",
 
     "-I INPUT 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
     "-I INPUT 2 -i lo -j ACCEPT",
     "-I INPUT 3 -j INPUT_direct",
-    "-I INPUT 4 -j INPUT_ZONES",
-    "-I INPUT 5 -p %%ICMP%% -j ACCEPT",
-    "-I INPUT 6 -j %%REJECT%%",
+    "-I INPUT 4 -j INPUT_ZONES_SOURCE",
+    "-I INPUT 5 -j INPUT_ZONES",
+    "-I INPUT 6 -p %%ICMP%% -j ACCEPT",
+    "-I INPUT 7 -j %%REJECT%%",
 
     "-N FORWARD_direct",
+    "-N FORWARD_IN_ZONES_SOURCE",
     "-N FORWARD_IN_ZONES",
+    "-N FORWARD_OUT_ZONES_SOURCE",
     "-N FORWARD_OUT_ZONES",
 
     "-I FORWARD 1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT",
     "-I FORWARD 2 -i lo -j ACCEPT",
     "-I FORWARD 3 -j FORWARD_direct",
-    "-I FORWARD 4 -j FORWARD_IN_ZONES",
-    "-I FORWARD 5 -j FORWARD_OUT_ZONES",
-    "-I FORWARD 6 -p %%ICMP%% -j ACCEPT",
-    "-I FORWARD 7 -j %%REJECT%%",
+    "-I FORWARD 4 -j FORWARD_IN_ZONES_SOURCE",
+    "-I FORWARD 5 -j FORWARD_IN_ZONES",
+    "-I FORWARD 6 -j FORWARD_OUT_ZONES_SOURCE",
+    "-I FORWARD 7 -j FORWARD_OUT_ZONES",
+    "-I FORWARD 8 -p %%ICMP%% -j ACCEPT",
+    "-I FORWARD 9 -j %%REJECT%%",
 
     "-N OUTPUT_direct",
 

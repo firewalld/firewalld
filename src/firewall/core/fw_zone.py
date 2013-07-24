@@ -478,8 +478,9 @@ class FirewallZone:
                     # DROP is not supported in nat table
                     continue
                 # append rule
-                rule = [ "%s_ZONES" % chain, "-t", table,
-                         opt, source, "-j", target ]
+                action = "-g" if "_ZONE_" in target else "-j"
+                rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                         opt, source, action, target ]
                 rules.append((ipv, rule))
 
         # handle rules
