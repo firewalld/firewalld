@@ -616,7 +616,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def listIcmpTypes(self, sender=None):
         # returns the list of services
-        log.debug1("listServices()")
+        log.debug1("listIcmpTypes()")
         return self.fw.icmptype.get_icmptypes()
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
