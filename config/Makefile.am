@@ -62,6 +62,7 @@ EXTRA_DIST = \
 	services/cluster-suite.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
+	services/dhcp.xml \
 	services/dns.xml \
 	services/ftp.xml \
 	services/https.xml \
@@ -89,6 +90,7 @@ EXTRA_DIST = \
 	services/pmwebapis.xml \
 	services/pop3s.xml \
 	services/postgresql.xml \
+	services/proxy-dhcp.xml \
 	services/radius.xml \
 	services/rpc-bind.xml \
 	services/samba-client.xml \
