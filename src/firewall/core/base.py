@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-DEFAULT_ZONE_TARGET = "{chain}_ZONE_{zone}"
+DEFAULT_ZONE_TARGET = "{chain}_{zone}"
 ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET ]
 
 SHORTCUTS = {
