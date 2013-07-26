@@ -76,7 +76,7 @@ class Zone(IO_Object):
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
-        "source": [ "invert" ],
+        "source": [ "invert", "family" ],
         "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
@@ -313,6 +313,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if not "address" in attrs:
                 log.error('Invalid source: Address missing.')
                 return
+            if "family" in attrs:
+                log.warning("Ignoring deprecated attribute family='%s'" %
+                            attrs["family"])
             if "invert" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
