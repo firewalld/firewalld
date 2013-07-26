@@ -329,3 +329,13 @@ def ppid_of_pid(pid):
     except:
         return None
     return pid
+
+def max_zone_name_len():
+    """
+    Netfilter limits length of chain to (currently) 28 chars.
+    The longest chain we create is FWDI_ZONE_<zone>_allow,
+    which leaves 28 - 16 = 12 chars for <zone>.
+    """
+    from firewall.core.base import SHORTCUTS
+    longest_shortcut = max(map (len, SHORTCUTS.values()))
+    return 28 - (longest_shortcut + len("_ZONE_") + len("_allow"))

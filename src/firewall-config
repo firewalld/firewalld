@@ -1023,8 +1023,8 @@ class FirewallConfig(object):
         zone.loadDefaults()
         self.onChangeZone()
 
-    def entry_changed(self, entry, allowed_chars):
-        "Remove all disallowed characters."
+    def entry_changed(self, entry, allowed_chars, max_chars=-1):
+        "Remove all disallowed characters and truncate length."
         origtext = entry.get_text()
         newtext = origtext
         for char in origtext:
@@ -1033,11 +1033,15 @@ class FirewallConfig(object):
         if newtext != origtext:
             entry.set_text(newtext)
 
+        if (max_chars != -1) and (len(origtext) > max_chars):
+            newtext = origtext[:max_chars]
+            entry.set_text(newtext)
+
     def onZoneBaseDialogChanged(self, *args):
         if args and (args[0] == self.zoneBaseDialogNameEntry):
             additional_chars = "".join(Zone.ADDITIONAL_ALNUM_CHARS)
             allowed_chars = string.ascii_letters+string.digits+additional_chars
-            self.entry_changed(args[0], allowed_chars)
+            self.entry_changed(args[0], allowed_chars, max_zone_name_len())
         self.zoneBaseDialogOkButton.set_sensitive(True)
 
     def onZoneBaseDialogTargetCheckToggled(self, check):

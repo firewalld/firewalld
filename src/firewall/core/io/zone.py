@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkIP, uniqify
+from firewall.functions import checkIP, uniqify, max_zone_name_len
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -438,6 +438,8 @@ def zone_reader(filename, path):
     if not filename.endswith(".xml"):
         raise FirewallError(INVALID_NAME, filename)
     zone.name = filename[:-4]
+    if len(zone.name) > max_zone_name_len():
+        raise FirewallError(INVALID_NAME, filename)
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
