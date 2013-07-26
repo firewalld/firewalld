@@ -102,7 +102,7 @@ class FirewallZone:
         for args in obj.interfaces:
             self._error2warning(self.remove_interface, obj.name, args)
         for args in obj.sources:
-            self._error2warning(self.remove_source, obj.name, *args)
+            self._error2warning(self.remove_source, obj.name, args)
         for args in obj.icmp_blocks:
             self._error2warning(self.remove_icmp_block, obj.name, args)
         for args in obj.forward_ports:
