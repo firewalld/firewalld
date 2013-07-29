@@ -242,7 +242,7 @@ class TrayApplet(object):
         self.settings.connect("changed::show-inactive",
                               self.show_inactive_changed)
 
-        if os.path.isfile(NM_CONNECTION_EDITOR):
+        if os.path.exists(NM_CONNECTION_EDITOR):
             self.has_nm_connection_editor = True
         else:
             self.has_nm_connection_editor = False
