@@ -38,6 +38,8 @@ from firewall.server.decorators import *
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid
+from firewall.core.io.service import Service
+from firewall.core.io.icmptype import IcmpType
 from firewall.errors import *
 
 ############################################################################
@@ -611,6 +613,16 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.service.get_services()
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='s',
+                         out_signature=Service.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getServiceSettings(self, service, sender=None):
+        # returns service settings for service
+        service = dbus_to_python(service)
+        log.debug1("getServiceSettings(%s)", service)
+        return self.fw.service.get_service(service).export_config()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
@@ -618,6 +630,16 @@ class FirewallD(slip.dbus.service.Object):
         # returns the list of services
         log.debug1("listIcmpTypes()")
         return self.fw.icmptype.get_icmptypes()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='s',
+                         out_signature=IcmpType.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getIcmpTypeSettings(self, icmptype, sender=None):
+        # returns icmptype settings for icmptype
+        icmptype = dbus_to_python(icmptype)
+        log.debug1("getIcmpTypeSettings(%s)", icmptype)
+        return self.fw.icmptype.get_icmptype(icmptype).export_config()
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -1004,7 +1026,7 @@ class FirewallD(slip.dbus.service.Object):
     def getRichRules(self, zone, sender=None):
         # returns the list of enabled services for zone
         zone = dbus_to_python(zone)
-        log.debug1("zone.getServices('%s')" % (zone))
+        log.debug1("zone.getRichRules('%s')" % (zone))
         return self.fw.zone.get_rules(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')

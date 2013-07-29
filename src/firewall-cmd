@@ -393,7 +393,7 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
         # lockdown whitelist
 
         elif options_lockdown_whitelist:
-            whitelist = fw.config().policies.getLockdownWhitelist()
+            whitelist = fw.config().policies().getLockdownWhitelist()
                 
             # commands
             if a.list_lockdown_whitelist_commands:
@@ -444,7 +444,7 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
                                      a.query_lockdown_whitelist_user))
 
             # apply whitelist changes
-            fw.config().policies.setLockdownWhitelist(whitelist)
+            fw.config().policies().setLockdownWhitelist(whitelist)
 
         else:
             if zone == "":

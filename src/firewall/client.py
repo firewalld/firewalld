@@ -311,7 +311,7 @@ class FirewallClientConfigZone(object):
 
 # service config settings
 
-class FirewallClientConfigServiceSettings(object):
+class FirewallClientServiceSettings(object):
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -426,7 +426,7 @@ class FirewallClientConfigService(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getSettings(self):
-        return FirewallClientConfigServiceSettings(list(dbus_to_python(\
+        return FirewallClientServiceSettings(list(dbus_to_python(\
                     self.fw_service.getSettings())))
 
     @slip.dbus.polkit.enable_proxy
@@ -451,7 +451,7 @@ class FirewallClientConfigService(object):
 
 # icmptype config settings
 
-class FirewallClientConfigIcmpTypeSettings(object):
+class FirewallClientIcmpTypeSettings(object):
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -530,7 +530,7 @@ class FirewallClientConfigIcmpType(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getSettings(self):
-        return FirewallClientConfigIcmpTypeSettings(list(dbus_to_python(\
+        return FirewallClientIcmpTypeSettings(list(dbus_to_python(\
                     self.fw_icmptype.getSettings())))
 
     @slip.dbus.polkit.enable_proxy
@@ -671,7 +671,7 @@ class FirewallClientConfig(object):
                                         dbus_interface=DBUS_INTERFACE_CONFIG)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
-        self.policies = FirewallClientConfigPolicies(self.bus)
+        self._policies = FirewallClientConfigPolicies(self.bus)
 
     # properties
 
@@ -773,6 +773,10 @@ class FirewallClientConfig(object):
         path = self.fw_config.addIcmpType(name, tuple(settings.settings))
         return FirewallClientConfigIcmpType(self.bus, path)
 
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def policies(self):
+        return self._policies
 #
 
 class FirewallClient(object):
@@ -797,6 +801,7 @@ class FirewallClient(object):
         for interface in [ DBUS_INTERFACE,
                            DBUS_INTERFACE_ZONE,
                            DBUS_INTERFACE_DIRECT,
+                           DBUS_INTERFACE_POLICIES,
                            DBUS_INTERFACE_CONFIG,
                            DBUS_INTERFACE_CONFIG_ZONE,
                            DBUS_INTERFACE_CONFIG_SERVICE,
@@ -829,6 +834,8 @@ class FirewallClient(object):
             "forward-port-removed": "ForwardPortRemoved",
             "icmp-block-added": "IcmpBlockAdded",
             "icmp-block-removed": "IcmpBlockRemoved",
+            "richrule-added": "RichRuleAdded",
+            "richrule-removed": "RichRuleRemoved",
             "interface-added": "InterfaceAdded",
             "interface-removed": "InterfaceRemoved",
             "zone-changed": "ZoneOfInterfaceChanged", # DEPRECATED, use zone-of-interface-changed instead
@@ -855,7 +862,7 @@ class FirewallClient(object):
             "lockdown-whitelist-user-added": "LockdownWhitelistUserAdded",
             "lockdown-whitelist-user-removed": "LockdownWhitelistUserRemoved",
             # firewalld.config callbacks
-            "config:policies:lockdown-whitelist-updated": "config:policies:LockdownWhitelistUpdated",
+            "config:lockdown-whitelist-updated": "config:LockdownWhitelistUpdated",
             "config:zone-added": "config:ZoneAdded",
             "config:zone-updated": "config:ZoneUpdated",
             "config:zone-removed": "config:ZoneRemoved",
@@ -1047,8 +1054,18 @@ class FirewallClient(object):
         return dbus_to_python(self.fw.listServices())
 
     @handle_exceptions
+    def getServiceSettings(self, service):
+        return FirewallClientServiceSettings(list(dbus_to_python(\
+                    self.fw.getServiceSettings(service))))
+
+    @handle_exceptions
     def listIcmpTypes(self):
         return dbus_to_python(self.fw.listIcmpTypes())
+
+    @handle_exceptions
+    def getIcmpTypeSettings(self, icmptype):
+        return FirewallClientIcmpTypeSettings(list(dbus_to_python(\
+                    self.fw.getIcmpTypeSettings(icmptype))))
 
     # default zone
 
