@@ -276,9 +276,6 @@
       <para>
 	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
       </para>
-      <para>
-	For the rich language rule syntax in the rich language rules, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-      </para>
       <variablelist>
 
 	<!-- list-all -->
@@ -539,6 +536,9 @@
 	      Add rich language rule '<replaceable>rule</replaceable>' for <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used. If a timeout is supplied, the <replaceable>rule</replaceable> will be active for the amount of seconds and will be removed automatically afterwards.
 	    </para>
 	    <para>
+	      For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	    </para>
+	    <para>
 	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
 	    </para>
 	  </listitem>
@@ -550,6 +550,9 @@
 	    <para>
 	      Remove rich language rule '<replaceable>rule</replaceable>' from <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used.
 	    </para>
+	    <para>
+	      For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	    </para>
 	  </listitem>
 	</varlistentry>
 
@@ -558,6 +561,9 @@
 	  <listitem>
 	    <para>
 	      Return whether a rich language rule '<replaceable>rule</replaceable>' has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	    </para>
+	    <para>
+	      For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 	    </para>
 	  </listitem>
 	</varlistentry>
