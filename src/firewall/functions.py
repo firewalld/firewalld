@@ -339,3 +339,26 @@ def max_zone_name_len():
     from firewall.core.base import SHORTCUTS
     longest_shortcut = max(map (len, SHORTCUTS.values()))
     return 28 - (longest_shortcut + len("__allow"))
+
+def checkUser(user):
+    if len(user) < 1 or len(user) > os.sysconf('SC_LOGIN_NAME_MAX'):
+        return False
+    return True
+
+def checkUid(uid):
+    if type(uid) == str:
+        try:
+            uid = int(uid)
+        except:
+            return False
+    if uid > 0 or uid <= 2^31-1:
+        return True
+    return False
+
+def checkCommand(command):
+    if len(command) < 1 or len(command) > 1024:
+        return False
+    for ch in [ "|", "\n", "\0" ]:
+        if ch in command:
+            return False
+    return True
