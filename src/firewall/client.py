@@ -657,8 +657,6 @@ class FirewallClientConfigPolicies(object):
     def setLockdownWhitelist(self, settings):
         self.fw_policies.setLockdownWhitelist(tuple(settings.settings))
 
-    # TODO: LockdownWhitelistUpdated signal handling
-
 # config
 
 class FirewallClientConfig(object):
@@ -805,7 +803,8 @@ class FirewallClient(object):
                            DBUS_INTERFACE_CONFIG,
                            DBUS_INTERFACE_CONFIG_ZONE,
                            DBUS_INTERFACE_CONFIG_SERVICE,
-                           DBUS_INTERFACE_CONFIG_ICMPTYPE ]:
+                           DBUS_INTERFACE_CONFIG_ICMPTYPE,
+                           DBUS_INTERFACE_CONFIG_POLICIES ]:
             self.bus.add_signal_receiver(self._signal_receiver,
                                          dbus_interface=interface,
                                          interface_keyword='interface',
@@ -862,7 +861,7 @@ class FirewallClient(object):
             "lockdown-whitelist-user-added": "LockdownWhitelistUserAdded",
             "lockdown-whitelist-user-removed": "LockdownWhitelistUserRemoved",
             # firewalld.config callbacks
-            "config:lockdown-whitelist-updated": "config:LockdownWhitelistUpdated",
+            "config:policies:lockdown-whitelist-updated": "config:policies:LockdownWhitelistUpdated",
             "config:zone-added": "config:ZoneAdded",
             "config:zone-updated": "config:ZoneUpdated",
             "config:zone-removed": "config:ZoneRemoved",
