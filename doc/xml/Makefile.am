@@ -30,6 +30,8 @@ XSLTPROC_FLAGS = --nonet --xinclude
 XSLTPROC_MAN_FLAGS = $(XSLTPROC_FLAGS) transform-man.xsl
 XSLTPROC_HTML_FLAGS = $(XSLTPROC_FLAGS) transform-html.xsl
 
+install:
+
 all: $(man_MANS) $(HTMLS)
 
 clean:
