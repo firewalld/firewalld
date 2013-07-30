@@ -40,6 +40,7 @@ exception_handler = None
 def handle_exceptions(func, *args, **kwargs):
     """Decorator to handle exceptions
     """
+    global exception_handler
     #while 1:
     try:
         return func(*args, **kwargs)
@@ -897,6 +898,16 @@ class FirewallClient(object):
         self.connected = False
 
     @handle_exceptions
+    def getExceptionHandler(self):
+        global exception_handler
+        return exception_handler
+
+    @handle_exceptions
+    def setExceptionHandler(self, handler):
+        global exception_handler
+        exception_handler = handler
+
+    @handle_exceptions
     def connect(self, name, callback, *args):
         if name in self._callbacks:
             self._callback[self._callbacks[name]] = (callback, args)
@@ -1048,19 +1059,23 @@ class FirewallClient(object):
 
     # list functions
 
+    @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def listServices(self):
         return dbus_to_python(self.fw.listServices())
 
+    @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getServiceSettings(self, service):
         return FirewallClientServiceSettings(list(dbus_to_python(\
                     self.fw.getServiceSettings(service))))
 
+    @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def listIcmpTypes(self):
         return dbus_to_python(self.fw.listIcmpTypes())
 
+    @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getIcmpTypeSettings(self, icmptype):
         return FirewallClientIcmpTypeSettings(list(dbus_to_python(\
