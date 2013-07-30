@@ -876,7 +876,8 @@ class FirewallZone:
                 raise FirewallError(INVALID_RULE, "Unknown element %s" % 
                                     type(rule.element))
 
-        if self.handle_cmr(zone, chains, modules, rules, enable) != None:
+        msg = self.handle_cmr(zone, chains, modules, rules, enable)
+        if msg != None:
             raise FirewallError(COMMAND_FAILED, msg)
 
         return mark_id
