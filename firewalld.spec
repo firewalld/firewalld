@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.3
+Version: 0.3.4
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -13,6 +13,7 @@ BuildRequires: intltool
 # glib2-devel is needed for gsettings.m4
 BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
+BuildRequires: docbook-style-xsl
 Requires: dbus-python
 Requires: python-slip-dbus >= 0.2.7
 Requires: python-decorator
@@ -157,7 +158,8 @@ fi
 %{python_sitelib}/firewall/core/*.py*
 %{python_sitelib}/firewall/core/io/*.py*
 %{python_sitelib}/firewall/server/*.py*
-%{_mandir}/man1/firewall*.1*
+%{_mandir}/man1/firewall*cmd*.1*
+%{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 
 %files -n firewall-applet
@@ -166,6 +168,7 @@ fi
 %{_sysconfdir}/xdg/autostart/firewall-applet.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
+%{_mandir}/man1/firewall-applet*.1*
 
 %files -n firewall-config
 %{_bindir}/firewall-config
@@ -174,8 +177,85 @@ fi
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
 %{_datadir}/applications/firewall-config.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
+%{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Jul 30 2013 Thomas Woerner <twoerner@redhat.com> 0.3.4-1
+- several rich rule check enhancements and fixes
+- firewall-cmd: direct options - check ipv4|ipv6|eb (RHBZ#970505)
+- firewall-cmd(1): improve description of direct options (RHBZ#970509)
+- several firewall-applet enhancements and fixes
+- New README
+- several doc and man page fixes
+- Service definitions for PCP daemons (RHBZ#972262)
+- bash-completion: add lockdown and rich language options
+- firewall-cmd: add --permanent --list-all[-zones]
+- firewall-cmd: new -q/--quiet option
+- firewall-cmd: warn when default zone not active (RHBZ#971843)
+- firewall-cmd: check priority in --add-rule (RHBZ#914955)
+- add dhcpv6 (for server) service (RHBZ#917866)
+- firewall-cmd: add --permanent --get-zone-of-interface/source --change-interface/source
+- firewall-cmd: print result (yes/no) of all --query-* commands
+- move permanent-getZoneOf{Interface|Source} from firewall-cmd to server
+- Check Interfaces/sources when updating permanent zone settings.
+- FirewallDConfig: getZoneOfInterface/Source can actually return more zones
+- Fixed toaddr check in forward port to only allow single address, no range
+- firewall-cmd: various output improvements
+- fw_zone: use check_single_address from firewall.functions
+- getZoneOfInterface/Source does not need to throw exception
+- firewall.functions: Use socket.inet_pton in checkIP, fixed checkIP*nMask
+- firewall.core.io.service: Properly check port/proto and destination address
+- Install applet desktop file into /etc/xdg/autostart
+- Fixed option problem with rich rule destinations (RHBZ#979804)
+- Better exception creation in dbus_handle_exceptions() decorator (RHBZ#979790)
+- Updated firewall-offline-cmd
+- Use priority in add, remove, query and list of direct rules (RHBZ#979509)
+- New documentation (man pages are created from docbook sources)
+- firewall/core/io/direct.py: use prirority for rule methods, new get_all_ methods
+- direct: pass priority also to client.py and firewall-cmd
+- applet: New blink and blink-count settings
+- firewall.functions: New function ppid_of_pid
+- applet: Check for gnome3 and fix it, use new settings, new size-changed cb
+- firewall-offline-cmd: Fix use of systemctl in chroot
+- firewall-config: use string.ascii_letters instead of string.letters
+- dbus_to_python(): handle non-ascii chars in dbus.String.
+- Modernize old syntax constructions.
+- dict.keys() in Python 3 returns a "view" instead of list
+- Use gettext.install() to install _() in builtins namespace.
+- Allow non-ascii chars in 'short' and 'description'
+- README: More information for "Working With The Source Repository"
+- Build environment fixes
+- firewalld.spec: Added missing checks for rhel > 6 for pygobject3-base
+- firewall-applet: New setting show-inactive
+- Don't stop on reload when lockdown already enabled (RHBZ#987403)
+- firewall-cmd: --lockdown-on/off did not touch firewalld.conf
+- FirewallApplet.gschema.xml: Dropped unused sender-info setting
+- doc/firewall-applet.xml: Added information about gsettings
+- several debug and log message fixes
+- Add chain for sources so they can be checked before interfaces (RHBZ#903222)
+- Add dhcp and proxy-dhcp services (RHBZ#986947)
+- io/Zone(): don't error on deprecated family attr of source elem
+- Limit length of zone file name (to 12 chars) due to Netfilter internals.
+- It was not possible to overload a zone with defined source(s).
+- DEFAULT_ZONE_TARGET: {chain}_ZONE_{zone} -> {chain}_{zone}
+- New runtime get<X>Settings for services and icmptypes, fixed policies callbacks
+- functions: New functions checkUser, checkUid and checkCommand
+- src/firewall/client: Fixed lockdown-whitelist-updated signal handling
+- firewall-cmd(1): move firewalld.richlanguage(5) reference in --*-rich-rule
+- Rich rule service: Only add modules for accept action
+- firewall/core/rich: Several fixes and enhanced checks
+- Fixed reload of direct rules
+- firewall/client: New functions to set and get the exception handler
+- firewall-config: New and enhanced UI to handle lockdown and rich rules
+- zone's immutable attribute is redundant
+- Do not allow to set settings in config for immutable zones.
+- Ignore deprecated 'immutable' attribute in zone files.
+- Eviscerate 'immutable' completely.
+- FirewallDirect.query_rule(): fix it
+- permanent direct: activate firewall.core.io.direct:Direct reader
+- core/io/*: simplify getting of character data
+- FirewallDirect.set_config(): allow reloading
+
 * Thu Jun 20 2013  Jiri Popelka <jpopelka@redhat.com>
 - Remove migrating to a systemd unit file from a SysV initscript
 - Remove pointless "ExclusiveOS" tag
