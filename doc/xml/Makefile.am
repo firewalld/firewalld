@@ -22,7 +22,8 @@ man5_MANS = \
 	../man/man5/firewalld.zone.5 \
 	../man/man5/firewalld.zones.5
 
-CLEAN_FILES = $(man_MANS) $(HTMLS) *~ errorcodes.xml
+CLEAN_FILES = *~ errorcodes.xml
+DISTCLEANFILES = $(man_MANS) $(HTMLS)
 
 #SGML_CATALOG_FILES
 #XSLTPROC_FLAGS = --catalogs --nonet --xinclude
