@@ -63,11 +63,14 @@ class FirewallDirect:
         for table_id in _chains:
             (ipv, table) = table_id
             for chain in _chains[table_id]:
-                self.__chain(True, ipv, table, chain)
+                if not self.query_chain(ipv, table, chain):
+                    self.add_chain(ipv, table, chain)
+
         for chain_id in _rules:
             (ipv, table, chain) = chain_id
             for (priority, args) in _rules[chain_id]:
-                self.__rule(True, ipv, table, chain, priority, args)
+                if not self.query_rule(ipv, table, chain, priority, args):
+                    self.add_rule(ipv, table, chain, priority, args)
 
     # DIRECT CHAIN
 
