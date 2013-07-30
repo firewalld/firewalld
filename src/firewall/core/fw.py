@@ -194,12 +194,13 @@ class Firewall:
         except Exception as msg:
             log.debug1("Failed to load direct rules file '%s': %s",
                       FIREWALLD_DIRECT, msg)
-        #obj.output()
-        self.direct.set_config((obj.get_all_chains(), obj.get_all_rules()))
-        for ipv, args in obj.get_all_passthroughs().items():
-            for arg in args:
-                self.direct.passthrough(ipv, arg)
-        # TODO: copy obj into config interface
+        else:
+            #obj.output()
+            self.direct.set_config((obj.get_all_chains(), obj.get_all_rules()))
+            for ipv, args in obj.get_all_passthroughs().items():
+                for arg in args:
+                    self.direct.passthrough(ipv, arg)
+            # TODO: copy obj into config interface
 
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():
