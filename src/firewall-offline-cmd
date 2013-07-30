@@ -388,11 +388,6 @@ if not obj:
     # create new zone?
     sys.exit(1)
 
-if obj.immutable:
-    error(_("Zone '%s' is immutable, exiting.") % default_zone)
-    # create new zone?
-    sys.exit(1)
-
 trusted_obj = None
 if default_zone != trusted_zone:
     for path in [ ETC_FIREWALLD_ZONES, FIREWALLD_ZONES ]:

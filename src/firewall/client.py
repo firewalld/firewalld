@@ -94,12 +94,7 @@ class FirewallClientConfigZoneSettings(object):
     def setDescription(self, description):
         self.settings[2] = description
 
-    @handle_exceptions
-    def getImmutable(self):
-        return self.settings[3]
-    @handle_exceptions
-    def setImmutable(self, immutable):
-        self.settings[3] = immutable
+    # self.settings[3] was used for 'immutable'
 
     @handle_exceptions
     def getTarget(self):

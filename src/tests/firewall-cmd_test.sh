@@ -1,9 +1,5 @@
 #!/bin/bash
 
-# BEWARE:
-# some tests modify default zone and will fail if default zone is
-# set to immutable one, i.e. to block, drop, trusted
-
 #path="/usr/bin/"
 path="../"
 
@@ -281,7 +277,6 @@ assert_good "--permanent --remove-masquerade --zone=${default_zone}"
 assert_bad  "--permanent  --query-masquerade"
 
 assert_bad  "--zone=external    --add-icmp-block=dummyblock" # invalid icmp type
-assert_bad  "--zone=block       --add-icmp-block=redirect" # immutable zone
 assert_good "--zone=external    --add-icmp-block=redirect"
 assert_good "--zone=external  --query-icmp-block=redirect"
 assert_good "--zone=external --remove-icmp-block redirect"

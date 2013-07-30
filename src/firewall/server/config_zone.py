@@ -163,8 +163,10 @@ class FirewallDConfigZone(slip.dbus.service.Object):
            part of only one zone. So make sure added interfaces/sources have
            not already been bound to another zone."""
         old_settings = self.config.get_zone_config(self.obj)
-        added_ifaces = set(settings[10]) - set(old_settings[10])
-        added_sources = set(settings[11]) - set(old_settings[11])
+        idx_i = Zone.index_of("interfaces")
+        idx_s = Zone.index_of("sources")
+        added_ifaces = set(settings[idx_i]) - set(old_settings[idx_i])
+        added_sources = set(settings[idx_s]) - set(old_settings[idx_s])
 
         for iface in added_ifaces:
             if self.parent.getZoneOfInterface(iface):

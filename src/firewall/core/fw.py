@@ -264,8 +264,6 @@ class Firewall:
                     if not combine:
                         if obj.name in self.zone.get_zones():
                             orig_obj = self.zone.get_zone(obj.name)
-                            if orig_obj.immutable:
-                                raise FirewallError(NOT_OVERLOADABLE, obj.name)
                             if orig_obj.combined:
                                 raise FirewallError(NOT_OVERLOADABLE,
                                                     "%s is a combined zone" % \

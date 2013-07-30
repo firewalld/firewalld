@@ -63,7 +63,6 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         zone_version = "1.0"
         zone_short = "Testing"
         zone_description = "this is just a testing zone"
-        zone_immutable = False
         zone_target = DEFAULT_ZONE_TARGET
         zone_services = ["dhcpv6-client", "ssh"]
         zone_ports = [("123", "tcp"), ("666-667", "udp")]
@@ -74,7 +73,6 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         settings.setVersion(zone_version)
         settings.setShort(zone_short)
         settings.setDescription(zone_description)
-        settings.setImmutable(zone_immutable)
         settings.setTarget(zone_target)
         settings.setServices(zone_services)
         settings.setPorts(zone_ports)
@@ -98,7 +96,6 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(zone_settings.getVersion(), zone_version)
         self.assertEquals(zone_settings.getShort(), zone_short)
         self.assertEquals(zone_settings.getDescription(), zone_description)
-        self.assertEquals(zone_settings.getImmutable(), zone_immutable)
         self.assertEquals(zone_settings.getTarget(), zone_target)
         self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
         self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
@@ -137,7 +134,6 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(zone_settings.getVersion(), zone_version)
         self.assertEquals(zone_settings.getShort(), zone_short)
         self.assertEquals(zone_settings.getDescription(), zone_description)
-        self.assertEquals(zone_settings.getImmutable(), zone_immutable)
         self.assertEquals(zone_settings.getTarget(), zone_target)
         self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
         self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())

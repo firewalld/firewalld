@@ -740,10 +740,8 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='b')
     @dbus_handle_exceptions
     def isImmutable(self, zone, sender=None):
-        # immutable zones: block, drop, trusted
-        zone = dbus_to_python(zone)
-        log.debug1("zone.isImmutable('%s')" % zone)
-        return self.fw.zone.is_immutable(zone)
+        # no immutable zones anymore
+        return False
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

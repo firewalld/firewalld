@@ -19,7 +19,6 @@ elementFormDefault="qualified">
       <xs:element name="rule" type="ruletype" minOccurs="0" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="version" type="xs:string"/>
-    <xs:attribute name="immutable" type="xs:string"/>
     <xs:attribute name="target" type="zonetargettype"/>
   </xs:complexType>
 </xs:element>
