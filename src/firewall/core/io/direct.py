@@ -23,7 +23,6 @@ import xml.sax as sax
 import os
 import shutil
 
-from firewall.config import _
 from firewall.fw_types import *
 from firewall.errors import *
 from firewall.core.io.io_object import *
@@ -44,7 +43,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "chain":
             if not self.direct:
-                log.error("Parse Error: command outside of direct")
+                log.error("Parse Error: chain outside of direct")
                 return
             ipv = str(attrs["ipv"])
             table = str(attrs["table"])
@@ -53,7 +52,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "rule":
             if not self.direct:
-                log.error("Parse Error: command outside of direct")
+                log.error("Parse Error: rule outside of direct")
                 return
             ipv = str(attrs["ipv"])
             if ipv not in [ "ipv4", "ipv6", "eb" ]:
@@ -66,52 +65,61 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                 log.error("Parse Error: %s is not a valid priority" % 
                           attrs["priority"])
                 return
-            args = [ ]
-            self._rule = (ipv, table, chain, priority, args)
-            self._args = args
+            self._rule = [ipv, table, chain, priority]
+            self._element = ""
 
-#        elif name == "passthrough":
-#            if not self.direct:
-#                log.error("Parse Error: command outside of direct")
-#                return
-#            ipv = str(attrs["ipv"])
-#            args = [ ]
-#            self._passthrough = (ipv, args)
-#            self._args = args
-
-        elif name == "arg":
-            if self._args == None:
-                log.error("Parse Error: arg element unexpected")
+        elif name == "passthrough":
+            if not self.direct:
+                log.error("Parse Error: command outside of direct")
                 return
-            # start new arg stored in _element
-            self._element = u""
+            ipv = str(attrs["ipv"])
+            self._passthrough = [ipv]
+            self._element = ""
 
         else:
             log.error('Unknown XML element %s' % name)
             return
 
+    def _tokenize(self, args_string):
+        # split args_string to args, but consider " and '
+        in_string = False
+        args = []
+        for arg in args_string.split():
+            if in_string:
+                # append to the last argument
+                args[-1] += " " + arg
+            else:
+                # add new argument
+                args.append(arg)
+            # consider " and '
+            if arg.startswith('"') or arg.startswith('\''):
+                in_string = True
+            if arg.endswith('"') or arg.endswith('\''):
+                in_string = False
+        return args
+
     def endElement(self, name):
         IO_Object_ContentHandler.endElement(self, name)
 
-        if name == "arg":
-            if self._element != None:
-                self._args.append(self._element.strip()) # TODO: no strip?
-                self._element = None
         if name == "rule":
-            if len(self._args) < 1:
-                log.error("Error: rule does not have any arguments, ignoring.")
-            else:
+            if self._element != "":
+                # add arguments
+                self._rule.append(self._tokenize(self._element))
                 self.item.add_rule(*self._rule)
+            else:
+                log.error("Error: rule does not have any arguments, ignoring.")
             self._rule = None
-            self._args = None
-#        elif name == "passthrough":
-#            if len(self._args) < 1:
-#                log.error("Error: passthrough does not have any arguments, " +
-#                          "ignoring.")
-#            else:
-#                self.item.add_passthrough(*self._passthrough)
-#            self._passthrough = None
-#            self._args = None
+            self._element = None
+        elif name == "passthrough":
+            if self._element != "":
+                # add arguments
+                self._passthrough.append(self._tokenize(self._element))
+                self.item.add_passthrough(*self._passthrough)
+            else:
+               log.error("Error: passthrough does not have any arguments, " +
+                         "ignoring.")
+            self._passthrough = None
+            self._element = None
 
 class Direct(IO_Object):
     """ Direct class """
@@ -122,15 +130,14 @@ class Direct(IO_Object):
         # rule: [ ipv, table, chain, priority, [ arg ]
         ( "rule", [ "", "", "", 0, [ "" ] ] ),          # a(sssdas)
 #        # passthrough: [ ipv, [ arg ]
-#        ( "passthough", [ "", [ "" ] ] ),               # a(sas)
+        ( "passthough", [ "", [ "" ] ] ),               # a(sas)
         )
     DBUS_SIGNATURE = '(a(sss)a(sssdas)a(sas)'
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "direct": None,
         "chain": [ "ipv", "table", "chain" ],
         "rule": [ "ipv", "table", "chain", "priority" ],
-#        "passthrough": [ "ipv" ],
-        "arg": None
+        "passthrough": [ "ipv" ]
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         }
@@ -147,7 +154,7 @@ class Direct(IO_Object):
     def clear(self):
         self.chains = LastUpdatedOrderedDict()
         self.rules = LastUpdatedOrderedDict()
-#        self.passthroughs = LastUpdatedOrderedDict()
+        self.passthroughs = LastUpdatedOrderedDict()
 
     def output(self):
         print ("chains")
@@ -158,11 +165,11 @@ class Direct(IO_Object):
             print ("  (%s, %s, %s):" % (key[0], key[1], key[2]))
             for (priority,args) in self.rules[key]:
                 print ("    (%d, ('%s'))" % (priority, "','".join(args)))
-#        print ("passthroughs")
-#        for key in self.passthroughs:
-#            print ("  %s:" % (key))
-#            for args in self.passthroughs[key]:
-#                print ("    ('%s')" % ("','".join(args)))
+        print ("passthroughs")
+        for key in self.passthroughs:
+            print ("  %s:" % (key))
+            for args in self.passthroughs[key]:
+                print ("    ('%s')" % ("','".join(args)))
 
     # chains
 
@@ -177,28 +184,28 @@ class Direct(IO_Object):
                             (chain, table, ipv)
                         + "already in list, ignoring")
 
-    def remove_chain(self, ipv, table, chain):
-        key = (ipv, table)
-        if key in self.chains and chain in self.chains[key]:
-            self.chains[key].remove(chain)
-            if len(self.chains[key]) == 0:
-                del self.chains[key]
-        else:
-            raise ValueError( \
-                "Chain '%s' with table '%s' with ipv '%s' not in list" % \
-                (chain, table, ipv))
+#    def remove_chain(self, ipv, table, chain):
+#        key = (ipv, table)
+#        if key in self.chains and chain in self.chains[key]:
+#            self.chains[key].remove(chain)
+#            if len(self.chains[key]) == 0:
+#                del self.chains[key]
+#        else:
+#            raise ValueError( \
+#                "Chain '%s' with table '%s' with ipv '%s' not in list" % \
+#                (chain, table, ipv))
 
-    def query_chain(self, ipv, table, chain):
-        key = (ipv, table)
-        return (key in self.chains and chain in self.chains[key])
+#    def query_chain(self, ipv, table, chain):
+#        key = (ipv, table)
+#        return (key in self.chains and chain in self.chains[key])
 
-    def get_chains(self, ipv, table):
-        key = (ipv, table)
-        if key in self.chains:
-            return self.chains[key]
-        else:
-            raise ValueError("No chains for table '%s' with ipv '%s'" % \
-                             (table, ipv))
+#    def get_chains(self, ipv, table):
+#        key = (ipv, table)
+#        if key in self.chains:
+#            return self.chains[key]
+#        else:
+#            raise ValueError("No chains for table '%s' with ipv '%s'" % \
+#                             (table, ipv))
 
     def get_all_chains(self):
         return self.chains
@@ -218,45 +225,45 @@ class Direct(IO_Object):
                         + "with ipv '%s' and priority %d " % (ipv, priority)
                         + "already in list, ignoring")
 
-    def remove_rule(self, ipv, table, chain, priority, args):
-        key = (ipv, table, chain)
-        value = (priority, tuple(args))
-        if key in self.rules and value in self.rules[key]:
-            del self.rules[key][value]
-            if len(self.rules[key]) == 0:
-                del self.rules[key]
-        else:
-            raise ValueError("Rule '%s' for table '%s' and chain '%s' " % \
-                ("',".join(args), table, chain) + \
-                "with ipv '%s' and priority %d not in list" % (ipv, priority))
+#    def remove_rule(self, ipv, table, chain, priority, args):
+#        key = (ipv, table, chain)
+#        value = (priority, tuple(args))
+#        if key in self.rules and value in self.rules[key]:
+#            del self.rules[key][value]
+#            if len(self.rules[key]) == 0:
+#                del self.rules[key]
+#        else:
+#            raise ValueError("Rule '%s' for table '%s' and chain '%s' " % \
+#                ("',".join(args), table, chain) + \
+#                "with ipv '%s' and priority %d not in list" % (ipv, priority))
 
-    def query_rule(self, ipv, table, chain, priority, args):
-        key = (ipv, table, chain)
-        value = (priority, tuple(args))
-        return (key in self.rules and value in self.rules[key])
+#    def query_rule(self, ipv, table, chain, priority, args):
+#        key = (ipv, table, chain)
+#        value = (priority, tuple(args))
+#        return (key in self.rules and value in self.rules[key])
 
-    def get_rules(self, ipv, table, chain):
-        key = (ipv, table, chain)
-        if key in self.rules:
-            return self.rules[key]
-        else:
-            raise ValueError("No rules for table '%s' and chain '%s' " %\
-                             (table, chain) + "with ipv '%s'" % (ipv))
+#    def get_rules(self, ipv, table, chain):
+#        key = (ipv, table, chain)
+#        if key in self.rules:
+#            return self.rules[key]
+#        else:
+#            raise ValueError("No rules for table '%s' and chain '%s' " %\
+#                             (table, chain) + "with ipv '%s'" % (ipv))
 
     def get_all_rules(self):
         return self.rules
 
 #    # passthrough
 #
-#    def add_passthrough(self, ipv, args):
-#        if ipv not in self.passthroughs:
-#            self.passthroughs[ipv] = [ ]
-#        if args not in self.passthroughs[ipv]:
-#            self.passthroughs[ipv].append(args)
-#        else:
-#            log.warning("Passthrough '%s' for ipv '%s'" % \
-#                            ("',".join(args), ipv)
-#                        + "already in list, ignoring")
+    def add_passthrough(self, ipv, args):
+        if ipv not in self.passthroughs:
+            self.passthroughs[ipv] = [ ]
+        if args not in self.passthroughs[ipv]:
+            self.passthroughs[ipv].append(args)
+        else:
+            log.warning("Passthrough '%s' for ipv '%s'" % \
+                            ("',".join(args), ipv)
+                        + "already in list, ignoring")
 #
 #    def remove_passthrough(self, ipv, args):
 #        if ipv in self.passthroughs and args in self.passthroughs[ipv]:
@@ -276,8 +283,8 @@ class Direct(IO_Object):
 #        else:
 #            raise ValueError, "No passthroughs for ipv '%s'" % (ipv)
 #
-#    def get_all_passthroughs(self):
-#        return self.passthroughs
+    def get_all_passthroughs(self):
+        return self.passthroughs
 
     # read
 

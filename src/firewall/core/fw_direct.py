@@ -221,7 +221,6 @@ class FirewallDirect:
         chain_id = (ipv, table, _chain)
 
         if chain_id in self._rules:
-            print (self._rules[chain_id])
             return self._rules[chain_id]
         return [ ]
 

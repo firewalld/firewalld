@@ -349,7 +349,7 @@ assert_good          "--permanent --list-forward-ports"
 assert_bad           "--permanent --complete-reload" # impossible combination
 
 # ... --direct  ...
-assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_ZONE_home_allow"
+assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_home_allow"
 assert_bad           "--direct --passthrough ipv5 -nvL" # ipv5
 assert_bad           "--direct --passthrough ipv4" # missing argument
 assert_good_empty    "--direct --get-chains ipv4 filter"

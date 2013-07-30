@@ -34,7 +34,7 @@ from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
-#from firewall.core.io.direct import Direct
+from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
@@ -186,9 +186,20 @@ class Firewall:
         if error:
             sys.exit(1)
 
-#        # load direct rules
-#        log.debug1("Loading direct rules")
-#        obj = Direct(FIREWALLD_DIRECT)
+        # load direct rules
+        log.debug1("Loading direct rules file '%s'" % FIREWALLD_DIRECT)
+        obj = Direct(FIREWALLD_DIRECT)
+        try:
+            obj.read()
+        except Exception as msg:
+            log.debug1("Failed to load direct rules file '%s': %s",
+                      FIREWALLD_DIRECT, msg)
+        #obj.output()
+        self.direct.set_config((obj.get_all_chains(), obj.get_all_rules()))
+        for ipv, args in obj.get_all_passthroughs().items():
+            for arg in args:
+                self.direct.passthrough(ipv, arg)
+        # TODO: copy obj into config interface
 
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():

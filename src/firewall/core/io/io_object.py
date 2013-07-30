@@ -179,7 +179,7 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
 
     def characters(self, content):
         if self._element != None:
-            self._element += content.replace('\n', ' ')
+            self._element += str(content).replace('\n', ' ')
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):
