@@ -119,7 +119,7 @@ class Rich_Reject(object):
         self.limit = limit
 
     def __str__(self):
-        return "reject%s%s" % (' type="%s"' if self.type else "",
+        return "reject%s%s" % (' type="%s"' % self.type if self.type != None else "",
                                " %s" % self.limit if self.limit else "")
 
 class Rich_Drop(Rich_Accept):
@@ -446,23 +446,28 @@ class Rich_Rule(object):
 
         # source
         if self.source != None:
-            if self.source.addr != None and \
+            if self.family == None:
+                raise FirewallError(INVALID_FAMILY)
+            if self.source.addr == None or \
                     not functions.check_address(self.family,
                                                 self.source.addr):
-                raise FirewallError(INVALID_ADDR, self.source.addr)
+                raise FirewallError(INVALID_ADDR, str(self.source.addr))
 
         # destination
         if self.destination != None:
-            if self.destination.addr != None and \
+            if self.family == None:
+                raise FirewallError(INVALID_FAMILY)
+            if self.destination.addr == None or \
                     not functions.check_address(self.family,
                                                 self.destination.addr):
-                raise FirewallError(INVALID_ADDR, self.destination.addr)
+                raise FirewallError(INVALID_ADDR, str(self.destination.addr))
 
         # service
         if type(self.element) == Rich_Service:
             # service availability needs to be checked in Firewall, here is no
-            # knowledge about this
-            pass
+            # knowledge about this, therefore only simple check
+            if self.element.name == None or len(self.element.name) < 1:
+                raise FirewallError(INVALID_SERVICE, str(self.element.name))
 
         # port
         elif type(self.element) == Rich_Port:
@@ -484,8 +489,11 @@ class Rich_Rule(object):
         # icmp-block
         elif type(self.element) == Rich_IcmpBlock:
             # icmp type availability needs to be checked in Firewall, here is no
-            # knowledge about this
-            pass
+            # knowledge about this, therefore only simple check
+            if self.element.name == None or len(self.element.name) < 1:
+                raise FirewallError(INVALID_ICMPTYPE, str(self.element.name))
+            if self.action and type(self.action) == Rich_Accept:
+                raise FirewallError(INVALID_RULE, "icmpblock and accept")
 
         # forward-port
         elif type(self.element) == Rich_ForwardPort:
@@ -502,6 +510,8 @@ class Rich_Rule(object):
                     not functions.check_single_address(self.family,
                                                        self.element.to_address):
                 raise FirewallError(INVALID_ADDR, self.element.to_address)
+            if self.family == None:
+                raise FirewallError(INVALID_FAMILY)
 
         # other element and not empty?
         elif self.element != None:
@@ -522,8 +532,14 @@ class Rich_Rule(object):
             if type(self.action) not in [ Rich_Accept, Rich_Reject, Rich_Drop ]:
                 raise FirewallError(INVALID_AUDIT_TYPE, type(self.action))
 
+            if self.audit.limit != None:
+                self.audit.limit.check()
+
         # action
         if self.action != None:
+            if type(self.action) == Rich_Reject:
+                if self.action.type != None and len(self.action.type) < 1:
+                    raise FirewallError(INVALID_RULE, "reject type")
             if self.action.limit != None:
                 self.action.limit.check()
 
