@@ -6082,6 +6082,7 @@
                               <item translatable="yes">forward-port</item>
                               <item translatable="yes">masquerade</item>
                             </items>
+                            <signal name="changed" handler="on_richRuleDialogElementCombobox_changed" swapped="no"/>
                             <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                           </object>
                           <packing>

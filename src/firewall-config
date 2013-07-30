@@ -2041,7 +2041,10 @@ class FirewallConfig(object):
             old_port = None
             old_proto = None
             if old_value != "":
-                (old_port,old_proto) = old_value.split("/")
+                try:
+                    (old_port,old_proto) = old_value.split("/")
+                except:
+                    pass
             value = self.port_select_dialog(old_port, old_proto)
         elif combolabel == _("protocol"):
             value = self.protocol_select_dialog(old_value)
@@ -2394,6 +2397,9 @@ class FirewallConfig(object):
             rule.audit = Rich_Audit(limit)
 
         return rule
+
+    def on_richRuleDialogElementCombobox_changed(self, *args):
+        self.richRuleDialogElementChooser.set_text("")
 
     def on_richRuleDialog_changed(self, *args):
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
