@@ -2139,6 +2139,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             services = sorted(self.fw.listServices())
         else:
+            services = [ ]
             _services = sorted(self.fw.config().listServices())
             for service in _services:
                 z = self.fw.config().getService(service)
@@ -2187,9 +2188,10 @@ class FirewallConfig(object):
         if self.runtime_view:
             icmptypes = sorted(self.fw.listIcmpTypes())
         else:
+            icmptypes = [ ]
             _icmptypes = sorted(self.fw.config().listIcmpTypes())
             for icmptype in _icmptypes:
-                z = self.fw.config().getIcmptype(icmptype)
+                z = self.fw.config().getIcmpType(icmptype)
                 icmptypes.append(z.get_property("name"))
         for icmptype in icmptypes:
             self.icmptypeDialogIcmptypeStore.append([icmptype])
@@ -2261,6 +2263,10 @@ class FirewallConfig(object):
         return "%s/%s%s%s" % (port, proto, _to_port, _to_addr)
 
     def split_fwp_string(self, text):
+        port = ""
+        proto = ""
+        to_port = ""
+        to_addr = ""
         if "➙" in text: # to_port
             splits = text.split("➙")
             (port,proto) = splits[0].split("/")
@@ -2268,11 +2274,9 @@ class FirewallConfig(object):
                 (to_port,to_addr) = splits[1].split("@")
             else:
                 to_port = splits[1]
-                to_addr = ""
         elif "@" in text:
             splits = text.split("@")
             (port,proto) = splits[0].split("/")
-            to_port = ""
             to_addr = splits[1]
         return (port.strip(), proto.strip(), to_port.strip(), to_addr.strip())
 
