@@ -24,12 +24,14 @@ import sys
 import string
 
 try:
-    from gi.repository import Gtk, Gdk
+    from gi.repository import Gtk, Gdk, Pango
     Gtk.init (sys.argv)
 except RuntimeError as e:
     print ("firewall-config: %s" % e)
     print ("This is a graphical application and requires DISPLAY to be set.")
     sys.exit (1)
+
+from gi.repository import NetworkManager
 
 from gi.repository import GObject
 sys.modules['gobject'] = GObject
@@ -42,27 +44,23 @@ import dbus
 
 from firewall.config import *
 from firewall.config.dbus import *
-import firewall.client as client
+from firewall import client
 from firewall.functions import *
+from firewall.dbus_utils import dbus_to_python
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
+from firewall.core.rich import *
 
 if not datadir:
     datadir = DATADIR
     sys.path.insert(0, datadir)
-# import ChooserButton
 from gtk3_chooserbutton import ChooserButton
 
 NM_CONNECTION_EDITOR = "/usr/bin/nm-connection-editor"
 
 #FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
-
-# TODO:
-#
-# - add FirewallClient exception handling and error dialog for all uses
-#
 
 class FirewallConfig(object):
     def __init__(self):
@@ -75,6 +73,9 @@ class FirewallConfig(object):
         self.no_connection = _("No connection.")
         self.waiting = _("Waiting ...")
         self.retrying = _("Retrying ...")
+        self.used_by = _("Used by network connection '%s'")
+        self.enabled = _("enabled")
+        self.disabled = _("disabled")
 
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
@@ -94,12 +95,16 @@ class FirewallConfig(object):
 
         self.statusLabel = builder.get_object("statusLabel")
         self.modifiedLabel = builder.get_object("modifiedLabel")
+        self.lockdownLabel = builder.get_object("lockdownLabel")
+        self.panicLabel = builder.get_object("panicLabel")
 
         # make the toolbar the primary toolbar - odd that this is needed at all
         # glade-3 does not support this up to now.
         self.mainToolbar = builder.get_object("mainToolbar")
         sty = self.mainToolbar.get_style_context()
         sty.add_class("primary-toolbar")
+        # hide toolbar for now
+        self.mainToolbar.hide()
 
         self.changeZonesConnectionMenuitem = \
             builder.get_object("changeZonesConnectionMenuitem")
@@ -110,12 +115,101 @@ class FirewallConfig(object):
                 _("%s is missing") % NM_CONNECTION_EDITOR)
             self.changeZonesConnectionMenuitem.set_sensitive(False)
 
-        self.editServicesButton = \
-            builder.get_object("editServicesButton")
-        self.editServicesButton.hide()
-        self.editIcmpTypesButton = \
-            builder.get_object("editIcmpTypesButton")
-        self.editIcmpTypesButton.hide()
+        self.panicMenuitem = builder.get_object("panicMenuitem")
+        self.panic_check_id = \
+            self.panicMenuitem.connect_after("toggled", self.panic_check_cb)
+        self.lockdownMenuitem = builder.get_object("lockdownMenuitem")
+        self.lockdown_check_id = \
+            self.lockdownMenuitem.connect_after("toggled",
+                                                self.lockdown_check_cb)
+
+        self.lockdownContextView = builder.get_object("lockdownContextView")
+        self.lockdownContextStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.lockdownContextView.append_column(
+            Gtk.TreeViewColumn("Context", Gtk.CellRendererText(), text=0))
+        self.lockdownContextView.set_model(self.lockdownContextStore)
+        self.lockdownContextView.get_selection().connect( \
+            "changed", self.change_lockdown_context_selection_cb)
+        self.editLockdownContextButton = \
+            builder.get_object("editLockdownContextButton")
+        self.removeLockdownContextButton = \
+            builder.get_object("removeLockdownContextButton")
+
+        self.contextDialog = builder.get_object("contextDialog")
+        self.contextDialogOkButton = builder.get_object("contextDialogOkButton")
+        self.contextDialogCancelButton = \
+            builder.get_object("contextDialogCancelButton")
+        self.contextDialogContextEntry = \
+            builder.get_object("contextDialogContextEntry")
+
+        self.lockdownCommandView = builder.get_object("lockdownCommandView")
+        self.lockdownCommandStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.lockdownCommandView.append_column(
+            Gtk.TreeViewColumn("Command line", Gtk.CellRendererText(), text=0))
+        self.lockdownCommandView.set_model(self.lockdownCommandStore)
+        self.lockdownCommandView.get_selection().connect( \
+            "changed", self.change_lockdown_command_selection_cb)
+        self.editLockdownCommandButton = \
+            builder.get_object("editLockdownCommandButton")
+        self.removeLockdownCommandButton = \
+            builder.get_object("removeLockdownCommandButton")
+
+        self.commandDialog = builder.get_object("commandDialog")
+        self.commandDialogOkButton = builder.get_object("commandDialogOkButton")
+        self.commandDialogCancelButton = \
+            builder.get_object("commandDialogCancelButton")
+        self.commandDialogCommandEntry = \
+            builder.get_object("commandDialogCommandEntry")
+
+        self.lockdownUserView = builder.get_object("lockdownUserView")
+        self.lockdownUserStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.lockdownUserView.append_column(
+            Gtk.TreeViewColumn("User name", Gtk.CellRendererText(), text=0))
+        self.lockdownUserView.set_model(self.lockdownUserStore)
+        self.lockdownUserView.get_selection().connect( \
+            "changed", self.change_lockdown_user_selection_cb)
+        self.editLockdownUserButton = \
+            builder.get_object("editLockdownUserButton")
+        self.removeLockdownUserButton = \
+            builder.get_object("removeLockdownUserButton")
+
+        self.userDialog = builder.get_object("userDialog")
+        self.userDialogOkButton = builder.get_object("userDialogOkButton")
+        self.userDialogCancelButton = \
+            builder.get_object("userDialogCancelButton")
+        self.userDialogUserEntry = \
+            builder.get_object("userDialogUserEntry")
+
+        self.lockdownUidView = builder.get_object("lockdownUidView")
+        self.lockdownUidStore = Gtk.ListStore(GObject.TYPE_INT)
+        self.lockdownUidView.append_column(
+            Gtk.TreeViewColumn("User id", Gtk.CellRendererText(), text=0))
+        self.lockdownUidView.set_model(self.lockdownUidStore)
+        self.lockdownUidView.get_selection().connect( \
+            "changed", self.change_lockdown_uid_selection_cb)
+        self.editLockdownUidButton = \
+            builder.get_object("editLockdownUidButton")
+        self.removeLockdownUidButton = \
+            builder.get_object("removeLockdownUidButton")
+
+        self.uidDialog = builder.get_object("uidDialog")
+        self.uidDialogOkButton = builder.get_object("uidDialogOkButton")
+        self.uidDialogCancelButton = \
+            builder.get_object("uidDialogCancelButton")
+        self.uidDialogUidEntry = \
+            builder.get_object("uidDialogUidEntry")
+
+        self.serviceConfServicesEditBox = \
+            builder.get_object("serviceConfServicesEditBox")
+        self.serviceConfPortBox = \
+            builder.get_object("serviceConfPortBox")
+        self.serviceConfModuleBox = \
+            builder.get_object("serviceConfModuleBox")
+        self.serviceConfDestinationGrid = \
+            builder.get_object("serviceConfDestinationGrid")
+
+        self.icmpDialogIcmpEditBox = \
+            builder.get_object("icmpDialogIcmpEditBox")
 
         self.mainVBox = builder.get_object("mainVBox")
         self.optionMenuitem = builder.get_object("optionMenuitem")
@@ -140,25 +234,30 @@ class FirewallConfig(object):
         self.runtime_view = True
 
         self.zoneView = builder.get_object("zoneView")
-        self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING, # name
+                                       GObject.TYPE_INT) # weight
         self.zoneView.append_column(
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=1))
         self.zoneView.set_model(self.zoneStore)
         self.zoneStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        self.zoneView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
-        self.zoneView_selection_changed_handler_id = \
-            self.zoneView.get_selection().connect("changed", self.onChangeZone)
+        self.zoneView.get_selection().connect("changed", self.onChangeZone)
 
         self.immutableNotebook = builder.get_object("immutableNotebook")
-        self.mainNotebook = builder.get_object("mainNotebook")
+        self.zoneNotebook = builder.get_object("zoneNotebook")
 
         self.defaultZoneLabel = builder.get_object("defaultZoneLabel")
         self.defaultZoneDialog = builder.get_object("defaultZoneDialog")
+        self.defaultZoneDialogOkButton = \
+            builder.get_object("defaultZoneDialogOkButton")
         self.defaultZoneView = builder.get_object("defaultZoneView")
-        self.defaultZoneStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.defaultZoneStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                              GObject.TYPE_INT)
         self.defaultZoneView.append_column(
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=1))
         self.defaultZoneView.set_model(self.defaultZoneStore)
+
+        self.defaultZoneView.get_selection().connect(\
+            "changed", self.on_defaultZoneViewSelection_changed)
 
         self.zoneEditBox = builder.get_object("zoneEditBox")
         self.zoneEditBox.hide()
@@ -221,6 +320,17 @@ class FirewallConfig(object):
         self.portDialogProtoCombobox = \
             builder.get_object("portDialogProtoCombobox")
 
+        self.protoDialog = builder.get_object("protoDialog")
+        self.protoDialogOkButton = builder.get_object("protoDialogOkButton")
+        self.protoDialogCancelButton = \
+            builder.get_object("protoDialogCancelButton")
+        self.protoDialogProtoCombobox = \
+            builder.get_object("protoDialogProtoCombobox")
+        self.protoDialogOtherProtoCheck = \
+            builder.get_object("protoDialogOtherProtoCheck")
+        self.protoDialogOtherProtoEntry = \
+            builder.get_object("protoDialogOtherProtoEntry")
+
         self.masqueradeCheck = builder.get_object("masqueradeCheck")
         self.masqueradeEventbox = builder.get_object("masqueradeEventbox")
         self.masqueradeEventbox.connect("button-press-event",
@@ -279,6 +389,156 @@ class FirewallConfig(object):
         self.icmpView.set_model(self.icmpStore)
         self.icmpStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
+        self.richRuleView = builder.get_object("richRuleView")
+        self.richRuleStore = Gtk.ListStore(GObject.TYPE_PYOBJECT, # the rule obj
+                                           GObject.TYPE_STRING, # ipv4/ipv6
+                                           GObject.TYPE_STRING, # action
+                                           GObject.TYPE_STRING, # element
+                                           GObject.TYPE_STRING, # source
+                                           GObject.TYPE_STRING, # destination
+                                           GObject.TYPE_STRING, # log
+                                           GObject.TYPE_STRING) # audit
+
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Family"), Gtk.CellRendererText(), text=1))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Action"), Gtk.CellRendererText(), text=2))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Element"), Gtk.CellRendererText(), text=3))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Src"), Gtk.CellRendererText(), text=4))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Dest"), Gtk.CellRendererText(), text=5))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("log"), Gtk.CellRendererText(), text=6))
+        self.richRuleView.append_column(
+            Gtk.TreeViewColumn(_("Audit"), Gtk.CellRendererText(), text=7))
+        self.richRuleView.set_model(self.richRuleStore)
+
+        self.richRuleView.get_selection().connect( \
+            "changed", self.change_rich_rule_selection_cb)
+
+        self.addRichRuleButton = builder.get_object("addRichRuleButton")
+        self.editRichRuleButton = builder.get_object("editRichRuleButton")
+        self.removeRichRuleButton = builder.get_object("removeRichRuleButton")
+
+        self.richRuleDialog = builder.get_object("richRuleDialog")
+        self.richRuleDialogOkButton = builder.get_object( \
+            "richRuleDialogOkButton")
+        self.richRuleDialogCancelButton = builder.get_object( \
+            "richRuleDialogCancelButton")
+
+        self.richRuleDialogFamilyCombobox = builder.get_object( \
+            "richRuleDialogFamilyCombobox")
+        self.richRuleDialogElementCheck = builder.get_object( \
+            "richRuleDialogElementCheck")
+        self.richRuleDialogElementBox = builder.get_object( \
+            "richRuleDialogElementBox")
+        self.richRuleDialogElementCombobox = builder.get_object( \
+            "richRuleDialogElementCombobox")
+        
+
+        self.richRuleDialogElementChooser = ChooserButton(builder.get_object( \
+            "richRuleDialogElementChooser"))
+        self.richRuleDialogActionCheck = builder.get_object( \
+            "richRuleDialogActionCheck")
+        self.richRuleDialogActionBox = builder.get_object( \
+            "richRuleDialogActionBox")
+        self.richRuleDialogActionCombobox = builder.get_object( \
+            "richRuleDialogActionCombobox")
+        self.richRuleDialogActionRejectBox = builder.get_object( \
+            "richRuleDialogActionRejectBox")
+        self.richRuleDialogActionRejectTypeCheck = builder.get_object( \
+            "richRuleDialogActionRejectTypeCheck")
+        self.richRuleDialogActionRejectTypeEntry = builder.get_object( \
+            "richRuleDialogActionRejectTypeEntry")
+        self.richRuleDialogActionLimitCheck = builder.get_object( \
+            "richRuleDialogActionLimitCheck")
+        self.richRuleDialogActionLimitBox = builder.get_object( \
+            "richRuleDialogActionLimitBox")
+        self.richRuleDialogActionLimitRateEntry = builder.get_object( \
+            "richRuleDialogActionLimitRateEntry")
+        self.richRuleDialogActionLimitDurationCombobox = builder.get_object( \
+            "richRuleDialogActionLimitDurationCombobox")
+        self.richRuleDialogSourceLabel = builder.get_object( \
+            "richRuleDialogSourceLabel")
+        self.richRuleDialogSourceBox = builder.get_object( \
+            "richRuleDialogSourceBox")
+        self.richRuleDialogSourceInvertCheck = builder.get_object( \
+            "richRuleDialogSourceInvertCheck")
+        self.richRuleDialogSourceChooser = ChooserButton(builder.get_object( \
+                "richRuleDialogSourceChooser"))
+        self.richRuleDialogDestinationLabel = builder.get_object( \
+            "richRuleDialogDestinationLabel")
+        self.richRuleDialogDestinationBox = builder.get_object( \
+            "richRuleDialogDestinationBox")
+        self.richRuleDialogDestinationInvertCheck = builder.get_object( \
+            "richRuleDialogDestinationInvertCheck")
+        self.richRuleDialogDestinationChooser = \
+            ChooserButton(builder.get_object( \
+                "richRuleDialogDestinationChooser"))
+        self.richRuleDialogLogCheck = builder.get_object( \
+            "richRuleDialogLogCheck")
+        self.richRuleDialogLogGrid = builder.get_object( \
+            "richRuleDialogLogGrid")
+        self.richRuleDialogLogPrefixEntry = builder.get_object( \
+            "richRuleDialogLogPrefixEntry")
+        self.richRuleDialogLogLevelCombobox = builder.get_object( \
+            "richRuleDialogLogLevelCombobox")
+        self.richRuleDialogLogLimitCheck = builder.get_object( \
+            "richRuleDialogLogLimitCheck")
+        self.richRuleDialogLogLimitBox = builder.get_object( \
+            "richRuleDialogLogLimitBox")
+        self.richRuleDialogLogLimitRateEntry = builder.get_object( \
+            "richRuleDialogLogLimitRateEntry")
+        self.richRuleDialogLogLimitDurationCombobox = builder.get_object( \
+            "richRuleDialogLogLimitDurationCombobox")
+        self.richRuleDialogAuditCheck = builder.get_object( \
+            "richRuleDialogAuditCheck")
+        self.richRuleDialogAuditBox = builder.get_object( \
+            "richRuleDialogAuditBox")
+        self.richRuleDialogAuditLimitBox = builder.get_object( \
+            "richRuleDialogAuditLimitBox")
+        self.richRuleDialogAuditLimitCheck = builder.get_object( \
+            "richRuleDialogAuditLimitCheck")
+        self.richRuleDialogAuditLimitRateEntry = builder.get_object( \
+            "richRuleDialogAuditLimitRateEntry")
+        self.richRuleDialogAuditLimitDurationCombobox = builder.get_object( \
+            "richRuleDialogAuditLimitDurationCombobox")
+
+        self.interfaceView = builder.get_object("interfaceView")
+        self.interfaceStore = Gtk.ListStore(GObject.TYPE_STRING, # interface
+                                            GObject.TYPE_STRING) # comment
+        self.interfaceView.append_column(
+            Gtk.TreeViewColumn("Interface", Gtk.CellRendererText(), text=0))
+        self.interfaceView.append_column(
+            Gtk.TreeViewColumn("Comment", Gtk.CellRendererText(), text=1))
+        self.interfaceView.set_model(self.interfaceStore)
+        self.interfaceView.get_selection().connect(
+            "changed", self.change_interface_selection_cb)
+
+        self.interfaceDialog = builder.get_object("interfaceDialog")
+        self.interfaceDialogOkButton = builder.get_object(
+            "interfaceDialogOkButton")
+        self.interfaceDialogCancelButton = builder.get_object(
+            "interfaceDialogCancelButton")
+        self.interfaceDialogInterfaceEntry = builder.get_object(
+            "interfaceDialogInterfaceEntry")
+
+        self.editInterfaceButton = builder.get_object("editInterfaceButton")
+        self.removeInterfaceButton = builder.get_object("removeInterfaceButton")
+
+        self.sourceView = builder.get_object("sourceView")
+        self.sourceStore = Gtk.ListStore(GObject.TYPE_STRING) # 
+        self.sourceView.append_column(
+            Gtk.TreeViewColumn("Source", Gtk.CellRendererText(), text=0))
+        self.sourceView.set_model(self.sourceStore)
+        self.sourceView.get_selection().connect(
+            "changed", self.change_source_selection_cb)
+
+        self.editSourceButton = builder.get_object("editSourceButton")
+        self.removeSourceButton = builder.get_object("removeSourceButton")
+
         self.portProtoDialog = builder.get_object("portProtoDialog")
         self.portProtoDialogOkButton = \
             builder.get_object("portProtoDialogOkButton")
@@ -293,68 +553,66 @@ class FirewallConfig(object):
         self.portProtoDialogOtherProtoEntry = \
             builder.get_object("portProtoDialogOtherProtoEntry")
 
-        self.serviceDialog = builder.get_object("serviceDialog")
+        self.serviceConfServiceNotebook = \
+            builder.get_object("serviceConfServiceNotebook")
 
-        self.serviceDialogServiceNotebook = \
-            builder.get_object("serviceDialogServiceNotebook")
+        self.serviceConfServiceEditBox = \
+            builder.get_object("serviceConfServiceEditBox")
+        self.serviceConfEditServiceButton = \
+            builder.get_object("serviceConfEditServiceButton")
+        self.serviceConfRemoveServiceButton = \
+            builder.get_object("serviceConfRemoveServiceButton")
+        self.serviceConfLoadDefaultsServiceButton = \
+            builder.get_object("serviceConfLoadDefaultsServiceButton")
 
-        self.serviceDialogServiceEditBox = \
-            builder.get_object("serviceDialogServiceEditBox")
-        self.serviceDialogEditServiceButton = \
-            builder.get_object("serviceDialogEditServiceButton")
-        self.serviceDialogRemoveServiceButton = \
-            builder.get_object("serviceDialogRemoveServiceButton")
-        self.serviceDialogLoadDefaultsServiceButton = \
-            builder.get_object("serviceDialogLoadDefaultsServiceButton")
-
-        self.serviceDialogServiceView = \
-            builder.get_object("serviceDialogServiceView")
-        self.serviceDialogServiceStore = Gtk.ListStore(GObject.TYPE_STRING)
-        self.serviceDialogServiceView.append_column(
+        self.serviceConfServiceView = \
+            builder.get_object("serviceConfServiceView")
+        self.serviceConfServiceStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.serviceConfServiceView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
-        self.serviceDialogServiceView.set_model(self.serviceDialogServiceStore)
-        self.serviceDialogServiceStore.set_sort_column_id(
+        self.serviceConfServiceView.set_model(self.serviceConfServiceStore)
+        self.serviceConfServiceStore.set_sort_column_id(
             0, Gtk.SortType.ASCENDING)
-        self.serviceDialogServiceView.get_selection().connect(\
+        self.serviceConfServiceView.get_selection().connect(\
             "changed", self.onChangeService)
 
-        self.serviceDialogPortView = builder.get_object("serviceDialogPortView")
-        self.serviceDialogPortStore = Gtk.ListStore(GObject.TYPE_STRING,
+        self.serviceConfPortView = builder.get_object("serviceConfPortView")
+        self.serviceConfPortStore = Gtk.ListStore(GObject.TYPE_STRING,
                                                     GObject.TYPE_STRING)
-        self.serviceDialogPortView.append_column(
+        self.serviceConfPortView.append_column(
             Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
-        self.serviceDialogPortView.append_column(
+        self.serviceConfPortView.append_column(
             Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
-        self.serviceDialogPortView.set_model(self.serviceDialogPortStore)
-        self.serviceDialogPortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        self.serviceDialogPortView.get_selection().connect(\
+        self.serviceConfPortView.set_model(self.serviceConfPortStore)
+        self.serviceConfPortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.serviceConfPortView.get_selection().connect(\
             "changed", self.change_service_dialog_port_selection_cb)
 
-        self.serviceDialogEditPortButton = \
-            builder.get_object("serviceDialogEditPortButton")
-        self.serviceDialogRemovePortButton = \
-            builder.get_object("serviceDialogRemovePortButton")
+        self.serviceConfEditPortButton = \
+            builder.get_object("serviceConfEditPortButton")
+        self.serviceConfRemovePortButton = \
+            builder.get_object("serviceConfRemovePortButton")
 
-        self.serviceDialogModuleView = \
-            builder.get_object("serviceDialogModuleView")
-        self.serviceDialogModuleStore = Gtk.ListStore(GObject.TYPE_STRING)
-        self.serviceDialogModuleView.append_column(
+        self.serviceConfModuleView = \
+            builder.get_object("serviceConfModuleView")
+        self.serviceConfModuleStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.serviceConfModuleView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
-        self.serviceDialogModuleView.set_model(self.serviceDialogModuleStore)
-        self.serviceDialogModuleStore.set_sort_column_id(
+        self.serviceConfModuleView.set_model(self.serviceConfModuleStore)
+        self.serviceConfModuleStore.set_sort_column_id(
             0, Gtk.SortType.ASCENDING)
-        self.serviceDialogModuleView.get_selection().connect(\
+        self.serviceConfModuleView.get_selection().connect(\
             "changed", self.change_service_dialog_module_selection_cb)
 
-        self.serviceDialogEditModuleButton = \
-            builder.get_object("serviceDialogEditModuleButton")
-        self.serviceDialogRemoveModuleButton = \
-            builder.get_object("serviceDialogRemoveModuleButton")
+        self.serviceConfEditModuleButton = \
+            builder.get_object("serviceConfEditModuleButton")
+        self.serviceConfRemoveModuleButton = \
+            builder.get_object("serviceConfRemoveModuleButton")
 
-        self.serviceDialogDestIpv4Chooser = ChooserButton(
-            builder.get_object("serviceDialogDestIpv4Chooser"), "")
-        self.serviceDialogDestIpv6Chooser = ChooserButton(
-            builder.get_object("serviceDialogDestIpv6Chooser"), "")
+        self.serviceConfDestIpv4Chooser = ChooserButton(
+            builder.get_object("serviceConfDestIpv4Chooser"), "")
+        self.serviceConfDestIpv6Chooser = ChooserButton(
+            builder.get_object("serviceConfDestIpv6Chooser"), "")
 
         self.moduleDialog = builder.get_object("moduleDialog")
         self.moduleDialogOkButton = \
@@ -387,8 +645,6 @@ class FirewallConfig(object):
             builder.get_object("serviceBaseDialogDescText")
         self.serviceBaseDialogDescText.get_buffer().connect(\
             "changed", self.onServiceBaseDialogChanged)
-
-        self.icmpDialog = builder.get_object("icmpDialog")
 
         self.icmpDialogIcmpNotebook = \
             builder.get_object("icmpDialogIcmpNotebook")
@@ -442,15 +698,54 @@ class FirewallConfig(object):
         self.icmpBaseDialogDescText.get_buffer().connect(\
             "changed", self.onIcmpBaseDialogChanged)
 
+        # service dialog
+
+        self.serviceDialog = builder.get_object("serviceDialog")
+        self.serviceDialogOkButton = builder.get_object("serviceDialogOkButton")
+        self.serviceDialogCancelButton = \
+            builder.get_object("serviceDialogCancelButton")
+        self.serviceDialogServiceView = \
+            builder.get_object("serviceDialogServiceView")
+        self.serviceDialogServiceStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.serviceDialogServiceView.append_column(
+            Gtk.TreeViewColumn("Service", Gtk.CellRendererText(), text=0))
+        self.serviceDialogServiceView.set_model(self.serviceDialogServiceStore)
+        self.serviceDialogServiceView.get_selection().connect( \
+            "changed", self.change_service_selection_cb)
+
+        # icmptype dialog
+
+        self.icmptypeDialog = builder.get_object("icmptypeDialog")
+        self.icmptypeDialogOkButton = \
+            builder.get_object("icmptypeDialogOkButton")
+        self.icmptypeDialogCancelButton = \
+            builder.get_object("icmptypeDialogCancelButton")
+        self.icmptypeDialogIcmptypeView = \
+            builder.get_object("icmptypeDialogIcmptypeView")
+
+        self.icmptypeDialogIcmptypeStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.icmptypeDialogIcmptypeView.append_column(
+            Gtk.TreeViewColumn("ICMP Type", Gtk.CellRendererText(), text=0))
+        self.icmptypeDialogIcmptypeView.set_model(
+            self.icmptypeDialogIcmptypeStore)
+        self.icmptypeDialogIcmptypeView.get_selection().connect( \
+            "changed", self.change_icmptype_selection_cb)
+
         # firewall client
 
-        client.exception_handler = self._exception_handler
         self.fw = client.FirewallClient(wait=1)
+        self.fw.setExceptionHandler(self._exception_handler)
+
+        self.fw.connect("panic-mode-enabled", self.panic_mode_enabled_cb)
+        self.fw.connect("panic-mode-disabled", self.panic_mode_disabled_cb)
 
         self.fw.connect("connection-changed", self.connection_changed)
 
         self.fw.connect("default-zone-changed", self.default_zone_changed_cb)
-        self.fw.connect("reloaded", self.load)
+        self.fw.connect("reloaded", self.reload_cb)
+        self.fw.connect("lockdown-enabled", self.lockdown_enabled_cb)
+        self.fw.connect("lockdown-disabled", self.lockdown_disabled_cb)
+
         self.fw.connect("service-added", self.service_added_cb)
         self.fw.connect("service-removed", self.service_removed_cb)
         self.fw.connect("port-added", self.port_added_cb)
@@ -461,6 +756,29 @@ class FirewallConfig(object):
         self.fw.connect("forward-port-removed", self.forward_port_removed_cb)
         self.fw.connect("icmp-block-added", self.icmp_added_cb)
         self.fw.connect("icmp-block-removed", self.icmp_removed_cb)
+        self.fw.connect("richrule-added", self.richrule_added_cb)
+        self.fw.connect("richrule-removed", self.richrule_removed_cb)
+        self.fw.connect("interface-added", self.interface_added_cb)
+        self.fw.connect("interface-removed", self.interface_removed_cb)
+        self.fw.connect("source-added", self.source_added_cb)
+        self.fw.connect("source-removed", self.source_removed_cb)
+
+        self.fw.connect("lockdown-whitelist-command-added",
+                        self.lockdown_whitelist_command_added_cb)
+        self.fw.connect("lockdown-whitelist-command-removed",
+                        self.lockdown_whitelist_command_removed_cb)
+        self.fw.connect("lockdown-whitelist-context-added",
+                        self.lockdown_whitelist_context_added_cb)
+        self.fw.connect("lockdown-whitelist-context-removed",
+                        self.lockdown_whitelist_context_removed_cb)
+        self.fw.connect("lockdown-whitelist-uid-added",
+                        self.lockdown_whitelist_uid_added_cb)
+        self.fw.connect("lockdown-whitelist-uid-removed",
+                        self.lockdown_whitelist_uid_removed_cb)
+        self.fw.connect("lockdown-whitelist-user-added",
+                        self.lockdown_whitelist_user_added_cb)
+        self.fw.connect("lockdown-whitelist-user-removed",
+                        self.lockdown_whitelist_user_removed_cb)
 
         self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
         self.fw.connect("config:service-added", self.conf_service_added_cb)
@@ -469,6 +787,17 @@ class FirewallConfig(object):
         self.fw.connect("config:icmptype-added", self.conf_icmp_added_cb)
         self.fw.connect("config:icmptype-updated", self.conf_icmp_updated_cb)
         self.fw.connect("config:icmptype-removed", self.conf_icmp_removed_cb)
+        self.fw.connect("config:policies:lockdown-whitelist-updated",
+                        self.lockdown_whitelist_updated_cb)
+
+        self.connections = { }
+        self.connections_uuid = { }
+        self.fw.bus.add_signal_receiver(
+            self.nm_signal_receiver,
+            dbus_interface=NetworkManager.DBUS_INTERFACE,
+            signal_name='PropertiesChanged',
+            member_keyword='member')
+        self.nm_signal_receiver()
 
         # start with no connection
 
@@ -482,6 +811,66 @@ class FirewallConfig(object):
             self.mainloop.run()
         except KeyboardInterrupt:
             self.onQuit()
+
+    def nm_signal_receiver(self, *args, **kwargs):
+        #print("nm_signal_receiver", args, kwargs)
+        self.connections.clear()
+        self.connections_uuid.clear()
+
+        # do not use NMClient could result in python core dump
+
+        NM_IF = NetworkManager.DBUS_INTERFACE
+        NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
+        NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
+        NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
+        NM_PATH = NetworkManager.DBUS_PATH
+        DBUS_PROP = 'org.freedesktop.DBus.Properties'
+
+        try:
+            # get active connections
+            obj = self.fw.bus.get_object(NM_IF, NM_PATH)
+            props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+            connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
+
+            # for all active connections:
+            for active in connections:
+                # get connection and devices from active connection
+                obj = self.fw.bus.get_object(NM_IF, active)
+                props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
+                devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
+
+                # get name (id) from connection
+                obj = self.fw.bus.get_object(NM_IF, connection)
+                iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
+                settings = dbus_to_python(iface.GetSettings())
+                name = settings["connection"]["id"]
+                uuid = settings["connection"]["uuid"]
+                self.connections_uuid[name] = uuid
+
+                # for all devices:
+                for device in devices:
+                    obj = self.fw.bus.get_object(NM_IF, device)
+                    props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                    # get interface from device (first try: IpInterface)
+                    iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
+                    if iface == "":
+                        iface = dbus_to_python(props.Get(NM_IF_D, "Interface"))
+                    self.connections[iface] = name
+
+        except Exception as msg:
+            print(msg)
+
+        iter = self.interfaceStore.get_iter_first()
+        while iter:
+            interface = self.interfaceStore.get_value(iter, 0)
+            if interface in self.connections:
+                comment = ""
+                if interface in self.connections:
+                    comment = self.used_by % self.connections[interface]
+                self.interfaceStore.set_value(iter, 1, comment)
+            iter = self.portStore.iter_next(iter)
+        self.change_interface_selection_cb(self.interfaceView.get_selection())
 
     def _dialog(self, text, msg=None, title=None,
                 message_type=Gtk.MessageType.INFO,
@@ -520,22 +909,54 @@ class FirewallConfig(object):
     def connection_changed(self):
         if self.fw.connected:
             self.statusLabel.set_text(self.connected)
+            self.default_zone = self.fw.getDefaultZone()
+            self.defaultZoneLabel.set_text(self.default_zone)
+            if self.fw.queryLockdown():
+                self.lockdownLabel.set_text(self.enabled)
+            else:
+                self.lockdownLabel.set_text(self.disabled)
+            if self.fw.queryPanicMode():
+                self.panicLabel.set_text(self.enabled)
+            else:
+                self.panicLabel.set_text(self.disabled)
             self.modifiedLabel.set_text("")
-            default_zone = self.fw.getDefaultZone()
-            self.defaultZoneLabel.set_text(default_zone)
+            self.lockdownMenuitem.handler_block(self.lockdown_check_id)
+            self.lockdownMenuitem.set_active(self.fw.queryLockdown())
+            self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
+            self.panicMenuitem.handler_block(self.panic_check_id)
+            self.panicMenuitem.set_active(self.fw.queryPanicMode())
+            self.panicMenuitem.handler_unblock(self.panic_check_id)
             self.currentViewCombobox.set_active(0)
         else:
             self.statusLabel.set_text(self.no_connection)
             self.modifiedLabel.set_text(self.waiting)
+            self.defaultZoneLabel.set_text("-")
+            self.lockdownLabel.set_text("-")
+            self.panicLabel.set_text("-")
 
         self.mainToolbar.set_sensitive(self.fw.connected)
         self.mainVBox.set_sensitive(self.fw.connected)
         self.optionMenuitem.get_submenu().set_sensitive(self.fw.connected)
 
-    def load(self):
-        default_zone = self.fw.getDefaultZone()
-        self.defaultZoneLabel.set_text(default_zone)
+    def panic_mode_enabled_cb(self):
+        self.panicLabel.set_text(self.enabled)
+        self.panicMenuitem.handler_block(self.panic_check_id)
+        self.panicMenuitem.set_active(True)
+        self.panicMenuitem.handler_unblock(self.panic_check_id)
+
+    def panic_mode_disabled_cb(self):
+        self.panicLabel.set_text(self.disabled)
+        self.panicMenuitem.handler_block(self.panic_check_id)
+        self.panicMenuitem.set_active(False)
+        self.panicMenuitem.handler_unblock(self.panic_check_id)
+
+    def reload_cb(self):
+        self.default_zone = self.fw.getDefaultZone()
+        self.defaultZoneLabel.set_text(self.default_zone)
         self.load_zones()
+        self.load_services()
+        self.load_icmps()
+        self.load_lockdown_whitelist()
 
     def load_zones(self):
         active_zone = self.get_active_zone()
@@ -551,8 +972,8 @@ class FirewallConfig(object):
 
         # reset and fill notebook content according to view
 
-        self.zoneView.get_selection().handler_block( \
-            self.zoneView_selection_changed_handler_id)
+        selection = self.zoneView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.NONE)
 
         self.zoneStore.clear()
         self.serviceStore.clear()
@@ -574,19 +995,19 @@ class FirewallConfig(object):
                 self.icmpStore.append([False, obj.get_property("name")])
 
         # zones
-
         for zone in zones:
-            self.zoneStore.append([zone])
-
-        self.zoneView.get_selection().handler_unblock( \
-            self.zoneView_selection_changed_handler_id)
+            if zone == self.default_zone:
+                self.zoneStore.append([zone, Pango.Weight.BOLD])
+            else:
+                self.zoneStore.append([zone, Pango.Weight.NORMAL])
 
         if active_zone in zones:
             _zone = active_zone
         else:
             _zone = self.defaultZoneLabel.get_text()
 
-        selection = self.zoneView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
         iter = self.zoneStore.get_iter_first()
         while iter:
             if self.zoneStore.get_value(iter, 0) == _zone:
@@ -597,40 +1018,55 @@ class FirewallConfig(object):
         selection.select_path(0)
 
     def get_active_service(self):
-        selection = self.serviceDialogServiceView.get_selection()
+        selection = self.serviceConfServiceView.get_selection()
         (model, iter) = selection.get_selected()
         if iter:
-            return self.serviceDialogServiceStore.get_value(iter, 0)
+            return self.serviceConfServiceStore.get_value(iter, 0)
         return None
 
     def load_services(self):
         active_service = self.get_active_service()
 
         services = [ ]
-        _services = sorted(self.fw.config().listServices())
-        for service in _services:
-            z = self.fw.config().getService(service)
-            settings = z.getSettings()
-            services.append(z.get_property("name"))
+        if self.runtime_view:
+            services = sorted(self.fw.listServices())
+        else:
+            _services = sorted(self.fw.config().listServices())
+            for service in _services:
+                z = self.fw.config().getService(service)
+                services.append(z.get_property("name"))
+
+        selection = self.serviceConfServiceView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.NONE)
 
         # reset and fill notebook content according to view
 
-        self.serviceDialogServiceStore.clear()
+        self.serviceConfServiceStore.clear()
 
         # services
 
         for service in services:
-            self.serviceDialogServiceStore.append([service])
+            self.serviceConfServiceStore.append([service])
 
-        selection = self.serviceDialogServiceView.get_selection()
-        iter = self.serviceDialogServiceStore.get_iter_first()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
+        iter = self.serviceConfServiceStore.get_iter_first()
         while iter:
-            if self.serviceDialogServiceStore.get_value(iter, 0) == \
+            if self.serviceConfServiceStore.get_value(iter, 0) == \
                     active_service:
                 selection.select_iter(iter)
                 return
-            iter = self.serviceDialogServiceStore.iter_next(iter)
+            iter = self.serviceConfServiceStore.iter_next(iter)
         selection.select_path(0)
+
+    def change_rich_rule_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editRichRuleButton.set_sensitive(True)
+            self.removeRichRuleButton.set_sensitive(True)
+        else:
+            self.editRichRuleButton.set_sensitive(False)
+            self.removeRichRuleButton.set_sensitive(False)
 
     def service_added_cb(self, zone, service, timeout):
         if not self.runtime_view or zone != self.get_active_zone():
@@ -753,7 +1189,145 @@ class FirewallConfig(object):
                 break
             iter = self.icmpStore.iter_next(iter)
 
+    def _add_rich_rule(self, obj):
+#        family = "ipv4 & ipv6"
+        family = "all"
+        src = ""
+        dest = ""
+        elem = ""
+        log = ""
+        audit = ""
+        action = ""
+
+        if obj.family:
+            family = obj.family
+        if obj.action:
+            if type(obj.action) == Rich_Accept:
+                action = _("accept")
+            elif type(obj.action) == Rich_Reject:
+                action = _("reject")
+            elif type(obj.action) == Rich_Drop:
+                action = _("drop")
+            if obj.action.limit:
+                action += "\n" + _("limit") + " " + obj.action.limit.value
+        if obj.source:
+            src = obj.source.addr
+            if obj.source.invert:
+                src = "! %s" % src
+        if obj.destination:
+            dest = obj.destination.addr
+            if obj.destination.invert:
+                dest = "! %s" % dest
+        if obj.element:
+            if type(obj.element) == Rich_Service:
+                elem = _("service") + "\n" + obj.element.name
+            elif type(obj.element) == Rich_Port:
+                elem = _("port") + "\n%s/%s" % (obj.element.port,
+                                                obj.element.protocol)
+            elif type(obj.element) == Rich_Protocol:
+                elem = _("protocol") + "\n" + obj.element.value
+            elif type(obj.element) == Rich_Masquerade:
+                elem = _("masquerade")
+            elif type(obj.element) == Rich_IcmpBlock:
+                elem = "icmp-block" + "\n%s" % obj.element.name
+            elif type(obj.element) == Rich_ForwardPort:
+                elem = "forward-port" + "\n%s" % self.create_fwp_string(
+                    obj.element.port, obj.element.protocol,
+                    obj.element.to_port, obj.element.to_address)
+            else:
+                elem = str(obj.element)
+
+        if obj.log:
+            log = '"%s"' % obj.log.prefix
+            if obj.log.level != "info":
+                log += "\n" + _("level") + " " + obj.log.limit.value
+            if obj.log.limit:
+                log += "\n" + _("limit") + " " + obj.log.limit.value
+        if obj.audit:
+            audit = _("yes")
+            if obj.audit.limit:
+                audit += "\n" + _("limit") + " " + obj.audit.limit.value
+
+        self.richRuleStore.append([obj, family, action, elem, src, dest, log,
+                                   audit])
+
+    def richrule_added_cb(self, zone, rule, timeout):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        obj = Rich_Rule(rule_str=rule)
+        iter = self.richRuleStore.get_iter_first()
+        while iter:
+            if str(self.richRuleStore.get_value(iter, 0)) == str(obj):
+                # already there
+                return
+            iter = self.richRuleStore.iter_next(iter)
+        # nothing found, so add it
+        self._add_rich_rule(obj)
+
+    def richrule_removed_cb(self, zone, rule):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        obj = Rich_Rule(rule_str=rule)
+        iter = self.richRuleStore.get_iter_first()
+        while iter:
+            if str(self.richRuleStore.get_value(iter, 0)) == str(obj):
+                self.richRuleStore.remove(iter)
+                break
+            iter = self.richRuleStore.iter_next(iter)
+
+    def _add_interface(self, interface):
+        comment = ""
+        if interface in self.connections:
+            comment = self.used_by % self.connections[interface]
+        self.interfaceStore.append([interface, comment])
+
+    def interface_added_cb(self, zone, interface):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.interfaceStore.get_iter_first()
+        while iter:
+            if self.interfaceStore.get_value(iter, 0) == interface:
+                # already there
+                return
+            iter = self.interfaceStore.iter_next(iter)
+        # nothing found, so add it
+        self._add_interface(interface)
+
+    def interface_removed_cb(self, zone, interface):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.interfaceStore.get_iter_first()
+        while iter:
+            if self.interfaceStore.get_value(iter, 0) == interface:
+                self.interfaceStore.remove(iter)
+                break
+            iter = self.interfaceStore.iter_next(iter)
+
+    def source_added_cb(self, zone, source):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.sourceStore.get_iter_first()
+        while iter:
+            if self.sourceStore.get_value(iter, 0) == source:
+                # already there
+                return
+            iter = self.sourceStore.iter_next(iter)
+        # nothing found, so add it
+        self.sourceStore.append([source])
+
+    def source_removed_cb(self, zone, source):
+        if not self.runtime_view or zone != self.get_active_zone():
+            return
+        iter = self.sourceStore.get_iter_first()
+        while iter:
+            if self.sourceStore.get_value(iter, 0) == source:
+                self.sourceStore.remove(iter)
+                break
+            iter = self.sourceStore.iter_next(iter)
+
     def conf_zone_updated_cb(self, zone):
+        if zone != self.get_active_zone():
+            return
         self.onChangeZone()
 
     def _exception_handler(self, exception_message):
@@ -768,11 +1342,13 @@ class FirewallConfig(object):
         else:
             self._error(exception_message)
 
-    def combobox_select_text(self, combobox, value):
+    def combobox_select_text(self, combobox, value, insensitive=False):
         model = combobox.get_model()
         iter = model.get_iter_first()
         while iter:
-            if model.get_value(iter, 0) == value:
+            if (not insensitive and model.get_value(iter, 0) == value) or \
+                    (insensitive and \
+                         model.get_value(iter, 0).lower() == value.lower()):
                 combobox.set_active_iter(iter)
                 return True
             iter = model.iter_next(iter)
@@ -815,35 +1391,55 @@ class FirewallConfig(object):
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
                                  _("Runtime Configuration"))
 
-        self.editServicesButton.set_sensitive(not self.runtime_view)
-        self.editIcmpTypesButton.set_sensitive(not self.runtime_view)
         self.zoneEditBox.set_sensitive(not self.runtime_view)
+        self.serviceConfDestinationGrid.set_sensitive(not self.runtime_view)
+        self.icmpDialogDestIpv4Check.set_sensitive(not self.runtime_view)
+        self.icmpDialogDestIpv6Check.set_sensitive(not self.runtime_view)
+
         if self.runtime_view:
-            self.editServicesButton.hide()
-            self.editIcmpTypesButton.hide()
             self.zoneEditBox.hide()
+            self.serviceConfServiceEditBox.hide()
+            self.serviceConfPortBox.hide()
+            self.serviceConfModuleBox.hide()
+            self.icmpDialogIcmpEditBox.hide()
         else:
-            self.editServicesButton.show()
-            self.editIcmpTypesButton.show()
             self.zoneEditBox.show()
+            self.serviceConfServiceEditBox.show()
+            self.serviceConfPortBox.show()
+            self.serviceConfModuleBox.show()
+            self.icmpDialogIcmpEditBox.show()
 
         self.load_zones()
+        self.load_services()
+        self.load_icmps()
+        self.load_lockdown_whitelist()
 
-    def onChangeConnectionsZone(self, *args):
-        os.system("%s &" % NM_CONNECTION_EDITOR)
+    def nm_connection_editor(self, item, uuid=None):
+        if not os.path.exists(NM_CONNECTION_EDITOR):
+            self._warning("%s does not exist." % NM_CONNECTION_EDITOR)
+            return
+
+        if uuid:
+            os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
+        else:
+            os.system("%s &" % NM_CONNECTION_EDITOR)
 
     def onChangeDefaultZone(self, *args):
         self.defaultZoneStore.clear()
         zones = sorted(self.fw.getZones())
-        default_zone = self.fw.getDefaultZone()
+#        self.default_zone = self.fw.getDefaultZone()
         for zone in zones:
-            self.defaultZoneStore.append([zone])
+            if zone == self.default_zone:
+                self.defaultZoneStore.append([zone, Pango.Weight.BOLD])
+            else:
+                self.defaultZoneStore.append([zone, Pango.Weight.NORMAL])
         selection = self.defaultZoneView.get_selection()
-        if default_zone in zones:
-            selection.select_path(zones.index(default_zone))
+        if self.default_zone in zones:
+            selection.select_path(zones.index(self.default_zone))
         else:
             selection.set_mode(Gtk.SelectionMode.NONE)
 
+        self.defaultZoneDialogOkButton.set_sensitive(False)
         self.defaultZoneDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.defaultZoneDialog.set_transient_for(self.mainWindow)
         self.defaultZoneDialog.show_all()
@@ -853,11 +1449,28 @@ class FirewallConfig(object):
             (model, iter) = selection.get_selected()
             if not iter:
                 return
-            if model.get(iter, 0)[0] != default_zone:
-                self.fw.setDefaultZone(model.get(iter, 0)[0])
+            new_default_zone = model.get(iter, 0)[0]
+            if new_default_zone != self.default_zone:
+                self.fw.setDefaultZone(new_default_zone)
+                self.default_zone = new_default_zone
+
+    def on_defaultZoneViewSelection_changed(self, selection):
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return
+        new_default_zone = model.get(iter, 0)[0]
+        self.defaultZoneDialogOkButton.set_sensitive( \
+            new_default_zone != self.default_zone)
 
     def default_zone_changed_cb(self, zone):
         self.defaultZoneLabel.set_text(zone)
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) == zone:
+                self.zoneStore.set_value(iter, 1, Pango.Weight.BOLD)
+            else:
+                self.zoneStore.set_value(iter, 1, Pango.Weight.NORMAL)
+            iter = self.zoneStore.iter_next(iter)
 
     def onChangeZone(self, *args):
         active_zone = self.get_active_zone()
@@ -866,26 +1479,46 @@ class FirewallConfig(object):
 
         self.portStore.clear()
         self.forwardStore.clear()
+        self.richRuleStore.clear()
+        self.interfaceStore.clear()
+        self.sourceStore.clear()
 
         self.serviceView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.portView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.forwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.icmpView.get_selection().set_mode(Gtk.SelectionMode.NONE)
-        self.mainNotebook.set_tooltip_markup("")
+        self.richRuleView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.zoneNotebook.set_tooltip_markup("")
 
         if not active_zone:
             self.zoneEditBox.set_sensitive(False)
-            self.mainNotebook.set_sensitive(False)
+            self.zoneNotebook.set_sensitive(False)
+
+            iter = self.serviceStore.get_iter_first()
+            while iter:
+                self.serviceStore.set_value(iter, 0, False)
+                iter = self.serviceStore.iter_next(iter)
+
+            self.masqueradeCheck.set_active(False)
+
+            iter = self.icmpStore.get_iter_first()
+            while iter:
+                self.icmpStore.set_value(iter, 0, False)
+                iter = self.icmpStore.iter_next(iter)
+
             return
 
         self.zoneEditBox.set_sensitive(not self.runtime_view)
-        self.mainNotebook.set_sensitive(True)
+        self.zoneNotebook.set_sensitive(True)
 
         services = [ ]
         ports = [ ]
         masquerade = False
         forward_ports = [ ]
         icmpblocks = [ ]
+        rules = [ ]
+        interfaces = [ ]
+        sources = [ ]
 
         if self.runtime_view:
             # load runtime configuration
@@ -895,19 +1528,22 @@ class FirewallConfig(object):
             masquerade = self.fw.queryMasquerade(active_zone)
             forward_ports = self.fw.getForwardPorts(active_zone)
             icmpblocks = self.fw.getIcmpBlocks(active_zone)
+            rules = self.fw.getRichRules(active_zone)
+            interfaces = self.fw.getInterfaces(active_zone)
+            sources = self.fw.getSources(active_zone)
             immutable = self.fw.isImmutable(active_zone)
             default = False
             builtin = False
         else:
-            old_handler = client.exception_handler
+            old_handler = self.fw.getExceptionHandler()
             # we want to handle exceptions ourselves
-            client.exception_handler = None
+            self.fw.setExceptionHandler(None)
             try:
                 zone = self.fw.config().getZoneByName(active_zone)
             except:
-                client.exception_handler = old_handler
+                self.fw.setExceptionHandler(old_handler)
                 return
-            client.exception_handler = old_handler
+            self.fw.setExceptionHandler(old_handler)
 
             # load permanent configuration
             settings = zone.getSettings()
@@ -916,13 +1552,16 @@ class FirewallConfig(object):
             masquerade = settings.getMasquerade()
             forward_ports = settings.getForwardPorts()
             icmpblocks = settings.getIcmpBlocks()
+            rules = settings.getRichRules()
+            interfaces = settings.getInterfaces()
+            sources = settings.getSources()
             immutable = settings.getImmutable()
             default = zone.get_property("default")
             builtin = zone.get_property("builtin")
 
-        self.mainNotebook.set_sensitive(not immutable)
+        self.zoneNotebook.set_sensitive(not immutable)
         if immutable:
-            self.mainNotebook.set_tooltip_markup(\
+            self.zoneNotebook.set_tooltip_markup(\
                 "Immutable zones are not customizable.")
         self.zoneEditRemoveButton.set_sensitive(\
             not builtin and not immutable)
@@ -991,10 +1630,26 @@ class FirewallConfig(object):
                     settings.removeIcmpBlock(name)
                     zone.update(settings)
 
+        # set rich rules
+        for item in rules:
+            rule = Rich_Rule(rule_str=item)
+            self._add_rich_rule(rule)
+
+        # set interfaces
+        for item in interfaces:
+            self._add_interface(item)
+
+        # set sources
+        for item in sources:
+            self.sourceStore.append([item])
+
         self.serviceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.portView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.forwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.icmpView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.richRuleView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.interfaceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.sourceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
 
     def onAddZone(self, *args):
         if self.runtime_view:
@@ -1153,8 +1808,821 @@ class FirewallConfig(object):
             self.fw.config().addZone(name, settings)
 
         self.load_zones()
-        #TODO: change active zone
         self.onChangeZone()
+
+    def onAddRichRule(self, *args):
+        self.add_edit_rich_rule(True)
+
+    def onEditRichRule(self, *args):
+        self.add_edit_rich_rule(False)
+
+    def onRemoveRichRule(self, *args):
+        active_zone = self.get_active_zone()
+        selection = self.richRuleView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        obj = self.richRuleStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            self.fw.removeRichRule(active_zone, str(obj))
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.removeRichRule(str(obj))
+            zone.update(settings)
+
+    def add_edit_rich_rule(self, add):
+        self.richRuleDialogFamilyCombobox.set_active(0)
+        self.richRuleDialogElementCheck.set_active(False)
+        self.richRuleDialogElementCombobox.set_active(0)
+        self.richRuleDialogElementChooser.set_text("")
+        self.richRuleDialogActionCheck.set_active(False)
+        self.richRuleDialogActionCombobox.set_active(0)
+        self.richRuleDialogActionRejectTypeCheck.set_active(False)
+        self.richRuleDialogActionRejectTypeEntry.set_text("")
+        self.richRuleDialogActionLimitCheck.set_active(False)
+        self.richRuleDialogActionLimitRateEntry.set_text("")
+        self.richRuleDialogActionLimitDurationCombobox.set_active(0)
+        self.richRuleDialogSourceInvertCheck.set_active(False)
+        self.richRuleDialogSourceChooser.set_text("")
+        self.richRuleDialogDestinationInvertCheck.set_active(False)
+        self.richRuleDialogDestinationChooser.set_text("")
+        self.richRuleDialogLogCheck.set_active(False)
+        self.richRuleDialogLogPrefixEntry.set_text("")
+        self.richRuleDialogLogLevelCombobox.set_active(0)
+        self.richRuleDialogLogLimitCheck.set_active(False)
+        self.richRuleDialogLogLimitRateEntry.set_text("")
+        self.richRuleDialogLogLimitDurationCombobox.set_active(0)
+        self.richRuleDialogAuditCheck.set_active(False)
+        self.richRuleDialogAuditLimitCheck.set_active(False)
+        self.richRuleDialogAuditLimitRateEntry.set_text("")
+        self.richRuleDialogAuditLimitDurationCombobox.set_active(0)
+
+        smhd = { "s": _("second"),
+                 "m": _("minute"),
+                 "h": _("hour"),
+                 "d": _("day") }
+        loglevel = { "info": _("info"),
+                     "notice": _("notice"),
+                     "debug": _("debug"),
+                     "warn": _("warning"),
+                     "err": _("error"),
+                     "alert": _("alert"),
+                     "crit": _("critical"),
+                     "emerg": _("emergency") }
+
+        active_zone = self.get_active_zone()
+
+        old_obj = None
+        iter = None
+        if not add:
+            selection = self.richRuleView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_obj = self.richRuleStore.get_value(iter, 0)
+
+        self.richRuleDialog.old_obj = old_obj
+
+        if old_obj:
+            if old_obj.family in [ "ipv4", "ipv6" ]:
+                self.combobox_select_text(self.richRuleDialogFamilyCombobox,
+                                          old_obj.family, insensitive=True)
+
+            if old_obj.element:
+                self.richRuleDialogElementCheck.set_active(True)
+
+            # element
+            if type(old_obj.element) == Rich_Service:
+                self.combobox_select_text(self.richRuleDialogElementCombobox,
+                                          _("service"))
+                self.richRuleDialogElementChooser.set_text( \
+                    old_obj.element.name)
+
+            elif type(old_obj.element) == Rich_Port:
+                self.combobox_select_text(self.richRuleDialogElementCombobox,
+                                          _("port"))
+                self.richRuleDialogElementChooser.set_text( \
+                    "%s/%s" % (old_obj.element.port, old_obj.element.protocol))
+            elif type(old_obj.element) == Rich_Protocol:
+                self.combobox_select_text(self.richRuleDialogElementCombobox,
+                                          _("protocol"))
+                self.richRuleDialogElementChooser.set_text( \
+                    old_obj.element.value)
+            elif type(old_obj.element) == Rich_Masquerade:
+                self.combobox_select_text(self.richRuleDialogElementCombobox,
+                                          _("masquerade"))
+            elif type(old_obj.element) == Rich_IcmpBlock:
+                self.combobox_select_text(self.richRuleDialogElementCombobox,
+                                          _("icmp-block"))
+                self.richRuleDialogElementChooser.set_text( \
+                    old_obj.element.name)
+            elif type(old_obj.element) == Rich_ForwardPort:
+                self.combobox_select_text(self.richRuleDialogElementCombobox,
+                                          _("forward-port"))
+                s = "%s/%s" % (old_obj.element.port, old_obj.element.protocol)
+                if old_obj.element.to_port != "":
+                    s += " ➙%s" % old_obj.element.to_port
+                if old_obj.element.to_address != "":
+                    s += " @%s" % old_obj.element.to_address
+                self.richRuleDialogElementChooser.set_text(s)
+
+            # action
+            if old_obj.action:
+                self.richRuleDialogActionCheck.set_active(True)
+                action = None
+                if type(old_obj.action) == Rich_Accept:
+                    action = "accept"
+                elif type(old_obj.action) == Rich_Reject:
+                    action = "reject"
+                    if old_obj.action.type:
+                        self.richRuleDialogActionRejectTypeEntry.set_text( \
+                            old_obj.action.type)
+                elif type(old_obj.action) == Rich_Drop:
+                    action = "drop"
+                self.combobox_select_text(self.richRuleDialogActionCombobox, 
+                                          action)
+
+                if old_obj.action.limit:
+                    self.richRuleDialogActionLimitCheck.set_active(True)
+                    (rate, duration) = old_obj.action.limit.value.split("/")
+                    self.richRuleDialogActionLimitRateEntry.set_text(rate)
+                    self.combobox_select_text( \
+                        self.richRuleDialogActionLimitDurationCombobox,
+                        smhd[duration], insensitive=True)
+
+            # source
+            if old_obj.source:
+                self.richRuleDialogSourceChooser.set_text(old_obj.source.addr)
+                self.richRuleDialogSourceInvertCheck.set_active( \
+                    old_obj.source.invert == True)
+
+            # destination
+            if old_obj.destination:
+                self.richRuleDialogDestinationChooser.set_text( \
+                    old_obj.destination.addr)
+                self.richRuleDialogDestinationInvertCheck.set_active( \
+                    old_obj.destination.invert == True)
+
+            # log
+            if old_obj.log:
+                self.richRuleDialogLogCheck.set_active(True)
+                self.richRuleDialogLogPrefixEntry.set_text( \
+                    old_obj.log.prefix)
+                self.combobox_select_text(self.richRuleDialogLogLevelCombobox,
+                                          loglevel[old_obj.log.level])
+                if old_obj.log.limit:
+                    self.richRuleDialogLogLimitCheck.set_active(True)
+                    (rate, duration) = old_obj.log.limit.value.split("/")
+                    self.richRuleDialogLogLimitRateEntry.set_text(rate)
+                    self.combobox_select_text( \
+                        self.richRuleDialogLogLimitDurationCombobox,
+                        smhd[duration], insensitive=True)
+
+            # audit
+            if old_obj.audit:
+                self.richRuleDialogAuditCheck.set_active(True)
+                if old_obj.audit.limit:
+                    self.richRuleDialogAuditLimitCheck.set_active(True)
+                    (rate, duration) = old_obj.audit.limit.value.split("/")
+                    self.richRuleDialogAuditLimitRateEntry.set_text(rate)
+                    self.combobox_select_text( \
+                        self.richRuleDialogAuditLimitDurationCombobox,
+                        smhd[duration], insensitive=True)
+
+        self.richRuleDialogOkButton.set_sensitive(False)
+
+        self.richRuleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.richRuleDialog.set_transient_for(self.mainWindow)
+        self.richRuleDialog.show_all()
+        result = self.richRuleDialog.run()
+        self.richRuleDialog.hide()
+
+        if result != 1:
+            return
+
+        obj = self.richRuleDialog_getRule()
+        old_rule = str(old_obj)
+        rule = str(obj)
+        if (old_rule == rule):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryRichRule(active_zone, rule):
+                self.fw.addRichRule(active_zone, rule)
+                if not add:
+                    self.fw.removeRichRule(active_zone, old_rule)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not settings.queryRichRule(rule):
+                if not add:
+                    settings.removeRichRule(old_rule)
+                settings.addRichRule(rule)
+                zone.update(settings)
+
+    def on_richRuleDialogElementChooser_clicked(self, *args):
+        combolabel = self.richRuleDialogElementCombobox.get_active_text()
+        old_value = self.richRuleDialogElementChooser.get_text()
+
+        familylabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if familylabel == _("ipv4"):
+            family = "ipv4"
+        elif familylabel == _("ipv6"):
+            family = "ipv6"
+        else:
+            family = None
+        
+        if combolabel == _("service"):
+            value = self.service_select_dialog(old_value)
+        elif combolabel == _("port"):
+            old_port = None
+            old_proto = None
+            if old_value != "":
+                (old_port,old_proto) = old_value.split("/")
+            value = self.port_select_dialog(old_port, old_proto)
+        elif combolabel == _("protocol"):
+            value = self.protocol_select_dialog(old_value)
+        elif combolabel == _("icmp-block"):
+            value = self.icmptype_select_dialog(old_value)
+        elif combolabel == _("forward-port"):
+            value = self.forwardport_select_dialog(family, old_value)
+
+        if value == None:
+            return
+        self.richRuleDialogElementChooser.set_text(value)
+
+    def port_select_dialog(self, old_port, old_proto):
+        self.portDialogPortEntry.set_text("")
+        self.portDialogProtoCombobox.set_active(0)
+
+        if old_port:
+            self.portDialogPortEntry.set_text(old_port)
+        if old_proto:
+            self.combobox_select_text(self.portDialogProtoCombobox,
+                                      old_proto)
+
+        self.portDialogOkButton.set_sensitive(False)
+
+        self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.portDialog.set_transient_for(self.mainWindow)
+        self.portDialog.show_all()
+        result = self.portDialog.run()
+        self.portDialog.hide()
+
+        if result != 1:
+            return None
+
+        port = self.portDialogPortEntry.get_text()
+        proto = self.portDialogProtoCombobox.get_active_text()
+        
+        if (old_port == port and old_proto == proto):
+            # nothing to change
+            return None
+
+        return "%s/%s" % (port, proto)
+
+    def onProtoChanged(self, *args):
+        if self.protoDialogOtherProtoCheck.get_active():
+            proto = self.protoDialogOtherProtoEntry.get_text()
+        else:
+            proto = self.protoDialogProtoCombobox.get_active_text()
+        if checkProtocol(proto):
+            self.protoDialogOkButton.set_sensitive(True)
+        else:
+            self.protoDialogOkButton.set_sensitive(False)
+
+    def protocol_select_dialog(self, old_proto):
+        self.protoDialogProtoCombobox.set_active(0)
+        self.protoDialogOtherProtoCheck.set_active(False)
+        self.protoDialogOtherProtoEntry.set_text("")
+
+        if old_proto:
+            if not self.combobox_select_text(self.protoDialogProtoCombobox,
+                                             old_proto):
+                self.protoDialogOtherProtoCheck.set_active(True)
+                self.protoDialogOtherProtoEntry.set_text(old_proto)
+
+        self.protoDialogOkButton.set_sensitive(False)
+
+        self.protoDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.protoDialog.set_transient_for(self.mainWindow)
+        self.protoDialog.show_all()
+        result = self.protoDialog.run()
+        self.protoDialog.hide()
+
+        if result != 1:
+            return None
+
+        if self.protoDialogOtherProtoCheck.get_active():
+            proto = self.protoDialogOtherProtoEntry.get_text()
+        else:
+            proto = self.protoDialogProtoCombobox.get_active_text()
+        
+        if (old_proto == proto):
+            # nothing to change
+            return None
+
+        return proto
+
+    def change_service_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.serviceDialogOkButton.set_sensitive(True)
+        else:
+            self.serviceDialogOkButton.set_sensitive(False)
+
+    def service_select_dialog(self, old_service=""):
+        self.serviceDialogServiceStore.clear()
+        if self.runtime_view:
+            services = sorted(self.fw.listServices())
+        else:
+            _services = sorted(self.fw.config().listServices())
+            for service in _services:
+                z = self.fw.config().getService(service)
+                services.append(z.get_property("name"))
+        for service in services:
+            self.serviceDialogServiceStore.append([service])
+
+        selection = self.serviceDialogServiceView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+        selection.select_path(0)
+        iter = self.serviceDialogServiceStore.get_iter_first()
+        while iter:
+            if self.serviceDialogServiceStore.get_value(iter, 0) == \
+                    old_service:
+                selection.select_iter(iter)
+            iter = self.serviceDialogServiceStore.iter_next(iter)
+
+        self.serviceDialogOkButton.set_sensitive(False)
+        self.serviceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.serviceDialog.set_transient_for(self.mainWindow)
+        self.serviceDialog.show_all()
+
+        result = self.serviceDialog.run()
+        self.serviceDialog.hide()
+
+        if result != 1:
+            return None
+
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return None
+        service = self.serviceDialogServiceStore.get_value(iter, 0)
+        if old_service == service:
+            return None
+        return service
+
+    def change_icmptype_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.icmptypeDialogOkButton.set_sensitive(True)
+        else:
+            self.icmptypeDialogOkButton.set_sensitive(False)
+
+    def icmptype_select_dialog(self, old_icmptype=""):
+        self.icmptypeDialogIcmptypeStore.clear()
+        if self.runtime_view:
+            icmptypes = sorted(self.fw.listIcmpTypes())
+        else:
+            _icmptypes = sorted(self.fw.config().listIcmpTypes())
+            for icmptype in _icmptypes:
+                z = self.fw.config().getIcmptype(icmptype)
+                icmptypes.append(z.get_property("name"))
+        for icmptype in icmptypes:
+            self.icmptypeDialogIcmptypeStore.append([icmptype])
+
+        selection = self.icmptypeDialogIcmptypeView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+        selection.select_path(0)
+        iter = self.icmptypeDialogIcmptypeStore.get_iter_first()
+        while iter:
+            if self.icmptypeDialogIcmptypeStore.get_value(iter, 0) == \
+                    old_icmptype:
+                selection.select_iter(iter)
+            iter = self.icmptypeDialogIcmptypeStore.iter_next(iter)
+
+        self.icmptypeDialogOkButton.set_sensitive(False)
+        self.icmptypeDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.icmptypeDialog.set_transient_for(self.mainWindow)
+        self.icmptypeDialog.show_all()
+
+        result = self.icmptypeDialog.run()
+        self.icmptypeDialog.hide()
+
+        if result != 1:
+            return None
+
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return None
+        icmptype = self.icmptypeDialogIcmptypeStore.get_value(iter, 0)
+        if old_icmptype == icmptype:
+            return None
+        return icmptype
+
+    def on_richRuleDialogSourceChooser_clicked(self, *args):
+        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if combolabel == _("ipv4"):
+            family = "ipv4"
+        elif combolabel == _("ipv6"):
+            family = "ipv6"
+        else:
+            family = None
+        old_address =  self.richRuleDialogSourceChooser.get_text()
+
+        address = self.address_select_dialog(family, old_address)
+        if address != None:
+            self.richRuleDialogSourceChooser.set_text(address)
+
+    def on_richRuleDialogDestinationChooser_clicked(self, *args):
+        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if combolabel == _("ipv4"):
+            family = "ipv4"
+        elif combolabel == _("ipv6"):
+            family = "ipv6"
+        else:
+            family = None
+        old_address =  self.richRuleDialogDestinationChooser.get_text()
+
+        address = self.address_select_dialog(family, old_address)
+        if address != None:
+            self.richRuleDialogDestinationChooser.set_text(address)
+
+    def create_fwp_string(self, port, proto, to_port, to_addr):
+        _to_port = ""
+        if to_port != "":
+            _to_port = " ➙%s" % to_port
+        _to_addr = ""
+        if to_addr != "":
+            _to_addr = " @%s" % to_addr
+        return "%s/%s%s%s" % (port, proto, _to_port, _to_addr)
+
+    def split_fwp_string(self, text):
+        if "➙" in text: # to_port
+            splits = text.split("➙")
+            (port,proto) = splits[0].split("/")
+            if "@" in splits[1]:
+                (to_port,to_addr) = splits[1].split("@")
+            else:
+                to_port = splits[1]
+                to_addr = ""
+        elif "@" in text:
+            splits = text.split("@")
+            (port,proto) = splits[0].split("/")
+            to_port = ""
+            to_addr = splits[1]
+        return (port.strip(), proto.strip(), to_port.strip(), to_addr.strip())
+
+    def richRuleDialog_getRule(self):
+        smhd = { _("second"): "s",
+                 _("minute"): "m",
+                 _("hour"): "h",
+                 _("day"): "d" }
+        loglevel = { _("info"): "info",
+                     _("notice"): "notice",
+                     _("debug"): "debug",
+                     _("warning"): "warn",
+                     _("error"): "err",
+                     _("alert"): "alert",
+                     _("critical"): "crit",
+                     _("emergency"): "emerg", }
+
+        # family
+        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if combolabel == _("ipv4"):
+            rule = Rich_Rule("ipv4") # ipv4 rule
+        elif combolabel == _("ipv6"):
+            rule = Rich_Rule("ipv6") # ipv6 rule
+        else:
+            rule = Rich_Rule() # ipv4+ipv6 rule
+
+        # element
+        if self.richRuleDialogElementCheck.get_active():
+            combolabel = self.richRuleDialogElementCombobox.get_active_text()
+            if combolabel == _("service"):
+                rule.element = Rich_Service(
+                    self.richRuleDialogElementChooser.get_text())
+            elif combolabel == _("port"):
+                try:
+                    (port,proto) = self.richRuleDialogElementChooser.get_text().split("/")
+                except:
+                    return None
+                rule.element = Rich_Port(port, proto)
+            elif combolabel == _("protocol"):
+                rule.element = Rich_Protocol(
+                    self.richRuleDialogElementChooser.get_text())
+            elif combolabel == _("icmp-block"):
+                rule.element = Rich_IcmpBlock(
+                    self.richRuleDialogElementChooser.get_text())
+            elif combolabel == _("forward-port"):
+                text = self.richRuleDialogElementChooser.get_text()
+                try:
+                    (port, proto, to_port, to_addr) = \
+                        self.split_fwp_string(text)
+                except:
+                    return None
+                rule.element = Rich_ForwardPort(port, proto, to_port, to_addr)
+            elif combolabel == _("masquerade"):
+                rule.element = Rich_Masquerade()
+
+        # action
+        if self.richRuleDialogActionCheck.is_sensitive() and \
+           self.richRuleDialogActionCheck.get_active():
+            limit = None
+            if self.richRuleDialogActionLimitCheck.get_active():
+                value = self.richRuleDialogActionLimitRateEntry.get_text()
+                value += "/"
+                value += smhd[self.richRuleDialogActionLimitDurationCombobox.get_active_text()]
+                limit = Rich_Limit(value)
+            combolabel = self.richRuleDialogActionCombobox.get_active_text()
+            if combolabel == _("accept"):
+                rule.action = Rich_Accept(limit)
+            elif combolabel == _("reject"):
+                _type = None
+                if self.richRuleDialogActionRejectTypeCheck.get_active():
+                    _type = self.richRuleDialogActionRejectTypeEntry.get_text()
+                rule.action = Rich_Reject(_type, limit)
+            elif combolabel == _("drop"):
+                rule.action = Rich_Drop(limit)
+
+        # source
+        if self.richRuleDialogSourceBox.is_sensitive() and \
+           (self.richRuleDialogSourceChooser.get_text() != "" \
+            or self.richRuleDialogSourceInvertCheck.get_active()):
+            rule.source = Rich_Source(
+                self.richRuleDialogSourceChooser.get_text(),
+                self.richRuleDialogSourceInvertCheck.get_active())
+
+        # destination
+        if self.richRuleDialogDestinationBox.is_sensitive() and \
+           (self.richRuleDialogDestinationChooser.get_text() != "" \
+            or self.richRuleDialogDestinationInvertCheck.get_active()):
+            rule.destination = Rich_Destination(
+                self.richRuleDialogDestinationChooser.get_text(),
+                self.richRuleDialogDestinationInvertCheck.get_active())
+
+        # log
+        if self.richRuleDialogLogCheck.is_sensitive() and \
+           self.richRuleDialogLogCheck.get_active():
+            limit = None
+            if self.richRuleDialogLogLimitCheck.get_active():
+                value = self.richRuleDialogLogLimitRateEntry.get_text()
+                value += "/"
+                value += smhd[self.richRuleDialogLogLimitDurationCombobox.get_active_text()]
+                limit = Rich_Limit(value)
+
+            level = self.richRuleDialogLogLevelCombobox.get_active_text()
+            rule.log = Rich_Log(self.richRuleDialogLogPrefixEntry.get_text(),
+                                loglevel[level], limit)
+
+        # audit
+        if self.richRuleDialogAuditCheck.is_sensitive() and \
+           self.richRuleDialogAuditCheck.get_active():
+            limit = None
+            if self.richRuleDialogAuditLimitCheck.get_active():
+                value = self.richRuleDialogAuditLimitRateEntry.get_text()
+                value += "/"
+                value += smhd[self.richRuleDialogAuditLimitDurationCombobox.get_active_text()]
+                limit = Rich_Limit(value)
+            rule.audit = Rich_Audit(limit)
+
+        return rule
+
+    def on_richRuleDialog_changed(self, *args):
+        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if combolabel == _("ipv4"):
+            family = "ipv4"
+        elif combolabel == _("ipv6"):
+            family = "ipv6"
+        else:
+            family = None
+
+        if family == None:
+            self.richRuleDialogSourceLabel.set_sensitive(False)
+            self.richRuleDialogSourceBox.set_sensitive(False)
+            self.richRuleDialogDestinationLabel.set_sensitive(False)
+            self.richRuleDialogDestinationBox.set_sensitive(False)
+        else:
+            self.richRuleDialogSourceLabel.set_sensitive(True)
+            self.richRuleDialogSourceBox.set_sensitive(True)
+            self.richRuleDialogDestinationLabel.set_sensitive(True)
+            self.richRuleDialogDestinationBox.set_sensitive(True)
+
+        self.richRuleDialogActionCheck.set_sensitive(True)
+        self.richRuleDialogActionBox.set_sensitive(
+            self.richRuleDialogActionCheck.get_active())
+        self.richRuleDialogElementChooser.set_sensitive(True)
+        self.richRuleDialogElementBox.set_sensitive(
+            self.richRuleDialogElementCheck.get_active())
+        self.richRuleDialogLogCheck.set_sensitive(True)
+        self.richRuleDialogAuditCheck.set_sensitive(True)
+
+        self.richRuleDialogActionLimitBox.set_sensitive(
+            self.richRuleDialogActionLimitCheck.get_active())
+        self.richRuleDialogActionRejectTypeEntry.set_sensitive(
+            self.richRuleDialogActionRejectTypeCheck.get_active())
+        self.richRuleDialogActionRejectBox.set_sensitive(
+            self.richRuleDialogActionCombobox.get_active_text() == _("reject"))
+        self.richRuleDialogLogGrid.set_sensitive(
+            self.richRuleDialogLogCheck.get_active())
+        self.richRuleDialogLogLimitBox.set_sensitive(
+            self.richRuleDialogLogLimitCheck.get_active())
+        self.richRuleDialogAuditBox.set_sensitive(
+            self.richRuleDialogAuditCheck.get_active())
+        self.richRuleDialogAuditLimitBox.set_sensitive(
+            self.richRuleDialogAuditLimitCheck.get_active())
+
+        if self.richRuleDialogElementCheck.get_active():
+            combolabel = self.richRuleDialogElementCombobox.get_active_text()
+            if combolabel == _("masquerade"):
+                self.richRuleDialogElementChooser.set_sensitive(False)
+                self.richRuleDialogActionCheck.set_sensitive(False)
+                self.richRuleDialogActionBox.set_sensitive(False)
+                self.richRuleDialogLogCheck.set_sensitive(False)
+                self.richRuleDialogLogGrid.set_sensitive(False)
+                self.richRuleDialogAuditCheck.set_sensitive(False)
+                self.richRuleDialogAuditBox.set_sensitive(False)
+            elif combolabel == _("forward-port"):
+                self.richRuleDialogActionCheck.set_sensitive(False)
+                self.richRuleDialogActionBox.set_sensitive(False)
+                self.richRuleDialogDestinationLabel.set_sensitive(False)
+                self.richRuleDialogDestinationBox.set_sensitive(False)
+                self.richRuleDialogLogCheck.set_sensitive(False)
+                self.richRuleDialogLogGrid.set_sensitive(False)
+                self.richRuleDialogAuditCheck.set_sensitive(False)
+                self.richRuleDialogAuditBox.set_sensitive(False)
+
+        rule = self.richRuleDialog_getRule()
+        try:
+            rule.check()
+        except Exception as msg:
+            self.richRuleDialogOkButton.set_sensitive(False)
+        else:
+            if str(self.richRuleDialog.old_obj) != str(rule):
+                self.richRuleDialogOkButton.set_sensitive(True)
+            else:
+                self.richRuleDialogOkButton.set_sensitive(False)
+
+    def onAddInterface(self, *args):
+        self.add_edit_interface(True)
+
+    def onEditInterface(self, *args):
+        active_zone = self.get_active_zone()
+        selection = self.interfaceView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        interface = self.interfaceStore.get_value(iter, 0)
+        if interface in self.connections:
+            connection = self.connections[interface]
+            uuid = None
+            if connection in self.connections_uuid:
+                uuid = self.connections_uuid[connection]
+            return self.nm_connection_editor(None, uuid=uuid)
+        self.add_edit_interface(False)
+
+    def onRemoveInterface(self, *args):
+        active_zone = self.get_active_zone()
+        selection = self.interfaceView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        interface = self.interfaceStore.get_value(iter, 0)
+        if self.runtime_view:
+            self.fw.removeInterface(active_zone, interface)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.removeInterface(interface)
+            zone.update(settings)
+
+    def change_interface_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return
+        interface = self.interfaceStore.get_value(iter, 0)
+        if iter:
+            self.editInterfaceButton.set_sensitive(True)
+            if interface in self.connections:
+                self.removeInterfaceButton.set_sensitive(False)
+            else:
+                self.removeInterfaceButton.set_sensitive(True)
+        else:
+            self.editInterfaceButton.set_sensitive(False)
+            self.removeInterfaceButton.set_sensitive(False)
+
+    def add_edit_interface(self, add):
+        active_zone = self.get_active_zone()
+        old_interface = None
+            
+        if add:
+            self.interfaceDialogInterfaceEntry.set_text("")
+        else:
+            selection = self.interfaceView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_interface = self.interfaceStore.get_value(iter, 0)
+            self.interfaceDialogInterfaceEntry.set_text(old_interface)
+
+        self.interfaceDialogOkButton.set_sensitive(False)
+
+        self.interfaceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.interfaceDialog.set_transient_for(self.mainWindow)
+        self.interfaceDialog.show_all()
+        result = self.interfaceDialog.run()
+        self.interfaceDialog.hide()
+
+        if result != 1:
+            return
+
+        interface = self.interfaceDialogInterfaceEntry.get_text()
+        if (old_interface == interface):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryInterface(active_zone, interface):
+                self.fw.addInterface(active_zone, interface)
+                if not add:
+                    self.fw.removeInterface(active_zone, old_interface)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not settings.queryInterface(interface):
+                if not add:
+                    settings.removeInterface(old_interface)
+                settings.addInterface(interface)
+                zone.update(settings)
+
+    def onInterfaceChanged(self, *args):
+        text = self.interfaceDialogInterfaceEntry.get_text()
+        if text != "" and checkInterface(text):
+            self.interfaceDialogOkButton.set_sensitive(True)
+        else:
+            self.interfaceDialogOkButton.set_sensitive(False)
+
+    def onAddSource(self, *args):
+        self.add_edit_source(True)
+
+    def onEditSource(self, *args):
+        self.add_edit_source(False)
+
+    def onRemoveSource(self, *args):
+        active_zone = self.get_active_zone()
+        selection = self.sourceView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        source = self.sourceStore.get_value(iter, 0)
+        if self.runtime_view:
+            self.fw.removeSource(active_zone, source)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            settings.removeSource(source)
+            zone.update(settings)
+
+    def change_source_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editSourceButton.set_sensitive(True)
+            self.removeSourceButton.set_sensitive(True)
+        else:
+            self.editSourceButton.set_sensitive(False)
+            self.removeSourceButton.set_sensitive(False)
+
+    def add_edit_source(self, add):
+        active_zone = self.get_active_zone()
+
+        old_source = ""
+        if not add:
+            selection = self.sourceView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_source = self.sourceStore.get_value(iter, 0)
+
+        source = self.address_select_dialog(None, old_source)
+        if not source:
+            return
+
+        if self.runtime_view:
+            if not self.fw.querySource(active_zone, source):
+                self.fw.addSource(active_zone, source)
+                if not add:
+                    self.fw.removeSource(active_zone, old_source)
+        else:
+            zone = self.fw.config().getZoneByName(active_zone)
+            settings = zone.getSettings()
+            if not settings.querySource(source):
+                if not add:
+                    settings.removeSource(old_source)
+                settings.addSource(source)
+                zone.update(settings)
 
     def onAddPort(self, *args):
         self.add_edit_port(True)
@@ -1192,7 +2660,6 @@ class FirewallConfig(object):
 
         old_port = None
         old_proto = None
-        iter = None
         if not add:
             selection = self.portView.get_selection()
             (model, iter) = selection.get_selected()
@@ -1248,9 +2715,8 @@ class FirewallConfig(object):
                                isinstance(ports, tuple)):
             self.portProtoDialogOkButton.set_sensitive(False)
         else:
-            #TODO: check proto
             if self.portProtoDialogOtherProtoCheck.get_active() and \
-                    self.portProtoDialogOtherProtoEntry.get_text() == "":
+                    not checkProtocol(self.portProtoDialogOtherProtoEntry.get_text()):
                 self.portProtoDialogOkButton.set_sensitive(False)
             else:
                 self.portProtoDialogOkButton.set_sensitive(True)
@@ -1274,12 +2740,12 @@ class FirewallConfig(object):
         old_proto = None
 
         if not add:
-            selection = self.serviceDialogPortView.get_selection()
+            selection = self.serviceConfPortView.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_port = self.serviceDialogPortStore.get_value(iter, 0)
-            old_proto = self.serviceDialogPortStore.get_value(iter, 1)
+            old_port = self.serviceConfPortStore.get_value(iter, 0)
+            old_proto = self.serviceConfPortStore.get_value(iter, 1)
 
         if old_port:
             self.portProtoDialogPortEntry.set_text(old_port)
@@ -1380,9 +2846,14 @@ class FirewallConfig(object):
                          isinstance(to_ports, tuple)):
             to_ports_ok = True
         to_addr_ok = False
-        if to_addr != "" and checkIP(to_addr):
-            to_addr_ok = True
-
+        if to_addr != "":
+            if self.forwardDialog.family == "ipv4" and checkIP(to_addr):
+                to_addr_ok = True
+            if self.forwardDialog.family == "ipv6" and checkIP6(to_addr):
+                to_addr_ok = True
+            if self.forwardDialog.family == None and \
+               (checkIP(to_addr) or checkIP6(to_addr)):
+                to_addr_ok = True
         ok = False
         if ports_ok:
             if local_check:
@@ -1412,6 +2883,58 @@ class FirewallConfig(object):
     def onEditForwardPort(self, *args):
         self.add_edit_forward_port(False)
 
+    def forwardport_select_dialog(self, family, old_value=None):
+        self.forwardDialogOkButton.set_sensitive(False)
+        self.forwardDialogLocalCheck.set_active(True)
+        self.forwardDialogLocalCheck.set_active(False)
+        self.forwardDialogToPortCheck.set_active(False)
+        self.forwardDialog.family = family
+
+        (old_port, old_proto, old_to_port, old_to_addr) = \
+            self.split_fwp_string(old_value)
+
+        self.forwardDialogPortEntry.set_text("")
+        if old_port != None:
+            self.forwardDialogPortEntry.set_text(old_port)
+        self.combobox_select_text(self.forwardDialogProtoCombobox,
+                                  old_proto)
+        self.forwardDialogToPortEntry.set_text("")
+        if old_to_port != None:
+            self.forwardDialogToPortEntry.set_text(old_to_port)
+        if old_to_addr:
+            if old_to_port:
+                self.forwardDialogToPortCheck.set_active(True)
+        else:
+            self.forwardDialogLocalCheck.set_active(True)
+        self.forwardDialogToAddrEntry.set_text("")
+        if old_to_addr != None:
+            self.forwardDialogToAddrEntry.set_text(old_to_addr)
+
+        self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.forwardDialog.set_transient_for(self.mainWindow)
+        self.forwardDialog.show_all()
+        result = self.forwardDialog.run()
+        self.forwardDialog.hide()
+
+        if result != 1:
+            return None
+
+        port = self.forwardDialogPortEntry.get_text()
+        proto = self.forwardDialogProtoCombobox.get_active_text()
+        to_addr = self.forwardDialogToAddrEntry.get_text()
+        to_port = self.forwardDialogToPortEntry.get_text()
+        if not self.forwardDialogLocalCheck.get_active():
+            if not self.forwardDialogToPortCheck.get_active():
+                to_port = ""
+        else:
+            to_addr = ""
+
+        value = self.create_fwp_string(port, proto, to_port, to_addr)
+        if old_value == value:
+            return None
+
+        return value
+
     def add_edit_forward_port(self, add):
         active_zone = self.get_active_zone()
 
@@ -1419,6 +2942,7 @@ class FirewallConfig(object):
         self.forwardDialogLocalCheck.set_active(True)
         self.forwardDialogLocalCheck.set_active(False)
         self.forwardDialogToPortCheck.set_active(False)
+        self.forwardDialog.family = "ipv4"
 
         old_port = None
         old_proto = None
@@ -1551,73 +3075,82 @@ class FirewallConfig(object):
             settings.removeForwardPort(port, proto, to_port, to_addr)
             zone.update(settings)
 
-        model.remove(iter)
-
     def onChangeService(self, *args):
         active_service = self.get_active_service()
 
         ### load service settings
 
-        self.serviceDialogPortStore.clear()
-        self.serviceDialogModuleStore.clear()
-        self.serviceDialogDestIpv4Chooser.set_text("")
-        self.serviceDialogDestIpv6Chooser.set_text("")
+        self.serviceConfPortStore.clear()
+        self.serviceConfModuleStore.clear()
+        self.serviceConfDestIpv4Chooser.set_text("")
+        self.serviceConfDestIpv6Chooser.set_text("")
 
-        self.serviceDialogPortView.get_selection().set_mode(
+        self.serviceConfPortView.get_selection().set_mode(
             Gtk.SelectionMode.NONE)
-        self.serviceDialogModuleView.get_selection().set_mode(
+        self.serviceConfModuleView.get_selection().set_mode(
             Gtk.SelectionMode.NONE)
 
         if not active_service:
-            self.serviceDialogServiceEditBox.set_sensitive(False)
-            self.serviceDialogServiceNotebook.set_sensitive(False)
+            self.serviceConfServiceEditBox.set_sensitive(False)
+            self.serviceConfServiceNotebook.set_sensitive(False)
             return
 
-        self.serviceDialogServiceEditBox.set_sensitive(True)
-        self.serviceDialogServiceNotebook.set_sensitive(True)
+        self.serviceConfServiceEditBox.set_sensitive(True)
+        self.serviceConfServiceNotebook.set_sensitive(True)
 
         ports = [ ]
         modules = [ ]
         destination = { }
 
-        old_handler = client.exception_handler
-        # we want to handle exceptions ourselves
-        client.exception_handler = None
-        try:
-            service = self.fw.config().getServiceByName(active_service)
-        except:
-            client.exception_handler = old_handler
-            return
-        client.exception_handler = old_handler
+        if self.runtime_view:
+            # load runtime configuration
 
-        # load permanent configuration
-        settings = service.getSettings()
-        ports = settings.getPorts()
-        modules = settings.getModules()
-        destination = settings.getDestinations()
-        default = service.get_property("default")
-        builtin = service.get_property("builtin")
+            settings = self.fw.getServiceSettings(active_service)
+            ports = settings.getPorts()
+            modules = settings.getModules()
+            destination = settings.getDestinations()
+            default = False
+            builtin = False            
+        else:
+            old_handler = self.fw.getExceptionHandler()
+            # we want to handle exceptions ourselves
+            self.fw.setExceptionHandler(None)
 
-        self.serviceDialogRemoveServiceButton.set_sensitive(not builtin)
-        self.serviceDialogLoadDefaultsServiceButton.set_sensitive(not default)
+            try:
+                service = self.fw.config().getServiceByName(active_service)
+            except:
+                self.fw.setExceptionHandler(old_handler)
+                return
+            self.fw.setExceptionHandler(old_handler)
+
+            # load permanent configuration
+            settings = service.getSettings()
+            ports = settings.getPorts()
+            modules = settings.getModules()
+            destination = settings.getDestinations()
+            default = service.get_property("default")
+            builtin = service.get_property("builtin")
+
+        self.serviceConfRemoveServiceButton.set_sensitive(not builtin)
+        self.serviceConfLoadDefaultsServiceButton.set_sensitive(not default)
 
         # set ports
         for item in ports:
-            self.serviceDialogPortStore.append(item)
+            self.serviceConfPortStore.append(item)
 
         # set modules
         for item in modules:
-            self.serviceDialogModuleStore.append([item])
+            self.serviceConfModuleStore.append([item])
 
         # set destination
         if "ipv4" in destination:
-            self.serviceDialogDestIpv4Chooser.set_text(destination["ipv4"])
+            self.serviceConfDestIpv4Chooser.set_text(destination["ipv4"])
         if "ipv6" in destination:
-            self.serviceDialogDestIpv6Chooser.set_text(destination["ipv6"])
+            self.serviceConfDestIpv6Chooser.set_text(destination["ipv6"])
 
-        self.serviceDialogPortView.get_selection().set_mode(
+        self.serviceConfPortView.get_selection().set_mode(
             Gtk.SelectionMode.SINGLE)
-        self.serviceDialogModuleView.get_selection().set_mode(
+        self.serviceConfModuleView.get_selection().set_mode(
             Gtk.SelectionMode.SINGLE)
 
     def conf_service_added_cb(self, service):
@@ -1638,26 +3171,17 @@ class FirewallConfig(object):
                 break
             iter = self.serviceStore.iter_next(iter)
 
-    def onEditServices(self, *args):
-        self.serviceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.serviceDialog.set_transient_for(self.mainWindow)
-        self.load_services()
-        self.onChangeService()
-        self.serviceDialog.show_all()
-        self.serviceDialog.run()
-        self.serviceDialog.hide()
-
-    def onServiceDialogAddService(self, *args):
+    def onServiceConfAddService(self, *args):
         self.add_edit_service(True)
 
-    def onServiceDialogRemoveService(self, *args):
+    def onServiceConfRemoveService(self, *args):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
         service.remove()
         self.load_services()
         self.onChangeService()
 
-    def onServiceDialogEditService(self, *args):
+    def onServiceConfEditService(self, *args):
         self.add_edit_service(False)
 
     def onServiceBaseDialogChanged(self, *args):
@@ -1668,20 +3192,20 @@ class FirewallConfig(object):
 
         self.serviceBaseDialogOkButton.set_sensitive(True)
 
-    def onServiceDialogAddPort(self, *args):
+    def onServiceConfAddPort(self, *args):
         self.add_edit_port_proto(True)
 
-    def onServiceDialogEditPort(self, *args):
+    def onServiceConfEditPort(self, *args):
         self.add_edit_port_proto(False)
 
-    def onServiceDialogRemovePort(self, *args):
+    def onServiceConfRemovePort(self, *args):
         active_service = self.get_active_service()
-        selection = self.serviceDialogPortView.get_selection()
+        selection = self.serviceConfPortView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
             return
-        port = self.serviceDialogPortStore.get_value(iter, 0)
-        proto = self.serviceDialogPortStore.get_value(iter, 1)
+        port = self.serviceConfPortStore.get_value(iter, 0)
+        proto = self.serviceConfPortStore.get_value(iter, 1)
 
         service = self.fw.config().getServiceByName(active_service)
         settings = service.getSettings()
@@ -1691,11 +3215,11 @@ class FirewallConfig(object):
     def change_service_dialog_port_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
-            self.serviceDialogEditPortButton.set_sensitive(True)
-            self.serviceDialogRemovePortButton.set_sensitive(True)
+            self.serviceConfEditPortButton.set_sensitive(True)
+            self.serviceConfRemovePortButton.set_sensitive(True)
         else:
-            self.serviceDialogEditPortButton.set_sensitive(False)
-            self.serviceDialogRemovePortButton.set_sensitive(False)
+            self.serviceConfEditPortButton.set_sensitive(False)
+            self.serviceConfRemovePortButton.set_sensitive(False)
 
     def add_edit_service(self, add):
         if add:
@@ -1784,25 +3308,25 @@ class FirewallConfig(object):
         #TODO: change active service
         self.onChangeService()
 
-    def onServiceDialogLoadDefaultsService(self, *args):
+    def onServiceConfLoadDefaultsService(self, *args):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
         service.loadDefaults()
         self.onChangeService()
 
-    def onServiceDialogAddModule(self, *args):
+    def onServiceConfAddModule(self, *args):
         self.add_edit_module(True)
 
-    def onServiceDialogEditModule(self, *args):
+    def onServiceConfEditModule(self, *args):
         self.add_edit_module(False)
 
-    def onServiceDialogRemoveModule(self, *args):
+    def onServiceConfRemoveModule(self, *args):
         active_service = self.get_active_service()
-        selection = self.serviceDialogModuleView.get_selection()
+        selection = self.serviceConfModuleView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
             return
-        module = self.serviceDialogModuleStore.get_value(iter, 0)
+        module = self.serviceConfModuleStore.get_value(iter, 0)
 
         service = self.fw.config().getServiceByName(active_service)
         settings = service.getSettings()
@@ -1815,11 +3339,11 @@ class FirewallConfig(object):
     def change_service_dialog_module_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
-            self.serviceDialogEditModuleButton.set_sensitive(True)
-            self.serviceDialogRemoveModuleButton.set_sensitive(True)
+            self.serviceConfEditModuleButton.set_sensitive(True)
+            self.serviceConfRemoveModuleButton.set_sensitive(True)
         else:
-            self.serviceDialogEditModuleButton.set_sensitive(False)
-            self.serviceDialogRemoveModuleButton.set_sensitive(False)
+            self.serviceConfEditModuleButton.set_sensitive(False)
+            self.serviceConfRemoveModuleButton.set_sensitive(False)
 
     def add_edit_module(self, add):
         active_service = self.get_active_service()
@@ -1829,11 +3353,11 @@ class FirewallConfig(object):
         old_module = None
 
         if not add:
-            selection = self.serviceDialogModuleView.get_selection()
+            selection = self.serviceConfModuleView.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_module = self.serviceDialogModuleStore.get_value(iter, 0)
+            old_module = self.serviceConfModuleStore.get_value(iter, 0)
 
         if old_module:
             self.moduleDialogModuleEntry.set_text(old_module)
@@ -1863,9 +3387,9 @@ class FirewallConfig(object):
             settings.addModule(module)
             service.update(settings)
 
-    def onChangeServiceDialogDestIpv4(self, *args):
-        old_addr = self.serviceDialogDestIpv4Chooser.get_text()
-        addr = self._address_dialog("ipv4", old_addr)
+    def onChangeServiceConfDestIpv4(self, *args):
+        old_addr = self.serviceConfDestIpv4Chooser.get_text()
+        addr = self.address_select_dialog("ipv4", old_addr)
         if addr == None:
             return
         active_service = self.get_active_service()
@@ -1875,9 +3399,9 @@ class FirewallConfig(object):
             settings.setDestination("ipv4", addr)
             service.update(settings)
 
-    def onChangeServiceDialogDestIpv6(self, *args):
-        old_addr = self.serviceDialogDestIpv6Chooser.get_text()
-        addr = self._address_dialog("ipv6", old_addr)
+    def onChangeServiceConfDestIpv6(self, *args):
+        old_addr = self.serviceConfDestIpv6Chooser.get_text()
+        addr = self.address_select_dialog("ipv6", old_addr)
         if addr == None:
             return
         active_service = self.get_active_service()
@@ -1887,26 +3411,35 @@ class FirewallConfig(object):
             settings.setDestination("ipv6", addr)
             service.update(settings)
 
-    def onAddressChanged(self, entry, addr_type):
+    def onAddressChanged(self, entry, addr_type, old_address):
         text = entry.get_text()
+        if text == "":
+            self.addressDialogOkButton.set_sensitive(True)
+            return
+
         self.addressDialogOkButton.set_sensitive(False)
         if addr_type == "ipv4":
-            if checkIPnMask(text):
+            if checkIPnMask(text) and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
         elif addr_type == "ipv6":
-            if checkIP6nMask(text):
+            if checkIP6nMask(text) and text != old_address:
+                self.addressDialogOkButton.set_sensitive(True)
+        else:
+            if (checkIPnMask(text) or checkIP6nMask(text)) \
+               and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
 
-    def _address_dialog(self, addr_type, old_address):
-        active_service = self.get_active_service()
+    def address_select_dialog(self, addr_type, old_address):
         if addr_type == "ipv4":
-            self.addressDialogLabel.set_markup("Please enter an IPv4 address with the form address[/mask].\nThe mask can be a network mask or a number")
+            self.addressDialogLabel.set_markup("Please enter an ipv4 address with the form address[/mask].\nThe mask can be a network mask or a number")
         elif addr_type == "ipv6":
-            self.addressDialogLabel.set_markup("Please enter an IPv6 address with the form address[/mask].\nThe mask is a number.")
+            self.addressDialogLabel.set_markup("Please enter an ipv6 address with the form address[/mask].\nThe mask is a number.")
+        else:
+            self.addressDialogLabel.set_markup("Please enter an ipv4 or ipv6 address with the form address[/mask].\nThe mask can be a network mask or a number for ipv4.\nThe mask is a number for ipv6.")
 
         self.addressDialogAddressEntry.set_text(old_address)
         handler_id = self.addressDialogAddressEntry.connect(\
-            "changed", self.onAddressChanged, addr_type)
+            "changed", self.onAddressChanged, addr_type, old_address)
         self.addressDialogOkButton.set_sensitive(False)
 
         self.addressDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -1935,11 +3468,16 @@ class FirewallConfig(object):
         active_icmp = self.get_active_icmp()
 
         icmps = [ ]
-        _icmps = sorted(self.fw.config().listIcmpTypes())
-        for icmp in _icmps:
-            z = self.fw.config().getIcmpType(icmp)
-            settings = z.getSettings()
-            icmps.append(z.get_property("name"))
+        if self.runtime_view:
+            icmps = sorted(self.fw.listIcmpTypes())
+        else:
+            _icmps = sorted(self.fw.config().listIcmpTypes())
+            for icmp in _icmps:
+                z = self.fw.config().getIcmpType(icmp)
+                icmps.append(z.get_property("name"))
+
+        selection = self.icmpDialogIcmpView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.NONE)
 
         # reset and fill notebook content according to view
 
@@ -1950,7 +3488,8 @@ class FirewallConfig(object):
         for icmp in icmps:
             self.icmpDialogIcmpStore.append([icmp])
 
-        selection = self.icmpDialogIcmpView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
         iter = self.icmpDialogIcmpStore.get_iter_first()
         while iter:
             if self.icmpDialogIcmpStore.get_value(iter, 0) == \
@@ -1978,21 +3517,30 @@ class FirewallConfig(object):
 
         destination = [ ]
 
-        old_handler = client.exception_handler
-        # we want to handle exceptions ourselves
-        client.exception_handler = None
-        try:
-            icmp = self.fw.config().getIcmpTypeByName(active_icmp)
-        except:
-            client.exception_handler = old_handler
-            return
-        client.exception_handler = old_handler
+        if self.runtime_view:
+            # load runtime configuration
 
-        # load permanent configuration
-        settings = icmp.getSettings()
-        destination = settings.getDestinations()
-        default = icmp.get_property("default")
-        builtin = icmp.get_property("builtin")
+            settings = self.fw.getIcmpTypeSettings(active_icmp)
+            destination = settings.getDestinations()
+            default = False
+            builtin = False
+        else:
+            old_handler = self.fw.getExceptionHandler()
+            # we want to handle exceptions ourselves
+            self.fw.setExceptionHandler(None)
+
+            try:
+                icmp = self.fw.config().getIcmpTypeByName(active_icmp)
+            except:
+                self.fw.setExceptionHandler(old_handler)
+                return
+            self.fw.setExceptionHandler(old_handler)
+
+            # load permanent configuration
+            settings = icmp.getSettings()
+            destination = settings.getDestinations()
+            default = icmp.get_property("default")
+            builtin = icmp.get_property("builtin")
 
         self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin)
         self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not default)
@@ -2002,15 +3550,6 @@ class FirewallConfig(object):
             self.icmpDialogDestIpv4Check.set_active(True)
         if "ipv6" in destination:
             self.icmpDialogDestIpv6Check.set_active(True)
-
-    def onEditIcmps(self, *args):
-        self.icmpDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.icmpDialog.set_transient_for(self.mainWindow)
-        self.load_icmps()
-        self.onChangeIcmp()
-        self.icmpDialog.show_all()
-        self.icmpDialog.run()
-        self.icmpDialog.hide()
 
     def onIcmpDialogAddIcmp(self, *args):
         self.add_edit_icmp(True)
@@ -2176,6 +3715,440 @@ class FirewallConfig(object):
                 self.icmpStore.remove(iter)
                 break
             iter = self.icmpStore.iter_next(iter)
+
+    def lockdown_check_cb(self, *args):
+        if self.fw.queryLockdown():
+            self.fw.disableLockdown()
+        else:
+            self.fw.enableLockdown()
+
+    def panic_check_cb(self, *args):
+        if self.fw.queryPanicMode():
+            self.fw.disablePanicMode()
+        else:
+            self.fw.enablePanicMode()
+
+    def load_lockdown_whitelist(self):
+        contexts = [ ]
+        commands = [ ]
+        users = [ ]
+        uids = [ ]
+        if self.runtime_view:
+            contexts = sorted(self.fw.getLockdownWhitelistContexts())
+            commands = sorted(self.fw.getLockdownWhitelistCommands())
+            users = sorted(self.fw.getLockdownWhitelistUsers())
+            uids = sorted(self.fw.getLockdownWhitelistUids())
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            contexts = sorted(whitelist.getContexts())
+            commands = sorted(whitelist.getCommands())
+            users = sorted(whitelist.getUsers())
+            uids = sorted(whitelist.getUids())
+
+        self.lockdownContextStore.clear()
+        self.lockdownCommandStore.clear()
+        self.lockdownUserStore.clear()
+        self.lockdownUidStore.clear()
+
+        for context in contexts:
+            self.lockdownContextStore.append([context])
+        self.lockdownContextView.get_selection().select_path(0)
+        for command in commands:
+            self.lockdownCommandStore.append([command])
+        self.lockdownCommandView.get_selection().select_path(0)
+        for user in users:
+            self.lockdownUserStore.append([user])
+        self.lockdownUserView.get_selection().select_path(0)
+        for uid in uids:
+            self.lockdownUidStore.append([uid])
+        self.lockdownUidView.get_selection().select_path(0)
+
+    def lockdown_enabled_cb(self):
+        self.lockdownLabel.set_text(self.enabled)
+        self.lockdownMenuitem.handler_block(self.lockdown_check_id)
+        self.lockdownMenuitem.set_active(True)
+        self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
+
+    def lockdown_disabled_cb(self):
+        self.lockdownLabel.set_text(self.disabled)
+        self.lockdownMenuitem.handler_block(self.lockdown_check_id)
+        self.lockdownMenuitem.set_active(False)
+        self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
+
+    def change_lockdown_context_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editLockdownContextButton.set_sensitive(True)
+            self.removeLockdownContextButton.set_sensitive(True)
+        else:
+            self.editLockdownContextButton.set_sensitive(False)
+            self.removeLockdownContextButton.set_sensitive(False)
+
+    def change_lockdown_command_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editLockdownCommandButton.set_sensitive(True)
+            self.removeLockdownCommandButton.set_sensitive(True)
+        else:
+            self.editLockdownCommandButton.set_sensitive(False)
+            self.removeLockdownCommandButton.set_sensitive(False)
+
+    def change_lockdown_user_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editLockdownUserButton.set_sensitive(True)
+            self.removeLockdownUserButton.set_sensitive(True)
+        else:
+            self.editLockdownUserButton.set_sensitive(False)
+            self.removeLockdownUserButton.set_sensitive(False)
+
+    def change_lockdown_uid_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editLockdownUidButton.set_sensitive(True)
+            self.removeLockdownUidButton.set_sensitive(True)
+        else:
+            self.editLockdownUidButton.set_sensitive(False)
+            self.removeLockdownUidButton.set_sensitive(False)
+
+    def onAddContext(self, button):
+        self.add_edit_context(True)
+
+    def onEditContext(self, button):
+        self.add_edit_context(False)
+
+    def onRemoveContext(self, button):
+        selection = self.lockdownContextView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        context = self.lockdownContextStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            self.fw.removeLockdownWhitelistContext(context)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            whitelist.removeContext(context)
+            self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def lockdown_whitelist_context_added_cb(self, context):
+        iter = self.lockdownContextStore.get_iter_first()
+        while iter:
+            if self.lockdownContextStore.get_value(iter, 0) == context:
+                return
+            iter = self.lockdownContextStore.iter_next(iter)
+        self.lockdownContextStore.append([context])
+
+    def lockdown_whitelist_context_removed_cb(self, context):
+        iter = self.lockdownContextStore.get_iter_first()
+        while iter:
+            if self.lockdownContextStore.get_value(iter, 0) == context:
+                self.lockdownContextStore.remove(iter)
+                break
+            iter = self.lockdownContextStore.iter_next(iter)
+
+    def add_edit_context(self, add):
+        if add:
+            old_context = ""
+        else:
+            selection = self.lockdownContextView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_context = self.lockdownContextStore.get_value(iter, 0)
+
+        self.contextDialogContextEntry.set_text(old_context)
+        self.contextDialogOkButton.set_sensitive(False)
+
+        self.contextDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.contextDialog.set_transient_for(self.mainWindow)
+        self.contextDialog.show_all()
+        result = self.contextDialog.run()
+        self.contextDialog.hide()
+
+        if result != 1:
+            return
+
+        context = self.contextDialogContextEntry.get_text()
+        if (old_context == context):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryLockdownWhitelistContext(context):
+                self.fw.addLockdownWhitelistContext(context)
+                if not add:
+                    self.fw.removeLockdownWhitelistContext(old_context)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            if not whitelist.queryContext(context):
+                if not add:
+                    whitelist.removeContext(old_context)
+                whitelist.addContext(context)
+                self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def onContextChanged(self, *args):
+        text = self.contextDialogContextEntry.get_text()
+#TODO: checkContext
+#        if text != "" and checkContext(text):
+        if text != "":
+            self.contextDialogOkButton.set_sensitive(True)
+        else:
+            self.contextDialogOkButton.set_sensitive(False)
+
+
+    def onAddCommand(self, button):
+        self.add_edit_command(True)
+
+    def onEditCommand(self, button):
+        self.add_edit_command(False)
+
+    def onRemoveCommand(self, button):
+        selection = self.lockdownCommandView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        command = self.lockdownCommandStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            self.fw.removeLockdownWhitelistCommand(command)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            whitelist.removeCommand(command)
+            self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def lockdown_whitelist_command_added_cb(self, command):
+        iter = self.lockdownCommandStore.get_iter_first()
+        while iter:
+            if self.lockdownCommandStore.get_value(iter, 0) == command:
+                return
+            iter = self.lockdownCommandStore.iter_next(iter)
+        self.lockdownCommandStore.append([command])
+
+    def lockdown_whitelist_command_removed_cb(self, command):
+        iter = self.lockdownCommandStore.get_iter_first()
+        while iter:
+            if self.lockdownCommandStore.get_value(iter, 0) == command:
+                self.lockdownCommandStore.remove(iter)
+                break
+            iter = self.lockdownCommandStore.iter_next(iter)
+
+    def add_edit_command(self, add):
+        if add:
+            old_command = ""
+        else:
+            selection = self.lockdownCommandView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_command = self.lockdownCommandStore.get_value(iter, 0)
+
+        self.commandDialogCommandEntry.set_text(old_command)
+        self.commandDialogOkButton.set_sensitive(False)
+
+        self.commandDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.commandDialog.set_transient_for(self.mainWindow)
+        self.commandDialog.show_all()
+        result = self.commandDialog.run()
+        self.commandDialog.hide()
+
+        if result != 1:
+            return
+
+        command = self.commandDialogCommandEntry.get_text()
+        if (old_command == command):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryLockdownWhitelistCommand(command):
+                self.fw.addLockdownWhitelistCommand(command)
+                if not add:
+                    self.fw.removeLockdownWhitelistCommand(old_command)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            if not whitelist.queryCommand(command):
+                if not add:
+                    whitelist.removeCommand(old_command)
+                whitelist.addCommand(command)
+                self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def onCommandChanged(self, *args):
+        text = self.commandDialogCommandEntry.get_text()
+        if checkCommand(text):
+            self.commandDialogOkButton.set_sensitive(True)
+        else:
+            self.commandDialogOkButton.set_sensitive(False)
+
+    def onAddUser(self, button):
+        self.add_edit_user(True)
+
+    def onEditUser(self, button):
+        self.add_edit_user(False)
+
+    def onRemoveUser(self, button):
+        selection = self.lockdownUserView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        user = self.lockdownUserStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            self.fw.removeLockdownWhitelistUser(user)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            whitelist.removeUser(user)
+            self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def lockdown_whitelist_user_added_cb(self, user):
+        iter = self.lockdownUserStore.get_iter_first()
+        while iter:
+            if self.lockdownUserStore.get_value(iter, 0) == user:
+                return
+            iter = self.lockdownUserStore.iter_next(iter)
+        self.lockdownUserStore.append([user])
+
+    def lockdown_whitelist_user_removed_cb(self, user):
+        iter = self.lockdownUserStore.get_iter_first()
+        while iter:
+            if self.lockdownUserStore.get_value(iter, 0) == user:
+                self.lockdownUserStore.remove(iter)
+                break
+            iter = self.lockdownUserStore.iter_next(iter)
+
+    def add_edit_user(self, add):
+        if add:
+            old_user = ""
+        else:
+            selection = self.lockdownUserView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_user = self.lockdownUserStore.get_value(iter, 0)
+
+        self.userDialogUserEntry.set_text(old_user)
+        self.userDialogOkButton.set_sensitive(False)
+
+        self.userDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.userDialog.set_transient_for(self.mainWindow)
+        self.userDialog.show_all()
+        result = self.userDialog.run()
+        self.userDialog.hide()
+
+        if result != 1:
+            return
+
+        user = self.userDialogUserEntry.get_text()
+        if (old_user == user):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryLockdownWhitelistUser(user):
+                self.fw.addLockdownWhitelistUser(user)
+                if not add:
+                    self.fw.removeLockdownWhitelistUser(old_user)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            if not whitelist.queryUser(user):
+                if not add:
+                    whitelist.removeUser(old_user)
+                whitelist.addUser(user)
+                self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def onUserChanged(self, *args):
+        text = self.userDialogUserEntry.get_text()
+        if text != "" and checkUser(text):
+            self.userDialogOkButton.set_sensitive(True)
+        else:
+            self.userDialogOkButton.set_sensitive(False)
+
+
+    def onAddUid(self, button):
+        self.add_edit_uid(True)
+
+    def onEditUid(self, button):
+        self.add_edit_uid(False)
+
+    def onRemoveUid(self, button):
+        selection = self.lockdownUidView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        uid = self.lockdownUidStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            self.fw.removeLockdownWhitelistUid(uid)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            whitelist.removeUid(uid)
+            self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def lockdown_whitelist_uid_added_cb(self, uid):
+        iter = self.lockdownUidStore.get_iter_first()
+        while iter:
+            if self.lockdownUidStore.get_value(iter, 0) == uid:
+                return
+            iter = self.lockdownUidStore.iter_next(iter)
+        self.lockdownUidStore.append([uid])
+
+    def lockdown_whitelist_uid_removed_cb(self, uid):
+        iter = self.lockdownUidStore.get_iter_first()
+        while iter:
+            if self.lockdownUidStore.get_value(iter, 0) == uid:
+                self.lockdownUidStore.remove(iter)
+                break
+            iter = self.lockdownUidStore.iter_next(iter)
+
+    def add_edit_uid(self, add):
+        if add:
+            old_uid = ""
+        else:
+            selection = self.lockdownUidView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_uid = self.lockdownUidStore.get_value(iter, 0)
+
+        self.uidDialogUidEntry.set_text("%s" % old_uid)
+        self.uidDialogOkButton.set_sensitive(False)
+
+        self.uidDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.uidDialog.set_transient_for(self.mainWindow)
+        self.uidDialog.show_all()
+        result = self.uidDialog.run()
+        self.uidDialog.hide()
+
+        if result != 1:
+            return
+
+        uid = int(self.uidDialogUidEntry.get_text())
+        if (old_uid == uid):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryLockdownWhitelistUid(uid):
+                self.fw.addLockdownWhitelistUid(uid)
+                if not add:
+                    self.fw.removeLockdownWhitelistUid(old_uid)
+        else:
+            whitelist = self.fw.config().policies().getLockdownWhitelist()
+            if not whitelist.queryUid(uid):
+                if not add:
+                    whitelist.removeUid(old_uid)
+                whitelist.addUid(uid)
+                self.fw.config().policies().setLockdownWhitelist(whitelist)
+
+    def onUidChanged(self, *args):
+        text = self.uidDialogUidEntry.get_text()
+        if text != "" and checkUid(text):
+            self.uidDialogOkButton.set_sensitive(True)
+        else:
+            self.uidDialogOkButton.set_sensitive(False)
+
+    def lockdown_whitelist_updated_cb(self):
+        self.load_lockdown_whitelist()
 
 # MAIN
 
