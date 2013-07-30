@@ -66,8 +66,7 @@ class FirewallDirect:
                 self.__chain(True, ipv, table, chain)
         for chain_id in _rules:
             (ipv, table, chain) = chain_id
-            for args in _rules[chain_id]:
-                priority = _rules[chain_id][args]
+            for (priority, args) in _rules[chain_id]:
                 self.__rule(True, ipv, table, chain, priority, args)
 
     # DIRECT CHAIN
@@ -163,7 +162,7 @@ class FirewallDirect:
 
         rule = [ "-t", table ]
         if enable:
-            rule += [ "-I", _chain, index ]
+            rule += [ "-I", _chain, str(index) ]
         else:
             rule += [ "-D", _chain ]
         rule += args
