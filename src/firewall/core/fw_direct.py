@@ -207,7 +207,7 @@ class FirewallDirect:
             _chain = "%s_direct" % (chain)
         chain_id = (ipv, table, _chain)
         return (chain_id in self._rules and \
-                    args in self._rules[chain_id])
+                (priority, args) in self._rules[chain_id])
 
     def get_rules(self, ipv, table, chain):
         _chain = chain
