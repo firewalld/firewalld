@@ -658,7 +658,9 @@ class FirewallZone:
 
                 table = "filter"
                 chains.append([table, "INPUT" ])
-                modules += svc.modules
+                if type(rule.action) == Rich_Accept:
+                    # only load modules for accept action
+                    modules += svc.modules
                 target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                     zone=zone)
 
