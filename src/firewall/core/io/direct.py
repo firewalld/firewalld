@@ -66,7 +66,6 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                           attrs["priority"])
                 return
             self._rule = [ipv, table, chain, priority]
-            self._element = ""
 
         elif name == "passthrough":
             if not self.direct:
@@ -74,7 +73,6 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                 return
             ipv = str(attrs["ipv"])
             self._passthrough = [ipv]
-            self._element = ""
 
         else:
             log.error('Unknown XML element %s' % name)
@@ -102,16 +100,15 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         IO_Object_ContentHandler.endElement(self, name)
 
         if name == "rule":
-            if self._element != "":
+            if self._element:
                 # add arguments
                 self._rule.append(self._tokenize(self._element))
                 self.item.add_rule(*self._rule)
             else:
                 log.error("Error: rule does not have any arguments, ignoring.")
             self._rule = None
-            self._element = None
         elif name == "passthrough":
-            if self._element != "":
+            if self._element:
                 # add arguments
                 self._passthrough.append(self._tokenize(self._element))
                 self.item.add_passthrough(*self._passthrough)
@@ -119,7 +116,6 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                log.error("Error: passthrough does not have any arguments, " +
                          "ignoring.")
             self._passthrough = None
-            self._element = None
 
 class Direct(IO_Object):
     """ Direct class """

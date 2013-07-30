@@ -74,9 +74,9 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
         elif name == "short":
-            self._element = self.item.short
+            pass
         elif name == "description":
-            self._element = self.item.description
+            pass
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs and \

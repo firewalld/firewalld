@@ -209,9 +209,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     self.item.target = target
 
         elif name == "short":
-            self._element = self.item.short
+            pass
         elif name == "description":
-            self._element = self.item.description
+            pass
         elif name == "service":
             if self._rule:
                 if self._rule.element:

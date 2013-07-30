@@ -167,19 +167,16 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
         self.item = item
 
     def startDocument(self):
-        self._element = None
+        self._element = ""
 
     def endElement(self, name):
         if name == "short":
             self.item.short = self._element
-            self._element = None
         elif name == "description":
             self.item.description = self._element
-            self._element = None
 
     def characters(self, content):
-        if self._element != None:
-            self._element += str(content).replace('\n', ' ')
+        self._element = str(content).replace('\n', ' ')
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):

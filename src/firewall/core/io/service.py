@@ -93,9 +93,9 @@ class service_ContentHandler(IO_Object_ContentHandler):
             if "version" in attrs:
                 self.item.version = str(attrs["version"])
         elif name == "short":
-            self._element = self.item.short
+            pass
         elif name == "description":
-            self._element = self.item.description
+            pass
         elif name == "port":
             self.item.ports.append((str(attrs["port"]),
                                        str(attrs["protocol"])))
