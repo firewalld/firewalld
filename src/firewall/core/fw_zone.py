@@ -135,8 +135,10 @@ class FirewallZone:
 
         # TODO: simplify for one zone only
         for _zone in zones:
-
-            ipvs = [ "ipv4", "ipv6" ]
+            ipvs = [ "ipv4" ]
+            if IPV6_NAT or table != "nat":
+                # no nat for ipv6
+                ipvs.append("ipv6")
 
             for ipv in ipvs:
                 chains.append((ipv, [ _zone, "-t", table ]))

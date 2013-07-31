@@ -18,6 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import os
+(major, minor, release) = os.uname()[2].split('.', 2)
+# http://kernelnewbies.org/Linux_3.7
+IPV6_NAT = int(major) >= 3 and int(minor) >= 7
 
 DEFAULT_ZONE_TARGET = "{chain}_{zone}"
 ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET ]
@@ -47,10 +51,10 @@ ZONE_CHAINS = {
         "FORWARD_OUT": [ "ipv4", "ipv6" ],
         },
     "nat": {
-        "PREROUTING": [ "ipv4", "ipv6" ],
-        "POSTROUTING": [ "ipv4", "ipv6" ],
+        "PREROUTING": [ "ipv4", "ipv6" ] if IPV6_NAT else [ "ipv4" ],
+        "POSTROUTING": [ "ipv4", "ipv6" ] if IPV6_NAT else [ "ipv4" ],
         },
     "mangle": {
-        "PREROUTING": [ "ipv4", "ipv6" ],
+        "PREROUTING": [ "ipv4", "ipv6" ] if IPV6_NAT else [ "ipv4" ],
         },
 }

@@ -26,6 +26,7 @@ from firewall import functions
 from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core import modules
+from firewall.core.base import IPV6_NAT
 from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
@@ -442,6 +443,9 @@ class Firewall:
             default_rules = ebtables.DEFAULT_RULES
 
         for table in default_rules:
+            if not IPV6_NAT and ipv == "ipv6" and table == "nat":
+                # no nat for IPv6
+                continue
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
                 _rule = prefix + rule.split()
