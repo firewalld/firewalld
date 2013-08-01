@@ -72,7 +72,14 @@ def check_gnome3():
     return False
 
 APPLET_SCHEMA = "org.fedoraproject.FirewallApplet"
-NM_CONNECTION_EDITOR = "/usr/bin/nm-connection-editor"
+NM_CONNECTION_EDITOR = ""
+for binary in [ "/usr/bin/nm-connection-editor",
+                    "/bin/nm-connection-editor",
+                "/usr/bin/kde-nm-connection-editor",
+                    "/bin/kde-nm-connection-editor" ]:
+    if os.path.exists(binary):
+        NM_CONNECTION_EDITOR = binary
+        break
 
 def combobox_select_text(combobox, value):
     model = combobox.get_model()
@@ -242,11 +249,6 @@ class TrayApplet(object):
         self.settings.connect("changed::show-inactive",
                               self.show_inactive_changed)
 
-        if os.path.exists(NM_CONNECTION_EDITOR):
-            self.has_nm_connection_editor = True
-        else:
-            self.has_nm_connection_editor = False
-
         self.icontheme = Gtk.IconTheme.get_default()
 
         self.statusicon = Gtk.StatusIcon.new()
@@ -296,7 +298,7 @@ class TrayApplet(object):
         item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
                                                 Gtk.IconSize.MENU))
         item.connect("activate", self.nm_connection_editor)
-        item.set_sensitive(self.has_nm_connection_editor)
+        item.set_sensitive(NM_CONNECTION_EDITOR != "")
         self.right_menu.append(item)
 
         item = Gtk.ImageMenuItem.new_with_mnemonic(_("Configure Shields UP/Down Zones..."))
@@ -579,7 +581,7 @@ class TrayApplet(object):
             label.set_padding(12, 0)
             hbox.pack_start(label, True, True, 0)
             # only sensitive if nm_connection_editor exists
-            if not self.has_nm_connection_editor:
+            if NM_CONNECTION_EDITOR == "":
                 item.set_sensitive(False)
             item.add(hbox)
             item.connect("activate", self.nm_connection_editor, uuid)
@@ -636,6 +638,10 @@ class TrayApplet(object):
                 self.left_menu.append(item)
 
     def nm_connection_editor(self, item, uuid=None):
+        if NM_CONNECTION_EDITOR == "":
+            self._warning("NetworkManager connection editor is missing.")
+            return
+
         if uuid:
             os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
         else:

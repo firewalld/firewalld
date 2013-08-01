@@ -58,7 +58,14 @@ if not datadir:
     sys.path.insert(0, datadir)
 from gtk3_chooserbutton import ChooserButton
 
-NM_CONNECTION_EDITOR = "/usr/bin/nm-connection-editor"
+NM_CONNECTION_EDITOR = ""
+for binary in [ "/usr/bin/nm-connection-editor",
+                    "/bin/nm-connection-editor",
+                "/usr/bin/kde-nm-connection-editor",
+                    "/bin/kde-nm-connection-editor" ]:
+    if os.path.exists(binary):
+        NM_CONNECTION_EDITOR = binary
+        break
 
 #FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 
@@ -108,11 +115,11 @@ class FirewallConfig(object):
 
         self.changeZonesConnectionMenuitem = \
             builder.get_object("changeZonesConnectionMenuitem")
-        if os.path.isfile(NM_CONNECTION_EDITOR):
+        if NM_CONNECTION_EDITOR != "":
             self.changeZonesConnectionMenuitem.set_sensitive(True)
         else:
             self.changeZonesConnectionMenuitem.set_tooltip_markup(\
-                _("%s is missing") % NM_CONNECTION_EDITOR)
+                _("NetworkManager connection editor is missing."))
             self.changeZonesConnectionMenuitem.set_sensitive(False)
 
         self.panicMenuitem = builder.get_object("panicMenuitem")
@@ -1412,8 +1419,8 @@ class FirewallConfig(object):
         self.load_lockdown_whitelist()
 
     def nm_connection_editor(self, item, uuid=None):
-        if not os.path.exists(NM_CONNECTION_EDITOR):
-            self._warning("%s does not exist." % NM_CONNECTION_EDITOR)
+        if NM_CONNECTION_EDITOR == "":
+            self._warning("NetworkManager connection editor is missing.")
             return
 
         if uuid:
