@@ -71,6 +71,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(ETC_FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(FIREWALLD_ZONES)
         self.watcher.add_watch_dir(ETC_FIREWALLD_ZONES)
+        self.watcher.add_watch_file(LOCKDOWN_WHITELIST)
 
     @handle_exceptions
     def _init_vars(self):
@@ -123,7 +124,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             elif what == "update":
                 self._updateIcmpType(obj)
 
-        if name.startswith(FIREWALLD_SERVICES) or \
+        elif name.startswith(FIREWALLD_SERVICES) or \
                 name.startswith(ETC_FIREWALLD_SERVICES):
             (what, obj) = self.config.update_service_from_path(name)
             if what == "new":
@@ -133,7 +134,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             elif what == "update":
                 self._updateService(obj)
 
-        if name.startswith(FIREWALLD_ZONES) or \
+        elif name.startswith(FIREWALLD_ZONES) or \
                 name.startswith(ETC_FIREWALLD_ZONES):
             (what, obj) = self.config.update_zone_from_path(name)
             if what == "new":
@@ -142,6 +143,10 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.removeZone(obj)
             elif what == "update":
                 self._updateZone(obj)
+
+        elif name == LOCKDOWN_WHITELIST:
+            self.config.update_lockdown_whitelist()
+            self.LockdownWhitelistUpdated()
 
     @handle_exceptions
     def _addIcmpType(self, obj):
