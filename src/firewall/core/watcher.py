@@ -35,6 +35,12 @@ class Watcher(object):
             Gio.FileMonitorFlags.NONE, None)
         self._monitors[directory].connect("changed", self._file_changed_cb)
 
+    def add_watch_file(self, filename):
+        gfile = Gio.File.new_for_path(filename)
+        self._monitors[filename] = gfile.monitor_file(\
+            Gio.FileMonitorFlags.NONE, None)
+        self._monitors[filename].connect("changed", self._file_changed_cb)
+
     def block_source(self, filename):
         if filename not in self._blocked:
             self._blocked.append(filename)
