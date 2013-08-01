@@ -87,6 +87,12 @@ class FirewallConfig:
     def get_policies(self):
         return self._policies
 
+    def update_lockdown_whitelist(self):
+        if not os.path.exists(LOCKDOWN_WHITELIST):
+            self._policies.lockdown_whitelist.clear()
+        else:
+            self._policies.lockdown_whitelist.read()
+
     # icmptypes
 
     def get_icmptypes(self):
