@@ -165,7 +165,7 @@ def _addStandardOptions(parser):
                       action="callback", dest="services", type="service",
                       default=[ ],
                       metavar=_("<service>"), callback=_append_unique,
-                      help=_("Enable a service in the default zone (example: ssh"))
+                      help=_("Enable a service in the default zone (example: ssh)"))
     parser.add_option("-p", "--port",
                       action="callback", dest="ports", type="port",
                       metavar=_("<port>[-<port>]:<protocol>"),
@@ -198,7 +198,7 @@ def _addStandardOptions(parser):
                       default=[ ],
                       callback=_append_unique,
                       metavar=_("<icmp type>"),
-                      help=_("Block this ICMP type in in the default zone. The default is to accept all ICMP types."))
+                      help=_("Block this ICMP type in the default zone. The default is to accept all ICMP types."))
 
 def _parse_args(parser, args, options=None):
     try:
