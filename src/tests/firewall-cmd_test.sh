@@ -352,22 +352,18 @@ assert_bad           "--permanent --complete-reload" # impossible combination
 assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_home_allow"
 assert_bad           "--direct --passthrough ipv5 -nvL" # ipv5
 assert_bad           "--direct --passthrough ipv4" # missing argument
-assert_good_empty    "--direct --get-chains ipv4 filter"
 assert_good          "--direct --add-chain ipv4 filter mychain"
-assert_good_equals   "--direct --get-chains ipv4 filter" "mychain"
+assert_good_contains "--direct --get-chains ipv4 filter" "mychain"
 assert_good          "--direct --query-chain ipv4 filter mychain"
 
-assert_good_empty    "--direct --get-rules ipv4 filter mychain"
 assert_good          "--direct --add-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_good_contains "--direct --get-rules ipv4 filter mychain" "ACCEPT"
 assert_good          "--direct --query-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_good          "--direct --remove-rule ipv4 filter mychain 3 -j ACCEPT"
-assert_good_empty    "--direct --get-rules ipv4 filter mychain"
 assert_bad           "--direct --query-rule ipv4 filter mychain 3 -j ACCEPT"
 
 assert_good          "--direct --remove-chain ipv4 filter mychain"
 assert_bad           "--direct --query-chain ipv4 filter mychain"
-assert_good_empty    "--direct --get-chains ipv4 filter"
 assert_good          "--direct --remove-chain ipv4 filter dummy" # removing nonexisting chain is just warning
 
 assert_bad           "--direct --reload" # impossible combination
