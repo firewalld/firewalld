@@ -102,6 +102,7 @@ EXTRA_DIST = \
 	services/tftp.xml \
 	services/transmission-client.xml \
 	services/vnc-server.xml \
+	services/wbem-https.xml \
 	zones/block.xml \
 	zones/dmz.xml \
 	zones/drop.xml \
