@@ -1,25 +1,25 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Angels Sala <m_angels15@yahoo.es>, 2004
 # Josep Puigdemont <josep.puigdemont@gmail.com>, 2004-2006
-# Josep Sànchez Mesegué <papapep@gmx.com>, 2010
+# Josep Sànchez <papapep@gmx.com>, 2010
 # Pedro <pedro.babelia@gmail.com>, 2005
 # Xavier Conde Rueda <xavi.conde@gmail.com>, 2009
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-02 11:52+0200\n"
-"PO-Revision-Date: 2013-08-02 09:38+0000\n"
+"POT-Creation-Date: 2013-08-06 11:53+0200\n"
+"PO-Revision-Date: 2013-08-06 09:54+0000\n"
 "Last-Translator: twoerner <twoerner@redhat.com>\n"
 "Language-Team: Catalan <fedora@llistes.softcatala.org>\n"
-"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:219
@@ -111,8 +111,8 @@ msgstr ""
 
 #: ../src/firewall-applet:360
 msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
+"This feature is useful for people using the default zones mostly. For users,"
+" that are changing zones of connections, it might be of limited use."
 msgstr ""
 
 #: ../src/firewall-applet:375
@@ -167,7 +167,8 @@ msgstr ""
 
 #: ../src/firewall-applet:868
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 
 #: ../src/firewall-applet:871
@@ -537,8 +538,7 @@ msgstr "Reenviament de ports"
 #: ../src/firewall-config.glade.h:8
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Seleccioneu les opcions d'origen i destí segons les vostres necessitats."
+msgstr "Seleccioneu les opcions d'origen i destí segons les vostres necessitats."
 
 #: ../src/firewall-config.glade.h:9
 msgid "Port / Port Range:"
@@ -570,11 +570,9 @@ msgstr "Reenvia a un altre port"
 
 #: ../src/firewall-config.glade.h:16
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to "
-"be different to the source port."
-msgstr ""
-"Si habiliteu el reenviament local, heu d'especificar un port. Aquest port ha "
-"de ser diferent del port origen."
+"If you enable local forwarding, you have to specify a port. This port has to"
+" be different to the source port."
+msgstr "Si habiliteu el reenviament local, heu d'especificar un port. Aquest port ha de ser diferent del port origen."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Base ICMP Type Settings"
@@ -688,8 +686,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:45
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services "
-"are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services"
+" are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
 
@@ -724,10 +722,7 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"L'emmascarat us permet configurar un servidor o encaminador que connecta la "
-"vostra xarxa local a internet. La vostra xarxa local no serà visible i "
-"apareixerà com a un servidor a internet. Només ho podeu fer servir amb IPv4."
+msgstr "L'emmascarat us permet configurar un servidor o encaminador que connecta la vostra xarxa local a internet. La vostra xarxa local no serà visible i apareixerà com a un servidor a internet. Només ho podeu fer servir amb IPv4."
 
 #: ../src/firewall-config.glade.h:53
 msgid "Masquerade zone"
@@ -749,10 +744,7 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr ""
-"Afegeix entrades per reenviar ports des d'un port a un altre en el sistema "
-"local o cap a un altre sistema. El reenviament a un altre sistema és útil "
-"només si la interfície està enmascarada. Només es pot fer amb IPv4."
+msgstr "Afegeix entrades per reenviar ports des d'un port a un altre en el sistema local o cap a un altre sistema. El reenviament a un altre sistema és útil només si la interfície està enmascarada. Només es pot fer amb IPv4."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Add Forward Port"
@@ -771,19 +763,13 @@ msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr ""
-"El protocol de missatges de control d'internet (ICMP) s'usa principlament "
-"per enviar missatges d'error entre ordinadors de xarxa, però també per a "
-"missatges d'informació com ara peticions de ping i respostes."
+msgstr "El protocol de missatges de control d'internet (ICMP) s'usa principlament per enviar missatges d'error entre ordinadors de xarxa, però també per a missatges d'informació com ara peticions de ping i respostes."
 
 #: ../src/firewall-config.glade.h:61
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Marca els tipus d'ICMP a la llista, que haurien de ser rebutjats. Tots els "
-"altres tipus ICMP tenen permès passar pel tallafoc. Per defecte no hi ha "
-"límit."
+msgstr "Marca els tipus d'ICMP a la llista, que haurien de ser rebutjats. Tots els altres tipus ICMP tenen permès passar pel tallafoc. Per defecte no hi ha límit."
 
 #: ../src/firewall-config.glade.h:62
 msgid "ICMP Filter"
@@ -799,8 +785,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:65
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by "
-"a connection, the zone will be set to the zone specified in the connection."
+"Add entries to bind interfaces to the zone. If the interface will be used by"
+" a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:67
@@ -908,8 +894,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:92
 msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to "
-"the destination."
+"If you specify destination addresses, the ICMP Type entry will be limited to"
+" the destination."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:93
@@ -932,8 +918,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:97
 msgid ""
-"The lockdown feature is a light version of user and application policies for "
-"firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for"
+" firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
 
@@ -1217,7 +1203,7 @@ msgid "<service>"
 msgstr "<serviço>"
 
 #: ../src/firewall-offline-cmd:168
-msgid "Enable a service in the default zone (example: ssh"
+msgid "Enable a service in the default zone (example: ssh)"
 msgstr ""
 
 #: ../src/firewall-offline-cmd:171
@@ -1248,24 +1234,22 @@ msgstr "[<tipus>:][<taula>:]<nom de fitxer>"
 
 #: ../src/firewall-offline-cmd:187
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
 
 #: ../src/firewall-offline-cmd:191
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<interfície>:port=<port>:proto=<protocol>[:toport=<port destí>][:"
-"toaddr=<adreça destí>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
+"port>][:toaddr=<destination address>]"
+msgstr "if=<interfície>:port=<port>:proto=<protocol>[:toport=<port destí>][:toaddr=<adreça destí>]"
 
 #: ../src/firewall-offline-cmd:195
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
+"address with an optional destination port. This will be added to the default"
+" zone. This is IPv4 only."
 msgstr ""
 
 #: ../src/firewall-offline-cmd:200
@@ -1274,8 +1258,8 @@ msgstr "<tipus d'icmp>"
 
 #: ../src/firewall-offline-cmd:201
 msgid ""
-"Block this ICMP type in in the default zone. The default is to accept all "
-"ICMP types."
+"Block this ICMP type in the default zone. The default is to accept all ICMP "
+"types."
 msgstr ""
 
 #: ../src/firewall-offline-cmd:212

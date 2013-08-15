@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2007-2010
 # zdenek <chmelarz@centrum.cz>, 2013
@@ -17,15 +17,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-02 11:52+0200\n"
-"PO-Revision-Date: 2013-08-02 09:38+0000\n"
+"POT-Creation-Date: 2013-08-06 11:53+0200\n"
+"PO-Revision-Date: 2013-08-06 09:54+0000\n"
 "Last-Translator: twoerner <twoerner@redhat.com>\n"
-"Language-Team: Czech (http://www.transifex.com/projects/p/fedora/language/"
-"cs/)\n"
-"Language: cs\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/fedora/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:219
@@ -117,11 +116,9 @@ msgstr "Zde můžete vybrat zóny použité pro zapnuté štíty a vypnuté št�
 
 #: ../src/firewall-applet:360
 msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
-msgstr ""
-"Tato vlastnost je užitečná pro osoby využívající převážně implicitní zóny. "
-"Pro uživatele, kteří mění zóny připojení, může být toto použití omezující. "
+"This feature is useful for people using the default zones mostly. For users,"
+" that are changing zones of connections, it might be of limited use."
+msgstr "Tato vlastnost je užitečná pro osoby využívající převážně implicitní zóny. Pro uživatele, kteří mění zóny připojení, může být toto použití omezující. "
 
 #: ../src/firewall-applet:375
 msgid "Shields Up Zone:"
@@ -175,9 +172,9 @@ msgstr ""
 
 #: ../src/firewall-applet:868
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr ""
-"Zóna '{zone}' aktivní pro spojení '{connection}' přes rozhraní '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
+msgstr "Zóna '{zone}' aktivní pro spojení '{connection}' přes rozhraní '{interface}'"
 
 #: ../src/firewall-applet:871
 msgid "Zone '{zone}' active for interface '{interface}'"
@@ -216,9 +213,7 @@ msgstr "deaktivováno"
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr ""
-"Zóna '{zone}' {activated_deactivated} pro spojení '{connection}' na rozhraní "
-"'{interface}'"
+msgstr "Zóna '{zone}' {activated_deactivated} pro spojení '{connection}' na rozhraní '{interface}'"
 
 #: ../src/firewall-applet:941
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
@@ -580,11 +575,9 @@ msgstr "Přeposlat na jiný port"
 
 #: ../src/firewall-config.glade.h:16
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to "
-"be different to the source port."
-msgstr ""
-"Pokud povolíte lokální přeposílání, musíte určit port. Tento port musí být "
-"jiný, než zdrojový port."
+"If you enable local forwarding, you have to specify a port. This port has to"
+" be different to the source port."
+msgstr "Pokud povolíte lokální přeposílání, musíte určit port. Tento port musí být jiný, než zdrojový port."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Base ICMP Type Settings"
@@ -658,9 +651,7 @@ msgstr "_Nápověda"
 msgid ""
 "Reloads firewalld: Current permanent configuration will become the new "
 "runtime configuration."
-msgstr ""
-"Znovunačtení firewalld: Současná trvalá konfigurace se použije jako běhová "
-"konfigurace"
+msgstr "Znovunačtení firewalld: Současná trvalá konfigurace se použije jako běhová konfigurace"
 
 #: ../src/firewall-config.glade.h:37
 msgid "Current View:"
@@ -671,10 +662,7 @@ msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
-msgstr ""
-"Viditelné konfigurace. Běhová konfigurace je momentálně aktivní konfigurace. "
-"Trvalá konfigurace se aktivuje po znovuzavedení nebo restartu služby nebo "
-"systému."
+msgstr "Viditelné konfigurace. Běhová konfigurace je momentálně aktivní konfigurace. Trvalá konfigurace se aktivuje po znovuzavedení nebo restartu služby nebo systému."
 
 #: ../src/firewall-config.glade.h:39
 msgid ""
@@ -703,8 +691,8 @@ msgstr "Nahrát základní nastavení zóny"
 
 #: ../src/firewall-config.glade.h:45
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services "
-"are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services"
+" are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
 
@@ -739,11 +727,7 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"Maškarádování je užitečné, pokud nastavujete počítač nebo směrovač, který "
-"spojuje vaši lokální síť s internetem. Vaše lokální síť nebude z internetu "
-"dostupná a všechny vnitřní počítače budou vystupovat jako jedna IP adresa "
-"jednoho počítače. Maškarádování funguje pouze pro IPv4."
+msgstr "Maškarádování je užitečné, pokud nastavujete počítač nebo směrovač, který spojuje vaši lokální síť s internetem. Vaše lokální síť nebude z internetu dostupná a všechny vnitřní počítače budou vystupovat jako jedna IP adresa jednoho počítače. Maškarádování funguje pouze pro IPv4."
 
 #: ../src/firewall-config.glade.h:53
 msgid "Masquerade zone"
@@ -753,8 +737,7 @@ msgstr "Povolit maškarádu v zóně"
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr ""
-"Pokud povolíte maškarádu, IP forwarding bude povolen pro vaše IPv4 sítě."
+msgstr "Pokud povolíte maškarádu, IP forwarding bude povolen pro vaše IPv4 sítě."
 
 #: ../src/firewall-config.glade.h:55
 msgid "Masquerading"
@@ -766,11 +749,7 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr ""
-"Přidat záznamy pro přeposílání portů buď z jednoho portu na druhý na "
-"lokálním systému nebo z lokálního portu do portu na jiném systému. "
-"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní "
-"maškarádované. Přeposílání portů funguje pouze na IPv4."
+msgstr "Přidat záznamy pro přeposílání portů buď z jednoho portu na druhý na lokálním systému nebo z lokálního portu do portu na jiném systému. Přeposílání na jiný systém je užitečné pouze pokud je rozhraní maškarádované. Přeposílání portů funguje pouze na IPv4."
 
 #: ../src/firewall-config.glade.h:57
 msgid "Add Forward Port"
@@ -789,19 +768,13 @@ msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr ""
-"ICMP protokol (Internet Control Message Protocol) je používán především pro "
-"posílání chybových zpráv mezi počítači v síti, ale také pro informační "
-"zprávy typ požadavek a odpověď (ping)."
+msgstr "ICMP protokol (Internet Control Message Protocol) je používán především pro posílání chybových zpráv mezi počítači v síti, ale také pro informační zprávy typ požadavek a odpověď (ping)."
 
 #: ../src/firewall-config.glade.h:61
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Označte v seznamu typy ICMP zpráv, které mají být odmítnuty. Všechny ostatní "
-"ICMP typy budou  procházet firewallem. Implicitně jsou zprávy vpouštěny bez "
-"omezení."
+msgstr "Označte v seznamu typy ICMP zpráv, které mají být odmítnuty. Všechny ostatní ICMP typy budou  procházet firewallem. Implicitně jsou zprávy vpouštěny bez omezení."
 
 #: ../src/firewall-config.glade.h:62
 msgid "ICMP Filter"
@@ -817,8 +790,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:65
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by "
-"a connection, the zone will be set to the zone specified in the connection."
+"Add entries to bind interfaces to the zone. If the interface will be used by"
+" a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:67
@@ -855,9 +828,7 @@ msgstr "Nahrát původní nastavení služby"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr ""
-"Přidat další porty nebo jejich rozsah, které potřebujete mít přístupné pro "
-"všechny počítače a sítě. Můžete přidávat i protokoly bez specifikace portů."
+msgstr "Přidat další porty nebo jejich rozsah, které potřebujete mít přístupné pro všechny počítače a sítě. Můžete přidávat i protokoly bez specifikace portů."
 
 #: ../src/firewall-config.glade.h:77
 msgid "Add Entry"
@@ -888,10 +859,7 @@ msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr ""
-"Pokud specifikujete cílové adresy, vložené služby jsou vztaženy k cílové "
-"adrese a typu. Pokud jsou oba vstupy prázdné, nejsou aplikována žádná "
-"omezení."
+msgstr "Pokud specifikujete cílové adresy, vložené služby jsou vztaženy k cílové adrese a typu. Pokud jsou oba vstupy prázdné, nejsou aplikována žádná omezení."
 
 #: ../src/firewall-config.glade.h:84
 msgid "IPv4:"
@@ -931,10 +899,9 @@ msgstr "Nahrát základní typ ICMP"
 
 #: ../src/firewall-config.glade.h:92
 msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to "
-"the destination."
-msgstr ""
-"Pokud specifikujete cílovou adresu, bude typ ICMP limitován pouze pro cíl."
+"If you specify destination addresses, the ICMP Type entry will be limited to"
+" the destination."
+msgstr "Pokud specifikujete cílovou adresu, bude typ ICMP limitován pouze pro cíl."
 
 #: ../src/firewall-config.glade.h:93
 msgid "IPv4"
@@ -956,8 +923,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:97
 msgid ""
-"The lockdown feature is a light version of user and application policies for "
-"firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for"
+" firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
 
@@ -1241,7 +1208,7 @@ msgid "<service>"
 msgstr "<služba>"
 
 #: ../src/firewall-offline-cmd:168
-msgid "Enable a service in the default zone (example: ssh"
+msgid "Enable a service in the default zone (example: ssh)"
 msgstr ""
 
 #: ../src/firewall-offline-cmd:171
@@ -1272,24 +1239,22 @@ msgstr "[<typ>:][<tabulka>:]<jméno_souboru>"
 
 #: ../src/firewall-offline-cmd:187
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
 
 #: ../src/firewall-offline-cmd:191
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<rozhraní>:port=<port>:proto=<protokol>[:toport=<cílový port>][:"
-"toaddr=<cílová adresa>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
+"port>][:toaddr=<destination address>]"
+msgstr "if=<rozhraní>:port=<port>:proto=<protokol>[:toport=<cílový port>][:toaddr=<cílová adresa>]"
 
 #: ../src/firewall-offline-cmd:195
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
+"address with an optional destination port. This will be added to the default"
+" zone. This is IPv4 only."
 msgstr ""
 
 #: ../src/firewall-offline-cmd:200
@@ -1298,8 +1263,8 @@ msgstr "<icmp typ>"
 
 #: ../src/firewall-offline-cmd:201
 msgid ""
-"Block this ICMP type in in the default zone. The default is to accept all "
-"ICMP types."
+"Block this ICMP type in the default zone. The default is to accept all ICMP "
+"types."
 msgstr ""
 
 #: ../src/firewall-offline-cmd:212
