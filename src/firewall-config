@@ -3285,7 +3285,7 @@ class FirewallConfig(object):
             service = self.fw.config().getServiceByName(active_service)
             settings = service.getSettings()
         else:
-            settings = client.FirewallClientConfigServiceSettings()
+            settings = client.FirewallClientServiceSettings()
 
         if old_version != version or old_short != short or \
                 old_desc != desc:
@@ -3644,7 +3644,7 @@ class FirewallConfig(object):
             icmp = self.fw.config().getIcmpTypeByName(active_icmp)
             settings = icmp.getSettings()
         else:
-            settings = client.FirewallClientConfigIcmpTypeSettings()
+            settings = client.FirewallClientIcmpTypeSettings()
 
         if old_version != version or old_short != short or \
                 old_desc != desc:

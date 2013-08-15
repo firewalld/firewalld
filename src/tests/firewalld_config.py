@@ -28,8 +28,8 @@ import time
 import firewall
 from firewall.client import FirewallClient, \
                             FirewallClientConfigZoneSettings, \
-                            FirewallClientConfigServiceSettings, \
-                            FirewallClientConfigIcmpTypeSettings
+                            FirewallClientServiceSettings, \
+                            FirewallClientIcmpTypeSettings
 from firewall.core.base import DEFAULT_ZONE_TARGET
 
 class TestFirewallDInterfaceConfig(unittest.TestCase):
@@ -172,7 +172,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         service_ports = [("123", "tcp"), ("666-667", "udp")]
         service_modules = ["nf_test_first", "nf_test_second"]
         service_destinations = {'ipv4': '1.2.3.4', 'ipv6': 'dead::beef'}
-        settings = FirewallClientConfigServiceSettings() # ["", "", "", [], [], {}]
+        settings = FirewallClientServiceSettings() # ["", "", "", [], [], {}]
         settings.setVersion(service_version)
         settings.setShort(service_short)
         settings.setDescription(service_description)
@@ -192,7 +192,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         config_service = self.fw.config().getServiceByName(service_name)
         self.assertIsInstance(config_service, firewall.client.FirewallClientConfigService)
         service_settings = config_service.getSettings()
-        self.assertIsInstance(service_settings, firewall.client.FirewallClientConfigServiceSettings)
+        self.assertIsInstance(service_settings, firewall.client.FirewallClientServiceSettings)
 
         print ("Updating settings")
         service_modules.append("nf_test_third")
@@ -254,7 +254,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         icmptype_short = "Testing"
         icmptype_description = "this is just a testing icmp type"
         icmptype_destinations = ['ipv4']
-        settings = FirewallClientConfigIcmpTypeSettings() # ["", "", "", []]
+        settings = FirewallClientIcmpTypeSettings() # ["", "", "", []]
         settings.setVersion(icmptype_version)
         settings.setShort(icmptype_short)
         settings.setDescription(icmptype_description)
@@ -272,7 +272,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         config_icmptype = self.fw.config().getIcmpTypeByName(icmptype_name)
         self.assertIsInstance(config_icmptype, firewall.client.FirewallClientConfigIcmpType)
         icmptype_settings = config_icmptype.getSettings()
-        self.assertIsInstance(icmptype_settings, firewall.client.FirewallClientConfigIcmpTypeSettings)
+        self.assertIsInstance(icmptype_settings, firewall.client.FirewallClientIcmpTypeSettings)
 
         print ("Updating settings")
         icmptype_destinations.append("ipv6")
