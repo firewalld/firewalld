@@ -176,7 +176,7 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
             self.item.description = self._element
 
     def characters(self, content):
-        self._element = str(content).replace('\n', ' ')
+        self._element = content.replace('\n', ' ')
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):

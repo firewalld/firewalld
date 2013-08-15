@@ -154,21 +154,21 @@ def service_writer(service, path=None):
 
     # short
     if service.short and service.short != "":
-        if isinstance(service.short, bytes):
-            service.short = service.short.decode('utf-8')
         handler.ignorableWhitespace("  ")
         handler.startElement("short", { })
-        handler.characters(service.short)
+        handler.characters(service.short.decode('utf-8')
+                           if isinstance(service.short, bytes)
+                           else service.short)
         handler.endElement("short")
         handler.ignorableWhitespace("\n")
 
     # description
     if service.description and service.description != "":
-        if isinstance(service.description, bytes):
-            service.description = service.description.decode('utf-8')
         handler.ignorableWhitespace("  ")
         handler.startElement("description", { })
-        handler.characters(service.description)
+        handler.characters(service.description.decode('utf-8')
+                           if isinstance(service.description, bytes)
+                           else service.description)
         handler.endElement("description")
         handler.ignorableWhitespace("\n")
 
