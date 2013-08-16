@@ -51,7 +51,7 @@ def __parse_port(value):
     try:
         (port, proto) = value.split("/")
     except Exception as e:
-        __fail("bad port (most likely missing protocol)")
+        __fail("bad port (most likely missing protocol), correct syntax is portid[-portid]/protocol")
     return (port, proto)
 
 def __parse_forward_port(value):
