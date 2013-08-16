@@ -131,6 +131,10 @@ assert_good_equals   "--get-zone-of-interface=${iface}" "${zone}"
 assert_good_contains "--zone=${zone} --list-interfaces" "${iface}"
 assert_good          "--zone=${zone} --remove-interface=${iface}"
 assert_bad           "--zone=${zone} --query-interface ${iface}"
+assert_good          "--zone=${zone} --change-interface=${iface}" # should work as add
+assert_good          "--zone=${zone} --query-interface ${iface}"
+assert_good          "--zone=${zone} --remove-interface=${iface}"
+assert_bad           "--zone=${zone} --query-interface ${iface}"
 assert_bad           "--get-zone-of-interface=${iface}" # in no zone
 assert_bad           "--get-zone-of-interface" # missing argument
 assert_bad           "--zone=${zone} --get-zones" # impossible combination
@@ -151,7 +155,10 @@ assert_good          "--permanent --zone=${zone} --change-interface=${iface}"
 assert_good_equals   "--permanent --get-zone-of-interface=${iface}" "${zone}"
 assert_good          "--permanent --zone=${zone} --remove-interface=${iface}"
 assert_bad           "--permanent --zone=${zone} --query-interface ${iface}"
-
+assert_good          "--permanent --zone=${zone} --change-interface=${iface}" # should work as add
+assert_good_equals   "--permanent --get-zone-of-interface=${iface}" "${zone}"
+assert_good          "--permanent --zone=${zone} --remove-interface=${iface}"
+assert_bad           "--permanent --zone=${zone} --query-interface ${iface}"
 
 iface1="foo"
 iface2="bar"

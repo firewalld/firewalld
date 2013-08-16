@@ -464,11 +464,13 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
                     __print_and_exit("no zone", 2)
             elif a.change_interface:
                 old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
-                old_zone_obj = fw.config().getZoneByName(old_zone_name)
-                old_zone_settings = old_zone_obj.getSettings()
-                old_zone_settings.removeInterface(a.change_interface)  # remove from old
-                old_zone_obj.update(old_zone_settings)
-                fw_settings.addInterface(a.change_interface)           # add to new
+                if old_zone_name != zone:
+                    if old_zone_name:
+                        old_zone_obj = fw.config().getZoneByName(old_zone_name)
+                        old_zone_settings = old_zone_obj.getSettings()
+                        old_zone_settings.removeInterface(a.change_interface) # remove from old
+                        old_zone_obj.update(old_zone_settings)
+                    fw_settings.addInterface(a.change_interface)              # add to new
             elif a.add_interface:
                 fw_settings.addInterface(a.add_interface)
             elif a.remove_interface:
