@@ -35,7 +35,7 @@ class FirewallIcmpType:
     # zones
 
     def get_icmptypes(self):
-        return list(self._icmptypes.keys())
+        return sorted(self._icmptypes.keys())
 
     def check_icmptype(self, icmptype):
         if icmptype not in self._icmptypes:

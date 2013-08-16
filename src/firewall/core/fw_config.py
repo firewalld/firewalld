@@ -96,8 +96,8 @@ class FirewallConfig:
     # icmptypes
 
     def get_icmptypes(self):
-        return list(set(list(self._icmptypes.keys()) + \
-                        list(self._default_icmptypes.keys())))
+        return sorted(set(self._icmptypes.keys() + \
+                          self._default_icmptypes.keys()))
 
     def add_icmptype(self, obj):
         if obj.default:
@@ -258,8 +258,8 @@ class FirewallConfig:
     # services
 
     def get_services(self):
-        return list(set(list(self._services.keys()) + \
-                        list(self._default_services.keys())))
+        return sorted(set(self._services.keys() + \
+                          self._default_services.keys()))
 
     def add_service(self, obj):
         if obj.default:
@@ -420,8 +420,8 @@ class FirewallConfig:
     # zones
 
     def get_zones(self):
-        return list(set(self._zones.keys() + \
-                        self._default_zones.keys()))
+        return sorted(set(self._zones.keys() + \
+                          self._default_zones.keys()))
 
     def add_zone(self, obj):
         if obj.default:

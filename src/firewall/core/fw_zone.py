@@ -42,7 +42,7 @@ class FirewallZone:
     # zones
 
     def get_zones(self):
-        return list(self._zones.keys())
+        return sorted(self._zones.keys())
 
     def get_zone_of_interface(self, interface):
         interface_id = self.__interface_id(interface)
@@ -423,7 +423,7 @@ class FirewallZone:
         return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
     def get_interfaces(self, zone):
-        return list(self.get_settings(zone)["interfaces"].keys())
+        return sorted(self.get_settings(zone)["interfaces"].keys())
 
     # SOURCES
 
@@ -1027,7 +1027,7 @@ class FirewallZone:
         return (self.__service_id(service) in self.get_settings(zone)["services"])
 
     def get_services(self, zone):
-        return list(self.get_settings(zone)["services"].keys())
+        return sorted(self.get_settings(zone)["services"].keys())
 
     # PORTS
 
@@ -1388,4 +1388,4 @@ class FirewallZone:
         return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
 
     def get_icmp_blocks(self, zone):
-        return list(self.get_settings(zone)["icmp_blocks"].keys())
+        return sorted(self.get_settings(zone)["icmp_blocks"].keys())

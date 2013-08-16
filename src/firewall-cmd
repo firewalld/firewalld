@@ -380,15 +380,15 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
         if a.get_zones:
             zones = fw.config().listZones()
             l = [fw.config().getZone(z).get_property("name") for z in zones]
-            __print_and_exit(" ".join(l))
+            __print_and_exit(" ".join(sorted(l)))
         elif a.get_services:
             services = fw.config().listServices()
             l = [fw.config().getService(s).get_property("name") for s in services]
-            __print_and_exit(" ".join(l))
+            __print_and_exit(" ".join(sorted(l)))
         elif a.get_icmptypes:
             icmptypes = fw.config().listIcmpTypes()
             l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
-            __print_and_exit(" ".join(l))
+            __print_and_exit(" ".join(sorted(l)))
 
         # lockdown whitelist
 
@@ -588,7 +588,7 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
             elif a.list_all_zones:
                 zones = fw.config().listZones()
                 names = [fw.config().getZone(z).get_property("name") for z in zones]
-                for zone in names:
+                for zone in sorted(names):
                     fw_zone = fw.config().getZoneByName(zone)
                     fw_settings = fw_zone.getSettings()
                     __list_all_permanent(fw_settings, zone)

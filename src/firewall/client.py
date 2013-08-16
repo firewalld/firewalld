@@ -105,7 +105,7 @@ class FirewallClientConfigZoneSettings(object):
 
     @handle_exceptions
     def getServices(self):
-        return self.settings[5]
+        return sorted(self.settings[5])
     @handle_exceptions
     def setServices(self, services):
         self.settings[5] = services
@@ -141,7 +141,7 @@ class FirewallClientConfigZoneSettings(object):
 
     @handle_exceptions
     def getIcmpBlocks(self):
-        return self.settings[7]
+        return sorted(self.settings[7])
     @handle_exceptions
     def setIcmpBlocks(self, icmpblocks):
         self.settings[7] = icmpblocks
@@ -196,7 +196,7 @@ class FirewallClientConfigZoneSettings(object):
 
     @handle_exceptions
     def getInterfaces(self):
-        return self.settings[10]
+        return sorted(self.settings[10])
     @handle_exceptions
     def setInterfaces(self, interfaces):
         self.settings[10] = interfaces
