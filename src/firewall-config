@@ -1238,7 +1238,8 @@ class FirewallConfig(object):
                 elem = str(obj.element)
 
         if obj.log:
-            log = '"%s"' % obj.log.prefix
+            if obj.log.prefix:
+                log = '"%s"' % obj.log.prefix
             if obj.log.level != "info":
                 log += "\n" + _("level") + " " + obj.log.limit.value
             if obj.log.limit:
@@ -1954,8 +1955,9 @@ class FirewallConfig(object):
             # log
             if old_obj.log:
                 self.richRuleDialogLogCheck.set_active(True)
-                self.richRuleDialogLogPrefixEntry.set_text( \
-                    old_obj.log.prefix)
+                if old_obj.log.prefix:
+                    self.richRuleDialogLogPrefixEntry.set_text( \
+                                                        old_obj.log.prefix)
                 self.combobox_select_text(self.richRuleDialogLogLevelCombobox,
                                           loglevel[old_obj.log.level])
                 if old_obj.log.limit:

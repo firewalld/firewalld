@@ -379,7 +379,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     log.error('Invalid rule: Invalid log level')
                     self._rule_error = True
                     return
-            self._rule.log = Rich_Log(str(attrs["prefix"]), level)
+            prefix = str(attrs["prefix"]) if "prefix" in attrs else None
+            self._rule.log = Rich_Log(prefix, level)
             self._limit_ok = self._rule.log
 
         elif name == "audit":
