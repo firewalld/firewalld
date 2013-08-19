@@ -965,14 +965,12 @@ class FirewallConfig(object):
     def load_zones(self):
         active_zone = self.get_active_zone()
 
-        zones = [ ]
         if self.runtime_view:
-            zones = sorted(self.fw.getZones())
+            zones = self.fw.getZones()
         else:
-            _zones = sorted(self.fw.config().listZones())
-            for zone in _zones:
-                z = self.fw.config().getZone(zone)
-                zones.append(z.get_property("name"))
+            zones = [self.fw.config().getZone(z).get_property("name") \
+                     for z in self.fw.config().listZones()]
+            zones.sort()
 
         # reset and fill notebook content according to view
 
@@ -1031,14 +1029,12 @@ class FirewallConfig(object):
     def load_services(self):
         active_service = self.get_active_service()
 
-        services = [ ]
         if self.runtime_view:
-            services = sorted(self.fw.listServices())
+            services = self.fw.listServices()
         else:
-            _services = sorted(self.fw.config().listServices())
-            for service in _services:
-                z = self.fw.config().getService(service)
-                services.append(z.get_property("name"))
+            services = [self.fw.config().getService(s).get_property("name") \
+                        for s in self.fw.config().listServices()]
+            services.sort()
 
         selection = self.serviceConfServiceView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
@@ -1430,7 +1426,7 @@ class FirewallConfig(object):
 
     def onChangeDefaultZone(self, *args):
         self.defaultZoneStore.clear()
-        zones = sorted(self.fw.getZones())
+        zones = self.fw.getZones()
 #        self.default_zone = self.fw.getDefaultZone()
         for zone in zones:
             if zone == self.default_zone:
@@ -2130,13 +2126,12 @@ class FirewallConfig(object):
     def service_select_dialog(self, old_service=""):
         self.serviceDialogServiceStore.clear()
         if self.runtime_view:
-            services = sorted(self.fw.listServices())
+            services = self.fw.listServices()
         else:
-            services = [ ]
-            _services = sorted(self.fw.config().listServices())
-            for service in _services:
-                z = self.fw.config().getService(service)
-                services.append(z.get_property("name"))
+            services = [self.fw.config().getService(s).get_property("name") \
+                        for s in self.fw.config().listServices()]
+            services.sort()
+
         for service in services:
             self.serviceDialogServiceStore.append([service])
 
@@ -2179,13 +2174,12 @@ class FirewallConfig(object):
     def icmptype_select_dialog(self, old_icmptype=""):
         self.icmptypeDialogIcmptypeStore.clear()
         if self.runtime_view:
-            icmptypes = sorted(self.fw.listIcmpTypes())
+            icmptypes = self.fw.listIcmpTypes()
         else:
-            icmptypes = [ ]
-            _icmptypes = sorted(self.fw.config().listIcmpTypes())
-            for icmptype in _icmptypes:
-                z = self.fw.config().getIcmpType(icmptype)
-                icmptypes.append(z.get_property("name"))
+            icmptypes = [self.fw.config().getIcmpType(i).get_property("name") \
+                         for i in self.fw.config().listIcmpTypes()]
+            icmptypes.sort()
+
         for icmptype in icmptypes:
             self.icmptypeDialogIcmptypeStore.append([icmptype])
 
@@ -3466,14 +3460,12 @@ class FirewallConfig(object):
     def load_icmps(self):
         active_icmp = self.get_active_icmp()
 
-        icmps = [ ]
         if self.runtime_view:
-            icmps = sorted(self.fw.listIcmpTypes())
+            icmps = self.fw.listIcmpTypes()
         else:
-            _icmps = sorted(self.fw.config().listIcmpTypes())
-            for icmp in _icmps:
-                z = self.fw.config().getIcmpType(icmp)
-                icmps.append(z.get_property("name"))
+            icmps = [self.fw.config().getIcmpType(i).get_property("name") \
+                         for i in self.fw.config().listIcmpTypes()]
+            icmps.sort()
 
         selection = self.icmpDialogIcmpView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
@@ -3727,21 +3719,17 @@ class FirewallConfig(object):
             self.fw.enablePanicMode()
 
     def load_lockdown_whitelist(self):
-        contexts = [ ]
-        commands = [ ]
-        users = [ ]
-        uids = [ ]
         if self.runtime_view:
-            contexts = sorted(self.fw.getLockdownWhitelistContexts())
-            commands = sorted(self.fw.getLockdownWhitelistCommands())
-            users = sorted(self.fw.getLockdownWhitelistUsers())
-            uids = sorted(self.fw.getLockdownWhitelistUids())
+            contexts = self.fw.getLockdownWhitelistContexts()
+            commands = self.fw.getLockdownWhitelistCommands()
+            users = self.fw.getLockdownWhitelistUsers()
+            uids = self.fw.getLockdownWhitelistUids()
         else:
             whitelist = self.fw.config().policies().getLockdownWhitelist()
-            contexts = sorted(whitelist.getContexts())
-            commands = sorted(whitelist.getCommands())
-            users = sorted(whitelist.getUsers())
-            uids = sorted(whitelist.getUids())
+            contexts = whitelist.getContexts()
+            commands = whitelist.getCommands()
+            users = whitelist.getUsers()
+            uids = whitelist.getUids()
 
         self.lockdownContextStore.clear()
         self.lockdownCommandStore.clear()
