@@ -142,7 +142,7 @@ class LockdownWhitelist(IO_Object):
         return False
 
     def get_commands(self):
-        return self.commands
+        return sorted(self.commands)
 
     # user ids
 
@@ -164,7 +164,7 @@ class LockdownWhitelist(IO_Object):
         return (uid in self.uids)
 
     def get_uids(self):
-        return self.uids
+        return sorted(self.uids)
 
     # users
 
@@ -186,7 +186,7 @@ class LockdownWhitelist(IO_Object):
         return (user in self.users)
 
     def get_users(self):
-        return self.users
+        return sorted(self.users)
 
 #    # group ids
 #
@@ -208,7 +208,7 @@ class LockdownWhitelist(IO_Object):
 #        return (gid in self.gids)
 #
 #    def get_gids(self):
-#        return self.gids
+#        return sorted(self.gids)
 
 #    # groups
 #
@@ -230,7 +230,7 @@ class LockdownWhitelist(IO_Object):
 #        return (group in self.groups)
 #
 #    def get_groups(self):
-#        return self.groups
+#        return sorted(self.groups)
 
     # selinux contexts
 
@@ -252,7 +252,7 @@ class LockdownWhitelist(IO_Object):
         return (context in self.contexts)
 
     def get_contexts(self):
-        return self.contexts
+        return sorted(self.contexts)
 
     # read and write
 

@@ -214,7 +214,7 @@ class FirewallClientConfigZoneSettings(object):
 
     @handle_exceptions
     def getSources(self):
-        return self.settings[11]
+        return sorted(self.settings[11])
     @handle_exceptions
     def setSources(self, sources):
         self.settings[11] = sources
@@ -356,7 +356,7 @@ class FirewallClientServiceSettings(object):
 
     @handle_exceptions
     def getModules(self):
-        return self.settings[4]
+        return sorted(self.settings[4])
     @handle_exceptions
     def setModules(self, modules):
         self.settings[4] = modules
@@ -561,7 +561,7 @@ class FirewallClientConfigPoliciesLockdownWhitelist(object):
 
     @handle_exceptions
     def getCommands(self):
-        return self.settings[0]
+        return sorted(self.settings[0])
     @handle_exceptions
     def setCommands(self, commands):
         self.settings[0] = commands
@@ -579,7 +579,7 @@ class FirewallClientConfigPoliciesLockdownWhitelist(object):
 
     @handle_exceptions
     def getContexts(self):
-        return self.settings[1]
+        return sorted(self.settings[1])
     @handle_exceptions
     def setContexts(self, contexts):
         self.settings[1] = contexts
@@ -597,7 +597,7 @@ class FirewallClientConfigPoliciesLockdownWhitelist(object):
 
     @handle_exceptions
     def getUsers(self):
-        return self.settings[2]
+        return sorted(self.settings[2])
     @handle_exceptions
     def setUsers(self, users):
         self.settings[2] = users
@@ -615,7 +615,7 @@ class FirewallClientConfigPoliciesLockdownWhitelist(object):
 
     @handle_exceptions
     def getUids(self):
-        return self.settings[3]
+        return sorted(self.settings[3])
     @handle_exceptions
     def setUids(self, uids):
         self.settings[3] = uids
