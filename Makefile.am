@@ -43,13 +43,16 @@ tag:
 	git push --all
 	git push --tags
 
-dist: clean-docs update-docs
+dist: clean-docs update-docs tx-pull
 
 update-docs:
 	make -C doc/xml
 
 clean-docs:
 	make -C doc/xml clean
+
+tx-pull:
+	tx pull
 
 archive: update-po $(desktop_DATA) tag dist
 	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
@@ -74,6 +77,7 @@ test-srpm: dist
 update-po:
 	ls $(top_srcdir)/po/*.po | sed 's/.*\/po\///;s/.po//' > $(top_srcdir)/po/LINGUAS
 	make -C po update-po ${PACKAGE_NAME}.pot
+	tx push -s
 
 clean-po:
 	@for cat in `cat ${top_srcdir}/po/LINGUAS`; do \
