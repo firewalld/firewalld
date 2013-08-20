@@ -259,6 +259,9 @@
 	    <para>
 	      If set to <literal>yes</literal> or <literal>true</literal>, masquerading is enabled for the zone. If set to <literal>no</literal> or <literal>false</literal>, the masquerade tag has no effect and can be removed from the config file.
 	    </para>
+	    <para>
+	      If you want to enable masquerading, you should enable it in the zone bound to the external interface.
+	    </para>
 	  </listitem>
 	</varlistentry>
       </variablelist>
