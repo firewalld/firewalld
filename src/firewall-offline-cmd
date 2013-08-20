@@ -361,6 +361,15 @@ else:
         error(_("Opening of '%s' failed, exiting." % CONFIG))
         sys.exit(1)
 
+
+if conf.enabled == False:
+    os.system("systemctl disable firewalld.service")
+    os.system("systemctl mask firewalld.service")
+else:
+    os.system("systemctl unmask firewalld.service")
+    os.system("systemctl enable firewalld.service")
+
+
 # open firewalld config file to get default zone
 
 default_zone = "public" # default zone in case of missing config file
@@ -405,10 +414,6 @@ changed = False
 changed_trusted = False
 
 # fields that can not get converted into a zone, need NM work
-if conf.enabled == False:
-    os.system("systemctl disable firewalld.service")
-else:
-    os.system("systemctl enable firewalld.service")
 
 if conf.trust:
     if trusted_obj:
