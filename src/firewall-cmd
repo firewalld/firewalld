@@ -72,7 +72,7 @@ Zone Options
   --get-zone-of-source=<source>[/<mask>]
                        Print name of the zone the source[/mask] is bound to [P]
   --list-all-zones     List everything added for or enabled in all zones [P]
-  --zone=zone          Use this zone to set or query options, else default zone
+  --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options maked with [Z]
 
 Options to Adapt and Query Zones
@@ -82,33 +82,33 @@ Options to Adapt and Query Zones
                        Usable for options maked with [T]
   --add-service=<service>
                        Add a service for a zone [P] [Z] [T]
-  --remove-service=service
+  --remove-service=<service>
                        Remove a service from a zone [P] [Z]
-  --query-service=service
+  --query-service=<service>
                        Return whether service has been added for a zone [P] [Z]
   --list-ports         List ports added for a zone [P] [Z]
-  --add-port=portid[-portid]/protocol
+  --add-port=<portid>[-<portid>]/<protocol>
                        Add the port for a zone [P] [Z] [T]
-  --remove-port=portid[-portid]/protocol
+  --remove-port=<portid>[-<portid>]/<protocol>
                        Remove the port from a zone [P] [Z]
-  --query-port=portid[-portid]/protocol
+  --query-port=<portid>[-<portid>]/<protocol>
                        Return whether the port has been added for zone [P] [Z]
   --list-icmp-blocks   List Internet ICMP type blocks added for a zone [P] [Z]
-  --add-icmp-block=icmptype
+  --add-icmp-block=<icmptype>
                        Add an ICMP block for a zone [P] [Z] [T]
-  --remove-icmp-block=icmptype
+  --remove-icmp-block=<icmptype>
                        Remove the ICMP block from a zone [P] [Z]
-  --query-icmp-block=icmptype
+  --query-icmp-block=<icmptype>
                        Return whether an ICMP block has been added for a zone
                        [P] [Z]
   --list-forward-ports List IPv4 forward ports added for a zone [P] [Z]
-  --add-forward-port=port=portid[-portid]:proto=protocol[:toport=portid[-portid]][:toaddr=address[/mask]]
+  --add-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Add the IPv4 forward port for a zone [P] [Z] [T]
-  --remove-forward-port=port=portid[-portid]:proto=protocol[:toport=portid[-portid]][:toaddr=address[/mask]]
+  --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Remove the IPv4 forward port from a zone [P] [Z]
 
 
-  --query-forward-port=port=portid[-portid]:proto=protocol[:toport=portid[-portid]][:toaddr=address[/mask]]
+  --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Return whether the IPv4 forward port has been added for
                        a zone [P] [Z]
   --add-masquerade     Enable IPv4 masquerade for a zone [P] [Z] [T]
@@ -116,57 +116,57 @@ Options to Adapt and Query Zones
   --query-masquerade   Return whether IPv4 masquerading has been enabled for a
                        zone [P] [Z]
   --list-rich-rules    List rich language rules added for a zone [P] [Z]
-  --add-rich-rule='rule'
+  --add-rich-rule=<rule>
                        Add rich language rule 'rule' for a zone [P] [Z] [T]
-  --remove-rich-rule='rule'
+  --remove-rich-rule=<rule>
                        Remove rich language rule 'rule' from a zone [P] [Z]
-  --query-rich-rule='rule'
+  --query-rich-rule=<rule>
                        Return whether a rich language rule 'rule' has been
                        added for a zone [P] [Z]
 
 Options to Handle Bindings of Interfaces
   --list-interfaces    List interfaces that are bound to a zone [P] [Z]
-  --add-interface=interface
-                       Bind interface interface to a zone [P] [Z]
-  --change-interface=interface
-                       Change zone the interface is bound to [Z]
-  --query-interface=interface
-                       Query whether interface is bound to a zone [P] [Z]
-  --remove-interface=interface
-                       Remove binding of interface from a zone [P] [Z]
+  --add-interface=<interface>
+                       Bind the <interface> to a zone [P] [Z]
+  --change-interface=<interface>
+                       Change zone the <interface> is bound to [Z]
+  --query-interface=<interface>
+                       Query whether <interface> is bound to a zone [P] [Z]
+  --remove-interface=<interface>
+                       Remove binding of <interface> from a zone [P] [Z]
 
 Options to Handle Bindings of Sources
   --list-sources       List sources that are bound to a zone [P] [Z]
-  --add-source=source[/mask]
-                       Bind source[/mask] to a zone [P] [Z]
-  --change-source=source[/mask]
-                       Change zone the source[/mask] is bound to [Z]
-  --query-source=source[/mask]
-                       Query whether the source[/mask] is bound to a zone
+  --add-source=<source>[/<mask>]
+                       Bind <source>[/<mask>] to a zone [P] [Z]
+  --change-source=<source>[/<mask>]
+                       Change zone the <source>[/<mask>] is bound to [Z]
+  --query-source=<source>[/<mask>]
+                       Query whether <source>[/<mask>] is bound to a zone
                        [P] [Z]
-  --remove-source=source[/mask]
-                       Remove binding of source[/mask] from a zone [P] [Z]
+  --remove-source=<source>[/<mask>]
+                       Remove binding of <source>[/<mask>] from a zone [P] [Z]
 
 Direct Options
   --direct             First option for all direct options
-  --get-chains {ipv4|ipv6|eb} table
+  --get-chains {ipv4|ipv6|eb} <table>
                        Get all chains added to the table
-  --add-chain {ipv4|ipv6|eb} table chain
+  --add-chain {ipv4|ipv6|eb} <table> <chain>
                        Add a new chain to the table
-  --remove-chain {ipv4|ipv6|eb} table chain
+  --remove-chain {ipv4|ipv6|eb} <table> <chain>
                        Remove the chain from the table
-  --query-chain {ipv4|ipv6|eb} table chain
+  --query-chain {ipv4|ipv6|eb} <table> <chain>
                        Return whether the chain has been added to the table
-  --get-rules {ipv4|ipv6|eb} table chain
+  --get-rules {ipv4|ipv6|eb} <table> <chain>
                        Get all rules added to chain in table
-  --add-rule {ipv4|ipv6|eb} table chain priority args
+  --add-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Add rule to chain in table
-  --remove-rule {ipv4|ipv6|eb} table chain priority args
+  --remove-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Remove rule with priority from chain in table
-  --query-rule {ipv4|ipv6|eb} table chain priority args
+  --query-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Return whether a rule with priority has been added to
                        chain in table
-  --passthrough {ipv4|ipv6|eb} args
+  --passthrough {ipv4|ipv6|eb} <arg>...
                        Pass a command through
 
 Lockdown Options
@@ -177,35 +177,35 @@ Lockdown Options
 Lockdown Whitelist Options
   --list-lockdown-whitelist-commands
                        List all command lines that are on the whitelist [P]
-  --add-lockdown-whitelist-command=command
+  --add-lockdown-whitelist-command=<command>
                        Add the command to the whitelist [P]
-  --remove-lockdown-whitelist-command=command
+  --remove-lockdown-whitelist-command=<command>
                        Remove the command from the whitelist [P]
-  --query-lockdown-whitelist-command=command
+  --query-lockdown-whitelist-command=<command>
                        Query whether the command is on the whitelist [P]
   --list-lockdown-whitelist-contexts
                        List all contexts that are on the whitelist [P]
-  --add-lockdown-whitelist-context=context
+  --add-lockdown-whitelist-context=<context>
                        Add the context context to the whitelist [P]
-  --remove-lockdown-whitelist-context=context
+  --remove-lockdown-whitelist-context=<context>
                        Remove the context from the whitelist [P]
-  --query-lockdown-whitelist-context=context
+  --query-lockdown-whitelist-context=<context>
                        Query whether the context is on the whitelist [P]
   --list-lockdown-whitelist-uids
                        List all user ids that are on the whitelist [P]
-  --add-lockdown-whitelist-uid=uid
+  --add-lockdown-whitelist-uid=<uid>
                        Add the user id uid to the whitelist [P]
-  --remove-lockdown-whitelist-uid=uid
+  --remove-lockdown-whitelist-uid=<uid>
                        Remove the user id uid from the whitelist [P]
-  --query-lockdown-whitelist-uid=uid
+  --query-lockdown-whitelist-uid=<uid>
                        Query whether the user id uid is on the whitelist [P]
   --list-lockdown-whitelist-users
                        List all user names that are on the whitelist [P]
-  --add-lockdown-whitelist-user=user
+  --add-lockdown-whitelist-user=<user>
                        Add the user name user to the whitelist [P]
-  --remove-lockdown-whitelist-user=user
+  --remove-lockdown-whitelist-user=<user>
                        Remove the user name user from the whitelist [P]
-  --query-lockdown-whitelist-user=user
+  --query-lockdown-whitelist-user=<user>
                        Query whether the user name user is on the whitelist [P]
 
 Panic Options
