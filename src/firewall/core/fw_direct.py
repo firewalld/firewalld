@@ -153,8 +153,44 @@ class FirewallDirect:
             # get priority of rule
             priority = self._rules[chain_id][rule_id]
 
-        # sum number of rules for all positions up to position (including)
-        # sort used positions
+        # If a rule gets added, the initial rule index position within the 
+        # ipv, table and chain combination (chain_id) is 1.
+        # Tf the chain_id exists in _rule_priority_positions, there are already
+        # other rules for this chain_id. The number of rules for a priority
+        # less or equal to the priority of the new rule will increase the 
+        # index of the new rule. The index is the ip*tables -I insert rule
+        # number.
+        #
+        # Example: We have the following rules for chain_id (ipv4, filter,
+        # INPUT) already:
+        #   ipv4, filter, INPUT, 1, -i, foo1, -j, ACCEPT
+        #   ipv4, filter, INPUT, 2, -i, foo2, -j, ACCEPT
+        #   ipv4, filter, INPUT, 2, -i, foo2_1, -j, ACCEPT
+        #   ipv4, filter, INPUT, 3, -i, foo3, -j, ACCEPT
+        # This results in the following _rule_priority_positions structure:
+        #   _rule_priority_positions[(ipv4,filter,INPUT)][1] = 1
+        #   _rule_priority_positions[(ipv4,filter,INPUT)][2] = 2
+        #   _rule_priority_positions[(ipv4,filter,INPUT)][3] = 1
+        # The new rule
+        #   ipv4, filter, INPUT, 2, -i, foo2_2, -j, ACCEPT
+        # has the same pritority as the second rule before and will be added
+        # right after it. 
+        # The initial index is 1 and the chain_id is already in
+        # _rule_priority_positions. Therefore the index will increase for
+        # the number of rules in every rule position in 
+        # _rule_priority_positions[(ipv4,filter,INPUT)].keys()
+        # where position is smaller or equal to the entry in keys.
+        # With the example from above:
+        # The priority of the new rule is 2. Therefore for all keys in 
+        # _rule_priority_positions[chain_id] where priority is 1 or 2, the 
+        # number of the rules will increase the index of the rule.
+        # For _rule_priority_positions[chain_id][1]: index += 1
+        # _rule_priority_positions[chain_id][2]: index += 2
+        # index will be 4 in the end and the rule in the table chain 
+        # combination will be added at index 4.
+        # If there are no rules in the table chain combination, a new rule 
+        # has index 1.
+
         index = 1
         if chain_id in self._rule_priority_positions:
             positions = sorted(self._rule_priority_positions[chain_id].keys())
