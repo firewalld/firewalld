@@ -64,7 +64,7 @@ def handle_exceptions(func, *args, **kwargs):
 
 # zone config setings
 
-class FirewallClientConfigZoneSettings(object):
+class FirewallClientZoneSettings(object):
     @handle_exceptions
     def __init__(self, settings = None):
         if settings:
@@ -282,7 +282,7 @@ class FirewallClientConfigZone(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getSettings(self):
-        return FirewallClientConfigZoneSettings(list(dbus_to_python(\
+        return FirewallClientZoneSettings(list(dbus_to_python(\
                     self.fw_zone.getSettings())))
 
     @slip.dbus.polkit.enable_proxy
@@ -551,7 +551,7 @@ class FirewallClientConfigIcmpType(object):
 
 # config.policies lockdown whitelist
 
-class FirewallClientConfigPoliciesLockdownWhitelist(object):
+class FirewallClientPoliciesLockdownWhitelist(object):
     @handle_exceptions
     def __init__(self, settings=None):
         if settings:
@@ -645,7 +645,7 @@ class FirewallClientConfigPolicies(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getLockdownWhitelist(self):
-        return FirewallClientConfigPoliciesLockdownWhitelist( \
+        return FirewallClientPoliciesLockdownWhitelist( \
             list(dbus_to_python(self.fw_policies.getLockdownWhitelist())))
 
     @slip.dbus.polkit.enable_proxy

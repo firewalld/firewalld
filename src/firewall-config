@@ -1775,7 +1775,7 @@ class FirewallConfig(object):
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
         else:
-            settings = client.FirewallClientConfigZoneSettings()
+            settings = client.FirewallClientZoneSettings()
 
         if old_version != version or old_short != short or \
                 old_desc != desc or old_target != target:
