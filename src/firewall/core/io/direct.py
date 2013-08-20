@@ -121,14 +121,14 @@ class Direct(IO_Object):
     """ Direct class """
 
     IMPORT_EXPORT_STRUCTURE = (
-        # chain: [ ipv, table, chain ]
-        ( "chain", [ "", "", "" ] ),                    # a(sss)
-        # rule: [ ipv, table, chain, priority, [ arg ]
-        ( "rule", [ "", "", "", 0, [ "" ] ] ),          # a(sssdas)
-#        # passthrough: [ ipv, [ arg ]
-        ( "passthough", [ "", [ "" ] ] ),               # a(sas)
+        # chain: [ ipv, table, [ chain ] ]
+        ( "chains", [ ( "", "", "" ), ], ),                   # a(ssas)
+        # rule: [ ipv, table, chain, [ priority, [ arg ] ] ]
+        ( "rules", [ ( "", "", "", 0, [ "" ] ), ], ),         # a(sssa(das))
+        # passthrough: [ ipv, [ [ arg ] ] ]
+        ( "passthroughs", [ ( "", [ "" ]), ], ),              # a(sas)
         )
-    DBUS_SIGNATURE = '(a(sss)a(sssdas)a(sas)'
+    DBUS_SIGNATURE = '(a(sss)a(sssias)a(sas))'
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "direct": None,
         "chain": [ "ipv", "table", "chain" ],
@@ -146,6 +146,39 @@ class Direct(IO_Object):
     def _check_config(self, config, item):
         pass
         # check arg lists
+
+    def export_config(self):
+        ret = [ ]
+        x = [ ]
+        for key in self.chains:
+            for chain in self.chains[key]:
+                x.append(list(key) + list([chain]))
+        ret.append(x)
+        x = [ ]
+        for key in self.rules:
+            for rule in self.rules[key]:
+                x.append(list(key) + list(rule))
+        ret.append(x)
+        x = [ ]
+        for key in self.passthroughs:
+            for rule in self.passthroughs[key]:
+                x.append((key, rule))
+        ret.append(x)
+        return tuple(ret)
+
+    def import_config(self, config):
+        self.clear()
+        self.check_config(config)
+        for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+            if element == "chains":
+                for x in config[i]:
+                    self.add_chain(*x)
+            if element == "rules":
+                for x in config[i]:
+                    self.add_rule(*x)
+            if element == "passthroughs":
+                for x in config[i]:
+                    self.add_passthrough(*x)
 
     def clear(self):
         self.chains = LastUpdatedOrderedDict()
@@ -327,39 +360,20 @@ class Direct(IO_Object):
                 handler.startElement("rule", { "ipv": ipv, "table": table,
                                                  "chain": chain,
                                                  "priority": "%d" % priority })
-                handler.ignorableWhitespace("\n")
-                for arg in args:
-                    # use start/stop elements if '"' is in arg, else simple
-                    # elements
-                    handler.ignorableWhitespace("    ")
-                    handler.startElement("arg", { })
-                    handler.ignorableWhitespace(arg)
-                    handler.endElement("arg")
-                    handler.ignorableWhitespace("\n")
-
-                handler.ignorableWhitespace("  ")
+                handler.ignorableWhitespace(" ".join(args))
                 handler.endElement("rule")
                 handler.ignorableWhitespace("\n")
 
-#        # passthroughs
-#        for ipv in self.passthroughs:
-#            for args in self.passthroughs[ipv]:
-#                if len(args) < 1:
-#                    continue
-#                handler.ignorableWhitespace("  ")
-#                handler.startElement("passthrough", { "ipv": ipv })
-#                handler.ignorableWhitespace("\n")
-#                for arg in args:
-#                    # use start/stop elements if '"' is in arg, else simple
-#                    # elements
-#                    handler.ignorableWhitespace("    ")
-#                    handler.startElement("arg", { })
-#                    handler.ignorableWhitespace(arg)
-#                    handler.endElement("arg")
-#                    handler.ignorableWhitespace("\n")
-#                handler.ignorableWhitespace("  ")
-#                handler.endElement("passthrough")
-#                handler.ignorableWhitespace("\n")
+        # passthroughs
+        for ipv in self.passthroughs:
+            for args in self.passthroughs[ipv]:
+                if len(args) < 1:
+                    continue
+                handler.ignorableWhitespace("  ")
+                handler.startElement("passthrough", { "ipv": ipv })
+                handler.ignorableWhitespace(" ".join(args))
+                handler.endElement("passthrough")
+                handler.ignorableWhitespace("\n")
 
         # end zone element
         handler.endElement("direct")

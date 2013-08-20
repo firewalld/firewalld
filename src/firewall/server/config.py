@@ -40,6 +40,7 @@ from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
+from firewall.core.io.direct import Direct
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid
 from firewall.errors import *
@@ -72,6 +73,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(FIREWALLD_ZONES)
         self.watcher.add_watch_dir(ETC_FIREWALLD_ZONES)
         self.watcher.add_watch_file(LOCKDOWN_WHITELIST)
+        self.watcher.add_watch_file(FIREWALLD_DIRECT)
 
     @handle_exceptions
     def _init_vars(self):
@@ -147,6 +149,11 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif name == LOCKDOWN_WHITELIST:
             self.config.update_lockdown_whitelist()
             self.LockdownWhitelistUpdated()
+
+        elif name == FIREWALLD_DIRECT:
+            self.config.update_direct()
+            self.DirectSettingsUpdated()
+
 
     @handle_exceptions
     def _addIcmpType(self, obj):
@@ -574,3 +581,30 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def ZoneAdded(self, zone):
         log.debug1("config.ZoneAdded('%s')" % (zone))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # DIRECT
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT,
+                         out_signature=Direct.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getDirectSettings(self, sender=None):
+        # returns list ipv, table, list of chains
+        log.debug1("config.direct.getChainSettings()")
+        return self.config.get_direct().export_config()
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT,
+                         in_signature=Direct.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def setDirectSettings(self, settings, sender=None):
+        # returns list ipv, table, list of chains
+        log.debug1("config.direct.setChainSettings()")
+        settings = dbus_to_python(settings)
+        self.config.get_direct().import_config(settings)
+        self.config.get_direct().write()
+        self.DirectSettingsUpdated()
+
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG_DIRECT)
+    @dbus_handle_exceptions
+    def DirectSettingsUpdated(self):
+        log.debug1("config.direct.DirectSettingsUpdated()")

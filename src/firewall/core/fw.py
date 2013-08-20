@@ -202,6 +202,7 @@ class Firewall:
                 for arg in args:
                     self.direct.passthrough(ipv, arg)
             # TODO: copy obj into config interface
+        self.config.set_direct(copy.deepcopy(obj))
 
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():

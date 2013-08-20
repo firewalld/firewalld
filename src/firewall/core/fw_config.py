@@ -44,6 +44,7 @@ class FirewallConfig:
         self._default_zones = { }
         self._firewalld_conf = None
         self._policies = None
+        self._direct = None
 
     def cleanup(self):
         for x in self._default_icmptypes.keys():
@@ -92,6 +93,20 @@ class FirewallConfig:
             self._policies.lockdown_whitelist.clear()
         else:
             self._policies.lockdown_whitelist.read()
+
+    # direct
+
+    def set_direct(self, direct):
+        self._direct = direct
+
+    def get_direct(self):
+        return self._direct
+
+    def update_direct(self):
+        if not os.path.exists(FIREWALLD_DIRECT):
+            self._direct.clear()
+        else:
+            self._direct.read()
 
     # icmptypes
 
