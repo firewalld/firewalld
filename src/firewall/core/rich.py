@@ -78,6 +78,11 @@ class Rich_ForwardPort(object):
         self.protocol = protocol
         self.to_port = to_port
         self.to_address = to_address
+        # do not use None for to_port and to_address, replace it by ""
+        if self.to_port == None:
+            self.to_port = ""
+        if self.to_address == None:
+            self.to_address = ""
 
     def __str__(self):
         return 'forward-port port="%s" protocol="%s"%s%s' % \
@@ -501,12 +506,12 @@ class Rich_Rule(object):
                 raise FirewallError(INVALID_PORT, self.element.port)
             if not self.element.protocol in [ "tcp", "udp" ]:
                 raise FirewallError(INVALID_PROTOCOL, self.element.protocol)
-            if self.element.to_port == None and self.element.to_address == None:
+            if self.element.to_port == "" and self.element.to_address == "":
                 raise FirewallError(INVALID_PORT, self.element.to_port)
-            if self.element.to_port != None and \
+            if self.element.to_port != "" and \
                     not functions.check_port(self.element.to_port):
                 raise FirewallError(INVALID_PORT, self.element.to_port)
-            if self.element.to_address != None and \
+            if self.element.to_address != "" and \
                     not functions.check_single_address(self.family,
                                                        self.element.to_address):
                 raise FirewallError(INVALID_ADDR, self.element.to_address)
