@@ -27,7 +27,7 @@ import unittest
 import time
 import firewall
 from firewall.client import FirewallClient, \
-                            FirewallClientConfigZoneSettings, \
+                            FirewallClientZoneSettings, \
                             FirewallClientServiceSettings, \
                             FirewallClientIcmpTypeSettings
 from firewall.core.base import DEFAULT_ZONE_TARGET
@@ -69,7 +69,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         zone_icmpblocks = ["redirect", "echo-reply"]
         zone_masquerade = False
         zone_forward_ports = [("443", "tcp", "441", "192.168.0.2"), ("123", "udp", "321", "192.168.1.1")]
-        settings = FirewallClientConfigZoneSettings()
+        settings = FirewallClientZoneSettings()
         settings.setVersion(zone_version)
         settings.setShort(zone_short)
         settings.setDescription(zone_description)
@@ -92,7 +92,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         config_zone = self.fw.config().getZoneByName(zone_name)
         self.assertIsInstance(config_zone, firewall.client.FirewallClientConfigZone)
         zone_settings = config_zone.getSettings()
-        self.assertIsInstance(zone_settings, firewall.client.FirewallClientConfigZoneSettings)
+        self.assertIsInstance(zone_settings, firewall.client.FirewallClientZoneSettings)
         self.assertEquals(zone_settings.getVersion(), zone_version)
         self.assertEquals(zone_settings.getShort(), zone_short)
         self.assertEquals(zone_settings.getDescription(), zone_description)
