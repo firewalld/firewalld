@@ -38,7 +38,6 @@ def __print(msg=None):
 
 def __print_and_exit(msg=None, exit_code=0):
     __print(msg)
-    __usage()
     sys.exit(exit_code)
 
 def __usage():
