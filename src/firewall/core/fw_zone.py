@@ -422,7 +422,7 @@ class FirewallZone:
     def query_interface(self, zone, interface):
         return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
-    def get_interfaces(self, zone):
+    def list_interfaces(self, zone):
         return sorted(self.get_settings(zone)["interfaces"].keys())
 
     # SOURCES
@@ -540,7 +540,7 @@ class FirewallZone:
     def query_source(self, zone, source):
         return self.__source_id(source) in self.get_settings(zone)["sources"]
 
-    def get_sources(self, zone):
+    def list_sources(self, zone):
         return [ k[1] for k in self.get_settings(zone)["sources"].keys() ]
 
     # RICH LANGUAGE
@@ -923,7 +923,7 @@ class FirewallZone:
     def query_rule(self, zone, rule):
         return self.__rule_id(rule) in self.get_settings(zone)["rules"]
 
-    def get_rules(self, zone):
+    def list_rules(self, zone):
         return list(self.get_settings(zone)["rules"].keys())
 
     # SERVICES
@@ -1026,7 +1026,7 @@ class FirewallZone:
     def query_service(self, zone, service):
         return (self.__service_id(service) in self.get_settings(zone)["services"])
 
-    def get_services(self, zone):
+    def list_services(self, zone):
         return sorted(self.get_settings(zone)["services"].keys())
 
     # PORTS
@@ -1099,7 +1099,7 @@ class FirewallZone:
     def query_port(self, zone, port, protocol):
         return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
 
-    def get_ports(self, zone):
+    def list_ports(self, zone):
         return list(self.get_settings(zone)["ports"].keys())
 
     # PROTOCOLS
@@ -1299,7 +1299,7 @@ class FirewallZone:
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         return forward_id in self.get_settings(zone)["forward_ports"]
 
-    def get_forward_ports(self, zone):
+    def list_forward_ports(self, zone):
         return list(self.get_settings(zone)["forward_ports"].keys())
 
     # ICMP BLOCK
@@ -1387,5 +1387,5 @@ class FirewallZone:
     def query_icmp_block(self, zone, icmp):
         return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
 
-    def get_icmp_blocks(self, zone):
+    def list_icmp_blocks(self, zone):
         return sorted(self.get_settings(zone)["icmp_blocks"].keys())

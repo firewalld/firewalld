@@ -609,6 +609,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def listServices(self, sender=None):
         # returns the list of services
+        # TODO: should be renamed to getServices()
+        # because is called by firewall-cmd --get-services
         log.debug1("listServices()")
         return self.fw.service.get_services()
 
@@ -628,6 +630,8 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def listIcmpTypes(self, sender=None):
         # returns the list of services
+        # TODO: should be renamed to getIcmptypes()
+        # because is called by firewall-cmd --get-icmptypes
         log.debug1("listIcmpTypes()")
         return self.fw.icmptype.get_icmptypes()
 
@@ -693,8 +697,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getActiveZones()")
         zones = { }
         for zone in self.fw.zone.get_zones():
-            interfaces = self.fw.zone.get_interfaces(zone)
-            sources = self.fw.zone.get_sources(zone)
+            interfaces = self.fw.zone.list_interfaces(zone)
+            sources = self.fw.zone.list_sources(zone)
             if len(interfaces) + len(sources) > 0:
                 zones[zone] = { }
                 if len(interfaces) > 0:
@@ -833,9 +837,11 @@ class FirewallD(slip.dbus.service.Object):
         """Return the list of interfaces of a zone.
         If zone is empty, use default zone.
         """
+        # TODO: should be renamed to listInterfaces()
+        # because is called by firewall-cmd --zone --list-interfaces
         zone = dbus_to_python(zone)
         log.debug1("zone.getInterfaces('%s')" % (zone))
-        return self.fw.zone.get_interfaces(zone)
+        return self.fw.zone.list_interfaces(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
@@ -938,9 +944,11 @@ class FirewallD(slip.dbus.service.Object):
         """Return the list of sources of a zone.
         If zone is empty, use default zone.
         """
+        # TODO: should be renamed to listSources()
+        # because is called by firewall-cmd --zone --list-sources
         zone = dbus_to_python(zone)
         log.debug1("zone.getSources('%s')" % (zone))
-        return self.fw.zone.get_sources(zone)
+        return self.fw.zone.list_sources(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
@@ -1023,9 +1031,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getRichRules(self, zone, sender=None):
         # returns the list of enabled services for zone
+        # TODO: should be renamed to listRichRules()
+        # because is called by firewall-cmd --zone --list-rich-rules
         zone = dbus_to_python(zone)
         log.debug1("zone.getRichRules('%s')" % (zone))
-        return self.fw.zone.get_rules(zone)
+        return self.fw.zone.list_rules(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
@@ -1104,9 +1114,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getServices(self, zone, sender=None):
         # returns the list of enabled services for zone
+        # TODO: should be renamed to listServices()
+        # because is called by firewall-cmd --zone --list-services
         zone = dbus_to_python(zone)
         log.debug1("zone.getServices('%s')" % (zone))
-        return self.fw.zone.get_services(zone)
+        return self.fw.zone.list_services(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
@@ -1190,9 +1202,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getPorts(self, zone, sender=None):
         # returns the list of enabled ports
+        # TODO: should be renamed to listPorts()
+        # because is called by firewall-cmd --zone --list-ports
         zone = dbus_to_python(zone)
         log.debug1("zone.getPorts('%s')" % (zone))
-        return self.fw.zone.get_ports(zone)
+        return self.fw.zone.list_ports(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssi')
     @dbus_handle_exceptions
@@ -1355,9 +1369,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getForwardPorts(self, zone, sender=None):
         # returns the list of enabled ports for zone
+        # TODO: should be renamed to listForwardPorts()
+        # because is called by firewall-cmd --zone --list-forward-ports
         zone = dbus_to_python(zone)
         log.debug1("zone.getForwardPorts('%s')" % (zone))
-        return self.fw.zone.get_forward_ports(zone)
+        return self.fw.zone.list_forward_ports(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssssi')
     @dbus_handle_exceptions
@@ -1437,9 +1453,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getIcmpBlocks(self, zone, sender=None):
         # returns the list of enabled icmpblocks
+        # TODO: should be renamed to listIcmpBlocks()
+        # because is called by firewall-cmd --zone --list-icmptypes
         zone = dbus_to_python(zone)
         log.debug1("zone.getIcmpBlocks('%s')" % (zone))
-        return self.fw.zone.get_icmp_blocks(zone)
+        return self.fw.zone.list_icmp_blocks(zone)
 
     @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
