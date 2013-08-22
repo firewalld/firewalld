@@ -1803,6 +1803,10 @@ class FirewallConfig(object):
     def onEditRichRule(self, *args):
         self.add_edit_rich_rule(False)
 
+    def onRichRuleClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_rich_rule(False)
+
     def onRemoveRichRule(self, *args):
         active_zone = self.get_active_zone()
         selection = self.richRuleView.get_selection()
@@ -2480,6 +2484,10 @@ class FirewallConfig(object):
             return self.nm_connection_editor(None, uuid=uuid)
         self.add_edit_interface(False)
 
+    def onInterfaceClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.onEditInterface()
+
     def onRemoveInterface(self, *args):
         active_zone = self.get_active_zone()
         selection = self.interfaceView.get_selection()
@@ -2567,6 +2575,10 @@ class FirewallConfig(object):
     def onEditSource(self, *args):
         self.add_edit_source(False)
 
+    def onSourceClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_source(False)
+
     def onRemoveSource(self, *args):
         active_zone = self.get_active_zone()
         selection = self.sourceView.get_selection()
@@ -2625,6 +2637,10 @@ class FirewallConfig(object):
 
     def onEditPort(self, *args):
         self.add_edit_port(False)
+
+    def onPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_port(False)
 
     def onRemovePort(self, *args):
         active_zone = self.get_active_zone()
@@ -2878,6 +2894,10 @@ class FirewallConfig(object):
 
     def onEditForwardPort(self, *args):
         self.add_edit_forward_port(False)
+
+    def onForwardPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_forward_port(False)
 
     def forwardport_select_dialog(self, family, old_value=None):
         self.forwardDialogOkButton.set_sensitive(False)
@@ -3194,6 +3214,10 @@ class FirewallConfig(object):
     def onServiceConfEditPort(self, *args):
         self.add_edit_port_proto(False)
 
+    def onServiceConfPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_port_proto(False)
+
     def onServiceConfRemovePort(self, *args):
         active_service = self.get_active_service()
         selection = self.serviceConfPortView.get_selection()
@@ -3314,6 +3338,10 @@ class FirewallConfig(object):
 
     def onServiceConfEditModule(self, *args):
         self.add_edit_module(False)
+
+    def onServiceConfModuleClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_module(False)
 
     def onServiceConfRemoveModule(self, *args):
         active_service = self.get_active_service()
@@ -3805,6 +3833,10 @@ class FirewallConfig(object):
     def onEditContext(self, button):
         self.add_edit_context(False)
 
+    def onContextClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_context(False)
+
     def onRemoveContext(self, button):
         selection = self.lockdownContextView.get_selection()
         (model, iter) = selection.get_selected()
@@ -3891,6 +3923,10 @@ class FirewallConfig(object):
     def onEditCommand(self, button):
         self.add_edit_command(False)
 
+    def onCommandClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_command(False)
+
     def onRemoveCommand(self, button):
         selection = self.lockdownCommandView.get_selection()
         (model, iter) = selection.get_selected()
@@ -3973,6 +4009,10 @@ class FirewallConfig(object):
 
     def onEditUser(self, button):
         self.add_edit_user(False)
+
+    def onUserClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_user(False)
 
     def onRemoveUser(self, button):
         selection = self.lockdownUserView.get_selection()
@@ -4057,6 +4097,10 @@ class FirewallConfig(object):
 
     def onEditUid(self, button):
         self.add_edit_uid(False)
+
+    def onUidClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_uid(False)
 
     def onRemoveUid(self, button):
         selection = self.lockdownUidView.get_selection()
