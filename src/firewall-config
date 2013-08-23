@@ -3738,9 +3738,11 @@ class FirewallConfig(object):
 
     def lockdown_check_cb(self, *args):
         if self.fw.queryLockdown():
-            self.fw.disableLockdown()
+            self.fw.config().set_property("Lockdown", "no")    # permanent
+            self.fw.disableLockdown()                          # runtime
         else:
-            self.fw.enableLockdown()
+            self.fw.config().set_property("Lockdown", "yes")   # permanent
+            self.fw.enableLockdown()                           # runtime
 
     def panic_check_cb(self, *args):
         if self.fw.queryPanicMode():

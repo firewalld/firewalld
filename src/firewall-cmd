@@ -866,11 +866,11 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
 
     # lockdown
     elif a.lockdown_on:
-        fw.enableLockdown()                           # runtime
         fw.config().set_property("Lockdown", "yes")   # permanent
+        fw.enableLockdown()                           # runtime
     elif a.lockdown_off:
-        fw.disableLockdown()                          # runtime
         fw.config().set_property("Lockdown", "no")    # permanent
+        fw.disableLockdown()                          # runtime
     elif a.query_lockdown:
         __print_query_result(fw.queryLockdown())      # runtime
         #lockdown = fw.config().get_property("Lockdown")
