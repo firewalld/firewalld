@@ -1419,7 +1419,7 @@
                         <property name="label" translatable="yes">Reload Firewalld</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Reload Firewalld</property>
+                        <property name="tooltip_text" translatable="yes">Reloads firewall rules. Current permanent configuration will become new runtime configuration. i.e. all runtime only changes done until reload are lost with reload if they have not been also in permanent configuration.</property>
                         <property name="image">image1</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="onReloadFirewalld" swapped="no"/>
@@ -1436,7 +1436,7 @@
                         <property name="label" translatable="yes">Change Zones of Connections...</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Change Zones of Connections</property>
+                        <property name="tooltip_text" translatable="yes">Change which zone a network connection belongs to.</property>
                         <property name="image">image2</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="nm_connection_editor" swapped="no"/>
@@ -1447,7 +1447,7 @@
                         <property name="label" translatable="yes">Change Default Zone</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="tooltip_text" translatable="yes">Change Default Zone</property>
+                        <property name="tooltip_text" translatable="yes">Change default zone for connections or interfaces.</property>
                         <property name="image">image15</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="onChangeDefaultZone" swapped="no"/>
@@ -1463,6 +1463,7 @@
                       <object class="GtkCheckMenuItem" id="panicMenuitem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Panic mode means that all incoming and outgoing packets are dropped.</property>
                         <property name="label" translatable="yes">Panic Mode</property>
                         <property name="use_underline">True</property>
                       </object>
@@ -1471,6 +1472,7 @@
                       <object class="GtkCheckMenuItem" id="lockdownMenuitem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Lockdown locks firewall configuration so that only applications on lockdown whitelist are able to change it.</property>
                         <property name="label" translatable="yes">Lockdown</property>
                         <property name="use_underline">True</property>
                       </object>
@@ -1518,7 +1520,7 @@
               <object class="GtkToolButton" id="toolbutton1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Reloads firewalld: Current permanent configuration will become the new runtime configuration.</property>
+                <property name="tooltip_markup" translatable="yes">Reloads firewall rules. Current permanent configuration will become new runtime configuration. i.e. all runtime only changes done until reload are lost with reload if they have not been also in permanent configuration.</property>
                 <property name="label" translatable="yes">Reload Firewalld</property>
                 <property name="use_underline">True</property>
                 <property name="stock_id">gtk-refresh</property>
@@ -6895,6 +6897,12 @@
                     <property name="n_columns">2</property>
                     <property name="column_spacing">6</property>
                     <property name="row_spacing">6</property>
+                    <child>
+                      <placeholder/>
+                    </child>
+                    <child>
+                      <placeholder/>
+                    </child>
                     <child>
                       <placeholder/>
                     </child>

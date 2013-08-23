@@ -122,6 +122,9 @@
 	  <listitem>
 	    <para>
 	      Reload firewall rules and keep state information.
+	      Current permanent configuration will become new runtime configuration,
+	      i.e. all runtime only changes done until reload are lost with reload
+	      if they are not also in permanent configuration.
 	    </para>
 	  </listitem>
 	</varlistentry>

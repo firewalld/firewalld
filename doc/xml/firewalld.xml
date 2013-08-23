@@ -141,14 +141,14 @@
     <refsect2>
       <title>Runtime configuration</title>
       <para>
-	The runtime configuration is not permanent and will only be restored for a reload. After restart or stop of the service or a system reboot, these options will be gone.
+	Runtime configuration is the actual active configuration and is not permanent. After reload/restart of the service or a system reboot, runtime settings will be gone if they haven't been also in permanent configuration.
       </para>
     </refsect2>
 
     <refsect2>
       <title>Permanent configuration</title>
       <para>
-	The permanent configuration is stored in config files and will be restored with every machine boot or service reload or restart.
+	The permanent configuration is stored in config files and will be loaded and become new runtime configuration with every machine boot or service reload/restart.
       </para>
     </refsect2>
 
