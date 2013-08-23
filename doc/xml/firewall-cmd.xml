@@ -124,7 +124,7 @@
 	      Reload firewall rules and keep state information.
 	      Current permanent configuration will become new runtime configuration,
 	      i.e. all runtime only changes done until reload are lost with reload
-	      if they are not also in permanent configuration.
+	      if they have not been also in permanent configuration.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -829,7 +829,7 @@
 	  <term><option>--lockdown-on</option></term>
 	  <listitem>
 	    <para>
-	      Enable lockdown.
+	      Enable lockdown. Be careful - if firewall-cmd is not on lockdown whitelist when you enable lockdown you won't be able to disable it again with firewall-cmd, you would need to edit firewalld.conf.
 	    </para>
 	    <para>
 	      This is a runtime and permanent change.
