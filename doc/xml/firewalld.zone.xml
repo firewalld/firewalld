@@ -78,7 +78,7 @@
   [ &lt;masquerade enabled="<replaceable>bool</replaceable>"/&gt; ]
   [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
   [
-    &lt;rule [invert="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
+    &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
     [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
     [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
     [
@@ -335,7 +335,7 @@
 	The general rule structure:
       </para>
       <programlisting>
-&lt;rule [invert="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
+&lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
   [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
   [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
   [
@@ -355,8 +355,8 @@
 	Rule structure for source black or white listing:
       </para>
       <programlisting>
-&lt;rule [invert="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
-  &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt;
+&lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
+  &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [family="<replaceable>bool</replaceable>"]/&gt;
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
   &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt;
