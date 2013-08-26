@@ -141,6 +141,18 @@
 	</varlistentry>
 
 	<varlistentry>
+          <term><option>--remove-service</option>=<replaceable>service</replaceable></term>
+          <listitem>
+	    <para>
+	      Remove a service from the default zone. This option can be specified multiple times. 
+	    </para>
+	    <para>
+	      The service is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
           <term><option>-s</option> <replaceable>service</replaceable></term>
           <term><option>--service</option>=<replaceable>service</replaceable></term>
           <listitem>

@@ -166,6 +166,11 @@ def _addStandardOptions(parser):
                       default=[ ],
                       metavar=_("<service>"), callback=_append_unique,
                       help=_("Enable a service in the default zone (example: ssh)"))
+    parser.add_option("--remove-service",
+                      action="callback", dest="remove_services", type="service",
+                      default=[ ],
+                      metavar=_("<service>"), callback=_append_unique,
+                      help=_("Disable a service in the default zone (example: ssh)"))
     parser.add_option("-p", "--port",
                       action="callback", dest="ports", type="port",
                       metavar=_("<port>[-<port>]:<protocol>"),
@@ -449,6 +454,13 @@ if conf.ports and len(conf.ports) > 0:
             print(_("Adding port '%s/%s' to default zone.") % \
                       (item[0], item[1]))
             obj.ports.append(item)
+            changed = True
+
+if conf.remove_services:
+    for service in conf.remove_services:
+        if service in obj.services:
+            print(_("Removing service '%s' from default zone.") % service)
+            obj.services.remove(service)
             changed = True
 
 if conf.services:
