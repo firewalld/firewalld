@@ -643,7 +643,10 @@ class TrayApplet(object):
             return
 
         if uuid:
-            os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
+            if "kde-" in NM_CONNECTION_EDITOR:
+                os.system("%s %s &" % (NM_CONNECTION_EDITOR, uuid))
+            else:
+                os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
         else:
             os.system("%s &" % NM_CONNECTION_EDITOR)
 
