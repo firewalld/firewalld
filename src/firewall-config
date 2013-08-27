@@ -3024,6 +3024,9 @@ class FirewallConfig(object):
                 if not add:
                     self.fw.removeForwardPort(active_zone, old_port, old_proto,
                                               old_to_port, old_to_addr)
+                if add and to_addr and not self.fw.queryMasquerade(active_zone):
+                    if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
+                        self.fw.addMasquerade(active_zone)
         else:
             zone = self.fw.config().getZoneByName(active_zone)
             settings = zone.getSettings()
@@ -3032,7 +3035,16 @@ class FirewallConfig(object):
                     settings.removeForwardPort(old_port, old_proto,
                                                old_to_port, old_to_addr)
                 settings.addForwardPort(port, proto, to_port, to_addr)
+                if add and to_addr and not settings.getMasquerade():
+                    if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
+                        settings.setMasquerade(True)
                 zone.update(settings)
+
+    def masqueradeQueryDialog(self):
+        text = _("Forwarding to another system is only useful if the interface is masqueraded.\nDo you want to masquerade this zone ?")
+        return self._dialog(text=text,
+                            buttons=((Gtk.STOCK_YES, Gtk.ResponseType.YES),
+                                     (Gtk.STOCK_NO, Gtk.ResponseType.NO)))
 
     def forward_port_added_cb(self, zone, port, protocol, to_port, to_address,
                               timeout):
