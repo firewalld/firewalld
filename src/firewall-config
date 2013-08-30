@@ -3540,8 +3540,8 @@ class FirewallConfig(object):
 
         ### load service settings
 
-        self.icmpDialogDestIpv4Check.set_active(False)
-        self.icmpDialogDestIpv6Check.set_active(False)
+        self.icmpDialogDestIpv4Check.set_active(True)
+        self.icmpDialogDestIpv6Check.set_active(True)
 
         if not active_icmp:
             self.icmpDialogIcmpEditBox.set_sensitive(False)
@@ -3581,11 +3581,14 @@ class FirewallConfig(object):
         self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin)
         self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not default)
 
+        ipv4 = "ipv4" in destination
+        ipv6 = "ipv6" in destination
         # set destination
-        if "ipv4" in destination:
-            self.icmpDialogDestIpv4Check.set_active(True)
-        if "ipv6" in destination:
-            self.icmpDialogDestIpv6Check.set_active(True)
+        if ipv4 != ipv6:
+            if not ipv4:
+                self.icmpDialogDestIpv4Check.set_active(False)
+            if not ipv6:
+                self.icmpDialogDestIpv6Check.set_active(False)
 
     def onIcmpDialogAddIcmp(self, *args):
         self.add_edit_icmp(True)

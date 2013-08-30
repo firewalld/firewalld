@@ -490,9 +490,16 @@ class FirewallClientIcmpTypeSettings(object):
     def removeDestination(self, destination):
         if destination in self.settings[3]:
             self.settings[3].remove(destination)
+        # empty means all
+        elif not self.settings[3]:
+            self.setDestinations(list(set(['ipv4','ipv6']) - \
+                                      set([destination])))
+
     @handle_exceptions
     def queryDestination(self, destination):
-        return destination in self.settings[3]
+        # empty means all
+        return not self.settings[3] or \
+               destination in self.settings[3]
 
 # icmptype config
 
