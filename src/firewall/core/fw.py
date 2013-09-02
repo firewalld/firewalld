@@ -514,6 +514,8 @@ class Firewall:
         else:
             raise FirewallError(INVALID_IPV, ipv)
 
+        return ""
+
     # check functions
 
     def check_panic(self):
