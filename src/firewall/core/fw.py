@@ -98,7 +98,7 @@ class Firewall:
             self.ebtables_enabled = False
 
         if not self.ip4tables_enabled and not self.ip6tables_enabled:
-            log.fatal("No IPv4 and IPv6 firewall.")            
+            log.fatal("No IPv4 and IPv6 firewall.")
             sys.exit(1)
 
         # initialize firewall

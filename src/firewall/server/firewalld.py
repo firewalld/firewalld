@@ -187,9 +187,9 @@ class FirewallD(slip.dbus.service.Object):
             'version': self._get_property("version"),
             'interface_version': self._get_property("interface_version"),
             'state': self._get_property("state"),
-            'IPv4': self._get_property("ip4tables"),
-            'IPv6': self._get_property("ip6tables"),
-            'BRIDGE': self._get_property("ebtables"),
+            'IPv4': self._get_property("IPv4"),
+            'IPv6': self._get_property("IPv6"),
+            'BRIDGE': self._get_property("BRIDGE"),
         }
         
 
