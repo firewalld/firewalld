@@ -498,7 +498,6 @@ bad_rules=(
  'rule service name="radius" port port="4011" reject'       # service && port
  'rule service bad_attribute="dns"'                         # bad attribute
  'rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"'         # bad limit
- 'rule service name="http" log prefix="http" level="info" limit value="1/m" audit limit value="1/m" accept' # log & audit
  'rule protocol value="esp"'                                # no action/log/audit
 )
 
@@ -510,7 +509,7 @@ done
 good_rules=(
  'rule service name="ftp" audit limit value="1/m" accept'
  'rule protocol value="ah" reject'
- 'rule protocol value=esp accept'
+ 'rule protocol value="esp" accept'
  'rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept'
  'rule family="ipv4" source NOT address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" drop'
  'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject limit value="20/m"'
