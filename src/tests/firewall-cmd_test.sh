@@ -9,8 +9,8 @@ assert_good() {
   if [ $? == 0 ]; then
     echo "${args} ... OK"
   else
-    echo "${args} ... FAILED (non-zero exit status)"
     ((failures++))
+    echo "${args} ... ${failures}. FAILED (non-zero exit status)"
   fi
 }
 
@@ -20,8 +20,8 @@ assert_good_notempty() {
   if [ $? == 0 -a -n "${ret}" ]; then
     echo "${args} ... OK"
   else
-    echo "${args} ... FAILED (non-zero exit status or empty return value)"
     ((failures++))
+    echo "${args} ... ${failures}. FAILED (non-zero exit status or empty return value)"
   fi
 }
 
@@ -31,8 +31,8 @@ assert_good_empty() {
   if [ $? == 0 -a -z "${ret}" ]; then
     echo "${args} ... OK"
   else
-    echo "${args} ... FAILED (non-zero exit status or non-empty return value)"
     ((failures++))
+    echo "${args} ... ${failures}. FAILED (non-zero exit status or non-empty return value)"
   fi
 }
 
@@ -43,8 +43,8 @@ assert_good_equals() {
   if [ $? == 0 -a "${ret}" == "${value}" ]; then
     echo "${args} ... OK"
   else
-    echo "${args} ... FAILED (non-zero exit status or '${ret}' != '${value}')"
     ((failures++))
+    echo "${args} ... ${failures}. FAILED (non-zero exit status or '${ret}' != '${value}')"
   fi
 }
 
@@ -55,8 +55,8 @@ assert_good_contains() {
   if [[ ( $? == 0 ) && ( "${ret}" = *${value}* ) ]]; then
     echo "${args} ... OK"
   else
-    echo "${args} ... FAILED (non-zero exit status or '${ret}' does not contain '${value}')"
     ((failures++))
+    echo "${args} ... ${failures}. FAILED (non-zero exit status or '${ret}' does not contain '${value}')"
   fi
 }
 
@@ -66,8 +66,51 @@ assert_bad() {
   if [ $? != 0 ]; then
     echo "${args} ... OK"
   else
-    echo "${args} ... FAILED (zero exit status)"
     ((failures++))
+    echo "${args} ... ${failures}. FAILED (zero exit status)"
+  fi
+}
+
+# rich rules need separate assert methods because of quotation hell
+assert_rich_good() {
+  operation="${1}"
+  args="${2}"
+  [[ "${operation}" = *permanent* ]] && permanent="--permanent"
+  if [[ "${operation}" = *add* ]]; then
+    command="--add-rich-rule"
+  elif [[ "${operation}" = *remove* ]]; then
+    command="--remove-rich-rule"
+  elif [[ "${operation}" = *query* ]]; then
+    command="--query-rich-rule"
+  fi
+
+  ${path}firewall-cmd ${permanent} ${command} "${args}" > /dev/null
+  if [ $? == 0 ]; then
+    echo ${permanent} ${command} "${args} ... OK"
+  else
+    ((failures++))
+    echo ${permanent} ${command} "${args} ... ${failures}. FAILED (non-zero exit status)"
+  fi
+}
+
+assert_rich_bad() {
+  operation="${1}"
+  args="${2}"
+  [[ "${operation}" = *permanent* ]] && permanent="--permanent"
+  if [[ "${operation}" = *add* ]]; then
+    command="--add-rich-rule"
+  elif [[ "${operation}" = *remove* ]]; then
+    command="--remove-rich-rule"
+  elif [[ "${operation}" = *query* ]]; then
+    command="--query-rich-rule"
+  fi
+
+  ${path}firewall-cmd ${permanent} ${command} "${args}" > /dev/null
+  if [ $? != 0 ]; then
+    echo ${permanent} ${command} "${args} ... OK"
+  else
+    ((failures++))
+    echo ${permanent} ${command} "${args} ... ${failures}. FAILED (zero exit status)"
   fi
 }
 
@@ -441,36 +484,58 @@ assert_bad           "--permanent --query-lockdown-whitelist-user ${user}"  # al
 
 # rich rules
 
-rules=('rule service name="ftp" audit limit value="1/m" accept'
-       'rule protocol value="ah" accept'
-       'rule protocol value="esp" accept'
-       'rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept'
-       'rule family="ipv4" source NOT address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" accept '
-       'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject limit value="20/m" '
-       'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop '
-       'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7" '
-       'rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m" '
-       'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirect" level="info" limit value="4/m" '
-       'rule family="ipv4" source address="192.168.1.0/24" masquerade '
-       'rule family="ipv6" masquerade ')
+bad_rules=(
+ ''                                                         # empty
+ 'family="ipv6" accept'                                     # no 'rule'
+ 'name="dns" accept'                                        # no 'rule'
+ 'protocol value="ah" reject'                               # no 'rule'
+ 'rule'                                                     # no element
+ 'rule bad_element'                                         # no unknown element
+ 'rule family="ipv5"'                                       # bad family
+ 'rule name="dns" accept'                                   # name outside of element
+ 'rule protocol="ah" accept'                                # bad protocol usage
+ 'rule protocol value="ah" accept drop'                     # accept && drop
+ 'rule service name="radius" port port="4011" reject'       # service && port
+ 'rule service bad_attribute="dns"'                         # bad attribute
+ 'rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"'         # bad limit
+ 'rule service name="http" log prefix="http" level="info" limit value="1/m" audit limit value="1/m" accept' # log & audit
+ 'rule protocol value="esp"'                                # no action/log/audit
+)
 
-#for (( i=0;i<${#rules[@]};i++)); do
-#  rule=${rules[${i}]}
-#  assert_good          "--add-rich-rule ${rule}"
-#  assert_good          "--query-rich-rule ${rule}"
-#  assert_good_contains "--list-rich-rules" ${rule}
-#  assert_good          "--remove-rich-rule ${rule}"
-#  assert_bad           "--query-rich-rule ${rule}"
-#done
+for (( i=0;i<${#bad_rules[@]};i++)); do
+  rule=${bad_rules[${i}]}
+  assert_rich_bad           "add"    "${rule}"
+done
 
-#for (( i=0;i<${#rules[@]};i++)); do
-#  rule=${rules[${i}]}
-#  assert_good          "--permanent --add-rich-rule ${rule}"
-#  assert_good          "--permanent --query-rich-rule ${rule}"
-#  assert_good_contains "--permanent --list-rich-rules" ${rule}
-#  assert_good          "--permanent --remove-rich-rule ${rule}"
-#  assert_bad           "--permanent --query-rich-rule ${rule}"
-#done
+good_rules=(
+ 'rule service name="ftp" audit limit value="1/m" accept'
+ 'rule protocol value="ah" reject'
+ 'rule protocol value=esp accept'
+ 'rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept'
+ 'rule family="ipv4" source NOT address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" drop'
+ 'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject limit value="20/m"'
+ 'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop'
+ 'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"'
+ 'rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m"'
+ 'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirect" level="info" limit value="4/m"'
+ 'rule family="ipv4" source address="192.168.1.0/24" masquerade'
+ 'rule family="ipv6" masquerade')
+
+for (( i=0;i<${#good_rules[@]};i++)); do
+  rule=${good_rules[${i}]}
+  assert_rich_good          "add"    "${rule}"
+  assert_rich_good          "query"  "${rule}"
+  assert_rich_good          "remove" "${rule}"
+  assert_rich_bad           "query"  "${rule}"
+done
+
+for (( i=0;i<${#good_rules[@]};i++)); do
+  rule=${good_rules[${i}]}
+  assert_rich_good          "permanent add"    "${rule}"
+  assert_rich_good          "permanent query"  "${rule}"
+  assert_rich_good          "permanent remove" "${rule}"
+  assert_rich_bad           "permanent query"  "${rule}"
+done
 
 echo "----------------------------------------------------------------------"
 if [ ${failures} -eq 0 ]; then
