@@ -239,7 +239,7 @@ class Rich_Rule(object):
                (d.get('element') and d.get('attr_value')) or \
                (d.get('attr_name') and not d.get('attr_value')) or \
                (d.get('attr_value') and not d.get('attr_name')) or not d:
-                raise FirewallError(INVALID_RULE, 'internal error in _lexer()')
+                raise FirewallError(INVALID_RULE, 'internal error in _lexer(): %s' % d)
 
         return tokens
 
@@ -285,30 +285,39 @@ class Rich_Rule(object):
                         raise FirewallError(INVALID_RULE, "more than one 'destination' element")
                     elif element in ['protocol', 'service', 'port', 'icmp-block', \
                                   'masquerade', 'forward-port'] and self.element:
-                        raise FirewallError(INVALID_RULE, "more than one element")
+                        raise FirewallError(INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
                     elif element == 'log' and self.log:
                         raise FirewallError(INVALID_RULE, "more than one 'log' element")
                     elif element == 'audit' and self.audit:
                         raise FirewallError(INVALID_RULE, "more than one 'audit' element")
                     elif element in ['accept', 'drop', 'reject'] and self.action:
-                        raise FirewallError(INVALID_RULE, "more than one 'action' element")
+                        raise FirewallError(INVALID_RULE, "more than one 'action' element. There cannot be both '%s' and '%s' in one rule." % (element, self.action))
                 else:
                     raise FirewallError(INVALID_RULE, "unknown element %s" % element)
 
             in_element = in_elements[len(in_elements)-1] if len(in_elements) > 0 else ''
 
             if in_element == '':
-                if 'rule' not in element:
-                    raise FirewallError(INVALID_RULE, "'%s' outside of rule" % element)
+                if not element and attr_name:
+                    if attr_name == 'family':
+                        raise FirewallError(INVALID_RULE, "'family' outside of rule. Use 'rule family=...'.")
+                    else:
+                        raise FirewallError(INVALID_RULE, "'%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name))
+                elif 'rule' not in element:
+                    raise FirewallError(INVALID_RULE, "'%s' outside of rule. Use 'rule ... %s ...'." % (element, element))
                 else:
                     in_elements.append('rule') # push into stack
             elif in_element == 'rule':
                 if attr_name == 'family':
                     if attr_value not in ['ipv4', 'ipv6']:
-                        raise FirewallError(INVALID_RULE, "bad 'family' attribute")
+                        raise FirewallError(INVALID_RULE, "'family' attribute cannot have '%s' value. Use 'ipv4' or 'ipv6' instead." % attr_value)
                     self.family = attr_value
                 elif attr_name:
-                    raise FirewallError(INVALID_RULE, "attribute '%s' outside of element" % attr_name)
+                    if attr_name == 'protocol':
+                        err_msg = "wrong 'protocol' usage. Use either 'rule protocol value=...' or  'rule [forward-]port protocol=...'."
+                    else:
+                        err_msg = "attribute '%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name)
+                    raise FirewallError(INVALID_RULE, err_msg)
                 else:
                     in_elements.append(element) # push into stack
             elif in_element == 'source':
