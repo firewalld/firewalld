@@ -158,7 +158,7 @@
 	  <term>priority="<replaceable>priority</replaceable>"</term>
           <listitem>
 	    <para>
-	      The <em class="replaceable"><code>priority</code></em> is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
+	      The priority is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
 	    </para>
 	  </listitem>
 	</varlistentry>
