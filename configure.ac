@@ -64,10 +64,7 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],)
 IT_PROG_INTLTOOL([0.35.0], [no-xml])
 AM_PO_SUBDIRS
 
-PREFIX=`eval echo $prefix`
-AC_SUBST(PREFIX)
-SYSCONFDIR=`eval echo $sysconfdir`
-AC_SUBST(SYSCONFDIR)
+AC_CONFIG_COMMANDS([xsl-cleanup],,[rm -f doc/xml/transform-*.xsl])
 
 AC_CONFIG_FILES([Makefile
 		 doxygen.conf
@@ -77,8 +74,6 @@ AC_CONFIG_FILES([Makefile
 		 doc/man/man1/Makefile
 		 doc/man/man5/Makefile
 		 doc/xml/Makefile
-		 doc/xml/transform-html.xsl
-		 doc/xml/transform-man.xsl
 		 po/Makefile.in
 		 shell-completion/Makefile
 		 src/firewall/config/__init__.py

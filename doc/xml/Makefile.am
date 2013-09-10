@@ -58,3 +58,8 @@ errorcodes.xml: ../../src/firewall/errors.py
 		sed -e 's/^/\<row\>\<entry\>/g' \
 			-e 's/ *= */\<\/entry\>\<entry\>/g' \
 			-e 's/$$/\<\/entry\>\<\/row\>/g' > $@
+
+transform-man.xsl transform-html.xsl:
+	sed -e 's|\@PREFIX\@|$(prefix)|' \
+	    -e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
+	    -e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|' $@.in > $@
