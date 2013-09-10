@@ -14,4 +14,21 @@
     <xsl:text>@PREFIX@</xsl:text>
   </xsl:template>
 
+  <!-- generate URL for citerefentry for firewall* references only -->
+  <xsl:template match="citerefentry">
+    <xsl:choose>
+      <xsl:when test="starts-with(refentrytitle, 'firewall')">
+	<a>
+	  <xsl:attribute name="href">
+	    <xsl:value-of select="refentrytitle"/><xsl:text>.html</xsl:text>
+	  </xsl:attribute>
+	  <xsl:call-template name="inline.charseq"/>
+	</a>
+      </xsl:when>
+      <xsl:otherwise>
+	<xsl:call-template name="inline.charseq"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
 </xsl:stylesheet>
