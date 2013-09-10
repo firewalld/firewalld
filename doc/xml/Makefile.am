@@ -59,6 +59,9 @@ errorcodes.xml: ../../src/firewall/errors.py
 			-e 's/ *= */\<\/entry\>\<entry\>/g' \
 			-e 's/$$/\<\/entry\>\<\/row\>/g' > $@
 
+transform-man.xsl: transform-man.xsl.in
+transform-html.xsl: transform-html.xsl.in
+
 transform-man.xsl transform-html.xsl:
 	sed -e 's|\@PREFIX\@|$(prefix)|' \
 	    -e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
