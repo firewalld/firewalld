@@ -91,7 +91,7 @@
 	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
           <listitem>
 	    <para>
-              The ipv family where the chain will be created. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              The IP family where the chain will be created. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -100,7 +100,7 @@
 	  <term>table="<replaceable>table</replaceable>"</term>
           <listitem>
 	    <para>
-              The table name where the chain will be created. This can be one of the tables that casn be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
+              The table name where the chain will be created. This can be one of the tables that can be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -131,7 +131,7 @@
 	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
           <listitem>
 	    <para>
-              The ipv family where the rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              The IP family where the rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -183,7 +183,7 @@
 	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
           <listitem>
 	    <para>
-              The ipv family where the passthrough rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              The IP family where the passthrough rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
