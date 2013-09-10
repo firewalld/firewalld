@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.direct">
+
+  <refentryinfo>
+    <title>firewalld.direct</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.direct</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.direct</refname>
+    <refpurpose>firewalld direct configuration file</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/direct.xml</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      A firewalld direct configuration file contains the information about permanent direct chains and rules.
+
+      These are the chains, rules and passthrough ...
+    </para>
+    <para>
+       This is the structure of a direct configuration file:
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;direct&gt;
+  [ &lt;chain ipv="<literal>ipv4</literal>|<literal>ipv6</literal>" table="<replaceable>table</replaceable>" chain="<replaceable>chain</replaceable>"/&gt; ]
+  [ &lt;rule ipv="<literal>ipv4</literal>|<literal>ipv6</literal>" table="<replaceable>table</replaceable>" chain="<replaceable>chain</replaceable>" priority="<replaceable>priority</replaceable>"&gt; args &lt;/rule&gt; ]
+  [ &lt;passthrough ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"&gt; args &lt;/passthrough&gt; ]
+&lt;/direct&gt;
+      </programlisting>
+    </para>
+
+    <refsect2 id="direct">
+      <title>direct</title>
+      <para>
+	The mandatory direct start and end tag defines the direct. This tag can only be used once in a direct configuration file. There are no attributes for direct.
+      </para>
+    </refsect2>
+
+    <refsect2 id="chain">
+      <title>chain</title>
+      <para>
+	Is an optional empty-element tag and can be used several times. It can be used to define names for additional chains. A chain entry has exactly three attributes:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+          <listitem>
+	    <para>
+              The ipv family where the chain will be created. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>table="<replaceable>table</replaceable>"</term>
+          <listitem>
+	    <para>
+              The table name where the chain will be created. This can be one of the tables that casn be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>chain="<replaceable>chain</replaceable>"</term>
+          <listitem>
+	    <para>
+              The name of the chain, that will be created. Please make sure that there is no other chain with this name already.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+      </variablelist>
+
+      <para>
+	Please remember to add a rule or passthrough rule with an <option>--jump</option> or <option>--goto</option> option to connect the chain to another one.
+      </para>
+    </refsect2>
+
+    <refsect2 id="rule">
+      <title>rule</title>
+      <para>
+	Is an optional element tag and can be used several times. It can be used to add rules to a built-in or added chain. A rule entry has exactly four attributes:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+          <listitem>
+	    <para>
+              The ipv family where the rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>table="<replaceable>table</replaceable>"</term>
+          <listitem>
+	    <para>
+              The table name where the chain will be created. This can be one of the tables that casn be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>chain="<replaceable>chain</replaceable>"</term>
+          <listitem>
+	    <para>
+              The name of the chain where the rule will be added. This can be either a built-in chain or a chain that has been created with the chain tag.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>priority="<replaceable>priority</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The <em class="replaceable"><code>priority</code></em> is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <replaceable>args</replaceable> can be any arguments of iptables or ip6tables, that do not conflict with the table or chain attributes.
+      </para>
+
+      <para>
+	If the chain name is a built-in chain, then the rule will be added to <replaceable>chain</replaceable>_direct, else the supplied chain name is used. <replaceable>chain</replaceable>_direct is created internally for all built-in chains to make sure that the added rules do not conflict with the rules created by firewalld.
+      </para>
+    </refsect2>
+
+    <refsect2 id="passthrough">
+      <title>passthrough</title>
+      <para>
+	Is an optional element tag and can be used several times. It can be used to add rules to a built-in or added chain. A rule entry has exactly one attribute:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+          <listitem>
+	    <para>
+              The ipv family where the passthrough rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The <replaceable>args</replaceable> can be any arguments of iptables or ip6tables.
+      </para>
+
+      <para>
+	The passthrough rule will be added to the chain directly. There is no mechanism like for the direct <option>rule</option> above. The user of the passthrough rule has to make sure that there will be no conflict with the rules created by firewalld.
+      </para>
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1 id="example">
+    <title>Example</title>
+
+    <para>
+      Blacklisting of the networks 192.168.1.0/24 and 192.168.5.0/24 with logging and dropping early in the raw table:
+      
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;direct&gt;
+  &lt;chain ipv="ipv4" table="raw" chain="blacklist"/&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="PREROUTING" priority="0"&gt;-s 192.168.1.0/24 -j blacklist&lt;/rule&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="PREROUTING" priority="1"&gt;-s 192.168.5.0/24 -j blacklist&lt;/rule&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="blacklist" priority="0"&gt;-m limit --limit 1/min -j LOG --log-prefix "blacklisted: "&lt;/rule&gt;
+  &lt;rule ipv="ipv4" table="raw" chain="blacklist" priority="1"&gt;-j DROP&lt;/rule&gt;
+&lt;/direct&gt;
+      </programlisting>
+      
+    </para>
+  </refsect1>
+
+
+  &seealso;
+
+  &notes;
+
+</refentry>
