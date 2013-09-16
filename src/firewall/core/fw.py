@@ -78,7 +78,7 @@ class Firewall:
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
 
-    def start(self):
+    def _start(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
 
         try:
@@ -102,9 +102,6 @@ class Firewall:
             sys.exit(1)
 
         # initialize firewall
-        self._flush()
-        self._set_policy("ACCEPT")
-
         default_zone = FALLBACK_ZONE
 
         # load firewalld config
@@ -223,6 +220,11 @@ class Firewall:
         self.zone.change_default_zone(None, self._default_zone)
 
         self._state = "RUNNING"
+
+    def start(self):
+        self._flush()
+        self._set_policy("ACCEPT")        
+        self._start()
 
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
@@ -588,17 +590,15 @@ class Firewall:
         _direct_config = self.direct.get_config()
         _old_dz = self.get_default_zone()
 
+        # stop
+        self._set_policy("DROP")
+        self._flush()
         if stop:
-            self.stop()
-        else:
-            self.cleanup()
-            self._flush()
-            self._set_policy("ACCEPT")
-        self.start()
+            self._modules.unload_firewall_modules()
+        self.cleanup()
 
         # start
-        if _panic:
-            self.enable_panic_mode()
+        self._start()
 
         # handle interfaces in the default zone and move them to the new 
         # default zone if it changed
@@ -631,6 +631,13 @@ class Firewall:
 
         # restore direct config
         self.direct.set_config(_direct_config)
+
+        # enable panic mode again if it has been enabled before or set policy 
+        # to ACCEPT
+        if _panic:
+            self.enable_panic_mode()
+        else:
+            self._set_policy("ACCEPT")
 
     # STATE
 
