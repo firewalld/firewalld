@@ -29,19 +29,14 @@ from firewall.errors import *
 class FirewallPolicies:
     def __init__(self, fw):
         self._fw = fw
+        self.__init_vars()
+
+    def __init_vars(self):
+        self._lockdown = False
         self.lockdown_whitelist = LockdownWhitelist(LOCKDOWN_WHITELIST)
-        self.cleanup()
 
     def cleanup(self):
-        self._lockdown = False
-        self.lockdown_whitelist.clear()
-
-    def copy(self):
-        x = FirewallPolicies(self._fw)
-        if self.query_lockdown():
-            x.enable_lockdown()
-        x.lockdown_whitelist = self.lockdown_whitelist.copy()
-        return x
+        self.__init_vars()
 
     # lockdown
 

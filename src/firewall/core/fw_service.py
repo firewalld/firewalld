@@ -24,10 +24,13 @@ from firewall.errors import *
 class FirewallService:
     def __init__(self, fw):
         self._fw = fw
+        self.__init_vars()
+
+    def __init_vars(self):
         self._services = { }
 
     def cleanup(self):
-        self._services.clear()
+        self.__init_vars()
 
     # zones
 
@@ -47,5 +50,4 @@ class FirewallService:
 
     def remove_service(self, service):
         self.check_service(service)
-        self._services[service].cleanup()
         del self._services[service]

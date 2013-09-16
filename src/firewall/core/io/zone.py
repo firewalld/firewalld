@@ -91,75 +91,21 @@ class Zone(IO_Object):
 
     def __init__(self):
         super(Zone, self).__init__()
-        self.__init_vars()
-        self.services = [ ]
-        self.ports = [ ]
-        self.icmp_blocks = [ ]
-        self.forward_ports = [ ]
-        self.interfaces = [ ]
-        self.sources = [ ]
-        self.rules = [ ]
-
-    def __init_vars(self):
-        self.target = DEFAULT_ZONE_TARGET
         self.version = ""
         self.short = ""
         self.description = ""
         self.UNUSED = False
+        self.target = DEFAULT_ZONE_TARGET
+        self.services = [ ]
+        self.ports = [ ]
+        self.icmp_blocks = [ ]
         self.masquerade = False
+        self.forward_ports = [ ]
+        self.interfaces = [ ]
+        self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
+        self.rules = [ ]
         self.combined = False
-
-    def copy(self):
-        x = Zone()
-        x.name = self.name
-        x.filename = self.filename
-        x.path = self.path
-        x.default = self.default
-        x.target = self.target
-        x.version = self.version
-        x.short = self.short
-        x.description = self.description
-        x.UNUSED = self.UNUSED
-        x.masquerade = self.masquerade
-        x.fw_config = self.fw_config
-        x.combined = self.combined
-        x.services = self.services[:]
-        x.ports = self.ports[:]
-        x.icmp_blocks = self.icmp_blocks[:]
-        x.forward_ports = self.forward_ports[:]
-        x.interfaces = self.interfaces[:]
-        x.sources = self.sources[:]
-        x.rules = self.rules[:]
-        return x
-
-    def __del__(self):
-        self.cleanup()
-        del self.target
-        del self.version
-        del self.short
-        del self.description
-        del self.UNUSED
-        del self.masquerade
-        del self.fw_config
-        del self.combined
-        del self.services
-        del self.ports
-        del self.icmp_blocks
-        del self.forward_ports
-        del self.interfaces
-        del self.sources
-        del self.rules
-
-    def cleanup(self):
-        self.__init_vars()
-        del self.services[:]
-        del self.ports[:]
-        del self.icmp_blocks[:]
-        del self.forward_ports[:]
-        del self.interfaces[:]
-        del self.sources[:]
-        del self.rules[:]
 
     def __getattr__(self, name):
         if name == "rules_str":

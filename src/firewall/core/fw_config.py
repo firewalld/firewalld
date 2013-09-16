@@ -33,6 +33,9 @@ from firewall.errors import *
 class FirewallConfig:
     def __init__(self, fw):
         self._fw = fw
+        self.__init_vars()
+
+    def __init_vars(self):
         self._icmptypes = { }
         self._services = { }
         self._zones = { }
@@ -45,38 +48,21 @@ class FirewallConfig:
 
     def cleanup(self):
         for x in self._default_icmptypes.keys():
-            self._default_icmptypes[x].cleanup()
             del self._default_icmptypes[x]
         for x in self._icmptypes.keys():
-            self._icmptypes[x].cleanup()
             del self._icmptypes[x]
 
         for x in self._default_services.keys():
-            self._default_services[x].cleanup()
             del self._default_services[x]
         for x in self._services.keys():
-            self._services[x].cleanup()
             del self._services[x]
 
         for x in self._default_zones.keys():
-            self._default_zones[x].cleanup()
             del self._default_zones[x]
         for x in self._zones.keys():
-            self._zones[x].cleanup()
             del self._zones[x]
 
-        if self._firewalld_conf:
-            self._firewalld_conf.cleanup()
-            del self._firewalld_conf
-            self._firewalld_conf = None
-        if self._policies:
-            self._policies.cleanup()
-            del self._policies
-            self._policies = None
-        if self._direct:
-            self._direct.cleanup()
-            del self._direct
-            self._direct = None
+        self.__init_vars()
 
     # access check
 
@@ -460,10 +446,8 @@ class FirewallConfig:
 
     def forget_zone(self, name):
         if name in self._default_zones:
-            self._default_zones[name].cleanup()
             del self._default_zones[name]
         if name in self._zones:
-            self._zones[name].cleanup()
             del self._zones[name]
 
     def get_zone(self, name):
@@ -538,7 +522,6 @@ class FirewallConfig:
                 for x in self._zones.keys():
                     obj = self._zones[x]
                     if obj.filename == filename:
-                        self._zones[x].cleanup()
                         del self._zones[x]
                         if obj.name in self._default_zones:
                             return ("update", self._default_zones[obj.name])
@@ -548,7 +531,6 @@ class FirewallConfig:
                 for x in self._default_zones.keys():
                     obj = self._default_zones[x]
                     if obj.filename == filename:
-                        self._default_zones[x].cleanup()
                         del self._default_zones[x]
                         if obj.name not in self._zones:
                             # update dbus zone
@@ -579,7 +561,6 @@ class FirewallConfig:
         else:
             if obj.name in self._default_zones:
                 # builtin zone update
-                self._default_zones[obj.name].cleanup()
                 del self._default_zones[obj.name]
                 self._default_zones[obj.name] = obj
 
@@ -599,7 +580,6 @@ class FirewallConfig:
         if obj.path != ETC_FIREWALLD_ZONES:
             raise FirewallError(INVALID_DIRECTORY, obj.path)
         os.remove("%s/%s.xml" % (obj.path, obj.name))
-        self._zones[obj.name].cleanup()
         del self._zones[obj.name]
 
     def is_builtin_zone(self, obj):

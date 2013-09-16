@@ -50,36 +50,10 @@ class IcmpType(IO_Object):
 
     def __init__(self):
         super(IcmpType, self).__init__()
-        self.__init_vars()
-        self.destination = [ ]
-
-    def __init_vars(self):
         self.version = ""
         self.short = ""
         self.description = ""
-
-    def copy(self):
-        x = IcmpType()
-        x.name = self.name
-        x.filename = self.filename
-        x.path = self.path
-        x.default = self.default
-        x.version = self.version
-        x.short = self.short
-        x.description = self.description
-        x.destination = self.destination[:]
-        return x
-
-    def __del__(self):
-        self.cleanup()
-        del self.version
-        del self.short
-        del self.description
-        del self.destination
-
-    def cleanup(self):
-        self.__init_vars()
-        del self.destination[:]
+        self.destination = [ ]
 
     def _check_config(self, config, item):
         if item == "destination":
