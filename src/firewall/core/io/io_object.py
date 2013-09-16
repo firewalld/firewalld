@@ -44,7 +44,8 @@ class IO_Object(object):
     def export_config(self):
         ret = [ ]
         for x in self.IMPORT_EXPORT_STRUCTURE:
-            ret.append(copy.deepcopy(getattr(self, x[0])))
+#            ret.append(copy.deepcopy(getattr(self, x[0])))
+            ret.append(getattr(self, x[0]))
         return tuple(ret)
 
     def import_config(self, config):
@@ -52,9 +53,11 @@ class IO_Object(object):
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(config[i], list):
                 # remove duplicates
-                setattr(self, element, copy.deepcopy(list(set(config[i]))))
+#                setattr(self, element, copy.deepcopy(list(set(config[i]))))
+                setattr(self, element, config[i][:])
             else:
-                setattr(self, element, copy.deepcopy(config[i]))
+#                setattr(self, element, copy.deepcopy(config[i]))
+                setattr(self, element, config[i])
 
     def check_name(self, name):
         if type(name) != type(""):

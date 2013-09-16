@@ -103,21 +103,45 @@ class LockdownWhitelist(IO_Object):
     def __init__(self, filename):
         super(LockdownWhitelist, self).__init__()
         self.filename = filename
+        self.commands = []
+        self.contexts = []
+        self.users = []
+        self.uids = []
+#        self.groups = [ ]
+
+    def __del__(self):
         self.clear()
+        del self.commands
+        del self.contexts
+        del self.users
+        del self.uids
+#        del self.groups
+
+    def clear(self):
+        del self.commands[:]
+        del self.contexts[:]
+        del self.users[:]
+        del self.uids[:]
+#        del self.groups[:]
+
+    def copy(self):
+        x = LockdownWhitelist(self.filename)
+        x.commands = self.commands[:]
+        x.contexts = self.contexts[:]
+        x.users = self.users[:]
+        x.uids = self.uids[:]
+#        x.groups = self.groups[:]
+        return x
 
     def _check_config(self, config, item):
         pass
 
-    def clear(self):
-        self.commands = [ ]
-        self.contexts = [ ]
-        self.users = [ ]
-        self.uids = [ ]
-#        self.groups = [ ]
-
     # commands
 
     def add_command(self, command):
+        if not isinstance(obj, str) or len(str) > 2048:
+            raise FirewallError(128)
+
         if command not in self.commands:
             self.commands.append(command)
 

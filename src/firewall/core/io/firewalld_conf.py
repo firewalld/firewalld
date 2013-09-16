@@ -30,11 +30,18 @@ valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown"]
 class firewalld_conf:
     def __init__(self, filename):
         self.filename = filename
-        self.clear()
-
-    def clear(self):
         self._config = { }
         self._deleted = [ ]
+
+    def cleanup(self):
+        self._config.clear()
+        self._deleted = [ ]
+
+    def copy(self):
+        x = firewalld_conf(self.filename)
+        x._config = self._config.copy()
+        x._deleted = self._deleted[:]
+        return x
 
     def get(self, key):
         return self._config.get(key.strip())
@@ -55,7 +62,7 @@ class firewalld_conf:
 
     # load self.filename
     def read(self):
-        self.clear()
+        self.cleanup()
         try:
             f = open(self.filename, "r")
         except Exception as msg:

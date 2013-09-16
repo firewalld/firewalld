@@ -54,12 +54,44 @@ class Service(IO_Object):
 
     def __init__(self):
         super(Service, self).__init__()
-        self.version = ""
-        self.short = ""
-        self.description = ""
+        self.__init_vars()
         self.ports = [ ]
         self.modules = [ ]
         self.destination = { }
+
+    def __init_vars(self):
+        self.version = ""
+        self.short = ""
+        self.description = ""        
+
+    def copy(self):
+        x = Service()
+        x.name = self.name
+        x.filename = self.filename
+        x.path = self.path
+        x.default = self.default
+        x.version = self.version
+        x.short = self.short
+        x.description = self.description
+        x.ports = self.ports[:]
+        x.modules = self.modules[:]
+        x.destination = self.destination.copy()
+        return x
+
+    def __del__(self):
+        self.cleanup()
+        del self.version
+        del self.short
+        del self.description
+        del self.ports
+        del self.modules
+        del self.destination
+
+    def cleanup(self):
+        self.__init_vars()
+        del self.ports[:]
+        del self.modules[:]
+        self.destination.clear()
 
     def _check_config(self, config, item):
         if item == "ports":
@@ -78,7 +110,6 @@ class Service(IO_Object):
                     raise FirewallError(INVALID_DESTINATION, destination)
                 if not functions.check_address(destination, config[destination]):
                     raise FirewallError(INVALID_ADDRESS, config[destination])
-                    
 
 # PARSER
 

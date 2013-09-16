@@ -45,15 +45,14 @@ from firewall.errors import *
 class FirewallDirect:
     def __init__(self, fw):
         self._fw = fw
-        self.__init_vars()
-
-    def __init_vars(self):
         self._chains = LastUpdatedOrderedDict()
         self._rules = LastUpdatedOrderedDict()
         self._rule_priority_positions = { }
 
     def cleanup(self):
-        self.__init_vars()
+        self._chains.clear()
+        self._rules.clear()
+        self._rule_priority_positions.clear()
 
     def get_config(self):
         return (self._chains, self._rules)

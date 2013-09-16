@@ -20,7 +20,6 @@
 #
 
 import os.path
-import copy
 from firewall.config import *
 from firewall import functions
 from firewall.core import ipXtables
@@ -77,6 +76,16 @@ class Firewall:
         self._marks = [ ]
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
+
+    def cleanup(self):
+        self.icmptype.cleanup()
+        self.service.cleanup()
+        self.zone.cleanup()
+        self.config.cleanup()
+        self.direct.cleanup()
+        self.policies.cleanup()
+        self._firewalld_conf.cleanup()
+        self.__init_vars()
 
     def _start(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -137,7 +146,8 @@ class Firewall:
                         # already enabled, this is probably reload
                         pass
 
-        self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
+        # copy firewalld_conf to the config interface
+        self.config.set_firewalld_conf(self._firewalld_conf.copy())
 
         # apply default rules
         self._apply_default_rules()
@@ -151,7 +161,7 @@ class Firewall:
                       self.policies.lockdown_whitelist.filename, msg)
 
         # copy policies to config interface
-        self.config.set_policies(copy.deepcopy(self.policies))
+        self.config.set_policies(self.policies.copy())
 
         # load icmptype files
         self._loader(FIREWALLD_ICMPTYPES, "icmptype")
@@ -191,7 +201,7 @@ class Firewall:
             obj.read()
         except Exception as msg:
             log.debug1("Failed to load direct rules file '%s': %s",
-                      FIREWALLD_DIRECT, msg)
+                       FIREWALLD_DIRECT, msg)
         else:
             #obj.output()
             self.direct.set_config((obj.get_all_chains(), obj.get_all_rules()))
@@ -199,7 +209,7 @@ class Firewall:
                 for arg in args:
                     self.direct.passthrough(ipv, arg)
             # TODO: copy obj into config interface
-        self.config.set_direct(copy.deepcopy(obj))
+        self.config.set_direct(obj.copy())
 
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():
@@ -262,8 +272,8 @@ class Firewall:
                                    orig_obj.filename)
                         self.icmptype.remove_icmptype(orig_obj.name)
                     self.icmptype.add_icmptype(obj)
-                    # add a deep copy to the configuration interface
-                    self.config.add_icmptype(copy.deepcopy(obj))
+                    # add a copy to the configuration interface
+                    self.config.add_icmptype(obj.copy())
                 elif reader_type == "service":
                     obj = service_reader(filename, path)
                     if obj.name in self.service.get_services():
@@ -274,7 +284,7 @@ class Firewall:
                         self.service.remove_service(orig_obj.name)
                     self.service.add_service(obj)
                     # add a deep copy to the configuration interface
-                    self.config.add_service(copy.deepcopy(obj))
+                    self.config.add_service(obj.copy())
                 elif reader_type == "zone":
                     obj = zone_reader(filename, path)
                     if not combine:
@@ -291,7 +301,7 @@ class Firewall:
                             self.zone.remove_zone(orig_obj.name)
                         self.zone.add_zone(obj)
                         # add a deep copy to the configuration interface
-                        self.config.add_zone(copy.deepcopy(obj))
+                        self.config.add_zone(obj.copy())
                     else:
                         combined_zone.combine(obj)
                 else:
@@ -315,14 +325,6 @@ class Firewall:
                     pass
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
-
-    def cleanup(self):
-        self.__init_vars()
-        self.icmptype.cleanup()
-        self.service.cleanup()
-        self.zone.cleanup()
-        self.config.cleanup()
-        self.direct.cleanup()
 
     def stop(self):
         if self.cleanup_on_exit:

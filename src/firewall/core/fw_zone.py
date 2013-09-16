@@ -30,14 +30,12 @@ from firewall.errors import *
 class FirewallZone:
     def __init__(self, fw):
         self._fw = fw
-        self.__init_vars()
-
-    def __init_vars(self):
         self._chains = { }
         self._zones = { }
 
     def cleanup(self):
-        self.__init_vars()
+        self._chains.clear()
+        self._zones.clear()
 
     # zones
 
@@ -119,6 +117,7 @@ class FirewallZone:
             self._error2warning(self.remove_rule, obj.name, args)
 
         obj.settings.clear()
+        self._zones[zone].cleanup()
         del self._zones[zone]
 
     # dynamic chain handling

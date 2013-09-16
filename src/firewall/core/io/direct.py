@@ -141,7 +141,29 @@ class Direct(IO_Object):
     def __init__(self, filename):
         super(Direct, self).__init__()
         self.filename = filename
+        self.chains = LastUpdatedOrderedDict()
+        self.rules = LastUpdatedOrderedDict()
+        self.passthroughs = LastUpdatedOrderedDict()
         self.clear()
+
+    def copy(self):
+        x = Direct(self.filename)
+        x.chains = self.chains.copy()
+        x.rules = self.rules.copy()
+        x.passthroughs = self.passthroughs.copy()
+        return x
+
+    def __del__(self):
+        self.cleanup()
+        del self.filename
+        del self.chains
+        del self.rules
+        del self.passthroughs
+
+    def cleanup(self):
+        self.chains.clear()
+        self.rules.clear()
+        self.passthroughs.clear()
 
     def _check_config(self, config, item):
         pass
@@ -181,9 +203,12 @@ class Direct(IO_Object):
                     self.add_passthrough(*x)
 
     def clear(self):
-        self.chains = LastUpdatedOrderedDict()
-        self.rules = LastUpdatedOrderedDict()
-        self.passthroughs = LastUpdatedOrderedDict()
+        self.chains.clear()
+        for key in self.rules:
+            self.rules[key].clear()
+            del self.rules[key]
+        self.rules.clear()
+        self.passthroughs.clear()
 
     def output(self):
         print ("chains")

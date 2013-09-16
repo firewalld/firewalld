@@ -24,13 +24,10 @@ from firewall.errors import *
 class FirewallIcmpType:
     def __init__(self, fw):
         self._fw = fw
-        self.__init_vars()
-
-    def __init_vars(self):
         self._icmptypes = { }
 
     def cleanup(self):
-        self.__init_vars()
+        self._icmptypes.clear()
 
     # zones
 
@@ -50,4 +47,5 @@ class FirewallIcmpType:
 
     def remove_icmptype(self, icmptype):
         self.check_icmptype(icmptype)
+        self._icmptypes[icmptype].cleanup()
         del self._icmptypes[icmptype]
