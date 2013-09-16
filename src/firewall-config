@@ -33,7 +33,7 @@ except RuntimeError as e:
 
 from gi.repository import NetworkManager
 
-from gi.repository import GObject
+from gi.repository import GObject, GLib
 sys.modules['gobject'] = GObject
 import os
 datadir = None
@@ -810,7 +810,7 @@ class FirewallConfig(object):
         # mainloop
 
         self.mainWindow.show()
-        self.mainloop = GObject.MainLoop()
+        self.mainloop = GLib.MainLoop()
         try:
             self.mainloop.run()
         except KeyboardInterrupt:

@@ -70,7 +70,7 @@ def run_server():
         name = dbus.service.BusName(DBUS_INTERFACE, bus=bus)
         service = FirewallD(name, DBUS_PATH)
 
-        mainloop = GObject.MainLoop()
+        mainloop = GLib.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)
 
         # use unix_signal_add if available, else unix_signal_add_full

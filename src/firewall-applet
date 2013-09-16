@@ -1083,6 +1083,6 @@ Options:
 """  % sys.argv[0])
     sys.exit(1)
 
-mainloop = GObject.MainLoop()
+mainloop = GLib.MainLoop()
 applet = TrayApplet()
 mainloop.run()
