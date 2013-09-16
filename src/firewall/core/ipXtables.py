@@ -54,6 +54,16 @@ ICMP = {
 
 DEFAULT_RULES = { }
 
+DEFAULT_RULES["security"] = [ ]
+for chain in CHAINS["security"]:
+    DEFAULT_RULES["security"].append("-N %s_direct" % chain)
+    DEFAULT_RULES["security"].append("-I %s 1 -j %s_direct" % (chain, chain))
+
+DEFAULT_RULES["raw"] = [ ]
+for chain in CHAINS["raw"]:
+    DEFAULT_RULES["raw"].append("-N %s_direct" % chain)
+    DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
+
 DEFAULT_RULES["mangle"] = [ ]
 for chain in CHAINS["mangle"]:
     DEFAULT_RULES["mangle"].append("-N %s_direct" % chain)
