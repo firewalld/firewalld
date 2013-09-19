@@ -124,7 +124,7 @@ elementFormDefault="qualified">
 
 <xs:simpleType name="logtypelevelrestrict">
   <xs:restriction base="xs:string">
-    <xs:pattern value="emerg|alert|crit|err|warn|notice|info|debug"/>
+    <xs:pattern value="emerg|alert|crit|error|warning|notice|info|debug"/>
   </xs:restriction>
 </xs:simpleType>
 

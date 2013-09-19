@@ -1240,12 +1240,11 @@ class FirewallConfig(object):
         if obj.log:
             if obj.log.prefix:
                 log = '"%s"' % obj.log.prefix
-            if obj.log.level != "info":
-                log += "\n" + _("level") + " " + obj.log.limit.value
+            if obj.log.level:
+                log += "\n" + _("level") + " " + obj.log.level
             if obj.log.limit:
                 log += "\n" + _("limit") + " " + obj.log.limit.value
         if obj.audit:
-            audit = _("yes")
             if obj.audit.limit:
                 audit += "\n" + _("limit") + " " + obj.audit.limit.value
 
@@ -1857,14 +1856,14 @@ class FirewallConfig(object):
                  "m": _("minute"),
                  "h": _("hour"),
                  "d": _("day") }
-        loglevel = { "info": _("info"),
-                     "notice": _("notice"),
-                     "debug": _("debug"),
-                     "warn": _("warning"),
-                     "err": _("error"),
+        loglevel = { "emerg": _("emergency"),
                      "alert": _("alert"),
                      "crit": _("critical"),
-                     "emerg": _("emergency") }
+                     "error": _("error"),
+                     "warning": _("warning"),
+                     "notice": _("notice"),
+                     "info": _("info"),
+                     "debug": _("debug"), }
 
         active_zone = self.get_active_zone()
 
@@ -2281,14 +2280,14 @@ class FirewallConfig(object):
                  _("minute"): "m",
                  _("hour"): "h",
                  _("day"): "d" }
-        loglevel = { _("info"): "info",
-                     _("notice"): "notice",
-                     _("debug"): "debug",
-                     _("warning"): "warn",
-                     _("error"): "err",
-                     _("alert"): "alert",
-                     _("critical"): "crit",
-                     _("emergency"): "emerg", }
+        loglevel = { _("emergency"): "emerg", # 0, system is unusable
+                     _("alert"): "alert",     # 1, action must be taken immediately
+                     _("critical"): "crit",   # 2, critical conditions
+                     _("error"): "error",     # 3, error conditions
+                     _("warning"): "warning", # 4, warning conditions
+                     _("notice"): "notice",   # 5, normal but significant condition
+                     _("info"): "info",       # 6, informational
+                     _("debug"): "debug", }   # 7, debug-level messages
 
         # family
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()

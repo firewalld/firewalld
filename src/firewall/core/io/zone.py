@@ -374,8 +374,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             level = None
             if "level" in attrs:
                 level = str(attrs["level"])
-                if level not in [ "emerg", "alert", "crit", "err",
-                                  "warn", "notice", "info", "debug" ]:
+                if level not in [ "emerg", "alert", "crit", "error",
+                                  "warning", "notice", "info", "debug" ]:
                     log.error('Invalid rule: Invalid log level')
                     self._rule_error = True
                     return

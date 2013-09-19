@@ -5789,14 +5789,14 @@
                             <property name="entry_text_column">0</property>
                             <property name="id_column">1</property>
                             <items>
-                              <item translatable="yes">info</item>
-                              <item translatable="yes">notice</item>
-                              <item translatable="yes">debug</item>
-                              <item translatable="yes">warn</item>
-                              <item translatable="yes">err</item>
+                              <item translatable="yes">emergency</item>
                               <item translatable="yes">alert</item>
-                              <item translatable="yes">crit</item>
-                              <item translatable="yes">emerg</item>
+                              <item translatable="yes">critical</item>
+                              <item translatable="yes">error</item>
+                              <item translatable="yes">warning</item>
+                              <item translatable="yes">notice</item>
+                              <item translatable="yes">info</item>
+                              <item translatable="yes">debug</item>
                             </items>
                             <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                           </object>
