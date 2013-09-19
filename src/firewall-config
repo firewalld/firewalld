@@ -1245,6 +1245,7 @@ class FirewallConfig(object):
             if obj.log.limit:
                 log += "\n" + _("limit") + " " + obj.log.limit.value
         if obj.audit:
+            audit = _("yes")
             if obj.audit.limit:
                 audit += "\n" + _("limit") + " " + obj.audit.limit.value
 
