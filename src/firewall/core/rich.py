@@ -534,7 +534,8 @@ class Rich_Rule(object):
 
         # log
         if self.log != None:
-            if self.log.level not in [ "emerg", "alert", "crit", "error",
+            if self.log.level and \
+               self.log.level not in [ "emerg", "alert", "crit", "error",
                                        "warning", "notice", "info", "debug" ]:
                 raise FirewallError(INVALID_LOG_LEVEL, self.log.level)
 

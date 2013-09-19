@@ -1244,10 +1244,13 @@ class FirewallConfig(object):
                 log += "\n" + _("level") + " " + obj.log.level
             if obj.log.limit:
                 log += "\n" + _("limit") + " " + obj.log.limit.value
+            if log == "":
+                log = _("yes")
         if obj.audit:
-            audit = _("yes")
             if obj.audit.limit:
                 audit += "\n" + _("limit") + " " + obj.audit.limit.value
+            if audit == "":
+                audit = _("yes")
 
         self.richRuleStore.append([obj, family, action, elem, src, dest, log,
                                    audit])
@@ -1844,7 +1847,7 @@ class FirewallConfig(object):
         self.richRuleDialogDestinationChooser.set_text("")
         self.richRuleDialogLogCheck.set_active(False)
         self.richRuleDialogLogPrefixEntry.set_text("")
-        self.richRuleDialogLogLevelCombobox.set_active(0)
+        self.richRuleDialogLogLevelCombobox.set_active(4)
         self.richRuleDialogLogLimitCheck.set_active(False)
         self.richRuleDialogLogLimitRateEntry.set_text("")
         self.richRuleDialogLogLimitDurationCombobox.set_active(0)
@@ -1965,8 +1968,11 @@ class FirewallConfig(object):
                 if old_obj.log.prefix:
                     self.richRuleDialogLogPrefixEntry.set_text( \
                                                         old_obj.log.prefix)
+                log_level = "warning"
+                if old_obj.log.level and old_obj.log.level != log_level:
+                    log_level = old_obj.log.level
                 self.combobox_select_text(self.richRuleDialogLogLevelCombobox,
-                                          loglevel[old_obj.log.level])
+                                          loglevel[log_level])
                 if old_obj.log.limit:
                     self.richRuleDialogLogLimitCheck.set_active(True)
                     (rate, duration) = old_obj.log.limit.value.split("/")
