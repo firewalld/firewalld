@@ -37,8 +37,22 @@ def __print(msg=None):
         print(msg)
 
 def __print_and_exit(msg=None, exit_code=0):
-    __print(msg)
+    FAIL = '\033[91m'
+    OK =   '\033[92m'
+    END =  '\033[00m'
+    if exit_code != 0:
+        __print(FAIL + msg + END)
+    else:
+        __print(msg)
+        #__print(OK + msg + END)
     sys.exit(exit_code)
+
+def __fail(msg=None):
+    __print_and_exit(msg, 2)
+
+def __print_if_verbose(msg=None):
+    if msg and a.verbose:
+        print(msg)
 
 def __usage():
     print """
@@ -212,13 +226,6 @@ Panic Options
   --panic-off          Disable panic mode
   --query-panic        Query whether panic mode is enabled
 """
-
-def __fail(msg=None):
-    __print_and_exit(msg, 2)
-
-def __print_if_verbose(msg=None):
-    if msg and a.verbose:
-        print(msg)
 
 def __parse_port(value):
     try:
