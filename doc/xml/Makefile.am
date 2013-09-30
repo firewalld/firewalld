@@ -1,7 +1,8 @@
 XSLTPROC = xsltproc
 
 EXTRA_DIST = $(HTMLS:../html/%.html=%.xml) \
-	authors.xml notes.xml seealso.xml errorcodes.xml
+	authors.xml notes.xml seealso.xml errorcodes.xml \
+	transform-man.xsl.in transform-html.xsl.in
 
 man_MANS = $(man1_MANS) $(man5_MANS)
 HTMLS = $(man1_MANS:../man/man1/%.1=../html/%.html) $(man5_MANS:../man/man5/%.5=../html/%.html)
@@ -24,7 +25,7 @@ man5_MANS = \
 	../man/man5/firewalld.zones.5
 
 CLEAN_FILES = *~ errorcodes.xml
-DISTCLEANFILES = $(man_MANS) $(HTMLS)
+DISTCLEANFILES = $(man_MANS) $(HTMLS) transform-*.xsl
 
 #SGML_CATALOG_FILES
 #XSLTPROC_FLAGS = --catalogs --nonet --xinclude
@@ -59,10 +60,12 @@ errorcodes.xml: ../../src/firewall/errors.py
 			-e 's/ *= */\<\/entry\>\<entry\>/g' \
 			-e 's/$$/\<\/entry\>\<\/row\>/g' > $@
 
-transform-man.xsl: transform-man.xsl.in
-transform-html.xsl: transform-html.xsl.in
+edit = sed \
+	-e 's|\@PREFIX\@|$(prefix)|' \
+	-e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
+	-e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|'
 
-transform-man.xsl transform-html.xsl:
-	sed -e 's|\@PREFIX\@|$(prefix)|' \
-	    -e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
-	    -e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|' $@.in > $@
+transform-man.xsl: transform-man.xsl.in
+	$(edit) $< >$@
+transform-html.xsl: transform-html.xsl.in
+	$(edit) $< >$@
