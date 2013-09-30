@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -29,14 +29,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-30 12:20+0200\n"
-"PO-Revision-Date: 2013-09-25 21:20+0000\n"
+"POT-Creation-Date: 2013-09-30 13:34+0200\n"
+"PO-Revision-Date: 2013-09-30 14:59+0000\n"
 "Last-Translator: Roman Spirgi <bigant@fedoraproject.org>\n"
 "Language-Team: German <trans-de@lists.fedoraproject.org>\n"
-"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:219
@@ -124,18 +124,13 @@ msgstr "Konfiguriere geschützte/ offene Zonen"
 
 #: ../src/firewall-applet:352
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
-"Hier können Sie die Bereiche für aktive und offene Schutzschild-Zonen "
-"auswählen."
+msgstr "Hier können Sie die Bereiche für aktive und offene Schutzschild-Zonen auswählen."
 
 #: ../src/firewall-applet:360
 msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
-msgstr ""
-"Diese Funktion ist für vor allem für diejenigen von Nutzen, die die Standard-"
-"Zonen nutzen. Für Benutzer, die Verbindungs-Zonen ändern, ist es "
-"möglicherweise nur bedingt nützlich."
+"This feature is useful for people using the default zones mostly. For users,"
+" that are changing zones of connections, it might be of limited use."
+msgstr "Diese Funktion ist für vor allem für diejenigen von Nutzen, die die Standard-Zonen nutzen. Für Benutzer, die Verbindungs-Zonen ändern, ist es möglicherweise nur bedingt nützlich."
 
 #: ../src/firewall-applet:375
 msgid "Shields Up Zone:"
@@ -189,10 +184,9 @@ msgstr "Standardzone: »%s«"
 
 #: ../src/firewall-applet:871
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr ""
-"»{zone}«-Zone aktiv für »{connection}«-Verbindung auf »{interface}«-"
-"Schnittstelle"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
+msgstr "»{zone}«-Zone aktiv für »{connection}«-Verbindung auf »{interface}«-Schnittstelle"
 
 #: ../src/firewall-applet:874
 msgid "Zone '{zone}' active for interface '{interface}'"
@@ -231,9 +225,7 @@ msgstr "deaktiviert"
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr ""
-"»{zone}«-Zone {activated_deactivated} für »{connection}«-Verbindung  auf  "
-"»{interface}«-Schnittstelle"
+msgstr "»{zone}«-Zone {activated_deactivated} für »{connection}«-Verbindung  auf  »{interface}«-Schnittstelle"
 
 #: ../src/firewall-applet:944
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
@@ -530,8 +522,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3053
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -560,14 +551,12 @@ msgid "Please enter the context."
 msgstr "Bitte den Kontext eingeben."
 
 #: ../src/firewall-config.glade.h:5
-#, fuzzy
 msgid "Default Zone"
-msgstr "Standard-Zone:"
+msgstr "Standardzone"
 
 #: ../src/firewall-config.glade.h:6
-#, fuzzy
 msgid "Please select default zone from the list below."
-msgstr "Bitte wählen Sie aus der nachfolgenden Liste die Standard-System-Zone."
+msgstr "Bitte wählen Sie die Standardzone aus der unteren Liste."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Port Forwarding"
@@ -576,9 +565,7 @@ msgstr "Port-Weiterleitung"
 #: ../src/firewall-config.glade.h:8
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr ""
-"Bitte wählen Sie die Quell- und Ziel-Einstellungen nach Ihren Bedürfnissen "
-"aus."
+msgstr "Bitte wählen Sie die Quell- und Ziel-Einstellungen nach Ihren Bedürfnissen aus."
 
 #: ../src/firewall-config.glade.h:9
 msgid "Port / Port Range:"
@@ -610,11 +597,9 @@ msgstr "An einen anderen Port weiterleiten"
 
 #: ../src/firewall-config.glade.h:16
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to "
-"be different to the source port."
-msgstr ""
-"Wenn Sie lokales Weiterleiten aktivieren, müssen Sie einen Port angeben. "
-"Dieser Port darf nicht mit dem Quell-Port übereinstimmen."
+"If you enable local forwarding, you have to specify a port. This port has to"
+" be different to the source port."
+msgstr "Wenn Sie lokales Weiterleiten aktivieren, müssen Sie einen Port angeben. Dieser Port darf nicht mit dem Quell-Port übereinstimmen."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Base ICMP Type Settings"
@@ -672,18 +657,16 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Change which zone a network connection belongs to."
-msgstr "Verbindungszonen ändern..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:33
 msgid "Change Default Zone"
 msgstr "Standardzone ändern"
 
 #: ../src/firewall-config.glade.h:34
-#, fuzzy
 msgid "Change default zone for connections or interfaces."
-msgstr "Verbindungszonen ändern..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:35
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -716,10 +699,7 @@ msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
-msgstr ""
-"Aktuell einsehbare Konfiguration. Die Runtime-Konfiguration ist die "
-"derzeitig aktive Konfiguration. Die dauerhafte Konfiguration wird nach dem "
-"erneuten Laden des Dienstes oder Systems aktiv sein."
+msgstr "Aktuell einsehbare Konfiguration. Die Runtime-Konfiguration ist die derzeitig aktive Konfiguration. Die dauerhafte Konfiguration wird nach dem erneuten Laden des Dienstes oder Systems aktiv sein."
 
 #: ../src/firewall-config.glade.h:42
 msgid ""
@@ -728,12 +708,7 @@ msgid ""
 "services, ports, protocols, masquerading, port/packet forwarding, icmp "
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
-msgstr ""
-"Ein firewalld-Zone definiert die Vertrauensstufe für Netzwerkverbindungen, "
-"Schnittstellen und Quell-Adressen. Die Zone kombiniert Dienste, Ports, "
-"Protokolle, Maskierungen, Port-/ Paket-Weiterleitung, ICMP-Filter und "
-"umfassende Regeln. Die Zone kann mit Schnittstellen und Quelladressen "
-"verknüpft werden."
+msgstr "Ein firewalld-Zone definiert die Vertrauensstufe für Netzwerkverbindungen, Schnittstellen und Quell-Adressen. Die Zone kombiniert Dienste, Ports, Protokolle, Maskierungen, Port-/ Paket-Weiterleitung, ICMP-Filter und umfassende Regeln. Die Zone kann mit Schnittstellen und Quelladressen verknüpft werden."
 
 #: ../src/firewall-config.glade.h:44
 msgid "Add Zone"
@@ -753,14 +728,10 @@ msgstr "Standardwerte der Zone laden"
 
 #: ../src/firewall-config.glade.h:48
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services "
-"are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services"
+" are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
-msgstr ""
-"Hier können  vertrauenswürdige Diensten der Zone definiert werden. "
-"Vertrauenswürdige Dienste sind über Verbindungen, Schnittstellen und Quellen "
-"von allen Rechnern und Netzwerken erreichbar, die mit dieser Zone verknüpft "
-"sind."
+msgstr "Hier können  vertrauenswürdige Diensten der Zone definiert werden. Vertrauenswürdige Dienste sind über Verbindungen, Schnittstellen und Quellen von allen Rechnern und Netzwerken erreichbar, die mit dieser Zone verknüpft sind."
 
 #: ../src/firewall-config.glade.h:49
 msgid "Services"
@@ -770,10 +741,7 @@ msgstr "Dienste"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
-msgstr ""
-"Zusätzliche Ports oder Portbereiche hinzufügen, welche von allen Rechnern "
-"oder Netzwerken erreichbar sein müssen, die sich mit dem Gerät verbinden "
-"können."
+msgstr "Zusätzliche Ports oder Portbereiche hinzufügen, welche von allen Rechnern oder Netzwerken erreichbar sein müssen, die sich mit dem Gerät verbinden können."
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Port"
@@ -796,11 +764,7 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr ""
-"Masquerading erlaubt es, einen Rechner oder Router einzurichten, der Ihr "
-"lokales Netzwerk mit dem Internet verbindet. Ihr lokales Netzwerk ist nicht "
-"sichtbar und erscheint als ein Rechner vom Internet aus betrachtet. "
-"Masquerading kann nur für IPv4 benutzt werden."
+msgstr "Masquerading erlaubt es, einen Rechner oder Router einzurichten, der Ihr lokales Netzwerk mit dem Internet verbindet. Ihr lokales Netzwerk ist nicht sichtbar und erscheint als ein Rechner vom Internet aus betrachtet. Masquerading kann nur für IPv4 benutzt werden."
 
 #: ../src/firewall-config.glade.h:56
 msgid "Masquerade zone"
@@ -810,9 +774,7 @@ msgstr "Maskierte Zone"
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr ""
-"Wenn Sie Masquerading aktivieren, wird IP Forwarding für Ihre IPv4-Netzwerke "
-"aktiviert."
+msgstr "Wenn Sie Masquerading aktivieren, wird IP Forwarding für Ihre IPv4-Netzwerke aktiviert."
 
 #: ../src/firewall-config.glade.h:58
 msgid "Masquerading"
@@ -824,12 +786,7 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr ""
-"Fügen Sie Einträge hinzu, um entweder einen Port auf einen anderen lokalen "
-"Port weiterzuleiten oder vom lokalen System auf ein anderes. Das "
-"Weiterleiten eines Ports auf ein anderes System ist nur dann sinnvoll, wenn "
-"die Schnittstelle maskiert ist. Port-Weiterleitung kann nur für IPv4 benutzt "
-"werden."
+msgstr "Fügen Sie Einträge hinzu, um entweder einen Port auf einen anderen lokalen Port weiterzuleiten oder vom lokalen System auf ein anderes. Das Weiterleiten eines Ports auf ein anderes System ist nur dann sinnvoll, wenn die Schnittstelle maskiert ist. Port-Weiterleitung kann nur für IPv4 benutzt werden."
 
 #: ../src/firewall-config.glade.h:60
 msgid "Add Forward Port"
@@ -848,19 +805,13 @@ msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr ""
-"Das Internet Control Message Protocol (ICMP) wird hauptsächlich dazu "
-"verwendet, um Fehlermeldungen zwischen vernetzten Computern zu senden und "
-"zusätzlich zu Informationszwecken wie z.B. Ping-Anfragen und -Antworten."
+msgstr "Das Internet Control Message Protocol (ICMP) wird hauptsächlich dazu verwendet, um Fehlermeldungen zwischen vernetzten Computern zu senden und zusätzlich zu Informationszwecken wie z.B. Ping-Anfragen und -Antworten."
 
 #: ../src/firewall-config.glade.h:64
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr ""
-"Markieren Sie die ICMP-Typen in der Liste, die abgelehnt werden sollen. Alle "
-"anderen ICMP-Typen dürfen die Firewall passieren. Der Standardwert hat keine "
-"Beschränkung."
+msgstr "Markieren Sie die ICMP-Typen in der Liste, die abgelehnt werden sollen. Alle anderen ICMP-Typen dürfen die Firewall passieren. Der Standardwert hat keine Beschränkung."
 
 #: ../src/firewall-config.glade.h:65
 msgid "ICMP Filter"
@@ -876,18 +827,13 @@ msgstr "Umfassende Regeln"
 
 #: ../src/firewall-config.glade.h:68
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by "
-"a connection, the zone will be set to the zone specified in the connection."
-msgstr ""
-"Einträge hinzufügen, um Schnittstellen mit der Zone zu verknüpfen. Falls die "
-"Schnittstelle von einer Verbindung verwendet wird, wird die Zone in der "
-"Verbindung angegebenen Zone gesetzt."
+"Add entries to bind interfaces to the zone. If the interface will be used by"
+" a connection, the zone will be set to the zone specified in the connection."
+msgstr "Einträge hinzufügen, um Schnittstellen mit der Zone zu verknüpfen. Falls die Schnittstelle von einer Verbindung verwendet wird, wird die Zone in der Verbindung angegebenen Zone gesetzt."
 
 #: ../src/firewall-config.glade.h:70
 msgid "Add entries to bind source addresses or areas to the zone."
-msgstr ""
-"Einträge hinzufügen, um Quelladressen oder Bereiche mit der Zone zu "
-"verknüpfen."
+msgstr "Einträge hinzufügen, um Quelladressen oder Bereiche mit der Zone zu verknüpfen."
 
 #: ../src/firewall-config.glade.h:72
 msgid "Zones"
@@ -897,9 +843,7 @@ msgstr "Zonen"
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
-msgstr ""
-"Ein firewalld-Dienst ist eine Kombination aus Ports, Protokollen, Modulen "
-"und Zieladressen."
+msgstr "Ein firewalld-Dienst ist eine Kombination aus Ports, Protokollen, Modulen und Zieladressen."
 
 #: ../src/firewall-config.glade.h:75
 msgid "Add Service"
@@ -921,10 +865,7 @@ msgstr "Standard-Dienst-Einstellungen laden"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr ""
-"Fügen Sie zusätzliche Ports oder Port-Bereiche hinzu, die für alle Rechner "
-"oder Netzwerke zugänglich sein sollten. Sie können auch Protokolle "
-"hinzufügen ohne bestimmte Ports zu definieren."
+msgstr "Fügen Sie zusätzliche Ports oder Port-Bereiche hinzu, die für alle Rechner oder Netzwerke zugänglich sein sollten. Sie können auch Protokolle hinzufügen ohne bestimmte Ports zu definieren."
 
 #: ../src/firewall-config.glade.h:80
 msgid "Add Entry"
@@ -955,10 +896,7 @@ msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr ""
-"Wenn Sie Zieladressen angeben, wird der Dienst-Eintrag auf die Zieladresse "
-"und den Typ beschränkt. Wenn beide Einträge leer sind, gibt es keine "
-"Einschränkung."
+msgstr "Wenn Sie Zieladressen angeben, wird der Dienst-Eintrag auf die Zieladresse und den Typ beschränkt. Wenn beide Einträge leer sind, gibt es keine Einschränkung."
 
 #: ../src/firewall-config.glade.h:87
 msgid "IPv4:"
@@ -972,17 +910,13 @@ msgstr "IPv6:"
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
-msgstr ""
-"Dienste können nur in der permanenten Konfigurationsansicht geändert werden. "
-"Die Runtime-Konfiguration der Dienste ist beständig."
+msgstr "Dienste können nur in der permanenten Konfigurationsansicht geändert werden. Die Runtime-Konfiguration der Dienste ist beständig."
 
 #: ../src/firewall-config.glade.h:90
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
-msgstr ""
-"Ein firewalld-icmp-Typ stellt die Information für einen »Internet Control "
-"Message Protocol«-Typ (ICMP) für firewalld bereit."
+msgstr "Ein firewalld-icmp-Typ stellt die Information für einen »Internet Control Message Protocol«-Typ (ICMP) für firewalld bereit."
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add ICMP Type"
@@ -1016,9 +950,7 @@ msgstr "IPv6"
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
-msgstr ""
-"ICMP-Typen können nur in der permanenten Konfigurationsansicht geändert "
-"werden. Die Runtime-Konfiguration der ICMP-Typen ist beständig."
+msgstr "ICMP-Typen können nur in der permanenten Konfigurationsansicht geändert werden. Die Runtime-Konfiguration der ICMP-Typen ist beständig."
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Types"
@@ -1026,14 +958,10 @@ msgstr "ICMP-Typen"
 
 #: ../src/firewall-config.glade.h:100
 msgid ""
-"The lockdown feature is a light version of user and application policies for "
-"firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for"
+" firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
-msgstr ""
-"Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Whitelist kann Befehle, Kontexte, Benutzer und Benutzer-"
-"IDs enthalten."
+msgstr "Die Sperroption ist eine einfache Version von Benutzer- und Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall. Die Sperr-Whitelist kann Befehle, Kontexte, Benutzer und Benutzer-IDs enthalten."
 
 #: ../src/firewall-config.glade.h:101
 msgid "Lockdown Whitelist"
@@ -1043,10 +971,7 @@ msgstr "Sperr-Positivliste"
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
-msgstr ""
-"Der Kontext ist der (SELinux-) Sicherheitskontext einer laufenden Anwendung "
-"oder eines Dienstes. Um den Kontext einer laufenden Anwendung einzusehen, "
-"verwenden Sie ps -e --context."
+msgstr "Der Kontext ist der (SELinux-) Sicherheitskontext einer laufenden Anwendung oder eines Dienstes. Um den Kontext einer laufenden Anwendung einzusehen, verwenden Sie ps -e --context."
 
 #: ../src/firewall-config.glade.h:103
 msgid "Contexts"
@@ -1057,11 +982,7 @@ msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
-msgstr ""
-"Falls ein Befehlseintrag der Positivliste mit einem Sternsymbol »*« endet, "
-"werden alle Kommandozeilen, die mit dem Befehl beginnen ausgewertet. Falls "
-"das  »*«-Symbol nicht vorhanden ist, muss der absolute Befehl inklusive "
-"Argumenten übereinstimmen."
+msgstr "Falls ein Befehlseintrag der Positivliste mit einem Sternsymbol »*« endet, werden alle Kommandozeilen, die mit dem Befehl beginnen ausgewertet. Falls das  »*«-Symbol nicht vorhanden ist, muss der absolute Befehl inklusive Argumenten übereinstimmen."
 
 #: ../src/firewall-config.glade.h:105
 msgid "Command lines"
@@ -1133,9 +1054,7 @@ msgstr "Bitte eine umfassende Regel eingeben."
 
 #: ../src/firewall-config.glade.h:123
 msgid "For host or network white or blacklisting deactivate the element."
-msgstr ""
-"Element deaktivieren, um Positiv- oder Negativlisten für Rechner oder "
-"Netzwerk zu verwenden."
+msgstr "Element deaktivieren, um Positiv- oder Negativlisten für Rechner oder Netzwerk zu verwenden."
 
 #: ../src/firewall-config.glade.h:124
 msgid "Source:"
@@ -1272,9 +1191,7 @@ msgstr "Ungültiges Argument %s"
 
 #: ../src/firewall-offline-cmd:111
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"Option %(option)s: Ungültiger Port für die Weiterleitung '%(value)s': "
-"%(error)s. "
+msgstr "Option %(option)s: Ungültiger Port für die Weiterleitung '%(value)s': %(error)s. "
 
 #: ../src/firewall-offline-cmd:122
 msgid "option %(option)s: invalid forward_port '%(value)s'."
@@ -1299,12 +1216,11 @@ msgstr "<Modul>"
 
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
-msgstr ""
-"Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu aktivieren"
+msgstr "Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu aktivieren"
 
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
-msgstr ""
+msgstr "Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu deaktivieren"
 
 #: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
@@ -1324,7 +1240,7 @@ msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr ""
+msgstr "Einen Port der Standardzone aktivieren (Beispiel: ssh:tcp)"
 
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
@@ -1332,13 +1248,13 @@ msgstr "<Schnittstelle>"
 
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
-msgstr ""
+msgstr "Eine Schnittstelle mit der vertrauenswürdigen Zone verknüpfen"
 
 #: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
-msgstr ""
+msgstr "Masquerading in der Standardzone aktivieren, Schnittstellen-Argument ist unberücksichtigt. Dies betrifft nur IPv4."
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
@@ -1346,25 +1262,23 @@ msgstr "[<type>:][<table>:]<filename>"
 
 #: ../src/firewall-offline-cmd:192
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr ""
+"Ignored option. Was used to add custom rules to the firewall (Example: "
+"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr "Unberücksichtigte Option. Dies wurde benutzt, um benutzerdefinierte Regeln zur Firewall hinzuzufügen (Beispiel: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-offline-cmd:196
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<Schnittstelle>:port=<Port>:proto=<Protokoll>[:toport=<Ziel-Port>][:"
-"toaddr=<Ziel-Adresse>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
+"port>][:toaddr=<destination address>]"
+msgstr "if=<Schnittstelle>:port=<Port>:proto=<Protokoll>[:toport=<Ziel-Port>][:toaddr=<Ziel-Adresse>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
-msgstr ""
+"address with an optional destination port. This will be added to the default"
+" zone. This is IPv4 only."
+msgstr "Weiterleiten des Ports mit dem Schnittstellen-Protokoll zu einem anderen lokalen Ziel-Port (kein Zieladresse angegeben)  oder zu einer anderen Zieladresse mit einem optionalen Ziel-Port. Diese werden zur Standard-Zone hinzugefügt. Dies betrifft nur IPv4."
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
@@ -1386,12 +1300,12 @@ msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
-msgstr ""
+msgstr "Dieses Tool versucht system-config-firewall/lokkit-Optionen so weit wie möglich zu firewalld zu übertragen, es gibt jedoch Einschränkungen zum Beispiel bei eigenen Regeln, Modulen und Masquerading."
 
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr ""
+msgstr "Falls keine Optionen angegeben, wird die Konfiguration von »%s« migriert."
 
 #: ../src/firewall-offline-cmd:286
 #, c-format
@@ -1409,57 +1323,57 @@ msgstr "%s Option erhielt keinen Wert"
 
 #: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
-msgstr ""
+msgstr "Argumente können nicht verarbeitet werden."
 
 #: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
-msgstr ""
+msgstr "Öffnen von »%s« fehlgeschlagen, Abbruch."
 
 #: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
-msgstr ""
+msgstr "Standardzone »%s« öffnen"
 
 #: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
-msgstr ""
+msgstr "Standardzone »%s« kann nicht geöffnet werden, Abbruch."
 
 #: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
-msgstr ""
+msgstr "Zone »%s« kann nicht geöffnet werden, Abbruch."
 
 #: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
-msgstr ""
+msgstr "Das Gerät »%s« wird mit der %s-Zone verknüpft."
 
 #: ../src/firewall-offline-cmd:434
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
-msgstr ""
+msgstr "Benutzerdefinierte Regel-Datei »%s« wird nicht berücksichtigt"
 
 #: ../src/firewall-offline-cmd:439
 #, c-format
 msgid "Ignoring addmodule '%s'"
-msgstr ""
+msgstr "Addmodule »%s« wird nicht berücksichtigt"
 
 #: ../src/firewall-offline-cmd:442
 #, c-format
 msgid "Ignoring removemodule '%s'"
-msgstr ""
+msgstr "Removemodule »%s« wird nicht berücksichtigt"
 
 #: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr ""
+msgstr "Gerat »%s« war getarnt, Masquerading für die Standardzone aktivieren."
 
 #: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
-msgstr ""
+msgstr "Port »%s/%s« zur Standardzone hinzufügen."
 
 #: ../src/firewall-offline-cmd:462
 #, c-format
@@ -1469,21 +1383,21 @@ msgstr ""
 #: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
-msgstr ""
+msgstr "Dienst  »%s« zur Standardzone hinzufügen."
 
 #: ../src/firewall-offline-cmd:476
 #, c-format
 msgid "Adding icmpblock '%s' to default zone."
-msgstr ""
+msgstr "Icmpblock  »%s« zur Standardzone hinzufügen."
 
 #: ../src/firewall-offline-cmd:485
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr ""
+msgstr "Weiterleitungsport %s:%s:%s:%s zur Standardzone hinzufügen."
 
 #: ../src/firewall-offline-cmd:493
 msgid "No changes to default zone needed."
-msgstr ""
+msgstr "Keine Änderung der Standardzone erforderlich."
 
 #: ../src/firewall-offline-cmd:497
 msgid "Changed trusted zone configuration."
@@ -1499,35 +1413,3 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
-
-#~ msgid "System Default Zone"
-#~ msgstr "Standard-System-Zone"
-
-#~ msgid "Change Zones of Connections"
-#~ msgstr "Verbindungszonen ändern"
-
-#~ msgid ""
-#~ "Reloads firewalld: Current permanent configuration will become the new "
-#~ "runtime configuration."
-#~ msgstr ""
-#~ "Firewalld neu laden: Die aktuelle dauerhafte Konfiguration wird die neue "
-#~ "Runtime-Konfiguration werden."
-
-#~ msgid ""
-#~ "If you specify destination addresses, the ICMP Type entry will be limited "
-#~ "to the destination."
-#~ msgstr ""
-#~ "Wenn Sie Zieladressen definieren wird der Eintrag des ICMP-Typs auf das "
-#~ "Ziel beschränkt sein."
-
-#~ msgid "warn"
-#~ msgstr "warnen"
-
-#~ msgid "err"
-#~ msgstr "Err"
-
-#~ msgid "crit"
-#~ msgstr "Krit"
-
-#~ msgid "emerg"
-#~ msgstr "Alarm"
