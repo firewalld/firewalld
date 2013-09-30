@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.4
+Version: 0.3.5
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -180,6 +180,40 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Sep 30 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.5-1
+- Only use one PK action for configuration (RHBZ#994729)
+- firewall-cmd: indicate non-zero exit code with red color
+- rich-rule: enable to have log without prefix & log_level & limit
+- log-level warn/err -> warning/error (RHBZ#1009436)
+- Use policy DROP while reloading, do not reset policy in restart twice
+- Add _direct chains to all table and chain combinations
+- documentation improvements
+- New firewalld.direct(5) man page docbook source
+- tests/firewall-cmd_test.sh: make rich language tests work
+- Rich_Rule._import_from_string(): improve error messages (RHBZ#994150)
+- direct.passthrough wasn't always matching out_signature (RHBZ#967800)
+- firewall-config: twist ICMP Type IP address family logic.
+- firewall-config: port-forwarding/masquerading dialog (RHBZ#993658)
+- firewall-offline-cmd: New --remove-service=<service> option (BZ#969106)
+- firewall-config: Options->Lockdown was not changing permanent.
+- firewall-config: edit line on doubleclick (RHBZ#993572)
+- firewall-config: System Default Zone -> Default Zone (RHBZ#993811)
+- New direct D-Bus interface, persistent direct rule handling, enabled passthough
+- src/firewall-cmd: Fixed help output to use more visual parameters
+- src/firewall-cmd: New usage output, no redirection to man page anymore
+- src/firewall/core/rich.py: Fixed forwad port destinations
+- src/firewall-offline-cmd: Early enable/disable handling now with mask/unmask
+- doc/xml/firewalld.zone.xml: Added more information about masquerade use
+- Prefix to log message is optional (RHBZ#998079)
+- firewall-cmd: fix --permanent --change-interface (RHBZ#997974)
+- Sort zones/interfaces/service/icmptypes on output.
+- wbem-https service (RHBZ#996668)
+- applet&config: add support for KDE NetworkManager connection editor
+- firewall/core/fw_config.py: New method update_lockdown_whitelist
+- Added missing file watcher for lockdown whitelist in config D-Bus interface
+- firewall/core/watcher: New add_watch_file for lockdown-whitelist and direct
+- Make use of IPv6 NAT conditional, based on kernel number (RHBZ#967376)
+
 * Tue Jul 30 2013 Thomas Woerner <twoerner@redhat.com> 0.3.4-1
 - several rich rule check enhancements and fixes
 - firewall-cmd: direct options - check ipv4|ipv6|eb (RHBZ#970505)
