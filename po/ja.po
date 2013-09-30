@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Copyright (C) Red Hat Inc. 2010, 2011
 # Hajime Taira <htaira@redhat.com>, 2010-2011
@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-06 11:53+0200\n"
-"PO-Revision-Date: 2013-08-06 09:54+0000\n"
-"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"POT-Creation-Date: 2013-09-30 12:20+0200\n"
+"PO-Revision-Date: 2013-09-17 13:03+0000\n"
+"Last-Translator: Tomoyuki KATO <tomo@dream.daynight.jp>\n"
 "Language-Team: Japanese <trans-ja@lists.fedoraproject.org>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:219
@@ -73,7 +73,7 @@ msgstr "ゾーン '%s' をインターフェース '%s' に対して有効化し
 #: ../src/firewall-applet:162
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "ソース %s のゾーンの選択"
 
 #: ../src/firewall-applet:263
 msgid "Shields Up"
@@ -87,7 +87,7 @@ msgstr "通知の有効化"
 msgid "Edit Firewall Settings..."
 msgstr "ファイアウォール設定の編集..."
 
-#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:30
+#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:31
 msgid "Change Zones of Connections..."
 msgstr "接続のゾーンの変更..."
 
@@ -105,13 +105,17 @@ msgstr "シールド・アップ/ダウン・ゾーンの設定"
 
 #: ../src/firewall-applet:352
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "ここからシールド・アップおよびシールド・ダウンに対して使用するゾーンを選択できます。"
+msgstr ""
+"ここからシールド・アップおよびシールド・ダウンに対して使用するゾーンを選択で"
+"きます。"
 
 #: ../src/firewall-applet:360
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
-msgstr "この機能はたいてい標準のゾーンを使用する人々にとって有用です。接続のゾーンを変更しているユーザーに対して、限定的に使用できます。"
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
+msgstr ""
+"この機能はたいてい標準のゾーンを使用する人々にとって有用です。接続のゾーンを"
+"変更しているユーザーに対して、限定的に使用できます。"
 
 #: ../src/firewall-applet:375
 msgid "Shields Up Zone:"
@@ -126,107 +130,112 @@ msgid "Connections"
 msgstr "接続されていません。"
 
 #: ../src/firewall-applet:579 ../src/firewall-applet:607
-#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:40
+#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:43
 msgid "Zone"
 msgstr "ゾーン"
 
-#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:66
+#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:69
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:68
+#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:71
 msgid "Sources"
-msgstr ""
+msgstr "送信元"
 
-#: ../src/firewall-applet:714
+#: ../src/firewall-applet:717
 msgid "Connection to FirewallD established."
 msgstr "FirewallD への接続が確立されました。"
 
-#: ../src/firewall-applet:723
+#: ../src/firewall-applet:726
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD への接続が失われました。"
 
-#: ../src/firewall-applet:770
+#: ../src/firewall-applet:773
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD が再読み込みされました。"
 
-#: ../src/firewall-applet:847
+#: ../src/firewall-applet:850
 msgid "No connection to firewall daemon"
 msgstr "ファイアーウォール・デーモンへの接続がありません。"
 
-#: ../src/firewall-applet:853
+#: ../src/firewall-applet:856
 msgid "PANIC MODE"
 msgstr "パニックモード"
 
-#: ../src/firewall-applet:860
+#: ../src/firewall-applet:863
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
-
-#: ../src/firewall-applet:868
-msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
-msgstr "ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対して有効化"
+msgstr "標準ゾーン: '%s'"
 
 #: ../src/firewall-applet:871
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
+"ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対し"
+"て有効化"
+
+#: ../src/firewall-applet:874
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "ゾーン '{zone}' がインターフェース '{interface}' に対して有効化"
 
-#: ../src/firewall-applet:879
+#: ../src/firewall-applet:882
 msgid "Zone '{zone}' active for source {source}"
 msgstr ""
 
-#: ../src/firewall-applet:883
+#: ../src/firewall-applet:886
 msgid "No Active Zones."
 msgstr "有効なゾーンがありません。"
 
-#: ../src/firewall-applet:892
+#: ../src/firewall-applet:895
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "標準のゾーンを '%s' に変更しました。"
 
-#: ../src/firewall-applet:916
+#: ../src/firewall-applet:919
 msgid "All network traffic is blocked."
 msgstr "すべてのネットワーク通信が遮断されます。"
 
-#: ../src/firewall-applet:917
+#: ../src/firewall-applet:920
 msgid "Network traffic is not blocked anymore."
 msgstr "ネットワーク通信が遮断されなくなります。"
 
-#: ../src/firewall-applet:932 ../src/firewall-applet:972
+#: ../src/firewall-applet:935 ../src/firewall-applet:975
 msgid "activated"
 msgstr "有効化"
 
-#: ../src/firewall-applet:933 ../src/firewall-applet:973
+#: ../src/firewall-applet:936 ../src/firewall-applet:976
 msgid "deactivated"
 msgstr "無効化"
 
-#: ../src/firewall-applet:936
+#: ../src/firewall-applet:939
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対して {activated_deactivated}"
+msgstr ""
+"ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対し"
+"て {activated_deactivated}"
 
-#: ../src/firewall-applet:941
+#: ../src/firewall-applet:944
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "インターフェース '{interface}' に対してゾーン '{zone}' を {activated_deactivated} しました"
+msgstr ""
+"インターフェース '{interface}' に対してゾーン '{zone}' を "
+"{activated_deactivated} しました"
 
-#: ../src/firewall-applet:963
+#: ../src/firewall-applet:966
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "ゾーン '%s' をインターフェース '%s' に対して有効化しました"
 
-#: ../src/firewall-applet:975
+#: ../src/firewall-applet:978
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 
-#: ../src/firewall-applet:998
+#: ../src/firewall-applet:1001
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:1063
+#: ../src/firewall-applet:1066
 msgid "Firewall-applet"
 msgstr "ファイアウォール・アプレット"
 
@@ -249,15 +258,15 @@ msgstr "再試行中 ..."
 #: ../src/firewall-config:83
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "ネットワーク接続 '%s' により使用中"
 
 #: ../src/firewall-config:84
 msgid "enabled"
-msgstr ""
+msgstr "有効"
 
 #: ../src/firewall-config:85
 msgid "disabled"
-msgstr ""
+msgstr "無効"
 
 #: ../src/firewall-config:95
 msgid "Failed to load icons."
@@ -265,7 +274,7 @@ msgstr "アイコンの読み込みに失敗しました。"
 
 #: ../src/firewall-config:122
 msgid "NetworkManager connection editor is missing."
-msgstr ""
+msgstr "NetworkManager 接続エディターがありません。"
 
 #: ../src/firewall-config:239 ../src/firewall-config:1396
 msgid "Runtime Configuration"
@@ -275,7 +284,7 @@ msgstr "実行時の設定"
 msgid "Permanent Configuration"
 msgstr "永続的な設定"
 
-#: ../src/firewall-config:301 ../src/firewall-config.glade.h:71
+#: ../src/firewall-config:301 ../src/firewall-config.glade.h:74
 msgid "Service"
 msgstr "サービス"
 
@@ -285,52 +294,52 @@ msgid "Port"
 msgstr "ポート"
 
 #: ../src/firewall-config:310 ../src/firewall-config:351
-#: ../src/firewall-config:589 ../src/firewall-config.glade.h:116
+#: ../src/firewall-config:589 ../src/firewall-config.glade.h:119
 msgid "Protocol"
 msgstr "プロトコル"
 
 #: ../src/firewall-config:353
 msgid "To Port"
-msgstr "宛先ポート"
+msgstr "送信先ポート"
 
 #: ../src/firewall-config:355
 msgid "To Address"
-msgstr "宛先アドレス"
+msgstr "送信先アドレス"
 
 #: ../src/firewall-config:392
 msgid "Icmp Type"
-msgstr "ICMP 種別"
+msgstr "ICMP タイプ"
 
 #: ../src/firewall-config:407
 msgid "Family"
-msgstr ""
+msgstr "ファミリー"
 
 #: ../src/firewall-config:409
 msgid "Action"
-msgstr ""
+msgstr "アクション"
 
 #: ../src/firewall-config:411
 msgid "Element"
-msgstr ""
+msgstr "要素"
 
 #: ../src/firewall-config:413
 msgid "Src"
-msgstr ""
+msgstr "送信元"
 
 #: ../src/firewall-config:415
 msgid "Dest"
-msgstr ""
+msgstr "送信先"
 
 #: ../src/firewall-config:417
 msgid "log"
-msgstr ""
+msgstr "ログ"
 
 #: ../src/firewall-config:419
 msgid "Audit"
-msgstr ""
+msgstr "監査"
 
-#: ../src/firewall-config:899 ../src/firewall-config:1585
-#: ../src/firewall-config:1622
+#: ../src/firewall-config:899 ../src/firewall-config:1588
+#: ../src/firewall-config:1625
 msgid "Warning"
 msgstr "警告"
 
@@ -338,55 +347,55 @@ msgstr "警告"
 msgid "Error"
 msgstr "エラー"
 
-#: ../src/firewall-config:1210 ../src/firewall-config:2338
+#: ../src/firewall-config:1206 ../src/firewall-config:2347
 msgid "accept"
-msgstr ""
+msgstr "受信"
 
-#: ../src/firewall-config:1212 ../src/firewall-config:2340
-#: ../src/firewall-config:2428
+#: ../src/firewall-config:1208 ../src/firewall-config:2349
+#: ../src/firewall-config:2437
 msgid "reject"
-msgstr ""
+msgstr "拒否"
 
-#: ../src/firewall-config:1214 ../src/firewall-config:2345
+#: ../src/firewall-config:1210 ../src/firewall-config:2354
 msgid "drop"
-msgstr ""
+msgstr "廃棄"
 
-#: ../src/firewall-config:1216 ../src/firewall-config:1249
-#: ../src/firewall-config:1253
-msgid "limit"
-msgstr ""
-
-#: ../src/firewall-config:1227 ../src/firewall-config:1889
-#: ../src/firewall-config:2028 ../src/firewall-config:2302
-#: ../src/firewall-config.glade.h:145
-msgid "service"
-msgstr ""
-
-#: ../src/firewall-config:1229 ../src/firewall-config:1895
-#: ../src/firewall-config:2030 ../src/firewall-config:2305
-#: ../src/firewall-config.glade.h:146
-msgid "port"
-msgstr ""
-
-#: ../src/firewall-config:1232 ../src/firewall-config:1900
-#: ../src/firewall-config:2039 ../src/firewall-config:2311
-#: ../src/firewall-config.glade.h:147
-msgid "protocol"
-msgstr ""
-
-#: ../src/firewall-config:1234 ../src/firewall-config:1905
-#: ../src/firewall-config:2325 ../src/firewall-config:2440
-#: ../src/firewall-config.glade.h:150
-msgid "masquerade"
-msgstr ""
-
-#: ../src/firewall-config:1247
-msgid "level"
-msgstr ""
-
+#: ../src/firewall-config:1212 ../src/firewall-config:1246
 #: ../src/firewall-config:1251
+msgid "limit"
+msgstr "制限"
+
+#: ../src/firewall-config:1223 ../src/firewall-config:1896
+#: ../src/firewall-config:2039 ../src/firewall-config:2311
+#: ../src/firewall-config.glade.h:148
+msgid "service"
+msgstr "サービス"
+
+#: ../src/firewall-config:1225 ../src/firewall-config:1902
+#: ../src/firewall-config:2041 ../src/firewall-config:2314
+#: ../src/firewall-config.glade.h:149
+msgid "port"
+msgstr "ポート"
+
+#: ../src/firewall-config:1228 ../src/firewall-config:1907
+#: ../src/firewall-config:2050 ../src/firewall-config:2320
+#: ../src/firewall-config.glade.h:150
+msgid "protocol"
+msgstr "プロトコル"
+
+#: ../src/firewall-config:1230 ../src/firewall-config:1912
+#: ../src/firewall-config:2334 ../src/firewall-config:2449
+#: ../src/firewall-config.glade.h:153
+msgid "masquerade"
+msgstr "マスカレード"
+
+#: ../src/firewall-config:1244
+msgid "level"
+msgstr "レベル"
+
+#: ../src/firewall-config:1248 ../src/firewall-config:1253
 msgid "yes"
-msgstr ""
+msgstr "はい"
 
 #: ../src/firewall-config:1339
 msgid "Invalid name"
@@ -396,112 +405,123 @@ msgstr "不当な実引数 %s"
 msgid "Name already exists"
 msgstr "名前がすでに存在します"
 
-#: ../src/firewall-config:1582
+#: ../src/firewall-config:1585
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "ゾーン '%s': サービス '%s' が利用可能ではありません。"
 
-#: ../src/firewall-config:1586 ../src/firewall-config:1623
+#: ../src/firewall-config:1589 ../src/firewall-config:1626
 msgid "Remove"
 msgstr "ゾーンの削除"
 
-#: ../src/firewall-config:1586 ../src/firewall-config:1623
+#: ../src/firewall-config:1589 ../src/firewall-config:1626
 msgid "Ignore"
 msgstr "無視"
 
-#: ../src/firewall-config:1619
+#: ../src/firewall-config:1622
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "ゾーン '%s': ICMP タイプ '%s' が利用可能ではありません。"
 
-#: ../src/firewall-config:1746
+#: ../src/firewall-config:1749
 msgid "Built-in zone, rename not supported."
 msgstr "組み込みのゾーンです、名前を変更できません。"
 
-#: ../src/firewall-config:1852 ../src/firewall-config:2277
-#: ../src/firewall-config.glade.h:130
-msgid "second"
-msgstr ""
-
-#: ../src/firewall-config:1853 ../src/firewall-config:2278
-#: ../src/firewall-config.glade.h:131
-msgid "minute"
-msgstr ""
-
-#: ../src/firewall-config:1854 ../src/firewall-config:2279
-#: ../src/firewall-config.glade.h:132
-msgid "hour"
-msgstr ""
-
-#: ../src/firewall-config:1855 ../src/firewall-config:2280
+#: ../src/firewall-config:1859 ../src/firewall-config:2286
 #: ../src/firewall-config.glade.h:133
-msgid "day"
-msgstr ""
+msgid "second"
+msgstr "秒"
 
-#: ../src/firewall-config:1856 ../src/firewall-config:2281
+#: ../src/firewall-config:1860 ../src/firewall-config:2287
+#: ../src/firewall-config.glade.h:134
+msgid "minute"
+msgstr "分"
+
+#: ../src/firewall-config:1861 ../src/firewall-config:2288
+#: ../src/firewall-config.glade.h:135
+msgid "hour"
+msgstr "時間"
+
+#: ../src/firewall-config:1862 ../src/firewall-config:2289
 #: ../src/firewall-config.glade.h:136
-msgid "info"
-msgstr ""
+msgid "day"
+msgstr "日"
 
-#: ../src/firewall-config:1857 ../src/firewall-config:2282
-#: ../src/firewall-config.glade.h:137
-msgid "notice"
-msgstr ""
-
-#: ../src/firewall-config:1858 ../src/firewall-config:2283
-#: ../src/firewall-config.glade.h:138
-msgid "debug"
-msgstr ""
-
-#: ../src/firewall-config:1859 ../src/firewall-config:2284
-msgid "warning"
-msgstr ""
-
-#: ../src/firewall-config:1860 ../src/firewall-config:2285
-msgid "error"
-msgstr ""
-
-#: ../src/firewall-config:1861 ../src/firewall-config:2286
-#: ../src/firewall-config.glade.h:141
-msgid "alert"
-msgstr ""
-
-#: ../src/firewall-config:1862 ../src/firewall-config:2287
-msgid "critical"
-msgstr ""
-
-#: ../src/firewall-config:1863 ../src/firewall-config:2288
+#: ../src/firewall-config:1863 ../src/firewall-config:2290
+#: ../src/firewall-config.glade.h:139
 msgid "emergency"
-msgstr ""
+msgstr "緊急"
 
-#: ../src/firewall-config:1908 ../src/firewall-config:2041
-#: ../src/firewall-config:2314 ../src/firewall-config.glade.h:148
+#: ../src/firewall-config:1864 ../src/firewall-config:2291
+#: ../src/firewall-config.glade.h:140
+msgid "alert"
+msgstr "アラート"
+
+#: ../src/firewall-config:1865 ../src/firewall-config:2292
+#: ../src/firewall-config.glade.h:141
+msgid "critical"
+msgstr "クリティカル"
+
+#: ../src/firewall-config:1866 ../src/firewall-config:2293
+#: ../src/firewall-config.glade.h:142
+msgid "error"
+msgstr "エラー"
+
+#: ../src/firewall-config:1867 ../src/firewall-config:2294
+#: ../src/firewall-config.glade.h:143
+msgid "warning"
+msgstr "警告"
+
+#: ../src/firewall-config:1868 ../src/firewall-config:2295
+#: ../src/firewall-config.glade.h:144
+msgid "notice"
+msgstr "注意"
+
+#: ../src/firewall-config:1869 ../src/firewall-config:2296
+#: ../src/firewall-config.glade.h:145
+msgid "info"
+msgstr "情報"
+
+#: ../src/firewall-config:1870 ../src/firewall-config:2297
+#: ../src/firewall-config.glade.h:146
+msgid "debug"
+msgstr "デバッグ"
+
+#: ../src/firewall-config:1915 ../src/firewall-config:2052
+#: ../src/firewall-config:2323 ../src/firewall-config.glade.h:151
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-block"
 
-#: ../src/firewall-config:1913 ../src/firewall-config:2043
-#: ../src/firewall-config:2317 ../src/firewall-config:2448
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config:1920 ../src/firewall-config:2054
+#: ../src/firewall-config:2326 ../src/firewall-config:2457
+#: ../src/firewall-config.glade.h:152
 msgid "forward-port"
-msgstr ""
+msgstr "forward-port"
 
-#: ../src/firewall-config:2021 ../src/firewall-config:2223
-#: ../src/firewall-config:2237 ../src/firewall-config:2292
-#: ../src/firewall-config:2396
+#: ../src/firewall-config:2032 ../src/firewall-config:2232
+#: ../src/firewall-config:2246 ../src/firewall-config:2301
+#: ../src/firewall-config:2405
 msgid "ipv4"
-msgstr ""
+msgstr "IPv4"
 
-#: ../src/firewall-config:2023 ../src/firewall-config:2225
-#: ../src/firewall-config:2239 ../src/firewall-config:2294
-#: ../src/firewall-config:2398
+#: ../src/firewall-config:2034 ../src/firewall-config:2234
+#: ../src/firewall-config:2248 ../src/firewall-config:2303
+#: ../src/firewall-config:2407
 msgid "ipv6"
+msgstr "IPv6"
+
+#: ../src/firewall-config:3053
+msgid ""
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
+"Do you want to masquerade this zone ?"
 msgstr ""
 
-#: ../src/firewall-config:3256
+#: ../src/firewall-config:3297
 msgid "Built-in service, rename not supported."
 msgstr "組み込みのサービスです、名前を変更できません。"
 
-#: ../src/firewall-config:3615
+#: ../src/firewall-config:3661
 msgid "Built-in icmp, rename not supported."
 msgstr "組み込みの ICMP です、名前を変更できません。"
 
@@ -515,18 +535,20 @@ msgstr "ポートとプロトコル"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "コマンドラインを入力してください。"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr ""
+msgstr "コンテキストを入力してください。"
 
 #: ../src/firewall-config.glade.h:5
-msgid "System Default Zone"
-msgstr "システムの標準ゾーン"
+#, fuzzy
+msgid "Default Zone"
+msgstr "標準ゾーン:"
 
 #: ../src/firewall-config.glade.h:6
-msgid "Please select the system default zone from the list below."
+#, fuzzy
+msgid "Please select default zone from the list below."
 msgstr "以下の一覧からシステムの標準ゾーンを選択してください。"
 
 #: ../src/firewall-config.glade.h:7
@@ -536,7 +558,7 @@ msgstr "ポート転送"
 #: ../src/firewall-config.glade.h:8
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr "必要に応じた送り元と宛先のオプションを選択してください。"
+msgstr "必要に応じた送信元と送信先のオプションを選択してください。"
 
 #: ../src/firewall-config.glade.h:9
 msgid "Port / Port Range:"
@@ -552,7 +574,7 @@ msgstr "プロトコル:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Destination"
-msgstr "宛先"
+msgstr "送信先"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Source"
@@ -568,9 +590,11 @@ msgstr "他のポートへの転送"
 
 #: ../src/firewall-config.glade.h:16
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "ローカル転送を有効にするなら、ポートを指定しなければなりません。これはソースポートと異なる必要があります。"
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"ローカル転送を有効にするなら、ポートを指定しなければなりません。これはソース"
+"ポートと異なる必要があります。"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Base ICMP Type Settings"
@@ -606,7 +630,7 @@ msgstr "ICMP の種類"
 
 #: ../src/firewall-config.glade.h:25
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "ICMP タイプを選択してください。"
 
 #: ../src/firewall-config.glade.h:27
 msgid "_File"
@@ -620,44 +644,63 @@ msgstr "オプション(_O)"
 msgid "Reload Firewalld"
 msgstr "Firewalld の再読み込み"
 
-#: ../src/firewall-config.glade.h:31
-msgid "Change Zones of Connections"
-msgstr "接続のゾーンの変更"
+#: ../src/firewall-config.glade.h:30
+msgid ""
+"Reloads firewall rules. Current permanent configuration will become new "
+"runtime configuration. i.e. all runtime only changes done until reload are "
+"lost with reload if they have not been also in permanent configuration."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:32
+#, fuzzy
+msgid "Change which zone a network connection belongs to."
+msgstr "接続のゾーンの変更..."
+
+#: ../src/firewall-config.glade.h:33
 msgid "Change Default Zone"
 msgstr "標準のゾーンの変更"
 
-#: ../src/firewall-config.glade.h:33
-msgid "Panic Mode"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:34
-msgid "Lockdown"
-msgstr ""
+#, fuzzy
+msgid "Change default zone for connections or interfaces."
+msgstr "接続のゾーンの変更..."
 
 #: ../src/firewall-config.glade.h:35
+msgid "Panic mode means that all incoming and outgoing packets are dropped."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:36
+msgid "Panic Mode"
+msgstr "パニックモード"
+
+#: ../src/firewall-config.glade.h:37
+msgid ""
+"Lockdown locks firewall configuration so that only applications on lockdown "
+"whitelist are able to change it."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:38
+msgid "Lockdown"
+msgstr "ロックダウン"
+
+#: ../src/firewall-config.glade.h:39
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Reloads firewalld: Current permanent configuration will become the new "
-"runtime configuration."
-msgstr "firewalld の再読み込み: 現在の永続設定が次の実行中設定になります。"
-
-#: ../src/firewall-config.glade.h:37
+#: ../src/firewall-config.glade.h:40
 msgid "Current View:"
 msgstr "現在のビュー:"
 
-#: ../src/firewall-config.glade.h:38
+#: ../src/firewall-config.glade.h:41
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
-msgstr "現在利用可能な設定。実行中の設定が実際に有効な設定です。永続的な設定は、サービスまたはシステムが再読み込みまたは再起動した後、有効になります。"
+msgstr ""
+"現在利用可能な設定。実行中の設定が実際に有効な設定です。永続的な設定は、サー"
+"ビスまたはシステムが再読み込みまたは再起動した後、有効になります。"
 
-#: ../src/firewall-config.glade.h:39
+#: ../src/firewall-config.glade.h:42
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -665,478 +708,510 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"firewalld のゾーンは、ゾーンと結びついたネットワーク接続、インターフェースお"
+"よび送信元アドレスの信頼レベルを定義します。ゾーンは、サービス、ポート、プロ"
+"トコル、マスカレード、ポート・パケット転送、ICMP フィルター、高度なルールの組"
+"み合わせです。ゾーンは、インターフェースと送信元アドレスを結びつけられます。"
 
-#: ../src/firewall-config.glade.h:41
+#: ../src/firewall-config.glade.h:44
 msgid "Add Zone"
 msgstr "ゾーンの追加"
 
-#: ../src/firewall-config.glade.h:42
+#: ../src/firewall-config.glade.h:45
 msgid "Edit Zone"
 msgstr "ゾーンの編集"
 
-#: ../src/firewall-config.glade.h:43
+#: ../src/firewall-config.glade.h:46
 msgid "Remove Zone"
 msgstr "ゾーンの削除"
 
-#: ../src/firewall-config.glade.h:44
+#: ../src/firewall-config.glade.h:47
 msgid "Load Zone Defaults"
 msgstr "ゾーンの初期値の読み込み"
 
-#: ../src/firewall-config.glade.h:45
+#: ../src/firewall-config.glade.h:48
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services"
-" are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services "
+"are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"このゾーンで信頼されるサービスを定義できます。信頼されたサービスは、このゾー"
+"ンと結びつけられた接続、インターフェース、送信元から、このマシンに到達できる"
+"すべてのホストとネットワークからアクセス可能です。"
 
-#: ../src/firewall-config.glade.h:46
+#: ../src/firewall-config.glade.h:49
 msgid "Services"
 msgstr "サービス"
 
-#: ../src/firewall-config.glade.h:47
+#: ../src/firewall-config.glade.h:50
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"このマシンに接続可能なすべてのホストやネットワークがアクセスする必要がある、"
+"追加のポートまたはポート範囲を追加します。"
 
-#: ../src/firewall-config.glade.h:48
+#: ../src/firewall-config.glade.h:51
 msgid "Add Port"
-msgstr "宛先ポート"
+msgstr "送信先ポート"
 
-#: ../src/firewall-config.glade.h:49
+#: ../src/firewall-config.glade.h:52
 msgid "Edit Port"
 msgstr "ゾーンの編集"
 
-#: ../src/firewall-config.glade.h:50
+#: ../src/firewall-config.glade.h:53
 msgid "Remove Port"
 msgstr "ゾーンの削除"
 
-#: ../src/firewall-config.glade.h:51
+#: ../src/firewall-config.glade.h:54
 msgid "Ports"
 msgstr "ポート"
 
-#: ../src/firewall-config.glade.h:52
+#: ../src/firewall-config.glade.h:55
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "マスカレーディングによりローカルネットワークをインターネットと接続しているホストやルーターをセットアップすることができます。あなたのローカルネットワークはインターネットからは見えず、インターネット上の一つのアドレスに見えます。マスカレーディングは IPv4 のみです。"
+msgstr ""
+"マスカレーディングによりローカルネットワークをインターネットと接続しているホ"
+"ストやルーターをセットアップすることができます。あなたのローカルネットワーク"
+"はインターネットからは見えず、インターネット上の一つのアドレスに見えます。マ"
+"スカレーディングは IPv4 のみです。"
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:56
 msgid "Masquerade zone"
 msgstr "マスカレードゾーン"
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:57
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr "マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも有効になります。"
+msgstr ""
+"マスカレーディングを有効にすると、IPv4 ネットワークでは IP フォワーディングも"
+"有効になります。"
 
-#: ../src/firewall-config.glade.h:55
+#: ../src/firewall-config.glade.h:58
 msgid "Masquerading"
 msgstr "マスカレーディング"
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:59
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードはそのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワードは IPv4 のみです。"
+msgstr ""
+"ローカルシステムの指定ポートから違うポートへ、もしくはローカルシステムから他"
+"のシステムへのフォワードエントリーの追加。なお、他のシステムへのフォワードは"
+"そのインターフェイスがIPマスカレードされている時のみ有効です。ポートフォワー"
+"ドは IPv4 のみです。"
 
-#: ../src/firewall-config.glade.h:57
+#: ../src/firewall-config.glade.h:60
 msgid "Add Forward Port"
 msgstr "転送ポートの追加"
 
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:61
 msgid "Edit Forward Port"
 msgstr "転送ポートの編集"
 
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-config.glade.h:62
 msgid "Remove Forward Port"
 msgstr "転送ポートの削除"
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:63
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュータ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答などの情報メッセージにも使用されます。"
+msgstr ""
+"ICMP (Internet Control Message Protocol) は、主にネットワーク上の コンピュー"
+"タ間でエラーメッセージを送信するのに使用されますが、更には ping の要求や応答"
+"などの情報メッセージにも使用されます。"
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:64
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプはファイアーウォールの通過が許可されます。 デフォルトでは無制限になっています。"
+msgstr ""
+"一覧内の拒否されるべき ICMP タイプをマークします。 その他すべての ICMP タイプ"
+"はファイアーウォールの通過が許可されます。 デフォルトでは無制限になっていま"
+"す。"
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:65
 msgid "ICMP Filter"
 msgstr "ICMP フィルター"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:66
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:64
-msgid "Rich Rules"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:65
-msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by"
-" a connection, the zone will be set to the zone specified in the connection."
-msgstr ""
+msgstr "ここからゾーンの高度な言語ルールを設定できます。"
 
 #: ../src/firewall-config.glade.h:67
-msgid "Add entries to bind source addresses or areas to the zone."
-msgstr ""
+msgid "Rich Rules"
+msgstr "高度なルール"
 
-#: ../src/firewall-config.glade.h:69
-msgid "Zones"
+#: ../src/firewall-config.glade.h:68
+msgid ""
+"Add entries to bind interfaces to the zone. If the interface will be used by "
+"a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"インターフェースをゾーンに割り当てるための項目を追加します。インターフェース"
+"が接続により使用される場合、ゾーンが接続で指定されたゾーンが設定されます。"
 
 #: ../src/firewall-config.glade.h:70
+msgid "Add entries to bind source addresses or areas to the zone."
+msgstr ""
+"送信元アドレスまたはアドレス範囲をゾーンに割り当てるための項目を追加します。"
+
+#: ../src/firewall-config.glade.h:72
+msgid "Zones"
+msgstr "ゾーン"
+
+#: ../src/firewall-config.glade.h:73
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"firewalld サービスは、ポート、プロトコル、モジュールおよび送信先アドレスの組"
+"み合わせです。"
 
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:75
 msgid "Add Service"
 msgstr "サービスの追加"
 
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:76
 msgid "Edit Service"
 msgstr "サービスの編集"
 
-#: ../src/firewall-config.glade.h:74
+#: ../src/firewall-config.glade.h:77
 msgid "Remove Service"
 msgstr "サービスの削除"
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:78
 msgid "Load Service Defaults"
 msgstr "サービスの標準の読み込み"
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:79
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr "全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポートの範囲を追加します。ポートを指定せずにプロトコルを追加することもできます。"
+msgstr ""
+"全てのホストやネットワークからアクセスできることが必要な追加のポートか、ポー"
+"トの範囲を追加します。ポートを指定せずにプロトコルを追加することもできます。"
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:80
 msgid "Add Entry"
 msgstr "エントリーの追加"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:81
 msgid "Edit Entry"
 msgstr "編集エントリー"
 
-#: ../src/firewall-config.glade.h:79
+#: ../src/firewall-config.glade.h:82
 msgid "Remove Entry"
 msgstr "エントリーの削除"
 
-#: ../src/firewall-config.glade.h:80
+#: ../src/firewall-config.glade.h:83
 msgid "Ports and Protocols"
 msgstr "ポートとプロトコル"
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:84
 msgid "Netfilter helper modules"
 msgstr "Netfilter ヘルパーモジュール"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:85
 msgid "Modules"
 msgstr "モジュール"
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:86
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr "宛先アドレスを指定すると、サービスの項目が宛先アドレスと種別に制限されます。どちらの項目も空の場合、制限がありません。"
+msgstr ""
+"送信先アドレスを指定すると、サービスの項目が送信先アドレスとタイプに制限され"
+"ます。どちらの項目も空の場合、制限がありません。"
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:87
 msgid "IPv4:"
 msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:88
 msgid "IPv6:"
 msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:89
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"サービスは永続的な設定の表示画面だけで変更できます。サービスの実行時の設定が"
+"変更されます。"
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:90
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"firewalld の ICMP タイプは firewalld 用の Internet Control Message Protocol "
+"(ICMP) タイプの情報を提供します。"
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:91
 msgid "Add ICMP Type"
 msgstr "ICMP の種類の追加"
 
-#: ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.glade.h:92
 msgid "Edit ICMP Type"
 msgstr "ICMP の種類の編集"
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:93
 msgid "Remove ICMP Type"
 msgstr "ICMP の種類の削除"
 
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-config.glade.h:94
 msgid "Load ICMP Type Defaults"
 msgstr "ICMP タイプの初期値の読み込み"
 
-#: ../src/firewall-config.glade.h:92
-msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to"
-" the destination."
-msgstr "宛先アドレスを指定すると、ICMP 種別の項目が宛先に制限されます。"
+#: ../src/firewall-config.glade.h:95
+msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
+msgstr ""
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:96
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:97
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:98
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-
-#: ../src/firewall-config.glade.h:96
-msgid "ICMP Types"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:97
-msgid ""
-"The lockdown feature is a light version of user and application policies for"
-" firewalld. It limits changes to the firewall. The lockdown whitelist can "
-"contain commands, contexts, users and user ids."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:98
-msgid "Lockdown Whitelist"
-msgstr ""
+"ICMP タイプは永続的な設定の表示画面だけで変更できます。ICMP タイプの実行時の"
+"設定は変更されます。"
 
 #: ../src/firewall-config.glade.h:99
+msgid "ICMP Types"
+msgstr "ICMP タイプ"
+
+#: ../src/firewall-config.glade.h:100
+msgid ""
+"The lockdown feature is a light version of user and application policies for "
+"firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"contain commands, contexts, users and user ids."
+msgstr ""
+"ロックダウン機能はユーザーとアプリケーションのポリシーの firewalld 向け軽量"
+"バージョンです。これにより、ファイアウォールへの変更が制限されます。ロックダ"
+"ウンホワイトリストは、コマンド、コンテキスト、ユーザーおよびユーザー ID を含"
+"められます。"
+
+#: ../src/firewall-config.glade.h:101
+msgid "Lockdown Whitelist"
+msgstr "ロックダウンホワイトリスト"
+
+#: ../src/firewall-config.glade.h:102
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
+"コンテキストは実行中のアプリケーションやサービスの SELinux コンテキストです。"
+"実行中のアプリケーションのコンテキストを確認するには、ps -e --context コマン"
+"ドを使用します。"
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:103
 msgid "Contexts"
-msgstr ""
+msgstr "コンテキスト"
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:104
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-
-#: ../src/firewall-config.glade.h:102
-msgid "Command lines"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:103
-msgid "User names."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:104
-msgid "User names"
-msgstr ""
+"ホワイトリストのコマンドがアスタリスク '*' で終わっている場合、そのコマンドか"
+"ら始まるすべてのコマンドラインに一致します。もし '*' がなければ、引数を含め、"
+"コマンドが完全に一致する必要があります。"
 
 #: ../src/firewall-config.glade.h:105
-msgid "User ids."
-msgstr ""
+msgid "Command lines"
+msgstr "コマンドライン"
 
 #: ../src/firewall-config.glade.h:106
-msgid "User Ids"
-msgstr ""
+msgid "User names."
+msgstr "ユーザー名。"
 
 #: ../src/firewall-config.glade.h:107
+msgid "User names"
+msgstr "ユーザー名"
+
+#: ../src/firewall-config.glade.h:108
+msgid "User ids."
+msgstr "ユーザー ID。"
+
+#: ../src/firewall-config.glade.h:109
+msgid "User Ids"
+msgstr "ユーザー ID"
+
+#: ../src/firewall-config.glade.h:110
 msgid "Default Zone:"
 msgstr "標準ゾーン:"
 
-#: ../src/firewall-config.glade.h:108
+#: ../src/firewall-config.glade.h:111
 msgid "Current default zone of the system."
 msgstr "現在のシステムの標準ゾーン。"
 
-#: ../src/firewall-config.glade.h:109
+#: ../src/firewall-config.glade.h:112
 msgid "Lockdown:"
-msgstr ""
+msgstr "ロックダウン:"
 
-#: ../src/firewall-config.glade.h:110
+#: ../src/firewall-config.glade.h:113
 msgid "Panic Mode:"
-msgstr ""
+msgstr "パニックモード:"
 
-#: ../src/firewall-config.glade.h:111
+#: ../src/firewall-config.glade.h:114
 msgid "Please enter the module name."
 msgstr "モジュール名を入力してください。"
 
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:115
 msgid "Please enter a port and protocol."
 msgstr "ポートおよびプロトコルを入力してください。"
 
-#: ../src/firewall-config.glade.h:113
+#: ../src/firewall-config.glade.h:116
 msgid "Port and/or Protocol"
 msgstr "ポートおよび/またはプロトコル"
 
-#: ../src/firewall-config.glade.h:114
+#: ../src/firewall-config.glade.h:117
 msgid "Please enter a port and/or a protocol."
 msgstr "ポートおよび/またはプロトコルを入力してください。"
 
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:118
 msgid "Other Protocol:"
 msgstr "他のプロトコル:"
 
-#: ../src/firewall-config.glade.h:117
-msgid "Please enter a protocol."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:118
-msgid "Rich Rule"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:119
-msgid "Please enter a rich rule."
-msgstr ""
-
 #: ../src/firewall-config.glade.h:120
+msgid "Please enter a protocol."
+msgstr "プロトコルを入力してください。"
+
+#: ../src/firewall-config.glade.h:121
+msgid "Rich Rule"
+msgstr "高度なルール"
+
+#: ../src/firewall-config.glade.h:122
+msgid "Please enter a rich rule."
+msgstr "高度なルールを入力してください。"
+
+#: ../src/firewall-config.glade.h:123
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:121
-msgid "Source:"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:122
-msgid "Destination:"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:123
-msgid "Log:"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:124
-msgid "Audit:"
-msgstr ""
+msgid "Source:"
+msgstr "送信元:"
 
 #: ../src/firewall-config.glade.h:125
-msgid "ipv4 and ipv6"
-msgstr ""
+msgid "Destination:"
+msgstr "送信先:"
 
 #: ../src/firewall-config.glade.h:126
+msgid "Log:"
+msgstr "ログ:"
+
+#: ../src/firewall-config.glade.h:127
+msgid "Audit:"
+msgstr "監査:"
+
+#: ../src/firewall-config.glade.h:128
+msgid "ipv4 and ipv6"
+msgstr "IPv4 と IPv6"
+
+#: ../src/firewall-config.glade.h:129
 msgid "inverted"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:127
+#: ../src/firewall-config.glade.h:130
 msgid "with Type:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:128
+#: ../src/firewall-config.glade.h:131
 msgid "With limit:"
-msgstr ""
+msgstr "有効期限:"
 
-#: ../src/firewall-config.glade.h:129
+#: ../src/firewall-config.glade.h:132
 msgid "/"
-msgstr ""
+msgstr "/"
 
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config.glade.h:137
 msgid "Prefix:"
-msgstr ""
+msgstr "プレフィックス:"
 
-#: ../src/firewall-config.glade.h:135
+#: ../src/firewall-config.glade.h:138
 msgid "Level:"
-msgstr ""
+msgstr "レベル:"
 
-#: ../src/firewall-config.glade.h:139
-msgid "warn"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:140
-msgid "err"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:142
-msgid "crit"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:143
-msgid "emerg"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config.glade.h:147
 msgid "Element:"
-msgstr ""
+msgstr "要素:"
 
-#: ../src/firewall-config.glade.h:151
+#: ../src/firewall-config.glade.h:154
 msgid "Family:"
-msgstr ""
+msgstr "ファミリー:"
 
-#: ../src/firewall-config.glade.h:152
+#: ../src/firewall-config.glade.h:155
 msgid "Action:"
-msgstr ""
+msgstr "アクション:"
 
-#: ../src/firewall-config.glade.h:153
+#: ../src/firewall-config.glade.h:156
 msgid "Base Service Settings"
 msgstr "基本サービス設定"
 
-#: ../src/firewall-config.glade.h:154
+#: ../src/firewall-config.glade.h:157
 msgid "Please configure base service settings:"
 msgstr "基本サービス設定を設定してください:"
 
-#: ../src/firewall-config.glade.h:155
-msgid "Please select a service."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:156
-msgid "User ID"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:157
-msgid "Please enter the user id."
-msgstr ""
-
 #: ../src/firewall-config.glade.h:158
-msgid "User name"
-msgstr ""
+msgid "Please select a service."
+msgstr "サービスを選択してください。"
 
 #: ../src/firewall-config.glade.h:159
-msgid "Please enter the user name."
-msgstr ""
+msgid "User ID"
+msgstr "ユーザー ID"
 
 #: ../src/firewall-config.glade.h:160
+msgid "Please enter the user id."
+msgstr "ユーザー ID を入力してください。"
+
+#: ../src/firewall-config.glade.h:161
+msgid "User name"
+msgstr "ユーザー名"
+
+#: ../src/firewall-config.glade.h:162
+msgid "Please enter the user name."
+msgstr "ユーザー名を入力してください。"
+
+#: ../src/firewall-config.glade.h:163
 msgid "Base Zone Settings"
 msgstr "基本ゾーン設定"
 
-#: ../src/firewall-config.glade.h:161
+#: ../src/firewall-config.glade.h:164
 msgid "Please configure base zone settings:"
 msgstr "基本ゾーン設定を設定してください:"
 
-#: ../src/firewall-config.glade.h:162
+#: ../src/firewall-config.glade.h:165
 msgid "Target:"
 msgstr "ターゲット:"
 
-#: ../src/firewall-config.glade.h:163
+#: ../src/firewall-config.glade.h:166
 msgid "Default Target"
 msgstr "標準ターゲット"
 
 #: ../src/firewall-offline-cmd:45
 msgid "Error:"
-msgstr ""
+msgstr "エラー:"
 
 #: ../src/firewall-offline-cmd:48
 msgid "Warning:"
-msgstr ""
+msgstr "警告:"
 
 #: ../src/firewall-offline-cmd:68
 #, c-format
@@ -1195,180 +1270,195 @@ msgstr ""
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
 msgstr ""
+"無視されたオプション、iptables オプションを無効化するために使用されました"
 
-#: ../src/firewall-offline-cmd:167
+#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
 msgstr "<service>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
-msgstr ""
+msgstr "標準のゾーンにあるサービス (例: SSH) の有効化"
 
-#: ../src/firewall-offline-cmd:171
+#: ../src/firewall-offline-cmd:173
+#, fuzzy
+msgid "Disable a service in the default zone (example: ssh)"
+msgstr "標準のゾーンにあるサービス (例: SSH) の有効化"
+
+#: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:173
+#: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr ""
+msgstr "標準のゾーンにあるサービス (例: ssh:tcp) の有効化"
 
-#: ../src/firewall-offline-cmd:177 ../src/firewall-offline-cmd:181
+#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
 msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:178
+#: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
-msgstr ""
+msgstr "インターフェースを信頼済みゾーンにバインド"
 
-#: ../src/firewall-offline-cmd:182
+#: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:185
+#: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:187
+#: ../src/firewall-offline-cmd:192
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:191
+#: ../src/firewall-offline-cmd:196
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:195
+#: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default"
-" zone. This is IPv4 only."
+"address with an optional destination port. This will be added to the default "
+"zone. This is IPv4 only."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:200
+#: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
 msgstr "<tipo icmp>"
 
-#: ../src/firewall-offline-cmd:201
+#: ../src/firewall-offline-cmd:206
 msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
 msgstr ""
+"標準のゾーンでこの ICMP タイプを遮断します。初期状態では、すべての ICMP タイ"
+"プを許可します。"
 
-#: ../src/firewall-offline-cmd:212
+#: ../src/firewall-offline-cmd:217
 #, c-format
 msgid "no such option: %s"
 msgstr "そのようなオプションがありません: %s"
 
-#: ../src/firewall-offline-cmd:227
+#: ../src/firewall-offline-cmd:232
 msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:233
+#: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:281
+#: ../src/firewall-offline-cmd:286
 #, c-format
 msgid "%s option requires an argument"
 msgstr "%s オプションには、引数が１つ必要です"
 
-#: ../src/firewall-offline-cmd:284
+#: ../src/firewall-offline-cmd:289
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "%(option)s オプションには %(count)s の引数が必要となります"
 
-#: ../src/firewall-offline-cmd:298
+#: ../src/firewall-offline-cmd:303
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s オプションは値を取りません"
 
-#: ../src/firewall-offline-cmd:355
+#: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:361
+#: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
-msgstr ""
+msgstr "'%s' を開けませんでした、終了します。"
 
-#: ../src/firewall-offline-cmd:382
+#: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
-msgstr ""
+msgstr "標準のゾーン '%s' を開いています"
 
-#: ../src/firewall-offline-cmd:387
+#: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
-msgstr ""
+msgstr "標準のゾーン '%s' を開けません、終了します。"
 
-#: ../src/firewall-offline-cmd:399
+#: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
-msgstr ""
+msgstr "ゾーン '%s' を開けません、終了します。"
 
-#: ../src/firewall-offline-cmd:416
+#: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
-msgstr ""
+msgstr "デバイス '%s' が %s ゾーンと結びつけられます。"
 
-#: ../src/firewall-offline-cmd:424
+#: ../src/firewall-offline-cmd:434
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
-msgstr ""
+msgstr "カスタムルールファイル '%s' を無視しています"
 
-#: ../src/firewall-offline-cmd:429
+#: ../src/firewall-offline-cmd:439
 #, c-format
 msgid "Ignoring addmodule '%s'"
-msgstr ""
+msgstr "追加モジュール '%s' を無視しています"
 
-#: ../src/firewall-offline-cmd:432
+#: ../src/firewall-offline-cmd:442
 #, c-format
 msgid "Ignoring removemodule '%s'"
-msgstr ""
+msgstr "削除モジュール '%s' を無視しています"
 
-#: ../src/firewall-offline-cmd:437
+#: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:444
+#: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
-msgstr ""
+msgstr "ポート '%s/%s' を標準のゾーンに追加しています。"
 
-#: ../src/firewall-offline-cmd:452
+#: ../src/firewall-offline-cmd:462
+#, fuzzy, c-format
+msgid "Removing service '%s' from default zone."
+msgstr "サービス '%s' を標準のゾーンに追加しています。"
+
+#: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
-msgstr ""
-
-#: ../src/firewall-offline-cmd:459
-#, c-format
-msgid "Adding icmpblock '%s' to default zone."
-msgstr ""
-
-#: ../src/firewall-offline-cmd:468
-#, c-format
-msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr ""
+msgstr "サービス '%s' を標準のゾーンに追加しています。"
 
 #: ../src/firewall-offline-cmd:476
+#, c-format
+msgid "Adding icmpblock '%s' to default zone."
+msgstr "icmpblock '%s' を標準のゾーンに追加しています。"
+
+#: ../src/firewall-offline-cmd:485
+#, c-format
+msgid "Adding forward port %s:%s:%s:%s to default zone."
+msgstr "転送ポート %s:%s:%s:%s を標準のゾーンに追加しています。"
+
+#: ../src/firewall-offline-cmd:493
 msgid "No changes to default zone needed."
-msgstr ""
+msgstr "標準のゾーンを変更する必要がありません。"
 
-#: ../src/firewall-offline-cmd:480
+#: ../src/firewall-offline-cmd:497
 msgid "Changed trusted zone configuration."
-msgstr ""
+msgstr "trusted ゾーンの設定を変更しました。"
 
-#: ../src/firewall-offline-cmd:482
+#: ../src/firewall-offline-cmd:499
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
 "NetworkManager or if there is an ifcfg file for this interface, the zone "
@@ -1378,3 +1468,32 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
+
+#~ msgid "System Default Zone"
+#~ msgstr "システムの標準ゾーン"
+
+#~ msgid "Change Zones of Connections"
+#~ msgstr "接続のゾーンの変更"
+
+#~ msgid ""
+#~ "Reloads firewalld: Current permanent configuration will become the new "
+#~ "runtime configuration."
+#~ msgstr "firewalld の再読み込み: 現在の永続設定が次の実行中設定になります。"
+
+#~ msgid ""
+#~ "If you specify destination addresses, the ICMP Type entry will be limited "
+#~ "to the destination."
+#~ msgstr ""
+#~ "送信先アドレスを指定すると、ICMP タイプの項目が送信先に制限されます。"
+
+#~ msgid "warn"
+#~ msgstr "警告"
+
+#~ msgid "err"
+#~ msgstr "エラー"
+
+#~ msgid "crit"
+#~ msgstr "クリティカル"
+
+#~ msgid "emerg"
+#~ msgstr "緊急"

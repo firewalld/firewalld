@@ -4,15 +4,17 @@
 #
 # Translators:
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2007-2010
+# Krishnababu Krothapalli <kkrothap@redhat.com>, 2013
 # Sree Ganesh <sthottem@redhat.com>, 2006
+# sudheesh001 <sudheesh1995@outlook.com>, 2013
 # sudheesh001 <sudheesh1995@outlook.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-06 11:53+0200\n"
-"PO-Revision-Date: 2013-08-02 09:38+0000\n"
-"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"POT-Creation-Date: 2013-09-30 12:20+0200\n"
+"PO-Revision-Date: 2013-09-20 10:40+0000\n"
+"Last-Translator: Krishnababu Krothapalli <krisnababu@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/fedora/language/"
 "te/)\n"
 "Language: te\n"
@@ -35,7 +37,7 @@ msgstr "Firewall ఆకృతీకరణ"
 
 #: ../src/firewall/client.py:53
 msgid "Authorization failed."
-msgstr ""
+msgstr "ధృవీకరణ విఫలమైంది."
 
 #: ../src/firewall/core/io/io_object.py:147
 #, python-format
@@ -69,16 +71,16 @@ msgstr "Fork #1 విఫలమైంది: %d (%s)"
 #: ../src/firewall-applet:106
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr ""
+msgstr "ఇంటర్ఫేస్ '%s' కొరకు జోన్ ఎంపికచేయి"
 
 #: ../src/firewall-applet:162
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "మూలం %s కొరకు జోన్ ఎంపికచేయి"
 
 #: ../src/firewall-applet:263
 msgid "Shields Up"
-msgstr ""
+msgstr "షీల్డ్ చేయి"
 
 #: ../src/firewall-applet:276
 msgid "Enable Notifications"
@@ -88,9 +90,9 @@ msgstr "నోటిఫికేషన్లను ప్రారంభిం�
 msgid "Edit Firewall Settings..."
 msgstr "ఫైర్వాల్ సెట్టింగ్లను సవరించండి..."
 
-#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:30
+#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:31
 msgid "Change Zones of Connections..."
-msgstr ""
+msgstr "అనుసంధానాల జోన్ మార్చు..."
 
 #: ../src/firewall-applet:304
 msgid "Configure Shields UP/Down Zones..."
@@ -126,158 +128,162 @@ msgstr "డౌన్ షీల్డ్స్ జోన్:"
 
 #: ../src/firewall-applet:537
 msgid "Connections"
-msgstr ""
+msgstr "అనుసంధానాలు"
 
 #: ../src/firewall-applet:579 ../src/firewall-applet:607
-#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:40
+#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:43
 msgid "Zone"
-msgstr ""
+msgstr "జోన్"
 
-#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:66
+#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:69
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:68
+#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:71
 msgid "Sources"
-msgstr ""
+msgstr "మూలాలు"
 
-#: ../src/firewall-applet:714
+#: ../src/firewall-applet:717
 msgid "Connection to FirewallD established."
 msgstr "FirewallD కనెక్షన్ స్థాపించబడింది."
 
-#: ../src/firewall-applet:723
+#: ../src/firewall-applet:726
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD కనెక్షన్ కోల్పోయింది."
 
-#: ../src/firewall-applet:770
+#: ../src/firewall-applet:773
 msgid "FirewallD has been reloaded."
-msgstr ""
+msgstr "FirewallD తిరిగిలోడైంది."
 
-#: ../src/firewall-applet:847
+#: ../src/firewall-applet:850
 msgid "No connection to firewall daemon"
 msgstr "ఫైర్వాల్ డెమోన్ కోసం కనెక్షన్ లేదు"
 
-#: ../src/firewall-applet:853
+#: ../src/firewall-applet:856
 msgid "PANIC MODE"
 msgstr "పానిక్ మోడ్"
 
-#: ../src/firewall-applet:860
+#: ../src/firewall-applet:863
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "అప్రమేయ జోన్: '%s'"
 
-#: ../src/firewall-applet:868
+#: ../src/firewall-applet:871
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
+"ఇంటర్ఫేస్ '{interface}' పైన అనుసంధానం '{connection}'  కొరకు జోన్  '{zone}' "
+"క్రియాశీలపరచబడెను"
 
-#: ../src/firewall-applet:871
+#: ../src/firewall-applet:874
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr ""
+msgstr "ఇంటర్ఫేస్  '{interface}' కొరకు జోన్ '{zone}' క్రియాశీలపరచబడెను"
 
-#: ../src/firewall-applet:879
+#: ../src/firewall-applet:882
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "జోన్ '{zone}' మూలం {source} కొరకు క్రియాశీలపరచబడెను"
 
-#: ../src/firewall-applet:883
+#: ../src/firewall-applet:886
 msgid "No Active Zones."
-msgstr ""
+msgstr "క్రియాశీల జోన్స్ లేవు."
 
-#: ../src/firewall-applet:892
+#: ../src/firewall-applet:895
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr ""
+msgstr "అప్రమేయ జోన్ '%s' కు మార్చబడెను."
 
-#: ../src/firewall-applet:916
+#: ../src/firewall-applet:919
 msgid "All network traffic is blocked."
-msgstr ""
+msgstr "నెట్వర్కు ట్రాఫిక్ అంచా నిరోధించబడెను."
 
-#: ../src/firewall-applet:917
+#: ../src/firewall-applet:920
 msgid "Network traffic is not blocked anymore."
-msgstr ""
+msgstr "నెట్వర్కు ట్రాఫిక్ నిరోధించబడుటలేదు."
 
-#: ../src/firewall-applet:932 ../src/firewall-applet:972
+#: ../src/firewall-applet:935 ../src/firewall-applet:975
 msgid "activated"
-msgstr ""
+msgstr "క్రియాశీలం"
 
-#: ../src/firewall-applet:933 ../src/firewall-applet:973
+#: ../src/firewall-applet:936 ../src/firewall-applet:976
 msgid "deactivated"
-msgstr ""
+msgstr "క్రియాహీనం"
 
-#: ../src/firewall-applet:936
+#: ../src/firewall-applet:939
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"జోన్ '{zone}' {activated_deactivated} అనుసంధానం '{connection}' కొరకు ఇంటర్ఫేస్ "
+"'{interface}' పైన"
 
-#: ../src/firewall-applet:941
+#: ../src/firewall-applet:944
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
+msgstr "జోన్ '{zone}' {activated_deactivated} ఇంటర్ఫేస్ '{interface}' కొరకు"
 
-#: ../src/firewall-applet:963
+#: ../src/firewall-applet:966
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr ""
+msgstr "జోన్ '%s' ఇంటర్ఫేస్ '%s' కొరకు క్రియాశీలమైంది"
 
-#: ../src/firewall-applet:975
+#: ../src/firewall-applet:978
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "జోన్ '{zone}' {activated_deactivated} వనరు '{source}' కొరకు"
 
-#: ../src/firewall-applet:998
+#: ../src/firewall-applet:1001
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "జోన్ '%s' మూలం '%s' కొరకు క్రియాశీలమైంది"
 
-#: ../src/firewall-applet:1063
+#: ../src/firewall-applet:1066
 msgid "Firewall-applet"
-msgstr ""
+msgstr "ఫైర్‌వాల్-ఆప్లెట్"
 
 #: ../src/firewall-config:79
 msgid "Connected."
-msgstr ""
+msgstr "అనుసంధానమైంది."
 
 #: ../src/firewall-config:80
 msgid "No connection."
-msgstr ""
+msgstr "అనుసంధానంలేదు."
 
 #: ../src/firewall-config:81
 msgid "Waiting ..."
-msgstr ""
+msgstr "వేచివుంది ..."
 
 #: ../src/firewall-config:82
 msgid "Retrying ..."
-msgstr ""
+msgstr "తిరిగిప్రయత్నిస్తోంది ..."
 
 #: ../src/firewall-config:83
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "నెట్వర్కు అనుసంధానం '%s' చేత వుపయోగించబడింది"
 
 #: ../src/firewall-config:84
 msgid "enabled"
-msgstr ""
+msgstr "చేతనమైన"
 
 #: ../src/firewall-config:85
 msgid "disabled"
-msgstr ""
+msgstr "అచేతనమైన"
 
 #: ../src/firewall-config:95
 msgid "Failed to load icons."
-msgstr ""
+msgstr "ప్రతిమలు లోడుచేయుటకు విఫలమైంది."
 
 #: ../src/firewall-config:122
 msgid "NetworkManager connection editor is missing."
-msgstr ""
+msgstr "నెట్వర్కునిర్వాహిక అనుసంధానం సరికూర్పరి దొరకలేదు."
 
 #: ../src/firewall-config:239 ../src/firewall-config:1396
 msgid "Runtime Configuration"
-msgstr ""
+msgstr "రన్‌టైమ్ ఆకృతీకరణ"
 
 #: ../src/firewall-config:240
 msgid "Permanent Configuration"
 msgstr "Firewall ఆకృతీకరణ"
 
-#: ../src/firewall-config:301 ../src/firewall-config.glade.h:71
+#: ../src/firewall-config:301 ../src/firewall-config.glade.h:74
 msgid "Service"
 msgstr "సేవ"
 
@@ -287,7 +293,7 @@ msgid "Port"
 msgstr "పోర్టును"
 
 #: ../src/firewall-config:310 ../src/firewall-config:351
-#: ../src/firewall-config:589 ../src/firewall-config.glade.h:116
+#: ../src/firewall-config:589 ../src/firewall-config.glade.h:119
 msgid "Protocol"
 msgstr "చట్టం"
 
@@ -301,38 +307,38 @@ msgstr "పంపవలిసిన చిరునామా"
 
 #: ../src/firewall-config:392
 msgid "Icmp Type"
-msgstr ""
+msgstr "Icmp రకం"
 
 #: ../src/firewall-config:407
 msgid "Family"
-msgstr ""
+msgstr "ఫ్యామిలీ"
 
 #: ../src/firewall-config:409
 msgid "Action"
-msgstr ""
+msgstr "చర్య"
 
 #: ../src/firewall-config:411
 msgid "Element"
-msgstr ""
+msgstr "మూలకం"
 
 #: ../src/firewall-config:413
 msgid "Src"
-msgstr ""
+msgstr "మూలం"
 
 #: ../src/firewall-config:415
 msgid "Dest"
-msgstr ""
+msgstr "గమ్యం"
 
 #: ../src/firewall-config:417
 msgid "log"
-msgstr ""
+msgstr "లాగ్"
 
 #: ../src/firewall-config:419
 msgid "Audit"
-msgstr ""
+msgstr "ఆడిట్"
 
-#: ../src/firewall-config:899 ../src/firewall-config:1585
-#: ../src/firewall-config:1622
+#: ../src/firewall-config:899 ../src/firewall-config:1588
+#: ../src/firewall-config:1625
 msgid "Warning"
 msgstr "హెచ్చిరక"
 
@@ -340,55 +346,55 @@ msgstr "హెచ్చిరక"
 msgid "Error"
 msgstr "దోషము"
 
-#: ../src/firewall-config:1210 ../src/firewall-config:2338
+#: ../src/firewall-config:1206 ../src/firewall-config:2347
 msgid "accept"
-msgstr ""
+msgstr "ఆమోదించు"
 
-#: ../src/firewall-config:1212 ../src/firewall-config:2340
-#: ../src/firewall-config:2428
+#: ../src/firewall-config:1208 ../src/firewall-config:2349
+#: ../src/firewall-config:2437
 msgid "reject"
-msgstr ""
+msgstr "తిరస్కరించు"
 
-#: ../src/firewall-config:1214 ../src/firewall-config:2345
+#: ../src/firewall-config:1210 ../src/firewall-config:2354
 msgid "drop"
-msgstr ""
+msgstr "విడువు"
 
-#: ../src/firewall-config:1216 ../src/firewall-config:1249
-#: ../src/firewall-config:1253
-msgid "limit"
-msgstr ""
-
-#: ../src/firewall-config:1227 ../src/firewall-config:1889
-#: ../src/firewall-config:2028 ../src/firewall-config:2302
-#: ../src/firewall-config.glade.h:145
-msgid "service"
-msgstr ""
-
-#: ../src/firewall-config:1229 ../src/firewall-config:1895
-#: ../src/firewall-config:2030 ../src/firewall-config:2305
-#: ../src/firewall-config.glade.h:146
-msgid "port"
-msgstr ""
-
-#: ../src/firewall-config:1232 ../src/firewall-config:1900
-#: ../src/firewall-config:2039 ../src/firewall-config:2311
-#: ../src/firewall-config.glade.h:147
-msgid "protocol"
-msgstr ""
-
-#: ../src/firewall-config:1234 ../src/firewall-config:1905
-#: ../src/firewall-config:2325 ../src/firewall-config:2440
-#: ../src/firewall-config.glade.h:150
-msgid "masquerade"
-msgstr ""
-
-#: ../src/firewall-config:1247
-msgid "level"
-msgstr ""
-
+#: ../src/firewall-config:1212 ../src/firewall-config:1246
 #: ../src/firewall-config:1251
+msgid "limit"
+msgstr "పరిమితి"
+
+#: ../src/firewall-config:1223 ../src/firewall-config:1896
+#: ../src/firewall-config:2039 ../src/firewall-config:2311
+#: ../src/firewall-config.glade.h:148
+msgid "service"
+msgstr "సేవ"
+
+#: ../src/firewall-config:1225 ../src/firewall-config:1902
+#: ../src/firewall-config:2041 ../src/firewall-config:2314
+#: ../src/firewall-config.glade.h:149
+msgid "port"
+msgstr "పోర్ట్"
+
+#: ../src/firewall-config:1228 ../src/firewall-config:1907
+#: ../src/firewall-config:2050 ../src/firewall-config:2320
+#: ../src/firewall-config.glade.h:150
+msgid "protocol"
+msgstr "ప్రొటోకాల్"
+
+#: ../src/firewall-config:1230 ../src/firewall-config:1912
+#: ../src/firewall-config:2334 ../src/firewall-config:2449
+#: ../src/firewall-config.glade.h:153
+msgid "masquerade"
+msgstr "మాస్క్వరేడ్"
+
+#: ../src/firewall-config:1244
+msgid "level"
+msgstr "స్థాయి"
+
+#: ../src/firewall-config:1248 ../src/firewall-config:1253
 msgid "yes"
-msgstr ""
+msgstr "అవును"
 
 #: ../src/firewall-config:1339
 msgid "Invalid name"
@@ -396,120 +402,131 @@ msgstr "చెల్లని ఆర్గుమెంట్ %s"
 
 #: ../src/firewall-config:1342
 msgid "Name already exists"
-msgstr ""
+msgstr "పేరు యిప్పటికే వుంది"
 
-#: ../src/firewall-config:1582
+#: ../src/firewall-config:1585
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "జోన్ '%s': సేవ '%s' అందుబాటులో లేదు."
 
-#: ../src/firewall-config:1586 ../src/firewall-config:1623
+#: ../src/firewall-config:1589 ../src/firewall-config:1626
 msgid "Remove"
-msgstr ""
+msgstr "తీసివేయి"
 
-#: ../src/firewall-config:1586 ../src/firewall-config:1623
+#: ../src/firewall-config:1589 ../src/firewall-config:1626
 msgid "Ignore"
-msgstr ""
+msgstr "విస్మరించు"
 
-#: ../src/firewall-config:1619
+#: ../src/firewall-config:1622
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr ""
+msgstr "జోన్ '%s': ICMP రకం '%s' అందుబాటులో లేదు."
 
-#: ../src/firewall-config:1746
+#: ../src/firewall-config:1749
 msgid "Built-in zone, rename not supported."
-msgstr ""
+msgstr "బిల్ట్-ఇన్ జోన్, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
-#: ../src/firewall-config:1852 ../src/firewall-config:2277
-#: ../src/firewall-config.glade.h:130
-msgid "second"
-msgstr ""
-
-#: ../src/firewall-config:1853 ../src/firewall-config:2278
-#: ../src/firewall-config.glade.h:131
-msgid "minute"
-msgstr ""
-
-#: ../src/firewall-config:1854 ../src/firewall-config:2279
-#: ../src/firewall-config.glade.h:132
-msgid "hour"
-msgstr ""
-
-#: ../src/firewall-config:1855 ../src/firewall-config:2280
+#: ../src/firewall-config:1859 ../src/firewall-config:2286
 #: ../src/firewall-config.glade.h:133
-msgid "day"
-msgstr ""
+msgid "second"
+msgstr "క్షణం"
 
-#: ../src/firewall-config:1856 ../src/firewall-config:2281
+#: ../src/firewall-config:1860 ../src/firewall-config:2287
+#: ../src/firewall-config.glade.h:134
+msgid "minute"
+msgstr "నిమిషం"
+
+#: ../src/firewall-config:1861 ../src/firewall-config:2288
+#: ../src/firewall-config.glade.h:135
+msgid "hour"
+msgstr "గంట"
+
+#: ../src/firewall-config:1862 ../src/firewall-config:2289
 #: ../src/firewall-config.glade.h:136
-msgid "info"
-msgstr ""
+msgid "day"
+msgstr "రోజు"
 
-#: ../src/firewall-config:1857 ../src/firewall-config:2282
-#: ../src/firewall-config.glade.h:137
-msgid "notice"
-msgstr ""
-
-#: ../src/firewall-config:1858 ../src/firewall-config:2283
-#: ../src/firewall-config.glade.h:138
-msgid "debug"
-msgstr ""
-
-#: ../src/firewall-config:1859 ../src/firewall-config:2284
-msgid "warning"
-msgstr ""
-
-#: ../src/firewall-config:1860 ../src/firewall-config:2285
-msgid "error"
-msgstr ""
-
-#: ../src/firewall-config:1861 ../src/firewall-config:2286
-#: ../src/firewall-config.glade.h:141
-msgid "alert"
-msgstr ""
-
-#: ../src/firewall-config:1862 ../src/firewall-config:2287
-msgid "critical"
-msgstr ""
-
-#: ../src/firewall-config:1863 ../src/firewall-config:2288
+#: ../src/firewall-config:1863 ../src/firewall-config:2290
+#: ../src/firewall-config.glade.h:139
 msgid "emergency"
-msgstr ""
+msgstr "అత్యవసర"
 
-#: ../src/firewall-config:1908 ../src/firewall-config:2041
-#: ../src/firewall-config:2314 ../src/firewall-config.glade.h:148
+#: ../src/firewall-config:1864 ../src/firewall-config:2291
+#: ../src/firewall-config.glade.h:140
+msgid "alert"
+msgstr "జాగరూకత"
+
+#: ../src/firewall-config:1865 ../src/firewall-config:2292
+#: ../src/firewall-config.glade.h:141
+msgid "critical"
+msgstr "సంక్లిష్ట"
+
+#: ../src/firewall-config:1866 ../src/firewall-config:2293
+#: ../src/firewall-config.glade.h:142
+msgid "error"
+msgstr "దోషం"
+
+#: ../src/firewall-config:1867 ../src/firewall-config:2294
+#: ../src/firewall-config.glade.h:143
+msgid "warning"
+msgstr "హెచ్చరిక"
+
+#: ../src/firewall-config:1868 ../src/firewall-config:2295
+#: ../src/firewall-config.glade.h:144
+msgid "notice"
+msgstr "సూచన"
+
+#: ../src/firewall-config:1869 ../src/firewall-config:2296
+#: ../src/firewall-config.glade.h:145
+msgid "info"
+msgstr "సమాచారం"
+
+#: ../src/firewall-config:1870 ../src/firewall-config:2297
+#: ../src/firewall-config.glade.h:146
+msgid "debug"
+msgstr "డీబగ్"
+
+#: ../src/firewall-config:1915 ../src/firewall-config:2052
+#: ../src/firewall-config:2323 ../src/firewall-config.glade.h:151
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-బ్లాక్"
 
-#: ../src/firewall-config:1913 ../src/firewall-config:2043
-#: ../src/firewall-config:2317 ../src/firewall-config:2448
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config:1920 ../src/firewall-config:2054
+#: ../src/firewall-config:2326 ../src/firewall-config:2457
+#: ../src/firewall-config.glade.h:152
 msgid "forward-port"
-msgstr ""
+msgstr "ఫార్వార్డ్-పోర్ట్"
 
-#: ../src/firewall-config:2021 ../src/firewall-config:2223
-#: ../src/firewall-config:2237 ../src/firewall-config:2292
-#: ../src/firewall-config:2396
+#: ../src/firewall-config:2032 ../src/firewall-config:2232
+#: ../src/firewall-config:2246 ../src/firewall-config:2301
+#: ../src/firewall-config:2405
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
-#: ../src/firewall-config:2023 ../src/firewall-config:2225
-#: ../src/firewall-config:2239 ../src/firewall-config:2294
-#: ../src/firewall-config:2398
+#: ../src/firewall-config:2034 ../src/firewall-config:2234
+#: ../src/firewall-config:2248 ../src/firewall-config:2303
+#: ../src/firewall-config:2407
 msgid "ipv6"
+msgstr "ipv6"
+
+#: ../src/firewall-config:3053
+msgid ""
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
+"Do you want to masquerade this zone ?"
 msgstr ""
 
-#: ../src/firewall-config:3256
+#: ../src/firewall-config:3297
 msgid "Built-in service, rename not supported."
-msgstr ""
+msgstr "బిల్ట్-ఇన్ సేవ, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
-#: ../src/firewall-config:3615
+#: ../src/firewall-config:3661
 msgid "Built-in icmp, rename not supported."
-msgstr ""
+msgstr "బిల్ట్-ఇన్ icmp, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr ""
+msgstr "చిరునామా"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Port and Protocol"
@@ -517,19 +534,21 @@ msgstr "పోర్ట్‍ మరియు నియమం"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "ఆదేశ వరుస ప్రవేశపెట్టండి."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr ""
+msgstr "సందర్భం ప్రవేశ పెట్టండి."
 
 #: ../src/firewall-config.glade.h:5
-msgid "System Default Zone"
-msgstr ""
+#, fuzzy
+msgid "Default Zone"
+msgstr "అప్రమేయ జోన్:"
 
 #: ../src/firewall-config.glade.h:6
-msgid "Please select the system default zone from the list below."
-msgstr ""
+#, fuzzy
+msgid "Please select default zone from the list below."
+msgstr "కింది జాబితా నుండి దయచేసి వ్యవస్థ అప్రమేయ జోన్ యెంపికచేయండి."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Port Forwarding"
@@ -554,11 +573,11 @@ msgstr "చట్టం:"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Destination"
-msgstr ""
+msgstr "గమ్యం"
 
 #: ../src/firewall-config.glade.h:13
 msgid "Source"
-msgstr ""
+msgstr "మూలం"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Local forwarding"
@@ -578,31 +597,31 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:17
 msgid "Base ICMP Type Settings"
-msgstr ""
+msgstr "ఆధార ICMP రకం అమరికలు"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Please configure base ICMP type settings:"
-msgstr ""
+msgstr "దయచేసి ఆధార ICMP రకం అమరికలు ఆకృతీకరించు:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "బోల్డ్ గా వున్న ప్రవేశాలు తప్పనిసరి, మిగతావి అన్నీ ఐచ్చికాలు."
 
 #: ../src/firewall-config.glade.h:20
 msgid "Name:"
-msgstr ""
+msgstr "పేరు:"
 
 #: ../src/firewall-config.glade.h:21
 msgid "Version:"
-msgstr ""
+msgstr "వర్షన్:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Short:"
-msgstr ""
+msgstr "షార్ట్:"
 
 #: ../src/firewall-config.glade.h:23
 msgid "Description:"
-msgstr ""
+msgstr "వివరణ:"
 
 #: ../src/firewall-config.glade.h:24
 msgid "ICMP Type"
@@ -610,7 +629,7 @@ msgstr "ICMP రకము"
 
 #: ../src/firewall-config.glade.h:25
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "దయచేసి ICMP రకం యెంపికచేయి"
 
 #: ../src/firewall-config.glade.h:27
 msgid "_File"
@@ -622,46 +641,65 @@ msgstr "ఐచ్చికాలు (_O)"
 
 #: ../src/firewall-config.glade.h:29
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Firewalld తిరిగిలోడుచేయి"
 
-#: ../src/firewall-config.glade.h:31
-msgid "Change Zones of Connections"
+#: ../src/firewall-config.glade.h:30
+msgid ""
+"Reloads firewall rules. Current permanent configuration will become new "
+"runtime configuration. i.e. all runtime only changes done until reload are "
+"lost with reload if they have not been also in permanent configuration."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:32
-msgid "Change Default Zone"
-msgstr ""
+#, fuzzy
+msgid "Change which zone a network connection belongs to."
+msgstr "అనుసంధానాల జోన్ మార్చు..."
 
 #: ../src/firewall-config.glade.h:33
-msgid "Panic Mode"
-msgstr ""
+msgid "Change Default Zone"
+msgstr "అప్రమేయ జోన్ మార్చు"
 
 #: ../src/firewall-config.glade.h:34
-msgid "Lockdown"
-msgstr ""
+#, fuzzy
+msgid "Change default zone for connections or interfaces."
+msgstr "అనుసంధానాల జోన్ మార్చు..."
 
 #: ../src/firewall-config.glade.h:35
-msgid "_Help"
-msgstr "సహాయం (_H)"
-
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Reloads firewalld: Current permanent configuration will become the new "
-"runtime configuration."
+msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
 
+#: ../src/firewall-config.glade.h:36
+msgid "Panic Mode"
+msgstr "పానిక్ రీతి"
+
 #: ../src/firewall-config.glade.h:37
-msgid "Current View:"
+msgid ""
+"Lockdown locks firewall configuration so that only applications on lockdown "
+"whitelist are able to change it."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:38
+msgid "Lockdown"
+msgstr "లాక్‌డౌన్"
+
+#: ../src/firewall-config.glade.h:39
+msgid "_Help"
+msgstr "సహాయం (_H)"
+
+#: ../src/firewall-config.glade.h:40
+msgid "Current View:"
+msgstr "ప్రస్తుత దర్శనం:"
+
+#: ../src/firewall-config.glade.h:41
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"ప్రస్తుతం దర్శనీయమైన ఆకృతీకరణ. రన్‌టైమ్ ఆకృతీకరణ అనునది యథార్ధ క్రియాశీల ఆకృతీకరణ. శాశ్వత ఆకృతీకరణ "
+"అనునది సేవ తర్వాత లేదా వ్యవస్థ తిరిగిలోడైన తర్వాత లేదా పునఃప్రారంభం తరువాత క్రియాశీలమగును."
 
-#: ../src/firewall-config.glade.h:39
+#: ../src/firewall-config.glade.h:42
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -669,57 +707,66 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-
-#: ../src/firewall-config.glade.h:41
-msgid "Add Zone"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:42
-msgid "Edit Zone"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:43
-msgid "Remove Zone"
-msgstr ""
+"firewalld జోన్ అనునది జోన్‌కు బందనమైన నెట్వర్కు అనుసంధానాలు, ఇంటర్ఫేసులు మరియు మూలపు చిరునామాల "
+"నమ్మిక స్థాయిను నిర్వచించును. జోన్ అనునది సేవలను, పోర్టులను, ప్రొటోకాల్సును, మాస్క్వారేడింగ్‌ను, పోర్ట్/"
+"పాకెట్ ఫార్వార్డింగ్‌ను, icmp ఫిల్టర్లను మరియు రిచ్ నియమాలను కలుపును. జోన్ అనునది ఇంటర్ఫేసులకు మరియు "
+"మూలపు చిరునామాలకు బందనం కాగలదు."
 
 #: ../src/firewall-config.glade.h:44
-msgid "Load Zone Defaults"
-msgstr ""
+msgid "Add Zone"
+msgstr "జోన్ జతచేయి"
 
 #: ../src/firewall-config.glade.h:45
+msgid "Edit Zone"
+msgstr "జోన్ సరికూర్చు"
+
+#: ../src/firewall-config.glade.h:46
+msgid "Remove Zone"
+msgstr "జోన్ తీసివేయి"
+
+#: ../src/firewall-config.glade.h:47
+msgid "Load Zone Defaults"
+msgstr "జోన్ అప్రమేయాలు లోడుచేయి"
+
+#: ../src/firewall-config.glade.h:48
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"జోన్ నందు ఏ సేవలు నమ్మదగినవో మీరు యిక్కడ నిర్వచించవచ్చు. ఈ జోన్‌కు బందనం అయిన అనుసంధానాలు, "
+"ఇంటర్ఫేసులు మరియు మూలాల నుండి మిషన్‌ను చేరగల అన్ని అతిధేయలు మరియు నెట్వర్కుల నుండి నమ్మదగిన సేవలు "
+"ఏక్సెస్ చేయవచ్చు."
 
-#: ../src/firewall-config.glade.h:46
+#: ../src/firewall-config.glade.h:49
 msgid "Services"
-msgstr ""
+msgstr "సేవలు"
 
-#: ../src/firewall-config.glade.h:47
+#: ../src/firewall-config.glade.h:50
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"మిషన్‌కు అనుసంధానం కాగల అన్ని అతిధేయలు లేదా నెట్వర్కుల నుండి ఏక్సెస్ కావలసిన, పోర్టులు లేదా పోర్టుల "
+"విస్తృతిని జతచేయి."
 
-#: ../src/firewall-config.glade.h:48
+#: ../src/firewall-config.glade.h:51
 msgid "Add Port"
 msgstr "ఈ పోర్ట్‍‌కు"
 
-#: ../src/firewall-config.glade.h:49
-msgid "Edit Port"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:50
-msgid "Remove Port"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:51
-msgid "Ports"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:52
+msgid "Edit Port"
+msgstr "పోర్ట్ సరికూర్చు"
+
+#: ../src/firewall-config.glade.h:53
+msgid "Remove Port"
+msgstr "పోర్టు తీసివేయి"
+
+#: ../src/firewall-config.glade.h:54
+msgid "Ports"
+msgstr "పోర్టులు"
+
+#: ../src/firewall-config.glade.h:55
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -729,21 +776,21 @@ msgstr ""
 "మారువేషదారణ ఉపయోగకరంగా ఉంటుంది.మీ స్థానిక నెట్వర్కు కనిపించదు మరియు ఇంటర్‌నెట్ కు ఒక అతిధేయ లాగా "
 "కనబడుతుంది. మారువేషదారణ IPv4 మాత్రమే."
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:56
 msgid "Masquerade zone"
-msgstr ""
+msgstr "మాస్క్వరేడ్ జోన్"
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:57
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr ""
+msgstr "మీరు మాస్క్వరేడింగ్ చేతనంచేస్తే, ఐపి ఫార్వార్డింగ్ అనునది మీ IPv4 నెట్వర్కుల కొరకు చేతనమగును."
 
-#: ../src/firewall-config.glade.h:55
+#: ../src/firewall-config.glade.h:58
 msgid "Masquerading"
 msgstr "Masquerading"
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:59
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -754,19 +801,19 @@ msgstr ""
 "పంపుటకు ప్రవేశాలను పోర్ట్స్‍‌కు జతచేయుము. వేరొక సిస్టమ్‌కు పంపుట ఇంటర్‌ఫేస్ మారువేషంలోవుంటేనే "
 "ఉపయోగకరంగా వుంటుంది. పోర్ట్‍ పంపుట IPv4 మాత్రమే."
 
-#: ../src/firewall-config.glade.h:57
-msgid "Add Forward Port"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:58
-msgid "Edit Forward Port"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:59
-msgid "Remove Forward Port"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:60
+msgid "Add Forward Port"
+msgstr "ఫార్వార్డ్ పోర్ట్ జతచేయి"
+
+#: ../src/firewall-config.glade.h:61
+msgid "Edit Forward Port"
+msgstr "ఫార్వార్డ్ పోర్ట్ సరికూర్చు"
+
+#: ../src/firewall-config.glade.h:62
+msgid "Remove Forward Port"
+msgstr "ఫార్వార్డ్ పోర్ట్ తీసివేయి"
+
+#: ../src/firewall-config.glade.h:63
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -776,7 +823,7 @@ msgstr ""
 "పంపుటకు ఉపయోగించబడుతుంది, అయితే అదనంగా పింగ్ అభ్యర్దనలు మరియు ప్రత్యుత్తరాలు వంటి సమాచార "
 "సందేశాలు కు."
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:64
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -784,374 +831,375 @@ msgstr ""
 "జాబితానందు ICMP రకాలను గుర్తుంచుము, ఏవైతే తిరస్కరించాలో. అన్ని ఇతర ICMP రకములు ఫైర్‌వాల్ దాటుటకు "
 "అనుమతించబడినవి. అప్రమేయంగా ఏ పరిమితి లేదు."
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:65
 msgid "ICMP Filter"
 msgstr "ICMP వడపోత"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:66
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "జోన్ కొరకు ఇక్కడ మీరు రిచ్ భాషా నియమాలను అమర్చవచ్చు."
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:67
 msgid "Rich Rules"
-msgstr ""
+msgstr "రిచ్ నియమాలు"
 
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:68
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
-
-#: ../src/firewall-config.glade.h:67
-msgid "Add entries to bind source addresses or areas to the zone."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:69
-msgid "Zones"
-msgstr ""
+"ఇంటర్ఫేసులను జోన్‌కు బందనం చేయుటకు ప్రవేశాలను జతచేయి. ఒకవేళ ఇంటర్ఫేస్ అనునది అనుసంధానం చేత "
+"వుపయోగించబడితే, జోన్ అనునది అనుసంధానం నందు తెలిపిన జోన్‌కు అమర్చబడును."
 
 #: ../src/firewall-config.glade.h:70
+msgid "Add entries to bind source addresses or areas to the zone."
+msgstr "జోన్‌కు మూలపు చిరునామాలను లేదా ప్రాంతాలను బందనం చేయుటకు ప్రవేశాలను జతచేయి."
+
+#: ../src/firewall-config.glade.h:72
+msgid "Zones"
+msgstr "జోన్స్"
+
+#: ../src/firewall-config.glade.h:73
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:72
-msgid "Add Service"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:73
-msgid "Edit Service"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:74
-msgid "Remove Service"
-msgstr ""
+msgstr "firewalld సేవ అనునది పోర్టులు, ప్రొటోకాల్స్, మాడ్యూళ్ళు మరియు గమ్యపు చిరునామాల సమ్మేళనం."
 
 #: ../src/firewall-config.glade.h:75
-msgid "Load Service Defaults"
-msgstr ""
+msgid "Add Service"
+msgstr "సేవ జతచేయి"
 
 #: ../src/firewall-config.glade.h:76
+msgid "Edit Service"
+msgstr "సేవ సరికూర్చు"
+
+#: ../src/firewall-config.glade.h:77
+msgid "Remove Service"
+msgstr "సేవ తీసివేయి"
+
+#: ../src/firewall-config.glade.h:78
+msgid "Load Service Defaults"
+msgstr "సేవా అప్రమేయాలు లోడుచేయి"
+
+#: ../src/firewall-config.glade.h:79
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
+"మిషన్‌కు అనుసంధానం కాగల అన్ని అతిధేయలు లేదా నెట్వర్కుల నుండి ఏక్సెస్ కావలసిన, పోర్టులు లేదా పోర్టుల "
+"విస్తృతిని జతచేయి. ఫలానా పోర్టులు అనిలేకుండా మీరు ప్రొటోకాల్స్ జతచేయవచ్చు."
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:80
 msgid "Add Entry"
 msgstr "ప్రవేశమును జతపరచుము"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:81
 msgid "Edit Entry"
 msgstr "ప్రవేశమును సరిచేయుము"
 
-#: ../src/firewall-config.glade.h:79
+#: ../src/firewall-config.glade.h:82
 msgid "Remove Entry"
 msgstr "ప్రవేశమును తీసివేయి"
 
-#: ../src/firewall-config.glade.h:80
-msgid "Ports and Protocols"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:81
-msgid "Netfilter helper modules"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:82
-msgid "Modules"
-msgstr ""
-
 #: ../src/firewall-config.glade.h:83
+msgid "Ports and Protocols"
+msgstr "పోర్టులు మరియు ప్రొటోకాల్స్"
+
+#: ../src/firewall-config.glade.h:84
+msgid "Netfilter helper modules"
+msgstr "Netfilter సహాయకి మాడ్యూళ్ళు"
+
+#: ../src/firewall-config.glade.h:85
+msgid "Modules"
+msgstr "మాడ్యూళ్ళు"
+
+#: ../src/firewall-config.glade.h:86
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
+"ఒకవేళ మీరు గమ్యపు చిరునామాలను తెలిపితే, సేవా ప్రవేశం అనునది గమ్యపు చిరునామా మరియు రకమునకు పరిమితం "
+"అగును. ఒకవేళ రెండు ప్రవేశాలు ఖాళీ అయితే, అప్పుడు ఏ పరిమితి వుండదు."
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:87
 msgid "IPv4:"
-msgstr ""
+msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:88
 msgid "IPv6:"
-msgstr ""
+msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:89
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"సేవలు అనునవి శాశ్వత ఆకృతీకరణ దర్శని నందు మాత్రమే మారగలవు. సేవల యొక్క రన్‌టైమ్ ఆకృతీకరణ అనునది "
+"నిర్ధిష్టం."
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:90
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
-
-#: ../src/firewall-config.glade.h:88
-msgid "Add ICMP Type"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:89
-msgid "Edit ICMP Type"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:90
-msgid "Remove ICMP Type"
-msgstr ""
+"firewalld icmptype అనునది firewalld కొరకు ఇంటర్నెట్ కంట్రోల్ మెసేజ్ ప్రొటోకాల్ (ICMP) కు "
+"చెందిన సమాచారం ఇచ్చును."
 
 #: ../src/firewall-config.glade.h:91
-msgid "Load ICMP Type Defaults"
-msgstr ""
+msgid "Add ICMP Type"
+msgstr "ICMP రకం జతచేయి"
 
 #: ../src/firewall-config.glade.h:92
-msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to "
-"the destination."
-msgstr ""
+msgid "Edit ICMP Type"
+msgstr "ICMP రకం సరికూర్చు"
 
 #: ../src/firewall-config.glade.h:93
-msgid "IPv4"
-msgstr ""
+msgid "Remove ICMP Type"
+msgstr "ICMP రకం తీసివేయి"
 
 #: ../src/firewall-config.glade.h:94
-msgid "IPv6"
-msgstr ""
+msgid "Load ICMP Type Defaults"
+msgstr "ICMP రకం అప్రమేయాలు లోడుచేయి"
 
 #: ../src/firewall-config.glade.h:95
+msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:96
+msgid "IPv4"
+msgstr "IPv4"
+
+#: ../src/firewall-config.glade.h:97
+msgid "IPv6"
+msgstr "IPv6"
+
+#: ../src/firewall-config.glade.h:98
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP రకాలు అనునవి శాశ్వత ఆకృతీకరణ దర్శని నందు మాత్రమే మారగలవు. ICMP రకాల యొక్క రన్‌టైమ్ "
+"ఆకృతీకరణ అనునది నిర్ధిష్టం."
 
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-config.glade.h:99
 msgid "ICMP Types"
-msgstr ""
+msgstr "ICMP రకాలు"
 
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:100
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"లాక్‌డౌన్ విశేషణం అనునది firewalld కొరకు వాడుకరి మరియు అనువర్తనం విధానాల లైట్ వర్షన్. ఇది మార్పులను "
+"ఫైర్‌వాల్‌కు పరిమితం చేయును. లాక్‌డౌన్ వైట్‌లిస్ట్ అనునది ఆదేశాలను, సందర్భాలను, వాడుకరులను మరియు వాడుకరి "
+"ఐడిలను కలిగివుండవచ్చు."
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:101
 msgid "Lockdown Whitelist"
-msgstr ""
+msgstr "లాక్‌డౌన్ వైట్‌లిస్ట్"
 
-#: ../src/firewall-config.glade.h:99
+#: ../src/firewall-config.glade.h:102
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
+"సందర్భం అనునది నడుస్తున్న అనువర్తనం లేదా సేవ యొక్క రక్షణ (SELinux) సందర్భం. నడుస్తున్న "
+"అనువర్తనం యొక్క సందర్భం పొందుటకు ps -e --context వుపయోగించుము."
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:103
 msgid "Contexts"
-msgstr ""
+msgstr "సందర్భాలు"
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:104
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-
-#: ../src/firewall-config.glade.h:102
-msgid "Command lines"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:103
-msgid "User names."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:104
-msgid "User names"
-msgstr ""
+"వైట్‌లిస్ట్ పైన ఆదేశం ప్రవేశం ఏస్ట్రిక్ '*' తో ముగిస్తే, అప్పుడు ఆ ఆదేశంతో ప్రారంభమయ్యే అన్ని ఆదేశ "
+"వరుసలు సరిపోలును. ఒకవేళ '*' లేకపోతే అప్పుడు ఆదేశం అనునది ఆర్గుమెంట్లతో సహా ఖచ్చితంగా సరిపోలాలి."
 
 #: ../src/firewall-config.glade.h:105
-msgid "User ids."
-msgstr ""
+msgid "Command lines"
+msgstr "ఆదేశ వరుసలు"
 
 #: ../src/firewall-config.glade.h:106
-msgid "User Ids"
-msgstr ""
+msgid "User names."
+msgstr "వాడుకరి పేరులు."
 
 #: ../src/firewall-config.glade.h:107
-msgid "Default Zone:"
-msgstr ""
+msgid "User names"
+msgstr "వాడుకరి పేరులు"
 
 #: ../src/firewall-config.glade.h:108
-msgid "Current default zone of the system."
-msgstr ""
+msgid "User ids."
+msgstr "వాడుకరి ఐడిలు."
 
 #: ../src/firewall-config.glade.h:109
-msgid "Lockdown:"
-msgstr ""
+msgid "User Ids"
+msgstr "వాడుకరి ఐడిలు"
 
 #: ../src/firewall-config.glade.h:110
-msgid "Panic Mode:"
-msgstr ""
+msgid "Default Zone:"
+msgstr "అప్రమేయ జోన్:"
 
 #: ../src/firewall-config.glade.h:111
-msgid "Please enter the module name."
-msgstr ""
+msgid "Current default zone of the system."
+msgstr "వ్యవస్థ యొక్క ప్రస్తుత అప్రమేయ జోన్."
 
 #: ../src/firewall-config.glade.h:112
-msgid "Please enter a port and protocol."
-msgstr ""
+msgid "Lockdown:"
+msgstr "లాక్‌డౌన్:"
 
 #: ../src/firewall-config.glade.h:113
-msgid "Port and/or Protocol"
-msgstr ""
+msgid "Panic Mode:"
+msgstr "పానిక్ మోడ్:"
 
 #: ../src/firewall-config.glade.h:114
-msgid "Please enter a port and/or a protocol."
-msgstr ""
+msgid "Please enter the module name."
+msgstr "దయచేసి మాడ్యూల్ పేరు ప్రవేశపెట్టండి."
 
 #: ../src/firewall-config.glade.h:115
-msgid "Other Protocol:"
-msgstr ""
+msgid "Please enter a port and protocol."
+msgstr "దయచేసి పోర్ట్ మరియు ప్రొటోకాల్ ప్రవేశపెట్టండి."
+
+#: ../src/firewall-config.glade.h:116
+msgid "Port and/or Protocol"
+msgstr "పోర్ట్ మరియు/లేదా ప్రొటోకాల్"
 
 #: ../src/firewall-config.glade.h:117
-msgid "Please enter a protocol."
-msgstr ""
+msgid "Please enter a port and/or a protocol."
+msgstr "దయచేసి పోర్ట్ మరియు/లేదా ప్రొటోకాల్ ప్రవేశపెట్టండి."
 
 #: ../src/firewall-config.glade.h:118
-msgid "Rich Rule"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:119
-msgid "Please enter a rich rule."
-msgstr ""
+msgid "Other Protocol:"
+msgstr "ఇతర ప్రొటోకాల్:"
 
 #: ../src/firewall-config.glade.h:120
-msgid "For host or network white or blacklisting deactivate the element."
-msgstr ""
+msgid "Please enter a protocol."
+msgstr "దయచేసి ప్రొటోకాల్ ప్రవేశపెట్టండి."
 
 #: ../src/firewall-config.glade.h:121
-msgid "Source:"
-msgstr ""
+msgid "Rich Rule"
+msgstr "రిచ్ నియమం"
 
 #: ../src/firewall-config.glade.h:122
-msgid "Destination:"
-msgstr ""
+msgid "Please enter a rich rule."
+msgstr "దయచేసి రిట్ నియమం ప్రవేశపెట్టండి."
 
 #: ../src/firewall-config.glade.h:123
-msgid "Log:"
-msgstr ""
+msgid "For host or network white or blacklisting deactivate the element."
+msgstr "అతిధేయ లేదా నెట్వర్కునకు వైట్ లేదా బ్లాక్‌లిస్టింగ్ అనునది మూలకం క్రియాహీనం చేయును."
 
 #: ../src/firewall-config.glade.h:124
-msgid "Audit:"
-msgstr ""
+msgid "Source:"
+msgstr "మూలం:"
 
 #: ../src/firewall-config.glade.h:125
-msgid "ipv4 and ipv6"
-msgstr ""
+msgid "Destination:"
+msgstr "గమ్యం:"
 
 #: ../src/firewall-config.glade.h:126
-msgid "inverted"
-msgstr ""
+msgid "Log:"
+msgstr "లాగ్:"
 
 #: ../src/firewall-config.glade.h:127
-msgid "with Type:"
-msgstr ""
+msgid "Audit:"
+msgstr "ఆడిట్:"
 
 #: ../src/firewall-config.glade.h:128
-msgid "With limit:"
-msgstr ""
+msgid "ipv4 and ipv6"
+msgstr "ipv4 మరియు ipv6"
 
 #: ../src/firewall-config.glade.h:129
+msgid "inverted"
+msgstr "తిరగతిప్పిన"
+
+#: ../src/firewall-config.glade.h:130
+msgid "with Type:"
+msgstr "రకం తో:"
+
+#: ../src/firewall-config.glade.h:131
+msgid "With limit:"
+msgstr "పరిమితి తో:"
+
+#: ../src/firewall-config.glade.h:132
 msgid "/"
-msgstr ""
+msgstr "/"
 
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config.glade.h:137
 msgid "Prefix:"
-msgstr ""
+msgstr "ప్రిఫిక్స్:"
 
-#: ../src/firewall-config.glade.h:135
+#: ../src/firewall-config.glade.h:138
 msgid "Level:"
-msgstr ""
+msgstr "స్థాయి:"
 
-#: ../src/firewall-config.glade.h:139
-msgid "warn"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:140
-msgid "err"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:142
-msgid "crit"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:143
-msgid "emerg"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config.glade.h:147
 msgid "Element:"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:151
-msgid "Family:"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:152
-msgid "Action:"
-msgstr ""
-
-#: ../src/firewall-config.glade.h:153
-msgid "Base Service Settings"
-msgstr ""
+msgstr "మూలకం:"
 
 #: ../src/firewall-config.glade.h:154
-msgid "Please configure base service settings:"
-msgstr ""
+msgid "Family:"
+msgstr "ఫ్యామిలి:"
 
 #: ../src/firewall-config.glade.h:155
-msgid "Please select a service."
-msgstr ""
+msgid "Action:"
+msgstr "చర్య:"
 
 #: ../src/firewall-config.glade.h:156
-msgid "User ID"
-msgstr ""
+msgid "Base Service Settings"
+msgstr "ప్రాధమిక సేవ అమరికలు"
 
 #: ../src/firewall-config.glade.h:157
-msgid "Please enter the user id."
-msgstr ""
+msgid "Please configure base service settings:"
+msgstr "దయచేసి ప్రాధమిక సేవ అమరికలు ఆకృతీకరించు:"
 
 #: ../src/firewall-config.glade.h:158
-msgid "User name"
-msgstr ""
+msgid "Please select a service."
+msgstr "దయచేసి సేవను ఎంపికచేయి."
 
 #: ../src/firewall-config.glade.h:159
-msgid "Please enter the user name."
-msgstr ""
+msgid "User ID"
+msgstr "వాడుకరి ఐడి"
 
 #: ../src/firewall-config.glade.h:160
-msgid "Base Zone Settings"
-msgstr ""
+msgid "Please enter the user id."
+msgstr "దయచేసి వాడుకరి ఐడిను ప్రవేశపెట్టుము."
 
 #: ../src/firewall-config.glade.h:161
-msgid "Please configure base zone settings:"
-msgstr ""
+msgid "User name"
+msgstr "వాడుకరి పేరు"
 
 #: ../src/firewall-config.glade.h:162
-msgid "Target:"
-msgstr ""
+msgid "Please enter the user name."
+msgstr "దయచేసి వాడుకరి పేరు ప్రవేశపెట్టుము."
 
 #: ../src/firewall-config.glade.h:163
+msgid "Base Zone Settings"
+msgstr "ఆధార జోన్ అమరికలు"
+
+#: ../src/firewall-config.glade.h:164
+msgid "Please configure base zone settings:"
+msgstr "దయచేసి ఆధార జోన్ అమరికలు ఆకృతీకరించు:"
+
+#: ../src/firewall-config.glade.h:165
+msgid "Target:"
+msgstr "లక్ష్యం:"
+
+#: ../src/firewall-config.glade.h:166
 msgid "Default Target"
-msgstr ""
+msgstr "అప్రమేయ లక్ష్యం"
 
 #: ../src/firewall-offline-cmd:45
 msgid "Error:"
-msgstr ""
+msgstr "దోషం:"
 
 #: ../src/firewall-offline-cmd:48
 msgid "Warning:"
-msgstr ""
+msgstr "హెచ్చరిక:"
 
 #: ../src/firewall-offline-cmd:68
 #, c-format
@@ -1205,53 +1253,61 @@ msgstr "<module>"
 
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
-msgstr ""
+msgstr "ఐచ్చికం విస్మరించబడెను, iptables మాడ్యూల్ చేతనం చేయుటకు వుపయోగించబడెను"
 
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
-msgstr ""
+msgstr "ఐచ్చికం విస్మరించబడెను, iptables మాడ్యూల్ అచేతనం చేయుటకు వుపయోగించబడెను"
 
-#: ../src/firewall-offline-cmd:167
+#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
 msgstr "<serviço>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
-msgstr ""
+msgstr "అప్రమేయ జోన్ నందు సేవను చేతనం చేయి (ఉదాహరణ: ssh)"
 
-#: ../src/firewall-offline-cmd:171
+#: ../src/firewall-offline-cmd:173
+#, fuzzy
+msgid "Disable a service in the default zone (example: ssh)"
+msgstr "అప్రమేయ జోన్ నందు సేవను చేతనం చేయి (ఉదాహరణ: ssh)"
+
+#: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:173
+#: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr ""
+msgstr "అప్రమేయ జోన్ నందు పోర్ట్ చేతనం చేయి (ఉదాహరణ: ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:177 ../src/firewall-offline-cmd:181
+#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
 msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:178
+#: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
-msgstr ""
+msgstr "నమ్మకమైన జోన్‌కు ఇంటర్ఫేస్ బందనం చేయి"
 
-#: ../src/firewall-offline-cmd:182
+#: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
 msgstr ""
+"అప్రమేయ జోన్ నందు మాస్క్వారేడింగ్ చేతనం చేయును, ఇంటర్ఫేస్ ఆర్గుమెంట్ విస్మరించబడెను. ఇది IPv4 మాత్రమే."
 
-#: ../src/firewall-offline-cmd:185
+#: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:187
+#: ../src/firewall-offline-cmd:192
 msgid ""
 "Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
+"విస్మరించిన ఐచ్చికం. ఫైర్‌వాల్‌కు వినియోగదారి మలచిన నియమాలు జతచేయుటకు వుపయోగించబడెను (ఉదాహరణ: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-offline-cmd:191
+#: ../src/firewall-offline-cmd:196
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
@@ -1259,133 +1315,144 @@ msgstr ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:195
+#: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
 "address with an optional destination port. This will be added to the default "
 "zone. This is IPv4 only."
 msgstr ""
+"ఇంటర్ఫేస్ కొరకు పోర్టును ప్రొటోకాల్‌తో స్థానిక గమ్యపు పోర్ట్ (ఏ గమ్యపు చిరునామా ఈయలేదు)కు లేదా వేరొక "
+"గమ్యపు చిరునామాకు ఐచ్చిక గమ్యపు పోర్టుతో ఫార్వార్డ్ చేయి. ఇది అప్రమేయ జోన్‌కు జతచేయబడును. ఇది IPv4 "
+"మాత్రమే."
 
-#: ../src/firewall-offline-cmd:200
+#: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
 msgstr "<icmp type>"
 
-#: ../src/firewall-offline-cmd:201
+#: ../src/firewall-offline-cmd:206
 msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
-msgstr ""
+msgstr "అప్రమేయ జోన్ నందు ఈ ICMP రకం నిరోధించు. అప్రమేయంగా అన్ని ICMP రకాలను ఆమోదించును."
 
-#: ../src/firewall-offline-cmd:212
+#: ../src/firewall-offline-cmd:217
 #, c-format
 msgid "no such option: %s"
 msgstr "అటువంటి ఐచ్చికం లేదు: %s"
 
-#: ../src/firewall-offline-cmd:227
+#: ../src/firewall-offline-cmd:232
 msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
 msgstr ""
+"ఈ సాధనం system-config-firewall/lokkit ఐచ్చికాలను సాధ్యమైనంతవరకు firewalld కు "
+"మార్చుటకు ప్రయత్నించును, అయితే కొన్ని పరిమితులు వున్నాయి ఉదాహరణకు వినియోగదారి నియమాలు, మాడ్యూళ్ళు మరియు "
+"మాస్క్వారేడింగ్ తో."
 
-#: ../src/firewall-offline-cmd:233
+#: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr ""
+msgstr "ఒకవేళ ఏ ఐచ్చికాలు ఈయకపోతే, '%s' నుండి ఆకృతీకరణ మైగ్రేట్ అగును."
 
-#: ../src/firewall-offline-cmd:281
+#: ../src/firewall-offline-cmd:286
 #, c-format
 msgid "%s option requires an argument"
 msgstr "%s ఐచ్చికంకు ఒక ఆర్గుమెంటు అవసరము"
 
-#: ../src/firewall-offline-cmd:284
+#: ../src/firewall-offline-cmd:289
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "%(option)s ఐచ్చికం %(count)s ఆర్గుమెంట్లు అవసరము"
 
-#: ../src/firewall-offline-cmd:298
+#: ../src/firewall-offline-cmd:303
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s ఐచ్చికం విలువను తీసుకోలేదు"
 
-#: ../src/firewall-offline-cmd:355
+#: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
-msgstr ""
+msgstr "ఆర్గుమెంట్లను పార్స్ చేయుటలో సమస్య."
 
-#: ../src/firewall-offline-cmd:361
+#: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
-msgstr ""
+msgstr "'%s' తెరుచుటలో విఫలమైంది, నిష్క్రమిస్తోంది."
 
-#: ../src/firewall-offline-cmd:382
+#: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
-msgstr ""
+msgstr "అప్రమేయ జోన్ '%s' తెరుస్తోంది"
 
-#: ../src/firewall-offline-cmd:387
+#: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
-msgstr ""
+msgstr "అప్రమేయ జోన్ '%s' తెరువలేక పోయింది, నిష్క్రమిస్తోంది."
 
-#: ../src/firewall-offline-cmd:399
+#: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
-msgstr ""
+msgstr "జోన్ '%s' తెరువలేక పోయింది, నిష్క్రమిస్తోంది."
 
-#: ../src/firewall-offline-cmd:416
+#: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
-msgstr ""
+msgstr "పరికరం '%s' అనునది %s జోన్‌కు బందనం అగును."
 
-#: ../src/firewall-offline-cmd:424
+#: ../src/firewall-offline-cmd:434
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
-msgstr ""
+msgstr "వినియోగదారి-నియమం ఫైలు '%s' విస్మరిస్తోంది"
 
-#: ../src/firewall-offline-cmd:429
+#: ../src/firewall-offline-cmd:439
 #, c-format
 msgid "Ignoring addmodule '%s'"
-msgstr ""
+msgstr "addmodule '%s' విస్మరిస్తోంది"
 
-#: ../src/firewall-offline-cmd:432
+#: ../src/firewall-offline-cmd:442
 #, c-format
 msgid "Ignoring removemodule '%s'"
-msgstr ""
+msgstr "removemodule '%s' విస్మరిస్తోంది"
 
-#: ../src/firewall-offline-cmd:437
+#: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr ""
+msgstr "పరికరం '%s' మాస్క్వారేడెడ్ అయ్యెను, మాస్క్వారేడ్‌ను అప్రమేయ జోన్ కొరకు చేతనంచేస్తోంది."
 
-#: ../src/firewall-offline-cmd:444
+#: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
-msgstr ""
+msgstr "పోర్ట్ '%s/%s' ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
 
-#: ../src/firewall-offline-cmd:452
+#: ../src/firewall-offline-cmd:462
+#, fuzzy, c-format
+msgid "Removing service '%s' from default zone."
+msgstr "సేవ '%s' ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
+
+#: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
-msgstr ""
-
-#: ../src/firewall-offline-cmd:459
-#, c-format
-msgid "Adding icmpblock '%s' to default zone."
-msgstr ""
-
-#: ../src/firewall-offline-cmd:468
-#, c-format
-msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr ""
+msgstr "సేవ '%s' ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
 
 #: ../src/firewall-offline-cmd:476
+#, c-format
+msgid "Adding icmpblock '%s' to default zone."
+msgstr "icmpblock '%s' ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
+
+#: ../src/firewall-offline-cmd:485
+#, c-format
+msgid "Adding forward port %s:%s:%s:%s to default zone."
+msgstr "పార్వార్డ్ పోర్ట్ %s:%s:%s:%s ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
+
+#: ../src/firewall-offline-cmd:493
 msgid "No changes to default zone needed."
-msgstr ""
+msgstr "అప్రమేయ జోన్‌కు ఏ మార్పులు అవసరంలేదు."
 
-#: ../src/firewall-offline-cmd:480
+#: ../src/firewall-offline-cmd:497
 msgid "Changed trusted zone configuration."
-msgstr ""
+msgstr "నమ్మకమైన జోన్ ఆకృతీకరణను మార్చెను."
 
-#: ../src/firewall-offline-cmd:482
+#: ../src/firewall-offline-cmd:499
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
 "NetworkManager or if there is an ifcfg file for this interface, the zone "
@@ -1395,3 +1462,37 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
+"నమ్మదగిన ఇంటర్ఫేసెస్‌లో వొకటి నెట్వర్కునిర్వాహిక తో ఆనుసంధానం కొరకు వుపయోగించిన లేదా ఈ ఇంటర్ఫేస్ కొరకు వొక "
+"ifcfg ఫైలు వుంటే, ఆ జోన్ క్రియాశీలమైన తక్షణమే ఆకృతీకరణనందు నిర్వచించిన జోన్‌కు మార్చబడును. జోన్ యొక్క "
+"అనుసంధానం మార్చుటకు <command>nm-connection-editor</command> వుపయోగించు మరియు జోన్‌ను "
+"నమ్మదగినదిగా అమర్చుము, ifcfg ఫైలు కొరకు, ఒక సరికూర్పరి వుపయోగించు మరియు \"ZONE=trusted\" "
+"జతచేయి. ఒకవేళ జోన్ అనునది ifcfg ఫైలునందు నిర్వచించకపోతే, firewalld అప్రమేయ జోన్ వుపయోగించబడును."
+
+#~ msgid "System Default Zone"
+#~ msgstr "వ్యవస్థ అప్రమేయ జోన్"
+
+#~ msgid "Change Zones of Connections"
+#~ msgstr "అనుసంధానాల జోన్స్ మార్చు"
+
+#~ msgid ""
+#~ "Reloads firewalld: Current permanent configuration will become the new "
+#~ "runtime configuration."
+#~ msgstr ""
+#~ "firewalld తిరిగిలోడుచేయును: ప్రస్తుత శాశ్వత ఆకృతీకరణ అనునది కొత్త రన్‌టైమ్ ఆకృతీకరణ అగును."
+
+#~ msgid ""
+#~ "If you specify destination addresses, the ICMP Type entry will be limited "
+#~ "to the destination."
+#~ msgstr "ఒకవేళ మీరు గమ్యపు చిరునామాలు తెలిపితే, ICMP రకం ప్రవేశం గమ్యానికి పరిమితం అగును."
+
+#~ msgid "warn"
+#~ msgstr "హెచ్చరిక"
+
+#~ msgid "err"
+#~ msgstr "దోషం"
+
+#~ msgid "crit"
+#~ msgstr "సంక్లిష్ట"
+
+#~ msgid "emerg"
+#~ msgstr "అత్యవసర"

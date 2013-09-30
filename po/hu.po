@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Arpad Biro <biro_arpad@yahoo.com>, 2004,2006,2008
 # Gabor Mako <makgab@m-info.hu>, 2009
@@ -13,19 +13,20 @@
 # Nikolas Slivka <snicore@gmail.com>, 2010
 # Szentiványi Gábor <szentivanyi.gabor@ulx.hu>, 2006
 # Tamas Szanto <tszanto@mol.hu>, 2003
+# Ferenc Teknős <teknos.ferenc@gmail.com>, 2013
 # Zoltan Hoppár <hopparz@gmail.com>, 2012-2013
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-06 11:53+0200\n"
-"PO-Revision-Date: 2013-08-06 09:54+0000\n"
-"Last-Translator: twoerner <twoerner@redhat.com>\n"
+"POT-Creation-Date: 2013-09-30 12:20+0200\n"
+"PO-Revision-Date: 2013-09-27 14:08+0000\n"
+"Last-Translator: Ferenc Teknős <teknos.ferenc@gmail.com>\n"
 "Language-Team: Hungarian <trans-hu@lists.fedoraproject.org>\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:219
@@ -95,7 +96,7 @@ msgstr "Rendszerüzenetek bekapcsolása"
 msgid "Edit Firewall Settings..."
 msgstr "Tűzfal beállítások szerkesztése..."
 
-#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:30
+#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:31
 msgid "Change Zones of Connections..."
 msgstr "Zónák kapcsolatainak megváltoztatása..."
 
@@ -117,9 +118,12 @@ msgstr "Itt kiválogathatja a zónákat az tűzfal aktív és deaktívált rész
 
 #: ../src/firewall-applet:360
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
-msgstr "Ez a képesség hasznos azoknak az emberek akik leginkább az alapértelmezett zónákat használják csak. Azoknak a felhasználóknak, akik megváltozatják a zónak kapcsolatait, csak korlátozottan lehet hasznos."
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
+msgstr ""
+"Ez a képesség hasznos azoknak az emberek akik leginkább az alapértelmezett "
+"zónákat használják csak. Azoknak a felhasználóknak, akik megváltozatják a "
+"zónak kapcsolatait, csak korlátozottan lehet hasznos."
 
 #: ../src/firewall-applet:375
 msgid "Shields Up Zone:"
@@ -134,107 +138,110 @@ msgid "Connections"
 msgstr "Nincs kapcsolat"
 
 #: ../src/firewall-applet:579 ../src/firewall-applet:607
-#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:40
+#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:43
 msgid "Zone"
 msgstr "Zóna"
 
-#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:66
+#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:69
 msgid "Interfaces"
 msgstr "<csatlakozó>"
 
-#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:68
+#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:71
 msgid "Sources"
 msgstr "Források"
 
-#: ../src/firewall-applet:714
+#: ../src/firewall-applet:717
 msgid "Connection to FirewallD established."
 msgstr "FirewallD kapcsolat helyreállt."
 
-#: ../src/firewall-applet:723
+#: ../src/firewall-applet:726
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD kapcsolat elveszett."
 
-#: ../src/firewall-applet:770
+#: ../src/firewall-applet:773
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD újra betöltve."
 
-#: ../src/firewall-applet:847
+#: ../src/firewall-applet:850
 msgid "No connection to firewall daemon"
 msgstr "Tűzfal alkalmazás kiszolgálóval nincs kapcsolat"
 
-#: ../src/firewall-applet:853
+#: ../src/firewall-applet:856
 msgid "PANIC MODE"
 msgstr "PÁNIK MÓD"
 
-#: ../src/firewall-applet:860
+#: ../src/firewall-applet:863
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Alapértelmezett Zóna: '%s'"
 
-#: ../src/firewall-applet:868
-msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
-msgstr "A '{zone}' zóna aktiv az '{interface}' csatlakozón a '{connection}' kapcsolatnál"
-
 #: ../src/firewall-applet:871
+msgid ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
+"A '{zone}' zóna aktiv az '{interface}' csatlakozón a '{connection}' "
+"kapcsolatnál"
+
+#: ../src/firewall-applet:874
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "A '{zone}' zóna aktiv az '{interface}' csatlakozón"
 
-#: ../src/firewall-applet:879
+#: ../src/firewall-applet:882
 msgid "Zone '{zone}' active for source {source}"
 msgstr "A '{zone}' zóna aktiv az {source} forrásról"
 
-#: ../src/firewall-applet:883
+#: ../src/firewall-applet:886
 msgid "No Active Zones."
 msgstr "Nincsenek aktív zónák."
 
-#: ../src/firewall-applet:892
+#: ../src/firewall-applet:895
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Alapértelmezett zóna megváltozott erre: '%s'."
 
-#: ../src/firewall-applet:916
+#: ../src/firewall-applet:919
 msgid "All network traffic is blocked."
 msgstr "Minden hálózati forgalom blokkolva."
 
-#: ../src/firewall-applet:917
+#: ../src/firewall-applet:920
 msgid "Network traffic is not blocked anymore."
 msgstr "Hálózati forgalom nincs már blokkolva."
 
-#: ../src/firewall-applet:932 ../src/firewall-applet:972
+#: ../src/firewall-applet:935 ../src/firewall-applet:975
 msgid "activated"
 msgstr "aktívált"
 
-#: ../src/firewall-applet:933 ../src/firewall-applet:973
+#: ../src/firewall-applet:936 ../src/firewall-applet:976
 msgid "deactivated"
 msgstr "deaktívált"
 
-#: ../src/firewall-applet:936
+#: ../src/firewall-applet:939
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "A '{zone}' zóna {activated_deactivated} az '{interface}' csatlakozón a '{connection}' kapcsolatnál"
+msgstr ""
+"A '{zone}' zóna {activated_deactivated} az '{interface}' csatlakozón a "
+"'{connection}' kapcsolatnál"
 
-#: ../src/firewall-applet:941
+#: ../src/firewall-applet:944
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "A '{zone}' zóna  {activated_deactivated} az '{interface}' csatlakozón"
 
-#: ../src/firewall-applet:963
+#: ../src/firewall-applet:966
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "'%s' zóna aktiválásra került '%s' felületen"
 
-#: ../src/firewall-applet:975
+#: ../src/firewall-applet:978
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "A '{zone}' zóna {activated_deactivated} '{source}' forrás számára"
 
-#: ../src/firewall-applet:998
+#: ../src/firewall-applet:1001
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "'%s' zóna aktiválásra került '%s' forrás számára"
 
-#: ../src/firewall-applet:1063
+#: ../src/firewall-applet:1066
 msgid "Firewall-applet"
 msgstr "Tűzfal-alkalmazás"
 
@@ -261,11 +268,11 @@ msgstr "'%s' hálózati kapcsolat által használt"
 
 #: ../src/firewall-config:84
 msgid "enabled"
-msgstr ""
+msgstr "engedélyezve"
 
 #: ../src/firewall-config:85
 msgid "disabled"
-msgstr ""
+msgstr "letiltva"
 
 #: ../src/firewall-config:95
 msgid "Failed to load icons."
@@ -283,7 +290,7 @@ msgstr "Futtatási Konfiguráció"
 msgid "Permanent Configuration"
 msgstr "Állandó konfiguráció"
 
-#: ../src/firewall-config:301 ../src/firewall-config.glade.h:71
+#: ../src/firewall-config:301 ../src/firewall-config.glade.h:74
 msgid "Service"
 msgstr "Szolgáltatás"
 
@@ -293,7 +300,7 @@ msgid "Port"
 msgstr "Port"
 
 #: ../src/firewall-config:310 ../src/firewall-config:351
-#: ../src/firewall-config:589 ../src/firewall-config.glade.h:116
+#: ../src/firewall-config:589 ../src/firewall-config.glade.h:119
 msgid "Protocol"
 msgstr "Protokoll"
 
@@ -337,8 +344,8 @@ msgstr "log"
 msgid "Audit"
 msgstr "Audit"
 
-#: ../src/firewall-config:899 ../src/firewall-config:1585
-#: ../src/firewall-config:1622
+#: ../src/firewall-config:899 ../src/firewall-config:1588
+#: ../src/firewall-config:1625
 msgid "Warning"
 msgstr "Figyelmeztetés"
 
@@ -346,53 +353,53 @@ msgstr "Figyelmeztetés"
 msgid "Error"
 msgstr "Hiba"
 
-#: ../src/firewall-config:1210 ../src/firewall-config:2338
+#: ../src/firewall-config:1206 ../src/firewall-config:2347
 msgid "accept"
 msgstr "elfogad"
 
-#: ../src/firewall-config:1212 ../src/firewall-config:2340
-#: ../src/firewall-config:2428
+#: ../src/firewall-config:1208 ../src/firewall-config:2349
+#: ../src/firewall-config:2437
 msgid "reject"
 msgstr "elutasít"
 
-#: ../src/firewall-config:1214 ../src/firewall-config:2345
+#: ../src/firewall-config:1210 ../src/firewall-config:2354
 msgid "drop"
 msgstr "eldob"
 
-#: ../src/firewall-config:1216 ../src/firewall-config:1249
-#: ../src/firewall-config:1253
+#: ../src/firewall-config:1212 ../src/firewall-config:1246
+#: ../src/firewall-config:1251
 msgid "limit"
 msgstr "határ"
 
-#: ../src/firewall-config:1227 ../src/firewall-config:1889
-#: ../src/firewall-config:2028 ../src/firewall-config:2302
-#: ../src/firewall-config.glade.h:145
+#: ../src/firewall-config:1223 ../src/firewall-config:1896
+#: ../src/firewall-config:2039 ../src/firewall-config:2311
+#: ../src/firewall-config.glade.h:148
 msgid "service"
 msgstr "Szolgáltatás"
 
-#: ../src/firewall-config:1229 ../src/firewall-config:1895
-#: ../src/firewall-config:2030 ../src/firewall-config:2305
-#: ../src/firewall-config.glade.h:146
+#: ../src/firewall-config:1225 ../src/firewall-config:1902
+#: ../src/firewall-config:2041 ../src/firewall-config:2314
+#: ../src/firewall-config.glade.h:149
 msgid "port"
 msgstr "Port"
 
-#: ../src/firewall-config:1232 ../src/firewall-config:1900
-#: ../src/firewall-config:2039 ../src/firewall-config:2311
-#: ../src/firewall-config.glade.h:147
+#: ../src/firewall-config:1228 ../src/firewall-config:1907
+#: ../src/firewall-config:2050 ../src/firewall-config:2320
+#: ../src/firewall-config.glade.h:150
 msgid "protocol"
 msgstr "Protokoll"
 
-#: ../src/firewall-config:1234 ../src/firewall-config:1905
-#: ../src/firewall-config:2325 ../src/firewall-config:2440
-#: ../src/firewall-config.glade.h:150
+#: ../src/firewall-config:1230 ../src/firewall-config:1912
+#: ../src/firewall-config:2334 ../src/firewall-config:2449
+#: ../src/firewall-config.glade.h:153
 msgid "masquerade"
 msgstr "Maszkolás"
 
-#: ../src/firewall-config:1247
+#: ../src/firewall-config:1244
 msgid "level"
 msgstr "Szint"
 
-#: ../src/firewall-config:1251
+#: ../src/firewall-config:1248 ../src/firewall-config:1253
 msgid "yes"
 msgstr "igen"
 
@@ -404,112 +411,123 @@ msgstr "Helytelen paraméter: %s"
 msgid "Name already exists"
 msgstr "Név már létezik"
 
-#: ../src/firewall-config:1582
+#: ../src/firewall-config:1585
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Zóna '%s': Szolgáltatás: '%s' nem elérhető."
 
-#: ../src/firewall-config:1586 ../src/firewall-config:1623
+#: ../src/firewall-config:1589 ../src/firewall-config:1626
 msgid "Remove"
 msgstr "Zóna eltávolítása"
 
-#: ../src/firewall-config:1586 ../src/firewall-config:1623
+#: ../src/firewall-config:1589 ../src/firewall-config:1626
 msgid "Ignore"
 msgstr "Kihagyás"
 
-#: ../src/firewall-config:1619
+#: ../src/firewall-config:1622
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Zone '%s': ICMP típus '%s' nem elérhető."
 
-#: ../src/firewall-config:1746
+#: ../src/firewall-config:1749
 msgid "Built-in zone, rename not supported."
 msgstr "Beépített zóna, átnevezés nem támogatott."
 
-#: ../src/firewall-config:1852 ../src/firewall-config:2277
-#: ../src/firewall-config.glade.h:130
+#: ../src/firewall-config:1859 ../src/firewall-config:2286
+#: ../src/firewall-config.glade.h:133
 msgid "second"
 msgstr "mp"
 
-#: ../src/firewall-config:1853 ../src/firewall-config:2278
-#: ../src/firewall-config.glade.h:131
+#: ../src/firewall-config:1860 ../src/firewall-config:2287
+#: ../src/firewall-config.glade.h:134
 msgid "minute"
 msgstr "perc"
 
-#: ../src/firewall-config:1854 ../src/firewall-config:2279
-#: ../src/firewall-config.glade.h:132
+#: ../src/firewall-config:1861 ../src/firewall-config:2288
+#: ../src/firewall-config.glade.h:135
 msgid "hour"
 msgstr "óra"
 
-#: ../src/firewall-config:1855 ../src/firewall-config:2280
-#: ../src/firewall-config.glade.h:133
+#: ../src/firewall-config:1862 ../src/firewall-config:2289
+#: ../src/firewall-config.glade.h:136
 msgid "day"
 msgstr "nap"
 
-#: ../src/firewall-config:1856 ../src/firewall-config:2281
-#: ../src/firewall-config.glade.h:136
-msgid "info"
-msgstr "info"
-
-#: ../src/firewall-config:1857 ../src/firewall-config:2282
-#: ../src/firewall-config.glade.h:137
-msgid "notice"
-msgstr "megjegyzés"
-
-#: ../src/firewall-config:1858 ../src/firewall-config:2283
-#: ../src/firewall-config.glade.h:138
-msgid "debug"
-msgstr "nyomkövetés"
-
-#: ../src/firewall-config:1859 ../src/firewall-config:2284
-msgid "warning"
-msgstr "figyelmeztetés"
-
-#: ../src/firewall-config:1860 ../src/firewall-config:2285
-msgid "error"
-msgstr "hiba"
-
-#: ../src/firewall-config:1861 ../src/firewall-config:2286
-#: ../src/firewall-config.glade.h:141
-msgid "alert"
-msgstr "riasztás"
-
-#: ../src/firewall-config:1862 ../src/firewall-config:2287
-msgid "critical"
-msgstr "kritikus"
-
-#: ../src/firewall-config:1863 ../src/firewall-config:2288
+#: ../src/firewall-config:1863 ../src/firewall-config:2290
+#: ../src/firewall-config.glade.h:139
 msgid "emergency"
 msgstr "vészjelzés"
 
-#: ../src/firewall-config:1908 ../src/firewall-config:2041
-#: ../src/firewall-config:2314 ../src/firewall-config.glade.h:148
+#: ../src/firewall-config:1864 ../src/firewall-config:2291
+#: ../src/firewall-config.glade.h:140
+msgid "alert"
+msgstr "riasztás"
+
+#: ../src/firewall-config:1865 ../src/firewall-config:2292
+#: ../src/firewall-config.glade.h:141
+msgid "critical"
+msgstr "kritikus"
+
+#: ../src/firewall-config:1866 ../src/firewall-config:2293
+#: ../src/firewall-config.glade.h:142
+msgid "error"
+msgstr "hiba"
+
+#: ../src/firewall-config:1867 ../src/firewall-config:2294
+#: ../src/firewall-config.glade.h:143
+msgid "warning"
+msgstr "figyelmeztetés"
+
+#: ../src/firewall-config:1868 ../src/firewall-config:2295
+#: ../src/firewall-config.glade.h:144
+msgid "notice"
+msgstr "megjegyzés"
+
+#: ../src/firewall-config:1869 ../src/firewall-config:2296
+#: ../src/firewall-config.glade.h:145
+msgid "info"
+msgstr "info"
+
+#: ../src/firewall-config:1870 ../src/firewall-config:2297
+#: ../src/firewall-config.glade.h:146
+msgid "debug"
+msgstr "nyomkövetés"
+
+#: ../src/firewall-config:1915 ../src/firewall-config:2052
+#: ../src/firewall-config:2323 ../src/firewall-config.glade.h:151
 msgid "icmp-block"
 msgstr "icmp-blokk"
 
-#: ../src/firewall-config:1913 ../src/firewall-config:2043
-#: ../src/firewall-config:2317 ../src/firewall-config:2448
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config:1920 ../src/firewall-config:2054
+#: ../src/firewall-config:2326 ../src/firewall-config:2457
+#: ../src/firewall-config.glade.h:152
 msgid "forward-port"
 msgstr "port-továbbítás"
 
-#: ../src/firewall-config:2021 ../src/firewall-config:2223
-#: ../src/firewall-config:2237 ../src/firewall-config:2292
-#: ../src/firewall-config:2396
+#: ../src/firewall-config:2032 ../src/firewall-config:2232
+#: ../src/firewall-config:2246 ../src/firewall-config:2301
+#: ../src/firewall-config:2405
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2023 ../src/firewall-config:2225
-#: ../src/firewall-config:2239 ../src/firewall-config:2294
-#: ../src/firewall-config:2398
+#: ../src/firewall-config:2034 ../src/firewall-config:2234
+#: ../src/firewall-config:2248 ../src/firewall-config:2303
+#: ../src/firewall-config:2407
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3256
+#: ../src/firewall-config:3053
+msgid ""
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
+"Do you want to masquerade this zone ?"
+msgstr ""
+
+#: ../src/firewall-config:3297
 msgid "Built-in service, rename not supported."
 msgstr "Beépített szolgáltatás, átnevezés nem támogatott."
 
-#: ../src/firewall-config:3615
+#: ../src/firewall-config:3661
 msgid "Built-in icmp, rename not supported."
 msgstr "Beépített icmp, átnevezés nem támogatott."
 
@@ -530,12 +548,15 @@ msgid "Please enter the context."
 msgstr "Kérem adja meg a kontextust."
 
 #: ../src/firewall-config.glade.h:5
-msgid "System Default Zone"
-msgstr "Alapértelmezett Rendszer Zóna"
+#, fuzzy
+msgid "Default Zone"
+msgstr "Alapértelmezett Zóna:"
 
 #: ../src/firewall-config.glade.h:6
-msgid "Please select the system default zone from the list below."
-msgstr "Kérem válassza ki az alapértelmezett rendszer zónát az alábbi listából."
+#, fuzzy
+msgid "Please select default zone from the list below."
+msgstr ""
+"Kérem válassza ki az alapértelmezett rendszer zónát az alábbi listából."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Port Forwarding"
@@ -576,9 +597,11 @@ msgstr "Másik portra irányítás"
 
 #: ../src/firewall-config.glade.h:16
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "A helyi továbbításhoz meg kell adnia egy - a forrás porttól különböző - portot."
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"A helyi továbbításhoz meg kell adnia egy - a forrás porttól különböző - "
+"portot."
 
 #: ../src/firewall-config.glade.h:17
 msgid "Base ICMP Type Settings"
@@ -628,44 +651,64 @@ msgstr "Beállítás_ok"
 msgid "Reload Firewalld"
 msgstr "Firewalld újratöltése"
 
-#: ../src/firewall-config.glade.h:31
-msgid "Change Zones of Connections"
-msgstr "Zónák kapcsolatainak megváltoztatása"
+#: ../src/firewall-config.glade.h:30
+msgid ""
+"Reloads firewall rules. Current permanent configuration will become new "
+"runtime configuration. i.e. all runtime only changes done until reload are "
+"lost with reload if they have not been also in permanent configuration."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:32
+#, fuzzy
+msgid "Change which zone a network connection belongs to."
+msgstr "Zónák kapcsolatainak megváltoztatása..."
+
+#: ../src/firewall-config.glade.h:33
 msgid "Change Default Zone"
 msgstr "Alapértelmezett Zóna átváltása"
 
-#: ../src/firewall-config.glade.h:33
+#: ../src/firewall-config.glade.h:34
+#, fuzzy
+msgid "Change default zone for connections or interfaces."
+msgstr "Zónák kapcsolatainak megváltoztatása..."
+
+#: ../src/firewall-config.glade.h:35
+msgid "Panic mode means that all incoming and outgoing packets are dropped."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:36
 msgid "Panic Mode"
 msgstr "Pánik Mód"
 
-#: ../src/firewall-config.glade.h:34
+#: ../src/firewall-config.glade.h:37
+msgid ""
+"Lockdown locks firewall configuration so that only applications on lockdown "
+"whitelist are able to change it."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:38
 msgid "Lockdown"
 msgstr "Zárolás"
 
-#: ../src/firewall-config.glade.h:35
+#: ../src/firewall-config.glade.h:39
 msgid "_Help"
 msgstr "Súgó"
 
-#: ../src/firewall-config.glade.h:36
-msgid ""
-"Reloads firewalld: Current permanent configuration will become the new "
-"runtime configuration."
-msgstr "Újratölti a Firewalld szolgáltatást: Jelenlegi állandó összeállítás lesznek az új működésbeli beállítása."
-
-#: ../src/firewall-config.glade.h:37
+#: ../src/firewall-config.glade.h:40
 msgid "Current View:"
 msgstr "Aktuális nézet:"
 
-#: ../src/firewall-config.glade.h:38
+#: ../src/firewall-config.glade.h:41
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
-msgstr "Jelenleg látható összeállítás. Runtime a jelenlegi aktuális aktív összeállítás. Az állandó összeállítás akkor válik aktívvá, ha a szolgáltatás vagy a rendszer újraindul és betölti."
+msgstr ""
+"Jelenleg látható összeállítás. Runtime a jelenlegi aktuális aktív "
+"összeállítás. Az állandó összeállítás akkor válik aktívvá, ha a szolgáltatás "
+"vagy a rendszer újraindul és betölti."
 
-#: ../src/firewall-config.glade.h:39
+#: ../src/firewall-config.glade.h:42
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -674,467 +717,472 @@ msgid ""
 "addresses."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:41
+#: ../src/firewall-config.glade.h:44
 msgid "Add Zone"
 msgstr "Zóna hozzáadása"
 
-#: ../src/firewall-config.glade.h:42
+#: ../src/firewall-config.glade.h:45
 msgid "Edit Zone"
 msgstr "Zóna szerkesztése"
 
-#: ../src/firewall-config.glade.h:43
+#: ../src/firewall-config.glade.h:46
 msgid "Remove Zone"
 msgstr "Zóna eltávolítása"
 
-#: ../src/firewall-config.glade.h:44
+#: ../src/firewall-config.glade.h:47
 msgid "Load Zone Defaults"
 msgstr "Alapértemezett Zóna beolvasás"
 
-#: ../src/firewall-config.glade.h:45
+#: ../src/firewall-config.glade.h:48
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services"
-" are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services "
+"are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:46
+#: ../src/firewall-config.glade.h:49
 msgid "Services"
 msgstr "Szolgáltatások"
 
-#: ../src/firewall-config.glade.h:47
+#: ../src/firewall-config.glade.h:50
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"Adjon meg további portokat vagy port tartományokat, melyeknek minden "
+"kiszolgáló vagy hálózat számára csatlakozni tudniuk kell a géphez."
 
-#: ../src/firewall-config.glade.h:48
+#: ../src/firewall-config.glade.h:51
 msgid "Add Port"
 msgstr "Cél port"
 
-#: ../src/firewall-config.glade.h:49
+#: ../src/firewall-config.glade.h:52
 msgid "Edit Port"
 msgstr "Zóna szerkesztése"
 
-#: ../src/firewall-config.glade.h:50
+#: ../src/firewall-config.glade.h:53
 msgid "Remove Port"
 msgstr "Zóna eltávolítása"
 
-#: ../src/firewall-config.glade.h:51
+#: ../src/firewall-config.glade.h:54
 msgid "Ports"
 msgstr "Portok"
 
-#: ../src/firewall-config.glade.h:52
+#: ../src/firewall-config.glade.h:55
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "A maszkolás lehetővé teszi kiszolgáló vagy router beállítását, amely összekapcsolja a helyi gépet az Internettel. A helyi hálózat láthatatlan lesz és a kiszolgáló egyetlen címként jelenik meg az Interneten. Csak IPv4-hez."
+msgstr ""
+"A maszkolás lehetővé teszi kiszolgáló vagy router beállítását, amely "
+"összekapcsolja a helyi gépet az Internettel. A helyi hálózat láthatatlan "
+"lesz és a kiszolgáló egyetlen címként jelenik meg az Interneten. Csak IPv4-"
+"hez."
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:56
 msgid "Masquerade zone"
 msgstr "Maszkolási zóna"
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:57
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr "Ha engedélyezi a maszkolást, az IP átirányítás engedélyezésre kerül az IPv4 hálózataiban."
+msgstr ""
+"Ha engedélyezi a maszkolást, az IP átirányítás engedélyezésre kerül az IPv4 "
+"hálózataiban."
 
-#: ../src/firewall-config.glade.h:55
+#: ../src/firewall-config.glade.h:58
 msgid "Masquerading"
 msgstr "Maszkolás"
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:59
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "Bejegyzés hozzáadása a helyi rendszeren, hogy akár a helyi rendszer másik portjára, vagy egy másik rendszer egy adott portjára történjen továbbítás. Másik rendszerre történő port továbbítás csak maszkolt eszköz esetén lehetséges. Port továbbítás csak IPv4 esetén elérhető."
+msgstr ""
+"Bejegyzés hozzáadása a helyi rendszeren, hogy akár a helyi rendszer másik "
+"portjára, vagy egy másik rendszer egy adott portjára történjen továbbítás. "
+"Másik rendszerre történő port továbbítás csak maszkolt eszköz esetén "
+"lehetséges. Port továbbítás csak IPv4 esetén elérhető."
 
-#: ../src/firewall-config.glade.h:57
+#: ../src/firewall-config.glade.h:60
 msgid "Add Forward Port"
 msgstr "Port továbbítás hozzáadása"
 
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:61
 msgid "Edit Forward Port"
 msgstr "Port továbbítás szerkesztése"
 
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-config.glade.h:62
 msgid "Remove Forward Port"
 msgstr "Port továbbítás eltávolítása"
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:63
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "Az Internet Control Message Protocolt (ICMP) általában hálózatba kötött számítógépek közti hibaüzenetek küldésére használják, de tájékoztató üzenetekhez is használható (pl. ping kérések és válaszok)."
+msgstr ""
+"Az Internet Control Message Protocolt (ICMP) általában hálózatba kötött "
+"számítógépek közti hibaüzenetek küldésére használják, de tájékoztató "
+"üzenetekhez is használható (pl. ping kérések és válaszok)."
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:64
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "Jelölje be azokat az ICMP típusokat a listában, melyeket el kíván utasítani. Minden egyéb ICMP kérést a tűzfal át fog engedni. Alapértelmezetten nincs korlátozás."
+msgstr ""
+"Jelölje be azokat az ICMP típusokat a listában, melyeket el kíván utasítani. "
+"Minden egyéb ICMP kérést a tűzfal át fog engedni. Alapértelmezetten nincs "
+"korlátozás."
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:65
 msgid "ICMP Filter"
 msgstr "ICMP szűrő"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:66
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Itt beállíthat ritch language szabályokat a zónához."
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:67
 msgid "Rich Rules"
 msgstr "Bővített szabályzat"
 
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:68
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by"
-" a connection, the zone will be set to the zone specified in the connection."
+"Add entries to bind interfaces to the zone. If the interface will be used by "
+"a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:67
+#: ../src/firewall-config.glade.h:70
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:69
+#: ../src/firewall-config.glade.h:72
 msgid "Zones"
 msgstr "Zónák"
 
-#: ../src/firewall-config.glade.h:70
+#: ../src/firewall-config.glade.h:73
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:75
 msgid "Add Service"
 msgstr "Szolgáltatás hozzáadása"
 
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:76
 msgid "Edit Service"
 msgstr "Szolgáltatás szerkesztése"
 
-#: ../src/firewall-config.glade.h:74
+#: ../src/firewall-config.glade.h:77
 msgid "Remove Service"
 msgstr "Szolgáltatás eltávolítása"
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:78
 msgid "Load Service Defaults"
 msgstr "A szolgáltatás alapértelmezéseinek betöltése"
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:79
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr "Adjon meg további portokat vagy port tartományokat, melyeknek minden kiszolgáló vagy hálózat számára elérhetőnek kell lenniük. Hozzáadhat protokollokat meghatározott port nélkül is."
+msgstr ""
+"Adjon meg további portokat vagy port tartományokat, melyeknek minden "
+"kiszolgáló vagy hálózat számára elérhetőnek kell lenniük. Hozzáadhat "
+"protokollokat meghatározott port nélkül is."
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:80
 msgid "Add Entry"
 msgstr "Bejegyzés hozzáadása"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:81
 msgid "Edit Entry"
 msgstr "Bejegyzés szerkesztése"
 
-#: ../src/firewall-config.glade.h:79
+#: ../src/firewall-config.glade.h:82
 msgid "Remove Entry"
 msgstr "Bejegyzés eltávolítása"
 
-#: ../src/firewall-config.glade.h:80
+#: ../src/firewall-config.glade.h:83
 msgid "Ports and Protocols"
 msgstr "Portok és Protokollok"
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:84
 msgid "Netfilter helper modules"
 msgstr "Netfilter támogató modulok"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:85
 msgid "Modules"
 msgstr "Modulok"
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:86
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr "Ha meghatároz célállomásokat, a szolgáltatás bejegyzése korlátozásra kerül a célállomás címére és típusára. Ha mindkét bejegyzés üres, nincs korlátozás."
+msgstr ""
+"Ha meghatároz célállomásokat, a szolgáltatás bejegyzése korlátozásra kerül a "
+"célállomás címére és típusára. Ha mindkét bejegyzés üres, nincs korlátozás."
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:87
 msgid "IPv4:"
 msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:88
 msgid "IPv6:"
 msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:89
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:90
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:91
 msgid "Add ICMP Type"
 msgstr "ICMP szűrő hozzádása"
 
-#: ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.glade.h:92
 msgid "Edit ICMP Type"
 msgstr "ICMP szűrő szerkesztése"
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:93
 msgid "Remove ICMP Type"
 msgstr "ICMP szűrő eltávolítása"
 
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-config.glade.h:94
 msgid "Load ICMP Type Defaults"
 msgstr "Alapértelmezett ICMP szűrő betöltése"
 
-#: ../src/firewall-config.glade.h:92
-msgid ""
-"If you specify destination addresses, the ICMP Type entry will be limited to"
-" the destination."
-msgstr "Ha definiál cél címeket, az ICMP szűrő bejegyzés csak a kijelölt célállomásokra korlátozódik"
+#: ../src/firewall-config.glade.h:95
+msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
+msgstr ""
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:96
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:97
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:98
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-config.glade.h:99
 msgid "ICMP Types"
 msgstr "ICMP típusok"
 
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:100
 msgid ""
-"The lockdown feature is a light version of user and application policies for"
-" firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for "
+"firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:101
 msgid "Lockdown Whitelist"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:99
+#: ../src/firewall-config.glade.h:102
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:103
 msgid "Contexts"
 msgstr "Kontextusok"
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:104
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:102
+#: ../src/firewall-config.glade.h:105
 msgid "Command lines"
 msgstr "Parancssorok"
 
-#: ../src/firewall-config.glade.h:103
+#: ../src/firewall-config.glade.h:106
 msgid "User names."
 msgstr "Felhasználói nevek."
 
-#: ../src/firewall-config.glade.h:104
+#: ../src/firewall-config.glade.h:107
 msgid "User names"
 msgstr "Felhasználói nevek"
 
-#: ../src/firewall-config.glade.h:105
+#: ../src/firewall-config.glade.h:108
 msgid "User ids."
 msgstr "Felhasználói ID-k."
 
-#: ../src/firewall-config.glade.h:106
+#: ../src/firewall-config.glade.h:109
 msgid "User Ids"
 msgstr "Felhasználói ID-k"
 
-#: ../src/firewall-config.glade.h:107
+#: ../src/firewall-config.glade.h:110
 msgid "Default Zone:"
 msgstr "Alapértelmezett Zóna:"
 
-#: ../src/firewall-config.glade.h:108
+#: ../src/firewall-config.glade.h:111
 msgid "Current default zone of the system."
 msgstr "Aktuális alapértelmezett zóna a rendszerben."
 
-#: ../src/firewall-config.glade.h:109
+#: ../src/firewall-config.glade.h:112
 msgid "Lockdown:"
 msgstr "Zárolás:"
 
-#: ../src/firewall-config.glade.h:110
+#: ../src/firewall-config.glade.h:113
 msgid "Panic Mode:"
 msgstr "Pánik Mód:"
 
-#: ../src/firewall-config.glade.h:111
+#: ../src/firewall-config.glade.h:114
 msgid "Please enter the module name."
 msgstr "Kérem adja meg a modul nevét"
 
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:115
 msgid "Please enter a port and protocol."
 msgstr "Kérem adja meg a port és protokoll nevét."
 
-#: ../src/firewall-config.glade.h:113
+#: ../src/firewall-config.glade.h:116
 msgid "Port and/or Protocol"
 msgstr "Port és/vagy Protokoll"
 
-#: ../src/firewall-config.glade.h:114
+#: ../src/firewall-config.glade.h:117
 msgid "Please enter a port and/or a protocol."
 msgstr "Adja meg a portot és/vagy protokollt."
 
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:118
 msgid "Other Protocol:"
 msgstr "Egyéb Protokoll:"
 
-#: ../src/firewall-config.glade.h:117
+#: ../src/firewall-config.glade.h:120
 msgid "Please enter a protocol."
 msgstr "Kérem adjon meg egy protokollt."
 
-#: ../src/firewall-config.glade.h:118
+#: ../src/firewall-config.glade.h:121
 msgid "Rich Rule"
 msgstr "Bővített szabályzat"
 
-#: ../src/firewall-config.glade.h:119
+#: ../src/firewall-config.glade.h:122
 msgid "Please enter a rich rule."
 msgstr "Kérem adja meg a bővített szabályzatot."
 
-#: ../src/firewall-config.glade.h:120
+#: ../src/firewall-config.glade.h:123
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr "Kiszolgáló vagy a hálózat számára fehér vagy feketelistázza az elemet."
 
-#: ../src/firewall-config.glade.h:121
+#: ../src/firewall-config.glade.h:124
 msgid "Source:"
 msgstr "Forrás:"
 
-#: ../src/firewall-config.glade.h:122
+#: ../src/firewall-config.glade.h:125
 msgid "Destination:"
 msgstr "Célállomás:"
 
-#: ../src/firewall-config.glade.h:123
+#: ../src/firewall-config.glade.h:126
 msgid "Log:"
 msgstr "Log:"
 
-#: ../src/firewall-config.glade.h:124
+#: ../src/firewall-config.glade.h:127
 msgid "Audit:"
 msgstr "Audit:"
 
-#: ../src/firewall-config.glade.h:125
+#: ../src/firewall-config.glade.h:128
 msgid "ipv4 and ipv6"
 msgstr "IPv4 és IPv6"
 
-#: ../src/firewall-config.glade.h:126
+#: ../src/firewall-config.glade.h:129
 msgid "inverted"
 msgstr "invertálva"
 
-#: ../src/firewall-config.glade.h:127
+#: ../src/firewall-config.glade.h:130
 msgid "with Type:"
 msgstr "ezzel a típussal"
 
-#: ../src/firewall-config.glade.h:128
+#: ../src/firewall-config.glade.h:131
 msgid "With limit:"
 msgstr "Ezzel a korláttal:"
 
-#: ../src/firewall-config.glade.h:129
+#: ../src/firewall-config.glade.h:132
 msgid "/"
 msgstr "/"
 
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config.glade.h:137
 msgid "Prefix:"
 msgstr "Előtag:"
 
-#: ../src/firewall-config.glade.h:135
+#: ../src/firewall-config.glade.h:138
 msgid "Level:"
 msgstr "Szint:"
 
-#: ../src/firewall-config.glade.h:139
-msgid "warn"
-msgstr "figyelmeztetés"
-
-#: ../src/firewall-config.glade.h:140
-msgid "err"
-msgstr "hiba"
-
-#: ../src/firewall-config.glade.h:142
-msgid "crit"
-msgstr "kritikus"
-
-#: ../src/firewall-config.glade.h:143
-msgid "emerg"
-msgstr "vészjel"
-
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config.glade.h:147
 msgid "Element:"
 msgstr "Elem:"
 
-#: ../src/firewall-config.glade.h:151
+#: ../src/firewall-config.glade.h:154
 msgid "Family:"
 msgstr "Család:"
 
-#: ../src/firewall-config.glade.h:152
+#: ../src/firewall-config.glade.h:155
 msgid "Action:"
 msgstr "Művelet:"
 
-#: ../src/firewall-config.glade.h:153
+#: ../src/firewall-config.glade.h:156
 msgid "Base Service Settings"
 msgstr "Alap szolgáltatás beállítások"
 
-#: ../src/firewall-config.glade.h:154
+#: ../src/firewall-config.glade.h:157
 msgid "Please configure base service settings:"
 msgstr "Kérem állítsa be az alap szolgáltatási beállításokat:"
 
-#: ../src/firewall-config.glade.h:155
+#: ../src/firewall-config.glade.h:158
 msgid "Please select a service."
 msgstr "Kérem válasszon egy szolgáltatást."
 
-#: ../src/firewall-config.glade.h:156
+#: ../src/firewall-config.glade.h:159
 msgid "User ID"
 msgstr "Felhasználói ID"
 
-#: ../src/firewall-config.glade.h:157
+#: ../src/firewall-config.glade.h:160
 msgid "Please enter the user id."
 msgstr "Kérem adja meg a felhasználó ID-jét"
 
-#: ../src/firewall-config.glade.h:158
+#: ../src/firewall-config.glade.h:161
 msgid "User name"
 msgstr "Felhasználói név"
 
-#: ../src/firewall-config.glade.h:159
+#: ../src/firewall-config.glade.h:162
 msgid "Please enter the user name."
 msgstr "Kérem adja meg a felhasználó nevét."
 
-#: ../src/firewall-config.glade.h:160
+#: ../src/firewall-config.glade.h:163
 msgid "Base Zone Settings"
 msgstr "Alap zóna beállítások"
 
-#: ../src/firewall-config.glade.h:161
+#: ../src/firewall-config.glade.h:164
 msgid "Please configure base zone settings:"
 msgstr "Kérem állítsa be az alap zóna beállításokat:"
 
-#: ../src/firewall-config.glade.h:162
+#: ../src/firewall-config.glade.h:165
 msgid "Target:"
 msgstr "Cél:"
 
-#: ../src/firewall-config.glade.h:163
+#: ../src/firewall-config.glade.h:166
 msgid "Default Target"
 msgstr "Alapértelmezett Cél"
 
@@ -1198,13 +1246,17 @@ msgstr "<modul>"
 
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
-msgstr "Figyelmen kívül hagyott opció, egy iptables modul engedélyezéséhez volt szükséges"
+msgstr ""
+"Figyelmen kívül hagyott opció, egy iptables modul engedélyezéséhez volt "
+"szükséges"
 
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
-msgstr "Figyelmen kívül hagyott opció, egy iptables modul kiiktatásához volt szükséges"
+msgstr ""
+"Figyelmen kívül hagyott opció, egy iptables modul kiiktatásához volt "
+"szükséges"
 
-#: ../src/firewall-offline-cmd:167
+#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
 msgstr "Szolgáltatás"
 
@@ -1212,171 +1264,185 @@ msgstr "Szolgáltatás"
 msgid "Enable a service in the default zone (example: ssh)"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:171
+#: ../src/firewall-offline-cmd:173
+#, fuzzy
+msgid "Disable a service in the default zone (example: ssh)"
+msgstr "Port engedélyezése az alapértelmezett zónában (pl. ssh:tcp)"
+
+#: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protokoll>"
 
-#: ../src/firewall-offline-cmd:173
+#: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
 msgstr "Port engedélyezése az alapértelmezett zónában (pl. ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:177 ../src/firewall-offline-cmd:181
+#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
 msgstr "<csatlakozó>"
 
-#: ../src/firewall-offline-cmd:178
+#: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
 msgstr "Bind-eljen egy csatlakozót a megbízható zónába"
 
-#: ../src/firewall-offline-cmd:182
+#: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
-msgstr "Engedélyezi a maszkolást az alapértelmezett zónában, a csatlakozó paraméter elhagyva. Ez csak IPv4."
+msgstr ""
+"Engedélyezi a maszkolást az alapértelmezett zónában, a csatlakozó paraméter "
+"elhagyva. Ez csak IPv4."
 
-#: ../src/firewall-offline-cmd:185
+#: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<típus>:][<tábla>:]<fájlnév>"
 
-#: ../src/firewall-offline-cmd:187
+#: ../src/firewall-offline-cmd:192
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:191
+#: ../src/firewall-offline-cmd:196
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<csatlakozó>:port=<port>:proto=<protokoll>[:toport=<cél port>][:toaddr=<cél cím>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<csatlakozó>:port=<port>:proto=<protokoll>[:toport=<cél port>][:"
+"toaddr=<cél cím>]"
 
-#: ../src/firewall-offline-cmd:195
+#: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default"
-" zone. This is IPv4 only."
+"address with an optional destination port. This will be added to the default "
+"zone. This is IPv4 only."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:200
+#: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
 msgstr "<icmp szűrő>"
 
-#: ../src/firewall-offline-cmd:201
+#: ../src/firewall-offline-cmd:206
 msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:212
+#: ../src/firewall-offline-cmd:217
 #, c-format
 msgid "no such option: %s"
 msgstr "nincs ilyen opció: %s"
 
-#: ../src/firewall-offline-cmd:227
+#: ../src/firewall-offline-cmd:232
 msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:233
+#: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:281
+#: ../src/firewall-offline-cmd:286
 #, c-format
 msgid "%s option requires an argument"
 msgstr "%s opció paramétert vár."
 
-#: ../src/firewall-offline-cmd:284
+#: ../src/firewall-offline-cmd:289
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "%(option)s opció %(count)s paramétert igényel"
 
-#: ../src/firewall-offline-cmd:298
+#: ../src/firewall-offline-cmd:303
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s opció nem vár értéket"
 
-#: ../src/firewall-offline-cmd:355
+#: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:361
+#: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:382
+#: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:387
+#: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:399
+#: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:416
+#: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:424
+#: ../src/firewall-offline-cmd:434
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:429
+#: ../src/firewall-offline-cmd:439
 #, c-format
 msgid "Ignoring addmodule '%s'"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:432
+#: ../src/firewall-offline-cmd:442
 #, c-format
 msgid "Ignoring removemodule '%s'"
 msgstr ""
 
-#: ../src/firewall-offline-cmd:437
+#: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:444
+#: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:452
+#: ../src/firewall-offline-cmd:462
+#, c-format
+msgid "Removing service '%s' from default zone."
+msgstr ""
+
+#: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:459
+#: ../src/firewall-offline-cmd:476
 #, c-format
 msgid "Adding icmpblock '%s' to default zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:468
+#: ../src/firewall-offline-cmd:485
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:476
+#: ../src/firewall-offline-cmd:493
 msgid "No changes to default zone needed."
 msgstr ""
 
-#: ../src/firewall-offline-cmd:480
+#: ../src/firewall-offline-cmd:497
 msgid "Changed trusted zone configuration."
-msgstr ""
+msgstr "Megváltozott a megbízható zóna  konfigurációja ."
 
-#: ../src/firewall-offline-cmd:482
+#: ../src/firewall-offline-cmd:499
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
 "NetworkManager or if there is an ifcfg file for this interface, the zone "
@@ -1386,3 +1452,35 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
+
+#~ msgid "System Default Zone"
+#~ msgstr "Alapértelmezett Rendszer Zóna"
+
+#~ msgid "Change Zones of Connections"
+#~ msgstr "Zónák kapcsolatainak megváltoztatása"
+
+#~ msgid ""
+#~ "Reloads firewalld: Current permanent configuration will become the new "
+#~ "runtime configuration."
+#~ msgstr ""
+#~ "Újratölti a Firewalld szolgáltatást: Jelenlegi állandó összeállítás "
+#~ "lesznek az új működésbeli beállítása."
+
+#~ msgid ""
+#~ "If you specify destination addresses, the ICMP Type entry will be limited "
+#~ "to the destination."
+#~ msgstr ""
+#~ "Ha definiál cél címeket, az ICMP szűrő bejegyzés csak a kijelölt "
+#~ "célállomásokra korlátozódik"
+
+#~ msgid "warn"
+#~ msgstr "figyelmeztetés"
+
+#~ msgid "err"
+#~ msgstr "hiba"
+
+#~ msgid "crit"
+#~ msgstr "kritikus"
+
+#~ msgid "emerg"
+#~ msgstr "vészjel"
