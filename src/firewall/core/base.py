@@ -18,10 +18,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 import os
-(major, minor, release) = os.uname()[2].split('.', 2)
+import subprocess
+
+# Check if kernel supports IPv6 NAT
 # http://kernelnewbies.org/Linux_3.7
-IPV6_NAT = int(major) >= 3 and int(minor) >= 7
+command = ["ip6tables", "-t", "nat", "-L"]
+
+with open(os.devnull, "w") as fnull:
+    result = subprocess.call(command, stdout = fnull, stderr = fnull)
+
+if result == 0:
+    IPV6_NAT = True
+else:
+    IPV6_NAT = False
 
 DEFAULT_ZONE_TARGET = "{chain}_{zone}"
 ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET ]
