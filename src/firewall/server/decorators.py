@@ -39,7 +39,7 @@ def handle_exceptions(func, *args, **kwargs):
     try:
         return func(*args, **kwargs)
     except FirewallError as error:
-        log.debug1(error)
+        log.error(error)
     except Exception as msg:
         log.exception()
 
@@ -52,7 +52,7 @@ def dbus_handle_exceptions(func, *args, **kwargs):
     try:
         return func(*args, **kwargs)
     except FirewallError as error:
-        log.debug1(str(error))
+        log.error(str(error))
         raise DBusException(str(error))
     except DBusException as e:
         # only log DBusExceptions once
