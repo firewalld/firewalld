@@ -25,9 +25,8 @@ import pwd
 def command_of_pid(pid):
     """ Get command for pid from /proc """
     try:
-        f = open("/proc/%d/cmdline" % pid, "r")
-        cmd = f.readlines()[0].replace('\0', " ").strip()
-        f.close()
+        with open("/proc/%d/cmdline" % pid, "r") as f:
+            cmd = f.readlines()[0].replace('\0', " ").strip()
     except:
         return None
     return cmd

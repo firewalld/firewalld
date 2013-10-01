@@ -150,12 +150,11 @@ class ip4tables:
         filename = PROC_IPxTABLE_NAMES[self.ipv]
 
         if os.path.exists(filename):
-            f = open(filename, "r")
-            for line in f.readlines():
-                if not line:
-                    break
-                tables.append(line.strip())
-            f.close()
+            with open(filename, "r") as f:
+                for line in f.readlines():
+                    if not line:
+                        break
+                    tables.append(line.strip())
 
         return tables
 

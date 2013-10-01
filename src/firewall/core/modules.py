@@ -29,19 +29,18 @@ class modules:
     def loaded_modules(self):
         modules = [ ]
         deps = { }
-        f = open("/proc/modules", "r")
-        for line in f.xreadlines():
-            if not line:
-                break
-            line = line.strip()
-            splits = line.split()
-            modules.append(splits[0])
-            if splits[3] != "-":
-                deps[splits[0]] = splits[3].split(",")[:-1]
-            else:
-                deps[splits[0]] = [ ]
+        with open("/proc/modules", "r") as f:
+            for line in f.xreadlines():
+                if not line:
+                    break
+                line = line.strip()
+                splits = line.split()
+                modules.append(splits[0])
+                if splits[3] != "-":
+                    deps[splits[0]] = splits[3].split(",")[:-1]
+                else:
+                    deps[splits[0]] = [ ]
 
-        f.close()
         return modules, deps
 
     def load_module(self, module):

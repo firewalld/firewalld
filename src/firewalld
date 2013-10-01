@@ -120,9 +120,8 @@ try:
     if not args.nopid:
         # write the pid file
         pid_file = "/var/run/firewalld.pid"
-        f = open(pid_file, "w")
-        f.write(str(os.getpid()))
-        f.close()
+        with open(pid_file, "w") as f:
+            f.write(str(os.getpid()))
 
     # import here
     from firewall.server import server

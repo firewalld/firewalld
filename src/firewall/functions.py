@@ -228,9 +228,8 @@ def firewalld_is_active():
         return False
 
     try:
-        fd = open("/var/run/firewalld.pid", "r")
-        pid = fd.readline()
-        fd.close()
+        with open("/var/run/firewalld.pid", "r") as fd:
+            pid = fd.readline()
     except:
         return False
 
@@ -238,9 +237,8 @@ def firewalld_is_active():
         return False
 
     try:
-        fd = open("/proc/%s/cmdline" % pid, "r")
-        cmdline = fd.readline()
-        fd.close()
+        with open("/proc/%s/cmdline" % pid, "r") as fd:
+            cmdline = fd.readline()
     except:
         return False
 
@@ -253,7 +251,6 @@ def readfile(filename):
     try:
         with open(filename, "r") as f:
             line = "".join(f.readlines())
-            f.close()
     except Exception as e:
         log.error('Failed to read file "%s": %s' % (filename, e))
         return None
@@ -263,7 +260,6 @@ def writefile(filename, line):
     try:
         with open(filename, "w") as f:
             f.write(line)
-            f.close()
     except Exception as e:
         log.error('Failed to write to file "%s": %s' % (filename, e))
         return False
