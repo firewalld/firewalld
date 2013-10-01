@@ -21,6 +21,7 @@
 
 import socket
 import os.path
+import shlex, pipes
 from firewall.core.logger import log
 
 def getPortID(port):
@@ -362,3 +363,12 @@ def checkCommand(command):
         if ch in command:
             return False
     return True
+
+def joinArgs(args):
+    if "quote" in dir(shlex):
+        return " ".join(shlex.quote(a) for a in args)
+    else:
+        return " ".join(pipes.quote(a) for a in args)
+
+def splitArgs(string):
+    return shlex.split(string)
