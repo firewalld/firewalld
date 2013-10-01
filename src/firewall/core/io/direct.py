@@ -24,6 +24,7 @@ import os
 import shutil
 
 from firewall.fw_types import *
+from firewall.functions import splitArgs, joinArgs
 from firewall.errors import *
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
@@ -78,31 +79,13 @@ class direct_ContentHandler(IO_Object_ContentHandler):
             log.error('Unknown XML element %s' % name)
             return
 
-    def _tokenize(self, args_string):
-        # split args_string to args, but consider " and '
-        in_string = False
-        args = []
-        for arg in args_string.split():
-            if in_string:
-                # append to the last argument
-                args[-1] += " " + arg
-            else:
-                # add new argument
-                args.append(arg)
-            # consider " and '
-            if arg.startswith('"') or arg.startswith('\''):
-                in_string = True
-            if arg.endswith('"') or arg.endswith('\''):
-                in_string = False
-        return args
-
     def endElement(self, name):
         IO_Object_ContentHandler.endElement(self, name)
 
         if name == "rule":
             if self._element:
                 # add arguments
-                self._rule.append(self._tokenize(self._element))
+                self._rule.append(splitArgs(self._element))
                 self.item.add_rule(*self._rule)
             else:
                 log.error("Error: rule does not have any arguments, ignoring.")
@@ -110,7 +93,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         elif name == "passthrough":
             if self._element:
                 # add arguments
-                self._passthrough.append(self._tokenize(self._element))
+                self._passthrough.append(splitArgs(self._element))
                 self.item.add_passthrough(*self._passthrough)
             else:
                log.error("Error: passthrough does not have any arguments, " +
@@ -124,7 +107,7 @@ class Direct(IO_Object):
         # chain: [ ipv, table, [ chain ] ]
         ( "chains", [ ( "", "", "" ), ], ),                   # a(ssas)
         # rule: [ ipv, table, chain, [ priority, [ arg ] ] ]
-        ( "rules", [ ( "", "", "", 0, [ "" ] ), ], ),         # a(sssa(das))
+        ( "rules", [ ( "", "", "", 0, [ "" ] ), ], ),         # a(sssias)
         # passthrough: [ ipv, [ [ arg ] ] ]
         ( "passthroughs", [ ( "", [ "" ]), ], ),              # a(sas)
         )
@@ -360,7 +343,7 @@ class Direct(IO_Object):
                 handler.startElement("rule", { "ipv": ipv, "table": table,
                                                  "chain": chain,
                                                  "priority": "%d" % priority })
-                handler.ignorableWhitespace(" ".join(args))
+                handler.ignorableWhitespace(joinArgs(args))
                 handler.endElement("rule")
                 handler.ignorableWhitespace("\n")
 
@@ -371,7 +354,7 @@ class Direct(IO_Object):
                     continue
                 handler.ignorableWhitespace("  ")
                 handler.startElement("passthrough", { "ipv": ipv })
-                handler.ignorableWhitespace(" ".join(args))
+                handler.ignorableWhitespace(joinArgs(args))
                 handler.endElement("passthrough")
                 handler.ignorableWhitespace("\n")
 

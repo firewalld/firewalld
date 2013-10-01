@@ -1527,6 +1527,15 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getChains('%s', '%s')" % (ipv, table))
         return self.fw.direct.get_chains(ipv, table)
 
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+                         out_signature='a(sss)')
+    @dbus_handle_exceptions
+    def getAllChains(self, sender=None):
+        # returns list of added chains
+        log.debug1("direct.getAllChains()")
+        return self.fw.direct.get_all_chains()
+
     @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sss')
     @dbus_handle_exceptions
     def ChainAdded(self, ipv, table, chain):
@@ -1601,6 +1610,15 @@ class FirewallD(slip.dbus.service.Object):
         chain = dbus_to_python(chain)
         log.debug1("direct.getRules('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.get_rules(ipv, table, chain)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+                         out_signature='a(sssias)')
+    @dbus_handle_exceptions
+    def getAllRules(self, sender=None):
+        # returns list of added rules
+        log.debug1("direct.getAllRules()")
+        return self.fw.direct.get_all_rules()
 
     @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions

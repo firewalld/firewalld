@@ -714,7 +714,19 @@
 	<!-- direct chain -->
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--get-chains</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-all-chains</option></term>
+	  <listitem>
+	    <para>
+	      Get all chains added to all tables.
+	    </para>
+	    <para>
+	      This option concerns only chains previously added with <option>--direct --add-chain</option>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-chains</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable></term>
 	  <listitem>
 	    <para>
 	      Get all chains added to table <replaceable>table</replaceable> as a space separated list.
@@ -726,7 +738,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--add-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--add-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
 	  <listitem>
 	    <para>
 	      Add a new chain with name <replaceable>chain</replaceable> to table <replaceable>table</replaceable>.
@@ -739,7 +751,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--remove-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--remove-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove the chain with name <replaceable>chain</replaceable> from table <replaceable>table</replaceable>.
@@ -748,7 +760,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--query-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--query-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether a chain with name <replaceable>chain</replaceable> exists in table <replaceable>table</replaceable>. Returns 0 if true, 1 otherwise.
@@ -762,7 +774,16 @@
 	<!-- direct rule -->
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--get-rules</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-all-rules</option></term>
+	  <listitem>
+	    <para>
+	      Get all rules added to all chains in all tables as a newline separated list of the priority and arguments.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-rules</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
 	  <listitem>
 	    <para>
 	      Get all rules added to chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable> as a newline separated list of the priority and arguments.
@@ -771,7 +792,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--add-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--add-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
 	      Add a rule with the arguments <replaceable>args</replaceable> to chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable> with priority <replaceable>priority</replaceable>.
@@ -783,7 +804,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--remove-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--remove-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> from chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable>.
@@ -792,7 +813,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--direct</option> <option>--query-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--query-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable>. Returns 0 if true, 1 otherwise.
@@ -807,6 +828,53 @@
 	  <listitem>
 	    <para>
 	      Pass a command through to the firewall. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<!-- direct permanent passthrough -->
+
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--direct</option> <option>--get-all-passthroughs</option></term>
+	  <listitem>
+	    <para>
+	      Get all permanent passthrough as a newline separated list of the ipv value and arguments.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--direct</option> <option>--get-passthroughs</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } </term>
+	  <listitem>
+	    <para>
+	      Get all permanent passthrough rules for the ipv value as a newline separated list of the priority and arguments.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--direct</option> <option>--add-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
+	  <listitem>
+	    <para>
+	      Add a permanent passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--direct</option> <option>--remove-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
+	  <listitem>
+	    <para>
+	      Remove a permanent passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--direct</option> <option>--query-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
+	  <listitem>
+	    <para>
+	      Return whether a permanent passthrough rule with the arguments <replaceable>args</replaceable> exists for the ipv value. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>

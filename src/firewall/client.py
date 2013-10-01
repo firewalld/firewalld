@@ -660,6 +660,114 @@ class FirewallClientConfigPolicies(object):
     def setLockdownWhitelist(self, settings):
         self.fw_policies.setLockdownWhitelist(tuple(settings.settings))
 
+# config.direct
+
+class FirewallClientDirect(object):
+    @handle_exceptions
+    def __init__(self, settings=None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = [ [], [], [], ]
+
+    @handle_exceptions
+    def getAllChains(self):
+        return self.settings[0]
+    @handle_exceptions
+    def getChains(self, ipv, table):
+        return [ entry[2] for entry in self.settings[0] \
+                 if entry[0] == ipv and entry[1] == table ]
+    @handle_exceptions
+    def setAllChains(self, chains):
+        self.settings[0] = chains
+    @handle_exceptions
+    def addChain(self, ipv, table, chain):
+        idx = (ipv, table, chain)
+        if idx not in self.settings[0]:
+            self.settings[0].append(idx)
+    @handle_exceptions
+    def removeChain(self, ipv, table, chain):
+        idx = (ipv, table, chain)
+        if idx in self.settings[0]:
+            self.settings[0].remove(idx)
+    @handle_exceptions
+    def queryChain(self, ipv, table, chain):
+        idx = (ipv, table, chain)
+        return idx in self.settings[0]
+
+    @handle_exceptions
+    def getAllRules(self):
+        return self.settings[1]
+    @handle_exceptions
+    def getRules(self, ipv, table, chain):
+        return [ entry[3:] for entry in self.settings[1] \
+                 if entry[0] == ipv and entry[1] == table \
+                 and entry[2] == chain ]
+    @handle_exceptions
+    def setAllRules(self, rules):
+        self.settings[1] = rules
+    @handle_exceptions
+    def addRule(self, ipv, table, chain, priority, args):
+        idx = (ipv, table, chain, priority, args)
+        if idx not in self.settings[1]:
+            self.settings[1].append(idx)
+    @handle_exceptions
+    def removeRule(self, ipv, table, chain, priority, args):
+        idx = (ipv, table, chain, priority, args)
+        if idx in self.settings[1]:
+            self.settings[1].remove(idx)
+    @handle_exceptions
+    def queryRule(self, ipv, table, chain, priority, args):
+        idx = (ipv, table, chain, priority, args)
+        return idx in self.settings[1]
+
+    @handle_exceptions
+    def getAllPassthroughs(self):
+        return self.settings[2]
+    @handle_exceptions
+    def getPassthroughs(self, ipv):
+        return [ entry[1] for entry in self.settings[2] \
+                 if entry[0] == ipv ]
+    @handle_exceptions
+    def setAllPassthroughs(self, passthroughs):
+        self.settings[2] = passthroughs
+    @handle_exceptions
+    def addPassthrough(self, ipv, args):
+        idx = (ipv, args)
+        if idx not in self.settings[2]:
+            self.settings[2].append(idx)
+    @handle_exceptions
+    def removePassthrough(self, ipv, args):
+        idx = (ipv, args)
+        if idx in self.settings[2]:
+            self.settings[2].remove(idx)
+    @handle_exceptions
+    def queryPassthrough(self, ipv, args):
+        idx = (ipv, args)
+        return idx in self.settings[2]
+
+# config.direct
+
+class FirewallClientConfigDirect(object):
+    @handle_exceptions
+    def __init__(self, bus):
+        self.bus = bus
+        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE,
+                                            DBUS_PATH_CONFIG)
+        self.fw_direct = dbus.Interface( \
+            self.dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG_DIRECT)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSettings(self):
+        return FirewallClientDirect( \
+            list(dbus_to_python(self.fw_direct.getSettings())))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def update(self, settings):
+        self.fw_direct.update(tuple(settings.settings))
+
 # config
 
 class FirewallClientConfig(object):
@@ -673,6 +781,7 @@ class FirewallClientConfig(object):
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         self._policies = FirewallClientConfigPolicies(self.bus)
+        self._direct = FirewallClientConfigDirect(self.bus)
 
     # properties
 
@@ -778,6 +887,12 @@ class FirewallClientConfig(object):
     @handle_exceptions
     def policies(self):
         return self._policies
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def direct(self):
+        return self._direct
+
 #
 
 class FirewallClient(object):
@@ -806,6 +921,7 @@ class FirewallClient(object):
                            DBUS_INTERFACE_CONFIG,
                            DBUS_INTERFACE_CONFIG_ZONE,
                            DBUS_INTERFACE_CONFIG_SERVICE,
+                           DBUS_INTERFACE_CONFIG_DIRECT,
                            DBUS_INTERFACE_CONFIG_ICMPTYPE,
                            DBUS_INTERFACE_CONFIG_POLICIES ]:
             self.bus.add_signal_receiver(self._signal_receiver,
@@ -846,13 +962,12 @@ class FirewallClient(object):
             "source-removed": "SourceRemoved",
             "zone-of-source-changed": "ZoneOfSourceChanged",
             # direct callbacks
-# TODO
-            "direct-chain-added": "ChainAdded",
-            "direct-chain-removed": "ChainRemoved",
-            "direct-rule-added": "RuleAdded",
-            "direct-rule-removed": "RuleRemoved",
+            "direct:chain-added": "ChainAdded",
+            "direct:chain-removed": "ChainRemoved",
+            "direct:rule-added": "RuleAdded",
+            "direct:rule-removed": "RuleRemoved",
+            "config:direct:updated": "config:direct:Updated",
             # policy callbacks
-# TODO
             "lockdown-enabled": "LockdownEnabled",
             "lockdown-disabled": "LockdownDisabled",
             "lockdown-whitelist-command-added": "LockdownWhitelistCommandAdded",
@@ -992,6 +1107,8 @@ class FirewallClient(object):
             signal = "config:" + signal
         elif interface == DBUS_INTERFACE_CONFIG_POLICIES:
             signal = "config:policies:" + signal
+        elif interface == DBUS_INTERFACE_CONFIG_DIRECT:
+            signal = "config:direct:" + signal
 
         for callback in self._callbacks:
             if self._callbacks[callback] == signal and \
@@ -1350,6 +1467,11 @@ class FirewallClient(object):
     def getChains(self, ipv, table):
         return dbus_to_python(self.fw_direct.getChains(ipv, table))
 
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getAllChains(self):
+        return dbus_to_python(self.fw_direct.getAllChains())
+
     # direct rule
 
     @slip.dbus.polkit.enable_proxy
@@ -1371,6 +1493,11 @@ class FirewallClient(object):
     @handle_exceptions
     def getRules(self, ipv, table, chain):
         return dbus_to_python(self.fw_direct.getRules(ipv, table, chain))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getAllRules(self):
+        return dbus_to_python(self.fw_direct.getAllRules())
 
     # direct passthrough
 

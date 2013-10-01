@@ -64,13 +64,19 @@ class FirewallDirect:
             (ipv, table) = table_id
             for chain in _chains[table_id]:
                 if not self.query_chain(ipv, table, chain):
-                    self.add_chain(ipv, table, chain)
+                    try:
+                        self.add_chain(ipv, table, chain)
+                    except FirewallError as error:
+                        log.warning(str(error))
 
         for chain_id in _rules:
             (ipv, table, chain) = chain_id
             for (priority, args) in _rules[chain_id]:
                 if not self.query_rule(ipv, table, chain, priority, args):
-                    self.add_rule(ipv, table, chain, priority, args)
+                    try:
+                        self.add_rule(ipv, table, chain, priority, args)
+                    except FirewallError as error:
+                        log.warning(str(error))
 
     # DIRECT CHAIN
 
@@ -122,8 +128,15 @@ class FirewallDirect:
         table_id = (ipv, table)
         if table_id in self._chains:
             return self._chains[table_id]
-        else:
-            return [ ]
+        return [ ]
+
+    def get_all_chains(self):
+        r = [ ]
+        for key in self._chains:
+            (ipv, table) = key
+            for chain in self._chains[key]:
+                r.append((ipv, table, chain))
+        return r
 
     # DIRECT RULE
 
@@ -139,7 +152,7 @@ class FirewallDirect:
         if table in _CHAINS and chain in _CHAINS[table]:
             _chain = "%s_direct" % (chain)
 
-        chain_id = (ipv, table, _chain)
+        chain_id = (ipv, table, chain)
         rule_id = (priority, args)
 
         if enable:
@@ -236,32 +249,23 @@ class FirewallDirect:
         self.__rule(False, ipv, table, chain, priority, args)
 
     def query_rule(self, ipv, table, chain, priority, args):
-        _chain = chain
-        # use "%s_chain" for built-in chains
-        if ipv in [ "ipv4", "ipv6" ]:
-            _CHAINS = ipXtables.CHAINS
-        else:
-            _CHAINS = ebtables.CHAINS
-        if table in _CHAINS and chain in _CHAINS[table]:
-            _chain = "%s_direct" % (chain)
-        chain_id = (ipv, table, _chain)
+        chain_id = (ipv, table, chain)
         return (chain_id in self._rules and \
                 (priority, args) in self._rules[chain_id])
 
     def get_rules(self, ipv, table, chain):
-        _chain = chain
-        # use "%s_chain" for built-in chains
-        if ipv in [ "ipv4", "ipv6" ]:
-            _CHAINS = ipXtables.CHAINS
-        else:
-            _CHAINS = ebtables.CHAINS
-        if table in _CHAINS and chain in _CHAINS[table]:
-            _chain = "%s_direct" % (chain)
-        chain_id = (ipv, table, _chain)
-
+        chain_id = (ipv, table, chain)
         if chain_id in self._rules:
             return self._rules[chain_id]
         return [ ]
+
+    def get_all_rules(self):
+        r = [ ]
+        for key in self._rules:
+            (ipv, table, chain) = key
+            for (priority, args) in self._rules[key]:
+                r.append((ipv, table, chain, priority, args))
+        return r
 
     # DIRECT PASSTROUGH
 

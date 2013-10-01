@@ -24,7 +24,7 @@ import sys
 import string
 
 try:
-    from gi.repository import Gtk, Gdk, Pango
+    from gi.repository import Gtk, Gdk, Pango, Gio
     Gtk.init (sys.argv)
 except RuntimeError as e:
     print ("firewall-config: %s" % e)
@@ -67,7 +67,7 @@ for binary in [ "/usr/bin/nm-connection-editor",
         NM_CONNECTION_EDITOR = binary
         break
 
-#FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
+FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 
 class FirewallConfig(object):
     def __init__(self):
@@ -83,6 +83,8 @@ class FirewallConfig(object):
         self.used_by = _("Used by network connection '%s'")
         self.enabled = _("enabled")
         self.disabled = _("disabled")
+
+        self.settings = Gio.Settings.new(FIREWALL_CONFIG_SCHEMA)
 
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
@@ -112,6 +114,15 @@ class FirewallConfig(object):
         sty.add_class("primary-toolbar")
         # hide toolbar for now
         self.mainToolbar.hide()
+
+        self.mainNotebook = builder.get_object("mainNotebook")
+        self.icmpTypesBox = builder.get_object("icmpTypesBox")
+        self.icmpTypesMenuitem = builder.get_object("icmpTypesMenuitem")
+        self.directBox = builder.get_object("directBox")
+        self.directMenuitem = builder.get_object("directMenuitem")
+        self.lockdownWhitelistBox = builder.get_object("lockdownWhitelistBox")
+        self.lockdownWhitelistMenuitem = \
+            builder.get_object("lockdownWhitelistMenuitem")
 
         self.changeZonesConnectionMenuitem = \
             builder.get_object("changeZonesConnectionMenuitem")
@@ -218,6 +229,111 @@ class FirewallConfig(object):
         self.icmpDialogIcmpEditBox = \
             builder.get_object("icmpDialogIcmpEditBox")
 
+        self.directChainView = builder.get_object("directChainView")
+
+        self.directChainStore = Gtk.ListStore(GObject.TYPE_STRING, # ipv
+                                              GObject.TYPE_STRING, # table
+                                              GObject.TYPE_STRING) # chain
+        self.directChainView.append_column(
+            Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
+        self.directChainView.append_column(
+            Gtk.TreeViewColumn("Table", Gtk.CellRendererText(), text=1))
+        self.directChainView.append_column(
+            Gtk.TreeViewColumn("Chain", Gtk.CellRendererText(), text=2))
+        self.directChainView.set_model(self.directChainStore)
+
+        self.directChainView.get_selection().connect( \
+            "changed", self.change_chain_selection_cb)
+        self.editDirectChainButton = \
+            builder.get_object("editDirectChainButton")
+        self.removeDirectChainButton = \
+            builder.get_object("removeDirectChainButton")
+
+        self.directChainDialog = builder.get_object("directChainDialog")
+        self.directChainDialogOkButton = \
+            builder.get_object("directChainDialogOkButton")
+        self.directChainDialogCancelButton = \
+            builder.get_object("directChainDialogCancelButton")
+        self.directChainDialogIPVCombobox = \
+            builder.get_object("directChainDialogIPVCombobox")
+        self.directChainDialogTableCombobox = \
+            builder.get_object("directChainDialogTableCombobox")
+        self.directChainDialogChainEntry = \
+            builder.get_object("directChainDialogChainEntry")
+
+        self.directRuleView = builder.get_object("directRuleView")
+
+        self.directRuleStore = Gtk.ListStore(GObject.TYPE_STRING, # ipv
+                                              GObject.TYPE_STRING, # table
+                                              GObject.TYPE_STRING, # chain
+                                              GObject.TYPE_INT, # priority
+                                              GObject.TYPE_STRING) # args
+        self.directRuleView.append_column(
+            Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
+        self.directRuleView.append_column(
+            Gtk.TreeViewColumn("Table", Gtk.CellRendererText(), text=1))
+        self.directRuleView.append_column(
+            Gtk.TreeViewColumn("Chain", Gtk.CellRendererText(), text=2))
+        self.directRuleView.append_column(
+            Gtk.TreeViewColumn("Priority", Gtk.CellRendererText(), text=3))
+        self.directRuleView.append_column(
+            Gtk.TreeViewColumn("Args", Gtk.CellRendererText(), text=4))
+        self.directRuleView.set_model(self.directRuleStore)
+
+        self.directRuleView.get_selection().connect( \
+            "changed", self.change_rule_selection_cb)
+        self.editDirectRuleButton = \
+            builder.get_object("editDirectRuleButton")
+        self.removeDirectRuleButton = \
+            builder.get_object("removeDirectRuleButton")
+
+        self.directRuleDialog = builder.get_object("directRuleDialog")
+        self.directRuleDialogOkButton = \
+            builder.get_object("directRuleDialogOkButton")
+        self.directRuleDialogCancelButton = \
+            builder.get_object("directRuleDialogCancelButton")
+
+        self.directRuleDialogIPVCombobox = \
+            builder.get_object("directRuleDialogIPVCombobox")
+        self.directRuleDialogTableCombobox = \
+            builder.get_object("directRuleDialogTableCombobox")
+        self.directRuleDialogChainEntry = \
+            builder.get_object("directRuleDialogChainEntry")
+        self.directRuleDialogPrioritySpinbutton = \
+            builder.get_object("directRuleDialogPrioritySpinbutton")
+        self.directRuleDialogArgsEntry = \
+            builder.get_object("directRuleDialogArgsEntry")
+
+        self.directPassthroughBox = builder.get_object("directPassthroughBox")
+
+        self.directPassthroughView = builder.get_object("directPassthroughView")
+
+        self.directPassthroughStore = Gtk.ListStore(GObject.TYPE_STRING, # ipv
+                                              GObject.TYPE_STRING) # passthrough
+        self.directPassthroughView.append_column(
+            Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
+        self.directPassthroughView.append_column(
+            Gtk.TreeViewColumn("Args", Gtk.CellRendererText(), text=1))
+        self.directPassthroughView.set_model(self.directPassthroughStore)
+
+        self.directPassthroughView.get_selection().connect( \
+            "changed", self.change_passthrough_selection_cb)
+        self.editDirectPassthroughButton = \
+            builder.get_object("editDirectPassthroughButton")
+        self.removeDirectPassthroughButton = \
+            builder.get_object("removeDirectPassthroughButton")
+
+        self.directPassthroughDialog = \
+            builder.get_object("directPassthroughDialog")
+        self.directPassthroughDialogOkButton = \
+            builder.get_object("directPassthroughDialogOkButton")
+        self.directPassthroughDialogCancelButton = \
+            builder.get_object("directPassthroughDialogCancelButton")
+        self.directPassthroughDialogIPVCombobox = \
+            builder.get_object("directPassthroughDialogIPVCombobox")
+        self.directPassthroughDialogArgsEntry = \
+            builder.get_object("directPassthroughDialogArgsEntry")
+
         self.mainVBox = builder.get_object("mainVBox")
         self.optionMenuitem = builder.get_object("optionMenuitem")
 
@@ -236,8 +352,8 @@ class FirewallConfig(object):
         self.aboutDialog.set_website(WEBSITE)
 
         self.currentViewCombobox = builder.get_object("currentViewCombobox")
-        self.currentViewCombobox.append_text(_("Runtime Configuration"))
-        self.currentViewCombobox.append_text(_("Permanent Configuration"))
+        self.currentViewCombobox.append_text(_("Runtime"))
+        self.currentViewCombobox.append_text(_("Permanent"))
         self.runtime_view = True
 
         self.zoneView = builder.get_object("zoneView")
@@ -784,7 +900,16 @@ class FirewallConfig(object):
         self.fw.connect("lockdown-whitelist-user-removed",
                         self.lockdown_whitelist_user_removed_cb)
 
+        self.fw.connect("direct:chain-added", self.direct_chain_added_cb)
+        self.fw.connect("direct:chain-removed", self.direct_chain_removed_cb)
+        self.fw.connect("direct:rule-added", self.direct_rule_added_cb)
+        self.fw.connect("direct:rule-removed", self.direct_rule_removed_cb)
+        self.fw.connect("config:direct:updated", self.direct_updated_cb)
+
+        # TODO: zone-added, zone-removed
+        self.fw.connect("config:zone-added", self.conf_zone_added_cb)
         self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
+        self.fw.connect("config:zone-removed", self.conf_zone_removed_cb)
         self.fw.connect("config:service-added", self.conf_service_added_cb)
         self.fw.connect("config:service-updated", self.conf_service_updated_cb)
         self.fw.connect("config:service-removed", self.conf_service_removed_cb)
@@ -793,6 +918,23 @@ class FirewallConfig(object):
         self.fw.connect("config:icmptype-removed", self.conf_icmp_removed_cb)
         self.fw.connect("config:policies:lockdown-whitelist-updated",
                         self.lockdown_whitelist_updated_cb)
+
+        # settings
+        
+        self.settings.connect("changed::show-icmp-types",
+                              self.settings_show_icmp_types_changed)
+        self.settings_show_icmp_types_changed(self.settings, "show-icmp-types")
+
+        self.settings.connect("changed::show-direct",
+                              self.settings_show_direct_changed)
+        self.settings_show_direct_changed(self.settings, "show-direct")
+
+        self.settings.connect("changed::show-lockdown-whitelist",
+                              self.settings_show_lockdown_whitelist_changed)
+        self.settings_show_lockdown_whitelist_changed(self.settings,
+                                                      "show-lockdown-whitelist")
+
+        # connect
 
         self.connections = { }
         self.connections_uuid = { }
@@ -815,6 +957,54 @@ class FirewallConfig(object):
             self.mainloop.run()
         except KeyboardInterrupt:
             self.onQuit()
+
+    def onViewICMPTypes_toggled(self, button):
+        self.settings.set_boolean("show-icmp-types", button.get_active())
+
+    def settings_show_icmp_types_changed(self, settings, key):
+        self.show_icmp_types = settings.get_boolean(key)
+        self.icmpTypesBox.set_visible(self.show_icmp_types)
+        self.icmpTypesMenuitem.set_active(self.show_icmp_types)
+
+        if self.show_icmp_types:
+            if self.fw.connected:
+                self.load_icmps()
+        else:
+            self.icmpDialogIcmpStore.clear()
+
+    def onViewDirect_toggled(self, button):
+        self.settings.set_boolean("show-direct", button.get_active())
+
+    def settings_show_direct_changed(self, settings, key):
+        self.show_direct = settings.get_boolean(key)
+        self.directBox.set_visible(self.show_direct)
+        self.directMenuitem.set_active(self.show_direct)
+
+        if self.show_direct:
+            if self.fw.connected:
+                self.load_direct()
+        else:
+            self.directChainStore.clear()
+            self.directRuleStore.clear()
+            self.directPassthroughStore.clear()
+
+    def onViewLockdownWhitelist_toggled(self, button):
+        self.settings.set_boolean("show-lockdown-whitelist",
+                                  button.get_active())
+
+    def settings_show_lockdown_whitelist_changed(self, settings, key):
+        self.show_lockdown_whitelist = settings.get_boolean(key)
+        self.lockdownWhitelistBox.set_visible(self.show_lockdown_whitelist)
+        self.lockdownWhitelistMenuitem.set_active(self.show_lockdown_whitelist)
+
+        if self.show_lockdown_whitelist:
+            if self.fw.connected:
+                self.load_lockdown_whitelist()
+        else:
+            self.lockdownContextStore.clear()
+            self.lockdownCommandStore.clear()
+            self.lockdownUserStore.clear()
+            self.lockdownUidStore.clear()
 
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
@@ -960,6 +1150,7 @@ class FirewallConfig(object):
         self.load_zones()
         self.load_services()
         self.load_icmps()
+        self.load_direct()
         self.load_lockdown_whitelist()
 
     def load_zones(self):
@@ -1329,10 +1520,25 @@ class FirewallConfig(object):
                 break
             iter = self.sourceStore.iter_next(iter)
 
+    def conf_zone_added_cb(self, zone):
+        if self.runtime_view:
+            return
+        self.zoneStore.append([zone, Pango.Weight.NORMAL])
+
     def conf_zone_updated_cb(self, zone):
         if zone != self.get_active_zone():
             return
         self.onChangeZone()
+
+    def conf_zone_removed_cb(self, zone):
+        if self.runtime_view:
+            return
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) == zone:
+                self.zoneStore.remove(iter)
+                break
+            iter = self.zoneStore.iter_next(iter)
 
     def _exception_handler(self, exception_message):
         if "INVALID_NAME" in exception_message:
@@ -1393,7 +1599,7 @@ class FirewallConfig(object):
         Gdk.DisplayManager.get().get_default_display().flush()
 
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
-                                 _("Runtime Configuration"))
+                                 _("Runtime"))
 
         self.zoneEditBox.set_sensitive(not self.runtime_view)
         self.serviceConfDestinationGrid.set_sensitive(not self.runtime_view)
@@ -1412,10 +1618,12 @@ class FirewallConfig(object):
             self.serviceConfPortBox.show()
             self.serviceConfModuleBox.show()
             self.icmpDialogIcmpEditBox.show()
+        self.directPassthroughBox.set_sensitive(not self.runtime_view)
 
         self.load_zones()
         self.load_services()
         self.load_icmps()
+        self.load_direct()
         self.load_lockdown_whitelist()
 
     def nm_connection_editor(self, item, uuid=None):
@@ -3509,6 +3717,8 @@ class FirewallConfig(object):
         return None
 
     def load_icmps(self):
+        if not self.show_icmp_types:
+            return
         active_icmp = self.get_active_icmp()
 
         if self.runtime_view:
@@ -3745,13 +3955,21 @@ class FirewallConfig(object):
     def conf_icmp_added_cb(self, icmp):
         if self.runtime_view:
             return
+        if not self.show_icmp_types:
+            return
         self.icmpStore.append([False, icmp])
 
     def conf_icmp_updated_cb(self, zone):
+        if self.runtime_view:
+            return
+        if not self.show_icmp_types:
+            return
         self.onChangeIcmp()
 
     def conf_icmp_removed_cb(self, icmp):
         if self.runtime_view:
+            return
+        if not self.show_icmp_types:
             return
         iter = self.icmpStore.get_iter_first()
         while iter:
@@ -3774,7 +3992,35 @@ class FirewallConfig(object):
         else:
             self.fw.enablePanicMode()
 
+    def load_direct(self):
+        if not self.show_direct:
+            return
+        if self.runtime_view:
+            chains = self.fw.getAllChains()
+            rules = self.fw.getAllRules()
+            passthroughs = [ ]
+        else:
+            direct = self.fw.config().direct()
+            settings = direct.getSettings()
+
+            chains = settings.getAllChains()
+            rules = settings.getAllRules()
+            passthroughs = settings.getAllPassthroughs()
+
+        self.directChainStore.clear()
+        self.directRuleStore.clear()
+        self.directPassthroughStore.clear()
+
+        for x in chains:
+            self.directChainStore.append(x)
+        for (ipv, table, chain, priority, args) in rules:
+            self.directRuleStore.append((ipv, table, chain, priority, joinArgs(args)))
+        for (ipv, args) in passthroughs:
+            self.directPassthroughStore.append((ipv, joinArgs(args)))
+
     def load_lockdown_whitelist(self):
+        if not self.show_lockdown_whitelist:
+            return
         if self.runtime_view:
             contexts = self.fw.getLockdownWhitelistContexts()
             commands = self.fw.getLockdownWhitelistCommands()
@@ -3878,6 +4124,8 @@ class FirewallConfig(object):
             self.fw.config().policies().setLockdownWhitelist(whitelist)
 
     def lockdown_whitelist_context_added_cb(self, context):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownContextStore.get_iter_first()
         while iter:
             if self.lockdownContextStore.get_value(iter, 0) == context:
@@ -3886,6 +4134,8 @@ class FirewallConfig(object):
         self.lockdownContextStore.append([context])
 
     def lockdown_whitelist_context_removed_cb(self, context):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownContextStore.get_iter_first()
         while iter:
             if self.lockdownContextStore.get_value(iter, 0) == context:
@@ -3968,6 +4218,8 @@ class FirewallConfig(object):
             self.fw.config().policies().setLockdownWhitelist(whitelist)
 
     def lockdown_whitelist_command_added_cb(self, command):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownCommandStore.get_iter_first()
         while iter:
             if self.lockdownCommandStore.get_value(iter, 0) == command:
@@ -3976,6 +4228,8 @@ class FirewallConfig(object):
         self.lockdownCommandStore.append([command])
 
     def lockdown_whitelist_command_removed_cb(self, command):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownCommandStore.get_iter_first()
         while iter:
             if self.lockdownCommandStore.get_value(iter, 0) == command:
@@ -4055,6 +4309,8 @@ class FirewallConfig(object):
             self.fw.config().policies().setLockdownWhitelist(whitelist)
 
     def lockdown_whitelist_user_added_cb(self, user):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownUserStore.get_iter_first()
         while iter:
             if self.lockdownUserStore.get_value(iter, 0) == user:
@@ -4063,6 +4319,8 @@ class FirewallConfig(object):
         self.lockdownUserStore.append([user])
 
     def lockdown_whitelist_user_removed_cb(self, user):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownUserStore.get_iter_first()
         while iter:
             if self.lockdownUserStore.get_value(iter, 0) == user:
@@ -4143,6 +4401,8 @@ class FirewallConfig(object):
             self.fw.config().policies().setLockdownWhitelist(whitelist)
 
     def lockdown_whitelist_uid_added_cb(self, uid):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownUidStore.get_iter_first()
         while iter:
             if self.lockdownUidStore.get_value(iter, 0) == uid:
@@ -4151,6 +4411,8 @@ class FirewallConfig(object):
         self.lockdownUidStore.append([uid])
 
     def lockdown_whitelist_uid_removed_cb(self, uid):
+        if not self.show_lockdown_whitelist:
+            return
         iter = self.lockdownUidStore.get_iter_first()
         while iter:
             if self.lockdownUidStore.get_value(iter, 0) == uid:
@@ -4207,6 +4469,387 @@ class FirewallConfig(object):
 
     def lockdown_whitelist_updated_cb(self):
         self.load_lockdown_whitelist()
+
+    def change_chain_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editDirectChainButton.set_sensitive(True)
+            self.removeDirectChainButton.set_sensitive(True)
+        else:
+            self.editDirectChainButton.set_sensitive(False)
+            self.removeDirectChainButton.set_sensitive(False)
+
+    def onAddChain(self, button):
+        self.add_edit_direct_chain(True)
+
+    def onEditChain(self, button):
+        self.add_edit_direct_chain(False)
+
+    def onChainClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_direct_chain(False)
+
+    def onRemoveChain(self, button):
+        selection = self.directChainView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        ipv = self.directChainStore.get_value(iter, 0)
+        table = self.directChainStore.get_value(iter, 1)
+        chain = self.directChainStore.get_value(iter, 2)
+
+        if self.runtime_view:
+            self.fw.removeChain(ipv, table, chain)
+        else:
+            settings = self.fw.config().direct().getSettings()
+            if settings.queryChain(ipv, table, chain):
+                settings.removeChain(ipv, table, chain)
+                self.fw.config().direct().update(settings)
+
+    def direct_updated_cb(self):
+        if not self.show_direct:
+            return
+        if self.runtime_view:
+            return
+        self.load_direct()
+
+    def direct_chain_added_cb(self, ipv, table, chain):
+        if not self.show_direct:
+            return
+        if not self.runtime_view:
+            return
+        iter = self.directChainStore.get_iter_first()
+        while iter:
+            if self.directChainStore.get_value(iter, 0) == ipv and \
+               self.directChainStore.get_value(iter, 1) == table and \
+               self.directChainStore.get_value(iter, 2) == chain:
+                return
+            iter = self.directChainStore.iter_next(iter)
+        self.directChainStore.append([ipv, table, chain])
+
+    def direct_chain_removed_cb(self, ipv, table, chain):
+        if not self.show_direct:
+            return
+        if not self.runtime_view:
+            return
+        iter = self.directChainStore.get_iter_first()
+        while iter:
+            if self.directChainStore.get_value(iter, 0) == ipv and \
+               self.directChainStore.get_value(iter, 1) == table and \
+               self.directChainStore.get_value(iter, 2) == chain:
+                self.directChainStore.remove(iter)
+                break
+            iter = self.directChainStore.iter_next(iter)
+
+    def add_edit_direct_chain(self, add):
+        if add:
+            old_ipv = ""
+            old_table = ""
+            old_chain = ""
+        else:
+            selection = self.directChainView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_ipv = self.directChainStore.get_value(iter, 0)
+            old_table = self.directChainStore.get_value(iter, 1)
+            old_chain = self.directChainStore.get_value(iter, 2)
+
+        self.directChainDialogIPVCombobox.set_active(0)
+        self.combobox_select_text(self.directChainDialogIPVCombobox,
+                                  old_ipv)
+        self.combobox_select_text(self.directChainDialogTableCombobox,
+                                  old_table)
+        self.directChainDialogChainEntry.set_text("%s" % old_chain)
+        self.directChainDialogOkButton.set_sensitive(False)
+
+        self.directChainDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.directChainDialog.set_transient_for(self.mainWindow)
+        self.directChainDialog.show_all()
+        result = self.directChainDialog.run()
+        self.directChainDialog.hide()
+
+        if result != 1:
+            return
+
+        ipv = self.directChainDialogIPVCombobox.get_active_text()
+        table = self.directChainDialogTableCombobox.get_active_text()
+        chain = self.directChainDialogChainEntry.get_text()
+
+        if self.runtime_view:
+            if not self.fw.queryChain(ipv, table, chain):
+                self.fw.addChain(ipv, table, chain)
+                if not add:
+                    self.fw.removeChain(old_ipv, old_table, old_chain)
+        else:
+            settings = self.fw.config().direct().getSettings()
+            if not settings.queryChain(ipv, table, chain):
+                if not add:
+                    settings.removeChain(old_ipv, old_table, old_chain)
+                settings.addChain(ipv, table, chain)
+                self.fw.config().direct().update(settings)
+
+    def onDirectChainDialogChanged(self, *args):
+        self.directChainDialogOkButton.set_sensitive(True)
+
+    def onDirectChainDialogIPVChanged(self, *args):
+        old_table = self.directChainDialogTableCombobox.get_active_text()
+
+        ipv = self.directChainDialogIPVCombobox.get_active_text()
+        self.directChainDialogTableCombobox.remove_all()
+        self.directChainDialogTableCombobox.append_text("filter")
+        if ipv in [ "ipv4", "ipv6" ]:
+            self.directChainDialogTableCombobox.append_text("nat")
+            self.directChainDialogTableCombobox.append_text("mangle")
+            self.directChainDialogTableCombobox.append_text("raw")
+            self.directChainDialogTableCombobox.append_text("security")
+        else:
+            self.directChainDialogTableCombobox.append_text("broute")
+
+        self.combobox_select_text(self.directChainDialogTableCombobox,
+                                  old_table)
+
+    def change_rule_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editDirectRuleButton.set_sensitive(True)
+            self.removeDirectRuleButton.set_sensitive(True)
+        else:
+            self.editDirectRuleButton.set_sensitive(False)
+            self.removeDirectRuleButton.set_sensitive(False)
+
+    def onAddRule(self, button):
+        self.add_edit_direct_rule(True)
+
+    def onEditRule(self, button):
+        self.add_edit_direct_rule(False)
+
+    def onRuleClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_direct_rule(False)
+
+    def onRemoveRule(self, button):
+        selection = self.directRuleView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        ipv = self.directRuleStore.get_value(iter, 0)
+        table = self.directRuleStore.get_value(iter, 1)
+        chain = self.directRuleStore.get_value(iter, 2)
+        priority = self.directRuleStore.get_value(iter, 3)
+        args = self.directRuleStore.get_value(iter, 4)
+
+        split_args = splitArgs(args)
+
+        if self.runtime_view:
+            self.fw.removeRule(ipv, table, chain, priority, split_args)
+        else:
+            settings = self.fw.config().direct().getSettings()
+            if settings.queryRule(ipv, table, chain, priority, split_args):
+                settings.removeRule(ipv, table, chain, priority, split_args)
+                self.fw.config().direct().update(settings)
+
+    def direct_rule_added_cb(self, ipv, table, chain, priority, args):
+        if not self.show_direct:
+            return
+        if not self.runtime_view:
+            return
+        joined_args = joinArgs(args)
+        iter = self.directRuleStore.get_iter_first()
+        while iter:
+            if self.directRuleStore.get_value(iter, 0) == ipv and \
+               self.directRuleStore.get_value(iter, 1) == table and \
+               self.directRuleStore.get_value(iter, 2) == chain and \
+               self.directRuleStore.get_value(iter, 3) == priority and \
+               self.directRuleStore.get_value(iter, 4) == joined_args:
+                return
+            iter = self.directRuleStore.iter_next(iter)
+        self.directRuleStore.append([ipv, table, chain, priority, joined_args])
+
+    def direct_rule_removed_cb(self, ipv, table, chain, priority, args):
+        if not self.show_direct:
+            return
+        if not self.runtime_view:
+            return
+        joined_args = joinArgs(args)
+        iter = self.directRuleStore.get_iter_first()
+        while iter:
+            if self.directRuleStore.get_value(iter, 0) == ipv and \
+               self.directRuleStore.get_value(iter, 1) == table and \
+               self.directRuleStore.get_value(iter, 2) == chain and \
+               self.directRuleStore.get_value(iter, 3) == priority and \
+               self.directRuleStore.get_value(iter, 4) == joined_args:
+                self.directRuleStore.remove(iter)
+                break
+            iter = self.directRuleStore.iter_next(iter)
+
+    def add_edit_direct_rule(self, add):
+        if add:
+            old_ipv = ""
+            old_table = ""
+            old_chain = ""
+            old_priority = 0
+            old_args = ""
+        else:
+            selection = self.directRuleView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_ipv = self.directRuleStore.get_value(iter, 0)
+            old_table = self.directRuleStore.get_value(iter, 1)
+            old_chain = self.directRuleStore.get_value(iter, 2)
+            old_priority = self.directRuleStore.get_value(iter, 3)
+            old_args = self.directRuleStore.get_value(iter, 4)
+
+        self.directRuleDialogIPVCombobox.set_active(0)
+        self.combobox_select_text(self.directRuleDialogIPVCombobox,
+                                  old_ipv)
+        self.combobox_select_text(self.directRuleDialogTableCombobox,
+                                  old_table)
+        self.directRuleDialogChainEntry.set_text("%s" % old_chain)
+        self.directRuleDialogPrioritySpinbutton.set_value(old_priority)
+        self.directRuleDialogArgsEntry.set_text("%s" % old_args)
+        self.directRuleDialogOkButton.set_sensitive(False)
+
+        self.directRuleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.directRuleDialog.set_transient_for(self.mainWindow)
+        self.directRuleDialog.show_all()
+        result = self.directRuleDialog.run()
+        self.directRuleDialog.hide()
+
+        if result != 1:
+            return
+
+        ipv = self.directRuleDialogIPVCombobox.get_active_text()
+        table = self.directRuleDialogTableCombobox.get_active_text()
+        chain = self.directRuleDialogChainEntry.get_text()
+        priority = self.directRuleDialogPrioritySpinbutton.get_value_as_int()
+        args = self.directRuleDialogArgsEntry.get_text()
+
+        split_args = splitArgs(args)
+        split_old_args = splitArgs(old_args)
+
+        if self.runtime_view:
+            if not self.fw.queryRule(ipv, table, chain, priority, split_args):
+                self.fw.addRule(ipv, table, chain, priority, split_args)
+                if not add:
+                    self.fw.removeRule(old_ipv, old_table, old_chain,
+                                       old_priority, split_old_args)
+        else:
+            settings = self.fw.config().direct().getSettings()
+            if not settings.queryRule(ipv, table, chain, priority, split_args):
+                if not add:
+                    settings.removeRule(old_ipv, old_table, old_chain,
+                                        old_priority, split_old_args)
+                settings.addRule(ipv, table, chain, priority, split_args)
+                self.fw.config().direct().update(settings)
+
+    def onDirectRuleDialogChanged(self, *args):
+        self.directRuleDialogOkButton.set_sensitive(True)
+
+    def onDirectRuleDialogIPVChanged(self, *args):
+        old_table = self.directRuleDialogTableCombobox.get_active_text()
+
+        ipv = self.directRuleDialogIPVCombobox.get_active_text()
+        self.directRuleDialogTableCombobox.remove_all()
+        self.directRuleDialogTableCombobox.append_text("filter")
+        if ipv in [ "ipv4", "ipv6" ]:
+            self.directRuleDialogTableCombobox.append_text("nat")
+            self.directRuleDialogTableCombobox.append_text("mangle")
+            self.directRuleDialogTableCombobox.append_text("raw")
+            self.directRuleDialogTableCombobox.append_text("security")
+        else:
+            self.directRuleDialogTableCombobox.append_text("broute")
+
+        self.combobox_select_text(self.directRuleDialogTableCombobox,
+                                  old_table)
+
+    def change_passthrough_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editDirectPassthroughButton.set_sensitive(True)
+            self.removeDirectPassthroughButton.set_sensitive(True)
+        else:
+            self.editDirectPassthroughButton.set_sensitive(False)
+            self.removeDirectPassthroughButton.set_sensitive(False)
+
+    def onAddPassthrough(self, button):
+        self.add_edit_direct_passthrough(True)
+
+    def onEditPassthrough(self, button):
+        self.add_edit_direct_passthrough(False)
+
+    def onPassthroughClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_direct_passthrough(False)
+
+    def onRemovePassthrough(self, button):
+        selection = self.directPassthroughView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        ipv = self.directPassthroughStore.get_value(iter, 0)
+        args = self.directPassthroughStore.get_value(iter, 1)
+
+        split_args = splitArgs(args)
+
+        if self.runtime_view:
+            self.fw.removePassthrough(ipv, split_args)
+        else:
+            settings = self.fw.config().direct().getSettings()
+            if settings.queryPassthrough(ipv, split_args):
+                settings.removePassthrough(ipv, split_args)
+                self.fw.config().direct().update(settings)
+
+    def add_edit_direct_passthrough(self, add):
+        if add:
+            old_ipv = ""
+            old_args = ""
+        else:
+            selection = self.directPassthroughView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_ipv = self.directPassthroughStore.get_value(iter, 0)
+            old_args = self.directPassthroughStore.get_value(iter, 1)
+
+        self.directPassthroughDialogIPVCombobox.set_active(0)
+        self.combobox_select_text(self.directPassthroughDialogIPVCombobox,
+                                  old_ipv)
+        self.directPassthroughDialogArgsEntry.set_text("%s" % old_args)
+        self.directPassthroughDialogOkButton.set_sensitive(False)
+
+        self.directPassthroughDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.directPassthroughDialog.set_transient_for(self.mainWindow)
+        self.directPassthroughDialog.show_all()
+        result = self.directPassthroughDialog.run()
+        self.directPassthroughDialog.hide()
+
+        if result != 1:
+            return
+
+        ipv = self.directPassthroughDialogIPVCombobox.get_active_text()
+        args = self.directPassthroughDialogArgsEntry.get_text()
+
+        split_args = splitArgs(args)
+        split_old_args = splitArgs(old_args)
+
+        if self.runtime_view:
+            if not self.fw.queryPassthrough(ipv, split_args):
+                self.fw.addPassthrough(ipv, split_args)
+                if not add:
+                    self.fw.removePassthrough(old_ipv, split_old_args)
+        else:
+            settings = self.fw.config().direct().getSettings()
+            if not settings.queryPassthrough(ipv, split_args):
+                if not add:
+                    settings.removePassthrough(old_ipv, split_old_args)
+                settings.addPassthrough(ipv, split_args)
+                self.fw.config().direct().update(settings)
+
+    def onDirectPassthroughDialogChanged(self, *args):
+        self.directPassthroughDialogOkButton.set_sensitive(True)
+
 
 # MAIN
 

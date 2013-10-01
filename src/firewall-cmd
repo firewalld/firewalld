@@ -31,6 +31,7 @@ import os
 
 from firewall.client import FirewallClient
 from firewall.errors import *
+from firewall.functions import splitArgs, joinArgs
 
 def __print(msg=None):
     if msg and not a.quiet:
@@ -162,25 +163,40 @@ Options to Handle Bindings of Sources
 
 Direct Options
   --direct             First option for all direct options
+  --get-all-chains
+                       Get all chains [P]
   --get-chains {ipv4|ipv6|eb} <table>
-                       Get all chains added to the table
+                       Get all chains added to the table [P]
   --add-chain {ipv4|ipv6|eb} <table> <chain>
-                       Add a new chain to the table
+                       Add a new chain to the table [P]
   --remove-chain {ipv4|ipv6|eb} <table> <chain>
-                       Remove the chain from the table
+                       Remove the chain from the table [P]
   --query-chain {ipv4|ipv6|eb} <table> <chain>
-                       Return whether the chain has been added to the table
+                       Return whether the chain has been added to the table [P]
+  --get-all-rules
+                       Get all rules [P]
   --get-rules {ipv4|ipv6|eb} <table> <chain>
-                       Get all rules added to chain in table
+                       Get all rules added to chain in table [P]
   --add-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
-                       Add rule to chain in table
+                       Add rule to chain in table [P]
   --remove-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
-                       Remove rule with priority from chain in table
+                       Remove rule with priority from chain in table [P]
   --query-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Return whether a rule with priority has been added to
-                       chain in table
+                       chain in table [P]
   --passthrough {ipv4|ipv6|eb} <arg>...
                        Pass a command through
+  --get-all-passthroughs
+                       Get all passthrough rules [P only]
+  --get-passthroughs {ipv4|ipv6|eb} <arg>...
+                       Get passthrough rules [P only]
+  --add-passthrough {ipv4|ipv6|eb} <arg>...
+                       Add a new passthrough rule [P only]
+  --remove-passthrough {ipv4|ipv6|eb} <arg>...
+                       Remove a passthrough rule [P only]
+  --query-passthrough {ipv4|ipv6|eb} <arg>...
+                       Return whether the passthrough rule has been added
+                       [P only]
 
 Lockdown Options
   --lockdown-on        Enable lockdown.
@@ -409,12 +425,22 @@ parser.add_argument("--direct", action="store_true")
 parser_direct = parser.add_mutually_exclusive_group()
 parser_direct.add_argument("--passthrough", nargs=argparse.REMAINDER,
                     metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+parser_direct.add_argument("--add-passthrough", nargs=argparse.REMAINDER,
+                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+parser_direct.add_argument("--remove-passthrough", nargs=argparse.REMAINDER,
+                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+parser_direct.add_argument("--query-passthrough", nargs=argparse.REMAINDER,
+                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+parser_direct.add_argument("--get-passthroughs", nargs=1,
+                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+parser_direct.add_argument("--get-all-passthroughs", action="store_true")
 parser_direct.add_argument("--add-chain", nargs=3,
                     metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--remove-chain", nargs=3,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--query-chain", nargs=3,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
+parser_direct.add_argument("--get-all-chains", action="store_true")
 parser_direct.add_argument("--get-chains", nargs=2,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>"))
 parser_direct.add_argument("--add-rule", nargs=argparse.REMAINDER,
@@ -425,6 +451,7 @@ parser_direct.add_argument("--query-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <args>"))
 parser_direct.add_argument("--get-rules", nargs=3,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
+parser_direct.add_argument("--get-all-rules", action="store_true")
 
 a = parser.parse_args()
 
@@ -480,7 +507,17 @@ options_permanent = a.permanent or options_config or a.zone or options_zone_ops
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
-                 a.add_rule or a.remove_rule or a.query_rule or a.get_rules
+           a.get_all_chains or \
+           a.add_rule or a.remove_rule or a.query_rule or a.get_rules or \
+           a.get_all_rules
+
+options_direct_permanent = \
+           a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
+           a.get_all_chains or \
+           a.add_rule or a.remove_rule or a.query_rule or a.get_rules or \
+           a.get_all_rules or \
+           a.add_passthrough or a.remove_passthrough or a.query_passthrough or \
+           a.get_passthroughs or a.get_all_passthroughs
 
 # these are supposed to only write out some output
 options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
@@ -494,18 +531,20 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 # Check various impossible combinations of options
 
 if not (options_standalone or options_zone or \
-        options_permanent or options_direct):
+        options_permanent or options_direct or options_permanent_direct):
     __fail(parser.format_usage() + "No option specified.")
 
-if options_standalone and (options_zone or options_permanent or options_direct):
+if options_standalone and (options_zone or options_permanent or \
+                               options_direct or options_direct_permanent):
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if options_direct and (options_zone or options_permanent):
+if (options_direct or options_direct_permanent) and (options_zone):
     __fail(parser.format_usage() +
            "Can't use 'direct' options with other options.")
 
-if (a.direct and not options_direct) or (options_direct and not a.direct):
+if (a.direct and not (options_direct or options_direct_permanent)) or \
+        ((options_direct or options_direct_permanent) and not a.direct):
     __fail(parser.format_usage() +
            "Wrong usage of 'direct' options.")
 
@@ -625,6 +664,114 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
 
             # apply whitelist changes
             fw.config().policies().setLockdownWhitelist(whitelist)
+
+        # lockdown whitelist
+
+        elif options_direct_permanent:
+            settings = fw.config().direct().getSettings()
+
+            if a.passthrough:
+                if len (a.passthrough) < 2:
+                    __fail("usage: --permanent --direct --passthrough { ipv4 | ipv6 | eb } <args>")
+                __print(settings.addPassthrough(_check_ipv(a.passthrough[0]),
+                                                a.passthrough[1:]))
+
+            if a.add_passthrough:
+                if len (a.add_passthrough) < 2:
+                    __fail("usage: --permanent --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
+                __print(settings.addPassthrough(
+                    _check_ipv(a.add_passthrough[0]), a.add_passthrough[1:]))
+
+            elif a.remove_passthrough:
+                if len (a.remove_passthrough) < 2:
+                    __fail("usage: --permanent --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
+                settings.removePassthrough(_check_ipv(a.remove_passthrough[0]),
+                                           a.remove_passthrough[1:])
+            elif a.query_passthrough:
+                if len (a.query_passthrough) < 2:
+                    __fail("usage: --permanent --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
+                __print_query_result(
+                    settings.queryPassthrough(
+                        _check_ipv(a.query_passthrough[0]),
+                        a.query_passthrough[1:]))
+                sys.exit(0)
+            elif a.get_passthroughs:
+                rules = settings.getPassthroughs(
+                    _check_ipv(a.get_passthroughs[0]))
+                for rule in rules:
+                    __print(joinArgs(rule))
+                sys.exit(0)
+            elif a.get_all_passthroughs:
+                for (ipv,rule) in settings.getAllPassthroughs():
+                    __print("%s %s" % (ipv, joinArgs(rule)))
+                sys.exit(0)
+
+            elif a.add_chain:
+                settings.addChain(_check_ipv(a.add_chain[0]),
+                                  a.add_chain[1], a.add_chain[2])
+            elif a.remove_chain:
+                settings.removeChain(_check_ipv(a.remove_chain[0]),
+                                     a.remove_chain[1], a.remove_chain[2])
+            elif a.query_chain:
+                __print_query_result(
+                    settings.queryChain(_check_ipv(a.query_chain[0]),
+                                        a.query_chain[1], a.query_chain[2]))
+                sys.exit(0)
+            elif a.get_chains:
+                __print_and_exit(
+                    " ".join(settings.getChains(_check_ipv(a.get_chains[0]),
+                                                a.get_chains[1])))
+                sys.exit(0)
+            elif a.get_all_chains:
+                chains = settings.getAllChains()
+                for (ipv, table, chain) in chains:
+                    __print("%s %s %s" % (ipv, table, chain))
+                sys.exit(0)
+            elif a.add_rule:
+                if len (a.add_rule) < 5:
+                    __fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                try:
+                    priority = int(a.add_rule[3])
+                except ValueError:
+                    __fail("wrong priority\nusage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                settings.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1],
+                                 a.add_rule[2], priority, a.add_rule[4:])
+            elif a.remove_rule:
+                if len (a.remove_rule) < 5:
+                    __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                try:
+                    priority = int(a.remove_rule[3])
+                except ValueError:
+                    __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                settings.removeRule(_check_ipv(a.remove_rule[0]),
+                                    a.remove_rule[1], a.remove_rule[2],
+                                    priority, a.remove_rule[4:])
+            elif a.query_rule:
+                if len (a.query_rule) < 5:
+                    __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                try:
+                    priority = int(a.query_rule[3])
+                except ValueError:
+                    __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                __print_query_result(
+                    settings.queryRule(_check_ipv(a.query_rule[0]),
+                                       a.query_rule[1], a.query_rule[2],
+                                       priority, a.query_rule[4:]))
+                sys.exit(0)
+            elif a.get_rules:
+                rules = settings.getRules(_check_ipv(a.get_rules[0]),
+                                          a.get_rules[1], a.get_rules[2])
+                for (priority, rule) in rules:
+                    __print("%d %s" % (priority, joinArgs(rule)))
+                sys.exit(0)
+            elif a.get_all_rules:
+                rules = settings.getAllRules()
+                for (ipv, table, chain, priority, rule) in rules:
+                    __print("%s %s %s %d %s" % (ipv, table, chain, priority,
+                                                joinArgs(rule)))
+                sys.exit(0)
+
+            fw.config().direct().update(settings)
 
         else:
             if zone == "":
@@ -809,6 +956,11 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
         elif a.get_chains:
             __print_and_exit(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
                                         a.get_chains[1])))
+        elif a.get_all_chains:
+            chains = fw.getAllChains()
+            for (ipv, table, chain) in chains:
+                __print("%s %s %s" % (ipv, table, chain))
+            sys.exit(0)
         elif a.add_rule:
             if len (a.add_rule) < 5:
                 __fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
@@ -840,8 +992,15 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
             rules = fw.getRules(_check_ipv(a.get_rules[0]),
                                 a.get_rules[1], a.get_rules[2])
             for (priority, rule) in rules:
-                __print("%d %s" % (priority, " ".join(rule)))
+                __print("%d %s" % (priority, joinArgs(rule)))
             sys.exit(0)
+        elif a.get_all_rules:
+            rules = fw.getAllRules()
+            for (ipv, table, chain, priority, rule) in rules:
+                __print("%s %s %s %d %s" % (ipv, table, chain, priority,
+                                            joinArgs(rule)))
+            sys.exit(0)
+
     elif a.get_default_zone:
         __print_and_exit(fw.getDefaultZone())
     elif a.set_default_zone:

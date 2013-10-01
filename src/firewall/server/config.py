@@ -152,7 +152,7 @@ class FirewallDConfig(slip.dbus.service.Object):
 
         elif name == FIREWALLD_DIRECT:
             self.config.update_direct()
-            self.SettingsUpdated()
+            self.Updated()
 
 
     @handle_exceptions
@@ -596,15 +596,15 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT,
                          in_signature=Direct.DBUS_SIGNATURE)
     @dbus_handle_exceptions
-    def setSettings(self, settings, sender=None):
+    def update(self, settings, sender=None):
         # returns list ipv, table, list of chains
-        log.debug1("config.direct.setSettings()")
+        log.debug1("config.direct.update()")
         settings = dbus_to_python(settings)
         self.config.get_direct().import_config(settings)
         self.config.get_direct().write()
-        self.SettingsUpdated()
+        self.Updated()
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_DIRECT)
     @dbus_handle_exceptions
-    def SettingsUpdated(self):
-        log.debug1("config.direct.SettingsUpdated()")
+    def Updated(self):
+        log.debug1("config.direct.Updated()")

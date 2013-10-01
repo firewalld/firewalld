@@ -193,11 +193,13 @@ class Firewall:
             log.debug1("Failed to load direct rules file '%s': %s",
                       FIREWALLD_DIRECT, msg)
         else:
-            #obj.output()
             self.direct.set_config((obj.get_all_chains(), obj.get_all_rules()))
             for ipv, args in obj.get_all_passthroughs().items():
                 for arg in args:
-                    self.direct.passthrough(ipv, arg)
+                    try:
+                        self.direct.passthrough(ipv, arg)
+                    except FirewallError as error:
+                        log.warning(str(error))
             # TODO: copy obj into config interface
         self.config.set_direct(copy.deepcopy(obj))
 
