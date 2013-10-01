@@ -1072,6 +1072,41 @@
       </variablelist>
     </refsect2>
 
+  <refsect1>
+    <title>Examples</title>
+      <para>
+	For more examples see <ulink url="http://fedoraproject.org/wiki/FirewallD"></ulink>
+      </para>
+
+    <refsect2>
+      <title>Example 1</title>
+      <para>
+	Enable http service in default zone. This is runtime only change, i.e. effective until restart.
+      </para>
+      <para>
+	<programlisting>
+firewall-cmd --add-service=http
+	</programlisting>
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>Example 2</title>
+      <para>
+	Enable port 443/tcp immediately and permanently in default zone.
+	To make the change effective immediately and also after restart we need two commands.
+	The first command makes the change in runtime configuration, i.e. makes it effective immediately, until restart.
+	The second command makes the change in permanent configuration, i.e. makes it effective after restart.
+      </para>
+      <para>
+	<programlisting>
+firewall-cmd --add-port=443/tcp
+firewall-cmd --permanent --add-port=443/tcp
+	</programlisting>
+      </para>
+    </refsect2>
+  </refsect1>
+
   <refsect1 id="exit_codes">
     <title>Exit Codes</title>
     <para>
