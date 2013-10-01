@@ -112,7 +112,6 @@ class service_ContentHandler(IO_Object_ContentHandler):
             self.item.modules.append(str(attrs["name"]))
 
 def service_reader(filename, path):
-    name = "%s/%s" % (path, filename)
     service = Service()
     if not filename.endswith(".xml"):
         raise FirewallError(INVALID_NAME, filename)
@@ -124,7 +123,9 @@ def service_reader(filename, path):
     handler = service_ContentHandler(service)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
-    parser.parse(name)
+    name = "%s/%s" % (path, filename)
+    with open(name, "r") as f:
+        parser.parse(f)
     return service
 
 def service_writer(service, path=None):

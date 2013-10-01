@@ -84,7 +84,6 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
                     self.item.destination.append(str(x))
 
 def icmptype_reader(filename, path):
-    name = "%s/%s" % (path, filename)
     icmptype = IcmpType()
     if not filename.endswith(".xml"):
         raise FirewallError(INVALID_NAME, filename)
@@ -96,7 +95,9 @@ def icmptype_reader(filename, path):
     handler = icmptype_ContentHandler(icmptype)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
-    parser.parse(name)
+    name = "%s/%s" % (path, filename)
+    with open(name, "r") as f:
+        parser.parse(f)
     return icmptype
 
 def icmptype_writer(icmptype, path=None):

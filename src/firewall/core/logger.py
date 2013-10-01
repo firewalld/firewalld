@@ -26,6 +26,7 @@ import inspect
 import fnmatch
 import syslog
 import traceback
+import fcntl
 
 # ---------------------------------------------------------------------------
 
@@ -116,6 +117,7 @@ class FileLog(LogTarget):
         if self.fd:
             return
         self.fd = open(self.filename, self.mode)
+        fcntl.fcntl(self.fd, fcntl.F_SETFD, fcntl.FD_CLOEXEC)
 
     def write(self, data, level, logger, is_debug=0):
         if not self.fd:

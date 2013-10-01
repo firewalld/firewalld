@@ -440,7 +440,6 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             self._limit_ok = None
 
 def zone_reader(filename, path):
-    name = "%s/%s" % (path, filename)
     zone = Zone()
     if not filename.endswith(".xml"):
         raise FirewallError(INVALID_NAME, filename)
@@ -454,7 +453,9 @@ def zone_reader(filename, path):
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
-    parser.parse(name)
+    name = "%s/%s" % (path, filename)
+    with open(name, "r") as f:
+        parser.parse(f)
     return zone
 
 def zone_writer(zone, path=None):
