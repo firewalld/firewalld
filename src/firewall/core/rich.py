@@ -135,6 +135,11 @@ class Rich_Drop(Rich_Accept):
 class Rich_Limit(object):
     def __init__(self, value):
         self.value = value
+        if "/" in self.value:
+            splits = self.value.split("/")
+            if len(splits) == 2 and \
+               splits[1] in [ "second", "minute", "hour", "day" ]:
+                self.value = "%s/%s" % (splits[0], splits[1][:1])
 
     def check(self):
         splits = None
