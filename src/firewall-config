@@ -1138,7 +1138,7 @@ class FirewallConfig(object):
         self.optionMenuitem.get_submenu().set_sensitive(self.fw.connected)
 
     def changes_applied(self):
-        self.modifiedLabel.set_text("Changes applied.")
+        self.modifiedLabel.set_text(_("Changes applied."))
         if self.modified_timer:
             GLib.source_remove(self.modified_timer)
         self.modified_timer = GLib.timeout_add_seconds(
