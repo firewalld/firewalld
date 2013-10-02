@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-30 12:20+0200\n"
+"POT-Creation-Date: 2013-10-02 16:14+0200\n"
 "PO-Revision-Date: 2013-09-19 10:40+0000\n"
 "Last-Translator: shkumar <shkumar@redhat.com>\n"
 "Language-Team: Tamil <tamil-users@lists.fedoraproject.org>\n"
@@ -26,7 +26,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:219
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
 msgstr "ஃபயர்வால் அப்பலெட்"
 
@@ -34,7 +34,7 @@ msgstr "ஃபயர்வால் அப்பலெட்"
 msgid "Firewall"
 msgstr "ஃபயர்வால்"
 
-#: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:26
+#: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:41
 msgid "Firewall Configuration"
 msgstr "ஃபயர்வால் கட்டமைப்பு"
 
@@ -66,56 +66,61 @@ msgstr "%s ஐ இயக்க நீங்கள் ரூட்டாக இ�
 msgid "Not starting FirewallD, already running."
 msgstr "ஃபயர்வால்D துவக்கப்படவில்லை, ஏற்கனவே இயக்கத்தில் உள்ளது."
 
-#: ../src/firewalld:135
+#: ../src/firewalld:134
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ஃபோர்க் #1 தோல்வியுற்றது: %d (%s)"
 
-#: ../src/firewall-applet:106
+#: ../src/firewall-applet:106 ../src/firewall-config:4967
+#, fuzzy, c-format
+msgid "Select zone for connection '%s'"
+msgstr "இடைமுகம் '%s' க்கு மண்டலத்தைத் தேர்ந்தெடுக்கவும்"
+
+#: ../src/firewall-applet:185
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "இடைமுகம் '%s' க்கு மண்டலத்தைத் தேர்ந்தெடுக்கவும்"
 
-#: ../src/firewall-applet:162
+#: ../src/firewall-applet:241
 #, c-format
 msgid "Select zone for source %s"
 msgstr "மூலம் %s க்கு மண்டலத்தைத் தேர்ந்தெடுக்கவும்"
 
-#: ../src/firewall-applet:263
+#: ../src/firewall-applet:343
 msgid "Shields Up"
 msgstr "ஷீல்டுகள் மேலே"
 
-#: ../src/firewall-applet:276
+#: ../src/firewall-applet:356
 msgid "Enable Notifications"
 msgstr "அறிவிப்புகளை செயல்படுத்து"
 
-#: ../src/firewall-applet:289
+#: ../src/firewall-applet:369
 msgid "Edit Firewall Settings..."
 msgstr "ஃபயர்வால் அமைவுகளைத் திருத்து..."
 
-#: ../src/firewall-applet:297 ../src/firewall-config.glade.h:31
+#: ../src/firewall-applet:377 ../src/firewall-config.glade.h:46
 msgid "Change Zones of Connections..."
 msgstr "இணைப்புகளின் மண்டலங்களை மாற்று..."
 
-#: ../src/firewall-applet:304
+#: ../src/firewall-applet:384
 msgid "Configure Shields UP/Down Zones..."
 msgstr "ஷீல்டுகள் மேலே/கீழே மண்டலங்களை அமைவாக்கம் செய்..."
 
-#: ../src/firewall-applet:313
+#: ../src/firewall-applet:393
 msgid "Block all network traffic"
 msgstr "அனைத்து பிணைய போக்குவரத்தையும் தடு"
 
-#: ../src/firewall-applet:342
+#: ../src/firewall-applet:422
 msgid "Configure Shields Up/Down Zones"
 msgstr "ஷீல்டுகள் மேலே/கீழே மண்டலங்களை அமைவாக்கம் "
 
-#: ../src/firewall-applet:352
+#: ../src/firewall-applet:432
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 "இங்கு நீங்கள் ஷீல்டுகள் மேலே மற்றும் ஷீல்டுகள் கீழே என்பவற்றுக்குப் பயன்படும் மண்டலங்களைத் "
 "தேர்ந்தெடுக்கலாம்."
 
-#: ../src/firewall-applet:360
+#: ../src/firewall-applet:440
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -123,96 +128,96 @@ msgstr ""
 "இந்த அம்சம் பெரும்பாலும் முன்னிருப்பு மண்டலங்களைப் பயன்படுத்தும் நபர்களுக்குப் பயனுள்ளது. "
 "இணைப்புகளின் மண்டலங்களை மாற்றும் பயனர்களுக்கு இது வரம்புக்குட்பட்ட பயனுள்ளதாக இருக்கும்."
 
-#: ../src/firewall-applet:375
+#: ../src/firewall-applet:455
 msgid "Shields Up Zone:"
 msgstr "ஷீல்டுகள் மேலே மண்டலம்:"
 
-#: ../src/firewall-applet:386
+#: ../src/firewall-applet:466
 msgid "Shields Down Zone:"
 msgstr "ஷீல்டுகள் கீழே மண்டலம்:"
 
-#: ../src/firewall-applet:537
+#: ../src/firewall-applet:617
 msgid "Connections"
 msgstr "இணைப்புகள்"
 
-#: ../src/firewall-applet:579 ../src/firewall-applet:607
-#: ../src/firewall-applet:631 ../src/firewall-config.glade.h:43
+#: ../src/firewall-applet:659 ../src/firewall-applet:688
+#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "மண்டலம்"
 
-#: ../src/firewall-applet:593 ../src/firewall-config.glade.h:69
+#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:618 ../src/firewall-config.glade.h:71
+#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "மூலங்கள்"
 
-#: ../src/firewall-applet:717
+#: ../src/firewall-applet:811
 msgid "Connection to FirewallD established."
 msgstr "FirewallD க்கான இணைப்பு நிறுவப்பட்டது."
 
-#: ../src/firewall-applet:726
+#: ../src/firewall-applet:820
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD க்கான இணைப்பு இழக்கபப்ட்டது."
 
-#: ../src/firewall-applet:773
+#: ../src/firewall-applet:867
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD மீளேற்றப்பட்டது."
 
-#: ../src/firewall-applet:850
+#: ../src/firewall-applet:944
 msgid "No connection to firewall daemon"
 msgstr "ஃபயர்வால் டீமனுடன் இணைப்பு எதுவும் இல்லை"
 
-#: ../src/firewall-applet:856
+#: ../src/firewall-applet:950
 msgid "PANIC MODE"
 msgstr "பானிக் முனைமை"
 
-#: ../src/firewall-applet:863
+#: ../src/firewall-applet:957
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "முன்னிருப்பு மண்டலம்: '%s'"
 
-#: ../src/firewall-applet:871
+#: ../src/firewall-applet:965
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "இடைமுகம் '{interface}' இல் உள்ள இணைப்பு '{connection}' க்கு மண்டலம் '{zone}' செயலில் "
 
-#: ../src/firewall-applet:874
+#: ../src/firewall-applet:968
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "இடைமுகம் '{interface}' க்கு மண்டலம் '{zone}' செயலில் உள்ளது"
 
-#: ../src/firewall-applet:882
+#: ../src/firewall-applet:976
 msgid "Zone '{zone}' active for source {source}"
 msgstr "மூலம் {source} க்கு மண்டலம் '{zone}' செயலில் உள்ளது"
 
-#: ../src/firewall-applet:886
+#: ../src/firewall-applet:980
 msgid "No Active Zones."
 msgstr "செயலில் உள்ள மண்டலங்கள் எதுவும் இல்லை."
 
-#: ../src/firewall-applet:895
+#: ../src/firewall-applet:989
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "முன்னிருப்பு மண்டலம் '%s' என மா."
 
-#: ../src/firewall-applet:919
+#: ../src/firewall-applet:1013
 msgid "All network traffic is blocked."
 msgstr "அனைத்து பிணைய போக்குவரத்தும் தடுக்கப்பட்டுள்ளது."
 
-#: ../src/firewall-applet:920
+#: ../src/firewall-applet:1014
 msgid "Network traffic is not blocked anymore."
 msgstr "பிணைய போக்குவரத்து இப்போது தடுக்கப்பட்டில்லை."
 
-#: ../src/firewall-applet:935 ../src/firewall-applet:975
+#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
 msgid "activated"
 msgstr "செயல்படுத்தப்பட்டது"
 
-#: ../src/firewall-applet:936 ../src/firewall-applet:976
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "deactivated"
 msgstr "முடக்கப்பட்டது"
 
-#: ../src/firewall-applet:939
+#: ../src/firewall-applet:1033
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -220,25 +225,25 @@ msgstr ""
 "இடைமுகம் '{interface}' இல் உள்ள இணைப்பு '{connection}' க்கான மண்டலம் "
 "'{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:1038
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "இடைமுகம் '{interface}' க்கான மண்டலம் '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:966
+#: ../src/firewall-applet:1060
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "இடைமுகம் '%s' க்கான மண்டலம் '%s' செயல்படுத்தப்பட்டது"
 
-#: ../src/firewall-applet:978
+#: ../src/firewall-applet:1072
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "மூலம் '{source}' க்கு மண்டலம் '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1001
+#: ../src/firewall-applet:1095
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "மூலம் '%s' க்கு மண்டலம் '%s' செயல்படுத்தப்பட்டுள்ளது"
 
-#: ../src/firewall-applet:1066
+#: ../src/firewall-applet:1160
 msgid "Firewall-applet"
 msgstr "ஃபயர்வால் அப்பலெட்"
 
@@ -271,260 +276,264 @@ msgstr "செயல்படுத்தப்பட்டது"
 msgid "disabled"
 msgstr "முடக்கப்பட்டது"
 
-#: ../src/firewall-config:95
+#: ../src/firewall-config:98
 msgid "Failed to load icons."
 msgstr "சின்னங்களை ஏற்றத்தில் தோல்வியுற்றது."
 
-#: ../src/firewall-config:122
+#: ../src/firewall-config:134
 msgid "NetworkManager connection editor is missing."
 msgstr "NetworkManager இணைப்பு திருத்தி விடுபட்டுள்ளது."
 
-#: ../src/firewall-config:239 ../src/firewall-config:1396
-msgid "Runtime Configuration"
-msgstr "நிகழ்நேர அமை"
+#: ../src/firewall-config:356 ../src/firewall-config:1643
+msgid "Runtime"
+msgstr ""
 
-#: ../src/firewall-config:240
-msgid "Permanent Configuration"
-msgstr "ஃபயர்வால் கட்டமைப்பு"
+#: ../src/firewall-config:357
+msgid "Permanent"
+msgstr ""
 
-#: ../src/firewall-config:301 ../src/firewall-config.glade.h:74
+#: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
 msgstr "சேவை"
 
-#: ../src/firewall-config:308 ../src/firewall-config:349
-#: ../src/firewall-config:587
+#: ../src/firewall-config:425 ../src/firewall-config:466
+#: ../src/firewall-config:704
 msgid "Port"
 msgstr "துறை"
 
-#: ../src/firewall-config:310 ../src/firewall-config:351
-#: ../src/firewall-config:589 ../src/firewall-config.glade.h:119
+#: ../src/firewall-config:427 ../src/firewall-config:468
+#: ../src/firewall-config:706 ../src/firewall-config.glade.h:177
 msgid "Protocol"
 msgstr "நெறிமுறை"
 
-#: ../src/firewall-config:353
+#: ../src/firewall-config:470
 msgid "To Port"
 msgstr "துறைக்கு"
 
-#: ../src/firewall-config:355
+#: ../src/firewall-config:472
 msgid "To Address"
 msgstr "முகவரிக்கு"
 
-#: ../src/firewall-config:392
+#: ../src/firewall-config:509
 msgid "Icmp Type"
 msgstr "Icmp வகை"
 
-#: ../src/firewall-config:407
+#: ../src/firewall-config:524
 msgid "Family"
 msgstr "குடும்பம்"
 
-#: ../src/firewall-config:409
+#: ../src/firewall-config:526
 msgid "Action"
 msgstr "செயல்"
 
-#: ../src/firewall-config:411
+#: ../src/firewall-config:528
 msgid "Element"
 msgstr "கூ"
 
-#: ../src/firewall-config:413
+#: ../src/firewall-config:530
 msgid "Src"
 msgstr "Src"
 
-#: ../src/firewall-config:415
+#: ../src/firewall-config:532
 msgid "Dest"
 msgstr "இலக்கு"
 
-#: ../src/firewall-config:417
+#: ../src/firewall-config:534
 msgid "log"
 msgstr "பதிவு"
 
-#: ../src/firewall-config:419
+#: ../src/firewall-config:536
 msgid "Audit"
 msgstr "தணிக்கை"
 
-#: ../src/firewall-config:899 ../src/firewall-config:1588
-#: ../src/firewall-config:1625
+#: ../src/firewall-config:1094 ../src/firewall-config:1838
+#: ../src/firewall-config:1876
 msgid "Warning"
 msgstr "எச்சரிக்கை"
 
-#: ../src/firewall-config:908
+#: ../src/firewall-config:1103
 msgid "Error"
 msgstr "பிழை"
 
-#: ../src/firewall-config:1206 ../src/firewall-config:2347
+#: ../src/firewall-config:1142
+msgid "Changes applied."
+msgstr ""
+
+#: ../src/firewall-config:1425 ../src/firewall-config:2603
 msgid "accept"
 msgstr "ஏ"
 
-#: ../src/firewall-config:1208 ../src/firewall-config:2349
-#: ../src/firewall-config:2437
+#: ../src/firewall-config:1427 ../src/firewall-config:2605
+#: ../src/firewall-config:2693
 msgid "reject"
 msgstr "நிரா"
 
-#: ../src/firewall-config:1210 ../src/firewall-config:2354
+#: ../src/firewall-config:1429 ../src/firewall-config:2610
 msgid "drop"
 msgstr "விடுக"
 
-#: ../src/firewall-config:1212 ../src/firewall-config:1246
-#: ../src/firewall-config:1251
+#: ../src/firewall-config:1431 ../src/firewall-config:1465
+#: ../src/firewall-config:1470
 msgid "limit"
 msgstr "வரம்பு"
 
-#: ../src/firewall-config:1223 ../src/firewall-config:1896
-#: ../src/firewall-config:2039 ../src/firewall-config:2311
-#: ../src/firewall-config.glade.h:148
+#: ../src/firewall-config:1442 ../src/firewall-config:2152
+#: ../src/firewall-config:2296 ../src/firewall-config:2567
+#: ../src/firewall-config.glade.h:206
 msgid "service"
 msgstr "சேவை"
 
-#: ../src/firewall-config:1225 ../src/firewall-config:1902
-#: ../src/firewall-config:2041 ../src/firewall-config:2314
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config:1444 ../src/firewall-config:2158
+#: ../src/firewall-config:2298 ../src/firewall-config:2570
+#: ../src/firewall-config.glade.h:207
 msgid "port"
 msgstr "துறை"
 
-#: ../src/firewall-config:1228 ../src/firewall-config:1907
-#: ../src/firewall-config:2050 ../src/firewall-config:2320
-#: ../src/firewall-config.glade.h:150
+#: ../src/firewall-config:1447 ../src/firewall-config:2163
+#: ../src/firewall-config:2307 ../src/firewall-config:2576
+#: ../src/firewall-config.glade.h:208
 msgid "protocol"
 msgstr "நெறிமுறை"
 
-#: ../src/firewall-config:1230 ../src/firewall-config:1912
-#: ../src/firewall-config:2334 ../src/firewall-config:2449
-#: ../src/firewall-config.glade.h:153
+#: ../src/firewall-config:1449 ../src/firewall-config:2168
+#: ../src/firewall-config:2590 ../src/firewall-config:2705
+#: ../src/firewall-config.glade.h:211
 msgid "masquerade"
 msgstr "போ"
 
-#: ../src/firewall-config:1244
+#: ../src/firewall-config:1463
 msgid "level"
 msgstr "நிலை"
 
-#: ../src/firewall-config:1248 ../src/firewall-config:1253
+#: ../src/firewall-config:1467 ../src/firewall-config:1472
 msgid "yes"
 msgstr "ஆம்"
 
-#: ../src/firewall-config:1339
+#: ../src/firewall-config:1599
 msgid "Invalid name"
 msgstr "தவறான அளவுரு %s"
 
-#: ../src/firewall-config:1342
+#: ../src/firewall-config:1602
 msgid "Name already exists"
 msgstr "பெயர் ஏற்கனவே உள்ளது"
 
-#: ../src/firewall-config:1585
+#: ../src/firewall-config:1835
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "மண்டலம் '%s': சேவை '%s' கிடைக்கவில்லை."
 
-#: ../src/firewall-config:1589 ../src/firewall-config:1626
+#: ../src/firewall-config:1839 ../src/firewall-config:1877
 msgid "Remove"
 msgstr "நீக்கு"
 
-#: ../src/firewall-config:1589 ../src/firewall-config:1626
+#: ../src/firewall-config:1839 ../src/firewall-config:1877
 msgid "Ignore"
 msgstr "புறக்கணி"
 
-#: ../src/firewall-config:1622
+#: ../src/firewall-config:1873
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "மண்டலம் '%s': ICMP வகை '%s' கிடைக்கவில்லை."
 
-#: ../src/firewall-config:1749
+#: ../src/firewall-config:2003
 msgid "Built-in zone, rename not supported."
 msgstr "உள்ளமைந்த மண்டலம். மறுபெயரிட ஆதரவில்லை."
 
-#: ../src/firewall-config:1859 ../src/firewall-config:2286
-#: ../src/firewall-config.glade.h:133
+#: ../src/firewall-config:2115 ../src/firewall-config:2542
+#: ../src/firewall-config.glade.h:191
 msgid "second"
 msgstr "வினா"
 
-#: ../src/firewall-config:1860 ../src/firewall-config:2287
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config:2116 ../src/firewall-config:2543
+#: ../src/firewall-config.glade.h:192
 msgid "minute"
 msgstr "நிமிடம்"
 
-#: ../src/firewall-config:1861 ../src/firewall-config:2288
-#: ../src/firewall-config.glade.h:135
+#: ../src/firewall-config:2117 ../src/firewall-config:2544
+#: ../src/firewall-config.glade.h:193
 msgid "hour"
 msgstr "மணி"
 
-#: ../src/firewall-config:1862 ../src/firewall-config:2289
-#: ../src/firewall-config.glade.h:136
+#: ../src/firewall-config:2118 ../src/firewall-config:2545
+#: ../src/firewall-config.glade.h:194
 msgid "day"
 msgstr "நாள்"
 
-#: ../src/firewall-config:1863 ../src/firewall-config:2290
-#: ../src/firewall-config.glade.h:139
+#: ../src/firewall-config:2119 ../src/firewall-config:2546
+#: ../src/firewall-config.glade.h:197
 msgid "emergency"
 msgstr "அவசரம்"
 
-#: ../src/firewall-config:1864 ../src/firewall-config:2291
-#: ../src/firewall-config.glade.h:140
+#: ../src/firewall-config:2120 ../src/firewall-config:2547
+#: ../src/firewall-config.glade.h:198
 msgid "alert"
 msgstr "எச்சரிக்கை"
 
-#: ../src/firewall-config:1865 ../src/firewall-config:2292
-#: ../src/firewall-config.glade.h:141
+#: ../src/firewall-config:2121 ../src/firewall-config:2548
+#: ../src/firewall-config.glade.h:199
 msgid "critical"
 msgstr "மிக "
 
-#: ../src/firewall-config:1866 ../src/firewall-config:2293
-#: ../src/firewall-config.glade.h:142
+#: ../src/firewall-config:2122 ../src/firewall-config:2549
+#: ../src/firewall-config.glade.h:200
 msgid "error"
 msgstr "பிழை"
 
-#: ../src/firewall-config:1867 ../src/firewall-config:2294
-#: ../src/firewall-config.glade.h:143
+#: ../src/firewall-config:2123 ../src/firewall-config:2550
+#: ../src/firewall-config.glade.h:201
 msgid "warning"
 msgstr "எச்சரிக்கை"
 
-#: ../src/firewall-config:1868 ../src/firewall-config:2295
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config:2124 ../src/firewall-config:2551
+#: ../src/firewall-config.glade.h:202
 msgid "notice"
 msgstr "அறிக்கை"
 
-#: ../src/firewall-config:1869 ../src/firewall-config:2296
-#: ../src/firewall-config.glade.h:145
+#: ../src/firewall-config:2125 ../src/firewall-config:2552
+#: ../src/firewall-config.glade.h:203
 msgid "info"
 msgstr "தகவல்"
 
-#: ../src/firewall-config:1870 ../src/firewall-config:2297
-#: ../src/firewall-config.glade.h:146
+#: ../src/firewall-config:2126 ../src/firewall-config:2553
+#: ../src/firewall-config.glade.h:204
 msgid "debug"
 msgstr "வழு நீக்கு"
 
-#: ../src/firewall-config:1915 ../src/firewall-config:2052
-#: ../src/firewall-config:2323 ../src/firewall-config.glade.h:151
+#: ../src/firewall-config:2171 ../src/firewall-config:2309
+#: ../src/firewall-config:2579 ../src/firewall-config.glade.h:209
 msgid "icmp-block"
 msgstr "icmp-block"
 
-#: ../src/firewall-config:1920 ../src/firewall-config:2054
-#: ../src/firewall-config:2326 ../src/firewall-config:2457
-#: ../src/firewall-config.glade.h:152
+#: ../src/firewall-config:2176 ../src/firewall-config:2311
+#: ../src/firewall-config:2582 ../src/firewall-config:2713
+#: ../src/firewall-config.glade.h:210
 msgid "forward-port"
 msgstr "முன்னனுப்பல் துறை"
 
-#: ../src/firewall-config:2032 ../src/firewall-config:2232
-#: ../src/firewall-config:2246 ../src/firewall-config:2301
-#: ../src/firewall-config:2405
+#: ../src/firewall-config:2289 ../src/firewall-config:2488
+#: ../src/firewall-config:2502 ../src/firewall-config:2557
+#: ../src/firewall-config:2661
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2034 ../src/firewall-config:2234
-#: ../src/firewall-config:2248 ../src/firewall-config:2303
-#: ../src/firewall-config:2407
+#: ../src/firewall-config:2291 ../src/firewall-config:2490
+#: ../src/firewall-config:2504 ../src/firewall-config:2559
+#: ../src/firewall-config:2663
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3053
+#: ../src/firewall-config:3323
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
-#: ../src/firewall-config:3297
+#: ../src/firewall-config:3570
 msgid "Built-in service, rename not supported."
 msgstr "உள்ளமைந்த சேவை. மறுபெயரிட ஆதரவில்லை."
 
-#: ../src/firewall-config:3661
+#: ../src/firewall-config:3942
 msgid "Built-in icmp, rename not supported."
 msgstr "உள்ளமைந்த icmp, மறுபெயரிட ஆதரவில்லை."
 
@@ -555,43 +564,107 @@ msgid "Please select default zone from the list below."
 msgstr "கீழே உள்ள பட்டியலில் இருந்து கணினி முன்னிருப்பு மண்டலத்தைத் தேர்ந்தெடுக்கவும்."
 
 #: ../src/firewall-config.glade.h:7
+msgid "Direct Chain"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:8
+#, fuzzy
+msgid "Please select ipv and table and enter the chain name."
+msgstr "கீழே உள்ள பட்டியலில் இருந்து கணினி முன்னிருப்பு மண்டலத்தைத் தேர்ந்தெடுக்கவும்."
+
+#: ../src/firewall-config.glade.h:9
+msgid "ipv:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:10
+#, fuzzy
+msgid "Table:"
+msgstr "செயல்படுத்தப்பட்டது"
+
+#: ../src/firewall-config.glade.h:11
+msgid "nat"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:12
+msgid "raw"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:13
+msgid "security"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:14
+msgid "Chain:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:15
+msgid "eb"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:16
+msgid "Direct Passthrough Rule"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:17
+#, fuzzy
+msgid "Please select ipv and enter the args."
+msgstr "ஒரு சேவையைத் தேர்ந்தெடுக்கவும்."
+
+#: ../src/firewall-config.glade.h:18
+msgid "Args:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:19
+#, fuzzy
+msgid "Direct Rule"
+msgstr "உயர் விதி"
+
+#: ../src/firewall-config.glade.h:20
+msgid "Please select ipv and table, chain priority and enter the args."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:21
+msgid "Priority:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
 msgstr "துறை முன்னனுப்புதல்"
 
-#: ../src/firewall-config.glade.h:8
+#: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr "உங்கள் தேவைக்கேற்ப மூல மற்றும் இலக்கு விருப்பங்களை தேர்ந்தெடுக்கவும்."
 
-#: ../src/firewall-config.glade.h:9
+#: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
 msgstr "துறை / துறை வரம்பு:"
 
-#: ../src/firewall-config.glade.h:10
+#: ../src/firewall-config.glade.h:25
 msgid "IP address:"
 msgstr "IP முகவரி:"
 
-#: ../src/firewall-config.glade.h:11
+#: ../src/firewall-config.glade.h:26
 msgid "Protocol:"
 msgstr "நெறிமுறை:"
 
-#: ../src/firewall-config.glade.h:12
+#: ../src/firewall-config.glade.h:27
 msgid "Destination"
 msgstr "இலக்கு"
 
-#: ../src/firewall-config.glade.h:13
+#: ../src/firewall-config.glade.h:28
 msgid "Source"
 msgstr "மூலம்"
 
-#: ../src/firewall-config.glade.h:14
+#: ../src/firewall-config.glade.h:29
 msgid "Local forwarding"
 msgstr "உள்ளமை முன்னனுப்புதல்"
 
-#: ../src/firewall-config.glade.h:15
+#: ../src/firewall-config.glade.h:30
 msgid "Forward to another port"
 msgstr "வேறு துறைக்கு திருப்பப்படுகிறது"
 
-#: ../src/firewall-config.glade.h:16
+#: ../src/firewall-config.glade.h:31
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
@@ -599,102 +672,120 @@ msgstr ""
 "நீங்கள் உள்ளமை முன்னனுப்புதலை செயல்படுத்தினால், நீங்கள் ஒரு துறையை குறிப்பிட வேண்டும். இந்த "
 "துறை மூல துறைக்கு வேறாக இருக்கும்."
 
-#: ../src/firewall-config.glade.h:17
+#: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
 msgstr "அடிப்படை ICMP வகை அமைவுகள்"
 
-#: ../src/firewall-config.glade.h:18
+#: ../src/firewall-config.glade.h:33
 msgid "Please configure base ICMP type settings:"
 msgstr "அடிப்படை ICMP வகை அமைவுகளை அமைவாக்கம் செய்யவும்:"
 
-#: ../src/firewall-config.glade.h:19
+#: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
 msgstr "தடிமனாக உள்ள உள்ளீடுகள் கட்டாயம் தேவை, மற்ற அனைத்தும் கட்டாயமல்ல."
 
-#: ../src/firewall-config.glade.h:20
+#: ../src/firewall-config.glade.h:35
 msgid "Name:"
 msgstr "பெயர்:"
 
-#: ../src/firewall-config.glade.h:21
+#: ../src/firewall-config.glade.h:36
 msgid "Version:"
 msgstr "பதிப்பு:"
 
-#: ../src/firewall-config.glade.h:22
+#: ../src/firewall-config.glade.h:37
 msgid "Short:"
 msgstr "சிறிய:"
 
-#: ../src/firewall-config.glade.h:23
+#: ../src/firewall-config.glade.h:38
 msgid "Description:"
 msgstr "விளக்கம்:"
 
-#: ../src/firewall-config.glade.h:24
+#: ../src/firewall-config.glade.h:39
 msgid "ICMP Type"
 msgstr "ICMP வகை"
 
-#: ../src/firewall-config.glade.h:25
+#: ../src/firewall-config.glade.h:40
 msgid "Please select an ICMP type"
 msgstr "ஒரு ICMP வகையைத் தேர்ந்தெடுக்கவும்"
 
-#: ../src/firewall-config.glade.h:27
+#: ../src/firewall-config.glade.h:42
 msgid "_File"
 msgstr "கோப்பு (_F)"
 
-#: ../src/firewall-config.glade.h:28
+#: ../src/firewall-config.glade.h:43
 msgid "_Options"
 msgstr "விருப்பங்கள் (_O)"
 
-#: ../src/firewall-config.glade.h:29
+#: ../src/firewall-config.glade.h:44
 msgid "Reload Firewalld"
 msgstr "Firewalld ஐ மீளேற்று"
 
-#: ../src/firewall-config.glade.h:30
+#: ../src/firewall-config.glade.h:45
 msgid ""
 "Reloads firewall rules. Current permanent configuration will become new "
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:32
+#: ../src/firewall-config.glade.h:47
 #, fuzzy
 msgid "Change which zone a network connection belongs to."
 msgstr "இணைப்புகளின் மண்டலங்களை மாற்று..."
 
-#: ../src/firewall-config.glade.h:33
+#: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
 msgstr "முன்னிருப்பு மண்டலத்தை மாற்று"
 
-#: ../src/firewall-config.glade.h:34
+#: ../src/firewall-config.glade.h:49
 #, fuzzy
 msgid "Change default zone for connections or interfaces."
 msgstr "இணைப்புகளின் மண்டலங்களை மாற்று..."
 
-#: ../src/firewall-config.glade.h:35
+#: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:36
+#: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
 msgstr "பேனிக் பயன்முறை"
 
-#: ../src/firewall-config.glade.h:37
+#: ../src/firewall-config.glade.h:52
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:38
+#: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
 msgstr "லாக்டவுன்"
 
-#: ../src/firewall-config.glade.h:39
+#: ../src/firewall-config.glade.h:54
+msgid "_View"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:55
+msgid "ICMP Types"
+msgstr "ICMP வகை"
+
+#: ../src/firewall-config.glade.h:56
+#, fuzzy
+msgid "Direct Configuration"
+msgstr "ஃபயர்வால் கட்டமைப்பு"
+
+#: ../src/firewall-config.glade.h:57
+msgid "Lockdown Whitelist"
+msgstr "லாக்டவுன் வெண்பட்டியல்"
+
+#: ../src/firewall-config.glade.h:58
 msgid "_Help"
 msgstr "உதவி (_H)"
 
-#: ../src/firewall-config.glade.h:40
-msgid "Current View:"
-msgstr "தற்போதைய காட்சி:"
+#: ../src/firewall-config.glade.h:59
+#, fuzzy
+msgid "Configuration:"
+msgstr "நிகழ்நேர அமை"
 
-#: ../src/firewall-config.glade.h:41
+#: ../src/firewall-config.glade.h:60
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
@@ -704,7 +795,7 @@ msgstr ""
 "அமைவாக்கமாகும். சேவை அல்லது கணினி மீளேற்றியதும் அல்லது மறுதொடக்கப்பட்டதும் நிரந்த "
 "அமைவாக்கம் செயலாகும்."
 
-#: ../src/firewall-config.glade.h:42
+#: ../src/firewall-config.glade.h:61
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -718,23 +809,23 @@ msgstr ""
 "விதிகள் ஆகியவற்றை உள்ளடக்கியது. மண்டலமானது இடைமுகங்கள் மற்றும் மூல முகவரிகளுக்கு "
 "கட்டுப்பட்டவையாக இருக்கலாம்."
 
-#: ../src/firewall-config.glade.h:44
+#: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
 msgstr "மண்டலத்தைச் சேர்"
 
-#: ../src/firewall-config.glade.h:45
+#: ../src/firewall-config.glade.h:64
 msgid "Edit Zone"
 msgstr "மண்டலத்தைத் திருத்து"
 
-#: ../src/firewall-config.glade.h:46
+#: ../src/firewall-config.glade.h:65
 msgid "Remove Zone"
 msgstr "மண்டலத்தை நீ"
 
-#: ../src/firewall-config.glade.h:47
+#: ../src/firewall-config.glade.h:66
 msgid "Load Zone Defaults"
 msgstr "மண்டலத்தின் முன்னிருப்பு மதிப்புகளை ஏ"
 
-#: ../src/firewall-config.glade.h:48
+#: ../src/firewall-config.glade.h:67
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
@@ -744,11 +835,11 @@ msgstr ""
 "மண்டலத்துக்குரிய இணைப்புகள், இடைமுகங்கள் மற்றும் மூலங்களிலிருந்து கணினியை அணுகக்கூடிய "
 "அனைத்து புரவலன்கள் மற்றும் பிணையங்களிலிருந்து அணுகப்பட முடியும்."
 
-#: ../src/firewall-config.glade.h:49
+#: ../src/firewall-config.glade.h:68
 msgid "Services"
 msgstr "சேவைகள்"
 
-#: ../src/firewall-config.glade.h:50
+#: ../src/firewall-config.glade.h:69
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
@@ -756,23 +847,23 @@ msgstr ""
 "கணினியுடன் இணைக்க முடிகின்ற அனைத்து வழங்கிகள் அல்லது பிணையங்களுக்கும் அணுகக்கூடியதாக "
 "இருக்க வேண்டிய கூடுதல் முனையங்கள் அல்லது முனைய வரம்புகளைச் சேர்க்கவும்."
 
-#: ../src/firewall-config.glade.h:51
+#: ../src/firewall-config.glade.h:70
 msgid "Add Port"
 msgstr "துறைக்கு"
 
-#: ../src/firewall-config.glade.h:52
+#: ../src/firewall-config.glade.h:71
 msgid "Edit Port"
 msgstr "துறையை திருத்தவும்"
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:72
 msgid "Remove Port"
 msgstr "துறையை நீக்கு"
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:73
 msgid "Ports"
 msgstr "துறைகள்"
 
-#: ../src/firewall-config.glade.h:55
+#: ../src/firewall-config.glade.h:74
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -782,11 +873,11 @@ msgstr ""
 "உள்ளமை பிணையத்தில் இணைக்கிறது. உங்கள் உள்ளமை பிணையம் தெரியாது மற்றும் புரவலன்கள் ஒரு "
 "ஒற்றை முகவரியில் இணையத்தில் தோன்றும் Masquerading IPv4 மட்டுமே."
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
 msgstr "போலி மண்டலம்"
 
-#: ../src/firewall-config.glade.h:57
+#: ../src/firewall-config.glade.h:76
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
@@ -794,11 +885,11 @@ msgstr ""
 "நீங்கள் masquerading ஐ செயல்படுத்தினால்,  உங்கள் IPv4 பிணையங்களுக்கு IP முன்னனுப்புதலும் "
 "செயல்படுத்தப்படும்."
 
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:77
 msgid "Masquerading"
 msgstr "Masquerading"
 
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-config.glade.h:78
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -809,19 +900,19 @@ msgstr ""
 "கணினியிலிருந்த சேர்க்கவும். வேறு கணினியை முன்னனுப்புவது முகப்பு சரியாக இருந்தால் "
 "மட்டுமே பயனாக இருக்கும். துறை முன்னனுப்புதல் IPv4 இல் மட்டும்."
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
 msgstr "முன்னனுப்பல் துறையைச் சேர்"
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:80
 msgid "Edit Forward Port"
 msgstr "முன்னனுப்பல் துறையைத் திருத்து"
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:81
 msgid "Remove Forward Port"
 msgstr "முன்னனுப்பல் துறையை நீக்கு"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:82
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -831,7 +922,7 @@ msgstr ""
 "பிணையப்பட்ட கணினிகளுக்கிடையே அனுப்பப்படும் பிழை செய்திகள் ஆனால் கூடுதலாக தகவல் "
 "செய்திகளே வருகிறது."
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -839,19 +930,34 @@ msgstr ""
 "பட்டியலில் ICMP வகைகளை குறிக்கவும், அது நிராகரிக்கப்பட வேண்டும். மற்ற அனைத்து ICMP "
 "வகைகளும் ஃபயர்வாலின் வழியாக செல்லும். முன்னிருப்புக்கு வரம்பு இல்லை."
 
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
 msgstr "ICMP வடிப்பி"
 
-#: ../src/firewall-config.glade.h:66
+#: ../src/firewall-config.glade.h:85
 msgid "Here you can set rich language rules for the zone."
 msgstr "மண்டலத்திற்கான உயர் மொழி விதிகளை இங்கு நீங்கள் அமைக்க முடியும்."
 
-#: ../src/firewall-config.glade.h:67
+#: ../src/firewall-config.glade.h:86
+#, fuzzy
+msgid "Add Rich Rule"
+msgstr "உயர் விதி"
+
+#: ../src/firewall-config.glade.h:87
+#, fuzzy
+msgid "Edit Rich Rule"
+msgstr "உயர் விதி"
+
+#: ../src/firewall-config.glade.h:88
+#, fuzzy
+msgid "Remove Rich Rule"
+msgstr "உயர் விதி"
+
+#: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
 msgstr "உயர் விதிகள்"
 
-#: ../src/firewall-config.glade.h:68
+#: ../src/firewall-config.glade.h:90
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
@@ -859,15 +965,45 @@ msgstr ""
 "மண்டலத்திற்கு இடைமுகங்களைப் பிணைக்க உள்ளீடுகளைச் சேர்க்கவும். இடைமுகம் ஒரு இணைப்பால் "
 "பயன்படுத்தப்படும் எனில், மண்டலமானது இணைப்பில் குறிப்பிடப்பட்ட மண்டலமாக அமைக்கப்படும்."
 
-#: ../src/firewall-config.glade.h:70
+#: ../src/firewall-config.glade.h:91
+#, fuzzy
+msgid "Add Interface"
+msgstr "<interface>"
+
+#: ../src/firewall-config.glade.h:92
+#, fuzzy
+msgid "Edit Interface"
+msgstr "<interface>"
+
+#: ../src/firewall-config.glade.h:93
+#, fuzzy
+msgid "Remove Interface"
+msgstr "சேவையை நீக்கு"
+
+#: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "மண்டலத்திற்கு மூல முகவரிகள் அல்லது பகுதிகளைப் பிணைக்க உள்ளீடுகளைச் சேர்க்கவும்."
 
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:96
+#, fuzzy
+msgid "Add Source"
+msgstr "சேவையைச் சேர்"
+
+#: ../src/firewall-config.glade.h:97
+#, fuzzy
+msgid "Edit Source"
+msgstr "சேவையைத் திருத்து"
+
+#: ../src/firewall-config.glade.h:98
+#, fuzzy
+msgid "Remove Source"
+msgstr "சேவையை நீக்கு"
+
+#: ../src/firewall-config.glade.h:100
 msgid "Zones"
 msgstr "மண்டலங்கள்"
 
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:101
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
@@ -875,23 +1011,23 @@ msgstr ""
 "ஒரு firewalld சேவையானது முனையங்கள், நெறிமுறைகள், தொகுதிக்கூறுகள் மற்றும் இலக்கு "
 "முகவரிகள் ஆகியவற்றின் சேர்க்கையாகும்."
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:103
 msgid "Add Service"
 msgstr "சேவையைச் சேர்"
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:104
 msgid "Edit Service"
 msgstr "சேவையைத் திருத்து"
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:105
 msgid "Remove Service"
 msgstr "சேவையை நீக்கு"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:106
 msgid "Load Service Defaults"
 msgstr "சேவை முன்னிருப்பு மதிப்புகளை ஏற்று"
 
-#: ../src/firewall-config.glade.h:79
+#: ../src/firewall-config.glade.h:107
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
@@ -900,31 +1036,31 @@ msgstr ""
 "முனையங்கள் அல்லது முனைய வரம்புகளைச் சேர்க்கவும். குறிப்பிட்ட முனையங்கள் இல்லாமலும் நீங்கள் "
 "நெறிமுறைகளைச் சேர்க்கலாம்."
 
-#: ../src/firewall-config.glade.h:80
+#: ../src/firewall-config.glade.h:108
 msgid "Add Entry"
 msgstr "உள்ளீட்டைச் சேர்"
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:109
 msgid "Edit Entry"
 msgstr "உள்ளீட்டைத் திருத்து"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:110
 msgid "Remove Entry"
 msgstr "உள்ளீட்டை நீக்கு"
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:111
 msgid "Ports and Protocols"
 msgstr "துறைகள் மற்றூம் நெறிமுறை"
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:112
 msgid "Netfilter helper modules"
 msgstr "Netfilter உதவி தொகுதிக்கூறுகள்"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:113
 msgid "Modules"
 msgstr "தொகுதிக்கூ"
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:114
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
@@ -934,15 +1070,15 @@ msgstr ""
 "வகைக்கு மட்டும் என வரம்புடையதாக இருக்கும். இரண்டு உள்ளீடுகளும் காலியாக இருந்தால் வரம்பு "
 "ஏதும் இல்லை."
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:115
 msgid "IPv4:"
 msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:116
 msgid "IPv6:"
 msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.glade.h:117
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
@@ -950,7 +1086,7 @@ msgstr ""
 "சேவைகளை நிரந்தர அமைவாக்கக் காட்சியில் மட்டுமே மாற்ற முடியும். சேவைகளின் நிகழ்நேர "
 "அமைவாக்கம் நிலையானது. "
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:118
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
@@ -958,35 +1094,35 @@ msgstr ""
 "firewalld icmptype ஆனது firewalld இன் இணைய கட்டுப்பாட்டு செய்தி நெறிமுறைக்கான "
 "(ICMP) தகவலை வழங்குகிறது."
 
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-config.glade.h:119
 msgid "Add ICMP Type"
 msgstr "ICMP வகையை சேர்க்கவும்"
 
-#: ../src/firewall-config.glade.h:92
+#: ../src/firewall-config.glade.h:120
 msgid "Edit ICMP Type"
 msgstr "ICMP வகையைத் திருத்து"
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:121
 msgid "Remove ICMP Type"
 msgstr "தொலைநிலை ICMP வகை"
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:122
 msgid "Load ICMP Type Defaults"
 msgstr "ICMP வகை முன்னிருப்பு மதிப்புகளை ஏ"
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:123
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-config.glade.h:124
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:125
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:126
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
@@ -994,11 +1130,111 @@ msgstr ""
 "ICMP வகைகளை நிரந்தர அமைவாக்கக் காட்சியில் மட்டுமே மாற்றச் முடியும். ICMP வகைகளின் "
 "நிகழ்நேர அமைவாக்கம் நிலையானது."
 
-#: ../src/firewall-config.glade.h:99
-msgid "ICMP Types"
-msgstr "ICMP வகை"
+#: ../src/firewall-config.glade.h:127
+msgid ""
+"The direct configuration gives a more direct access to the firewall. These "
+"options require user to know basic iptables concepts, i.e. tables, chains, "
+"commands, parameters and targets. Direct configuration should be used only "
+"as a last resort when it is not possible to use other firewalld features."
+msgstr ""
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:128
+msgid ""
+"The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
+"will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
+"bridges (ebtables)."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:129
+msgid "Additional chains for use with rules."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:130
+msgid "Add Chain"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:131
+#, fuzzy
+msgid "Edit Chain"
+msgstr "மண்டலத்தைத் திருத்து"
+
+#: ../src/firewall-config.glade.h:132
+#, fuzzy
+msgid "Remove Chain"
+msgstr "மண்டலத்தை நீ"
+
+#: ../src/firewall-config.glade.h:133
+msgid "Chains"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:134
+msgid ""
+"Add a rule with the arguments args to a chain in a table with a priority."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:135
+msgid ""
+"The priority is used to order rules. Priority 0 means add rule on top of the "
+"chain, with a higher priority the rule will be added further down. Rules "
+"with the same priority are on the same level and the order of these rules is "
+"not fixed and may change. If you want to make sure that a rule will be added "
+"after another one, use a low priority for the first and a higher for the "
+"following."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:136
+#, fuzzy
+msgid "Add Rule"
+msgstr "மண்டலத்தைச் சேர்"
+
+#: ../src/firewall-config.glade.h:137
+#, fuzzy
+msgid "Edit Rule"
+msgstr "மண்டலத்தைத் திருத்து"
+
+#: ../src/firewall-config.glade.h:138
+#, fuzzy
+msgid "Remove Rule"
+msgstr "மண்டலத்தை நீ"
+
+#: ../src/firewall-config.glade.h:139
+#, fuzzy
+msgid "Rules"
+msgstr "உயர் விதிகள்"
+
+#: ../src/firewall-config.glade.h:140
+msgid ""
+"The passthrough rules are directly passed through to the firewall and are "
+"not placed in special chains. All iptables, ip6tables and ebtables options "
+"can be used."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:141
+msgid "Passthrough rules can only be modified for the permanet configuration."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:142
+msgid "Please be careful with passthrough rules to not damage the firewall."
+msgstr ""
+
+#: ../src/firewall-config.glade.h:143
+msgid "Add Passthrough"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:144
+msgid "Edit Passthrough"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:145
+#, fuzzy
+msgid "Remove Passthrough"
+msgstr "துறையை நீக்கு"
+
+#: ../src/firewall-config.glade.h:146
+msgid "Passthrough"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:147
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
@@ -1008,11 +1244,7 @@ msgstr ""
 "பதிப்பாகும். இது ஃபயர்வாலுக்கான மாற்றங்களை வரம்புக்குட்படுத்துகிறது. லாக்டவுன் "
 "வெண்பட்டியலில் கட்டளைகள், சூழல்கள், பயனர்கள் மற்றும் பயனர் idகள் ஆகியவை இருக்கலாம்."
 
-#: ../src/firewall-config.glade.h:101
-msgid "Lockdown Whitelist"
-msgstr "லாக்டவுன் வெண்பட்டியல்"
-
-#: ../src/firewall-config.glade.h:102
+#: ../src/firewall-config.glade.h:148
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
@@ -1020,11 +1252,26 @@ msgstr ""
 "சூழலானது ஒரு இயங்கும் பயன்பாடு அல்லது சேவையின் பாதுகாப்பு (SELinux) சூழலாகும். "
 "இயங்கும் பயன்பாடு ஒன்றின் சூழலைப் பெற ps -e --context ஐப் பயன்படுத்தவும்."
 
-#: ../src/firewall-config.glade.h:103
+#: ../src/firewall-config.glade.h:149
+#, fuzzy
+msgid "Add Context"
+msgstr "சூழல்கள்"
+
+#: ../src/firewall-config.glade.h:150
+#, fuzzy
+msgid "Edit Context"
+msgstr "மண்டலத்தைத் திருத்து"
+
+#: ../src/firewall-config.glade.h:151
+#, fuzzy
+msgid "Remove Context"
+msgstr "மண்டலத்தை நீ"
+
+#: ../src/firewall-config.glade.h:152
 msgid "Contexts"
 msgstr "சூழல்கள்"
 
-#: ../src/firewall-config.glade.h:104
+#: ../src/firewall-config.glade.h:153
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
@@ -1034,175 +1281,220 @@ msgstr ""
 "தொடங்கும் அனைத்து கட்டளை வரிகளும் பொருந்தும். '*' இல்லாவிட்டால், மதிப்புருக்கள் உட்பட "
 "கட்டளை மட்டும் துல்லியமாகப் பொருந்த வேண்டும்."
 
-#: ../src/firewall-config.glade.h:105
+#: ../src/firewall-config.glade.h:154
+#, fuzzy
+msgid "Add Command Line"
+msgstr "கட்டளை வரிகள்"
+
+#: ../src/firewall-config.glade.h:155
+#, fuzzy
+msgid "Edit Command Line"
+msgstr "கட்டளை வரிகள்"
+
+#: ../src/firewall-config.glade.h:156
+#, fuzzy
+msgid "Remove Command Line"
+msgstr "கட்டளை வரிகள்"
+
+#: ../src/firewall-config.glade.h:157
 msgid "Command lines"
 msgstr "கட்டளை வரிகள்"
 
-#: ../src/firewall-config.glade.h:106
+#: ../src/firewall-config.glade.h:158
 msgid "User names."
 msgstr "பயனர் பெயர்கள்."
 
-#: ../src/firewall-config.glade.h:107
+#: ../src/firewall-config.glade.h:159
+#, fuzzy
+msgid "Add User Name"
+msgstr "பயனர் பெயர்"
+
+#: ../src/firewall-config.glade.h:160
+#, fuzzy
+msgid "Edit User Name"
+msgstr "பயனர் பெயர்"
+
+#: ../src/firewall-config.glade.h:161
+#, fuzzy
+msgid "Remove User Name"
+msgstr "சேவையை நீக்கு"
+
+#: ../src/firewall-config.glade.h:162
 msgid "User names"
 msgstr "பயனர் பெயர்கள்"
 
-#: ../src/firewall-config.glade.h:108
+#: ../src/firewall-config.glade.h:163
 msgid "User ids."
 msgstr "பயனர் idகள்"
 
-#: ../src/firewall-config.glade.h:109
+#: ../src/firewall-config.glade.h:164
+#, fuzzy
+msgid "Add User Id"
+msgstr "பயனர் Idகள்"
+
+#: ../src/firewall-config.glade.h:165
+#, fuzzy
+msgid "Edit User Id"
+msgstr "பயனர் Idகள்"
+
+#: ../src/firewall-config.glade.h:166
+#, fuzzy
+msgid "Remove User Id"
+msgstr "சேவையை நீக்கு"
+
+#: ../src/firewall-config.glade.h:167
 msgid "User Ids"
 msgstr "பயனர் Idகள்"
 
-#: ../src/firewall-config.glade.h:110
+#: ../src/firewall-config.glade.h:168
 msgid "Default Zone:"
 msgstr "முன்னிருப்பு மண்டலம்:"
 
-#: ../src/firewall-config.glade.h:111
+#: ../src/firewall-config.glade.h:169
 msgid "Current default zone of the system."
 msgstr "கணினியின் தற்போதைய முன்னிருப்பு மண்டலம்."
 
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:170
 msgid "Lockdown:"
 msgstr "லாக்டவுன்:"
 
-#: ../src/firewall-config.glade.h:113
+#: ../src/firewall-config.glade.h:171
 msgid "Panic Mode:"
 msgstr "பானிக் பயன்முறை:"
 
-#: ../src/firewall-config.glade.h:114
+#: ../src/firewall-config.glade.h:172
 msgid "Please enter the module name."
 msgstr "தொகுதிக்கூறின் பெயரை உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and protocol."
 msgstr "ஒரு துறை மற்றும் நெறிமுறையை உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:116
+#: ../src/firewall-config.glade.h:174
 msgid "Port and/or Protocol"
 msgstr "துறை மற்றும்/அல்லது நெறிமுறை"
 
-#: ../src/firewall-config.glade.h:117
+#: ../src/firewall-config.glade.h:175
 msgid "Please enter a port and/or a protocol."
 msgstr "ஒரு துறை மற்றும்/அல்லது நெறிமுறையை உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:118
+#: ../src/firewall-config.glade.h:176
 msgid "Other Protocol:"
 msgstr "பிற நெறிமுறை:"
 
-#: ../src/firewall-config.glade.h:120
+#: ../src/firewall-config.glade.h:178
 msgid "Please enter a protocol."
 msgstr "ஒரு நெறிமுறையை உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:121
+#: ../src/firewall-config.glade.h:179
 msgid "Rich Rule"
 msgstr "உயர் விதி"
 
-#: ../src/firewall-config.glade.h:122
+#: ../src/firewall-config.glade.h:180
 msgid "Please enter a rich rule."
 msgstr "ஒரு உயர் விதியை உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:123
+#: ../src/firewall-config.glade.h:181
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr "புரவலன் அல்லது பிணைய வெண் அல்லது கருப்புப் பட்டியலிடுதலுக்கு கூறை முடக்கவும்."
 
-#: ../src/firewall-config.glade.h:124
+#: ../src/firewall-config.glade.h:182
 msgid "Source:"
 msgstr "மூலம்:"
 
-#: ../src/firewall-config.glade.h:125
+#: ../src/firewall-config.glade.h:183
 msgid "Destination:"
 msgstr "இலக்கு:"
 
-#: ../src/firewall-config.glade.h:126
+#: ../src/firewall-config.glade.h:184
 msgid "Log:"
 msgstr "பதிவு:"
 
-#: ../src/firewall-config.glade.h:127
+#: ../src/firewall-config.glade.h:185
 msgid "Audit:"
 msgstr "தணிக்கை:"
 
-#: ../src/firewall-config.glade.h:128
+#: ../src/firewall-config.glade.h:186
 msgid "ipv4 and ipv6"
 msgstr "ipv4 மற்றும் ipv6"
 
-#: ../src/firewall-config.glade.h:129
+#: ../src/firewall-config.glade.h:187
 msgid "inverted"
 msgstr "தலைகீழ்"
 
-#: ../src/firewall-config.glade.h:130
+#: ../src/firewall-config.glade.h:188
 msgid "with Type:"
 msgstr "இந்த வகையுடன்:"
 
-#: ../src/firewall-config.glade.h:131
+#: ../src/firewall-config.glade.h:189
 msgid "With limit:"
 msgstr "இந்த வரம்புடன்:"
 
-#: ../src/firewall-config.glade.h:132
+#: ../src/firewall-config.glade.h:190
 msgid "/"
 msgstr "/"
 
-#: ../src/firewall-config.glade.h:137
+#: ../src/firewall-config.glade.h:195
 msgid "Prefix:"
 msgstr "முன்னொட்டு:"
 
-#: ../src/firewall-config.glade.h:138
+#: ../src/firewall-config.glade.h:196
 msgid "Level:"
 msgstr "நிலை:"
 
-#: ../src/firewall-config.glade.h:147
+#: ../src/firewall-config.glade.h:205
 msgid "Element:"
 msgstr "கூறு:"
 
-#: ../src/firewall-config.glade.h:154
+#: ../src/firewall-config.glade.h:212
 msgid "Family:"
 msgstr "குடும்பம்:"
 
-#: ../src/firewall-config.glade.h:155
+#: ../src/firewall-config.glade.h:213
 msgid "Action:"
 msgstr "செயல்:"
 
-#: ../src/firewall-config.glade.h:156
+#: ../src/firewall-config.glade.h:214
 msgid "Base Service Settings"
 msgstr "அடிப்படை சேவை அமைவுகள்"
 
-#: ../src/firewall-config.glade.h:157
+#: ../src/firewall-config.glade.h:215
 msgid "Please configure base service settings:"
 msgstr "அடிப்படை சேவை அமைவுகளை அமைவாக்கம் செய்யவும்:"
 
-#: ../src/firewall-config.glade.h:158
+#: ../src/firewall-config.glade.h:216
 msgid "Please select a service."
 msgstr "ஒரு சேவையைத் தேர்ந்தெடுக்கவும்."
 
-#: ../src/firewall-config.glade.h:159
+#: ../src/firewall-config.glade.h:217
 msgid "User ID"
 msgstr "பயனர் ID"
 
-#: ../src/firewall-config.glade.h:160
+#: ../src/firewall-config.glade.h:218
 msgid "Please enter the user id."
 msgstr "ஒரு பயனர் id ஐ உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:161
+#: ../src/firewall-config.glade.h:219
 msgid "User name"
 msgstr "பயனர் பெயர்"
 
-#: ../src/firewall-config.glade.h:162
+#: ../src/firewall-config.glade.h:220
 msgid "Please enter the user name."
 msgstr "பயனர் பெயரை உள்ளிடவும்."
 
-#: ../src/firewall-config.glade.h:163
+#: ../src/firewall-config.glade.h:221
 msgid "Base Zone Settings"
 msgstr "அடிப்படை மண்டல அமைவுகள்"
 
-#: ../src/firewall-config.glade.h:164
+#: ../src/firewall-config.glade.h:222
 msgid "Please configure base zone settings:"
 msgstr "அடிப்படை மண்டல அமைவுகளை அமைவாக்கம் செய்யவும்:"
 
-#: ../src/firewall-config.glade.h:165
+#: ../src/firewall-config.glade.h:223
 msgid "Target:"
 msgstr "இலக்கு:"
 
-#: ../src/firewall-config.glade.h:166
+#: ../src/firewall-config.glade.h:224
 msgid "Default Target"
 msgstr "முன்னிருப்பு இலக்கு"
 
@@ -1490,6 +1782,12 @@ msgstr ""
 "அமைக்கவும், ஒரு ifcfg கோப்புக்கு, ஒரு திருத்தியைப் பயன்படுத்தி \"ZONE=trusted\" ஐச் "
 "சேர்க்கவும். மண்டலமானது ifcfg கோப்பில் வரையறுக்கப்படாதிருந்தால், firewalld முன்னிருப்பு "
 "மண்டலம் பயன்படுத்தப்படும்."
+
+#~ msgid "Permanent Configuration"
+#~ msgstr "ஃபயர்வால் கட்டமைப்பு"
+
+#~ msgid "Current View:"
+#~ msgstr "தற்போதைய காட்சி:"
 
 #~ msgid "System Default Zone"
 #~ msgstr "கணினி முன்னிருப்பு மண்டலத்தைப் பயன்படுத்து"
