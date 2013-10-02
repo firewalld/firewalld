@@ -2581,7 +2581,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
                                         <property name="tooltip_text" translatable="yes">Add Port</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -2601,7 +2600,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
                                         <property name="tooltip_text" translatable="yes">Edit Port</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -2621,7 +2619,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
                                         <property name="tooltip_text" translatable="yes">Remove Port</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -2802,7 +2799,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Forward Port</property>
                                         <property name="tooltip_text" translatable="yes">Add Forward Port</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -2822,7 +2818,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Forward Port</property>
                                         <property name="tooltip_text" translatable="yes">Edit Forward Port</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -2842,7 +2837,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Forward Port</property>
                                         <property name="tooltip_text" translatable="yes">Remove Forward Port</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -3033,8 +3027,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Rich Rule</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddRichRule" swapped="no"/>
@@ -3053,8 +3046,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Rich Rule</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditRichRule" swapped="no"/>
@@ -3073,8 +3065,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Rich Rule</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveRichRule" swapped="no"/>
@@ -3178,8 +3169,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Forward Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Forward Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Interface</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddInterface" swapped="no"/>
@@ -3198,8 +3188,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Forward Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Forward Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Interface</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditInterface" swapped="no"/>
@@ -3218,8 +3207,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Forward Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Forward Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Interface</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveInterface" swapped="no"/>
@@ -3323,8 +3311,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Forward Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Forward Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Source</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddSource" swapped="no"/>
@@ -3343,8 +3330,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Forward Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Forward Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Source</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditSource" swapped="no"/>
@@ -3363,8 +3349,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Forward Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Forward Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Source</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveSource" swapped="no"/>
@@ -3656,7 +3641,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Entry</property>
                                         <property name="tooltip_text" translatable="yes">Add Entry</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -3676,7 +3660,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Entry</property>
                                         <property name="tooltip_text" translatable="yes">Edit Entry</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -3696,7 +3679,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Entry</property>
                                         <property name="tooltip_text" translatable="yes">Remove Entry</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -3798,7 +3780,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Entry</property>
                                         <property name="tooltip_text" translatable="yes">Add Entry</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -3818,7 +3799,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Entry</property>
                                         <property name="tooltip_text" translatable="yes">Edit Entry</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -3838,7 +3818,6 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Entry</property>
                                         <property name="tooltip_text" translatable="yes">Remove Entry</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
@@ -4512,8 +4491,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Chain</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddChain" swapped="no"/>
@@ -4532,8 +4510,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Chain</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditChain" swapped="no"/>
@@ -4552,8 +4529,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Chain</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveChain" swapped="no"/>
@@ -4668,8 +4644,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Rule</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddRule" swapped="no"/>
@@ -4688,8 +4663,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Rule</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditRule" swapped="no"/>
@@ -4708,8 +4682,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Rule</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveRule" swapped="no"/>
@@ -4843,8 +4816,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Passthrough</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddPassthrough" swapped="no"/>
@@ -4863,8 +4835,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Passthrough</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditPassthrough" swapped="no"/>
@@ -4883,8 +4854,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Passthrough</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemovePassthrough" swapped="no"/>
@@ -5064,8 +5034,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Context</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddContext" swapped="no"/>
@@ -5084,8 +5053,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Context</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditContext" swapped="no"/>
@@ -5104,8 +5072,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Context</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveContext" swapped="no"/>
@@ -5205,8 +5172,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add Command Line</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddCommand" swapped="no"/>
@@ -5225,8 +5191,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Command Line</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditCommand" swapped="no"/>
@@ -5245,8 +5210,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Command Line</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveCommand" swapped="no"/>
@@ -5350,8 +5314,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add User Name</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddUser" swapped="no"/>
@@ -5370,8 +5333,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit User Name</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditUser" swapped="no"/>
@@ -5390,8 +5352,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove User Name</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveUser" swapped="no"/>
@@ -5495,8 +5456,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Add Port</property>
-                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="tooltip_text" translatable="yes">Add User Id</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onAddUid" swapped="no"/>
@@ -5515,8 +5475,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Edit Port</property>
-                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="tooltip_text" translatable="yes">Edit User Id</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onEditUid" swapped="no"/>
@@ -5535,8 +5494,7 @@
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
                                         <property name="has_tooltip">True</property>
-                                        <property name="tooltip_markup" translatable="yes">Remove Port</property>
-                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="tooltip_text" translatable="yes">Remove User Id</property>
                                         <property name="use_stock">True</property>
                                         <property name="focus_on_click">False</property>
                                         <signal name="clicked" handler="onRemoveUid" swapped="no"/>
