@@ -30,7 +30,7 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-30 13:34+0200\n"
-"PO-Revision-Date: 2013-09-30 14:59+0000\n"
+"PO-Revision-Date: 2013-10-01 23:00+0000\n"
 "Last-Translator: Roman Spirgi <bigant@fedoraproject.org>\n"
 "Language-Team: German <trans-de@lists.fedoraproject.org>\n"
 "MIME-Version: 1.0\n"
@@ -524,7 +524,7 @@ msgstr "ipv6"
 msgid ""
 "Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
-msgstr ""
+msgstr "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, falls die Schnittstelle maskiert ist.\nWollen Sie diese Zone maskieren?"
 
 #: ../src/firewall-config:3297
 msgid "Built-in service, rename not supported."
@@ -654,11 +654,11 @@ msgid ""
 "Reloads firewall rules. Current permanent configuration will become new "
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
-msgstr ""
+msgstr "Firewall-Regeln neu laden. Die aktuelle permanente Konfiguration wird als neue Runtime-Konfiguration gesetzt, dadurch z.B. werden alle »Nur-Runtime«-Änderungen beim Neuladen verloren gehen, falls sich diese nicht auch in der permanenten Konfiguration befinden."
 
 #: ../src/firewall-config.glade.h:32
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Wählen Sie zu welcher Zone eine Netzwerkverbindung zugeordnet werden soll."
 
 #: ../src/firewall-config.glade.h:33
 msgid "Change Default Zone"
@@ -666,11 +666,11 @@ msgstr "Standardzone ändern"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Standardzone für Verbindungen oder Schnittstellen ändern."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr ""
+msgstr "Sperrmodus bedeutet, dass sämtliche eingehende und ausgehende Pakete verworfen werden."
 
 #: ../src/firewall-config.glade.h:36
 msgid "Panic Mode"
@@ -680,7 +680,7 @@ msgstr "Panik-Modus"
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
-msgstr ""
+msgstr "Lockdown sperrt die Firewall-Konfiguration, so dass nur Anwendungen auf der Sperr-Positivliste diese ändern können."
 
 #: ../src/firewall-config.glade.h:38
 msgid "Lockdown"
@@ -936,7 +936,7 @@ msgstr "ICMP Typ-Standardwerte laden"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr ""
+msgstr "Definieren, ob dieser ICMP-Typ für IPv4 und/ oder IPv6 verfügbar ist."
 
 #: ../src/firewall-config.glade.h:96
 msgid "IPv4"
@@ -1228,11 +1228,11 @@ msgstr "<Dienst>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
-msgstr ""
+msgstr "Einen Dienst in der Standardzone aktivieren (Beispiel: SSH)"
 
 #: ../src/firewall-offline-cmd:173
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr ""
+msgstr "Deaktivieren eines Dienstes der Standardzone (Beispiel: SSH)"
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
@@ -1288,7 +1288,7 @@ msgstr "<tipo icmp>"
 msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
-msgstr ""
+msgstr "Diesen ICMP-Typ in der Standardzone sperren. Standardmäßig werden alle ICMP-Typen akzeptiert."
 
 #: ../src/firewall-offline-cmd:217
 #, c-format
@@ -1378,7 +1378,7 @@ msgstr "Port »%s/%s« zur Standardzone hinzufügen."
 #: ../src/firewall-offline-cmd:462
 #, c-format
 msgid "Removing service '%s' from default zone."
-msgstr ""
+msgstr "Dienst »%s« aus der Standardzone entfernen."
 
 #: ../src/firewall-offline-cmd:469
 #, c-format
@@ -1412,4 +1412,4 @@ msgid ""
 "editor</command> and set the zone to trusted, for an ifcfg file, use an "
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
-msgstr ""
+msgstr "Falls NetworkManager eine der vertrauenswürdigen Schnittstellen benutzt oder falls eine ifcfg-Datei für diese Schnittstelle vorhanden ist, wird die Zone entsprechend der Konfiguration geändert, sobald diese aktiviert wird. Um die Verbindungszone zu ändern, benutzen Sie <Befehl>nm-connection-editor</Befehl> und stufen Sie die Zone als vertrauenswürdig ein. Bei einer ifcfg-Datei fügen Sie mit einem Editor die Zeile »ZONE=trusted« ein. Wenn die Zone nicht in der ifcfg-Datei definiert ist, wird die firewalld-Standardzone verwendet."
