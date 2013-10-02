@@ -60,12 +60,12 @@ EXTRA_DIST = \
 	services/amanda-client.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
-	services/cluster-suite.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
 	services/dns.xml \
 	services/ftp.xml \
+	services/high-availability.xml \
 	services/https.xml \
 	services/http.xml \
 	services/imaps.xml \
