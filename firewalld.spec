@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.5
+Version: 0.3.6
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -183,6 +183,20 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed Oct 02 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.6-1
+- firewalld.richlanguage.xml: correct log levels (RHBZ#993740)
+- firewall-config: Make sure that all zone settings are updated properly on firewalld restart
+- Rich_Limit: Allow long representation for duration (RHBZ#994103
+- firewall-config: Show "Changes applied." after changes (RHBZ#993643)
+- Use own connection dialog to change zones for NM connections
+- Rename service cluster-suite to high-availability (RHBZ#885257)
+- Permanent direct support for firewall-config and firewall-cmd
+- Try to avoid file descriptor leaking (RHBZ#951900)
+- New functions to split and join args properly (honoring quotes)
+- firewall-cmd(1): 2 simple examples
+- Better IPv6 NAT checking.
+- Ship firewalld.direct(5).
+
 * Mon Sep 30 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.5-1
 - Only use one PK action for configuration (RHBZ#994729)
 - firewall-cmd: indicate non-zero exit code with red color
@@ -297,6 +311,9 @@ fi
 - Remove migrating to a systemd unit file from a SysV initscript
 - Remove pointless "ExclusiveOS" tag
 
+* Fri Jun  7 2013 Thomas Woerner <twoerner@redhat.com> 0.3.3-2
+- Fixed rich rule check for use in D-Bus
+
 * Thu Jun  6 2013 Thomas Woerner <twoerner@redhat.com> 0.3.3-1
 - new service files
 - relicensed logger.py under GPLv2+
@@ -352,6 +369,9 @@ fi
 - Added lockdown, source, interface and rich rule docs to firewall-cmd
 - Do not masquerade lo if masquerade is enabled in the default zone (RHBZ#904098)
 - Use <rule> in metavar for firewall-cmd parser
+
+* Fri May 10 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.2-2
+- removed unintentional en_US.po from tarball
 
 * Tue Apr 30 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.2-1
 - Fix signal handling for SIGTERM
