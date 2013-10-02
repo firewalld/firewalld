@@ -1126,6 +1126,7 @@ class FirewallConfig(object):
             self.panicMenuitem.set_active(self.fw.queryPanicMode())
             self.panicMenuitem.handler_unblock(self.panic_check_id)
             self.currentViewCombobox.set_active(0)
+            self.onChangeView()
         else:
             self.statusLabel.set_text(self.no_connection)
             self.modifiedLabel.set_text(self.waiting)
@@ -1186,7 +1187,12 @@ class FirewallConfig(object):
 
         self.zoneStore.clear()
         self.serviceStore.clear()
+        self.portStore.clear()
+        self.forwardStore.clear()
         self.icmpStore.clear()
+        self.richRuleStore.clear()
+        self.interfaceStore.clear()
+        self.sourceStore.clear()
 
         if self.runtime_view:
             for item in self.fw.listServices():
