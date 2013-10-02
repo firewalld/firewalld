@@ -98,6 +98,85 @@ def escape(text):
     text = text.replace('<', '&lt;')
     return text
 
+class ZoneConnectionEditor(Gtk.Dialog):
+    def __init__(self, fw, connection, zone):
+        self.fw = fw
+        self.connection = connection
+        self.zone = zone
+        self.title = _("Select zone for connection '%s'") % self.connection
+
+        super(ZoneConnectionEditor, self).__init__(self.title)
+
+        self.set_property("width-request", 100)
+        self.resize_to_geometry(100, 50)
+        self.set_resizable(True)
+
+        self.add_button("gtk-close", 1)
+        self.ok_button = self.add_button("gtk-ok", 2)
+        self.ok_button.set_sensitive(False)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        vbox.set_border_width(12)
+        vbox.set_homogeneous(False)
+
+        label = Gtk.Label()
+        label.set_text(self.title)
+        label.set_line_wrap(True)
+        label.set_justify(Gtk.Justification.LEFT)
+        label.set_alignment(0, 0.5)
+        vbox.pack_start(label, True, True, 0)
+
+        self.combo = Gtk.ComboBoxText()
+        zones = self.fw.getZones()
+        for zone in zones:
+            self.combo.append_text(zone)
+        vbox.pack_start(self.combo, True, True, 0)
+
+        box = self.get_content_area()
+        box.set_border_width(6)
+        box.set_homogeneous(False)
+        box.pack_start(vbox, False, True, 0)
+
+        combobox_select_text(self.combo, self.zone)
+        self.combo.connect("changed", self.combo_changed)
+
+    def combo_changed(self, combo):
+        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
+
+    def set_zone(self, zone):
+        old_zone = self.zone
+        self.zone = zone
+        if self.combo.get_active_text() == old_zone:
+            combobox_select_text(self.combo, self.zone)
+        else:
+            self.combo_changed(None)
+
+    def get_zone(self):
+        return self.combo.get_active_text()
+
+    def run(self):
+        result = super(ZoneConnectionEditor, self).run()
+        if result != 2:
+            return
+        dbus_obj = self.fw.bus.get_object(NetworkManager.DBUS_INTERFACE,
+                                          NetworkManager.DBUS_PATH_SETTINGS)
+        settings_iface = dbus.Interface(
+            dbus_obj, dbus_interface=NetworkManager.DBUS_IFACE_SETTINGS)
+        conection_obj = None
+        settings = None
+        for connection in dbus_to_python(settings_iface.ListConnections()):
+            connection_obj = self.fw.bus.get_object(
+                NetworkManager.DBUS_INTERFACE, connection)
+            settings = connection_obj.GetSettings()
+            if settings["connection"]["id"] == self.connection:
+                break
+            else:
+                connection_obj = None
+                settings = None
+        if settings and connection_obj:
+            settings["connection"]["zone"] = self.get_zone()
+            connection_obj.Update(settings)
+
 class ZoneInterfaceEditor(Gtk.Dialog):
     def __init__(self, fw, interface, zone):
         self.fw = fw
@@ -231,6 +310,7 @@ class TrayApplet(object):
         self.connections = { }
         self.connections_uuid = { }
         self.default_zone = None
+        self.zone_connection_editors = { }
         self.zone_interface_editors = { }
         self.zone_source_editors = { }
 
@@ -580,11 +660,12 @@ class TrayApplet(object):
             label.set_alignment(0, 0.5)
             label.set_padding(12, 0)
             hbox.pack_start(label, True, True, 0)
-            # only sensitive if nm_connection_editor exists
-            if NM_CONNECTION_EDITOR == "":
-                item.set_sensitive(False)
+#            # only sensitive if nm_connection_editor exists
+#            if NM_CONNECTION_EDITOR == "":
+#                item.set_sensitive(False)
             item.add(hbox)
-            item.connect("activate", self.nm_connection_editor, uuid)
+#            item.connect("activate", self.nm_connection_editor, uuid)
+            item.connect("activate", self.change_zone_connection_editor, connection, zone)
             self.left_menu.append(item)
 
         if len(interfaces) > 0:
@@ -664,6 +745,19 @@ class TrayApplet(object):
         if result == 2:
             self.fw.changeZoneOfInterface(editor.get_zone(), interface)
         del self.zone_interface_editors[interface]
+
+    def change_zone_connection_editor(self, item, connection, zone):
+        if connection in self.zone_connection_editors:
+            return self.zone_connection_editors[connection].present()
+
+        editor = ZoneConnectionEditor(self.fw, connection, zone)
+        editor.set_icon_name(self.icon_name)
+        self.zone_connection_editors[connection] = editor
+
+        editor.show_all()
+        editor.run()
+        editor.hide()
+        del self.zone_connection_editors[connection]
 
     def change_zone_source_editor(self, item, source, zone):
         if source in self.zone_source_editors:
