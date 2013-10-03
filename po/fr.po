@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-09 09:00+0000\n"
-"Last-Translator: Jérôme Fenal <jfenal@gmail.com>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: French <trans-fr@lists.fedoraproject.org>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -78,9 +78,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "Échec du clonage #1 : %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "La zone « %s » est activée pour l'interface « %s »"
+msgstr ""
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -561,34 +561,28 @@ msgid "Please enter the context."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:5
-#, fuzzy
 msgid "Default Zone"
-msgstr "Zone par défaut :"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:6
-#, fuzzy
 msgid "Please select default zone from the list below."
 msgstr ""
-"Veuillez sélectionner la zone par défaut du système dans la liste suivante."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
 msgstr ""
-"Veuillez sélectionner la zone par défaut du système dans la liste suivante."
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "activé(e)"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -615,10 +609,8 @@ msgid "Direct Passthrough Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
 msgstr ""
-"Veuillez sélectionner la zone par défaut du système dans la liste suivante."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
@@ -739,18 +731,16 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change which zone a network connection belongs to."
-msgstr "Modifier les zones de connexions..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
 msgstr "Modifier la zone par défaut"
 
 #: ../src/firewall-config.glade.h:49
-#, fuzzy
 msgid "Change default zone for connections or interfaces."
-msgstr "Modifier les zones de connexions..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -779,9 +769,8 @@ msgid "ICMP Types"
 msgstr "Types ICMP"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "Configuration du pare-feu"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -792,9 +781,8 @@ msgid "_Help"
 msgstr "_Aide"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "Configuration d'exécution"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -948,14 +936,12 @@ msgid "Add Rich Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "Éditer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "Supprimer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -968,38 +954,32 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "Supprimer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "Ajouter un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "Éditer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "Supprimer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1148,14 +1128,12 @@ msgid "Add Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "Modifier une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "Supprimer une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1177,24 +1155,20 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "Ajouter une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "Modifier une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "Supprimer une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "Modules"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1220,9 +1194,8 @@ msgid "Edit Passthrough"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "Supprimer une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
@@ -1242,19 +1215,16 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "Contextes"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "Modifier une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "Supprimer une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1272,14 +1242,12 @@ msgid "Add Command Line"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "Modifier une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "Supprimer une zone"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1294,14 +1262,12 @@ msgid "Add User Name"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "Éditer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "Supprimer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1320,9 +1286,8 @@ msgid "Edit User Id"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "Supprimer un service"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1739,41 +1704,3 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "Configuration permanente"
-
-#~ msgid "Current View:"
-#~ msgstr "Vue actuelle :"
-
-#~ msgid "System Default Zone"
-#~ msgstr "Zone par défaut du système"
-
-#~ msgid "Change Zones of Connections"
-#~ msgstr "Modifier les zones de connexions"
-
-#~ msgid ""
-#~ "Reloads firewalld: Current permanent configuration will become the new "
-#~ "runtime configuration."
-#~ msgstr ""
-#~ "Rechargement de firewalld : la configuration persistante actuelle "
-#~ "deviendra la nouvelle configuration d'exécution."
-
-#~ msgid ""
-#~ "If you specify destination addresses, the ICMP Type entry will be limited "
-#~ "to the destination."
-#~ msgstr ""
-#~ "Si vous spécifiez des adresses de destination, l'entrée de type ICMP sera "
-#~ "limitée à cette destination."
-
-#~ msgid "warn"
-#~ msgstr "warn"
-
-#~ msgid "err"
-#~ msgstr "err"
-
-#~ msgid "crit"
-#~ msgstr "crit"
-
-#~ msgid "emerg"
-#~ msgstr "emerg"

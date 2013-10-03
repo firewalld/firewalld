@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-30 14:52+0000\n"
-"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -67,9 +67,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "Помилка розгалуження 1: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "Виберіть зону для інтерфейсу «%s»"
+msgstr "Виберіть зону для з’єднання «%s»"
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -281,11 +281,11 @@ msgstr "Не виявлено редактора з’єднань NetworkManage
 
 #: ../src/firewall-config:356 ../src/firewall-config:1643
 msgid "Runtime"
-msgstr ""
+msgstr "Тимчасові"
 
 #: ../src/firewall-config:357
 msgid "Permanent"
-msgstr ""
+msgstr "Остаточні"
 
 #: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
@@ -352,7 +352,7 @@ msgstr "Помилка"
 
 #: ../src/firewall-config:1142
 msgid "Changes applied."
-msgstr ""
+msgstr "Зміни застосовано."
 
 #: ../src/firewall-config:1425 ../src/firewall-config:2603
 msgid "accept"
@@ -561,67 +561,66 @@ msgstr "Будь ласка, виберіть типову зону систем
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "Безпосередній ланцюжок"
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
-msgstr "Будь ласка, виберіть типову зону системи з наведеного нижче списку."
+msgstr ""
+"Будь ласка виберіть версію протоколу IP та таблицю та введіть назву ланцюжка."
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "увімкнено"
+msgstr "Таблиця:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "без захисту"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "з захистом"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Ланцюжок:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Безпосереднє правило трансляції"
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "Будь ласка, виберіть службу."
+msgstr "Будь ласка виберіть версію протоколу IP та введіть аргументи."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "Аргументи:"
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "Розширене правило"
+msgstr "Безпосереднє правило"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
+"Будь ласка виберіть версію протоколу IP та таблицю, пріоритетність ланцюжка "
+"та введіть аргументи."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
-msgstr ""
+msgstr "Пріоритетність:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -764,16 +763,15 @@ msgstr "Блокування"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr ""
+msgstr "П_ерегляд"
 
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
 msgstr "Типи ICMP"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "Налаштовування мережного екрану"
+msgstr "Безпосереднє налаштовування"
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -784,9 +782,8 @@ msgid "_Help"
 msgstr "_Довідка"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "Тимчасові налаштування"
+msgstr "Налаштування:"
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -943,19 +940,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "Тут ви можете встановити розширені правила мови для зони."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "Розширене правило"
+msgstr "Додати розширене правило"
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "Розширене правило"
+msgstr "Змінити розширене правило"
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "Розширене правило"
+msgstr "Вилучити розширене правило"
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -971,38 +965,32 @@ msgstr ""
 "вказаної у записі з’єднання."
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<інтерфейс>"
+msgstr "Додати інтерфейс"
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<інтерфейс>"
+msgstr "Змінити інтерфейс"
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "Вилучити службу"
+msgstr "Вилучити інтерфейс"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "Додати записи для прив’язування адрес джерела або областей до зони."
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "Додати службу"
+msgstr "Додати джерело"
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "Змінити службу"
+msgstr "Змінити джерело"
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "Вилучити службу"
+msgstr "Вилучити джерело"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1141,6 +1129,12 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"Безпосереднє налаштовування надає ширший доступ до брандмауера. Для "
+"керування параметрами налаштовування користувач має бути ознайомлений з "
+"базовими елементами роботи iptables, зокрема таблицями, ланцюжками, "
+"командами, параметрами та призначеннями фільтрів. Безпосереднім "
+"налаштовуванням слід користуватися лише, якщо бажаного не можна досягти за "
+"допомогою інших можливостей firewalld."
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1148,33 +1142,35 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"Аргументом версії протоколу IP (ipv) для кожного параметра має бути ipv4, "
+"ipv6 або eb. Аргументу ipv4 відповідає iptables, аргументу ipv6 — ip6tables, "
+"а аргументу eb — містки ethernet (ebtables)."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Додаткові ланцюжки, які слід використати з правилами."
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
-msgstr ""
+msgstr "Додати ланцюжок"
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "Змінити зону"
+msgstr "Змінити ланцюжок"
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "Вилучити зону"
+msgstr "Вилучити ланцюжок"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
-msgstr ""
+msgstr "Ланцюжки"
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Додати правило з аргументами до ланцюжка у таблицю з рівнем пріоритетності."
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1185,26 +1181,29 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"Пріоритетність використовується для упорядковування правил. Значення "
+"пріоритетності 0 відповідає додаванню правила на початок ланцюжка, правила з "
+"більшими значеннями пріоритетності розташовуються далі за ланцюжком. Правила "
+"з одним рівнем пріоритетності перебувають на одному рівні, порядок таких "
+"правил не є фіксованим і може змінюватися. Якщо ви хочете забезпечити певну "
+"послідовність правил, скористайтеся меншим значенням пріоритетності для "
+"першого з правил і більшим для другого."
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "Додати зону"
+msgstr "Додати правило"
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "Змінити зону"
+msgstr "Змінити правило"
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "Вилучити зону"
+msgstr "Вилучити правило"
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "Розширені правила"
+msgstr "Правила"
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1212,6 +1211,9 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"Трансляційні правила буде безпосередньо передано брандмауеру без "
+"розташовування у спеціальних ланцюжках. Можна використовувати усі параметри "
+"iptables, ip6tables та ebtables."
 
 #: ../src/firewall-config.glade.h:141
 msgid "Passthrough rules can only be modified for the permanent configuration."
@@ -1220,23 +1222,24 @@ msgstr ""
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"Будь ласка, будьте обережні з правилами трансляції, щоб не зашкодити роботі "
+"брандмауера."
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Додати трансляцію"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Змінити трансляцію"
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "Вилучити зону"
+msgstr "Вилучити трансляцію"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr ""
+msgstr "Трансляція"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
@@ -1259,19 +1262,16 @@ msgstr ""
 "-e --context."
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "Контексти"
+msgstr "Додати контекст"
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "Змінити зону"
+msgstr "Змінити контекст"
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "Вилучити зону"
+msgstr "Вилучити контекст"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1289,19 +1289,16 @@ msgstr ""
 "разом з аргументами команди."
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "Рядки команд"
+msgstr "Додати рядок команди"
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "Рядки команд"
+msgstr "Змінити рядок команди"
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "Рядки команд"
+msgstr "Вилучити рядок команди"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1312,19 +1309,16 @@ msgid "User names."
 msgstr "Імена користувачів."
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "Ім’я користувача"
+msgstr "Додати ім’я користувача"
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "Ім’я користувача"
+msgstr "Змінити ім’я користувача"
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "Вилучити службу"
+msgstr "Вилучити ім’я користувача"
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1335,19 +1329,16 @@ msgid "User ids."
 msgstr "Ід. користувачів"
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "Ід. користувачів"
+msgstr "Додати ідентифікатор користувача"
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "Ід. користувачів"
+msgstr "Змінити ідентифікатор користувача"
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "Вилучити службу"
+msgstr "Вилучити ідентифікатор користувача"
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1789,9 +1780,3 @@ msgstr ""
 "вкажіть, що зона є довіреною. Якщо використано файл ifcfg, додайте до нього "
 "рядок «ZONE=trusted» за допомогою редактора. Якщо зону не визначено у файлі "
 "ifcfg, буде використано типову зону firewalld."
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "Сталі налаштування"
-
-#~ msgid "Current View:"
-#~ msgstr "Поточний перегляд:"

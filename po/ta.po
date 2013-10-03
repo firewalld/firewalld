@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-19 10:40+0000\n"
-"Last-Translator: shkumar <shkumar@redhat.com>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Tamil <tamil-users@lists.fedoraproject.org>\n"
 "Language: ta\n"
 "MIME-Version: 1.0\n"
@@ -72,9 +72,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "ஃபோர்க் #1 தோல்வியுற்றது: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "இடைமுகம் '%s' க்கு மண்டலத்தைத் தேர்ந்தெடுக்கவும்"
+msgstr ""
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -554,32 +554,28 @@ msgid "Please enter the context."
 msgstr "சூழலை உள்ளிடவும்."
 
 #: ../src/firewall-config.glade.h:5
-#, fuzzy
 msgid "Default Zone"
-msgstr "முன்னிருப்பு மண்டலம்:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:6
-#, fuzzy
 msgid "Please select default zone from the list below."
-msgstr "கீழே உள்ள பட்டியலில் இருந்து கணினி முன்னிருப்பு மண்டலத்தைத் தேர்ந்தெடுக்கவும்."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
-msgstr "கீழே உள்ள பட்டியலில் இருந்து கணினி முன்னிருப்பு மண்டலத்தைத் தேர்ந்தெடுக்கவும்."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "செயல்படுத்தப்பட்டது"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -606,18 +602,16 @@ msgid "Direct Passthrough Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "ஒரு சேவையைத் தேர்ந்தெடுக்கவும்."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "உயர் விதி"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
@@ -728,18 +722,16 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change which zone a network connection belongs to."
-msgstr "இணைப்புகளின் மண்டலங்களை மாற்று..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
 msgstr "முன்னிருப்பு மண்டலத்தை மாற்று"
 
 #: ../src/firewall-config.glade.h:49
-#, fuzzy
 msgid "Change default zone for connections or interfaces."
-msgstr "இணைப்புகளின் மண்டலங்களை மாற்று..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -768,9 +760,8 @@ msgid "ICMP Types"
 msgstr "ICMP வகை"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "ஃபயர்வால் கட்டமைப்பு"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -781,9 +772,8 @@ msgid "_Help"
 msgstr "உதவி (_H)"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "நிகழ்நேர அமை"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -939,19 +929,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "மண்டலத்திற்கான உயர் மொழி விதிகளை இங்கு நீங்கள் அமைக்க முடியும்."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "உயர் விதி"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "உயர் விதி"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "உயர் விதி"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -966,38 +953,32 @@ msgstr ""
 "பயன்படுத்தப்படும் எனில், மண்டலமானது இணைப்பில் குறிப்பிடப்பட்ட மண்டலமாக அமைக்கப்படும்."
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "சேவையை நீக்கு"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "மண்டலத்திற்கு மூல முகவரிகள் அல்லது பகுதிகளைப் பிணைக்க உள்ளீடுகளைச் சேர்க்கவும்."
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "சேவையைச் சேர்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "சேவையைத் திருத்து"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "சேவையை நீக்கு"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1154,14 +1135,12 @@ msgid "Add Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "மண்டலத்தைத் திருத்து"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "மண்டலத்தை நீ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1183,24 +1162,20 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "மண்டலத்தைச் சேர்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "மண்டலத்தைத் திருத்து"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "மண்டலத்தை நீ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "உயர் விதிகள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1226,9 +1201,8 @@ msgid "Edit Passthrough"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "துறையை நீக்கு"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
@@ -1253,19 +1227,16 @@ msgstr ""
 "இயங்கும் பயன்பாடு ஒன்றின் சூழலைப் பெற ps -e --context ஐப் பயன்படுத்தவும்."
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "சூழல்கள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "மண்டலத்தைத் திருத்து"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "மண்டலத்தை நீ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1282,19 +1253,16 @@ msgstr ""
 "கட்டளை மட்டும் துல்லியமாகப் பொருந்த வேண்டும்."
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "கட்டளை வரிகள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "கட்டளை வரிகள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "கட்டளை வரிகள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1305,19 +1273,16 @@ msgid "User names."
 msgstr "பயனர் பெயர்கள்."
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "பயனர் பெயர்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "பயனர் பெயர்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "சேவையை நீக்கு"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1328,19 +1293,16 @@ msgid "User ids."
 msgstr "பயனர் idகள்"
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "பயனர் Idகள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "பயனர் Idகள்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "சேவையை நீக்கு"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1574,9 +1536,8 @@ msgid "Enable a service in the default zone (example: ssh)"
 msgstr "முன்னிருப்பு மண்டலத்தில் ஒரு சேவையை செயல்படுத்து (எடுத்துக்காட்டு: ssh)"
 
 #: ../src/firewall-offline-cmd:173
-#, fuzzy
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr "முன்னிருப்பு மண்டலத்தில் ஒரு சேவையை செயல்படுத்து (எடுத்துக்காட்டு: ssh)"
+msgstr ""
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
@@ -1738,9 +1699,9 @@ msgid "Adding port '%s/%s' to default zone."
 msgstr "முன்னிருப்பு மண்டலத்திற்கு '%s/%s' ஐச் சேர்க்கிறது."
 
 #: ../src/firewall-offline-cmd:462
-#, fuzzy, c-format
+#, c-format
 msgid "Removing service '%s' from default zone."
-msgstr "முன்னிருப்பு மண்டலத்திற்கு சேவை '%s' ஐச் சேர்க்கிறது."
+msgstr ""
 
 #: ../src/firewall-offline-cmd:469
 #, c-format
@@ -1782,41 +1743,3 @@ msgstr ""
 "அமைக்கவும், ஒரு ifcfg கோப்புக்கு, ஒரு திருத்தியைப் பயன்படுத்தி \"ZONE=trusted\" ஐச் "
 "சேர்க்கவும். மண்டலமானது ifcfg கோப்பில் வரையறுக்கப்படாதிருந்தால், firewalld முன்னிருப்பு "
 "மண்டலம் பயன்படுத்தப்படும்."
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "ஃபயர்வால் கட்டமைப்பு"
-
-#~ msgid "Current View:"
-#~ msgstr "தற்போதைய காட்சி:"
-
-#~ msgid "System Default Zone"
-#~ msgstr "கணினி முன்னிருப்பு மண்டலத்தைப் பயன்படுத்து"
-
-#~ msgid "Change Zones of Connections"
-#~ msgstr "இணைப்புகளின் மண்டலங்களை மா"
-
-#~ msgid ""
-#~ "Reloads firewalld: Current permanent configuration will become the new "
-#~ "runtime configuration."
-#~ msgstr ""
-#~ "firewalld ஐ மீளேற்றும்: தற்போதைய நிரந்த அமைவாக்கம் புதிய நிகழ்நேர அமைவாக்கமாக "
-#~ "மாறும்."
-
-#~ msgid ""
-#~ "If you specify destination addresses, the ICMP Type entry will be limited "
-#~ "to the destination."
-#~ msgstr ""
-#~ "நீங்கள் இலக்கு முகவரிகளைக் குறிப்பிட்டால், ICMP வகை உள்ளீடானது இலக்குக்கு மட்டும் என "
-#~ "வரம்புடையதாக இருக்கும்."
-
-#~ msgid "warn"
-#~ msgstr "எச்சரி"
-
-#~ msgid "err"
-#~ msgstr "பிழை"
-
-#~ msgid "crit"
-#~ msgstr "crit"
-
-#~ msgid "emerg"
-#~ msgstr "emerg"

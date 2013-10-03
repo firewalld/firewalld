@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-30 13:40+0000\n"
-"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Japanese <trans-ja@lists.fedoraproject.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -66,9 +66,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "fork #1 失敗: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "ゾーン '%s' をインターフェース '%s' に対して有効化しました"
+msgstr ""
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -571,9 +571,8 @@ msgid "ipv:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "有効"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -600,18 +599,16 @@ msgid "Direct Passthrough Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "サービスを選択してください。"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "高度なルール"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
@@ -760,9 +757,8 @@ msgid "ICMP Types"
 msgstr "ICMP タイプ"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "ファイアウォールの設定"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -773,9 +769,8 @@ msgid "_Help"
 msgstr "ヘルプ(_H)"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "実行時の設定"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -932,19 +927,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "ここからゾーンの高度な言語ルールを設定できます。"
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "高度なルール"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "高度なルール"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "高度なルール"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -959,19 +951,16 @@ msgstr ""
 "が接続により使用される場合、ゾーンが接続で指定されたゾーンが設定されます。"
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "サービスの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
@@ -979,19 +968,16 @@ msgstr ""
 "送信元アドレスまたはアドレス範囲をゾーンに割り当てるための項目を追加します。"
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "サービスの追加"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "サービスの編集"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "サービスの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1146,14 +1132,12 @@ msgid "Add Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "ゾーンの編集"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "ゾーンの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1175,24 +1159,20 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "ゾーンの追加"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "ゾーンの編集"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "ゾーンの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "高度なルール"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1218,9 +1198,8 @@ msgid "Edit Passthrough"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "ゾーンの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
@@ -1247,19 +1226,16 @@ msgstr ""
 "ドを使用します。"
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "コンテキスト"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "ゾーンの編集"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "ゾーンの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1276,19 +1252,16 @@ msgstr ""
 "コマンドが完全に一致する必要があります。"
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "コマンドライン"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "コマンドライン"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "コマンドライン"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1299,19 +1272,16 @@ msgid "User names."
 msgstr "ユーザー名。"
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "ユーザー名"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "ユーザー名"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "サービスの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1322,19 +1292,16 @@ msgid "User ids."
 msgstr "ユーザー ID。"
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "ユーザー ID"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "ユーザー ID"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "サービスの削除"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1754,9 +1721,3 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "永続的な設定"
-
-#~ msgid "Current View:"
-#~ msgstr "現在のビュー:"

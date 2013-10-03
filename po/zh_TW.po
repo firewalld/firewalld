@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-26 15:50+0000\n"
-"Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Chinese (Taiwan) <trans-zh_TW@lists.fedoraproject.org>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
@@ -71,9 +71,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "分支出 #1 失敗：%d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "選取介面「%s」的域區"
+msgstr ""
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -550,32 +550,28 @@ msgid "Please enter the context."
 msgstr "請輸入情境。"
 
 #: ../src/firewall-config.glade.h:5
-#, fuzzy
 msgid "Default Zone"
-msgstr "預設域："
+msgstr ""
 
 #: ../src/firewall-config.glade.h:6
-#, fuzzy
 msgid "Please select default zone from the list below."
-msgstr "請從下列清單中選取系統預設域區。"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
-msgstr "請從下列清單中選取系統預設域區。"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "已啟用"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -602,18 +598,16 @@ msgid "Direct Passthrough Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "請選取服務。"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "豐富規則"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
@@ -723,18 +717,16 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change which zone a network connection belongs to."
-msgstr "變更連線的域區..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
 msgstr "變更預設域區"
 
 #: ../src/firewall-config.glade.h:49
-#, fuzzy
 msgid "Change default zone for connections or interfaces."
-msgstr "變更連線的域區..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -763,9 +755,8 @@ msgid "ICMP Types"
 msgstr "ICMP 類型"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "防火牆組態"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -776,9 +767,8 @@ msgid "_Help"
 msgstr "求助(_H)"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "執行時期組態"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -924,19 +914,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "您可以在這裡設定域區的豐富語言規則。"
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "豐富規則"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "豐富規則"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "豐富規則"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -951,38 +938,32 @@ msgstr ""
 "所指定的域區。"
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "介面"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "介面"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "移除服務"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "請添加條目來將來源位址或區域與此域區綁定。"
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "加入服務"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "編輯服務"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "移除服務"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1131,14 +1112,12 @@ msgid "Add Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "編輯域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "移除域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1160,24 +1139,20 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "加入域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "編輯域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "移除域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "豐富規則"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1203,9 +1178,8 @@ msgid "Edit Passthrough"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "移除連接埠"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
@@ -1229,19 +1203,16 @@ msgstr ""
 "的情境，請使用指令 ps -e --context。"
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "情境"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "編輯域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "移除域區"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1257,19 +1228,16 @@ msgstr ""
 "匹配。如果「*」並非結尾，則必須精確符合該指令與相關引數。"
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "指令列"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "指令列"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "指令列"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1280,19 +1248,16 @@ msgid "User names."
 msgstr "使用者名稱。"
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "使用者名稱"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "使用者名稱"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "移除服務"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1303,19 +1268,16 @@ msgid "User ids."
 msgstr "使用者 ID。"
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "使用者 ID"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "使用者 ID"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "移除服務"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1548,9 +1510,8 @@ msgid "Enable a service in the default zone (example: ssh)"
 msgstr "啟用預設域區中的服務 (例如：ssh)"
 
 #: ../src/firewall-offline-cmd:173
-#, fuzzy
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr "啟用預設域區中的服務 (例如：ssh)"
+msgstr ""
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
@@ -1703,9 +1664,9 @@ msgid "Adding port '%s/%s' to default zone."
 msgstr "正將連接埠「%s/%s」加入預設域區中。"
 
 #: ../src/firewall-offline-cmd:462
-#, fuzzy, c-format
+#, c-format
 msgid "Removing service '%s' from default zone."
-msgstr "正將「%s」加入預設域區中。"
+msgstr ""
 
 #: ../src/firewall-offline-cmd:469
 #, c-format
@@ -1745,37 +1706,3 @@ msgstr ""
 "區，請使用 <command>nm-connection-editor</command> 並將域區設為信任；至於 "
 "ifcfg 檔，請使用編輯器並加入「ZONE=trusted」。如果 ifcfg 檔中沒有定義域區，則"
 "會使用 firewalld 的預設域區。"
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "永久組態"
-
-#~ msgid "Current View:"
-#~ msgstr "目前檢視："
-
-#~ msgid "System Default Zone"
-#~ msgstr "系統預設域區"
-
-#~ msgid "Change Zones of Connections"
-#~ msgstr "變更連線的域區"
-
-#~ msgid ""
-#~ "Reloads firewalld: Current permanent configuration will become the new "
-#~ "runtime configuration."
-#~ msgstr "重新載入 firewalld：目前的永久組態將成為新的執行時期組態。"
-
-#~ msgid ""
-#~ "If you specify destination addresses, the ICMP Type entry will be limited "
-#~ "to the destination."
-#~ msgstr "若您指定目的地位址，ICMP 類型條目將限制於目的地。"
-
-#~ msgid "warn"
-#~ msgstr "警"
-
-#~ msgid "err"
-#~ msgstr "錯"
-
-#~ msgid "crit"
-#~ msgstr "嚴"
-
-#~ msgid "emerg"
-#~ msgstr "急"

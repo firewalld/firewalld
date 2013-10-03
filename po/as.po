@@ -7,12 +7,13 @@
 # Amitakhya Phukan <aphukan@fedoraproject.org>, 2007-2010
 # Amitakhya Phukan <aphukan@redhat.com>, 2007-2008,2010
 # ngoswami <ngoswami@redhat.com>, 2013
+# ngoswami <ngoswami@redhat.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-30 11:51+0000\n"
+"PO-Revision-Date: 2013-10-03 08:54+0000\n"
 "Last-Translator: ngoswami <ngoswami@redhat.com>\n"
 "Language-Team: Assamese (http://www.transifex.com/projects/p/fedora/language/"
 "as/)\n"
@@ -68,9 +69,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 ব্যৰ্থ: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "আন্তঃপৃষ্ঠ '%s' ৰ বাবে অঞ্চল বাছক"
+msgstr "সংযোগ '%s' ৰ বাবে অঞ্চল বাছক"
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -280,11 +281,11 @@ msgstr "NetworkManager সংযোগ সম্পাদক নাই।"
 
 #: ../src/firewall-config:356 ../src/firewall-config:1643
 msgid "Runtime"
-msgstr ""
+msgstr "চলনসময়"
 
 #: ../src/firewall-config:357
 msgid "Permanent"
-msgstr ""
+msgstr "স্থায়ী"
 
 #: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
@@ -351,7 +352,7 @@ msgstr "ভুল"
 
 #: ../src/firewall-config:1142
 msgid "Changes applied."
-msgstr ""
+msgstr "পৰিবৰ্তনসমূহ প্ৰয়োগ কৰা হৈছে।"
 
 #: ../src/firewall-config:1425 ../src/firewall-config:2603
 msgid "accept"
@@ -560,67 +561,63 @@ msgstr "অনুগ্ৰহ কৰি তলৰ তালিকাৰ পৰ�
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "প্ৰত্যক্ষ শৃংখল"
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
-msgstr "অনুগ্ৰহ কৰি তলৰ তালিকাৰ পৰা অবিকল্পিত অঞ্চল বাছক।"
+msgstr "অনুগ্ৰহ কৰি ipv আৰু টেবুল বাছক আৰু শৃংখল নাম সুমুৱাওক।"
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "সামৰ্থবান"
+msgstr "টেবুল:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "ৰ'"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "সুৰক্ষা"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "শৃংখল:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "প্ৰত্যক্ষ পাছথ্ৰু নিয়ম"
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "অনুগ্ৰহ কৰি এটা সেৱা বাছক।"
+msgstr "অনুগ্ৰহ কৰি ipv বাছক আৰু args সুমুৱাওক।"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "Args:"
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "সমৃদ্ধ নিয়ম"
+msgstr "প্ৰত্যক্ষ নিয়ম"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "অনুগ্ৰহ কৰি ipv আৰু টেবুল, শৃংখল প্ৰাথমিকতা বাছক আৰু args সুমুৱাওক।"
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
-msgstr ""
+msgstr "প্ৰাথমিকতা:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -759,16 +756,15 @@ msgstr "লকডাউন"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr ""
+msgstr "দৰ্শন (_V)"
 
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
 msgstr "ICMP ধৰণসমূহ"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "ফায়াৰ্ৱাল বিন্যাস"
+msgstr "প্ৰত্যক্ষ সংৰূপ"
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -779,9 +775,8 @@ msgid "_Help"
 msgstr "সহায়তা (_H)"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "চলনসময় সংৰূপ"
+msgstr "সংৰূপ:"
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -936,19 +931,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "ইয়াত আপুনি অঞ্চলৰ বাবে সমৃদ্ধ ভাষা নিয়মসমূহ সংহতি কৰিব পাৰিব।"
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "সমৃদ্ধ নিয়ম"
+msgstr "সমৃদ্ধ নিয়ম যোগ কৰক"
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "সমৃদ্ধ নিয়ম"
+msgstr "সমৃদ্ধ নিয়ম সম্পাদন কৰক"
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "সমৃদ্ধ নিয়ম"
+msgstr "সমৃদ্ধ নিয়ম আতৰাওক"
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -963,38 +955,32 @@ msgstr ""
 "সংযোগে ব্যৱহাৰ কৰিব, অঞ্চলক সংযোগত ধাৰ্য্য কৰা অঞ্চললৈ সংহতি কৰা হব।"
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<interface>"
+msgstr "আন্তঃপৃষ্ঠ যোগ কৰক"
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<interface>"
+msgstr "আন্তঃপৃষ্ঠ সম্পাদন কৰক"
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "সেৱা আতৰাওক"
+msgstr "আন্তঃপৃষ্ঠ আতৰাওক"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "অঞ্চললৈ উৎস ঠিকনাসমূহ অথবা স্থানসমূহ সংযুক্ত কৰিবলৈ প্ৰৱিষ্টিসমূহ যোগ কৰক।"
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "সেৱা যোগ কৰক"
+msgstr "উৎস যোগ কৰক"
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "সেৱা সম্পাদনা কৰক"
+msgstr "উৎস সম্পাদন কৰক"
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "সেৱা আতৰাওক"
+msgstr "উৎস আতৰাওক"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1149,14 +1135,12 @@ msgid "Add Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "অঞ্চল সম্পাদনা কৰক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "অঞ্চল আতৰাওক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1178,24 +1162,20 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "অঞ্চল যোগ কৰক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "অঞ্চল সম্পাদনা কৰক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "অঞ্চল আতৰাওক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "সমৃদ্ধ নিয়মসমূহ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1221,9 +1201,8 @@ msgid "Edit Passthrough"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "পৰ্ট আতৰাওক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
@@ -1248,19 +1227,16 @@ msgstr ""
 "এটা চলি থকা এপ্লিকেচনৰ পৰিপ্ৰেক্ষতিত প্ৰাপ্ত কৰিবলৈ ps -e --context ব্যৱহাৰ কৰক।"
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "পৰিপ্ৰেক্ষতিতসমূহ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "অঞ্চল সম্পাদনা কৰক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "অঞ্চল আতৰাওক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1277,19 +1253,16 @@ msgstr ""
 "অন্তৰ্ভুক্ত তৰ্কসমূহ মিল খাব লাগিব।"
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "কমান্ড শাৰীসমূহ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "কমান্ড শাৰীসমূহ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "কমান্ড শাৰীসমূহ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1300,19 +1273,16 @@ msgid "User names."
 msgstr "ব্যৱহাৰকাৰী নামসমূহ।"
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "ব্যৱহাৰকাৰী নাম"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "ব্যৱহাৰকাৰী নাম"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "সেৱা আতৰাওক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1323,19 +1293,16 @@ msgid "User ids."
 msgstr "ব্যৱহাৰকাৰী আইডিবোৰ।"
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "ব্যৱহাৰকাৰী আইডিবোৰ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "ব্যৱহাৰকাৰী আইডিবোৰ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "সেৱা আতৰাওক"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1772,9 +1739,3 @@ msgstr ""
 "connection-editor</command> ব্যৱহাৰ কৰক আৰু অঞ্চলক ভৰষাবানলৈ সংহতি কৰক, এটা "
 "ifcfg ফাইলৰ বাবে, এটা সম্পাদক ব্যৱহাৰ কৰক আৰু \"ZONE=trusted\" যোগ কৰক। যদি "
 "অঞ্চল ifcfg ফাইলত বিৱৰিত নহয়, firewalld অবিকল্পিত অঞ্চল ব্যৱহাৰ কৰা হব।"
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "ফায়াৰ্ৱাল বিন্যাস"
-
-#~ msgid "Current View:"
-#~ msgstr "বৰ্তমান দৰ্শন:"

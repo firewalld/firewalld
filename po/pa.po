@@ -21,8 +21,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-30 14:44+0000\n"
-"Last-Translator: asaini <asaini@redhat.com>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Panjabi (Punjabi) <punjabi-users@lists.sf.net>\n"
 "Language: pa\n"
 "MIME-Version: 1.0\n"
@@ -76,9 +76,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 failed: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "ਇੰਟਰਫੇਸ '%s' ਲਈ ਜ਼ੋਨ ਚੁਣੋ"
+msgstr "ਸੰਪਰਕ '%s' ਲਈ ਜ਼ੋਨ ਚੁਣੋ"
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -287,11 +287,11 @@ msgstr "ਨੈੱਟਵਰਕ-ਮੈਨੇਜਰ ਸੰਪਰਕ ਸੰਪਾਦ
 
 #: ../src/firewall-config:356 ../src/firewall-config:1643
 msgid "Runtime"
-msgstr ""
+msgstr "ਚੱਲਣ ਸਮਾਂ"
 
 #: ../src/firewall-config:357
 msgid "Permanent"
-msgstr ""
+msgstr "ਪੱਕਾ"
 
 #: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
@@ -358,7 +358,7 @@ msgstr "ਗਲਤੀ"
 
 #: ../src/firewall-config:1142
 msgid "Changes applied."
-msgstr ""
+msgstr "ਬਦਲਾਅ ਲਾਗੂ ਕੀਤੇ।"
 
 #: ../src/firewall-config:1425 ../src/firewall-config:2603
 msgid "accept"
@@ -566,67 +566,63 @@ msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ਹੇਠਾਂ ਦਿੱਤੀ ਸੂਚ�
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "ਸਿੱਧੀ ਲੜੀ"
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
-msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ਹੇਠਾਂ ਦਿੱਤੀ ਸੂਚੀ ਵਿੱਚੋਂ ਮੂਲ ਜ਼ੋਨ ਚੁਣੌ।"
+msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ipv ਅਤੇ ਸਾਰਣੀ ਚੁਣੋ ਅਤੇ ਲੜੀ ਨਾਂ ਭਰੋ।"
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "ਯੋਗ ਕੀਤਾ"
+msgstr "ਸਾਰਣੀ:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "ਕੱਚਾ"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "ਸੁਰੱਖਿਆ"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "ਲੜੀ:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "ਸਿੱਧਾ ਪਾਸਥਰੂਅ ਨਿਯਮ"
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ਇੱਕ ਸੇਵਾ ਚੁਣੋ।"
+msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ipv ਚੁਣੋ ਅਤੇ ਆਰਗੂਮੈਂਟ ਭਰੋ।"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "ਆਰਗੂਮੈਂਟ:"
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ"
+msgstr "ਸਿੱਧਾ ਨਿਯਮ"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ipv ਅਤੇ ਸਾਰਣੀ, ਲੜੀ ਤਰਜੀਹ ਚੁਣੋ ਅਤੇ ਆਰਗੂਮੈਂਟ ਭਰੋ।"
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
-msgstr ""
+msgstr "ਤਰਜੀਹ:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -764,16 +760,15 @@ msgstr "ਤਾਲਾਬੰਦ"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr ""
+msgstr "ਝਾਤ (_V)"
 
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
 msgstr "ICMP ਕਿਸਮਾਂ"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "ਫਾਇਰਵਾਲ ਸੰਰਚਨਾ"
+msgstr "ਸਿੱਧੀ ਸੰਰਚਨਾ"
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -784,9 +779,8 @@ msgid "_Help"
 msgstr "ਮਦਦ(_H)"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "ਰਨਟਾਈਮ ਸੰਰਚਨਾ"
+msgstr "ਸੰਰਚਨਾ:"
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -936,19 +930,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "ਇੱਥੇ ਤੁਸੀਂ ਜ਼ੋਨ ਲਈ ਉੱਚ-ਪੱਧਰੀ ਭਾਸ਼ਾ ਨਿਯਮ ਸੈੱਟ ਕਰ ਸਕਦੇ ਹੋ।"
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ"
+msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ"
+msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ"
+msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -963,38 +954,32 @@ msgstr ""
 "ਵਜੋਂ ਸੈੱਟ ਹੋਵੇਗਾ ਜੋ ਸੰਪਰਕ ਵਿੱਚ ਦਰਸਾਇਆ ਗਿਆ ਹੈ।"
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<interface>"
+msgstr "ਇੰਟਰਫੇਸ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<interface>"
+msgstr "ਇੰਟਰਫੇਸ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "ਸੇਵਾ ਹਟਾਓ"
+msgstr "ਇੰਟਰਫੇਸ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "ਜ਼ੋਨ ਨਾਲ ਸਰੋਤ ਪਤੇ ਜਾਂ ਖੇਤਰ ਬੰਨ੍ਹਣ ਲਈ ਐਂਟਰੀਆਂ ਜੋੜੋ।"
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "ਸੇਵਾ ਸ਼ਾਮਿਲ"
+msgstr "ਸਰੋਤ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "ਸੇਵਾ ਸੋਧ"
+msgstr "ਸਰੋਤ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "ਸੇਵਾ ਹਟਾਓ"
+msgstr "ਸਰੋਤ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1129,6 +1114,9 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"ਸਿੱਧੀ ਸੰਰਚਨਾ ਫਾਇਰਵਾਲ ਤੱਕ ਹੋਰ ਜਿਆਦਾ ਸਿੱਧਾ ਦਖਲ ਦਿੰਦੀ ਹੈ। ਇਹ ਚੋਣਾਂ ਲਈ ਲੋੜੀਂਦਾ ਹੈ ਕਿ ਯੂਜ਼ਰ ਨੂੰ "
+"iptables ਦੇ ਮੁੱਢਲੇ ਸਿਧਾਂਤ ਪਤਾ ਹੋਣ, i.e. ਸਾਰਣੀਆਂ, ਲੜੀਆਂ, ਕਮਾਂਡਾਂ, ਪੈਰਾਮੀਟਰ ਅਤੇ ਟਿਕਾਣੇ। "
+"ਸਿੱਧੀ ਸੰਰਚਨਾ ਆਖਿਰੀ ਹੱਲ ਵਜੋਂ ਵਰਤਣੀ ਚਾਹੀਦੀ ਹੈ ਜਦੋਂ ਹੋਰ ਫਾਇਰਵਾਲਡ ਫੀਚਰਾਂ ਨੂੰ ਵਰਤਣਾ ਸੰਭਵ ਨਾ ਹੋਵੇ।"
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1136,33 +1124,33 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"ਹਰੇਕ ਚੋਣ ਦੇ ipv ਆਰਗੂਮੈਂਟ ਦਾ ipv4 ਜਾਂ ipv6 ਜਾਂ eb ਹੋਣਾ ਹੈ। ipv4 ਨਾਲ ਇਹ iptables ਲਈ "
+"ਹੋਵੇਗਾ, ipv6 ਨਾਲ ਇਹ ip6tables ਲਈ ਅਤੇ eb ਨਾਲ ਇਹ ਈਥਰਨੈੱਟ ਬਰਿੱਜਾਂ (ebtables) ਲਈ।"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "ਨਿਯਮਾਂ ਨਾਲ ਵਰਤਣ ਲਈ ਵਾਧੂ ਲੜੀਆਂ।"
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
-msgstr ""
+msgstr "ਲੜੀ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "ਜ਼ੋਨ ਸੋਧ"
+msgstr "ਲੜੀ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "ਜ਼ੋਨ ਹਟਾਓ"
+msgstr "ਲੜੀ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
-msgstr ""
+msgstr "ਲੜੀਆਂ"
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
-msgstr ""
+msgstr "ਤਰਜੀਹ ਵਾਲੀ ਇੱਕ ਸਾਰਣੀ ਵਿੱਚ ਲੜੀ ਨਾਲ ਆਰਗੂਮੈਂਟਾਂ args ਨਾਲ ਇੱਕ ਨਿਯਮ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1173,26 +1161,26 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"ਤਰਜੀਹ ਨਿਯਮਾਂ ਨੂੰ ਤਰਤੀਬ ਦੇਣ ਲਈ ਵਰਤੀ ਜਾਂਦੀ ਹੈ। ਤਰਜੀਹ 0 ਦਾ ਮਤਲਬ ਨਿਯਮ ਨੂੰ ਲੜੀ ਵਿੱਚ ਸਿਖਰ ਤੇ "
+"ਜੋੜੋ, ਵੱਡੀ ਤਰਜੀਹ ਨਾਲ ਨਿਯਮ ਹੋਰ ਥੱਲੇ ਜੋੜੇ ਜਾਣਗੇ। ਇੱਕੋ ਤਰਜੀਹ ਵਾਲੇ ਨਿਯਮ ਇੱਕੋ ਪੱਧਰ ਤੇ ਹਨ ਅਤੇ ਇਹਨਾਂ "
+"ਨਿਯਮਾਂ ਦੀ ਤਰਤੀਬ ਪੱਕੀ ਨਹੀਂ ਹੈ ਤੇ ਬਦਲ ਸਕਦੀ ਹੈ। ਜੇ ਤੁਸੀਂ ਇਹ ਪੱਕਾ ਕਰਨਾ ਚਾਹੁੰਦੇ ਹੋ ਕਿ ਨਿਯਮ ਇੱਕ "
+"ਦੂਜੇ ਤੋਂ ਬਾਅਦ ਜੋੜੇ ਜਾਣਗੇ, ਪਹਿਲੇ ਲਈ ਘੱਟ ਅਤੇ ਬਾਅਦ ਵਾਲੇ ਲਈ ਵੱਡੀ ਤਰਜੀਹ ਵਰਤੋ।"
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "ਜ਼ੋਨ ਸ਼ਾਮਿਲ"
+msgstr "ਨਿਯਮ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "ਜ਼ੋਨ ਸੋਧ"
+msgstr "ਨਿਯਮ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "ਜ਼ੋਨ ਹਟਾਓ"
+msgstr "ਨਿਯਮ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "ਉੱਚ-ਪੱਧਰੀ ਨਿਯਮ"
+msgstr "ਨਿਯਮ"
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1200,6 +1188,8 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"ਪਾਸਥਰੂਅ ਨਿਯਮ ਸਿੱਧੇ ਫਾਇਰਵਾਲ ਤੱਕ ਲੰਘਾ ਦਿੱਤੇ ਜਾਂਦੇ ਹਨ ਅਤੇ ਖਾਸ ਲੜੀਆਂ ਵਿੱਚ ਨਹੀਂ ਰੱਖੇ ਜਾਂਦੇ। ਸਾਰੀਆਂ "
+"iptables, ip6tables ਅਤੇ ebtables ਚੋਣਾਂ ਵਰਤੀਆਂ ਜਾ ਸਕਦੀਆਂ।"
 
 #: ../src/firewall-config.glade.h:141
 msgid "Passthrough rules can only be modified for the permanent configuration."
@@ -1207,24 +1197,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr ""
+msgstr "ਕਿਰਪਾ ਕਰ ਕੇ ਪਾਸਥਰੂਅ ਨਿਯਨਾਂ ਨਾਲ ਸੁਚੇਤ ਰਹੋ ਕਿਤੇ ਫਾਇਰਵਾਲ ਨੂੰ ਨੁਕਸਾਨ ਨਾ ਪਹੁੰਚੇ।"
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr ""
+msgstr "ਪਾਸਥਰੂਅ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "ਪਾਸਥਰੂਅ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "ਜ਼ੋਨ ਹਟਾਓ"
+msgstr "ਪਾਸਥਰੂਅ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr ""
+msgstr "ਪਾਸਥਰੂਅ"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
@@ -1245,19 +1234,16 @@ msgstr ""
 "ਦਾ ਕੰਟੈਕਸਟ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ ps -e --context ਵਰਤੋ।"
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "ਕੰਟੈਕਸਟ"
+msgstr "ਕੰਟੈਕਸਟ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "ਜ਼ੋਨ ਸੋਧ"
+msgstr "ਕੰਟੈਕਸਟ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "ਜ਼ੋਨ ਹਟਾਓ"
+msgstr "ਕੰਟੈਕਸਟ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1274,19 +1260,16 @@ msgstr ""
 "ਜਰੂਰੀ ਹੈ।"
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "ਕਮਾਂਡ ਲਾਈਨਾਂ"
+msgstr "ਕਮਾਂਡ ਲਾਈਨ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "ਕਮਾਂਡ ਲਾਈਨਾਂ"
+msgstr "ਕਮਾਂਡ ਲਾਈਨ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "ਕਮਾਂਡ ਲਾਈਨਾਂ"
+msgstr "ਕਮਾਂਡ ਲਾਈਨ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1297,19 +1280,16 @@ msgid "User names."
 msgstr "ਯੂਜ਼ਰ ਨਾਂ।"
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "ਯੂਜ਼ਰ ਨਾਂ"
+msgstr "ਯੂਜ਼ਰ ਨਾਂ ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "ਯੂਜ਼ਰ ਨਾਂ"
+msgstr "ਯੂਜ਼ਰ ਨਾਂ ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "ਸੇਵਾ ਹਟਾਓ"
+msgstr "ਯੂਜ਼ਰ ਨਾਂ ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1320,19 +1300,16 @@ msgid "User ids."
 msgstr "ਯੂਜ਼ਰ id-ਆਂ।"
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "ਯੂਜ਼ਰ id-ਆਂ"
+msgstr "ਯੂਜ਼ਰ Id ਜੋੜੋ"
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "ਯੂਜ਼ਰ id-ਆਂ"
+msgstr "ਯੂਜ਼ਰ Id ਸੋਧੋ"
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "ਸੇਵਾ ਹਟਾਓ"
+msgstr "ਯੂਜ਼ਰ Id ਹਟਾਓ"
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1762,9 +1739,3 @@ msgstr ""
 "editor</command> ਵਰਤੋ ਅਤੇ ਜ਼ੋਨ ਭਰੋਸੇਯੋਗ ਵਜੋਂ ਸੈੱਟ ਕਰੋ, ਇੱਕ ifcfg ਫਾਈਲ ਲਈ, ਇੱਕ ਸੰਪਾਦਕ ਵਰਤੋ ਅਤੇ "
 "\"ZONE=trusted\" ਜੋੜੋ। ਜੇ ਜ਼ੋਨ ifcfg ਫਾਈਲ ਵਿੱਚ ਪਰਿਬਾਸ਼ਤ ਨਹੀਂ ਹੈ, ਫਾਇਰਵਾਲਡ ਦਾ ਮੂਲ ਜ਼ੋਨ "
 "ਵਰਤ ਲਿਆ ਜਾਵੇਗਾ।"
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "ਰਨਟਾਈਮ ਸੰਰਚਨਾ"
-
-#~ msgid "Current View:"
-#~ msgstr "ਮੌਜੂਦਾ ਝਲਕ:"

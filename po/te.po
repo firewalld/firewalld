@@ -5,6 +5,7 @@
 # Translators:
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2007-2010
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2013
+# Krishnababu Krothapalli <kkrothap@redhat.com>, 2013
 # Sree Ganesh <sthottem@redhat.com>, 2006
 # sudheesh001 <sudheesh1995@outlook.com>, 2013
 # sudheesh001 <sudheesh1995@outlook.com>, 2013
@@ -13,8 +14,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-09-20 10:40+0000\n"
-"Last-Translator: Krishnababu Krothapalli <krisnababu@gmail.com>\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
+"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/fedora/language/"
 "te/)\n"
 "Language: te\n"
@@ -69,9 +70,9 @@ msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 విఫలమైంది: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
-#, fuzzy, c-format
+#, c-format
 msgid "Select zone for connection '%s'"
-msgstr "ఇంటర్ఫేస్ '%s' కొరకు జోన్ ఎంపికచేయి"
+msgstr ""
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -550,32 +551,28 @@ msgid "Please enter the context."
 msgstr "సందర్భం ప్రవేశ పెట్టండి."
 
 #: ../src/firewall-config.glade.h:5
-#, fuzzy
 msgid "Default Zone"
-msgstr "అప్రమేయ జోన్:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:6
-#, fuzzy
 msgid "Please select default zone from the list below."
-msgstr "కింది జాబితా నుండి దయచేసి వ్యవస్థ అప్రమేయ జోన్ యెంపికచేయండి."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:8
-#, fuzzy
 msgid "Please select ipv and table and enter the chain name."
-msgstr "కింది జాబితా నుండి దయచేసి వ్యవస్థ అప్రమేయ జోన్ యెంపికచేయండి."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:10
-#, fuzzy
 msgid "Table:"
-msgstr "చేతనమైన"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -602,18 +599,16 @@ msgid "Direct Passthrough Rule"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:17
-#, fuzzy
 msgid "Please select ipv and enter the args."
-msgstr "దయచేసి సేవను ఎంపికచేయి."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:19
-#, fuzzy
 msgid "Direct Rule"
-msgstr "రిచ్ నియమం"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
@@ -724,18 +719,16 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change which zone a network connection belongs to."
-msgstr "అనుసంధానాల జోన్ మార్చు..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
 msgstr "అప్రమేయ జోన్ మార్చు"
 
 #: ../src/firewall-config.glade.h:49
-#, fuzzy
 msgid "Change default zone for connections or interfaces."
-msgstr "అనుసంధానాల జోన్ మార్చు..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -764,9 +757,8 @@ msgid "ICMP Types"
 msgstr "ICMP రకాలు"
 
 #: ../src/firewall-config.glade.h:56
-#, fuzzy
 msgid "Direct Configuration"
-msgstr "Firewall ఆకృతీకరణ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -777,9 +769,8 @@ msgid "_Help"
 msgstr "సహాయం (_H)"
 
 #: ../src/firewall-config.glade.h:59
-#, fuzzy
 msgid "Configuration:"
-msgstr "రన్‌టైమ్ ఆకృతీకరణ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -931,19 +922,16 @@ msgid "Here you can set rich language rules for the zone."
 msgstr "జోన్ కొరకు ఇక్కడ మీరు రిచ్ భాషా నియమాలను అమర్చవచ్చు."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Add Rich Rule"
-msgstr "రిచ్ నియమం"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
-#, fuzzy
 msgid "Edit Rich Rule"
-msgstr "రిచ్ నియమం"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:88
-#, fuzzy
 msgid "Remove Rich Rule"
-msgstr "రిచ్ నియమం"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -958,38 +946,32 @@ msgstr ""
 "వుపయోగించబడితే, జోన్ అనునది అనుసంధానం నందు తెలిపిన జోన్‌కు అమర్చబడును."
 
 #: ../src/firewall-config.glade.h:91
-#, fuzzy
 msgid "Add Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:92
-#, fuzzy
 msgid "Edit Interface"
-msgstr "<interface>"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:93
-#, fuzzy
 msgid "Remove Interface"
-msgstr "సేవ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "జోన్‌కు మూలపు చిరునామాలను లేదా ప్రాంతాలను బందనం చేయుటకు ప్రవేశాలను జతచేయి."
 
 #: ../src/firewall-config.glade.h:96
-#, fuzzy
 msgid "Add Source"
-msgstr "సేవ జతచేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:97
-#, fuzzy
 msgid "Edit Source"
-msgstr "సేవ సరికూర్చు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Remove Source"
-msgstr "సేవ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1142,14 +1124,12 @@ msgid "Add Chain"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:131
-#, fuzzy
 msgid "Edit Chain"
-msgstr "జోన్ సరికూర్చు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:132
-#, fuzzy
 msgid "Remove Chain"
-msgstr "జోన్ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1171,24 +1151,20 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
-#, fuzzy
 msgid "Add Rule"
-msgstr "జోన్ జతచేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:137
-#, fuzzy
 msgid "Edit Rule"
-msgstr "జోన్ సరికూర్చు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:138
-#, fuzzy
 msgid "Remove Rule"
-msgstr "జోన్ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:139
-#, fuzzy
 msgid "Rules"
-msgstr "రిచ్ నియమాలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1214,9 +1190,8 @@ msgid "Edit Passthrough"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:145
-#, fuzzy
 msgid "Remove Passthrough"
-msgstr "పోర్టు తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
@@ -1241,19 +1216,16 @@ msgstr ""
 "అనువర్తనం యొక్క సందర్భం పొందుటకు ps -e --context వుపయోగించుము."
 
 #: ../src/firewall-config.glade.h:149
-#, fuzzy
 msgid "Add Context"
-msgstr "సందర్భాలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:150
-#, fuzzy
 msgid "Edit Context"
-msgstr "జోన్ సరికూర్చు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:151
-#, fuzzy
 msgid "Remove Context"
-msgstr "జోన్ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1269,19 +1241,16 @@ msgstr ""
 "వరుసలు సరిపోలును. ఒకవేళ '*' లేకపోతే అప్పుడు ఆదేశం అనునది ఆర్గుమెంట్లతో సహా ఖచ్చితంగా సరిపోలాలి."
 
 #: ../src/firewall-config.glade.h:154
-#, fuzzy
 msgid "Add Command Line"
-msgstr "ఆదేశ వరుసలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:155
-#, fuzzy
 msgid "Edit Command Line"
-msgstr "ఆదేశ వరుసలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:156
-#, fuzzy
 msgid "Remove Command Line"
-msgstr "ఆదేశ వరుసలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1292,19 +1261,16 @@ msgid "User names."
 msgstr "వాడుకరి పేరులు."
 
 #: ../src/firewall-config.glade.h:159
-#, fuzzy
 msgid "Add User Name"
-msgstr "వాడుకరి పేరు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:160
-#, fuzzy
 msgid "Edit User Name"
-msgstr "వాడుకరి పేరు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:161
-#, fuzzy
 msgid "Remove User Name"
-msgstr "సేవ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1315,19 +1281,16 @@ msgid "User ids."
 msgstr "వాడుకరి ఐడిలు."
 
 #: ../src/firewall-config.glade.h:164
-#, fuzzy
 msgid "Add User Id"
-msgstr "వాడుకరి ఐడిలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:165
-#, fuzzy
 msgid "Edit User Id"
-msgstr "వాడుకరి ఐడిలు"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:166
-#, fuzzy
 msgid "Remove User Id"
-msgstr "సేవ తీసివేయి"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1560,9 +1523,8 @@ msgid "Enable a service in the default zone (example: ssh)"
 msgstr "అప్రమేయ జోన్ నందు సేవను చేతనం చేయి (ఉదాహరణ: ssh)"
 
 #: ../src/firewall-offline-cmd:173
-#, fuzzy
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr "అప్రమేయ జోన్ నందు సేవను చేతనం చేయి (ఉదాహరణ: ssh)"
+msgstr ""
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
@@ -1717,9 +1679,9 @@ msgid "Adding port '%s/%s' to default zone."
 msgstr "పోర్ట్ '%s/%s' ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
 
 #: ../src/firewall-offline-cmd:462
-#, fuzzy, c-format
+#, c-format
 msgid "Removing service '%s' from default zone."
-msgstr "సేవ '%s' ను అప్రమేయ జోన్‌కు జతచేస్తోంది."
+msgstr ""
 
 #: ../src/firewall-offline-cmd:469
 #, c-format
@@ -1759,38 +1721,3 @@ msgstr ""
 "అనుసంధానం మార్చుటకు <command>nm-connection-editor</command> వుపయోగించు మరియు జోన్‌ను "
 "నమ్మదగినదిగా అమర్చుము, ifcfg ఫైలు కొరకు, ఒక సరికూర్పరి వుపయోగించు మరియు \"ZONE=trusted\" "
 "జతచేయి. ఒకవేళ జోన్ అనునది ifcfg ఫైలునందు నిర్వచించకపోతే, firewalld అప్రమేయ జోన్ వుపయోగించబడును."
-
-#~ msgid "Permanent Configuration"
-#~ msgstr "Firewall ఆకృతీకరణ"
-
-#~ msgid "Current View:"
-#~ msgstr "ప్రస్తుత దర్శనం:"
-
-#~ msgid "System Default Zone"
-#~ msgstr "వ్యవస్థ అప్రమేయ జోన్"
-
-#~ msgid "Change Zones of Connections"
-#~ msgstr "అనుసంధానాల జోన్స్ మార్చు"
-
-#~ msgid ""
-#~ "Reloads firewalld: Current permanent configuration will become the new "
-#~ "runtime configuration."
-#~ msgstr ""
-#~ "firewalld తిరిగిలోడుచేయును: ప్రస్తుత శాశ్వత ఆకృతీకరణ అనునది కొత్త రన్‌టైమ్ ఆకృతీకరణ అగును."
-
-#~ msgid ""
-#~ "If you specify destination addresses, the ICMP Type entry will be limited "
-#~ "to the destination."
-#~ msgstr "ఒకవేళ మీరు గమ్యపు చిరునామాలు తెలిపితే, ICMP రకం ప్రవేశం గమ్యానికి పరిమితం అగును."
-
-#~ msgid "warn"
-#~ msgstr "హెచ్చరిక"
-
-#~ msgid "err"
-#~ msgstr "దోషం"
-
-#~ msgid "crit"
-#~ msgstr "సంక్లిష్ట"
-
-#~ msgid "emerg"
-#~ msgstr "అత్యవసర"
