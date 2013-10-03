@@ -480,7 +480,8 @@ if conf.block_icmp:
 if conf.forward_port:
     for fwd in conf.forward_port:
         # ignore interface, should belong to default zone
-        entry = (fwd["port"], fwd["proto"], fwd["toport"], fwd["toaddr"])
+        entry = (fwd.get("port", ""), fwd.get("proto", ""),
+                 fwd.get("toport", ""), fwd.get("toaddr", ""))
         if entry not in obj.forward_ports:
             print(_("Adding forward port %s:%s:%s:%s to default zone.") % \
                       (entry[0], entry[1], entry[2], entry[3]))
