@@ -402,12 +402,16 @@ assert_bad           "--permanent --complete-reload" # impossible combination
 assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_home_allow"
 assert_bad           "--direct --passthrough ipv5 -nvL" # ipv5
 assert_bad           "--direct --passthrough ipv4" # missing argument
+assert_bad           "--direct --get-all-passthroughs" # --permanent only
+
 assert_good          "--direct --add-chain ipv4 filter mychain"
 assert_good_contains "--direct --get-chains ipv4 filter" "mychain"
+assert_good_contains "--direct --get-all-chains" "ipv4 filter mychain"
 assert_good          "--direct --query-chain ipv4 filter mychain"
 
 assert_good          "--direct --add-rule ipv4 filter mychain 3 -j ACCEPT"
-assert_good_contains "--direct --get-rules ipv4 filter mychain" "ACCEPT"
+assert_good_contains "--direct --get-rules ipv4 filter mychain" "3 -j ACCEPT"
+assert_good_contains "--direct --get-all-rules" "ipv4 filter mychain 3 -j ACCEPT"
 assert_good          "--direct --query-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_good          "--direct --remove-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_bad           "--direct --query-rule ipv4 filter mychain 3 -j ACCEPT"
@@ -423,6 +427,31 @@ assert_bad           "--direct --get-default-zone" # impossible combination
 assert_bad           "--direct --zone=home --list-services" # impossible combination
 assert_bad           "--direct --permanent --list-all" # impossible combination
 assert_bad           "--direct --passthrough --get-chains ipv4 filter" # impossible combination
+
+# ... --permanent --direct ...
+assert_bad           "--permanent --direct --add-passthrough ipv4" # missing argument
+assert_good          "--permanent --direct --add-passthrough ipv4 -nvL"
+assert_good_contains "--permanent --direct --get-passthroughs ipv4" "-nvL"
+assert_good_contains "--permanent --direct --get-all-passthroughs" "ipv4 -nvL"
+assert_good          "--permanent --direct --query-passthrough ipv4 -nvL"
+assert_good          "--permanent --direct --remove-passthrough ipv4 -nvL"
+assert_bad           "--permanent --direct --query-passthrough ipv4 -nvL"
+
+assert_good          "--permanent --direct --add-chain ipv4 filter mychain_p"
+assert_good_contains "--permanent --direct --get-chains ipv4 filter" "mychain_p"
+assert_good_contains "--permanent --direct --get-all-chains" "ipv4 filter mychain_p"
+assert_good          "--permanent --direct --query-chain ipv4 filter mychain_p"
+
+assert_good          "--permanent --direct --add-rule ipv4 filter mychain_p 3 -j ACCEPT"
+assert_good_contains "--permanent --direct --get-rules ipv4 filter mychain_p" "ACCEPT"
+assert_good_contains "--permanent --direct --get-all-rules" "ipv4 filter mychain_p 3 -j ACCEPT"
+assert_good          "--permanent --direct --query-rule ipv4 filter mychain_p 3 -j ACCEPT"
+assert_good          "--permanent --direct --remove-rule ipv4 filter mychain_p 3 -j ACCEPT"
+assert_bad           "--permanent --direct --query-rule ipv4 filter mychain_p 3 -j ACCEPT"
+
+assert_good          "--permanent --direct --remove-chain ipv4 filter mychain_p"
+assert_bad           "--permanent --direct --query-chain ipv4 filter mychain_p"
+assert_good          "--permanent --direct --remove-chain ipv4 filter dummy" # removing nonexisting chain is just warning
 
 # lockdown
 
