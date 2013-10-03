@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.6
+Version: 0.3.6.1
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -183,6 +183,9 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Oct 03 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.6.1-1
+- remove superfluous po files from archive
+
 * Wed Oct 02 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.6-1
 - firewalld.richlanguage.xml: correct log levels (RHBZ#993740)
 - firewall-config: Make sure that all zone settings are updated properly on firewalld restart
