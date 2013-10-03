@@ -531,7 +531,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 # Check various impossible combinations of options
 
 if not (options_standalone or options_zone or \
-        options_permanent or options_direct or options_permanent_direct):
+        options_permanent or options_direct or options_direct_permanent):
     __fail(parser.format_usage() + "No option specified.")
 
 if options_standalone and (options_zone or options_permanent or \
