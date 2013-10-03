@@ -506,16 +506,12 @@ options_zone = a.zone or a.timeout or options_zone_ops
 options_permanent = a.permanent or options_config or a.zone or options_zone_ops
 
 options_direct = a.passthrough or \
-           a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
-           a.get_all_chains or \
-           a.add_rule or a.remove_rule or a.query_rule or a.get_rules or \
-           a.get_all_rules
+           a.add_chain or a.remove_chain or a.query_chain or \
+           a.get_chains or a.get_all_chains or \
+           a.add_rule or a.remove_rule or a.query_rule or \
+           a.get_rules or a.get_all_rules
 
 options_direct_permanent = \
-           a.add_chain or a.remove_chain or a.query_chain or a.get_chains or \
-           a.get_all_chains or \
-           a.add_rule or a.remove_rule or a.query_rule or a.get_rules or \
-           a.get_all_rules or \
            a.add_passthrough or a.remove_passthrough or a.query_passthrough or \
            a.get_passthroughs or a.get_all_passthroughs
 
@@ -547,6 +543,10 @@ if (a.direct and not (options_direct or options_direct_permanent)) or \
         ((options_direct or options_direct_permanent) and not a.direct):
     __fail(parser.format_usage() +
            "Wrong usage of 'direct' options.")
+
+if options_direct_permanent and not a.permanent:
+    __fail(parser.format_usage() +
+           "Option can be used only with --permanent.")
 
 if options_config and options_zone:
     __fail(parser.format_usage() +
@@ -665,16 +665,14 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
             # apply whitelist changes
             fw.config().policies().setLockdownWhitelist(whitelist)
 
-        # lockdown whitelist
-
-        elif options_direct_permanent:
+        elif options_direct or options_direct_permanent:
             settings = fw.config().direct().getSettings()
 
             if a.passthrough:
                 if len (a.passthrough) < 2:
                     __fail("usage: --permanent --direct --passthrough { ipv4 | ipv6 | eb } <args>")
                 __print(settings.addPassthrough(_check_ipv(a.passthrough[0]),
-                                                a.passthrough[1:]))
+                                                           a.passthrough[1:]))
 
             if a.add_passthrough:
                 if len (a.add_passthrough) < 2:
@@ -686,14 +684,14 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
                 if len (a.remove_passthrough) < 2:
                     __fail("usage: --permanent --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
                 settings.removePassthrough(_check_ipv(a.remove_passthrough[0]),
-                                           a.remove_passthrough[1:])
+                                                      a.remove_passthrough[1:])
             elif a.query_passthrough:
                 if len (a.query_passthrough) < 2:
                     __fail("usage: --permanent --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
                 __print_query_result(
                     settings.queryPassthrough(
                         _check_ipv(a.query_passthrough[0]),
-                        a.query_passthrough[1:]))
+                                   a.query_passthrough[1:]))
                 sys.exit(0)
             elif a.get_passthroughs:
                 rules = settings.getPassthroughs(
@@ -720,7 +718,7 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
             elif a.get_chains:
                 __print_and_exit(
                     " ".join(settings.getChains(_check_ipv(a.get_chains[0]),
-                                                a.get_chains[1])))
+                                                           a.get_chains[1])))
                 sys.exit(0)
             elif a.get_all_chains:
                 chains = settings.getAllChains()
