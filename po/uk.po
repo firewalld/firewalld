@@ -10,9 +10,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-10-03 08:49+0000\n"
-"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
+"POT-Creation-Date: 2013-10-04 17:28+0200\n"
+"PO-Revision-Date: 2013-10-03 09:10+0000\n"
+"Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
 "MIME-Version: 1.0\n"
@@ -1217,7 +1217,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:141
 msgid "Passthrough rules can only be modified for the permanent configuration."
-msgstr ""
+msgstr "Правила трансляції можна змінювати лише для остаточних налаштувань."
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
@@ -1750,20 +1750,20 @@ msgstr "Додаємо службу «%s» до типової зони."
 msgid "Adding icmpblock '%s' to default zone."
 msgstr "Додаємо блокування icmp «%s» у типовій зоні."
 
-#: ../src/firewall-offline-cmd:485
+#: ../src/firewall-offline-cmd:486
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
 msgstr "Додаємо порт переспрямовування %s:%s:%s:%s у типовій зоні."
 
-#: ../src/firewall-offline-cmd:493
+#: ../src/firewall-offline-cmd:494
 msgid "No changes to default zone needed."
 msgstr "Немає потреби у зміні параметрів роботи типової зони."
 
-#: ../src/firewall-offline-cmd:497
+#: ../src/firewall-offline-cmd:498
 msgid "Changed trusted zone configuration."
 msgstr "Змінено налаштування довіреної зони."
 
-#: ../src/firewall-offline-cmd:499
+#: ../src/firewall-offline-cmd:500
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
 "NetworkManager or if there is an ifcfg file for this interface, the zone "

@@ -29,9 +29,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-03 10:48+0200\n"
-"PO-Revision-Date: 2013-10-03 08:49+0000\n"
-"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
+"POT-Creation-Date: 2013-10-04 17:28+0200\n"
+"PO-Revision-Date: 2013-10-03 19:50+0000\n"
+"Last-Translator: Roman Spirgi <bigant@fedoraproject.org>\n"
 "Language-Team: German <trans-de@lists.fedoraproject.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -87,7 +87,7 @@ msgstr "Fork #1 fehlgeschlagen: %d (%s)"
 #: ../src/firewall-applet:106 ../src/firewall-config:4967
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr " Zone für Verbindung »%s« auswählen"
 
 #: ../src/firewall-applet:185
 #, c-format
@@ -301,11 +301,11 @@ msgstr "NetworkManager-Verbindungseditor fehlt."
 
 #: ../src/firewall-config:356 ../src/firewall-config:1643
 msgid "Runtime"
-msgstr ""
+msgstr "Runtime"
 
 #: ../src/firewall-config:357
 msgid "Permanent"
-msgstr ""
+msgstr "Permanent"
 
 #: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
@@ -372,7 +372,7 @@ msgstr "Fehler"
 
 #: ../src/firewall-config:1142
 msgid "Changes applied."
-msgstr ""
+msgstr "Änderungen angewendet."
 
 #: ../src/firewall-config:1425 ../src/firewall-config:2603
 msgid "accept"
@@ -589,7 +589,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
@@ -605,7 +605,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "Sicherheit"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
@@ -617,27 +617,27 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Direkte Weiterleitungsregel"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Bitte wählen Sie IP-Version und geben Sie die Argumente ein."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "Argumente:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Rule"
-msgstr ""
+msgstr "Direkte Regel"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "Bitte wählen Sie ipv und table, "
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
-msgstr ""
+msgstr "Priorität:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -782,7 +782,7 @@ msgstr "Sperrung"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr ""
+msgstr "_Ansicht"
 
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
@@ -790,7 +790,7 @@ msgstr "ICMP-Typen"
 
 #: ../src/firewall-config.glade.h:56
 msgid "Direct Configuration"
-msgstr ""
+msgstr "Direkte Konfiguration:"
 
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
@@ -802,7 +802,7 @@ msgstr "_Hilfe"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Configuration:"
-msgstr ""
+msgstr "Konfiguration:"
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -965,15 +965,15 @@ msgstr "Hier können umfassende Sprachregeln für die Zone definiert werden"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Umfassende Regel hinzufügen"
 
 #: ../src/firewall-config.glade.h:87
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Umfassende Regel bearbeiten"
 
 #: ../src/firewall-config.glade.h:88
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Umfassende Regel entfernen"
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -990,15 +990,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
-msgstr ""
+msgstr "Schnittstelle hinzufügen"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Edit Interface"
-msgstr ""
+msgstr "Schnittstelle bearbeiten"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Remove Interface"
-msgstr ""
+msgstr "Schnittstelle entfernen"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
@@ -1008,15 +1008,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:96
 msgid "Add Source"
-msgstr ""
+msgstr "Quelle hinzufügen"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Edit Source"
-msgstr ""
+msgstr "Quelle bearbeiten"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Remove Source"
-msgstr ""
+msgstr "Quelle entfernen"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1201,19 +1201,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
-msgstr ""
+msgstr "Regel hinzufügen"
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Rule"
-msgstr ""
+msgstr "Regel bearbeiten"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Rule"
-msgstr ""
+msgstr "Regel löschen"
 
 #: ../src/firewall-config.glade.h:139
 msgid "Rules"
-msgstr ""
+msgstr "Regeln"
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1268,15 +1268,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add Context"
-msgstr ""
+msgstr "Kontext hinzufügen"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Edit Context"
-msgstr ""
+msgstr "Kontext bearbeiten"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove Context"
-msgstr ""
+msgstr "Kontext entfernen"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1295,15 +1295,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:154
 msgid "Add Command Line"
-msgstr ""
+msgstr "Kommandozeile hinzufügen"
 
 #: ../src/firewall-config.glade.h:155
 msgid "Edit Command Line"
-msgstr ""
+msgstr "Kommandozeile bearbeiten"
 
 #: ../src/firewall-config.glade.h:156
 msgid "Remove Command Line"
-msgstr ""
+msgstr "Kommandozeile entfernen"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1315,15 +1315,15 @@ msgstr "Benutzernamen."
 
 #: ../src/firewall-config.glade.h:159
 msgid "Add User Name"
-msgstr ""
+msgstr "Benutzername hinzufügen"
 
 #: ../src/firewall-config.glade.h:160
 msgid "Edit User Name"
-msgstr ""
+msgstr "Benutzername bearbeiten"
 
 #: ../src/firewall-config.glade.h:161
 msgid "Remove User Name"
-msgstr ""
+msgstr "Benutzername entfernen"
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1335,15 +1335,15 @@ msgstr "Benutzerkennungen."
 
 #: ../src/firewall-config.glade.h:164
 msgid "Add User Id"
-msgstr ""
+msgstr "Benutzer-ID hinzufügen"
 
 #: ../src/firewall-config.glade.h:165
 msgid "Edit User Id"
-msgstr ""
+msgstr "Benutzer-ID bearbeiten"
 
 #: ../src/firewall-config.glade.h:166
 msgid "Remove User Id"
-msgstr ""
+msgstr "Benutzer-ID entfernen"
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1759,20 +1759,20 @@ msgstr "Dienst  »%s« zur Standardzone hinzufügen."
 msgid "Adding icmpblock '%s' to default zone."
 msgstr "Icmpblock  »%s« zur Standardzone hinzufügen."
 
-#: ../src/firewall-offline-cmd:485
+#: ../src/firewall-offline-cmd:486
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
 msgstr "Weiterleitungsport %s:%s:%s:%s zur Standardzone hinzufügen."
 
-#: ../src/firewall-offline-cmd:493
+#: ../src/firewall-offline-cmd:494
 msgid "No changes to default zone needed."
 msgstr "Keine Änderung der Standardzone erforderlich."
 
-#: ../src/firewall-offline-cmd:497
+#: ../src/firewall-offline-cmd:498
 msgid "Changed trusted zone configuration."
 msgstr "Konfiguration der vertrauenswürdigen Zone geändert."
 
-#: ../src/firewall-offline-cmd:499
+#: ../src/firewall-offline-cmd:500
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
 "NetworkManager or if there is an ifcfg file for this interface, the zone "
