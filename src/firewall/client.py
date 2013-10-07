@@ -45,22 +45,30 @@ def handle_exceptions(func, *args, **kwargs):
     try:
         return func(*args, **kwargs)
     except dbus.exceptions.DBusException as e:
-        dbus_message = e.get_dbus_message()
+        dbus_message = e.get_dbus_message() # returns unicode
         dbus_name = e.get_dbus_name()
         if not exception_handler:
             raise
         if "NotAuthorizedException" in dbus_name:
-            exception_handler(_("Authorization failed."))
+            message = _("Authorization failed.")
+            if isinstance(message, bytes):
+                message = message.decode('utf-8', 'replace')
         else:
             if dbus_message:
                 exception_handler(dbus_message)
             else:
-                exception_handler(str(e))
+                message = str(e)
+                if isinstance(message, bytes):
+                    message = message.decode('utf-8', 'replace')
+                exception_handler(message)
     except Exception as e:
         if not exception_handler:
             raise
         else:
-            exception_handler(str(e))
+            message = str(e)
+            if isinstance(message, bytes):
+                message = message.decode('utf-8', 'replace')
+            exception_handler(message)
 
 # zone config setings
 
