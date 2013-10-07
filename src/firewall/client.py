@@ -53,6 +53,7 @@ def handle_exceptions(func, *args, **kwargs):
             message = _("Authorization failed.")
             if isinstance(message, bytes):
                 message = message.decode('utf-8', 'replace')
+            exception_handler(message)
         else:
             if dbus_message:
                 exception_handler(dbus_message)
