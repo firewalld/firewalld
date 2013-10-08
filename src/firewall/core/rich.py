@@ -193,58 +193,18 @@ class Rich_Rule(object):
             self._import_from_string(rule_str)
 
     def _lexer(self, rule_str):
-        """Lexical analysis
-           rule_str.split() would be easier, but we need to take spaces
-           in attribute values into consideration
-        """
+        """ Lexical analysis """
         tokens = []
-        _dict = {}
-        _str = ''
-        state = 'element'
 
-        for c in rule_str:
-            if state == 'element':
-                if c == ' ':
-                    tokens.append({'element':_str})
-                    _str = ''
-                elif c == '=':
-                    _dict['attr_name'] = _str
-                    _str = ''
-                    state = 'attribute_value'
-                else:
-                    _str = _str + c
-            elif state == 'attribute_value':
-                if c == ' ':
-                    _dict['attr_value'] = _str
-                    tokens.append(_dict)
-                    _str = ''; _dict = {}
-                    state = 'element'
-                elif c == '"':
-                    state = 'attribute_value_quoted'
-                else:
-                    _str = _str + c
-            elif state == 'attribute_value_quoted':
-                if c == '"':
-                    state = 'attribute_value'
-                else:
-                    _str = _str + c
-
-        if state == 'element' and _str:
-            tokens.append({'element':_str})
-        elif state == 'attribute_value' and _str:
-            _dict['attr_value'] = _str
-            tokens.append(_dict)
-        elif state == 'attribute_value_quoted':
-            raise FirewallError(INVALID_RULE, 'missing quote')
-
+        for r in functions.splitArgs(rule_str):
+            if "=" in r:
+                attr = r.split('=')
+                if len(attr) != 2 or not attr[0] or not attr[1]:
+                    raise FirewallError(INVALID_RULE, 'internal error in _lexer(): %s' % r)
+                tokens.append({'attr_name':attr[0], 'attr_value':attr[1]})
+            else:
+                tokens.append({'element':r})
         tokens.append({'element':'EOL'})
-        # sanity check: each token has to be either element or attribute, not both
-        for d in tokens:
-            if (d.get('element') and d.get('attr_name')) or \
-               (d.get('element') and d.get('attr_value')) or \
-               (d.get('attr_name') and not d.get('attr_value')) or \
-               (d.get('attr_value') and not d.get('attr_name')) or not d:
-                raise FirewallError(INVALID_RULE, 'internal error in _lexer(): %s' % d)
 
         return tokens
 
@@ -260,7 +220,6 @@ class Rich_Rule(object):
         self.audit = None
         self.action = None
 
-        #tokens = rule_str.split()
         tokens = self._lexer(rule_str)
         if tokens and tokens[0].get('element')  == 'EOL':
             raise FirewallError(INVALID_RULE, 'empty rule')

@@ -96,7 +96,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                 self._passthrough.append(splitArgs(self._element))
                 self.item.add_passthrough(*self._passthrough)
             else:
-               log.error("Error: passthrough does not have any arguments, " +
+                log.error("Error: passthrough does not have any arguments, " +
                          "ignoring.")
             self._passthrough = None
 

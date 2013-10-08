@@ -31,7 +31,7 @@ import os
 
 from firewall.client import FirewallClient
 from firewall.errors import *
-from firewall.functions import splitArgs, joinArgs
+from firewall.functions import joinArgs
 
 def __print(msg=None):
     if msg and not a.quiet:
