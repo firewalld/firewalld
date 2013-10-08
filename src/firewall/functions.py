@@ -368,3 +368,9 @@ def joinArgs(args):
 
 def splitArgs(string):
     return shlex.split(string)
+
+def b2u(string):
+    """ bytes to unicode """
+    if isinstance(string, bytes):
+        return string.decode('utf-8', 'replace')
+    return string

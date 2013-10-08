@@ -1596,16 +1596,12 @@ class FirewallConfig(object):
 
     def _exception_handler(self, exception_message):
         if "INVALID_NAME" in exception_message:
-            tr_msg = _("Invalid name")
-            if isinstance(tr_msg, bytes):
-                tr_msg = tr_msg.decode('utf-8', 'replace')
-            msg = exception_message.replace("INVALID_NAME", tr_msg)
+            msg = exception_message.replace("INVALID_NAME",
+                                            b2u(_("Invalid name")))
             self._warning(msg)
         elif "NAME_CONFLICT" in exception_message:
-            tr_msg = _("Name already exists")
-            if isinstance(tr_msg, bytes):
-                tr_msg = tr_msg.decode('utf-8', 'replace')
-            msg = exception_message.replace("NAME_CONFLICT", tr_msg)
+            msg = exception_message.replace("NAME_CONFLICT",
+                                            b2u(_("Name already exists")))
             self._warning(msg)
         elif "NO_DEFAULTS" in exception_message:
             pass

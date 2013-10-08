@@ -33,6 +33,7 @@ from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
 import dbus
 from decorator import decorator
+from firewall.functions import b2u
 
 exception_handler = None
 
@@ -50,26 +51,17 @@ def handle_exceptions(func, *args, **kwargs):
         if not exception_handler:
             raise
         if "NotAuthorizedException" in dbus_name:
-            message = _("Authorization failed.")
-            if isinstance(message, bytes):
-                message = message.decode('utf-8', 'replace')
-            exception_handler(message)
+            exception_handler(b2u(_("Authorization failed.")))
         else:
             if dbus_message:
                 exception_handler(dbus_message)
             else:
-                message = str(e)
-                if isinstance(message, bytes):
-                    message = message.decode('utf-8', 'replace')
-                exception_handler(message)
+                exception_handler(b2u(str(e)))
     except Exception as e:
         if not exception_handler:
             raise
         else:
-            message = str(e)
-            if isinstance(message, bytes):
-                message = message.decode('utf-8', 'replace')
-            exception_handler(message)
+            exception_handler(b2u(str(e)))
 
 # zone config setings
 
