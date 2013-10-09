@@ -34,6 +34,7 @@ from firewall.dbus_utils import dbus_to_python
 import dbus
 from decorator import decorator
 from firewall.functions import b2u
+from firewall.core.rich import Rich_Rule
 
 exception_handler = None
 
@@ -236,17 +237,21 @@ class FirewallClientZoneSettings(object):
         return self.settings[12]
     @handle_exceptions
     def setRichRules(self, rules):
+        rules = [ str(Rich_Rule(rule_str=r)) for r in rules ]
         self.settings[12] = rules
     @handle_exceptions
     def addRichRule(self, rule):
+        rule = str(Rich_Rule(rule_str=rule))
         if rule not in self.settings[12]:
             self.settings[12].append(rule)
     @handle_exceptions
     def removeRichRule(self, rule):
+        rule = str(Rich_Rule(rule_str=rule))
         if rule in self.settings[12]:
             self.settings[12].remove(rule)
     @handle_exceptions
     def queryRichRule(self, rule):
+        rule = str(Rich_Rule(rule_str=rule))
         return rule in self.settings[12]
 
 
