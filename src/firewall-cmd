@@ -1234,5 +1234,7 @@ except dbus.exceptions.DBusException as e:
             __print_and_exit("Warning: %s" % dbus_message)
         else:
             __print_and_exit("Error: %s" % dbus_message, code)
+except FirewallError as e:
+    __fail(str(e))
 
 __print_and_exit("success")
