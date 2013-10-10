@@ -1595,7 +1595,9 @@ class FirewallConfig(object):
             iter = self.zoneStore.iter_next(iter)
 
     def _exception_handler(self, exception_message):
-        if "INVALID_NAME" in exception_message:
+        if "NotAuthorizedException" in exception_message:
+            self._error(_("Authorization failed."))
+        elif "INVALID_NAME" in exception_message:
             msg = exception_message.replace("INVALID_NAME",
                                             b2u(_("Invalid name")))
             self._warning(msg)

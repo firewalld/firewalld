@@ -52,7 +52,7 @@ def handle_exceptions(func, *args, **kwargs):
         if not exception_handler:
             raise
         if "NotAuthorizedException" in dbus_name:
-            exception_handler(b2u(_("Authorization failed.")))
+            exception_handler("NotAuthorizedException")
         else:
             if dbus_message:
                 exception_handler(dbus_message)
