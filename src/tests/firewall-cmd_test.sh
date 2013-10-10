@@ -3,6 +3,10 @@
 #path="/usr/bin/"
 path="../"
 
+RED='\033[00;31m'
+GREEN='\033[00;32m'
+RESTORE='\033[0m'
+
 assert_good() {
   args="${1}"
   ${path}firewall-cmd ${args} > /dev/null
@@ -10,7 +14,7 @@ assert_good() {
     echo "${args} ... OK"
   else
     ((failures++))
-    echo "${args} ... ${failures}. FAILED (non-zero exit status)"
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status)${RESTORE}"
   fi
 }
 
@@ -21,7 +25,7 @@ assert_good_notempty() {
     echo "${args} ... OK"
   else
     ((failures++))
-    echo "${args} ... ${failures}. FAILED (non-zero exit status or empty return value)"
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or empty return value)${RESTORE}"
   fi
 }
 
@@ -32,7 +36,7 @@ assert_good_empty() {
     echo "${args} ... OK"
   else
     ((failures++))
-    echo "${args} ... ${failures}. FAILED (non-zero exit status or non-empty return value)"
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or non-empty return value)${RESTORE}"
   fi
 }
 
@@ -44,7 +48,7 @@ assert_good_equals() {
     echo "${args} ... OK"
   else
     ((failures++))
-    echo "${args} ... ${failures}. FAILED (non-zero exit status or '${ret}' != '${value}')"
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' != '${value}')${RESTORE}"
   fi
 }
 
@@ -56,7 +60,7 @@ assert_good_contains() {
     echo "${args} ... OK"
   else
     ((failures++))
-    echo "${args} ... ${failures}. FAILED (non-zero exit status or '${ret}' does not contain '${value}')"
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' does not contain '${value}')${RESTORE}"
   fi
 }
 
@@ -67,7 +71,7 @@ assert_bad() {
     echo "${args} ... OK"
   else
     ((failures++))
-    echo "${args} ... ${failures}. FAILED (zero exit status)"
+    echo -e "${args} ... ${RED}${failures}. FAILED (zero exit status)${RESTORE}"
   fi
 }
 
@@ -89,7 +93,7 @@ assert_rich_good() {
     echo ${permanent} ${command} "${args} ... OK"
   else
     ((failures++))
-    echo ${permanent} ${command} "${args} ... ${failures}. FAILED (non-zero exit status)"
+    echo -e ${permanent} ${command} "${args} ... ${RED}${failures}. FAILED (non-zero exit status)${RESTORE}"
   fi
 }
 
@@ -110,7 +114,7 @@ assert_rich_bad() {
     echo ${permanent} ${command} "${args} ... OK"
   else
     ((failures++))
-    echo ${permanent} ${command} "${args} ... ${failures}. FAILED (zero exit status)"
+    echo -e ${permanent} ${command} "${args} ... ${RED}${failures}. FAILED (zero exit status)${RESTORE}"
   fi
 }
 
