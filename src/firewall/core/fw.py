@@ -78,19 +78,20 @@ class Firewall:
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
 
-    def _start(self):
+    def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
-
         try:
             self.rule("ipv4", [ "-L" ])
         except:
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
+
         try:
             self.rule("ipv6", [ "-L" ])
         except:
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
+
         try:
             self.rule("eb", [ "-L" ])
         except:
@@ -101,6 +102,7 @@ class Firewall:
             log.fatal("No IPv4 and IPv6 firewall.")
             sys.exit(1)
 
+    def _start(self):
         # initialize firewall
         default_zone = FALLBACK_ZONE
 
@@ -224,8 +226,9 @@ class Firewall:
         self._state = "RUNNING"
 
     def start(self):
+        self._check_tables()
         self._flush()
-        self._set_policy("ACCEPT")        
+        self._set_policy("ACCEPT")
         self._start()
 
     def _loader(self, path, reader_type, combine=False):
@@ -470,12 +473,16 @@ class Firewall:
     # flush and policy
 
     def _flush(self):
-        self._ip4tables.flush()
-        self._ip6tables.flush()
+        if self.ip4tables_enabled:
+            self._ip4tables.flush()
+        if self.ip6tables_enabled:
+            self._ip6tables.flush()
 
     def _set_policy(self, policy, which="used"):
-        self._ip4tables.set_policy(policy, which)
-        self._ip6tables.set_policy(policy, which)
+        if self.ip4tables_enabled:
+            self._ip4tables.set_policy(policy, which)
+        if self.ip6tables_enabled:
+            self._ip6tables.set_policy(policy, which)
 
     # rule function used in handle_ functions
 
