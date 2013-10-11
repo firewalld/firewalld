@@ -25,14 +25,14 @@ import subprocess
 # Check if kernel supports IPv6 NAT
 # http://kernelnewbies.org/Linux_3.7
 command = ["ip6tables", "-t", "nat", "-L"]
-
+IPV6_NAT = False
 with open(os.devnull, "w") as fnull:
-    result = subprocess.call(command, stdout = fnull, stderr = fnull)
-
-if result == 0:
-    IPV6_NAT = True
-else:
-    IPV6_NAT = False
+    try:
+        if subprocess.call(command, stdout = fnull, stderr = fnull) == 0:
+            IPV6_NAT = True
+    except OSError:
+        # no ip6tables ?
+        pass
 
 DEFAULT_ZONE_TARGET = "{chain}_{zone}"
 ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET ]
