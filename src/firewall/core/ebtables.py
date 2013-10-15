@@ -58,16 +58,17 @@ class ebtables:
     def delete_rule(self, rule):
         self.__run([ "-D" ] + rule)
 
-    def available_tables(self):
-        tables = []
-        for table in CHAINS.keys():
+    def available_tables(self, table=None):
+        ret = []
+        tables = [ table ] if table else CHAINS.keys()
+        for table in tables:
             try:
                 self.__run(["-t", table, "-L"])
-                tables.append(table)
+                ret.append(table)
             except ValueError:
                 log.warning("ebtables table '%s' does not exist." % table)
 
-        return tables
+        return ret
 
     def used_tables(self):
         return list(CHAINS.keys())

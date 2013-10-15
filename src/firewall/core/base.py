@@ -19,20 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
-import subprocess
-
-# Check if kernel supports IPv6 NAT
-# http://kernelnewbies.org/Linux_3.7
-command = ["ip6tables", "-t", "nat", "-L"]
-IPV6_NAT = False
-with open(os.devnull, "w") as fnull:
-    try:
-        if subprocess.call(command, stdout = fnull, stderr = fnull) == 0:
-            IPV6_NAT = True
-    except OSError:
-        # no ip6tables ?
-        pass
+from ipXtables import ip6tables
+IPV6_NAT = len(ip6tables().available_tables(table="nat")) > 0
 
 DEFAULT_ZONE_TARGET = "{chain}_{zone}"
 ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET ]

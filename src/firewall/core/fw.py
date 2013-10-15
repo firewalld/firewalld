@@ -80,15 +80,15 @@ class Firewall:
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
-        if not self._ip4tables.available_tables():
+        if not self._ip4tables.available_tables(table="filter"):
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
 
-        if not self._ip6tables.available_tables():
+        if not self._ip6tables.available_tables(table="filter"):
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
 
-        if not self._ebtables.available_tables():
+        if not self._ebtables.available_tables(table="filter"):
             log.error("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
