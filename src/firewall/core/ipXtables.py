@@ -145,6 +145,17 @@ class ip4tables:
     def delete_rule(self, rule):
         self.__run([ "-D" ] + rule)
 
+    def available_tables(self):
+        tables = []
+        for table in CHAINS.keys():
+            try:
+                self.__run(["-t", table, "-L"])
+                tables.append(table)
+            except ValueError:
+                log.warning("%s table '%s' does not exist." % (self.ipv, table))
+
+        return tables
+
     def used_tables(self):
         tables = [ ]
         filename = PROC_IPxTABLE_NAMES[self.ipv]
