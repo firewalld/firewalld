@@ -39,7 +39,6 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.errors import *
-from firewall.core.ebtables import ebtables_available_tables
 
 ############################################################################
 #

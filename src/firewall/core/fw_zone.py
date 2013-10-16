@@ -26,7 +26,6 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
-from firewall.core.ipXtables import ip6tables_available_tables
 
 class FirewallZone:
     def __init__(self, fw):
