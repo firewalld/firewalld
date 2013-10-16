@@ -26,6 +26,7 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
+from firewall.core.ipXtables import ip6tables_available_tables
 
 class FirewallZone:
     def __init__(self, fw):
@@ -135,9 +136,10 @@ class FirewallZone:
 
         # TODO: simplify for one zone only
         for _zone in zones:
-            ipvs = [ "ipv4" ]
-            if IPV6_NAT or table != "nat":
-                # no nat for ipv6
+            ipvs = []
+            if self._fw.is_table_available("ipv4", table):
+                ipvs.append("ipv4")
+            if self._fw.is_table_available("ipv6", table):
                 ipvs.append("ipv6")
 
             for ipv in ipvs:

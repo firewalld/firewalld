@@ -26,7 +26,6 @@ from firewall import functions
 from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core import modules
-from firewall.core.base import IPV6_NAT
 from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZone
@@ -40,6 +39,7 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.errors import *
+from firewall.core.ebtables import ebtables_available_tables
 
 ############################################################################
 #
@@ -80,15 +80,15 @@ class Firewall:
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
-        if not self._ip4tables.available_tables(table="filter"):
+        if not "filter" in ipXtables.ip4tables_available_tables:
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
 
-        if not self._ip6tables.available_tables(table="filter"):
+        if not "filter" in ipXtables.ip6tables_available_tables:
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
 
-        if not self._ebtables.available_tables(table="filter"):
+        if not "filter" in ebtables.ebtables_available_tables:
             log.error("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
@@ -364,6 +364,16 @@ class Firewall:
             if insert and not enable and isinstance(rule[1], int):
                 rule.pop(1)
 
+            table = None
+            for t in ipXtables.CHAINS.keys():
+                if t in rule:
+                    table = t
+            if table and not self.is_table_available(ipv, table):
+                if ((ipv == "ipv4" and self.ip4tables_enabled) or
+                    (ipv == "ipv6" and self.ip6tables_enabled)):
+                    log.error("Unable to add %s into %s %s" % (rule, ipv, table))
+                continue
+
             # run
             try:
                 self.rule(ipv, [ append_delete[enable], ] + rule)
@@ -389,6 +399,12 @@ class Firewall:
             # drop insert rule number if it exists
             if insert and not enable and isinstance(rule[1], int):
                 rule.pop(1)
+
+            if not self.is_table_available(ipv, table):
+                if ((ipv == "ipv4" and self.ip4tables_enabled) or
+                    (ipv == "ipv6" and self.ip6tables_enabled)):
+                    log.error("Unable to add %s into %s %s" % (rule, ipv, table))
+                continue
 
             # run
             try:
@@ -437,6 +453,10 @@ class Firewall:
         return None
 
     # apply default rules
+    def is_table_available(self, ipv, table):
+        return ((ipv == "ipv4" and table in ipXtables.ip4tables_available_tables) or
+                (ipv == "ipv6" and table in ipXtables.ip6tables_available_tables) or
+                (ipv == "eb" and table in ebtables.ebtables_available_tables))
 
     def __apply_default_rules(self, ipv):
         if ipv in [ "ipv4", "ipv6" ]:
@@ -445,8 +465,7 @@ class Firewall:
             default_rules = ebtables.DEFAULT_RULES
 
         for table in default_rules:
-            if not IPV6_NAT and ipv == "ipv6" and table == "nat":
-                # no nat for IPv6
+            if not self.is_table_available(ipv, table):
                 continue
             prefix = [ "-t", table ]
             for rule in default_rules[table]:

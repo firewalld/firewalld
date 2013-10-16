@@ -94,3 +94,5 @@ class ebtables:
         for table in tables:
             for chain in CHAINS[table]:
                 self.__run([ "-t", table, "-P", chain, policy ])
+
+ebtables_available_tables = ebtables().available_tables()

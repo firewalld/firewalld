@@ -153,7 +153,7 @@ class ip4tables:
                 self.__run(["-t", table, "-L"])
                 ret.append(table)
             except ValueError:
-                log.warning("%s table '%s' does not exist." % (self.ipv, table))
+                log.error("%s table '%s' does not exist." % (self.ipv, table))
 
         return ret
 
@@ -194,6 +194,9 @@ class ip4tables:
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
+
+ip4tables_available_tables = ip4tables().available_tables()
+ip6tables_available_tables = ip6tables().available_tables()
 
 #class ipXtables:
 #    def __init__(self, ipv4=True, ipv6=True):
