@@ -331,7 +331,7 @@
 	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-service</option>=<replaceable>service</replaceable></term>
 	  <listitem>
 	    <para>
-	      Return whether <replaceable>service</replaceable> has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	      Return whether <replaceable>service</replaceable> has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -375,7 +375,7 @@
 	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
 	  <listitem>
 	    <para>
-	      Return whether the port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	      Return whether the port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -419,7 +419,7 @@
 	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-icmp-block</option>=<replaceable>icmptype</replaceable></term>
 	  <listitem>
 	    <para>
-	      Return whether an ICMP block for <replaceable>icmptype</replaceable> has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	      Return whether an ICMP block for <replaceable>icmptype</replaceable> has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -472,7 +472,7 @@
 	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional></term>
 	  <listitem>
 	    <para>
-	      Return whether the <emphasis>IPv4</emphasis> forward port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	      Return whether the <emphasis>IPv4</emphasis> forward port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	    <para>
 	      For <emphasis>IPv6</emphasis> forward ports, please use the rich language.
@@ -513,7 +513,7 @@
 	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-masquerade</option></term>
 	  <listitem>
 	    <para>
-	      Return whether <emphasis>IPv4</emphasis> masquerading has been enabled for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	      Return whether <emphasis>IPv4</emphasis> masquerading has been enabled for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	    <para>
 	      For <emphasis>IPv6</emphasis> masquerading, please use the rich language.
@@ -563,7 +563,7 @@
 	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-rich-rule</option>='<replaceable>rule</replaceable>'</term>
 	  <listitem>
 	    <para>
-	      Return whether a rich language rule '<replaceable>rule</replaceable>' has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. There is no output. Returns 0 if true, 1 otherwise.
+	      Return whether a rich language rule '<replaceable>rule</replaceable>' has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	    <para>
 	      For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
