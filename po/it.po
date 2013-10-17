@@ -26,7 +26,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-04 17:28+0200\n"
+"POT-Creation-Date: 2013-10-17 17:20+0200\n"
 "PO-Revision-Date: 2013-10-04 14:07+0000\n"
 "Last-Translator: Fabio Tavano <tavano.fabio@gmail.com>\n"
 "Language-Team: Italian <trans-it@lists.fedoraproject.org>\n"
@@ -47,10 +47,6 @@ msgstr "Firewall"
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:41
 msgid "Firewall Configuration"
 msgstr "Configurazione del Firewall"
-
-#: ../src/firewall/client.py:53
-msgid "Authorization failed."
-msgstr "Autorizzazione fallita."
 
 #: ../src/firewall/core/io/io_object.py:147
 #, python-format
@@ -81,7 +77,7 @@ msgstr "FirewallD non partito, è già in esecuzione."
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 fallito: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4967
+#: ../src/firewall-applet:106 ../src/firewall-config:4971
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Seleziona la zone per la connessione '%s'"
@@ -295,7 +291,7 @@ msgstr "Caricamento icone fallito."
 msgid "NetworkManager connection editor is missing."
 msgstr "Manca l'editor di connessioni di NetworkManager"
 
-#: ../src/firewall-config:356 ../src/firewall-config:1643
+#: ../src/firewall-config:356 ../src/firewall-config:1647
 msgid "Runtime"
 msgstr "In esecuzione"
 
@@ -357,8 +353,8 @@ msgstr "log"
 msgid "Audit"
 msgstr "Controllo"
 
-#: ../src/firewall-config:1094 ../src/firewall-config:1838
-#: ../src/firewall-config:1876
+#: ../src/firewall-config:1094 ../src/firewall-config:1842
+#: ../src/firewall-config:1880
 msgid "Warning"
 msgstr "Attenzione"
 
@@ -370,16 +366,16 @@ msgstr "Errore"
 msgid "Changes applied."
 msgstr "Modifiche applicate."
 
-#: ../src/firewall-config:1425 ../src/firewall-config:2603
+#: ../src/firewall-config:1425 ../src/firewall-config:2607
 msgid "accept"
 msgstr "accetta"
 
-#: ../src/firewall-config:1427 ../src/firewall-config:2605
-#: ../src/firewall-config:2693
+#: ../src/firewall-config:1427 ../src/firewall-config:2609
+#: ../src/firewall-config:2697
 msgid "reject"
 msgstr "rifiuta"
 
-#: ../src/firewall-config:1429 ../src/firewall-config:2610
+#: ../src/firewall-config:1429 ../src/firewall-config:2614
 msgid "drop"
 msgstr "rilascio"
 
@@ -388,26 +384,26 @@ msgstr "rilascio"
 msgid "limit"
 msgstr "limita"
 
-#: ../src/firewall-config:1442 ../src/firewall-config:2152
-#: ../src/firewall-config:2296 ../src/firewall-config:2567
+#: ../src/firewall-config:1442 ../src/firewall-config:2156
+#: ../src/firewall-config:2300 ../src/firewall-config:2571
 #: ../src/firewall-config.glade.h:206
 msgid "service"
 msgstr "servizio"
 
-#: ../src/firewall-config:1444 ../src/firewall-config:2158
-#: ../src/firewall-config:2298 ../src/firewall-config:2570
+#: ../src/firewall-config:1444 ../src/firewall-config:2162
+#: ../src/firewall-config:2302 ../src/firewall-config:2574
 #: ../src/firewall-config.glade.h:207
 msgid "port"
 msgstr "porta"
 
-#: ../src/firewall-config:1447 ../src/firewall-config:2163
-#: ../src/firewall-config:2307 ../src/firewall-config:2576
+#: ../src/firewall-config:1447 ../src/firewall-config:2167
+#: ../src/firewall-config:2311 ../src/firewall-config:2580
 #: ../src/firewall-config.glade.h:208
 msgid "protocol"
 msgstr "protocollo"
 
-#: ../src/firewall-config:1449 ../src/firewall-config:2168
-#: ../src/firewall-config:2590 ../src/firewall-config:2705
+#: ../src/firewall-config:1449 ../src/firewall-config:2172
+#: ../src/firewall-config:2594 ../src/firewall-config:2709
 #: ../src/firewall-config.glade.h:211
 msgid "masquerade"
 msgstr "mascheramento"
@@ -421,119 +417,123 @@ msgid "yes"
 msgstr "si"
 
 #: ../src/firewall-config:1599
+msgid "Authorization failed."
+msgstr "Autorizzazione fallita."
+
+#: ../src/firewall-config:1602
 msgid "Invalid name"
 msgstr "Argomento %s non valido"
 
-#: ../src/firewall-config:1602
+#: ../src/firewall-config:1606
 msgid "Name already exists"
 msgstr "Nome già esistente"
 
-#: ../src/firewall-config:1835
+#: ../src/firewall-config:1839
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Zona '%s': Servizio '%s' non disponibile."
 
-#: ../src/firewall-config:1839 ../src/firewall-config:1877
+#: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Remove"
 msgstr "Elimina Zona"
 
-#: ../src/firewall-config:1839 ../src/firewall-config:1877
+#: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Ignore"
 msgstr "Ignora"
 
-#: ../src/firewall-config:1873
+#: ../src/firewall-config:1877
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Zona '%s': tipo ICMP '%s' non disponibile."
 
-#: ../src/firewall-config:2003
+#: ../src/firewall-config:2007
 msgid "Built-in zone, rename not supported."
 msgstr "Zona integrata, impossibile rinominare."
 
-#: ../src/firewall-config:2115 ../src/firewall-config:2542
+#: ../src/firewall-config:2119 ../src/firewall-config:2546
 #: ../src/firewall-config.glade.h:191
 msgid "second"
 msgstr "secondo"
 
-#: ../src/firewall-config:2116 ../src/firewall-config:2543
+#: ../src/firewall-config:2120 ../src/firewall-config:2547
 #: ../src/firewall-config.glade.h:192
 msgid "minute"
 msgstr "minuto"
 
-#: ../src/firewall-config:2117 ../src/firewall-config:2544
+#: ../src/firewall-config:2121 ../src/firewall-config:2548
 #: ../src/firewall-config.glade.h:193
 msgid "hour"
 msgstr "ora"
 
-#: ../src/firewall-config:2118 ../src/firewall-config:2545
+#: ../src/firewall-config:2122 ../src/firewall-config:2549
 #: ../src/firewall-config.glade.h:194
 msgid "day"
 msgstr "giorno"
 
-#: ../src/firewall-config:2119 ../src/firewall-config:2546
+#: ../src/firewall-config:2123 ../src/firewall-config:2550
 #: ../src/firewall-config.glade.h:197
 msgid "emergency"
 msgstr "emergenza"
 
-#: ../src/firewall-config:2120 ../src/firewall-config:2547
+#: ../src/firewall-config:2124 ../src/firewall-config:2551
 #: ../src/firewall-config.glade.h:198
 msgid "alert"
 msgstr "avviso"
 
-#: ../src/firewall-config:2121 ../src/firewall-config:2548
+#: ../src/firewall-config:2125 ../src/firewall-config:2552
 #: ../src/firewall-config.glade.h:199
 msgid "critical"
 msgstr "critico"
 
-#: ../src/firewall-config:2122 ../src/firewall-config:2549
+#: ../src/firewall-config:2126 ../src/firewall-config:2553
 #: ../src/firewall-config.glade.h:200
 msgid "error"
 msgstr "errore"
 
-#: ../src/firewall-config:2123 ../src/firewall-config:2550
+#: ../src/firewall-config:2127 ../src/firewall-config:2554
 #: ../src/firewall-config.glade.h:201
 msgid "warning"
 msgstr "attenzione"
 
-#: ../src/firewall-config:2124 ../src/firewall-config:2551
+#: ../src/firewall-config:2128 ../src/firewall-config:2555
 #: ../src/firewall-config.glade.h:202
 msgid "notice"
 msgstr "avviso"
 
-#: ../src/firewall-config:2125 ../src/firewall-config:2552
+#: ../src/firewall-config:2129 ../src/firewall-config:2556
 #: ../src/firewall-config.glade.h:203
 msgid "info"
 msgstr "informazioni"
 
-#: ../src/firewall-config:2126 ../src/firewall-config:2553
+#: ../src/firewall-config:2130 ../src/firewall-config:2557
 #: ../src/firewall-config.glade.h:204
 msgid "debug"
 msgstr "debug"
 
-#: ../src/firewall-config:2171 ../src/firewall-config:2309
-#: ../src/firewall-config:2579 ../src/firewall-config.glade.h:209
+#: ../src/firewall-config:2175 ../src/firewall-config:2313
+#: ../src/firewall-config:2583 ../src/firewall-config.glade.h:209
 msgid "icmp-block"
 msgstr "blocco-icmp"
 
-#: ../src/firewall-config:2176 ../src/firewall-config:2311
-#: ../src/firewall-config:2582 ../src/firewall-config:2713
+#: ../src/firewall-config:2180 ../src/firewall-config:2315
+#: ../src/firewall-config:2586 ../src/firewall-config:2717
 #: ../src/firewall-config.glade.h:210
 msgid "forward-port"
 msgstr "porta inoltro"
 
-#: ../src/firewall-config:2289 ../src/firewall-config:2488
-#: ../src/firewall-config:2502 ../src/firewall-config:2557
-#: ../src/firewall-config:2661
+#: ../src/firewall-config:2293 ../src/firewall-config:2492
+#: ../src/firewall-config:2506 ../src/firewall-config:2561
+#: ../src/firewall-config:2665
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2291 ../src/firewall-config:2490
-#: ../src/firewall-config:2504 ../src/firewall-config:2559
-#: ../src/firewall-config:2663
+#: ../src/firewall-config:2295 ../src/firewall-config:2494
+#: ../src/firewall-config:2508 ../src/firewall-config:2563
+#: ../src/firewall-config:2667
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3323
+#: ../src/firewall-config:3327
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -542,11 +542,11 @@ msgstr ""
 "L'inoltro ad un altro sistema è utile solo se l'interfaccia è nattata.\n"
 "Si vuole nattare questa zona?"
 
-#: ../src/firewall-config:3570
+#: ../src/firewall-config:3574
 msgid "Built-in service, rename not supported."
 msgstr "Servizio integrato, impossibile rinominare."
 
-#: ../src/firewall-config:3942
+#: ../src/firewall-config:3946
 msgid "Built-in icmp, rename not supported."
 msgstr "Icmp integrato, impossibile rinominare."
 

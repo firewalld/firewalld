@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.6.2
+Version: 0.3.7
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -183,6 +183,16 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Oct 17 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.7-1
+- Don't fail on missing ip[6]tables/ebtables table. (RHBZ#967376)
+- bash-completion: --permanent --direct options
+- firewall/core/fw.py: fix checking for iptables & ip6tables (RHBZ#1017087)
+- firewall-cmd: use client's exception_handler instead of catching exceptions ourselves
+- FirewallClientZoneSettings: fix {add|remove|query}RichRule()
+- Extend amanda-client service with 10080/tcp (RHBZ#1016867)
+- Simplify Rich_Rule()_lexer() by using functions.splitArgs()
+- Fix encoding problems in exception handling (RHBZ#1015941)
+
 * Fri Oct 04 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.6.2-1
 - firewall-offline-cmd: --forward-port 'toaddr' is optional (RHBZ#1014958)
 - firewall-cmd: fix variable name (RHBZ#1015011)
