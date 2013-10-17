@@ -451,12 +451,12 @@ class Firewall:
                         del self._module_refcount[module]
         return None
 
-    # apply default rules
     def is_table_available(self, ipv, table):
         return ((ipv == "ipv4" and table in ipXtables.ip4tables_available_tables) or
                 (ipv == "ipv6" and table in ipXtables.ip6tables_available_tables) or
                 (ipv == "eb" and table in ebtables.ebtables_available_tables))
 
+    # apply default rules
     def __apply_default_rules(self, ipv):
         if ipv in [ "ipv4", "ipv6" ]:
             default_rules = ipXtables.DEFAULT_RULES

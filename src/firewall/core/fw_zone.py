@@ -26,6 +26,49 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
+from ipXtables import ip4tables_available_tables, ip6tables_available_tables
+
+mangle = []
+if "mangle" in ip4tables_available_tables:
+    mangle.append("ipv4")
+if "mangle" in ip6tables_available_tables:
+    mangle.append("ipv6")
+
+nat = []
+if "nat" in ip4tables_available_tables:
+    nat.append("ipv4")
+else:
+    if "ipv4" in mangle:
+        mangle.remove("ipv4")
+if "nat" in ip6tables_available_tables:
+    nat.append("ipv6")
+else:
+    if "ipv6" in mangle:
+        mangle.remove("ipv6")
+
+ZONE_CHAINS = {
+    "filter": {
+        "INPUT": [ "ipv4", "ipv6" ],
+        "FORWARD_IN": [ "ipv4", "ipv6" ],
+        "FORWARD_OUT": [ "ipv4", "ipv6" ],
+        },
+    "nat": {
+        "PREROUTING": nat,
+        "POSTROUTING": nat,
+        },
+    "mangle": {
+        "PREROUTING": mangle,
+        },
+}
+
+INTERFACE_ZONE_OPTS = {
+    "PREROUTING": "-i",
+    "POSTROUTING": "-o",
+    "INPUT": "-i",
+    "FORWARD_IN": "-i",
+    "FORWARD_OUT": "-o",
+    "OUTPUT": "-o",
+}
 
 class FirewallZone:
     def __init__(self, fw):
