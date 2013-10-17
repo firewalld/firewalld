@@ -1,0 +1,2102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.dbus">
+
+  <refentryinfo>
+    <title>firewalld.dbus</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.dbus</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.dbus</refname>
+    <refpurpose>firewalld D-Bus interface description</refpurpose>
+  </refnamediv>
+
+  <refsect1 id="object-paths">
+    <title>Object Paths</title>
+    <para>
+      This is the basic firewalld object path structure. The used interfaces are explained below in the INTERFACES section.
+    </para>
+    <programlisting>
+/org/fedoraproject/FirewallD1
+  Interfaces
+    org.fedoraproject.FirewallD1
+    org.fedoraproject.FirewallD1.direct
+    org.fedoraproject.FirewallD1.policies
+    org.fedoraproject.FirewallD1.zone
+    org.freedesktop.DBus.Introspectable
+    org.freedesktop.DBus.Properties
+
+/org/fedoraproject/FirewallD1/config
+  Interfaces
+    org.fedoraproject.FirewallD1.config
+    org.fedoraproject.FirewallD1.config.direct
+    org.fedoraproject.FirewallD1.config.policies
+    org.freedesktop.DBus.Introspectable
+    org.freedesktop.DBus.Properties
+
+/org/fedoraproject/FirewallD1/config/icmptype/i
+  Interfaces
+    org.fedoraproject.FirewallD1.config.icmptype
+    org.freedesktop.DBus.Introspectable
+    org.freedesktop.DBus.Properties
+
+/org/fedoraproject/FirewallD1/config/service/i
+  Interfaces:
+    org.fedoraproject.FirewallD1.config.service
+    org.freedesktop.DBus.Introspectable
+    org.freedesktop.DBus.Properties
+
+/org/fedoraproject/FirewallD1/config/zone/i
+  Interfaces
+    org.fedoraproject.FirewallD1.config.zone
+    org.freedesktop.DBus.Introspectable
+    org.freedesktop.DBus.Properties
+    </programlisting>
+  </refsect1>
+
+  <refsect1 id="interfaces">
+    <title>Interfaces</title>
+
+    <para>
+    </para>
+
+
+    <refsect2 id="org.fedoraproject.FirewallD1">
+      <title>org.fedoraproject.FirewallD1</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>completeReload() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Reload firewall completely, even netfilter kernel modules.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>disablePanicMode() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Disable panic mode.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>enablePanicMode() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Enable panic mode.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getDefaultZone() &rarr; s</term>
+            <listitem>
+              <para>
+		Return default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getIcmpTypeSettings(s: icmptype) &rarr; (sssas)</term>
+            <listitem>
+              <para>
+		Return <replaceable>icmptype</replaceable> settings in format: version, name, description, array of destinations
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getServiceSettings(s: service) &rarr; (sssa(ss)asa{ss})</term>
+            <listitem>
+              <para>
+		Return <replaceable>service</replaceable> settings in format: version, name, description, array of ports (port, protocol), array of module names, destinations {IP family : IP address}
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>listIcmpTypes() &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of icmptype names.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>listServices() &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of service names.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryPanicMode() &rarr; b</term>
+            <listitem>
+              <para>
+		Return true if panic mode is enabled, false otherwise.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>reload() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Reload firewall rules and keep state information.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>setDefaultZone(s: zone) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Set default zone to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>DefaultZoneChanged(s: zone)</term>
+            <listitem>
+              <para>
+		Emitted when default zone has been changed to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>PanicModeDisabled()</term>
+            <listitem>
+              <para>
+		Emitted when panic mode has been deactivated.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>PanicModeEnabled()</term>
+            <listitem>
+              <para>
+		Emitted when panic mode has been activated.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Reloaded()</term>
+            <listitem>
+              <para>
+		Emitted when firewalld has been reloaded. Also emitted for a complete reload.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry>
+            <term>BRIDGE - b - (ro)</term>
+            <listitem>
+              <para>
+		Indicates whether the firewall has ethernet bridge support. 
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>IPv4 - b - (ro)</term>
+            <listitem>
+              <para>
+		Indicates whether the firewall has IPv4 support. 
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>IPv6 - b - (ro)</term>
+            <listitem>
+              <para>
+		Indicates whether the firewall has IPv6 support. 
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>interface_version - s - (ro)</term>
+            <listitem>
+              <para>
+		firewalld D-Bus interface version string.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>state - s - (ro)</term>
+            <listitem>
+              <para>
+		firewalld state. This can be either <literal>INIT</literal> or <literal>RUNNING</literal>. In <literal>INIT</literal> state, firewalld is starting up and initializing.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>version - s - (ro)</term>
+            <listitem>
+              <para>
+		firewalld version string.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.direct">
+      <title>org.fedoraproject.FirewallD1.direct</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.direct.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>addChain(s: ipv, s: table, s: chain) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add a new <replaceable>chain</replaceable> to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addRule(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add a rule with the arguments <replaceable>args</replaceable> to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getAllChains() &rarr; a(sss)</term>
+            <listitem>
+              <para>
+		Get all chains added to all tables in format: ipv, table, chain.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getAllRules() &rarr; a(sssias)</term>
+            <listitem>
+              <para>
+		Get all rules added to all chains in all tables in format: ipv, table, chain, priority, rule
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getChains(s: ipv, s: table) &rarr; as</term>
+            <listitem>
+              <para>
+		Get all chains added to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getRules(s: ipv, s: table, s: chain) &rarr; a(ias)</term>
+            <listitem>
+              <para>
+		Get all rules added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>passthrough(s: ipv, as: args) &rarr; s</term>
+            <listitem>
+              <para>
+		Pass a command through to the firewall. <replaceable>ipv</replaceable> can be either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryChain(s: ipv, s: table, s: chain) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryRule(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeChain(s: ipv, s: table, s: chain) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeRule(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.direct.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>ChainAdded(s: ipv, s: table, s: chain)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>chain</replaceable> has been changed into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>. 
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ChainRemoved(s: ipv, s: table, s: chain)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>chain</replaceable> has been changed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>. 
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>RuleAdded(s: ipv, s: table, s: chain, i: priority, as: args)</term>
+            <listitem>
+              <para>
+		Emitted when a rule with <replaceable>args</replaceable> has been added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>RuleRemoved(s: ipv, s: table, s: chain, i: priority, as: args)</term>
+            <listitem>
+              <para>
+		Emitted when a rule with <replaceable>args</replaceable> has been removed from <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.policies">
+      <title>org.fedoraproject.FirewallD1.policies</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.policies.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>addLockdownWhitelistCommand(s: command) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add <replaceable>command</replaceable> to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addLockdownWhitelistContext(s: context) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add <replaceable>context</replaceable> to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addLockdownWhitelistUid(i: uid) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add user id <replaceable>uid</replaceable> to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addLockdownWhitelistUser(s: user) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add <replaceable>user</replaceable> to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>disableLockdown() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Disable lockdown.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>enableLockdown() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Enable lockdown.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getLockdownWhitelistCommands() &rarr; as</term>
+            <listitem>
+              <para>
+		List all command lines that are on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getLockdownWhitelistContexts() &rarr; as</term>
+            <listitem>
+              <para>
+		List all contexts that are on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getLockdownWhitelistUids() &rarr; ai</term>
+            <listitem>
+              <para>
+		List all user ids that are on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getLockdownWhitelistUsers() &rarr; as</term>
+            <listitem>
+              <para>
+		List all users that are on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryLockdown() &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether lockdown is enabled.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryLockdownWhitelistCommand(s: command) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>command</replaceable> is on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryLockdownWhitelistContext(s: context) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>context</replaceable> is on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryLockdownWhitelistUid(i: uid) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether user id <replaceable>uid</replaceable> is on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryLockdownWhitelistUser(s: user) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>user</replaceable> is on whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeLockdownWhitelistCommand(s: command) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove <replaceable>command</replaceable> from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeLockdownWhitelistContext(s: context) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove <replaceable>context</replaceable> from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeLockdownWhitelistUid(i: uid) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove user id <replaceable>uid</replaceable> from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeLockdownWhitelistUser(s: user) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove <replaceable>user</replaceable> from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.policies.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>LockdownDisabled()</term>
+            <listitem>
+              <para>
+		Emitted when lockdown has been disabled.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownEnabled()</term>
+            <listitem>
+              <para>
+		Emitted when lockdown has been enabled.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistCommandAdded(s: command)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>command</replaceable> has been added to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistCommandRemoved(s: command)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>command</replaceable> has been removed from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistContextAdded(s: context)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>context</replaceable> has been added to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistContextRemoved(s: context)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>context</replaceable> has been removed from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistUidAdded(i: uid)</term>
+            <listitem>
+              <para>
+		Emitted when user id <replaceable>uid</replaceable> has been added to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistUidRemoved(i: uid)</term>
+            <listitem>
+              <para>
+		Emitted when user id <replaceable>uid</replaceable> has been removed from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistUserAdded(s: user)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>user</replaceable> has been added to whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>LockdownWhitelistUserRemoved(s: user)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>user</replaceable> has been removed from whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.zone">
+      <title>org.fedoraproject.FirewallD1.zone</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.zone.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>addForwardPort(s: zone, s: port, s: protocol, s: toport, s: toaddr, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add the <emphasis>IPv4</emphasis> forward port for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+		The destination address is a simple IP address.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+              </para>
+              <para>
+		Returns name of zone to which the forward port was added.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addIcmpBlock(s: zone, s: icmp, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add an ICMP block <replaceable>icmp</replaceable> for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+              </para>
+              <para>
+		Returns name of zone to which the ICMP block was added.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addInterface(s: zone, s: interface) &rarr; s</term>
+            <listitem>
+              <para>
+		Bind <replaceable>interface</replaceable> to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone to which the interface was bound.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addMasquerade(s: zone, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Enable <emphasis>IPv4</emphasis> masquerade for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		If <replaceable>timeout</replaceable> is non-zero, masquerading will be active for the amount of seconds.
+              </para>
+              <para>
+		Returns name of zone in which the masquerade was enabled.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addPort(s: zone, s: port, s: protocol, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add port for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+              </para>
+              <para>
+		Returns name of zone to which the port was added.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addRichRule(s: zone, s: rule, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add rich language <replaceable>rule</replaceable> for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+              </para>
+              <para>
+		Returns name of zone to which the rich language rule was added.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addService(s: zone, s: service, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add <replaceable>service</replaceable> for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+              </para>
+              <para>
+		Returns name of zone to which the service was added.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addSource(s: zone, s: source) &rarr; s</term>
+            <listitem>
+              <para>
+		Bind <replaceable>source</replaceable> to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone to which the source was bound.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>changeZone(s: zone, s: interface) &rarr; s</term>
+            <listitem>
+              <para>
+		This function is deprecated, use changeZoneOfInterface instead.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>changeZoneOfInterface(s: zone, s: interface) &rarr; s</term>
+            <listitem>
+              <para>
+		Change a zone an <replaceable>interface</replaceable> is part of to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>changeZoneOfSource(s: zone, s: source) &rarr; s</term>
+            <listitem>
+              <para>
+		Change a zone an <replaceable>source</replaceable> is part of to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getActiveZones() &rarr; a{sa{sas}}</term>
+            <listitem>
+              <para>
+		Return dictionary of currently active zones altogether with interfaces and sources used in these zones.
+		Active zones are zones, that have a binding to an interface or source.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getForwardPorts(s: zone) &rarr; aas</term>
+            <listitem>
+              <para>
+		Return list of <emphasis>IPv4</emphasis> forward ports added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getIcmpBlocks(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of Internet Control Message Protocol (ICMP) type blocks added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getInterfaces(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of interfaces of a <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getPorts(s: zone) &rarr; aas</term>
+            <listitem>
+              <para>
+		Return list of enabled ports in a <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getRichRules(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of rich language rules added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getServices(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of enabled services in a <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getSources(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of sources of a <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZoneOfInterface(s: interface) &rarr; s</term>
+            <listitem>
+              <para>
+		Return name of zone the <replaceable>interface</replaceable> is bound to or empty string.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZoneOfSource(s: source) &rarr; s</term>
+            <listitem>
+              <para>
+		Return name of zone the <replaceable>source</replaceable> is bound to or empty string.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZones() &rarr; as</term>
+            <listitem>
+              <para>
+		Return names of predefined zones.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>isImmutable(s: zone) &rarr; b</term>
+            <listitem>
+              <para>
+		Deprecated.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryForwardPort(s: zone, s: port, s: protocol, s: toport, s: toaddr) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether the <emphasis>IPv4</emphasis> forward port has been added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryIcmpBlock(s: zone, s: icmp) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether an ICMP block for <replaceable>icmp</replaceable> has been added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryInterface(s: zone, s: interface) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>interface</replaceable> has been bound to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryMasquerade(s: zone) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <emphasis>IPv4</emphasis> masquerading has been enabled for <replaceable>zone</replaceable>
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryPort(s: zone, s: port, s: protocol) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryRichRule(s: zone, s: rule) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether rich rule <replaceable>rule</replaceable> has been added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>queryService(s: zone, s: service) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>service</replaceable> has been added for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>querySource(s: zone, s: source) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>source</replaceable>has been bound to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeForwardPort(s: zone, s: port, s: protocol, s: toport, s: toaddr) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove <emphasis>IPv4</emphasis> forward port from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone from which the forward port was removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeIcmpBlock(s: zone, s: icmp) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove ICMP block <replaceable>icmp</replaceable> from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone from which the ICMP block was removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeInterface(s: zone, s: interface) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove binding of <replaceable>interface</replaceable> from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeMasquerade(s: zone) &rarr; s</term>
+            <listitem>
+              <para>
+		Disable <emphasis>IPv4</emphasis> masquerade for <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone for which the masquerade was disabled.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removePort(s: zone, s: port, s: protocol) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove port from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone from which the port was removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeRichRule(s: zone, s: rule) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove rich language <replaceable>rule</replaceable> from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone from which the rich language rule was removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeService(s: zone, s: service) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove <replaceable>service</replaceable> from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone from which the service was removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>removeSource(s: zone, s: source) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove binding of <replaceable>source</replaceable> from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+              </para>
+              <para>
+		Returns name of zone.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.zone.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>ForwardPortAdded(s: zone, s: port, s: protocol, s: toport, s: toaddr, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when forward port has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ForwardPortRemoved(s: zone, s: port, s: protocol, s: toport, s: toaddr)</term>
+            <listitem>
+              <para>
+		Emitted when forward port has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>IcmpBlockAdded(s: zone, s: icmp, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when ICMP block for <replaceable>icmp</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>IcmpBlockRemoved(s: zone, s: icmp)</term>
+            <listitem>
+              <para>
+		Emitted when ICMP block for <replaceable>icmp</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>InterfaceAdded(s: zone, s: interface)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>interface</replaceable> has been added to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>InterfaceRemoved(s: zone, s: interface)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>interface</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>MasqueradeAdded(s: zone, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when <emphasis>IPv4</emphasis> masquerade has been enabled for <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>MasqueradeRemoved(s: zone)</term>
+            <listitem>
+              <para>
+		Emitted when <emphasis>IPv4</emphasis> masquerade has been disabled for <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>PortAdded(s: zone, s: port, s: protocol, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>PortRemoved(s: zone, s: port, s: protocol)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>RichRuleAdded(s: zone, s: rule, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when rich language <replaceable>rule</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>RichRuleRemoved(s: zone, s: rule)</term>
+            <listitem>
+              <para>
+		Emitted when rich language <replaceable>rule</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ServiceAdded(s: zone, s: service, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>service</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ServiceRemoved(s: zone, s: service)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>service</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>SourceAdded(s: zone, s: source)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>source</replaceable> has been added to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>SourceRemoved(s: zone, s: source)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>source</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ZoneChanged(s: zone, s: interface)</term>
+            <listitem>
+              <para>
+		Deprecated
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ZoneOfInterfaceChanged(s: zone, s: interface)</term>
+            <listitem>
+              <para>
+		Emitted when a zone an <replaceable>interface</replaceable> is part of has been changed to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ZoneOfSourceChanged(s: zone, s: source)</term>
+            <listitem>
+              <para>
+		Emitted when a zone an <replaceable>source</replaceable> is part of has been changed to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1/org.freedesktop.DBus.Introspectable">
+      <title>org.freedesktop.DBus.Introspectable</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1/org.freedesktop.DBus.Introspectable.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Introspect() &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1/org.freedesktop.DBus.Properties">
+      <title>org.freedesktop.DBus.Properties</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1/org.freedesktop.DBus.Properties.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Get(s: interface_name, s: property_name) &rarr; v</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>GetAll(s: interface_name) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Set(s: interface_name, s: property_name, v: new_value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1/org.freedesktop.DBus.Properties.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>PropertiesChanged(s: interface_name, a{sv}: changed_properties, as: invalidated_properties)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config">
+      <title>org.fedoraproject.FirewallD1.config</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>addIcmpType(s: icmptype, (sssas): settings) &rarr; o</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addService(s: service, (sssa(ss)asa{ss}): settings) &rarr; o</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>addZone(s: zone, (sssbsasa(ss)asba(ssss)asasas): settings) &rarr; o</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getIcmpTypeByName(s: icmptype) &rarr; o</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getServiceByName(s: service) &rarr; o</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZoneByName(s: zone) &rarr; o</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZoneOfInterface(s: iface) &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZoneOfSource(s: source) &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>listIcmpTypes() &rarr; ao</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>listServices() &rarr; ao</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>listZones() &rarr; ao</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>IcmpTypeAdded(s: icmptype)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ServiceAdded(s: service)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>ZoneAdded(s: zone)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry>
+            <term>CleanupOnExit - s - (rw)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>DefaultZone - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Lockdown - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>MinimalMark - i - (rw)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.direct">
+      <title>org.fedoraproject.FirewallD1.config.direct</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.direct.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>getSettings() &rarr; (a(sss)a(sssias)a(sas))</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>update((a(sss)a(sssias)a(sas)): settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.direct.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>Updated()</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.policies">
+      <title>org.fedoraproject.FirewallD1.config.policies</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.policies.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>getLockdownWhitelist() &rarr; (asasasai)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>setLockdownWhitelist((asasasai): settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.policies.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>LockdownWhitelistUpdated()</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config/org.freedesktop.DBus.Introspectable">
+      <title>org.freedesktop.DBus.Introspectable</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config/org.freedesktop.DBus.Introspectable.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Introspect() &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config/org.freedesktop.DBus.Properties">
+      <title>org.freedesktop.DBus.Properties</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config/org.freedesktop.DBus.Properties.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Get(s: interface_name, s: property_name) &rarr; v</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>GetAll(s: interface_name) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Set(s: interface_name, s: property_name, v: new_value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config/org.freedesktop.DBus.Properties.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>PropertiesChanged(s: interface_name, a{sv}: changed_properties, as: invalidated_properties)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.zone">
+      <title>org.fedoraproject.FirewallD1.config.zone</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.zone.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>getSettings() &rarr; (sssbsasa(ss)asba(ssss)asasas)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>loadDefaults() &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>remove() &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>rename(s: name) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>update((sssbsasa(ss)asba(ssss)asasas): settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.zone.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>Removed(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Renamed(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Updated(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.zone.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry>
+            <term>default - b - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>filename - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>name - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>path - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.zone/org.freedesktop.DBus.Introspectable">
+      <title>org.freedesktop.DBus.Introspectable</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.zone/org.freedesktop.DBus.Introspectable.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Introspect() &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.zone/org.freedesktop.DBus.Properties">
+      <title>org.freedesktop.DBus.Properties</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.zone/org.freedesktop.DBus.Properties.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Get(s: interface_name, s: property_name) &rarr; v</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>GetAll(s: interface_name) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Set(s: interface_name, s: property_name, v: new_value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.zone/org.freedesktop.DBus.Properties.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>PropertiesChanged(s: interface_name, a{sv}: changed_properties, as: invalidated_properties)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.service">
+      <title>org.fedoraproject.FirewallD1.config.service</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.service.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>getSettings() &rarr; (sssa(ss)asa{ss})</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>loadDefaults() &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>remove() &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>rename(s: name) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>update((sssa(ss)asa{ss}): settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.service.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>Removed(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Renamed(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Updated(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.service.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry>
+            <term>default - b - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>filename - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>name - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>path - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.service/org.freedesktop.DBus.Introspectable">
+      <title>org.freedesktop.DBus.Introspectable</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.service/org.freedesktop.DBus.Introspectable.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Introspect() &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.service/org.freedesktop.DBus.Properties">
+      <title>org.freedesktop.DBus.Properties</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.service/org.freedesktop.DBus.Properties.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Get(s: interface_name, s: property_name) &rarr; v</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>GetAll(s: interface_name) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Set(s: interface_name, s: property_name, v: new_value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.service/org.freedesktop.DBus.Properties.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>PropertiesChanged(s: interface_name, a{sv}: changed_properties, as: invalidated_properties)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.icmptype">
+      <title>org.fedoraproject.FirewallD1.config.icmptype</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.icmptype.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>getSettings() &rarr; (sssas)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>loadDefaults() &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>remove() &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>rename(s: name) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>update((sssas): settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.icmptype.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>Removed(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Renamed(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Updated(s: name)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.icmptype.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry>
+            <term>default - b - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>filename - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>name - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>path - s - (ro)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.icmptype/org.freedesktop.DBus.Introspectable">
+      <title>org.freedesktop.DBus.Introspectable</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.icmptype/org.freedesktop.DBus.Introspectable.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Introspect() &rarr; s</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="org.fedoraproject.FirewallD1.config.icmptype/org.freedesktop.DBus.Properties">
+      <title>org.freedesktop.DBus.Properties</title>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.icmptype/org.freedesktop.DBus.Properties.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry>
+            <term>Get(s: interface_name, s: property_name) &rarr; v</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>GetAll(s: interface_name) &rarr; a{sv}</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>Set(s: interface_name, s: property_name, v: new_value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+
+      <refsect3 id="org.fedoraproject.FirewallD1.config.icmptype/org.freedesktop.DBus.Properties.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry>
+            <term>PropertiesChanged(s: interface_name, a{sv}: changed_properties, as: invalidated_properties)</term>
+            <listitem>
+              <para>
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>
