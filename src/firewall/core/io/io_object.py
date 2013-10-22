@@ -180,7 +180,19 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):
-        saxutils.XMLGenerator.__init__(self, out, "utf-8")
+        # fix memory leak in saxutils.XMLGenerator.__init__:
+        #   out = _gettextwriter(out, encoding)
+        # creates unbound object results in garbage in gc
+        #
+        # saxutils.XMLGenerator.__init__(self, out, "utf-8")
+        #   replaced by modified saxutils.XMLGenerator.__init__ code:
+        sax.handler.ContentHandler.__init__(self)
+        self._write = out.write
+        self._flush = out.flush
+        self._ns_contexts = [{}] # contains uri -> prefix dicts
+        self._current_context = self._ns_contexts[-1]
+        self._undeclared_ns_maps = []
+        self._encoding = "utf-8"
 
     def simpleElement(self, name, attrs):
         if isinstance(name, bytes):
