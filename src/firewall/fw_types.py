@@ -19,15 +19,56 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from collections import OrderedDict
+class LastUpdatedOrderedDict(object):
+    def __init__(self, x=None):
+        self._dict = { }
+        self._list = [ ]
+        if x:
+            self.update(x)
 
-class LastUpdatedOrderedDict(OrderedDict):
-    """ Ordered dictionary that stores items in the order they were last
-    set or added """
+    def clear(self):
+        del self._list[:]
+        self._dict.clear()
+
+    def update(self, x):
+        for key,value in x.items():
+            self[key] = value
+
+    def items(self):
+        return [(key, self[key]) for key in self._list]
+
+    def __delitem__(self, key):
+        if key in self._dict:
+            self._list.remove(key)
+            del self._dict[key]
+
+    def __repr__(self):
+        return '%s([%s])' % (self.__class__.__name__, ', '.join(
+                ['(%r, %r)' % (key, self[key]) for key in self._list]))
 
     def __setitem__(self, key, value):
-        # delete entry if it exists
+        if key not in self._dict:
+            self._list.append(key)
+        self._dict[key] = value
+
+    def __getitem__(self, key):
+        if key in self._dict:
+            return self._dict[key]
+        else:
+            return self._list[key]
+
+    def copy(self):
+        return LastUpdatedOrderedDict(self)
+
+    def keys(self):
+        return self_list[:]
+
+    def values(self, values=None):
+        return [ self[key] for key in self._list ]
+
+    def setdefault(self, key, value=None):
         if key in self:
-            del self[key]
-        # add the new entry as last item
-        OrderedDict.__setitem__(self, key, value)
+            return self[key]
+        else:
+            self[key] = value
+            return value
