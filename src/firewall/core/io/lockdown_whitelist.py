@@ -104,7 +104,13 @@ class LockdownWhitelist(IO_Object):
     def __init__(self, filename):
         super(LockdownWhitelist, self).__init__()
         self.filename = filename
-        self.clear()
+        self.parser = None
+        self.commands = [ ]
+        self.contexts = [ ]
+        self.users = [ ]
+        self.uids = [ ]
+#        self.gids = [ ]
+#        self.groups = [ ]
 
     def _check_config(self, config, item):
         if item in [ "commands", "contexts", "users", "uids" ]:
@@ -123,13 +129,13 @@ class LockdownWhitelist(IO_Object):
             if not checkUid(config):
                 raise FirewallError(INVALID_UID, config)
 
-    def clear(self):
-        self.commands = [ ]
-        self.contexts = [ ]
-        self.users = [ ]
-        self.uids = [ ]
-#        self.gids = [ ]
-#        self.groups = [ ]
+    def cleanup(self):
+        del self.commands[:]
+        del self.contexts[:]
+        del self.users[:]
+        del self.uids[:]
+#        del self.gids[:]
+#        del self.groups[:]
 
     # commands
 
@@ -281,13 +287,15 @@ class LockdownWhitelist(IO_Object):
     # read and write
 
     def read(self):
-        self.clear()
+        self.cleanup()
         if not self.filename.endswith(".xml"):
             raise FirewallError(INVALID_NAME, self.filename)
         handler = lockdown_whitelist_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)
         parser.parse(self.filename)
+        del handler
+        del parser
 
     def write(self):
         if os.path.exists(self.filename):
@@ -340,3 +348,4 @@ class LockdownWhitelist(IO_Object):
         handler.ignorableWhitespace("\n")
         handler.endDocument()
         fd.close()
+        del handler

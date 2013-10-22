@@ -404,7 +404,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                          in_signature=LockdownWhitelist.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def setLockdownWhitelist(self, settings, sender=None):
-        log.debug1("config.policies.setLockdownWhitelistSettings(...)")
+        log.debug1("config.policies.setLockdownWhitelist(...)")
         settings = dbus_to_python(settings)
         self.config.get_policies().lockdown_whitelist.import_config(settings)
         self.config.get_policies().lockdown_whitelist.write()

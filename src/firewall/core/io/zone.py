@@ -107,6 +107,23 @@ class Zone(IO_Object):
         self.rules = [ ]
         self.combined = False
 
+    def cleanup(self):
+        self.version = ""
+        self.short = ""
+        self.description = ""
+        self.UNUSED = False
+        self.target = DEFAULT_ZONE_TARGET
+        del self.services[:]
+        del self.ports[:]
+        del self.icmp_blocks[:]
+        self.masquerade = False
+        del self.forward_ports[:]
+        del self.interfaces[:]
+        del self.sources[:]
+        self.fw_config = None # to be able to check services and a icmp_blocks
+        del self.rules[:]
+        self.combined = False        
+
     def __getattr__(self, name):
         if name == "rules_str":
             rules_str = [str(rule) for rule in self.rules]
@@ -456,6 +473,8 @@ def zone_reader(filename, path):
     name = "%s/%s" % (path, filename)
     with open(name, "r") as f:
         parser.parse(f)
+    del handler
+    del parser
     return zone
 
 def zone_writer(zone, path=None):
@@ -687,3 +706,4 @@ def zone_writer(zone, path=None):
     handler.ignorableWhitespace("\n")
     handler.endDocument()
     fd.close()
+    del handler

@@ -64,7 +64,7 @@ class Firewall:
         self.zone = FirewallZone(self)
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
-        self.policies = FirewallPolicies(self)
+        self.policies = FirewallPolicies()
 
         self.__init_vars()
 
@@ -315,12 +315,14 @@ class Firewall:
             self.zone.add_zone(combined_zone)
 
     def cleanup(self):
-        self.__init_vars()
         self.icmptype.cleanup()
         self.service.cleanup()
         self.zone.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
+        self.policies.cleanup()
+        self._firewalld_conf.cleanup()
+        self.__init_vars()
 
     def stop(self):
         if self.cleanup_on_exit:

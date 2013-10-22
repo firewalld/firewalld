@@ -27,16 +27,13 @@ from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.errors import *
 
 class FirewallPolicies:
-    def __init__(self, fw):
-        self._fw = fw
-        self.__init_vars()
-
-    def __init_vars(self):
+    def __init__(self):
         self._lockdown = False
         self.lockdown_whitelist = LockdownWhitelist(LOCKDOWN_WHITELIST)
 
     def cleanup(self):
-        self.__init_vars()
+        self._lockdown = False
+        self.lockdown_whitelist.cleanup()
 
     # lockdown
 

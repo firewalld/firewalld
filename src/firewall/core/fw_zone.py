@@ -73,14 +73,12 @@ INTERFACE_ZONE_OPTS = {
 class FirewallZone:
     def __init__(self, fw):
         self._fw = fw
-        self.__init_vars()
-
-    def __init_vars(self):
         self._chains = { }
         self._zones = { }
 
     def cleanup(self):
-        self.__init_vars()
+        self._chains.clear()
+        self._zones.clear()
 
     # zones
 

@@ -124,7 +124,9 @@ class Direct(IO_Object):
     def __init__(self, filename):
         super(Direct, self).__init__()
         self.filename = filename
-        self.clear()
+        self.chains = LastUpdatedOrderedDict()
+        self.rules = LastUpdatedOrderedDict()
+        self.passthroughs = LastUpdatedOrderedDict()
 
     def _check_config(self, config, item):
         pass
@@ -150,7 +152,7 @@ class Direct(IO_Object):
         return tuple(ret)
 
     def import_config(self, config):
-        self.clear()
+        self.cleanup()
         self.check_config(config)
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if element == "chains":
@@ -163,10 +165,10 @@ class Direct(IO_Object):
                 for x in config[i]:
                     self.add_passthrough(*x)
 
-    def clear(self):
-        self.chains = LastUpdatedOrderedDict()
-        self.rules = LastUpdatedOrderedDict()
-        self.passthroughs = LastUpdatedOrderedDict()
+    def cleanup(self):
+        self.chains.clear()
+        self.rules.clear()
+        self.passthroughs.clear()
 
     def output(self):
         print ("chains")
@@ -301,7 +303,7 @@ class Direct(IO_Object):
     # read
 
     def read(self):
-        self.clear()
+        self.cleanup()
         if not self.filename.endswith(".xml"):
             raise FirewallError(INVALID_NAME, self.filename)
         handler = direct_ContentHandler(self)
@@ -363,3 +365,4 @@ class Direct(IO_Object):
         handler.ignorableWhitespace("\n")
         handler.endDocument()
         fd.close()
+        del handler

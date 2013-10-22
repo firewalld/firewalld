@@ -61,6 +61,14 @@ class Service(IO_Object):
         self.modules = [ ]
         self.destination = { }
 
+    def cleanup(self):
+        self.version = ""
+        self.short = ""
+        self.description = ""
+        del self.ports[:]
+        del self.modules[:]
+        self.destination.clear()
+
     def _check_config(self, config, item):
         if item == "ports":
             for port in config:
@@ -126,6 +134,8 @@ def service_reader(filename, path):
     name = "%s/%s" % (path, filename)
     with open(name, "r") as f:
         parser.parse(f)
+    del handler
+    del parser
     return service
 
 def service_writer(service, path=None):
@@ -196,3 +206,4 @@ def service_writer(service, path=None):
     handler.ignorableWhitespace("\n")
     handler.endDocument()
     fd.close()
+    del handler

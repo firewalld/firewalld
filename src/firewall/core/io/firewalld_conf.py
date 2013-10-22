@@ -36,6 +36,10 @@ class firewalld_conf:
         self._config = { }
         self._deleted = [ ]
 
+    def cleanup(self):
+        self._config.clear()
+        self._deleted = [ ]
+
     def get(self, key):
         return self._config.get(key.strip())
 

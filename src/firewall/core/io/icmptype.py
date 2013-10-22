@@ -55,6 +55,12 @@ class IcmpType(IO_Object):
         self.description = ""
         self.destination = [ ]
 
+    def cleanup(self):
+        self.version = ""
+        self.short = ""
+        self.description = ""        
+        del self.destination[:]
+
     def _check_config(self, config, item):
         if item == "destination":
             for destination in config:
@@ -98,6 +104,8 @@ def icmptype_reader(filename, path):
     name = "%s/%s" % (path, filename)
     with open(name, "r") as f:
         parser.parse(f)
+    del handler
+    del parser
     return icmptype
 
 def icmptype_writer(icmptype, path=None):
@@ -159,3 +167,4 @@ def icmptype_writer(icmptype, path=None):
     handler.ignorableWhitespace("\n")
     handler.endDocument()
     fd.close()
+    del handler

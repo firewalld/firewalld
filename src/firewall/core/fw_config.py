@@ -48,19 +48,40 @@ class FirewallConfig:
 
     def cleanup(self):
         for x in self._default_icmptypes.keys():
+            self._default_icmptypes[x].cleanup()
             del self._default_icmptypes[x]
         for x in self._icmptypes.keys():
+            self._icmptypes[x].cleanup()
             del self._icmptypes[x]
 
         for x in self._default_services.keys():
+            self._default_services[x].cleanup()
             del self._default_services[x]
         for x in self._services.keys():
+            self._services[x].cleanup()
             del self._services[x]
 
         for x in self._default_zones.keys():
+            self._default_zones[x].cleanup()
             del self._default_zones[x]
         for x in self._zones.keys():
+            self._zones[x].cleanup()
             del self._zones[x]
+
+        if self._firewalld_conf:
+            self._firewalld_conf.cleanup()
+            del self._firewalld_conf
+            self._firewalld_conf = None
+
+        if self._policies:
+            self._policies.cleanup()
+            del self._policies
+            self._policies = None
+
+        if self._direct:
+            self._direct.cleanup()
+            del self._direct
+            self._direct = None
 
         self.__init_vars()
 
