@@ -340,6 +340,11 @@ def max_zone_name_len():
 def checkUser(user):
     if len(user) < 1 or len(user) > os.sysconf('SC_LOGIN_NAME_MAX'):
         return False
+    for c in user:
+        if c not in string.ascii_letters and \
+           c not in string.digits and \
+           c not in [ ".", "-", "_", "$" ]:
+            return False
     return True
 
 def checkUid(uid):
@@ -348,7 +353,7 @@ def checkUid(uid):
             uid = int(uid)
         except:
             return False
-    if uid > 0 or uid <= 2^31-1:
+    if uid >= 0 or uid <= 2^31-1:
         return True
     return False
 
@@ -358,6 +363,26 @@ def checkCommand(command):
     for ch in [ "|", "\n", "\0" ]:
         if ch in command:
             return False
+    if command[0] != "/":
+        return False
+    return True
+
+def checkContext(context):
+    splits = context.split(":")
+    if len(splits) not in [4, 5]:
+        return False
+    # user ends with _u if not root
+    if splits[0] != "root" and splits[0][-2:] != "_u":
+        return False
+    # role ends with _r
+    if splits[1][-2:] != "_r":
+        return False
+    # type ends with _t
+    if splits[2][-2:] != "_t":
+        return False
+    # level might also contain :
+    if len(splits[3]) < 1:
+        return False
     return True
 
 def joinArgs(args):
