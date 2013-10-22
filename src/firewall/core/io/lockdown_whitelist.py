@@ -26,7 +26,8 @@ import shutil
 from firewall.errors import *
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
-from firewall.functions import uniqify
+from firewall.functions import uniqify, checkUser, checkUid, checkCommand, \
+    checkContext
 
 class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
@@ -106,18 +107,35 @@ class LockdownWhitelist(IO_Object):
         self.clear()
 
     def _check_config(self, config, item):
-        pass
+        if item in [ "commands", "contexts", "users", "uids" ]:
+            for x in config:
+                self._check_config(x, item[:-1])
+        elif item == "command":
+            if not checkCommand(config):
+                raise FirewallError(INVALID_COMMAND, config)
+        elif item == "context":
+            if not checkContext(config):
+                raise FirewallError(INVALID_CONTEXT, config)
+        elif item == "user":
+            if not checkUser(config):
+                raise FirewallError(INVALID_USER, config)
+        elif item == "uid":
+            if not checkUid(config):
+                raise FirewallError(INVALID_UID, config)
 
     def clear(self):
         self.commands = [ ]
         self.contexts = [ ]
         self.users = [ ]
         self.uids = [ ]
+#        self.gids = [ ]
 #        self.groups = [ ]
 
     # commands
 
     def add_command(self, command):
+        if not checkCommand(command):
+            raise FirewallError(INVALID_COMMAND, command)
         if command not in self.commands:
             self.commands.append(command)
 
@@ -147,6 +165,8 @@ class LockdownWhitelist(IO_Object):
     # user ids
 
     def add_uid(self, uid):
+        if not checkUid(uid):
+            raise FirewallError(INVALID_UID, str(uid))
         if uid not in self.uids:
             self.uids.append(uid)
 
@@ -169,6 +189,8 @@ class LockdownWhitelist(IO_Object):
     # users
 
     def add_user(self, user):
+        if not checkUser(user):
+            raise FirewallError(INVALID_USER, user)
         if user not in self.users:
             self.users.append(user)
 
@@ -235,6 +257,8 @@ class LockdownWhitelist(IO_Object):
     # selinux contexts
 
     def add_context(self, context):
+        if not checkContext(context):
+            raise FirewallError(INVALID_CONTEXT, context)
         if context not in self.contexts:
             self.contexts.append(context)
 
