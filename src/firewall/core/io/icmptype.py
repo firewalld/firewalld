@@ -137,9 +137,7 @@ def icmptype_writer(icmptype, path=None):
     if icmptype.short and icmptype.short != "":
         handler.ignorableWhitespace("  ")
         handler.startElement("short", { })
-        handler.characters(icmptype.short.decode('utf-8')
-                           if isinstance(icmptype.short, bytes)
-                           else icmptype.short)
+        handler.characters(icmptype.short)
         handler.endElement("short")
         handler.ignorableWhitespace("\n")
 
@@ -147,9 +145,7 @@ def icmptype_writer(icmptype, path=None):
     if icmptype.description and icmptype.description != "":
         handler.ignorableWhitespace("  ")
         handler.startElement("description", { })
-        handler.characters(icmptype.description.decode('utf-8')
-                           if isinstance(icmptype.description, bytes)
-                           else icmptype.description)
+        handler.characters(icmptype.description)
         handler.endElement("description")
         handler.ignorableWhitespace("\n")
 

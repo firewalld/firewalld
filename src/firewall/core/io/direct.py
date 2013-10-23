@@ -46,22 +46,22 @@ class direct_ContentHandler(IO_Object_ContentHandler):
             if not self.direct:
                 log.error("Parse Error: chain outside of direct")
                 return
-            ipv = str(attrs["ipv"])
-            table = str(attrs["table"])
-            chain = str(attrs["chain"])
+            ipv = attrs["ipv"]
+            table = attrs["table"]
+            chain = attrs["chain"]
             self.item.add_chain(ipv, table, chain)
 
         elif name == "rule":
             if not self.direct:
                 log.error("Parse Error: rule outside of direct")
                 return
-            ipv = str(attrs["ipv"])
+            ipv = attrs["ipv"]
             if ipv not in [ "ipv4", "ipv6", "eb" ]:
                 raise FirewallError(INVALID_IPV, ipv)
-            table = str(attrs["table"])
-            chain = str(attrs["chain"])
+            table = attrs["table"]
+            chain = attrs["chain"]
             try:
-                priority = int(str(attrs["priority"]))
+                priority = int(attrs["priority"])
             except:
                 log.error("Parse Error: %s is not a valid priority" % 
                           attrs["priority"])
@@ -72,7 +72,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
             if not self.direct:
                 log.error("Parse Error: command outside of direct")
                 return
-            ipv = str(attrs["ipv"])
+            ipv = attrs["ipv"]
             self._passthrough = [ipv]
 
         else:

@@ -167,9 +167,7 @@ def service_writer(service, path=None):
     if service.short and service.short != "":
         handler.ignorableWhitespace("  ")
         handler.startElement("short", { })
-        handler.characters(service.short.decode('utf-8')
-                           if isinstance(service.short, bytes)
-                           else service.short)
+        handler.characters(service.short)
         handler.endElement("short")
         handler.ignorableWhitespace("\n")
 
@@ -177,9 +175,7 @@ def service_writer(service, path=None):
     if service.description and service.description != "":
         handler.ignorableWhitespace("  ")
         handler.startElement("description", { })
-        handler.characters(service.description.decode('utf-8')
-                           if isinstance(service.description, bytes)
-                           else service.description)
+        handler.characters(service.description)
         handler.endElement("description")
         handler.ignorableWhitespace("\n")
 

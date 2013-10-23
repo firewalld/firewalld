@@ -508,9 +508,7 @@ def zone_writer(zone, path=None):
     if zone.short and zone.short != "":
         handler.ignorableWhitespace("  ")
         handler.startElement("short", { })
-        handler.characters(zone.short.decode('utf-8')
-                           if isinstance(zone.short, bytes)
-                           else zone.short)
+        handler.characters(zone.short)
         handler.endElement("short")
         handler.ignorableWhitespace("\n")
 
@@ -518,9 +516,7 @@ def zone_writer(zone, path=None):
     if zone.description and zone.description != "":
         handler.ignorableWhitespace("  ")
         handler.startElement("description", { })
-        handler.characters(zone.description.decode('utf-8')
-                           if isinstance(zone.description, bytes)
-                           else zone.description)
+        handler.characters(zone.description)
         handler.endElement("description")
         handler.ignorableWhitespace("\n")
 

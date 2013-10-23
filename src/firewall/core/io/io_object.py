@@ -25,7 +25,7 @@ import copy
 
 from firewall.config import *
 from firewall.errors import *
-from firewall import functions
+from firewall.functions import getPortRange, b2u
 
 class IO_Object(object):
     """ Abstract IO_Object as base for icmptype, service and zone """
@@ -187,6 +187,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         # saxutils.XMLGenerator.__init__(self, out, "utf-8")
         #   replaced by modified saxutils.XMLGenerator.__init__ code:
         sax.handler.ContentHandler.__init__(self)
+        out = saxutils._gettextwriter(out, "utf-8")
         self._write = out.write
         self._flush = out.flush
         self._ns_contexts = [{}] # contains uri -> prefix dicts
@@ -194,20 +195,51 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         self._undeclared_ns_maps = []
         self._encoding = "utf-8"
 
+    def startElement(self, name, attrs):
+        """ saxutils.XMLGenerator.startElement() expects name and attrs to be
+            unicode and bad things happen if any of them is (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
+        """
+        attrs = { b2u(name):b2u(value) for name, value in attrs.items() }
+        saxutils.XMLGenerator.startElement(self, b2u(name), attrs)
+
     def simpleElement(self, name, attrs):
-        if isinstance(name, bytes):
-            name = name.decode('utf-8')
-        self._write(u'<' + name)
+        """ slightly modified saxutils.XMLGenerator.startElement()
+        """
+        self._write(u'<' + b2u(name))
         for (name, value) in attrs.items():
-            if isinstance(name, bytes):
-                name = name.decode('utf-8')
-            if isinstance(value, bytes):
-                value = value.decode('utf-8')
-            self._write(u' %s=%s' % (name, saxutils.quoteattr(value)))
+            self._write(u' %s=%s' % (b2u(name),
+                                     saxutils.quoteattr(b2u(value))))
         self._write(u'/>')
 
+    def endElement(self, name):
+        """ saxutils.XMLGenerator.endElement() expects name to be
+            unicode and bad things happen if it's (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
+        """
+        saxutils.XMLGenerator.endElement(self, b2u(name))
+
+    def characters(self, content):
+        """ saxutils.XMLGenerator.characters() expects content to be
+            unicode and bad things happen if it's (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
+        """
+        saxutils.XMLGenerator.characters(self, b2u(content))
+
+    def ignorableWhitespace(self, content):
+        """ saxutils.XMLGenerator.ignorableWhitespace() expects content to be
+            unicode and bad things happen if it's (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
+        """
+        saxutils.XMLGenerator.ignorableWhitespace(self, b2u(content))
+
+
 def check_port(port):
-    port_range = functions.getPortRange(port)
+    port_range = getPortRange(port)
     if port_range == -2 or port_range == -1 or port_range == None or \
             (len(port_range) == 2 and port_range[0] >= port_range[1]):
         raise FirewallError(INVALID_PORT, port)

@@ -441,20 +441,22 @@ assert_good          "--permanent --direct --query-passthrough ipv4 -nvL"
 assert_good          "--permanent --direct --remove-passthrough ipv4 -nvL"
 assert_bad           "--permanent --direct --query-passthrough ipv4 -nvL"
 
-assert_good          "--permanent --direct --add-chain ipv4 filter mychain_p"
-assert_good_contains "--permanent --direct --get-chains ipv4 filter" "mychain_p"
-assert_good_contains "--permanent --direct --get-all-chains" "ipv4 filter mychain_p"
-assert_good          "--permanent --direct --query-chain ipv4 filter mychain_p"
+# try some non-ascii magic
+mychain_p="žluťoučký"
+assert_good          "--permanent --direct --add-chain ipv4 filter ${mychain_p}"
+assert_good_contains "--permanent --direct --get-chains ipv4 filter" "${mychain_p}"
+assert_good_contains "--permanent --direct --get-all-chains" "ipv4 filter ${mychain_p}"
+assert_good          "--permanent --direct --query-chain ipv4 filter ${mychain_p}"
 
-assert_good          "--permanent --direct --add-rule ipv4 filter mychain_p 3 -j ACCEPT"
-assert_good_contains "--permanent --direct --get-rules ipv4 filter mychain_p" "ACCEPT"
-assert_good_contains "--permanent --direct --get-all-rules" "ipv4 filter mychain_p 3 -j ACCEPT"
-assert_good          "--permanent --direct --query-rule ipv4 filter mychain_p 3 -j ACCEPT"
-assert_good          "--permanent --direct --remove-rule ipv4 filter mychain_p 3 -j ACCEPT"
-assert_bad           "--permanent --direct --query-rule ipv4 filter mychain_p 3 -j ACCEPT"
+assert_good          "--permanent --direct --add-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
+assert_good_contains "--permanent --direct --get-rules ipv4 filter ${mychain_p}" "ACCEPT"
+assert_good_contains "--permanent --direct --get-all-rules" "ipv4 filter ${mychain_p} 3 -j ACCEPT"
+assert_good          "--permanent --direct --query-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
+assert_good          "--permanent --direct --remove-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
+assert_bad           "--permanent --direct --query-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
 
-assert_good          "--permanent --direct --remove-chain ipv4 filter mychain_p"
-assert_bad           "--permanent --direct --query-chain ipv4 filter mychain_p"
+assert_good          "--permanent --direct --remove-chain ipv4 filter ${mychain_p}"
+assert_bad           "--permanent --direct --query-chain ipv4 filter ${mychain_p}"
 assert_good          "--permanent --direct --remove-chain ipv4 filter dummy" # removing nonexisting chain is just warning
 
 # lockdown
