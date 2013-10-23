@@ -30,7 +30,7 @@ class modules:
         modules = [ ]
         deps = { }
         with open("/proc/modules", "r") as f:
-            for line in f.xreadlines():
+            for line in f:
                 if not line:
                     break
                 line = line.strip()

@@ -149,7 +149,7 @@ def service_writer(service, path=None):
     if os.path.exists(name):
         try:
             shutil.copy2(name, "%s.old" % name)
-        except Exception, msg:
+        except Exception as msg:
             raise IOError("Backup of '%s' failed: %s" % (name, msg))
 
     fd = open(name, "w")

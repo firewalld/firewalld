@@ -326,18 +326,18 @@ def read_sysconfig_args():
     if os.path.exists(CONFIG) and os.path.isfile(CONFIG):
         filename = CONFIG
     try:
-        fd = open(filename, 'r')
+        f = open(filename, 'r')
     except:
         return None
     argv = [ ]
-    for line in fd.xreadlines():
+    for line in f:
         if not line:
             break
         line = line.strip()
         if len(line) < 1 or line[0] == '#':
             continue
         argv.append(line)
-    fd.close()
+    f.close()
     return (argv, filename)
 
 def parse_sysconfig_args(args, merge_config=None, filename=None):

@@ -47,24 +47,24 @@ class FirewallConfig:
         self._direct = None
 
     def cleanup(self):
-        for x in self._default_icmptypes.keys():
+        for x in list(self._default_icmptypes.keys()):
             self._default_icmptypes[x].cleanup()
             del self._default_icmptypes[x]
-        for x in self._icmptypes.keys():
+        for x in list(self._icmptypes.keys()):
             self._icmptypes[x].cleanup()
             del self._icmptypes[x]
 
-        for x in self._default_services.keys():
+        for x in list(self._default_services.keys()):
             self._default_services[x].cleanup()
             del self._default_services[x]
-        for x in self._services.keys():
+        for x in list(self._services.keys()):
             self._services[x].cleanup()
             del self._services[x]
 
-        for x in self._default_zones.keys():
+        for x in list(self._default_zones.keys()):
             self._default_zones[x].cleanup()
             del self._default_zones[x]
-        for x in self._zones.keys():
+        for x in list(self._zones.keys()):
             self._zones[x].cleanup()
             del self._zones[x]
 
@@ -132,8 +132,8 @@ class FirewallConfig:
     # icmptypes
 
     def get_icmptypes(self):
-        return sorted(set(self._icmptypes.keys() + \
-                          self._default_icmptypes.keys()))
+        return sorted(set(list(self._icmptypes.keys()) + \
+                          list(self._default_icmptypes.keys())))
 
     def add_icmptype(self, obj):
         if obj.default:
@@ -294,8 +294,8 @@ class FirewallConfig:
     # services
 
     def get_services(self):
-        return sorted(set(self._services.keys() + \
-                          self._default_services.keys()))
+        return sorted(set(list(self._services.keys()) + \
+                          list(self._default_services.keys())))
 
     def add_service(self, obj):
         if obj.default:
@@ -456,8 +456,8 @@ class FirewallConfig:
     # zones
 
     def get_zones(self):
-        return sorted(set(self._zones.keys() + \
-                          self._default_zones.keys()))
+        return sorted(set(list(self._zones.keys()) + \
+                          list(self._default_zones.keys())))
 
     def add_zone(self, obj):
         if obj.default:

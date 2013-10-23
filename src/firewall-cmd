@@ -56,7 +56,7 @@ def __print_if_verbose(msg=None):
         print(msg)
 
 def __usage():
-    print """
+    print ("""
 Usage: firewall-cmd [OPTIONS...]
 
 General Options
@@ -241,7 +241,7 @@ Panic Options
   --panic-on           Enable panic mode
   --panic-off          Disable panic mode
   --query-panic        Query whether panic mode is enabled
-"""
+""")
 
 def __parse_port(value):
     try:

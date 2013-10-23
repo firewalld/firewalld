@@ -188,7 +188,7 @@ class Logger:
     from logger import log
     log.setInfoLogLevel(log.INFO1)
     log.setDebugLogLevel(log.DEBUG1)
-    for i in xrange(1, log.INFO_MAX+1):
+    for i in range(1, log.INFO_MAX+1):
         log.setInfoLogLabel(i, "INFO%d: " % i)
     log.setFormat("%(date)s %(module)s:%(line)d [%(domain)s] %(label)s: "
                   "%(level)d %(message)s")
@@ -254,7 +254,7 @@ class Logger:
         self.setInfoLogLabel(self.WARNING, "WARNING: ")
 
         # generate info levels and infox functions
-        for _level in xrange(1, self.INFO_MAX+1):
+        for _level in range(1, self.INFO_MAX+1):
             setattr(self, "INFO%d" % _level, _level)
             self.setInfoLogLabel(_level, "")
             setattr(self, "info%d" % (_level),
@@ -263,7 +263,7 @@ class Logger:
                      self.info(x, message, *args, **kwargs))(self, _level))
 
         # generate debug levels and debugx functions
-        for _level in xrange(1, self.DEBUG_MAX+1):
+        for _level in range(1, self.DEBUG_MAX+1):
             setattr(self, "DEBUG%d" % _level, _level)
             self.setDebugLogLabel(_level, "DEBUG%d: " % _level)
             setattr(self, "debug%d" % (_level),
@@ -278,13 +278,13 @@ class Logger:
         self.setDateFormat("%d %b %Y %H:%M:%S")
         self.setInfoLogging("*", self.stderr, [ self.FATAL, self.ERROR ])
         self.setInfoLogging("*", self.stdout,
-                        [ i for i in xrange(self.WARNING, self.INFO_MAX+1) ])
+                        [ i for i in range(self.WARNING, self.INFO_MAX+1) ])
         self.setDebugLogging("*", self.stdout,
-                             [ i for i in xrange(1, self.DEBUG_MAX+1) ])
+                             [ i for i in range(1, self.DEBUG_MAX+1) ])
 
     def close(self):
         """ Close all logging targets """
-        for level in xrange(self.FATAL, self.DEBUG_MAX+1):
+        for level in range(self.FATAL, self.DEBUG_MAX+1):
             if not level in self._logging:
                 continue
             for (domain, target, _format) in self._logging[level]:
@@ -470,9 +470,9 @@ class Logger:
                                         max=self.INFO_MAX)
         else:
             if is_debug:
-                levels = [ i for i in xrange(self.DEBUG1, self.DEBUG_MAX) ]
+                levels = [ i for i in range(self.DEBUG1, self.DEBUG_MAX) ]
             else:
-                levels = [ i for i in xrange(self.FATAL, self.INFO_MAX) ]
+                levels = [ i for i in range(self.FATAL, self.INFO_MAX) ]
         return levels
 
     def _getTargets(self, target):
@@ -502,7 +502,7 @@ class Logger:
         if len(_domains) > 0:
             _domains.clear()
 
-        for level in xrange(_range[0], _range[1]):
+        for level in range(_range[0], _range[1]):
             if not level in _logging:
                 continue
             for (domain, target, _format) in _logging[level]:
@@ -819,9 +819,9 @@ log = Logger()
 if __name__ == '__main__':
     log.setInfoLogLevel(log.INFO2)
     log.setDebugLogLevel(log.DEBUG5)
-    for i in xrange(log.INFO1, log.INFO_MAX+1):
+    for i in range(log.INFO1, log.INFO_MAX+1):
         log.setInfoLogLabel(i, "INFO%d: " % i)
-    for i in xrange(log.DEBUG1, log.DEBUG_MAX+1):
+    for i in range(log.DEBUG1, log.DEBUG_MAX+1):
         log.setDebugLogLabel(i, "DEBUG%d: " % i)
 
     log.setFormat("%(date)s %(module)s:%(line)d %(label)s"

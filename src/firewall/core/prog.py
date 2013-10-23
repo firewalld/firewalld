@@ -42,7 +42,7 @@ def runProg(prog, argv=[ ]):
             os._exit(255)
     os.close(wfd)
 
-    cret = ""
+    cret = b''
     cout = os.read(rfd, 8192)
     while cout:
         cret += cout
@@ -50,4 +50,5 @@ def runProg(prog, argv=[ ]):
     os.close(rfd)
     (cpid, status) = os.waitpid(pid, 0)
 
-    return (status, cret.rstrip())
+    cret = cret.rstrip().decode('utf-8', 'replace')
+    return (status, cret)

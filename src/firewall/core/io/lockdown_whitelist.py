@@ -301,7 +301,7 @@ class LockdownWhitelist(IO_Object):
         if os.path.exists(self.filename):
             try:
                 shutil.copy2(self.filename, "%s.old" % self.filename)
-            except Exception, msg:
+            except Exception as msg:
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
         fd = open(self.filename, "w")

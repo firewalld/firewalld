@@ -63,7 +63,7 @@ def getPortRange(ports):
 
     splits = ports.split("-")
     matched = [ ]
-    for i in xrange(len(splits), 0, -1):
+    for i in range(len(splits), 0, -1):
         id1 = getPortID("-".join(splits[:i]))
         port2 = "-".join(splits[i:])
         if len(port2) > 0:

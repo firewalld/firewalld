@@ -185,7 +185,7 @@ if __name__ == "__main__":
     window.add(hbox)
 
     menu = Gtk.Menu()
-    for i in xrange(10):
+    for i in range(10):
         item = Gtk.CheckMenuItem("level %d" % i)
 #        item = Gtk.MenuItem("level %d" % i)
         menu.add(item)

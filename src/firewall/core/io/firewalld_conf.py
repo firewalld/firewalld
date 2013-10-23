@@ -66,7 +66,7 @@ class firewalld_conf:
             log.error("Failed to open '%s': %s" % (self.filename, msg))
             raise
 
-        for line in f.xreadlines():
+        for line in f:
             if not line:
                 break
             line = line.strip()
@@ -116,7 +116,7 @@ class firewalld_conf:
             else:
                 f = None
         else:
-            for line in f.xreadlines():
+            for line in f:
                 if not line:
                     break
                 # remove newline
@@ -188,4 +188,4 @@ class firewalld_conf:
             os.remove(temp)
             raise IOError("Failed to create '%s': %s" % (self.filename, msg))
         else:
-            os.chmod(self.filename, 0600)
+            os.chmod(self.filename, 0o600)

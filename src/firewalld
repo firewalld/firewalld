@@ -67,7 +67,7 @@ log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR ])
 log.setInfoLogging("*", log_file, [ log.WARNING ])
 log.setDebugLogLevel(log.NO_INFO)
 log.setDebugLogLevel(log.NO_DEBUG)
-log.setDebugLogging("*", log_file, [ i for i in xrange(1, log.DEBUG_MAX+1) ])
+log.setDebugLogging("*", log_file, [ i for i in range(1, log.DEBUG_MAX+1) ])
 
 if args.debug:
     log.setInfoLogLevel(log.INFO_MAX)
@@ -94,7 +94,7 @@ try:
         # decouple from parent environment
         os.chdir("/")
         os.setsid()
-        os.umask(os.umask(0077) | 0022)
+        os.umask(os.umask(0o077) | 0o022)
 
         import resource          # Resource usage information.
         maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
@@ -102,7 +102,7 @@ try:
             maxfd = 1024
 
         # Iterate through and close all file descriptors.
-        for fd in xrange(0, maxfd):
+        for fd in range(0, maxfd):
             try:
                 os.close(fd)
             except OSError:      # ERROR, fd wasn't open to begin with (ignored)
