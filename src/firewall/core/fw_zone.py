@@ -26,7 +26,7 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
-from firewall.core.ipXtables import ip4tables_available_tables, ip6tables_available_tables
+from ipXtables import ip4tables_available_tables, ip6tables_available_tables
 
 mangle = []
 if "mangle" in ip4tables_available_tables:
@@ -193,7 +193,12 @@ class FirewallZone:
                                      "-j", "%s_deny" % (_zone) ]))
                 rules.append((ipv, [ _zone, 3, "-t", table,
                                      "-j", "%s_allow" % (_zone) ]))
-                if self._zones[zone].target != DEFAULT_ZONE_TARGET:
+                target = self._zones[zone].target
+                if target != DEFAULT_ZONE_TARGET and not \
+                   ((target in [ "REJECT", "%%REJECT%%" ] and \
+                     chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT",
+                                    "OUTPUT" ]) or \
+                    (target == "DROP" and table == "nat")):
                     rules.append((ipv, [ _zone, 4, "-t", table,
                                          "-j", self._zones[zone].target ]))
 
@@ -378,15 +383,6 @@ class FirewallZone:
                     opt = INTERFACE_ZONE_OPTS[chain]
                     target = DEFAULT_ZONE_TARGET.format(
                         chain=SHORTCUTS[chain], zone=zone)
-                    if target in [ "REJECT", "%%REJECT%%" ] and \
-                            chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                        # REJECT is only valid in the INPUT, FORWARD and
-                        # OUTPUT chains, and user-defined chains which are 
-                        # only called from those chains
-                        continue
-                    if target == "DROP" and table == "nat":
-                        # DROP is not supported in nat table
-                        continue
                     action = "-g" if "_ZONE_" in target else "-j"
                     rule = [ "%s_ZONES" % chain, "-t", table,
                              opt, interface, action, target ]
