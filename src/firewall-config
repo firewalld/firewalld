@@ -2780,11 +2780,9 @@ class FirewallConfig(object):
 
     def change_interface_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
-        if not iter:
-            return
-        interface = self.interfaceStore.get_value(iter, 0)
         if iter:
             self.editInterfaceButton.set_sensitive(True)
+            interface = self.interfaceStore.get_value(iter, 0)
             if interface in self.connections:
                 self.removeInterfaceButton.set_sensitive(False)
             else:
