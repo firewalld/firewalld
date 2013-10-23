@@ -400,3 +400,9 @@ def b2u(string):
     if isinstance(string, bytes):
         return string.decode('utf-8', 'replace')
     return string
+
+def u2b(string):
+    """ unicode to bytes """
+    if isinstance(string, unicode):
+        return string.encode('utf-8', 'replace')
+    return string
