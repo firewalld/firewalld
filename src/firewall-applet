@@ -423,6 +423,7 @@ class TrayApplet(object):
         self.shields_dialog.set_property("width-request", 400)
         self.shields_dialog.resize_to_geometry(400, 100)
         self.shields_dialog.add_buttons("gtk-close", 1)
+        self.shields_dialog.set_icon_name(self.icon_name)
         self.shields_dialog.set_modal(True)
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         vbox.set_border_width(12)
