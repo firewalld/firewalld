@@ -22,6 +22,7 @@
 import socket
 import os.path
 import shlex, pipes
+import string
 from firewall.core.logger import log
 
 def getPortID(port):
