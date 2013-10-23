@@ -4513,7 +4513,7 @@ class FirewallConfig(object):
 
     def add_edit_uid(self, add):
         if add:
-            old_uid = ""
+            old_uid = 0
         else:
             selection = self.lockdownUidView.get_selection()
             (model, iter) = selection.get_selected()
