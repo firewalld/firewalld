@@ -110,7 +110,7 @@
                 <property name="max_length">60</property>
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
-                <property name="width_chars">20</property>
+                <property name="width_chars">40</property>
                 <property name="shadow_type">none</property>
                 <property name="invisible_char_set">True</property>
               </object>
@@ -211,10 +211,10 @@
               <object class="GtkEntry" id="commandDialogCommandEntry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="max_length">50</property>
+                <property name="max_length">1024</property>
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
-                <property name="width_chars">20</property>
+                <property name="width_chars">50</property>
                 <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onCommandChanged" swapped="no"/>
               </object>
@@ -315,10 +315,10 @@
               <object class="GtkEntry" id="contextDialogContextEntry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="max_length">50</property>
+                <property name="max_length">1024</property>
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
-                <property name="width_chars">20</property>
+                <property name="width_chars">50</property>
                 <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onContextChanged" swapped="no"/>
               </object>
@@ -773,6 +773,7 @@
                       <object class="GtkComboBoxText" id="directPassthroughDialogIPVCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="entry_text_column">0</property>
                         <property name="id_column">1</property>
                         <items>
@@ -795,7 +796,7 @@
                         <property name="valign">start</property>
                         <property name="max_length">1024</property>
                         <property name="invisible_char">●</property>
-                        <property name="width_chars">40</property>
+                        <property name="width_chars">50</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectPassthroughDialogChanged" swapped="no"/>
                       </object>
@@ -960,6 +961,7 @@
                       <object class="GtkComboBoxText" id="directRuleDialogTableCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="entry_text_column">0</property>
                         <property name="id_column">1</property>
                         <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
@@ -976,10 +978,11 @@
                       <object class="GtkEntry" id="directRuleDialogChainEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="halign">start</property>
                         <property name="valign">start</property>
                         <property name="max_length">31</property>
                         <property name="invisible_char">●</property>
-                        <property name="width_chars">20</property>
+                        <property name="width_chars">31</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                       </object>
@@ -1009,6 +1012,7 @@
                       <object class="GtkComboBoxText" id="directRuleDialogIPVCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="entry_text_column">0</property>
                         <property name="id_column">1</property>
                         <items>
@@ -1032,7 +1036,7 @@
                         <property name="valign">start</property>
                         <property name="max_length">1024</property>
                         <property name="invisible_char">●</property>
-                        <property name="width_chars">40</property>
+                        <property name="width_chars">50</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                       </object>
@@ -1076,6 +1080,7 @@
                       <object class="GtkSpinButton" id="directRuleDialogPrioritySpinbutton">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="halign">start</property>
                         <property name="max_length">8</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">8</property>
@@ -1317,10 +1322,10 @@
                       <object class="GtkEntry" id="forwardDialogToAddrEntry">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="max_length">15</property>
+                        <property name="max_length">60</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="width_chars">15</property>
+                        <property name="width_chars">25</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
@@ -1351,7 +1356,7 @@
                         <property name="can_focus">True</property>
                         <property name="max_length">11</property>
                         <property name="invisible_char">●</property>
-                        <property name="width_chars">5</property>
+                        <property name="width_chars">11</property>
                         <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1412,7 +1417,7 @@
                         <property name="can_focus">True</property>
                         <property name="max_length">11</property>
                         <property name="invisible_char">●</property>
-                        <property name="width_chars">5</property>
+                        <property name="width_chars">11</property>
                         <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1997,7 +2002,7 @@
                 <property name="max_length">60</property>
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
-                <property name="width_chars">20</property>
+                <property name="width_chars">50</property>
                 <property name="shadow_type">none</property>
                 <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onInterfaceChanged" swapped="no"/>
@@ -5807,7 +5812,7 @@
                 <property name="max_length">50</property>
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
-                <property name="width_chars">20</property>
+                <property name="width_chars">50</property>
                 <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onModuleChanged" swapped="no"/>
               </object>
@@ -5950,7 +5955,7 @@
                         <property name="max_length">50</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="width_chars">20</property>
+                        <property name="width_chars">25</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onPortChanged" swapped="no"/>
                       </object>
@@ -5964,6 +5969,7 @@
                       <object class="GtkComboBoxText" id="portDialogProtoCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="entry_text_column">0</property>
                         <property name="id_column">1</property>
                         <items>
@@ -6122,7 +6128,7 @@
                         <property name="max_length">50</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="width_chars">20</property>
+                        <property name="width_chars">25</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onPortProtoChanged" swapped="no"/>
                       </object>
@@ -6136,6 +6142,7 @@
                       <object class="GtkComboBoxText" id="portProtoDialogProtoCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">start</property>
                         <property name="entry_text_column">0</property>
                         <property name="id_column">1</property>
                         <items>
@@ -6179,7 +6186,7 @@
                         <property name="valign">start</property>
                         <property name="max_length">50</property>
                         <property name="invisible_char">●</property>
-                        <property name="width_chars">20</property>
+                        <property name="width_chars">25</property>
                         <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onPortProtoChanged" swapped="no"/>
                       </object>
@@ -6369,7 +6376,7 @@
                     <property name="hexpand">True</property>
                     <property name="max_length">50</property>
                     <property name="invisible_char">●</property>
-                    <property name="width_chars">20</property>
+                    <property name="width_chars">25</property>
                     <property name="invisible_char_set">True</property>
                     <signal name="changed" handler="onProtoChanged" swapped="no"/>
                   </object>
@@ -6504,6 +6511,7 @@
                       <object class="GtkLabel" id="richRuleDialogSourceLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">end</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Source:</property>
                       </object>
@@ -6518,6 +6526,7 @@
                       <object class="GtkLabel" id="richRuleDialogDestinationLabel">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="halign">end</property>
                         <property name="xalign">1</property>
                         <property name="label" translatable="yes">Destination:</property>
                       </object>
@@ -6552,7 +6561,7 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="halign">end</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">1</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_richRuleDialog_changed" swapped="no"/>
                       </object>
@@ -6586,6 +6595,7 @@
                       <object class="GtkBox" id="richRuleDialogSourceBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
                         <property name="spacing">3</property>
                         <child>
                           <object class="GtkButton" id="richRuleDialogSourceChooser">
@@ -6675,6 +6685,7 @@
                       <object class="GtkBox" id="richRuleDialogDestinationBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
                         <property name="spacing">3</property>
                         <child>
                           <object class="GtkButton" id="richRuleDialogDestinationChooser">
@@ -6764,6 +6775,7 @@
                       <object class="GtkBox" id="richRuleDialogActionBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
                         <property name="orientation">vertical</property>
                         <property name="spacing">3</property>
                         <child>
@@ -6819,6 +6831,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="hexpand">True</property>
+                                    <property name="max_length">50</property>
                                     <property name="invisible_char">●</property>
                                     <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
@@ -6944,6 +6957,7 @@
                       <object class="GtkGrid" id="richRuleDialogLogGrid">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
                         <property name="row_spacing">6</property>
                         <property name="column_spacing">3</property>
                         <child>
@@ -6981,9 +6995,12 @@
                           <object class="GtkEntry" id="richRuleDialogLogPrefixEntry">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="halign">start</property>
                             <property name="hexpand">True</property>
+                            <property name="max_length">29</property>
                             <property name="invisible_char">•</property>
                             <property name="activates_default">True</property>
+                            <property name="width_chars">29</property>
                             <property name="invisible_char_set">True</property>
                             <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                           </object>
@@ -7177,6 +7194,7 @@
                       <object class="GtkBox" id="richRuleDialogAuditBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
                         <property name="spacing">3</property>
                         <child>
                           <object class="GtkCheckButton" id="richRuleDialogAuditLimitCheck">
@@ -7280,19 +7298,21 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="halign">end</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">1</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_richRuleDialog_changed" swapped="no"/>
                       </object>
                       <packing>
                         <property name="top_attach">2</property>
                         <property name="bottom_attach">3</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkBox" id="richRuleDialogElementBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="hexpand">True</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkComboBoxText" id="richRuleDialogElementCombobox">
@@ -7391,9 +7411,12 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">end</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">1</property>
                         <property name="label" translatable="yes">Family:</property>
                       </object>
+                      <packing>
+                        <property name="x_options">GTK_FILL</property>
+                      </packing>
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="richRuleDialogActionCheck">
@@ -7402,13 +7425,14 @@
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="halign">end</property>
-                        <property name="xalign">0</property>
+                        <property name="xalign">1</property>
                         <property name="draw_indicator">True</property>
                         <signal name="toggled" handler="on_richRuleDialog_changed" swapped="no"/>
                       </object>
                       <packing>
                         <property name="top_attach">4</property>
                         <property name="bottom_attach">5</property>
+                        <property name="x_options">GTK_FILL</property>
                       </packing>
                     </child>
                   </object>
