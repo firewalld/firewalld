@@ -57,6 +57,9 @@ class LastUpdatedOrderedDict(object):
         else:
             return self._list[key]
 
+    def __len__(self):
+        return len(self._list)
+
     def copy(self):
         return LastUpdatedOrderedDict(self)
 
