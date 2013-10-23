@@ -193,6 +193,9 @@ class FirewallZone:
                                      "-j", "%s_deny" % (_zone) ]))
                 rules.append((ipv, [ _zone, 3, "-t", table,
                                      "-j", "%s_allow" % (_zone) ]))
+                if self._zones[zone].target != DEFAULT_ZONE_TARGET:
+                    rules.append((ipv, [ _zone, 4, "-t", table,
+                                         "-j", self._zones[zone].target ]))
 
         if create:
             # handle chains first
@@ -373,7 +376,7 @@ class FirewallZone:
                     # handle trust and block zone directly, accept or reject
                     # others will be placed into the proper zone chains
                     opt = INTERFACE_ZONE_OPTS[chain]
-                    target = self._zones[zone].target.format(
+                    target = DEFAULT_ZONE_TARGET.format(
                         chain=SHORTCUTS[chain], zone=zone)
                     if target in [ "REJECT", "%%REJECT%%" ] and \
                             chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
