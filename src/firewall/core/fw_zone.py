@@ -193,6 +193,14 @@ class FirewallZone:
                                      "-j", "%s_deny" % (_zone) ]))
                 rules.append((ipv, [ _zone, 3, "-t", table,
                                      "-j", "%s_allow" % (_zone) ]))
+
+                # handle trust and block zones:
+                # add an additional rule with the zone target (accept, reject or
+                # drop) to the base _zone, with the following limitations:
+                # - REJECT is only valid in the INPUT, FORWARD and
+                # - OUTPUT chains, and user-defined chains which are only 
+                #   called from those chains
+                # - DROP is not supported in nat table
                 target = self._zones[zone].target
                 if target != DEFAULT_ZONE_TARGET and not \
                    ((target in [ "REJECT", "%%REJECT%%" ] and \
@@ -377,9 +385,8 @@ class FirewallZone:
                     # create needed chains if not done already
                     if enable:
                         self.add_chain(zone, table, chain)
-
-                    # handle trust and block zone directly, accept or reject
-                    # others will be placed into the proper zone chains
+                    # handle all zones in the same way here, now
+                    # trust and block zone targets are handled now in __chain
                     opt = INTERFACE_ZONE_OPTS[chain]
                     target = DEFAULT_ZONE_TARGET.format(
                         chain=SHORTCUTS[chain], zone=zone)
