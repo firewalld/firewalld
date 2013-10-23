@@ -246,6 +246,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("completeReload()")
 
         self.fw.reload(True)
+        self.config.reload()
         self.Reloaded()
 
     @dbus.service.signal(DBUS_INTERFACE)
