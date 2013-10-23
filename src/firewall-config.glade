@@ -7817,11 +7817,6 @@
       <action-widget response="1">serviceDialogOkButton</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkAdjustment" id="uid_adjustment">
-    <property name="upper">2147483647</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkDialog" id="uidDialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -7896,20 +7891,26 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSpinButton" id="uidDialogUidSpinbutton">
+              <object class="GtkBox" id="box3">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="halign">start</property>
-                <property name="max_length">10</property>
-                <property name="invisible_char">●</property>
-                <property name="width_chars">10</property>
-                <property name="invisible_char_set">True</property>
-                <property name="progress_pulse_step">1</property>
-                <property name="input_purpose">number</property>
-                <property name="adjustment">uid_adjustment</property>
-                <property name="climb_rate">1</property>
-                <property name="numeric">True</property>
-                <signal name="value-changed" handler="onUidChanged" swapped="no"/>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkEntry" id="uidDialogUidEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="max_length">5</property>
+                    <property name="invisible_char">•</property>
+                    <property name="activates_default">True</property>
+                    <property name="width_chars">5</property>
+                    <property name="invisible_char_set">True</property>
+                    <signal name="changed" handler="onUidChanged" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -8008,7 +8009,7 @@
               <object class="GtkEntry" id="userDialogUserEntry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="max_length">256</property>
+                <property name="max_length">50</property>
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
                 <property name="width_chars">20</property>

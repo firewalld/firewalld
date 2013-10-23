@@ -215,8 +215,8 @@ class FirewallConfig(object):
         self.uidDialogOkButton = builder.get_object("uidDialogOkButton")
         self.uidDialogCancelButton = \
             builder.get_object("uidDialogCancelButton")
-        self.uidDialogUidSpinbutton = \
-            builder.get_object("uidDialogUidSpinbutton")
+        self.uidDialogUidEntry = \
+            builder.get_object("uidDialogUidEntry")
 
         self.serviceConfServicesEditBox = \
             builder.get_object("serviceConfServicesEditBox")
@@ -4521,7 +4521,7 @@ class FirewallConfig(object):
                 return
             old_uid = self.lockdownUidStore.get_value(iter, 0)
 
-        self.uidDialogUidSpinbutton.set_value(old_uid)
+        self.uidDialogUidEntry.set_text("%s" % old_uid)
         self.uidDialogOkButton.set_sensitive(False)
 
         self.uidDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -4533,7 +4533,7 @@ class FirewallConfig(object):
         if result != 1:
             return
 
-        uid = self.uidDialogUidSpinbutton.get_value_as_int()
+        uid = int(self.uidDialogUidEntry.get_text())
         if (old_uid == uid):
             # nothing to change
             return
@@ -4554,8 +4554,8 @@ class FirewallConfig(object):
                 self.changes_applied()
 
     def onUidChanged(self, *args):
-        uid = self.uidDialogUidSpinbutton.get_value_as_int()
-        if checkUid(uid):
+        text = self.uidDialogUidEntry.get_text()
+        if text != "" and checkUid(text):
             self.uidDialogOkButton.set_sensitive(True)
         else:
             self.uidDialogOkButton.set_sensitive(False)
