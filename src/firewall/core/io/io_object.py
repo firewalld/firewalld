@@ -22,10 +22,14 @@
 import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
+import sys
 
 from firewall.config import *
 from firewall.errors import *
 from firewall.functions import getPortRange, u2b
+
+PY2 = sys.version < '3'
+PY3 = sys.version >= '3'
 
 class IO_Object(object):
     """ Abstract IO_Object as base for icmptype, service and zone """
@@ -200,42 +204,62 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
             Because we don't use the _gettextwriter (see __init__) we need to
             override this method to pass utf-8 encoded string to _write().
         """
-        self._write('<' + u2b(name))
-        for (name, value) in attrs.items():
-            self._write(' %s=%s' % (u2b(name),
-                                    saxutils.quoteattr(u2b(value))))
-        self._write('>')
+        if PY3:
+            #saxutils.XMLGenerator.startElement(self, name, attrs)
+            super(IO_Object_XMLGenerator, self).startElement(name, attrs)
+        else:
+            self._write(b'<' + u2b(name))
+            for (name, value) in attrs.items():
+                self._write(b' %s=%s' % (u2b(name),
+                                        saxutils.quoteattr(u2b(value))))
+            self._write(b'>')
 
 
     def simpleElement(self, name, attrs):
         """ slightly modified startElement()
         """
-        self._write('<' + u2b(name))
-        for (name, value) in attrs.items():
-            self._write(' %s=%s' % (u2b(name),
-                                    saxutils.quoteattr(u2b(value))))
-        self._write('/>')
+        if PY3:
+            self._write('<' + name)
+            for (name, value) in attrs.items():
+                self._write(' %s=%s' % (name,
+                                        saxutils.quoteattr((value))))
+            self._write('/>')
+        else:
+            self._write(b'<' + u2b(name))
+            for (name, value) in attrs.items():
+                self._write(b' %s=%s' % (u2b(name),
+                                        saxutils.quoteattr(u2b(value))))
+            self._write(b'/>')
 
     def endElement(self, name):
         """ saxutils.XMLGenerator.endElement() passes unicode to _write.
             Because we don't use the _gettextwriter (see __init__) we need to
             override this method to pass utf-8 encoded string to _write().
         """
-        self._write('</%s>' % u2b(name))
+        if PY3:
+            saxutils.XMLGenerator.endElement(self, name)
+        else:
+            self._write(b'</%s>' % u2b(name))
 
     def characters(self, content):
         """ saxutils.XMLGenerator.characters() passes unicode to _write.
             Because we don't use the _gettextwriter (see __init__) we need to
             override this method to pass utf-8 encoded string to _write().
         """
-        self._write(saxutils.escape(u2b(content)))
+        if PY3:
+            saxutils.XMLGenerator.characters(self, content)
+        else:
+            self._write(saxutils.escape(u2b(content)))
 
     def ignorableWhitespace(self, content):
         """ saxutils.XMLGenerator.ignorableWhitespace() passes unicode to _write.
             Because we don't use the _gettextwriter (see __init__) we need to
             override this method to pass utf-8 encoded string to _write().
         """
-        self._write(u2b(content))
+        if PY3:
+            saxutils.XMLGenerator.ignorableWhitespace(self, content)
+        else:
+            self._write(u2b(content))
 
 
 def check_port(port):

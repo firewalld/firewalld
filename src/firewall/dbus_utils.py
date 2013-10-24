@@ -21,6 +21,9 @@
 
 import dbus
 import pwd
+import sys
+
+PY2 = sys.version < '3'
 
 def command_of_pid(pid):
     """ Get command for pid from /proc """
@@ -94,9 +97,10 @@ def dbus_to_python(obj):
     elif isinstance(obj, dbus.Boolean):
         return obj == True
     elif isinstance(obj, dbus.String):
-        return obj.encode('utf-8')
-    elif isinstance(obj, dbus.UTF8String) or \
-         isinstance(obj, dbus.ObjectPath):
+        return obj.encode('utf-8') if PY2 else str(obj)
+    elif PY2 and isinstance(obj, dbus.UTF8String): # Python3 has no UTF8String
+        return str(obj)
+    elif isinstance(obj, dbus.ObjectPath):
         return str(obj)
     elif isinstance(obj, dbus.Byte) or \
             isinstance(obj, dbus.Int16) or \
@@ -113,7 +117,7 @@ def dbus_to_python(obj):
     elif isinstance(obj, dbus.Struct):
         return tuple([dbus_to_python(x) for x in obj])
     elif isinstance(obj, dbus.Dictionary):
-        return {dbus_to_python(k):dbus_to_python(v) for k,v in obj.iteritems()}
+        return {dbus_to_python(k):dbus_to_python(v) for k,v in obj.items()}
     elif isinstance(obj, bool) or \
          isinstance(obj, str) or isinstance(obj, bytes) or \
          isinstance(obj, int) or isinstance(obj, float) or \

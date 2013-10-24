@@ -28,6 +28,9 @@ import syslog
 import traceback
 import fcntl
 
+PY2 = sys.version < '3'
+PY3 = sys.version >= '3'
+
 # ---------------------------------------------------------------------------
 
 # abstract class for logging targets
@@ -605,8 +608,9 @@ class Logger:
                 return None
 
         # class in module
-        for (name, obj) in module.__dict__.iteritems():
-            if isinstance(obj, types.ClassType):
+        for (name, obj) in module.__dict__.items():
+            if ((PY2 and isinstance(obj, types.ClassType)) or
+                (PY3 and isinstance(obj, type))):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
                     if type(value) == types.FunctionType:

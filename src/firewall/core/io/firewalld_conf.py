@@ -24,6 +24,7 @@ import tempfile
 import shutil
 
 from firewall.core.logger import log
+from firewall.functions import u2b
 
 valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown"]
 
@@ -124,17 +125,17 @@ class firewalld_conf:
 
                 if len(line) < 1:
                     if not empty:
-                        os.write(temp_file, "\n")
+                        os.write(temp_file, b"\n")
                         empty = True
                 elif line[0] == '#':
                     empty = False
-                    os.write(temp_file, line)
-                    os.write(temp_file, "\n")
+                    os.write(temp_file, u2b(line))
+                    os.write(temp_file, b"\n")
                 else:
                     p = line.split("=")
                     if len(p) != 2:
                         empty = False
-                        os.write(temp_file, line+"\n")
+                        os.write(temp_file, u2b(line)+b"\n")
                         continue
                     key = p[0].strip()
                     value = p[1].strip()
@@ -143,14 +144,14 @@ class firewalld_conf:
                         if (key in self._config and \
                                 self._config[key] != value):
                             empty = False
-                            os.write(temp_file, '%s=%s\n' \
-                                         % (key, self._config[key]))
+                            key_value = '%s=%s\n' % (key, self._config[key])
+                            os.write(temp_file, u2b(key_value))
                             modified = True
                         elif key in self._deleted:
                             modified = True
                         else:
                             empty = False
-                            os.write(temp_file, line+"\n")
+                            os.write(temp_file, u2b(line) + b"\n")
                         done.append(key)
                     else:
                         modified = True
@@ -161,9 +162,10 @@ class firewalld_conf:
                 if key in done:
                     continue
                 if not empty:
-                    os.write(temp_file, "\n")
+                    os.write(temp_file, b"\n")
                     empty = True
-                os.write(temp_file, '%s=%s\n' % (key, value))
+                key_value = '%s=%s\n' % (key, value)
+                os.write(temp_file, u2b(key_value))
                 modified = True
 
         if f:
