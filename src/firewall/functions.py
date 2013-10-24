@@ -403,6 +403,6 @@ def b2u(string):
 
 def u2b(string):
     """ unicode to bytes """
-    if isinstance(string, unicode):
+    if not isinstance(string, bytes):
         return string.encode('utf-8', 'replace')
     return string
