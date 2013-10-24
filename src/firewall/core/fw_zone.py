@@ -26,7 +26,7 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
-from ipXtables import ip4tables_available_tables, ip6tables_available_tables
+from firewall.core.ipXtables import ip4tables_available_tables, ip6tables_available_tables
 
 mangle = []
 if "mangle" in ip4tables_available_tables:
