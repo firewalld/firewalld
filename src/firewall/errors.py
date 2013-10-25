@@ -89,12 +89,6 @@ UNKNOWN_ERROR       =  254
 import sys
 
 class FirewallError(Exception):
-    mod = sys.modules[__module__]
-    errors = dict([(getattr(mod,varname),varname)
-                   for varname in dir(mod)
-                   if not varname.startswith("_")])
-    codes = dict([(errors[code],code) for code in errors])
-
     def __init__(self, code, msg=None):
         self.code = code
         self.msg = msg
@@ -119,3 +113,11 @@ class FirewallError(Exception):
         return code
 
     get_code = staticmethod(get_code)
+
+mod = sys.modules[FirewallError.__module__]
+FirewallError.errors = dict([(getattr(mod,varname),varname)
+                             for varname in dir(mod)
+                             if not varname.startswith("_") and \
+                             type(getattr(mod,varname)) == int])
+FirewallError.codes = dict([(FirewallError.errors[code],code) 
+                            for code in FirewallError.errors])
