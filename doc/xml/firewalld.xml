@@ -86,6 +86,15 @@
       </varlistentry>
 
       <varlistentry>
+        <term><option>--debug-gc</option></term>
+        <listitem>
+	  <para>
+	    Print garbage collector leak information. The collector runs every 10 seconds and if there are leaks, it prints information about the leaks.
+	  </para>
+	</listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term><option>--nofork</option></term>
         <listitem>
 	  <para>

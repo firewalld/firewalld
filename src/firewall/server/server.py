@@ -59,10 +59,29 @@ def sigterm(mainloop):
 #
 ############################################################################
 
-def run_server():
+def run_server(debug_gc=False):
     """ Main function for firewall server. Handles D-BUS and GLib mainloop.
     """
     service = None
+    if debug_gc:
+        from pprint import pformat
+        import gc
+        gc.enable()
+        gc.set_debug(gc.DEBUG_LEAK)
+
+        gc_timeout = 10
+        def gc_collect():
+            gc.collect()
+            if len(gc.garbage) > 0:
+                print("\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+                      ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+                print("GARBAGE OBJECTS (%d):\n" % len(gc.garbage))
+                for x in gc.garbage:
+                    print(type(x),"\n  ",)
+                    print(pformat(x))
+                print("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+                      "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
+            id = GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
     try:
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
@@ -72,6 +91,8 @@ def run_server():
 
         mainloop = GLib.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)
+        if debug_gc:
+            id = GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
         # use unix_signal_add if available, else unix_signal_add_full
         if hasattr(GLib, 'unix_signal_add'):

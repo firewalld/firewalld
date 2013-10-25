@@ -44,6 +44,11 @@ parser.add_argument('--debug',
                             Additional argument in range 1..%s can be used
                             to specify log level.""" % log.DEBUG_MAX,
                     metavar="level")
+parser.add_argument('--debug-gc',
+                    help="""Turn on garbage collector leak information.
+                    The collector runs every 10 seconds and if there are 
+                    leaks, it prints information about the leaks.""",
+                    action="store_true")
 parser.add_argument('--nofork',
                     help="""Turn off daemon forking,
                             run as a foreground process.""",
@@ -125,7 +130,7 @@ try:
 
     # import here
     from firewall.server import server
-    server.run_server()
+    server.run_server(args.debug_gc)
 
     if not args.nopid:
         os.remove(pid_file)
