@@ -290,25 +290,19 @@ def check_port(port):
 
 def check_address(ipv, source):
     if ipv == "ipv4":
-        if not checkIPnMask(source):
-            return False
+        return checkIPnMask(source)
     elif ipv == "ipv6":
-        if not checkIP6nMask(source):
-            return False
+        return checkIP6nMask(source)
     else:
         return False
-    return True
 
 def check_single_address(ipv, source):
     if ipv == "ipv4":
-        if not checkIP(source):
-            return False
+        return checkIP(source)
     elif ipv == "ipv6":
-        if not checkIP6(source):
-            return False
+        return checkIP6(source)
     else:
         return False
-    return True
 
 def uniqify(input):
     # removes duplicates from list, whilst preserving order
