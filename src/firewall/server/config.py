@@ -359,8 +359,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        if property_name in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                              "Lockdown" ]:
+        if property_name in [ "MinimalMark", "CleanupOnExit" ]:
             if property_name == "MinimalMark":
                 try:
                     foo = int(new_value)
@@ -371,7 +370,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
-            if property_name in [ "CleanupOnExit", "Lockdown" ]:
+            if property_name in [ "CleanupOnExit" ]:
                 if new_value.lower() not in [ "yes", "no", "true", "false" ]:
                     raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
@@ -379,15 +378,20 @@ class FirewallDConfig(slip.dbus.service.Object):
             self.config.get_firewalld_conf().write()
             self.PropertiesChanged(interface_name,
                                    { property_name: new_value }, [ ])
+        elif property_name in [ "DefaultZone", "Lockdown" ]:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.PropertyReadOnly: "
+                "Property '%s' is read-only" % property_name)
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' does not exist" % prop)
+                "Property '%s' does not exist" % property_name)
 
     @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
-        pass
+        log.debug1("config.PropertiesChanged('%s', '%s', '%s')", interface_name,
+                   changed_properties, invalidated_properties)
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
