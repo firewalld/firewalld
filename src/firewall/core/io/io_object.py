@@ -198,6 +198,8 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         self._current_context = self._ns_contexts[-1]
         self._undeclared_ns_maps = []
         self._encoding = "utf-8"
+        self._pending_start_element = False
+        self._short_empty_elements = False
 
     def startElement(self, name, attrs):
         """ saxutils.XMLGenerator.startElement() passes unicode to _write.
@@ -205,7 +207,6 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
             override this method to pass utf-8 encoded string to _write().
         """
         if PY3:
-            #saxutils.XMLGenerator.startElement(self, name, attrs)
             super(IO_Object_XMLGenerator, self).startElement(name, attrs)
         else:
             self._write(b'<' + u2b(name))
@@ -237,7 +238,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
             override this method to pass utf-8 encoded string to _write().
         """
         if PY3:
-            saxutils.XMLGenerator.endElement(self, name)
+            super(IO_Object_XMLGenerator, self).endElement(name)
         else:
             self._write(b'</%s>' % u2b(name))
 
@@ -247,7 +248,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
             override this method to pass utf-8 encoded string to _write().
         """
         if PY3:
-            saxutils.XMLGenerator.characters(self, content)
+            super(IO_Object_XMLGenerator, self).characters(content)
         else:
             self._write(saxutils.escape(u2b(content)))
 
@@ -257,7 +258,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
             override this method to pass utf-8 encoded string to _write().
         """
         if PY3:
-            saxutils.XMLGenerator.ignorableWhitespace(self, content)
+            super(IO_Object_XMLGenerator, self).ignorableWhitespace(content)
         else:
             self._write(u2b(content))
 
