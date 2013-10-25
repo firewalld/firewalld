@@ -1233,7 +1233,8 @@ class FirewallZone:
         if toport:
             self._fw.check_port(toport)
         if toaddr:
-            check_single_address(ipv, toaddr)
+            if not check_single_address(ipv, toaddr):
+                raise FirewallError(INVALID_ADDR, toaddr)
         if not toport and not toaddr:
             raise FirewallError(INVALID_FORWARD)
 
