@@ -115,9 +115,9 @@ class FirewallError(Exception):
     get_code = staticmethod(get_code)
 
 mod = sys.modules[FirewallError.__module__]
-FirewallError.errors = dict([(getattr(mod,varname),varname)
-                             for varname in dir(mod)
-                             if not varname.startswith("_") and \
-                             type(getattr(mod,varname)) == int])
-FirewallError.codes = dict([(FirewallError.errors[code],code) 
-                            for code in FirewallError.errors])
+FirewallError.errors = { getattr(mod,varname) : varname
+                         for varname in dir(mod)
+                         if not varname.startswith("_") and \
+                         type(getattr(mod,varname)) == int }
+FirewallError.codes =  { FirewallError.errors[code] : code
+                         for code in FirewallError.errors }
