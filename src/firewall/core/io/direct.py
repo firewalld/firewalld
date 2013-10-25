@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import xml.sax as sax
 import os
 import io
 import shutil
@@ -309,7 +310,9 @@ class Direct(IO_Object):
         handler = direct_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)
-        parser.parse(self.filename)
+        with open(self.filename, "r") as f:
+            parser.parse(f)
+
 
     def write(self):
         if os.path.exists(self.filename):

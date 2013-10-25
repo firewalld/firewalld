@@ -25,7 +25,7 @@ import tempfile
 import shutil
 
 from firewall.core.logger import log
-from firewall.functions import b2u
+from firewall.functions import b2u, u2b, PY2
 
 valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown"]
 
@@ -57,7 +57,7 @@ class firewalld_conf:
             if s:
                 s += '\n'
             s += '%s=%s' % (key, value)
-        return s
+        return u2b(s) if PY2 else s
 
     # load self.filename
     def read(self):

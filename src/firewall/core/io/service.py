@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import xml.sax as sax
 import os
 import io
 import shutil
@@ -85,39 +86,36 @@ class Service(IO_Object):
                 if destination not in [ "ipv4", "ipv6" ]:
                     raise FirewallError(INVALID_DESTINATION, destination)
                 if not functions.check_address(destination, config[destination]):
-                    raise FirewallError(INVALID_ADDRESS, config[destination])
-                    
+                    raise FirewallError(INVALID_ADDR, config[destination])
 
 # PARSER
 
 class service_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
         self.item.parser_check_element_attrs(name, attrs)
-
         if name == "service":
             if "name" in attrs:
                 log.warning("Ignoring deprecated attribute name='%s'" % 
                             attrs["name"])
             if "version" in attrs:
-                self.item.version = str(attrs["version"])
+                self.item.version = attrs["version"]
         elif name == "short":
             pass
         elif name == "description":
             pass
         elif name == "port":
-            self.item.ports.append((str(attrs["port"]),
-                                       str(attrs["protocol"])))
+            self.item.ports.append((attrs["port"], attrs["protocol"]))
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
-                    s = str(attrs[x])
+                    s = attrs[x]
                     if x == "ipv4" and not functions.checkIPnMask(s):
                         raise FirewallError(INVALID_DESTINATION, s)
                     if x == "ipv6" and not functions.checkIP6nMask(s):
                         raise FirewallError(INVALID_DESTINATION, s)
-                    self.item.destination[x] = str(attrs[x])
+                    self.item.destination[x] = attrs[x]
         elif name == "module":
-            self.item.modules.append(str(attrs["name"]))
+            self.item.modules.append(attrs["name"])
 
 def service_reader(filename, path):
     service = Service()

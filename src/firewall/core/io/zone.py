@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+import xml.sax as sax
 import os
 import io
 import shutil
@@ -213,12 +214,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.warning("Ignoring deprecated attribute name='%s'" % 
                             attrs["name"])
             if "version" in attrs:
-                self.item.version = str(attrs["version"])
+                self.item.version = attrs["version"]
             if "immutable" in attrs:
                 log.warning("Ignoring deprecated attribute immutable='%s'" % 
                             attrs["immutable"])
             if "target" in attrs:
-                target = str(attrs["target"])
+                target = attrs["target"]
                 if target not in ZONE_TARGETS:
                     raise FirewallError(INVALID_TARGET, target)
                 if target != "" and target != DEFAULT_ZONE_TARGET:
@@ -234,21 +235,21 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Service(str(attrs["name"]))
+                self._rule.element = Rich_Service(attrs["name"])
                 return
-            if str(attrs["name"]) not in self.item.services:
-                self.item.services.append(str(attrs["name"]))
+            if attrs["name"] not in self.item.services:
+                self.item.services.append(attrs["name"])
         elif name == "port":
             if self._rule:
                 if self._rule.element:
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Port(str(attrs["port"]),
-                                               str(attrs["protocol"]))
+                self._rule.element = Rich_Port(attrs["port"],
+                                               attrs["protocol"])
                 return
             # TODO: fix port string according to fw_zone.__port_id()
-            entry = (str(attrs["port"]), str(attrs["protocol"]))
+            entry = (attrs["port"], attrs["protocol"])
             if entry not in self.item.ports:
                 self.item.ports.append(entry)
         elif name == "protocol":
@@ -257,7 +258,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Protocol(str(attrs["value"]))
+                self._rule.element = Rich_Protocol(attrs["value"])
             else:
                 log.error('Protocol allowed only in rule.')
         elif name == "icmp-block":
@@ -266,10 +267,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
                     return
-                self._rule.element = Rich_IcmpBlock(str(attrs["name"]))
+                self._rule.element = Rich_IcmpBlock(attrs["name"])
                 return
-            if str(attrs["name"]) not in self.item.icmp_blocks:
-                self.item.icmp_blocks.append(str(attrs["name"]))
+            if attrs["name"] not in self.item.icmp_blocks:
+                self.item.icmp_blocks.append(attrs["name"])
         elif name == "masquerade":
             if self._rule:
                 if "enabled" in attrs:
@@ -285,22 +286,22 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         elif name == "forward-port":
             to_port = ""
             if "to-port" in attrs:
-                to_port = str(attrs["to-port"])
+                to_port = attrs["to-port"]
             to_addr = ""
             if "to-addr" in attrs:
-                to_addr = str(attrs["to-addr"])
+                to_addr = attrs["to-addr"]
 
             if self._rule:
                 if self._rule.element:
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
                     return
-                self._rule.element = Rich_ForwardPort(str(attrs["port"]),
-                                                      str(attrs["protocol"]),
+                self._rule.element = Rich_ForwardPort(attrs["port"],
+                                                      attrs["protocol"],
                                                       to_port, to_addr)
                 return
             # TODO: fix port string according to fw_zone.__forward_port_id()
-            entry = (str(attrs["port"]), str(attrs["protocol"]), to_port,
+            entry = (attrs["port"], attrs["protocol"], to_port,
                      to_addr)
             if entry not in self.item.forward_ports:
                 self.item.forward_ports.append(entry)
@@ -315,7 +316,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.error('Invalid interface: Name missing.')
                 self._rule_error = True
                 return
-            name = str(attrs["name"])
+            name = attrs["name"]
             if name not in self.item.interfaces:
                 self.item.interfaces.append(name)
             
@@ -329,7 +330,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 if "invert" in attrs and \
                         attrs["invert"].lower() in [ "yes", "true" ]:
                     invert = True
-                self._rule.source = Rich_Source(str(attrs["address"]), invert)
+                self._rule.source = Rich_Source(attrs["address"], invert)
                 return
             # zone bound to source
             if not "address" in attrs:
@@ -341,7 +342,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
-            entry = str(attrs["address"])
+            entry = attrs["address"]
             if entry not in self.item.sources:
                 self.item.sources.append(entry)
 
@@ -357,7 +358,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs and \
                     attrs["invert"].lower() in [ "yes", "true" ]:
                 invert = True
-            self._rule.destination = Rich_Destination(str(attrs["address"]),
+            self._rule.destination = Rich_Destination(attrs["address"],
                                                       invert)
 
         elif name in [ "accept", "reject", "drop" ]:
@@ -374,7 +375,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if name == "reject":
                 _type = None
                 if "type" in attrs:
-                    _type = str(attrs["type"])
+                    _type = attrs["type"]
                 self._rule.action = Rich_Reject(_type)
             if name == "drop":
                 self._rule.action = Rich_Drop()
@@ -389,13 +390,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 return
             level = None
             if "level" in attrs:
-                level = str(attrs["level"])
+                level = attrs["level"]
                 if level not in [ "emerg", "alert", "crit", "error",
                                   "warning", "notice", "info", "debug" ]:
                     log.error('Invalid rule: Invalid log level')
                     self._rule_error = True
                     return
-            prefix = str(attrs["prefix"]) if "prefix" in attrs else None
+            prefix = attrs["prefix"] if "prefix" in attrs else None
             self._rule.log = Rich_Log(prefix, level)
             self._limit_ok = self._rule.log
 
@@ -431,7 +432,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.error('Invalid rule: More than one limit')
                 self._rule_error = True
                 return
-            value = str(attrs["value"])
+            value = attrs["value"]
             self._limit_ok.limit = Rich_Limit(value)
 
         else:

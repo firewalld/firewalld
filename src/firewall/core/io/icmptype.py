@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import xml.sax as sax
 import os
 import io
 import shutil
@@ -78,7 +79,7 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
                 log.warning("Ignoring deprecated attribute name='%s'" % 
                             attrs["name"])
             if "version" in attrs:
-                self.item.version = str(attrs["version"])
+                self.item.version = attrs["version"]
         elif name == "short":
             pass
         elif name == "description":

@@ -23,7 +23,10 @@ import socket
 import os.path
 import shlex, pipes
 import string
+import sys
 from firewall.core.logger import log
+
+PY2 = sys.version < '3'
 
 def getPortID(port):
     """ Check and Get port id from port string or port id using socket.getservbyname
@@ -387,6 +390,9 @@ def joinArgs(args):
         return " ".join(pipes.quote(a) for a in args)
 
 def splitArgs(string):
+    if PY2:
+        # Python2's shlex doesn't like unicode
+        string = u2b(string)
     return shlex.split(string)
 
 def b2u(string):

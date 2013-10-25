@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import xml.sax as sax
 import os
 import io
 import shutil
@@ -46,7 +47,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
             if not self.whitelist:
                 log.error("Parse Error: command outside of whitelist")
                 return
-            command = str(attrs["name"])
+            command = attrs["name"]
             self.item.add_command(command)
 
         elif name == "user":
@@ -55,14 +56,14 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
                 return
             if "id" in attrs:
                 try:
-                    uid = int(str(attrs["id"]))
+                    uid = int(attrs["id"])
                 except:
                     log.error("Parse Error: %s is not a valid uid" % 
                               attrs["id"])
                     return
                 self.item.add_uid(uid)
             elif "name" in attrs:
-                self.item.add_user(str(attrs["name"]))
+                self.item.add_user(attrs["name"])
 
         elif name == "selinux":
             if not self.whitelist:
@@ -71,7 +72,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
             if not "context" in attrs:
                 log.error("Parse Error: no context")
                 return
-            self.item.add_context(str(attrs["context"]))
+            self.item.add_context(attrs["context"])
             
 
         else:
