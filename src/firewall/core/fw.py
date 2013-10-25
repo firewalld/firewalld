@@ -629,7 +629,7 @@ class Firewall:
         if _new_dz != _old_dz:
             # default zone changed. Move interfaces from old default zone to 
             # the new one.
-            for iface, settings in _zone_interfaces[_old_dz].items():
+            for iface, settings in list(_zone_interfaces[_old_dz].items()):
                 if settings["__default__"]:
                     # move only those that were added to default zone
                     # (not those that were added to specific zone same as 
@@ -712,7 +712,7 @@ class Firewall:
 
             # Move interfaces from old default zone to the new one.
             _old_dz_settings = self.zone.get_settings(_old_dz)
-            for iface, settings in _old_dz_settings["interfaces"].items():
+            for iface, settings in list(_old_dz_settings["interfaces"].items()):
                 if settings["__default__"]:
                     # move only those that were added to default zone
                     # (not those that were added to specific zone same as default)
