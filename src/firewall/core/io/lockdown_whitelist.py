@@ -19,8 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xml.sax as sax
 import os
+import io
 import shutil
 
 from firewall.errors import *
@@ -304,8 +304,8 @@ class LockdownWhitelist(IO_Object):
             except Exception as msg:
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
-        fd = open(self.filename, "w")
-        handler = IO_Object_XMLGenerator(fd)
+        f = io.open(self.filename, mode='wt', encoding='UTF-8')
+        handler = IO_Object_XMLGenerator(f)
         handler.startDocument()
 
         # start whitelist element
@@ -347,5 +347,5 @@ class LockdownWhitelist(IO_Object):
         handler.endElement("whitelist")
         handler.ignorableWhitespace("\n")
         handler.endDocument()
-        fd.close()
+        f.close()
         del handler

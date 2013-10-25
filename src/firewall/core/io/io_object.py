@@ -26,10 +26,9 @@ import sys
 
 from firewall.config import *
 from firewall.errors import *
-from firewall.functions import getPortRange, u2b
+from firewall.functions import getPortRange, b2u
 
 PY2 = sys.version < '3'
-PY3 = sys.version >= '3'
 
 class IO_Object(object):
     """ Abstract IO_Object as base for icmptype, service and zone """
@@ -104,7 +103,7 @@ class IO_Object(object):
                 self._check_config_structure(config[i], value)
         elif type(structure) == dict:
             # only one key value pair in structure
-            (skey, svalue) = structure.items()[0]
+            (skey, svalue) = list(structure.items())[0]
             for (key, value) in config.items():
                 if type(key) != type(skey):
                     raise FirewallError(INVALID_TYPE,
@@ -191,7 +190,6 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         # saxutils.XMLGenerator.__init__(self, out, "utf-8")
         #   replaced by modified saxutils.XMLGenerator.__init__ code:
         sax.handler.ContentHandler.__init__(self)
-        #out = saxutils._gettextwriter(out, "utf-8")
         self._write = out.write
         self._flush = out.flush
         self._ns_contexts = [{}] # contains uri -> prefix dicts
@@ -202,66 +200,53 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         self._short_empty_elements = False
 
     def startElement(self, name, attrs):
-        """ saxutils.XMLGenerator.startElement() passes unicode to _write.
-            Because we don't use the _gettextwriter (see __init__) we need to
-            override this method to pass utf-8 encoded string to _write().
+        """ saxutils.XMLGenerator.startElement() expects name and attrs to be
+            unicode and bad things happen if any of them is (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
         """
-        if PY3:
-            super(IO_Object_XMLGenerator, self).startElement(name, attrs)
-        else:
-            self._write(b'<' + u2b(name))
-            for (name, value) in attrs.items():
-                self._write(b' %s=%s' % (u2b(name),
-                                        saxutils.quoteattr(u2b(value))))
-            self._write(b'>')
-
+        if PY2:
+            attrs = { b2u(name):b2u(value) for name, value in attrs.items() }
+        saxutils.XMLGenerator.startElement(self, name, attrs)
 
     def simpleElement(self, name, attrs):
         """ slightly modified startElement()
         """
-        if PY3:
+        if PY2:
+            self._write(u'<' + b2u(name))
+            for (name, value) in attrs.items():
+                self._write(u' %s=%s' % (b2u(name),
+                                        saxutils.quoteattr(b2u(value))))
+            self._write(u'/>')
+        else:
             self._write('<' + name)
             for (name, value) in attrs.items():
-                self._write(' %s=%s' % (name,
-                                        saxutils.quoteattr((value))))
+                self._write(' %s=%s' % (name, saxutils.quoteattr(value)))
             self._write('/>')
-        else:
-            self._write(b'<' + u2b(name))
-            for (name, value) in attrs.items():
-                self._write(b' %s=%s' % (u2b(name),
-                                        saxutils.quoteattr(u2b(value))))
-            self._write(b'/>')
 
     def endElement(self, name):
-        """ saxutils.XMLGenerator.endElement() passes unicode to _write.
-            Because we don't use the _gettextwriter (see __init__) we need to
-            override this method to pass utf-8 encoded string to _write().
+        """ saxutils.XMLGenerator.endElement() expects name to be
+            unicode and bad things happen if it's (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
         """
-        if PY3:
-            super(IO_Object_XMLGenerator, self).endElement(name)
-        else:
-            self._write(b'</%s>' % u2b(name))
+        saxutils.XMLGenerator.endElement(self, b2u(name))
 
     def characters(self, content):
-        """ saxutils.XMLGenerator.characters() passes unicode to _write.
-            Because we don't use the _gettextwriter (see __init__) we need to
-            override this method to pass utf-8 encoded string to _write().
+        """ saxutils.XMLGenerator.characters() expects content to be
+            unicode and bad things happen if it's (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
         """
-        if PY3:
-            super(IO_Object_XMLGenerator, self).characters(content)
-        else:
-            self._write(saxutils.escape(u2b(content)))
+        saxutils.XMLGenerator.characters(self, b2u(content))
 
     def ignorableWhitespace(self, content):
-        """ saxutils.XMLGenerator.ignorableWhitespace() passes unicode to _write.
-            Because we don't use the _gettextwriter (see __init__) we need to
-            override this method to pass utf-8 encoded string to _write().
+        """ saxutils.XMLGenerator.ignorableWhitespace() expects content to be
+            unicode and bad things happen if it's (utf-8) encoded.
+            We override the method here to sanitize this case.
+            Can be removed once we drop Python2 support.
         """
-        if PY3:
-            super(IO_Object_XMLGenerator, self).ignorableWhitespace(content)
-        else:
-            self._write(u2b(content))
-
+        saxutils.XMLGenerator.ignorableWhitespace(self, b2u(content))
 
 def check_port(port):
     port_range = getPortRange(port)

@@ -19,8 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import xml.sax as sax
 import os
+import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
@@ -152,8 +152,8 @@ def service_writer(service, path=None):
         except Exception as msg:
             raise IOError("Backup of '%s' failed: %s" % (name, msg))
 
-    fd = open(name, "w")
-    handler = IO_Object_XMLGenerator(fd)
+    f = io.open(name, mode='wt', encoding='UTF-8')
+    handler = IO_Object_XMLGenerator(f)
     handler.startDocument()
 
     # start service element
@@ -201,5 +201,5 @@ def service_writer(service, path=None):
     handler.endElement('service')
     handler.ignorableWhitespace("\n")
     handler.endDocument()
-    fd.close()
+    f.close()
     del handler

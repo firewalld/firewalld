@@ -18,9 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-import xml.sax as sax
 import os
+import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
@@ -491,8 +490,8 @@ def zone_writer(zone, path=None):
         except Exception as msg:
             raise IOError("Backup of '%s' failed: %s" % (name, msg))
 
-    fd = open(name, "w")
-    handler = IO_Object_XMLGenerator(fd)
+    f = io.open(name, mode='wt', encoding='UTF-8')
+    handler = IO_Object_XMLGenerator(f)
     handler.startDocument()
 
     # start zone element
@@ -701,5 +700,5 @@ def zone_writer(zone, path=None):
     handler.endElement("zone")
     handler.ignorableWhitespace("\n")
     handler.endDocument()
-    fd.close()
+    f.close()
     del handler

@@ -19,12 +19,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os, os.path
+import os.path
+import io
 import tempfile
 import shutil
 
 from firewall.core.logger import log
-from firewall.functions import u2b
+from firewall.functions import b2u
 
 valid_keys = ["DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown"]
 
@@ -45,8 +46,8 @@ class firewalld_conf:
         return self._config.get(key.strip())
 
     def set(self, key, value):
-        _key = key.strip()
-        self._config[_key] = value.strip()
+        _key = b2u(key.strip())
+        self._config[_key] = b2u(value.strip())
         if _key in self._deleted:
             self._deleted.remove[_key]
 
@@ -101,7 +102,9 @@ class firewalld_conf:
 
         try:
             (temp_file, temp) = tempfile.mkstemp(prefix="%s." % os.path.basename(self.filename),
-                                                 dir=os.path.dirname(self.filename))
+                                                 dir=os.path.dirname(self.filename),
+                                                 text=True)
+            temp_file = io.open(temp_file, mode='wt', encoding='UTF-8')
         except Exception as msg:
             log.error("Failed to open temporary file: %s" % msg)
             raise
@@ -109,7 +112,7 @@ class firewalld_conf:
         modified = False
         empty = False
         try:
-            f = open(self.filename, "r")
+            f= io.open(self.filename, mode='rt', encoding='UTF-8')
         except Exception as msg:
             if os.path.exists(self.filename):
                 log.error("Failed to open '%s': %s" % (self.filename, msg))
@@ -125,17 +128,17 @@ class firewalld_conf:
 
                 if len(line) < 1:
                     if not empty:
-                        os.write(temp_file, b"\n")
+                        temp_file.write(u"\n")
                         empty = True
                 elif line[0] == '#':
                     empty = False
-                    os.write(temp_file, u2b(line))
-                    os.write(temp_file, b"\n")
+                    temp_file.write(line)
+                    temp_file.write(u"\n")
                 else:
                     p = line.split("=")
                     if len(p) != 2:
                         empty = False
-                        os.write(temp_file, u2b(line)+b"\n")
+                        temp_file.write(line+u"\n")
                         continue
                     key = p[0].strip()
                     value = p[1].strip()
@@ -144,14 +147,14 @@ class firewalld_conf:
                         if (key in self._config and \
                                 self._config[key] != value):
                             empty = False
-                            key_value = '%s=%s\n' % (key, self._config[key])
-                            os.write(temp_file, u2b(key_value))
+                            temp_file.write(u'%s=%s\n' %
+                                            (key, self._config[key]))
                             modified = True
                         elif key in self._deleted:
                             modified = True
                         else:
                             empty = False
-                            os.write(temp_file, u2b(line) + b"\n")
+                            temp_file.write(line+u"\n")
                         done.append(key)
                     else:
                         modified = True
@@ -162,15 +165,14 @@ class firewalld_conf:
                 if key in done:
                     continue
                 if not empty:
-                    os.write(temp_file, b"\n")
+                    temp_file.write(u"\n")
                     empty = True
-                key_value = '%s=%s\n' % (key, value)
-                os.write(temp_file, u2b(key_value))
+                temp_file.write(u'%s=%s\n' % (key, value))
                 modified = True
 
         if f:
             f.close()
-        os.close(temp_file)
+        temp_file.close()
 
         if not modified: # not modified: remove tempfile
             os.remove(temp)
