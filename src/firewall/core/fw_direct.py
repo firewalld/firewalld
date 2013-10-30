@@ -256,7 +256,7 @@ class FirewallDirect:
     def get_rules(self, ipv, table, chain):
         chain_id = (ipv, table, chain)
         if chain_id in self._rules:
-            return self._rules[chain_id]
+            return list(self._rules[chain_id].keys())
         return [ ]
 
     def get_all_rules(self):
