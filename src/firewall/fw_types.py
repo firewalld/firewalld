@@ -64,7 +64,7 @@ class LastUpdatedOrderedDict(object):
         return LastUpdatedOrderedDict(self)
 
     def keys(self):
-        return self_list[:]
+        return self._list[:]
 
     def values(self, values=None):
         return [ self[key] for key in self._list ]
