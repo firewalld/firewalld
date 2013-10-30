@@ -181,6 +181,8 @@ Direct Options
                        Add rule to chain in table [P]
   --remove-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Remove rule with priority from chain in table [P]
+  --remove-rules {ipv4|ipv6|eb} <table> <chain>
+                       Remove rules from chain in table [P]
   --query-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Return whether a rule with priority has been added to
                        chain in table [P]
@@ -459,6 +461,8 @@ parser_direct.add_argument("--add-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--remove-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
+parser_direct.add_argument("--remove-rules", nargs=3,
+                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <args>"))
 parser_direct.add_argument("--query-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--get-rules", nargs=3,
@@ -520,7 +524,7 @@ options_permanent = a.permanent or options_config or a.zone or options_zone_ops
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
            a.get_chains or a.get_all_chains or \
-           a.add_rule or a.remove_rule or a.query_rule or \
+           a.add_rule or a.remove_rule or a.remove_rules or a.query_rule or \
            a.get_rules or a.get_all_rules
 
 options_direct_permanent = \
@@ -753,6 +757,11 @@ if a.permanent:
                 __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             settings.removeRule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
                                 a.remove_rule[2], priority, a.remove_rule[4:])
+        elif a.remove_rules:
+            if len (a.remove_rules) < 3:
+                __fail("usage: --permanent --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
+            settings.removeRules(_check_ipv(a.remove_rules[0]),
+                                 a.remove_rules[1], a.remove_rules[2])
         elif a.query_rule:
             if len (a.query_rule) < 5:
                 __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
@@ -984,6 +993,11 @@ elif a.direct:
             __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         fw.removeRule(_check_ipv(a.remove_rule[0]),
                       a.remove_rule[1], a.remove_rule[2], priority, a.remove_rule[4:])
+    elif a.remove_rules:
+        if len (a.remove_rules) < 3:
+            __fail("usage: --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
+        fw.removeRules(_check_ipv(a.remove_rules[0]),
+                       a.remove_rules[1], a.remove_rules[2])
     elif a.query_rule:
         if len (a.query_rule) < 5:
             __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")

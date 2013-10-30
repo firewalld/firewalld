@@ -1586,6 +1586,21 @@ class FirewallD(slip.dbus.service.Object):
         self.RuleRemoved(ipv, table, chain, priority, args)
     
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeRules(self, ipv, table, chain, sender=None):
+        # removes direct rule
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        log.debug1("direct.removeRules('%s', '%s', '%s')" % (ipv, table, chain))
+        self.accessCheck(sender)
+        for (priority, args) in self.fw.direct.get_rules(ipv, table, chain):
+            self.fw.direct.remove_rule(ipv, table, chain, priority, args)
+            self.RuleRemoved(ipv, table, chain, priority, args)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='b')
     @dbus_handle_exceptions

@@ -813,6 +813,18 @@
 	</varlistentry>
 
 	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--remove-rules</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
+	  <listitem>
+	    <para>
+	      Remove all rules in the chain with name <replaceable>chain</replaceable> exists in table <replaceable>table</replaceable>.
+	    </para>
+	    <para>
+	      This option concerns only rules previously added with <option>--direct --add-rule</option> in this chain.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--query-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>

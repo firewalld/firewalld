@@ -723,6 +723,11 @@ class FirewallClientDirect(object):
         if idx in self.settings[1]:
             self.settings[1].remove(idx)
     @handle_exceptions
+    def removeRules(self, ipv, table, chain):
+        for idx in list(self.settings[1]):
+            if idx[0] == ipv and idx[1] == table and idx[2] == chain:
+                self.settings[1].remove(idx)
+    @handle_exceptions
     def queryRule(self, ipv, table, chain, priority, args):
         idx = (ipv, table, chain, priority, args)
         return idx in self.settings[1]
@@ -1489,6 +1494,11 @@ class FirewallClient(object):
     @handle_exceptions
     def removeRule(self, ipv, table, chain, priority, args):
         self.fw_direct.removeRule(ipv, table, chain, priority, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeRules(self, ipv, table, chain):
+        self.fw_direct.removeRules(ipv, table, chain)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
