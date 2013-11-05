@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#path="/usr/bin/"
-path="../"
+path="/usr/bin/"
+#path="../"
 
 RED='\033[00;31m'
 GREEN='\033[00;32m'

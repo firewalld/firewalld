@@ -16,7 +16,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 17:20+0200\n"
+"POT-Creation-Date: 2013-11-05 16:00+0100\n"
 "PO-Revision-Date: 2013-10-08 15:40+0000\n"
 "Last-Translator: shkumar <shkumar@redhat.com>\n"
 "Language-Team: Tamil (http://www.transifex.com/projects/p/fedora/language/"
@@ -39,36 +39,36 @@ msgstr "ஃபயர்வால்"
 msgid "Firewall Configuration"
 msgstr "ஃபயர்வால் கட்டமைப்பு"
 
-#: ../src/firewall/core/io/io_object.py:147
+#: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "எதிர்பாராத கூறு '%s'"
 
-#: ../src/firewall/core/io/io_object.py:154
+#: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "கூறு '%s': '%s' பண்புக்கூறு விடுபட்டுள்ளது"
 
-#: ../src/firewall/core/io/io_object.py:162
+#: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "கூறு '%s': எதிர்பாராத பண்புக்கூறு '%s'"
 
-#: ../src/firewalld:59 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "%s ஐ இயக்க நீங்கள் ரூட்டாக இருக்க வேண்டும்."
 
-#: ../src/firewalld:82
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "ஃபயர்வால்D துவக்கப்படவில்லை, ஏற்கனவே இயக்கத்தில் உள்ளது."
 
-#: ../src/firewalld:134
+#: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ஃபோர்க் #1 தோல்வியுற்றது: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4971
+#: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "இணைப்பு %s க்கு மண்டலத்தைத் தேர்ந்தெடுக்கவும்"
@@ -111,13 +111,13 @@ msgstr "அனைத்து பிணைய போக்குவரத்த�
 msgid "Configure Shields Up/Down Zones"
 msgstr "ஷீல்டுகள் மேலே/கீழே மண்டலங்களை அமைவாக்கம் "
 
-#: ../src/firewall-applet:432
+#: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 "இங்கு நீங்கள் ஷீல்டுகள் மேலே மற்றும் ஷீல்டுகள் கீழே என்பவற்றுக்குப் பயன்படும் மண்டலங்களைத் "
 "தேர்ந்தெடுக்கலாம்."
 
-#: ../src/firewall-applet:440
+#: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -125,96 +125,96 @@ msgstr ""
 "இந்த அம்சம் பெரும்பாலும் முன்னிருப்பு மண்டலங்களைப் பயன்படுத்தும் நபர்களுக்குப் பயனுள்ளது. "
 "இணைப்புகளின் மண்டலங்களை மாற்றும் பயனர்களுக்கு இது வரம்புக்குட்பட்ட பயனுள்ளதாக இருக்கும்."
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
 msgstr "ஷீல்டுகள் மேலே மண்டலம்:"
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
 msgstr "ஷீல்டுகள் கீழே மண்டலம்:"
 
-#: ../src/firewall-applet:617
+#: ../src/firewall-applet:618
 msgid "Connections"
 msgstr "இணைப்புகள்"
 
-#: ../src/firewall-applet:659 ../src/firewall-applet:688
-#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:660 ../src/firewall-applet:689
+#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "மண்டலம்"
 
-#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "மூலங்கள்"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
 msgstr "FirewallD க்கான இணைப்பு நிறுவப்பட்டது."
 
-#: ../src/firewall-applet:820
+#: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD க்கான இணைப்பு இழக்கபப்ட்டது."
 
-#: ../src/firewall-applet:867
+#: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD மீளேற்றப்பட்டது."
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
 msgstr "ஃபயர்வால் டீமனுடன் இணைப்பு எதுவும் இல்லை"
 
-#: ../src/firewall-applet:950
+#: ../src/firewall-applet:951
 msgid "PANIC MODE"
 msgstr "பானிக் முனைமை"
 
-#: ../src/firewall-applet:957
+#: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "முன்னிருப்பு மண்டலம்: '%s'"
 
-#: ../src/firewall-applet:965
+#: ../src/firewall-applet:966
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "இடைமுகம் '{interface}' இல் உள்ள இணைப்பு '{connection}' க்கு மண்டலம் '{zone}' செயலில் "
 
-#: ../src/firewall-applet:968
+#: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "இடைமுகம் '{interface}' க்கு மண்டலம் '{zone}' செயலில் உள்ளது"
 
-#: ../src/firewall-applet:976
+#: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
 msgstr "மூலம் {source} க்கு மண்டலம் '{zone}' செயலில் உள்ளது"
 
-#: ../src/firewall-applet:980
+#: ../src/firewall-applet:981
 msgid "No Active Zones."
 msgstr "செயலில் உள்ள மண்டலங்கள் எதுவும் இல்லை."
 
-#: ../src/firewall-applet:989
+#: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "முன்னிருப்பு மண்டலம் '%s' என மா."
 
-#: ../src/firewall-applet:1013
+#: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
 msgstr "அனைத்து பிணைய போக்குவரத்தும் தடுக்கப்பட்டுள்ளது."
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "பிணைய போக்குவரத்து இப்போது தடுக்கப்பட்டில்லை."
 
-#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
 msgstr "செயல்படுத்தப்பட்டது"
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
 msgstr "முடக்கப்பட்டது"
 
-#: ../src/firewall-applet:1033
+#: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -222,25 +222,25 @@ msgstr ""
 "இடைமுகம் '{interface}' இல் உள்ள இணைப்பு '{connection}' க்கான மண்டலம் "
 "'{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "இடைமுகம் '{interface}' க்கான மண்டலம் '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1060
+#: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "இடைமுகம் '%s' க்கான மண்டலம் '%s' செயல்படுத்தப்பட்டது"
 
-#: ../src/firewall-applet:1072
+#: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "மூலம் '{source}' க்கு மண்டலம் '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1095
+#: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "மூலம் '%s' க்கு மண்டலம் '%s' செயல்படுத்தப்பட்டுள்ளது"
 
-#: ../src/firewall-applet:1160
+#: ../src/firewall-applet:1161
 msgid "Firewall-applet"
 msgstr "ஃபயர்வால் அப்பலெட்"
 
@@ -523,7 +523,7 @@ msgstr "ipv4"
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3327
+#: ../src/firewall-config:3325
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -533,11 +533,11 @@ msgstr ""
 "பயனுள்ளதாக இருக்கும்.\n"
 "இந்த மண்டலத்தை போலித்தோற்றமாக்க வேண்டுமா ?"
 
-#: ../src/firewall-config:3574
+#: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
 msgstr "உள்ளமைந்த சேவை. மறுபெயரிட ஆதரவில்லை."
 
-#: ../src/firewall-config:3946
+#: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
 msgstr "உள்ளமைந்த icmp, மறுபெயரிட ஆதரவில்லை."
 

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 17:20+0200\n"
+"POT-Creation-Date: 2013-11-05 16:00+0100\n"
 "PO-Revision-Date: 2013-10-16 14:00+0000\n"
 "Last-Translator: Tomoyuki KATO <tomo@dream.daynight.jp>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/fedora/language/"
@@ -33,36 +33,36 @@ msgstr "ファイアウォール"
 msgid "Firewall Configuration"
 msgstr "ファイアウォールの設定"
 
-#: ../src/firewall/core/io/io_object.py:147
+#: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "予期しない要素 '%s'"
 
-#: ../src/firewall/core/io/io_object.py:154
+#: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "'%s' 要素: '%s' 属性がありません"
 
-#: ../src/firewall/core/io/io_object.py:162
+#: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "'%s' 要素: 予期しない属性 '%s'"
 
-#: ../src/firewalld:59 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "%s を実行するには root になる必要があります。"
 
-#: ../src/firewalld:82
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD を開始しません、すでに実行中です。"
 
-#: ../src/firewalld:134
+#: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "fork #1 失敗: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4971
+#: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "接続 '%s' のゾーンを 選択してください"
@@ -105,13 +105,13 @@ msgstr "すべてのネットワーク・トラフィックのブロック"
 msgid "Configure Shields Up/Down Zones"
 msgstr "シールド・アップ/ダウン・ゾーンの設定"
 
-#: ../src/firewall-applet:432
+#: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 "ここからシールド・アップおよびシールド・ダウンに対して使用するゾーンを選択で"
 "きます。"
 
-#: ../src/firewall-applet:440
+#: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -119,97 +119,97 @@ msgstr ""
 "この機能はたいてい標準のゾーンを使用する人々にとって有用です。接続のゾーンを"
 "変更しているユーザーに対して、限定的に使用できます。"
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
 msgstr "シールド・アップ・ゾーン:"
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
 msgstr "シールド・ダウン・ゾーン:"
 
-#: ../src/firewall-applet:617
+#: ../src/firewall-applet:618
 msgid "Connections"
 msgstr "接続されていません。"
 
-#: ../src/firewall-applet:659 ../src/firewall-applet:688
-#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:660 ../src/firewall-applet:689
+#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "ゾーン"
 
-#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "送信元"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
 msgstr "FirewallD への接続が確立されました。"
 
-#: ../src/firewall-applet:820
+#: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD への接続が失われました。"
 
-#: ../src/firewall-applet:867
+#: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD が再読み込みされました。"
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
 msgstr "ファイアーウォール・デーモンへの接続がありません。"
 
-#: ../src/firewall-applet:950
+#: ../src/firewall-applet:951
 msgid "PANIC MODE"
 msgstr "パニックモード"
 
-#: ../src/firewall-applet:957
+#: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "標準ゾーン: '%s'"
 
-#: ../src/firewall-applet:965
+#: ../src/firewall-applet:966
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対し"
 "て有効化"
 
-#: ../src/firewall-applet:968
+#: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "ゾーン '{zone}' がインターフェース '{interface}' に対して有効化"
 
-#: ../src/firewall-applet:976
+#: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
 msgstr "ゾーン '{zone}' を送信元 {source} に対して有効化"
 
-#: ../src/firewall-applet:980
+#: ../src/firewall-applet:981
 msgid "No Active Zones."
 msgstr "有効なゾーンがありません。"
 
-#: ../src/firewall-applet:989
+#: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "標準のゾーンを '%s' に変更しました。"
 
-#: ../src/firewall-applet:1013
+#: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
 msgstr "すべてのネットワーク通信が遮断されます。"
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "ネットワーク通信が遮断されなくなります。"
 
-#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
 msgstr "有効化"
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
 msgstr "無効化"
 
-#: ../src/firewall-applet:1033
+#: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -217,28 +217,28 @@ msgstr ""
 "ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対し"
 "て {activated_deactivated}"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 "インターフェース '{interface}' に対してゾーン '{zone}' を "
 "{activated_deactivated} しました"
 
-#: ../src/firewall-applet:1060
+#: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "ゾーン '%s' をインターフェース '%s' に対して有効化しました"
 
-#: ../src/firewall-applet:1072
+#: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 "ゾーン '{zone}' を送信元 '{source}' に対して {activated_deactivated} しました"
 
-#: ../src/firewall-applet:1095
+#: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "ゾーン '%s' を送信元 '%s' に対して有効化しました"
 
-#: ../src/firewall-applet:1160
+#: ../src/firewall-applet:1161
 msgid "Firewall-applet"
 msgstr "ファイアウォール・アプレット"
 
@@ -521,7 +521,7 @@ msgstr "IPv4"
 msgid "ipv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config:3327
+#: ../src/firewall-config:3325
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -531,11 +531,11 @@ msgstr ""
 "です。\n"
 "このゾーンをマスカレードしたいですか ?"
 
-#: ../src/firewall-config:3574
+#: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
 msgstr "組み込みのサービスです、名前を変更できません。"
 
-#: ../src/firewall-config:3946
+#: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
 msgstr "組み込みの ICMP です、名前を変更できません。"
 

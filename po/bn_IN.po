@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 17:20+0200\n"
+"POT-Creation-Date: 2013-11-05 16:00+0100\n"
 "PO-Revision-Date: 2013-10-03 08:49+0000\n"
 "Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Bengali (India) <anubad@lists.ankur.org.in>\n"
@@ -32,36 +32,36 @@ msgstr "ফায়ারওয়াল"
 msgid "Firewall Configuration"
 msgstr "ফায়ারওয়াল কনফিগারেশন"
 
-#: ../src/firewall/core/io/io_object.py:147
+#: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr ""
 
-#: ../src/firewall/core/io/io_object.py:154
+#: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr ""
 
-#: ../src/firewall/core/io/io_object.py:162
+#: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
 
-#: ../src/firewalld:59 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr ""
 
-#: ../src/firewalld:82
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr ""
 
-#: ../src/firewalld:134
+#: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4971
+#: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr ""
@@ -104,129 +104,129 @@ msgstr ""
 msgid "Configure Shields Up/Down Zones"
 msgstr ""
 
-#: ../src/firewall-applet:432
+#: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 
-#: ../src/firewall-applet:440
+#: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:617
+#: ../src/firewall-applet:618
 msgid "Connections"
 msgstr ""
 
-#: ../src/firewall-applet:659 ../src/firewall-applet:688
-#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:660 ../src/firewall-applet:689
+#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr ""
 
-#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr ""
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:820
+#: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:867
+#: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:950
+#: ../src/firewall-applet:951
 msgid "PANIC MODE"
 msgstr ""
 
-#: ../src/firewall-applet:957
+#: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:965
+#: ../src/firewall-applet:966
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:968
+#: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:976
+#: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
 msgstr ""
 
-#: ../src/firewall-applet:980
+#: ../src/firewall-applet:981
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:989
+#: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:1013
+#: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:1033
+#: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:1060
+#: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:1072
+#: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 
-#: ../src/firewall-applet:1095
+#: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:1160
+#: ../src/firewall-applet:1161
 msgid "Firewall-applet"
 msgstr ""
 
@@ -509,18 +509,18 @@ msgstr ""
 msgid "ipv6"
 msgstr ""
 
-#: ../src/firewall-config:3327
+#: ../src/firewall-config:3325
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
-#: ../src/firewall-config:3574
+#: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:3946
+#: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 

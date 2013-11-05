@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 17:20+0200\n"
-"PO-Revision-Date: 2013-10-12 08:41+0000\n"
+"POT-Creation-Date: 2013-11-05 16:00+0100\n"
+"PO-Revision-Date: 2013-10-30 16:00+0000\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/fedora/"
 "language/zh_TW/)\n"
@@ -38,49 +38,49 @@ msgstr "防火牆"
 msgid "Firewall Configuration"
 msgstr "防火牆組態"
 
-#: ../src/firewall/core/io/io_object.py:147
+#: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "未預期的元素「%s」"
 
-#: ../src/firewall/core/io/io_object.py:154
+#: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "元素「%s」：遺失「%s」特性"
 
-#: ../src/firewall/core/io/io_object.py:162
+#: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "元素「%s」：未預期的特性「%s」"
 
-#: ../src/firewalld:59 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "您需要是 root 身份才能執行 %s。"
 
-#: ../src/firewalld:82
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "不啟動 FirewallD，已經在執行中。"
 
-#: ../src/firewalld:134
+#: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "分支出 #1 失敗：%d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4971
+#: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr "選取「%s」連線的域區"
+msgstr "選取「%s」連線的界域"
 
 #: ../src/firewall-applet:185
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "選取「%s」介面的域區"
+msgstr "選取「%s」介面的界域"
 
 #: ../src/firewall-applet:241
 #, c-format
 msgid "Select zone for source %s"
-msgstr "選取 %s 來源的域區"
+msgstr "選取 %s 來源的界域"
 
 #: ../src/firewall-applet:343
 msgid "Shields Up"
@@ -96,11 +96,11 @@ msgstr "編輯防火牆設定..."
 
 #: ../src/firewall-applet:377 ../src/firewall-config.glade.h:46
 msgid "Change Zones of Connections..."
-msgstr "變更連線的域區..."
+msgstr "變更連線的界域..."
 
 #: ../src/firewall-applet:384
 msgid "Configure Shields UP/Down Zones..."
-msgstr "設定防禦展開/卸下域區..."
+msgstr "設定防禦展開/卸下界域..."
 
 #: ../src/firewall-applet:393
 msgid "Block all network traffic"
@@ -108,135 +108,135 @@ msgstr "封鎖所有網路交通"
 
 #: ../src/firewall-applet:422
 msgid "Configure Shields Up/Down Zones"
-msgstr "設定防禦展開/卸下域區"
+msgstr "設定防禦展開/卸下界域"
 
-#: ../src/firewall-applet:432
+#: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "您可以在這裡選取「防禦展開」與「防禦卸下」所要使用的域區。"
+msgstr "您可以在這裡選取「防禦展開」與「防禦卸下」所要使用的界域。"
 
-#: ../src/firewall-applet:440
+#: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"此功能對於大多數使用預設域區的人來說很有用處。至於更改連線的域區之使用者，這"
+"此功能對於大多數使用預設界域的人來說很有用處。至於更改連線的界域之使用者，這"
 "可能用處不大。"
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
-msgstr "防禦展開域區："
+msgstr "防禦展開界域："
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
-msgstr "防禦卸下域區："
+msgstr "防禦卸下界域："
 
-#: ../src/firewall-applet:617
+#: ../src/firewall-applet:618
 msgid "Connections"
 msgstr "連線"
 
-#: ../src/firewall-applet:659 ../src/firewall-applet:688
-#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:660 ../src/firewall-applet:689
+#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
-msgstr "域區"
+msgstr "界域"
 
-#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "介面"
 
-#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "來源"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
 msgstr "與 FirewallD 的連線已建立。"
 
-#: ../src/firewall-applet:820
+#: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
 msgstr "與 FirewallD 的連線已中斷。"
 
-#: ../src/firewall-applet:867
+#: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD 已重新載入。"
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
 msgstr "未有連接防火牆幕後程式的連線"
 
-#: ../src/firewall-applet:950
+#: ../src/firewall-applet:951
 msgid "PANIC MODE"
 msgstr "緊急模式"
 
-#: ../src/firewall-applet:957
+#: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr "預設域區：「%s」"
+msgstr "預設界域：「%s」"
 
-#: ../src/firewall-applet:965
+#: ../src/firewall-applet:966
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
-msgstr "域區「{zone}」使用中：連線「{connection}」，介面「{interface}」"
+msgstr "界域「{zone}」使用中：連線「{connection}」，介面「{interface}」"
 
-#: ../src/firewall-applet:968
+#: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "域區「{zone}」使用中：介面「{interface}」"
+msgstr "界域「{zone}」使用中：介面「{interface}」"
 
-#: ../src/firewall-applet:976
+#: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
-msgstr "域區「{zone}」使用中：來源 {source}"
+msgstr "界域「{zone}」使用中：來源 {source}"
 
-#: ../src/firewall-applet:980
+#: ../src/firewall-applet:981
 msgid "No Active Zones."
-msgstr "無使用中域區。"
+msgstr "無使用中界域。"
 
-#: ../src/firewall-applet:989
+#: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "預設域區變更為「%s」。"
+msgstr "預設界域變更為「%s」。"
 
-#: ../src/firewall-applet:1013
+#: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
 msgstr "所有網路交通已封鎖。"
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "網路交通已不再封鎖。"
 
-#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
 msgstr "已啟動"
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
 msgstr "已停止"
 
-#: ../src/firewall-applet:1033
+#: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"域區「{zone}」{activated_deactivated}：連線「{connection}」，介面"
+"界域「{zone}」{activated_deactivated}：連線「{connection}」，介面"
 "「{interface}」"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "域區「{zone}」{activated_deactivated}：介面「{interface}」"
+msgstr "界域「{zone}」{activated_deactivated}：介面「{interface}」"
 
-#: ../src/firewall-applet:1060
+#: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr "域區「%s」已啟動：介面「%s」"
+msgstr "界域「%s」已啟動：介面「%s」"
 
-#: ../src/firewall-applet:1072
+#: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr "域區「{zone}」{activated_deactivated}：來源「{source}」"
+msgstr "界域「{zone}」{activated_deactivated}：來源「{source}」"
 
-#: ../src/firewall-applet:1095
+#: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr "域區「%s」已啟動：來源「%s」"
+msgstr "界域「%s」已啟動：來源「%s」"
 
-#: ../src/firewall-applet:1160
+#: ../src/firewall-applet:1161
 msgid "Firewall-applet"
 msgstr "Firewall-applet"
 
@@ -417,7 +417,7 @@ msgstr "名稱已經存在"
 #: ../src/firewall-config:1839
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr "域區「%s」：服務「%s」無法使用。"
+msgstr "界域「%s」：服務「%s」無法使用。"
 
 #: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Remove"
@@ -430,11 +430,11 @@ msgstr "忽略"
 #: ../src/firewall-config:1877
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr "域區「%s」：ICMP 類型「%s」無法使用。"
+msgstr "界域「%s」：ICMP 類型「%s」無法使用。"
 
 #: ../src/firewall-config:2007
 msgid "Built-in zone, rename not supported."
-msgstr "內建域區，不支援重新命名。"
+msgstr "內建界域，不支援重新命名。"
 
 #: ../src/firewall-config:2119 ../src/firewall-config:2546
 #: ../src/firewall-config.glade.h:191
@@ -519,20 +519,20 @@ msgstr "ipv4"
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3327
+#: ../src/firewall-config:3325
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "轉送至其他系統的功能僅在介面為偽裝之時才會有用。\n"
-"您是否想要偽裝此域區？"
+"您是否想要偽裝此界域？"
 
-#: ../src/firewall-config:3574
+#: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
 msgstr "內建服務，不支援重新命名。"
 
-#: ../src/firewall-config:3946
+#: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
 msgstr "內建 icmp，不支援重新命名。"
 
@@ -554,11 +554,11 @@ msgstr "請輸入情境。"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
-msgstr "預設域區"
+msgstr "預設界域"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
-msgstr "請從下列清單中選取預設域區。"
+msgstr "請從下列清單中選取預設界域。"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
@@ -724,15 +724,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
-msgstr "變更網路連線所屬的域區。"
+msgstr "變更網路連線所屬的界域。"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
-msgstr "變更預設域區"
+msgstr "變更預設界域"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Change default zone for connections or interfaces."
-msgstr "變更連線或介面的預設域區。"
+msgstr "變更連線或介面的預設界域。"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -794,25 +794,25 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"firewalld 域區所定義的是綁定該域區之網路連線、介面、來源位址的信任等級。域區"
-"能結合服務、連接埠、協定、偽裝、連接埠/封包轉送、icmp 過濾、豐富規則等。域區"
+"firewalld 界域所定義的是綁定該界域之網路連線、介面、來源位址的信任等級。界域"
+"能結合服務、連接埠、協定、偽裝、連接埠/封包轉送、icmp 過濾、豐富規則等。界域"
 "可以與介面、來源位址等綁定。"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
-msgstr "加入域區"
+msgstr "加入界域"
 
 #: ../src/firewall-config.glade.h:64
 msgid "Edit Zone"
-msgstr "編輯域區"
+msgstr "編輯界域"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Remove Zone"
-msgstr "移除域區"
+msgstr "移除界域"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Load Zone Defaults"
-msgstr "載入域區預設值"
+msgstr "載入界域預設值"
 
 #: ../src/firewall-config.glade.h:67
 msgid ""
@@ -820,7 +820,7 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"你可以在此處定義該域區中有哪些服務值得信任。只要此域區所綁定之連線、介面、來"
+"你可以在此處定義該界域中有哪些服務值得信任。只要此界域所綁定之連線、介面、來"
 "源的主機與網路能觸及本機，則皆可存取這些信任的服務。"
 
 #: ../src/firewall-config.glade.h:68
@@ -860,7 +860,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
-msgstr "偽裝域區"
+msgstr "偽裝界域"
 
 #: ../src/firewall-config.glade.h:76
 msgid ""
@@ -918,7 +918,7 @@ msgstr "ICMP 過濾器"
 
 #: ../src/firewall-config.glade.h:85
 msgid "Here you can set rich language rules for the zone."
-msgstr "您可以在這裡設定域區的豐富語言規則。"
+msgstr "您可以在這裡設定界域的豐富語言規則。"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Add Rich Rule"
@@ -941,8 +941,8 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
-"請添加條目來將介面與此域區綁定。如果介面會被某連線使用，則域區將被設為連線中"
-"所指定的域區。"
+"請添加條目來將介面與此界域綁定。如果介面會被某連線使用，則界域將被設為連線中"
+"所指定的界域。"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
@@ -958,7 +958,7 @@ msgstr "移除介面"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
-msgstr "請添加條目來將來源位址或區域與此域區綁定。"
+msgstr "請添加條目來將來源位址或區域與此界域綁定。"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Add Source"
@@ -974,7 +974,7 @@ msgstr "移除來源"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
-msgstr "域區"
+msgstr "界域"
 
 #: ../src/firewall-config.glade.h:101
 msgid ""
@@ -1307,7 +1307,7 @@ msgstr "預設域："
 
 #: ../src/firewall-config.glade.h:169
 msgid "Current default zone of the system."
-msgstr "系統的目前預設域區。"
+msgstr "系統的目前預設界域。"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Lockdown:"
@@ -1439,11 +1439,11 @@ msgstr "請輸入使用者名稱。"
 
 #: ../src/firewall-config.glade.h:221
 msgid "Base Zone Settings"
-msgstr "基礎域區設定"
+msgstr "基礎界域設定"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please configure base zone settings:"
-msgstr "請設定基礎域區設定："
+msgstr "請設定基礎界域設定："
 
 #: ../src/firewall-config.glade.h:223
 msgid "Target:"
@@ -1525,11 +1525,11 @@ msgstr "<服務>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
-msgstr "啟用預設域區中的服務 (例如：ssh)"
+msgstr "啟用預設界域中的服務 (例如：ssh)"
 
 #: ../src/firewall-offline-cmd:173
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr "停用預設域區中的服務 (例如：ssh)"
+msgstr "停用預設界域中的服務 (例如：ssh)"
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
@@ -1537,7 +1537,7 @@ msgstr "<連接埠>[-<連接埠>]:<協定>"
 
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr "啟用預設域區中的連接埠 (例如：ssh:tcp)"
+msgstr "啟用預設界域中的連接埠 (例如：ssh:tcp)"
 
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
@@ -1545,13 +1545,13 @@ msgstr "<介面>"
 
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
-msgstr "將介面綁定至信任的域區"
+msgstr "將介面綁定至信任的界域"
 
 #: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
-msgstr "啟用預設域區中的偽裝功能，介面引數則忽略。僅用於 IPv4。"
+msgstr "啟用預設界域中的偽裝功能，介面引數則忽略。僅用於 IPv4。"
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
@@ -1581,7 +1581,7 @@ msgid ""
 "zone. This is IPv4 only."
 msgstr ""
 "將介面的某協定與連接埠轉送至另外的本地端目的地連接埠 (無給定目的地位址的話) "
-"或是其他目的地位址 (也可加上選用的目的地連接埠)。這個設定會加入預設域區中。此"
+"或是其他目的地位址 (也可加上選用的目的地連接埠)。這個設定會加入預設界域中。此"
 "功能僅用於 IPv4。"
 
 #: ../src/firewall-offline-cmd:205
@@ -1592,7 +1592,7 @@ msgstr "<icmp 類型>"
 msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
-msgstr "於預設域區中封鎖此種 ICMP 類型。預設情況則是接受所有 ICMP 類型。"
+msgstr "於預設界域中封鎖此種 ICMP 類型。預設情況則是接受所有 ICMP 類型。"
 
 #: ../src/firewall-offline-cmd:217
 #, c-format
@@ -1639,22 +1639,22 @@ msgstr "「%s」開啟失敗，離開中。"
 #: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
-msgstr "正在開啟預設域區「%s」"
+msgstr "正在開啟預設界域「%s」"
 
 #: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
-msgstr "無法開啟預設域區「%s」，離開中。"
+msgstr "無法開啟預設界域「%s」，離開中。"
 
 #: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
-msgstr "無法開啟域區「%s」，離開中。"
+msgstr "無法開啟界域「%s」，離開中。"
 
 #: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
-msgstr "裝置「%s」將綁定 %s 域區。"
+msgstr "裝置「%s」將綁定 %s 界域。"
 
 #: ../src/firewall-offline-cmd:434
 #, c-format
@@ -1674,40 +1674,40 @@ msgstr "正忽略 removemodule「%s」"
 #: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr "裝置「%s」已被偽裝，因而為預設域區啟用偽裝中。"
+msgstr "裝置「%s」已被偽裝，因而為預設界域啟用偽裝中。"
 
 #: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
-msgstr "正將連接埠「%s/%s」加入預設域區中。"
+msgstr "正將連接埠「%s/%s」加入預設界域中。"
 
 #: ../src/firewall-offline-cmd:462
 #, c-format
 msgid "Removing service '%s' from default zone."
-msgstr "正從預設域區中移除「%s」服務。"
+msgstr "正從預設界域中移除「%s」服務。"
 
 #: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
-msgstr "正將「%s」加入預設域區中。"
+msgstr "正將「%s」加入預設界域中。"
 
 #: ../src/firewall-offline-cmd:476
 #, c-format
 msgid "Adding icmpblock '%s' to default zone."
-msgstr "正將 icmpblock「%s」加入預設域區中。"
+msgstr "正將 icmpblock「%s」加入預設界域中。"
 
 #: ../src/firewall-offline-cmd:486
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr "正將轉送連接埠 %s:%s:%s:%s 加入預設域區中。"
+msgstr "正將轉送連接埠 %s:%s:%s:%s 加入預設界域中。"
 
 #: ../src/firewall-offline-cmd:494
 msgid "No changes to default zone needed."
-msgstr "預設域區無須改變。"
+msgstr "預設界域無須改變。"
 
 #: ../src/firewall-offline-cmd:498
 msgid "Changed trusted zone configuration."
-msgstr "已變更信賴域區的組態。"
+msgstr "已變更信賴界域的組態。"
 
 #: ../src/firewall-offline-cmd:500
 msgid ""
@@ -1720,7 +1720,7 @@ msgid ""
 "file, the firewalld default zone will be used."
 msgstr ""
 "如果信任的介面之一被用於 NetworkManager 的連線上，或如果此介面有個 ifcfg 檔案"
-"的話，一旦該組態啟用，則此域區將變成該組態中所定義的域區。若要更改連線的域"
-"區，請使用 <command>nm-connection-editor</command> 並將域區設為信任；至於 "
-"ifcfg 檔，請使用編輯器並加入「ZONE=trusted」。如果 ifcfg 檔中沒有定義域區，則"
-"會使用 firewalld 的預設域區。"
+"的話，一旦該組態啟用，則此界域將變成該組態中所定義的界域。若要更改連線的界"
+"域，請使用 <command>nm-connection-editor</command> 並將界域設為信任；至於 "
+"ifcfg 檔，請使用編輯器並加入「ZONE=trusted」。如果 ifcfg 檔中沒有定義界域，則"
+"會使用 firewalld 的預設界域。"

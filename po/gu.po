@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 17:20+0200\n"
+"POT-Creation-Date: 2013-11-05 16:00+0100\n"
 "PO-Revision-Date: 2013-10-08 07:00+0000\n"
 "Last-Translator: sweta <swkothar@redhat.com>\n"
 "Language-Team: Gujarati (http://www.transifex.com/projects/p/fedora/language/"
@@ -36,36 +36,36 @@ msgstr "ફાયરવોલ"
 msgid "Firewall Configuration"
 msgstr "ફાયરવોલ રૂપરેખાંકન"
 
-#: ../src/firewall/core/io/io_object.py:147
+#: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "અનિચ્છીનીય ઘટક '%s'"
 
-#: ../src/firewall/core/io/io_object.py:154
+#: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "ઘટક '%s': ગેરહાજર '%s' ગુણધર્મ"
 
-#: ../src/firewall/core/io/io_object.py:162
+#: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "ઘટક '%s': અનિચ્છનીય ગુણધર્મ '%s'"
 
-#: ../src/firewalld:59 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "તમારે %s ને ચલાવવા માટે રુટની જરૂરી છે."
 
-#: ../src/firewalld:82
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD શરૂ થઇ રહી નથી, પહેલેથી જ ચાલી રહી છે."
 
-#: ../src/firewalld:134
+#: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ફોર્ક #1 નિષ્ફળ: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4971
+#: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "જોડાણ '%s' માટે વિસ્તારને પસંદ કરો"
@@ -108,11 +108,11 @@ msgstr "બધા નેટવર્ક ટ્રાફિકને બ્લો
 msgid "Configure Shields Up/Down Zones"
 msgstr "શીલ્ડ અપ/ડાઉન વિસ્તારોને રૂપરેખાંકિત કરો"
 
-#: ../src/firewall-applet:432
+#: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr "શીલ્ડ અપ અને શીલ્ડ ડાઉન માટે વાપરેલ વિસ્તારોને તમે અહિંયા પસંદ કરી શકો છો."
 
-#: ../src/firewall-applet:440
+#: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -120,95 +120,95 @@ msgstr ""
 "આ લક્ષણ મોટેભાગે મૂળભૂત વિસ્તારોની મદદથી લોકો માટે ઉપયોગી છે. વપરાશકર્તાઓ માટે, જોડાણો "
 "માટે વિસ્તારોને બદલી રહ્યા છે, તે મર્યાદિત વપરાશ હોઇ શકે છે."
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
 msgstr "શીલ્ડ અપ વિસ્તાર:"
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
 msgstr "શીલ્ડ ડાઉન વિસ્તાર:"
 
-#: ../src/firewall-applet:617
+#: ../src/firewall-applet:618
 msgid "Connections"
 msgstr "જોડાણો"
 
-#: ../src/firewall-applet:659 ../src/firewall-applet:688
-#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:660 ../src/firewall-applet:689
+#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "વિસ્તાર"
 
-#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "સ્ત્રોતો"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
 msgstr "FirewallD માં જોડાણને સ્થાપિત કરેલ છે."
 
-#: ../src/firewall-applet:820
+#: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD માં જોડાણ ગુમ થયેલ છે."
 
-#: ../src/firewall-applet:867
+#: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD ને પુન:લાવી દેવામાં આવ્યુ છે."
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
 msgstr "ફાયરવોલ ડિમન માટે જોડાણ નથી"
 
-#: ../src/firewall-applet:950
+#: ../src/firewall-applet:951
 msgid "PANIC MODE"
 msgstr "PANIC MODE"
 
-#: ../src/firewall-applet:957
+#: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "મૂળભૂત વિસ્તાર: '%s'"
 
-#: ../src/firewall-applet:965
+#: ../src/firewall-applet:966
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr "ઇન્ટરફેસ '{interface}' પર જોડાણ '{connection}' માટે વિસ્તાર '{zone}' સક્રિય"
 
-#: ../src/firewall-applet:968
+#: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "ઇન્ટરફેસ '{interface}' માટે વિસ્તાર '{zone}' સક્રિય"
 
-#: ../src/firewall-applet:976
+#: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
 msgstr "સ્ત્રોત {source} માટે વિસ્તાર '{zone}' સક્રિય"
 
-#: ../src/firewall-applet:980
+#: ../src/firewall-applet:981
 msgid "No Active Zones."
 msgstr "સક્રિય વિસ્તારો નથી."
 
-#: ../src/firewall-applet:989
+#: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "'%s' માં મૂળભૂત વિસ્તારને બદલેલ છે."
 
-#: ../src/firewall-applet:1013
+#: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
 msgstr "બધા નેટવર્ક ટ્રાફિક બ્લોક થયેલ છે."
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "નેટવર્ક ટ્રાફિક હવે બ્લોક થયેલ નથી."
 
-#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
 msgstr "સક્રિય"
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
 msgstr "નિષ્ક્રિય"
 
-#: ../src/firewall-applet:1033
+#: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -216,25 +216,25 @@ msgstr ""
 "ઇન્ટરફેસ '{interface}' પર જોડાણ '{connection}' માટે વિસ્તાર "
 "'{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "ઇન્ટરફેસ '{interface}' માટે વિસ્તાર '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1060
+#: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "ઇન્ટરફેસ '%s' માટે સક્રિય થયેલ વિસ્તાર '%s'"
 
-#: ../src/firewall-applet:1072
+#: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "સ્ત્રોત '{source}' માટે વિસ્તાર '{zone}' {activated_deactivated}"
 
-#: ../src/firewall-applet:1095
+#: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "સ્ત્રોત '%s' માટે સક્રિય થયેલ વિસ્તાર '%s'"
 
-#: ../src/firewall-applet:1160
+#: ../src/firewall-applet:1161
 msgid "Firewall-applet"
 msgstr "Firewall-applet"
 
@@ -517,18 +517,18 @@ msgstr "ipv4"
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3327
+#: ../src/firewall-config:3325
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr "ફોર્વડીંગ એ ફક્ત બીજી સિસ્ટમ માટે ઉપયોગી છે જો ઇન્ટરફેસ માસ્કરેડ છે. "
 
-#: ../src/firewall-config:3574
+#: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
 msgstr "બિલ્ટ-ઇન સેવા, નામ બદલવાનું આધારભૂત નથી."
 
-#: ../src/firewall-config:3946
+#: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
 msgstr "બિલ્ટ-ઇન icmp, નામ બદલવાનું આધારભૂત નથી."
 

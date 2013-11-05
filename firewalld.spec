@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.7
+Version: 0.3.8
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -15,7 +15,7 @@ BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 BuildRequires: docbook-style-xsl
 Requires: dbus-python
-Requires: python-slip-dbus >= 0.2.7
+Requires: python-slip-dbus
 Requires: python-decorator
 %if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
@@ -183,6 +183,18 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Nov 05 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.8-1
+- fix memory leaks
+- New option --debug-gc
+- Python3 compatibility
+- Better non-ascii support
+- several firewall-config & firewall-applet fixes
+- New --remove-rules commands for firewall-cmd and removeRules methods for D-Bus
+- Fixed FirewallDirect.get_rules to return proper list
+- Fixed LastUpdatedOrderedDict.keys()
+- Enable rich rule usage in trusted zone (RHBZ#994144)
+- New error codes: INVALID_CONTEXT, INVALID_COMMAND, INVALID_USER and INVALID_UID
+
 * Thu Oct 17 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.7-1
 - Don't fail on missing ip[6]tables/ebtables table. (RHBZ#967376)
 - bash-completion: --permanent --direct options

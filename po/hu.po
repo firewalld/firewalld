@@ -19,8 +19,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-17 17:20+0200\n"
-"PO-Revision-Date: 2013-10-05 10:10+0000\n"
+"POT-Creation-Date: 2013-11-05 16:00+0100\n"
+"PO-Revision-Date: 2013-10-27 10:00+0000\n"
 "Last-Translator: Zoltan Hoppár <hopparz@gmail.com>\n"
 "Language-Team: Hungarian (http://www.transifex.com/projects/p/fedora/"
 "language/hu/)\n"
@@ -42,36 +42,36 @@ msgstr "Tűzfal"
 msgid "Firewall Configuration"
 msgstr "Tűzfal beállítások"
 
-#: ../src/firewall/core/io/io_object.py:147
+#: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "Váratlan elem '%s'"
 
-#: ../src/firewall/core/io/io_object.py:154
+#: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "Elem '%s': hiányzó '%s' attributum"
 
-#: ../src/firewall/core/io/io_object.py:162
+#: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "Elem '%s': váratlan attributum '%s'"
 
-#: ../src/firewalld:59 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "Root jogokkal kell rendelkeznie hogy futtathassa: %s."
 
-#: ../src/firewalld:82
+#: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewalD nem indult el, mert már fut az alkalmazás."
 
-#: ../src/firewalld:134
+#: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 hiba: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4971
+#: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Válasszon zónát ehhez a kapcsolathoz: '%s'"
@@ -114,11 +114,11 @@ msgstr "Teljes hálózati forgalom blokkolása"
 msgid "Configure Shields Up/Down Zones"
 msgstr "Tűzfal BE/KI zónák beállítása"
 
-#: ../src/firewall-applet:432
+#: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr "Itt kiválogathatja a zónákat az tűzfal aktív és deaktívált részeihez."
 
-#: ../src/firewall-applet:440
+#: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -127,97 +127,97 @@ msgstr ""
 "zónákat használják csak. Azoknak a felhasználóknak, akik megváltozatják a "
 "zónak kapcsolatait, csak korlátozottan lehet hasznos."
 
-#: ../src/firewall-applet:455
+#: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
 msgstr "Védett Zóna:"
 
-#: ../src/firewall-applet:466
+#: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
 msgstr "Nem Védett Zóna"
 
-#: ../src/firewall-applet:617
+#: ../src/firewall-applet:618
 msgid "Connections"
 msgstr "Kapcsolatok"
 
-#: ../src/firewall-applet:659 ../src/firewall-applet:688
-#: ../src/firewall-applet:712 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:660 ../src/firewall-applet:689
+#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "Zóna"
 
-#: ../src/firewall-applet:674 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "Csatlakozók"
 
-#: ../src/firewall-applet:699 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "Források"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
 msgstr "FirewallD kapcsolat helyreállt."
 
-#: ../src/firewall-applet:820
+#: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD kapcsolat elveszett."
 
-#: ../src/firewall-applet:867
+#: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD újra betöltve."
 
-#: ../src/firewall-applet:944
+#: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
 msgstr "Tűzfal alkalmazás kiszolgálóval nincs kapcsolat"
 
-#: ../src/firewall-applet:950
+#: ../src/firewall-applet:951
 msgid "PANIC MODE"
 msgstr "PÁNIK MÓD"
 
-#: ../src/firewall-applet:957
+#: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Alapértelmezett Zóna: '%s'"
 
-#: ../src/firewall-applet:965
+#: ../src/firewall-applet:966
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "A '{zone}' zóna aktiv az '{interface}' csatlakozón a '{connection}' "
 "kapcsolatnál"
 
-#: ../src/firewall-applet:968
+#: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "A '{zone}' zóna aktiv az '{interface}' csatlakozón"
 
-#: ../src/firewall-applet:976
+#: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
 msgstr "A '{zone}' zóna aktiv az {source} forrásról"
 
-#: ../src/firewall-applet:980
+#: ../src/firewall-applet:981
 msgid "No Active Zones."
 msgstr "Nincsenek aktív zónák."
 
-#: ../src/firewall-applet:989
+#: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Alapértelmezett zóna megváltozott erre: '%s'."
 
-#: ../src/firewall-applet:1013
+#: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
 msgstr "Minden hálózati forgalom blokkolva."
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
 msgstr "Hálózati forgalom nincs már blokkolva."
 
-#: ../src/firewall-applet:1029 ../src/firewall-applet:1069
+#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
 msgstr "aktívált"
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
 msgstr "deaktívált"
 
-#: ../src/firewall-applet:1033
+#: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -225,25 +225,25 @@ msgstr ""
 "A '{zone}' zóna {activated_deactivated} az '{interface}' csatlakozón a "
 "'{connection}' kapcsolatnál"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "A '{zone}' zóna  {activated_deactivated} az '{interface}' csatlakozón"
 
-#: ../src/firewall-applet:1060
+#: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "'%s' zóna aktiválásra került '%s' felületen"
 
-#: ../src/firewall-applet:1072
+#: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "A '{zone}' zóna {activated_deactivated} '{source}' forrás számára"
 
-#: ../src/firewall-applet:1095
+#: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "'%s' zóna aktiválásra került '%s' forrás számára"
 
-#: ../src/firewall-applet:1160
+#: ../src/firewall-applet:1161
 msgid "Firewall-applet"
 msgstr "Tűzfal-alkalmazás"
 
@@ -526,7 +526,7 @@ msgstr "ipv4"
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3327
+#: ../src/firewall-config:3325
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -536,11 +536,11 @@ msgstr ""
 "maszkolva van.\n"
 "Kívánja maszkolni ezt a zónát?"
 
-#: ../src/firewall-config:3574
+#: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
 msgstr "Beépített szolgáltatás, átnevezés nem támogatott."
 
-#: ../src/firewall-config:3946
+#: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
 msgstr "Beépített icmp, átnevezés nem támogatott."
 
@@ -811,6 +811,11 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"A firewalld zóna határozza meg a hitelességet a hálózati kapcsolatok, "
+"interfészek és a forrás címeket amelyek a zónához kapcsolódnak. A zóna "
+"egyesíti szolgáltatásokat, portokat, protokollokat, maszkolást, portok/ "
+"csomagok továbbítását, ICMP szűrőket és a bővített szabályokat. A zóna "
+"összekapcsolható csatlakozókhoz, és forráscímekhez."
 
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
@@ -834,6 +839,10 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"Itt meghatározhatja, hogy mely szolgáltatások megbízhatóak a zónában. "
+"Megbízható szolgáltatások elérhetőek az összes gépről és hálózatból, "
+"amelyeket elérhet a gép az ezzel a zónával összekapcsolt kapcsolatok, "
+"interfészek és források révén."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Services"
@@ -962,6 +971,9 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Adjon meg bejegyzéseket, hogy csatlakozókat kapcsolhasson a zónához. Ha a "
+"csatlakozó használatba kerül a kapcsolatban, a zóna a zónában "
+"meghatározottaknak alapján fog működni a kapcsolatban."
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
@@ -1206,7 +1218,7 @@ msgstr "Áteresztő szabály hozzáadása"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Áteresztő szabály szerkesztése"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Passthrough"
