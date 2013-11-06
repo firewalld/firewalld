@@ -604,7 +604,7 @@ class Logger:
         # function in module?
         if code.co_name in module.__dict__:
             if hasattr(module.__dict__[code.co_name], "func_code") and \
-                   module.__dict__[code.co_name].func_code  == code:
+                   module.__dict__[code.co_name].__code__  == code:
                 return None
 
         # class in module
@@ -614,7 +614,7 @@ class Logger:
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
                     if type(value) == types.FunctionType:
-                        if value.func_code == code:
+                        if value.__code__ == code:
                             return obj
 
         # nothing found
@@ -624,7 +624,7 @@ class Logger:
         """ Internal function to get calling class. Returns class or None. """
         for value in obj.__dict__.values():
             if type(value) == types.FunctionType:
-                if value.func_code == code:
+                if value.__code__ == code:
                     return obj
 
         for base in obj.__bases__:
