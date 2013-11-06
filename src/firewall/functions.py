@@ -393,7 +393,10 @@ def splitArgs(string):
     if PY2:
         # Python2's shlex doesn't like unicode
         string = u2b(string)
-    return shlex.split(string)
+        splits = shlex.split(string)
+        return map (b2u, splits)
+    else:
+        return shlex.split(string)
 
 def b2u(string):
     """ bytes to unicode """
