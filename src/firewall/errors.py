@@ -93,6 +93,9 @@ class FirewallError(Exception):
         self.code = code
         self.msg = msg
 
+    def __repr__(self):
+        return '%s(%r, %r)' % (self.__class__, self.code, self.msg)
+
     def __str__(self):
         if self.msg:
             return "%s: %s" % (self.errors[self.code], self.msg)

@@ -26,6 +26,9 @@ class FirewallIcmpType:
         self._fw = fw
         self._icmptypes = { }
 
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self._icmptypes)
+
     def cleanup(self):
         self._icmptypes.clear()
 

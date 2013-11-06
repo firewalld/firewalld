@@ -35,6 +35,12 @@ class FirewallConfig:
         self._fw = fw
         self.__init_vars()
 
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
+                   self._icmptypes, self._services, self._zones,
+                   self._default_icmptypes, self._default_services, self._default_zones,
+                   self._firewalld_conf, self._policies, self._direct)
+
     def __init_vars(self):
         self._icmptypes = { }
         self._services = { }

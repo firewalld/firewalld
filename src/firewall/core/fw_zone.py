@@ -76,6 +76,9 @@ class FirewallZone:
         self._chains = { }
         self._zones = { }
 
+    def __repr__(self):
+        return '%s(%r, %r)' % (self.__class__, self._chains, self._zones)
+
     def cleanup(self):
         self._chains.clear()
         self._zones.clear()

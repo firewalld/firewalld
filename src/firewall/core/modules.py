@@ -26,6 +26,9 @@ class modules:
     def __init__(self):
         self._command = "/sbin/modprobe"
 
+    def __repr__(self):
+        return '%s' % (self.__class__)
+
     def loaded_modules(self):
         modules = [ ]
         deps = { }

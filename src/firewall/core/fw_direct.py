@@ -47,6 +47,10 @@ class FirewallDirect:
         self._fw = fw
         self.__init_vars()
 
+    def __repr__(self):
+        return '%s(%r, %r, %r)' % (self.__class__, self._chains, self._rules,
+                                   self._rule_priority_positions)
+
     def __init_vars(self):
         self._chains = LastUpdatedOrderedDict()
         self._rules = LastUpdatedOrderedDict()

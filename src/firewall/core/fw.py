@@ -68,6 +68,12 @@ class Firewall:
 
         self.__init_vars()
 
+    def __repr__(self):
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
+         self.ip4tables_enabled, self.ip6tables_enabled, self.ebtables_enabled,
+         self._state, self._panic, self._default_zone, self._module_refcount,
+         self._marks, self._min_mark, self.cleanup_on_exit)
+
     def __init_vars(self):
         self._state = "INIT"
         self._panic = False

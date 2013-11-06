@@ -31,6 +31,10 @@ class FirewallPolicies:
         self._lockdown = False
         self.lockdown_whitelist = LockdownWhitelist(LOCKDOWN_WHITELIST)
 
+    def __repr__(self):
+        return '%s(%r, %r)' % (self.__class__, self._lockdown,
+                                           self.lockdown_whitelist)
+
     def cleanup(self):
         self._lockdown = False
         self.lockdown_whitelist.cleanup()

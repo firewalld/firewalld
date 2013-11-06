@@ -76,6 +76,10 @@ class FirewallClientZoneSettings(object):
                              [], [], []]
 
     @handle_exceptions
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
     def getVersion(self):
         return self.settings[0]
     @handle_exceptions
@@ -322,6 +326,10 @@ class FirewallClientServiceSettings(object):
             self.settings = ["", "", "", [], [], {}]
 
     @handle_exceptions
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
     def getVersion(self):
         return self.settings[0]
     @handle_exceptions
@@ -462,6 +470,10 @@ class FirewallClientIcmpTypeSettings(object):
             self.settings = ["", "", "", []]
 
     @handle_exceptions
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
     def getVersion(self):
         return self.settings[0]
     @handle_exceptions
@@ -573,6 +585,10 @@ class FirewallClientPoliciesLockdownWhitelist(object):
             self.settings = [ [], [], [], [] ]
 
     @handle_exceptions
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
     def getCommands(self):
         return sorted(self.settings[0])
     @handle_exceptions
@@ -675,6 +691,10 @@ class FirewallClientDirect(object):
             self.settings = settings
         else:
             self.settings = [ [], [], [], ]
+
+    @handle_exceptions
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self.settings)
 
     @handle_exceptions
     def getAllChains(self):
