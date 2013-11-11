@@ -1190,7 +1190,8 @@ firewall-cmd --permanent --add-port=443/tcp
   <refsect1 id="exit_codes">
     <title>Exit Codes</title>
     <para>
-      On success 0 is returned. In case of error one of the following error codes:
+      On success 0 is returned.
+      On failure the output is red colored and exit code is either 2 in case of wrong command-line option usage or one of the following error codes in other cases:
 
       <informaltable frame="all">
 	<tgroup cols="2" colsep="1" rowsep="1">
