@@ -1827,7 +1827,7 @@ class FirewallConfig(object):
         iter = self.serviceStore.get_iter_first()
         while iter:
             name = self.serviceStore.get_value(iter, 1)
-            if name in services:
+            if name in _services:
                 self.serviceStore.set_value(iter, 0, True)
                 _services.remove(name)
             else:
@@ -1865,7 +1865,7 @@ class FirewallConfig(object):
         iter = self.icmpStore.get_iter_first()
         while iter:
             name = self.icmpStore.get_value(iter, 1)
-            if name in icmpblocks:
+            if name in _icmpblocks:
                 self.icmpStore.set_value(iter, 0, True)
                 _icmpblocks.remove(name)
             else:
