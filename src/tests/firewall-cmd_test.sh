@@ -1,16 +1,17 @@
 #!/bin/bash
 
 #path="/usr/bin/"
-path="../"
+readonly path="../"
 
-RED='\033[00;31m'
-GREEN='\033[00;32m'
-RESTORE='\033[0m'
+readonly RED='\033[00;31m'
+readonly GREEN='\033[00;32m'
+readonly RESTORE='\033[0m'
 
 assert_good() {
-  args="${1}"
+  local args="${1}"
+
   ${path}firewall-cmd ${args} > /dev/null
-  if [ $? == 0 ]; then
+  if [[ "$?" -eq 0 ]]; then
     echo "${args} ... OK"
   else
     ((failures++))
@@ -19,9 +20,11 @@ assert_good() {
 }
 
 assert_good_notempty() {
-  args="${1}"
+  local args="${1}"
+  local ret
+
   ret=$(${path}firewall-cmd ${args}) > /dev/null
-  if [ $? == 0 -a -n "${ret}" ]; then
+  if [[ ( "$?" -eq 0 ) && ( -n "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
     ((failures++))
@@ -30,9 +33,11 @@ assert_good_notempty() {
 }
 
 assert_good_empty() {
-  args="${1}"
+  local args="${1}"
+  local ret
+
   ret=$(${path}firewall-cmd ${args}) > /dev/null
-  if [ $? == 0 -a -z "${ret}" ]; then
+  if [[ ( "$?" -eq 0 ) && ( -z "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
     ((failures++))
@@ -41,10 +46,12 @@ assert_good_empty() {
 }
 
 assert_good_equals() {
-  args="${1}"
-  value="${2}"
+  local args="${1}"
+  local value="${2}"
+  local ret
+
   ret=$(${path}firewall-cmd ${args}) > /dev/null
-  if [ $? == 0 -a "${ret}" == "${value}" ]; then
+  if [[ ( "$?" -eq 0 ) && ( "${ret}" = "${value}" ) ]]; then
     echo "${args} ... OK"
   else
     ((failures++))
@@ -53,10 +60,12 @@ assert_good_equals() {
 }
 
 assert_good_contains() {
-  args="${1}"
-  value="${2}"
+  local args="${1}"
+  local value="${2}"
+  local ret
+
   ret=$(${path}firewall-cmd ${args}) > /dev/null
-  if [[ ( $? == 0 ) && ( "${ret}" = *${value}* ) ]]; then
+  if [[ ( "$?" -eq 0 ) && ( "${ret}" = *${value}* ) ]]; then
     echo "${args} ... OK"
   else
     ((failures++))
@@ -65,9 +74,10 @@ assert_good_contains() {
 }
 
 assert_bad() {
-  args="${1}"
+  local args="${1}"
+
   ${path}firewall-cmd ${args} 1> /dev/null 2>&1
-  if [ $? != 0 ]; then
+  if [[ "$?" -ne 0 ]]; then
     echo "${args} ... OK"
   else
     ((failures++))
@@ -77,8 +87,11 @@ assert_bad() {
 
 # rich rules need separate assert methods because of quotation hell
 assert_rich_good() {
-  operation="${1}"
-  args="${2}"
+  local operation="${1}"
+  local args="${2}"
+  local command
+  local permanent
+
   [[ "${operation}" = *permanent* ]] && permanent="--permanent"
   if [[ "${operation}" = *add* ]]; then
     command="--add-rich-rule"
@@ -89,7 +102,7 @@ assert_rich_good() {
   fi
 
   ${path}firewall-cmd ${permanent} ${command} "${args}" > /dev/null
-  if [ $? == 0 ]; then
+  if [[ "$?" -eq 0 ]]; then
     echo ${permanent} ${command} "${args} ... OK"
   else
     ((failures++))
@@ -98,8 +111,11 @@ assert_rich_good() {
 }
 
 assert_rich_bad() {
-  operation="${1}"
-  args="${2}"
+  local operation="${1}"
+  local args="${2}"
+  local command
+  local permanent
+
   [[ "${operation}" = *permanent* ]] && permanent="--permanent"
   if [[ "${operation}" = *add* ]]; then
     command="--add-rich-rule"
@@ -110,7 +126,7 @@ assert_rich_bad() {
   fi
 
   ${path}firewall-cmd ${permanent} ${command} "${args}" > /dev/null
-  if [ $? != 0 ]; then
+  if [[ "$?" -ne 0 ]]; then
     echo ${permanent} ${command} "${args} ... OK"
   else
     ((failures++))
@@ -118,10 +134,9 @@ assert_rich_bad() {
   fi
 }
 
-${path}firewall-cmd --state --quiet
-if [ $? != 0 ]; then
+if ! ${path}firewall-cmd --state --quiet; then
   echo "FirewallD is not running"
-  exit $?
+  exit 1
 fi
 
 # MAIN
@@ -603,7 +618,7 @@ for (( i=0;i<${#good_rules[@]};i++)); do
 done
 
 echo "----------------------------------------------------------------------"
-if [ ${failures} -eq 0 ]; then
+if [[ "${failures}" -eq 0 ]]; then
     echo "Everything's OK, you rock :-)"
     exit 0
 else
