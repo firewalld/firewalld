@@ -604,9 +604,9 @@ class FirewallConfig:
     def _remove_zone(self, obj):
         if obj.name not in self._zones:
             raise FirewallError(INVALID_ZONE, obj.name)
-        if obj.path != ETC_FIREWALLD_ZONES:
+        if not obj.path.startswith(ETC_FIREWALLD_ZONES):
             raise FirewallError(INVALID_DIRECTORY, obj.path)
-        os.remove("%s/%s.xml" % (obj.path, obj.name))
+        os.remove("%s/%s.xml" % (ETC_FIREWALLD_ZONES, obj.name))
         del self._zones[obj.name]
 
     def is_builtin_zone(self, obj):

@@ -50,7 +50,7 @@ class Zone(IO_Object):
         ( "rules_str", [ "" ] ),                       # as
         )
     DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasas)'
-    ADDITIONAL_ALNUM_CHARS = [ "_" ]
+    ADDITIONAL_ALNUM_CHARS = [ "_", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
@@ -163,6 +163,11 @@ class Zone(IO_Object):
                 if fwd_port[3]:
                     if not checkIP(fwd_port[3]):
                         raise FirewallError(INVALID_ADDR, fwd_port[3])
+
+    def check_name(self, name):
+        super(Zone, self).check_name(name)
+        if name[0] == '/' or name [-1] == '/' or name.count('/') > 1:
+            raise FirewallError(INVALID_NAME, name)
 
     def combine(self, zone):
         self.combined = True
@@ -490,6 +495,10 @@ def zone_writer(zone, path=None):
             shutil.copy2(name, "%s.old" % name)
         except Exception as msg:
             raise IOError("Backup of '%s' failed: %s" % (name, msg))
+
+    dirpath = os.path.dirname(name)
+    if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
+        os.mkdir(dirpath, 0o750)
 
     f = io.open(name, mode='wt', encoding='UTF-8')
     handler = IO_Object_XMLGenerator(f)

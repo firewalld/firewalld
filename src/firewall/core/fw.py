@@ -281,23 +281,35 @@ class Firewall:
                     self.config.add_service(copy.deepcopy(obj))
                 elif reader_type == "zone":
                     obj = zone_reader(filename, path)
-                    if not combine:
-                        if obj.name in self.zone.get_zones():
-                            orig_obj = self.zone.get_zone(obj.name)
-                            if orig_obj.combined:
-                                raise FirewallError(NOT_OVERLOADABLE,
-                                                    "%s is a combined zone" % \
-                                                        obj.name)
+                    if combine:
+                        # Change name for permanent configuration
+                        obj.name = "%s/%s" % (
+                            os.path.basename(path),
+                            os.path.basename(filename)[0:-4])
+                        obj.check_name(obj.name)
+                    # Copy object before combine
+                    config_obj = copy.deepcopy(obj)
+                    if obj.name in self.zone.get_zones():
+                        orig_obj = self.zone.get_zone(obj.name)
+                        self.zone.remove_zone(orig_obj.name)
+                        if orig_obj.combined:
+                            log.debug1("  Combining %s '%s' ('%s/%s')",
+                                        reader_type, obj.name,
+                                        path, filename)
+                            obj.combine(orig_obj)
+                        else:
                             log.debug1("  Overloads %s '%s' ('%s/%s')",
                                        reader_type,
                                        orig_obj.name, orig_obj.path,
                                        orig_obj.filename)
-                            self.zone.remove_zone(orig_obj.name)
-                        self.zone.add_zone(obj)
-                        # add a deep copy to the configuration interface
-                        self.config.add_zone(copy.deepcopy(obj))
-                    else:
+                    self.config.add_zone(config_obj)
+                    if combine:
+                        log.debug1("  Combining %s '%s' ('%s/%s')",
+                                   reader_type, combined_zone.name,
+                                   path, filename)
                         combined_zone.combine(obj)
+                    else:
+                        self.zone.add_zone(obj)
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:

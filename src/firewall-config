@@ -1937,26 +1937,39 @@ class FirewallConfig(object):
         self.changes_applied()
         self.onChangeZone()
 
-    def entry_changed(self, entry, allowed_chars, max_chars=-1):
+    def entry_changed(self, entry, allowed_chars, modify=None):
         "Remove all disallowed characters and truncate length."
         origtext = entry.get_text()
         newtext = origtext
         for char in origtext:
             if char not in allowed_chars:
                 newtext = newtext.replace(char, "")
+        OK = len(newtext) > 0
+        if modify:
+            OK,newtext = modify(newtext)
+
         if newtext != origtext:
             entry.set_text(newtext)
+        return OK
 
-        if (max_chars != -1) and (len(origtext) > max_chars):
-            newtext = origtext[:max_chars]
-            entry.set_text(newtext)
+    def _check_zone_name(zone):
+        max_len = max_zone_name_len()
+        parts = zone.split('/')
+        if len(parts) < 2:
+            return (True, zone)
+        if len(parts[0]) > max_len:
+            parts[0] = parts[0][:max_len]
+        zone = '/'.join(parts[:2])
+        OK = len(zone) > 1 and zone[0] != '/' and zone[-1] != '/'
+        return (OK, zone)
 
     def onZoneBaseDialogChanged(self, *args):
+        OK=True
         if args and (args[0] == self.zoneBaseDialogNameEntry):
             additional_chars = "".join(Zone.ADDITIONAL_ALNUM_CHARS)
             allowed_chars = string.ascii_letters+string.digits+additional_chars
-            self.entry_changed(args[0], allowed_chars, max_zone_name_len())
-        self.zoneBaseDialogOkButton.set_sensitive(True)
+            OK = self.entry_changed(args[0], allowed_chars, _check_zone_name)
+        self.zoneBaseDialogOkButton.set_sensitive(OK)
 
     def onZoneBaseDialogTargetCheckToggled(self, check):
         val = check.get_active()
