@@ -246,7 +246,7 @@ log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
 	An action can be one of <option>accept</option>, <option>reject</option> or <option>drop</option>.
       </para>
       <para>
-	The rule can either contain an element or also a source only. If the rule contains an element, then new connection matching the element will be handled with the action. If the rule does not contain an element, then everything from the source address will be handled with the action (requires firewalld version 0.3.1).
+	The rule can either contain an element or also a source only. If the rule contains an element, then new connection matching the element will be handled with the action. If the rule does not contain an element, then everything from the source address will be handled with the action.
       </para>
       <para>
 	<programlisting>
@@ -254,7 +254,7 @@ accept | reject [type="reject type"] | drop
 	</programlisting>
       </para>
       <para>
-	With accept all new connection attempts will be granted. With reject they will not be accepted and there source will get a reject message. The reject type can be set to use an other value. With drop all packets will be dropped immediately, there is no information sent to the source.
+	With accept all new connection attempts will be granted. With reject they will not be accepted and there source will get a reject message. The reject type can be set to use an other value. For valid reject types see <option>--reject-with type</option> in <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page. Because reject types are different for IPv4 and IPv6 you have to specify rule family when using reject type. With drop all packets will be dropped immediately, there is no information sent to the source.
       </para>
       <para>
 	Also an action can be limited using the limit tag.
@@ -372,7 +372,7 @@ rule family="ipv4" source address="192.168.2.2" accept
       </para>
       <para>
 	<programlisting>
-rule family="ipv4" source address="192.168.2.3" reject
+rule family="ipv4" source address="192.168.2.3" reject type="icmp-admin-prohibited"
 	</programlisting>
       </para>
     </refsect2>
