@@ -124,7 +124,7 @@ class Rich_Reject(object):
         self.limit = limit
 
     def __str__(self):
-        return "reject%s%s" % (' type="%s"' % self.type if self.type != None else "",
+        return "reject%s%s" % (' type="%s"' % self.type if self.type else "",
                                " %s" % self.limit if self.limit else "")
 
 class Rich_Drop(Rich_Accept):
@@ -380,7 +380,7 @@ class Rich_Rule(object):
             elif in_element == 'reject':
                 if attr_name == 'type':
                     attrs[attr_name] = attr_value
-                if element == 'limit':
+                elif element == 'limit':
                     in_elements.append('limit')
                 else:
                     self.action = Rich_Reject(attrs.get('type'), attrs.get('limit'))
