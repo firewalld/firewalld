@@ -22,6 +22,11 @@
 from firewall import functions
 from firewall.errors import *
 
+REJECT_TYPES = {
+    "ipv4": ["icmp-net-unreachable", "net-unreach", "icmp-host-unreachable", "host-unreach", "icmp-port-unreachable", "port-unreach", "icmp-proto-unreachable", "proto-unreach", "icmp-net-prohibited", "net-prohib", "icmp-host-prohibited", "host-prohib", "tcp-reset", "tcp-rst", "icmp-admin-prohibited", "admin-prohib"],
+    "ipv6": ["icmp6-no-route", "no-route", "icmp6-adm-prohibited", "adm-prohibited", "icmp6-addr-unreachable", "addr-unreach", "icmp6-port-unreachable", "port-unreach", "tcp-reset", "tcp-rst"]
+}
+
 class Rich_Source(object):
     def __init__(self, addr, invert=False):
         self.addr = addr
@@ -126,6 +131,15 @@ class Rich_Reject(object):
     def __str__(self):
         return "reject%s%s" % (' type="%s"' % self.type if self.type else "",
                                " %s" % self.limit if self.limit else "")
+
+    def check(self, family):
+        if self.type:
+            if not family:
+                raise FirewallError(INVALID_RULE, "When using reject type you must specify also rule family.")
+            if family in ['ipv4', 'ipv6'] and \
+               self.type not in REJECT_TYPES[family]:
+                valid_types = ", ".join(REJECT_TYPES[family])
+                raise FirewallError(INVALID_RULE, "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types))
 
 class Rich_Drop(Rich_Accept):
     def __str__(self):
@@ -517,8 +531,8 @@ class Rich_Rule(object):
         # action
         if self.action != None:
             if type(self.action) == Rich_Reject:
-                if self.action.type != None and len(self.action.type) < 1:
-                    raise FirewallError(INVALID_RULE, "reject type")
+                self.action.check(self.family)
+
             if self.action.limit != None:
                 self.action.limit.check()
 

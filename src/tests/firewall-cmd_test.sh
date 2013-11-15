@@ -567,6 +567,8 @@ bad_rules=(
  'family="ipv6" accept'                                     # no 'rule'
  'name="dns" accept'                                        # no 'rule'
  'protocol value="ah" reject'                               # no 'rule'
+ 'rule protocol value="ah" reject type="icmp-host-prohibited"' # reject type needs specific family
+ 'rule family="ipv4" protocol value="ah" reject type="dummy"'  # dummy reject type
  'rule'                                                     # no element
  'rule bad_element'                                         # no unknown element
  'rule family="ipv5"'                                       # bad family
@@ -592,7 +594,7 @@ good_rules=(
  'rule protocol value="sctp" log'
  'rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept'
  'rule family="ipv4" source NOT address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" drop'
- 'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject limit value="20/m"'
+ 'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"'
  'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop'
  'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"'
  'rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m"'
