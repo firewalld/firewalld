@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.0 on Mon Nov 18 13:32:18 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <!-- interface-local-resource-path icons -->
@@ -112,7 +113,6 @@
                 <property name="activates_default">True</property>
                 <property name="width_chars">40</property>
                 <property name="shadow_type">none</property>
-                <property name="invisible_char_set">True</property>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -215,7 +215,6 @@
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
                 <property name="width_chars">50</property>
-                <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onCommandChanged" swapped="no"/>
               </object>
               <packing>
@@ -319,7 +318,6 @@
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
                 <property name="width_chars">50</property>
-                <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onContextChanged" swapped="no"/>
               </object>
               <packing>
@@ -576,8 +574,6 @@
                       <object class="GtkComboBoxText" id="directChainDialogTableCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>filter</item>
                           <item translatable="yes">nat</item>
@@ -603,7 +599,6 @@
                         <property name="max_length">31</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">20</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectChainDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -632,8 +627,6 @@
                       <object class="GtkComboBoxText" id="directChainDialogIPVCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>ipv4</item>
                           <item>ipv6</item>
@@ -774,8 +767,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>ipv4</item>
                           <item>ipv6</item>
@@ -797,7 +788,6 @@
                         <property name="max_length">1024</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">50</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectPassthroughDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -962,8 +952,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -983,7 +971,6 @@
                         <property name="max_length">31</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">31</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1013,8 +1000,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>ipv4</item>
                           <item>ipv6</item>
@@ -1037,7 +1022,6 @@
                         <property name="max_length">1024</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">50</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1326,7 +1310,6 @@
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
                         <property name="width_chars">25</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onForwardChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1383,8 +1366,6 @@
                       <object class="GtkComboBoxText" id="forwardDialogProtoCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>tcp</item>
                           <item>udp</item>
@@ -1679,7 +1660,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onIcmpBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1722,7 +1702,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onIcmpBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -1739,7 +1718,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onIcmpBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -2004,7 +1982,6 @@
                 <property name="activates_default">True</property>
                 <property name="width_chars">50</property>
                 <property name="shadow_type">none</property>
-                <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onInterfaceChanged" swapped="no"/>
               </object>
               <packing>
@@ -2034,8 +2011,8 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Firewall Configuration</property>
-    <signal name="destroy-event" handler="onQuit" swapped="no"/>
     <signal name="delete-event" handler="onQuit" swapped="no"/>
+    <signal name="destroy-event" handler="onQuit" swapped="no"/>
     <child>
       <object class="GtkVBox" id="vbox6">
         <property name="visible">True</property>
@@ -2275,8 +2252,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="tooltip_markup" translatable="yes">Currently visible configuration. Runtime configuration is the actual active configuration. Permanent configuration will be active after service or system reload or restart.</property>
-                    <property name="entry_text_column">0</property>
-                    <property name="id_column">1</property>
                     <signal name="changed" handler="onChangeView" swapped="no"/>
                   </object>
                   <packing>
@@ -3956,7 +3931,7 @@
                                                 <property name="can_focus">False</property>
                                                 <property name="yalign">0.49000000953674316</property>
                                                 <property name="stock">gtk-network</property>
-                                                <property name="icon-size">1</property>
+                                                <property name="icon_size">1</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>
@@ -4016,7 +3991,7 @@
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
                                                 <property name="stock">gtk-network</property>
-                                                <property name="icon-size">1</property>
+                                                <property name="icon_size">1</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>
@@ -5813,7 +5788,6 @@
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
                 <property name="width_chars">50</property>
-                <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onModuleChanged" swapped="no"/>
               </object>
               <packing>
@@ -5956,7 +5930,6 @@
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
                         <property name="width_chars">25</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onPortChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -5970,8 +5943,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>tcp</item>
                           <item>udp</item>
@@ -6129,7 +6100,6 @@
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
                         <property name="width_chars">25</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onPortProtoChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -6143,8 +6113,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>tcp</item>
                           <item>udp</item>
@@ -6170,8 +6138,8 @@
                         <property name="xalign">1</property>
                         <property name="image_position">right</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="onPortProtoDialogOtherProtoCheckToggled" swapped="no"/>
                         <signal name="toggled" handler="onPortProtoChanged" swapped="no"/>
+                        <signal name="toggled" handler="onPortProtoDialogOtherProtoCheckToggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="top_attach">2</property>
@@ -6187,7 +6155,6 @@
                         <property name="max_length">50</property>
                         <property name="invisible_char">●</property>
                         <property name="width_chars">25</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onPortProtoChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -6327,8 +6294,6 @@
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
                     <property name="hexpand">True</property>
-                    <property name="entry_text_column">0</property>
-                    <property name="id_column">1</property>
                     <items>
                       <item>ah</item>
                       <item>esp</item>
@@ -6377,7 +6342,6 @@
                     <property name="max_length">50</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">25</property>
-                    <property name="invisible_char_set">True</property>
                     <signal name="changed" handler="onProtoChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -6576,8 +6540,6 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item translatable="yes">ipv4 and ipv6</item>
                           <item>ipv4</item>
@@ -6640,7 +6602,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="stock">gtk-network</property>
-                                    <property name="icon-size">1</property>
+                                    <property name="icon_size">1</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -6730,7 +6692,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="stock">gtk-network</property>
-                                    <property name="icon-size">1</property>
+                                    <property name="icon_size">1</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -6788,8 +6750,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="entry_text_column">0</property>
-                                <property name="id_column">1</property>
                                 <items>
                                   <item>accept</item>
                                   <item>reject</item>
@@ -6833,7 +6793,6 @@
                                     <property name="hexpand">True</property>
                                     <property name="max_length">50</property>
                                     <property name="invisible_char">●</property>
-                                    <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                                   </object>
                                   <packing>
@@ -6890,7 +6849,6 @@
                                     <property name="max_length">8</property>
                                     <property name="invisible_char">●</property>
                                     <property name="width_chars">8</property>
-                                    <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                                   </object>
                                   <packing>
@@ -6915,8 +6873,6 @@
                                   <object class="GtkComboBoxText" id="richRuleDialogActionLimitDurationCombobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="entry_text_column">0</property>
-                                    <property name="id_column">1</property>
                                     <items>
                                       <item translatable="yes">second</item>
                                       <item translatable="yes">minute</item>
@@ -7001,7 +6957,6 @@
                             <property name="invisible_char">•</property>
                             <property name="activates_default">True</property>
                             <property name="width_chars">29</property>
-                            <property name="invisible_char_set">True</property>
                             <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                           </object>
                           <packing>
@@ -7016,8 +6971,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
-                            <property name="entry_text_column">0</property>
-                            <property name="id_column">1</property>
                             <items>
                               <item translatable="yes">emergency</item>
                               <item translatable="yes">alert</item>
@@ -7071,7 +7024,6 @@
                                     <property name="max_length">8</property>
                                     <property name="invisible_char">●</property>
                                     <property name="width_chars">8</property>
-                                    <property name="invisible_char_set">True</property>
                                     <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                                   </object>
                                   <packing>
@@ -7096,8 +7048,6 @@
                                   <object class="GtkComboBoxText" id="richRuleDialogLogLimitDurationCombobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="entry_text_column">0</property>
-                                    <property name="id_column">1</property>
                                     <items>
                                       <item translatable="yes">second</item>
                                       <item translatable="yes">minute</item>
@@ -7224,7 +7174,6 @@
                                 <property name="max_length">8</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">8</property>
-                                <property name="invisible_char_set">True</property>
                                 <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                               </object>
                               <packing>
@@ -7249,8 +7198,6 @@
                               <object class="GtkComboBoxText" id="richRuleDialogAuditLimitDurationCombobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="entry_text_column">0</property>
-                                <property name="id_column">1</property>
                                 <items>
                                   <item translatable="yes">second</item>
                                   <item translatable="yes">minute</item>
@@ -7319,8 +7266,6 @@
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="halign">start</property>
-                            <property name="entry_text_column">0</property>
-                            <property name="id_column">1</property>
                             <items>
                               <item translatable="yes">service</item>
                               <item translatable="yes">port</item>
@@ -7381,7 +7326,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="stock">gtk-properties</property>
-                                    <property name="icon-size">1</property>
+                                    <property name="icon_size">1</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -7591,7 +7536,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onServiceBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -7634,7 +7578,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onServiceBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -7651,7 +7594,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onServiceBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -7902,7 +7844,6 @@
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">5</property>
-                    <property name="invisible_char_set">True</property>
                     <signal name="changed" handler="onUidChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -8013,7 +7954,6 @@
                 <property name="invisible_char">•</property>
                 <property name="activates_default">True</property>
                 <property name="width_chars">20</property>
-                <property name="invisible_char_set">True</property>
                 <signal name="changed" handler="onUserChanged" swapped="no"/>
               </object>
               <packing>
@@ -8178,7 +8118,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onZoneBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -8221,7 +8160,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onZoneBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -8256,7 +8194,6 @@
                         <property name="can_focus">True</property>
                         <property name="invisible_char">•</property>
                         <property name="activates_default">True</property>
-                        <property name="invisible_char_set">True</property>
                         <signal name="changed" handler="onZoneBaseDialogChanged" swapped="no"/>
                       </object>
                       <packing>
@@ -8297,8 +8234,8 @@
                         <property name="receives_default">False</property>
                         <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="onZoneBaseDialogTargetCheckToggled" swapped="no"/>
                         <signal name="toggled" handler="onZoneBaseDialogChanged" swapped="no"/>
+                        <signal name="toggled" handler="onZoneBaseDialogTargetCheckToggled" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
@@ -8312,8 +8249,6 @@
                       <object class="GtkComboBoxText" id="zoneBaseDialogTargetCombobox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="entry_text_column">0</property>
-                        <property name="id_column">1</property>
                         <items>
                           <item>ACCEPT</item>
                           <item>DROP</item>
