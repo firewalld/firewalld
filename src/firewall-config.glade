@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.0 on Mon Nov 18 13:32:18 2013 -->
+<!-- Generated with glade 3.16.0 on Mon Nov 18 14:51:48 2013 -->
 <interface>
   <!-- interface-requires gtk+ 3.0 -->
   <!-- interface-local-resource-path icons -->
@@ -6545,6 +6545,7 @@
                           <item>ipv4</item>
                           <item>ipv6</item>
                         </items>
+                        <signal name="changed" handler="on_richRuleDialogFamilyCombobox_changed" swapped="no"/>
                         <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                       </object>
                       <packing>
@@ -6767,6 +6768,7 @@
                               <object class="GtkBox" id="richRuleDialogActionRejectBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <property name="tooltip_text" translatable="yes">To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' (not both).</property>
                                 <property name="hexpand">True</property>
                                 <property name="spacing">6</property>
                                 <child>
@@ -6787,12 +6789,9 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkEntry" id="richRuleDialogActionRejectTypeEntry">
+                                  <object class="GtkComboBoxText" id="richRuleDialogActionRejectTypeCombobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="hexpand">True</property>
-                                    <property name="max_length">50</property>
-                                    <property name="invisible_char">●</property>
                                     <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
                                   </object>
                                   <packing>

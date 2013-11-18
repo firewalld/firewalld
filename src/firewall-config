@@ -571,8 +571,8 @@ class FirewallConfig(object):
             "richRuleDialogActionRejectBox")
         self.richRuleDialogActionRejectTypeCheck = builder.get_object( \
             "richRuleDialogActionRejectTypeCheck")
-        self.richRuleDialogActionRejectTypeEntry = builder.get_object( \
-            "richRuleDialogActionRejectTypeEntry")
+        self.richRuleDialogActionRejectTypeCombobox = builder.get_object( \
+            "richRuleDialogActionRejectTypeCombobox")
         self.richRuleDialogActionLimitCheck = builder.get_object( \
             "richRuleDialogActionLimitCheck")
         self.richRuleDialogActionLimitBox = builder.get_object( \
@@ -2110,7 +2110,7 @@ class FirewallConfig(object):
         self.richRuleDialogActionCheck.set_active(False)
         self.richRuleDialogActionCombobox.set_active(0)
         self.richRuleDialogActionRejectTypeCheck.set_active(False)
-        self.richRuleDialogActionRejectTypeEntry.set_text("")
+        self.richRuleDialogActionRejectTypeCombobox.set_active(0)
         self.richRuleDialogActionLimitCheck.set_active(False)
         self.richRuleDialogActionLimitRateEntry.set_text("")
         self.richRuleDialogActionLimitDurationCombobox.set_active(0)
@@ -2206,9 +2206,16 @@ class FirewallConfig(object):
                     action = "accept"
                 elif type(old_obj.action) == Rich_Reject:
                     action = "reject"
+                    self.richRuleDialogActionRejectTypeCombobox.remove_all()
+                    for icmp in REJECT_TYPES[old_obj.family]:
+                        self.richRuleDialogActionRejectTypeCombobox. \
+                                                    append(icmp, icmp)
                     if old_obj.action.type:
-                        self.richRuleDialogActionRejectTypeEntry.set_text( \
-                            old_obj.action.type)
+                        self.richRuleDialogActionRejectTypeCombobox. \
+                                         set_active_id(old_obj.action.type)
+                    else:
+                        self.richRuleDialogActionRejectTypeCombobox. \
+                             set_active_id(REJECT_TYPES[old_obj.family][0])
                 elif type(old_obj.action) == Rich_Drop:
                     action = "drop"
                 combobox_select_text(self.richRuleDialogActionCombobox, action)
@@ -2622,7 +2629,7 @@ class FirewallConfig(object):
             elif combolabel == _("reject"):
                 _type = None
                 if self.richRuleDialogActionRejectTypeCheck.get_active():
-                    _type = self.richRuleDialogActionRejectTypeEntry.get_text()
+                    _type = self.richRuleDialogActionRejectTypeCombobox.get_active_text()
                 rule.action = Rich_Reject(_type, limit)
             elif combolabel == _("drop"):
                 rule.action = Rich_Drop(limit)
@@ -2670,6 +2677,27 @@ class FirewallConfig(object):
 
         return rule
 
+    def on_richRuleDialogFamilyCombobox_changed(self, *args):
+        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if combolabel == _("ipv4"):
+            family = "ipv4"
+        elif combolabel == _("ipv6"):
+            family = "ipv6"
+        else:
+            family = None
+
+        self.richRuleDialogActionRejectTypeCombobox.remove_all()
+        if family != None:
+            for icmp in REJECT_TYPES[family]:
+                self.richRuleDialogActionRejectTypeCombobox.append(icmp, icmp)
+            old_obj = self.richRuleDialog.old_obj
+            if family == old_obj.family and old_obj.action.type:
+                self.richRuleDialogActionRejectTypeCombobox. \
+                                     set_active_id(old_obj.action.type)
+            else:
+                self.richRuleDialogActionRejectTypeCombobox. \
+                                     set_active_id(REJECT_TYPES[family][0])
+
     def on_richRuleDialogElementCombobox_changed(self, *args):
         self.richRuleDialogElementChooser.set_text("")
 
@@ -2704,9 +2732,9 @@ class FirewallConfig(object):
 
         self.richRuleDialogActionLimitBox.set_sensitive(
             self.richRuleDialogActionLimitCheck.get_active())
-        self.richRuleDialogActionRejectTypeEntry.set_sensitive(
+        self.richRuleDialogActionRejectTypeCombobox.set_sensitive(
             self.richRuleDialogActionRejectTypeCheck.get_active())
-        self.richRuleDialogActionRejectBox.set_sensitive(
+        self.richRuleDialogActionRejectBox.set_sensitive(family != None and \
             self.richRuleDialogActionCombobox.get_active_text() == _("reject"))
         self.richRuleDialogLogGrid.set_sensitive(
             self.richRuleDialogLogCheck.get_active())
