@@ -2691,7 +2691,7 @@ class FirewallConfig(object):
             for icmp in REJECT_TYPES[family]:
                 self.richRuleDialogActionRejectTypeCombobox.append(icmp, icmp)
             old_obj = self.richRuleDialog.old_obj
-            if family == old_obj.family and old_obj.action.type:
+            if old_obj and old_obj.family == family and old_obj.action.type:
                 self.richRuleDialogActionRejectTypeCombobox. \
                                      set_active_id(old_obj.action.type)
             else:
