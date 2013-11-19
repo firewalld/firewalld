@@ -856,6 +856,7 @@ class FirewallConfig(object):
 
         self.fw = client.FirewallClient(wait=1)
         self.fw.setExceptionHandler(self._exception_handler)
+        self.fw.setNotAuthorizedLoop(True)
 
         self.fw.connect("panic-mode-enabled", self.panic_mode_enabled_cb)
         self.fw.connect("panic-mode-disabled", self.panic_mode_disabled_cb)

@@ -37,32 +37,39 @@ from firewall.functions import b2u
 from firewall.core.rich import Rich_Rule
 
 exception_handler = None
+not_authorized_loop = False
 
 @decorator
 def handle_exceptions(func, *args, **kwargs):
     """Decorator to handle exceptions
     """
     global exception_handler
-    #while 1:
-    try:
-        return func(*args, **kwargs)
-    except dbus.exceptions.DBusException as e:
-        dbus_message = e.get_dbus_message() # returns unicode
-        dbus_name = e.get_dbus_name()
-        if not exception_handler:
-            raise
-        if "NotAuthorizedException" in dbus_name:
-            exception_handler("NotAuthorizedException")
-        else:
-            if dbus_message:
-                exception_handler(dbus_message)
+    global not_authorized_loop
+    authorized = False
+    while not authorized:
+        try:
+            return func(*args, **kwargs)
+        except dbus.exceptions.DBusException as e:
+            dbus_message = e.get_dbus_message() # returns unicode
+            dbus_name = e.get_dbus_name()
+            if not exception_handler:
+                raise
+            if "NotAuthorizedException" in dbus_name:
+                authorized = False
+                exception_handler("NotAuthorizedException")
+            else:
+                authorized = True
+                if dbus_message:
+                    exception_handler(dbus_message)
+                else:
+                    exception_handler(b2u(str(e)))
+        except Exception as e:
+            if not exception_handler:
+                raise
             else:
                 exception_handler(b2u(str(e)))
-    except Exception as e:
-        if not exception_handler:
-            raise
-        else:
-            exception_handler(b2u(str(e)))
+        if not not_authorized_loop:
+            break
 
 # zone config setings
 
@@ -1054,6 +1061,16 @@ class FirewallClient(object):
     def setExceptionHandler(self, handler):
         global exception_handler
         exception_handler = handler
+
+    @handle_exceptions
+    def getNotAuthorizedLoop(self):
+        global not_authorized_loop
+        return not_authorized_loop
+
+    @handle_exceptions
+    def setNotAuthorizedLoop(self, enable):
+        global not_authorized_loop
+        not_authorized_loop = (enable == True)
 
     @handle_exceptions
     def connect(self, name, callback, *args):
