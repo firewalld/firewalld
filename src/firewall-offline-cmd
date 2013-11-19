@@ -369,9 +369,7 @@ else:
 
 if conf.enabled == False:
     os.system("systemctl disable firewalld.service")
-    os.system("systemctl mask firewalld.service")
 else:
-    os.system("systemctl unmask firewalld.service")
     os.system("systemctl enable firewalld.service")
 
 
