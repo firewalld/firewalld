@@ -58,12 +58,12 @@ CLEANFILES = *~ *\# .\#* *.py?
 
 install-data-local:
 	@echo "Fixing python shebang"
-	@list='$(bin_SCRIPTS)'; \
+	@list='$(dist_bin_SCRIPTS)'; \
 	for p in $$list; do \
 	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
 	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(bindir)/$$p"; \
 	done
-	@list='$(sbin_SCRIPTS)'; \
+	@list='$(dist_sbin_SCRIPTS)'; \
 	for p in $$list; do \
 	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
 	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
