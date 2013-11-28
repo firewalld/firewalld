@@ -385,6 +385,14 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry>
+            <term>removeRules(s: ipv, s: table, s: chain) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
 
