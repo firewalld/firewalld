@@ -1031,7 +1031,7 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='as')
     @dbus_handle_exceptions
     def getRichRules(self, zone, sender=None):
-        # returns the list of enabled services for zone
+        # returns the list of enabled rich rules for zone
         # TODO: should be renamed to listRichRules()
         # because is called by firewall-cmd --zone --list-rich-rules
         zone = dbus_to_python(zone)
@@ -1455,7 +1455,7 @@ class FirewallD(slip.dbus.service.Object):
     def getIcmpBlocks(self, zone, sender=None):
         # returns the list of enabled icmpblocks
         # TODO: should be renamed to listIcmpBlocks()
-        # because is called by firewall-cmd --zone --list-icmptypes
+        # because is called by firewall-cmd --zone --list-icmp-blocks
         zone = dbus_to_python(zone)
         log.debug1("zone.getIcmpBlocks('%s')" % (zone))
         return self.fw.zone.list_icmp_blocks(zone)
