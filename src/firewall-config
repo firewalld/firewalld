@@ -359,9 +359,12 @@ class FirewallConfig(object):
 
         self.zoneView = builder.get_object("zoneView")
         self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING, # name
-                                       GObject.TYPE_INT) # weight
+                                       GObject.TYPE_INT,    # Pango.Weight
+                                       GObject.TYPE_STRING) # tooltip
+
         self.zoneView.append_column(
             Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0, weight=1))
+        self.zoneView.set_tooltip_column(2)
         self.zoneView.set_model(self.zoneStore)
         self.zoneStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.zoneView.get_selection().connect("changed", self.onChangeZone)
@@ -410,12 +413,14 @@ class FirewallConfig(object):
 
         self.serviceView = builder.get_object("serviceView")
         self.serviceStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, # checked
-                                          GObject.TYPE_STRING)  # name
+                                          GObject.TYPE_STRING,  # name
+                                          GObject.TYPE_STRING)  # tooltip
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.service_toggle_cb, self.serviceStore, 0)
         self.serviceView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
         self.serviceView.append_column(
             Gtk.TreeViewColumn(_("Service"), Gtk.CellRendererText(), text=1))
+        self.serviceView.set_tooltip_column(2)
         self.serviceView.set_model(self.serviceStore)
         self.serviceStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
@@ -501,12 +506,14 @@ class FirewallConfig(object):
 
         self.icmpView = builder.get_object("icmpView")
         self.icmpStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, # checked
-                                       GObject.TYPE_STRING)  # name
+                                       GObject.TYPE_STRING,  # name
+                                       GObject.TYPE_STRING)  # tooltip
         toggle = Gtk.CellRendererToggle()
         toggle.connect("toggled", self.icmp_toggle_cb, self.icmpStore, 0)
         self.icmpView.append_column(Gtk.TreeViewColumn("", toggle, active=0))
         self.icmpView.append_column(
             Gtk.TreeViewColumn(_("Icmp Type"), Gtk.CellRendererText(), text=1))
+        self.icmpView.set_tooltip_column(2)
         self.icmpView.set_model(self.icmpStore)
         self.icmpStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
@@ -1175,9 +1182,10 @@ class FirewallConfig(object):
         active_zone = self.get_active_zone()
 
         if self.runtime_view:
-            zones = self.fw.getZones()
+            zones = [(z,"") for z in self.fw.getZones()]
         else:
-            zones = [self.fw.config().getZone(z).get_property("name") \
+            zones = [(self.fw.config().getZone(z).get_property("name"), \
+                      self.fw.config().getZone(z).get_property("description")) \
                      for z in self.fw.config().listZones()]
             zones.sort()
 
@@ -1197,27 +1205,31 @@ class FirewallConfig(object):
 
         if self.runtime_view:
             for item in self.fw.listServices():
-                self.serviceStore.append([False, item])
+                self.serviceStore.append([False, item, ""])
             for item in self.fw.listIcmpTypes():
-                self.icmpStore.append([False, item])
+                self.icmpStore.append([False, item, ""])
         else:
             items = self.fw.config().listServices()
             for item in items:
                 obj = self.fw.config().getService(item)
-                self.serviceStore.append([False, obj.get_property("name")])
+                self.serviceStore.append([False,
+                                          obj.get_property("name"),
+                                          obj.get_property("description")])
             items = self.fw.config().listIcmpTypes()
             for item in items:
                 obj = self.fw.config().getIcmpType(item)
-                self.icmpStore.append([False, obj.get_property("name")])
+                self.icmpStore.append([False,
+                                       obj.get_property("name"),
+                                       obj.get_property("description")])
 
         # zones
         for zone in zones:
             if zone == self.default_zone:
-                self.zoneStore.append([zone, Pango.Weight.BOLD])
+                self.zoneStore.append([zone[0], Pango.Weight.BOLD, zone[1]])
             else:
-                self.zoneStore.append([zone, Pango.Weight.NORMAL])
+                self.zoneStore.append([zone[0], Pango.Weight.NORMAL, zone[1]])
 
-        if active_zone in zones:
+        if [z[0] for z in zones if z[0] == active_zone]:
             _zone = active_zone
         else:
             _zone = self.defaultZoneLabel.get_text()
@@ -3505,7 +3517,7 @@ class FirewallConfig(object):
     def conf_service_added_cb(self, service):
         if self.runtime_view:
             return
-        self.serviceStore.append([False, service])
+        self.serviceStore.append([False, service, ""])
 
     def conf_service_updated_cb(self, zone):
         self.onChangeService()
@@ -4075,7 +4087,7 @@ class FirewallConfig(object):
             return
         if not self.show_icmp_types:
             return
-        self.icmpStore.append([False, icmp])
+        self.icmpStore.append([False, icmp, ""])
 
     def conf_icmp_updated_cb(self, zone):
         if self.runtime_view:
