@@ -1578,7 +1578,7 @@ class FirewallConfig(object):
     def conf_zone_added_cb(self, zone):
         if self.runtime_view:
             return
-        self.zoneStore.append([zone, Pango.Weight.NORMAL])
+        self.load_zones()
 
     def conf_zone_updated_cb(self, zone):
         if zone != self.get_active_zone():
@@ -2072,9 +2072,6 @@ class FirewallConfig(object):
         else:
             self.fw.config().addZone(name, settings)
         self.changes_applied()
-
-        self.load_zones()
-        self.onChangeZone()
 
     def onAddRichRule(self, *args):
         self.add_edit_rich_rule(True)
