@@ -1581,7 +1581,7 @@ class FirewallConfig(object):
         self.load_zones()
 
     def conf_zone_updated_cb(self, zone):
-        if zone != self.get_active_zone():
+        if self.runtime_view or zone != self.get_active_zone():
             return
         self.onChangeZone()
 
