@@ -1953,23 +1953,23 @@ class FirewallConfig(object):
             entry.set_text(newtext)
         return OK
 
-    def _check_zone_name(zone):
-        max_len = max_zone_name_len()
-        parts = zone.split('/')
-        if len(parts) < 2:
-            return (True, zone)
-        if len(parts[0]) > max_len:
-            parts[0] = parts[0][:max_len]
-        zone = '/'.join(parts[:2])
-        OK = len(zone) > 1 and zone[0] != '/' and zone[-1] != '/'
-        return (OK, zone)
-
     def onZoneBaseDialogChanged(self, *args):
+        def check_zone_name(zone):
+            max_len = max_zone_name_len()
+            parts = zone.split('/')
+            if len(parts) < 2:
+                return (True, zone)
+            if len(parts[0]) > max_len:
+                parts[0] = parts[0][:max_len]
+            zone = '/'.join(parts[:2])
+            OK = len(zone) > 1 and zone[0] != '/' and zone[-1] != '/'
+            return (OK, zone)
+
         OK=True
         if args and (args[0] == self.zoneBaseDialogNameEntry):
             additional_chars = "".join(Zone.ADDITIONAL_ALNUM_CHARS)
             allowed_chars = string.ascii_letters+string.digits+additional_chars
-            OK = self.entry_changed(args[0], allowed_chars, _check_zone_name)
+            OK = self.entry_changed(args[0], allowed_chars, check_zone_name)
         self.zoneBaseDialogOkButton.set_sensitive(OK)
 
     def onZoneBaseDialogTargetCheckToggled(self, check):
