@@ -1182,10 +1182,11 @@ class FirewallConfig(object):
         active_zone = self.get_active_zone()
 
         if self.runtime_view:
-            zones = [(z,"") for z in self.fw.getZones()]
+            zones = [(z, self.fw.config().getZoneByName(z).\
+                     get_property("description")) for z in self.fw.getZones()]
         else:
             zones = [(self.fw.config().getZone(z).get_property("name"), \
-                      self.fw.config().getZone(z).get_property("description")) \
+                      self.fw.config().getZone(z).get_property("description"))\
                      for z in self.fw.config().listZones()]
             zones.sort()
 
@@ -1205,9 +1206,11 @@ class FirewallConfig(object):
 
         if self.runtime_view:
             for item in self.fw.listServices():
-                self.serviceStore.append([False, item, ""])
+                self.serviceStore.append([False, item, self.fw.config().\
+                          getServiceByName(item).get_property("description")])
             for item in self.fw.listIcmpTypes():
-                self.icmpStore.append([False, item, ""])
+                self.icmpStore.append([False, item, self.fw.config().\
+                         getIcmpTypeByName(item).get_property("description")])
         else:
             items = self.fw.config().listServices()
             for item in items:
@@ -3517,7 +3520,9 @@ class FirewallConfig(object):
     def conf_service_added_cb(self, service):
         if self.runtime_view:
             return
-        self.serviceStore.append([False, service, ""])
+        self.serviceStore.append([False, service,
+                                  self.fw.config().getServiceByName(service).\
+                                                 get_property("description")])
 
     def conf_service_updated_cb(self, zone):
         self.onChangeService()
@@ -4087,7 +4092,8 @@ class FirewallConfig(object):
             return
         if not self.show_icmp_types:
             return
-        self.icmpStore.append([False, icmp, ""])
+        self.icmpStore.append([False, icmp, self.fw.config().\
+                         getIcmpTypeByName(icmp).get_property("description")])
 
     def conf_icmp_updated_cb(self, zone):
         if self.runtime_view:
