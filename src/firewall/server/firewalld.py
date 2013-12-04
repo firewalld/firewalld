@@ -740,6 +740,16 @@ class FirewallD(slip.dbus.service.Object):
             return zone
         return ""
 
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getZoneDescription(self, zone, sender=None):
+        # Return description of a zone.
+        zone = dbus_to_python(zone)
+        log.debug1("zone.getZoneDescription('%s')" % zone)
+        return self.fw.zone.get_description(zone)
+
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='b')

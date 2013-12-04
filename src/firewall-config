@@ -1182,8 +1182,7 @@ class FirewallConfig(object):
         active_zone = self.get_active_zone()
 
         if self.runtime_view:
-            zones = [(z, self.fw.config().getZoneByName(z).\
-                     get_property("description")) for z in self.fw.getZones()]
+            zones = [(z, self.fw.getZoneDescription(z)) for z in self.fw.getZones()]
         else:
             zones = [(self.fw.config().getZone(z).get_property("name"), \
                       self.fw.config().getZone(z).get_property("description"))\
@@ -1206,11 +1205,11 @@ class FirewallConfig(object):
 
         if self.runtime_view:
             for item in self.fw.listServices():
-                self.serviceStore.append([False, item, self.fw.config().\
-                          getServiceByName(item).get_property("description")])
+                self.serviceStore.append([False, item,
+                           self.fw.getServiceSettings(item).getDescription()])
             for item in self.fw.listIcmpTypes():
-                self.icmpStore.append([False, item, self.fw.config().\
-                         getIcmpTypeByName(item).get_property("description")])
+                self.icmpStore.append([False, item,
+                          self.fw.getIcmpTypeSettings(item).getDescription()])
         else:
             items = self.fw.config().listServices()
             for item in items:

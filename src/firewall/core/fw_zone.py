@@ -104,6 +104,9 @@ class FirewallZone:
                 return zone
         return None
 
+    def get_description(self, zone):
+        return self.get_zone(zone).description
+
     def get_zone(self, zone):
         z = self._fw.check_zone(zone)
         return self._zones[z]
