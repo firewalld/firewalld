@@ -277,16 +277,16 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if attrs["name"] not in self.item.icmp_blocks:
                 self.item.icmp_blocks.append(attrs["name"])
         elif name == "masquerade":
+            if "enabled" in attrs:
+                log.warning("Ignoring deprecated attribute enabled='%s'" %
+                            attrs["enabled"])
             if self._rule:
-                if "enabled" in attrs:
-                    log.warning('Invalid rule: Masquerade attribute ignored in rule.')
                 if self._rule.element:
                     log.error('Invalid rule: More than one element, ignoring.')
                     self._rule_error = True
                     return
                 self._rule.element = Rich_Masquerade()
-                return
-            if attrs["enabled"].lower() in [ "yes", "true" ]:
+            else:
                 self.item.masquerade = True
         elif name == "forward-port":
             to_port = ""
@@ -562,7 +562,7 @@ def zone_writer(zone, path=None):
     # masquerade
     if zone.masquerade:
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("masquerade", { "enabled": "Yes" })
+        handler.simpleElement("masquerade", { })
         handler.ignorableWhitespace("\n")
 
     # forward-ports
