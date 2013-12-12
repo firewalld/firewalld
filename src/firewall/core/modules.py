@@ -69,9 +69,17 @@ class modules:
             ret.append(module)
 
     def get_firewall_modules(self):
-        """ get all firewall-related modules """
+        """ get all loaded firewall-related modules """
         modules = [ ]
         (mods, deps) = self.loaded_modules()
+
+        self.get_deps("nf_conntrack", deps, modules)
+        # these modules don't have dependants listed in /proc/modules
+        for bad_bad_module in ["nf_conntrack_ipv4", "nf_conntrack_ipv6"]:
+            if bad_bad_module in modules:
+                # move them to end of list, so we'll remove them later
+                modules.remove(bad_bad_module)
+                modules.insert(-1, bad_bad_module)
 
         for mod in mods:
             if mod in [ "ip_tables", "ip6_tables", "ebtables" ] or \
@@ -83,14 +91,6 @@ class modules:
 
     def unload_firewall_modules(self):
         """ unload all firewall-related modules """
-        for module in self.get_firewall_modules():
-            (status, ret) = self.unload_module(module)
-            if status != 0:
-                log.debug2("Failed to unload module '%s': %s" %(module, ret))
-
-        # Unloading of modul with rmmod sometimes fails for no obvious reason
-        # (even if no other modul uses it). It was ok with modprobe -r.
-        # Anyway this additional round should remove the rest.
         for module in self.get_firewall_modules():
             (status, ret) = self.unload_module(module)
             if status != 0:
