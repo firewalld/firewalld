@@ -24,12 +24,15 @@ from firewall.core.logger import log
 
 class modules:
     def __init__(self):
-        self._command = "/sbin/modprobe"
+        self._load_command = "/sbin/modprobe"
+        # Use rmmod instead of modprobe -r (RHBZ#1031102)
+        self._unload_command = "/sbin/rmmod"
 
     def __repr__(self):
         return '%s' % (self.__class__)
 
     def loaded_modules(self):
+        """ get all loaded kernel modules and their dependencies """
         modules = [ ]
         deps = { }
         with open("/proc/modules", "r") as f:
@@ -44,17 +47,18 @@ class modules:
                 else:
                     deps[splits[0]] = [ ]
 
-        return modules, deps
+        return modules, deps # [loaded modules], {module:[dependants]}
 
     def load_module(self, module):
-        log.debug2("%s: %s %s", self.__class__, self._command, module)
-        return runProg(self._command, [ module ])
+        log.debug2("%s: %s %s", self.__class__, self._load_command, module)
+        return runProg(self._load_command, [ module ])
 
     def unload_module(self, module):
-        log.debug2("%s: %s -r %s", self.__class__, self._command, module)
-        return runProg(self._command, [ "-r", module ])
+        log.debug2("%s: %s %s", self.__class__, self._unload_command, module)
+        return runProg(self._unload_command, [ module ])
 
     def get_deps(self, module, deps, ret):
+        """ get all dependants of a module """
         if module not in deps:
             return
         for mod in deps[module]:
@@ -65,20 +69,35 @@ class modules:
             ret.append(module)
 
     def get_firewall_modules(self):
+        """ get all firewall-related modules """
         modules = [ ]
         (mods, deps) = self.loaded_modules()
 
-        for mod in [ "ip_tables", "ip6_tables", "nf_conntrack", "ebtables" ]:
-            self.get_deps(mod, deps, modules)
-
         for mod in mods:
-            if mod.startswith("iptable_") or mod.startswith("ip6table_") or \
-                    mod.startswith("nf_") or mod.startswith("xt_") or \
-                    mod.startswith("ipt_") or mod.startswith("ip6t_") :
+            if mod in [ "ip_tables", "ip6_tables", "ebtables" ] or \
+               mod.startswith("iptable_") or mod.startswith("ip6table_") or \
+               mod.startswith("nf_") or mod.startswith("xt_") or \
+               mod.startswith("ipt_") or mod.startswith("ip6t_") :
                 self.get_deps(mod, deps, modules)
         return modules
 
+    def unload_firewall_modules(self):
+        """ unload all firewall-related modules """
+        for module in self.get_firewall_modules():
+            (status, ret) = self.unload_module(module)
+            if status != 0:
+                log.debug2("Failed to unload module '%s': %s" %(module, ret))
+
+        # Unloading of modul with rmmod sometimes fails for no obvious reason
+        # (even if no other modul uses it). It was ok with modprobe -r.
+        # Anyway this additional round should remove the rest.
+        for module in self.get_firewall_modules():
+            (status, ret) = self.unload_module(module)
+            if status != 0:
+                log.debug1("Failed to unload module '%s': %s" %(module, ret))
+
     def unload_modules(self, modules):
+        """ unused """
         (mods, deps) = self.loaded_modules()
 
         to_unload = [ ]
@@ -91,13 +110,8 @@ class modules:
                 raise ValueError("Unable to unload module %s: %s" % (module,
                                                                      ret))
 
-    def unload_firewall_modules(self):
-        for module in self.get_firewall_modules():
-            (status, ret) = self.unload_module(module)
-            if status != 0:
-                log.debug1("Failed to unload module '%s': %s" %(module, ret))
-
-    def get_dep_modules(self, module):
+    def get_module_deps(self, module):
+        """ unused """
         (mods, deps) = self.loaded_modules()
 
         dependant = [ ]
