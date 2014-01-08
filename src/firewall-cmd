@@ -485,9 +485,9 @@ options_lockdown_whitelist = \
     a.list_lockdown_whitelist_contexts or a.add_lockdown_whitelist_context or \
     a.remove_lockdown_whitelist_context or \
     a.query_lockdown_whitelist_context or \
-    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid or \
-    a.remove_lockdown_whitelist_uid or \
-    a.query_lockdown_whitelist_uid or \
+    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid != None or \
+    a.remove_lockdown_whitelist_uid != None or \
+    a.query_lockdown_whitelist_uid != None or \
     a.list_lockdown_whitelist_users or a.add_lockdown_whitelist_user or \
     a.remove_lockdown_whitelist_user or \
     a.query_lockdown_whitelist_user
@@ -658,11 +658,11 @@ if a.permanent:
         elif a.list_lockdown_whitelist_uids:
             l = whitelist.getUids()
             __print_and_exit(" ".join(map(str, l)))
-        elif a.add_lockdown_whitelist_uid:
+        elif a.add_lockdown_whitelist_uid != None:
             whitelist.addUid(a.add_lockdown_whitelist_uid)
-        elif a.remove_lockdown_whitelist_uid:
+        elif a.remove_lockdown_whitelist_uid != None:
             whitelist.removeUid(a.remove_lockdown_whitelist_uid)
-        elif a.query_lockdown_whitelist_uid:
+        elif a.query_lockdown_whitelist_uid != None:
             __print_query_result(whitelist.queryUid( \
                                  a.query_lockdown_whitelist_uid))
 
@@ -1091,11 +1091,11 @@ elif a.query_lockdown_whitelist_context:
 elif a.list_lockdown_whitelist_uids:
     l = fw.getLockdownWhitelistUids()
     __print_and_exit(" ".join(map(str, l)))
-elif a.add_lockdown_whitelist_uid:
+elif a.add_lockdown_whitelist_uid != None:
     fw.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
-elif a.remove_lockdown_whitelist_uid:
+elif a.remove_lockdown_whitelist_uid != None:
     fw.removeLockdownWhitelistUid(a.remove_lockdown_whitelist_uid)
-elif a.query_lockdown_whitelist_uid:
+elif a.query_lockdown_whitelist_uid != None:
     __print_query_result(fw.queryLockdownWhitelistUid( \
                          a.query_lockdown_whitelist_uid))
 
