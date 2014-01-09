@@ -1810,15 +1810,10 @@ class FirewallConfig(object):
             default = False
             builtin = False
         else:
-            old_handler = self.fw.getExceptionHandler()
-            # we want to handle exceptions ourselves
-            self.fw.setExceptionHandler(None)
             try:
                 zone = self.fw.config().getZoneByName(active_zone)
             except:
-                self.fw.setExceptionHandler(old_handler)
                 return
-            self.fw.setExceptionHandler(old_handler)
 
             # load permanent configuration
             settings = zone.getSettings()
@@ -3475,16 +3470,10 @@ class FirewallConfig(object):
             default = False
             builtin = False            
         else:
-            old_handler = self.fw.getExceptionHandler()
-            # we want to handle exceptions ourselves
-            self.fw.setExceptionHandler(None)
-
             try:
                 service = self.fw.config().getServiceByName(active_service)
             except:
-                self.fw.setExceptionHandler(old_handler)
                 return
-            self.fw.setExceptionHandler(old_handler)
 
             # load permanent configuration
             settings = service.getSettings()
@@ -3905,16 +3894,10 @@ class FirewallConfig(object):
             default = False
             builtin = False
         else:
-            old_handler = self.fw.getExceptionHandler()
-            # we want to handle exceptions ourselves
-            self.fw.setExceptionHandler(None)
-
             try:
                 icmp = self.fw.config().getIcmpTypeByName(active_icmp)
             except:
-                self.fw.setExceptionHandler(old_handler)
                 return
-            self.fw.setExceptionHandler(old_handler)
 
             # load permanent configuration
             settings = icmp.getSettings()
