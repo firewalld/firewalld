@@ -185,6 +185,9 @@ class Firewall:
         if error:
             sys.exit(1)
 
+        # apply settings for loaded zones
+        self.zone.apply_zones()
+
         # load direct rules
         log.debug1("Loading direct rules file '%s'" % FIREWALLD_DIRECT)
         obj = Direct(FIREWALLD_DIRECT)

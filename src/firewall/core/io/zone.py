@@ -106,6 +106,7 @@ class Zone(IO_Object):
         self.fw_config = None # to be able to check services and a icmp_blocks
         self.rules = [ ]
         self.combined = False
+        self.applied = False
 
     def cleanup(self):
         self.version = ""
@@ -123,6 +124,7 @@ class Zone(IO_Object):
         self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
         self.combined = False        
+        self.applied = False
 
     def __getattr__(self, name):
         if name == "rules_str":
