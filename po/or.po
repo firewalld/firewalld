@@ -1,26 +1,28 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Manoj Kumar Giri <mgiri@redhat.com>, 2008-2011
 # saroj kumar padhy <saroz.kumar@gmail.com>, 2008
 # Subhransu Behera <arya_subhransu@yahoo.co.in>, 2007
 # Subhransu Behera <sbehera@redhat.com>, 2006-2007
+# mgiri <mgiri@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: firewalld\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-10-03 08:49+0000\n"
-"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
-"Language-Team: Oriya (http://www.transifex.com/projects/p/fedora/language/"
-"or/)\n"
-"Language: or\n"
+"POT-Creation-Date: 2013-11-13 15:34+0530\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-11-22 06:14-0500\n"
+"Last-Translator: mgiri <mgiri@redhat.com>\n"
+"Language-Team: Oriya (http://www.transifex.com/projects/p/fedora/language/or/"
+")\n"
+"Language: or\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.1.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -34,99 +36,122 @@ msgstr "ଅଗ୍ନିକବଚ"
 msgid "Firewall Configuration"
 msgstr "ଅଗ୍ନିକବଚର ବିନ୍ଯାସ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
-msgstr ""
+msgstr "ଅପ୍ରତ୍ଯାଶିତ ଉପାଦାନ '%s'"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
-msgstr ""
+msgstr "ଉପାଦାନ '%s': ଅନୁପସ୍ଥିତ '%s' ଗୁଣ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
-msgstr ""
+msgstr "ଉପାଦାନ '%s': ଅପ୍ରତ୍ୟାଶିତ ଗୁଣ '%s'"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
-msgstr ""
+msgstr "%s କୁ ଚଲାଇବା ପାଇଁ ଆପଣଙ୍କୁ ରୁଟ ହେବାକୁ ପଡ଼ିବ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "FirewallD କୁ ଆରମ୍ଭ କରୁ ନାହିଁ, ପୂର୍ବରୁ ଚାଲୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "ଫର୍କ #1 ବିଫଳ ହୋଇଛି: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "ସଂଯୋଗ '%s' ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:185
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr ""
+msgstr "ଅନ୍ତରାପୃଷ୍ଠ '%s' ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:241
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "ଉତ୍ସ '%s'ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:343
 msgid "Shields Up"
-msgstr ""
+msgstr "ସିଲ ଉପରକୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:356
 msgid "Enable Notifications"
-msgstr ""
+msgstr "ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକୁ ସକ୍ରିୟ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:369
 msgid "Edit Firewall Settings..."
-msgstr ""
+msgstr "ଫାୟାରୱାଲ ସେଟିଙ୍ଗଗୁଡିକୁ ସଂପାଦନକରନ୍ତୁ ..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:377 ../src/firewall-config.glade.h:46
 msgid "Change Zones of Connections..."
-msgstr ""
+msgstr "ସଂଯୋଗଗୁଡ଼ିକର ଅଞ୍ଚଳକୁ ପରିବର୍ତ୍ତନ କରନ୍ତୁ ..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:384
 msgid "Configure Shields UP/Down Zones..."
-msgstr ""
+msgstr "ସିଲ୍ଡ ଉପର/ତଳ ଅଞ୍ଚଳଗୁଡ଼ିକୁ ବିନ୍ୟାସ କରନ୍ତୁ ..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:393
 msgid "Block all network traffic"
-msgstr ""
+msgstr "ସମସ୍ତ ନେଟୱର୍କ ପ୍ରବାହକୁ ଅଟକାନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:422
 msgid "Configure Shields Up/Down Zones"
-msgstr ""
+msgstr "ସିଲ୍ଡ ଉପର/ତଳ ଅଞ୍ଚଳଗୁଡ଼ିକୁ ବିନ୍ୟାସ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
+msgstr "ଏଠାରେ ଆପଣ ସିଲ୍ଡ ଉପର ଏବଂ ସିଲ୍ଡ ତଳ ପାଇଁ ବ୍ୟବହୃତ ଅଞ୍ଚଳକୁ ବାଛିପାରିବେ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
+"ଏହି ବିଶେଷତାଟି ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ବ୍ୟବହାର କରୁଥିବା ବ୍ୟକ୍ତିଙ୍କ ପାଇଁ "
+"ଉପଯୋଗୀ ହୋଇଥାଏ। ସଂଯୋଗଗୁଡ଼ିକର ଅଞ୍ଚଳ ବଦଳାଉଥିବା ବ୍ୟବହାରକାରୀଙ୍କ ପାଇଁ, ଏହାର "
+"ଉପଯୋଗୀତା ସିମୀତ ଅଟେ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
-msgstr ""
+msgstr "ସିଲ୍ଡ ଉପର ଅଞ୍ଚଳ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
-msgstr ""
+msgstr "ସିଲ୍ଡ ତଳ ଅଞ୍ଚଳ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:618
 msgid "Connections"
-msgstr ""
+msgstr "ସଂଯୋଗଗୁଡିକ"
 
 #: ../src/firewall-applet:660 ../src/firewall-applet:689
 #: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
@@ -135,23 +160,27 @@ msgstr "କ୍ଷେତ୍ର"
 
 #: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
-msgstr "<interface>"
+msgstr "ଅନ୍ତରାପୃଷ୍ଠ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
-msgstr ""
+msgstr "ଉତ୍ସ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
-msgstr ""
+msgstr "FirewallD ସହିତ ସଂଯୋଗ ସ୍ଥାପନ ହୋଇସାରିଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
-msgstr ""
+msgstr "FirewallD ସହିତ ସଂଯୋଗ ନଷ୍ଟ ହୋଇଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
-msgstr ""
+msgstr "FirewallD କୁ ପୁନର୍ଦ୍ଧାରଣ କରାଯାଇଛି।"
 
 #: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
@@ -161,121 +190,150 @@ msgstr "ଅଗ୍ନିକବଚ ଡେମନକୁ କୌଣସି ସଂଯୋ
 msgid "PANIC MODE"
 msgstr "ଜଟିଳ ଅବସ୍ଥା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ: '%s'"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
+"ଅଞ୍ଚଳ '{zone}' ସଂଯୋଗ '{connection}' ପାଇଁ ଅନ୍ତରାପୃଷ୍ଠ'{interface}' ଉପରେ "
+"ସକ୍ରିୟ ଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '{zone}' ଅନ୍ତରାପୃଷ୍ଠ '{interface}' ପାଇଁ ସକ୍ରିୟ ଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '{zone}' ଉତ୍ସ {source} ପାଇଁ ସକ୍ରିୟ ଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:981
 msgid "No Active Zones."
-msgstr ""
+msgstr "କୌଣସି ସକ୍ରିୟ ଅଞ୍ଚଳ ନାହିଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ପରିବର୍ତ୍ତନ ହୋଇଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
-msgstr ""
+msgstr "ସମସ୍ତ ନେଟୱର୍କ ଯାତାୟାତକୁ ବନ୍ଦ କରାଯାଇଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
-msgstr ""
+msgstr "ନେଟୱର୍କ ଯାତାୟାତ ବର୍ତ୍ତମାନ ବନ୍ଦ ହୋଇନାହିଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
-msgstr ""
+msgstr "ସକ୍ରିୟ କରାଯାଇଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
-msgstr ""
+msgstr "ନିଷ୍କ୍ରିୟ କରାଯାଇଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"ଅଞ୍ଚଳ '{zone}' {activated_deactivated} କୁ ସଂଯୋଗ '{connection}' "
+"ପାଇଁଅନ୍ତରାପୃଷ୍ଠ '{interface}' ରେ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '{zone}' {activated_deactivated} ଅନ୍ତରାପୃଷ୍ଠ '{interface}' ପାଇଁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '%s' ଟି ଅନ୍ତରାପୃଷ୍ଠ '%s' ପାଇଁ ସକ୍ରିୟ ହୋଇଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '{zone}' {activated_deactivated} ଉତ୍ସ '{source}' ପାଇଁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '%s' କୁ ଉତ୍ସ '%s' ପାଇଁ ସକ୍ରିୟ କରାଯାଇଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-applet:1161
 msgid "Firewall-applet"
-msgstr ""
+msgstr "ଫାୟାରୱାଲ-ଆପଲେଟ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:79
 msgid "Connected."
-msgstr ""
+msgstr "ସଂଯୁକ୍ତ ହୋଇଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:80
 msgid "No connection."
-msgstr ""
+msgstr "କୌଣସି ସଂଯୋଗ ନାହିଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:81
 msgid "Waiting ..."
-msgstr ""
+msgstr "ଅପେକ୍ଷାକରୁଛି ..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:82
 msgid "Retrying ..."
-msgstr ""
+msgstr "ପୁନଃ ପ୍ରଚେଷ୍ଟା କରୁଅଛି ..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:83
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "ନେଟୱର୍କ ସଂଯୋଗ '%s' ଦ୍ୱାରା ବ୍ୟବହୃତ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:84
 msgid "enabled"
-msgstr ""
+msgstr "ସକ୍ରିୟ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:85
 msgid "disabled"
-msgstr ""
+msgstr "ନିଷ୍କ୍ରିୟ ହୋଇଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:98
 msgid "Failed to load icons."
-msgstr ""
+msgstr "ଚିତ୍ର ସଂକେତ ଧାରଣ କରିବାରେ ଅସଫଳ।"
 
 #: ../src/firewall-config:134
 msgid "NetworkManager connection editor is missing."
-msgstr ""
+msgstr "NetworkManager ସଂଯୋଗ ସମ୍ପାଦକ ଅନୁପସ୍ଥିତ ଅଛି।"
 
 #: ../src/firewall-config:356 ../src/firewall-config:1647
 msgid "Runtime"
-msgstr ""
+msgstr "ଚାଲୁଥିବା ସମୟ"
 
 #: ../src/firewall-config:357
 msgid "Permanent"
-msgstr ""
+msgstr "ସ୍ଥାୟୀ"
 
 #: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
@@ -299,37 +357,45 @@ msgstr "ସଂଯୋଗିକୀ କୁ"
 msgid "To Address"
 msgstr "ଠିକଣା କୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:509
 msgid "Icmp Type"
-msgstr ""
+msgstr "Icmp ପ୍ରକାର"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:524
 msgid "Family"
-msgstr ""
+msgstr "ପରିବାର"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:526
 msgid "Action"
-msgstr ""
+msgstr "କାର୍ଯ୍ଯ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:528
 msgid "Element"
-msgstr ""
+msgstr "ଉପାଦାନ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:530
 msgid "Src"
-msgstr ""
+msgstr "Src"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:532
 msgid "Dest"
-msgstr ""
+msgstr "ଲକ୍ଷ୍ଯସ୍ଥଳ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:534
 msgid "log"
-msgstr ""
+msgstr "ଲଗ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:536
 msgid "Audit"
-msgstr ""
+msgstr "ସମ୍ପାଦନ"
 
 #: ../src/firewall-config:1094 ../src/firewall-config:1842
 #: ../src/firewall-config:1880
@@ -342,273 +408,313 @@ msgstr "ତ୍ରୁଟି"
 
 #: ../src/firewall-config:1142
 msgid "Changes applied."
-msgstr ""
+msgstr "ପରିବର୍ତ୍ତନଗୁଡ଼ିକୁ ପ୍ରୟୋଗ କରାଯାଇଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1425 ../src/firewall-config:2607
 msgid "accept"
-msgstr ""
+msgstr "ଗ୍ରହଣ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1427 ../src/firewall-config:2609
 #: ../src/firewall-config:2697
 msgid "reject"
-msgstr ""
+msgstr "ଅସ୍ବୀକାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1429 ../src/firewall-config:2614
 msgid "drop"
-msgstr ""
+msgstr "ପକାଅ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1431 ../src/firewall-config:1465
 #: ../src/firewall-config:1470
 msgid "limit"
-msgstr ""
+msgstr "ସୀମା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1442 ../src/firewall-config:2156
 #: ../src/firewall-config:2300 ../src/firewall-config:2571
 #: ../src/firewall-config.glade.h:206
 msgid "service"
-msgstr ""
+msgstr "ସର୍ଭିସ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1444 ../src/firewall-config:2162
 #: ../src/firewall-config:2302 ../src/firewall-config:2574
 #: ../src/firewall-config.glade.h:207
 msgid "port"
-msgstr ""
+msgstr "ପୋର୍ଟ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author mgiri
 #: ../src/firewall-config:1447 ../src/firewall-config:2167
 #: ../src/firewall-config:2311 ../src/firewall-config:2580
 #: ../src/firewall-config.glade.h:208
 msgid "protocol"
-msgstr ""
+msgstr "ପ୍ରୋଟୋକଲ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author mgiri
 #: ../src/firewall-config:1449 ../src/firewall-config:2172
 #: ../src/firewall-config:2594 ../src/firewall-config:2709
 #: ../src/firewall-config.glade.h:211
 msgid "masquerade"
-msgstr ""
+msgstr "ଛଦ୍ମ ବେଶ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1463
 msgid "level"
-msgstr ""
+msgstr "ସ୍ତର"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1467 ../src/firewall-config:1472
 msgid "yes"
-msgstr ""
+msgstr "ହଁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1599
 msgid "Authorization failed."
-msgstr ""
+msgstr "ବୈଧିକରଣ ବିଫଳ ହୋଇଛି।"
 
 #: ../src/firewall-config:1602
 msgid "Invalid name"
-msgstr "ଅବୈଧ ସ୍ବତନ୍ତ୍ରଚର %s"
+msgstr "ଅବୈଧ ନାମ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1606
 msgid "Name already exists"
-msgstr ""
+msgstr "ନାମ ପୂର୍ବରୁ ଅବସ୍ଥିତ ଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1839
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '%s': ସର୍ଭିସ '%s' ଉପଲବ୍ଧ ନାହିଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Remove"
-msgstr ""
+msgstr "ହଟାଅ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Ignore"
-msgstr ""
+msgstr "ଆଗ୍ରହ୍ଯ କରିଦିଅନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:1877
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '%s': ICMP ପ୍ରକାର '%s' ଉପଲବ୍ଧ ନାହିଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2007
 msgid "Built-in zone, rename not supported."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ମିତ ଅଞ୍ଚଳ, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2119 ../src/firewall-config:2546
 #: ../src/firewall-config.glade.h:191
 msgid "second"
-msgstr ""
+msgstr "ସେକଣ୍ଡ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2120 ../src/firewall-config:2547
 #: ../src/firewall-config.glade.h:192
 msgid "minute"
-msgstr ""
+msgstr "ମିନିଟ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2121 ../src/firewall-config:2548
 #: ../src/firewall-config.glade.h:193
 msgid "hour"
-msgstr ""
+msgstr "ଘଣ୍ଟା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2122 ../src/firewall-config:2549
 #: ../src/firewall-config.glade.h:194
 msgid "day"
-msgstr ""
+msgstr "ଦିନ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2123 ../src/firewall-config:2550
 #: ../src/firewall-config.glade.h:197
 msgid "emergency"
-msgstr ""
+msgstr "ଜରୁରୀକାଳୀନ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2124 ../src/firewall-config:2551
 #: ../src/firewall-config.glade.h:198
 msgid "alert"
-msgstr ""
+msgstr "ଚେତାବନୀ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2125 ../src/firewall-config:2552
 #: ../src/firewall-config.glade.h:199
 msgid "critical"
-msgstr ""
+msgstr "ଗୁରୁତର"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2126 ../src/firewall-config:2553
 #: ../src/firewall-config.glade.h:200
 msgid "error"
-msgstr ""
+msgstr "ତୃଟି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author mgiri
 #: ../src/firewall-config:2127 ../src/firewall-config:2554
 #: ../src/firewall-config.glade.h:201
 msgid "warning"
-msgstr ""
+msgstr "ଚେତାବନୀ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2128 ../src/firewall-config:2555
 #: ../src/firewall-config.glade.h:202
 msgid "notice"
-msgstr ""
+msgstr "ଅଧିସୂଚନା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2129 ../src/firewall-config:2556
 #: ../src/firewall-config.glade.h:203
 msgid "info"
-msgstr ""
+msgstr "ସୂଚନା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2130 ../src/firewall-config:2557
 #: ../src/firewall-config.glade.h:204
 msgid "debug"
-msgstr ""
+msgstr "ତୃଟିମୁକ୍ତ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2175 ../src/firewall-config:2313
 #: ../src/firewall-config:2583 ../src/firewall-config.glade.h:209
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-ବ୍ଲକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2180 ../src/firewall-config:2315
 #: ../src/firewall-config:2586 ../src/firewall-config:2717
 #: ../src/firewall-config.glade.h:210
 msgid "forward-port"
-msgstr ""
+msgstr "ଅଗ୍ରସରଣ-ପୋର୍ଟ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2293 ../src/firewall-config:2492
 #: ../src/firewall-config:2506 ../src/firewall-config:2561
 #: ../src/firewall-config:2665
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:2295 ../src/firewall-config:2494
 #: ../src/firewall-config:2508 ../src/firewall-config:2563
 #: ../src/firewall-config:2667
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ ପଠାଇବା ଉପଯୋଗୀ ହୋଇଥାଏ ଯଦି ଅନ୍ତରାପୃଷ୍ଠ ଛଦ୍ମବେଶ ଧାରଣ କରିଥାଏ।\n"
+"ଆପଣ ଏହି ଅଞ୍ଚଳକୁ ଛଦ୍ମବେଶ ଧାରଣ କରାଇବାକୁ ଚାହୁଁଛନ୍ତି କି?"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ମିତ ସର୍ଭିସ, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ମିତ icmp, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr ""
+msgstr "ଠିକଣା"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Port and Protocol"
 msgstr "ସଂଯୋଗିକୀ ଏବଂ ପ୍ରୋଟୋକଲ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "ଦୟାକରି ନିର୍ଦ୍ଦେଶନାମାକୁ ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr ""
+msgstr "ଦୟାକରି ପ୍ରସଙ୍ଗକୁ ଭରଣ କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
-msgstr ""
+msgstr "ନିମ୍ନଲିଖିତ ତାଲିକାରୁ ଦୟାକରି ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ବାଛନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "ସିଧାସଳଖ ସୃଙ୍ଖଳ"
 
 #: ../src/firewall-config.glade.h:8
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "ଦୟାକରି ipv ଏବଂ ସାରଣୀକୁ ବାଛନ୍ତୁ ଏବଂ ଶୃଙ୍ଖଳ ନାମକୁ ଭରଣ କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
-msgstr ""
+msgstr "ସାରଣୀ:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "ସୁରକ୍ଷା"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "ସୃଙ୍ଖଳ:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "ସିଧାସଳଖ ଅଗ୍ରଗତି ନିୟମ"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "ଦୟାକରି ipv କୁ ବାଛନ୍ତୁ ଏବଂ args ଭରଣ କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "Args:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Rule"
-msgstr ""
+msgstr "ସିଧାସଳଖ ନିୟମ"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
+"ଦୟାକରି ipv ଏବଂ table, ଶୃଙ୍ଖଳ ଅଗ୍ରାଧୀକାରକୁ ବାଛନ୍ତୁ ଏବଂ args କୁ ଭରଣ କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
-msgstr ""
+msgstr "ଅଗ୍ରାଧିକାର:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -617,7 +723,9 @@ msgstr "ସଂଯୋଗିକୀ ଅଗ୍ରସରଣ"
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr "ଆପଣଙ୍କର ଆବଶ୍ୟକତା ଅନୁସାରେ ଦୟାକରି ମୂଳ ସ୍ଥାନ ଏବଂ ଲକ୍ଷ୍ଯ ସ୍ଥଳ ବିକଳ୍ପଗୁଡ଼ିକୁ ଚୟନକରନ୍ତୁ."
+msgstr ""
+"ଆପଣଙ୍କର ଆବଶ୍ୟକତା ଅନୁସାରେ ଦୟାକରି ମୂଳ ସ୍ଥାନ ଏବଂ ଲକ୍ଷ୍ଯ ସ୍ଥଳ ବିକଳ୍ପଗୁଡ଼ିକୁ "
+"ଚୟନକରନ୍ତୁ."
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
@@ -631,13 +739,15 @@ msgstr "ଆଇ.ପି. ଠିକଣା:"
 msgid "Protocol:"
 msgstr "ପ୍ରୋଟୋକଲ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:27
 msgid "Destination"
-msgstr ""
+msgstr "ଲକ୍ଷ୍ଯସ୍ଥଳ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:28
 msgid "Source"
-msgstr ""
+msgstr "ଉତ୍ସ"
 
 #: ../src/firewall-config.glade.h:29
 msgid "Local forwarding"
@@ -652,44 +762,52 @@ msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"ଯଦି ଆପଣ ସ୍ଥାନୀୟ ଅଗ୍ରସରଣକୁ ସକ୍ରିୟ କରନ୍ତି, ତେବେ ଆପଣଙ୍କୁ ଗୋଟିଏ ସଂଯୋଗିକୀ ଉଲ୍ଲେଖ କରିବାକୁ ପଡ଼ିବ. ଏହି "
-"ସଂଯୋଗିକୀ ଉତ୍ସ ସଂଯୋଗିକୀ ଠାରୁ ଅଲଗା ହୋଇଥିବା ଉଚିତ."
+"ଯଦି ଆପଣ ସ୍ଥାନୀୟ ଅଗ୍ରସରଣକୁ ସକ୍ରିୟ କରନ୍ତି, ତେବେ ଆପଣଙ୍କୁ ଗୋଟିଏ ସଂଯୋଗିକୀ ଉଲ୍ଲେଖ "
+"କରିବାକୁ ପଡ଼ିବ. ଏହି ସଂଯୋଗିକୀ ଉତ୍ସ ସଂଯୋଗିକୀ ଠାରୁ ଅଲଗା ହୋଇଥିବା ଉଚିତ."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
-msgstr ""
+msgstr "ଆଧାର ICMP ପ୍ରକାର ସେଟିଙ୍ଗଗୁଡିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base ICMP type settings:"
-msgstr ""
+msgstr "ଦୟାକରି ଆଧାର ICMP ପ୍ରକାର ସେଟିଙ୍ଗଗୁଡିକୁ ବିନ୍ୟାସ କରନ୍ତୁ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "ଗାଢ଼ ନିବେଶଗୁଡ଼ିକ ବାଧ୍ଯତାମୂଳକ ଅଟେ, ଅନ୍ୟ ସମସ୍ତଗୁଡ଼ିକ ବୈକଳ୍ପିକ ଅଟେ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
-msgstr ""
+msgstr "ନାମ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:36
 msgid "Version:"
-msgstr ""
+msgstr "ସଂସ୍କରଣ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:37
 msgid "Short:"
-msgstr ""
+msgstr "ସଂକ୍ଷିପ୍ତ ପଥ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:38
 msgid "Description:"
-msgstr ""
+msgstr "ବର୍ଣ୍ଣନା:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "ICMP Type"
 msgstr "ICMP ପ୍ରକାର"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:40
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "ଦୟାକରି ICMP ପ୍ରକାରକୁ ବାଛନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:42
 msgid "_File"
@@ -699,9 +817,10 @@ msgstr "ଫାଇଲ (_F)"
 msgid "_Options"
 msgstr "ବିକଲ୍ପ (_O)"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:44
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Firewalld କୁ ପୁନର୍ଧାରଣ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:45
 msgid ""
@@ -709,52 +828,66 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"ଫୟାରୱାଲ ନିୟମାବଳୀକୁ ପୁନର୍ଦ୍ଧାରଣ କରିଥାଏ। ପ୍ରଚଳିତ ସ୍ଥାୟୀ ସଂରଚନାଟି ନୂତନ ଚାଲୁଥିବା "
+"ସଂରଚନାରେ ପରିବର୍ତ୍ତନ ହୋଇଥାଏ ଯେପରିକି କେବଳ ପୁନର୍ଦ୍ଧାରଣ ପର୍ଯ୍ୟନ୍ତ ପରିବର୍ତ୍ତିତ "
+"ହୋଇଥିବା ସମସ୍ତ ଚଳନ୍ତି ସଂରଚନା ନଷ୍ଟ ହୋଇଥାଏ ଯଦି ସେଗୁଡ଼ିକ ସ୍ଥାୟୀ ସଂରଚନାରେ ନଥାଏ।"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "ନେଟୱର୍କ ସଂଯୋଗ କେଉଁ ଅଞ୍ଚଳ ଅନ୍ତର୍ଗତରେ ଆସିଥାଏ ତାହାକୁ ପରିବର୍ତ୍ତନ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
-msgstr ""
+msgstr "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Change default zone for connections or interfaces."
 msgstr ""
+"ସଂଯୋଗ ଅଥବା ଅନ୍ତରାପୃଷ୍ଠଗୁଡ଼ିକ ପାଇଁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ପରିବର୍ତ୍ତନ "
+"କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
+"ଆକସ୍ମିକ ଧାରା ଅର୍ଥ ହେଉଛି ସମସ୍ତ ଆସୁଥିବା ଏବଂ ଯାଉଥିବା ପ୍ୟାକେଟଗୁଡ଼ିକୁ ତ୍ୟାଗ "
+"କରାଯାଇଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
-msgstr ""
+msgstr "ଆକସ୍ମିକ ଭୟ ପରିସ୍ଥିତି"
 
 #: ../src/firewall-config.glade.h:52
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
+"ଲକଡାଉନ ଫାୟାରୱାଲ ସଂରଚନାକୁ ଅପରିବର୍ତ୍ତନୀୟ କରିଥାଏ ଯାହାଫଳରେ କେବଳ ଲକଡାଉନ "
+"ହ୍ୱାଇଟଲିଷ୍ଟରେ ଥିବା ପ୍ରୟୋଗଗୁଡ଼ିକ ଏହାକୁ ପରିବର୍ତ୍ତନ କରିବାରେ ସକ୍ଷମ ହୋଇଥାନ୍ତି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
-msgstr ""
+msgstr "ଲକଡାଉନ"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr ""
+msgstr "ଦୃଶ୍ଯ (_V)"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author mgiri
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
-msgstr ""
+msgstr "ICMP ପ୍ରକାର"
 
 #: ../src/firewall-config.glade.h:56
 msgid "Direct Configuration"
-msgstr ""
+msgstr "ସିଧାସଳଖ ସଂରଚନା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
-msgstr ""
+msgstr "ଲକଡାଉନ ହ୍ୱାଇଟଲିଷ୍ଟ"
 
 #: ../src/firewall-config.glade.h:58
 msgid "_Help"
@@ -762,15 +895,20 @@ msgstr "ସହାୟତା (_H)"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Configuration:"
-msgstr ""
+msgstr "ସଂରଚନା:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:60
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"ବର୍ତ୍ତମାନ ଦୃଶ୍ୟମାନ ସଂରଚନା। ଚାଲୁଥିବା ସମୟର ସଂରଚନା ହେଉଛି ପ୍ରକୃତ ସକ୍ରିୟ ସଂରଚନା। "
+"ସ୍ଥାୟୀ ସଂରଚନା ସର୍ଭିସ ପରେ କିମ୍ବା ତନ୍ତ୍ର ପୁନର୍ଦ୍ଧାରଣ କିମ୍ବା ପୁନଃଚାଳନ ପରେ "
+"ସକ୍ରିୟ ହେବ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:61
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
@@ -779,55 +917,74 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"ଗୋଟିଏ firewalld ଅଞ୍ଚଳ ନେଟୱର୍କ ସଂଯୋଗଗୁଡ଼ିକ, ଅନ୍ତରାପୃଷ୍ଠ ଏବଂ ଅଞ୍ଚଳ ସହିତ "
+"ସଂଶ୍ଳିଷ୍ଟ ଉତ୍ସ ଠିକଣାଗୁଡ଼ିକ ପାଇଁ ବିଶ୍ୱାସର ସ୍ତର ବ୍ୟାଖ୍ୟା କରିଥାଏ। ଏହି ଅଞ୍ଚଳ "
+"ସର୍ଭିସ, ପୋର୍ଟ, ପ୍ରୋଟୋକଲ, ଛଦ୍ମ ବେଶ, ପୋର୍ଟ/ପ୍ୟାକେଟ ଅଗ୍ରସରଣ, icmp ଫିଲଟର ଏବଂ "
+"ଶକ୍ତ ନିୟମାବଳୀକୁ ମିଶ୍ରଣ କରିଥାଏ। ଏହି ଅଞ୍ଚଳ ଅନ୍ତରାପୃଷ୍ଠଗୁଡ଼ିକୁ ଏବଂ ଠିକଣାଗୁଡ଼ିକୁ "
+"ବାନ୍ଧିଥାଏ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
-msgstr ""
+msgstr "ଅଞ୍ଚଳକୁ ଯୋଗ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:64
 msgid "Edit Zone"
-msgstr ""
+msgstr "ଅଞ୍ଚଳକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:65
 msgid "Remove Zone"
-msgstr ""
+msgstr "ଅଞ୍ଚଳକୁ ହଟାନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:66
 msgid "Load Zone Defaults"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ ପୂର୍ବନିର୍ଦ୍ଧାରିତକୁ ଧାରଣ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author mgiri
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"କେଉଁ ସେବା ଗୁଡିକ ବିଶ୍ଯସ୍ତ ଆପଣ ତାହା ଏଠାରେ ବ୍ଯାଖ୍ଯା କରିପାରିବେ। ଏହାର ଅର୍ଥ ହେଉଛି "
+"ଯେ ଏହି ସେବା ଗୁଡିକୁ ସମସ୍ତ ଆଧାର କିମ୍ବା ନେଟୱାର୍କରୁ ଅଭିଗମ କରିହେବ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:68
 msgid "Services"
-msgstr ""
+msgstr "ସର୍ଭିସଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author mgiri
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"ଅତିରିକ୍ତ ସଂଯୋଗିକୀ କିମ୍ବା ସଂଯୋଗିକୀ ପରିସର ମାନଙ୍କୁ ଯୋଗ କରନ୍ତୁ, ଯାହାକି ସମସ୍ତ "
+"ଆଧାର କିମ୍ବା ନେଟୱାର୍କ ଦ୍ବାରା ଅଭିଗମ୍ଯ ହେବା ଉଚିତ।"
 
 #: ../src/firewall-config.glade.h:70
 msgid "Add Port"
-msgstr "ସଂଯୋଗିକୀ କୁ"
+msgstr "ପୋର୍ଟକୁ ଯୋଗ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:71
 msgid "Edit Port"
-msgstr ""
+msgstr "ପୋର୍ଟକୁ ସଂପାଦନା କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:72
 msgid "Remove Port"
-msgstr ""
+msgstr "ପୋର୍ଟକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:73
 msgid "Ports"
-msgstr ""
+msgstr "ପୋର୍ଟଗୁଡ଼ିକ"
 
 #: ../src/firewall-config.glade.h:74
 msgid ""
@@ -835,19 +992,24 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"ମିଥ୍ୟାଭନୟ ଆପଣଙ୍କୁ ଇଣ୍ଟରନେଟ ସହିତ ଆପଣଙ୍କ ସ୍ଥାନୀୟ ନେଟୱର୍କକୁ ସଂଯୋଗ କରୁଥିବା ଆଧାର କିମ୍ବା ରାଉଟରକୁ "
-"ବିନ୍ୟାସ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ. ଆପଣଙ୍କର ସ୍ଥାନୀୟ ନେଟୱର୍କ ଦେଖାଯିବ ନାହିଁ ଏବଂ ସେହି ଆଧାରଟି "
-"ଇଣ୍ଟରନେଟରେ ଗୋଟିଏ ଠିକଣା ପରି ଦେଖାଯିବ. କେବଳ IPv4 ମିଥ୍ୟାଭିନୟ କରୁଅଛି."
+"ମିଥ୍ୟାଭନୟ ଆପଣଙ୍କୁ ଇଣ୍ଟରନେଟ ସହିତ ଆପଣଙ୍କ ସ୍ଥାନୀୟ ନେଟୱର୍କକୁ ସଂଯୋଗ କରୁଥିବା ଆଧାର "
+"କିମ୍ବା ରାଉଟରକୁ ବିନ୍ୟାସ କରିବାକୁ ଅନୁମତି ଦେଇଥାଏ. ଆପଣଙ୍କର ସ୍ଥାନୀୟ ନେଟୱର୍କ "
+"ଦେଖାଯିବ ନାହିଁ ଏବଂ ସେହି ଆଧାରଟି ଇଣ୍ଟରନେଟରେ ଗୋଟିଏ ଠିକଣା ପରି ଦେଖାଯିବ. କେବଳ IPv4 "
+"ମିଥ୍ୟାଭିନୟ କରୁଅଛି."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
-msgstr ""
+msgstr "ଛଦ୍ମ ବେଶୀ ଅଞ୍ଚଳ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:76
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"ଯଦି ଆପଣ ଛଦ୍ମ ବେଶ କରିବାରେ ସକ୍ରିୟ ହୁଅନ୍ତି, ତେବେ IP ଅଗ୍ରସରଣକୁ ଆପଣଙ୍କ IPv4 "
+"ନେଟୱର୍କଗୁଡ଼ିକ ପାଇଁସକ୍ରିୟ କରାଯିବ।"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Masquerading"
@@ -860,21 +1022,25 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"ସ୍ଥାନୀୟ ତନ୍ତ୍ରରେ ଗୋଟିଏ ସଂଯୋଗିକୀରୁ ଅନ୍ୟ ଏକ ସଂଯୋଗିକୀକୁ ଅଥବା ସ୍ଥାନୀୟ ତନ୍ତ୍ରରୁ ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ "
-"ଅଗ୍ରସରଣ ସଂଯୋଗିକୀରେ ଭରଣଗୁଡ଼ିକୁ ଯୋଗକରନ୍ତୁ. ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ ପଠାଇବା ହିଁ କେବଳ ଫଳପ୍ରଦ ହୋଇଥାଏ ଯଦି "
-"ଅନ୍ତରାପୃଷ୍ଠ ମିଥ୍ୟାଭିନୟ କରୁଥାଏ. ସଂଯୋଗିକୀ ଆଗେଇବାଟି କେବଳ IPv4."
+"ସ୍ଥାନୀୟ ତନ୍ତ୍ରରେ ଗୋଟିଏ ସଂଯୋଗିକୀରୁ ଅନ୍ୟ ଏକ ସଂଯୋଗିକୀକୁ ଅଥବା ସ୍ଥାନୀୟ ତନ୍ତ୍ରରୁ "
+"ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ ଅଗ୍ରସରଣ ସଂଯୋଗିକୀରେ ଭରଣଗୁଡ଼ିକୁ ଯୋଗକରନ୍ତୁ. ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ "
+"ପଠାଇବା ହିଁ କେବଳ ଫଳପ୍ରଦ ହୋଇଥାଏ ଯଦି ଅନ୍ତରାପୃଷ୍ଠ ମିଥ୍ୟାଭିନୟ କରୁଥାଏ. ସଂଯୋଗିକୀ "
+"ଆଗେଇବାଟି କେବଳ IPv4."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
-msgstr ""
+msgstr "ପୋର୍ଟ ଅଗ୍ରସରଣକୁ ଯୋଗ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:80
 msgid "Edit Forward Port"
-msgstr ""
+msgstr "ପୋର୍ଟ ଅଗ୍ରସରଣକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:81
 msgid "Remove Forward Port"
-msgstr ""
+msgstr "ପୋର୍ଟ ଅଗ୍ରସରଣକୁ ବାହାର କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:82
 msgid ""
@@ -882,107 +1048,129 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"ଇଣ୍ଟରନେଟ ନିୟନ୍ତ୍ରଣ ସନ୍ଦେଶ ପ୍ରୋଟୋକଲ (ICMP) ଟି ମୁଖ୍ୟତଃ ନେଟୱର୍କ କମ୍ପୁଟରଗୁଡ଼ିକ ମଧ୍ୟରେ ତ୍ରୁଟି ସନ୍ଦେଶ "
-"ପଠାଇବାରେ ବ୍ୟବହାର ହୋଇଥାଏ, କିନ୍ତୁ ଅତିରିକ୍ତ ଭାବରେ ସୂଚନାତ୍ମକ ସନ୍ଦେଶଗୁଡ଼ିକୁ ଯେପରି କି ping ଅନୁରୋଧ "
-"ଏବଂ ଉତ୍ତରଗୁଡ଼ିକ ପାଇଁ."
+"ଇଣ୍ଟରନେଟ ନିୟନ୍ତ୍ରଣ ସନ୍ଦେଶ ପ୍ରୋଟୋକଲ (ICMP) ଟି ମୁଖ୍ୟତଃ ନେଟୱର୍କ କମ୍ପୁଟରଗୁଡ଼ିକ "
+"ମଧ୍ୟରେ ତ୍ରୁଟି ସନ୍ଦେଶ ପଠାଇବାରେ ବ୍ୟବହାର ହୋଇଥାଏ, କିନ୍ତୁ ଅତିରିକ୍ତ ଭାବରେ "
+"ସୂଚନାତ୍ମକ ସନ୍ଦେଶଗୁଡ଼ିକୁ ଯେପରି କି ping ଅନୁରୋଧ ଏବଂ ଉତ୍ତରଗୁଡ଼ିକ ପାଇଁ."
 
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"ICMP ପ୍ରକାରଗୁଡ଼ିକୁ ତାଲିକାରେ ଚିହ୍ନଟକରନ୍ତୁ, ଯାହାକୁ କି ଅସ୍ୱୀକାର କରିବା ଉଚିତ. ଅନ୍ୟ ସମସ୍ତ ICMP "
-"ପ୍ରକାରଗୁଡ଼ିକ ଅଗ୍ନିକବଚ ପାରକରିବା ପାଇଁ ଅନୁମତିପ୍ରାପ୍ତ. ପୂର୍ବନିର୍ଦ୍ଧାରିତରେ କୌଣସି ସୀମା ବନ୍ଧନ ନାହିଁ."
+"ICMP ପ୍ରକାରଗୁଡ଼ିକୁ ତାଲିକାରେ ଚିହ୍ନଟକରନ୍ତୁ, ଯାହାକୁ କି ଅସ୍ୱୀକାର କରିବା ଉଚିତ. "
+"ଅନ୍ୟ ସମସ୍ତ ICMP ପ୍ରକାରଗୁଡ଼ିକ ଅଗ୍ନିକବଚ ପାରକରିବା ପାଇଁ ଅନୁମତିପ୍ରାପ୍ତ. "
+"ପୂର୍ବନିର୍ଦ୍ଧାରିତରେ କୌଣସି ସୀମା ବନ୍ଧନ ନାହିଁ."
 
 #: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
 msgstr "ICMP ଫିଲଟର"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:85
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "ଏଠାରେ ଆପଣ ଅଞ୍ଚଳ ପାଇଁ ଶକ୍ତିଶାଳୀ ଭାଷା ନିୟମାବଳୀକୁ ସେଟ କରିପାରିବେ।"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "ଶକ୍ତ ନିୟମ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:87
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "ଶକ୍ତ ନିୟମକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:88
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "ଶକ୍ତ ନିୟମକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
-msgstr ""
+msgstr "ଶକ୍ତିଶାଳୀ ନିୟମାବଳୀ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:90
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"ଏହି ଅଞ୍ଚଳରେ ଅନ୍ତରାପୃଷ୍ଠଗୁଡ଼ିକୁ ବାନ୍ଧିବା ପାଇଁ ଯୋଗ କରନ୍ତୁ। ଯଦି ଏହି "
+"ଅନ୍ତରାପୃଷ୍ଠଗୁଡ଼ିକ କୌଣସି ସଂଯୋଗ ଦ୍ୱାରା ବ୍ୟବହାର ହୋଇଥାଏ, ତେବେ ସେହି ଅଞ୍ଚଳଟି "
+"ସଂଯୋଗରେ ଉଲ୍ଲେଖିତ ଅଞ୍ଚଳରେ ସେଟ ହେବ।"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
-msgstr ""
+msgstr "ଅନ୍ତରାପୃଷ୍ଠ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Edit Interface"
-msgstr ""
+msgstr "ଅନ୍ତରାପୃଷ୍ଠକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Remove Interface"
-msgstr ""
+msgstr "ଅନ୍ତରାପୃଷ୍ଠକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr ""
+"ଉତ୍ସ ଠିକଣାଗୁଡ଼ିକୁ ବାନ୍ଧିବା ପାଇଁ ନିବେଶଗୁଡ଼ିକୁ କିମ୍ବା ଏହି ଅଞ୍ଚଳର ସ୍ଥାନଗୁଡ଼ିକୁ "
+"ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Add Source"
-msgstr ""
+msgstr "ଉତ୍ସ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Edit Source"
-msgstr ""
+msgstr "ଉତ୍ସକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Remove Source"
-msgstr ""
+msgstr "ଉତ୍ସକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
-msgstr ""
+msgstr "ଅଞ୍ଚଳ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:101
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"firewalld ସର୍ଭିସ ହେଉଛି ପୋର୍ଟ, ପ୍ରୋଟୋକଲ, ମଡ୍ୟୁଲ ଏବଂ ଲକ୍ଷ୍ଯସ୍ଥଳ ଠିକଣାଗୁଡ଼ିକର "
+"ଏକ ମିଶ୍ରଣ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:103
 msgid "Add Service"
-msgstr ""
+msgstr "ସର୍ଭିସ ଯୋଗ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:104
 msgid "Edit Service"
-msgstr ""
+msgstr "ସର୍ଭିସକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:105
 msgid "Remove Service"
-msgstr ""
+msgstr "ସର୍ଭିସକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:106
 msgid "Load Service Defaults"
-msgstr ""
+msgstr "ସର୍ଭିସ ପୂର୍ବନିର୍ଦ୍ଧାରିତକୁ ଧାରଣ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:107
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
+"ଅତିରିକ୍ତ ପୋର୍ଟ କିମ୍ବା ପୋର୍ଟ ପରିସରଗୁଡ଼ିକୁ ଯୋଗ କରନ୍ତୁ, ଯାହାକି ସମସ୍ତ ହୋଷ୍ଟ "
+"କିମ୍ବା ନେଟୱର୍କ ପାଇଁ ଅଭିଗମ୍ୟ ହେବା ଆବଶ୍ୟକ। ଆପଣ ନିର୍ଦ୍ଦିଷ୍ଟ ପୋର୍ଟଗୁଡ଼ିକ ବିନା "
+"ପ୍ରୋଟୋକଲଗୁଡ଼ିକୁ ମଧ୍ଯ ଯୋଗ କରିପାରିବେ।"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Add Entry"
@@ -996,64 +1184,85 @@ msgstr "ପ୍ରବେଶ ସଂପାଦନା କର"
 msgid "Remove Entry"
 msgstr "ଭରଣକୁ କାଢ଼ି ଦିଅନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:111
 msgid "Ports and Protocols"
-msgstr ""
+msgstr "ପୋର୍ଟ ଏବଂ ପ୍ରଟୋକଲଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:112
 msgid "Netfilter helper modules"
-msgstr ""
+msgstr "ନେଟଫିଲଟର ସହାୟକ ମଡ୍ୟୁଲଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:113
 msgid "Modules"
-msgstr ""
+msgstr "ମୋଡ୍ୟୁଲଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:114
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
+"ଯଦି ଆପଣ ଲକ୍ଷ୍ଯସ୍ଥଳ ଠିକଣାକୁ ଉଲ୍ଲେଖ କରନ୍ତି, ତେବେ ସର୍ଭିସ ନିବେଶ ଲକ୍ଷ୍ଯସ୍ଥଳ ଠିକଣା "
+"ଏବଂ ପ୍ରକାରରେ ସିମୀତ ହେବ। ଯଦି ଉଭୟ ନିବେଶଗୁଡ଼ିକ ଖାଲିଥାଏ, ତେବେ ସେଠାରେ କୌଣସି ସୀମା "
+"ନଥାଏ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:115
 msgid "IPv4:"
-msgstr ""
+msgstr "IPv4:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:116
 msgid "IPv6:"
-msgstr ""
+msgstr "IPv6:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:117
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"ସର୍ଭିସଗୁଡ଼ିକ କେବଳ ସ୍ଥାୟୀ ବିନ୍ୟାସ ଦୃଶ୍ୟରେ ପରିବର୍ତ୍ତନ ହୋଇପାରିବ। ସର୍ଭିସଗୁଡ଼ିକର "
+"ପ୍ରଚଳିତ ବିନ୍ୟାସ ସ୍ଥାୟୀ ଅଟେ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:118
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"ଏକ firewalld icmptype  ଇଣ୍ଟରନେଟ ନିୟନ୍ତ୍ରଣ ସନ୍ଦେଶ ପ୍ରୋଟୋକଲ (ICMP) ପ୍ରକାର ପାଇଁ "
+"firewalld କୁ ସୂଚନା ପ୍ରଦାନ କରିଥାଏ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:119
 msgid "Add ICMP Type"
-msgstr ""
+msgstr "ICMP ପ୍ରକାରକୁ ଯୋଗ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:120
 msgid "Edit ICMP Type"
-msgstr ""
+msgstr "ICMP ପ୍ରକାରକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:121
 msgid "Remove ICMP Type"
-msgstr ""
+msgstr "ICMP ପ୍ରକାରକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:122
 msgid "Load ICMP Type Defaults"
-msgstr ""
+msgstr "ICMP ପ୍ରକାର ପୂର୍ବନିର୍ଦ୍ଧାରିତକୁ ଧାରଣ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
+"ଏହି ICMP ପ୍ରକାରଟି IPv4 ଏବଂ/ଅଥବା IPv6 ରେ ଉପଲବ୍ଧ ହୋଇଥାଏ କି ନାହିଁ ତାହା ଉଲ୍ଲେଖ "
+"କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:124
 msgid "IPv4"
@@ -1063,11 +1272,14 @@ msgstr "IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:126
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP ପ୍ରକାରଗୁଡ଼ିକ ସ୍ଥାୟୀ ବିନ୍ୟାସ ଦୃଶ୍ୟରେ ହିଁ କେବଳ ପରିବର୍ତ୍ତିତ ହୋଇଥାଏ। ICMP "
+"ପ୍ରକାରଗୁଡ଼ିକ ପ୍ରଚଳିତ ବିନ୍ୟାସ ସ୍ଥାୟୀ ଅଛି।"
 
 #: ../src/firewall-config.glade.h:127
 msgid ""
@@ -1076,6 +1288,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"ସିଧାସଳଖ ସଂରଚନା ଫାୟାରୱାଲରେ ସିଧାସଳଖ ପ୍ରବେଶାନୁମତି ଦେଇଥାଏ। ଏହି ବିକଳ୍ପଗୁଡ଼ିକ ପାଇଁ "
+"ବ୍ୟବହାରକାରୀଙ୍କ ପାଖରେ ମୌଳିକ iptables ଜ୍ଞାନ ଥିବା ଆବଶ୍ୟକ, ଯେପରିକି ସାରଣୀ, "
+"ଶୃଙ୍ଖଳ, ନିର୍ଦ୍ଦେଶ, ପ୍ରାଚଳ ଏବଂ ଲକ୍ଷ୍ଯସ୍ଥଳ। ସିଧାସଳଖ ସଂରଚନାକୁ କେବଳ ଶେଷ ଆଶ୍ରୟ "
+"ଭାବରେ ବ୍ୟବହାର କରିବା ଉଚିତ ଯେତେବେଳେ ଅନ୍ୟ କୌଣସି firewalld ବିଶେଷତା ବ୍ୟବହାର କରିବା "
+"ସମ୍ଭବ ହୋଇନଥାଏ।"
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1083,31 +1300,35 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"ପ୍ରତ୍ୟେକ ବିକଳ୍ପର ipv ସ୍ୱତନ୍ତ୍ରଚର ipv4 କିମ୍ବା ipv6 ଅଥବା eb ହୋଇଥିବା ଉଚିତ। ipv4 "
+"ସହିତ ଏହା iptables ପାଇଁ ହୋଇଥାଏ, ipv6 ସହିତ ip6tables ପାଇଁ ଏବଂ eb ସହିତ ଇଥରନେଟ "
+"ବ୍ରିଜଗୁଡ଼ିକ ପାଇଁ ହୋଇଥାଏ (ebtables)."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "ନିୟମାବଳୀ ସହିତ ବ୍ୟବହାର ହେବାକୁ ଥିବା ଅତିରିକ୍ତ ଶୃଙ୍ଖଳ।"
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
-msgstr ""
+msgstr "ସୃଙ୍ଖଳ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:131
 msgid "Edit Chain"
-msgstr ""
+msgstr "ସୃଙ୍ଖଳକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Remove Chain"
-msgstr ""
+msgstr "ସୃଙ୍ଖଳକୁ ବାହାର କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
-msgstr ""
+msgstr "ସୃଙ୍ଖଳଗୁଡ଼ିକ"
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"ସ୍ୱତନ୍ତ୍ରଚର args ସହିତ ଏକ ଶୃଙ୍ଖଳରେ ପ୍ରାଥମିକତା ଦେଇ ଗୋଟିଏ ନିୟମ ଯୋଗ କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1118,22 +1339,28 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"ନିୟମାବଳୀକୁ କ୍ରମାନ୍ୱୟରେ ରଖିବା ପାଇଁ ପ୍ରାଥମିକତାକୁ ବ୍ୟବହାର କରାଯାଇଥାଏ। ପ୍ରାଥମିକତା "
+"0 ଅର୍ଥ ହେଉଛି ଶୃଙ୍ଖଳ ଉପରେ ନିୟମ ଯୋଗ କରନ୍ତୁ, ଉଚ୍ଚ ପ୍ରାଥମିକତା ସହିତ ନିୟମଟି ତଳେ "
+"ଯୋଗ କରାଯାଇଥାଏ। ସମାନ ପ୍ରାଥମିକତା ବିଶିଷ୍ଟ ନିୟମାବଳୀ ସମାନ ସ୍ତରରେ  ଥାଏ ଏବଂ ସେହି "
+"ନିୟମାବଳୀର କ୍ରମ ସ୍ଥାୟୀନଥାଏ ଏବଂ ପରିବର୍ତ୍ତନ ହୋଇପାରେ। ଯଦି ଆପଣ ନିଶ୍ଚିତ କରିବାକୁ "
+"ଚାହୁଁଛନ୍ତି ଯେ ଅନ୍ୟ ଗୋଟିଏ ଉପରେ ନିୟମାବଳୀ ଯୋଗ ହେବ ତେବେ, ପ୍ରଥମେ କମ ପ୍ରାଥମିକତାକୁ "
+"ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ତାପରେ ଉଚ୍ଚ ପ୍ରାଥମିକତାକୁ ରଖନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
-msgstr ""
+msgstr "ନିୟମ ୟୋଗକରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Rule"
-msgstr ""
+msgstr "ନିୟମ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Rule"
-msgstr ""
+msgstr "ନିୟମକୁ ବାହାର କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:139
 msgid "Rules"
-msgstr ""
+msgstr "ନିୟମାବଳୀ"
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1141,282 +1368,347 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"ଅଗ୍ରଗତି ନିୟମାବଳୀ ସିଧାସଳଖ ଭାବରେ ଫାୟାରୱାଲ ମଧ୍ଯ ଦେଇ ଯାଇଥାଏ ଏବଂ ତାହା ବିଶେଷ "
+"ଶୃଙ୍ଖଳରେ ରଖାଯାଇନଥାଏ। ସମସ୍ତ iptables, ip6tables ଏବଂ etables ବିକଳ୍ପକୁ ବ୍ୟବହାର "
+"କରାଯାଇପାରିବ।"
 
 #: ../src/firewall-config.glade.h:141
-msgid "Passthrough rules can only be modified for the permanent configuration."
-msgstr ""
+msgid ""
+"Passthrough rules can only be modified for the permanent configuration."
+msgstr "ଅଗ୍ରଗତି ନିୟମାବଳୀକୁ କେବଳ ସ୍ଥାୟୀ ସଂରଚନା ପାଇଁ ପରିବର୍ତ୍ତନ କରିହେବ।"
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"ଅଗ୍ରଗତି ନିୟମାବଳୀ ସହିତ ଦୟାକରି ସତର୍କ ରୁହନ୍ତୁ ଯେପରି ତାହା ଫାୟାରୱାଲକୁ କ୍ଷତି ନକରେ।"
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr ""
+msgstr "ଅଗ୍ରଗତିକୁ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "ଅଗ୍ରଗତିକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "ଅଗ୍ରଗତିକୁ ବାହାର କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr ""
+msgstr "ଅଗ୍ରଗତି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:147
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"ଲକଡାଉନ ବିଶେଷତାଟି ହେଉଛି firewalld ପାଇଁ ବ୍ୟବହାରକାରୀ ଏବଂ ପ୍ରୟୋଗ ନିତୀଗୁଡ଼ିକର "
+"ହାଲୁକା ସଂସ୍କରଣ। ଏହା ଫାୟାରୱାଲର ପରିବର୍ତ୍ତନକୁ ସିମୀତ କରିଥାଏ। ଲକଡାଉନ ହ୍ୱାଇଟଲିଷ୍ଟ "
+"ନିର୍ଦ୍ଦେଶ, ପ୍ରସଙ୍ଗ, ବ୍ୟବହାରକାରୀ ଏବଂ ବ୍ୟବହାରକାରୀ id ଗୁଡ଼ିକୁ ଧାରଣ କରିଥାଏ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:148
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
+"ପ୍ରସଙ୍ଗଟି ହେଉଛି ପ୍ରଚଳିତ ପ୍ରୟୋଗ କିମ୍ବା ସର୍ଭିସର ସୁରକ୍ଷା (SELinux) ପ୍ରସଙ୍ଗ। "
+"ପ୍ରଚଳିତ ପ୍ରୟୋଗର ପ୍ରସଙ୍ଗ ପାଇବା ପାଇଁ ps -e --context ବ୍ୟବହାର କରନ୍ତୁ।"
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add Context"
-msgstr ""
+msgstr "ପ୍ରସଙ୍ଗକୁ ଯୋଗକରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Edit Context"
-msgstr ""
+msgstr "ପ୍ରସଙ୍ଗକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove Context"
-msgstr ""
+msgstr "ପ୍ରସଙ୍ଗକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
-msgstr ""
+msgstr "ପ୍ରସଙ୍ଗ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:153
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
+"ଯଦି ହ୍ୱାଇଟଲିଷ୍ଟରେ ଗୋଟିଏ ନିର୍ଦ୍ଦେଶ ନିବେଶ ଆସଟେରିସ୍କ '*' ରେ ସମାପ୍ତ ହୋଇଥାଏ, ତେବେ "
+"ସେହି ନିର୍ଦ୍ଦେଶ ସହିତ ଆରମ୍ଭ ହେଉଥିବା ସମସ୍ତ ନିର୍ଦ୍ଦେଶ ଧାରା ମେଳ ଖାଇବ। ଯଦି ସେହି "
+"'*' ସେଠାରେ ନଥାଏ ତେବେ ସେହି ସ୍ୱଚନ୍ତ୍ରଚର ସହିତ ମେଳଖାଉଥିବା ନିର୍ଦ୍ଦିଷ୍ଟ ନିର୍ଦ୍ଦେଶ "
+"ନିଶ୍ଚିତ ଭାବରେ ମେଳଖାଇବ।"
 
 #: ../src/firewall-config.glade.h:154
 msgid "Add Command Line"
-msgstr ""
+msgstr "ପାଠ୍ଯ ନିର୍ଦ୍ଦେଶକୁ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:155
 msgid "Edit Command Line"
-msgstr ""
+msgstr "ପାଠ୍ଯ ନିର୍ଦ୍ଦେଶକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:156
 msgid "Remove Command Line"
-msgstr ""
+msgstr "ପାଠ୍ଯ ନିର୍ଦ୍ଦେଶକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
-msgstr ""
+msgstr "ନିର୍ଦ୍ଦେଶ ଧାରା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:158
 msgid "User names."
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ନାମଗୁଡ଼ିକ।"
 
 #: ../src/firewall-config.glade.h:159
 msgid "Add User Name"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ନାମ ଯୋଗ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:160
 msgid "Edit User Name"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ନାମକୁ ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:161
 msgid "Remove User Name"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ନାମକୁ ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ନାମଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:163
 msgid "User ids."
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ id ଗୁଡ଼ିକ।"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Add User Id"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ Id ଯୋଗକରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:165
 msgid "Edit User Id"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ Id ସମ୍ପାଦନ କରନ୍ତୁ"
 
 #: ../src/firewall-config.glade.h:166
 msgid "Remove User Id"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ Id ବାହାର କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ Id ଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:168
 msgid "Default Zone:"
-msgstr ""
+msgstr "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:169
 msgid "Current default zone of the system."
-msgstr ""
+msgstr "ତନ୍ତ୍ରର ପ୍ରଚଳିତ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:170
 msgid "Lockdown:"
-msgstr ""
+msgstr "ଲକଡାଉନ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:171
 msgid "Panic Mode:"
-msgstr ""
+msgstr "ଆକସ୍ମିକ ଭୟ ପରିସ୍ଥିତି:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:172
 msgid "Please enter the module name."
-msgstr ""
+msgstr "ଦୟାକରି ମଡ୍ୟୁଲ ନାମ ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and protocol."
-msgstr ""
+msgstr "ଦୟାକରି ଗୋଟିଏ ପୋର୍ଟ ଏବଂ ପ୍ରୋଟୋକଲ ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:174
 msgid "Port and/or Protocol"
-msgstr ""
+msgstr "ପୋର୍ଟ ଏବଂ/ଅଥବା ପ୍ରୋଟୋକଲ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:175
 msgid "Please enter a port and/or a protocol."
-msgstr ""
+msgstr "ଦୟାକରି ଗୋଟିଏ ପୋର୍ଟ ଏବଂ/ଅଥବା ପ୍ରୋଟୋକଲ ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:176
 msgid "Other Protocol:"
-msgstr ""
+msgstr "ଅନ୍ୟାନ୍ୟ ପ୍ରୋଟୋକଲ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:178
 msgid "Please enter a protocol."
-msgstr ""
+msgstr "ଦୟାକରି ଗୋଟିଏ ପ୍ରୋଟୋକଲ ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:179
 msgid "Rich Rule"
-msgstr ""
+msgstr "ଶକ୍ତ ନିୟମ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:180
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "ଦୟାକରି ଗୋଟିଏ ଶକ୍ତ ନିୟମକୁ ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:181
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
+"ହୋଷ୍ଟ କିମ୍ବା ନେଟୱର୍କ ହ୍ୱାଇଟ କିମ୍ବା ବ୍ଲାକଲିଷ୍ଟ ପାଇଁ ଉପାଦାନକୁ ନିଷ୍କ୍ରିୟ "
+"କରିଥାଏ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:182
 msgid "Source:"
-msgstr ""
+msgstr "ଉତ୍ସ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:183
 msgid "Destination:"
-msgstr ""
+msgstr "ଲକ୍ଷ୍ଯସ୍ଥଳ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:184
 msgid "Log:"
-msgstr ""
+msgstr "ଲଗ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:185
 msgid "Audit:"
-msgstr ""
+msgstr "ସମ୍ପାଦନ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:186
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4 ଏବଂ ipv6"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:187
 msgid "inverted"
-msgstr ""
+msgstr "ଓଲଟି ଯାଇଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:188
 msgid "with Type:"
-msgstr ""
+msgstr "ପ୍ରକାର ସହିତ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:189
 msgid "With limit:"
-msgstr ""
+msgstr "ସୀମା ସହିତ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:190
 msgid "/"
-msgstr ""
+msgstr "/"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:195
 msgid "Prefix:"
-msgstr ""
+msgstr "ଉପସର୍ଗ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:196
 msgid "Level:"
-msgstr ""
+msgstr "ସ୍ତର:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:205
 msgid "Element:"
-msgstr ""
+msgstr "ଉପାଦାନ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:212
 msgid "Family:"
-msgstr ""
+msgstr "ପରିବାର:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:213
 msgid "Action:"
-msgstr ""
+msgstr "କାର୍ଯ୍ୟ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:214
 msgid "Base Service Settings"
-msgstr ""
+msgstr "ମୂଳ ସର୍ଭିସ ସେଟିଙ୍ଗଗୁଡ଼ିକ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:215
 msgid "Please configure base service settings:"
-msgstr ""
+msgstr "ମୂଳ ସର୍ଭିସ ସେଟିଙ୍ଗଗୁଡ଼ିକୁ ଦୟାକରି ବିନ୍ୟାସ କରନ୍ତୁ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:216
 msgid "Please select a service."
-msgstr ""
+msgstr "ଦୟାକରି ଗୋଟିଏ ସର୍ଭିସ ବାଛନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:217
 msgid "User ID"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ID"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:218
 msgid "Please enter the user id."
-msgstr ""
+msgstr "ଦୟାକରି ବ୍ୟବହାରକାରୀ id ଭରଣ କରନ୍ତୁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:219
 msgid "User name"
-msgstr ""
+msgstr "ବ୍ୟବହାରକାରୀ ନାମ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:220
 msgid "Please enter the user name."
-msgstr ""
+msgstr "ଦୟାକରି ବ୍ୟବହାରକାରୀ ନାମ ଭରଣ କରନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:221
 msgid "Base Zone Settings"
-msgstr ""
+msgstr "ମୂଳ ଅଞ୍ଚଳ ସଂରଚନା"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:222
 msgid "Please configure base zone settings:"
-msgstr ""
+msgstr "ମୂଳ ଅଞ୍ଚଳ ସଂରଚନାକୁ ବିନ୍ୟାସ କରନ୍ତୁ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:223
 msgid "Target:"
-msgstr ""
+msgstr "ଲକ୍ଷ୍ଯ ସ୍ଥଳ:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:224
 msgid "Default Target"
-msgstr ""
+msgstr "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ ଲକ୍ଷ୍ଯ ସ୍ଥଳ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:45
 msgid "Error:"
-msgstr ""
+msgstr "ତୃଟି:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:48
 msgid "Warning:"
-msgstr ""
+msgstr "ଚେତାବନୀ:"
 
 #: ../src/firewall-offline-cmd:68
 #, c-format
@@ -1468,57 +1760,70 @@ msgstr "ଅଗ୍ନିକବଚ କୁ ନିଷ୍କ୍ରିୟ କରନ୍
 msgid "<module>"
 msgstr "<module>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
-msgstr ""
+msgstr "ଅଗ୍ରାହ୍ୟ ବିକଳ୍ପ, ଗୋଟିଏ iptables ମଡ୍ୟୁଲକୁ ସକ୍ରିୟ କରିଥାଏ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
-msgstr ""
+msgstr "ଅଗ୍ରାହ୍ୟ ବିକଳ୍ପ, ଗୋଟିଏ iptables ମଡ୍ୟୁଲକୁ ନିଷ୍କ୍ରିୟ କରିଥାଏ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
-msgstr ""
+msgstr "<service>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
 msgstr ""
+"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ସର୍ଭିସକୁ ସକ୍ରିୟ କରନ୍ତୁ (ଉଦାହରଣ ସ୍ୱରୂପ: ssh)"
 
 #: ../src/firewall-offline-cmd:173
 msgid "Disable a service in the default zone (example: ssh)"
 msgstr ""
+"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ସର୍ଭିସକୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ (ଉଦାହରଣ ସ୍ୱରୂପ: ssh)"
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ପୋର୍ଟକୁ ସକ୍ରିୟ କରିଥାଏ (ଉଦାହରଣ: ssh:tcp)"
 
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
 msgstr "<interface>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
-msgstr ""
+msgstr "ବିଶ୍ୱସ୍ତ ଅଞ୍ଚଳରେ ଏକ ଅନ୍ତରାପୃଷ୍ଠକୁ ବାନ୍ଧନ୍ତୁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
 msgstr ""
+"ଛଦ୍ମବେଶକୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ, ଅନ୍ତରାପୃଷ୍ଠ ସ୍ୱତନ୍ତ୍ରଚରରେ ସକ୍ରିୟ "
+"କରିଥାଏ।ଏହା କେବଳ IPv4 ଅଟେ।"
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:192
 msgid ""
 "Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
+"ଅଗ୍ରହଣୀୟ ବିକଳ୍ପ। ଇଚ୍ଛାରୂପଣ ନିୟମାବଳୀକୁ ଫାୟାରୱାଲରେ  ଯୋଗ କରିବା ପାଇଁ ବ୍ୟବହାର "
+"କରିଥାଏ (ଉଦାହରଣ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-offline-cmd:196
 msgid ""
@@ -1528,6 +1833,7 @@ msgstr ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
@@ -1535,6 +1841,10 @@ msgid ""
 "address with an optional destination port. This will be added to the default "
 "zone. This is IPv4 only."
 msgstr ""
+"ଗୋଟିଏ ସ୍ଥାନୀୟ ଲକ୍ଷ୍ୟ ସ୍ଥଳ ସଂଯୋଗିକୀକୁ (କୌଣସି ଲକ୍ଷ୍ୟ ସ୍ଥଳ ଠିକଣା ଦିଆଯାଇନାହିଁ) "
+"କିମ୍ବା ଇଚ୍ଛାଧିନ ଲକ୍ଷ୍ୟସ୍ଥଳ ସଂଯୋଗିକୀ ବିଶିଷ୍ଟ ଅନ୍ୟ ଏକ ଲକ୍ଷ୍ୟ ସ୍ଥଳ ଠିକଣା "
+"ଅନ୍ତରାପୃଷ୍ଠ ପାଇଁ ସଂଯୋଗିକୀକୁ ପ୍ରୋଟୋକଲ ସହିତ ଅଗ୍ରସର କରାନ୍ତୁ। ଏହାକୁ "
+"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରାଯିବ। ଏହା କେବଳ IPv4."
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
@@ -1545,23 +1855,31 @@ msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
 msgstr ""
+"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏହି ICMP ପ୍ରକାରକୁ ଅଟକାନ୍ତୁ। ପୂର୍ବନିର୍ଦ୍ଧାରିତଟି "
+"ହେଉଛି ସମସ୍ତ ICMP ପ୍ରକାରକୁ ଗ୍ରହଣ କରିବା।"
 
 #: ../src/firewall-offline-cmd:217
 #, c-format
 msgid "no such option: %s"
 msgstr "ଏଭଳି କୌଣସି ବିକଳ୍ପ ନାହିଁ: %s"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:232
 msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
 msgstr ""
+"ଏହି ସାଧନଟି system-config-firewall/lokkit ବିକଳ୍ପଗୁଡ଼ିକୁ firewalld ରେ ଯେତେ "
+"ସମ୍ଭବ ବଦଳାଇଥାଏ, କିନ୍ତୁ ସେଠାରେ ଉଦାହରଣ ପାଇଁ ଇଚ୍ଛାରୂପଣ ନିୟମାବଳୀ, ମଡ୍ଯୁଲ ଏବଂ "
+"ଛଦ୍ମବେଶରେ କିଛି ପ୍ରତିବନ୍ଧ ଥାଏ ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
 msgstr ""
+"ଯଦି କୌଣସି ବିକଳ୍ପ ଦିଆଯାଇନଥାଏ, ତେବେ '%s' ରୁ ସଂରଚନାକୁ ସ୍ଥାନାନ୍ତରଣ କରାଯାଇଥାଏ।"
 
 #: ../src/firewall-offline-cmd:286
 #, c-format
@@ -1577,88 +1895,107 @@ msgstr "%(option)s option requires %(count)s arguments"
 msgid "%s option does not take a value"
 msgstr "%s ପସନ୍ଦ ମୂଲ୍ଯକୁ ଗ୍ରହଣ କରେନାହିଁ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
-msgstr ""
+msgstr "ସମସ୍ୟା ବିଶ୍ଳେଷଣ ସ୍ୱତନ୍ତ୍ରଚରଗୁଡ଼ିକ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
-msgstr ""
+msgstr "'%s' କୁ ଖୋଲିବା ବିଫଳ ହୋଇଛି, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ଖୋଲୁଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ଖୋଲିବାରେ ଅସମର୍ଥ, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
-msgstr ""
+msgstr "ଅଞ୍ଚଳ '%s' କୁ ଖୋଲିବାରେ ଅସମର୍ଥ, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
-msgstr ""
+msgstr "'%s' ଉପକରଣ %s ଅଞ୍ଚଳକୁ ବାନ୍ଧିବ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:434
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
-msgstr ""
+msgstr "ଇଚ୍ଛାରୂପଣ ନିୟମ ଫାଇଲ '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:439
 #, c-format
 msgid "Ignoring addmodule '%s'"
-msgstr ""
+msgstr "addmodule '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:442
 #, c-format
 msgid "Ignoring removemodule '%s'"
-msgstr ""
+msgstr "removemodule '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
 msgstr ""
+"ଉପକରଣ '%s' ଛଦ୍ମ ବେଶ ଧାରଣ କରିଛି, ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ ପାଇଁ ଛଦ୍ମବେଶକୁ ସକ୍ରିୟ "
+"କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
-msgstr ""
+msgstr "ପୋର୍ଟ '%s/%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
 #: ../src/firewall-offline-cmd:462
 #, c-format
 msgid "Removing service '%s' from default zone."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରୁ ସର୍ଭିସ '%s' କୁ ବାହାର କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
-msgstr ""
+msgstr "ସର୍ଭିସ '%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:476
 #, c-format
 msgid "Adding icmpblock '%s' to default zone."
-msgstr ""
+msgstr "icmpblock '%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:486
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr ""
+msgstr "ଅଗ୍ରସରଣ ପୋର୍ଟ %s:%s:%s:%s କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:494
 msgid "No changes to default zone needed."
-msgstr ""
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ ପାଇଁ କୌଣସି ପରିବର୍ତ୍ତନ ଆବଶ୍ୟକ ନାହିଁ।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:498
 msgid "Changed trusted zone configuration."
-msgstr ""
+msgstr "ବିଶ୍ୱସ୍ତ ଅଞ୍ଚଳ ବିନ୍ୟାସକୁ ପରିବର୍ତ୍ତନ କରିଛି।"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:500
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
@@ -1669,3 +2006,11 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
+"ଯଦି ଏହା ମଧ୍ଯରୁ କୌଣସି ବିଶ୍ୱସ୍ତ ଅନ୍ତରାପୃଷ୍ଠକୁ NetworkManager ସହିତ ସଂଯୋଗ ପାଇଁ "
+"ବ୍ୟବହାର କରାଯାଇଥାଏ କିମ୍ବା ସେଠାରେ ଯଦି ଏହି ଅନ୍ତରାପୃଷ୍ଠ ପାଇଁ ifcfg ଫାଇଲ ଥାଏ, "
+"ତେବେ ସେହି ଅଞ୍ଚଳକୁ ସକ୍ରିୟ ହେବା ମାତ୍ରେ ସଂରଚନାରେ ବ୍ୟାଖ୍ୟା କରାଯାଇଥିବା ଅଞ୍ଚଳ ସହିତ "
+"ପରିବର୍ତ୍ତନ କରାଯାଇଥାଏ। କୌଣସି ସଂଯୋଗର ଅଞ୍ଚଳକୁ ପରିବର୍ତ୍ତନ କରିବାକୁ <command>nm-"
+"connection-editor</command> କୁ ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ସେହି ଅଞ୍ଚଳକୁ ବିଶ୍ୱସ୍ତ "
+"ଭାବରେ ସେଟ କରନ୍ତୁ, ଏକ ifcfg ଫାଇଲ ପାଇଁ, ଏକ ସମ୍ପାଦକକୁ ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ \"ZONE="
+"trusted\" କୁ ଯୋଗ କରନ୍ତୁ। ଯଦି ସେହି ଅଞ୍ଚଳଟି ifcfg ଫାଇଲରେ ବ୍ୟାଖ୍ୟା ହୋଇନଥାଏ, "
+"ତେବେ firewalld ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ବ୍ୟବହାର କରାଯିବ।"

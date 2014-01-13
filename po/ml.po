@@ -1,22 +1,24 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Ani Peter <apeter@redhat.com>, 2006-2007,2009
+# apeter <apeter@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: firewalld\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-10-03 08:49+0000\n"
-"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
-"Language-Team: Malayalam <discuss@lists.smc.org.in>\n"
-"Language: ml\n"
+"POT-Creation-Date: 2013-11-13 15:34+0530\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-11-29 03:41-0500\n"
+"Last-Translator: apeter <apeter@redhat.com>\n"
+"Language-Team: Malayalam <discuss@lists.smc.org.in>\n"
+"Language: ml\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.1.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -30,25 +32,29 @@ msgstr "ഫയര്‍വോള്‍"
 msgid "Firewall Configuration"
 msgstr "ഫയര്‍വോള്‍ ക്രമീകരണം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
-msgstr ""
+msgstr "അപ്രതീക്ഷിതമായ എലമെന്റ് '%s'"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
-msgstr ""
+msgstr "എലമെന്റ് '%s': '%s' വിശേഷത ലഭ്യമല്ല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
-msgstr ""
+msgstr "എലമെന്റ് '%s': അപ്രതീക്ഷിതമായ വിശേഷത '%s'"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
-msgstr ""
+msgstr "%s നടപ്പിലാക്കുന്നതിനു് നിങ്ങള്‍ റൂട്ട് ആകേണ്ടതുണ്ടു്."
 
 #: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
@@ -62,92 +68,116 @@ msgstr "ഫോര്‍ക്ക് #1 പരാജയപ്പെട്ടു: 
 #: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "'%s' കണക്ഷനു് മേഖല തെരഞ്ഞെടുക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:185
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr ""
+msgstr "'%s' ഇന്റര്‍ഫെയിസിനു് മേഘല തെരഞ്ഞെടുക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:241
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "'%s' ശ്രോതസ്സിനു് മേഘല തെരഞ്ഞെടുക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:343
 msgid "Shields Up"
-msgstr ""
+msgstr "ഷീള്‍ഡ്സ് അപ്പ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:356
 msgid "Enable Notifications"
-msgstr ""
+msgstr "അറിയിപ്പുകള്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:369
 msgid "Edit Firewall Settings..."
-msgstr ""
+msgstr "ഫയര്‍വോള്‍ സജ്ജീകരണങ്ങള്‍ ചിട്ടപ്പെടുത്തുക..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:377 ../src/firewall-config.glade.h:46
 msgid "Change Zones of Connections..."
-msgstr ""
+msgstr "കണക്ഷനുകള്‍ക്കുള്ള മേഘലകള്‍ മാറ്റുക..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:384
 msgid "Configure Shields UP/Down Zones..."
-msgstr ""
+msgstr "ഷീള്‍ഡ്സ് അപ്പ്/ഡൌണ്‍ മേഘലകള്‍ ക്രമീകരിയ്ക്കുക..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:393
 msgid "Block all network traffic"
-msgstr ""
+msgstr "എല്ലാ നെറ്റ്‌വര്‍ക്ക് ട്രാഫിക്കും തടയുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:422
 msgid "Configure Shields Up/Down Zones"
-msgstr ""
+msgstr "ഷീള്‍ഡ്സ് അപ്പ്/ഡൌണ്‍ മേഘലകള്‍ ക്രമീകരിയ്ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
+"ഷീള്‍ഡ്സ് അപ്പ്, ഷീള്‍ഡ്സ് ഡൌണ്‍ എന്നിവയ്ക്കുപയോഗിച്ച മേഘലകള്‍ നിങ്ങള്‍ക്കു് "
+"ഇവിടെ തെരഞ്ഞെടുക്കാം."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:441
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
+"മിക്കപ്പോഴും സ്വതവേയുള്ള മേഘലകള്‍ ഉപയോഗിയ്ക്കുവര്‍ക്കു് ഈ വിശേഷത "
+"പ്രയോജനകരമാണു്. കണക്ഷനുകളുടെ മേഘലകള്‍ മാറ്റുന്ന ഉപയോക്താക്കള്‍ക്കു് അധികം "
+"ഉപയോഗമുണ്ടാവില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
-msgstr ""
+msgstr "ഷീള്‍ഡ്സ് അപ്പ് മേഘല:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:467
 msgid "Shields Down Zone:"
-msgstr ""
+msgstr "ഷീള്‍ഡ്സ് ഡൌണ്‍ മേഘല:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:618
 msgid "Connections"
-msgstr ""
+msgstr "കണക്ഷനുകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:660 ../src/firewall-applet:689
 #: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
 msgid "Zone"
-msgstr ""
+msgstr "മേഘല"
 
 #: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
-msgstr ""
+msgstr "ശ്രോതസ്സുകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:812
 msgid "Connection to FirewallD established."
-msgstr ""
+msgstr "FirewallD-യ്ക്കുള്ള കണക്ഷന്‍ സ്ഥാപിച്ചിരിയ്ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:821
 msgid "Connection to FirewallD lost."
-msgstr ""
+msgstr "FirewallD-ലേക്കുള്ള കണക്ഷന്‍ നഷ്ടമായി."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:868
 msgid "FirewallD has been reloaded."
-msgstr ""
+msgstr "FirewallD വീണ്ടും ലഭ്യമാക്കിയിരിയ്ക്കുന്നു."
 
 #: ../src/firewall-applet:945
 msgid "No connection to firewall daemon"
@@ -157,121 +187,152 @@ msgstr "ഫയര്‍വോള്‍ ഡെമണിലേക്കു് ക�
 msgid "PANIC MODE"
 msgstr "PANIC MODE"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:958
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘല: '%s'"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
+"'{interface}' ഇന്റര്‍ഫെയിസില്‍  '{connection}' കണക്ഷനു് സജീവമായ '{zone}' "
+"മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr ""
+msgstr "'{interface}' ഇന്റര്‍ഫെയിസില്‍  സജീവമായ '{zone}' മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "{source} ശ്രോതസ്സില്‍‍  സജീവമായ '{zone}' മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:981
 msgid "No Active Zones."
-msgstr ""
+msgstr "സജീവമായ മേഘലകള്‍ ലഭ്യമല്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:990
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘല '%s' ആയി മാറ്റിയിരിയ്ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1014
 msgid "All network traffic is blocked."
-msgstr ""
+msgstr "എല്ലാ നെറ്റ്‌വര്‍ക്ക് ട്രാഫിക്കും തടഞ്ഞിരിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1015
 msgid "Network traffic is not blocked anymore."
-msgstr ""
+msgstr "നെറ്റ്‌വര്‍ക്ക് ട്രാഫിക്ക് ഇനി തടസ്സപ്പെടുത്തിയിട്ടില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1030 ../src/firewall-applet:1070
 msgid "activated"
-msgstr ""
+msgstr "സജീവമാക്കിയിരിക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1031 ../src/firewall-applet:1071
 msgid "deactivated"
-msgstr ""
+msgstr "നിര്‍ജ്ജീവമാക്കിയിരിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1034
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"'{interface}' ഇന്റര്‍ഫെയിസില്‍  '{connection}' കണക്ഷനു് സജീവമായ "
+"'{zone}'{activated_deactivated} മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
+"'{interface}' ഇന്റര്‍ഫെയിസില്‍  സജീവമായ '{zone}' {activated_deactivated} "
+"മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1061
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr ""
+msgstr "'%s' മേഘല '%s' ഇന്റര്‍ഫെയിസിനു് സജീവമാക്കിയിരിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "'{source}' ശ്രോതസ്സിനുള്ള '{zone}' {activated_deactivated} മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1096
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "'%s' മേഘല '%s' ശ്രോതസ്സിനു് സജീവമാക്കിയിരിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-applet:1161
 msgid "Firewall-applet"
-msgstr ""
+msgstr "ഫയര്‍വോള്‍-ആപ്ലെറ്റ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:79
 msgid "Connected."
-msgstr ""
+msgstr "കണക്ട് ചെയ്തിരിയ്ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:80
 msgid "No connection."
-msgstr ""
+msgstr "കണക്ഷന്‍ ലഭ്യമല്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:81
 msgid "Waiting ..."
-msgstr ""
+msgstr "കാത്തിരിയ്ക്കുന്നു..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:82
 msgid "Retrying ..."
-msgstr ""
+msgstr "വീണ്ടും ശ്രമിയ്ക്കുന്നു..."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:83
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "നെറ്റ്‌വര്‍ക്ക് കണക്ഷന്‍ '%s' ഉപയോഗിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:84
 msgid "enabled"
-msgstr ""
+msgstr "പ്രവര്‍ത്തന സജ്ജം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:85
 msgid "disabled"
-msgstr ""
+msgstr "പ്രവര്‍ത്തന രഹിതം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:98
 msgid "Failed to load icons."
-msgstr ""
+msgstr "ചിഹ്നങ്ങള്‍ ലഭ്യമാക്കുന്നതില്‍ പരാജയപ്പെട്ടു."
 
 #: ../src/firewall-config:134
 msgid "NetworkManager connection editor is missing."
-msgstr ""
+msgstr "NetworkManager കണക്ഷന്‍ എഡിറ്റര്‍ ലഭ്യമല്ല."
 
 #: ../src/firewall-config:356 ../src/firewall-config:1647
 msgid "Runtime"
-msgstr ""
+msgstr "പ്രവര്‍ത്തനസമയം"
 
 #: ../src/firewall-config:357
 msgid "Permanent"
-msgstr ""
+msgstr "സ്ഥിരമായ"
 
 #: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
 msgid "Service"
@@ -295,37 +356,45 @@ msgstr "ഏത്തിച്ചേരണ്ട  പോര്‍ട്ട്"
 msgid "To Address"
 msgstr "ഏത്തിച്ചേരണ്ട വിലാസം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:509
 msgid "Icmp Type"
-msgstr ""
+msgstr "ഐസിഎംപി തരം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:524
 msgid "Family"
-msgstr ""
+msgstr "കുടുംബം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:526
 msgid "Action"
-msgstr ""
+msgstr "പ്രവര്‍ത്തനം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:528
 msgid "Element"
-msgstr ""
+msgstr "എലമെന്റ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:530
 msgid "Src"
-msgstr ""
+msgstr "ശ്രോതസ്സ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:532
 msgid "Dest"
-msgstr ""
+msgstr "ലക്ഷ്യം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:534
 msgid "log"
-msgstr ""
+msgstr "ലോഗ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:536
 msgid "Audit"
-msgstr ""
+msgstr "ഓഡിറ്റ് ചെയ്യുക"
 
 #: ../src/firewall-config:1094 ../src/firewall-config:1842
 #: ../src/firewall-config:1880
@@ -338,273 +407,317 @@ msgstr "പിഴവ്"
 
 #: ../src/firewall-config:1142
 msgid "Changes applied."
-msgstr ""
+msgstr "മാറ്റങ്ങള്‍ സൂക്ഷിച്ചു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1425 ../src/firewall-config:2607
 msgid "accept"
-msgstr ""
+msgstr "സ്വീകരിയ്ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1427 ../src/firewall-config:2609
 #: ../src/firewall-config:2697
 msgid "reject"
-msgstr ""
+msgstr "നിരസിയ്ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1429 ../src/firewall-config:2614
 msgid "drop"
-msgstr ""
+msgstr "ഉപേക്ഷിയ്ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1431 ../src/firewall-config:1465
 #: ../src/firewall-config:1470
 msgid "limit"
-msgstr ""
+msgstr "പരിധി"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1442 ../src/firewall-config:2156
 #: ../src/firewall-config:2300 ../src/firewall-config:2571
 #: ../src/firewall-config.glade.h:206
 msgid "service"
-msgstr ""
+msgstr "സേവനം "
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1444 ../src/firewall-config:2162
 #: ../src/firewall-config:2302 ../src/firewall-config:2574
 #: ../src/firewall-config.glade.h:207
 msgid "port"
-msgstr ""
+msgstr "പോര്‍ട്ട്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1447 ../src/firewall-config:2167
 #: ../src/firewall-config:2311 ../src/firewall-config:2580
 #: ../src/firewall-config.glade.h:208
 msgid "protocol"
-msgstr ""
+msgstr "സമ്പ്രദായം "
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1449 ../src/firewall-config:2172
 #: ../src/firewall-config:2594 ../src/firewall-config:2709
 #: ../src/firewall-config.glade.h:211
 msgid "masquerade"
-msgstr ""
+msgstr "മാസ്ക്യുറേഡിംങ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1463
 msgid "level"
-msgstr ""
+msgstr "നില"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1467 ../src/firewall-config:1472
 msgid "yes"
-msgstr ""
+msgstr "ഉവ്വു്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1599
 msgid "Authorization failed."
-msgstr ""
+msgstr "ആധികാരികത ഉറപ്പാക്കല്‍ പരാജയപ്പെട്ടു."
 
 #: ../src/firewall-config:1602
 msgid "Invalid name"
 msgstr "തെറ്റായ ആര്‍ഗ്യുമെന്റ് %s"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1606
 msgid "Name already exists"
-msgstr ""
+msgstr "പേരു് നിലവിലുണ്ടു്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1839
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "'%s' മേഘല: '%s' സര്‍വീസ് തരം ലഭ്യമല്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Remove"
-msgstr ""
+msgstr "നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1843 ../src/firewall-config:1881
 msgid "Ignore"
-msgstr ""
+msgstr "അവഗണിയ്ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:1877
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr ""
+msgstr "'%s' മേഘല: '%s' ഐസിഎംപി തരം ലഭ്യമല്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2007
 msgid "Built-in zone, rename not supported."
-msgstr ""
+msgstr "ബിള്‍ട്ടിന്‍ zone, rename പിന്തുണയ്ക്കുന്നില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2119 ../src/firewall-config:2546
 #: ../src/firewall-config.glade.h:191
 msgid "second"
-msgstr ""
+msgstr "നിമിഷം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2120 ../src/firewall-config:2547
 #: ../src/firewall-config.glade.h:192
 msgid "minute"
-msgstr ""
+msgstr "മിനിറ്റ്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2121 ../src/firewall-config:2548
 #: ../src/firewall-config.glade.h:193
 msgid "hour"
-msgstr ""
+msgstr "മണിക്കൂര്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2122 ../src/firewall-config:2549
 #: ../src/firewall-config.glade.h:194
 msgid "day"
-msgstr ""
+msgstr "ദിവസം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2123 ../src/firewall-config:2550
 #: ../src/firewall-config.glade.h:197
 msgid "emergency"
-msgstr ""
+msgstr "emergency"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2124 ../src/firewall-config:2551
 #: ../src/firewall-config.glade.h:198
 msgid "alert"
-msgstr ""
+msgstr "alert"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2125 ../src/firewall-config:2552
 #: ../src/firewall-config.glade.h:199
 msgid "critical"
-msgstr ""
+msgstr "critical"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2126 ../src/firewall-config:2553
 #: ../src/firewall-config.glade.h:200
 msgid "error"
-msgstr ""
+msgstr "പിശക്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2127 ../src/firewall-config:2554
 #: ../src/firewall-config.glade.h:201
 msgid "warning"
-msgstr ""
+msgstr "മുന്നറിയിപ്പു്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2128 ../src/firewall-config:2555
 #: ../src/firewall-config.glade.h:202
 msgid "notice"
-msgstr ""
+msgstr "notice"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2129 ../src/firewall-config:2556
 #: ../src/firewall-config.glade.h:203
 msgid "info"
-msgstr ""
+msgstr "വിവരം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2130 ../src/firewall-config:2557
 #: ../src/firewall-config.glade.h:204
 msgid "debug"
-msgstr ""
+msgstr "debug"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2175 ../src/firewall-config:2313
 #: ../src/firewall-config:2583 ../src/firewall-config.glade.h:209
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-block"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2180 ../src/firewall-config:2315
 #: ../src/firewall-config:2586 ../src/firewall-config:2717
 #: ../src/firewall-config.glade.h:210
 msgid "forward-port"
-msgstr ""
+msgstr "forward-port"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2293 ../src/firewall-config:2492
 #: ../src/firewall-config:2506 ../src/firewall-config:2561
 #: ../src/firewall-config:2665
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:2295 ../src/firewall-config:2494
 #: ../src/firewall-config:2508 ../src/firewall-config:2563
 #: ../src/firewall-config:2667
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"ഇന്റര്‍ഫെയിസ് മാസ്ക്യുറേഡ് ചെയ്താല്‍ മാത്രമേ മറ്റൊരു സിസ്റ്റത്തിലേക്കു് "
+"ഫോര്‍വേഡ് ചെയ്യുന്നതു് പ്രയോജനകരമാകൂ.\n"
+"ഈ മേഖല മാസ്ക്യുറേഡ് ചെയ്യണമോ ?"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
-msgstr ""
+msgstr "ബിള്‍ട്ടിന്‍ service, rename പിന്തുണയ്ക്കുന്നില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config:3944
 msgid "Built-in icmp, rename not supported."
-msgstr ""
+msgstr "ബിള്‍ട്ടിന്‍ icmp, rename പിന്തുണയ്ക്കുന്നില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr ""
+msgstr "വിലാസം"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Port and Protocol"
 msgstr "പോര്‍ട്ടും സമ്പ്രദായവും"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "ദയവായി കമാന്‍ഡ് ലൈന്‍ നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr ""
+msgstr "ദയവായി സന്ദര്‍ഭം നല്‍കുക."
 
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
-msgstr ""
+msgstr "സ്വതവേയുളഅള മേഖല"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
 msgstr ""
+"താഴെ കാണിച്ചിട്ടുള്ള പട്ടികയില്‍ നിന്നും സ്വതവേയുള്ള മേഘല ദയവായി "
+"തെരഞ്ഞെടുക്കുക."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "ഡയറക്ട് ചെയിന്‍"
 
 #: ../src/firewall-config.glade.h:8
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "ipv, പട്ടിക എന്നിവ തെരഞ്ഞെടുത്തു്, ചെയിന്റെ പേരു് നല്‍കുക."
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
-msgstr ""
+msgstr "പട്ടിക:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "സുരക്ഷ"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "ചെയിന്‍:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "നേരിട്ടുള്ള പാസ്ത്രൂ നിയമം"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "ipv ദയവായി തെരഞ്ഞെടുത്തു് ആര്‍ഗ്യുമെന്റുകള്‍ നല്‍കുക."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "ആര്‍ഗ്യുമെന്റുകള്‍:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Direct Rule"
-msgstr ""
+msgstr "നേരിട്ടുള്ള നിയമം"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
+"ipv, പട്ടിക, ചെയിന്‍ മുന്‍ഗണം എന്നിവ പരിശോധിച്ചു് ആര്‍ഗ്യുമെന്റുകള്‍ നല്‍കുക."
+""
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
-msgstr ""
+msgstr "മുന്‍ഗണന:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
@@ -613,7 +726,8 @@ msgstr "പോര്‍ട്ട് ഫോര്‍‍വേര്‍‍ഡി�
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr "നിങ്ങളുടെ ആവശ്യ‌മനുസരിച്ച് ഉറവിട, ലക്ഷ്യ പോര്‍ട്ടുകള്‍ തെരഞ്ഞെടുക്കുക."
+msgstr ""
+"നിങ്ങളുടെ ആവശ്യ‌മനുസരിച്ച് ഉറവിട, ലക്ഷ്യ പോര്‍ട്ടുകള്‍ തെരഞ്ഞെടുക്കുക."
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
@@ -627,13 +741,15 @@ msgstr "ഐപി വിലാസം:"
 msgid "Protocol:"
 msgstr "സമ്പ്രദായം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:27
 msgid "Destination"
-msgstr ""
+msgstr "ലക്ഷ്യസ്ഥലം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:28
 msgid "Source"
-msgstr ""
+msgstr "ശ്രോതസ്സ്"
 
 #: ../src/firewall-config.glade.h:29
 msgid "Local forwarding"
@@ -648,44 +764,52 @@ msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"നിങ്ങള്‍ ലോക്കല്‍ ഫോര്‍വേര്‍ഡിങ് സജ്ജമാക്കിയാല്‍, പോര്‍ട്ട് നല്‍കേണ്ടതാണ്. ഇത് ഉറവിട പോര്‍ട്ടില്‍ നിന്നും "
-"വ്യ‌‌ത്യ‌‌സ്തമാണ്."
+"നിങ്ങള്‍ ലോക്കല്‍ ഫോര്‍വേര്‍ഡിങ് സജ്ജമാക്കിയാല്‍, പോര്‍ട്ട് നല്‍കേണ്ടതാണ്. "
+"ഇത് ഉറവിട പോര്‍ട്ടില്‍ നിന്നും വ്യ‌‌ത്യ‌‌സ്തമാണ്."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
-msgstr ""
+msgstr "അടിസ്ഥാന ഐസിഎംപി തരം സജ്ജീകരണങ്ങള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base ICMP type settings:"
-msgstr ""
+msgstr "ദയവായി അടിസ്ഥാന ഐസിഎംപി തരം സജ്ജീകരണങ്ങള്‍ ക്രമീകരിയ്ക്കുക: "
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "കട്ടിയിലുള്ള എന്‍ട്രികള്‍ നിര്‍ബന്ധമാണു്, മറ്റൊന്നും നിര്‍ബന്ധമല്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
-msgstr ""
+msgstr "പേരു്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:36
 msgid "Version:"
-msgstr ""
+msgstr "പതിപ്പു്‌:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:37
 msgid "Short:"
-msgstr ""
+msgstr "ലഘു:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:38
 msgid "Description:"
-msgstr ""
+msgstr "വിവരണം:"
 
 #: ../src/firewall-config.glade.h:39
 msgid "ICMP Type"
 msgstr "ICMP തരത്തിലുള്ള"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:40
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "ഒരു ഐസിഎംപി തരം ദയവായി തെരഞ്ഞെടുക്കുക"
 
 #: ../src/firewall-config.glade.h:42
 msgid "_File"
@@ -695,9 +819,10 @@ msgstr "ഫയല്‍ (_F)"
 msgid "_Options"
 msgstr "ഐഛികങ്ങള്‍ (_O)"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:44
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Firewalld വീണ്ടും ലഭ്യമാക്കുക"
 
 #: ../src/firewall-config.glade.h:45
 msgid ""
@@ -705,52 +830,65 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"ഫയര്‍വോള്‍ നിയമങ്ങള്‍ വീണ്ടും ലഭ്യമാക്കുന്നു. നിലവില്‍ സ്ഥിരമായുള്ള "
+"ക്രമീകരണം പുതിയ പ്രവര്‍ത്തന ക്രമീകരണമാകുന്നു. അതായതു്, സ്ഥിരമായ "
+"ക്രമീകരണത്തിലില്ലെങ്കില്‍, പ്രവര്‍ത്തന സമയത്തു് വരുത്തിയ മാറ്റങ്ങള്‍ വീണ്ടും "
+"ലഭ്യമാക്കുമ്പോള്‍ നഷ്ടമാകുന്നു."
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "ഒരു നെറ്റ്‌വര്‍ക്ക് കണക്ഷനുള്ള മേഖല മാറ്റുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘല മാറ്റുക"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "കണക്ഷനുകള്‍ക്കും ഇന്റര്‍ഫെയിസുകള്‍ക്കുമുള്ള സ്വതവേയുള്ള മേഖല മാറ്റുക."
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
+"പാനിക്ക് മോഡിനര്‍ത്ഥം വരുന്നതും പോകുന്നതുമായ എല്ലാ പാക്കറ്റുകളും "
+"ഇല്ലാതാക്കുന്നു് എന്നാണു്."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
-msgstr ""
+msgstr "പാനിക്ക് മോഡ്"
 
 #: ../src/firewall-config.glade.h:52
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
+"ലോക്ക്‍ഡൌണ്‍ ഫയര്‍വോള്‍ ക്രമീകരണം പൂട്ടുന്നു. ഇങ്ങനെ വൈറ്റ്‌ലിസ്റ്റിലുള്ള "
+"പ്രയോഗങ്ങള്‍ക്കു് മാത്രമേ ഇതില്‍ മാറ്റം വരുത്തുവാന്‍ സാധ്യമാകൂ."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
-msgstr ""
+msgstr "ലോക്ക് ഡൌണ്‍"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr ""
+msgstr "_കാഴ്ച"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
-msgstr ""
+msgstr "ഐസിഎംപി തരങ്ങള്‍"
 
 #: ../src/firewall-config.glade.h:56
 msgid "Direct Configuration"
-msgstr ""
+msgstr "നേരിട്ടുള്ള ക്രമീകരണം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
-msgstr ""
+msgstr "ലോക്ക്ഡൌണ്‍ വൈറ്റ് ലിസ്റ്റ്"
 
 #: ../src/firewall-config.glade.h:58
 msgid "_Help"
@@ -758,15 +896,20 @@ msgstr "സഹായം (_H)"
 
 #: ../src/firewall-config.glade.h:59
 msgid "Configuration:"
-msgstr ""
+msgstr "ക്രമീകരണം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:60
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"നിലവില്‍ ദൃശ്യമായ ക്രമീകരണം. പ്രവര്‍ത്തന ക്രമീകരണമാണു് സജീവമായ ക്രമീകരണം. "
+"സര്‍വീസ് അല്ലെങ്കില്‍ സിസ്റ്റം വീണ്ടും ലഭ്യമാക്കുന്നതിനു് അല്ലെങ്കില്‍ "
+"വീണ്ടും ആരംഭിയ്ക്കുന്നതിനു് ശേഷം എന്നേക്കുമുള്ള ക്രമീകരണം സജീവമാകുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:61
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
@@ -775,55 +918,78 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"മേഘലയ്ക്കുള്ള നെറ്റ്‌വര്‍ക്ക് കണക്ഷനുകള്‍, ഇന്റര്‍ഫെയിസുകള്‍, ശ്രോതസ്സ് "
+"വിലാസങ്ങള്‍ എന്നിവയ്ക്കുള്ള വിശ്വസ്തത firewalld മേഘല നിഷ്കര്‍ഷിയ്ക്കുന്നു. "
+"സര്‍വീസുകള്‍, പോര്‍ട്ടുകള്‍, സമ്പ്രദായങ്ങള്‍, മാസ്ക്യൂറേഡിങ്, പോര്‍ട്ട്/"
+"പാക്കറ്റ് ഫോര്‍വേഡിങ്, icmp ഫില്‍റ്ററുകള്‍, റിച്ച് റൂളുകള്‍ എന്നിവ മേഘലയില്‍ "
+"ലഭ്യമാകുന്നു. ഇന്റര്‍ഫെയിസുകളും ശ്രോതസ്സിനുള്ള വിലാസങ്ങളും അനുസരിച്ചാണു് "
+"മേഘല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
-msgstr ""
+msgstr "മേഘല ചേര്‍ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:64
 msgid "Edit Zone"
-msgstr ""
+msgstr "മേഘല ചിട്ടപ്പെടുത്തുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:65
 msgid "Remove Zone"
-msgstr ""
+msgstr "മേഘല നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:66
 msgid "Load Zone Defaults"
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘല ലഭ്യമാക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"ഏതെല്ലാം സര്‍‍വീസുകളാണ് വിശ്വസനീയം എന്ന് നിങ്ങള്‍ക്ക് ഇവിടെ വ്യ‌ക്തമാക്കാം. "
+"ഈ മേഘലയ്ക്കുള്ള ശ്രോതസ്സുകളും ഇന്റര്‍ഫെയിസുകളും കണക്ഷനുകളിലും നിന്നും "
+"സിസ്റ്റത്തിലേക്കുള്ള എല്ലാ ഹോസ്റ്റുകളും നെറ്റ്‌വര്‍ക്കുകളും വിശ്വസനീയമായ "
+"സേവനങ്ങള്‍ക്കു് ലഭ്യമാകുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:68
 msgid "Services"
-msgstr ""
+msgstr "സര്‍വീസുകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"അധികമായ പോര്‍ട്ടുകള്‍ അല്ലെങ്കില്‍ പോര്‍ട്ട് പരിധികളും ചേര്‍ക്കുക, "
+"സിസ്റ്റത്തിലേക്കു് കണക്ട് ചെയ്യുവാന്‍ സാധ്യമായ നെറ്റ്‌വര്‍ക്കുകള്‍ "
+"അല്ലെങ്കില്‍ എല്ലാം ഹോസ്റ്റുകളിലേക്കുള്ള ഇവയ്ക്കു് പ്രവേശിയ്ക്കേണ്ടതുണ്ടു്."
 
 #: ../src/firewall-config.glade.h:70
 msgid "Add Port"
 msgstr "ഏത്തിച്ചേരണ്ട  പോര്‍ട്ട്"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:71
 msgid "Edit Port"
-msgstr ""
+msgstr "പോര്‍ട്ട് ചിട്ടപ്പെടുത്തുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:72
 msgid "Remove Port"
-msgstr ""
+msgstr "പോര്‍ട്ട് നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:73
 msgid "Ports"
-msgstr ""
+msgstr "പോര്‍ട്ടുകള്‍"
 
 #: ../src/firewall-config.glade.h:74
 msgid ""
@@ -831,20 +997,26 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാ പ്രവര്‍ത്തനത്തിനെ ഇന്റര്‍നെറ്റുമായി ബന്ധപ്പെടുത്തുന്നതിനായി ഒരു "
-"ആതിഥേയന്‍ അല്ലെങ്കില്‍ റൂട്ടര്‍ നിങ്ങള്‍ ക്രമീകരിക്കുന്നു എങ്കില്‍ മാസ്ക്യുറേഡിംഗ് നിങ്ങള്‍ക്ക് "
-"പ്രയോജനകരമാകുന്നു. നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാകര്മ്മം  അദൃശ്യ‌മായിരിക്കും, മാത്രമല്ല, "
-"ഇന്റര്‍നെറ്റില്‍ ആതിഥേയനെ ഒരു വിലാസമായി കണക്കാക്കുന്നു. മാസ്ക്യുറേഡിംഗ് IPv4 മാത്രമാണ്."
+"നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാ പ്രവര്‍ത്തനത്തിനെ ഇന്റര്‍നെറ്റുമായി "
+"ബന്ധപ്പെടുത്തുന്നതിനായി ഒരു ആതിഥേയന്‍ അല്ലെങ്കില്‍ റൂട്ടര്‍ നിങ്ങള്‍ "
+"ക്രമീകരിക്കുന്നു എങ്കില്‍ മാസ്ക്യുറേഡിംഗ് നിങ്ങള്‍ക്ക് പ്രയോജനകരമാകുന്നു. "
+"നിങ്ങളുടെ പ്രാദേശിക ശൃംഖലാകര്മ്മം  അദൃശ്യ‌മായിരിക്കും, മാത്രമല്ല, "
+"ഇന്റര്‍നെറ്റില്‍ ആതിഥേയനെ ഒരു വിലാസമായി കണക്കാക്കുന്നു. മാസ്ക്യുറേഡിംഗ് IPv4 "
+"മാത്രമാണ്."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
-msgstr ""
+msgstr "മാസ്ക്യുറേഡ് മേഘല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:76
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"മാസ്ക്യുറേഡിങ് പ്രവര്‍ത്തന സജ്ജമാക്കുന്നെങ്കില്‍, നിങ്ങളുടെ IPv4 "
+"നെറ്റ്‌വര്‍ക്കു് ഐപി ഫോര്‍വേഡിങ് പ്രവര്‍ത്തന സജ്ജമാക്കുന്നു."
 
 #: ../src/firewall-config.glade.h:77
 msgid "Masquerading"
@@ -857,22 +1029,26 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"ഒരു പ്രാദേശിക വ്യവ്സ്ഥയിലുള്ള പോര്‍ട്ടില്‍ നിന്നും മറ്റൊന്നിലേക്ക് അല്ലെങ്കില്‍ ഒരു പ്രാദേശിക "
-"വ്യ‌വസ്ഥയില്‍നിന്നും മറ്റൊന്നിലേക്ക് പോര്‍ട്ടുകള്‍ അയയ്ക്കുന്നതിനായി എന്ട്രികള്‍ നല്‍കുക. വിനിമയതലം "
-"മാസ്ക്യുറേഡ് ചെയ്തെങ്കില്‍ മാത്രമേ മറ്റൊരു സിസ്റ്റമിലേക്ക് അയയ്ക്കുന്നതില്‍ പ്രയോജനമുള്ളൂ. പോര്‍ട്ട് "
-"ഫോര്‍വേര്‍ഡിംഗ് IPv4 മാത്രമാണ്."
+"ഒരു പ്രാദേശിക വ്യവ്സ്ഥയിലുള്ള പോര്‍ട്ടില്‍ നിന്നും മറ്റൊന്നിലേക്ക് "
+"അല്ലെങ്കില്‍ ഒരു പ്രാദേശിക വ്യ‌വസ്ഥയില്‍നിന്നും മറ്റൊന്നിലേക്ക് "
+"പോര്‍ട്ടുകള്‍ അയയ്ക്കുന്നതിനായി എന്ട്രികള്‍ നല്‍കുക. വിനിമയതലം മാസ്ക്യുറേഡ് "
+"ചെയ്തെങ്കില്‍ മാത്രമേ മറ്റൊരു സിസ്റ്റമിലേക്ക് അയയ്ക്കുന്നതില്‍ പ്രയോജനമുള്ളൂ."
+" പോര്‍ട്ട് ഫോര്‍വേര്‍ഡിംഗ് IPv4 മാത്രമാണ്."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
-msgstr ""
+msgstr "ഫോര്‍വേഡ് പോര്‍ട്ട് ചേര്‍ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:80
 msgid "Edit Forward Port"
-msgstr ""
+msgstr "ഫോര്‍വേഡ് പോര്‍ട്ട് ചിട്ടപ്പെടുത്തുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:81
 msgid "Remove Forward Port"
-msgstr ""
+msgstr "ഫോര്‍വേഡ് പോര്‍ട്ട് നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:82
 msgid ""
@@ -880,107 +1056,131 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"ശൃംഖലയിലെ കമ്പ്യൂട്ടറുകള്‍ക്ക് തമ്മില്‍ പിശക് അറിയിക്കുന്ന സന്ദേശങ്ങള്‍ അയയ്ക്കുന്നതിനാണ് പ്രധാനമായും "
-"ഇന്റര്‍നെറ്റ് കണ്ട്രോള്‍ മെസേജ് പ്രോട്ടോക്കോള്‍ (ICMP) ഉപയോഗിക്കുന്നത്. കൂടാതെ, വിവരങ്ങള്‍ "
-"ലഭ്യ‌മാക്കുവാന്‍ സഹായിക്കുന്ന പിങ് അപേക്ഷകള്‍ക്കും മറുപടികള്‍ക്കും ഇവ ഉപയോഗിക്കുന്നു."
+"ശൃംഖലയിലെ കമ്പ്യൂട്ടറുകള്‍ക്ക് തമ്മില്‍ പിശക് അറിയിക്കുന്ന സന്ദേശങ്ങള്‍ "
+"അയയ്ക്കുന്നതിനാണ് പ്രധാനമായും ഇന്റര്‍നെറ്റ് കണ്ട്രോള്‍ മെസേജ് "
+"പ്രോട്ടോക്കോള്‍ (ICMP) ഉപയോഗിക്കുന്നത്. കൂടാതെ, വിവരങ്ങള്‍ ലഭ്യ‌മാക്കുവാന്‍ "
+"സഹായിക്കുന്ന പിങ് അപേക്ഷകള്‍ക്കും മറുപടികള്‍ക്കും ഇവ ഉപയോഗിക്കുന്നു."
 
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"പട്ടികയില്‍ നിന്നും വേണ്ട എന്ന് തീരുമാനിക്കേണ്ട ICMP തരത്തിലുള്ളവ അടയാളപ്പെടുത്തുക. മറ്റെല്ലാ "
-"ICMP തരത്തിലുള്ളവയും ഫയര്‍വോള്‍ കടക്കുന്നതിന് അനുവാദമുള്ളവയാണ്. പരിമിതികളില്ലാത്തതാണ് സഹജം."
+"പട്ടികയില്‍ നിന്നും വേണ്ട എന്ന് തീരുമാനിക്കേണ്ട ICMP തരത്തിലുള്ളവ "
+"അടയാളപ്പെടുത്തുക. മറ്റെല്ലാ ICMP തരത്തിലുള്ളവയും ഫയര്‍വോള്‍ കടക്കുന്നതിന് "
+"അനുവാദമുള്ളവയാണ്. പരിമിതികളില്ലാത്തതാണ് സഹജം."
 
 #: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
 msgstr "ICMP ഫില്‍‌റ്റര്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:85
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "മേഘലയ്ക്കുള്ള റിച്ച് ഭാഷ നിയമങ്ങള്‍ നിങ്ങള്‍ക്കിവിടെ സജ്ജമാക്കാം."
 
 #: ../src/firewall-config.glade.h:86
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "റിച്ച് റൂള്‍ ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:87
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "റിച്ച് റൂള്‍ ചിട്ടപ്പെട്ടുത്തുക"
 
 #: ../src/firewall-config.glade.h:88
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "റിച്ച് റൂള്‍ നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
-msgstr ""
+msgstr "റിച്ച് റൂളുകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:90
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"മേഘലയ്ക്കു് സംയോജക ഘടകങ്ങള്‍ ബൈന്‍ഡ് ചെയ്യുന്നതിനു് എന്‍ട്രികള്‍ ചേര്‍ക്കുക. "
+"സംയോജകഘടകം ഒരു കണക്ഷന്‍ ഉപയോഗിയ്ക്കുന്നെങ്കില്‍, കണക്ഷനില്‍ "
+"വ്യക്തമാക്കിയിരിയ്ക്കുന്ന മേഘലയായി ഈ മേഘല സജ്ജമാക്കുന്നു."
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
-msgstr ""
+msgstr "ഇന്റര്‍ഫെയിസ് ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Edit Interface"
-msgstr ""
+msgstr "ഇന്റര്‍ഫെയിസില്‍ മാറ്റം വരുത്തുക"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Remove Interface"
-msgstr ""
+msgstr "ഇന്റര്‍ഫെയിസ് നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr ""
+"മേഘലയ്ക്കുള്ള ശ്രോതസ്സ് വിലാസങ്ങള്‍ അല്ലെങ്കില്‍ സ്ഥലങ്ങള്‍ ബൈന്‍ഡ് "
+"ചെയ്യുന്നതിനു് എന്‍ട്രികള്‍ ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Add Source"
-msgstr ""
+msgstr "ഒരു ശ്രോതസ്സ് ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Edit Source"
-msgstr ""
+msgstr "ശ്രോതസ്സില്‍ മാറ്റം വരുത്തുക"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Remove Source"
-msgstr ""
+msgstr "ശ്രോതസ്സ് നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
-msgstr ""
+msgstr "മേഘലകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:101
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"പോര്‍ട്ടുകള്‍, സമ്പ്രദായങ്ങള്‍, ഘടകങ്ങള്‍, ലക്ഷ്യ വിലാസങ്ങള്‍ എന്നിവയെ "
+"ഒന്നിച്ചു് ഒരു firewalld സര്‍വീസായി കണക്കാക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:103
 msgid "Add Service"
-msgstr ""
+msgstr "സര്‍വീസ് ചേര്‍ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:104
 msgid "Edit Service"
-msgstr ""
+msgstr "സര്‍വീസ് ചിട്ടപ്പെടുത്തുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:105
 msgid "Remove Service"
-msgstr ""
+msgstr "സര്‍വീസ് നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:106
 msgid "Load Service Defaults"
-msgstr ""
+msgstr "സ്വതവേയുള്ള സര്‍വീസ് ലഭ്യമാക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:107
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
+"എല്ലാ ഹോസ്റ്റുകള്‍ അല്ലെങ്കില്‍ നെറ്റ്‌വര്‍ക്കുകള്‍ക്കുള്ള അധികമായ "
+"പോര്‍ട്ടുകള്‍ അല്ലെങ്കില്‍ പോര്‍ട്ട് പരിധികള്‍ ചേര്‍ക്കുക. പ്രത്യേക "
+"പോര്‍ട്ടുകളില്ലാതെ നിങ്ങള്‍ക്കു് സമ്പ്രദായങ്ങള്‍ ചേര്‍ക്കുവാന്‍ "
+"സാധിയ്ക്കുന്നു."
 
 #: ../src/firewall-config.glade.h:108
 msgid "Add Entry"
@@ -994,64 +1194,84 @@ msgstr "എന്‍ട്രി ചിട്ടപ്പെടുത്തു�
 msgid "Remove Entry"
 msgstr "എന്‍ട്രി നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:111
 msgid "Ports and Protocols"
-msgstr ""
+msgstr "പോര്‍ട്ടുകളും സമ്പ്രദായങ്ങളും"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:112
 msgid "Netfilter helper modules"
-msgstr ""
+msgstr "നെറ്റ്ഫില്‍റ്റര്‍ ഹെല്‍പ്പര്‍ ഘടകങ്ങള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:113
 msgid "Modules"
-msgstr ""
+msgstr "ഘടകങ്ങള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:114
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
+"ലക്ഷ്യസ്ഥാന വിലാസങ്ങള്‍ നല്‍കുന്നെങ്കില്‍, ലക്ഷ്യസ്ഥാന വിലാസം , തരം "
+"എന്നതില്‍ സര്‍വീസ് എന്‍ട്രി ഒതുങ്ങുന്നു. രണ്ടു് എന്‍ട്രികളും കാലിയെങ്കില്‍ "
+"ഒരു പരിമിതികളുമില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:115
 msgid "IPv4:"
-msgstr ""
+msgstr "IPv4:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:116
 msgid "IPv6:"
-msgstr ""
+msgstr "IPv6:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:117
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"സ്ഥിരമായുള്ള ക്രമീകരണ കാഴ്ചയില്‍ മാത്രമേ സര്‍വീസുകള്‍ക്കു് മാറ്റം "
+"വരുത്തുവാന്‍ സാധിയ്ക്കൂ. സര്‍വീസുകളുടെ പ്രവര്‍ത്തന ക്രമീകരണം "
+"പരിഹരിച്ചിരിയ്ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:118
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"firewalld-യ്ക്കുള്ളൊരു ഇന്റര്‍നെറ്റ് കണ്ട്രോള്‍ മസ്സേജ് പ്രോട്ടോക്കോള്‍ "
+"(ഐസിഎംപി) തരത്തിനുള്ള വിവരങ്ങള്‍ ഒരു firewalld icmptype ലഭ്യമാക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:119
 msgid "Add ICMP Type"
-msgstr ""
+msgstr "ഐസിഎംപി തരം ചേര്‍ക്കുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:120
 msgid "Edit ICMP Type"
-msgstr ""
+msgstr "ഐസിഎംപി തരം ചിട്ടപ്പെടുത്തുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:121
 msgid "Remove ICMP Type"
-msgstr ""
+msgstr "ഐസിഎംപി തരം നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:122
 msgid "Load ICMP Type Defaults"
-msgstr ""
+msgstr "ഐസിഎംപി തരത്തിലുള്ളവ ലഭ്യമാക്കുക"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr ""
+msgstr "IPv4, IPv6 എന്നിവയ്ക്കു് ഐസിഎംപി തരം ലഭ്യമാണോ എന്നു് വ്യക്തമാക്കുക."
 
 #: ../src/firewall-config.glade.h:124
 msgid "IPv4"
@@ -1061,11 +1281,15 @@ msgstr "IPv4"
 msgid "IPv6"
 msgstr "IPv6"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:126
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"സ്ഥിരമായുള്ള ക്രമീകരണ കാഴ്ചയില്‍ മാത്രമേ ഐസിഎംപി തരങ്ങള്‍ക്കു് മാറ്റം "
+"വരുത്തുവാന്‍ സാധിയ്ക്കൂ. ഐസിഎംപി തരങ്ങളുടെ പ്രവര്‍ത്തന ക്രമീകരണം "
+"പരിഹരിച്ചിരിയ്ക്കുന്നു."
 
 #: ../src/firewall-config.glade.h:127
 msgid ""
@@ -1074,6 +1298,12 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"നേരിട്ടുള്ള ക്രമീകരണം ഫയര്‍വോളിലേക്കു് കൂടുതല്‍ അനുമതി നല്‍കുന്നു. ഈ "
+"ഐച്ഛികങ്ങള്‍ക്കു്, ഉപയോക്താവു് അടിസ്ഥാന iptables ശൈലികള്‍, അതായതു്, "
+"പട്ടികകള്‍, ചെയിനുകള്‍, കമാന്‍ഡുകള്‍, പരാമീറ്ററുകള്‍, ടാര്‍ഗറ്റുകള്‍ എന്നിവ "
+"അറിയേണ്ട ആവശ്യമുണ്ടു്. മറ്റു് firewalld വിശേഷതകള്‍ ഉപയോഗിയ്ക്കുവാന്‍ "
+"സാധ്യമല്ല എന്നുറപ്പുള്ളപ്പോള്‍ മാത്രം നേരിട്ടുള്ള ക്രമീകരണം "
+"ഉപയോഗിയ്ക്കുവാന്‍ പാടുള്ളൂ."
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1081,31 +1311,36 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"ഓരോ ഐച്ഛികത്തിന്റേയും ipv ആര്‍ഗ്യുമെന്റ് ipv4 അല്ലെങ്കില്‍ ipv6 അല്ലെങ്കില്‍ "
+"eb ആയിരിയ്ക്കണം. ipv4 - iptables, ipv6 - ip6tables, eb - ഇഥര്‍നെറ്റ് "
+"ബ്രിഡ്ജുകള്‍ക്കു് (ebtables) എന്നിങ്ങനെയാകുന്നു."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "നിയമങ്ങള്‍ക്കൊപ്പം ഉപയോഗിയ്ക്കുന്നതിനുള്ള അധികമായ ചെയിനുകള്‍."
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
-msgstr ""
+msgstr "ചെയിന്‍ ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:131
 msgid "Edit Chain"
-msgstr ""
+msgstr "ചെയിനില്‍ മാറ്റം വരുത്തുക"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Remove Chain"
-msgstr ""
+msgstr "ചെയിന്‍ നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
-msgstr ""
+msgstr "ചെയിനുകള്‍"
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"മുന്‍ഗണനയ്ക്കൊപ്പം ഒരു പട്ടികയില്‍ ഒരു ചെയിനിനു് args "
+"ആര്‍ഗ്യുമെന്റുകള്‍ക്കൊപ്പം ഒരു നിയമം ചേര്‍ക്കുക."
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1116,22 +1351,28 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"നിയമങ്ങളുടെ ക്രമത്തിനു് വേണ്ടി മുന്‍ഗണന ഉപയോഗിയ്ക്കുന്നു. മുന്‍ഗണന 0 - "
+"ചെയിനിന്റെ മുകളില്‍ നിയമം ചേര്‍ക്കുക, ഇതിനു് ശേഷം കൂടുതല്‍ മുന്‍ഗണനയോടെ "
+"നിയമങ്ങള്‍ ചേര്‍ക്കുന്നു. ഒരേ മുന്‍ഗണനയുള്ള നിയമങ്ങള്‍ ഒരേ തലത്തിലാകുന്നു. "
+"ഇവയുടെ ക്രമം സ്ഥിരമല്ല, മാറ്റുവാന്‍ സാധ്യമാകുന്നു. ഒന്നിനു് ശേഷം മറ്റൊന്നായി "
+"നിയമം ചേര്‍ക്കുന്നതിനു്, ആദ്യം മുന്‍ഗണന കുറഞ്ഞതു് ഉപയോഗിയ്ക്കുക ശേഷം "
+"മുന്‍ഗണന കൂടിയതു്, അങ്ങനെ..."
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
-msgstr ""
+msgstr "നിയമം ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Rule"
-msgstr ""
+msgstr "നിയമത്തില്‍ മാറ്റം വരുത്തുക"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Rule"
-msgstr ""
+msgstr "നിയമം‍ നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:139
 msgid "Rules"
-msgstr ""
+msgstr "നിയമങ്ങള്‍"
 
 #: ../src/firewall-config.glade.h:140
 msgid ""
@@ -1139,282 +1380,350 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"പാസ്ത്രൂ നിയമങ്ങള്‍ പ്രത്യേക ചെയിനിലല്ല, പക്ഷേ നേരിട്ടു് ഫയര്‍വോളിലേക്കു് "
+"അയയ്ക്കുന്നു. iptables, ip6tables, ebtables എന്നിവയെല്ലാം ഉപയോഗിയ്ക്കാം."
 
 #: ../src/firewall-config.glade.h:141
-msgid "Passthrough rules can only be modified for the permanent configuration."
+msgid ""
+"Passthrough rules can only be modified for the permanent configuration."
 msgstr ""
+"സ്ഥിരമായ ക്രമീകരണത്തിനു് മാത്രമേ പാസ്ത്രൂ നിയമങ്ങള്‍ മാറ്റുവാന്‍ സാധിയ്ക്കു."
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"പാസ്ത്രൂ നിയമങ്ങള്‍ ഫയര്‍വോളിനെ ബാധിയ്ക്കുന്നില്ലെന്നു് ദയവായി ഉറപ്പു് "
+"വരുത്തുക."
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr ""
+msgstr "പാസ്ത്രൂ ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "പാസ്ത്രൂ ചിട്ടപ്പെടുത്തുക"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "പാസ്ത്രൂ നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr ""
+msgstr "പാസ്ത്രൂ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:147
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"firewalld-യ്ക്കുള്ള ഉപയോക്താവിനും പ്രയോഗത്തിനുമുള്ള ലളിതമായ പോളിസികളാണു് "
+"ലോക്ക്ഡൌണ്‍ വിശേഷത. ഇതു് ഫയര്‍വോളില്‍ മാത്രമേയുള്ളൂ. ലോക്ക്ഡൌണ്‍ വൈറ്റ് "
+"ലിസ്റ്റില്‍ കമാന്‍ഡുകള്‍, സന്ദര്‍ഭങ്ങള്‍, ഉപയോക്താക്കള്‍, ഉപയോക്തൃ ഐഡികള്‍ "
+"എന്നിവ അടങ്ങുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:148
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
+"പ്രവര്‍ത്തനത്തിലുള്ളൊരു പ്രയോഗം അല്ലെങ്കില്‍ സര്‍വീസിന്റെ സുരക്ഷ (SELinux) "
+"കോണ്‍ടക്സ്റ്റാണു് സന്ദര്‍ഭം. പ്രവര്‍ത്തനത്തിലുള്ളൊരു പ്രയോഗത്തിന്റെ "
+"സന്ദര്‍ഭം ലഭിയ്ക്കുന്നതിനായി, ps -e --context ഉപയോഗിയ്ക്കുക."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add Context"
-msgstr ""
+msgstr "സന്ദര്‍ഭം ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Edit Context"
-msgstr ""
+msgstr "സന്ദര്‍ഭം ചിട്ടപ്പെടുത്തുക"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove Context"
-msgstr ""
+msgstr "സന്ദര്‍ഭം നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
-msgstr ""
+msgstr "സന്ദര്‍ഭങ്ങള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:153
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
+"വൈറ്റ് ലിസ്റ്റിലുള്ളൊരു കമാന്‍ഡ് എന്‍ട്രി '*'-ല്‍ അവസാനിയ്ക്കുന്നെങ്കില്‍, "
+"കമാന്‍‍ഡില്‍ ആരംഭിയ്ക്കുന്ന എല്ലാ കമാന്‍ഡ് ലൈനുകളും ചേരുന്നു. '*' "
+"ലഭ്യമല്ലെങ്കില്‍, ആര്‍ഗ്യുമെന്റുകള്‍ ഉള്‍പ്പടെയുള്ള ആബ്സല്യൂട്ട് കമാന്‍ഡും "
+"പൊരുത്തപ്പെടണം. "
 
 #: ../src/firewall-config.glade.h:154
 msgid "Add Command Line"
-msgstr ""
+msgstr "കമാന്‍ഡ് ലൈന്‍ ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:155
 msgid "Edit Command Line"
-msgstr ""
+msgstr "കമാന്‍ഡ് ലൈന്‍ ചിട്ടപ്പെടുത്തുക"
 
 #: ../src/firewall-config.glade.h:156
 msgid "Remove Command Line"
-msgstr ""
+msgstr "കമാന്‍ഡ് ലൈന്‍ നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
-msgstr ""
+msgstr "കമാന്‍ഡ് ലൈനുകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:158
 msgid "User names."
-msgstr ""
+msgstr "ഉപയോക്താവിന്റെ പേരുകള്‍."
 
 #: ../src/firewall-config.glade.h:159
 msgid "Add User Name"
-msgstr ""
+msgstr "ഉപയോക്തൃനാമം ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:160
 msgid "Edit User Name"
-msgstr ""
+msgstr "ഉപയോക്തൃനാമം ചിട്ടപ്പെടുത്തുക"
 
 #: ../src/firewall-config.glade.h:161
 msgid "Remove User Name"
-msgstr ""
+msgstr "ഉപയോക്തൃനാമം നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
-msgstr ""
+msgstr "ഉപയോക്താവിന്റെ പേരുകള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:163
 msgid "User ids."
-msgstr ""
+msgstr "ഉപയോക്താവിന്റെ ഐഡികള്‍."
 
 #: ../src/firewall-config.glade.h:164
 msgid "Add User Id"
-msgstr ""
+msgstr "ഉപയോക്തൃ ഐഡി ചേര്‍ക്കുക"
 
 #: ../src/firewall-config.glade.h:165
 msgid "Edit User Id"
-msgstr ""
+msgstr "ഉപയോക്തൃ ഐഡിയില്‍ മാറ്റം വരുത്തുക"
 
 #: ../src/firewall-config.glade.h:166
 msgid "Remove User Id"
-msgstr ""
+msgstr "ഉപയോക്തൃ ഐഡി നീക്കം ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
-msgstr ""
+msgstr "ഉപയോക്താവിന്റെ ഐഡികള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:168
 msgid "Default Zone:"
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘല:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:169
 msgid "Current default zone of the system."
-msgstr ""
+msgstr "സിസ്റ്റത്തില്‍ നിലവില്‍ സ്വതവേയുള്ള മേഘല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:170
 msgid "Lockdown:"
-msgstr ""
+msgstr "ലോക്ക്ഡൌണ്‍:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:171
 msgid "Panic Mode:"
-msgstr ""
+msgstr "പാനിക്ക് മോഡ്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:172
 msgid "Please enter the module name."
-msgstr ""
+msgstr "ദയവായി ഘടകത്തിന്റെ പേരു് നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and protocol."
-msgstr ""
+msgstr "ഒരു പോര്‍ട്ടും സമ്പ്രദായവും ദയവായി നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:174
 msgid "Port and/or Protocol"
-msgstr ""
+msgstr "പോര്‍ട്ടും സമ്പ്രദായവും"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:175
 msgid "Please enter a port and/or a protocol."
-msgstr ""
+msgstr "ഒരു പോര്‍ട്ടും സമ്പ്രദായവും ദയവായി നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:176
 msgid "Other Protocol:"
-msgstr ""
+msgstr "മറ്റുള്ള സമ്പ്രദായം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:178
 msgid "Please enter a protocol."
-msgstr ""
+msgstr "ദയവായി ഒരു സമ്പ്രദായം നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:179
 msgid "Rich Rule"
-msgstr ""
+msgstr "റിച്ച് റൂള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:180
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "ദയവായി ഒരു റിച്ച് റൂള്‍ നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:181
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
+"ഹോസ്റ്റ് അല്ലെങ്കില്‍ നെറ്റ്‌വര്‍ക്കിനു്, വൈറ്റ് അല്ലെങ്കില്‍ ബ്ലാക്ക് "
+"ലിസ്റ്റ് ചെയ്തതിനു് എലമെന്റ് നിര്‍ജീവമാക്കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:182
 msgid "Source:"
-msgstr ""
+msgstr "ശ്രോതസ്സ്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:183
 msgid "Destination:"
-msgstr ""
+msgstr "ലക്ഷ്യസ്ഥാനം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:184
 msgid "Log:"
-msgstr ""
+msgstr "ലോഗ്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:185
 msgid "Audit:"
-msgstr ""
+msgstr "ഓഡിറ്റ് ചെയ്യുക:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:186
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4-ഉം ipv6-ഉം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:187
 msgid "inverted"
-msgstr ""
+msgstr "വിപിരീതമായ"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:188
 msgid "with Type:"
-msgstr ""
+msgstr "തരം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:189
 msgid "With limit:"
-msgstr ""
+msgstr "പരിധി:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:190
 msgid "/"
-msgstr ""
+msgstr "/"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:195
 msgid "Prefix:"
-msgstr ""
+msgstr "പ്രീഫിക്സ്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:196
 msgid "Level:"
-msgstr ""
+msgstr "തലം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:205
 msgid "Element:"
-msgstr ""
+msgstr "എലമെന്റ്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:212
 msgid "Family:"
-msgstr ""
+msgstr "കുടുംബം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:213
 msgid "Action:"
-msgstr ""
+msgstr "പ്രവര്‍ത്തി:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:214
 msgid "Base Service Settings"
-msgstr ""
+msgstr "അടിസ്ഥാന സര്‍വീസ് സജ്ജീകരണങ്ങള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:215
 msgid "Please configure base service settings:"
-msgstr ""
+msgstr "അടിസ്ഥാന സര്‍വീസ് സജ്ജീകരണങ്ങള്‍ ദയവായി ക്രമീകരിയ്ക്കുക:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:216
 msgid "Please select a service."
-msgstr ""
+msgstr "ദയവായി ഒരു സര്‍വീസ് തെരഞ്ഞെടുക്കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:217
 msgid "User ID"
-msgstr ""
+msgstr "ഉപയോക്തൃ ഐഡി"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:218
 msgid "Please enter the user id."
-msgstr ""
+msgstr "ദയവായി ഉപയോക്തൃ ഐഡി നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:219
 msgid "User name"
-msgstr ""
+msgstr "ഉപയോക്തൃനാമം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:220
 msgid "Please enter the user name."
-msgstr ""
+msgstr "ദയവായി ഉപയോക്തൃനാമം നല്‍കുക."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:221
 msgid "Base Zone Settings"
-msgstr ""
+msgstr "അടിസ്ഥാന മേഘല സജ്ജീകരണങ്ങള്‍"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:222
 msgid "Please configure base zone settings:"
-msgstr ""
+msgstr "ദയവായി അടിസ്ഥാന മേഘല സജ്ജീകരണങ്ങള്‍ ക്രമീകരിയ്ക്കുക:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:223
 msgid "Target:"
-msgstr ""
+msgstr "ലക്ഷ്യസ്ഥാനം:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-config.glade.h:224
 msgid "Default Target"
-msgstr ""
+msgstr "സ്വതവേയുള്ള ലക്ഷ്യസ്ഥാനം"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:45
 msgid "Error:"
-msgstr ""
+msgstr "പിശക്:"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:48
 msgid "Warning:"
-msgstr ""
+msgstr "മുന്നറിയിപ്പ്:"
 
 #: ../src/firewall-offline-cmd:68
 #, c-format
@@ -1424,7 +1733,9 @@ msgstr "പോര്‍ട്ട് പരിധി %s അസാധാരണമ�
 #: ../src/firewall-offline-cmd:70
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s ശരിയായ പരിധിയിലുള്ളതല്ല (ആരംഭത്തിലുള്ള പോര്‍ട്ട് >= അവസാനിക്കുന്ന പോര്‍ട്ട്)."
+msgstr ""
+"%s ശരിയായ പരിധിയിലുള്ളതല്ല (ആരംഭത്തിലുള്ള പോര്‍ട്ട് >= അവസാനിക്കുന്ന "
+"പോര്‍ട്ട്)."
 
 #: ../src/firewall-offline-cmd:75
 #, c-format
@@ -1443,7 +1754,8 @@ msgstr "തെറ്റായ ആര്‍ഗ്യുമെന്റ് %s"
 
 #: ../src/firewall-offline-cmd:111
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr "ഐഛികം %(option)s: തെറ്റായ ഫോര്‍വേര്‍ഡ് _പോര്‍ട്ട്  '%(value)s': %(error)s.'"
+msgstr ""
+"ഐഛികം %(option)s: തെറ്റായ ഫോര്‍വേര്‍ഡ് _പോര്‍ട്ട്  '%(value)s': %(error)s.'"
 
 #: ../src/firewall-offline-cmd:122
 msgid "option %(option)s: invalid forward_port '%(value)s'."
@@ -1466,57 +1778,76 @@ msgstr "ഫയര്‍വോള്‍ പ്രവര്‍ത്തന രഹ�
 msgid "<module>"
 msgstr "<module>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
 msgstr ""
+"ഉപേക്ഷിച്ച ഐച്ഛികം, ഒരു iptables-ന്റെ ഘടകം പ്രവര്‍ത്തന സജ്ജമാക്കുവാന്‍ "
+"ഉപയോഗിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
 msgstr ""
+"ഒരു iptables-ന്റെ ഘടകം പ്രവര്‍ത്തന ഉപേക്ഷിച്ച ഐച്ഛികം, ഒരു iptables-ന്റെ "
+"ഘടകം പ്രവര്‍ത്തന രഹിതമാക്കുവാന്‍ ഉപയോഗിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
-msgstr ""
+msgstr "<service>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഖലയില്‍ സര്‍വീസ് പ്രവര്‍ത്തന സജ്ജമാക്കുക (ഉദാഹരണം: ssh)"
 
 #: ../src/firewall-offline-cmd:173
 msgid "Disable a service in the default zone (example: ssh)"
 msgstr ""
+"സ്വതവേയുള്ള മേഖലയില്‍ സര്‍വീസ് പ്രവര്‍ത്തന രഹിതമാക്കുക (ഉദാഹരണത്തിനു്: ssh)"
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
 msgstr ""
+"സ്വതവേയുള്ള മേഘലയില്‍ ഒരു പോര്‍ട്ട് പ്രവര്‍ത്തന സജ്ജമാക്കുക (ഉദാഹരണത്തിനു്: "
+"ssh:tcp)"
 
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
 msgstr "<interface>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
-msgstr ""
+msgstr "വിശ്വസനീയമായ മേഘലയ്ക്കൊരു ഇന്റര്‍ഫെയിസ് ബൈന്‍ഡ് ചെയ്യുക"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
 msgstr ""
+"സ്വതവേയുള്ള മേഘലയില്‍ മാസ്ക്യുറേഡില്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുന്നു. ഇതു് IPv4 "
+"മാത്രമാകുന്നു."
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:192
 msgid ""
 "Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
 "filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
+"ഉപേക്ഷിച്ച ഐച്ഛികം. ഫയര്‍വോളിനു് യഥേഷ്ടമുള്ള നിയമങ്ങള്‍ ചേര്‍ക്കുവാന്‍ "
+"ഉപയോഗിച്ചിരിയ്ക്കുന്നു (ഉദാഹരണത്തിനു്: ipv4:filter:/etc/sysconfig/"
+"ipv4_filter_addon)"
 
 #: ../src/firewall-offline-cmd:196
 msgid ""
@@ -1526,6 +1857,7 @@ msgstr ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
@@ -1533,6 +1865,10 @@ msgid ""
 "address with an optional destination port. This will be added to the default "
 "zone. This is IPv4 only."
 msgstr ""
+"മറ്റു പ്രാദേശിക ലക്ഷ്യ പോര്‍ട്ട് (ലക്ഷ്യ പോര്‍ വിലാസം തന്നിട്ടില്ല) "
+"അല്ലെങ്കില്‍ ഐഛികമായ ലക്ഷ്യപോര്‍ട്ടോടു കൂടിയ ഒരു മേല്‍വിലാസത്തിലേക്ക് "
+"വിനിമയതലത്തിന്റെ നിയമാവലിയോടുകൂടിയ പോര്‍ട്ട് അയയ്ക്കുക. ഇതു് IPv4 "
+"മാത്രമാകുന്നു."
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
@@ -1543,23 +1879,33 @@ msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
 msgstr ""
+"സ്വതവേയുള്ള മേഖലയില്‍ ഈ ഐസിഎംപി തരം തടയുക. എല്ലാ ഐസിഎംപി തരങ്ങള്‍ക്കും "
+"സ്വതവേയുള്ളതു് സ്വീകാര്യമാണു്."
 
 #: ../src/firewall-offline-cmd:217
 #, c-format
 msgid "no such option: %s"
 msgstr "ഇങ്ങനെ ഒരു ഐഛികം ഇല്ല: %s"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:232
 msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
 msgstr ""
+"സാധ്യമായ system-config-firewall/lokkit ഐച്ഛികങ്ങള്‍ firewalld-ലേക്കു് "
+"വേര്‍തിരിയ്ക്കുവാന്‍ ഈ പ്രയോഗം ശ്രമിയ്ക്കുന്നു. പക്ഷേ, ഇതില്‍ ചില "
+"പരിമിതികളുണ്ടു്, ഉദാഹരണത്തിനു്, യഥേഷ്ടമായ നിയമങ്ങള്‍, ഘടകങ്ങള്‍, "
+"മാസ്ക്യുറേഡിങ്."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
 msgstr ""
+"ഒരു ഐച്ഛികങ്ങളും നല്‍കിയിട്ടില്ലെങ്കില്‍, '%s'-ല്‍ നിന്നുള്ള ക്രമീകരണം "
+"നീക്കിയിരിയ്ക്കുന്നു."
 
 #: ../src/firewall-offline-cmd:286
 #, c-format
@@ -1575,88 +1921,108 @@ msgstr "%(option)s ഐച്ഛികത്തിന് %(count)s ആര്‍�
 msgid "%s option does not take a value"
 msgstr "%s ഐഛികം ഒരു മൂല്യം എടുക്കുന്നില്ല"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
-msgstr ""
+msgstr "പ്രശ്നം പാഴ്സ് ചെയ്യുന്നതിനുള്ള ആര്‍ഗ്യുമെന്റുകള്‍."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
-msgstr ""
+msgstr "'%s' തുറക്കുന്നതില്‍ പരാജയപ്പെട്ടു, പുറത്തു് കടക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:396
 #, c-format
 msgid "Opening default zone '%s'"
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘല '%s' തുറക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:401
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
-msgstr ""
+msgstr "'%s' സ്വതവേയുള്ള മേഘല തുറക്കുവാന്‍ സാധ്യമല്ല, പുറത്തു് കടക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:413
 #, c-format
 msgid "Unable to open zone '%s', exiting."
-msgstr ""
+msgstr "'%s' മേഘല തുറക്കുവാന്‍ സാധ്യമല്ല, പുറത്തു് കടക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:426
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
-msgstr ""
+msgstr "'%s' ഡിവൈസ് %s മേഘലയ്ക്കുള്ളതാകുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:434
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
-msgstr ""
+msgstr "custom-rule ഫയല്‍ '%s' ഉപേക്ഷിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:439
 #, c-format
 msgid "Ignoring addmodule '%s'"
-msgstr ""
+msgstr "addmodule '%s' ഉപേക്ഷിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:442
 #, c-format
 msgid "Ignoring removemodule '%s'"
-msgstr ""
+msgstr "removemodule '%s' ഉപേക്ഷിയ്ക്കുന്നു"
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
 msgstr ""
+"ഡിവൈസ് '%s' മാസ്ക്യുറേഡ് ചെയ്തിരിയ്ക്കുന്നു, സ്വതവേയുള്ള മേഘലയ്ക്കു് "
+"മാസ്ക്യുറേഡ് പ്രവര്‍ത്തന സജ്ജമാക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:454
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘലയ്ക്കു് '%s/%s' പോര്‍ട്ട് ചേര്‍ക്കുന്നു."
 
 #: ../src/firewall-offline-cmd:462
 #, c-format
 msgid "Removing service '%s' from default zone."
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഖലയില്‍ നിന്നും '%s' സര്‍വീസ് നീക്കം ചെയ്യുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:469
 #, c-format
 msgid "Adding service '%s' to default zone."
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘലയ്ക്കു് '%s' സര്‍വീസ് ചേര്‍ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:476
 #, c-format
 msgid "Adding icmpblock '%s' to default zone."
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘലയ്ക്കു് icmpblock '%s' ചേര്‍ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:486
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
 msgstr ""
+"സ്വതവേയുള്ള മേഘലയ്ക്കു് ഫോര്‍വേഡ് പോര്‍ട്ട് %s:%s:%s:%s ചേര്‍ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:494
 msgid "No changes to default zone needed."
-msgstr ""
+msgstr "സ്വതവേയുള്ള മേഘലയ്ക്കു് മാറ്റങ്ങള്‍ ആവശ്യമില്ല."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:498
 msgid "Changed trusted zone configuration."
-msgstr ""
+msgstr "വിശ്വസനീയമായ മേഘല ക്രമീകരണം മാറ്റിയിരിയ്ക്കുന്നു."
 
+# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author apeter
 #: ../src/firewall-offline-cmd:500
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
@@ -1667,3 +2033,10 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
+"NetworkManager-നുള്ളൊരു കണക്ഷനു് വിശ്വസനീയമായ ഒരു സംയോജക ഘടകം "
+"ഉപയോഗിയ്ക്കുന്നു അല്ലെങ്കില്‍ ഈ സംയോജക ഘടകത്തിനു് ഒരു ifcfg ഫയലുണ്ടെങ്കില്‍, "
+"ക്രമീകരണം സജീവമാകുമ്പോള്‍ മേഘല ഇതില്‍ നിഷ്കര്‍ഷിച്ച മേഘലയായി മാറുന്നു. ഒരു "
+"കണക്ഷനുള്ള മേഘല മാറ്റുന്നതിനായി, <command>nm-connection-editor</command> "
+"ഉപയോഗിച്ചു് മേഘല വിശ്വസനീയമായി മാറ്റുക. ഒരു ifcfg ഫയലിനു്, ഒരു എഡിറ്റര്‍ "
+"ഉപയോഗിച്ചു് \"ZONE=trusted\" ചേര്‍ക്കുക. ifcfg ഫയലില്‍ മേഘല "
+"നിഷ്കര്‍ഷിച്ചിട്ടില്ലെങ്കില്‍,  firewalld സ്വതവേയുള്ള മേഘല ഉപയോഗിയ്ക്കുന്നു."

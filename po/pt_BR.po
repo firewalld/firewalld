@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # ataliba <ataliba@ataliba.eti.br>, 2013
 # ataliba <ataliba@ataliba.eti.br>, 2013
@@ -23,20 +23,22 @@
 # Rodrigo Padula de Oliveira <rodrigopadula@gmail.com>, 2005-2006
 # Taylon Silmer <taylonsilva@gmail.com>, 2010
 # Valnir Ferreira Jr. <vferreir@redhat.com>, 2006-2007
+# gcintra <gcintra@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: firewalld\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-11-04 13:40+0000\n"
-"Last-Translator: Marcelo Barbosa <mr.marcelo.barbosa@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
-"fedora/language/pt_BR/)\n"
-"Language: pt_BR\n"
+"POT-Creation-Date: 2013-11-13 15:34+0530\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-11-19 02:42-0500\n"
+"Last-Translator: gcintra <gcintra@redhat.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
+"fedora/language/pt_BR/)\n"
+"Language: pt-BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Zanata 3.1.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -82,12 +84,12 @@ msgstr "Fork #1 falhou: %d (%s)"
 #: ../src/firewall-applet:106 ../src/firewall-config:4969
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "Selecione a zona para conexão '%s'"
 
 #: ../src/firewall-applet:185
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "Zona '%s' ativada para interface '%s'"
+msgstr "Selecione a zona para interface '%s'"
 
 #: ../src/firewall-applet:241
 #, c-format
@@ -188,7 +190,8 @@ msgstr "Zona Padrão: '%s'"
 
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zona '{zone}' ativada para conexão '{connection}' na interface '{interface}'"
 
@@ -537,8 +540,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Encaminhamento para outro sistema só é útil se a interface é mascarada. ⏎\n"
@@ -574,19 +576,19 @@ msgstr "Zona Padrão:"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
-msgstr "Por favor seleccione zona padrão na lista abaixo."
+msgstr "Por favor selecione a zona padrão na lista abaixo."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "Cadeia Direta"
 
 #: ../src/firewall-config.glade.h:8
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Por favor selecione o ipv e tabela e ensira o nome da cadeia."
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
@@ -606,19 +608,19 @@ msgstr "segurança"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Cadeia:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Regra de Passagem Direta"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Por favor selecione ipv e ensira os args."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
@@ -631,6 +633,7 @@ msgstr "Regra Direta"
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
+"Por favor selecione o ipv e tabela, prioridade de cadeia e ensira os args."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
@@ -737,10 +740,14 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"Regarrega regras de firewall. Configuração permanente atual se tornará nova "
+"configuração de tempo de execução, ex.: todas as mudanças de tempo de "
+"execução realizadas até a regarga são perdidas com a regarga se não "
+"estiveram também em configuração permanente."
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Mude a zona da conexão de rede."
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
@@ -748,11 +755,13 @@ msgstr "Mudar Zona Padrão"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Mude a zona padrão para conexões e interfaces"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
+"Modo de Pânico significa que todos os pacotes de entrada e saída são "
+"despejados."
 
 #: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
@@ -763,6 +772,8 @@ msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
+"O Lockdown bloqueia a configuração de firewall para que somente os "
+"aplicativos na lista branca do lockdown possam mudá-la."
 
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
@@ -1119,6 +1130,7 @@ msgstr "Carregando os tipos de ICMP padrão. "
 #: ../src/firewall-config.glade.h:123
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
+"Especifique se este Tipo de ICMP está disponível para o IPv4 e/ou IPv6."
 
 #: ../src/firewall-config.glade.h:124
 msgid "IPv4"
@@ -1143,6 +1155,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"A configuração direta fornece um acesso mais direto ao firewall. Estas "
+"opções requerem que usuário saiba conceitos básicos do iptables, ex.: "
+"tabelas, cadeias, comandos, parâmetros e alvos. A configuração direta deve "
+"ser usada somente como último recurso, quando não é mais possível usar "
+"outros recursos do firewalld."
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1150,31 +1167,36 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"O argumento do ipv de cada opção precisa ser ipv4 ou ipv6 ou eb. Com o ipv4 "
+"ele será para o iptables, com o ipv6 para ip6tables e com o eb para pontes "
+"de ethernet (ebtables)."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Cadeias extras para uso com as regras."
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
-msgstr ""
+msgstr "Adicionar Cadeias."
 
 #: ../src/firewall-config.glade.h:131
 msgid "Edit Chain"
-msgstr ""
+msgstr "Editar Cadeia"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Remove Chain"
-msgstr ""
+msgstr "Remover Cadeia"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
-msgstr ""
+msgstr "Cadeias"
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Adicionar uma regra com os argumentos args para uma cadeia em uma tabela com "
+"uma prioridade."
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1185,6 +1207,12 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"A prioridade é usada para pedir regras. Prioridade 0 significa adicionar "
+"regra à cadeia, com uma prioridade mais alta a regra será adicionada mais "
+"tarde. Regras com a mesma prioridade pertencem ao mesmo nível e a ordem "
+"destas regras não é fixa e pode mudar. Se você deseja ter certeza de que uma "
+"regra será adicionada após outra, use uma prioridade baixa para a primeira e "
+"uma maior para a seguinte."
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
@@ -1208,30 +1236,38 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"As regras de passagem são diretamente passadas através de um firewall e não "
+"são colocadas em cadeias especiais. Todas as opções de iptables, ip6tables e "
+"ebtables podem ser utilizadas."
 
 #: ../src/firewall-config.glade.h:141
-msgid "Passthrough rules can only be modified for the permanent configuration."
+msgid ""
+"Passthrough rules can only be modified for the permanent configuration."
 msgstr ""
+"As regras da passagem podem ser modificadas somente para a configuração "
+"permanente."
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"Por favor tenha cuidado com as regras de passagem para que não danifique o "
+"firewall."
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Adicionar Passagem"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Editar Passagem"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Remover Passagem"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr ""
+msgstr "Passagem"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
@@ -1409,8 +1445,7 @@ msgstr "IPv4 e IPv6"
 
 #: ../src/firewall-config.glade.h:187
 msgid "inverted"
-msgstr ""
-"\t\n"
+msgstr "\t\n"
 "inverso"
 
 #: ../src/firewall-config.glade.h:188
@@ -1557,7 +1592,7 @@ msgstr "Opção ignorada, foi utilizada para desativar um módulo do iptables"
 
 #: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
-msgstr "<serviço>"
+msgstr "<service>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
@@ -1565,11 +1600,11 @@ msgstr "Ativar um serviço na zona padrão (exemplo: ssh)"
 
 #: ../src/firewall-offline-cmd:173
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr ""
+msgstr "Desabilitar um serviço da zona padrão (exemplo: ssh)"
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<porta>[-<porta>]:<protocolo>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
@@ -1593,7 +1628,7 @@ msgstr ""
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
-msgstr "[<tipo>:][<tabela>:]<nome_do_arquivo>"
+msgstr "[<type>:][<table>:]<filename>"
 
 #: ../src/firewall-offline-cmd:192
 msgid ""
@@ -1608,8 +1643,8 @@ msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<interface>:port=<porta>:proto=<protocolo>[:toport=<porta de destino>][:"
-"toaddr=<endereço de destino>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
@@ -1625,7 +1660,7 @@ msgstr ""
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
-msgstr "<tipo de icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-offline-cmd:206
 msgid ""
@@ -1653,7 +1688,7 @@ msgstr ""
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr "Se nenhuma opção for dada, a configuração de '% s' sera migrada."
+msgstr "Se nenhuma opção for dada, a configuração de '%s' será migrada."
 
 #: ../src/firewall-offline-cmd:286
 #, c-format
@@ -1676,7 +1711,7 @@ msgstr "Problema na análise de Argumentos."
 #: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
-msgstr "Abertura de '% s' falhou, saindo."
+msgstr "Abertura de '%s' falhou, saindo."
 
 #: ../src/firewall-offline-cmd:396
 #, c-format
@@ -1726,7 +1761,7 @@ msgstr "Adicionando Porta '%s/%s' na zona padrão "
 #: ../src/firewall-offline-cmd:462
 #, c-format
 msgid "Removing service '%s' from default zone."
-msgstr ""
+msgstr "Removendo serviço '%s' da zona padão"
 
 #: ../src/firewall-offline-cmd:469
 #, c-format
@@ -1761,10 +1796,10 @@ msgid ""
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
 msgstr ""
-"Se uma das interfaces de confiança é utilizado para uma conexão com o "
+"Se uma das interfaces de confiança é utilizada para uma conexão com o "
 "NetworkManager ou se houver um arquivo ifcfg para a interface, a zona será "
 "mudado para a zona definida na configuração, logo que ele é ativado. Para "
 "alterar a utilização de uma zona de conexão use <command>nm-connection-"
 "editor</command> e defini a zona de confiança, para um arquivo ifcfg, use um "
-"editor e adicione \"ZONE = trusted\". Se a zona não é definido no arquivo "
+"editor e adicione \"ZONE=trusted\". Se a zona não é definido no arquivo "
 "ifcfg, a zona padrão firewalld será usado. "

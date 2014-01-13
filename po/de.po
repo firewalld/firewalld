@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -25,20 +25,22 @@
 # twoerner <twoerner@redhat.com>, 2012
 # twoerner <twoerner@redhat.com>, 2012
 # Verena <vfuehrer@redhat.com>, 2004
+# rgromans <rgromans@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: firewalld\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-10-06 22:20+0000\n"
-"Last-Translator: Roman Spirgi <bigant@fedoraproject.org>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/fedora/language/"
-"de/)\n"
-"Language: de\n"
+"POT-Creation-Date: 2013-11-13 15:34+0530\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2013-11-26 11:14-0500\n"
+"Last-Translator: rgromans <rgromans@redhat.com>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/fedora/language/"
+"de/)\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Zanata 3.1.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -89,7 +91,7 @@ msgstr " Zone für Verbindung »%s« auswählen"
 #: ../src/firewall-applet:185
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "»%s«-Zone aktiviert für »%s«-Schnittstelle "
+msgstr "Wählen Sie die Zone für die Schnittstelle '%s'"
 
 #: ../src/firewall-applet:241
 #, c-format
@@ -158,7 +160,7 @@ msgstr "Zone"
 
 #: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
 msgid "Interfaces"
-msgstr "<interface>"
+msgstr "Schnittstellen"
 
 #: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
 msgid "Sources"
@@ -191,18 +193,19 @@ msgstr "Standardzone: »%s«"
 
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
-"»{zone}«-Zone aktiv für »{connection}«-Verbindung auf »{interface}«-"
+"'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
 
 #: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr "»{zone}«-Zone aktiv für »{interface}«-Schnittstelle"
+msgstr "'{zone}'-Zone aktiv für '{interface}'-Schnittstelle"
 
 #: ../src/firewall-applet:977
 msgid "Zone '{zone}' active for source {source}"
-msgstr "Zone »{zone}» aktiv für Quelle {source}"
+msgstr "Zone '{zone}' aktiv für Quelle {source}"
 
 #: ../src/firewall-applet:981
 msgid "No Active Zones."
@@ -234,12 +237,12 @@ msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"»{zone}«-Zone {activated_deactivated} für »{connection}«-Verbindung  auf  "
-"»{interface}«-Schnittstelle"
+"'{zone}'-Zone {activated_deactivated} für '{connection}'-Verbindung  auf  "
+"'{interface}'-Schnittstelle"
 
 #: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "»{zone}«-Zone {activated_deactivated} für »{interface}«-Schnittstelle"
+msgstr "'{zone}'-Zone {activated_deactivated} für '{interface}'-Schnittstelle"
 
 #: ../src/firewall-applet:1061
 #, c-format
@@ -248,7 +251,7 @@ msgstr "»%s«-Zone aktiviert für »%s«-Schnittstelle "
 
 #: ../src/firewall-applet:1073
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr "Zone »{zone}» {aktiviert_deaktiviert} für Quelle »{source}»"
+msgstr "Zone '{zone}' {activated_deactivated} für Quelle '{source}'"
 
 #: ../src/firewall-applet:1096
 #, c-format
@@ -427,7 +430,7 @@ msgstr "Autorisierung fehlgeschlagen."
 
 #: ../src/firewall-config:1602
 msgid "Invalid name"
-msgstr "Ungültiges Argument %s"
+msgstr "Ungültiger Name"
 
 #: ../src/firewall-config:1606
 msgid "Name already exists"
@@ -540,8 +543,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, falls die "
@@ -582,11 +584,13 @@ msgstr "Bitte wählen Sie die Standardzone aus der unteren Liste."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "Direkte Kette"
 
 #: ../src/firewall-config.glade.h:8
 msgid "Please select ipv and table and enter the chain name."
 msgstr ""
+"Bitte wählen Sie IP-Version sowie die Tabelle und geben Sie den Ketten-Namen "
+"ein."
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
@@ -594,15 +598,15 @@ msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
-msgstr ""
+msgstr "Tabelle:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
@@ -610,11 +614,11 @@ msgstr "Sicherheit"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Kette:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
@@ -693,7 +697,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -1157,6 +1162,11 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"Die direkte Konfiguration ergibt einen direkteren Zugang zum Firewall. Diese "
+"Optionen verlangen vom Benutzer grundlegende Kenntnisse über iptables-"
+"Konzepte, z.B. Tabellen, Ketten, Befehle, Parameter und Ziele. Direkte "
+"Konfiguration sollte nur als letzter Ausweg eingesetzt werden, wenn es nicht "
+"möglich ist, andere firewalld Funktionen zu verwenden."
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1164,31 +1174,36 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"Das ipv Argument jeder Option hat ipv4 oder ipv6 oder eb zu sein. Bei ipv4 "
+"wird es für iptables, mit ipv6 für ip6tables und mit eb für Ethernet-Brücken "
+"(ebtables) sein."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Weitere Ketten für den Einsatz mit Regeln."
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
-msgstr ""
+msgstr "Kette Hinzufügen"
 
 #: ../src/firewall-config.glade.h:131
 msgid "Edit Chain"
-msgstr ""
+msgstr "Kette Bearbeiten"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Remove Chain"
-msgstr ""
+msgstr "Kette Entfernen"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
-msgstr ""
+msgstr "Ketten"
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Fügen Sie eine Regel mit den Argumenten args zu einer Kette in einer Tabelle "
+"mit einer Priorität hinzu."
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1199,6 +1214,13 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"Die Priorität wird verwendet, um Regeln zu reihen. Priorität 0 bedeutet die "
+"Regel oben auf der Kette einzufügen, mit einer höheren Priorität wird die "
+"Regel weiter unten hinzugefügt werden. Regeln mit der gleichen Priorität "
+"sind auf der gleichen Ebene und die Reihenfolge dieser Regeln ist nicht "
+"festgelegt und kann sich ändern. Wenn Sie sicherstellen wollen, dass eine "
+"Regel nach einer anderen hinzugefügt werden soll, verwenden Sie eine "
+"niedrige Priorität für die erste und eine höhere für die folgende."
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
@@ -1222,30 +1244,38 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"Die Durchgangsregeln werden direkt durch die Firewall gelassen und werden "
+"nicht in Spezialketten gegeben. Alle iptables, ip6tables und ebtables "
+"Optionen können verwendet werden."
 
 #: ../src/firewall-config.glade.h:141
-msgid "Passthrough rules can only be modified for the permanent configuration."
+msgid ""
+"Passthrough rules can only be modified for the permanent configuration."
 msgstr ""
+"Durchgangsregeln können nur für die permanente Konfiguration modifiziert "
+"werden."
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
+"Bitte seien Sie vorsichtig mit Durchgangsregeln damit Sie nicht den Firewall "
+"beschädigen."
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Durchgang Hinzufügen"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Durchgang Bearbeiten"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Durchgang Entfernen"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr ""
+msgstr "Durchgang"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
@@ -1254,9 +1284,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:148
 msgid ""
@@ -1562,12 +1592,13 @@ msgstr "Firewall deaktivieren"
 
 #: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
 msgid "<module>"
-msgstr "<Modul>"
+msgstr "<module>"
 
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
 msgstr ""
-"Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu aktivieren"
+"Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu "
+"aktivieren"
 
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
@@ -1577,7 +1608,7 @@ msgstr ""
 
 #: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
-msgstr "<Dienst>"
+msgstr "<service>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
@@ -1597,7 +1628,7 @@ msgstr "Einen Port der Standardzone aktivieren (Beispiel: ssh:tcp)"
 
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
-msgstr "<Schnittstelle>"
+msgstr "<interface>"
 
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
@@ -1629,8 +1660,8 @@ msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<Schnittstelle>:port=<Port>:proto=<Protokoll>[:toport=<Ziel-Port>][:"
-"toaddr=<Ziel-Adresse>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
@@ -1646,7 +1677,7 @@ msgstr ""
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
-msgstr "<tipo icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-offline-cmd:206
 msgid ""
@@ -1786,8 +1817,8 @@ msgstr ""
 "Falls NetworkManager eine der vertrauenswürdigen Schnittstellen benutzt oder "
 "falls eine ifcfg-Datei für diese Schnittstelle vorhanden ist, wird die Zone "
 "entsprechend der Konfiguration geändert, sobald diese aktiviert wird. Um die "
-"Verbindungszone zu ändern, benutzen Sie <Befehl>nm-connection-editor</"
-"Befehl> und stufen Sie die Zone als vertrauenswürdig ein. Bei einer ifcfg-"
+"Verbindungszone zu ändern, benutzen Sie <command>nm-connection-editor</"
+"command> und stufen Sie die Zone als vertrauenswürdig ein. Bei einer ifcfg-"
 "Datei fügen Sie mit einem Editor die Zeile »ZONE=trusted« ein. Wenn die Zone "
 "nicht in der ifcfg-Datei definiert ist, wird die firewalld-Standardzone "
 "verwendet."
