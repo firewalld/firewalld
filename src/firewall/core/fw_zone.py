@@ -129,10 +129,6 @@ class FirewallZone:
         self._zones[obj.name] = obj
 
         # load zone in case of missing services, icmptypes etc.
-        for args in obj.interfaces:
-            self._error2warning(self.add_interface, obj.name, args)
-        for args in obj.sources:
-            self._error2warning(self.add_source, obj.name, args)
         for args in obj.icmp_blocks:
             self._error2warning(self.add_icmp_block, obj.name, args)
         for args in obj.forward_ports:
@@ -145,6 +141,10 @@ class FirewallZone:
             self._error2warning(self.add_masquerade, obj.name)
         for args in obj.rules:
             self._error2warning(self.add_rule, obj.name, args)
+        for args in obj.interfaces:
+            self._error2warning(self.add_interface, obj.name, args)
+        for args in obj.sources:
+            self._error2warning(self.add_source, obj.name, args)
 
     def remove_zone(self, zone):
         obj = self._zones[zone]
@@ -297,11 +297,7 @@ class FirewallZone:
                         # zone configuration, also do not restore date,
                         # sender and timeout
                         continue
-                    if key == "interfaces":
-                        self.change_zone_of_interface(zone, args)
-                    elif key == "sources":
-                        self.change_zone_of_source(zone, args)
-                    elif key == "icmp_blocks":
+                    if key == "icmp_blocks":
                         self.add_icmp_block(zone, args)
                     elif key == "forward_ports":
                         self.add_forward_port(zone, *args)
@@ -311,6 +307,10 @@ class FirewallZone:
                         self.add_port(zone, *args)
                     elif key == "masquerade":
                         self.add_masquerade(zone)
+                    elif key == "interfaces":
+                        self.change_zone_of_interface(zone, args)
+                    elif key == "sources":
+                        self.change_zone_of_source(zone, args)
                     else:
                         log.error("Zone '%s': Unknown setting '%s:%s', "
                                   "unable to restore.", zone, key, args)
