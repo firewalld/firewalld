@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Ben Wu <hpwu@redhat.com>, 2002-2004
 # Chester Cheng <ccheng@redhat.com>, 2004-2006,2010
@@ -16,13 +16,14 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-11-19 16:49+0000\n"
+"PO-Revision-Date: 2013-10-30 16:00+0000\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/fedora/language/zh_TW/)\n"
+"Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/fedora/"
+"language/zh_TW/)\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
@@ -115,9 +116,11 @@ msgstr "您可以在這裡選取「防禦展開」與「防禦卸下」所要使
 
 #: ../src/firewall-applet:441
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
-msgstr "此功能對於大多數使用預設界域的人來說很有用處。至於更改連線的界域之使用者，這可能用處不大。"
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
+msgstr ""
+"此功能對於大多數使用預設界域的人來說很有用處。至於更改連線的界域之使用者，這"
+"可能用處不大。"
 
 #: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
@@ -171,8 +174,7 @@ msgstr "預設界域：「%s」"
 
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr "界域「{zone}」使用中：連線「{connection}」，介面「{interface}」"
 
 #: ../src/firewall-applet:969
@@ -212,7 +214,9 @@ msgstr "已停止"
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "界域「{zone}」{activated_deactivated}：連線「{connection}」，介面「{interface}」"
+msgstr ""
+"界域「{zone}」{activated_deactivated}：連線「{connection}」，介面"
+"「{interface}」"
 
 #: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
@@ -517,9 +521,12 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
-msgstr "轉送至其他系統的功能僅在介面為偽裝之時才會有用。\n您是否想要偽裝此界域？"
+msgstr ""
+"轉送至其他系統的功能僅在介面為偽裝之時才會有用。\n"
+"您是否想要偽裝此界域？"
 
 #: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
@@ -652,9 +659,10 @@ msgstr "轉送至其他連接埠"
 
 #: ../src/firewall-config.glade.h:31
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "若您啟用本地端轉送，您就必須要指定連接埠。這個連接埠必須和來源連接埠不同。"
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"若您啟用本地端轉送，您就必須要指定連接埠。這個連接埠必須和來源連接埠不同。"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
@@ -709,7 +717,10 @@ msgid ""
 "Reloads firewall rules. Current permanent configuration will become new "
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
-msgstr "重新載入防火牆規則。目前的永久組態會變成新的執行時期組態。舉例，所有的執行時期下的變動直到重新載入前都會有效：只要改變不是設在永久組態中，那麼一旦重新載入後所有改動都會消失。"
+msgstr ""
+"重新載入防火牆規則。目前的永久組態會變成新的執行時期組態。舉例，所有的執行時"
+"期下的變動直到重新載入前都會有效：只要改變不是設在永久組態中，那麼一旦重新載"
+"入後所有改動都會消失。"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
@@ -735,7 +746,8 @@ msgstr "恐慌模式"
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
-msgstr "封鎖管制會鎖上防火牆組態，只有封鎖管制白名單中列出的應用程式可以改動組態。"
+msgstr ""
+"封鎖管制會鎖上防火牆組態，只有封鎖管制白名單中列出的應用程式可以改動組態。"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
@@ -770,7 +782,9 @@ msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
-msgstr "目前可見的組態。執行時期組態為實際使用中組態。永久組態將在服務或系統重新載入或重新啟動之後啟動。"
+msgstr ""
+"目前可見的組態。執行時期組態為實際使用中組態。永久組態將在服務或系統重新載入"
+"或重新啟動之後啟動。"
 
 #: ../src/firewall-config.glade.h:61
 msgid ""
@@ -779,7 +793,10 @@ msgid ""
 "services, ports, protocols, masquerading, port/packet forwarding, icmp "
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
-msgstr "firewalld 界域所定義的是綁定該界域之網路連線、介面、來源位址的信任等級。界域能結合服務、連接埠、協定、偽裝、連接埠/封包轉送、icmp 過濾、豐富規則等。界域可以與介面、來源位址等綁定。"
+msgstr ""
+"firewalld 界域所定義的是綁定該界域之網路連線、介面、來源位址的信任等級。界域"
+"能結合服務、連接埠、協定、偽裝、連接埠/封包轉送、icmp 過濾、豐富規則等。界域"
+"可以與介面、來源位址等綁定。"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
@@ -799,10 +816,12 @@ msgstr "載入界域預設值"
 
 #: ../src/firewall-config.glade.h:67
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services"
-" are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services "
+"are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
-msgstr "你可以在此處定義該界域中有哪些服務值得信任。只要此界域所綁定之連線、介面、來源的主機與網路能觸及本機，則皆可存取這些信任的服務。"
+msgstr ""
+"你可以在此處定義該界域中有哪些服務值得信任。只要此界域所綁定之連線、介面、來"
+"源的主機與網路能觸及本機，則皆可存取這些信任的服務。"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Services"
@@ -835,7 +854,9 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "偽裝可讓您設置個能讓您本本地端網路連至網際網路的主機或路由器。您的本地端網路不會被看見，且眾主機在網際網路上會顯示成單一位址。偽裝功能僅適用於 IPv4。"
+msgstr ""
+"偽裝可讓您設置個能讓您本本地端網路連至網際網路的主機或路由器。您的本地端網路"
+"不會被看見，且眾主機在網際網路上會顯示成單一位址。偽裝功能僅適用於 IPv4。"
 
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
@@ -857,7 +878,10 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "新增條目來從本地端系統上的一個連接埠轉送至另一個連接埠，或由本地端系統轉送至另一部系統。僅在介面卡偽裝時才能轉送至另一部系統。連接埠轉送功能僅適用於 IPv4。"
+msgstr ""
+"新增條目來從本地端系統上的一個連接埠轉送至另一個連接埠，或由本地端系統轉送至"
+"另一部系統。僅在介面卡偽裝時才能轉送至另一部系統。連接埠轉送功能僅適用於 "
+"IPv4。"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
@@ -876,13 +900,17 @@ msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "網際網路控制訊息通訊協定 (Internet Control Message Protocol, ICMP) 主要用在連網電腦間錯誤訊息的傳送，不過也能被用來傳送像是 ping 請求和回應的資訊訊息。"
+msgstr ""
+"網際網路控制訊息通訊協定 (Internet Control Message Protocol, ICMP) 主要用在連"
+"網電腦間錯誤訊息的傳送，不過也能被用來傳送像是 ping 請求和回應的資訊訊息。"
 
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "將清單中應被拒絕的 ICMP 類型標記起來。其他所有 ICMP 則允許通過防火牆。預設值為無限制。"
+msgstr ""
+"將清單中應被拒絕的 ICMP 類型標記起來。其他所有 ICMP 則允許通過防火牆。預設值"
+"為無限制。"
 
 #: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
@@ -910,9 +938,11 @@ msgstr "豐富規則"
 
 #: ../src/firewall-config.glade.h:90
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by"
-" a connection, the zone will be set to the zone specified in the connection."
-msgstr "請添加條目來將介面與此界域綁定。如果介面會被某連線使用，則界域將被設為連線中所指定的界域。"
+"Add entries to bind interfaces to the zone. If the interface will be used by "
+"a connection, the zone will be set to the zone specified in the connection."
+msgstr ""
+"請添加條目來將介面與此界域綁定。如果介面會被某連線使用，則界域將被設為連線中"
+"所指定的界域。"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
@@ -972,7 +1002,9 @@ msgstr "載入服務預設值"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr "加入其他需要給所有主機或網路存取的連接埠或連接埠範圍。您也可以直接加入協定而不指定連接埠。"
+msgstr ""
+"加入其他需要給所有主機或網路存取的連接埠或連接埠範圍。您也可以直接加入協定而"
+"不指定連接埠。"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Add Entry"
@@ -1003,7 +1035,8 @@ msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr "若您指定目標位址，服務條目將限於目的地位址與類型。若兩條目皆空，則沒有限制。"
+msgstr ""
+"若您指定目標位址，服務條目將限於目的地位址與類型。若兩條目皆空，則沒有限制。"
 
 #: ../src/firewall-config.glade.h:115
 msgid "IPv4:"
@@ -1023,7 +1056,9 @@ msgstr "服務僅可以在永久組態檢視下更動。服務的執行時期組
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
-msgstr "firewalld icmptype 為 firewalld 提供網際網路控制訊息協定 (ICMP，Internet Control Message Protocol) 類型資訊。"
+msgstr ""
+"firewalld icmptype 為 firewalld 提供網際網路控制訊息協定 (ICMP，Internet "
+"Control Message Protocol) 類型資訊。"
 
 #: ../src/firewall-config.glade.h:119
 msgid "Add ICMP Type"
@@ -1057,7 +1092,8 @@ msgstr "IPv6"
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
-msgstr "ICMP 類型僅可以在永久組態檢視下更動。ICMP 類型的執行時期組態是固定不變的。"
+msgstr ""
+"ICMP 類型僅可以在永久組態檢視下更動。ICMP 類型的執行時期組態是固定不變的。"
 
 #: ../src/firewall-config.glade.h:127
 msgid ""
@@ -1065,14 +1101,19 @@ msgid ""
 "options require user to know basic iptables concepts, i.e. tables, chains, "
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
-msgstr "直接組態讓您可以更直接地存取防火牆。這些選項需要使用者知曉基礎的 iptables 概念，例如表格、鏈條、指令、參數、目標等。直接組態應該謹以「最後的避風港」的心態對待，只在無法使用其他 firewalld 功能時才使用。"
+msgstr ""
+"直接組態讓您可以更直接地存取防火牆。這些選項需要使用者知曉基礎的 iptables 概"
+"念，例如表格、鏈條、指令、參數、目標等。直接組態應該謹以「最後的避風港」的心"
+"態對待，只在無法使用其他 firewalld 功能時才使用。"
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
 "The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
-msgstr "每個選項的 ipv 引數必須是 ipv4 或 ipv6 或 eb。ipv4 用於 iptables，ipv6 用於 ip6tables，而 eb 用於乙太網路接橋 (ebtables)。"
+msgstr ""
+"每個選項的 ipv 引數必須是 ipv4 或 ipv6 或 eb。ipv4 用於 iptables，ipv6 用於 "
+"ip6tables，而 eb 用於乙太網路接橋 (ebtables)。"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
@@ -1101,13 +1142,17 @@ msgstr "加入有 args 引數的規則到有優先等級的表格的鏈條中。
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
-"The priority is used to order rules. Priority 0 means add rule on top of the"
-" chain, with a higher priority the rule will be added further down. Rules "
-"with the same priority are on the same level and the order of these rules is"
-" not fixed and may change. If you want to make sure that a rule will be "
-"added after another one, use a low priority for the first and a higher for "
-"the following."
-msgstr "優先等級用來排序規則。優先等級 0 代表將規則加到鏈條頂端；優先等級數字越高，規則會越往後擺放。相同優先等級的規則位在同個等級中，而這些規則的順序並非固定而可能變動。如果您想要確保某規則在某個規則之後才加入，前者請使用較低的優先等級，後者請使用較高的優先等級。"
+"The priority is used to order rules. Priority 0 means add rule on top of the "
+"chain, with a higher priority the rule will be added further down. Rules "
+"with the same priority are on the same level and the order of these rules is "
+"not fixed and may change. If you want to make sure that a rule will be added "
+"after another one, use a low priority for the first and a higher for the "
+"following."
+msgstr ""
+"優先等級用來排序規則。優先等級 0 代表將規則加到鏈條頂端；優先等級數字越高，規"
+"則會越往後擺放。相同優先等級的規則位在同個等級中，而這些規則的順序並非固定而"
+"可能變動。如果您想要確保某規則在某個規則之後才加入，前者請使用較低的優先等"
+"級，後者請使用較高的優先等級。"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
@@ -1130,11 +1175,12 @@ msgid ""
 "The passthrough rules are directly passed through to the firewall and are "
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
-msgstr "通透規則會直接傳遞給防火牆，而不會放入特殊鏈條中。所有的 iptabls、ip6tables 與 ebtables 選項皆可使用。"
+msgstr ""
+"通透規則會直接傳遞給防火牆，而不會放入特殊鏈條中。所有的 iptabls、ip6tables "
+"與 ebtables 選項皆可使用。"
 
 #: ../src/firewall-config.glade.h:141
-msgid ""
-"Passthrough rules can only be modified for the permanent configuration."
+msgid "Passthrough rules can only be modified for the permanent configuration."
 msgstr "通透規則僅可以在永久組態中修改。"
 
 #: ../src/firewall-config.glade.h:142
@@ -1159,16 +1205,20 @@ msgstr "通透"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
-"The lockdown feature is a light version of user and application policies for"
-" firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for "
+"firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
-msgstr "封鎖管制功能是 firewalld 其使用者與應用程式方針的輕量版。它會限制防火牆的更動。封鎖管制白名單可以包含指令、情境、使用者與使用者 ID。"
+msgstr ""
+"封鎖管制功能是 firewalld 其使用者與應用程式方針的輕量版。它會限制防火牆的更"
+"動。封鎖管制白名單可以包含指令、情境、使用者與使用者 ID。"
 
 #: ../src/firewall-config.glade.h:148
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
-msgstr "情境是指執行中應用程式或服務的安全情境 (SELinux 情境)。若要取得執行中應用程式的情境，請使用指令 ps -e --context。"
+msgstr ""
+"情境是指執行中應用程式或服務的安全情境 (SELinux 情境)。若要取得執行中應用程式"
+"的情境，請使用指令 ps -e --context。"
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add Context"
@@ -1191,7 +1241,9 @@ msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
-msgstr "如果白名單中的指令條目是以米字號「*」結尾，則所有以該指令列開頭的任何指令皆會匹配。如果「*」並非結尾，則必須精確符合該指令與相關引數。"
+msgstr ""
+"如果白名單中的指令條目是以米字號「*」結尾，則所有以該指令列開頭的任何指令皆會"
+"匹配。如果「*」並非結尾，則必須精確符合該指令與相關引數。"
 
 #: ../src/firewall-config.glade.h:154
 msgid "Add Command Line"
@@ -1507,23 +1559,30 @@ msgstr "[<類型>:][<表格>:]<檔名>"
 
 #: ../src/firewall-offline-cmd:192
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr "忽略的選項。過去用來將自訂規則加入防火牆中 (範例：ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+"忽略的選項。過去用來將自訂規則加入防火牆中 (範例：ipv4:filter:/etc/sysconfig/"
+"ipv4_filter_addon)"
 
 #: ../src/firewall-offline-cmd:196
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<介面>:port=<連接埠>:proto=<協定>[:toport=<目的地連接埠>][:toaddr=<目的地位址>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<介面>:port=<連接埠>:proto=<協定>[:toport=<目的地連接埠>][:toaddr=<目的地"
+"位址>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default"
-" zone. This is IPv4 only."
-msgstr "將介面的某協定與連接埠轉送至另外的本地端目的地連接埠 (無給定目的地位址的話) 或是其他目的地位址 (也可加上選用的目的地連接埠)。這個設定會加入預設界域中。此功能僅用於 IPv4。"
+"address with an optional destination port. This will be added to the default "
+"zone. This is IPv4 only."
+msgstr ""
+"將介面的某協定與連接埠轉送至另外的本地端目的地連接埠 (無給定目的地位址的話) "
+"或是其他目的地位址 (也可加上選用的目的地連接埠)。這個設定會加入預設界域中。此"
+"功能僅用於 IPv4。"
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
@@ -1545,7 +1604,9 @@ msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
-msgstr "此工具會盡可能嘗試將 system-config-firewall/lokkit 選項轉換為 firewalld 形式，但轉換上仍有限制，例如自訂規則、模組、偽裝等這些。"
+msgstr ""
+"此工具會盡可能嘗試將 system-config-firewall/lokkit 選項轉換為 firewalld 形"
+"式，但轉換上仍有限制，例如自訂規則、模組、偽裝等這些。"
 
 #: ../src/firewall-offline-cmd:238
 #, c-format
@@ -1657,4 +1718,9 @@ msgid ""
 "editor</command> and set the zone to trusted, for an ifcfg file, use an "
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
-msgstr "如果信任的介面之一被用於 NetworkManager 的連線上，或如果此介面有個 ifcfg 檔案的話，一旦該組態啟用，則此界域將變成該組態中所定義的界域。若要更改連線的界域，請使用 <command>nm-connection-editor</command> 並將界域設為信任；至於 ifcfg 檔，請使用編輯器並加入「ZONE=trusted」。如果 ifcfg 檔中沒有定義界域，則會使用 firewalld 的預設界域。"
+msgstr ""
+"如果信任的介面之一被用於 NetworkManager 的連線上，或如果此介面有個 ifcfg 檔案"
+"的話，一旦該組態啟用，則此界域將變成該組態中所定義的界域。若要更改連線的界"
+"域，請使用 <command>nm-connection-editor</command> 並將界域設為信任；至於 "
+"ifcfg 檔，請使用編輯器並加入「ZONE=trusted」。如果 ifcfg 檔中沒有定義界域，則"
+"會使用 firewalld 的預設界域。"

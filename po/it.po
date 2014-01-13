@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Andrea La Fauci <andrea.lafauci@weproudlymanage.com>, 2010
 # antoniomontag <antonio.montagnani@alice.it>, 2013
@@ -27,13 +27,14 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-11-19 16:49+0000\n"
+"PO-Revision-Date: 2013-11-05 13:30+0000\n"
 "Last-Translator: Fabio Tavano <tavano.fabio@gmail.com>\n"
-"Language-Team: Italian (http://www.transifex.com/projects/p/fedora/language/it/)\n"
+"Language-Team: Italian (http://www.transifex.com/projects/p/fedora/language/"
+"it/)\n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
@@ -122,13 +123,17 @@ msgstr "Configura Shields Up/Down Zones"
 
 #: ../src/firewall-applet:433
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "Qui è possibile selezionare le zone usate per Shields Up e Shields Down."
+msgstr ""
+"Qui è possibile selezionare le zone usate per Shields Up e Shields Down."
 
 #: ../src/firewall-applet:441
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
-msgstr "Questa funzione è utile per coloro che usano soprattutto le zone predefinite. Per gli utenti che modificano le zone delle connessioni, potrebbe essere limitata."
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
+msgstr ""
+"Questa funzione è utile per coloro che usano soprattutto le zone "
+"predefinite. Per gli utenti che modificano le zone delle connessioni, "
+"potrebbe essere limitata."
 
 #: ../src/firewall-applet:456
 msgid "Shields Up Zone:"
@@ -182,9 +187,10 @@ msgstr "Zona Predefinita: '%s'"
 
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+msgstr ""
+"Zona '{zone}' attiva per la connessione '{connection}' sull'interfaccia "
 "'{interface}'"
-msgstr "Zona '{zone}' attiva per la connessione '{connection}' sull'interfaccia '{interface}'"
 
 #: ../src/firewall-applet:969
 msgid "Zone '{zone}' active for interface '{interface}'"
@@ -223,7 +229,9 @@ msgstr "disattivato"
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "Zona '{zone}' {activated_deactivated} per la connessione '{connection}' sull'interfaccia '{interface}'"
+msgstr ""
+"Zona '{zone}' {activated_deactivated} per la connessione '{connection}' "
+"sull'interfaccia '{interface}'"
 
 #: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
@@ -528,9 +536,12 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
-msgstr "L'inoltro ad un altro sistema è utile solo se l'interfaccia è nattata.\nSi vuole nattare questa zona?"
+msgstr ""
+"L'inoltro ad un altro sistema è utile solo se l'interfaccia è nattata.\n"
+"Si vuole nattare questa zona?"
 
 #: ../src/firewall-config:3572
 msgid "Built-in service, rename not supported."
@@ -618,7 +629,9 @@ msgstr "Regola Diretta"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "Prego selezionare l'ipv e la tabella, la priorità della catena e inserire gli argomenti."
+msgstr ""
+"Prego selezionare l'ipv e la tabella, la priorità della catena e inserire "
+"gli argomenti."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
@@ -631,7 +644,9 @@ msgstr "Forwarding della porta"
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
-msgstr "Selezionare le opzioni di sorgente e destinazione in base alle proprie esigenze."
+msgstr ""
+"Selezionare le opzioni di sorgente e destinazione in base alle proprie "
+"esigenze."
 
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
@@ -663,9 +678,11 @@ msgstr "Forward verso un'altra porta"
 
 #: ../src/firewall-config.glade.h:31
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "Se si abilita il forward locale, si deve specificare una porta. Questa porta deve essere diversa dalla porta sorgente."
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"Se si abilita il forward locale, si deve specificare una porta. Questa porta "
+"deve essere diversa dalla porta sorgente."
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
@@ -720,7 +737,11 @@ msgid ""
 "Reloads firewall rules. Current permanent configuration will become new "
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
-msgstr "Ricarica le regole del firewall. L'attuale configurazione salvata diventerà la nuova configurazione in uso. p.e. tutti i cambiamenti fatti prima saranno perse con la ricarica se non sono presenti anche nella configurazione salvata."
+msgstr ""
+"Ricarica le regole del firewall. L'attuale configurazione salvata diventerà "
+"la nuova configurazione in uso. p.e. tutti i cambiamenti fatti prima saranno "
+"perse con la ricarica se non sono presenti anche nella configurazione "
+"salvata."
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
@@ -736,7 +757,9 @@ msgstr "Cambia la zona predefinita di connessioni o interfacce."
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr "Modalità panico significa che tutti i pacchetti in ingresso e uscita verranno scartati."
+msgstr ""
+"Modalità panico significa che tutti i pacchetti in ingresso e uscita "
+"verranno scartati."
 
 #: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
@@ -746,7 +769,9 @@ msgstr "Modalità Panico"
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
-msgstr "Lockdown blocca la configurazione del firewall in modo che solo le applicazioni nella lockdown whitelist possano cambiarla."
+msgstr ""
+"Lockdown blocca la configurazione del firewall in modo che solo le "
+"applicazioni nella lockdown whitelist possano cambiarla."
 
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
@@ -781,7 +806,10 @@ msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
-msgstr "Configurazione attuale visibile. La configurazione runtime è l'attuale configurazione attiva. Quella persistente sarà attiva dopo il ricaricamento o il riavvìo del servizio o del sistema."
+msgstr ""
+"Configurazione attuale visibile. La configurazione runtime è l'attuale "
+"configurazione attiva. Quella persistente sarà attiva dopo il ricaricamento "
+"o il riavvìo del servizio o del sistema."
 
 #: ../src/firewall-config.glade.h:61
 msgid ""
@@ -790,7 +818,12 @@ msgid ""
 "services, ports, protocols, masquerading, port/packet forwarding, icmp "
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
-msgstr "Una zona firewalld definisce il livello di fiducia per le connessioni della rete, interfacce e indirizzi della sorgente legati alla zona. La zona combina servizi, porte, protocolli, mascheramenti, inoltro porte/pacchetti, filtri icmp e regole estese. La zona può essere associata alle interfacce e agli indirizzi della sorgente."
+msgstr ""
+"Una zona firewalld definisce il livello di fiducia per le connessioni della "
+"rete, interfacce e indirizzi della sorgente legati alla zona. La zona "
+"combina servizi, porte, protocolli, mascheramenti, inoltro porte/pacchetti, "
+"filtri icmp e regole estese. La zona può essere associata alle interfacce e "
+"agli indirizzi della sorgente."
 
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
@@ -810,10 +843,14 @@ msgstr "Carica Zona Predefinita"
 
 #: ../src/firewall-config.glade.h:67
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services"
-" are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services "
+"are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
-msgstr "Qui è possibile definire quali servizi sono fidati nella zona. I servizi fidati sono accessibili da tutti gli host e reti che possono raggiungere la macchina attraverso connessioni, interfacce e sorgenti associate a questa zona."
+msgstr ""
+"Qui è possibile definire quali servizi sono fidati nella zona. I servizi "
+"fidati sono accessibili da tutti gli host e reti che possono raggiungere la "
+"macchina attraverso connessioni, interfacce e sorgenti associate a questa "
+"zona."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Services"
@@ -823,7 +860,9 @@ msgstr "Servizi"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
-msgstr "Aggiungere ulteriori porte o intervalli di porte, che dovranno essere accessibili da tutti gli host o reti che possono connettersi alla macchina."
+msgstr ""
+"Aggiungere ulteriori porte o intervalli di porte, che dovranno essere "
+"accessibili da tutti gli host o reti che possono connettersi alla macchina."
 
 #: ../src/firewall-config.glade.h:70
 msgid "Add Port"
@@ -846,7 +885,11 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "Il mascheramento (masquerading) permette di impostare un host o un router che connette la rete locale ad Internet. La rete locale non sarà visibile e gli host appariranno come un singolo indirizzo su Internet. Il mascheramento è disponibile solo con IPv4."
+msgstr ""
+"Il mascheramento (masquerading) permette di impostare un host o un router "
+"che connette la rete locale ad Internet. La rete locale non sarà visibile e "
+"gli host appariranno come un singolo indirizzo su Internet. Il mascheramento "
+"è disponibile solo con IPv4."
 
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
@@ -856,7 +899,9 @@ msgstr "Zona Mascherata"
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr "Se si abilta il masquerading, l'IP forwarding sarà abilitato per le reti IPv4."
+msgstr ""
+"Se si abilta il masquerading, l'IP forwarding sarà abilitato per le reti "
+"IPv4."
 
 #: ../src/firewall-config.glade.h:77
 msgid "Masquerading"
@@ -868,7 +913,11 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "Aggiungere righe per eseguire il forward delle porte sia da una porta ad un'altra sul sistema locale o dal sistema locale ad un altro sistema. Eseguire il forward verso un altro sistema è utile solo se l'interfaccia è mascherata. Il forwarding delle porte è disponibile solo con IPv4."
+msgstr ""
+"Aggiungere righe per eseguire il forward delle porte sia da una porta ad "
+"un'altra sul sistema locale o dal sistema locale ad un altro sistema. "
+"Eseguire il forward verso un altro sistema è utile solo se l'interfaccia è "
+"mascherata. Il forwarding delle porte è disponibile solo con IPv4."
 
 #: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
@@ -887,13 +936,19 @@ msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "L'Internet Control Message Protocol (ICMP) è principalmente utilizzato per inviare messaggi d'errore fra computer in rete, ma anche per messaggi informativi come richieste e risposte ping."
+msgstr ""
+"L'Internet Control Message Protocol (ICMP) è principalmente utilizzato per "
+"inviare messaggi d'errore fra computer in rete, ma anche per messaggi "
+"informativi come richieste e risposte ping."
 
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "Contrassegnare nell'elenco i tipi ICMP che dovranno essere rifiutati. A tutti gli altri tipi ICMP sarà consentito di oltrepassare il firewall. L'impostazione predefinita è: nessuna limitazione."
+msgstr ""
+"Contrassegnare nell'elenco i tipi ICMP che dovranno essere rifiutati. A "
+"tutti gli altri tipi ICMP sarà consentito di oltrepassare il firewall. "
+"L'impostazione predefinita è: nessuna limitazione."
 
 #: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
@@ -921,9 +976,12 @@ msgstr "Regole Estese"
 
 #: ../src/firewall-config.glade.h:90
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by"
-" a connection, the zone will be set to the zone specified in the connection."
-msgstr "Aggiunta voci per collegare interfacce alla zona. Se l'interfaccia sarà utilizzata da una connessione, la zona verrà impostata alla zona specificata nella connessione."
+"Add entries to bind interfaces to the zone. If the interface will be used by "
+"a connection, the zone will be set to the zone specified in the connection."
+msgstr ""
+"Aggiunta voci per collegare interfacce alla zona. Se l'interfaccia sarà "
+"utilizzata da una connessione, la zona verrà impostata alla zona specificata "
+"nella connessione."
 
 #: ../src/firewall-config.glade.h:91
 msgid "Add Interface"
@@ -961,7 +1019,9 @@ msgstr "Zone"
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
-msgstr "Un servizio firewalld è una combinazione di porte, protocolli, moduli e indirizzi di destinazione."
+msgstr ""
+"Un servizio firewalld è una combinazione di porte, protocolli, moduli e "
+"indirizzi di destinazione."
 
 #: ../src/firewall-config.glade.h:103
 msgid "Add Service"
@@ -983,7 +1043,10 @@ msgstr "Carica Servizi Predefiniti"
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
-msgstr "Aggiungi porte addizionali o un range di porte che devono essere accessibili per tutti gli host o le reti. E' possibile anche aggiungere protocolli senza specificare le porte."
+msgstr ""
+"Aggiungi porte addizionali o un range di porte che devono essere accessibili "
+"per tutti gli host o le reti. E' possibile anche aggiungere protocolli senza "
+"specificare le porte."
 
 #: ../src/firewall-config.glade.h:108
 msgid "Add Entry"
@@ -1014,7 +1077,10 @@ msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
-msgstr "Se si specificano indirizzi di destinazione, la voce del servizio sarà limitato a quell'indirizzo o al tipo. Se entrambe le voci sono vuote, non ci sono limitazioni."
+msgstr ""
+"Se si specificano indirizzi di destinazione, la voce del servizio sarà "
+"limitato a quell'indirizzo o al tipo. Se entrambe le voci sono vuote, non ci "
+"sono limitazioni."
 
 #: ../src/firewall-config.glade.h:115
 msgid "IPv4:"
@@ -1028,13 +1094,17 @@ msgstr "IPv6:"
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
-msgstr "E' possibile cambiare i servizi solo nella vista configurazione permanente. La configurazione runtime dei servizi è fissa."
+msgstr ""
+"E' possibile cambiare i servizi solo nella vista configurazione permanente. "
+"La configurazione runtime dei servizi è fissa."
 
 #: ../src/firewall-config.glade.h:118
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
-msgstr "Un icmptype di firewalld fornisce l'informazione per un tipo di Internet Control Message Protocol (ICMP) per firewalld."
+msgstr ""
+"Un icmptype di firewalld fornisce l'informazione per un tipo di Internet "
+"Control Message Protocol (ICMP) per firewalld."
 
 #: ../src/firewall-config.glade.h:119
 msgid "Add ICMP Type"
@@ -1068,7 +1138,9 @@ msgstr "IPv6"
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
-msgstr "E' possibile cambiare i tipi ICMP solo nella vista configurazione permanente. La configurazione runtime dei tipi ICMP è fissa."
+msgstr ""
+"E' possibile cambiare i tipi ICMP solo nella vista configurazione "
+"permanente. La configurazione runtime dei tipi ICMP è fissa."
 
 #: ../src/firewall-config.glade.h:127
 msgid ""
@@ -1076,14 +1148,22 @@ msgid ""
 "options require user to know basic iptables concepts, i.e. tables, chains, "
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
-msgstr "La configurazione esperta permette un accesso più profondo al firewall. Queste opzioni richiedono all'utente una conoscenza dei concetti base di iptables, p.e. tabelle, catene, comandi, parametri e obiettivi. La configurazione esperta dovrebbe essere usata solo come ultima possibilità quando non è possibile utilizzare gli altri strumenti di firewalld."
+msgstr ""
+"La configurazione esperta permette un accesso più profondo al firewall. "
+"Queste opzioni richiedono all'utente una conoscenza dei concetti base di "
+"iptables, p.e. tabelle, catene, comandi, parametri e obiettivi. La "
+"configurazione esperta dovrebbe essere usata solo come ultima possibilità "
+"quando non è possibile utilizzare gli altri strumenti di firewalld."
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
 "The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
-msgstr "L'argomenti ipv di ogni opzione deve essere ipv4 o ipv6 o eb. Se ipv4 sarà per iptables, se ipv6 sarà per ip6tables e con eb sarà per i bridge ethernet (ebtables)."
+msgstr ""
+"L'argomenti ipv di ogni opzione deve essere ipv4 o ipv6 o eb. Se ipv4 sarà "
+"per iptables, se ipv6 sarà per ip6tables e con eb sarà per i bridge ethernet "
+"(ebtables)."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
@@ -1108,17 +1188,26 @@ msgstr "Catene"
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
-msgstr "Aggiungi una regola con gli argomenti args ad una catena in una tabella con priorità."
+msgstr ""
+"Aggiungi una regola con gli argomenti args ad una catena in una tabella con "
+"priorità."
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
-"The priority is used to order rules. Priority 0 means add rule on top of the"
-" chain, with a higher priority the rule will be added further down. Rules "
-"with the same priority are on the same level and the order of these rules is"
-" not fixed and may change. If you want to make sure that a rule will be "
-"added after another one, use a low priority for the first and a higher for "
-"the following."
-msgstr "La priorità viene usata per ordinare le regole. Priorità 0 significa aggiungere la regola in cima alla catena, con una priorità maggiore la regola verrà aggiunta sempre più in basso. Regole con la stessa priorità sono allo stesso livello e l'ordine di queste regole non è fisso e può cambiare. Se si vuole essere sicuri che una regola venga aggiunta dopo un'altra, utilizzare una priorità minore per la prima e maggiore per la seconda."
+"The priority is used to order rules. Priority 0 means add rule on top of the "
+"chain, with a higher priority the rule will be added further down. Rules "
+"with the same priority are on the same level and the order of these rules is "
+"not fixed and may change. If you want to make sure that a rule will be added "
+"after another one, use a low priority for the first and a higher for the "
+"following."
+msgstr ""
+"La priorità viene usata per ordinare le regole. Priorità 0 significa "
+"aggiungere la regola in cima alla catena, con una priorità maggiore la "
+"regola verrà aggiunta sempre più in basso. Regole con la stessa priorità "
+"sono allo stesso livello e l'ordine di queste regole non è fisso e può "
+"cambiare. Se si vuole essere sicuri che una regola venga aggiunta dopo "
+"un'altra, utilizzare una priorità minore per la prima e maggiore per la "
+"seconda."
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
@@ -1141,16 +1230,21 @@ msgid ""
 "The passthrough rules are directly passed through to the firewall and are "
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
-msgstr "Le regole di passthrough vengono inviate direttamente al firewall e non vengono inserite in catene speciali. Tutte le opzioni di iptables, ip6tables e ebtables possono essere usate."
+msgstr ""
+"Le regole di passthrough vengono inviate direttamente al firewall e non "
+"vengono inserite in catene speciali. Tutte le opzioni di iptables, ip6tables "
+"e ebtables possono essere usate."
 
 #: ../src/firewall-config.glade.h:141
-msgid ""
-"Passthrough rules can only be modified for the permanent configuration."
-msgstr "Le regole di passthrough possono essere modificate solo per la configurazione salvata."
+msgid "Passthrough rules can only be modified for the permanent configuration."
+msgstr ""
+"Le regole di passthrough possono essere modificate solo per la "
+"configurazione salvata."
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "Siate prudenti con le regole di passthrough per non danneggiare il firewall."
+msgstr ""
+"Siate prudenti con le regole di passthrough per non danneggiare il firewall."
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
@@ -1170,16 +1264,22 @@ msgstr "Passthrough"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
-"The lockdown feature is a light version of user and application policies for"
-" firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for "
+"firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
-msgstr "La funzionalità lockdown è una versione light delle politiche dell'utente e dell'applicazione per firewalld. Limita le modifiche del firewall. La whitelist lockdown può contenere, comandi, contesti, utenti e user id."
+msgstr ""
+"La funzionalità lockdown è una versione light delle politiche dell'utente e "
+"dell'applicazione per firewalld. Limita le modifiche del firewall. La "
+"whitelist lockdown può contenere, comandi, contesti, utenti e user id."
 
 #: ../src/firewall-config.glade.h:148
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
-msgstr "Il contesto è il contesto di sicurezza (SELinux) di un'applicazione o servizio in esecuzione. Per ottenere il contesto di un applicazione in esecuzione utilizzare ps -e --contesto."
+msgstr ""
+"Il contesto è il contesto di sicurezza (SELinux) di un'applicazione o "
+"servizio in esecuzione. Per ottenere il contesto di un applicazione in "
+"esecuzione utilizzare ps -e --contesto."
 
 #: ../src/firewall-config.glade.h:149
 msgid "Add Context"
@@ -1202,7 +1302,10 @@ msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
-msgstr "Se una voce di comando nella whitelist finisce per asterisco '*', tutti i comandi che iniziano per il comando corrisponderanno. Se non c'è '*' il comando assoluto compresi argomenti dovrà corrispondere."
+msgstr ""
+"Se una voce di comando nella whitelist finisce per asterisco '*', tutti i "
+"comandi che iniziano per il comando corrisponderanno. Se non c'è '*' il "
+"comando assoluto compresi argomenti dovrà corrispondere."
 
 #: ../src/firewall-config.glade.h:154
 msgid "Add Command Line"
@@ -1510,7 +1613,9 @@ msgstr "Associare un'interfaccia alla zona fidata"
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
 "This is IPv4 only."
-msgstr "Abilita mascheramento nella zona predefinita, argomento interfaccia è ignorato. Vale solo per IPv4."
+msgstr ""
+"Abilita mascheramento nella zona predefinita, argomento interfaccia è "
+"ignorato. Vale solo per IPv4."
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
@@ -1518,23 +1623,32 @@ msgstr "[<tipo>:][<tavola>:]<nomefile>"
 
 #: ../src/firewall-offline-cmd:192
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr "Opzione ignorata. E' utilizzata per aggiungere regole personalizzate per il firewall (Esempio : ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
+msgstr ""
+"Opzione ignorata. E' utilizzata per aggiungere regole personalizzate per il "
+"firewall (Esempio : ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
 #: ../src/firewall-offline-cmd:196
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<interfaccia>:port=<porta>:proto=<protocollo>[:toport=<porta destinazione>][:toaddr=<indirizzo destinazione>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<interfaccia>:port=<porta>:proto=<protocollo>[:toport=<porta "
+"destinazione>][:toaddr=<indirizzo destinazione>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default"
-" zone. This is IPv4 only."
-msgstr "Inoltro della porta con protocollo per l'interfaccia sia verso un'altra porta di destinazione locale (senza il passaggio dell'indirizzo di destinazione) sia verso un altro indirizzo di destinazione con una porta di destinazione opzionale. Questo sarà aggiunto alla zona predefinita. Vale solo con IPv4."
+"address with an optional destination port. This will be added to the default "
+"zone. This is IPv4 only."
+msgstr ""
+"Inoltro della porta con protocollo per l'interfaccia sia verso un'altra "
+"porta di destinazione locale (senza il passaggio dell'indirizzo di "
+"destinazione) sia verso un altro indirizzo di destinazione con una porta di "
+"destinazione opzionale. Questo sarà aggiunto alla zona predefinita. Vale "
+"solo con IPv4."
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
@@ -1544,7 +1658,9 @@ msgstr "<tipo icmp>"
 msgid ""
 "Block this ICMP type in the default zone. The default is to accept all ICMP "
 "types."
-msgstr "Blocca questo tipo di ICMP nella zona predefinita. Di default vengono accettati tutti i tipi ICMP."
+msgstr ""
+"Blocca questo tipo di ICMP nella zona predefinita. Di default vengono "
+"accettati tutti i tipi ICMP."
 
 #: ../src/firewall-offline-cmd:217
 #, c-format
@@ -1556,12 +1672,16 @@ msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
 "possible to firewalld, but there are limitations for example with custom "
 "rules, modules and masquerading."
-msgstr "Questo strumento tenta di convertire le opzioni system-config-firewall/lokkit quanto più possibile in firewalld, ma ci sono limiti per esempio con le regole personalizzate, moduli e mascheramenti."
+msgstr ""
+"Questo strumento tenta di convertire le opzioni system-config-firewall/"
+"lokkit quanto più possibile in firewalld, ma ci sono limiti per esempio con "
+"le regole personalizzate, moduli e mascheramenti."
 
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr "Se non vengono passate opzioni, la configurazione sarà migrata da '%s'."
+msgstr ""
+"Se non vengono passate opzioni, la configurazione sarà migrata da '%s'."
 
 #: ../src/firewall-offline-cmd:286
 #, c-format
@@ -1624,7 +1744,9 @@ msgstr "Ignoro removemodule '%s'"
 #: ../src/firewall-offline-cmd:447
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr "Il dispositivo '%s' è stato mascherato, abilitazione mascheramento per la zona predefinita."
+msgstr ""
+"Il dispositivo '%s' è stato mascherato, abilitazione mascheramento per la "
+"zona predefinita."
 
 #: ../src/firewall-offline-cmd:454
 #, c-format
@@ -1668,4 +1790,11 @@ msgid ""
 "editor</command> and set the zone to trusted, for an ifcfg file, use an "
 "editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
 "file, the firewalld default zone will be used."
-msgstr "Se una delle interfacce fidate è utilizzata per una connessione con NetworkManager o c'è un file ifcfg per questa interfaccia, la zona sarà cambiata con quella definita nella configurazione appena sarà attivata. Per cambiare la zona di una connessione utilizzare <command>nm-connection-editor</command> e impostare la zona come fidata, per un file ifcfg, utilizzare un editor e aggiungere \"Zone=trusted\". Se la zona non è definita nel file ifcfg, sarà utilizzata la zona predefinita firewalld."
+msgstr ""
+"Se una delle interfacce fidate è utilizzata per una connessione con "
+"NetworkManager o c'è un file ifcfg per questa interfaccia, la zona sarà "
+"cambiata con quella definita nella configurazione appena sarà attivata. Per "
+"cambiare la zona di una connessione utilizzare <command>nm-connection-"
+"editor</command> e impostare la zona come fidata, per un file ifcfg, "
+"utilizzare un editor e aggiungere \"Zone=trusted\". Se la zona non è "
+"definita nel file ifcfg, sarà utilizzata la zona predefinita firewalld."

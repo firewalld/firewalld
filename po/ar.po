@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # abdilra7eem <abdilra7eem@yahoo.com>, 2010
 # abdilra7eem <abdilra7eem@yahoo.com>, 2010
@@ -15,14 +15,15 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-11-05 16:00+0100\n"
-"PO-Revision-Date: 2013-11-19 16:49+0000\n"
+"PO-Revision-Date: 2013-10-03 08:49+0000\n"
 "Last-Translator: jpopelka <jpopelka@redhat.com>\n"
-"Language-Team: Arabic (http://www.transifex.com/projects/p/fedora/language/ar/)\n"
+"Language-Team: Arabic <trans-ar@lists.fedoraproject.org>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ar\n"
-"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -114,8 +115,8 @@ msgstr ""
 
 #: ../src/firewall-applet:441
 msgid ""
-"This feature is useful for people using the default zones mostly. For users,"
-" that are changing zones of connections, it might be of limited use."
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
 msgstr ""
 
 #: ../src/firewall-applet:456
@@ -170,8 +171,7 @@ msgstr ""
 
 #: ../src/firewall-applet:966
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
 #: ../src/firewall-applet:969
@@ -516,7 +516,8 @@ msgstr ""
 
 #: ../src/firewall-config:3325
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -651,9 +652,11 @@ msgstr "تَحويل لمنفذ اخر"
 
 #: ../src/firewall-config.glade.h:31
 msgid ""
-"If you enable local forwarding, you have to specify a port. This port has to"
-" be different to the source port."
-msgstr "اذا مكنت التحويل المحلي لديك لتحديد منفذ.هذا المنفذ قد يكون مختلف عن المنفذ المصدر."
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
+msgstr ""
+"اذا مكنت التحويل المحلي لديك لتحديد منفذ.هذا المنفذ قد يكون مختلف عن المنفذ "
+"المصدر."
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
@@ -798,8 +801,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:67
 msgid ""
-"Here you can define which services are trusted in the zone. Trusted services"
-" are accessible from all hosts and networks that can reach the machine from "
+"Here you can define which services are trusted in the zone. Trusted services "
+"are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
 
@@ -834,7 +837,10 @@ msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
-msgstr "يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة العالميّة. ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. التقنيع لـIPv4 فقط."
+msgstr ""
+"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة العالميّة. "
+"ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. التقنيع لـIPv4 "
+"فقط."
 
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
@@ -856,7 +862,9 @@ msgid ""
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
-msgstr "أضف مُدخلاً لتحويل منفذ إلى آخر محلّيّ أو إلى نظام آخر. التحويل إلى نظام آخر مفيد إذا كانت الواجهة مُقنّعة. تحويل المنافذ يعمل على IPv4 فقط."
+msgstr ""
+"أضف مُدخلاً لتحويل منفذ إلى آخر محلّيّ أو إلى نظام آخر. التحويل إلى نظام آخر "
+"مفيد إذا كانت الواجهة مُقنّعة. تحويل المنافذ يعمل على IPv4 فقط."
 
 #: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
@@ -875,13 +883,17 @@ msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
-msgstr "يستخدم ميفاق التحكم برسائل الشبكة (ICMP) لإرسال رسائل الأخطاء بين الأجهزة امزودة باتصال شبكيّ، ورسائل المعلومات، مثل طلب الرّد ورجع الصدى."
+msgstr ""
+"يستخدم ميفاق التحكم برسائل الشبكة (ICMP) لإرسال رسائل الأخطاء بين الأجهزة "
+"امزودة باتصال شبكيّ، ورسائل المعلومات، مثل طلب الرّد ورجع الصدى."
 
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
-msgstr "علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها بالمرور عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
+msgstr ""
+"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها بالمرور "
+"عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
 
 #: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
@@ -909,8 +921,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:90
 msgid ""
-"Add entries to bind interfaces to the zone. If the interface will be used by"
-" a connection, the zone will be set to the zone specified in the connection."
+"Add entries to bind interfaces to the zone. If the interface will be used by "
+"a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:91
@@ -1100,12 +1112,12 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
-"The priority is used to order rules. Priority 0 means add rule on top of the"
-" chain, with a higher priority the rule will be added further down. Rules "
-"with the same priority are on the same level and the order of these rules is"
-" not fixed and may change. If you want to make sure that a rule will be "
-"added after another one, use a low priority for the first and a higher for "
-"the following."
+"The priority is used to order rules. Priority 0 means add rule on top of the "
+"chain, with a higher priority the rule will be added further down. Rules "
+"with the same priority are on the same level and the order of these rules is "
+"not fixed and may change. If you want to make sure that a rule will be added "
+"after another one, use a low priority for the first and a higher for the "
+"following."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:136
@@ -1132,8 +1144,7 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:141
-msgid ""
-"Passthrough rules can only be modified for the permanent configuration."
+msgid "Passthrough rules can only be modified for the permanent configuration."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:142
@@ -1158,8 +1169,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
-"The lockdown feature is a light version of user and application policies for"
-" firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"The lockdown feature is a light version of user and application policies for "
+"firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
 
@@ -1506,22 +1517,24 @@ msgstr "[<type>:][<table>:]<filename>"
 
 #: ../src/firewall-offline-cmd:192
 msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: "
-"ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
+"filter:/etc/sysconfig/ipv4_filter_addon)"
 msgstr ""
 
 #: ../src/firewall-offline-cmd:196
 msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination "
-"port>][:toaddr=<destination address>]"
-msgstr "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
+msgstr ""
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
 "destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default"
-" zone. This is IPv4 only."
+"address with an optional destination port. This will be added to the default "
+"zone. This is IPv4 only."
 msgstr ""
 
 #: ../src/firewall-offline-cmd:205
