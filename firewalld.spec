@@ -1,10 +1,9 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.8
+Version: 0.3.9
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
-Group: System Environment/Base
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: desktop-file-utils
@@ -17,14 +16,8 @@ BuildRequires: docbook-style-xsl
 Requires: dbus-python
 Requires: python-slip-dbus
 Requires: python-decorator
-%if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
-%else
-Requires: pygobject3
-%endif
 Requires: iptables, ebtables
-Requires(post): chkconfig
-Requires(preun): chkconfig
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
@@ -40,11 +33,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
-%if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
-%else
-Requires: pygobject3
-%endif
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also 
@@ -56,11 +45,7 @@ Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
-%if 0%{?fedora} > 17 || 0%{?rhel} > 6
 Requires: pygobject3-base
-%else
-Requires: pygobject3
-%endif
 
 %description -n firewall-config
 The firewall configuration application provides an configuration interface for 
@@ -183,6 +168,26 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Jan 13 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.9-1
+- translation updates
+- New IPv6_rpfilter setting to enable source address validation (RHBZ#847707)
+- Do not mix original and customized zones in case of target changes,
+  apply only used zones
+- firewall-cmd: fix --*_lockdown_whitelist_uid to work with uid 0
+- Don't show main window maximized. (RHBZ#1046811)
+- Use rmmod instead of 'modprobe -r' (RHBZ#1031102)
+- Deprecate 'enabled' attribute of 'masquerade' element
+- firewall-config: new zone was added twice to the list
+- firewalld.dbus(5)
+- Enable python shebang fix again
+- firewall/client: handle_exceptions: Use loop in decorator
+- firewall-offline-cmd: Do not mask firewalld service with disabled option
+- firewall-config: richRuleDialogActionRejectType Entry -> ComboBox
+- Rich_Rule: fix parsing of reject element (RHBZ#1027373)
+- Show combined zones in permanent configuration (RHBZ#1002016)
+- firewall-cmd(1): document exit code 2 and colored output (RHBZ#1028507)
+- firewall-config: fix RHBZ#1028853
+
 * Tue Nov 05 2013 Jiri Popelka <jpopelka@redhat.com> - 0.3.8-1
 - fix memory leaks
 - New option --debug-gc
