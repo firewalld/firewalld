@@ -147,6 +147,9 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "IPv6":
             return self.fw.ip6tables_enabled
 
+        elif prop == "IPv6_rpfilter":
+            return self.fw.ipv6_rpfilter_enabled
+
         elif prop == "BRIDGE":
             return self.fw.ebtables_enabled
 
@@ -189,6 +192,7 @@ class FirewallD(slip.dbus.service.Object):
             'state': self._get_property("state"),
             'IPv4': self._get_property("IPv4"),
             'IPv6': self._get_property("IPv6"),
+            'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
             'BRIDGE': self._get_property("BRIDGE"),
         }
         

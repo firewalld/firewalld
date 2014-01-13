@@ -69,10 +69,11 @@ class Firewall:
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
-         self.ip4tables_enabled, self.ip6tables_enabled, self.ebtables_enabled,
-         self._state, self._panic, self._default_zone, self._module_refcount,
-         self._marks, self._min_mark, self.cleanup_on_exit)
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+            (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
+             self.ebtables_enabled, self._state, self._panic,
+             self._default_zone, self._module_refcount, self._marks,
+             self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -82,6 +83,7 @@ class Firewall:
         self._marks = [ ]
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
+        self.ipv6_rpfilter_enabled = False
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -137,6 +139,18 @@ class Firewall:
                     except FirewallError:
                         # already enabled, this is probably reload
                         pass
+
+            if self._firewalld_conf.get("IPv6_rpfilter"):
+                value = self._firewalld_conf.get("IPv6_rpfilter")
+                if value != None:
+                    if value.lower() in [ "no", "false" ]:
+                        self.ipv6_rpfilter_enabled = False
+                    if value.lower() in [ "yes", "true" ]:
+                        self.ipv6_rpfilter_enabled = True
+            if self.ipv6_rpfilter_enabled:
+                log.debug1("IPv6 rpfilter is enabled")
+            else:
+                log.debug1("IPV6 rpfilter is disabled")
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
@@ -504,6 +518,12 @@ class Firewall:
     def _apply_default_rules(self):
         for ipv in [ "ipv4", "ipv6", "eb" ]:
             self.__apply_default_rules(ipv)
+
+        if self.ipv6_rpfilter_enabled:
+            if self.is_table_available("ipv6", "raw"):
+                rule = [ "-t", "raw", "-I", "PREROUTING", "1",
+                         "-m", "rpfilter", "--invert", "-j", "DROP" ]
+                self.rule("ipv6", rule)
 
     # flush and policy
 
