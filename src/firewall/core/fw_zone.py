@@ -307,6 +307,8 @@ class FirewallZone:
                         self.add_port(zone, *args)
                     elif key == "masquerade":
                         self.add_masquerade(zone)
+                    elif key == "rules":
+                        self.add_rule(zone, args)
                     elif key == "interfaces":
                         self.change_zone_of_interface(zone, args)
                     elif key == "sources":
