@@ -97,8 +97,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             return self.obj.default
         elif property_name == "builtin":
             return self.config.is_builtin_zone(self.obj)
-        elif property_name == "description":
-            return self.obj.description
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -122,7 +120,6 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             'filename': self.obj.filename,
             'path': self.obj.path,
             'default': self.obj.default,
-            'description': self.obj.description,
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
