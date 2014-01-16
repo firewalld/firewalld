@@ -206,10 +206,11 @@ class FirewallZone:
                 #   called from those chains
                 # - DROP is not supported in nat table
                 target = self._zones[zone].target
-                if target != DEFAULT_ZONE_TARGET and \
-                   ((target in [ "REJECT", "%%REJECT%%" ] and chain in
-                     [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]) or \
-                    (target == "DROP" and table != "nat")):
+                if target != DEFAULT_ZONE_TARGET and not \
+                   ((target in [ "REJECT", "%%REJECT%%" ] and \
+                     chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT",
+                                    "OUTPUT" ]) or \
+                    (target == "DROP" and table == "nat")):
                     rules.append((ipv, [ _zone, 4, "-t", table,
                                          "-j", self._zones[zone].target ]))
 
