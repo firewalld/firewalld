@@ -1426,6 +1426,8 @@ class FirewallConfig(object):
                 action = _("accept")
             elif type(obj.action) == Rich_Reject:
                 action = _("reject")
+                if obj.action.type != None:
+                    action += "\n" + obj.action.type
             elif type(obj.action) == Rich_Drop:
                 action = _("drop")
             if obj.action.limit:
