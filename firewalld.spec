@@ -28,7 +28,6 @@ firewall with a D-BUS interface.
 
 %package -n firewall-applet
 Summary: Firewall panel applet
-Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
@@ -41,7 +40,6 @@ the firewall settings.
 
 %package -n firewall-config
 Summary: Firewall configuration application
-Group: System Environment/Base
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
