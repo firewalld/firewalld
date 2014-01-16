@@ -2188,7 +2188,7 @@ class FirewallConfig(object):
                                      _("forward-port"))
                 s = "%s/%s" % (old_obj.element.port, old_obj.element.protocol)
                 if old_obj.element.to_port != "":
-                    s += " ➙%s" % old_obj.element.to_port
+                    s += " >%s" % old_obj.element.to_port
                 if old_obj.element.to_address != "":
                     s += " @%s" % old_obj.element.to_address
                 self.richRuleDialogElementChooser.set_text(s)
@@ -2536,7 +2536,7 @@ class FirewallConfig(object):
     def create_fwp_string(self, port, proto, to_port, to_addr):
         _to_port = ""
         if to_port != "":
-            _to_port = " ➙%s" % to_port
+            _to_port = " >%s" % to_port
         _to_addr = ""
         if to_addr != "":
             _to_addr = " @%s" % to_addr
@@ -2547,8 +2547,8 @@ class FirewallConfig(object):
         proto = ""
         to_port = ""
         to_addr = ""
-        if "➙" in text: # to_port
-            splits = text.split("➙")
+        if ">" in text: # to_port
+            splits = text.split(">")
             (port,proto) = splits[0].split("/")
             if "@" in splits[1]:
                 (to_port,to_addr) = splits[1].split("@")
