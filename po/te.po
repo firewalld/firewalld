@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-13 17:16+0100\n"
+"POT-Creation-Date: 2014-01-16 16:04+0100\n"
 "PO-Revision-Date: 2013-10-03 04:49-0400\n"
 "Last-Translator: jpopelka <jpopelka@redhat.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/fedora/language/"
@@ -66,7 +66,7 @@ msgstr "ప్రారంభ కాదు, ఇప్పటికే నడు�
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 విఫలమైంది: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4991
+#: ../src/firewall-applet:106 ../src/firewall-config:4997
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "అనుసంధానం '%s' కొరకు క్షేత్రం ఎంపికచేయి"
@@ -278,7 +278,7 @@ msgstr "ప్రతిమలు లోడుచేయుటకు విఫల�
 msgid "NetworkManager connection editor is missing."
 msgstr "నెట్వర్కునిర్వాహిక అనుసంధానం సరికూర్పరి దొరకలేదు."
 
-#: ../src/firewall-config:356 ../src/firewall-config:1648
+#: ../src/firewall-config:356 ../src/firewall-config:1650
 msgid "Runtime"
 msgstr "రన్‌టైమ్"
 
@@ -340,8 +340,8 @@ msgstr "లాగ్"
 msgid "Audit"
 msgstr "ఆడిట్"
 
-#: ../src/firewall-config:1095 ../src/firewall-config:1838
-#: ../src/firewall-config:1876
+#: ../src/firewall-config:1095 ../src/firewall-config:1840
+#: ../src/firewall-config:1878
 msgid "Warning"
 msgstr "హెచ్చిరక"
 
@@ -353,174 +353,174 @@ msgstr "దోషము"
 msgid "Changes applied."
 msgstr "మార్పులు అనువర్తించబడెను."
 
-#: ../src/firewall-config:1426 ../src/firewall-config:2620
+#: ../src/firewall-config:1426 ../src/firewall-config:2625
 msgid "accept"
 msgstr "ఆమోదించు"
 
-#: ../src/firewall-config:1428 ../src/firewall-config:2622
-#: ../src/firewall-config:2731
+#: ../src/firewall-config:1428 ../src/firewall-config:2627
+#: ../src/firewall-config:2737
 msgid "reject"
 msgstr "తిరస్కరించు"
 
-#: ../src/firewall-config:1430 ../src/firewall-config:2627
+#: ../src/firewall-config:1432 ../src/firewall-config:2632
 msgid "drop"
 msgstr "విడువు"
 
-#: ../src/firewall-config:1432 ../src/firewall-config:1466
-#: ../src/firewall-config:1471
+#: ../src/firewall-config:1434 ../src/firewall-config:1468
+#: ../src/firewall-config:1473
 msgid "limit"
 msgstr "పరిమితి"
 
-#: ../src/firewall-config:1443 ../src/firewall-config:2162
-#: ../src/firewall-config:2313 ../src/firewall-config:2584
+#: ../src/firewall-config:1445 ../src/firewall-config:2164
+#: ../src/firewall-config:2318 ../src/firewall-config:2589
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "సేవ"
 
-#: ../src/firewall-config:1445 ../src/firewall-config:2168
-#: ../src/firewall-config:2315 ../src/firewall-config:2587
+#: ../src/firewall-config:1447 ../src/firewall-config:2170
+#: ../src/firewall-config:2320 ../src/firewall-config:2592
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "పోర్ట్"
 
-#: ../src/firewall-config:1448 ../src/firewall-config:2173
-#: ../src/firewall-config:2324 ../src/firewall-config:2593
+#: ../src/firewall-config:1450 ../src/firewall-config:2175
+#: ../src/firewall-config:2329 ../src/firewall-config:2598
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "ప్రొటోకాల్"
 
-#: ../src/firewall-config:1450 ../src/firewall-config:2178
-#: ../src/firewall-config:2607 ../src/firewall-config:2743
+#: ../src/firewall-config:1452 ../src/firewall-config:2180
+#: ../src/firewall-config:2612 ../src/firewall-config:2749
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "మాస్క్వరేడ్"
 
-#: ../src/firewall-config:1464
+#: ../src/firewall-config:1466
 msgid "level"
 msgstr "స్థాయి"
 
-#: ../src/firewall-config:1468 ../src/firewall-config:1473
+#: ../src/firewall-config:1470 ../src/firewall-config:1475
 msgid "yes"
 msgstr "అవును"
 
-#: ../src/firewall-config:1600
+#: ../src/firewall-config:1602
 msgid "Authorization failed."
 msgstr "ధృవీకరణ విఫలమైంది."
 
-#: ../src/firewall-config:1603
+#: ../src/firewall-config:1605
 msgid "Invalid name"
 msgstr "చెల్లని ఆర్గుమెంట్ %s"
 
-#: ../src/firewall-config:1607
+#: ../src/firewall-config:1609
 msgid "Name already exists"
 msgstr "పేరు యిప్పటికే వుంది"
 
-#: ../src/firewall-config:1835
+#: ../src/firewall-config:1837
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "జోన్ '%s': సేవ '%s' అందుబాటులో లేదు."
 
-#: ../src/firewall-config:1839 ../src/firewall-config:1877
+#: ../src/firewall-config:1841 ../src/firewall-config:1879
 msgid "Remove"
 msgstr "తీసివేయి"
 
-#: ../src/firewall-config:1839 ../src/firewall-config:1877
+#: ../src/firewall-config:1841 ../src/firewall-config:1879
 msgid "Ignore"
 msgstr "విస్మరించు"
 
-#: ../src/firewall-config:1873
+#: ../src/firewall-config:1875
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "జోన్ '%s': ICMP రకం '%s' అందుబాటులో లేదు."
 
-#: ../src/firewall-config:2016
+#: ../src/firewall-config:2018
 msgid "Built-in zone, rename not supported."
 msgstr "బిల్ట్-ఇన్ జోన్, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
-#: ../src/firewall-config:2125 ../src/firewall-config:2559
+#: ../src/firewall-config:2127 ../src/firewall-config:2564
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "క్షణం"
 
-#: ../src/firewall-config:2126 ../src/firewall-config:2560
+#: ../src/firewall-config:2128 ../src/firewall-config:2565
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "నిమిషం"
 
-#: ../src/firewall-config:2127 ../src/firewall-config:2561
+#: ../src/firewall-config:2129 ../src/firewall-config:2566
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "గంట"
 
-#: ../src/firewall-config:2128 ../src/firewall-config:2562
+#: ../src/firewall-config:2130 ../src/firewall-config:2567
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "రోజు"
 
-#: ../src/firewall-config:2129 ../src/firewall-config:2563
+#: ../src/firewall-config:2131 ../src/firewall-config:2568
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "అత్యవసర"
 
-#: ../src/firewall-config:2130 ../src/firewall-config:2564
+#: ../src/firewall-config:2132 ../src/firewall-config:2569
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "జాగరూకత"
 
-#: ../src/firewall-config:2131 ../src/firewall-config:2565
+#: ../src/firewall-config:2133 ../src/firewall-config:2570
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "సంక్లిష్ట"
 
-#: ../src/firewall-config:2132 ../src/firewall-config:2566
+#: ../src/firewall-config:2134 ../src/firewall-config:2571
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "దోషం"
 
-#: ../src/firewall-config:2133 ../src/firewall-config:2567
+#: ../src/firewall-config:2135 ../src/firewall-config:2572
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "హెచ్చరిక"
 
-#: ../src/firewall-config:2134 ../src/firewall-config:2568
+#: ../src/firewall-config:2136 ../src/firewall-config:2573
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "సూచన"
 
-#: ../src/firewall-config:2135 ../src/firewall-config:2569
+#: ../src/firewall-config:2137 ../src/firewall-config:2574
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "సమాచారం"
 
-#: ../src/firewall-config:2136 ../src/firewall-config:2570
+#: ../src/firewall-config:2138 ../src/firewall-config:2575
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "డీబగ్"
 
-#: ../src/firewall-config:2181 ../src/firewall-config:2326
-#: ../src/firewall-config:2596 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2183 ../src/firewall-config:2331
+#: ../src/firewall-config:2601 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-బ్లాక్"
 
-#: ../src/firewall-config:2186 ../src/firewall-config:2328
-#: ../src/firewall-config:2599 ../src/firewall-config:2751
+#: ../src/firewall-config:2188 ../src/firewall-config:2333
+#: ../src/firewall-config:2604 ../src/firewall-config:2757
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "ఫార్వార్డ్-పోర్ట్"
 
-#: ../src/firewall-config:2306 ../src/firewall-config:2505
-#: ../src/firewall-config:2519 ../src/firewall-config:2574
-#: ../src/firewall-config:2675 ../src/firewall-config:2699
+#: ../src/firewall-config:2311 ../src/firewall-config:2510
+#: ../src/firewall-config:2524 ../src/firewall-config:2579
+#: ../src/firewall-config:2680 ../src/firewall-config:2705
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2308 ../src/firewall-config:2507
-#: ../src/firewall-config:2521 ../src/firewall-config:2576
-#: ../src/firewall-config:2677 ../src/firewall-config:2701
+#: ../src/firewall-config:2313 ../src/firewall-config:2512
+#: ../src/firewall-config:2526 ../src/firewall-config:2581
+#: ../src/firewall-config:2682 ../src/firewall-config:2707
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3359
+#: ../src/firewall-config:3365
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -529,11 +529,11 @@ msgstr ""
 "ఇంటర్ఫేస్ మారువేషంలో వుంటేనే వేరొక వ్యవస్థకు పంపుట వుపయోగకరంగా వుంటుంది.\n"
 "ఈ క్షేత్రాన్ని మారువేషంలో వుంచాలనుకొంటున్నారా?"
 
-#: ../src/firewall-config:3600
+#: ../src/firewall-config:3606
 msgid "Built-in service, rename not supported."
 msgstr "బిల్ట్-ఇన్ సేవ, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
-#: ../src/firewall-config:3966
+#: ../src/firewall-config:3972
 msgid "Built-in icmp, rename not supported."
 msgstr "బిల్ట్-ఇన్ icmp, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#path="/usr/bin/"
+#readonly path="/usr/bin/"
 readonly path="../"
 
 readonly RED='\033[00;31m'
