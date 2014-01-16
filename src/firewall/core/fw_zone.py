@@ -307,7 +307,7 @@ class FirewallZone:
                     elif key == "masquerade":
                         self.add_masquerade(zone)
                     elif key == "rules":
-                        self.add_rule(zone, args)
+                        self.add_rule(zone, Rich_Rule(rule_str=args))
                     elif key == "interfaces":
                         self.change_zone_of_interface(zone, args)
                     elif key == "sources":
@@ -341,7 +341,8 @@ class FirewallZone:
                     elif key == "masquerade":
                         self.__masquerade(enable, zone)
                     elif key == "rules":
-                        mark = self.__rule(enable, zone, args)
+                        mark = self.__rule(enable, zone,
+                                           Rich_Rule(rule_str=args), None)
                         obj.settings["rules"][args]["mark"] = mark
                     elif key == "interfaces":
                         self.__interface(enable, zone, args)
