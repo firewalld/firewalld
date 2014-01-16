@@ -2205,6 +2205,8 @@ class FirewallConfig(object):
                             self.richRuleDialogActionRejectTypeCombobox. \
                                                         append(icmp, icmp)
                         if old_obj.action.type:
+                            self.richRuleDialogActionRejectTypeCheck. \
+                                set_active(True)
                             self.richRuleDialogActionRejectTypeCombobox. \
                                             set_active_id(old_obj.action.type)
                         else:
