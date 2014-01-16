@@ -2200,15 +2200,16 @@ class FirewallConfig(object):
                 elif type(old_obj.action) == Rich_Reject:
                     action = "reject"
                     self.richRuleDialogActionRejectTypeCombobox.remove_all()
-                    for icmp in REJECT_TYPES[old_obj.family]:
-                        self.richRuleDialogActionRejectTypeCombobox. \
-                                                    append(icmp, icmp)
-                    if old_obj.action.type:
-                        self.richRuleDialogActionRejectTypeCombobox. \
-                                         set_active_id(old_obj.action.type)
-                    else:
-                        self.richRuleDialogActionRejectTypeCombobox. \
-                             set_active_id(REJECT_TYPES[old_obj.family][0])
+                    if old_obj.family != None:
+                        for icmp in REJECT_TYPES[old_obj.family]:
+                            self.richRuleDialogActionRejectTypeCombobox. \
+                                                        append(icmp, icmp)
+                        if old_obj.action.type:
+                            self.richRuleDialogActionRejectTypeCombobox. \
+                                            set_active_id(old_obj.action.type)
+                        else:
+                            self.richRuleDialogActionRejectTypeCombobox. \
+                                set_active_id(REJECT_TYPES[old_obj.family][0])
                 elif type(old_obj.action) == Rich_Drop:
                     action = "drop"
                 combobox_select_text(self.richRuleDialogActionCombobox, action)
@@ -2684,7 +2685,8 @@ class FirewallConfig(object):
             for icmp in REJECT_TYPES[family]:
                 self.richRuleDialogActionRejectTypeCombobox.append(icmp, icmp)
             old_obj = self.richRuleDialog.old_obj
-            if old_obj and old_obj.family == family and old_obj.action.type:
+            if old_obj and old_obj.family == family and \
+               hasattr(old_obj.action, 'type') and old_obj.action.type:
                 self.richRuleDialogActionRejectTypeCombobox. \
                                      set_active_id(old_obj.action.type)
             else:
