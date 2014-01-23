@@ -334,7 +334,8 @@ class FirewallZone:
                     if key == "icmp_blocks":
                         self.__icmp_block(enable, zone, args)
                     elif key == "forward_ports":
-                        self.__forward_port(enable, zone, *args)
+                        mark = obj.settings["forward_ports"][args]["mark"]
+                        self.__forward_port(enable, zone, *args, mark_id=mark)
                     elif key == "services":
                         self.__service(enable, zone, args)
                     elif key == "ports":
