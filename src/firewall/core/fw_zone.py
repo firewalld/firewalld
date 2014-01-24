@@ -208,7 +208,6 @@ class FirewallZone:
                 if table == "filter" and \
                    target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
                    chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    print "-->", _zone, create, table, chain, target
                     rules.append((ipv, [ _zone, 4, "-t", table, "-j", target ]))
 
         if create:
