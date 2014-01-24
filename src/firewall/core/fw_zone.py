@@ -198,21 +198,18 @@ class FirewallZone:
                 rules.append((ipv, [ _zone, 3, "-t", table,
                                      "-j", "%s_allow" % (_zone) ]))
 
-                # handle trust and block zones:
-                # add an additional rule with the zone target (accept, reject or
-                # drop) to the base _zone, with the following limitations:
-                # - REJECT is only valid in the INPUT, FORWARD and
-                #   OUTPUT chains, and user-defined chains which are only
-                #   called from those chains
-                # - DROP is not supported in nat table
+                # Handle trust, block and drop zones:
+                # Add an additional rule with the zone target (accept, reject
+                # or drop) to the base _zone only in the filter table.
+                # Otherwise it is not be possible to have a zone with drop
+                # target, that is allowing traffic that is locally initiated
+                # or that adds additional rules. (RHBZ#1055190)
                 target = self._zones[zone].target
-                if target != DEFAULT_ZONE_TARGET and not \
-                   ((target in [ "REJECT", "%%REJECT%%" ] and \
-                     chain not in [ "INPUT", "FORWARD_IN", "FORWARD_OUT",
-                                    "OUTPUT" ]) or \
-                    (target == "DROP" and table == "nat")):
-                    rules.append((ipv, [ _zone, 4, "-t", table,
-                                         "-j", self._zones[zone].target ]))
+                if table == "filter" and \
+                   target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
+                   chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                    print "-->", _zone, create, table, chain, target
+                    rules.append((ipv, [ _zone, 4, "-t", table, "-j", target ]))
 
         if create:
             # handle chains first
