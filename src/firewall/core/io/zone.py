@@ -664,6 +664,7 @@ def zone_writer(zone, path=None):
 
         # audit
         if rule.audit:
+            attrs = {}
             if rule.audit.limit:
                 handler.ignorableWhitespace("    ")
                 handler.startElement("audit", { })
