@@ -223,7 +223,7 @@ log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
 	</programlisting>
       </para>
       <para>
-	Log new connection attempts to the rule with kernel logging for example in syslog. You can define a prefix text that will be added to the log message as a prefix. Log level can be one of "<option>emerg</option>", "<option>alert</option>", "<option>crit</option>", "<option>error</option>", "<option>warning</option>", "<option>notice</option>", "<option>info</option>" or "<option>debug</option>". See <citerefentry><refentrytitle>syslog</refentrytitle><manvolnum>3</manvolnum></citerefentry> for description of levels.
+	Log new connection attempts to the rule with kernel logging for example in syslog. You can define a prefix text that will be added to the log message as a prefix. Log level can be one of "<option>emerg</option>", "<option>alert</option>", "<option>crit</option>", "<option>error</option>", "<option>warning</option>", "<option>notice</option>", "<option>info</option>" or "<option>debug</option>", where default (i.e. if there's no one specified) is "<option>warning</option>". See <citerefentry><refentrytitle>syslog</refentrytitle><manvolnum>3</manvolnum></citerefentry> for description of levels.
       </para>
       <para>
 	It is possible to limit logging: The rate is a natural positive number [1, ..], the duration is of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days. The maximum limit value is "1/d" which means at maximum one log entry per day.
