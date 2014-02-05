@@ -6,16 +6,17 @@
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2007-2010
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2013
 # Krishnababu Krothapalli <kkrothap@redhat.com>, 2013
+# Krishnababu Krothapalli <krisnababu@gmail.com>, 2014
 # Sree Ganesh <sthottem@redhat.com>, 2006
 # sudheesh001 <sudheesh1995@outlook.com>, 2013
 # sudheesh001 <sudheesh1995@outlook.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-17 06:59+0100\n"
-"PO-Revision-Date: 2013-10-03 04:49-0400\n"
-"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
+"POT-Creation-Date: 2014-02-05 17:43+0100\n"
+"PO-Revision-Date: 2014-01-30 08:50+0000\n"
+"Last-Translator: Krishnababu Krothapalli <krisnababu@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/fedora/language/"
 "te/)\n"
 "Language: te\n"
@@ -23,7 +24,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.1.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -66,7 +66,7 @@ msgstr "ప్రారంభ కాదు, ఇప్పటికే నడు�
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 విఫలమైంది: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4997
+#: ../src/firewall-applet:106 ../src/firewall-config:4999
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "అనుసంధానం '%s' కొరకు క్షేత్రం ఎంపికచేయి"
@@ -529,11 +529,11 @@ msgstr ""
 "ఇంటర్ఫేస్ మారువేషంలో వుంటేనే వేరొక వ్యవస్థకు పంపుట వుపయోగకరంగా వుంటుంది.\n"
 "ఈ క్షేత్రాన్ని మారువేషంలో వుంచాలనుకొంటున్నారా?"
 
-#: ../src/firewall-config:3606
+#: ../src/firewall-config:3607
 msgid "Built-in service, rename not supported."
 msgstr "బిల్ట్-ఇన్ సేవ, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
-#: ../src/firewall-config:3972
+#: ../src/firewall-config:3974
 msgid "Built-in icmp, rename not supported."
 msgstr "బిల్ట్-ఇన్ icmp, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
@@ -1395,6 +1395,8 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"దీనిని చేతనం చేయుటకు చర్య అనేది 'తిరస్కరించు' అవ్వాలి మరియు ఫ్యామిలీ 'ipv4' లేదా 'ipv6' అవ్వాలి "
+"(రెండూ కాదు)."
 
 #: ../src/firewall-config.glade.h:189
 msgid "with Type:"

@@ -9,23 +9,22 @@
 # Leah Liu <weliu@redhat.com>, 2005-2006
 # Sarah Wang <sarahs@redhat.com>, 2003-2005
 # Tommy He <lovenemesis@gmail.com>, 2012-2013
+# zsun <zamirs@163.com>, 2013-2014
 # zsun <zamirs@163.com>, 2013
-# zsun <zamirs@163.com>, 2013
-# Leah Liu <lliu@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-17 06:59+0100\n"
-"PO-Revision-Date: 2013-11-24 06:26-0500\n"
-"Last-Translator: Leah Liu <lliu@redhat.com>\n"
-"Language-Team: Chinese (China) <trans-zh_cn@lists.fedoraproject.org>\n"
-"Language: zh-CN\n"
+"POT-Creation-Date: 2014-02-05 17:43+0100\n"
+"PO-Revision-Date: 2014-02-03 09:30+0000\n"
+"Last-Translator: zsun <zamirs@163.com>\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/projects/p/fedora/"
+"language/zh_CN/)\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.1.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
 msgid "Firewall Applet"
@@ -68,7 +67,7 @@ msgstr "不能启动 FirewallD，已在运行。"
 msgid "Fork #1 failed: %d (%s)"
 msgstr "分支 #1 失败：%d （%s）"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4997
+#: ../src/firewall-applet:106 ../src/firewall-config:4999
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "为连接 '%s' 选择区域"
@@ -351,7 +350,7 @@ msgstr "错误"
 
 #: ../src/firewall-config:1143
 msgid "Changes applied."
-msgstr "应用更改。"
+msgstr "变更已生效。"
 
 #: ../src/firewall-config:1426 ../src/firewall-config:2625
 msgid "accept"
@@ -526,14 +525,14 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
-"只有接口被伪装时转发到另一个系统才游泳。\n"
-"您要伪装这个区域吗？"
+"转发至其他系统琴在端口伪装时才有用。\n"
+"您想要伪装该区域吗？"
 
-#: ../src/firewall-config:3606
+#: ../src/firewall-config:3607
 msgid "Built-in service, rename not supported."
 msgstr "预置服务，不支持重命名。"
 
-#: ../src/firewall-config:3972
+#: ../src/firewall-config:3974
 msgid "Built-in icmp, rename not supported."
 msgstr "预置 ICMP，不支持重命名。"
 
@@ -559,7 +558,7 @@ msgstr "默认区域"
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
-msgstr "请从下面的列表中选择默认区域"
+msgstr "请从下面列表选择默认区域。"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
@@ -567,15 +566,15 @@ msgstr "直接链"
 
 #: ../src/firewall-config.glade.h:8
 msgid "Please select ipv and table and enter the chain name."
-msgstr "请选择 ipv 和 table 并输入链名称。"
+msgstr "请选择 IPV 及表并输入链名。"
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr "ipv:"
+msgstr "ipv："
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
-msgstr "Table:"
+msgstr "表："
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
@@ -591,7 +590,7 @@ msgstr "security"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr "Chain:"
+msgstr "链："
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
@@ -599,11 +598,11 @@ msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr "直接通过规则"
+msgstr "直接穿通规则"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Please select ipv and enter the args."
-msgstr "请选择 ipv 并输入参数。"
+msgstr "请选择 IPV 并输入参数。"
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
@@ -615,7 +614,7 @@ msgstr "直接规则"
 
 #: ../src/firewall-config.glade.h:20
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr "请选择 ip 和 table，链优先级，并输入该参数。"
+msgstr "请选择 IPV 及表、链优先级并输入参数。"
 
 #: ../src/firewall-config.glade.h:21
 msgid "Priority:"
@@ -718,12 +717,12 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
-"重载防火墙规则: 当前永久配置将变成新的运行时配置。例如：所有只在运行时进行的"
-"更改在重新载入前都有效，如果更改不再永久配置中，则会在重新载入后失效。"
+"重载防火墙规则。当前永久配置将变成新的运行时配置。例如所有仅在运行时配置所做"
+"的变更若未在永久配置中操作，将在重载后丢失。"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Change which zone a network connection belongs to."
-msgstr "网络连接所属区域的更改。"
+msgstr "更改网络连接所属的区域。"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
@@ -731,11 +730,11 @@ msgstr "改变默认区域"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Change default zone for connections or interfaces."
-msgstr "为连接或者接口更改默认区域。"
+msgstr "更改连接或接口的默认区域。"
 
 #: ../src/firewall-config.glade.h:50
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr "Panic 模式意味着损失了所有进入和外出的数据包。"
+msgstr "应急模式意味着将丢弃所有传入和传出的包。"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
@@ -745,7 +744,7 @@ msgstr "应急模式"
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
-msgstr "锁定锁防火墙配置以便只有锁定白名单中的程序可以更改它。"
+msgstr "锁定可以对防火墙配置进行加锁，只允许锁定白名单上的应用程序进行改动。"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
@@ -753,7 +752,7 @@ msgstr "锁定"
 
 #: ../src/firewall-config.glade.h:54
 msgid "_View"
-msgstr "查看（_V）"
+msgstr "查看(V)"
 
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
@@ -929,7 +928,7 @@ msgstr "编辑富规则"
 
 #: ../src/firewall-config.glade.h:88
 msgid "Remove Rich Rule"
-msgstr "删除富规则"
+msgstr "移除富规则"
 
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
@@ -953,7 +952,7 @@ msgstr "编辑接口"
 
 #: ../src/firewall-config.glade.h:93
 msgid "Remove Interface"
-msgstr "删除接口"
+msgstr "移除接口"
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
@@ -961,15 +960,15 @@ msgstr "为与此区域绑定来源地址或范围添加条目。"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Add Source"
-msgstr "添加源"
+msgstr "添加来源"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Edit Source"
-msgstr "编辑源"
+msgstr "编辑来源"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Remove Source"
-msgstr "删除源"
+msgstr "移除来源"
 
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
@@ -1076,7 +1075,7 @@ msgstr "载入默认 ICMP 类型"
 
 #: ../src/firewall-config.glade.h:123
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "指定这个 ICMP 类型是否可用于 IPv4 和/或者 IPv6。"
+msgstr "指定是否该 ICMP 类型可用于 IPv4 和/或 IPv6。"
 
 #: ../src/firewall-config.glade.h:124
 msgid "IPv4"
@@ -1100,9 +1099,9 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
-"这个直接配置可让您从更多方向访问该防火墙。这些选项要求用户了解基本 iptables "
-"概念。例如：tables、链、命令、参数和目标。只能在无法使用其他 firewalld 功能的"
-"系统中使用直接配置。"
+"直接配置给予直接访问防火墙方式。这些选项需要用户了解基本的 iptables 概念，比"
+"如表、链、命令、参数和目标。直接配置应该仅用于当其他 firewalld 功能都不可用时"
+"的最后手段。"
 
 #: ../src/firewall-config.glade.h:128
 msgid ""
@@ -1110,12 +1109,12 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
-"每个选项的 ipv 参数必须是 ipv4 或者 ipv 6 或者 eb。ipv4 用于 iptables，ipv6 "
-"用于 ip6tables，eb 用于以太网桥接（ebtables）。"
+"每个操作的 IPV 参数应为 ipv4 或 ipv6 或 eb。ipv4 用于 iptables，ipv6 用于 "
+"ip6tables，eb 用于以太网桥接(ebtables)。"
 
 #: ../src/firewall-config.glade.h:129
 msgid "Additional chains for use with rules."
-msgstr "使用这些规则的附加链。"
+msgstr "与规则共同生效的附加链"
 
 #: ../src/firewall-config.glade.h:130
 msgid "Add Chain"
@@ -1127,7 +1126,7 @@ msgstr "编辑链"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Remove Chain"
-msgstr "删除链"
+msgstr "移除链"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Chains"
@@ -1136,7 +1135,7 @@ msgstr "链"
 #: ../src/firewall-config.glade.h:134
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
-msgstr "在有优先级的 table 的链中添加使用参数 args 的规则。"
+msgstr "添加一个包含参数的规则至具备优先级信息的表中。"
 
 #: ../src/firewall-config.glade.h:135
 msgid ""
@@ -1147,14 +1146,13 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
-"采用优先级为规则排序。优先级 0 代表在该链 的顶部添加规则，优先级数越高，则添"
-"加规则的位置越低。使用同样优先级数的规则所处的等级相同，且这些规则不是固定"
-"的，可以更改。如果您要确定某个规则要添加到另一个规则之后，则需要在第一个规则"
-"中使用低优先级，后面的规则使用高优先级。"
+"优先级用于规则排序。优先级0 代表在链顶端添加规则，更大的优先级将添加到链下"
+"方。优先级相同的规则将具备相同的级别，排序并不固定并有可能变化。如果您想要确"
+"保一个规则会在另外一个后添加，需为前者指定低优先级而为后者指定高优先级。"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Add Rule"
-msgstr "添加规则 "
+msgstr "添加规则"
 
 #: ../src/firewall-config.glade.h:137
 msgid "Edit Rule"
@@ -1162,7 +1160,7 @@ msgstr "编辑规则"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Remove Rule"
-msgstr "删除规则"
+msgstr "移除规则"
 
 #: ../src/firewall-config.glade.h:139
 msgid "Rules"
@@ -1174,32 +1172,32 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
-"通过规则会直接穿过防火墙，且不会放在特殊链中。可使用所有 iptables、ip6tables "
-"和 ebtables 选项。"
+"穿通规则将被直接传递给防火墙而不会放置到特殊链中。可以使用所有 iptables、"
+"ip6tables 和 ebtables 选项。"
 
 #: ../src/firewall-config.glade.h:141
 msgid "Passthrough rules can only be modified for the permanent configuration."
-msgstr "只能为永久配置修改通过规则。"
+msgstr "穿通规则仅能在永久配置中变更。"
 
 #: ../src/firewall-config.glade.h:142
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "使用通过规则时要小心不要破坏防火墙。"
+msgstr "请小心使用穿通规则，不要损害防火墙。"
 
 #: ../src/firewall-config.glade.h:143
 msgid "Add Passthrough"
-msgstr "添加通过"
+msgstr "添加穿通"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Edit Passthrough"
-msgstr "编辑通过"
+msgstr "编辑穿通"
 
 #: ../src/firewall-config.glade.h:145
 msgid "Remove Passthrough"
-msgstr "删除通过"
+msgstr "移除穿通"
 
 #: ../src/firewall-config.glade.h:146
 msgid "Passthrough"
-msgstr "通过"
+msgstr "穿通"
 
 #: ../src/firewall-config.glade.h:147
 msgid ""
@@ -1228,7 +1226,7 @@ msgstr "编辑上下文"
 
 #: ../src/firewall-config.glade.h:151
 msgid "Remove Context"
-msgstr "删除上下文"
+msgstr "移除上下文"
 
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
@@ -1253,7 +1251,7 @@ msgstr "编辑命令行"
 
 #: ../src/firewall-config.glade.h:156
 msgid "Remove Command Line"
-msgstr "删除命令行"
+msgstr "移除命令行"
 
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
@@ -1273,7 +1271,7 @@ msgstr "编辑用户名"
 
 #: ../src/firewall-config.glade.h:161
 msgid "Remove User Name"
-msgstr "删除用户名"
+msgstr "移除用户名"
 
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
@@ -1293,7 +1291,7 @@ msgstr "编辑用户 ID"
 
 #: ../src/firewall-config.glade.h:166
 msgid "Remove User Id"
-msgstr "删除用户 ID"
+msgstr "移除用户 ID"
 
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
@@ -1379,7 +1377,7 @@ msgstr "反转"
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
-msgstr ""
+msgstr "若启用该项，操作需为'reject'并且家族选择'ipv4'或'ipv6'(但不能同时选择)"
 
 #: ../src/firewall-config.glade.h:189
 msgid "with Type:"
@@ -1529,11 +1527,11 @@ msgstr "<service>"
 
 #: ../src/firewall-offline-cmd:168
 msgid "Enable a service in the default zone (example: ssh)"
-msgstr "启用默认区域中的一种协议 ( 例：ssh )"
+msgstr "启用默认区域中的一种服务 ( 例：ssh )"
 
 #: ../src/firewall-offline-cmd:173
 msgid "Disable a service in the default zone (example: ssh)"
-msgstr "禁用默认区域中的一种服务（例如：ssh ）"
+msgstr "禁用默认区域中的一种服务 ( 例：ssh )"
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
@@ -1687,7 +1685,7 @@ msgstr "将端口 '%s/%s' 添加到默认区域。"
 #: ../src/firewall-offline-cmd:460
 #, c-format
 msgid "Removing service '%s' from default zone."
-msgstr "从默认区域中删除服务 '%s'。"
+msgstr "从默认区域移除服务 '%s'"
 
 #: ../src/firewall-offline-cmd:467
 #, c-format

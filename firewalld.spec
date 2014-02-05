@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.9.2
+Version: 0.3.9.3
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -166,6 +166,13 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed Feb 05 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.9.3-1
+- Fixed persistent port forwarding (RHBZ#1056154)
+- Stop default zone rules being applied to all zones (RHBZ#1057875)
+- Enforce trust, block and drop zones in the filter table only (RHBZ#1055190)
+- Allow RAs prior to applying IPv6_rpfilter (RHBZ#1058505)
+- Fix writing of rule.audit in zone_writer()
+
 * Fri Jan 17 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.9.2-1
 - fix regression introduced in 0.3.9 (RHBZ#1053932)
 
