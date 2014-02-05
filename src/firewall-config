@@ -3673,7 +3673,8 @@ class FirewallConfig(object):
         self.add_edit_module(False)
 
     def onServiceConfModuleClicked(self, widget, event):
-        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS and \
+           not self.runtime_view:
             self.add_edit_module(False)
 
     def onServiceConfRemoveModule(self, *args):
