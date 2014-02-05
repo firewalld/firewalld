@@ -522,6 +522,10 @@ class Firewall:
         if self.ipv6_rpfilter_enabled:
             if self.is_table_available("ipv6", "raw"):
                 rule = [ "-t", "raw", "-I", "PREROUTING", "1",
+                         "-p", "icmpv6", "--icmpv6-type=router-advertisement",
+                         "-j", "ACCEPT" ]       # RHBZ#1058505
+                self.rule("ipv6", rule)
+                rule = [ "-t", "raw", "-I", "PREROUTING", "2",
                          "-m", "rpfilter", "--invert", "-j", "DROP" ]
                 self.rule("ipv6", rule)
 
