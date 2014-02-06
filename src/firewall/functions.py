@@ -401,11 +401,17 @@ def splitArgs(string):
 def b2u(string):
     """ bytes to unicode """
     if isinstance(string, bytes):
-        return string.decode('utf-8', 'replace')
+        return string.decode('UTF-8', 'replace')
     return string
 
 def u2b(string):
     """ unicode to bytes """
     if not isinstance(string, bytes):
-        return string.encode('utf-8', 'replace')
+        return string.encode('UTF-8', 'replace')
+    return string
+
+def u2b_if_py2(string):
+    """ unicode to bytes only if Python 2"""
+    if PY2 and isinstance(string, unicode):
+            return string.encode('UTF-8', 'replace')
     return string

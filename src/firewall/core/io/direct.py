@@ -106,7 +106,7 @@ class Direct(IO_Object):
 
     IMPORT_EXPORT_STRUCTURE = (
         # chain: [ ipv, table, [ chain ] ]
-        ( "chains", [ ( "", "", "" ), ], ),                   # a(ssas)
+        ( "chains", [ ( "", "", "" ), ], ),                   # a(sss)
         # rule: [ ipv, table, chain, [ priority, [ arg ] ] ]
         ( "rules", [ ( "", "", "", 0, [ "" ] ), ], ),         # a(sssias)
         # passthrough: [ ipv, [ [ arg ] ] ]

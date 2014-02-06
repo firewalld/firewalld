@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkIP, uniqify, max_zone_name_len
+from firewall.functions import checkIP, uniqify, max_zone_name_len, u2b_if_py2
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -123,8 +123,23 @@ class Zone(IO_Object):
         del self.sources[:]
         self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
-        self.combined = False        
+        self.combined = False
         self.applied = False
+
+    def encode_strings(self):
+        """ HACK. I haven't been able to make sax parser return
+            strings encoded (because of python 2) instead of in unicode.
+            Get rid of it once we throw out python 2 support."""
+        self.version = u2b_if_py2(self.version)
+        self.short = u2b_if_py2(self.short)
+        self.description = u2b_if_py2(self.description)
+        self.services = [u2b_if_py2(s) for s in self.services]
+        self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
+        self.icmp_blocks = [u2b_if_py2(i) for i in self.icmp_blocks]
+        self.forward_ports = [(u2b_if_py2(p1),u2b_if_py2(p2),u2b_if_py2(p3),u2b_if_py2(p4)) for (p1,p2,p3,p4) in self.forward_ports]
+        self.interfaces = [u2b_if_py2(i) for i in self.interfaces]
+        self.sources = [u2b_if_py2(s) for s in self.sources]
+        self.rules = [u2b_if_py2(s) for s in self.rules]
 
     def __getattr__(self, name):
         if name == "rules_str":
@@ -482,6 +497,8 @@ def zone_reader(filename, path):
         parser.parse(f)
     del handler
     del parser
+    if PY2:
+        zone.encode_strings()
     return zone
 
 def zone_writer(zone, path=None):

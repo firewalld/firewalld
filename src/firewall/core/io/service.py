@@ -26,7 +26,8 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall import functions
+from firewall.functions import checkProtocol, check_address, \
+                               checkIPnMask, checkIP6nMask, u2b_if_py2
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
 
@@ -70,6 +71,17 @@ class Service(IO_Object):
         del self.modules[:]
         self.destination.clear()
 
+    def encode_strings(self):
+        """ HACK. I haven't been able to make sax parser return
+            strings encoded (because of python 2) instead of in unicode.
+            Get rid of it once we throw out python 2 support."""
+        self.version = u2b_if_py2(self.version)
+        self.short = u2b_if_py2(self.short)
+        self.description = u2b_if_py2(self.description)
+        self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
+        self.modules = [u2b_if_py2(m) for m in self.modules]
+        self.destination = {u2b_if_py2(k):u2b_if_py2(v) for k,v in self.destination.items()}
+
     def _check_config(self, config, item):
         if item == "ports":
             for port in config:
@@ -78,14 +90,14 @@ class Service(IO_Object):
                     check_protocol(port[1])
                 else:
                     # only protocol
-                    if not functions.checkProtocol(port[1]):
+                    if not checkProtocol(port[1]):
                         raise FirewallError(INVALID_PROTOCOL, port[1])
 
         elif item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
                     raise FirewallError(INVALID_DESTINATION, destination)
-                if not functions.check_address(destination, config[destination]):
+                if not check_address(destination, config[destination]):
                     raise FirewallError(INVALID_ADDR, config[destination])
 
 # PARSER
@@ -109,9 +121,9 @@ class service_ContentHandler(IO_Object_ContentHandler):
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
                     s = attrs[x]
-                    if x == "ipv4" and not functions.checkIPnMask(s):
+                    if x == "ipv4" and not checkIPnMask(s):
                         raise FirewallError(INVALID_DESTINATION, s)
-                    if x == "ipv6" and not functions.checkIP6nMask(s):
+                    if x == "ipv6" and not checkIP6nMask(s):
                         raise FirewallError(INVALID_DESTINATION, s)
                     self.item.destination[x] = attrs[x]
         elif name == "module":
@@ -134,6 +146,8 @@ def service_reader(filename, path):
         parser.parse(f)
     del handler
     del parser
+    if PY2:
+        service.encode_strings()
     return service
 
 def service_writer(service, path=None):
