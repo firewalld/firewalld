@@ -10,7 +10,7 @@
 <!--
   This file is part of firewalld.
 
-  Copyright (C) 2010-2013 Red Hat, Inc.
+  Copyright (C) 2010-2014 Red Hat, Inc.
   Authors:
   Thomas Woerner <twoerner@redhat.com>
 
@@ -270,6 +270,24 @@
               </programlisting>
 	    </para>
 	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--permanent</option> <option>--new-zone</option>=<replaceable>zone</replaceable></term>
+          <listitem>
+            <para>
+              Add a new permanent zone.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--permanent</option> <option>--delete-zone</option>=<replaceable>zone</replaceable></term>
+          <listitem>
+            <para>
+              Delete an existing permanent zone.
+            </para>
+          </listitem>
 	</varlistentry>
       </variablelist>
     </refsect2>
@@ -695,6 +713,52 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="service_options">
+      <title>Service Options</title>
+      <variablelist>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-service</option>=<replaceable>service</replaceable></term>
+         <listitem>
+           <para>
+             Add a new permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--delete-service</option>=<replaceable>service</replaceable></term>
+         <listitem>
+           <para>
+             Delete an existing permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="icmptype_options">
+      <title>Internet Control Message Protocol (ICMP) type Options</title>
+      <variablelist>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-icmptype</option>=<replaceable>icmptype</replaceable></term>
+         <listitem>
+           <para>
+             Add a new permanent icmptype.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--delete-icmptype</option>=<replaceable>icmptype</replaceable></term>
+         <listitem>
+           <para>
+             Delete an existing permanent icmptype.
+           </para>
+         </listitem>
+       </varlistentry>
       </variablelist>
     </refsect2>
 

@@ -29,7 +29,7 @@ import argparse
 import dbus
 import os
 
-from firewall.client import FirewallClient
+from firewall.client import *
 from firewall.errors import *
 from firewall.functions import joinArgs
 
@@ -86,8 +86,22 @@ Zone Options
   --get-zone-of-source=<source>[/<mask>]
                        Print name of the zone the source[/mask] is bound to [P]
   --list-all-zones     List everything added for or enabled in all zones [P]
+  --new-zone=<zone>    Add a new zone [P only]
+  --delete-zone=<zone> Delete an existing zone [P only]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options maked with [Z]
+
+IcmpType Options
+  --new-icmptype=<icmptype>
+                       Add a new icmptype [P only]
+  --delete-icmptype=<icmptype>
+                       Delete and existing icmptype [P only]
+
+Service Options
+  --new-service=<service>
+                       Add a new service [P only]
+  --delete-service=<service>
+                       Delete and existing service [P only]
 
 Options to Adapt and Query Zones
   --list-all           List everything added for or enabled in a zone [P] [Z]
@@ -373,6 +387,14 @@ parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>
 parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>")
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
 
+parser_group_config = parser.add_mutually_exclusive_group()
+parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--delete-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--new-service", metavar="<service>")
+parser_group_config.add_argument("--delete-service", metavar="<service>")
+parser_group_config.add_argument("--new-zone", metavar="<zone>")
+parser_group_config.add_argument("--delete-zone", metavar="<zone>")
+
 parser_group_lockdown_whitelist = parser.add_mutually_exclusive_group()
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-commands", action="store_true")
 parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-command", metavar="<command>")
@@ -512,6 +534,7 @@ options_zone_adapt_query = \
     a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
     a.list_services or a.list_ports or a.list_icmp_blocks or \
+    a.list_forward_ports or a.list_rich_rules or a.list_all or \
     a.list_forward_ports or a.list_rich_rules or a.list_all
 
 options_zone_ops = options_zone_interfaces_sources or \
@@ -520,6 +543,10 @@ options_zone_ops = options_zone_interfaces_sources or \
 options_zone = a.zone or a.timeout or options_zone_ops
 
 options_permanent = a.permanent or options_config or a.zone or options_zone_ops
+
+options_permanent_only = a.new_icmptype or a.delete_icmptype or \
+                         a.new_service or a.delete_service or \
+                         a.new_zone or a.delete_zone
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -543,15 +570,18 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 # Check various impossible combinations of options
 
 if not (options_standalone or options_zone or \
-        options_permanent or options_direct or options_direct_permanent):
+        options_permanent or options_direct or options_direct_permanent or \
+        options_permanent_only):
     __fail(parser.format_usage() + "No option specified.")
 
 if options_standalone and (options_zone or options_permanent or \
-                               options_direct or options_direct_permanent):
+                           options_direct or options_direct_permanent or \
+                           options_permanent_only):
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if (options_direct or options_direct_permanent) and (options_zone):
+if (options_direct or options_direct_permanent or options_permanent_only) and \
+   (options_zone):
     __fail(parser.format_usage() +
            "Can't use 'direct' options with other options.")
 
@@ -561,6 +591,10 @@ if (a.direct and not (options_direct or options_direct_permanent)) or \
            "Wrong usage of 'direct' options.")
 
 if options_direct_permanent and not a.permanent:
+    __fail(parser.format_usage() +
+           "Option can be used only with --permanent.")
+
+if options_permanent_only and not a.permanent:
     __fail(parser.format_usage() +
            "Option can be used only with --permanent.")
 
@@ -624,6 +658,30 @@ if a.permanent:
         icmptypes = fw.config().listIcmpTypes()
         l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
         __print_and_exit(" ".join(sorted(l)))
+
+    elif a.new_zone:
+        config = fw.config()
+        config.addZone(a.new_zone, FirewallClientZoneSettings())
+
+    elif a.delete_zone:
+        zone = fw.config().getZoneByName(a.delete_zone)
+        zone.remove()
+
+    elif a.new_service:
+        config = fw.config()
+        config.addService(a.new_service, FirewallClientServiceSettings())
+
+    elif a.delete_service:
+        service = fw.config().getServiceByName(a.delete_service)
+        service.remove()
+
+    elif a.new_icmptype:
+        config = fw.config()
+        config.addIcmpType(a.new_icmptype, FirewallClientIcmpTypeSettings())
+
+    elif a.delete_icmptype:
+        icmptype = fw.config().getIcmpTypeByName(a.delete_icmptype)
+        icmptype.remove()
 
     # lockdown whitelist
 
