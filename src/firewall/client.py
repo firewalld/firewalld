@@ -30,6 +30,7 @@ import slip.dbus
 
 from firewall.config import *
 from firewall.config.dbus import *
+from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.dbus_utils import dbus_to_python
 import dbus
 from decorator import decorator
@@ -79,8 +80,8 @@ class FirewallClientZoneSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", False, "", [], [], [], False, [],
-                             [], [], []]
+            self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
+                             [], False, [], [], [], []]
 
     @handle_exceptions
     def __repr__(self):
