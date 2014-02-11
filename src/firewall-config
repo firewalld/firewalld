@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2012 Red Hat, Inc.
+# Copyright (C) 2011-2014 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -912,7 +912,6 @@ class FirewallConfig(object):
         self.fw.connect("direct:rule-removed", self.direct_rule_removed_cb)
         self.fw.connect("config:direct:updated", self.direct_updated_cb)
 
-        # TODO: zone-added, zone-removed
         self.fw.connect("config:zone-added", self.conf_zone_added_cb)
         self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
         self.fw.connect("config:zone-removed", self.conf_zone_removed_cb)
@@ -1580,7 +1579,7 @@ class FirewallConfig(object):
     def conf_zone_added_cb(self, zone):
         if self.runtime_view:
             return
-        self.load_zones()
+        self.zoneStore.append([zone, Pango.Weight.NORMAL])
 
     def conf_zone_updated_cb(self, zone):
         if self.runtime_view or zone != self.get_active_zone():
@@ -3500,20 +3499,20 @@ class FirewallConfig(object):
     def conf_service_added_cb(self, service):
         if self.runtime_view:
             return
-        self.serviceStore.append([False, service])
+        self.serviceConfServiceStore.append([service])
 
-    def conf_service_updated_cb(self, zone):
+    def conf_service_updated_cb(self, service):
         self.onChangeService()
 
     def conf_service_removed_cb(self, service):
         if self.runtime_view:
             return
-        iter = self.serviceStore.get_iter_first()
+        iter = self.serviceConfServiceStore.get_iter_first()
         while iter:
-            if self.serviceStore.get_value(iter, 1) == service:
-                self.serviceStore.remove(iter)
+            if self.serviceConfServiceStore.get_value(iter, 0) == service:
+                self.serviceConfServiceStore.remove(iter)
                 break
-            iter = self.serviceStore.iter_next(iter)
+            iter = self.serviceConfServiceStore.iter_next(iter)
 
     def onServiceConfAddService(self, *args):
         self.add_edit_service(True)
@@ -4066,7 +4065,7 @@ class FirewallConfig(object):
             return
         if not self.show_icmp_types:
             return
-        self.icmpStore.append([False, icmp])
+        self.icmpDialogIcmpStore.append([icmp])
 
     def conf_icmp_updated_cb(self, zone):
         if self.runtime_view:
@@ -4080,12 +4079,12 @@ class FirewallConfig(object):
             return
         if not self.show_icmp_types:
             return
-        iter = self.icmpStore.get_iter_first()
+        iter = self.icmpDialogIcmpStore.get_iter_first()
         while iter:
-            if self.icmpStore.get_value(iter, 1) == icmp:
-                self.icmpStore.remove(iter)
+            if self.icmpDialogIcmpStore.get_value(iter, 0) == icmp:
+                self.icmpDialogIcmpStore.remove(iter)
                 break
-            iter = self.icmpStore.iter_next(iter)
+            iter = self.icmpDialogIcmpStore.iter_next(iter)
 
     def lockdown_check_cb(self, *args):
         if self.fw.queryLockdown():
