@@ -180,6 +180,9 @@ class Zone(IO_Object):
                 if fwd_port[3]:
                     if not checkIP(fwd_port[3]):
                         raise FirewallError(INVALID_ADDR, fwd_port[3])
+        elif item == "target":
+            if config not in ZONE_TARGETS:
+                raise FirewallError(INVALID_TARGET, config)
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
