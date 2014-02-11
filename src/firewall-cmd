@@ -90,6 +90,9 @@ Zone Options
   --delete-zone=<zone> Delete an existing zone [P only]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options maked with [Z]
+  --get-target         Get the zone target [P only]
+  --set-target=<target>
+                       Set the zone target [P only]
 
 IcmpType Options
   --new-icmptype=<icmptype>
@@ -455,6 +458,8 @@ parser_group_zone.add_argument("--list-ports", action="store_true")
 parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
 parser_group_zone.add_argument("--list-forward-ports", action="store_true")
 parser_group_zone.add_argument("--list-all", action="store_true")
+parser_group_zone.add_argument("--get-target", action="store_true")
+parser_group_zone.add_argument("--set-target", metavar="<target>")
 
 parser.add_argument("--direct", action="store_true")
 
@@ -535,7 +540,7 @@ options_zone_adapt_query = \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
     a.list_services or a.list_ports or a.list_icmp_blocks or \
     a.list_forward_ports or a.list_rich_rules or a.list_all or \
-    a.list_forward_ports or a.list_rich_rules or a.list_all
+    a.get_target or a.set_target
 
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
@@ -565,7 +570,8 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.list_services or a.list_ports or a.list_icmp_blocks or a.list_forward_ports \
  or a.list_rich_rules or a.list_interfaces or a.list_sources or \
  a.get_default_zone or a.get_active_zones or a.get_zone_of_interface or \
- a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes
+ a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes or \
+ a.get_target or a.set_target
 
 # Check various impossible combinations of options
 
@@ -595,6 +601,10 @@ if options_direct_permanent and not a.permanent:
            "Option can be used only with --permanent.")
 
 if options_permanent_only and not a.permanent:
+    __fail(parser.format_usage() +
+           "Option can be used only with --permanent.")
+
+if a.set_target and not a.permanent:
     __fail(parser.format_usage() +
            "Option can be used only with --permanent.")
 
@@ -982,6 +992,12 @@ if a.permanent:
         elif a.query_icmp_block:
             __print_query_result(fw_settings.queryIcmpBlock(a.query_icmp_block))
 
+        # zone target
+        elif a.get_target:
+            __print_and_exit(fw_settings.getTarget())
+        elif a.set_target:
+            fw_settings.setTarget(a.set_target)
+
         # list all zone settings
         elif a.list_all:
             __list_all_permanent(fw_settings, zone if zone else fw.getDefaultZone())
@@ -1287,6 +1303,10 @@ elif a.remove_icmp_block:
         fw.removeIcmpBlock(zone, ib)
 elif a.query_icmp_block:
     __print_query_result(fw.queryIcmpBlock(zone, a.query_icmp_block))
+
+# zone target
+elif a.get_target:
+    __print_and_exit(fw.getZoneSettings(zone).getTarget())
 
 # list all
 elif a.list_all:
