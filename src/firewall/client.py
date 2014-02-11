@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009,2010,2012 Red Hat, Inc.
+# Copyright (C) 2009-2014 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -1226,6 +1226,12 @@ class FirewallClient(object):
         return dbus_to_python(self.fw.queryPanicMode())
 
     # list functions
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getZoneSettings(self, zone):
+        return FirewallClientZoneSettings(list(dbus_to_python(\
+                    self.fw.getZoneSettings(zone))))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions

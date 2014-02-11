@@ -9,7 +9,7 @@
 <!--
   This file is part of firewalld.
 
-  Copyright (C) 2010-2013 Red Hat, Inc.
+  Copyright (C) 2010-2014 Red Hat, Inc.
   Authors:
   Thomas Woerner <twoerner@redhat.com>
 
@@ -149,6 +149,14 @@
             <listitem>
               <para>
 		Return <replaceable>service</replaceable> settings in format: version, name, description, array of ports (port, protocol), array of module names, destinations {IP family : IP address}
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry>
+            <term>getZoneSettings(s: zone) &rarr; (sssbsasa(ss)asba(ssss)asasas)</term>
+            <listitem>
+              <para>
+		Return <replaceable>zone</replaceable> settings in format: version, name, description, UNUSED boolean, target, array of services, array of ports (port, protocol), array of icmp-blocks, masquerade boolean, array of forward-ports (port, protocol, to-port, to-addr), array of interfaces, array of sources, array of rich rules
               </para>
             </listitem>
           </varlistentry>

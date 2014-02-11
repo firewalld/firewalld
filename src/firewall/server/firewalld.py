@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2014 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -38,6 +38,7 @@ from firewall.server.decorators import *
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid
+from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.errors import *
@@ -607,6 +608,16 @@ class FirewallD(slip.dbus.service.Object):
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # list functions
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='s',
+                         out_signature=Zone.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getZoneSettings(self, zone, sender=None):
+        # returns zone settings for zone
+        zone = dbus_to_python(zone)
+        log.debug1("getZoneSettings(%s)", zone)
+        return self.fw.zone.get_zone(zone).export_config()
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='',
