@@ -2073,14 +2073,11 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="changeZonesConnectionMenuitem">
+                      <object class="GtkMenuItem" id="changeZonesConnectionMenuitem">
                         <property name="label" translatable="yes">Change Zones of Connections...</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Change which zone a network connection belongs to.</property>
-                        <property name="image">image2</property>
-                        <property name="use_stock">False</property>
-                        <signal name="activate" handler="nm_connection_editor" swapped="no"/>
                       </object>
                     </child>
                     <child>
