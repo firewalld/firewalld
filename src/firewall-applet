@@ -128,6 +128,7 @@ class ZoneConnectionEditor(Gtk.Dialog):
 
         self.combo = Gtk.ComboBoxText()
         zones = self.fw.getZones()
+        self.combo.append_text(_("Default Zone"))
         for zone in zones:
             self.combo.append_text(zone)
         vbox.pack_start(self.combo, True, True, 0)
@@ -152,7 +153,10 @@ class ZoneConnectionEditor(Gtk.Dialog):
             self.combo_changed(None)
 
     def get_zone(self):
-        return self.combo.get_active_text()
+        text = self.combo.get_active_text()
+        if text == _("Default Zone"):
+            text = ""
+        return text
 
     def run(self):
         result = super(ZoneConnectionEditor, self).run()
