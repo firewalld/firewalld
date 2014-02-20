@@ -156,7 +156,6 @@ assert_bad  "--query-panic"
 #assert_good "--lockdown-off"
 #assert_bad  "--query-lockdown"
 
-
 default_zone=$(firewall-cmd --get-default-zone)
 zone="home"
 assert_good_notempty "--get-default-zone"
@@ -416,6 +415,40 @@ assert_good_contains "--permanent --zone=work --list-services" "ssh"
 assert_good          "--permanent --list-forward-ports"
 
 assert_bad           "--permanent --complete-reload" # impossible combination
+
+myzone="myzone"
+myservice="myservice"
+myicmp="myicmp"
+
+# create new zone
+assert_bad "--new-zone=${myzone}" # no --permanent
+assert_good "--permanent --new-zone=${myzone}"
+assert_good_contains "--permanent --get-zones" "${myzone}"
+# get/set default target
+assert_good_contains "--permanent --zone=${myzone} --get-target" "{chain}_{zone}"
+assert_bad "--permanent --zone=${myzone} --set-target=BAD"
+assert_good "--permanent --zone=${myzone} --set-target=%%REJECT%%"
+assert_good "--permanent --zone=${myzone} --set-target=DROP"
+assert_good "--permanent --zone=${myzone} --set-target=ACCEPT"
+assert_good_contains "--permanent --zone=${myzone} --get-target" "ACCEPT"
+# create new service and icmptype
+assert_good "--permanent --new-service=${myservice}"
+assert_good_contains "--permanent --get-services" "${myservice}"
+assert_good "--permanent --new-icmptype=${myicmp}"
+assert_good_contains "--permanent --get-icmptypes" "${myicmp}"
+# add them to zone
+assert_good "--permanent --zone=${myzone} --add-service=${myservice}"
+assert_good "--permanent --zone=${myzone} --add-icmp-block=${myicmp}"
+assert_good_contains "--permanent --zone=${myzone} --list-services" "${myservice}"
+assert_good_contains "--permanent --zone=${myzone} --list-icmp-blocks" "${myicmp}"
+# delete the service and icmptype
+assert_good "--permanent --delete-service=${myservice}"
+assert_good "--permanent --delete-icmptype=${myicmp}"
+# make sure they were removed also from the zone
+assert_good_empty "--permanent --zone=${myzone} --list-services" "${myservice}"
+assert_good_empty "--permanent --zone=${myzone} --list-icmp-blocks" "${myicmp}"
+assert_good "--permanent --delete-zone=${myzone}"
+
 
 # ... --direct  ...
 assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_home_allow"
