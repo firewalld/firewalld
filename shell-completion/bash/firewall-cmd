@@ -90,16 +90,28 @@ _firewall_cmd()
 
     case $prev in
     --zone|--set-default-zone)
-        COMPREPLY=( $( compgen -W '`firewall-cmd --get-zones`' -- "$cur" ) )
+        if [[ ${words[@]} == *--permanent* ]]; then
+          COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-zones`' -- "$cur" ) )
+        else
+          COMPREPLY=( $( compgen -W '`firewall-cmd --get-zones`' -- "$cur" ) )
+        fi
         ;;
     --zone=*)
         COMPREPLY=( $( compgen -W "${OPTIONS_ZONE}" -- "$cur" ) )
         ;;
     --*-service)
-        COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
+        if [[ ${words[@]} == *--permanent* ]]; then
+          COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-services`' -- "$cur" ) )
+        else
+          COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
+        fi
         ;;
     --*-icmp-block)
-        COMPREPLY=( $( compgen -W '`firewall-cmd --get-icmptypes`' -- "$cur" ) )
+        if [[ ${words[@]} == *--permanent* ]]; then
+          COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-icmptypes`' -- "$cur" ) )
+        else
+          COMPREPLY=( $( compgen -W '`firewall-cmd --get-icmptypes`' -- "$cur" ) )
+        fi
         ;;
     --list-services|--add-service=*|--remove-service=*|--query-service=*|\
     --list-ports|--add-port=*|--remove-port=*|--query-port=*|\
