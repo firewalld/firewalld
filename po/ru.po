@@ -10,25 +10,25 @@
 # Leonid Kanter <leon@geon.donetsk.ua>, 2003
 # Stanislav Hanzhin <hanzhin.stas@gmail.com>, 2012
 # Yulia <ypoyarko@redhat.com>, 2007-2010
+# Yulia <yulia.poyarkova@redhat.com>, 2013-2014
 # Игорь Горбунов <igor.gorbounov@gmail.com>, 2013
-# ypoyarko <ypoyarko@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-05 17:43+0100\n"
-"PO-Revision-Date: 2013-11-26 03:30-0500\n"
-"Last-Translator: ypoyarko <ypoyarko@redhat.com>\n"
-"Language-Team: Russian <trans-ru@lists.fedoraproject.org>\n"
+"POT-Creation-Date: 2014-02-20 14:54+0100\n"
+"PO-Revision-Date: 2014-02-13 03:51+0000\n"
+"Last-Translator: Yulia <yulia.poyarkova@redhat.com>\n"
+"Language-Team: Russian (http://www.transifex.com/projects/p/fedora/language/"
+"ru/)\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.1.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
 msgstr "Апплет межсетевого экрана"
 
@@ -69,55 +69,61 @@ msgstr "FirewallD уже запущен."
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Невозможно выполнить ветвление: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4999
+#: ../src/firewall-applet:106 ../src/firewall-config:5165
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr "Выберите зону для подключения «%s»"
+msgstr "Выберите зону для соединения «%s»"
 
-#: ../src/firewall-applet:185
+#: ../src/firewall-applet:131 ../src/firewall-applet:157
+#: ../src/firewall-config:5190 ../src/firewall-config:5216
+#: ../src/firewall-config.glade.h:5
+msgid "Default Zone"
+msgstr "Зона по умолчанию"
+
+#: ../src/firewall-applet:189 ../src/firewall-config:5248
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr "Выберите зону для интерфейса «%s»"
+msgstr "Зона '%s' активирована на интерфейсе '%s'"
 
-#: ../src/firewall-applet:241
+#: ../src/firewall-applet:245 ../src/firewall-config:5304
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Выберите зону для источника %s"
 
-#: ../src/firewall-applet:343
+#: ../src/firewall-applet:347
 msgid "Shields Up"
 msgstr "Поднять щиты"
 
-#: ../src/firewall-applet:356
+#: ../src/firewall-applet:360
 msgid "Enable Notifications"
 msgstr "Включить уведомления"
 
-#: ../src/firewall-applet:369
+#: ../src/firewall-applet:373
 msgid "Edit Firewall Settings..."
 msgstr "Редактировать настройки брандмауэра…"
 
-#: ../src/firewall-applet:377 ../src/firewall-config.glade.h:46
+#: ../src/firewall-applet:381 ../src/firewall-config.glade.h:46
 msgid "Change Zones of Connections..."
 msgstr "Изменить зоны соединений..."
 
-#: ../src/firewall-applet:384
+#: ../src/firewall-applet:388
 msgid "Configure Shields UP/Down Zones..."
 msgstr "Настроить зоны включения/выключения защиты…"
 
-#: ../src/firewall-applet:393
+#: ../src/firewall-applet:397
 msgid "Block all network traffic"
 msgstr "Блокировать весь сетевой траффик"
 
-#: ../src/firewall-applet:422
+#: ../src/firewall-applet:426
 msgid "Configure Shields Up/Down Zones"
 msgstr "Настроить зоны включения/выключения защиты…"
 
-#: ../src/firewall-applet:433
+#: ../src/firewall-applet:437
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr ""
 "Здесь можно выбрать зоны, используемые для включения/отключения защиты."
 
-#: ../src/firewall-applet:441
+#: ../src/firewall-applet:445
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -126,97 +132,101 @@ msgstr ""
 "умолчанию. Для пользователей, меняющих зоны соединения, использование может "
 "быть ограничено."
 
-#: ../src/firewall-applet:456
+#: ../src/firewall-applet:460
 msgid "Shields Up Zone:"
 msgstr "Зона включения защиты:"
 
-#: ../src/firewall-applet:467
+#: ../src/firewall-applet:471
 msgid "Shields Down Zone:"
 msgstr "Зона отключения защиты:"
 
-#: ../src/firewall-applet:618
+#: ../src/firewall-applet:622 ../src/firewall-config:1755
 msgid "Connections"
 msgstr "Не подключено."
 
-#: ../src/firewall-applet:660 ../src/firewall-applet:689
-#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:664 ../src/firewall-applet:693
+#: ../src/firewall-applet:717 ../src/firewall-config:1796
+#: ../src/firewall-config:1822 ../src/firewall-config:1847
+#: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "Зона"
 
-#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:679 ../src/firewall-config:1808
+#: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
-msgstr "Интерфейсы"
+msgstr "<interface>"
 
-#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:704 ../src/firewall-config:1834
+#: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "Источники"
 
-#: ../src/firewall-applet:812
+#: ../src/firewall-applet:816
 msgid "Connection to FirewallD established."
 msgstr "Соединение с FirewallD установлено."
 
-#: ../src/firewall-applet:821
+#: ../src/firewall-applet:825
 msgid "Connection to FirewallD lost."
 msgstr "Соединение с FirewallD потеряно."
 
-#: ../src/firewall-applet:868
+#: ../src/firewall-applet:872
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD перезапущен."
 
-#: ../src/firewall-applet:945
+#: ../src/firewall-applet:949
 msgid "No connection to firewall daemon"
 msgstr "Нет соединения с фоновой службой брандмауэра"
 
-#: ../src/firewall-applet:951
+#: ../src/firewall-applet:955
 msgid "PANIC MODE"
 msgstr "Режим усиленной безопасности"
 
-#: ../src/firewall-applet:958
+#: ../src/firewall-applet:962
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Зона по умолчанию: «%s»"
 
-#: ../src/firewall-applet:966
+#: ../src/firewall-applet:970
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Зона '{zone}' активна для соединения '{connection}' на интерфейсе "
 "'{interface}'"
 
-#: ../src/firewall-applet:969
+#: ../src/firewall-applet:973
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "Зона '{zone}' активна на интерфейсе '{interface}'"
 
-#: ../src/firewall-applet:977
-msgid "Zone '{zone}' active for source {source}"
-msgstr "Зона «{zone}» активна для источника {source}"
-
 #: ../src/firewall-applet:981
+msgid "Zone '{zone}' active for source {source}"
+msgstr "Зона «{zone}» включена для источника {source}"
+
+#: ../src/firewall-applet:985
 msgid "No Active Zones."
 msgstr "Нет активных зон."
 
-#: ../src/firewall-applet:990
+#: ../src/firewall-applet:994
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr "По умолчанию будет использоваться зона «%s»."
+msgstr "Зона по-умолчанию изменена на '%s'."
 
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1018
 msgid "All network traffic is blocked."
 msgstr "Весь сетевой трафик заблокирован."
 
-#: ../src/firewall-applet:1015
+#: ../src/firewall-applet:1019
 msgid "Network traffic is not blocked anymore."
 msgstr "Сетевой трафик больше не блокируется."
 
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1034 ../src/firewall-applet:1074
 msgid "activated"
 msgstr "активирована"
 
-#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
+#: ../src/firewall-applet:1035 ../src/firewall-applet:1075
 msgid "deactivated"
 msgstr "деактивирована"
 
-#: ../src/firewall-applet:1034
+#: ../src/firewall-applet:1038
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -224,308 +234,304 @@ msgstr ""
 "Зона '{zone}' {activated_deactivated} для соединения '{connection}' на "
 "интерфейсе '{interface}'"
 
-#: ../src/firewall-applet:1039
+#: ../src/firewall-applet:1043
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "Зона '{zone}' {activated_deactivated} на интерфейсе {interface}'"
 
-#: ../src/firewall-applet:1061
+#: ../src/firewall-applet:1065
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Зона '%s' активирована на интерфейсе '%s'"
 
-#: ../src/firewall-applet:1073
+#: ../src/firewall-applet:1077
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "Зона «{zone}» {activated_deactivated} для источника «{source}» "
 
-#: ../src/firewall-applet:1096
+#: ../src/firewall-applet:1100
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "Зона «%s» включена для источника «%s»"
 
-#: ../src/firewall-applet:1161
+#: ../src/firewall-applet:1165
 msgid "Firewall-applet"
 msgstr "Апплет брандмауэра"
 
-#: ../src/firewall-config:79
+#: ../src/firewall-config:76
 msgid "Connected."
 msgstr "Подключено."
 
-#: ../src/firewall-config:80
+#: ../src/firewall-config:77
 msgid "No connection."
 msgstr "Не подключено."
 
-#: ../src/firewall-config:81
+#: ../src/firewall-config:78
 msgid "Waiting ..."
 msgstr "Ожидание…"
 
-#: ../src/firewall-config:82
+#: ../src/firewall-config:79
 msgid "Retrying ..."
-msgstr "Повторная попытка…"
+msgstr "Пробуем заново…"
 
-#: ../src/firewall-config:83
+#: ../src/firewall-config:80
 #, c-format
 msgid "Used by network connection '%s'"
 msgstr "Используется подключением «%s»"
 
-#: ../src/firewall-config:84
+#: ../src/firewall-config:81
 msgid "enabled"
 msgstr "включена"
 
-#: ../src/firewall-config:85
+#: ../src/firewall-config:82
 msgid "disabled"
 msgstr "отключена"
 
-#: ../src/firewall-config:98
+#: ../src/firewall-config:99
 msgid "Failed to load icons."
 msgstr "Не удалось загрузить значки"
 
-#: ../src/firewall-config:134
-msgid "NetworkManager connection editor is missing."
-msgstr "Редактор соединений NetworkManager отсутствует."
-
-#: ../src/firewall-config:356 ../src/firewall-config:1650
+#: ../src/firewall-config:358 ../src/firewall-config:1715
 msgid "Runtime"
 msgstr "Динамические"
 
-#: ../src/firewall-config:357
+#: ../src/firewall-config:359
 msgid "Permanent"
 msgstr "Постоянные"
 
-#: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
+#: ../src/firewall-config:420 ../src/firewall-config.glade.h:102
 msgid "Service"
 msgstr "Служба"
 
-#: ../src/firewall-config:425 ../src/firewall-config:466
-#: ../src/firewall-config:704
+#: ../src/firewall-config:427 ../src/firewall-config:468
+#: ../src/firewall-config:706
 msgid "Port"
 msgstr "Порт"
 
-#: ../src/firewall-config:427 ../src/firewall-config:468
-#: ../src/firewall-config:706 ../src/firewall-config.glade.h:177
+#: ../src/firewall-config:429 ../src/firewall-config:470
+#: ../src/firewall-config:708 ../src/firewall-config.glade.h:177
 msgid "Protocol"
 msgstr "Протокол"
 
-#: ../src/firewall-config:470
+#: ../src/firewall-config:472
 msgid "To Port"
 msgstr "На порт"
 
-#: ../src/firewall-config:472
+#: ../src/firewall-config:474
 msgid "To Address"
 msgstr "На адрес"
 
-#: ../src/firewall-config:509
+#: ../src/firewall-config:511
 msgid "Icmp Type"
 msgstr "Тип ICMP"
 
-#: ../src/firewall-config:524
+#: ../src/firewall-config:526
 msgid "Family"
 msgstr "Семейство"
 
-#: ../src/firewall-config:526
+#: ../src/firewall-config:528
 msgid "Action"
 msgstr "Действие"
 
-#: ../src/firewall-config:528
+#: ../src/firewall-config:530
 msgid "Element"
 msgstr "Элемент"
 
-#: ../src/firewall-config:530
+#: ../src/firewall-config:532
 msgid "Src"
 msgstr "Источник"
 
-#: ../src/firewall-config:532
+#: ../src/firewall-config:534
 msgid "Dest"
 msgstr "Получатель"
 
-#: ../src/firewall-config:534
+#: ../src/firewall-config:536
 msgid "log"
 msgstr "журнал"
 
-#: ../src/firewall-config:536
+#: ../src/firewall-config:538
 msgid "Audit"
 msgstr "Аудит"
 
-#: ../src/firewall-config:1095 ../src/firewall-config:1840
-#: ../src/firewall-config:1878
+#: ../src/firewall-config:1153 ../src/firewall-config:2006
+#: ../src/firewall-config:2044
 msgid "Warning"
 msgstr "Предупреждение"
 
-#: ../src/firewall-config:1104
+#: ../src/firewall-config:1162
 msgid "Error"
 msgstr "Ошибка"
 
-#: ../src/firewall-config:1143
+#: ../src/firewall-config:1202
 msgid "Changes applied."
 msgstr "Изменения сохранены."
 
-#: ../src/firewall-config:1426 ../src/firewall-config:2625
+#: ../src/firewall-config:1485 ../src/firewall-config:2791
 msgid "accept"
 msgstr "принять"
 
-#: ../src/firewall-config:1428 ../src/firewall-config:2627
-#: ../src/firewall-config:2737
+#: ../src/firewall-config:1487 ../src/firewall-config:2793
+#: ../src/firewall-config:2903
 msgid "reject"
 msgstr "отказать"
 
-#: ../src/firewall-config:1432 ../src/firewall-config:2632
+#: ../src/firewall-config:1491 ../src/firewall-config:2798
 msgid "drop"
 msgstr "отбросить"
 
-#: ../src/firewall-config:1434 ../src/firewall-config:1468
-#: ../src/firewall-config:1473
+#: ../src/firewall-config:1493 ../src/firewall-config:1527
+#: ../src/firewall-config:1532
 msgid "limit"
 msgstr "предел"
 
-#: ../src/firewall-config:1445 ../src/firewall-config:2164
-#: ../src/firewall-config:2318 ../src/firewall-config:2589
+#: ../src/firewall-config:1504 ../src/firewall-config:2330
+#: ../src/firewall-config:2484 ../src/firewall-config:2755
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "служба"
 
-#: ../src/firewall-config:1447 ../src/firewall-config:2170
-#: ../src/firewall-config:2320 ../src/firewall-config:2592
+#: ../src/firewall-config:1506 ../src/firewall-config:2336
+#: ../src/firewall-config:2486 ../src/firewall-config:2758
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "порт"
 
-#: ../src/firewall-config:1450 ../src/firewall-config:2175
-#: ../src/firewall-config:2329 ../src/firewall-config:2598
+#: ../src/firewall-config:1509 ../src/firewall-config:2341
+#: ../src/firewall-config:2495 ../src/firewall-config:2764
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "протокол"
 
-#: ../src/firewall-config:1452 ../src/firewall-config:2180
-#: ../src/firewall-config:2612 ../src/firewall-config:2749
+#: ../src/firewall-config:1511 ../src/firewall-config:2346
+#: ../src/firewall-config:2778 ../src/firewall-config:2915
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "маскировка"
 
-#: ../src/firewall-config:1466
+#: ../src/firewall-config:1525
 msgid "level"
 msgstr "уровень"
 
-#: ../src/firewall-config:1470 ../src/firewall-config:1475
+#: ../src/firewall-config:1529 ../src/firewall-config:1534
 msgid "yes"
 msgstr "да"
 
-#: ../src/firewall-config:1602
+#: ../src/firewall-config:1667
 msgid "Authorization failed."
 msgstr "Авторизация не удалась."
 
-#: ../src/firewall-config:1605
+#: ../src/firewall-config:1670
 msgid "Invalid name"
-msgstr "Неверное имя"
+msgstr "Неверный аргумент %s"
 
-#: ../src/firewall-config:1609
+#: ../src/firewall-config:1674
 msgid "Name already exists"
 msgstr "Имя уже существует"
 
-#: ../src/firewall-config:1837
+#: ../src/firewall-config:2003
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Зона '%s': служба '%s' недоступна."
 
-#: ../src/firewall-config:1841 ../src/firewall-config:1879
+#: ../src/firewall-config:2007 ../src/firewall-config:2045
 msgid "Remove"
-msgstr "Удалить"
+msgstr "Удалить зону"
 
-#: ../src/firewall-config:1841 ../src/firewall-config:1879
+#: ../src/firewall-config:2007 ../src/firewall-config:2045
 msgid "Ignore"
 msgstr "Пропустить"
 
-#: ../src/firewall-config:1875
+#: ../src/firewall-config:2041
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Зона '%s': ICMP- тип «%s» недоступен."
 
-#: ../src/firewall-config:2018
+#: ../src/firewall-config:2184
 msgid "Built-in zone, rename not supported."
 msgstr "Встроенная зона, переименование не поддерживается."
 
-#: ../src/firewall-config:2127 ../src/firewall-config:2564
+#: ../src/firewall-config:2293 ../src/firewall-config:2730
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "сек."
 
-#: ../src/firewall-config:2128 ../src/firewall-config:2565
+#: ../src/firewall-config:2294 ../src/firewall-config:2731
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "мин."
 
-#: ../src/firewall-config:2129 ../src/firewall-config:2566
+#: ../src/firewall-config:2295 ../src/firewall-config:2732
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
-msgstr "ч."
+msgstr "час"
 
-#: ../src/firewall-config:2130 ../src/firewall-config:2567
+#: ../src/firewall-config:2296 ../src/firewall-config:2733
 #: ../src/firewall-config.glade.h:195
 msgid "day"
-msgstr "день"
+msgstr "д."
 
-#: ../src/firewall-config:2131 ../src/firewall-config:2568
+#: ../src/firewall-config:2297 ../src/firewall-config:2734
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "срочно"
 
-#: ../src/firewall-config:2132 ../src/firewall-config:2569
+#: ../src/firewall-config:2298 ../src/firewall-config:2735
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "внимание"
 
-#: ../src/firewall-config:2133 ../src/firewall-config:2570
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "критично"
 
-#: ../src/firewall-config:2134 ../src/firewall-config:2571
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "ошибка"
 
-#: ../src/firewall-config:2135 ../src/firewall-config:2572
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "предупреждение"
 
-#: ../src/firewall-config:2136 ../src/firewall-config:2573
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "уведомление"
 
-#: ../src/firewall-config:2137 ../src/firewall-config:2574
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "инфо"
 
-#: ../src/firewall-config:2138 ../src/firewall-config:2575
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "отладка"
 
-#: ../src/firewall-config:2183 ../src/firewall-config:2331
-#: ../src/firewall-config:2601 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2349 ../src/firewall-config:2497
+#: ../src/firewall-config:2767 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "блокирование icmp"
 
-#: ../src/firewall-config:2188 ../src/firewall-config:2333
-#: ../src/firewall-config:2604 ../src/firewall-config:2757
+#: ../src/firewall-config:2354 ../src/firewall-config:2499
+#: ../src/firewall-config:2770 ../src/firewall-config:2923
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "порт переадресации"
 
-#: ../src/firewall-config:2311 ../src/firewall-config:2510
-#: ../src/firewall-config:2524 ../src/firewall-config:2579
-#: ../src/firewall-config:2680 ../src/firewall-config:2705
+#: ../src/firewall-config:2477 ../src/firewall-config:2676
+#: ../src/firewall-config:2690 ../src/firewall-config:2745
+#: ../src/firewall-config:2846 ../src/firewall-config:2871
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2313 ../src/firewall-config:2512
-#: ../src/firewall-config:2526 ../src/firewall-config:2581
-#: ../src/firewall-config:2682 ../src/firewall-config:2707
+#: ../src/firewall-config:2479 ../src/firewall-config:2678
+#: ../src/firewall-config:2692 ../src/firewall-config:2747
+#: ../src/firewall-config:2848 ../src/firewall-config:2873
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3365
+#: ../src/firewall-config:3531
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -534,11 +540,11 @@ msgstr ""
 "Переадресация в другую систему поможет только при маскировании интерфейса.\n"
 "Замаскировать эту зону?"
 
-#: ../src/firewall-config:3607
+#: ../src/firewall-config:3773
 msgid "Built-in service, rename not supported."
 msgstr "Встроенная служба, переименование не поддерживается."
 
-#: ../src/firewall-config:3974
+#: ../src/firewall-config:4140
 msgid "Built-in icmp, rename not supported."
 msgstr "Встроенный ICMP, переименование не поддерживается."
 
@@ -556,15 +562,11 @@ msgstr "Введите команду."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr "Введите контекст"
-
-#: ../src/firewall-config.glade.h:5
-msgid "Default Zone"
-msgstr "Стандартная зона"
+msgstr "Введите контекст."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
-msgstr "Выберите стандартную зону из списка."
+msgstr "Выберите стандартную зону."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
@@ -823,7 +825,7 @@ msgstr "Удалить зону"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Load Zone Defaults"
-msgstr "Загрузить значения по умолчанию"
+msgstr "Загрузить значения по-умолчанию"
 
 #: ../src/firewall-config.glade.h:67
 msgid ""
@@ -895,9 +897,9 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Добавьте записи для перенаправления портов либо с одного порта другому в "
-"локальной системе, либо из локальной системы другой системе. Перенаправление "
-"другой системе имеет смысл при маскараде интерфейса. Перенаправление портов "
+"Добавьте записи для перенаправления портов либо с одного локального порта "
+"другому, либо из локальной системы другой системе. Перенаправление другой "
+"системе имеет смысл при маскараде интерфейса. Перенаправление портов "
 "используется только для IPv4."
 
 #: ../src/firewall-config.glade.h:79
@@ -1292,7 +1294,7 @@ msgstr "Команды"
 
 #: ../src/firewall-config.glade.h:158
 msgid "User names."
-msgstr "Имена пользователей"
+msgstr "Имена пользователей."
 
 #: ../src/firewall-config.glade.h:159
 msgid "Add User Name"
@@ -1312,7 +1314,7 @@ msgstr "Имена пользователей"
 
 #: ../src/firewall-config.glade.h:163
 msgid "User ids."
-msgstr "Идентификаторы пользователей"
+msgstr "Идентификаторы пользователей."
 
 #: ../src/firewall-config.glade.h:164
 msgid "Add User Id"
@@ -1332,7 +1334,7 @@ msgstr "Идентификаторы пользователей"
 
 #: ../src/firewall-config.glade.h:168
 msgid "Default Zone:"
-msgstr "Зона по умолчанию:"
+msgstr "Зона по-умолчанию:"
 
 #: ../src/firewall-config.glade.h:169
 msgid "Current default zone of the system."
@@ -1413,6 +1415,8 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"Чтобы разрешить, поле «Действие» должно иметь значение «отказать», а "
+"«Семейство» —  «ipv4» или «ipv6»."
 
 #: ../src/firewall-config.glade.h:189
 msgid "with Type:"
@@ -1468,7 +1472,7 @@ msgstr "Введите идентификатор пользователя."
 
 #: ../src/firewall-config.glade.h:220
 msgid "User name"
-msgstr "Имя пользователя"
+msgstr "Пользователь"
 
 #: ../src/firewall-config.glade.h:221
 msgid "Please enter the user name."
@@ -1501,7 +1505,7 @@ msgstr "Предупреждение:"
 #: ../src/firewall-offline-cmd:68
 #, c-format
 msgid "port range %s is not unique."
-msgstr "диапазон '%s' не является уникальным."
+msgstr "диапазон портов '%s' не является уникальным."
 
 #: ../src/firewall-offline-cmd:70
 #, c-format
@@ -1548,7 +1552,7 @@ msgstr "Отключить межсетевой экран"
 
 #: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
 msgid "<module>"
-msgstr "<модуль>"
+msgstr "<module>"
 
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
@@ -1572,7 +1576,7 @@ msgstr "Отключить службу (например, ssh) в станда�
 
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
-msgstr "<порт>[-<порт>]:<протокол>"
+msgstr "<port>[-<port>]:<protocol>"
 
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
@@ -1580,7 +1584,7 @@ msgstr "Включить порт (например, ssh:tcp) в стандар�
 
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
-msgstr "<интерфейс>"
+msgstr "<interface>"
 
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
@@ -1596,7 +1600,7 @@ msgstr ""
 
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
-msgstr "[<тип>:][<таблица>:]<файл>"
+msgstr "[<type>:][<table>:]<filename>"
 
 #: ../src/firewall-offline-cmd:192
 msgid ""
@@ -1611,8 +1615,8 @@ msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 msgstr ""
-"if=<интерфейс>:port=<порт>:proto=<протокол>[:toport=<порт_назначения>][:"
-"toaddr=<адрес_назначения>]"
+"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+"toaddr=<destination address>]"
 
 #: ../src/firewall-offline-cmd:200
 msgid ""
@@ -1627,7 +1631,7 @@ msgstr ""
 
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
-msgstr "<тип icmp>"
+msgstr "<icmp type>"
 
 #: ../src/firewall-offline-cmd:206
 msgid ""
@@ -1655,7 +1659,7 @@ msgstr ""
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr "Если параметры не заданы, будут использоваться настройки из «%s»."
+msgstr "Если параметры не заданы, будут выбраны настройки из «%s»."
 
 #: ../src/firewall-offline-cmd:286
 #, c-format
@@ -1770,3 +1774,6 @@ msgstr ""
 "<command>nm-connection-editor</command>, а для файла ifcfg добавьте "
 "выражение  «ZONE=trusted». Если зона не определена в ifcfg, будет выбрана "
 "стандартная зона firewalld."
+
+#~ msgid "NetworkManager connection editor is missing."
+#~ msgstr "Редактор соединений NetworkManager отсутствует."

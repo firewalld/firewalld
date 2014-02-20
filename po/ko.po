@@ -3,19 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# eukim <eukim@redhat.com>, 2014
 # eukim <eukim@redhat.com>, 2006-2009
 # Hyunsok Oh <hoh@redhat.com>, 2010
 # Jinseok Seo <jsseo@postech.ac.kr>, 2004
 # Michelle Ji Yeen Kim <mkim@redhat.com>, 2005-2006
 # Michelle J Kim <mkim@redhat.com>, 2003-2004
 # Michelle Kim <mkim@redhat.com>, 2002
-# eukim <eukim@redhat.com>, 2013. #zanata
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-05 17:43+0100\n"
-"PO-Revision-Date: 2013-11-19 01:41-0500\n"
+"POT-Creation-Date: 2014-02-20 14:54+0100\n"
+"PO-Revision-Date: 2014-02-13 05:10+0000\n"
 "Last-Translator: eukim <eukim@redhat.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/fedora/language/"
 "ko/)\n"
@@ -24,117 +24,102 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.1.2\n"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:298
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
 msgstr "방화벽 애플릿 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
 msgstr "방화벽"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:41
 msgid "Firewall Configuration"
 msgstr "방화벽 설정"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall/core/io/io_object.py:150
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "예상치 못한 요소 '%s'"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall/core/io/io_object.py:157
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "요소 '%s': '%s' 속성이 누락되어 있음 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall/core/io/io_object.py:165
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "요소 '%s': 예상치 못한 속성 '%s'"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewalld:64 ../src/firewall-offline-cmd:38
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "root로 %s를 실행해야 합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
 msgstr "FirewallD를 시작하지 않습니다, 이미 실행되고 있습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 실패: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:4999
+#: ../src/firewall-applet:106 ../src/firewall-config:5165
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "연결 '%s'의 영역을 선택 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:185
+#: ../src/firewall-applet:131 ../src/firewall-applet:157
+#: ../src/firewall-config:5190 ../src/firewall-config:5216
+#: ../src/firewall-config.glade.h:5
+msgid "Default Zone"
+msgstr "기본 영역 "
+
+#: ../src/firewall-applet:189 ../src/firewall-config:5248
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "인터페이스 '%s'의 영역을 선택 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:241
+#: ../src/firewall-applet:245 ../src/firewall-config:5304
 #, c-format
 msgid "Select zone for source %s"
 msgstr "소스 '%s'의 영역을 선택 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:343
+#: ../src/firewall-applet:347
 msgid "Shields Up"
 msgstr "쉴드업 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:356
+#: ../src/firewall-applet:360
 msgid "Enable Notifications"
 msgstr "통지 활성화 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:369
+#: ../src/firewall-applet:373
 msgid "Edit Firewall Settings..."
 msgstr "방화벽 설정 편집..."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:377 ../src/firewall-config.glade.h:46
+#: ../src/firewall-applet:381 ../src/firewall-config.glade.h:46
 msgid "Change Zones of Connections..."
 msgstr "연결 영역 변경..."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:384
+#: ../src/firewall-applet:388
 msgid "Configure Shields UP/Down Zones..."
 msgstr "쉴드업/다운 영역 설정..."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:393
+#: ../src/firewall-applet:397
 msgid "Block all network traffic"
 msgstr "모든 네트워크 통신량 차단 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:422
+#: ../src/firewall-applet:426
 msgid "Configure Shields Up/Down Zones"
 msgstr "쉴드업/다운 영역 설정"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:433
+#: ../src/firewall-applet:437
 msgid "Here you can select the zones used for Shields Up and Shields Down."
 msgstr "여기에서 쉴드업 및 쉴드 다운에 사용할 영역을 선택할 수 있습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:441
+#: ../src/firewall-applet:445
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
@@ -142,119 +127,101 @@ msgstr ""
 "이 기능은 대부분 기본값 영역을 사용하는 사용자에게 유용합니다. 연결 영역을 변"
 "경한 사용자의 경우 제한적으로 사용할 수 있습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:456
+#: ../src/firewall-applet:460
 msgid "Shields Up Zone:"
 msgstr "쉴드업 영역:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:467
+#: ../src/firewall-applet:471
 msgid "Shields Down Zone:"
 msgstr "쉴드 다운 영역: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:618
+#: ../src/firewall-applet:622 ../src/firewall-config:1755
 msgid "Connections"
 msgstr "연결 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:660 ../src/firewall-applet:689
-#: ../src/firewall-applet:713 ../src/firewall-config.glade.h:62
+#: ../src/firewall-applet:664 ../src/firewall-applet:693
+#: ../src/firewall-applet:717 ../src/firewall-config:1796
+#: ../src/firewall-config:1822 ../src/firewall-config:1847
+#: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "영역 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:675 ../src/firewall-config.glade.h:94
+#: ../src/firewall-applet:679 ../src/firewall-config:1808
+#: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "인터페이스 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:700 ../src/firewall-config.glade.h:99
+#: ../src/firewall-applet:704 ../src/firewall-config:1834
+#: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "소스 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:812
+#: ../src/firewall-applet:816
 msgid "Connection to FirewallD established."
 msgstr "FirewallD에 연결되었습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:821
+#: ../src/firewall-applet:825
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD 연결이 끊어졌습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:868
+#: ../src/firewall-applet:872
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD가 다시 로딩되었습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:945
+#: ../src/firewall-applet:949
 msgid "No connection to firewall daemon"
 msgstr "방화벽 데몬으로의 연결이 없습니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:951
+#: ../src/firewall-applet:955
 msgid "PANIC MODE"
 msgstr "패닉 모드 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:958
+#: ../src/firewall-applet:962
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "기본 영역: '%s'"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:966
+#: ../src/firewall-applet:970
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "영역 '{zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 활성"
 "화"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:969
+#: ../src/firewall-applet:973
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "영역 '{zone}'은 인터페이스 '{interface}'에 대해 활성화 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:977
+#: ../src/firewall-applet:981
 msgid "Zone '{zone}' active for source {source}"
 msgstr "영역 '{zone}'은 소스 {source}에 대해 활성화 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:981
+#: ../src/firewall-applet:985
 msgid "No Active Zones."
 msgstr "활성화된 영역이 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:990
+#: ../src/firewall-applet:994
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "기본 영역을 '%s'로 변경했습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1014
+#: ../src/firewall-applet:1018
 msgid "All network traffic is blocked."
 msgstr "모든 네트워크 통신이 차단되었습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1015
+#: ../src/firewall-applet:1019
 msgid "Network traffic is not blocked anymore."
 msgstr "네트워크 통신이 더이상 차단되지 않습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1030 ../src/firewall-applet:1070
+#: ../src/firewall-applet:1034 ../src/firewall-applet:1074
 msgid "activated"
 msgstr "활성화됨"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1031 ../src/firewall-applet:1071
+#: ../src/firewall-applet:1035 ../src/firewall-applet:1075
 msgid "deactivated"
 msgstr "비활성화됨 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1034
+#: ../src/firewall-applet:1038
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -262,371 +229,305 @@ msgstr ""
 "영역 '{zone}'이 인터페이스 '{interface}' 상의 연결에 대해 "
 "{activated_deactivated}"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1039
+#: ../src/firewall-applet:1043
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 "영역 '{zone}'이 인터페이스 '{interface}'에 대해 {activated_deactivated}"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1061
+#: ../src/firewall-applet:1065
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "영역 '%s'이 인터페이스 '%s'에 대해 활성화되었습니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1073
+#: ../src/firewall-applet:1077
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "영역 '{zone}'이 소스 '{source}'에 대해 {activated_deactivated}"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1096
+#: ../src/firewall-applet:1100
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "영역 '%s'이 소스 '%s'에 대해 활성화되었습니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-applet:1161
+#: ../src/firewall-applet:1165
 msgid "Firewall-applet"
 msgstr "방화벽-애플릿 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:79
+#: ../src/firewall-config:76
 msgid "Connected."
 msgstr "연결되었습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:80
+#: ../src/firewall-config:77
 msgid "No connection."
 msgstr "연결되어 있지 않습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:81
+#: ../src/firewall-config:78
 msgid "Waiting ..."
 msgstr "대기 중 ..."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:82
+#: ../src/firewall-config:79
 msgid "Retrying ..."
 msgstr "다시 시도중 ..."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:83
+#: ../src/firewall-config:80
 #, c-format
 msgid "Used by network connection '%s'"
 msgstr "네트워크 연결 '%s'에 의해 사용됨 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:84
+#: ../src/firewall-config:81
 msgid "enabled"
 msgstr "활성화됨 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:85
+#: ../src/firewall-config:82
 msgid "disabled"
 msgstr "비활성화됨 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:98
+#: ../src/firewall-config:99
 msgid "Failed to load icons."
 msgstr "아이콘 로딩에 실패했습니다."
 
-#: ../src/firewall-config:134
-msgid "NetworkManager connection editor is missing."
-msgstr "NetworkManager 연결 편집기가 누락되어 있습니다."
-
-#: ../src/firewall-config:356 ../src/firewall-config:1650
+#: ../src/firewall-config:358 ../src/firewall-config:1715
 msgid "Runtime"
 msgstr "런타임 "
 
-#: ../src/firewall-config:357
+#: ../src/firewall-config:359
 msgid "Permanent"
 msgstr "영구적 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:418 ../src/firewall-config.glade.h:102
+#: ../src/firewall-config:420 ../src/firewall-config.glade.h:102
 msgid "Service"
 msgstr "서비스"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:425 ../src/firewall-config:466
-#: ../src/firewall-config:704
+#: ../src/firewall-config:427 ../src/firewall-config:468
+#: ../src/firewall-config:706
 msgid "Port"
 msgstr "포트"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:427 ../src/firewall-config:468
-#: ../src/firewall-config:706 ../src/firewall-config.glade.h:177
+#: ../src/firewall-config:429 ../src/firewall-config:470
+#: ../src/firewall-config:708 ../src/firewall-config.glade.h:177
 msgid "Protocol"
 msgstr "프로토콜"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:470
+#: ../src/firewall-config:472
 msgid "To Port"
 msgstr "목적 포트 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:472
+#: ../src/firewall-config:474
 msgid "To Address"
 msgstr "목적 주소 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:509
+#: ../src/firewall-config:511
 msgid "Icmp Type"
 msgstr "Icmp 유형 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:524
+#: ../src/firewall-config:526
 msgid "Family"
 msgstr "제품군 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:526
+#: ../src/firewall-config:528
 msgid "Action"
 msgstr "동작 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:528
+#: ../src/firewall-config:530
 msgid "Element"
 msgstr "요소 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:530
+#: ../src/firewall-config:532
 msgid "Src"
 msgstr "소스 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:532
+#: ../src/firewall-config:534
 msgid "Dest"
 msgstr "대상 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:534
+#: ../src/firewall-config:536
 msgid "log"
 msgstr "로그 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:536
+#: ../src/firewall-config:538
 msgid "Audit"
 msgstr "감사 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:1095 ../src/firewall-config:1840
-#: ../src/firewall-config:1878
+#: ../src/firewall-config:1153 ../src/firewall-config:2006
+#: ../src/firewall-config:2044
 msgid "Warning"
 msgstr "경고 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
-#: ../src/firewall-config:1104
+#: ../src/firewall-config:1162
 msgid "Error"
 msgstr "오류 "
 
-#: ../src/firewall-config:1143
+#: ../src/firewall-config:1202
 msgid "Changes applied."
 msgstr "변경 사항이 적용되었습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1426 ../src/firewall-config:2625
+#: ../src/firewall-config:1485 ../src/firewall-config:2791
 msgid "accept"
 msgstr "허용"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1428 ../src/firewall-config:2627
-#: ../src/firewall-config:2737
+#: ../src/firewall-config:1487 ../src/firewall-config:2793
+#: ../src/firewall-config:2903
 msgid "reject"
 msgstr "거부"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1432 ../src/firewall-config:2632
+#: ../src/firewall-config:1491 ../src/firewall-config:2798
 msgid "drop"
 msgstr "드롭 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1434 ../src/firewall-config:1468
-#: ../src/firewall-config:1473
+#: ../src/firewall-config:1493 ../src/firewall-config:1527
+#: ../src/firewall-config:1532
 msgid "limit"
 msgstr "제한 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1445 ../src/firewall-config:2164
-#: ../src/firewall-config:2318 ../src/firewall-config:2589
+#: ../src/firewall-config:1504 ../src/firewall-config:2330
+#: ../src/firewall-config:2484 ../src/firewall-config:2755
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "서비스 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1447 ../src/firewall-config:2170
-#: ../src/firewall-config:2320 ../src/firewall-config:2592
+#: ../src/firewall-config:1506 ../src/firewall-config:2336
+#: ../src/firewall-config:2486 ../src/firewall-config:2758
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "포트 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1450 ../src/firewall-config:2175
-#: ../src/firewall-config:2329 ../src/firewall-config:2598
+#: ../src/firewall-config:1509 ../src/firewall-config:2341
+#: ../src/firewall-config:2495 ../src/firewall-config:2764
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "프로토콜"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1452 ../src/firewall-config:2180
-#: ../src/firewall-config:2612 ../src/firewall-config:2749
+#: ../src/firewall-config:1511 ../src/firewall-config:2346
+#: ../src/firewall-config:2778 ../src/firewall-config:2915
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "마스커레이딩 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1466
+#: ../src/firewall-config:1525
 msgid "level"
 msgstr "레벨 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1470 ../src/firewall-config:1475
+#: ../src/firewall-config:1529 ../src/firewall-config:1534
 msgid "yes"
 msgstr "예 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1602
+#: ../src/firewall-config:1667
 msgid "Authorization failed."
 msgstr "인증 실패했습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1605
+#: ../src/firewall-config:1670
 msgid "Invalid name"
 msgstr "잘못된 이름 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1609
+#: ../src/firewall-config:1674
 msgid "Name already exists"
 msgstr "이름이 이미 존재합니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1837
+#: ../src/firewall-config:2003
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "영역 '%s': 서비스 '%s'를 사용할 수 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1841 ../src/firewall-config:1879
+#: ../src/firewall-config:2007 ../src/firewall-config:2045
 msgid "Remove"
 msgstr "제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1841 ../src/firewall-config:1879
+#: ../src/firewall-config:2007 ../src/firewall-config:2045
 msgid "Ignore"
 msgstr "무시 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:1875
+#: ../src/firewall-config:2041
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "영역 '%s': ICMP 유형 '%s'을 사용할 수 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2018
+#: ../src/firewall-config:2184
 msgid "Built-in zone, rename not supported."
 msgstr "내장된 영역, 이름을 바꿀 수 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2127 ../src/firewall-config:2564
+#: ../src/firewall-config:2293 ../src/firewall-config:2730
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "초 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2128 ../src/firewall-config:2565
+#: ../src/firewall-config:2294 ../src/firewall-config:2731
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "분 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2129 ../src/firewall-config:2566
+#: ../src/firewall-config:2295 ../src/firewall-config:2732
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "시 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2130 ../src/firewall-config:2567
+#: ../src/firewall-config:2296 ../src/firewall-config:2733
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "일 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2131 ../src/firewall-config:2568
+#: ../src/firewall-config:2297 ../src/firewall-config:2734
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "긴급 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2132 ../src/firewall-config:2569
+#: ../src/firewall-config:2298 ../src/firewall-config:2735
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "주의 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2133 ../src/firewall-config:2570
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "위험 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2134 ../src/firewall-config:2571
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "오류 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2135 ../src/firewall-config:2572
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "경고 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2136 ../src/firewall-config:2573
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "알림 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2137 ../src/firewall-config:2574
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "정보 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2138 ../src/firewall-config:2575
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "디버그 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2183 ../src/firewall-config:2331
-#: ../src/firewall-config:2601 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2349 ../src/firewall-config:2497
+#: ../src/firewall-config:2767 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-차단 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2188 ../src/firewall-config:2333
-#: ../src/firewall-config:2604 ../src/firewall-config:2757
+#: ../src/firewall-config:2354 ../src/firewall-config:2499
+#: ../src/firewall-config:2770 ../src/firewall-config:2923
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "포워드-포트 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2311 ../src/firewall-config:2510
-#: ../src/firewall-config:2524 ../src/firewall-config:2579
-#: ../src/firewall-config:2680 ../src/firewall-config:2705
+#: ../src/firewall-config:2477 ../src/firewall-config:2676
+#: ../src/firewall-config:2690 ../src/firewall-config:2745
+#: ../src/firewall-config:2846 ../src/firewall-config:2871
 msgid "ipv4"
 msgstr "ipv4"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:2313 ../src/firewall-config:2512
-#: ../src/firewall-config:2526 ../src/firewall-config:2581
-#: ../src/firewall-config:2682 ../src/firewall-config:2707
+#: ../src/firewall-config:2479 ../src/firewall-config:2678
+#: ../src/firewall-config:2692 ../src/firewall-config:2747
+#: ../src/firewall-config:2848 ../src/firewall-config:2873
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3365
+#: ../src/firewall-config:3531
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -636,39 +537,29 @@ msgstr ""
 "다.\n"
 "이 영역을 마스커레이딩하시겠습니까? "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:3607
+#: ../src/firewall-config:3773
 msgid "Built-in service, rename not supported."
 msgstr "내장된 서비스, 이름을 바꿀 수 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
-#: ../src/firewall-config:3974
+#: ../src/firewall-config:4140
 msgid "Built-in icmp, rename not supported."
 msgstr "내장된 icmp, 이름을 바꿀 수 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
 msgstr "주소"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:2
 msgid "Port and Protocol"
 msgstr "포트 및 프로토콜 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "명령행을 입력하십시오."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
 msgstr "컨텍스트를 입력하십시오."
-
-#: ../src/firewall-config.glade.h:5
-msgid "Default Zone"
-msgstr "기본 영역 "
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
@@ -734,53 +625,43 @@ msgstr "ipv 및 테이블, 체인 우선 순위를 선택하고 인수를 입력
 msgid "Priority:"
 msgstr "우선 순위:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:22
 msgid "Port Forwarding"
 msgstr "포트 포워딩"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:23
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr "필요에 따라 소스 및 수신지 옵션을 선택하시기 바랍니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:24
 msgid "Port / Port Range:"
 msgstr "포트 / 포트 범위:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:25
 msgid "IP address:"
 msgstr "IP 주소: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:26
 msgid "Protocol:"
 msgstr "프로토콜:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:27
 msgid "Destination"
 msgstr "대상"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:28
 msgid "Source"
 msgstr "소스 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:29
 msgid "Local forwarding"
 msgstr "로컬 포트 포워딩 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:30
 msgid "Forward to another port"
 msgstr "다른 포트로 포워드 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:31
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
@@ -789,62 +670,50 @@ msgstr ""
 "로컬 포워딩을 사용하실 경우, 포트를 지정하셔야 합니다. 이러한 포트는 소스 포"
 "트와 달라야 합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:32
 msgid "Base ICMP Type Settings"
 msgstr "기본 ICMP 유형 설정 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base ICMP type settings:"
 msgstr "기본 ICMP 유형 설정을 구성하십시오:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
 msgstr "굵게 표시된 항목은 필수 항목이며 모든 다른 항목은 옵션입니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
 msgstr "이름: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:36
 msgid "Version:"
 msgstr "버전:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:37
 msgid "Short:"
 msgstr "개요:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:38
 msgid "Description:"
 msgstr "설명: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:39
 msgid "ICMP Type"
 msgstr "ICMP 유형 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:40
 msgid "Please select an ICMP type"
 msgstr "ICMP 유형을 선택하십시오 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:42
 msgid "_File"
 msgstr "파일(_F)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:43
 msgid "_Options"
 msgstr "옵션(_O)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:44
 msgid "Reload Firewalld"
 msgstr "Firewalld 다시 불러오기 "
@@ -863,7 +732,6 @@ msgstr ""
 msgid "Change which zone a network connection belongs to."
 msgstr "네트워크 연결이 속해 있는 영역을 변경합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:48
 msgid "Change Default Zone"
 msgstr "기본 영역 변경 "
@@ -876,7 +744,6 @@ msgstr "연결 또는 인터페이스의 기본 영역을 변경합니다."
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr "패닉 모드는 모든 송수신 패킷이 삭제됨을 의미합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:51
 msgid "Panic Mode"
 msgstr "패닉 모드 "
@@ -889,7 +756,6 @@ msgstr ""
 "잠금 기능은 방화벽 설정을 잠금하여 잠금 화이트리스트에 있는 애플리케이션만 변"
 "경할 수 있게 합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:53
 msgid "Lockdown"
 msgstr "잠금 "
@@ -898,7 +764,6 @@ msgstr "잠금 "
 msgid "_View"
 msgstr "보기(_V)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:55
 msgid "ICMP Types"
 msgstr "ICMP 유형 "
@@ -907,12 +772,10 @@ msgstr "ICMP 유형 "
 msgid "Direct Configuration"
 msgstr "직접 설정 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:57
 msgid "Lockdown Whitelist"
 msgstr "잠금 화이트리스트 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:58
 msgid "_Help"
 msgstr "도움말(_H)"
@@ -921,7 +784,6 @@ msgstr "도움말(_H)"
 msgid "Configuration:"
 msgstr "설정: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:60
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
@@ -931,7 +793,6 @@ msgstr ""
 "현재 사용 가능한 설정. 런타임 설정은 실제 활성화된 설정입니다. 영구 설정은 서"
 "비스나 시스템을 다시 로딩하거나 다시 시작한 후 사용할 수 있습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:61
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
@@ -945,27 +806,22 @@ msgstr ""
 "포워딩, icmp 필터 및 고급 규칙의 조합입니다. 영역은 인터페이스와 소스 주소로 "
 "연결될 수 있습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:63
 msgid "Add Zone"
 msgstr "영역 추가 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:64
 msgid "Edit Zone"
 msgstr "영역 편집 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:65
 msgid "Remove Zone"
 msgstr "영역 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:66
 msgid "Load Zone Defaults"
 msgstr "영역 기본값 읽기 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:67
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
@@ -976,12 +832,10 @@ msgstr ""
 "이 영역에 결합된 연결, 인터페이스, 소스에서 시스템에 도달할 수 있는 모든 호스"
 "트 및 네트워크에서 액세스 가능하게 됩니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:68
 msgid "Services"
 msgstr "서비스 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -990,27 +844,22 @@ msgstr ""
 "이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
 "추가 포트 또는 포트 범위를 추가합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:70
 msgid "Add Port"
 msgstr "포트 추가 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:71
 msgid "Edit Port"
 msgstr "포트 편집  "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:72
 msgid "Remove Port"
 msgstr "포트 삭제    "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:73
 msgid "Ports"
 msgstr "포트 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:74
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
@@ -1022,12 +871,10 @@ msgstr ""
 "넷에서 하나의 주소로 나타납니다. 마스커레이딩 (Masquerading) 기능은 IPv4에서"
 "만 해당됩니다.  "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:75
 msgid "Masquerade zone"
 msgstr "마스커레이딩 영역 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:76
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
@@ -1035,12 +882,10 @@ msgid ""
 msgstr ""
 "마스커레이딩을 활성화할 경우 IP 포워딩은 IPv4 네트워크에 대해 활성화됩니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:77
 msgid "Masquerading"
 msgstr "마스커레이딩 (Masquerading) "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:78
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
@@ -1053,22 +898,18 @@ msgstr ""
 "것은 인터페이스가 마스커레이딩되었을 경우에만 유용합니다. 포트 포워딩은 IPv4"
 "에서만 해당됩니다.   "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:79
 msgid "Add Forward Port"
 msgstr "포워드 포트 추가 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:80
 msgid "Edit Forward Port"
 msgstr "포워드 포트 편집 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:81
 msgid "Remove Forward Port"
 msgstr "포워드 포트 삭제 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:82
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
@@ -1079,7 +920,6 @@ msgstr ""
 "류 메세지를 보내는 데 주로 사용되지만, 추가로 핑 요청 및 응답과 같은 알림 메"
 "세지를 보내는 데 사용될 수 있습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
@@ -1088,12 +928,10 @@ msgstr ""
 "목록에서 거부해야 할 ICMP 유형을 표시합니다. 그 외의 모든 ICMP 유형은 방화벽 "
 "통과를 허용합니다. 기본값은 제한 없음입니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:84
 msgid "ICMP Filter"
 msgstr "ICMP 필터 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:85
 msgid "Here you can set rich language rules for the zone."
 msgstr "여기에서 영역의 고급 언어 규칙을 설정할 수 있습니다."
@@ -1110,12 +948,10 @@ msgstr "고급 규칙 편집 "
 msgid "Remove Rich Rule"
 msgstr "고급 규칙 삭제 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:89
 msgid "Rich Rules"
 msgstr "고급 규칙 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:90
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
@@ -1136,7 +972,6 @@ msgstr "인터페이스 편집 "
 msgid "Remove Interface"
 msgstr "인터페이스 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:95
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "영역으로의 소스 주소 또는 범위를 바인딩할 항목을 추가합니다."
@@ -1153,39 +988,32 @@ msgstr "소스 편집 "
 msgid "Remove Source"
 msgstr "소스 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:100
 msgid "Zones"
 msgstr "영역 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:101
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr "firewalld 서비스는 포트, 프로토콜, 모듈 및 대상 주소의 조합입니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:103
 msgid "Add Service"
 msgstr "서비스 추가 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:104
 msgid "Edit Service"
 msgstr "서비스 편집 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:105
 msgid "Remove Service"
 msgstr "서비스 삭제 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:106
 msgid "Load Service Defaults"
 msgstr "서비스 기본값 읽기 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:107
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
@@ -1194,37 +1022,30 @@ msgstr ""
 "모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 추가 포트 또는 포트 범위"
 "를 추가합니다. 또한 포트를 지정하지 않고 프로토콜을 추가할 수 있습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:108
 msgid "Add Entry"
 msgstr "항목 추가  "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:109
 msgid "Edit Entry"
 msgstr "항목 편집  "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-config.glade.h:110
 msgid "Remove Entry"
 msgstr "항목 삭제    "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:111
 msgid "Ports and Protocols"
 msgstr "포트 및 프로토콜 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:112
 msgid "Netfilter helper modules"
 msgstr "Netfilter 도우미 모듈 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:113
 msgid "Modules"
 msgstr "모듈 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:114
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
@@ -1234,17 +1055,14 @@ msgstr ""
 "대상 주소를 지정할 경우, 서비스 항목은 대상 주소 및 유형으로 제한됩니다. 두 "
 "항목 모두가 비어 있을 경우 제한이 없게 됩니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:115
 msgid "IPv4:"
 msgstr "IPv4:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:116
 msgid "IPv6:"
 msgstr "IPv6:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:117
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
@@ -1253,7 +1071,6 @@ msgstr ""
 "서비스는 영구 설정 보기에서만 변경할 수 있습니다. 서비스의 런타임 설정은 고정"
 "되어 있습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:118
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
@@ -1262,22 +1079,18 @@ msgstr ""
 "firewalld icmp 유형은 firewalld 용 ICMP (Internet Control Message Protocol) "
 "유형의 정보를 제공합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:119
 msgid "Add ICMP Type"
 msgstr "ICMP 유형 추가 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:120
 msgid "Edit ICMP Type"
 msgstr "ICMP 유형 편집 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:121
 msgid "Remove ICMP Type"
 msgstr "ICMP 유형 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:122
 msgid "Load ICMP Type Defaults"
 msgstr "ICMP 유형의 기본값 가져오기 "
@@ -1286,17 +1099,14 @@ msgstr "ICMP 유형의 기본값 가져오기 "
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr "ICMP 유형이 IPv4 및 IPv6에서 사용 가능한 지에 대한 여부를 지정합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:124
 msgid "IPv4"
 msgstr "IPv4"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:125
 msgid "IPv6"
 msgstr "IPv6"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:126
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
@@ -1417,7 +1227,6 @@ msgstr "통과 규칙 제거 "
 msgid "Passthrough"
 msgstr "통과 규칙 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:147
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
@@ -1428,7 +1237,6 @@ msgstr ""
 "이는 방화벽 변경을 제한합니다. 잠금 화이트리스트에는 명령, 컨텍스트, 사용자 "
 "및 사용자 ID가 포함되어 있습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:148
 msgid ""
 "The context is the security (SELinux) context of a running application or "
@@ -1450,12 +1258,10 @@ msgstr "문맥 편집 "
 msgid "Remove Context"
 msgstr "문맥 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:152
 msgid "Contexts"
 msgstr "컨텍스트 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:153
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
@@ -1478,12 +1284,10 @@ msgstr "명령행 편집 "
 msgid "Remove Command Line"
 msgstr "명령행 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:157
 msgid "Command lines"
 msgstr "명령행 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:158
 msgid "User names."
 msgstr "사용자 이름 "
@@ -1500,12 +1304,10 @@ msgstr "사용자 이름 편집 "
 msgid "Remove User Name"
 msgstr "사용자 이름 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:162
 msgid "User names"
 msgstr "사용자 이름 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:163
 msgid "User ids."
 msgstr "사용자 ID"
@@ -1522,104 +1324,84 @@ msgstr "사용자 ID 편집 "
 msgid "Remove User Id"
 msgstr "사용자 ID 제거 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:167
 msgid "User Ids"
 msgstr "사용자 ID"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:168
 msgid "Default Zone:"
 msgstr "기본 영역: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:169
 msgid "Current default zone of the system."
 msgstr "시스템의 현재 기본 영역입니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:170
 msgid "Lockdown:"
 msgstr "잠금: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:171
 msgid "Panic Mode:"
 msgstr "패닉 모드: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:172
 msgid "Please enter the module name."
 msgstr "모듈 이름을 입력하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and protocol."
 msgstr "포트 및 프로토콜을 입력하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:174
 msgid "Port and/or Protocol"
 msgstr "포트 및/또는 프로토콜 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:175
 msgid "Please enter a port and/or a protocol."
 msgstr "포트 및/또는 프로토콜을 입력하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:176
 msgid "Other Protocol:"
 msgstr "다른 프로토콜: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:178
 msgid "Please enter a protocol."
 msgstr "프로토콜을 입력하십시오."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:179
 msgid "Rich Rule"
 msgstr "고급 규칙 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:180
 msgid "Please enter a rich rule."
 msgstr "고급 규칙을 입력하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:181
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
 "호스트 또는 네트워크의 경우 화이트 또는 블랙 리스트에 따라 요소가 비활성화됩"
 "니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:182
 msgid "Source:"
 msgstr "소스: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:183
 msgid "Destination:"
 msgstr "수신지: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:184
 msgid "Log:"
 msgstr "로그: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:185
 msgid "Audit:"
 msgstr "감사: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:186
 msgid "ipv4 and ipv6"
 msgstr "ipv4 및 ipv6"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:187
 msgid "inverted"
 msgstr "변환됨 "
@@ -1629,184 +1411,151 @@ msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"이를 활성화하려면 작업을 '거부'하고 'ipv4' 또는 'ipv6' 중 하나 (둘 중 하나)"
+"의 제품군을 선택합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:189
 msgid "with Type:"
 msgstr "유형: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:190
 msgid "With limit:"
 msgstr "제한: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:191
 msgid "/"
 msgstr "/"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:196
 msgid "Prefix:"
 msgstr "접두부: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:197
 msgid "Level:"
 msgstr "레벨: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:206
 msgid "Element:"
 msgstr "요소: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:213
 msgid "Family:"
 msgstr "제품군: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:214
 msgid "Action:"
 msgstr "동작: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:215
 msgid "Base Service Settings"
 msgstr "기본 서비스 설정 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:216
 msgid "Please configure base service settings:"
 msgstr "기본 서비스 설정을 구성하십시오: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:217
 msgid "Please select a service."
 msgstr "서비스를 선택하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:218
 msgid "User ID"
 msgstr "사용자 ID"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:219
 msgid "Please enter the user id."
 msgstr "사용자 ID를 입력하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:220
 msgid "User name"
 msgstr "사용자 이름 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:221
 msgid "Please enter the user name."
 msgstr "사용자 이름을 입력하십시오. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:222
 msgid "Base Zone Settings"
 msgstr "기본 영역 설정 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:223
 msgid "Please configure base zone settings:"
 msgstr "기본 영역 설정을 구성하십시오: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:224
 msgid "Target:"
 msgstr "대상: "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-config.glade.h:225
 msgid "Default Target"
 msgstr "기본 대상 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:45
 msgid "Error:"
 msgstr "오류:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:48
 msgid "Warning:"
 msgstr "경고:"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:68
 #, c-format
 msgid "port range %s is not unique."
 msgstr "포트 범위 %s 이(가) 고유한 범위가 아닙니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:70
 #, c-format
 msgid "%s is not a valid range (start port >= end port)."
 msgstr "%s 은(는) 올바른 범위 (시작 포트 >= 마지막 포트)가 아닙니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:75
 #, c-format
 msgid "%s is not a valid protocol."
 msgstr "%s은(는) 잘못된 프로토콜입니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:77
 #, c-format
 msgid "invalid port definition %s."
 msgstr "잘못된 포트 정의 %s."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:87 ../src/firewall-offline-cmd:97
 #, c-format
 msgid "Invalid argument %s"
 msgstr "잘못된 인수 %s "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:111
 msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
 msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s': %(error)s. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:122
 msgid "option %(option)s: invalid forward_port '%(value)s'."
 msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s'. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:129
 #, c-format
 msgid "invalid interface '%s'."
 msgstr "잘못된 인터페이스 '%s'. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:149
 msgid "Enable firewall (default)"
 msgstr "방화벽 사용 (기본)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:152
 msgid "Disable firewall"
 msgstr "방화벽을 사용하지 않음"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
 msgid "<module>"
 msgstr "<module>"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:159
 msgid "Ignored option, was used to enable an iptables module"
 msgstr "iptables 모듈을 활성화하기 위해 무시된 옵션이 사용되었습니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:163
 msgid "Ignored option, was used to disable an iptables module"
 msgstr "iptables 모듈을 비활성화하기 위해 무시된 옵션이 사용되었습니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
 msgid "<service>"
 msgstr "<service>"
@@ -1819,27 +1568,22 @@ msgstr "기본 영역에 있는 서비스를 활성화 (예: ssh)"
 msgid "Disable a service in the default zone (example: ssh)"
 msgstr "기본 영역에 있는 서비스를 비활성화 (예: ssh)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:176
 msgid "<port>[-<port>]:<protocol>"
 msgstr "<port>[-<port>]:<protocol>"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:178
 msgid "Enable a port in the default zone (example: ssh:tcp)"
 msgstr "기본 영역에 있는 포트를 활성화 (예: ssh:tcp)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
 msgid "<interface>"
 msgstr "<interface>"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:183
 msgid "Bind an interface to the trusted zone"
 msgstr "신뢰할 수 있는 영역에 인터페이스를 바인딩 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:187
 msgid ""
 "Enables masquerading in the default zone, interface argument is ignored. "
@@ -1848,12 +1592,10 @@ msgstr ""
 "기본 영역에 있는 마스커레이딩을 활성화합니다, 인터페이스 인수는 무시됩니다. "
 "IPv4에서만 해당됩니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:190
 msgid "[<type>:][<table>:]<filename>"
 msgstr "[<type>:][<table>:]<filename>"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:192
 msgid ""
 "Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
@@ -1862,7 +1604,6 @@ msgstr ""
 "무시된 옵션입니다. 방화벽에 사용자 지정 규칙을 추가하기 위해 사용되었습니다 "
 "(예: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:196
 msgid ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
@@ -1871,7 +1612,6 @@ msgstr ""
 "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
 "toaddr=<destination address>]"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:200
 msgid ""
 "Forward the port with protocol for the interface to either another local "
@@ -1883,7 +1623,6 @@ msgstr ""
 "지 포트 선택 지정 가능) 인터페이스의 프로토콜과 함께 포트를 포워딩합니다. 이"
 "는 기본 영역에 추가됩니다. IPv4에서만 해당됩니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:205
 msgid "<icmp type>"
 msgstr "<icmp type>"
@@ -1896,13 +1635,11 @@ msgstr ""
 "기본 영역에서 ICMP 유형이 차단되었습니다. 기본값으로 모든 ICMP 유형을 허용합"
 "니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:217
 #, c-format
 msgid "no such option: %s"
 msgstr "해당 옵션이 없음: %s"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:232
 msgid ""
 "This tool tries to convert system-config-firewall/lokkit options as much as "
@@ -1912,83 +1649,69 @@ msgstr ""
 "이 도구는 system-config-firewall/lokkit 옵션을 최대한 firewalld로 변경하려 하"
 "지만 사용자 지정 규칙, 모듈, 머스터레이딩 등의 경우에 대해 제한이 있습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:238
 #, c-format
 msgid "If no options are given, the configuration from '%s' be migrated."
 msgstr "옵션이 없을 경우 '%s'의 설정이 마이그레이션됩니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:286
 #, c-format
 msgid "%s option requires an argument"
 msgstr "%s 옵션에는 인수가 필요함 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:289
 msgid "%(option)s option requires %(count)s arguments"
 msgstr "%(option)s 옵션에는 %(count)s 인수가 필요함"
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld
 #: ../src/firewall-offline-cmd:303
 #, c-format
 msgid "%s option does not take a value"
 msgstr "%s 옵션 값을 갖지 않습니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:360
 msgid "Problem parsing arguments."
 msgstr "인수 분석 도중 문제가 발생했습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:366
 #, c-format
 msgid "Opening of '%s' failed, exiting."
 msgstr "'%s'를 열 수 없습니다. 종료합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:394
 #, c-format
 msgid "Opening default zone '%s'"
 msgstr "기본 영역 '%s'을 열고 있습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:399
 #, c-format
 msgid "Unable to open default zone '%s', exiting."
 msgstr "기본 영역 '%s'을 열 수 없습니다. 종료합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:411
 #, c-format
 msgid "Unable to open zone '%s', exiting."
 msgstr "영역 '%s'을 열 수 없습니다. 종료합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:424
 #, c-format
 msgid "The device '%s' will be bound to the %s zone."
 msgstr "장치 '%s'는 %s 영역으로 연결됩니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:432
 #, c-format
 msgid "Ignoring custom-rule file '%s'"
 msgstr "사용자 정의 규칙 파일 '%s'을 무시합니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:437
 #, c-format
 msgid "Ignoring addmodule '%s'"
 msgstr "추가 모듈 '%s'을 무시합니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:440
 #, c-format
 msgid "Ignoring removemodule '%s'"
 msgstr "삭제 모듈 '%s'을 무시합니다 "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:445
 #, c-format
 msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
@@ -1996,7 +1719,6 @@ msgstr ""
 "장치 '%s'가 마스커레이딩되었습니다, 기본 영역의 마스커레이딩이 활성화되어 있"
 "습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:452
 #, c-format
 msgid "Adding port '%s/%s' to default zone."
@@ -2007,35 +1729,29 @@ msgstr "기본 영역에 포트 '%s/%s'를 추가합니다. "
 msgid "Removing service '%s' from default zone."
 msgstr "기본 영역에서 서비스 '%s'를 삭제하고 있습니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:467
 #, c-format
 msgid "Adding service '%s' to default zone."
 msgstr "기본 영역에 서비스 '%s'를 추가합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:474
 #, c-format
 msgid "Adding icmpblock '%s' to default zone."
 msgstr "기본 영역에 icmpblock '%s'을 추가합니다. "
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:484
 #, c-format
 msgid "Adding forward port %s:%s:%s:%s to default zone."
 msgstr "기본 영역에 포워드 포트 %s:%s:%s:%s를 추가합니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:492
 msgid "No changes to default zone needed."
 msgstr "기본 영역에 변경할 필요가 없습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:496
 msgid "Changed trusted zone configuration."
 msgstr "신뢰할 수 있는 영역 설정을 변경했습니다."
 
-# translation auto-copied from project firewalld, version 0.3.4, document firewalld, author eukim
 #: ../src/firewall-offline-cmd:498
 msgid ""
 "If one of the trusted interfaces is used for a connection with "
@@ -2052,3 +1768,6 @@ msgstr ""
 "connection-editor</command>를 사용하고 영역을 신회할 수 있는 영역으로 설정하"
 "거나 ifcfg 파일의 경우 편집기를 사용하여 \"ZONE=trusted\"를 추가합니다. 영역"
 "이 ifcfg 파일에 정의되어 있지 않을 경우 firewalld 기본 영역이 사용됩니다."
+
+#~ msgid "NetworkManager connection editor is missing."
+#~ msgstr "NetworkManager 연결 편집기가 누락되어 있습니다."
