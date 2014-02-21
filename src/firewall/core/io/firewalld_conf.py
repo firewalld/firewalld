@@ -102,10 +102,9 @@ class firewalld_conf:
         done = [ ]
 
         try:
-            (temp_file, temp) = tempfile.mkstemp(prefix="%s." % os.path.basename(self.filename),
-                                                 dir=os.path.dirname(self.filename),
-                                                 text=True)
-            temp_file = io.open(temp_file, mode='wt', encoding='UTF-8')
+            temp_file = tempfile.NamedTemporaryFile(mode='wt',
+                             prefix="%s." % os.path.basename(self.filename),
+                             dir=os.path.dirname(self.filename), delete=False)
         except Exception as msg:
             log.error("Failed to open temporary file: %s" % msg)
             raise
@@ -176,21 +175,21 @@ class firewalld_conf:
         temp_file.close()
 
         if not modified: # not modified: remove tempfile
-            os.remove(temp)
+            os.remove(temp_file.name)
             return
         # make backup
         if os.path.exists(self.filename):
             try:
                 shutil.copy2(self.filename, "%s.old" % self.filename)
             except Exception as msg:
-                os.remove(temp)
+                os.remove(temp_file.name)
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
         # copy tempfile
         try:
-            shutil.move(temp, self.filename)
+            shutil.move(temp_file.name, self.filename)
         except Exception as msg:
-            os.remove(temp)
+            os.remove(temp_file.name)
             raise IOError("Failed to create '%s': %s" % (self.filename, msg))
         else:
             os.chmod(self.filename, 0o600)
