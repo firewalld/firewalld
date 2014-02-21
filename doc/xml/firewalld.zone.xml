@@ -126,7 +126,7 @@
 	      The <literal>ACCEPT</literal> target is used in the trusted zone, every packet will be accepted.
 	      The <literal>%%REJECT%%</literal> target is used in the block zone, every packet will be rejected with the default firewalld reject type.
 	      The <literal>DROP</literal> target is used in the drop zone, every packet will be dropped.
-	      The default target is <literal>{chain}_ZONE_{zone}</literal> and will be used if the target is not specified.
+	      The default target is <literal>{chain}_{zone}</literal> and will be used if the target is not specified.
 	      If other than the default target is used, all settings except interface and source are ignored, because the first rule created in firewall for this zone is 'jump to <replaceable>target</replaceable>'.
 	    </para>
 	  </listitem>
