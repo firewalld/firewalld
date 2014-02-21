@@ -81,6 +81,7 @@ class IcmpType(IO_Object):
 
 class icmptype_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
+        IO_Object_ContentHandler.startElement(self, name)
         self.item.parser_check_element_attrs(name, attrs)
 
         if name == "icmptype":

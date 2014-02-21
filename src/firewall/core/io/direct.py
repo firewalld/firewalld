@@ -36,6 +36,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         self.direct = False
 
     def startElement(self, name, attrs):
+        IO_Object_ContentHandler.startElement(self, name)
         self.item.parser_check_element_attrs(name, attrs)
 
         if name == "direct":
@@ -348,7 +349,7 @@ class Direct(IO_Object):
                 handler.startElement("rule", { "ipv": ipv, "table": table,
                                                  "chain": chain,
                                                  "priority": "%d" % priority })
-                handler.ignorableWhitespace(joinArgs(args))
+                handler.ignorableWhitespace(sax.saxutils.escape(joinArgs(args)))
                 handler.endElement("rule")
                 handler.ignorableWhitespace("\n")
 
@@ -359,7 +360,7 @@ class Direct(IO_Object):
                     continue
                 handler.ignorableWhitespace("  ")
                 handler.startElement("passthrough", { "ipv": ipv })
-                handler.ignorableWhitespace(joinArgs(args))
+                handler.ignorableWhitespace(sax.saxutils.escape(joinArgs(args)))
                 handler.endElement("passthrough")
                 handler.ignorableWhitespace("\n")
 

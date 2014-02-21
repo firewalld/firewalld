@@ -136,7 +136,7 @@ class IO_Object(object):
                     _attrs.remove(x)
         if not found:
             raise FirewallError(PARSE_ERROR, "Unexpected element %s" % name)
-         # raise attributes[0]
+        # raise attributes[0]
         for x in _attrs:
             raise FirewallError(PARSE_ERROR, "%s: Unexpected attribute %s" % 
                                 (name, x))
@@ -172,6 +172,9 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
     def startDocument(self):
         self._element = ""
 
+    def startElement(self, name):
+        self._element = ""
+
     def endElement(self, name):
         if name == "short":
             self.item.short = self._element
@@ -179,7 +182,7 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
             self.item.description = self._element
 
     def characters(self, content):
-        self._element = content.replace('\n', ' ')
+        self._element += content.replace('\n', ' ')
 
 class IO_Object_XMLGenerator(saxutils.XMLGenerator):
     def __init__(self, out):
