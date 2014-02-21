@@ -3821,10 +3821,6 @@ class FirewallConfig(object):
             self.fw.config().addService(name, settings)
         self.changes_applied()
 
-        self.load_services()
-        #TODO: change active service
-        self.onChangeService()
-
     def onServiceConfLoadDefaultsService(self, *args):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
@@ -4187,10 +4183,6 @@ class FirewallConfig(object):
         else:
             self.fw.config().addIcmpType(name, settings)
         self.changes_applied()
-
-        self.load_icmps()
-        #TODO: change active icmp
-        self.onChangeIcmp()
 
     def onIcmpDialogLoadDefaultsIcmp(self, *args):
         active_icmp = self.get_active_icmp()
