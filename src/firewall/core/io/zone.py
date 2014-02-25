@@ -133,6 +133,7 @@ class Zone(IO_Object):
         self.version = u2b_if_py2(self.version)
         self.short = u2b_if_py2(self.short)
         self.description = u2b_if_py2(self.description)
+        self.target = u2b_if_py2(self.target)
         self.services = [u2b_if_py2(s) for s in self.services]
         self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
         self.icmp_blocks = [u2b_if_py2(i) for i in self.icmp_blocks]
