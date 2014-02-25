@@ -256,7 +256,7 @@ class Direct(IO_Object):
     def remove_rules(self, ipv, table, chain):
         key = (ipv, table, chain)
         if key in self.rules:
-            for value in self.rules[key]:
+            for value in self.rules[key].keys():
                 del self.rules[key][value]
             if len(self.rules[key]) == 0:
                 del self.rules[key]

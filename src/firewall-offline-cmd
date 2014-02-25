@@ -208,8 +208,6 @@ Direct Options
   --query-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Return whether a rule with priority has been added to
                        chain in table
-  --passthrough {ipv4|ipv6|eb} <arg>...
-                       Pass a command through
   --get-all-passthroughs
                        Get all passthrough rules
   --get-passthroughs {ipv4|ipv6|eb} <arg>...
@@ -490,8 +488,6 @@ parser_group_zone.add_argument("--set-target", metavar="<target>")
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
-parser_direct.add_argument("--passthrough", nargs=argparse.REMAINDER,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--add-passthrough", nargs=argparse.REMAINDER,
                     metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--remove-passthrough", nargs=argparse.REMAINDER,
@@ -590,7 +586,7 @@ options_permanent = options_config or options_zone or \
                     a.new_service or a.delete_service or \
                     a.new_zone or a.delete_zone
 
-options_direct = a.passthrough or \
+options_direct = \
            a.add_chain or a.remove_chain or a.query_chain or \
            a.get_chains or a.get_all_chains or \
            a.add_rule or a.remove_rule or a.remove_rules or a.query_rule or \
@@ -895,7 +891,7 @@ try:
                 priority = int(a.remove_rule[3])
             except ValueError:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            settings.removeRule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
+            settings.remove_rule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
                                 a.remove_rule[2], priority, a.remove_rule[4:])
         elif a.remove_rules:
             if len (a.remove_rules) < 3:
