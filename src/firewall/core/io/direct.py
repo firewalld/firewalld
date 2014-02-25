@@ -200,28 +200,28 @@ class Direct(IO_Object):
                             (chain, table, ipv)
                         + "already in list, ignoring")
 
-#    def remove_chain(self, ipv, table, chain):
-#        key = (ipv, table)
-#        if key in self.chains and chain in self.chains[key]:
-#            self.chains[key].remove(chain)
-#            if len(self.chains[key]) == 0:
-#                del self.chains[key]
-#        else:
-#            raise ValueError( \
-#                "Chain '%s' with table '%s' with ipv '%s' not in list" % \
-#                (chain, table, ipv))
+    def remove_chain(self, ipv, table, chain):
+        key = (ipv, table)
+        if key in self.chains and chain in self.chains[key]:
+            self.chains[key].remove(chain)
+            if len(self.chains[key]) == 0:
+                del self.chains[key]
+        else:
+            raise ValueError( \
+                "Chain '%s' with table '%s' with ipv '%s' not in list" % \
+                (chain, table, ipv))
 
-#    def query_chain(self, ipv, table, chain):
-#        key = (ipv, table)
-#        return (key in self.chains and chain in self.chains[key])
+    def query_chain(self, ipv, table, chain):
+        key = (ipv, table)
+        return (key in self.chains and chain in self.chains[key])
 
-#    def get_chains(self, ipv, table):
-#        key = (ipv, table)
-#        if key in self.chains:
-#            return self.chains[key]
-#        else:
-#            raise ValueError("No chains for table '%s' with ipv '%s'" % \
-#                             (table, ipv))
+    def get_chains(self, ipv, table):
+        key = (ipv, table)
+        if key in self.chains:
+            return self.chains[key]
+        else:
+            raise ValueError("No chains for table '%s' with ipv '%s'" % \
+                             (table, ipv))
 
     def get_all_chains(self):
         return self.chains
@@ -241,30 +241,38 @@ class Direct(IO_Object):
                         + "with ipv '%s' and priority %d " % (ipv, priority)
                         + "already in list, ignoring")
 
-#    def remove_rule(self, ipv, table, chain, priority, args):
-#        key = (ipv, table, chain)
-#        value = (priority, tuple(args))
-#        if key in self.rules and value in self.rules[key]:
-#            del self.rules[key][value]
-#            if len(self.rules[key]) == 0:
-#                del self.rules[key]
-#        else:
-#            raise ValueError("Rule '%s' for table '%s' and chain '%s' " % \
-#                ("',".join(args), table, chain) + \
-#                "with ipv '%s' and priority %d not in list" % (ipv, priority))
+    def remove_rule(self, ipv, table, chain, priority, args):
+        key = (ipv, table, chain)
+        value = (priority, tuple(args))
+        if key in self.rules and value in self.rules[key]:
+            del self.rules[key][value]
+            if len(self.rules[key]) == 0:
+                del self.rules[key]
+        else:
+            raise ValueError("Rule '%s' for table '%s' and chain '%s' " % \
+                ("',".join(args), table, chain) + \
+                "with ipv '%s' and priority %d not in list" % (ipv, priority))
 
-#    def query_rule(self, ipv, table, chain, priority, args):
-#        key = (ipv, table, chain)
-#        value = (priority, tuple(args))
-#        return (key in self.rules and value in self.rules[key])
+    def remove_rules(self, ipv, table, chain):
+        key = (ipv, table, chain)
+        if key in self.rules:
+            for value in self.rules[key]:
+                del self.rules[key][value]
+            if len(self.rules[key]) == 0:
+                del self.rules[key]
 
-#    def get_rules(self, ipv, table, chain):
-#        key = (ipv, table, chain)
-#        if key in self.rules:
-#            return self.rules[key]
-#        else:
-#            raise ValueError("No rules for table '%s' and chain '%s' " %\
-#                             (table, chain) + "with ipv '%s'" % (ipv))
+    def query_rule(self, ipv, table, chain, priority, args):
+        key = (ipv, table, chain)
+        value = (priority, tuple(args))
+        return (key in self.rules and value in self.rules[key])
+
+    def get_rules(self, ipv, table, chain):
+        key = (ipv, table, chain)
+        if key in self.rules:
+            return self.rules[key]
+        else:
+            raise ValueError("No rules for table '%s' and chain '%s' " %\
+                             (table, chain) + "with ipv '%s'" % (ipv))
 
     def get_all_rules(self):
         return self.rules
@@ -280,25 +288,25 @@ class Direct(IO_Object):
             log.warning("Passthrough '%s' for ipv '%s'" % \
                             ("',".join(args), ipv)
                         + "already in list, ignoring")
-#
-#    def remove_passthrough(self, ipv, args):
-#        if ipv in self.passthroughs and args in self.passthroughs[ipv]:
-#            self.passthroughs[ipv].remove(args)
-#            if len(self.passthroughs[ipv]) == 0:
-#                del self.passthroughs[ipv]
-#        else:
-#            raise ValueError, "Passthrough '%s' for ipv '%s'" % \
-#                ("',".join(args), ipv) + "not in list"
-#
-#    def query_passthrough(self, ipv, args):
-#        return (ipv in self.passthroughs and args in self.passthroughs[ipv])
-#
-#    def get_passthroughs(self, ipv):
-#        if ipv in self.passthroughs:
-#            return self.passthroughs[ipv]
-#        else:
-#            raise ValueError, "No passthroughs for ipv '%s'" % (ipv)
-#
+
+    def remove_passthrough(self, ipv, args):
+        if ipv in self.passthroughs and args in self.passthroughs[ipv]:
+            self.passthroughs[ipv].remove(args)
+            if len(self.passthroughs[ipv]) == 0:
+                del self.passthroughs[ipv]
+        else:
+            raise ValueError, "Passthrough '%s' for ipv '%s'" % \
+                ("',".join(args), ipv) + "not in list"
+
+    def query_passthrough(self, ipv, args):
+        return (ipv in self.passthroughs and args in self.passthroughs[ipv])
+
+    def get_passthroughs(self, ipv):
+        if ipv in self.passthroughs:
+            return self.passthroughs[ipv]
+        else:
+            raise ValueError, "No passthroughs for ipv '%s'" % (ipv)
+
     def get_all_passthroughs(self):
         return self.passthroughs
 
