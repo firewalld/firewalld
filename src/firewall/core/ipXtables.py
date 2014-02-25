@@ -153,7 +153,7 @@ class ip4tables:
                 self.__run(["-t", table, "-L"])
                 ret.append(table)
             except ValueError:
-                log.error("%s table '%s' does not exist (or not enough permission to check)." % (self.ipv, table))
+                log.debug1("%s table '%s' does not exist (or not enough permission to check)." % (self.ipv, table))
 
         return ret
 

@@ -40,38 +40,17 @@ if os.getuid() != 0:
     print(_("You need to be root to run %s.") % sys.argv[0])
     sys.exit(-1)
 
-def __print(msg=None):
-    if msg and not a.quiet:
-        print(msg)
-
-def __print_and_exit(msg=None, exit_code=0):
-    FAIL = '\033[91m'
-    OK =   '\033[92m'
-    END =  '\033[00m'
-    if exit_code != 0:
-        __print(FAIL + msg + END)
-    else:
-        __print(msg)
-        #__print(OK + msg + END)
-    sys.exit(exit_code)
-
-def __fail(msg=None):
-    __print_and_exit(msg, 2)
-
-def __print_if_verbose(msg=None):
-    if msg and a.verbose:
-        print(msg)
-
 def __usage():
     print ("""
 Usage: firewall-offline-cmd [OPTIONS...]
 
+If no options are given, configuration from '/etc/sysconfig/system-config-firewall' will be migrated.
+
 General Options
   -h, --help           Prints a short help text and exists
   -V, --version        Print the version string of firewalld
-  -q, --quiet          Do not print status messages
 
-Lokkit Compatibilty Options
+Lokkit Compatibility Options
   --enabled             Enable firewall (default)
   --disabled            Disable firewall
   --addmodule=<module>  Ignored option, was used to enable an iptables module
@@ -102,148 +81,146 @@ Lokkit Compatibilty Options
                         Block this ICMP type in the default zone. The default
                         is to accept all ICMP types.
 
-If no options are given, the configuration from '/etc/sysconfig/system-config-firewall' be migrated.
-
 Zone Options
   --get-default-zone   Print default zone for connections and interfaces
   --set-default-zone=<zone>
                        Set default zone
-  --get-zones          Print predefined zones [P]
-  --get-services       Print predefined services [P]
-  --get-icmptypes      Print predefined icmptypes [P]
+  --get-zones          Print predefined zones
+  --get-services       Print predefined services
+  --get-icmptypes      Print predefined icmptypes
   --get-zone-of-interface=<interface>
-                       Print name of the zone the interface is bound to [P]
+                       Print name of the zone the interface is bound to
   --get-zone-of-source=<source>[/<mask>]
-                       Print name of the zone the source[/mask] is bound to [P]
-  --list-all-zones     List everything added for or enabled in all zones [P]
-  --new-zone=<zone>    Add a new zone [P only]
-  --delete-zone=<zone> Delete an existing zone [P only]
+                       Print name of the zone the source[/mask] is bound to
+  --list-all-zones     List everything added for or enabled in all zones
+  --new-zone=<zone>    Add a new zone
+  --delete-zone=<zone> Delete an existing zone
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options maked with [Z]
-  --get-target         Get the zone target [P only]
+  --get-target         Get the zone target
   --set-target=<target>
-                       Set the zone target [P only]
+                       Set the zone target
 
 IcmpType Options
   --new-icmptype=<icmptype>
-                       Add a new icmptype [P only]
+                       Add a new icmptype
   --delete-icmptype=<icmptype>
-                       Delete and existing icmptype [P only]
+                       Delete and existing icmptype
 
 Service Options
   --new-service=<service>
-                       Add a new service [P only]
+                       Add a new service
   --delete-service=<service>
-                       Delete and existing service [P only]
+                       Delete and existing service
 
 Options to Adapt and Query Zones
-  --list-all           List everything added for or enabled in a zone [P] [Z]
-  --list-services      List services added for a zone [P] [Z]
+  --list-all           List everything added for or enabled in a zone [Z]
+  --list-services      List services added for a zone [Z]
   --add-service=<service>
-                       Add a service for a zone [P] [Z] [T]
-  --remove-service=<service>
-                       Remove a service from a zone [P] [Z]
+                       Add a service for a zone [Z]
+  --remove-service-from-zone=<service>
+                       Remove a service from a zone [Z]
   --query-service=<service>
-                       Return whether service has been added for a zone [P] [Z]
-  --list-ports         List ports added for a zone [P] [Z]
+                       Return whether service has been added for a zone [Z]
+  --list-ports         List ports added for a zone [Z]
   --add-port=<portid>[-<portid>]/<protocol>
-                       Add the port for a zone [P] [Z] [T]
+                       Add the port for a zone [Z]
   --remove-port=<portid>[-<portid>]/<protocol>
-                       Remove the port from a zone [P] [Z]
+                       Remove the port from a zone [Z]
   --query-port=<portid>[-<portid>]/<protocol>
-                       Return whether the port has been added for zone [P] [Z]
-  --list-icmp-blocks   List Internet ICMP type blocks added for a zone [P] [Z]
+                       Return whether the port has been added for zone [Z]
+  --list-icmp-blocks   List Internet ICMP type blocks added for a zone [Z]
   --add-icmp-block=<icmptype>
-                       Add an ICMP block for a zone [P] [Z] [T]
+                       Add an ICMP block for a zone [Z]
   --remove-icmp-block=<icmptype>
-                       Remove the ICMP block from a zone [P] [Z]
+                       Remove the ICMP block from a zone [Z]
   --query-icmp-block=<icmptype>
                        Return whether an ICMP block has been added for a zone
-                       [P] [Z]
-  --list-forward-ports List IPv4 forward ports added for a zone [P] [Z]
+                       [Z]
+  --list-forward-ports List IPv4 forward ports added for a zone [Z]
   --add-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
-                       Add the IPv4 forward port for a zone [P] [Z] [T]
+                       Add the IPv4 forward port for a zone [Z]
   --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
-                       Remove the IPv4 forward port from a zone [P] [Z]
+                       Remove the IPv4 forward port from a zone [Z]
 
 
   --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Return whether the IPv4 forward port has been added for
-                       a zone [P] [Z]
-  --add-masquerade     Enable IPv4 masquerade for a zone [P] [Z] [T]
-  --remove-masquerade  Disable IPv4 masquerade for a zone [P] [Z]
+                       a zone [Z]
+  --add-masquerade     Enable IPv4 masquerade for a zone [Z]
+  --remove-masquerade  Disable IPv4 masquerade for a zone [Z]
   --query-masquerade   Return whether IPv4 masquerading has been enabled for a
-                       zone [P] [Z]
-  --list-rich-rules    List rich language rules added for a zone [P] [Z]
+                       zone [Z]
+  --list-rich-rules    List rich language rules added for a zone [Z]
   --add-rich-rule=<rule>
-                       Add rich language rule 'rule' for a zone [P] [Z] [T]
+                       Add rich language rule 'rule' for a zone [Z]
   --remove-rich-rule=<rule>
-                       Remove rich language rule 'rule' from a zone [P] [Z]
+                       Remove rich language rule 'rule' from a zone [Z]
   --query-rich-rule=<rule>
                        Return whether a rich language rule 'rule' has been
-                       added for a zone [P] [Z]
+                       added for a zone [Z]
 
 Options to Handle Bindings of Interfaces
-  --list-interfaces    List interfaces that are bound to a zone [P] [Z]
+  --list-interfaces    List interfaces that are bound to a zone [Z]
   --add-interface=<interface>
-                       Bind the <interface> to a zone [P] [Z]
+                       Bind the <interface> to a zone [Z]
   --change-interface=<interface>
                        Change zone the <interface> is bound to [Z]
   --query-interface=<interface>
-                       Query whether <interface> is bound to a zone [P] [Z]
+                       Query whether <interface> is bound to a zone [Z]
   --remove-interface=<interface>
-                       Remove binding of <interface> from a zone [P] [Z]
+                       Remove binding of <interface> from a zone [Z]
 
 Options to Handle Bindings of Sources
-  --list-sources       List sources that are bound to a zone [P] [Z]
+  --list-sources       List sources that are bound to a zone [Z]
   --add-source=<source>[/<mask>]
-                       Bind <source>[/<mask>] to a zone [P] [Z]
+                       Bind <source>[/<mask>] to a zone [Z]
   --change-source=<source>[/<mask>]
                        Change zone the <source>[/<mask>] is bound to [Z]
   --query-source=<source>[/<mask>]
                        Query whether <source>[/<mask>] is bound to a zone
-                       [P] [Z]
+                       [Z]
   --remove-source=<source>[/<mask>]
-                       Remove binding of <source>[/<mask>] from a zone [P] [Z]
+                       Remove binding of <source>[/<mask>] from a zone [Z]
 
 Direct Options
   --direct             First option for all direct options
   --get-all-chains
-                       Get all chains [P]
+                       Get all chains
   --get-chains {ipv4|ipv6|eb} <table>
-                       Get all chains added to the table [P]
+                       Get all chains added to the table
   --add-chain {ipv4|ipv6|eb} <table> <chain>
-                       Add a new chain to the table [P]
+                       Add a new chain to the table
   --remove-chain {ipv4|ipv6|eb} <table> <chain>
-                       Remove the chain from the table [P]
+                       Remove the chain from the table
   --query-chain {ipv4|ipv6|eb} <table> <chain>
-                       Return whether the chain has been added to the table [P]
+                       Return whether the chain has been added to the table
   --get-all-rules
-                       Get all rules [P]
+                       Get all rules
   --get-rules {ipv4|ipv6|eb} <table> <chain>
-                       Get all rules added to chain in table [P]
+                       Get all rules added to chain in table
   --add-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
-                       Add rule to chain in table [P]
+                       Add rule to chain in table
   --remove-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
-                       Remove rule with priority from chain in table [P]
+                       Remove rule with priority from chain in table
   --remove-rules {ipv4|ipv6|eb} <table> <chain>
-                       Remove rules from chain in table [P]
+                       Remove rules from chain in table
   --query-rule {ipv4|ipv6|eb} <table> <chain> <priority> <arg>...
                        Return whether a rule with priority has been added to
-                       chain in table [P]
+                       chain in table
   --passthrough {ipv4|ipv6|eb} <arg>...
                        Pass a command through
   --get-all-passthroughs
-                       Get all passthrough rules [P only]
+                       Get all passthrough rules
   --get-passthroughs {ipv4|ipv6|eb} <arg>...
-                       Get passthrough rules [P only]
+                       Get passthrough rules
   --add-passthrough {ipv4|ipv6|eb} <arg>...
-                       Add a new passthrough rule [P only]
+                       Add a new passthrough rule
   --remove-passthrough {ipv4|ipv6|eb} <arg>...
-                       Remove a passthrough rule [P only]
+                       Remove a passthrough rule
   --query-passthrough {ipv4|ipv6|eb} <arg>...
                        Return whether the passthrough rule has been added
-                       [P only]
+                      
 
 Lockdown Options
   --lockdown-on        Enable lockdown.
@@ -252,45 +229,71 @@ Lockdown Options
 
 Lockdown Whitelist Options
   --list-lockdown-whitelist-commands
-                       List all command lines that are on the whitelist [P]
+                       List all command lines that are on the whitelist
   --add-lockdown-whitelist-command=<command>
-                       Add the command to the whitelist [P]
+                       Add the command to the whitelist
   --remove-lockdown-whitelist-command=<command>
-                       Remove the command from the whitelist [P]
+                       Remove the command from the whitelist
   --query-lockdown-whitelist-command=<command>
-                       Query whether the command is on the whitelist [P]
+                       Query whether the command is on the whitelist
   --list-lockdown-whitelist-contexts
-                       List all contexts that are on the whitelist [P]
+                       List all contexts that are on the whitelist
   --add-lockdown-whitelist-context=<context>
-                       Add the context context to the whitelist [P]
+                       Add the context context to the whitelist
   --remove-lockdown-whitelist-context=<context>
-                       Remove the context from the whitelist [P]
+                       Remove the context from the whitelist
   --query-lockdown-whitelist-context=<context>
-                       Query whether the context is on the whitelist [P]
+                       Query whether the context is on the whitelist
   --list-lockdown-whitelist-uids
-                       List all user ids that are on the whitelist [P]
+                       List all user ids that are on the whitelist
   --add-lockdown-whitelist-uid=<uid>
-                       Add the user id uid to the whitelist [P]
+                       Add the user id uid to the whitelist
   --remove-lockdown-whitelist-uid=<uid>
-                       Remove the user id uid from the whitelist [P]
+                       Remove the user id uid from the whitelist
   --query-lockdown-whitelist-uid=<uid>
-                       Query whether the user id uid is on the whitelist [P]
+                       Query whether the user id uid is on the whitelist
   --list-lockdown-whitelist-users
-                       List all user names that are on the whitelist [P]
+                       List all user names that are on the whitelist
   --add-lockdown-whitelist-user=<user>
-                       Add the user name user to the whitelist [P]
+                       Add the user name user to the whitelist
   --remove-lockdown-whitelist-user=<user>
-                       Remove the user name user from the whitelist [P]
+                       Remove the user name user from the whitelist
   --query-lockdown-whitelist-user=<user>
-                       Query whether the user name user is on the whitelist [P]
+                       Query whether the user name user is on the whitelist
 
 """)
+
+def __print(msg=None):
+    if msg:
+        print(msg)
+
+def __print_and_exit(msg=None, exit_code=0):
+    FAIL = '\033[91m'
+    OK =   '\033[92m'
+    END =  '\033[00m'
+    if exit_code != 0:
+        __print(msg)
+        #__print(FAIL + msg + END)
+    else:
+        __print(msg)
+        #__print(OK + msg + END)
+    sys.exit(exit_code)
+
+def __fail(msg=None):
+    __print_and_exit(msg, 2)
 
 def __parse_port(value):
     try:
         (port, proto) = value.split("/")
     except Exception as e:
         __fail("bad port (most likely missing protocol), correct syntax is portid[-portid]/protocol")
+    return (port, proto)
+
+def __parse_port_lokkit(value):
+    try:
+        (port, proto) = value.split(":")
+    except Exception as e:
+        __fail("bad port (most likely missing protocol), correct syntax is portid[-portid]:protocol")
     return (port, proto)
 
 def __parse_forward_port(value):
@@ -358,17 +361,45 @@ def __print_query_result(value):
     else:
         __print_and_exit("no", 1)
 
+# system-config-firewall: fw_sysconfig
+CONFIG = '/etc/sysconfig/system-config-firewall'
+def read_sysconfig_args():
+    filename = None
+    if os.path.exists(CONFIG) and os.path.isfile(CONFIG):
+        filename = CONFIG
+    try:
+        f = open(filename, 'r')
+    except:
+        return None
+    argv = [ ]
+    for line in f:
+        if not line:
+            break
+        line = line.strip()
+        if len(line) < 1 or line[0] == '#':
+            continue
+        argv.append(line)
+    f.close()
+    return argv
+
 ##############################################################################
 
-
-##############################################################################
-
-parser = argparse.ArgumentParser(usage="see firewall-offline.cmd man page",
+parser = argparse.ArgumentParser(usage="see firewall-offline-cmd man page",
                                  add_help=False)
 
-parser_group_output = parser.add_mutually_exclusive_group()
-parser_group_output.add_argument("-v", "--verbose", action="store_true")
-parser_group_output.add_argument("-q", "--quiet", action="store_true")
+parser_group_lokkit = parser.add_argument_group()
+parser_group_lokkit.add_argument("--enabled", action="store_true")
+parser_group_lokkit.add_argument("--disabled", action="store_true")
+parser_group_lokkit.add_argument("--addmodule", metavar="<module>", action='append')
+parser_group_lokkit.add_argument("--removemodule", metavar="<module>", action='append')
+parser_group_lokkit.add_argument("--service", "-s", metavar="<service>", action='append')
+parser_group_lokkit.add_argument("--remove-service", metavar="<service>", action='append')
+parser_group_lokkit.add_argument("--port", "-p", metavar="<port>", action='append')
+parser_group_lokkit.add_argument("--trust", "-t", metavar="<iface>", action='append')
+parser_group_lokkit.add_argument("--masq", "-m", metavar="<iface>", action='append')
+parser_group_lokkit.add_argument("--custom-rules", metavar="<filename>", action='append')
+parser_group_lokkit.add_argument("--forward-port", metavar="<port>", action='append')
+parser_group_lokkit.add_argument("--block-icmp", metavar="<icmptype>", action='append')
 
 parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
@@ -433,7 +464,7 @@ parser_group_zone.add_argument("--add-rich-rule", metavar="<rule>", action='appe
 parser_group_zone.add_argument("--remove-rich-rule", metavar="<rule>", action='append')
 parser_group_zone.add_argument("--query-rich-rule", metavar="<rule>")
 parser_group_zone.add_argument("--add-service", metavar="<service>", action='append')
-parser_group_zone.add_argument("--remove-service", metavar="<zone>", action='append')
+parser_group_zone.add_argument("--remove-service-from-zone", metavar="<zone>", action='append')
 parser_group_zone.add_argument("--query-service", metavar="<zone>")
 parser_group_zone.add_argument("--add-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-port", metavar="<port>", action='append')
@@ -491,7 +522,22 @@ parser_direct.add_argument("--get-rules", nargs=3,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--get-all-rules", action="store_true")
 
-a = parser.parse_args()
+##############################################################################
+
+if len(sys.argv) > 1:
+    a = parser.parse_args()
+else:
+    # migrate configuration from /etc/sysconfig/system-config-firewall
+    args = read_sysconfig_args()
+    if args:
+        a = parser.parse_args(args)
+    else:
+        __fail("Opening of '%s' failed, exiting." % CONFIG)
+
+options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
+                 a.trust or a.masq or a.custom_rules or \
+                 a.service or a.remove_service or a.port or \
+                 a.trust or a.masq or a.forward_port or a.block_icmp
 
 options_standalone = a.help or a.version or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
@@ -516,7 +562,7 @@ options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  a.get_zone_of_interface or a.get_zone_of_source
 
 options_zone_action_action = \
-    a.add_service or a.remove_service or a.query_service or \
+    a.add_service or a.remove_service_from_zone or a.query_service or \
     a.add_port or a.remove_port or a.query_port or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
     a.add_forward_port or a.remove_forward_port or a.query_forward_port
@@ -539,7 +585,7 @@ options_zone_ops = options_zone_interfaces_sources or \
 
 options_zone = a.zone or options_zone_ops
 
-options_permanent = options_config or a.zone or options_zone_ops or \
+options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
                     a.new_service or a.delete_service or \
                     a.new_zone or a.delete_zone
@@ -562,15 +608,20 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes or \
  a.get_target or a.set_target
 
+###############################################################################
+
 # Check various impossible combinations of options
 
-###############################################################################
-if not (options_standalone or options_zone or \
+if not (options_lokkit or options_standalone or \
         options_permanent or options_direct):
     __fail(parser.format_usage() + "No option specified.")
-###############################################################################
 
-if options_standalone and (options_zone or options_permanent or \
+if options_lokkit and (options_standalone or \
+                       options_permanent or options_direct):
+    __fail(parser.format_usage() +
+           "Can't use lokkit options with other options.")
+
+if options_standalone and (options_permanent or \
                            options_direct):
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
@@ -587,11 +638,6 @@ if options_config and options_zone:
     __fail(parser.format_usage() +
            "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
 
-if a.quiet and options_list_get:
-    # it makes no sense to use --quiet with these options
-    a.quiet = False
-    __fail("-q/--quiet can't be used with this option(s)")
-
 if a.help:
     __usage()
     sys.exit(0)
@@ -600,14 +646,80 @@ zone = a.zone
 fw = Firewall_test()
 fw.start()
 
-#if options_zone_ops and not zone:
-#    default = fw.getDefaultZone()
-#    __print_if_verbose("No zone specified, using default zone, i.e. '%s'" % default)
-
 try:
     if a.version:
         __print_and_exit(VERSION)
 
+    # Lokkit Compatibility Options
+    if options_lokkit:
+        trusted_zone = "trusted"
+        default_zone = fw.get_default_zone()
+        fw_zone = fw.config.get_zone(default_zone)
+        fw_settings = FirewallClientZoneSettings(
+            list(fw.config.get_zone_config(fw_zone)))
+
+        if a.enabled:
+            # Enable firewall (default)
+            os.system("systemctl enable firewalld.service")
+        if a.disabled:
+            # Disable firewall
+            os.system("systemctl disable firewalld.service")
+        if a.addmodule:
+            for m in a.addmodule:
+                __print("Ignoring addmodule '%s'" % m)
+        if a.removemodule:
+            for m in a.removemodule:
+                __print("Ignoring removemodule '%s'" % m)
+        if a.custom_rules:
+            for c in a.custom_rules:
+                __print("Ignoring custom-rule '%s'" % c)
+        if a.service:
+            for s in a.service:
+                __print("Adding service '%s' to default zone." % s)
+                fw_settings.addService(s)
+        if a.remove_service:
+            for s in a.remove_service:
+                __print("Removing service '%s' from default zone." % s)
+                fw_settings.removeService(s)
+        if a.port:
+            for port_proto in a.port:
+                (port, proto) = __parse_port_lokkit(port_proto)
+                __print("Adding port '%s/%s' to default zone." % (port, proto))
+                fw_settings.addPort(port, proto)
+        if a.trust:
+            if default_zone != trusted_zone:
+                fw_trusted = fw.config.get_zone("trusted")
+                fw_trusted_settings = FirewallClientZoneSettings(
+                                 list(fw.config.get_zone_config(fw_trusted)))
+                # Bind an interface to the trusted zone
+                for i in a.trust:
+                    __print("Interface '%s' will be bound to zone '%s'." % \
+                            (i, trusted_zone))
+                    fw_trusted_settings.addInterface(i)
+                fw.config.set_zone_config(fw_trusted, fw_trusted_settings.settings)
+            else:
+                for i in a.trust:
+                    __print("Interface '%s' will be bound to zone '%s'." % \
+                            (i, trusted_zone))
+                    fw_settings.addInterface(i)
+        if a.masq:
+            # Enables masquerading in the default zone, interface argument is ignored
+            __print("Enabling masquerade for the default zone.")
+            fw_settings.setMasquerade(True)
+        if a.forward_port:
+            for fp in a.forward_port:
+                (port, protocol, toport, toaddr) = __parse_forward_port(fp)
+                __print("Adding forward port %s:%s:%s:%s to default zone." % \
+                      (port, protocol, toport, toaddr))
+                fw_settings.addForwardPort(port, protocol, toport, toaddr)
+        if a.block_icmp:
+            for ib in a.block_icmp:
+                __print("Adding icmpblock '%s' to default zone." % ib)
+                fw_settings.addIcmpBlock(ib)
+
+        fw.config.set_zone_config(fw_zone, fw_settings.settings)
+
+    # options from firewall-cmd
     elif a.get_default_zone:
         __print_and_exit(fw.get_default_zone())
     elif a.set_default_zone:
@@ -622,7 +734,7 @@ try:
         __print_query_result(fw.policies.query_lockdown())
 
     # zones
-    if a.get_zones:
+    elif a.get_zones:
         zones = fw.config.get_zones()
         __print_and_exit(" ".join(zones))
     elif a.get_services:
@@ -919,8 +1031,8 @@ try:
         elif a.add_service:
             for s in a.add_service:
                 fw_settings.addService(s)
-        elif a.remove_service:
-            for s in a.remove_service:
+        elif a.remove_service_from_zone:
+            for s in a.remove_service_from_zone:
                 fw_settings.removeService(s)
         elif a.query_service:
             __print_query_result(fw_settings.queryService(a.query_service))
