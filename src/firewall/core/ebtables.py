@@ -66,7 +66,7 @@ class ebtables:
                 self.__run(["-t", table, "-L"])
                 ret.append(table)
             except ValueError:
-                log.warning("ebtables table '%s' does not exist." % table)
+                log.debug1("ebtables table '%s' does not exist." % table)
 
         return ret
 
