@@ -451,7 +451,15 @@ assert_good "--permanent --delete-zone=${myzone}"
 
 
 # ... --direct  ...
-assert_good_contains "--direct --passthrough ipv4 -nvL" "IN_home_allow"
+modprobe dummy
+assert_good          "--direct --passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_good          "--direct --passthrough ipv6 --table filter --append FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
+assert_good          "--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill"
+assert_good          "--direct --passthrough ipv4 --table filter --delete INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_good          "--direct --passthrough ipv6 --table filter --delete FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
+assert_good          "--direct --passthrough ipv4 --table mangle --delete POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill"
+
+assert_good_contains "--direct --passthrough ipv4 -nvL" "INPUT_ZONES_SOURCE"
 assert_bad           "--direct --passthrough ipv5 -nvL" # ipv5
 assert_bad           "--direct --passthrough ipv4" # missing argument
 assert_bad           "--direct --get-all-passthroughs" # --permanent only

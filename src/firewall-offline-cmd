@@ -495,7 +495,7 @@ parser_direct.add_argument("--remove-passthrough", nargs=argparse.REMAINDER,
 parser_direct.add_argument("--query-passthrough", nargs=argparse.REMAINDER,
                     metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--get-passthroughs", nargs=1,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+                    metavar=("{ ipv4 | ipv6 | eb }"))
 parser_direct.add_argument("--get-all-passthroughs", action="store_true")
 parser_direct.add_argument("--add-chain", nargs=3,
                     metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
@@ -511,7 +511,7 @@ parser_direct.add_argument("--add-rule", nargs=argparse.REMAINDER,
 parser_direct.add_argument("--remove-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--remove-rules", nargs=3,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <args>"))
+                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain>"))
 parser_direct.add_argument("--query-rule", nargs=argparse.REMAINDER,
                         metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--get-rules", nargs=3,
@@ -521,7 +521,28 @@ parser_direct.add_argument("--get-all-rules", action="store_true")
 ##############################################################################
 
 if len(sys.argv) > 1:
-    a = parser.parse_args()
+    i = -1
+    args = sys.argv[1:]
+    if '--add-passthrough' in args:
+        i = args.index('--add-passthrough') + 1
+    elif '--remove-passthrough' in args:
+        i = args.index('--remove-passthrough') + 1
+    elif '--query-passthrough' in args:
+        i = args.index('--query-passthrough') + 1
+    elif '--add-rule' in args:
+        i = args.index('--add-rule') + 4
+    elif '--remove-rule' in args:
+        i = args.index('--remove-rule') + 4
+    elif '--query-rule' in args:
+        i = args.index('--query-rule') + 4
+    # join <args> into one argument to prevent parser from parsing each iptables
+    # option, because they can conflict with firewall-cmd options
+    # # e.g. --delete (iptables) and --delete-* (firewall-cmd)
+    if (i > -1) and (i < len(args) - 1):
+        aux_args = args[:]
+        args = aux_args[:i+1] # all but not <args>
+        args.append(" ".join(aux_args[i+1:])) # add <args> as one arg
+    a = parser.parse_args(args)
 else:
     # migrate configuration from /etc/sysconfig/system-config-firewall
     args = read_sysconfig_args()
@@ -826,19 +847,19 @@ try:
             if len (a.add_passthrough) < 2:
                 __fail("usage: --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
             __print(settings.add_passthrough(_check_ipv(a.add_passthrough[0]),
-                                             a.add_passthrough[1:]))
+                                             a.add_passthrough[1].split()))
 
         elif a.remove_passthrough:
             if len (a.remove_passthrough) < 2:
                 __fail("usage: --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
             settings.remove_passthrough(_check_ipv(a.remove_passthrough[0]),
-                                        a.remove_passthrough[1:])
+                                        a.remove_passthrough[1].split())
         elif a.query_passthrough:
             if len (a.query_passthrough) < 2:
                 __fail("usage: --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
             __print_query_result(
                 settings.query_passthrough(_check_ipv(a.query_passthrough[0]),
-                                           a.query_passthrough[1:]))
+                                           a.query_passthrough[1].split()))
             sys.exit(0)
         elif a.get_passthroughs:
             rules = settings.get_passthroughs(_check_ipv(a.get_passthroughs[0]))
@@ -883,7 +904,7 @@ try:
             except ValueError:
                 __fail("wrong priority\nusage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             settings.add_rule(_check_ipv(a.add_rule[0]), a.add_rule[1],
-                              a.add_rule[2], priority, a.add_rule[4:])
+                              a.add_rule[2], priority, a.add_rule[4].split())
         elif a.remove_rule:
             if len (a.remove_rule) < 5:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
@@ -892,7 +913,7 @@ try:
             except ValueError:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             settings.remove_rule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
-                                a.remove_rule[2], priority, a.remove_rule[4:])
+                                a.remove_rule[2], priority, a.remove_rule[4].split())
         elif a.remove_rules:
             if len (a.remove_rules) < 3:
                 __fail("usage: --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
@@ -908,7 +929,7 @@ try:
             __print_query_result(
                     settings.query_rule(_check_ipv(a.query_rule[0]),
                                         a.query_rule[1], a.query_rule[2],
-                                        priority, a.query_rule[4:]))
+                                        priority, a.query_rule[4].split()))
             sys.exit(0)
         elif a.get_rules:
             rules = settings.get_rules(_check_ipv(a.get_rules[0]),
