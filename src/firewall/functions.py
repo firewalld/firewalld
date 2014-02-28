@@ -390,7 +390,7 @@ def joinArgs(args):
         return " ".join(pipes.quote(a) for a in args)
 
 def splitArgs(string):
-    if PY2:
+    if PY2 and isinstance(string, unicode):
         # Python2's shlex doesn't like unicode
         string = u2b(string)
         splits = shlex.split(string)

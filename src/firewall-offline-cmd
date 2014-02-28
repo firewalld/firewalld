@@ -33,7 +33,7 @@ import os
 from firewall.core.fw_test import Firewall_test
 from firewall.client import *
 from firewall.errors import *
-from firewall.functions import joinArgs
+from firewall.functions import joinArgs, splitArgs
 
 # check for root user
 if os.getuid() != 0:
@@ -541,7 +541,7 @@ if len(sys.argv) > 1:
     if (i > -1) and (i < len(args) - 1):
         aux_args = args[:]
         args = aux_args[:i+1] # all but not <args>
-        args.append(" ".join(aux_args[i+1:])) # add <args> as one arg
+        args.append(joinArgs(aux_args[i+1:])) # add <args> as one arg
     a = parser.parse_args(args)
 else:
     # migrate configuration from /etc/sysconfig/system-config-firewall
@@ -847,19 +847,19 @@ try:
             if len (a.add_passthrough) < 2:
                 __fail("usage: --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
             __print(settings.add_passthrough(_check_ipv(a.add_passthrough[0]),
-                                             a.add_passthrough[1].split()))
+                                             splitArgs(a.add_passthrough[1])))
 
         elif a.remove_passthrough:
             if len (a.remove_passthrough) < 2:
                 __fail("usage: --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
             settings.remove_passthrough(_check_ipv(a.remove_passthrough[0]),
-                                        a.remove_passthrough[1].split())
+                                        splitArgs(a.remove_passthrough[1]))
         elif a.query_passthrough:
             if len (a.query_passthrough) < 2:
                 __fail("usage: --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
             __print_query_result(
                 settings.query_passthrough(_check_ipv(a.query_passthrough[0]),
-                                           a.query_passthrough[1].split()))
+                                           splitArgs(a.query_passthrough[1])))
             sys.exit(0)
         elif a.get_passthroughs:
             rules = settings.get_passthroughs(_check_ipv(a.get_passthroughs[0]))
@@ -904,7 +904,7 @@ try:
             except ValueError:
                 __fail("wrong priority\nusage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             settings.add_rule(_check_ipv(a.add_rule[0]), a.add_rule[1],
-                              a.add_rule[2], priority, a.add_rule[4].split())
+                              a.add_rule[2], priority, splitArgs(a.add_rule[4]))
         elif a.remove_rule:
             if len (a.remove_rule) < 5:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
@@ -913,7 +913,7 @@ try:
             except ValueError:
                 __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             settings.remove_rule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
-                                a.remove_rule[2], priority, a.remove_rule[4].split())
+                                a.remove_rule[2], priority, splitArgs(a.remove_rule[4]))
         elif a.remove_rules:
             if len (a.remove_rules) < 3:
                 __fail("usage: --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
@@ -929,7 +929,7 @@ try:
             __print_query_result(
                     settings.query_rule(_check_ipv(a.query_rule[0]),
                                         a.query_rule[1], a.query_rule[2],
-                                        priority, a.query_rule[4].split()))
+                                        priority, splitArgs(a.query_rule[4])))
             sys.exit(0)
         elif a.get_rules:
             rules = settings.get_rules(_check_ipv(a.get_rules[0]),
