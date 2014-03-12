@@ -112,10 +112,10 @@ class FirewallClientZoneSettings(object):
 
     @handle_exceptions
     def getTarget(self):
-        return self.settings[4]
+        return self.settings[4] if self.settings[4] != DEFAULT_ZONE_TARGET else "default"
     @handle_exceptions
     def setTarget(self, target):
-        self.settings[4] = target
+        self.settings[4] = target if target != "default" else DEFAULT_ZONE_TARGET
 
     @handle_exceptions
     def getServices(self):

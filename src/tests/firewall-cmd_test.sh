@@ -425,7 +425,7 @@ assert_bad "--new-zone=${myzone}" # no --permanent
 assert_good "--permanent --new-zone=${myzone}"
 assert_good_contains "--permanent --get-zones" "${myzone}"
 # get/set default target
-assert_good_contains "--permanent --zone=${myzone} --get-target" "{chain}_{zone}"
+assert_good_contains "--permanent --zone=${myzone} --get-target" "default"
 assert_bad "--permanent --zone=${myzone} --set-target=BAD"
 assert_good "--permanent --zone=${myzone} --set-target=%%REJECT%%"
 assert_good "--permanent --zone=${myzone} --set-target=DROP"

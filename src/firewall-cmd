@@ -90,9 +90,9 @@ Zone Options
   --delete-zone=<zone> Delete an existing zone [P only]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options maked with [Z]
-  --get-target         Get the zone target [P only]
+  --get-target         Get the zone target [P] [Z]
   --set-target=<target>
-                       Set the zone target [P only]
+                       Set the zone target [P] [Z]
 
 IcmpType Options
   --new-icmptype=<icmptype>
@@ -588,6 +588,9 @@ options_direct_permanent = \
            a.add_passthrough or a.remove_passthrough or a.query_passthrough or \
            a.get_passthroughs or a.get_all_passthroughs
 
+options_require_permanent = options_direct_permanent or options_permanent_only \
+                            or a.get_target or a.set_target
+
 # these are supposed to only write out some output
 options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.list_lockdown_whitelist_commands or a.list_lockdown_whitelist_contexts or \
@@ -596,7 +599,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  or a.list_rich_rules or a.list_interfaces or a.list_sources or \
  a.get_default_zone or a.get_active_zones or a.get_zone_of_interface or \
  a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes or \
- a.get_target or a.set_target
+ a.get_target
 
 # Check various impossible combinations of options
 
@@ -614,22 +617,14 @@ if options_standalone and (options_zone or options_permanent or \
 if (options_direct or options_direct_permanent or options_permanent_only) and \
    (options_zone):
     __fail(parser.format_usage() +
-           "Can't use 'direct' options with other options.")
+           "Can't be used with --zone.")
 
 if (a.direct and not (options_direct or options_direct_permanent)) or \
         ((options_direct or options_direct_permanent) and not a.direct):
     __fail(parser.format_usage() +
            "Wrong usage of 'direct' options.")
 
-if options_direct_permanent and not a.permanent:
-    __fail(parser.format_usage() +
-           "Option can be used only with --permanent.")
-
-if options_permanent_only and not a.permanent:
-    __fail(parser.format_usage() +
-           "Option can be used only with --permanent.")
-
-if a.set_target and not a.permanent:
+if options_require_permanent and not a.permanent:
     __fail(parser.format_usage() +
            "Option can be used only with --permanent.")
 

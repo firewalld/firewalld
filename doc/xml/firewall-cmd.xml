@@ -291,7 +291,7 @@
 	</varlistentry>
 
 	<varlistentry>
-          <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-target</option></term>
+          <term><option>--permanent</option> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-target</option></term>
           <listitem>
             <para>
               Get the target of a permanent zone.
@@ -300,10 +300,10 @@
 	</varlistentry>
 
 	<varlistentry>
-          <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-target</option>=<replaceable>zone</replaceable></term>
+          <term><option>--permanent</option> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--set-target</option>=<replaceable>target</replaceable></term>
           <listitem>
             <para>
-              Set the target of a permanent zone.
+              Set the target of a permanent zone. <replaceable>target</replaceable> is one of: <literal>default</literal>, <literal>ACCEPT</literal>, <literal>DROP</literal>, <literal>%%REJECT%%</literal>
             </para>
           </listitem>
 	</varlistentry>

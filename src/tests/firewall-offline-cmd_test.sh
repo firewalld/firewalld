@@ -358,7 +358,7 @@ myicmp="myicmp"
 assert_good "--new-zone=${myzone}"
 assert_good_contains "--get-zones" "${myzone}"
 # get/set default target
-assert_good_contains "--zone=${myzone} --get-target" "{chain}_{zone}"
+assert_good_contains "--zone=${myzone} --get-target" "default"
 assert_bad "--zone=${myzone} --set-target=BAD"
 assert_good "--zone=${myzone} --set-target=%%REJECT%%"
 assert_good "--zone=${myzone} --set-target=DROP"
