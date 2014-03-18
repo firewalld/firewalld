@@ -520,14 +520,18 @@ class Firewall:
         for ipv in [ "ipv4", "ipv6", "eb" ]:
             self.__apply_default_rules(ipv)
 
-        if self.ipv6_rpfilter_enabled:
-            if self.is_table_available("ipv6", "raw"):
-                rule = [ "-t", "raw", "-I", "PREROUTING", "1",
-                         "-p", "icmpv6", "--icmpv6-type=router-advertisement",
-                         "-j", "ACCEPT" ]       # RHBZ#1058505
+        if self.ipv6_rpfilter_enabled and \
+           self.is_table_available("ipv6", "raw"):
+            rule = [ "-t", "raw", "-I", "PREROUTING", "1",
+                     "-p", "icmpv6", "--icmpv6-type=router-advertisement",
+                     "-j", "ACCEPT" ]       # RHBZ#1058505
+            self.rule("ipv6", rule)
+            rule = [ "-t", "raw", "-I", "PREROUTING", "2",
+                     "-m", "rpfilter", "--invert", "-j", "DROP" ]
+            try:
                 self.rule("ipv6", rule)
-                rule = [ "-t", "raw", "-I", "PREROUTING", "2",
-                         "-m", "rpfilter", "--invert", "-j", "DROP" ]
+            except ValueError:    # some problem with ip6t_rpfilter module ?
+                rule = [ "-t", "raw", "-D", "PREROUTING", "1"]
                 self.rule("ipv6", rule)
 
     # flush and policy
