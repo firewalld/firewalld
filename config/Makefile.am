@@ -58,6 +58,7 @@ EXTRA_DIST = \
 	icmptypes/source-quench.xml \
 	icmptypes/time-exceeded.xml \
 	services/amanda-client.xml \
+	services/amanda-k5-client.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/dhcpv6-client.xml \
