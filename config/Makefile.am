@@ -93,6 +93,7 @@ EXTRA_DIST = \
 	services/pop3s.xml \
 	services/postgresql.xml \
 	services/proxy-dhcp.xml \
+	services/puppetmaster.xml \
 	services/radius.xml \
 	services/rpc-bind.xml \
 	services/samba-client.xml \
