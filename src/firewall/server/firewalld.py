@@ -560,7 +560,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # PANIC
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def enablePanicMode(self, sender=None):
@@ -573,7 +573,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.enable_panic_mode()
         self.PanicModeEnabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def disablePanicMode(self, sender=None):
