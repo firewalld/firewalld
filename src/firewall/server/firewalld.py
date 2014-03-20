@@ -1520,7 +1520,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.remove_chain(ipv, table, chain)
         self.ChainRemoved(ipv, table, chain)
     
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -1532,7 +1532,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.queryChain('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.query_chain(ipv, table, chain)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='ss',
                          out_signature='as')
     @dbus_handle_exceptions
@@ -1543,7 +1543,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getChains('%s', '%s')" % (ipv, table))
         return self.fw.direct.get_chains(ipv, table)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sss)')
     @dbus_handle_exceptions
@@ -1615,7 +1615,7 @@ class FirewallD(slip.dbus.service.Object):
             self.fw.direct.remove_rule(ipv, table, chain, priority, args)
             self.RuleRemoved(ipv, table, chain, priority, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -1630,7 +1630,7 @@ class FirewallD(slip.dbus.service.Object):
                        (table, chain, priority, "','".join(args)))
         return self.fw.direct.query_rule(ipv, table, chain, priority, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='a(ias)')
     @dbus_handle_exceptions
@@ -1642,7 +1642,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getRules('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.get_rules(ipv, table, chain)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sssias)')
     @dbus_handle_exceptions
