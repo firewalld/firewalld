@@ -9,7 +9,7 @@
 
    <action id="org.fedoraproject.FirewallD1.info">
     <description>General firewall information</description>
-    <message>System policy prevents to get general firewall information</message>
+    <message>System policy prevents getting general firewall information</message>
     <defaults>
       <allow_any>yes</allow_any>
       <allow_inactive>yes</allow_inactive>
@@ -19,7 +19,7 @@
 
    <action id="org.fedoraproject.FirewallD1.config">
     <description>Firewall configuration</description>
-    <message>System policy prevents to change the firewall configuration</message>
+    <message>System policy prevents changing the firewall configuration</message>
     <defaults>
       <allow_any>auth_admin_keep</allow_any>
       <allow_inactive>auth_admin_keep</allow_inactive>
@@ -29,7 +29,7 @@
 
    <action id="org.fedoraproject.FirewallD1.direct">
     <description>Firewall direct interface</description>
-    <message>System policy prevents to use the firewall direct interface</message>
+    <message>System policy prevents using the firewall direct interface</message>
     <defaults>
       <allow_any>auth_admin_keep</allow_any>
       <allow_inactive>auth_admin_keep</allow_inactive>
@@ -39,7 +39,7 @@
 
    <action id="org.fedoraproject.FirewallD1.policies">
     <description>Firewall policies interface</description>
-    <message>System policy prevents to use the firewall policies interface</message>
+    <message>System policy prevents using the firewall policies interface</message>
     <defaults>
       <allow_any>auth_admin_keep</allow_any>
       <allow_inactive>auth_admin_keep</allow_inactive>
