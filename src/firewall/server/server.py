@@ -60,7 +60,7 @@ def sigterm(mainloop):
 ############################################################################
 
 def run_server(debug_gc=False):
-    """ Main function for firewall server. Handles D-BUS and GLib mainloop.
+    """ Main function for firewall server. Handles D-Bus and GLib mainloop.
     """
     service = None
     if debug_gc:

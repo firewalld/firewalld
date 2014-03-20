@@ -1,4 +1,4 @@
-Summary: A firewall daemon with D-BUS interface providing a dynamic firewall
+Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.3.9.3
 Release: 1%{?dist}
@@ -24,7 +24,7 @@ Requires(postun): systemd
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
-firewall with a D-BUS interface.
+firewall with a D-Bus interface.
 
 %package -n firewall-applet
 Summary: Firewall panel applet

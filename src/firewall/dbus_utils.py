@@ -84,7 +84,7 @@ def context_of_sender(bus, sender):
     return "".join(map(chr, dbus_to_python(context)))
 
 def command_of_sender(bus, sender):
-    """ Return command of D-BUS sender """
+    """ Return command of D-Bus sender """
 
     return command_of_pid(pid_of_sender(bus, sender))
 

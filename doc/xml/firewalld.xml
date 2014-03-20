@@ -117,7 +117,7 @@
   <refsect1 id="concepts">
     <title>Concepts</title>
     <para>
-      firewalld has a D-BUS interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D-BUS can request changes to the firewall with the D-BUS interface directly.  For more information on the firewalld D-BUS interface, please have a look at <citerefentry><refentrytitle>firewalld.dbus</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      firewalld has a D-Bus interface for firewall configuration of services and applications. It also has a command line client for the user. Services or applications already using D-Bus can request changes to the firewall with the D-Bus interface directly.  For more information on the firewalld D-Bus interface, please have a look at <citerefentry><refentrytitle>firewalld.dbus</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
     </para>
     <para>
       firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options. Permanent configuration is loaded from XML files in <filename class="directory">/usr/lib/firewalld</filename> or <filename class="directory">/etc/firewalld</filename> (see <xref linkend="directories"/>).
@@ -164,7 +164,7 @@
     <refsect2>
       <title>Direct interface</title>
       <para>
-	The direct interface is mainly used by services or applications to add specific firewall rules. The rules are not permanent and need to get applied after receiving the <option>start</option>, <option>restart</option> or <option>reload</option> message from firewalld using D-BUS.
+	The direct interface is mainly used by services or applications to add specific firewall rules. The rules are not permanent and need to get applied after receiving the <option>start</option>, <option>restart</option> or <option>reload</option> message from firewalld using D-Bus.
       </para>
     </refsect2>
   </refsect1>

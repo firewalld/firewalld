@@ -34,7 +34,7 @@ from firewall.errors import *
 @decorator
 def handle_exceptions(func, *args, **kwargs):
     """Decorator to handle exceptions and log them. Used if not conneced 
-    to D-BUS.
+    to D-Bus.
     """
     try:
         return func(*args, **kwargs)
@@ -45,7 +45,7 @@ def handle_exceptions(func, *args, **kwargs):
 
 @decorator
 def dbus_handle_exceptions(func, *args, **kwargs):
-    """Decorator to handle exceptions, log and report them into D-BUS
+    """Decorator to handle exceptions, log and report them into D-Bus
 
     :Raises DBusException: on a firewall error code problems.
     """
