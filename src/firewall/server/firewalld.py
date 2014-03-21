@@ -289,7 +289,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.disable_lockdown()
         self.LockdownDisabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -340,7 +340,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_command(command)
         self.LockdownWhitelistCommandRemoved(command)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -352,7 +352,7 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_command(command)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
@@ -401,7 +401,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_uid(uid)
         self.LockdownWhitelistUidRemoved(uid)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -413,7 +413,7 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_uid(uid)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='ai')
     @dbus_handle_exceptions
@@ -462,7 +462,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_user(user)
         self.LockdownWhitelistUserRemoved(user)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -474,7 +474,7 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_user(user)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
@@ -523,7 +523,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_context(context)
         self.LockdownWhitelistContextRemoved(context)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -535,7 +535,7 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_context(context)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
