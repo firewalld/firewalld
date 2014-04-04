@@ -423,7 +423,7 @@ class TrayApplet(object):
 
         # shields up/down configure dialog
 
-        self.shields_dialog = Gtk.Dialog(_("Configure Shields Up/Down Zones"))
+        self.shields_dialog = Gtk.Dialog(title=_("Configure Shields Up/Down Zones"))
         self.shields_dialog.set_property("width-request", 400)
         self.shields_dialog.resize_to_geometry(400, 100)
         self.shields_dialog.add_buttons("gtk-close", 1)
@@ -478,11 +478,11 @@ class TrayApplet(object):
         self.shields_down_combo.connect("changed", self.shields_down_changed)
         grid.attach(self.shields_down_combo, 1, 1, 1, 1)
 
-        button = Gtk.Button("Set To Default")
+        button = Gtk.Button(label="Set To Default")
         button.connect("clicked", self.reset_shields_up_zone)
         grid.attach(button, 2, 0, 1, 1)
 
-        button = Gtk.Button("Set To Default")
+        button = Gtk.Button(label="Set To Default")
         button.connect("clicked", self.reset_shields_down_zone)
         grid.attach(button, 2, 1, 1, 1)
 
@@ -1161,7 +1161,8 @@ class TrayApplet(object):
 
     def message(self, text, secondary_text=None, msg_type=Gtk.MessageType.INFO,
                 buttons=[ ("gtk-close", Gtk.ResponseType.CLOSE) ]):
-        dialog = Gtk.MessageDialog(None, 0, msg_type, None, text)
+        dialog = Gtk.MessageDialog(parent=None, flags=0, message_type=msg_type,
+                                   buttons=None, message_format=text)
         dialog.set_title(_("Firewall-applet"))
         for (button, response) in buttons:
             dialog.add_button(button, response)

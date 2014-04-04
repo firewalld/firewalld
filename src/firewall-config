@@ -1133,7 +1133,8 @@ class FirewallConfig(object):
     def _dialog(self, text, msg=None, title=None,
                 message_type=Gtk.MessageType.INFO,
                 buttons=("gtk-close", 1)):
-        dialog = Gtk.MessageDialog(None, 0, message_type)
+        dialog = Gtk.MessageDialog(parent=None, flags=0,
+                                   message_type=message_type)
         dialog.set_markup(text)
         if title:
             dialog.set_title(title)
@@ -1149,7 +1150,8 @@ class FirewallConfig(object):
         return result
 
     def _warning(self, msg):
-        dialog = Gtk.MessageDialog(None, 0, Gtk.MessageType.WARNING)
+        dialog = Gtk.MessageDialog(parent=None, flags=0,
+                                   message_type=Gtk.MessageType.WARNING)
         dialog.set_markup("<b>" + _("Warning") + "</b>")
         dialog.format_secondary_markup(msg)
         dialog.add_button("gtk-close", 1)
