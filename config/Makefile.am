@@ -100,6 +100,7 @@ EXTRA_DIST = \
 	services/samba.xml \
 	services/smtp.xml \
 	services/ssh.xml \
+	services/synergy.xml \
 	services/telnet.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
