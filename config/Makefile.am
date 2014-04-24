@@ -106,6 +106,7 @@ EXTRA_DIST = \
 	services/transmission-client.xml \
 	services/vnc-server.xml \
 	services/wbem-https.xml \
+	services/xmpp-local.xml \
 	zones/block.xml \
 	zones/dmz.xml \
 	zones/drop.xml \
