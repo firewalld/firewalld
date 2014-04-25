@@ -7,7 +7,18 @@
   <vendor>FirewallD</vendor>
   <vendor_url>http://fedorahosted.org/firewalld</vendor_url>
 
-   <action id="org.fedoraproject.FirewallD1.info">
+  <action id="org.fedoraproject.FirewallD1.all">
+    <description>Firewall</description>
+    <message>System policy prevents inspecting and changing firewall</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.imply">org.fedoraproject.FirewallD1.info org.fedoraproject.FirewallD1.config org.fedoraproject.FirewallD1.direct org.fedoraproject.FirewallD1.policies</annotate>
+  </action>
+
+  <action id="org.fedoraproject.FirewallD1.info">
     <description>General firewall information</description>
     <message>System policy prevents getting general firewall information</message>
     <defaults>
@@ -17,7 +28,7 @@
     </defaults>
   </action>
 
-   <action id="org.fedoraproject.FirewallD1.config">
+  <action id="org.fedoraproject.FirewallD1.config">
     <description>Firewall configuration</description>
     <message>System policy prevents changing the firewall configuration</message>
     <defaults>
@@ -27,7 +38,7 @@
     </defaults>
   </action>
 
-   <action id="org.fedoraproject.FirewallD1.direct">
+  <action id="org.fedoraproject.FirewallD1.direct">
     <description>Firewall direct interface</description>
     <message>System policy prevents using the firewall direct interface</message>
     <defaults>
@@ -37,7 +48,7 @@
     </defaults>
   </action>
 
-   <action id="org.fedoraproject.FirewallD1.policies">
+  <action id="org.fedoraproject.FirewallD1.policies">
     <description>Firewall policies interface</description>
     <message>System policy prevents using the firewall policies interface</message>
     <defaults>

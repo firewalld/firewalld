@@ -1168,6 +1168,7 @@ class FirewallConfig(object):
 
     def connection_changed(self):
         if self.fw.connected:
+            self.fw.authorizeAll()
             self.statusLabel.set_text(self.connected)
             self.default_zone = self.fw.getDefaultZone()
             self.defaultZoneLabel.set_text(self.default_zone)
@@ -1712,6 +1713,8 @@ class FirewallConfig(object):
         # desired password into the agent and is also not able to close the
         # agent with the mouse. The focus is still on the combobox popup.
         Gdk.DisplayManager.get().get_default_display().flush()
+
+        self.fw.authorizeAll()
 
         self.runtime_view = (self.currentViewCombobox.get_active_text() == \
                                  _("Runtime"))

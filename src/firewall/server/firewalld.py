@@ -1678,3 +1678,15 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.passthrough('%s', '%s')" % (ipv, "','".join(args)))
         self.accessCheck(sender)
         return self.fw.direct.passthrough(ipv, args)
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_ALL)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @dbus_handle_exceptions
+    def authorizeAll(self, sender=None):
+        """ PK_ACTION_ALL implies all other actions, i.e. once a subject is
+            authorized for PK_ACTION_ALL it's also authorized for any other action.
+            Use-case is GUI (RHBZ#994729).
+        """
+        pass
