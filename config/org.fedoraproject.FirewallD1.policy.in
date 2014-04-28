@@ -15,7 +15,7 @@
       <allow_inactive>auth_admin_keep</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.imply">org.fedoraproject.FirewallD1.info org.fedoraproject.FirewallD1.config org.fedoraproject.FirewallD1.direct org.fedoraproject.FirewallD1.policies</annotate>
+    <annotate key="org.freedesktop.policykit.imply">org.fedoraproject.FirewallD1.info org.fedoraproject.FirewallD1.config org.fedoraproject.FirewallD1.config.info org.fedoraproject.FirewallD1.direct org.fedoraproject.FirewallD1.direct.info org.fedoraproject.FirewallD1.policies org.fedoraproject.FirewallD1.policies.info</annotate>
   </action>
 
   <action id="org.fedoraproject.FirewallD1.info">
@@ -36,6 +36,17 @@
       <allow_inactive>auth_admin_keep</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
+    <annotate key="org.freedesktop.policykit.imply">org.fedoraproject.FirewallD1.config.info</annotate>
+  </action>
+
+  <action id="org.fedoraproject.FirewallD1.config.info">
+    <description>Firewall configuration</description>
+    <message>System policy prevents inspecting the firewall configuration</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
   </action>
 
   <action id="org.fedoraproject.FirewallD1.direct">
@@ -46,11 +57,33 @@
       <allow_inactive>auth_admin_keep</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
+    <annotate key="org.freedesktop.policykit.imply">org.fedoraproject.FirewallD1.direct.info</annotate>
+  </action>
+
+  <action id="org.fedoraproject.FirewallD1.direct.info">
+    <description>Firewall direct interface</description>
+    <message>System policy prevents inspecting the firewall direct interface</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
   </action>
 
   <action id="org.fedoraproject.FirewallD1.policies">
     <description>Firewall policies interface</description>
     <message>System policy prevents using the firewall policies interface</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.imply">org.fedoraproject.FirewallD1.policies.info</annotate>
+  </action>
+
+  <action id="org.fedoraproject.FirewallD1.policies.info">
+    <description>Firewall policies interface</description>
+    <message>System policy prevents inspecting the firewall policies interface</message>
     <defaults>
       <allow_any>auth_admin_keep</allow_any>
       <allow_inactive>auth_admin_keep</allow_inactive>
