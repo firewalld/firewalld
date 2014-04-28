@@ -322,7 +322,7 @@
 	The general rule structure:
       </para>
       <programlisting>
-&lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
+&lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
   [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>bool</replaceable>"]/&gt; ]
   [
@@ -342,7 +342,7 @@
 	Rule structure for source black or white listing:
       </para>
       <programlisting>
-&lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]/&gt;
+&lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [family="<replaceable>bool</replaceable>"]/&gt;
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
