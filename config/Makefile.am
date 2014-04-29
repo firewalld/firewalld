@@ -103,6 +103,7 @@ EXTRA_DIST = \
 	services/pmwebapis.xml \
 	services/pop3s.xml \
 	services/postgresql.xml \
+	services/privoxy.xml \
 	services/proxy-dhcp.xml \
 	services/puppetmaster.xml \
 	services/radius.xml \
@@ -116,10 +117,14 @@ EXTRA_DIST = \
 	services/telnet.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
+	services/tor-socks.xml \
 	services/transmission-client.xml \
 	services/vnc-server.xml \
 	services/wbem-https.xml \
+	services/xmpp-bosh.xml \
+	services/xmpp-client.xml \
 	services/xmpp-local.xml \
+	services/xmpp-server.xml \
 	zones/block.xml \
 	zones/dmz.xml \
 	zones/drop.xml \
