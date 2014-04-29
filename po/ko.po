@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-20 14:54+0100\n"
+"POT-Creation-Date: 2014-04-29 15:41+0200\n"
 "PO-Revision-Date: 2014-02-13 05:10+0000\n"
 "Last-Translator: eukim <eukim@redhat.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/fedora/language/"
@@ -52,7 +52,7 @@ msgstr "요소 '%s': '%s' 속성이 누락되어 있음 "
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "요소 '%s': 예상치 못한 속성 '%s'"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "root로 %s를 실행해야 합니다."
@@ -66,23 +66,23 @@ msgstr "FirewallD를 시작하지 않습니다, 이미 실행되고 있습니다
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 실패: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5165
+#: ../src/firewall-applet:106 ../src/firewall-config:5159
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "연결 '%s'의 영역을 선택 "
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5190 ../src/firewall-config:5216
+#: ../src/firewall-config:5184 ../src/firewall-config:5210
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "기본 영역 "
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5248
+#: ../src/firewall-applet:189 ../src/firewall-config:5242
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "인터페이스 '%s'의 영역을 선택 "
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5304
+#: ../src/firewall-applet:245 ../src/firewall-config:5298
 #, c-format
 msgid "Select zone for source %s"
 msgstr "소스 '%s'의 영역을 선택 "
@@ -135,23 +135,23 @@ msgstr "쉴드업 영역:"
 msgid "Shields Down Zone:"
 msgstr "쉴드 다운 영역: "
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1755
+#: ../src/firewall-applet:622 ../src/firewall-config:1757
 msgid "Connections"
 msgstr "연결 "
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1796
-#: ../src/firewall-config:1822 ../src/firewall-config:1847
+#: ../src/firewall-applet:717 ../src/firewall-config:1798
+#: ../src/firewall-config:1824 ../src/firewall-config:1849
 #: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "영역 "
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1808
+#: ../src/firewall-applet:679 ../src/firewall-config:1810
 #: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "인터페이스 "
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1834
+#: ../src/firewall-applet:704 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "소스 "
@@ -248,7 +248,7 @@ msgstr "영역 '{zone}'이 소스 '{source}'에 대해 {activated_deactivated}"
 msgid "Zone '%s' activated for source '%s'"
 msgstr "영역 '%s'이 소스 '%s'에 대해 활성화되었습니다 "
 
-#: ../src/firewall-applet:1165
+#: ../src/firewall-applet:1166
 msgid "Firewall-applet"
 msgstr "방화벽-애플릿 "
 
@@ -285,7 +285,7 @@ msgstr "비활성화됨 "
 msgid "Failed to load icons."
 msgstr "아이콘 로딩에 실패했습니다."
 
-#: ../src/firewall-config:358 ../src/firewall-config:1715
+#: ../src/firewall-config:358 ../src/firewall-config:1717
 msgid "Runtime"
 msgstr "런타임 "
 
@@ -347,187 +347,187 @@ msgstr "로그 "
 msgid "Audit"
 msgstr "감사 "
 
-#: ../src/firewall-config:1153 ../src/firewall-config:2006
-#: ../src/firewall-config:2044
+#: ../src/firewall-config:1155 ../src/firewall-config:2008
+#: ../src/firewall-config:2046
 msgid "Warning"
 msgstr "경고 "
 
-#: ../src/firewall-config:1162
+#: ../src/firewall-config:1164
 msgid "Error"
 msgstr "오류 "
 
-#: ../src/firewall-config:1202
+#: ../src/firewall-config:1204
 msgid "Changes applied."
 msgstr "변경 사항이 적용되었습니다."
 
-#: ../src/firewall-config:1485 ../src/firewall-config:2791
+#: ../src/firewall-config:1487 ../src/firewall-config:2793
 msgid "accept"
 msgstr "허용"
 
-#: ../src/firewall-config:1487 ../src/firewall-config:2793
-#: ../src/firewall-config:2903
+#: ../src/firewall-config:1489 ../src/firewall-config:2795
+#: ../src/firewall-config:2905
 msgid "reject"
 msgstr "거부"
 
-#: ../src/firewall-config:1491 ../src/firewall-config:2798
+#: ../src/firewall-config:1493 ../src/firewall-config:2800
 msgid "drop"
 msgstr "드롭 "
 
-#: ../src/firewall-config:1493 ../src/firewall-config:1527
-#: ../src/firewall-config:1532
+#: ../src/firewall-config:1495 ../src/firewall-config:1529
+#: ../src/firewall-config:1534
 msgid "limit"
 msgstr "제한 "
 
-#: ../src/firewall-config:1504 ../src/firewall-config:2330
-#: ../src/firewall-config:2484 ../src/firewall-config:2755
+#: ../src/firewall-config:1506 ../src/firewall-config:2332
+#: ../src/firewall-config:2486 ../src/firewall-config:2757
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "서비스 "
 
-#: ../src/firewall-config:1506 ../src/firewall-config:2336
-#: ../src/firewall-config:2486 ../src/firewall-config:2758
+#: ../src/firewall-config:1508 ../src/firewall-config:2338
+#: ../src/firewall-config:2488 ../src/firewall-config:2760
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "포트 "
 
-#: ../src/firewall-config:1509 ../src/firewall-config:2341
-#: ../src/firewall-config:2495 ../src/firewall-config:2764
+#: ../src/firewall-config:1511 ../src/firewall-config:2343
+#: ../src/firewall-config:2497 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "프로토콜"
 
-#: ../src/firewall-config:1511 ../src/firewall-config:2346
-#: ../src/firewall-config:2778 ../src/firewall-config:2915
+#: ../src/firewall-config:1513 ../src/firewall-config:2348
+#: ../src/firewall-config:2780 ../src/firewall-config:2917
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "마스커레이딩 "
 
-#: ../src/firewall-config:1525
+#: ../src/firewall-config:1527
 msgid "level"
 msgstr "레벨 "
 
-#: ../src/firewall-config:1529 ../src/firewall-config:1534
+#: ../src/firewall-config:1531 ../src/firewall-config:1536
 msgid "yes"
 msgstr "예 "
 
-#: ../src/firewall-config:1667
+#: ../src/firewall-config:1669
 msgid "Authorization failed."
 msgstr "인증 실패했습니다."
 
-#: ../src/firewall-config:1670
+#: ../src/firewall-config:1672
 msgid "Invalid name"
 msgstr "잘못된 이름 "
 
-#: ../src/firewall-config:1674
+#: ../src/firewall-config:1676
 msgid "Name already exists"
 msgstr "이름이 이미 존재합니다 "
 
-#: ../src/firewall-config:2003
+#: ../src/firewall-config:2005
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "영역 '%s': 서비스 '%s'를 사용할 수 없습니다."
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Remove"
 msgstr "제거 "
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Ignore"
 msgstr "무시 "
 
-#: ../src/firewall-config:2041
+#: ../src/firewall-config:2043
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "영역 '%s': ICMP 유형 '%s'을 사용할 수 없습니다."
 
-#: ../src/firewall-config:2184
+#: ../src/firewall-config:2186
 msgid "Built-in zone, rename not supported."
 msgstr "내장된 영역, 이름을 바꿀 수 없습니다."
 
-#: ../src/firewall-config:2293 ../src/firewall-config:2730
+#: ../src/firewall-config:2295 ../src/firewall-config:2732
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "초 "
 
-#: ../src/firewall-config:2294 ../src/firewall-config:2731
+#: ../src/firewall-config:2296 ../src/firewall-config:2733
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "분 "
 
-#: ../src/firewall-config:2295 ../src/firewall-config:2732
+#: ../src/firewall-config:2297 ../src/firewall-config:2734
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "시 "
 
-#: ../src/firewall-config:2296 ../src/firewall-config:2733
+#: ../src/firewall-config:2298 ../src/firewall-config:2735
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "일 "
 
-#: ../src/firewall-config:2297 ../src/firewall-config:2734
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "긴급 "
 
-#: ../src/firewall-config:2298 ../src/firewall-config:2735
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "주의 "
 
-#: ../src/firewall-config:2299 ../src/firewall-config:2736
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "위험 "
 
-#: ../src/firewall-config:2300 ../src/firewall-config:2737
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "오류 "
 
-#: ../src/firewall-config:2301 ../src/firewall-config:2738
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "경고 "
 
-#: ../src/firewall-config:2302 ../src/firewall-config:2739
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "알림 "
 
-#: ../src/firewall-config:2303 ../src/firewall-config:2740
+#: ../src/firewall-config:2305 ../src/firewall-config:2742
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "정보 "
 
-#: ../src/firewall-config:2304 ../src/firewall-config:2741
+#: ../src/firewall-config:2306 ../src/firewall-config:2743
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "디버그 "
 
-#: ../src/firewall-config:2349 ../src/firewall-config:2497
-#: ../src/firewall-config:2767 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2351 ../src/firewall-config:2499
+#: ../src/firewall-config:2769 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-차단 "
 
-#: ../src/firewall-config:2354 ../src/firewall-config:2499
-#: ../src/firewall-config:2770 ../src/firewall-config:2923
+#: ../src/firewall-config:2356 ../src/firewall-config:2501
+#: ../src/firewall-config:2772 ../src/firewall-config:2925
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "포워드-포트 "
 
-#: ../src/firewall-config:2477 ../src/firewall-config:2676
-#: ../src/firewall-config:2690 ../src/firewall-config:2745
-#: ../src/firewall-config:2846 ../src/firewall-config:2871
-msgid "ipv4"
-msgstr "ipv4"
-
 #: ../src/firewall-config:2479 ../src/firewall-config:2678
 #: ../src/firewall-config:2692 ../src/firewall-config:2747
 #: ../src/firewall-config:2848 ../src/firewall-config:2873
+msgid "ipv4"
+msgstr "ipv4"
+
+#: ../src/firewall-config:2481 ../src/firewall-config:2680
+#: ../src/firewall-config:2694 ../src/firewall-config:2749
+#: ../src/firewall-config:2850 ../src/firewall-config:2875
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3531
+#: ../src/firewall-config:3533
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -537,11 +537,11 @@ msgstr ""
 "다.\n"
 "이 영역을 마스커레이딩하시겠습니까? "
 
-#: ../src/firewall-config:3773
+#: ../src/firewall-config:3775
 msgid "Built-in service, rename not supported."
 msgstr "내장된 서비스, 이름을 바꿀 수 없습니다."
 
-#: ../src/firewall-config:4140
+#: ../src/firewall-config:4138
 msgid "Built-in icmp, rename not supported."
 msgstr "내장된 icmp, 이름을 바꿀 수 없습니다."
 
@@ -1490,284 +1490,210 @@ msgstr "대상: "
 msgid "Default Target"
 msgstr "기본 대상 "
 
-#: ../src/firewall-offline-cmd:45
-msgid "Error:"
-msgstr "오류:"
+#~ msgid "Error:"
+#~ msgstr "오류:"
 
-#: ../src/firewall-offline-cmd:48
-msgid "Warning:"
-msgstr "경고:"
+#~ msgid "Warning:"
+#~ msgstr "경고:"
 
-#: ../src/firewall-offline-cmd:68
-#, c-format
-msgid "port range %s is not unique."
-msgstr "포트 범위 %s 이(가) 고유한 범위가 아닙니다."
+#~ msgid "port range %s is not unique."
+#~ msgstr "포트 범위 %s 이(가) 고유한 범위가 아닙니다."
 
-#: ../src/firewall-offline-cmd:70
-#, c-format
-msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s 은(는) 올바른 범위 (시작 포트 >= 마지막 포트)가 아닙니다."
+#~ msgid "%s is not a valid range (start port >= end port)."
+#~ msgstr "%s 은(는) 올바른 범위 (시작 포트 >= 마지막 포트)가 아닙니다."
 
-#: ../src/firewall-offline-cmd:75
-#, c-format
-msgid "%s is not a valid protocol."
-msgstr "%s은(는) 잘못된 프로토콜입니다. "
+#~ msgid "%s is not a valid protocol."
+#~ msgstr "%s은(는) 잘못된 프로토콜입니다. "
 
-#: ../src/firewall-offline-cmd:77
-#, c-format
-msgid "invalid port definition %s."
-msgstr "잘못된 포트 정의 %s."
+#~ msgid "invalid port definition %s."
+#~ msgstr "잘못된 포트 정의 %s."
 
-#: ../src/firewall-offline-cmd:87 ../src/firewall-offline-cmd:97
-#, c-format
-msgid "Invalid argument %s"
-msgstr "잘못된 인수 %s "
+#~ msgid "Invalid argument %s"
+#~ msgstr "잘못된 인수 %s "
 
-#: ../src/firewall-offline-cmd:111
-msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s': %(error)s. "
+#~ msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+#~ msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s': %(error)s. "
 
-#: ../src/firewall-offline-cmd:122
-msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s'. "
+#~ msgid "option %(option)s: invalid forward_port '%(value)s'."
+#~ msgstr "%(option)s 옵션: 잘못된 forward_port '%(value)s'. "
 
-#: ../src/firewall-offline-cmd:129
-#, c-format
-msgid "invalid interface '%s'."
-msgstr "잘못된 인터페이스 '%s'. "
+#~ msgid "invalid interface '%s'."
+#~ msgstr "잘못된 인터페이스 '%s'. "
 
-#: ../src/firewall-offline-cmd:149
-msgid "Enable firewall (default)"
-msgstr "방화벽 사용 (기본)"
+#~ msgid "Enable firewall (default)"
+#~ msgstr "방화벽 사용 (기본)"
 
-#: ../src/firewall-offline-cmd:152
-msgid "Disable firewall"
-msgstr "방화벽을 사용하지 않음"
+#~ msgid "Disable firewall"
+#~ msgstr "방화벽을 사용하지 않음"
 
-#: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
-msgid "<module>"
-msgstr "<module>"
+#~ msgid "<module>"
+#~ msgstr "<module>"
 
-#: ../src/firewall-offline-cmd:159
-msgid "Ignored option, was used to enable an iptables module"
-msgstr "iptables 모듈을 활성화하기 위해 무시된 옵션이 사용되었습니다 "
+#~ msgid "Ignored option, was used to enable an iptables module"
+#~ msgstr "iptables 모듈을 활성화하기 위해 무시된 옵션이 사용되었습니다 "
 
-#: ../src/firewall-offline-cmd:163
-msgid "Ignored option, was used to disable an iptables module"
-msgstr "iptables 모듈을 비활성화하기 위해 무시된 옵션이 사용되었습니다 "
+#~ msgid "Ignored option, was used to disable an iptables module"
+#~ msgstr "iptables 모듈을 비활성화하기 위해 무시된 옵션이 사용되었습니다 "
 
-#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
-msgid "<service>"
-msgstr "<service>"
+#~ msgid "<service>"
+#~ msgstr "<service>"
 
-#: ../src/firewall-offline-cmd:168
-msgid "Enable a service in the default zone (example: ssh)"
-msgstr "기본 영역에 있는 서비스를 활성화 (예: ssh)"
+#~ msgid "Enable a service in the default zone (example: ssh)"
+#~ msgstr "기본 영역에 있는 서비스를 활성화 (예: ssh)"
 
-#: ../src/firewall-offline-cmd:173
-msgid "Disable a service in the default zone (example: ssh)"
-msgstr "기본 영역에 있는 서비스를 비활성화 (예: ssh)"
+#~ msgid "Disable a service in the default zone (example: ssh)"
+#~ msgstr "기본 영역에 있는 서비스를 비활성화 (예: ssh)"
 
-#: ../src/firewall-offline-cmd:176
-msgid "<port>[-<port>]:<protocol>"
-msgstr "<port>[-<port>]:<protocol>"
+#~ msgid "<port>[-<port>]:<protocol>"
+#~ msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:178
-msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr "기본 영역에 있는 포트를 활성화 (예: ssh:tcp)"
+#~ msgid "Enable a port in the default zone (example: ssh:tcp)"
+#~ msgstr "기본 영역에 있는 포트를 활성화 (예: ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
-msgid "<interface>"
-msgstr "<interface>"
+#~ msgid "<interface>"
+#~ msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:183
-msgid "Bind an interface to the trusted zone"
-msgstr "신뢰할 수 있는 영역에 인터페이스를 바인딩 "
+#~ msgid "Bind an interface to the trusted zone"
+#~ msgstr "신뢰할 수 있는 영역에 인터페이스를 바인딩 "
 
-#: ../src/firewall-offline-cmd:187
-msgid ""
-"Enables masquerading in the default zone, interface argument is ignored. "
-"This is IPv4 only."
-msgstr ""
-"기본 영역에 있는 마스커레이딩을 활성화합니다, 인터페이스 인수는 무시됩니다. "
-"IPv4에서만 해당됩니다."
+#~ msgid ""
+#~ "Enables masquerading in the default zone, interface argument is ignored. "
+#~ "This is IPv4 only."
+#~ msgstr ""
+#~ "기본 영역에 있는 마스커레이딩을 활성화합니다, 인터페이스 인수는 무시됩니"
+#~ "다. IPv4에서만 해당됩니다."
 
-#: ../src/firewall-offline-cmd:190
-msgid "[<type>:][<table>:]<filename>"
-msgstr "[<type>:][<table>:]<filename>"
+#~ msgid "[<type>:][<table>:]<filename>"
+#~ msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:192
-msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr ""
-"무시된 옵션입니다. 방화벽에 사용자 지정 규칙을 추가하기 위해 사용되었습니다 "
-"(예: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgid ""
+#~ "Ignored option. Was used to add custom rules to the firewall (Example: "
+#~ "ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgstr ""
+#~ "무시된 옵션입니다. 방화벽에 사용자 지정 규칙을 추가하기 위해 사용되었습니"
+#~ "다 (예: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-offline-cmd:196
-msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
+#~ msgid ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
+#~ msgstr ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:200
-msgid ""
-"Forward the port with protocol for the interface to either another local "
-"destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
-msgstr ""
-"다른 로컬 수신지 포트 (수신지 주소가 없을 경우) 또는 다른 수신지 주소로(수신"
-"지 포트 선택 지정 가능) 인터페이스의 프로토콜과 함께 포트를 포워딩합니다. 이"
-"는 기본 영역에 추가됩니다. IPv4에서만 해당됩니다."
+#~ msgid ""
+#~ "Forward the port with protocol for the interface to either another local "
+#~ "destination port (no destination address given) or to an other "
+#~ "destination address with an optional destination port. This will be added "
+#~ "to the default zone. This is IPv4 only."
+#~ msgstr ""
+#~ "다른 로컬 수신지 포트 (수신지 주소가 없을 경우) 또는 다른 수신지 주소로(수"
+#~ "신지 포트 선택 지정 가능) 인터페이스의 프로토콜과 함께 포트를 포워딩합니"
+#~ "다. 이는 기본 영역에 추가됩니다. IPv4에서만 해당됩니다."
 
-#: ../src/firewall-offline-cmd:205
-msgid "<icmp type>"
-msgstr "<icmp type>"
+#~ msgid "<icmp type>"
+#~ msgstr "<icmp type>"
 
-#: ../src/firewall-offline-cmd:206
-msgid ""
-"Block this ICMP type in the default zone. The default is to accept all ICMP "
-"types."
-msgstr ""
-"기본 영역에서 ICMP 유형이 차단되었습니다. 기본값으로 모든 ICMP 유형을 허용합"
-"니다. "
+#~ msgid ""
+#~ "Block this ICMP type in the default zone. The default is to accept all "
+#~ "ICMP types."
+#~ msgstr ""
+#~ "기본 영역에서 ICMP 유형이 차단되었습니다. 기본값으로 모든 ICMP 유형을 허용"
+#~ "합니다. "
 
-#: ../src/firewall-offline-cmd:217
-#, c-format
-msgid "no such option: %s"
-msgstr "해당 옵션이 없음: %s"
+#~ msgid "no such option: %s"
+#~ msgstr "해당 옵션이 없음: %s"
 
-#: ../src/firewall-offline-cmd:232
-msgid ""
-"This tool tries to convert system-config-firewall/lokkit options as much as "
-"possible to firewalld, but there are limitations for example with custom "
-"rules, modules and masquerading."
-msgstr ""
-"이 도구는 system-config-firewall/lokkit 옵션을 최대한 firewalld로 변경하려 하"
-"지만 사용자 지정 규칙, 모듈, 머스터레이딩 등의 경우에 대해 제한이 있습니다."
+#~ msgid ""
+#~ "This tool tries to convert system-config-firewall/lokkit options as much "
+#~ "as possible to firewalld, but there are limitations for example with "
+#~ "custom rules, modules and masquerading."
+#~ msgstr ""
+#~ "이 도구는 system-config-firewall/lokkit 옵션을 최대한 firewalld로 변경하"
+#~ "려 하지만 사용자 지정 규칙, 모듈, 머스터레이딩 등의 경우에 대해 제한이 있"
+#~ "습니다."
 
-#: ../src/firewall-offline-cmd:238
-#, c-format
-msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr "옵션이 없을 경우 '%s'의 설정이 마이그레이션됩니다."
+#~ msgid "If no options are given, the configuration from '%s' be migrated."
+#~ msgstr "옵션이 없을 경우 '%s'의 설정이 마이그레이션됩니다."
 
-#: ../src/firewall-offline-cmd:286
-#, c-format
-msgid "%s option requires an argument"
-msgstr "%s 옵션에는 인수가 필요함 "
+#~ msgid "%s option requires an argument"
+#~ msgstr "%s 옵션에는 인수가 필요함 "
 
-#: ../src/firewall-offline-cmd:289
-msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s 옵션에는 %(count)s 인수가 필요함"
+#~ msgid "%(option)s option requires %(count)s arguments"
+#~ msgstr "%(option)s 옵션에는 %(count)s 인수가 필요함"
 
-#: ../src/firewall-offline-cmd:303
-#, c-format
-msgid "%s option does not take a value"
-msgstr "%s 옵션 값을 갖지 않습니다 "
+#~ msgid "%s option does not take a value"
+#~ msgstr "%s 옵션 값을 갖지 않습니다 "
 
-#: ../src/firewall-offline-cmd:360
-msgid "Problem parsing arguments."
-msgstr "인수 분석 도중 문제가 발생했습니다."
+#~ msgid "Problem parsing arguments."
+#~ msgstr "인수 분석 도중 문제가 발생했습니다."
 
-#: ../src/firewall-offline-cmd:366
-#, c-format
-msgid "Opening of '%s' failed, exiting."
-msgstr "'%s'를 열 수 없습니다. 종료합니다."
+#~ msgid "Opening of '%s' failed, exiting."
+#~ msgstr "'%s'를 열 수 없습니다. 종료합니다."
 
-#: ../src/firewall-offline-cmd:394
-#, c-format
-msgid "Opening default zone '%s'"
-msgstr "기본 영역 '%s'을 열고 있습니다. "
+#~ msgid "Opening default zone '%s'"
+#~ msgstr "기본 영역 '%s'을 열고 있습니다. "
 
-#: ../src/firewall-offline-cmd:399
-#, c-format
-msgid "Unable to open default zone '%s', exiting."
-msgstr "기본 영역 '%s'을 열 수 없습니다. 종료합니다."
+#~ msgid "Unable to open default zone '%s', exiting."
+#~ msgstr "기본 영역 '%s'을 열 수 없습니다. 종료합니다."
 
-#: ../src/firewall-offline-cmd:411
-#, c-format
-msgid "Unable to open zone '%s', exiting."
-msgstr "영역 '%s'을 열 수 없습니다. 종료합니다."
+#~ msgid "Unable to open zone '%s', exiting."
+#~ msgstr "영역 '%s'을 열 수 없습니다. 종료합니다."
 
-#: ../src/firewall-offline-cmd:424
-#, c-format
-msgid "The device '%s' will be bound to the %s zone."
-msgstr "장치 '%s'는 %s 영역으로 연결됩니다. "
+#~ msgid "The device '%s' will be bound to the %s zone."
+#~ msgstr "장치 '%s'는 %s 영역으로 연결됩니다. "
 
-#: ../src/firewall-offline-cmd:432
-#, c-format
-msgid "Ignoring custom-rule file '%s'"
-msgstr "사용자 정의 규칙 파일 '%s'을 무시합니다 "
+#~ msgid "Ignoring custom-rule file '%s'"
+#~ msgstr "사용자 정의 규칙 파일 '%s'을 무시합니다 "
 
-#: ../src/firewall-offline-cmd:437
-#, c-format
-msgid "Ignoring addmodule '%s'"
-msgstr "추가 모듈 '%s'을 무시합니다 "
+#~ msgid "Ignoring addmodule '%s'"
+#~ msgstr "추가 모듈 '%s'을 무시합니다 "
 
-#: ../src/firewall-offline-cmd:440
-#, c-format
-msgid "Ignoring removemodule '%s'"
-msgstr "삭제 모듈 '%s'을 무시합니다 "
+#~ msgid "Ignoring removemodule '%s'"
+#~ msgstr "삭제 모듈 '%s'을 무시합니다 "
 
-#: ../src/firewall-offline-cmd:445
-#, c-format
-msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr ""
-"장치 '%s'가 마스커레이딩되었습니다, 기본 영역의 마스커레이딩이 활성화되어 있"
-"습니다."
+#~ msgid ""
+#~ "Device '%s' was masqueraded, enabling masquerade for the default zone."
+#~ msgstr ""
+#~ "장치 '%s'가 마스커레이딩되었습니다, 기본 영역의 마스커레이딩이 활성화되어 "
+#~ "있습니다."
 
-#: ../src/firewall-offline-cmd:452
-#, c-format
-msgid "Adding port '%s/%s' to default zone."
-msgstr "기본 영역에 포트 '%s/%s'를 추가합니다. "
+#~ msgid "Adding port '%s/%s' to default zone."
+#~ msgstr "기본 영역에 포트 '%s/%s'를 추가합니다. "
 
-#: ../src/firewall-offline-cmd:460
-#, c-format
-msgid "Removing service '%s' from default zone."
-msgstr "기본 영역에서 서비스 '%s'를 삭제하고 있습니다. "
+#~ msgid "Removing service '%s' from default zone."
+#~ msgstr "기본 영역에서 서비스 '%s'를 삭제하고 있습니다. "
 
-#: ../src/firewall-offline-cmd:467
-#, c-format
-msgid "Adding service '%s' to default zone."
-msgstr "기본 영역에 서비스 '%s'를 추가합니다."
+#~ msgid "Adding service '%s' to default zone."
+#~ msgstr "기본 영역에 서비스 '%s'를 추가합니다."
 
-#: ../src/firewall-offline-cmd:474
-#, c-format
-msgid "Adding icmpblock '%s' to default zone."
-msgstr "기본 영역에 icmpblock '%s'을 추가합니다. "
+#~ msgid "Adding icmpblock '%s' to default zone."
+#~ msgstr "기본 영역에 icmpblock '%s'을 추가합니다. "
 
-#: ../src/firewall-offline-cmd:484
-#, c-format
-msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr "기본 영역에 포워드 포트 %s:%s:%s:%s를 추가합니다."
+#~ msgid "Adding forward port %s:%s:%s:%s to default zone."
+#~ msgstr "기본 영역에 포워드 포트 %s:%s:%s:%s를 추가합니다."
 
-#: ../src/firewall-offline-cmd:492
-msgid "No changes to default zone needed."
-msgstr "기본 영역에 변경할 필요가 없습니다."
+#~ msgid "No changes to default zone needed."
+#~ msgstr "기본 영역에 변경할 필요가 없습니다."
 
-#: ../src/firewall-offline-cmd:496
-msgid "Changed trusted zone configuration."
-msgstr "신뢰할 수 있는 영역 설정을 변경했습니다."
+#~ msgid "Changed trusted zone configuration."
+#~ msgstr "신뢰할 수 있는 영역 설정을 변경했습니다."
 
-#: ../src/firewall-offline-cmd:498
-msgid ""
-"If one of the trusted interfaces is used for a connection with "
-"NetworkManager or if there is an ifcfg file for this interface, the zone "
-"will be changed to the zone defined in the configuration as soon as it gets "
-"activated. To change the zone of a connection use <command>nm-connection-"
-"editor</command> and set the zone to trusted, for an ifcfg file, use an "
-"editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
-"file, the firewalld default zone will be used."
-msgstr ""
-"신뢰할 수 있는 인터페이스 중 하나가 NetworkManager로 연결하는데 사용되거나 이"
-"러한 인터페이스에 대한 ifcfg 파일이 있는 경우 영역은 활성화가 이루어지면 즉"
-"시 설정에 정의된 영역으로 변경됩니다. 연결 영역을 변경하려면 <command>nm-"
-"connection-editor</command>를 사용하고 영역을 신회할 수 있는 영역으로 설정하"
-"거나 ifcfg 파일의 경우 편집기를 사용하여 \"ZONE=trusted\"를 추가합니다. 영역"
-"이 ifcfg 파일에 정의되어 있지 않을 경우 firewalld 기본 영역이 사용됩니다."
+#~ msgid ""
+#~ "If one of the trusted interfaces is used for a connection with "
+#~ "NetworkManager or if there is an ifcfg file for this interface, the zone "
+#~ "will be changed to the zone defined in the configuration as soon as it "
+#~ "gets activated. To change the zone of a connection use <command>nm-"
+#~ "connection-editor</command> and set the zone to trusted, for an ifcfg "
+#~ "file, use an editor and add \"ZONE=trusted\". If the zone is not defined "
+#~ "in the ifcfg file, the firewalld default zone will be used."
+#~ msgstr ""
+#~ "신뢰할 수 있는 인터페이스 중 하나가 NetworkManager로 연결하는데 사용되거"
+#~ "나 이러한 인터페이스에 대한 ifcfg 파일이 있는 경우 영역은 활성화가 이루어"
+#~ "지면 즉시 설정에 정의된 영역으로 변경됩니다. 연결 영역을 변경하려면 "
+#~ "<command>nm-connection-editor</command>를 사용하고 영역을 신회할 수 있는 "
+#~ "영역으로 설정하거나 ifcfg 파일의 경우 편집기를 사용하여 \"ZONE=trusted"
+#~ "\"를 추가합니다. 영역이 ifcfg 파일에 정의되어 있지 않을 경우 firewalld 기"
+#~ "본 영역이 사용됩니다."
 
 #~ msgid "NetworkManager connection editor is missing."
 #~ msgstr "NetworkManager 연결 편집기가 누락되어 있습니다."

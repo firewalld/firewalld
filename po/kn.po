@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-20 14:54+0100\n"
+"POT-Creation-Date: 2014-04-29 15:41+0200\n"
 "PO-Revision-Date: 2014-01-31 10:10+0000\n"
 "Last-Translator: shanky <prasad.mvs@gmail.com>\n"
 "Language-Team: Kannada (http://www.transifex.com/projects/p/fedora/language/"
@@ -50,7 +50,7 @@ msgstr "'%s' ಘಟಕ: '%s' ಗುಣವಿಶೇಷ ಕಾಣಿಸುತ್�
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "'%s' ಘಟಕ: ಅನಿರೀಕ್ಷಿತ ಗುಣವಿಶೇಷ '%s'"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "%s ಚಲಾಯಿಸಲು ನೀವು ನಿರ್ವಾಹಕರಾಗಿರಬೇಕು."
@@ -64,23 +64,23 @@ msgstr "FirewallD ಅನ್ನು ಆರಂಭಿಸಲಾಗುತ್ತಿಲ�
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ಫೋರ್ಕ್ #1 ವಿಫಲಗೊಂಡಿದೆ: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5165
+#: ../src/firewall-applet:106 ../src/firewall-config:5159
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "'%s' ಸಂಪರ್ಕಕ್ಕಾಗಿ ವಲಯವನ್ನು ಆರಿಸಿ"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5190 ../src/firewall-config:5216
+#: ../src/firewall-config:5184 ../src/firewall-config:5210
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯ"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5248
+#: ../src/firewall-applet:189 ../src/firewall-config:5242
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "'%s' ಸಂಪರ್ಕಸಾಧನಕ್ಕಾಗಿ ವಲಯವನ್ನು ಆರಿಸಿ."
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5304
+#: ../src/firewall-applet:245 ../src/firewall-config:5298
 #, c-format
 msgid "Select zone for source %s"
 msgstr "'%s' ಆಕರಕ್ಕಾಗಿ ವಲಯವನ್ನು ಆರಿಸಿ."
@@ -133,23 +133,23 @@ msgstr "ಶೀಲ್ಡ್ಸ್ ಅಪ್ ವಲಯ:"
 msgid "Shields Down Zone:"
 msgstr "ಶೀಲ್ಡ್ಸ್ ಡೌನ್ ವಲಯ:"
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1755
+#: ../src/firewall-applet:622 ../src/firewall-config:1757
 msgid "Connections"
 msgstr "ಸಂಪರ್ಕಗಳು"
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1796
-#: ../src/firewall-config:1822 ../src/firewall-config:1847
+#: ../src/firewall-applet:717 ../src/firewall-config:1798
+#: ../src/firewall-config:1824 ../src/firewall-config:1849
 #: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "ವಲಯ"
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1808
+#: ../src/firewall-applet:679 ../src/firewall-config:1810
 #: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1834
+#: ../src/firewall-applet:704 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "ಆಕರಗಳು"
@@ -245,7 +245,7 @@ msgstr "'{source}' ಆಕರಕ್ಕಾಗಿ '{zone}' {activated_deactivated} 
 msgid "Zone '%s' activated for source '%s'"
 msgstr "'%s' ಆಕರಕ್ಕಾಗಿ '%s' ವಲಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
 
-#: ../src/firewall-applet:1165
+#: ../src/firewall-applet:1166
 msgid "Firewall-applet"
 msgstr "ಫೈರ್ವಾಲ್-ಆಪ್ಲೆಟ್"
 
@@ -282,7 +282,7 @@ msgstr "ನಿಷ್ಕ್ರಿಯಗೊಂಡ"
 msgid "Failed to load icons."
 msgstr "ಚಿಹ್ನೆಗಳನ್ನು ಲೋಡ್ ಮಾಡುವಲ್ಲಿ ವಿಫಲತೆ."
 
-#: ../src/firewall-config:358 ../src/firewall-config:1715
+#: ../src/firewall-config:358 ../src/firewall-config:1717
 msgid "Runtime"
 msgstr "ಚಾಲನಾಸಮಯ"
 
@@ -344,187 +344,187 @@ msgstr "ಲಾಗ್"
 msgid "Audit"
 msgstr "ಆಡಿಟ್"
 
-#: ../src/firewall-config:1153 ../src/firewall-config:2006
-#: ../src/firewall-config:2044
+#: ../src/firewall-config:1155 ../src/firewall-config:2008
+#: ../src/firewall-config:2046
 msgid "Warning"
 msgstr "ಎಚ್ಚರಿಕೆ"
 
-#: ../src/firewall-config:1162
+#: ../src/firewall-config:1164
 msgid "Error"
 msgstr "ದೋಷ"
 
-#: ../src/firewall-config:1202
+#: ../src/firewall-config:1204
 msgid "Changes applied."
 msgstr "ಬದಲಾವನೆಗಳನ್ನು ಅನ್ವಯಿಸಲಾಗಿದೆ."
 
-#: ../src/firewall-config:1485 ../src/firewall-config:2791
+#: ../src/firewall-config:1487 ../src/firewall-config:2793
 msgid "accept"
 msgstr "ಸ್ವೀಕರಿಸು"
 
-#: ../src/firewall-config:1487 ../src/firewall-config:2793
-#: ../src/firewall-config:2903
+#: ../src/firewall-config:1489 ../src/firewall-config:2795
+#: ../src/firewall-config:2905
 msgid "reject"
 msgstr "ತಿರಸ್ಕರಿಸು"
 
-#: ../src/firewall-config:1491 ../src/firewall-config:2798
+#: ../src/firewall-config:1493 ../src/firewall-config:2800
 msgid "drop"
 msgstr "ಬಿಟ್ಟುಬಿಡು"
 
-#: ../src/firewall-config:1493 ../src/firewall-config:1527
-#: ../src/firewall-config:1532
+#: ../src/firewall-config:1495 ../src/firewall-config:1529
+#: ../src/firewall-config:1534
 msgid "limit"
 msgstr "ಮಿತಿ"
 
-#: ../src/firewall-config:1504 ../src/firewall-config:2330
-#: ../src/firewall-config:2484 ../src/firewall-config:2755
+#: ../src/firewall-config:1506 ../src/firewall-config:2332
+#: ../src/firewall-config:2486 ../src/firewall-config:2757
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "ಸೇವೆ"
 
-#: ../src/firewall-config:1506 ../src/firewall-config:2336
-#: ../src/firewall-config:2486 ../src/firewall-config:2758
+#: ../src/firewall-config:1508 ../src/firewall-config:2338
+#: ../src/firewall-config:2488 ../src/firewall-config:2760
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "ಸಂಪರ್ಕಸ್ಥಾನ"
 
-#: ../src/firewall-config:1509 ../src/firewall-config:2341
-#: ../src/firewall-config:2495 ../src/firewall-config:2764
+#: ../src/firewall-config:1511 ../src/firewall-config:2343
+#: ../src/firewall-config:2497 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "ಪ್ರೊಟೊಕಾಲ್"
 
-#: ../src/firewall-config:1511 ../src/firewall-config:2346
-#: ../src/firewall-config:2778 ../src/firewall-config:2915
+#: ../src/firewall-config:1513 ../src/firewall-config:2348
+#: ../src/firewall-config:2780 ../src/firewall-config:2917
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "ಛದ್ಮವೇಷಗೊಳಿಕೆ"
 
-#: ../src/firewall-config:1525
+#: ../src/firewall-config:1527
 msgid "level"
 msgstr "ಮಟ್ಟ"
 
-#: ../src/firewall-config:1529 ../src/firewall-config:1534
+#: ../src/firewall-config:1531 ../src/firewall-config:1536
 msgid "yes"
 msgstr "ಹೌದು"
 
-#: ../src/firewall-config:1667
+#: ../src/firewall-config:1669
 msgid "Authorization failed."
 msgstr "ದೃಢೀಕರಣವು ವಿಫಲಗೊಂಡಿದೆ."
 
-#: ../src/firewall-config:1670
+#: ../src/firewall-config:1672
 msgid "Invalid name"
 msgstr "ಅಮಾನ್ಯವಾದ ಆರ್ಗ್ಯುಮೆಂಟ್ %s"
 
-#: ../src/firewall-config:1674
+#: ../src/firewall-config:1676
 msgid "Name already exists"
 msgstr "ಹೆಸರು ಈಗಾಗಲೆ ಅಸ್ತಿತ್ವದಲ್ಲಿದೆ"
 
-#: ../src/firewall-config:2003
+#: ../src/firewall-config:2005
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "ವಲಯ '%s': '%s' ಸೇವೆಯು ಲಭ್ಯವಿಲ್ಲ."
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Remove"
 msgstr "ತೆಗೆದು ಹಾಕು"
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Ignore"
 msgstr "ಕಡೆಗಣಿಸು"
 
-#: ../src/firewall-config:2041
+#: ../src/firewall-config:2043
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "ವಲಯ '%s': ICMP '%s' ಬಗೆಯು ಲಭ್ಯವಿಲ್ಲ."
 
-#: ../src/firewall-config:2184
+#: ../src/firewall-config:2186
 msgid "Built-in zone, rename not supported."
 msgstr "ಒಳನಿರ್ಮಿತ ವಲಯ, ಮರುಹೆಸರಿಸುವಿಕೆಗೆ ಬೆಂಬಲವಿಲ್ಲ."
 
-#: ../src/firewall-config:2293 ../src/firewall-config:2730
+#: ../src/firewall-config:2295 ../src/firewall-config:2732
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "ಎರಡನೆಯ"
 
-#: ../src/firewall-config:2294 ../src/firewall-config:2731
+#: ../src/firewall-config:2296 ../src/firewall-config:2733
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "ನಿಮಿಷ"
 
-#: ../src/firewall-config:2295 ../src/firewall-config:2732
+#: ../src/firewall-config:2297 ../src/firewall-config:2734
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "ಗಂಟೆ"
 
-#: ../src/firewall-config:2296 ../src/firewall-config:2733
+#: ../src/firewall-config:2298 ../src/firewall-config:2735
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "ದಿನ"
 
-#: ../src/firewall-config:2297 ../src/firewall-config:2734
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "ತುರ್ತು"
 
-#: ../src/firewall-config:2298 ../src/firewall-config:2735
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "ಎಚ್ಚರಿಕೆ"
 
-#: ../src/firewall-config:2299 ../src/firewall-config:2736
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "ಸಂದಿಗ್ಧ"
 
-#: ../src/firewall-config:2300 ../src/firewall-config:2737
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "ದೋಷ"
 
-#: ../src/firewall-config:2301 ../src/firewall-config:2738
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "ಎಚ್ಚರಿಕೆ"
 
-#: ../src/firewall-config:2302 ../src/firewall-config:2739
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "ಸೂಚನೆ"
 
-#: ../src/firewall-config:2303 ../src/firewall-config:2740
+#: ../src/firewall-config:2305 ../src/firewall-config:2742
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "ಮಾಹಿತಿ"
 
-#: ../src/firewall-config:2304 ../src/firewall-config:2741
+#: ../src/firewall-config:2306 ../src/firewall-config:2743
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "ದೋಷನಿವಾರಣೆ"
 
-#: ../src/firewall-config:2349 ../src/firewall-config:2497
-#: ../src/firewall-config:2767 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2351 ../src/firewall-config:2499
+#: ../src/firewall-config:2769 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-block"
 
-#: ../src/firewall-config:2354 ../src/firewall-config:2499
-#: ../src/firewall-config:2770 ../src/firewall-config:2923
+#: ../src/firewall-config:2356 ../src/firewall-config:2501
+#: ../src/firewall-config:2772 ../src/firewall-config:2925
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "ಫಾರ್ವಾರ್ಡ್-ಸಂಪರ್ಕಸ್ಥಾನ"
 
-#: ../src/firewall-config:2477 ../src/firewall-config:2676
-#: ../src/firewall-config:2690 ../src/firewall-config:2745
-#: ../src/firewall-config:2846 ../src/firewall-config:2871
-msgid "ipv4"
-msgstr "ipv4"
-
 #: ../src/firewall-config:2479 ../src/firewall-config:2678
 #: ../src/firewall-config:2692 ../src/firewall-config:2747
 #: ../src/firewall-config:2848 ../src/firewall-config:2873
+msgid "ipv4"
+msgstr "ipv4"
+
+#: ../src/firewall-config:2481 ../src/firewall-config:2680
+#: ../src/firewall-config:2694 ../src/firewall-config:2749
+#: ../src/firewall-config:2850 ../src/firewall-config:2875
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3531
+#: ../src/firewall-config:3533
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -534,11 +534,11 @@ msgstr ""
 "ಉಪಯೋಗಕ್ಕೆ ಬರುತ್ತದೆ.\n"
 "ನೀವು ಈ ವಲಯವನ್ನು ಛದ್ಮವೇಶಗೊಳಿಸಲು ಬಯಸುವಿರಾ?"
 
-#: ../src/firewall-config:3773
+#: ../src/firewall-config:3775
 msgid "Built-in service, rename not supported."
 msgstr "ಒಳ-ನಿರ್ಮಿತ ಸೇವೆ, ಮರುಹೆಸರಿಸುವಿಕೆಗೆ ಬೆಂಬಲವಿಲ್ಲ."
 
-#: ../src/firewall-config:4140
+#: ../src/firewall-config:4138
 msgid "Built-in icmp, rename not supported."
 msgstr "ಒಳ-ನಿರ್ಮಿತ icmp, ಮರುಹೆಸರಿಸುವಿಕೆಗೆ ಬೆಂಬಲವಿಲ್ಲ."
 
@@ -1497,291 +1497,217 @@ msgstr "ಗುರಿ:"
 msgid "Default Target"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಗುರಿ"
 
-#: ../src/firewall-offline-cmd:45
-msgid "Error:"
-msgstr "ದೋಷ:"
+#~ msgid "Error:"
+#~ msgstr "ದೋಷ:"
 
-#: ../src/firewall-offline-cmd:48
-msgid "Warning:"
-msgstr "ಎಚ್ಚರಿಕೆ:"
+#~ msgid "Warning:"
+#~ msgstr "ಎಚ್ಚರಿಕೆ:"
 
-#: ../src/firewall-offline-cmd:68
-#, c-format
-msgid "port range %s is not unique."
-msgstr "ಸಂಪರ್ಕ ಸ್ಥಾನ ವ್ಯಾಪ್ತಿ '%s' ಯು ವಿಶಿಷ್ಟವಾಗಿಲ್ಲ."
+#~ msgid "port range %s is not unique."
+#~ msgstr "ಸಂಪರ್ಕ ಸ್ಥಾನ ವ್ಯಾಪ್ತಿ '%s' ಯು ವಿಶಿಷ್ಟವಾಗಿಲ್ಲ."
 
-#: ../src/firewall-offline-cmd:70
-#, c-format
-msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s ವು ಒಂದು ಮಾನ್ಯವಾದ ವ್ಯಾಪ್ತಿಯಾಗಿಲ್ಲ (start port >= end port)."
+#~ msgid "%s is not a valid range (start port >= end port)."
+#~ msgstr "%s ವು ಒಂದು ಮಾನ್ಯವಾದ ವ್ಯಾಪ್ತಿಯಾಗಿಲ್ಲ (start port >= end port)."
 
-#: ../src/firewall-offline-cmd:75
-#, c-format
-msgid "%s is not a valid protocol."
-msgstr "%s ವು ಒಂದು ಮಾನ್ಯವಾದ ಪ್ರೊಟೋಕಾಲಲ್ಲ."
+#~ msgid "%s is not a valid protocol."
+#~ msgstr "%s ವು ಒಂದು ಮಾನ್ಯವಾದ ಪ್ರೊಟೋಕಾಲಲ್ಲ."
 
-#: ../src/firewall-offline-cmd:77
-#, c-format
-msgid "invalid port definition %s."
-msgstr "ಅಮಾನ್ಯವಾದ ಸಂಪರ್ಕಸ್ಥಾನ ವಿವರಣೆ %s."
+#~ msgid "invalid port definition %s."
+#~ msgstr "ಅಮಾನ್ಯವಾದ ಸಂಪರ್ಕಸ್ಥಾನ ವಿವರಣೆ %s."
 
-#: ../src/firewall-offline-cmd:87 ../src/firewall-offline-cmd:97
-#, c-format
-msgid "Invalid argument %s"
-msgstr "ಅಮಾನ್ಯವಾದ ಆರ್ಗ್ಯುಮೆಂಟ್ %s"
+#~ msgid "Invalid argument %s"
+#~ msgstr "ಅಮಾನ್ಯವಾದ ಆರ್ಗ್ಯುಮೆಂಟ್ %s"
 
-#: ../src/firewall-offline-cmd:111
-msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr "ಆಯ್ಕೆ %(option)s: ಅಮಾನ್ಯ forward_port '%(value)s': %(error)s."
+#~ msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+#~ msgstr "ಆಯ್ಕೆ %(option)s: ಅಮಾನ್ಯ forward_port '%(value)s': %(error)s."
 
-#: ../src/firewall-offline-cmd:122
-msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr "ಆಯ್ಕೆ %(option)s: ಅಮಾನ್ಯ forward_port '%(value)s'."
+#~ msgid "option %(option)s: invalid forward_port '%(value)s'."
+#~ msgstr "ಆಯ್ಕೆ %(option)s: ಅಮಾನ್ಯ forward_port '%(value)s'."
 
-#: ../src/firewall-offline-cmd:129
-#, c-format
-msgid "invalid interface '%s'."
-msgstr "ಅಮಾನ್ಯವಾದ ಸಂಪರ್ಕಸಾಧನ '%s'."
+#~ msgid "invalid interface '%s'."
+#~ msgstr "ಅಮಾನ್ಯವಾದ ಸಂಪರ್ಕಸಾಧನ '%s'."
 
-#: ../src/firewall-offline-cmd:149
-msgid "Enable firewall (default)"
-msgstr "ಫೈರ್ವಾಲನ್ನು ಶಕ್ತಗೊಳಿಸು (ಪೂರ್ವನಿಯೋಜಿತ)"
+#~ msgid "Enable firewall (default)"
+#~ msgstr "ಫೈರ್ವಾಲನ್ನು ಶಕ್ತಗೊಳಿಸು (ಪೂರ್ವನಿಯೋಜಿತ)"
 
-#: ../src/firewall-offline-cmd:152
-msgid "Disable firewall"
-msgstr "ಫೈರ್ವಾಲನ್ನು ಅಶಕ್ತಗೊಳಿಸು"
+#~ msgid "Disable firewall"
+#~ msgstr "ಫೈರ್ವಾಲನ್ನು ಅಶಕ್ತಗೊಳಿಸು"
 
-#: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
-msgid "<module>"
-msgstr "<module>"
+#~ msgid "<module>"
+#~ msgstr "<module>"
 
-#: ../src/firewall-offline-cmd:159
-msgid "Ignored option, was used to enable an iptables module"
-msgstr ""
-"ಕಡೆಗಣಿಸಲಾದ ಆಯ್ಕೆ, ಇದನ್ನು iptableಗಳ ಮಾಡ್ಯೂಲ್‌ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಬಳಸಲಾಗುತ್ತಿತ್ತು"
+#~ msgid "Ignored option, was used to enable an iptables module"
+#~ msgstr ""
+#~ "ಕಡೆಗಣಿಸಲಾದ ಆಯ್ಕೆ, ಇದನ್ನು iptableಗಳ ಮಾಡ್ಯೂಲ್‌ ಅನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲು ಬಳಸಲಾಗುತ್ತಿತ್ತು"
 
-#: ../src/firewall-offline-cmd:163
-msgid "Ignored option, was used to disable an iptables module"
-msgstr ""
-"ಕಡೆಗಣಿಸಲಾದ ಆಯ್ಕೆ, ಇದನ್ನು iptableಗಳ ಮಾಡ್ಯೂಲ್‌ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ಬಳಸಲಾಗುತ್ತಿತ್ತು"
+#~ msgid "Ignored option, was used to disable an iptables module"
+#~ msgstr ""
+#~ "ಕಡೆಗಣಿಸಲಾದ ಆಯ್ಕೆ, ಇದನ್ನು iptableಗಳ ಮಾಡ್ಯೂಲ್‌ ಅನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸಲು ಬಳಸಲಾಗುತ್ತಿತ್ತು"
 
-#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
-msgid "<service>"
-msgstr "<ಸೇವೆ>"
+#~ msgid "<service>"
+#~ msgstr "<ಸೇವೆ>"
 
-#: ../src/firewall-offline-cmd:168
-msgid "Enable a service in the default zone (example: ssh)"
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಒಂದು ಸೇವೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು (ಉದಾಹರಣೆ: ssh)"
+#~ msgid "Enable a service in the default zone (example: ssh)"
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಒಂದು ಸೇವೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು (ಉದಾಹರಣೆ: ssh)"
 
-#: ../src/firewall-offline-cmd:173
-msgid "Disable a service in the default zone (example: ssh)"
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಒಂದು ಸೇವೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸು (ಉದಾಹರಣೆ: ssh)"
+#~ msgid "Disable a service in the default zone (example: ssh)"
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಒಂದು ಸೇವೆಯನ್ನು ನಿಷ್ಕ್ರಿಯಗೊಳಿಸು (ಉದಾಹರಣೆ: ssh)"
 
-#: ../src/firewall-offline-cmd:176
-msgid "<port>[-<port>]:<protocol>"
-msgstr "<port>[-<port>]:<protocol>"
+#~ msgid "<port>[-<port>]:<protocol>"
+#~ msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:178
-msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr ""
-"ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಒಂದು ಸಂಪರ್ಕಸಾಧನವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು (ಉದಾಹರಣೆಗೆ: ssh:tcp)"
+#~ msgid "Enable a port in the default zone (example: ssh:tcp)"
+#~ msgstr ""
+#~ "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಒಂದು ಸಂಪರ್ಕಸಾಧನವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸು (ಉದಾಹರಣೆಗೆ: ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
-msgid "<interface>"
-msgstr "<interface>"
+#~ msgid "<interface>"
+#~ msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:183
-msgid "Bind an interface to the trusted zone"
-msgstr "ನಂಬಿಕಸ್ತ ವಲಯಕ್ಕೆ ಒಂದು ಸಂಪರ್ಕಸಾಧನವನ್ನು ಬೈಂಡ್ ಮಾಡು"
+#~ msgid "Bind an interface to the trusted zone"
+#~ msgstr "ನಂಬಿಕಸ್ತ ವಲಯಕ್ಕೆ ಒಂದು ಸಂಪರ್ಕಸಾಧನವನ್ನು ಬೈಂಡ್ ಮಾಡು"
 
-#: ../src/firewall-offline-cmd:187
-msgid ""
-"Enables masquerading in the default zone, interface argument is ignored. "
-"This is IPv4 only."
-msgstr ""
-"ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಛದ್ಮವೇಶಗೊಳಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ, ಸಂಪರ್ಕಸಾಧನ "
-"ಆರ್ಗ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ. ಇದು IPv4 ಗಾಗಿ ಮಾತ್ರವಾಗಿರುತ್ತದೆ."
+#~ msgid ""
+#~ "Enables masquerading in the default zone, interface argument is ignored. "
+#~ "This is IPv4 only."
+#~ msgstr ""
+#~ "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಛದ್ಮವೇಶಗೊಳಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸುತ್ತದೆ, ಸಂಪರ್ಕಸಾಧನ "
+#~ "ಆರ್ಗ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ. ಇದು IPv4 ಗಾಗಿ ಮಾತ್ರವಾಗಿರುತ್ತದೆ."
 
-#: ../src/firewall-offline-cmd:190
-msgid "[<type>:][<table>:]<filename>"
-msgstr "[<type>:][<table>:]<filename>"
+#~ msgid "[<type>:][<table>:]<filename>"
+#~ msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:192
-msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr ""
-"ಕಡೆಗಣಿಸಲಾದ ಆಯ್ಕೆ.. ಫೈರ್ವಾಲ್‌ಗೆ ಅಗತ್ಯಾನುಗಣವಾದ ನಿಯಮಗಳನ್ನು ಸೇರಿಸಲು ಇದನ್ನು ಬಳಸಲಾಗಿತ್ತು "
-"(ಉದಾಹರಣೆಗೆ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgid ""
+#~ "Ignored option. Was used to add custom rules to the firewall (Example: "
+#~ "ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgstr ""
+#~ "ಕಡೆಗಣಿಸಲಾದ ಆಯ್ಕೆ.. ಫೈರ್ವಾಲ್‌ಗೆ ಅಗತ್ಯಾನುಗಣವಾದ ನಿಯಮಗಳನ್ನು ಸೇರಿಸಲು ಇದನ್ನು "
+#~ "ಬಳಸಲಾಗಿತ್ತು (ಉದಾಹರಣೆಗೆ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-offline-cmd:196
-msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
+#~ msgid ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
+#~ msgstr ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:200
-msgid ""
-"Forward the port with protocol for the interface to either another local "
-"destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
-msgstr ""
-"ಸಂಪರ್ಕಸಾಧನಕ್ಕಾಗಿನ ಪ್ರೋಟೋಕಾಲ್‍ನೊಂದಿಗೆ ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಇನ್ನೊಂದು ಸ್ಥಳೀಯ ಉದ್ದೇಶಿತ "
-"ಸಂಪರ್ಕಸ್ಥಾನಕ್ಕೋ(ಯಾವುದೆ ಉದ್ದಿಷ್ಟ ವಿಳಾಸವನ್ನು ಒದಗಿಸಿರದ) ಅಥವ ಒಂದು ಆಯ್ಕಾ ಉದ್ದೇಶಿತ "
-"ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಹೊಂದಿರುವ ಬೇರೊಂದು ಉದ್ದೇಶಿತ ವಿಳಾಸಕ್ಕೊ ಫಾರ್ವಾರ್ಡ್ ಮಾಡಿ. ಇದನ್ನು "
-"ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ. ಇದು ಕೇವಲ IPv4 ಮಾತ್ರ."
+#~ msgid ""
+#~ "Forward the port with protocol for the interface to either another local "
+#~ "destination port (no destination address given) or to an other "
+#~ "destination address with an optional destination port. This will be added "
+#~ "to the default zone. This is IPv4 only."
+#~ msgstr ""
+#~ "ಸಂಪರ್ಕಸಾಧನಕ್ಕಾಗಿನ ಪ್ರೋಟೋಕಾಲ್‍ನೊಂದಿಗೆ ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಇನ್ನೊಂದು ಸ್ಥಳೀಯ ಉದ್ದೇಶಿತ "
+#~ "ಸಂಪರ್ಕಸ್ಥಾನಕ್ಕೋ(ಯಾವುದೆ ಉದ್ದಿಷ್ಟ ವಿಳಾಸವನ್ನು ಒದಗಿಸಿರದ) ಅಥವ ಒಂದು ಆಯ್ಕಾ ಉದ್ದೇಶಿತ "
+#~ "ಸಂಪರ್ಕಸ್ಥಾನವನ್ನು ಹೊಂದಿರುವ ಬೇರೊಂದು ಉದ್ದೇಶಿತ ವಿಳಾಸಕ್ಕೊ ಫಾರ್ವಾರ್ಡ್ ಮಾಡಿ. ಇದನ್ನು "
+#~ "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಸೇರಿಸಲಾಗುತ್ತದೆ. ಇದು ಕೇವಲ IPv4 ಮಾತ್ರ."
 
-#: ../src/firewall-offline-cmd:205
-msgid "<icmp type>"
-msgstr "<icmp type>"
+#~ msgid "<icmp type>"
+#~ msgstr "<icmp type>"
 
-#: ../src/firewall-offline-cmd:206
-msgid ""
-"Block this ICMP type in the default zone. The default is to accept all ICMP "
-"types."
-msgstr ""
-"ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಈ ICMP ಬಗೆಯನ್ನು ನಿರ್ಬಂಧಿಸು. ಪೂರ್ವನಿಯೋಜಿತವು ಎಲ್ಲಾ ICMP "
-"ಬಗೆಗಳನ್ನು ಒಪ್ಪುವುದಾಗಿರುತ್ತದೆ."
+#~ msgid ""
+#~ "Block this ICMP type in the default zone. The default is to accept all "
+#~ "ICMP types."
+#~ msgstr ""
+#~ "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಲ್ಲಿ ಈ ICMP ಬಗೆಯನ್ನು ನಿರ್ಬಂಧಿಸು. ಪೂರ್ವನಿಯೋಜಿತವು ಎಲ್ಲಾ ICMP "
+#~ "ಬಗೆಗಳನ್ನು ಒಪ್ಪುವುದಾಗಿರುತ್ತದೆ."
 
-#: ../src/firewall-offline-cmd:217
-#, c-format
-msgid "no such option: %s"
-msgstr "ಅಂತಹ ಯಾವುದೆ ಆಯ್ಕೆಗಳಿಲ್ಲ: %s"
+#~ msgid "no such option: %s"
+#~ msgstr "ಅಂತಹ ಯಾವುದೆ ಆಯ್ಕೆಗಳಿಲ್ಲ: %s"
 
-#: ../src/firewall-offline-cmd:232
-msgid ""
-"This tool tries to convert system-config-firewall/lokkit options as much as "
-"possible to firewalld, but there are limitations for example with custom "
-"rules, modules and masquerading."
-msgstr ""
-"ಈ ಉಪಕರಣವು system-config-firewall/lokkit ಆಯ್ಕೆಗಳನ್ನು ಸಾಧ್ಯವಿರುವಷ್ಟರ ಮಟ್ಟಿಗೆ "
-"firewalld ಯಾಗಿ ಪರಿವರ್ತಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತದೆ, ಆದರೆ ಅಗತ್ಯಾನುಗುಣವಾದ ನಿಯಮಗಳು, "
-"ಮಾಡ್ಯೂಲ್‌ಗಳು ಮತ್ತು ಛದ್ಮವೇಶಗೊಳಿಕೆ ಮುಂತಾದವುಗಳಿಗಾಗಿ ಮಿತಿಗಳಿರುತ್ತವೆ."
+#~ msgid ""
+#~ "This tool tries to convert system-config-firewall/lokkit options as much "
+#~ "as possible to firewalld, but there are limitations for example with "
+#~ "custom rules, modules and masquerading."
+#~ msgstr ""
+#~ "ಈ ಉಪಕರಣವು system-config-firewall/lokkit ಆಯ್ಕೆಗಳನ್ನು ಸಾಧ್ಯವಿರುವಷ್ಟರ ಮಟ್ಟಿಗೆ "
+#~ "firewalld ಯಾಗಿ ಪರಿವರ್ತಿಸಲು ಪ್ರಯತ್ನಿಸುತ್ತದೆ, ಆದರೆ ಅಗತ್ಯಾನುಗುಣವಾದ ನಿಯಮಗಳು, "
+#~ "ಮಾಡ್ಯೂಲ್‌ಗಳು ಮತ್ತು ಛದ್ಮವೇಶಗೊಳಿಕೆ ಮುಂತಾದವುಗಳಿಗಾಗಿ ಮಿತಿಗಳಿರುತ್ತವೆ."
 
-#: ../src/firewall-offline-cmd:238
-#, c-format
-msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr ""
-"ಯಾವುದೆ ಆಯ್ಕೆಗಳನ್ನು ಒದಗಿಸಲಾಗಿರದೆ ಇದ್ದಲ್ಲಿ, '%s' ಇಂದ ಸಂರಚನೆಯನ್ನು ವರ್ಗಾಯಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "If no options are given, the configuration from '%s' be migrated."
+#~ msgstr ""
+#~ "ಯಾವುದೆ ಆಯ್ಕೆಗಳನ್ನು ಒದಗಿಸಲಾಗಿರದೆ ಇದ್ದಲ್ಲಿ, '%s' ಇಂದ ಸಂರಚನೆಯನ್ನು "
+#~ "ವರ್ಗಾಯಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:286
-#, c-format
-msgid "%s option requires an argument"
-msgstr "%s ಆಯ್ಕೆಗೆ ಒಂದು ಆರ್ಗುಮೆಂಟ್‍ನ ಅಗತ್ಯವಿದೆ"
+#~ msgid "%s option requires an argument"
+#~ msgstr "%s ಆಯ್ಕೆಗೆ ಒಂದು ಆರ್ಗುಮೆಂಟ್‍ನ ಅಗತ್ಯವಿದೆ"
 
-#: ../src/firewall-offline-cmd:289
-msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s ಆಯ್ಕೆಗೆ %(count)s ಆರ್ಗುಮೆಂಟ್‍ಗಳ ಅಗತ್ಯವಿದೆ"
+#~ msgid "%(option)s option requires %(count)s arguments"
+#~ msgstr "%(option)s ಆಯ್ಕೆಗೆ %(count)s ಆರ್ಗುಮೆಂಟ್‍ಗಳ ಅಗತ್ಯವಿದೆ"
 
-#: ../src/firewall-offline-cmd:303
-#, c-format
-msgid "%s option does not take a value"
-msgstr "%s ಆಯ್ಕೆಯು ಒಂದು ಮೌನ್ಯವನ್ನು ತೆಗೆದುಕೊಳ್ಳುವುದಿಲ್ಲ"
+#~ msgid "%s option does not take a value"
+#~ msgstr "%s ಆಯ್ಕೆಯು ಒಂದು ಮೌನ್ಯವನ್ನು ತೆಗೆದುಕೊಳ್ಳುವುದಿಲ್ಲ"
 
-#: ../src/firewall-offline-cmd:360
-msgid "Problem parsing arguments."
-msgstr "ಆರ್ಗ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ತೊಂದರೆ ಉಂಟಾಗಿದೆ."
+#~ msgid "Problem parsing arguments."
+#~ msgstr "ಆರ್ಗ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ಪಾರ್ಸ್ ಮಾಡುವಲ್ಲಿ ತೊಂದರೆ ಉಂಟಾಗಿದೆ."
 
-#: ../src/firewall-offline-cmd:366
-#, c-format
-msgid "Opening of '%s' failed, exiting."
-msgstr "'%s' ಅನ್ನು ತೆರೆಯುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ, ನಿರ್ಗಮಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Opening of '%s' failed, exiting."
+#~ msgstr "'%s' ಅನ್ನು ತೆರೆಯುವಲ್ಲಿ ವಿಫಲಗೊಂಡಿದೆ, ನಿರ್ಗಮಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:394
-#, c-format
-msgid "Opening default zone '%s'"
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯ '%s' ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ"
+#~ msgid "Opening default zone '%s'"
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯ '%s' ಅನ್ನು ತೆರೆಯಲಾಗುತ್ತಿದೆ"
 
-#: ../src/firewall-offline-cmd:399
-#, c-format
-msgid "Unable to open default zone '%s', exiting."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯ '%s' ಅನ್ನು ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ, ನಿರ್ಗಮಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Unable to open default zone '%s', exiting."
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯ '%s' ಅನ್ನು ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ, ನಿರ್ಗಮಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:411
-#, c-format
-msgid "Unable to open zone '%s', exiting."
-msgstr "'%s' ವಲಯವನ್ನು ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ, ನಿರ್ಗಮಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Unable to open zone '%s', exiting."
+#~ msgstr "'%s' ವಲಯವನ್ನು ತೆರೆಯಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ, ನಿರ್ಗಮಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:424
-#, c-format
-msgid "The device '%s' will be bound to the %s zone."
-msgstr "'%s' ಸಾಧನವು %s ವಲಯಕ್ಕೆ ಬದ್ಧವಾಗಿರುತ್ತದೆ."
+#~ msgid "The device '%s' will be bound to the %s zone."
+#~ msgstr "'%s' ಸಾಧನವು %s ವಲಯಕ್ಕೆ ಬದ್ಧವಾಗಿರುತ್ತದೆ."
 
-#: ../src/firewall-offline-cmd:432
-#, c-format
-msgid "Ignoring custom-rule file '%s'"
-msgstr "ಅಗತ್ಯಾನುಗುಣ-ನಿಯಮ ಕಡತ '%s' ಅನ್ನು ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ"
+#~ msgid "Ignoring custom-rule file '%s'"
+#~ msgstr "ಅಗತ್ಯಾನುಗುಣ-ನಿಯಮ ಕಡತ '%s' ಅನ್ನು ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ"
 
-#: ../src/firewall-offline-cmd:437
-#, c-format
-msgid "Ignoring addmodule '%s'"
-msgstr "addmodule '%s' ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ"
+#~ msgid "Ignoring addmodule '%s'"
+#~ msgstr "addmodule '%s' ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ"
 
-#: ../src/firewall-offline-cmd:440
-#, c-format
-msgid "Ignoring removemodule '%s'"
-msgstr "removemodule '%s' ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ"
+#~ msgid "Ignoring removemodule '%s'"
+#~ msgstr "removemodule '%s' ಅನ್ನು ಕಡೆಗಣಿಸಲಾಗುತ್ತದೆ"
 
-#: ../src/firewall-offline-cmd:445
-#, c-format
-msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr ""
-"'%s' ಸಾಧನವನ್ನು ಛದ್ಮವೇಶಗೊಳಿಸಲಾಗಿದೆ, ಆ ಮೂಲಕ ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕಾಗಿ "
-"ಛದ್ಮವೇಶಗೊಳಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
+#~ msgid ""
+#~ "Device '%s' was masqueraded, enabling masquerade for the default zone."
+#~ msgstr ""
+#~ "'%s' ಸಾಧನವನ್ನು ಛದ್ಮವೇಶಗೊಳಿಸಲಾಗಿದೆ, ಆ ಮೂಲಕ ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕಾಗಿ "
+#~ "ಛದ್ಮವೇಶಗೊಳಿಕೆಯನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ."
 
-#: ../src/firewall-offline-cmd:452
-#, c-format
-msgid "Adding port '%s/%s' to default zone."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಸಂಪರ್ಕಸ್ಥಾನ '%s/%s ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Adding port '%s/%s' to default zone."
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಸಂಪರ್ಕಸ್ಥಾನ '%s/%s ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:460
-#, c-format
-msgid "Removing service '%s' from default zone."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಿಂದ  ಸೇವೆ '%s' ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತಿದೆ."
+#~ msgid "Removing service '%s' from default zone."
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯದಿಂದ  ಸೇವೆ '%s' ಅನ್ನು ತೆಗೆದುಹಾಕಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:467
-#, c-format
-msgid "Adding service '%s' to default zone."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ  ಸೇವೆ '%s' ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Adding service '%s' to default zone."
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ  ಸೇವೆ '%s' ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:474
-#, c-format
-msgid "Adding icmpblock '%s' to default zone."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ  icmpblock '%s' ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Adding icmpblock '%s' to default zone."
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ  icmpblock '%s' ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:484
-#, c-format
-msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನ %s:%s:%s:%s ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
+#~ msgid "Adding forward port %s:%s:%s:%s to default zone."
+#~ msgstr ""
+#~ "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಫಾರ್ವಾರ್ಡ್ ಸಂಪರ್ಕಸ್ಥಾನ %s:%s:%s:%s ಅನ್ನು ಸೇರಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../src/firewall-offline-cmd:492
-msgid "No changes to default zone needed."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಯಾವುದೆ ಬದಲಾವಣೆಗಳ ಅಗತ್ಯವಿರುವುದಿಲ್ಲ."
+#~ msgid "No changes to default zone needed."
+#~ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯಕ್ಕೆ ಯಾವುದೆ ಬದಲಾವಣೆಗಳ ಅಗತ್ಯವಿರುವುದಿಲ್ಲ."
 
-#: ../src/firewall-offline-cmd:496
-msgid "Changed trusted zone configuration."
-msgstr "ಬದಲಾಯಿಸಲಾದ ನಂಬಿಕಸ್ತ ವಲಯದ ಸಂರಚನೆ."
+#~ msgid "Changed trusted zone configuration."
+#~ msgstr "ಬದಲಾಯಿಸಲಾದ ನಂಬಿಕಸ್ತ ವಲಯದ ಸಂರಚನೆ."
 
-#: ../src/firewall-offline-cmd:498
-msgid ""
-"If one of the trusted interfaces is used for a connection with "
-"NetworkManager or if there is an ifcfg file for this interface, the zone "
-"will be changed to the zone defined in the configuration as soon as it gets "
-"activated. To change the zone of a connection use <command>nm-connection-"
-"editor</command> and set the zone to trusted, for an ifcfg file, use an "
-"editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
-"file, the firewalld default zone will be used."
-msgstr ""
-"ಒಂದು ಸಂಪರ್ಕಕ್ಕಾಗಿ NetworkManager ನಂಬಿಕಸ್ತ ಸಂಪರ್ಕಸಾಧನಗಳನ್ನು ಬಳಸಿದಲ್ಲಿ ಅಥವ ಈ "
-"ಸಂಪರ್ಕಸಾಧನಕ್ಕಾಗಿ ifcfg ಕಡತವು ಇದ್ದಲ್ಲಿ, ವಲಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದ ತಕ್ಷಣ ಅದನ್ನು "
-"ಸಂರಚನೆಯಲ್ಲಿ ವಿವರಿಸಲಾದ ವಲಯದಂತೆ ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ. ಸಂಪರ್ಕದ ವಲಯವನ್ನು ಬದಲಾಯಿಸಲು "
-"<command>nm-connection-editor</command> ಅನ್ನು ಬಳಸಿ ಮತ್ತು ವಲಯವನ್ನು ನಂಬಿಕಸ್ತ "
-"ಎಂಬುದಕ್ಕೆ ಬದಲಿಸಿ, ಒಂದು ifcfg ಕಡತಕ್ಕೆ, ಒಂದು ಸಂಪಾದಕವನ್ನು ಬಳಸಿ ನಂತರ \"ZONE=trusted"
-"\" ಅನ್ನು ಸೇರಿಸಿ. ವಲಯವನ್ನು ifcfg ಕಡತದಲ್ಲಿ ವಿವರಿಸಲಾಗಿರದೆ ಇದ್ದಲ್ಲಿ, firewalld ಯ "
-"ಪೂರ್ವನಿಯೋಜಿತ  ವಲಯವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ."
+#~ msgid ""
+#~ "If one of the trusted interfaces is used for a connection with "
+#~ "NetworkManager or if there is an ifcfg file for this interface, the zone "
+#~ "will be changed to the zone defined in the configuration as soon as it "
+#~ "gets activated. To change the zone of a connection use <command>nm-"
+#~ "connection-editor</command> and set the zone to trusted, for an ifcfg "
+#~ "file, use an editor and add \"ZONE=trusted\". If the zone is not defined "
+#~ "in the ifcfg file, the firewalld default zone will be used."
+#~ msgstr ""
+#~ "ಒಂದು ಸಂಪರ್ಕಕ್ಕಾಗಿ NetworkManager ನಂಬಿಕಸ್ತ ಸಂಪರ್ಕಸಾಧನಗಳನ್ನು ಬಳಸಿದಲ್ಲಿ ಅಥವ ಈ "
+#~ "ಸಂಪರ್ಕಸಾಧನಕ್ಕಾಗಿ ifcfg ಕಡತವು ಇದ್ದಲ್ಲಿ, ವಲಯವನ್ನು ಸಕ್ರಿಯಗೊಳಿಸಿದ ತಕ್ಷಣ ಅದನ್ನು "
+#~ "ಸಂರಚನೆಯಲ್ಲಿ ವಿವರಿಸಲಾದ ವಲಯದಂತೆ ಬದಲಾಯಿಸಲಾಗುತ್ತದೆ. ಸಂಪರ್ಕದ ವಲಯವನ್ನು ಬದಲಾಯಿಸಲು "
+#~ "<command>nm-connection-editor</command> ಅನ್ನು ಬಳಸಿ ಮತ್ತು ವಲಯವನ್ನು ನಂಬಿಕಸ್ತ "
+#~ "ಎಂಬುದಕ್ಕೆ ಬದಲಿಸಿ, ಒಂದು ifcfg ಕಡತಕ್ಕೆ, ಒಂದು ಸಂಪಾದಕವನ್ನು ಬಳಸಿ ನಂತರ "
+#~ "\"ZONE=trusted\" ಅನ್ನು ಸೇರಿಸಿ. ವಲಯವನ್ನು ifcfg ಕಡತದಲ್ಲಿ ವಿವರಿಸಲಾಗಿರದೆ ಇದ್ದಲ್ಲಿ, "
+#~ "firewalld ಯ ಪೂರ್ವನಿಯೋಜಿತ  ವಲಯವನ್ನು ಬಳಸಲಾಗುತ್ತದೆ."
 
 #~ msgid "NetworkManager connection editor is missing."
 #~ msgstr "NetworkManager ಸಂಪರ್ಕದ ಸಂಪಾದಕವು ಕಾಣಿಸುತ್ತಿಲ್ಲ."

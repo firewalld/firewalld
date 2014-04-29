@@ -30,7 +30,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-20 14:54+0100\n"
+"POT-Creation-Date: 2014-04-29 15:41+0200\n"
 "PO-Revision-Date: 2014-02-13 04:30+0000\n"
 "Last-Translator: hpeters <hpeters@redhat.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/fedora/language/"
@@ -68,7 +68,7 @@ msgstr "Element »%s«: fehlendes »%s«-Attribut"
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "Element »%s«: unerwartetes Attribut »%s«"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "Sie müssen Root sein, um %s auszuführen."
@@ -82,23 +82,23 @@ msgstr "FirewallD wird nicht gestartet, läuft bereits"
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 fehlgeschlagen: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5165
+#: ../src/firewall-applet:106 ../src/firewall-config:5159
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr " Zone für Verbindung »%s« auswählen"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5190 ../src/firewall-config:5216
+#: ../src/firewall-config:5184 ../src/firewall-config:5210
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "Standardzone"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5248
+#: ../src/firewall-applet:189 ../src/firewall-config:5242
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Wählen Sie die Zone für die Schnittstelle '%s'"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5304
+#: ../src/firewall-applet:245 ../src/firewall-config:5298
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Zone für Quelle %s auswählen"
@@ -154,23 +154,23 @@ msgstr "Aktive Schutzschild-Zone:"
 msgid "Shields Down Zone:"
 msgstr "Offene Schutzschild-Zone:"
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1755
+#: ../src/firewall-applet:622 ../src/firewall-config:1757
 msgid "Connections"
 msgstr "Keine Verbindung."
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1796
-#: ../src/firewall-config:1822 ../src/firewall-config:1847
+#: ../src/firewall-applet:717 ../src/firewall-config:1798
+#: ../src/firewall-config:1824 ../src/firewall-config:1849
 #: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "Zone"
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1808
+#: ../src/firewall-applet:679 ../src/firewall-config:1810
 #: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "Schnittstellen"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1834
+#: ../src/firewall-applet:704 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "Quellen"
@@ -266,7 +266,7 @@ msgstr "Zone '{zone}' {activated_deactivated} für Quelle '{source}'"
 msgid "Zone '%s' activated for source '%s'"
 msgstr "Zone »%s« aktiviert für Quelle »%s«"
 
-#: ../src/firewall-applet:1165
+#: ../src/firewall-applet:1166
 msgid "Firewall-applet"
 msgstr "Firewall-Applet"
 
@@ -303,7 +303,7 @@ msgstr "deaktiviert"
 msgid "Failed to load icons."
 msgstr "Symbole konnten nicht geladen werden."
 
-#: ../src/firewall-config:358 ../src/firewall-config:1715
+#: ../src/firewall-config:358 ../src/firewall-config:1717
 msgid "Runtime"
 msgstr "Runtime"
 
@@ -365,187 +365,187 @@ msgstr "Log"
 msgid "Audit"
 msgstr "Audit"
 
-#: ../src/firewall-config:1153 ../src/firewall-config:2006
-#: ../src/firewall-config:2044
+#: ../src/firewall-config:1155 ../src/firewall-config:2008
+#: ../src/firewall-config:2046
 msgid "Warning"
 msgstr "Warnung"
 
-#: ../src/firewall-config:1162
+#: ../src/firewall-config:1164
 msgid "Error"
 msgstr "Fehler"
 
-#: ../src/firewall-config:1202
+#: ../src/firewall-config:1204
 msgid "Changes applied."
 msgstr "Änderungen angewendet."
 
-#: ../src/firewall-config:1485 ../src/firewall-config:2791
+#: ../src/firewall-config:1487 ../src/firewall-config:2793
 msgid "accept"
 msgstr "akzeptieren"
 
-#: ../src/firewall-config:1487 ../src/firewall-config:2793
-#: ../src/firewall-config:2903
+#: ../src/firewall-config:1489 ../src/firewall-config:2795
+#: ../src/firewall-config:2905
 msgid "reject"
 msgstr "ablehnen"
 
-#: ../src/firewall-config:1491 ../src/firewall-config:2798
+#: ../src/firewall-config:1493 ../src/firewall-config:2800
 msgid "drop"
 msgstr "abwählen"
 
-#: ../src/firewall-config:1493 ../src/firewall-config:1527
-#: ../src/firewall-config:1532
+#: ../src/firewall-config:1495 ../src/firewall-config:1529
+#: ../src/firewall-config:1534
 msgid "limit"
 msgstr "begrenzen"
 
-#: ../src/firewall-config:1504 ../src/firewall-config:2330
-#: ../src/firewall-config:2484 ../src/firewall-config:2755
+#: ../src/firewall-config:1506 ../src/firewall-config:2332
+#: ../src/firewall-config:2486 ../src/firewall-config:2757
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "Dienst"
 
-#: ../src/firewall-config:1506 ../src/firewall-config:2336
-#: ../src/firewall-config:2486 ../src/firewall-config:2758
+#: ../src/firewall-config:1508 ../src/firewall-config:2338
+#: ../src/firewall-config:2488 ../src/firewall-config:2760
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "Port"
 
-#: ../src/firewall-config:1509 ../src/firewall-config:2341
-#: ../src/firewall-config:2495 ../src/firewall-config:2764
+#: ../src/firewall-config:1511 ../src/firewall-config:2343
+#: ../src/firewall-config:2497 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "Protokoll"
 
-#: ../src/firewall-config:1511 ../src/firewall-config:2346
-#: ../src/firewall-config:2778 ../src/firewall-config:2915
+#: ../src/firewall-config:1513 ../src/firewall-config:2348
+#: ../src/firewall-config:2780 ../src/firewall-config:2917
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "Maskierung"
 
-#: ../src/firewall-config:1525
+#: ../src/firewall-config:1527
 msgid "level"
 msgstr "Stufe"
 
-#: ../src/firewall-config:1529 ../src/firewall-config:1534
+#: ../src/firewall-config:1531 ../src/firewall-config:1536
 msgid "yes"
 msgstr "Ja"
 
-#: ../src/firewall-config:1667
+#: ../src/firewall-config:1669
 msgid "Authorization failed."
 msgstr "Autorisierung fehlgeschlagen."
 
-#: ../src/firewall-config:1670
+#: ../src/firewall-config:1672
 msgid "Invalid name"
 msgstr "Ungültiger Name"
 
-#: ../src/firewall-config:1674
+#: ../src/firewall-config:1676
 msgid "Name already exists"
 msgstr "Name ist bereits vorhanden"
 
-#: ../src/firewall-config:2003
+#: ../src/firewall-config:2005
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Zone »%s«: Dienst »%s« ist nicht verfügbar."
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Remove"
 msgstr "Zone entfernen"
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Ignore"
 msgstr "Ignorieren"
 
-#: ../src/firewall-config:2041
+#: ../src/firewall-config:2043
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Zone »%s«: ICMP-Typ »%s« ist nicht verfügbar."
 
-#: ../src/firewall-config:2184
+#: ../src/firewall-config:2186
 msgid "Built-in zone, rename not supported."
 msgstr "Integrierte Zone, das Umbenennen wird nicht unterstützt."
 
-#: ../src/firewall-config:2293 ../src/firewall-config:2730
+#: ../src/firewall-config:2295 ../src/firewall-config:2732
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "Sekunde"
 
-#: ../src/firewall-config:2294 ../src/firewall-config:2731
+#: ../src/firewall-config:2296 ../src/firewall-config:2733
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "Minute"
 
-#: ../src/firewall-config:2295 ../src/firewall-config:2732
+#: ../src/firewall-config:2297 ../src/firewall-config:2734
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "Stunde"
 
-#: ../src/firewall-config:2296 ../src/firewall-config:2733
+#: ../src/firewall-config:2298 ../src/firewall-config:2735
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "Tag"
 
-#: ../src/firewall-config:2297 ../src/firewall-config:2734
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "Gefahr"
 
-#: ../src/firewall-config:2298 ../src/firewall-config:2735
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "Warnung"
 
-#: ../src/firewall-config:2299 ../src/firewall-config:2736
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "kritisch"
 
-#: ../src/firewall-config:2300 ../src/firewall-config:2737
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "Fehler"
 
-#: ../src/firewall-config:2301 ../src/firewall-config:2738
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "Warnung"
 
-#: ../src/firewall-config:2302 ../src/firewall-config:2739
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "Notiz"
 
-#: ../src/firewall-config:2303 ../src/firewall-config:2740
+#: ../src/firewall-config:2305 ../src/firewall-config:2742
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "Info"
 
-#: ../src/firewall-config:2304 ../src/firewall-config:2741
+#: ../src/firewall-config:2306 ../src/firewall-config:2743
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "Debug"
 
-#: ../src/firewall-config:2349 ../src/firewall-config:2497
-#: ../src/firewall-config:2767 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2351 ../src/firewall-config:2499
+#: ../src/firewall-config:2769 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-Blockierung"
 
-#: ../src/firewall-config:2354 ../src/firewall-config:2499
-#: ../src/firewall-config:2770 ../src/firewall-config:2923
+#: ../src/firewall-config:2356 ../src/firewall-config:2501
+#: ../src/firewall-config:2772 ../src/firewall-config:2925
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "Weiterleitungsport"
 
-#: ../src/firewall-config:2477 ../src/firewall-config:2676
-#: ../src/firewall-config:2690 ../src/firewall-config:2745
-#: ../src/firewall-config:2846 ../src/firewall-config:2871
-msgid "ipv4"
-msgstr "ipv4"
-
 #: ../src/firewall-config:2479 ../src/firewall-config:2678
 #: ../src/firewall-config:2692 ../src/firewall-config:2747
 #: ../src/firewall-config:2848 ../src/firewall-config:2873
+msgid "ipv4"
+msgstr "ipv4"
+
+#: ../src/firewall-config:2481 ../src/firewall-config:2680
+#: ../src/firewall-config:2694 ../src/firewall-config:2749
+#: ../src/firewall-config:2850 ../src/firewall-config:2875
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3531
+#: ../src/firewall-config:3533
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -555,11 +555,11 @@ msgstr ""
 "Schnittstelle maskiert ist.\n"
 "Wollen Sie diese Zone maskieren?"
 
-#: ../src/firewall-config:3773
+#: ../src/firewall-config:3775
 msgid "Built-in service, rename not supported."
 msgstr "Integrierter Dienst, das Umbenennen wird nicht unterstützt."
 
-#: ../src/firewall-config:4140
+#: ../src/firewall-config:4138
 msgid "Built-in icmp, rename not supported."
 msgstr "Integriertes Icmp, das Umbenennen wird nicht unterstützt."
 
@@ -1541,293 +1541,220 @@ msgstr "Ziel:"
 msgid "Default Target"
 msgstr "Standard-Ziel"
 
-#: ../src/firewall-offline-cmd:45
-msgid "Error:"
-msgstr "Fehler:"
+#~ msgid "Error:"
+#~ msgstr "Fehler:"
 
-#: ../src/firewall-offline-cmd:48
-msgid "Warning:"
-msgstr "Warnung:"
+#~ msgid "Warning:"
+#~ msgstr "Warnung:"
 
-#: ../src/firewall-offline-cmd:68
-#, c-format
-msgid "port range %s is not unique."
-msgstr "Port-Bereich %s ist nicht eindeutig."
+#~ msgid "port range %s is not unique."
+#~ msgstr "Port-Bereich %s ist nicht eindeutig."
 
-#: ../src/firewall-offline-cmd:70
-#, c-format
-msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s ist kein gültiger Port-Bereich (Anfangs- Port >= End-Port)."
+#~ msgid "%s is not a valid range (start port >= end port)."
+#~ msgstr "%s ist kein gültiger Port-Bereich (Anfangs- Port >= End-Port)."
 
-#: ../src/firewall-offline-cmd:75
-#, c-format
-msgid "%s is not a valid protocol."
-msgstr "%s ist kein gültiges Protokoll."
+#~ msgid "%s is not a valid protocol."
+#~ msgstr "%s ist kein gültiges Protokoll."
 
-#: ../src/firewall-offline-cmd:77
-#, c-format
-msgid "invalid port definition %s."
-msgstr "Ungültige Port-Definition %s."
+#~ msgid "invalid port definition %s."
+#~ msgstr "Ungültige Port-Definition %s."
 
-#: ../src/firewall-offline-cmd:87 ../src/firewall-offline-cmd:97
-#, c-format
-msgid "Invalid argument %s"
-msgstr "Ungültiges Argument %s"
+#~ msgid "Invalid argument %s"
+#~ msgstr "Ungültiges Argument %s"
 
-#: ../src/firewall-offline-cmd:111
-msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr ""
-"Option %(option)s: Ungültiger Port für die Weiterleitung '%(value)s': "
-"%(error)s. "
+#~ msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+#~ msgstr ""
+#~ "Option %(option)s: Ungültiger Port für die Weiterleitung '%(value)s': "
+#~ "%(error)s. "
 
-#: ../src/firewall-offline-cmd:122
-msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr "Option %(option)s: Ungültiger Port für die Weiterleitung '%(value)s'"
+#~ msgid "option %(option)s: invalid forward_port '%(value)s'."
+#~ msgstr ""
+#~ "Option %(option)s: Ungültiger Port für die Weiterleitung '%(value)s'"
 
-#: ../src/firewall-offline-cmd:129
-#, c-format
-msgid "invalid interface '%s'."
-msgstr "Ungültige Schnittstelle »%s«."
+#~ msgid "invalid interface '%s'."
+#~ msgstr "Ungültige Schnittstelle »%s«."
 
-#: ../src/firewall-offline-cmd:149
-msgid "Enable firewall (default)"
-msgstr "Firewall aktivieren (Standard)"
+#~ msgid "Enable firewall (default)"
+#~ msgstr "Firewall aktivieren (Standard)"
 
-#: ../src/firewall-offline-cmd:152
-msgid "Disable firewall"
-msgstr "Firewall deaktivieren"
+#~ msgid "Disable firewall"
+#~ msgstr "Firewall deaktivieren"
 
-#: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
-msgid "<module>"
-msgstr "<module>"
+#~ msgid "<module>"
+#~ msgstr "<module>"
 
-#: ../src/firewall-offline-cmd:159
-msgid "Ignored option, was used to enable an iptables module"
-msgstr ""
-"Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu aktivieren"
+#~ msgid "Ignored option, was used to enable an iptables module"
+#~ msgstr ""
+#~ "Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu "
+#~ "aktivieren"
 
-#: ../src/firewall-offline-cmd:163
-msgid "Ignored option, was used to disable an iptables module"
-msgstr ""
-"Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu "
-"deaktivieren"
+#~ msgid "Ignored option, was used to disable an iptables module"
+#~ msgstr ""
+#~ "Unberücksichtigte Option - wurde benutzt, um ein iptables-Modul zu "
+#~ "deaktivieren"
 
-#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
-msgid "<service>"
-msgstr "<service>"
+#~ msgid "<service>"
+#~ msgstr "<service>"
 
-#: ../src/firewall-offline-cmd:168
-msgid "Enable a service in the default zone (example: ssh)"
-msgstr "Einen Dienst in der Standardzone aktivieren (Beispiel: SSH)"
+#~ msgid "Enable a service in the default zone (example: ssh)"
+#~ msgstr "Einen Dienst in der Standardzone aktivieren (Beispiel: SSH)"
 
-#: ../src/firewall-offline-cmd:173
-msgid "Disable a service in the default zone (example: ssh)"
-msgstr "Deaktivieren eines Dienstes der Standardzone (Beispiel: SSH)"
+#~ msgid "Disable a service in the default zone (example: ssh)"
+#~ msgstr "Deaktivieren eines Dienstes der Standardzone (Beispiel: SSH)"
 
-#: ../src/firewall-offline-cmd:176
-msgid "<port>[-<port>]:<protocol>"
-msgstr "<port>[-<port>]:<protocol>"
+#~ msgid "<port>[-<port>]:<protocol>"
+#~ msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:178
-msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr "Einen Port der Standardzone aktivieren (Beispiel: ssh:tcp)"
+#~ msgid "Enable a port in the default zone (example: ssh:tcp)"
+#~ msgstr "Einen Port der Standardzone aktivieren (Beispiel: ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
-msgid "<interface>"
-msgstr "<interface>"
+#~ msgid "<interface>"
+#~ msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:183
-msgid "Bind an interface to the trusted zone"
-msgstr "Eine Schnittstelle mit der vertrauenswürdigen Zone verknüpfen"
+#~ msgid "Bind an interface to the trusted zone"
+#~ msgstr "Eine Schnittstelle mit der vertrauenswürdigen Zone verknüpfen"
 
-#: ../src/firewall-offline-cmd:187
-msgid ""
-"Enables masquerading in the default zone, interface argument is ignored. "
-"This is IPv4 only."
-msgstr ""
-"Masquerading in der Standardzone aktivieren, Schnittstellen-Argument ist "
-"unberücksichtigt. Dies betrifft nur IPv4."
+#~ msgid ""
+#~ "Enables masquerading in the default zone, interface argument is ignored. "
+#~ "This is IPv4 only."
+#~ msgstr ""
+#~ "Masquerading in der Standardzone aktivieren, Schnittstellen-Argument ist "
+#~ "unberücksichtigt. Dies betrifft nur IPv4."
 
-#: ../src/firewall-offline-cmd:190
-msgid "[<type>:][<table>:]<filename>"
-msgstr "[<type>:][<table>:]<filename>"
+#~ msgid "[<type>:][<table>:]<filename>"
+#~ msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:192
-msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr ""
-"Unberücksichtigte Option. Dies wurde benutzt, um benutzerdefinierte Regeln "
-"zur Firewall hinzuzufügen (Beispiel: ipv4:filter:/etc/sysconfig/"
-"ipv4_filter_addon)"
+#~ msgid ""
+#~ "Ignored option. Was used to add custom rules to the firewall (Example: "
+#~ "ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgstr ""
+#~ "Unberücksichtigte Option. Dies wurde benutzt, um benutzerdefinierte "
+#~ "Regeln zur Firewall hinzuzufügen (Beispiel: ipv4:filter:/etc/sysconfig/"
+#~ "ipv4_filter_addon)"
 
-#: ../src/firewall-offline-cmd:196
-msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
+#~ msgid ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
+#~ msgstr ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:200
-msgid ""
-"Forward the port with protocol for the interface to either another local "
-"destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
-msgstr ""
-"Weiterleiten des Ports mit dem Schnittstellen-Protokoll zu einem anderen "
-"lokalen Ziel-Port (kein Zieladresse angegeben)  oder zu einer anderen "
-"Zieladresse mit einem optionalen Ziel-Port. Diese werden zur Standard-Zone "
-"hinzugefügt. Dies betrifft nur IPv4."
+#~ msgid ""
+#~ "Forward the port with protocol for the interface to either another local "
+#~ "destination port (no destination address given) or to an other "
+#~ "destination address with an optional destination port. This will be added "
+#~ "to the default zone. This is IPv4 only."
+#~ msgstr ""
+#~ "Weiterleiten des Ports mit dem Schnittstellen-Protokoll zu einem anderen "
+#~ "lokalen Ziel-Port (kein Zieladresse angegeben)  oder zu einer anderen "
+#~ "Zieladresse mit einem optionalen Ziel-Port. Diese werden zur Standard-"
+#~ "Zone hinzugefügt. Dies betrifft nur IPv4."
 
-#: ../src/firewall-offline-cmd:205
-msgid "<icmp type>"
-msgstr "<icmp type>"
+#~ msgid "<icmp type>"
+#~ msgstr "<icmp type>"
 
-#: ../src/firewall-offline-cmd:206
-msgid ""
-"Block this ICMP type in the default zone. The default is to accept all ICMP "
-"types."
-msgstr ""
-"Diesen ICMP-Typ in der Standardzone sperren. Standardmäßig werden alle ICMP-"
-"Typen akzeptiert."
+#~ msgid ""
+#~ "Block this ICMP type in the default zone. The default is to accept all "
+#~ "ICMP types."
+#~ msgstr ""
+#~ "Diesen ICMP-Typ in der Standardzone sperren. Standardmäßig werden alle "
+#~ "ICMP-Typen akzeptiert."
 
-#: ../src/firewall-offline-cmd:217
-#, c-format
-msgid "no such option: %s"
-msgstr "Keine solche Option vorhanden: %s"
+#~ msgid "no such option: %s"
+#~ msgstr "Keine solche Option vorhanden: %s"
 
-#: ../src/firewall-offline-cmd:232
-msgid ""
-"This tool tries to convert system-config-firewall/lokkit options as much as "
-"possible to firewalld, but there are limitations for example with custom "
-"rules, modules and masquerading."
-msgstr ""
-"Dieses Tool versucht system-config-firewall/lokkit-Optionen so weit wie "
-"möglich zu firewalld zu übertragen, es gibt jedoch Einschränkungen zum "
-"Beispiel bei eigenen Regeln, Modulen und Masquerading."
+#~ msgid ""
+#~ "This tool tries to convert system-config-firewall/lokkit options as much "
+#~ "as possible to firewalld, but there are limitations for example with "
+#~ "custom rules, modules and masquerading."
+#~ msgstr ""
+#~ "Dieses Tool versucht system-config-firewall/lokkit-Optionen so weit wie "
+#~ "möglich zu firewalld zu übertragen, es gibt jedoch Einschränkungen zum "
+#~ "Beispiel bei eigenen Regeln, Modulen und Masquerading."
 
-#: ../src/firewall-offline-cmd:238
-#, c-format
-msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr ""
-"Falls keine Optionen angegeben, wird die Konfiguration von »%s« migriert."
+#~ msgid "If no options are given, the configuration from '%s' be migrated."
+#~ msgstr ""
+#~ "Falls keine Optionen angegeben, wird die Konfiguration von »%s« migriert."
 
-#: ../src/firewall-offline-cmd:286
-#, c-format
-msgid "%s option requires an argument"
-msgstr "%s Option benötigt ein Argument"
+#~ msgid "%s option requires an argument"
+#~ msgstr "%s Option benötigt ein Argument"
 
-#: ../src/firewall-offline-cmd:289
-msgid "%(option)s option requires %(count)s arguments"
-msgstr "Option %(option)s benötigt %(count)s Argumente"
+#~ msgid "%(option)s option requires %(count)s arguments"
+#~ msgstr "Option %(option)s benötigt %(count)s Argumente"
 
-#: ../src/firewall-offline-cmd:303
-#, c-format
-msgid "%s option does not take a value"
-msgstr "%s Option erhielt keinen Wert"
+#~ msgid "%s option does not take a value"
+#~ msgstr "%s Option erhielt keinen Wert"
 
-#: ../src/firewall-offline-cmd:360
-msgid "Problem parsing arguments."
-msgstr "Argumente können nicht verarbeitet werden."
+#~ msgid "Problem parsing arguments."
+#~ msgstr "Argumente können nicht verarbeitet werden."
 
-#: ../src/firewall-offline-cmd:366
-#, c-format
-msgid "Opening of '%s' failed, exiting."
-msgstr "Öffnen von »%s« fehlgeschlagen, Abbruch."
+#~ msgid "Opening of '%s' failed, exiting."
+#~ msgstr "Öffnen von »%s« fehlgeschlagen, Abbruch."
 
-#: ../src/firewall-offline-cmd:394
-#, c-format
-msgid "Opening default zone '%s'"
-msgstr "Standardzone »%s« öffnen"
+#~ msgid "Opening default zone '%s'"
+#~ msgstr "Standardzone »%s« öffnen"
 
-#: ../src/firewall-offline-cmd:399
-#, c-format
-msgid "Unable to open default zone '%s', exiting."
-msgstr "Standardzone »%s« kann nicht geöffnet werden, Abbruch."
+#~ msgid "Unable to open default zone '%s', exiting."
+#~ msgstr "Standardzone »%s« kann nicht geöffnet werden, Abbruch."
 
-#: ../src/firewall-offline-cmd:411
-#, c-format
-msgid "Unable to open zone '%s', exiting."
-msgstr "Zone »%s« kann nicht geöffnet werden, Abbruch."
+#~ msgid "Unable to open zone '%s', exiting."
+#~ msgstr "Zone »%s« kann nicht geöffnet werden, Abbruch."
 
-#: ../src/firewall-offline-cmd:424
-#, c-format
-msgid "The device '%s' will be bound to the %s zone."
-msgstr "Das Gerät »%s« wird mit der %s-Zone verknüpft."
+#~ msgid "The device '%s' will be bound to the %s zone."
+#~ msgstr "Das Gerät »%s« wird mit der %s-Zone verknüpft."
 
-#: ../src/firewall-offline-cmd:432
-#, c-format
-msgid "Ignoring custom-rule file '%s'"
-msgstr "Benutzerdefinierte Regel-Datei »%s« wird nicht berücksichtigt"
+#~ msgid "Ignoring custom-rule file '%s'"
+#~ msgstr "Benutzerdefinierte Regel-Datei »%s« wird nicht berücksichtigt"
 
-#: ../src/firewall-offline-cmd:437
-#, c-format
-msgid "Ignoring addmodule '%s'"
-msgstr "Addmodule »%s« wird nicht berücksichtigt"
+#~ msgid "Ignoring addmodule '%s'"
+#~ msgstr "Addmodule »%s« wird nicht berücksichtigt"
 
-#: ../src/firewall-offline-cmd:440
-#, c-format
-msgid "Ignoring removemodule '%s'"
-msgstr "Removemodule »%s« wird nicht berücksichtigt"
+#~ msgid "Ignoring removemodule '%s'"
+#~ msgstr "Removemodule »%s« wird nicht berücksichtigt"
 
-#: ../src/firewall-offline-cmd:445
-#, c-format
-msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr "Gerat »%s« war getarnt, Masquerading für die Standardzone aktivieren."
+#~ msgid ""
+#~ "Device '%s' was masqueraded, enabling masquerade for the default zone."
+#~ msgstr ""
+#~ "Gerat »%s« war getarnt, Masquerading für die Standardzone aktivieren."
 
-#: ../src/firewall-offline-cmd:452
-#, c-format
-msgid "Adding port '%s/%s' to default zone."
-msgstr "Port »%s/%s« zur Standardzone hinzufügen."
+#~ msgid "Adding port '%s/%s' to default zone."
+#~ msgstr "Port »%s/%s« zur Standardzone hinzufügen."
 
-#: ../src/firewall-offline-cmd:460
-#, c-format
-msgid "Removing service '%s' from default zone."
-msgstr "Dienst »%s« aus der Standardzone entfernen."
+#~ msgid "Removing service '%s' from default zone."
+#~ msgstr "Dienst »%s« aus der Standardzone entfernen."
 
-#: ../src/firewall-offline-cmd:467
-#, c-format
-msgid "Adding service '%s' to default zone."
-msgstr "Dienst  »%s« zur Standardzone hinzufügen."
+#~ msgid "Adding service '%s' to default zone."
+#~ msgstr "Dienst  »%s« zur Standardzone hinzufügen."
 
-#: ../src/firewall-offline-cmd:474
-#, c-format
-msgid "Adding icmpblock '%s' to default zone."
-msgstr "Icmpblock  »%s« zur Standardzone hinzufügen."
+#~ msgid "Adding icmpblock '%s' to default zone."
+#~ msgstr "Icmpblock  »%s« zur Standardzone hinzufügen."
 
-#: ../src/firewall-offline-cmd:484
-#, c-format
-msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr "Weiterleitungsport %s:%s:%s:%s zur Standardzone hinzufügen."
+#~ msgid "Adding forward port %s:%s:%s:%s to default zone."
+#~ msgstr "Weiterleitungsport %s:%s:%s:%s zur Standardzone hinzufügen."
 
-#: ../src/firewall-offline-cmd:492
-msgid "No changes to default zone needed."
-msgstr "Keine Änderung der Standardzone erforderlich."
+#~ msgid "No changes to default zone needed."
+#~ msgstr "Keine Änderung der Standardzone erforderlich."
 
-#: ../src/firewall-offline-cmd:496
-msgid "Changed trusted zone configuration."
-msgstr "Konfiguration der vertrauenswürdigen Zone geändert."
+#~ msgid "Changed trusted zone configuration."
+#~ msgstr "Konfiguration der vertrauenswürdigen Zone geändert."
 
-#: ../src/firewall-offline-cmd:498
-msgid ""
-"If one of the trusted interfaces is used for a connection with "
-"NetworkManager or if there is an ifcfg file for this interface, the zone "
-"will be changed to the zone defined in the configuration as soon as it gets "
-"activated. To change the zone of a connection use <command>nm-connection-"
-"editor</command> and set the zone to trusted, for an ifcfg file, use an "
-"editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
-"file, the firewalld default zone will be used."
-msgstr ""
-"Falls NetworkManager eine der vertrauenswürdigen Schnittstellen benutzt oder "
-"falls eine ifcfg-Datei für diese Schnittstelle vorhanden ist, wird die Zone "
-"entsprechend der Konfiguration geändert, sobald diese aktiviert wird. Um die "
-"Verbindungszone zu ändern, benutzen Sie <command>nm-connection-editor</"
-"command> und stufen Sie die Zone als vertrauenswürdig ein. Bei einer ifcfg-"
-"Datei fügen Sie mit einem Editor die Zeile »ZONE=trusted« ein. Wenn die Zone "
-"nicht in der ifcfg-Datei definiert ist, wird die firewalld-Standardzone "
-"verwendet."
+#~ msgid ""
+#~ "If one of the trusted interfaces is used for a connection with "
+#~ "NetworkManager or if there is an ifcfg file for this interface, the zone "
+#~ "will be changed to the zone defined in the configuration as soon as it "
+#~ "gets activated. To change the zone of a connection use <command>nm-"
+#~ "connection-editor</command> and set the zone to trusted, for an ifcfg "
+#~ "file, use an editor and add \"ZONE=trusted\". If the zone is not defined "
+#~ "in the ifcfg file, the firewalld default zone will be used."
+#~ msgstr ""
+#~ "Falls NetworkManager eine der vertrauenswürdigen Schnittstellen benutzt "
+#~ "oder falls eine ifcfg-Datei für diese Schnittstelle vorhanden ist, wird "
+#~ "die Zone entsprechend der Konfiguration geändert, sobald diese aktiviert "
+#~ "wird. Um die Verbindungszone zu ändern, benutzen Sie <command>nm-"
+#~ "connection-editor</command> und stufen Sie die Zone als vertrauenswürdig "
+#~ "ein. Bei einer ifcfg-Datei fügen Sie mit einem Editor die Zeile "
+#~ "»ZONE=trusted« ein. Wenn die Zone nicht in der ifcfg-Datei definiert ist, "
+#~ "wird die firewalld-Standardzone verwendet."
 
 #~ msgid "NetworkManager connection editor is missing."
 #~ msgstr "NetworkManager-Verbindungseditor fehlt."

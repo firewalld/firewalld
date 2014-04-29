@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-20 14:54+0100\n"
+"POT-Creation-Date: 2014-04-29 15:41+0200\n"
 "PO-Revision-Date: 2014-02-04 07:40+0000\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya (http://www.transifex.com/projects/p/fedora/language/"
@@ -49,7 +49,7 @@ msgstr "ଉପାଦାନ '%s': ଅନୁପସ୍ଥିତ '%s' ଗୁଣ"
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "ଉପାଦାନ '%s': ଅପ୍ରତ୍ୟାଶିତ ଗୁଣ '%s'"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:38
+#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
 #, c-format
 msgid "You need to be root to run %s."
 msgstr "%s କୁ ଚଲାଇବା ପାଇଁ ଆପଣଙ୍କୁ ରୁଟ ହେବାକୁ ପଡ଼ିବ।"
@@ -63,23 +63,23 @@ msgstr "FirewallD କୁ ଆରମ୍ଭ କରୁ ନାହିଁ, ପୂର୍
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ଫର୍କ #1 ବିଫଳ ହୋଇଛି: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5165
+#: ../src/firewall-applet:106 ../src/firewall-config:5159
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "ସଂଯୋଗ '%s' ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5190 ../src/firewall-config:5216
+#: ../src/firewall-config:5184 ../src/firewall-config:5210
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5248
+#: ../src/firewall-applet:189 ../src/firewall-config:5242
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "ଅନ୍ତରାପୃଷ୍ଠ '%s' ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5304
+#: ../src/firewall-applet:245 ../src/firewall-config:5298
 #, c-format
 msgid "Select zone for source %s"
 msgstr "ଉତ୍ସ '%s'ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
@@ -132,23 +132,23 @@ msgstr "ସିଲ୍ଡ ଉପର ଅଞ୍ଚଳ:"
 msgid "Shields Down Zone:"
 msgstr "ସିଲ୍ଡ ତଳ ଅଞ୍ଚଳ:"
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1755
+#: ../src/firewall-applet:622 ../src/firewall-config:1757
 msgid "Connections"
 msgstr "ସଂଯୋଗଗୁଡିକ"
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1796
-#: ../src/firewall-config:1822 ../src/firewall-config:1847
+#: ../src/firewall-applet:717 ../src/firewall-config:1798
+#: ../src/firewall-config:1824 ../src/firewall-config:1849
 #: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "କ୍ଷେତ୍ର"
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1808
+#: ../src/firewall-applet:679 ../src/firewall-config:1810
 #: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "ଅନ୍ତରାପୃଷ୍ଠ"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1834
+#: ../src/firewall-applet:704 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "ଉତ୍ସ"
@@ -243,7 +243,7 @@ msgstr "ଅଞ୍ଚଳ '{zone}' {activated_deactivated} ଉତ୍ସ '{source}'
 msgid "Zone '%s' activated for source '%s'"
 msgstr "ଅଞ୍ଚଳ '%s' କୁ ଉତ୍ସ '%s' ପାଇଁ ସକ୍ରିୟ କରାଯାଇଛି"
 
-#: ../src/firewall-applet:1165
+#: ../src/firewall-applet:1166
 msgid "Firewall-applet"
 msgstr "ଫାୟାରୱାଲ-ଆପଲେଟ"
 
@@ -280,7 +280,7 @@ msgstr "ନିଷ୍କ୍ରିୟ ହୋଇଛି"
 msgid "Failed to load icons."
 msgstr "ଚିତ୍ର ସଂକେତ ଧାରଣ କରିବାରେ ଅସଫଳ।"
 
-#: ../src/firewall-config:358 ../src/firewall-config:1715
+#: ../src/firewall-config:358 ../src/firewall-config:1717
 msgid "Runtime"
 msgstr "ଚାଲୁଥିବା ସମୟ"
 
@@ -342,187 +342,187 @@ msgstr "ଲଗ"
 msgid "Audit"
 msgstr "ସମ୍ପାଦନ"
 
-#: ../src/firewall-config:1153 ../src/firewall-config:2006
-#: ../src/firewall-config:2044
+#: ../src/firewall-config:1155 ../src/firewall-config:2008
+#: ../src/firewall-config:2046
 msgid "Warning"
 msgstr "ଚେତାବନୀ"
 
-#: ../src/firewall-config:1162
+#: ../src/firewall-config:1164
 msgid "Error"
 msgstr "ତ୍ରୁଟି"
 
-#: ../src/firewall-config:1202
+#: ../src/firewall-config:1204
 msgid "Changes applied."
 msgstr "ପରିବର୍ତ୍ତନଗୁଡ଼ିକୁ ପ୍ରୟୋଗ କରାଯାଇଛି।"
 
-#: ../src/firewall-config:1485 ../src/firewall-config:2791
+#: ../src/firewall-config:1487 ../src/firewall-config:2793
 msgid "accept"
 msgstr "ଗ୍ରହଣ କରନ୍ତୁ"
 
-#: ../src/firewall-config:1487 ../src/firewall-config:2793
-#: ../src/firewall-config:2903
+#: ../src/firewall-config:1489 ../src/firewall-config:2795
+#: ../src/firewall-config:2905
 msgid "reject"
 msgstr "ଅସ୍ବୀକାର କରନ୍ତୁ"
 
-#: ../src/firewall-config:1491 ../src/firewall-config:2798
+#: ../src/firewall-config:1493 ../src/firewall-config:2800
 msgid "drop"
 msgstr "ପକାଅ"
 
-#: ../src/firewall-config:1493 ../src/firewall-config:1527
-#: ../src/firewall-config:1532
+#: ../src/firewall-config:1495 ../src/firewall-config:1529
+#: ../src/firewall-config:1534
 msgid "limit"
 msgstr "ସୀମା"
 
-#: ../src/firewall-config:1504 ../src/firewall-config:2330
-#: ../src/firewall-config:2484 ../src/firewall-config:2755
+#: ../src/firewall-config:1506 ../src/firewall-config:2332
+#: ../src/firewall-config:2486 ../src/firewall-config:2757
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "ସର୍ଭିସ"
 
-#: ../src/firewall-config:1506 ../src/firewall-config:2336
-#: ../src/firewall-config:2486 ../src/firewall-config:2758
+#: ../src/firewall-config:1508 ../src/firewall-config:2338
+#: ../src/firewall-config:2488 ../src/firewall-config:2760
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "ପୋର୍ଟ"
 
-#: ../src/firewall-config:1509 ../src/firewall-config:2341
-#: ../src/firewall-config:2495 ../src/firewall-config:2764
+#: ../src/firewall-config:1511 ../src/firewall-config:2343
+#: ../src/firewall-config:2497 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "ପ୍ରୋଟୋକଲ"
 
-#: ../src/firewall-config:1511 ../src/firewall-config:2346
-#: ../src/firewall-config:2778 ../src/firewall-config:2915
+#: ../src/firewall-config:1513 ../src/firewall-config:2348
+#: ../src/firewall-config:2780 ../src/firewall-config:2917
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "ଛଦ୍ମ ବେଶ"
 
-#: ../src/firewall-config:1525
+#: ../src/firewall-config:1527
 msgid "level"
 msgstr "ସ୍ତର"
 
-#: ../src/firewall-config:1529 ../src/firewall-config:1534
+#: ../src/firewall-config:1531 ../src/firewall-config:1536
 msgid "yes"
 msgstr "ହଁ"
 
-#: ../src/firewall-config:1667
+#: ../src/firewall-config:1669
 msgid "Authorization failed."
 msgstr "ବୈଧିକରଣ ବିଫଳ ହୋଇଛି।"
 
-#: ../src/firewall-config:1670
+#: ../src/firewall-config:1672
 msgid "Invalid name"
 msgstr "ଅବୈଧ ନାମ"
 
-#: ../src/firewall-config:1674
+#: ../src/firewall-config:1676
 msgid "Name already exists"
 msgstr "ନାମ ପୂର୍ବରୁ ଅବସ୍ଥିତ ଅଛି"
 
-#: ../src/firewall-config:2003
+#: ../src/firewall-config:2005
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "ଅଞ୍ଚଳ '%s': ସର୍ଭିସ '%s' ଉପଲବ୍ଧ ନାହିଁ।"
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Remove"
 msgstr "ହଟାଅ"
 
-#: ../src/firewall-config:2007 ../src/firewall-config:2045
+#: ../src/firewall-config:2009 ../src/firewall-config:2047
 msgid "Ignore"
 msgstr "ଆଗ୍ରହ୍ଯ କରିଦିଅନ୍ତୁ"
 
-#: ../src/firewall-config:2041
+#: ../src/firewall-config:2043
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "ଅଞ୍ଚଳ '%s': ICMP ପ୍ରକାର '%s' ଉପଲବ୍ଧ ନାହିଁ।"
 
-#: ../src/firewall-config:2184
+#: ../src/firewall-config:2186
 msgid "Built-in zone, rename not supported."
 msgstr "ପୂର୍ବନିର୍ମିତ ଅଞ୍ଚଳ, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
-#: ../src/firewall-config:2293 ../src/firewall-config:2730
+#: ../src/firewall-config:2295 ../src/firewall-config:2732
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "ସେକଣ୍ଡ"
 
-#: ../src/firewall-config:2294 ../src/firewall-config:2731
+#: ../src/firewall-config:2296 ../src/firewall-config:2733
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "ମିନିଟ"
 
-#: ../src/firewall-config:2295 ../src/firewall-config:2732
+#: ../src/firewall-config:2297 ../src/firewall-config:2734
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "ଘଣ୍ଟା"
 
-#: ../src/firewall-config:2296 ../src/firewall-config:2733
+#: ../src/firewall-config:2298 ../src/firewall-config:2735
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "ଦିନ"
 
-#: ../src/firewall-config:2297 ../src/firewall-config:2734
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "ଜରୁରୀକାଳୀନ"
 
-#: ../src/firewall-config:2298 ../src/firewall-config:2735
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "ଚେତାବନୀ"
 
-#: ../src/firewall-config:2299 ../src/firewall-config:2736
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "ଗୁରୁତର"
 
-#: ../src/firewall-config:2300 ../src/firewall-config:2737
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "ତୃଟି"
 
-#: ../src/firewall-config:2301 ../src/firewall-config:2738
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "ଚେତାବନୀ"
 
-#: ../src/firewall-config:2302 ../src/firewall-config:2739
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "ଅଧିସୂଚନା"
 
-#: ../src/firewall-config:2303 ../src/firewall-config:2740
+#: ../src/firewall-config:2305 ../src/firewall-config:2742
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "ସୂଚନା"
 
-#: ../src/firewall-config:2304 ../src/firewall-config:2741
+#: ../src/firewall-config:2306 ../src/firewall-config:2743
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "ତୃଟିମୁକ୍ତ କରନ୍ତୁ"
 
-#: ../src/firewall-config:2349 ../src/firewall-config:2497
-#: ../src/firewall-config:2767 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2351 ../src/firewall-config:2499
+#: ../src/firewall-config:2769 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-ବ୍ଲକ"
 
-#: ../src/firewall-config:2354 ../src/firewall-config:2499
-#: ../src/firewall-config:2770 ../src/firewall-config:2923
+#: ../src/firewall-config:2356 ../src/firewall-config:2501
+#: ../src/firewall-config:2772 ../src/firewall-config:2925
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "ଅଗ୍ରସରଣ-ପୋର୍ଟ"
 
-#: ../src/firewall-config:2477 ../src/firewall-config:2676
-#: ../src/firewall-config:2690 ../src/firewall-config:2745
-#: ../src/firewall-config:2846 ../src/firewall-config:2871
-msgid "ipv4"
-msgstr "ipv4"
-
 #: ../src/firewall-config:2479 ../src/firewall-config:2678
 #: ../src/firewall-config:2692 ../src/firewall-config:2747
 #: ../src/firewall-config:2848 ../src/firewall-config:2873
+msgid "ipv4"
+msgstr "ipv4"
+
+#: ../src/firewall-config:2481 ../src/firewall-config:2680
+#: ../src/firewall-config:2694 ../src/firewall-config:2749
+#: ../src/firewall-config:2850 ../src/firewall-config:2875
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3531
+#: ../src/firewall-config:3533
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -531,11 +531,11 @@ msgstr ""
 "ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ ପଠାଇବା ଉପଯୋଗୀ ହୋଇଥାଏ ଯଦି ଅନ୍ତରାପୃଷ୍ଠ ଛଦ୍ମବେଶ ଧାରଣ କରିଥାଏ।\n"
 "ଆପଣ ଏହି ଅଞ୍ଚଳକୁ ଛଦ୍ମବେଶ ଧାରଣ କରାଇବାକୁ ଚାହୁଁଛନ୍ତି କି?"
 
-#: ../src/firewall-config:3773
+#: ../src/firewall-config:3775
 msgid "Built-in service, rename not supported."
 msgstr "ପୂର୍ବନିର୍ମିତ ସର୍ଭିସ, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
-#: ../src/firewall-config:4140
+#: ../src/firewall-config:4138
 msgid "Built-in icmp, rename not supported."
 msgstr "ପୂର୍ବନିର୍ମିତ icmp, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
@@ -1479,283 +1479,207 @@ msgstr "ଲକ୍ଷ୍ଯ ସ୍ଥଳ:"
 msgid "Default Target"
 msgstr "ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ ଲକ୍ଷ୍ଯ ସ୍ଥଳ"
 
-#: ../src/firewall-offline-cmd:45
-msgid "Error:"
-msgstr "ତୃଟି:"
+#~ msgid "Error:"
+#~ msgstr "ତୃଟି:"
 
-#: ../src/firewall-offline-cmd:48
-msgid "Warning:"
-msgstr "ଚେତାବନୀ:"
+#~ msgid "Warning:"
+#~ msgstr "ଚେତାବନୀ:"
 
-#: ../src/firewall-offline-cmd:68
-#, c-format
-msgid "port range %s is not unique."
-msgstr "ସଂଯୋଗିକୀ ପରିସର %s ଅନନ୍ଯ ନୁହେଁ।"
+#~ msgid "port range %s is not unique."
+#~ msgstr "ସଂଯୋଗିକୀ ପରିସର %s ଅନନ୍ଯ ନୁହେଁ।"
 
-#: ../src/firewall-offline-cmd:70
-#, c-format
-msgid "%s is not a valid range (start port >= end port)."
-msgstr "%s ଏକ ବୈଧ ପରିସର ନୁହେଁ (ପ୍ରାରମ୍ଭ ସଂଯୋଗିକୀ >= ଶେଷ ସଂଯୋଗିକୀ)."
+#~ msgid "%s is not a valid range (start port >= end port)."
+#~ msgstr "%s ଏକ ବୈଧ ପରିସର ନୁହେଁ (ପ୍ରାରମ୍ଭ ସଂଯୋଗିକୀ >= ଶେଷ ସଂଯୋଗିକୀ)."
 
-#: ../src/firewall-offline-cmd:75
-#, c-format
-msgid "%s is not a valid protocol."
-msgstr "%s ଏକ ବୈଧ ପ୍ରୋଟୋକଲ ନୁହେଁ."
+#~ msgid "%s is not a valid protocol."
+#~ msgstr "%s ଏକ ବୈଧ ପ୍ରୋଟୋକଲ ନୁହେଁ."
 
-#: ../src/firewall-offline-cmd:77
-#, c-format
-msgid "invalid port definition %s."
-msgstr "ଅବୈଧ ସଂଯୋଗିକୀ ବ୍ଯାଖ୍ଯା %s."
+#~ msgid "invalid port definition %s."
+#~ msgstr "ଅବୈଧ ସଂଯୋଗିକୀ ବ୍ଯାଖ୍ଯା %s."
 
-#: ../src/firewall-offline-cmd:87 ../src/firewall-offline-cmd:97
-#, c-format
-msgid "Invalid argument %s"
-msgstr "ଅବୈଧ ସ୍ବତନ୍ତ୍ରଚର %s"
+#~ msgid "Invalid argument %s"
+#~ msgstr "ଅବୈଧ ସ୍ବତନ୍ତ୍ରଚର %s"
 
-#: ../src/firewall-offline-cmd:111
-msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-msgstr "ପସନ୍ଦ %(option)s: ଅବୈଧ forward_port '%(value)s': %(error)s."
+#~ msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
+#~ msgstr "ପସନ୍ଦ %(option)s: ଅବୈଧ forward_port '%(value)s': %(error)s."
 
-#: ../src/firewall-offline-cmd:122
-msgid "option %(option)s: invalid forward_port '%(value)s'."
-msgstr "ପସନ୍ଦ %(option)s: ଅବୈଧ forward_port '%(value)s'."
+#~ msgid "option %(option)s: invalid forward_port '%(value)s'."
+#~ msgstr "ପସନ୍ଦ %(option)s: ଅବୈଧ forward_port '%(value)s'."
 
-#: ../src/firewall-offline-cmd:129
-#, c-format
-msgid "invalid interface '%s'."
-msgstr "ଅବୈଧ ଅନ୍ତରାପୃଷ୍ଠ '%s'."
+#~ msgid "invalid interface '%s'."
+#~ msgstr "ଅବୈଧ ଅନ୍ତରାପୃଷ୍ଠ '%s'."
 
-#: ../src/firewall-offline-cmd:149
-msgid "Enable firewall (default)"
-msgstr "ଅଗ୍ନିକବଚ କୁ ସକ୍ରିୟ କରନ୍ତୁ (ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ)"
+#~ msgid "Enable firewall (default)"
+#~ msgstr "ଅଗ୍ନିକବଚ କୁ ସକ୍ରିୟ କରନ୍ତୁ (ପୂର୍ବ ନିର୍ଦ୍ଧାରିତ)"
 
-#: ../src/firewall-offline-cmd:152
-msgid "Disable firewall"
-msgstr "ଅଗ୍ନିକବଚ କୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
+#~ msgid "Disable firewall"
+#~ msgstr "ଅଗ୍ନିକବଚ କୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
 
-#: ../src/firewall-offline-cmd:158 ../src/firewall-offline-cmd:162
-msgid "<module>"
-msgstr "<module>"
+#~ msgid "<module>"
+#~ msgstr "<module>"
 
-#: ../src/firewall-offline-cmd:159
-msgid "Ignored option, was used to enable an iptables module"
-msgstr "ଅଗ୍ରାହ୍ୟ ବିକଳ୍ପ, ଗୋଟିଏ iptables ମଡ୍ୟୁଲକୁ ସକ୍ରିୟ କରିଥାଏ"
+#~ msgid "Ignored option, was used to enable an iptables module"
+#~ msgstr "ଅଗ୍ରାହ୍ୟ ବିକଳ୍ପ, ଗୋଟିଏ iptables ମଡ୍ୟୁଲକୁ ସକ୍ରିୟ କରିଥାଏ"
 
-#: ../src/firewall-offline-cmd:163
-msgid "Ignored option, was used to disable an iptables module"
-msgstr "ଅଗ୍ରାହ୍ୟ ବିକଳ୍ପ, ଗୋଟିଏ iptables ମଡ୍ୟୁଲକୁ ନିଷ୍କ୍ରିୟ କରିଥାଏ"
+#~ msgid "Ignored option, was used to disable an iptables module"
+#~ msgstr "ଅଗ୍ରାହ୍ୟ ବିକଳ୍ପ, ଗୋଟିଏ iptables ମଡ୍ୟୁଲକୁ ନିଷ୍କ୍ରିୟ କରିଥାଏ"
 
-#: ../src/firewall-offline-cmd:167 ../src/firewall-offline-cmd:172
-msgid "<service>"
-msgstr "<service>"
+#~ msgid "<service>"
+#~ msgstr "<service>"
 
-#: ../src/firewall-offline-cmd:168
-msgid "Enable a service in the default zone (example: ssh)"
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ସର୍ଭିସକୁ ସକ୍ରିୟ କରନ୍ତୁ (ଉଦାହରଣ ସ୍ୱରୂପ: ssh)"
+#~ msgid "Enable a service in the default zone (example: ssh)"
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ସର୍ଭିସକୁ ସକ୍ରିୟ କରନ୍ତୁ (ଉଦାହରଣ ସ୍ୱରୂପ: ssh)"
 
-#: ../src/firewall-offline-cmd:173
-msgid "Disable a service in the default zone (example: ssh)"
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ସର୍ଭିସକୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ (ଉଦାହରଣ ସ୍ୱରୂପ: ssh)"
+#~ msgid "Disable a service in the default zone (example: ssh)"
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ସର୍ଭିସକୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ (ଉଦାହରଣ ସ୍ୱରୂପ: ssh)"
 
-#: ../src/firewall-offline-cmd:176
-msgid "<port>[-<port>]:<protocol>"
-msgstr "<port>[-<port>]:<protocol>"
+#~ msgid "<port>[-<port>]:<protocol>"
+#~ msgstr "<port>[-<port>]:<protocol>"
 
-#: ../src/firewall-offline-cmd:178
-msgid "Enable a port in the default zone (example: ssh:tcp)"
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ପୋର୍ଟକୁ ସକ୍ରିୟ କରିଥାଏ (ଉଦାହରଣ: ssh:tcp)"
+#~ msgid "Enable a port in the default zone (example: ssh:tcp)"
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏକ ପୋର୍ଟକୁ ସକ୍ରିୟ କରିଥାଏ (ଉଦାହରଣ: ssh:tcp)"
 
-#: ../src/firewall-offline-cmd:182 ../src/firewall-offline-cmd:186
-msgid "<interface>"
-msgstr "<interface>"
+#~ msgid "<interface>"
+#~ msgstr "<interface>"
 
-#: ../src/firewall-offline-cmd:183
-msgid "Bind an interface to the trusted zone"
-msgstr "ବିଶ୍ୱସ୍ତ ଅଞ୍ଚଳରେ ଏକ ଅନ୍ତରାପୃଷ୍ଠକୁ ବାନ୍ଧନ୍ତୁ"
+#~ msgid "Bind an interface to the trusted zone"
+#~ msgstr "ବିଶ୍ୱସ୍ତ ଅଞ୍ଚଳରେ ଏକ ଅନ୍ତରାପୃଷ୍ଠକୁ ବାନ୍ଧନ୍ତୁ"
 
-#: ../src/firewall-offline-cmd:187
-msgid ""
-"Enables masquerading in the default zone, interface argument is ignored. "
-"This is IPv4 only."
-msgstr ""
-"ଛଦ୍ମବେଶକୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ, ଅନ୍ତରାପୃଷ୍ଠ ସ୍ୱତନ୍ତ୍ରଚରରେ ସକ୍ରିୟ କରିଥାଏ।ଏହା କେବଳ IPv4 ଅଟେ।"
+#~ msgid ""
+#~ "Enables masquerading in the default zone, interface argument is ignored. "
+#~ "This is IPv4 only."
+#~ msgstr ""
+#~ "ଛଦ୍ମବେଶକୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ, ଅନ୍ତରାପୃଷ୍ଠ ସ୍ୱତନ୍ତ୍ରଚରରେ ସକ୍ରିୟ କରିଥାଏ।ଏହା କେବଳ IPv4 ଅଟେ।"
 
-#: ../src/firewall-offline-cmd:190
-msgid "[<type>:][<table>:]<filename>"
-msgstr "[<type>:][<table>:]<filename>"
+#~ msgid "[<type>:][<table>:]<filename>"
+#~ msgstr "[<type>:][<table>:]<filename>"
 
-#: ../src/firewall-offline-cmd:192
-msgid ""
-"Ignored option. Was used to add custom rules to the firewall (Example: ipv4:"
-"filter:/etc/sysconfig/ipv4_filter_addon)"
-msgstr ""
-"ଅଗ୍ରହଣୀୟ ବିକଳ୍ପ। ଇଚ୍ଛାରୂପଣ ନିୟମାବଳୀକୁ ଫାୟାରୱାଲରେ  ଯୋଗ କରିବା ପାଇଁ ବ୍ୟବହାର କରିଥାଏ "
-"(ଉଦାହରଣ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgid ""
+#~ "Ignored option. Was used to add custom rules to the firewall (Example: "
+#~ "ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
+#~ msgstr ""
+#~ "ଅଗ୍ରହଣୀୟ ବିକଳ୍ପ। ଇଚ୍ଛାରୂପଣ ନିୟମାବଳୀକୁ ଫାୟାରୱାଲରେ  ଯୋଗ କରିବା ପାଇଁ ବ୍ୟବହାର କରିଥାଏ "
+#~ "(ଉଦାହରଣ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
 
-#: ../src/firewall-offline-cmd:196
-msgid ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
-msgstr ""
-"if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-"toaddr=<destination address>]"
+#~ msgid ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
+#~ msgstr ""
+#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
+#~ "toaddr=<destination address>]"
 
-#: ../src/firewall-offline-cmd:200
-msgid ""
-"Forward the port with protocol for the interface to either another local "
-"destination port (no destination address given) or to an other destination "
-"address with an optional destination port. This will be added to the default "
-"zone. This is IPv4 only."
-msgstr ""
-"ଗୋଟିଏ ସ୍ଥାନୀୟ ଲକ୍ଷ୍ୟ ସ୍ଥଳ ସଂଯୋଗିକୀକୁ (କୌଣସି ଲକ୍ଷ୍ୟ ସ୍ଥଳ ଠିକଣା ଦିଆଯାଇନାହିଁ) କିମ୍ବା ଇଚ୍ଛାଧିନ "
-"ଲକ୍ଷ୍ୟସ୍ଥଳ ସଂଯୋଗିକୀ ବିଶିଷ୍ଟ ଅନ୍ୟ ଏକ ଲକ୍ଷ୍ୟ ସ୍ଥଳ ଠିକଣା ଅନ୍ତରାପୃଷ୍ଠ ପାଇଁ ସଂଯୋଗିକୀକୁ ପ୍ରୋଟୋକଲ ସହିତ "
-"ଅଗ୍ରସର କରାନ୍ତୁ। ଏହାକୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରାଯିବ। ଏହା କେବଳ IPv4."
+#~ msgid ""
+#~ "Forward the port with protocol for the interface to either another local "
+#~ "destination port (no destination address given) or to an other "
+#~ "destination address with an optional destination port. This will be added "
+#~ "to the default zone. This is IPv4 only."
+#~ msgstr ""
+#~ "ଗୋଟିଏ ସ୍ଥାନୀୟ ଲକ୍ଷ୍ୟ ସ୍ଥଳ ସଂଯୋଗିକୀକୁ (କୌଣସି ଲକ୍ଷ୍ୟ ସ୍ଥଳ ଠିକଣା ଦିଆଯାଇନାହିଁ) କିମ୍ବା ଇଚ୍ଛାଧିନ "
+#~ "ଲକ୍ଷ୍ୟସ୍ଥଳ ସଂଯୋଗିକୀ ବିଶିଷ୍ଟ ଅନ୍ୟ ଏକ ଲକ୍ଷ୍ୟ ସ୍ଥଳ ଠିକଣା ଅନ୍ତରାପୃଷ୍ଠ ପାଇଁ ସଂଯୋଗିକୀକୁ ପ୍ରୋଟୋକଲ "
+#~ "ସହିତ ଅଗ୍ରସର କରାନ୍ତୁ। ଏହାକୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରାଯିବ। ଏହା କେବଳ IPv4."
 
-#: ../src/firewall-offline-cmd:205
-msgid "<icmp type>"
-msgstr "<icmp ପ୍ରକାର>"
+#~ msgid "<icmp type>"
+#~ msgstr "<icmp ପ୍ରକାର>"
 
-#: ../src/firewall-offline-cmd:206
-msgid ""
-"Block this ICMP type in the default zone. The default is to accept all ICMP "
-"types."
-msgstr ""
-"ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏହି ICMP ପ୍ରକାରକୁ ଅଟକାନ୍ତୁ। ପୂର୍ବନିର୍ଦ୍ଧାରିତଟି ହେଉଛି ସମସ୍ତ ICMP ପ୍ରକାରକୁ "
-"ଗ୍ରହଣ କରିବା।"
+#~ msgid ""
+#~ "Block this ICMP type in the default zone. The default is to accept all "
+#~ "ICMP types."
+#~ msgstr ""
+#~ "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଏହି ICMP ପ୍ରକାରକୁ ଅଟକାନ୍ତୁ। ପୂର୍ବନିର୍ଦ୍ଧାରିତଟି ହେଉଛି ସମସ୍ତ ICMP "
+#~ "ପ୍ରକାରକୁ ଗ୍ରହଣ କରିବା।"
 
-#: ../src/firewall-offline-cmd:217
-#, c-format
-msgid "no such option: %s"
-msgstr "ଏଭଳି କୌଣସି ବିକଳ୍ପ ନାହିଁ: %s"
+#~ msgid "no such option: %s"
+#~ msgstr "ଏଭଳି କୌଣସି ବିକଳ୍ପ ନାହିଁ: %s"
 
-#: ../src/firewall-offline-cmd:232
-msgid ""
-"This tool tries to convert system-config-firewall/lokkit options as much as "
-"possible to firewalld, but there are limitations for example with custom "
-"rules, modules and masquerading."
-msgstr ""
-"ଏହି ସାଧନଟି system-config-firewall/lokkit ବିକଳ୍ପଗୁଡ଼ିକୁ firewalld ରେ ଯେତେ ସମ୍ଭବ "
-"ବଦଳାଇଥାଏ, କିନ୍ତୁ ସେଠାରେ ଉଦାହରଣ ପାଇଁ ଇଚ୍ଛାରୂପଣ ନିୟମାବଳୀ, ମଡ୍ଯୁଲ ଏବଂ ଛଦ୍ମବେଶରେ କିଛି ପ୍ରତିବନ୍ଧ "
-"ଥାଏ ।"
+#~ msgid ""
+#~ "This tool tries to convert system-config-firewall/lokkit options as much "
+#~ "as possible to firewalld, but there are limitations for example with "
+#~ "custom rules, modules and masquerading."
+#~ msgstr ""
+#~ "ଏହି ସାଧନଟି system-config-firewall/lokkit ବିକଳ୍ପଗୁଡ଼ିକୁ firewalld ରେ ଯେତେ ସମ୍ଭବ "
+#~ "ବଦଳାଇଥାଏ, କିନ୍ତୁ ସେଠାରେ ଉଦାହରଣ ପାଇଁ ଇଚ୍ଛାରୂପଣ ନିୟମାବଳୀ, ମଡ୍ଯୁଲ ଏବଂ ଛଦ୍ମବେଶରେ କିଛି "
+#~ "ପ୍ରତିବନ୍ଧ ଥାଏ ।"
 
-#: ../src/firewall-offline-cmd:238
-#, c-format
-msgid "If no options are given, the configuration from '%s' be migrated."
-msgstr "ଯଦି କୌଣସି ବିକଳ୍ପ ଦିଆଯାଇନଥାଏ, ତେବେ '%s' ରୁ ସଂରଚନାକୁ ସ୍ଥାନାନ୍ତରଣ କରାଯାଇଥାଏ।"
+#~ msgid "If no options are given, the configuration from '%s' be migrated."
+#~ msgstr "ଯଦି କୌଣସି ବିକଳ୍ପ ଦିଆଯାଇନଥାଏ, ତେବେ '%s' ରୁ ସଂରଚନାକୁ ସ୍ଥାନାନ୍ତରଣ କରାଯାଇଥାଏ।"
 
-#: ../src/firewall-offline-cmd:286
-#, c-format
-msgid "%s option requires an argument"
-msgstr "%s ପସନ୍ଦ ଏକ ସ୍ବତନ୍ତ୍ରଚର ଆବଶ୍ଯକ କରୁଛି"
+#~ msgid "%s option requires an argument"
+#~ msgstr "%s ପସନ୍ଦ ଏକ ସ୍ବତନ୍ତ୍ରଚର ଆବଶ୍ଯକ କରୁଛି"
 
-#: ../src/firewall-offline-cmd:289
-msgid "%(option)s option requires %(count)s arguments"
-msgstr "%(option)s option requires %(count)s arguments"
+#~ msgid "%(option)s option requires %(count)s arguments"
+#~ msgstr "%(option)s option requires %(count)s arguments"
 
-#: ../src/firewall-offline-cmd:303
-#, c-format
-msgid "%s option does not take a value"
-msgstr "%s ପସନ୍ଦ ମୂଲ୍ଯକୁ ଗ୍ରହଣ କରେନାହିଁ"
+#~ msgid "%s option does not take a value"
+#~ msgstr "%s ପସନ୍ଦ ମୂଲ୍ଯକୁ ଗ୍ରହଣ କରେନାହିଁ"
 
-#: ../src/firewall-offline-cmd:360
-msgid "Problem parsing arguments."
-msgstr "ସମସ୍ୟା ବିଶ୍ଳେଷଣ ସ୍ୱତନ୍ତ୍ରଚରଗୁଡ଼ିକ।"
+#~ msgid "Problem parsing arguments."
+#~ msgstr "ସମସ୍ୟା ବିଶ୍ଳେଷଣ ସ୍ୱତନ୍ତ୍ରଚରଗୁଡ଼ିକ।"
 
-#: ../src/firewall-offline-cmd:366
-#, c-format
-msgid "Opening of '%s' failed, exiting."
-msgstr "'%s' କୁ ଖୋଲିବା ବିଫଳ ହୋଇଛି, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
+#~ msgid "Opening of '%s' failed, exiting."
+#~ msgstr "'%s' କୁ ଖୋଲିବା ବିଫଳ ହୋଇଛି, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:394
-#, c-format
-msgid "Opening default zone '%s'"
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ଖୋଲୁଅଛି"
+#~ msgid "Opening default zone '%s'"
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ଖୋଲୁଅଛି"
 
-#: ../src/firewall-offline-cmd:399
-#, c-format
-msgid "Unable to open default zone '%s', exiting."
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ଖୋଲିବାରେ ଅସମର୍ଥ, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
+#~ msgid "Unable to open default zone '%s', exiting."
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ '%s' କୁ ଖୋଲିବାରେ ଅସମର୍ଥ, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:411
-#, c-format
-msgid "Unable to open zone '%s', exiting."
-msgstr "ଅଞ୍ଚଳ '%s' କୁ ଖୋଲିବାରେ ଅସମର୍ଥ, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
+#~ msgid "Unable to open zone '%s', exiting."
+#~ msgstr "ଅଞ୍ଚଳ '%s' କୁ ଖୋଲିବାରେ ଅସମର୍ଥ, ପ୍ରସ୍ଥାନ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:424
-#, c-format
-msgid "The device '%s' will be bound to the %s zone."
-msgstr "'%s' ଉପକରଣ %s ଅଞ୍ଚଳକୁ ବାନ୍ଧିବ।"
+#~ msgid "The device '%s' will be bound to the %s zone."
+#~ msgstr "'%s' ଉପକରଣ %s ଅଞ୍ଚଳକୁ ବାନ୍ଧିବ।"
 
-#: ../src/firewall-offline-cmd:432
-#, c-format
-msgid "Ignoring custom-rule file '%s'"
-msgstr "ଇଚ୍ଛାରୂପଣ ନିୟମ ଫାଇଲ '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
+#~ msgid "Ignoring custom-rule file '%s'"
+#~ msgstr "ଇଚ୍ଛାରୂପଣ ନିୟମ ଫାଇଲ '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
 
-#: ../src/firewall-offline-cmd:437
-#, c-format
-msgid "Ignoring addmodule '%s'"
-msgstr "addmodule '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
+#~ msgid "Ignoring addmodule '%s'"
+#~ msgstr "addmodule '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
 
-#: ../src/firewall-offline-cmd:440
-#, c-format
-msgid "Ignoring removemodule '%s'"
-msgstr "removemodule '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
+#~ msgid "Ignoring removemodule '%s'"
+#~ msgstr "removemodule '%s' କୁ ଅଗ୍ରାହ୍ୟ କରୁଅଛି"
 
-#: ../src/firewall-offline-cmd:445
-#, c-format
-msgid "Device '%s' was masqueraded, enabling masquerade for the default zone."
-msgstr "ଉପକରଣ '%s' ଛଦ୍ମ ବେଶ ଧାରଣ କରିଛି, ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ ପାଇଁ ଛଦ୍ମବେଶକୁ ସକ୍ରିୟ କରୁଅଛି।"
+#~ msgid ""
+#~ "Device '%s' was masqueraded, enabling masquerade for the default zone."
+#~ msgstr "ଉପକରଣ '%s' ଛଦ୍ମ ବେଶ ଧାରଣ କରିଛି, ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ ପାଇଁ ଛଦ୍ମବେଶକୁ ସକ୍ରିୟ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:452
-#, c-format
-msgid "Adding port '%s/%s' to default zone."
-msgstr "ପୋର୍ଟ '%s/%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
+#~ msgid "Adding port '%s/%s' to default zone."
+#~ msgstr "ପୋର୍ଟ '%s/%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:460
-#, c-format
-msgid "Removing service '%s' from default zone."
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରୁ ସର୍ଭିସ '%s' କୁ ବାହାର କରୁଅଛି।"
+#~ msgid "Removing service '%s' from default zone."
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରୁ ସର୍ଭିସ '%s' କୁ ବାହାର କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:467
-#, c-format
-msgid "Adding service '%s' to default zone."
-msgstr "ସର୍ଭିସ '%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
+#~ msgid "Adding service '%s' to default zone."
+#~ msgstr "ସର୍ଭିସ '%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:474
-#, c-format
-msgid "Adding icmpblock '%s' to default zone."
-msgstr "icmpblock '%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
+#~ msgid "Adding icmpblock '%s' to default zone."
+#~ msgstr "icmpblock '%s' କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:484
-#, c-format
-msgid "Adding forward port %s:%s:%s:%s to default zone."
-msgstr "ଅଗ୍ରସରଣ ପୋର୍ଟ %s:%s:%s:%s କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
+#~ msgid "Adding forward port %s:%s:%s:%s to default zone."
+#~ msgstr "ଅଗ୍ରସରଣ ପୋର୍ଟ %s:%s:%s:%s କୁ ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳରେ ଯୋଗ କରୁଅଛି।"
 
-#: ../src/firewall-offline-cmd:492
-msgid "No changes to default zone needed."
-msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ ପାଇଁ କୌଣସି ପରିବର୍ତ୍ତନ ଆବଶ୍ୟକ ନାହିଁ।"
+#~ msgid "No changes to default zone needed."
+#~ msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ ପାଇଁ କୌଣସି ପରିବର୍ତ୍ତନ ଆବଶ୍ୟକ ନାହିଁ।"
 
-#: ../src/firewall-offline-cmd:496
-msgid "Changed trusted zone configuration."
-msgstr "ବିଶ୍ୱସ୍ତ ଅଞ୍ଚଳ ବିନ୍ୟାସକୁ ପରିବର୍ତ୍ତନ କରିଛି।"
+#~ msgid "Changed trusted zone configuration."
+#~ msgstr "ବିଶ୍ୱସ୍ତ ଅଞ୍ଚଳ ବିନ୍ୟାସକୁ ପରିବର୍ତ୍ତନ କରିଛି।"
 
-#: ../src/firewall-offline-cmd:498
-msgid ""
-"If one of the trusted interfaces is used for a connection with "
-"NetworkManager or if there is an ifcfg file for this interface, the zone "
-"will be changed to the zone defined in the configuration as soon as it gets "
-"activated. To change the zone of a connection use <command>nm-connection-"
-"editor</command> and set the zone to trusted, for an ifcfg file, use an "
-"editor and add \"ZONE=trusted\". If the zone is not defined in the ifcfg "
-"file, the firewalld default zone will be used."
-msgstr ""
-"ଯଦି ଏହା ମଧ୍ଯରୁ କୌଣସି ବିଶ୍ୱସ୍ତ ଅନ୍ତରାପୃଷ୍ଠକୁ NetworkManager ସହିତ ସଂଯୋଗ ପାଇଁ ବ୍ୟବହାର "
-"କରାଯାଇଥାଏ କିମ୍ବା ସେଠାରେ ଯଦି ଏହି ଅନ୍ତରାପୃଷ୍ଠ ପାଇଁ ifcfg ଫାଇଲ ଥାଏ, ତେବେ ସେହି ଅଞ୍ଚଳକୁ ସକ୍ରିୟ "
-"ହେବା ମାତ୍ରେ ସଂରଚନାରେ ବ୍ୟାଖ୍ୟା କରାଯାଇଥିବା ଅଞ୍ଚଳ ସହିତ ପରିବର୍ତ୍ତନ କରାଯାଇଥାଏ। କୌଣସି ସଂଯୋଗର "
-"ଅଞ୍ଚଳକୁ ପରିବର୍ତ୍ତନ କରିବାକୁ <command>nm-connection-editor</command> କୁ ବ୍ୟବହାର କରନ୍ତୁ "
-"ଏବଂ ସେହି ଅଞ୍ଚଳକୁ ବିଶ୍ୱସ୍ତ ଭାବରେ ସେଟ କରନ୍ତୁ, ଏକ ifcfg ଫାଇଲ ପାଇଁ, ଏକ ସମ୍ପାଦକକୁ ବ୍ୟବହାର "
-"କରନ୍ତୁ ଏବଂ \"ZONE=trusted\" କୁ ଯୋଗ କରନ୍ତୁ। ଯଦି ସେହି ଅଞ୍ଚଳଟି ifcfg ଫାଇଲରେ ବ୍ୟାଖ୍ୟା "
-"ହୋଇନଥାଏ, ତେବେ firewalld ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ବ୍ୟବହାର କରାଯିବ।"
+#~ msgid ""
+#~ "If one of the trusted interfaces is used for a connection with "
+#~ "NetworkManager or if there is an ifcfg file for this interface, the zone "
+#~ "will be changed to the zone defined in the configuration as soon as it "
+#~ "gets activated. To change the zone of a connection use <command>nm-"
+#~ "connection-editor</command> and set the zone to trusted, for an ifcfg "
+#~ "file, use an editor and add \"ZONE=trusted\". If the zone is not defined "
+#~ "in the ifcfg file, the firewalld default zone will be used."
+#~ msgstr ""
+#~ "ଯଦି ଏହା ମଧ୍ଯରୁ କୌଣସି ବିଶ୍ୱସ୍ତ ଅନ୍ତରାପୃଷ୍ଠକୁ NetworkManager ସହିତ ସଂଯୋଗ ପାଇଁ ବ୍ୟବହାର "
+#~ "କରାଯାଇଥାଏ କିମ୍ବା ସେଠାରେ ଯଦି ଏହି ଅନ୍ତରାପୃଷ୍ଠ ପାଇଁ ifcfg ଫାଇଲ ଥାଏ, ତେବେ ସେହି ଅଞ୍ଚଳକୁ "
+#~ "ସକ୍ରିୟ ହେବା ମାତ୍ରେ ସଂରଚନାରେ ବ୍ୟାଖ୍ୟା କରାଯାଇଥିବା ଅଞ୍ଚଳ ସହିତ ପରିବର୍ତ୍ତନ କରାଯାଇଥାଏ। "
+#~ "କୌଣସି ସଂଯୋଗର ଅଞ୍ଚଳକୁ ପରିବର୍ତ୍ତନ କରିବାକୁ <command>nm-connection-editor</command> କୁ "
+#~ "ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ସେହି ଅଞ୍ଚଳକୁ ବିଶ୍ୱସ୍ତ ଭାବରେ ସେଟ କରନ୍ତୁ, ଏକ ifcfg ଫାଇଲ ପାଇଁ, ଏକ "
+#~ "ସମ୍ପାଦକକୁ ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ \"ZONE=trusted\" କୁ ଯୋଗ କରନ୍ତୁ। ଯଦି ସେହି ଅଞ୍ଚଳଟି ifcfg "
+#~ "ଫାଇଲରେ ବ୍ୟାଖ୍ୟା ହୋଇନଥାଏ, ତେବେ firewalld ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳକୁ ବ୍ୟବହାର କରାଯିବ।"
 
 #~ msgid "NetworkManager connection editor is missing."
 #~ msgstr "NetworkManager ସଂଯୋଗ ସମ୍ପାଦକ ଅନୁପସ୍ଥିତ ଅଛି।"
