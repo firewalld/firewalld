@@ -10,7 +10,8 @@ applet_desktop_FILES = firewall-applet.desktop.in
 applet_desktopdir = $(sysconfdir)/xdg/autostart
 applet_desktop_DATA = $(applet_desktop_FILES:.in=)
 
-polkit1_action_FILES = org.fedoraproject.FirewallD1.policy.in
+polkit1_action_FILES = org.fedoraproject.FirewallD1.server.policy.in \
+                       org.fedoraproject.FirewallD1.desktop.policy.in
 polkit1_actiondir = $(datadir)/polkit-1/actions
 polkit1_action_DATA = $(polkit1_action_FILES:.in=)
 
@@ -194,3 +195,7 @@ uninstall-config:
 install-data-local: $(INSTALL_TARGETS)
 
 uninstall-local: $(UNINSTALL_TARGETS)
+
+install-data-hook:
+	cd $(DESTDIR)$(polkit1_actiondir) && \
+	  $(LN_S) org.fedoraproject.FirewallD1.server.policy org.fedoraproject.FirewallD1.policy

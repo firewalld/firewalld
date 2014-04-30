@@ -1673,3 +1673,8 @@ class FirewallClient(object):
     def removeLockdownWhitelistUser(self, user):
         self.fw_policies.removeLockdownWhitelistUser(user)
 
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def authorizeAll(self):
+        """ Authorize once for all polkit actions. """
+        self.fw.authorizeAll()
