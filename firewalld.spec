@@ -22,9 +22,27 @@ Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 
+Requires: firewalld-zones-base
+
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
 firewall with a D-Bus interface.
+
+%package -n firewalld-zones-base
+Summary: Base zones for firewalld
+Requires: %{name} = %{version}-%{release}
+Provides: firewalld-zones
+
+%description -n firewalld-zones-base
+This package provides basic zones for firewalld.
+
+%package -n firewalld-zones-others
+Summary: Additional zones for firewalld
+Requires: %{name} = %{version}-%{release}
+Provides: firewalld-zones
+
+%description -n firewalld-zones-others
+This package provides additional zones for firewalld.
 
 %package -n firewall-applet
 Summary: Firewall panel applet
@@ -120,7 +138,7 @@ fi
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/zones
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
-%{_prefix}/lib/firewalld/zones/*.xml
+#%%{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
@@ -146,6 +164,19 @@ fi
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
+
+%files -n firewalld-zones-base
+%{_prefix}/lib/firewalld/zones/public.xml
+%{_prefix}/lib/firewalld/zones/trusted.xml
+
+%files -n firewalld-zones-others
+%{_prefix}/lib/firewalld/zones/block.xml
+%{_prefix}/lib/firewalld/zones/dmz.xml
+%{_prefix}/lib/firewalld/zones/drop.xml
+%{_prefix}/lib/firewalld/zones/external.xml
+%{_prefix}/lib/firewalld/zones/home.xml
+%{_prefix}/lib/firewalld/zones/internal.xml
+%{_prefix}/lib/firewalld/zones/work.xml
 
 %files -n firewall-applet
 %{_bindir}/firewall-applet
