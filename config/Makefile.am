@@ -6,6 +6,10 @@ desktop_FILES = firewall-config.desktop.in
 desktopdir = $(datadir)/applications
 desktop_DATA = $(desktop_FILES:.in=)
 
+appdata_FILES = firewall-config.appdata.xml.in
+appdatadir = $(datadir)/appdata/
+appdata_DATA = $(appdata_FILES:.in=)
+
 applet_desktop_FILES = firewall-applet.desktop.in
 applet_desktopdir = $(sysconfdir)/xdg/autostart
 applet_desktop_DATA = $(applet_desktop_FILES:.in=)
@@ -24,6 +28,7 @@ gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
 BUILT_SOURCES = \
 	$(desktop_DATA) \
+	$(appdata_DATA) \
 	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS) \
@@ -34,18 +39,20 @@ BUILT_SOURCES = \
 @INTLTOOL_XML_NOMERGE_RULE@
 @GSETTINGS_RULES@
 
-all: $(desktop_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
+all: $(desktop_DATA) $(appdata_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
 CLEANFILES = *~ *\# .\#* firewalld.service
 
 DISTCLEANFILES = \
 	$(desktop_DATA) \
+	$(appdata_DATA) \
 	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS)
 
 EXTRA_DIST = \
 	$(desktop_FILES) \
+	$(appdata_FILES) \
 	$(applet_desktop_FILES) \
 	$(polkit1_action_FILES) \
 	$(gsettings_in_file) \
