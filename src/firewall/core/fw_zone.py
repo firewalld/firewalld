@@ -805,8 +805,8 @@ class FirewallZone:
 
                 table = "filter"
                 chains.append([ table, "INPUT" ])
-                target = self._zones[zone].target.format(chain=SHORTCUTS["INPUT"],
-                                                         zone=zone)
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                    zone=zone)
 
                 command = [ ]
                 self.__rule_source(rule.source, command)
@@ -826,8 +826,8 @@ class FirewallZone:
 
                 table = "filter"
                 chains.append([ table, "INPUT" ])
-                target = self._zones[zone].target.format(chain=SHORTCUTS["INPUT"],
-                                                         zone=zone)
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                    zone=zone)
 
                 command = [ ]
                 self.__rule_source(rule.source, command)
