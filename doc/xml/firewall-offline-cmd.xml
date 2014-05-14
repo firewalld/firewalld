@@ -68,7 +68,7 @@
   <refsect1 id="options">
     <title>Options</title>
     <para>
-      The options for <command>firewall-offline-cmd</command> are nearly identical to the options of <command>lokkit</command>. 
+      If no options are given, configuration from <command>/etc/sysconfig/system-config-firewall</command> will be migrated.
     </para>
     <para>
       The following options are supported:
@@ -115,6 +115,9 @@
 
     <refsect2 id="genernal_options">
       <title>Lokkit Compatibility Options</title>
+      <para>
+        These options are nearly identical to the options of <command>lokkit</command>.
+      </para>
       <variablelist>
 	<varlistentry>
 	  <term><option>--addmodule</option>=<replaceable>module</replaceable></term>
@@ -1223,6 +1226,28 @@
 	  <listitem>
 	    <para>
 	      Query whether the user name <replaceable>user</replaceable> is on the whitelist. Returns 0 if true, 1 otherwise.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="polkit_options">
+      <title>Policy Options</title>
+      <variablelist>
+	<varlistentry>
+          <term><option>--policy-server</option></term>
+          <listitem>
+	    <para>
+	      Change Polkit actions to 'server'  (more restricted)
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--policy-desktop</option></term>
+          <listitem>
+	    <para>
+	      Change Polkit actions to 'desktop'  (less restricted)
 	    </para>
 	  </listitem>
 	</varlistentry>

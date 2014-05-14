@@ -259,6 +259,10 @@ Lockdown Whitelist Options
   --query-lockdown-whitelist-user=<user>
                        Query whether the user name user is on the whitelist
 
+Polkit Options
+  --policy-server      Change Polkit actions to 'server'  (more restricted)
+  --policy-desktop     Change Polkit actions to 'desktop' (less restricted)
+
 """)
 
 def __print(msg=None):
@@ -359,6 +363,18 @@ def __print_query_result(value):
     else:
         __print_and_exit("no", 1)
 
+def __pk_symlink(product='server'):
+    _PK_DIR='/usr/share/polkit-1/actions/'
+    _PK_NAME='org.fedoraproject.FirewallD1.'
+    os.chdir(_PK_DIR)
+    if os.path.isfile(_PK_NAME+product+'.policy'):
+        if os.path.isfile(_PK_NAME+'policy'):
+            os.remove(_PK_NAME+'policy')
+        os.symlink(_PK_NAME+product+'.policy', _PK_NAME+'policy')
+        __print_and_exit('symlink '+_PK_DIR+_PK_NAME+product+'.policy -> '+_PK_NAME+'policy')
+    else:
+        __fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
+
 # system-config-firewall: fw_sysconfig
 CONFIG = '/etc/sysconfig/system-config-firewall'
 def read_sysconfig_args():
@@ -403,6 +419,8 @@ parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
                                      action="store_true")
 parser_group_standalone.add_argument("-V", "--version", action="store_true")
+parser_group_standalone.add_argument("--policy-server", action="store_true")
+parser_group_standalone.add_argument("--policy-desktop", action="store_true")
 parser_group_standalone.add_argument("--lockdown-on", action="store_true")
 parser_group_standalone.add_argument("--lockdown-off", action="store_true")
 parser_group_standalone.add_argument("--query-lockdown", action="store_true")
@@ -557,6 +575,7 @@ options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.trust or a.masq or a.forward_port or a.block_icmp
 
 options_standalone = a.help or a.version or \
+    a.policy_server or a.policy_desktop or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone
 
@@ -666,6 +685,11 @@ fw.start()
 try:
     if a.version:
         __print_and_exit(VERSION)
+
+    if a.policy_server:
+        __pk_symlink('server')
+    if a.policy_desktop:
+        __pk_symlink('desktop')
 
     # Lokkit Compatibility Options
     if options_lokkit:
