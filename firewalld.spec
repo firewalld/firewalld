@@ -138,7 +138,6 @@ fi
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/zones
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
-#%%{_prefix}/lib/firewalld/zones/*.xml
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
@@ -166,11 +165,11 @@ fi
 %{_mandir}/man5/firewall*.5*
 
 %files -n firewalld-zones-base
+%{_prefix}/lib/firewalld/zones/block.xml
 %{_prefix}/lib/firewalld/zones/public.xml
 %{_prefix}/lib/firewalld/zones/trusted.xml
 
 %files -n firewalld-zones-others
-%{_prefix}/lib/firewalld/zones/block.xml
 %{_prefix}/lib/firewalld/zones/dmz.xml
 %{_prefix}/lib/firewalld/zones/drop.xml
 %{_prefix}/lib/firewalld/zones/external.xml
