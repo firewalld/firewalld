@@ -349,9 +349,9 @@ def __print_query_result(value):
 
 def __exception_handler(exception_message):
     if "NotAuthorizedException" in exception_message:
-        __print ("Authorization failed.")
-        __print ("Make sure polkit agent is running or run the application as superuser.")
-        sys.exit(NOT_AUTHORIZED)
+        msg = """Authorization failed.
+Make sure polkit agent is running or run the application as superuser."""
+        __print_and_exit(msg, NOT_AUTHORIZED)
     else:
         code = FirewallError.get_code(exception_message)
         if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
@@ -892,7 +892,7 @@ if a.permanent:
             if zone:
                 __print_and_exit(zone)
             else:
-                __print_and_exit("no zone", 2)
+                __fail("no zone")
         elif a.change_interface:
             old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
             if old_zone_name != zone:
@@ -918,7 +918,7 @@ if a.permanent:
             if zone:
                 __print_and_exit(zone)
             else:
-                __print_and_exit("no zone", 2)
+                __fail("no zone")
         elif a.change_source:
             old_zone_name = fw.config().getZoneOfSource(a.change_source)
             old_zone_obj = fw.config().getZoneByName(old_zone_name)
@@ -1216,7 +1216,7 @@ elif a.get_zone_of_interface:
     if zone:
         __print_and_exit(zone)
     else:
-        __print_and_exit("no zone", 2)
+        __fail("no zone")
 elif a.add_interface:
     fw.addInterface(zone, a.add_interface)
 elif a.change_interface:
@@ -1235,7 +1235,7 @@ elif a.get_zone_of_source:
     if zone:
         __print_and_exit(zone)
     else:
-        __print_and_exit("no zone", 2)
+        __fail("no zone")
 elif a.add_source:
     fw.addSource(zone, a.add_source)
 elif a.change_source:
