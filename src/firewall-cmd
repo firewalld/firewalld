@@ -345,7 +345,7 @@ def __print_query_result(value):
     if value:
         __print_and_exit("yes")
     else:
-        __print_and_exit("no", 1)
+        __print_and_exit("no")
 
 def __exception_handler(exception_message):
     if "NotAuthorizedException" in exception_message:
