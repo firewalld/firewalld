@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>FreeIPA with LDAP</short>
+  <description>FreeIPA is an LDAP and Kerberos domain controller for Linux systems. Enable this option if you plan to provide a FreeIPA Domain Controller using the LDAP protocol. You can also enable the 'freeipa-ldaps' service if you want to provide the LDAPS protocol. Enable the 'dns' service if this FreeIPA server provides DNS services and 'freeipa-replication' service if this FreeIPA server is part of a multi-master replication setup.</description>
+  <port protocol="tcp" port="80"/>
+  <port protocol="tcp" port="443"/>
+  <port protocol="tcp" port="88"/>
+  <port protocol="udp" port="88"/>
+  <port protocol="tcp" port="464"/>
+  <port protocol="udp" port="464"/>
+  <port protocol="udp" port="123"/>
+  <port protocol="tcp" port="389"/>
+</service>
