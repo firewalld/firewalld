@@ -74,6 +74,9 @@ EXTRA_DIST = \
 	services/dhcp.xml \
 	services/dns.xml \
 	services/ftp.xml \
+	services/freeipa-ldap.xml \
+	services/freeipa-ldaps.xml \
+	services/freeipa-replication.xml \
 	services/high-availability.xml \
 	services/https.xml \
 	services/http.xml \
@@ -106,6 +109,7 @@ EXTRA_DIST = \
 	services/rpc-bind.xml \
 	services/samba-client.xml \
 	services/samba.xml \
+	services/sane.xml \
 	services/smtp.xml \
 	services/ssh.xml \
 	services/synergy.xml \
