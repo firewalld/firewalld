@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.9.3
+Version: 0.3.10
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -169,6 +169,34 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed May 28 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.10-1
+- new services: freeipa-*, puppermaster, amanda-k5, synergy,
+                xmpp-*, tor, privoxy, sane
+- do not use at_console in D-Bus policies (RHBZ#1094745)
+- apply all rich rules for non-default targets
+- AppData file (RHBZ#1094754)
+- separate Polkit actions for desktop & server (RHBZ#1091068)
+- sanitize missing ip6t_rpfilter (RHBZ#1074427)
+- firewall/core/io/*: few improvements (RHBZ#1065738)
+- no load failed error for absent direct.xml file
+- new DBUS_INTERFACE.getZoneSettings to get all run-time zone settings
+- fixed creation and deletion of zones, services and icmptypes over D-Bus signals
+- FirewallClientZoneSettings: Set proper default target
+- if Python2 then encode strings from sax parser (RHBZ#1059104, RHBZ#1058853)
+- firewall-cmd:
+  - don't colour output of query commands (RHBZ#1097841)
+  - use "default" instead of {chain}_{zone} (RHBZ#1075675)
+  - New --get-target and --set-target
+  - Create and remove permanent zones, services and icmptypes
+- firewall-config:
+  - Adding services and icmptypes resulted in duplicates in UI
+  - Use left button menu of -applet in Option menu
+- firewall-offline-cmd: same functionality as 'firewall-cmd --permanent'
+- firewall-applet: ZoneConnectionEditor was missing the Default Zone entry
+- bash-completion: getting zones/services/icmps is different with/without --permanent
+- firewalld.zone(5): removed superfluous slash (RHBZ#1091575)
+- updated translations
+
 * Wed Feb 05 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.9.3-1
 - Fixed persistent port forwarding (RHBZ#1056154)
 - Stop default zone rules being applied to all zones (RHBZ#1057875)
