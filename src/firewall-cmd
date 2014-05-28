@@ -41,7 +41,7 @@ def __print_and_exit(msg=None, exit_code=0):
     FAIL = '\033[91m'
     OK =   '\033[92m'
     END =  '\033[00m'
-    if exit_code != 0:
+    if exit_code > 1:
         __print(FAIL + msg + END)
     else:
         __print(msg)
@@ -345,7 +345,7 @@ def __print_query_result(value):
     if value:
         __print_and_exit("yes")
     else:
-        __print_and_exit("no")
+        __print_and_exit("no", 1)
 
 def __exception_handler(exception_message):
     if "NotAuthorizedException" in exception_message:
