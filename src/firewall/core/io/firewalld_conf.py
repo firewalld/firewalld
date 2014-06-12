@@ -24,6 +24,8 @@ import io
 import tempfile
 import shutil
 
+from firewall.config import FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
+    FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
@@ -67,6 +69,11 @@ class firewalld_conf:
             f = open(self.filename, "r")
         except Exception as msg:
             log.error("Failed to open '%s': %s" % (self.filename, msg))
+            self.set("DefaultZone", str(FALLBACK_ZONE))
+            self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
+            self.set("CleanupOnExit", FALLBACK_CLEANUP_ON_EXIT)
+            self.set("Lockdown", FALLBACK_LOCKDOWN)
+            self.set("IPv6_rpfilter", FALLBACK_IPV6_RPFILTER)
             raise
 
         for line in f:
@@ -91,6 +98,46 @@ class firewalld_conf:
                 continue
             self._config[pair[0]] = pair[1]
         f.close()
+
+        # check default zone
+        if not self.get("DefaultZone"):
+            log.error("DefaultZone is not set, using default value '%s'",
+                      FALLBACK_ZONE)
+            self.set("DefaultZone", str(FALLBACK_ZONE))
+
+        # check minimal mark
+        value = self.get("MinimalMark")
+        try:
+            mark = int(value)
+        except Exception as msg:
+            log.error("MinimalMark '%s' is not valid, using default "
+                      "value '%d'", value if value else '',
+                      FALLBACK_MINIMAL_MARK)
+            self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
+
+        # check cleanup on exit
+        value = self.get("CleanupOnExit")
+        if not value or value.lower() not in [ "no", "false", "yes", "true" ]:
+            log.error("CleanupOnExit '%s' is not valid, using default "
+                      "value %s", value if value else '',
+                      FALLBACK_CLEANUP_ON_EXIT)
+            self.set("CleanupOnExit", FALLBACK_CLEANUP_ON_EXIT)
+
+        # check lockdown
+        value = self.get("Lockdown")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            log.error("Lockdown '%s' is not valid, using default "
+                      "value %s", value if value else '', FALLBACK_LOCKDOWN)
+            self.set("Lockdown", FALLBACK_LOCKDOWN)
+
+        # check ipv6_rpfilter
+        value = self.get("IPv6_rpfilter")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            log.error("IPv6_rpfilter '%s' is not valid, using default "
+                      "value %s", value if value else '',
+                      FALLBACK_IPV6_RPFILTER)
+            self.set("IPv6_rpfilter", FALLBACK_IPV6_RPFILTER)
+
 
     # save to self.filename if there are key/value changes
     def write(self):
