@@ -603,8 +603,9 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 
 # Check various impossible combinations of options
 
-if not (options_standalone or options_zone or \
-        options_permanent or options_direct or options_direct_permanent or \
+if not (options_standalone or \
+        options_config or options_zone_ops or \
+        options_direct or options_direct_permanent or \
         options_permanent_only):
     __fail(parser.format_usage() + "No option specified.")
 
