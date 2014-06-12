@@ -107,6 +107,12 @@ class FirewallConfig:
     def get_firewalld_conf(self):
         return self._firewalld_conf
 
+    def update_firewalld_conf(self):
+        if not os.path.exists(LOCKDOWN_WHITELIST):
+            self._firewalld_conf.clear()
+        else:
+            self._firewalld_conf.read()
+
     # policies
 
     def set_policies(self, policies):
