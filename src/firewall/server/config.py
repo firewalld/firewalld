@@ -74,6 +74,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(ETC_FIREWALLD_ZONES)
         self.watcher.add_watch_file(LOCKDOWN_WHITELIST)
         self.watcher.add_watch_file(FIREWALLD_DIRECT)
+        self.watcher.add_watch_file(FIREWALLD_CONF)
 
     @handle_exceptions
     def _init_vars(self):
@@ -113,6 +114,19 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     @handle_exceptions
     def watch_updater(self, name):
+        if name == FIREWALLD_CONF:
+            old_props = self.GetAll(DBUS_INTERFACE_CONFIG)
+            log.debug1("config: Reloading firewalld config file '%s'",
+                       FIREWALLD_CONF)
+            self.config.update_firewalld_conf()
+            props = self.GetAll(DBUS_INTERFACE_CONFIG)
+            for name in props.keys():
+                if old_props[name] == props[name]:
+                    del props[name]
+            if len(props) > 0:
+                self.PropertiesChanged(DBUS_INTERFACE_CONFIG, props, [])
+            return
+
         if not name.endswith(".xml"):
             raise FirewallError(INVALID_FILENAME, name)
 
