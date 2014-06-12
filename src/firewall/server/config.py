@@ -301,112 +301,185 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     # P R O P E R T I E S
 
-    @dbus_handle_exceptions
-    def _get_property(self, prop):
-        if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                     "Lockdown" ]:
-            value = self.config.get_firewalld_conf().get(prop)
-            if prop == "MinimalMark":
-                value = int(value)
+    if hasattr(dbus.service, "property"):
+        # property support in dbus.service
+
+        @dbus.service.property(DBUS_INTERFACE_CONFIG, signature='s')
+        @dbus_handle_exceptions
+        def DefaultZone(self):
+            value = self.config.get_firewalld_conf().get("DefaultZone")
             if value != None:
                 return value
-            if prop == "DefaultZone":
+            else:
                 return FALLBACK_ZONE
-            elif prop == "MinimalMark":
-                return FALLBACK_MINIMAL_MARK
-            elif prop == "CleanupOnExit":
-                return "yes"
-            elif prop == "Lockdown":
+
+        @dbus.service.property(DBUS_INTERFACE_CONFIG, signature='s')
+        @dbus_handle_exceptions
+        def Lockdown(self):
+            value = self.config.get_firewalld_conf().get("Lockdown")
+            if value != None:
+                return value
+            else:
                 return "no"
-        else:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % prop)
 
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
-                         out_signature='v')
-    @dbus_handle_exceptions
-    def Get(self, interface_name, property_name, sender=None):
-        # get a property
-        interface_name = dbus_to_python(interface_name)
-        property_name = dbus_to_python(property_name)
-        log.debug1("config.Get('%s', '%s')", interface_name, property_name)
-
-        if interface_name != DBUS_INTERFACE_CONFIG:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        return self._get_property(property_name)
-
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
-                         out_signature='a{sv}')
-    @dbus_handle_exceptions
-    def GetAll(self, interface_name, sender=None):
-        interface_name = dbus_to_python(interface_name)
-        log.debug1("config.GetAll('%s')", interface_name)
-
-        if interface_name != DBUS_INTERFACE_CONFIG:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        return {
-            'DefaultZone': self._get_property("DefaultZone"),
-            'MinimalMark': self._get_property("MinimalMark"),
-            'CleanupOnExit': self._get_property("CleanupOnExit"),
-            'Lockdown': self._get_property("Lockdown"),
-        }
-
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
-    @dbus_handle_exceptions
-    def Set(self, interface_name, property_name, new_value, sender=None):
-        interface_name = dbus_to_python(interface_name)
-        property_name = dbus_to_python(property_name)
-        new_value = dbus_to_python(new_value)
-        log.debug1("config.Set('%s', '%s', '%s')", interface_name,
-                   property_name, new_value)
-        self.accessCheck(sender)
-
-        if interface_name != DBUS_INTERFACE_CONFIG:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        if property_name in [ "MinimalMark", "CleanupOnExit" ]:
-            if property_name == "MinimalMark":
+        @dbus.service.property(DBUS_INTERFACE_CONFIG, signature='i')
+        @dbus_handle_exceptions
+        def MinimalMark(self):
+            value = self.config.get_firewalld_conf().get("MinimalMark")
+            if value != None:
                 try:
-                    foo = int(new_value)
+                    return int(value)
                 except:
-                    raise FirewallError(INVALID_MARK, new_value)
+                    pass
+            return FALLBACK_MINIMAL_MARK
+
+        @MinimalMark.setter
+        @dbus_handle_exceptions
+        def MinimalMark(self, value):
+            try:
+                foo = int(value)
+            except:
+                raise FirewallError(INVALID_MARK, value)
             try:
                 new_value = str(new_value)
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
-                                            (new_value, property_name))
-            if property_name in [ "CleanupOnExit" ]:
-                if new_value.lower() not in [ "yes", "no", "true", "false" ]:
-                    raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
-                                            (new_value, property_name))
-            self.config.get_firewalld_conf().set(property_name, new_value)
+                                    (value, "MinimalMark"))
+            self.config.get_firewalld_conf().set("MinimalMark", value)
             self.config.get_firewalld_conf().write()
-            self.PropertiesChanged(interface_name,
-                                   { property_name: new_value }, [ ])
-        elif property_name in [ "DefaultZone", "Lockdown" ]:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.PropertyReadOnly: "
-                "Property '%s' is read-only" % property_name)
-        else:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' does not exist" % property_name)
+            self.PropertiesChanged(DBUS_INTERFACE_CONFIG,
+                                   { "MinimalMark": value }, [ ])
 
-    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
-    def PropertiesChanged(self, interface_name, changed_properties,
-                          invalidated_properties):
-        log.debug1("config.PropertiesChanged('%s', '%s', '%s')", interface_name,
-                   changed_properties, invalidated_properties)
+        @dbus.service.property(DBUS_INTERFACE_CONFIG, signature='s')
+        @dbus_handle_exceptions
+        def CleanupOnExit(self):
+            value = self.config.get_firewalld_conf().get("CleanupOnExit")
+            if value != None:
+                return value
+            else:
+                return "yes"
+
+        @CleanupOnExit.setter
+        @dbus_handle_exceptions
+        def CleanupOnExit(self, value):
+            try:
+                new_value = str(new_value)
+            except:
+                raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
+                                    (value, "CleanupOnExit"))
+            self.config.get_firewalld_conf().set("CleanupOnExit", value)
+            self.config.get_firewalld_conf().write()
+            self.PropertiesChanged(DBUS_INTERFACE_CONFIG,
+                                   { "CleanupOnExit": value }, [ ])
+    else:
+        # no property support in dbus.service
+
+        @dbus_handle_exceptions
+        def _get_property(self, prop):
+            if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
+                         "Lockdown" ]:
+                value = self.config.get_firewalld_conf().get(prop)
+                if prop == "MinimalMark":
+                    value = int(value)
+                if value != None:
+                    return value
+                if prop == "DefaultZone":
+                    return FALLBACK_ZONE
+                elif prop == "MinimalMark":
+                    return FALLBACK_MINIMAL_MARK
+                elif prop == "CleanupOnExit":
+                    return "yes"
+                elif prop == "Lockdown":
+                    return "no"
+            else:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.AccessDenied: "
+                    "Property '%s' isn't exported (or may not exist)" % prop)
+
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
+                             out_signature='v')
+        @dbus_handle_exceptions
+        def Get(self, interface_name, property_name, sender=None):
+            # get a property
+            interface_name = dbus_to_python(interface_name)
+            property_name = dbus_to_python(property_name)
+            log.debug1("config.Get('%s', '%s')", interface_name, property_name)
+
+            if interface_name != DBUS_INTERFACE_CONFIG:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            return self._get_property(property_name)
+
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
+                             out_signature='a{sv}')
+        @dbus_handle_exceptions
+        def GetAll(self, interface_name, sender=None):
+            interface_name = dbus_to_python(interface_name)
+            log.debug1("config.GetAll('%s')", interface_name)
+
+            if interface_name != DBUS_INTERFACE_CONFIG:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            return {
+                'DefaultZone': self._get_property("DefaultZone"),
+                'MinimalMark': self._get_property("MinimalMark"),
+                'CleanupOnExit': self._get_property("CleanupOnExit"),
+                'Lockdown': self._get_property("Lockdown"),
+            }
+
+        @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
+        @dbus_handle_exceptions
+        def Set(self, interface_name, property_name, new_value, sender=None):
+            interface_name = dbus_to_python(interface_name)
+            property_name = dbus_to_python(property_name)
+            new_value = dbus_to_python(new_value)
+            log.debug1("config.Set('%s', '%s', '%s')", interface_name,
+                       property_name, new_value)
+            self.accessCheck(sender)
+
+            if interface_name != DBUS_INTERFACE_CONFIG:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            if property_name in [ "MinimalMark", "CleanupOnExit" ]:
+                if property_name == "MinimalMark":
+                    try:
+                        foo = int(new_value)
+                    except:
+                        raise FirewallError(INVALID_MARK, new_value)
+                try:
+                    new_value = str(new_value)
+                except:
+                    raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
+                                                (new_value, property_name))
+                if property_name in [ "CleanupOnExit" ]:
+                    if new_value.lower() not in [ "yes", "no", "true", "false" ]:
+                        raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
+                                                (new_value, property_name))
+                self.config.get_firewalld_conf().set(property_name, new_value)
+                self.config.get_firewalld_conf().write()
+                self.PropertiesChanged(interface_name,
+                                       { property_name: new_value }, [ ])
+            elif property_name in [ "DefaultZone", "Lockdown" ]:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.PropertyReadOnly: "
+                    "Property '%s' is read-only" % property_name)
+            else:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.AccessDenied: "
+                    "Property '%s' does not exist" % property_name)
+
+        @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
+        def PropertiesChanged(self, interface_name, changed_properties,
+                              invalidated_properties):
+            log.debug1("config.PropertiesChanged('%s', '%s', '%s')", interface_name,
+                       changed_properties, invalidated_properties)
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

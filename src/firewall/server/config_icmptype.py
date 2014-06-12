@@ -58,7 +58,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         self.config = config
         self.obj = icmptype
         self.id = id
-        self.path = args[0]
+        self._path = args[0]
 
     @dbus_handle_exceptions
     def __del__(self):
@@ -72,80 +72,111 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
 
     # P R O P E R T I E S
 
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
-                         out_signature='v')
-    @dbus_handle_exceptions
-    def Get(self, interface_name, property_name, sender=None):
-        # get a property
-        interface_name = dbus_to_python(interface_name)
-        property_name = dbus_to_python(property_name)
-        log.debug1("config.icmptype.%d.Get('%s', '%s')", self.id,
-                   interface_name, property_name)
+    if hasattr(dbus.service, "property"):
+        # property support in dbus.service
 
-        if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        if property_name == "name":
+        @dbus.service.property(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')
+        @dbus_handle_exceptions
+        def name(self):
             return self.obj.name
-        elif property_name == "filename":
+
+        @dbus.service.property(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')
+        @dbus_handle_exceptions
+        def filename(self):
             return self.obj.filename
-        elif property_name == "path":
+
+        @dbus.service.property(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')
+        @dbus_handle_exceptions
+        def path(self):
             return self.obj.path
-        elif property_name == "default":
+
+        @dbus.service.property(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='b')
+        @dbus_handle_exceptions
+        def default(self):
             return self.obj.default
-        elif property_name == "builtin":
+
+        @dbus.service.property(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='b')
+        @dbus_handle_exceptions
+        def builtin(self):
             return self.config.is_builtin_icmptype(self.obj)
-        else:
+
+    else:
+        # no property support in dbus.service
+
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
+                             out_signature='v')
+        @dbus_handle_exceptions
+        def Get(self, interface_name, property_name, sender=None):
+            # get a property
+            interface_name = dbus_to_python(interface_name)
+            property_name = dbus_to_python(property_name)
+            log.debug1("config.icmptype.%d.Get('%s', '%s')", self.id,
+                       interface_name, property_name)
+
+            if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            if property_name == "name":
+                return self.obj.name
+            elif property_name == "filename":
+                return self.obj.filename
+            elif property_name == "path":
+                return self.obj.path
+            elif property_name == "default":
+                return self.obj.default
+            elif property_name == "builtin":
+                return self.config.is_builtin_icmptype(self.obj)
+            else:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.AccessDenied: "
+                    "Property '%s' isn't exported (or may not exist)" % \
+                        property_name)
+
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
+                             out_signature='a{sv}')
+        @dbus_handle_exceptions
+        def GetAll(self, interface_name, sender=None):
+            interface_name = dbus_to_python(interface_name)
+            log.debug1("config.icmptype.%d.GetAll('%s')", self.id, interface_name)
+
+            if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            return {
+                'name': self.obj.name,
+                'filename': self.obj.filename,
+                'path': self.obj.path,
+                'default': self.obj.default,
+            }
+
+        @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
+        @dbus_handle_exceptions
+        def Set(self, interface_name, property_name, new_value, sender=None):
+            interface_name = dbus_to_python(interface_name)
+            property_name = dbus_to_python(property_name)
+            new_value = dbus_to_python(new_value)
+            log.debug1("config.icmptype.%d.Set('%s', '%s', '%s')", self.id,
+                       interface_name, property_name, new_value)
+            self.parent.accessCheck(sender)
+
+            if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % \
-                    property_name)
+                "Property '%s' is not settable" % property_name)
 
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
-                         out_signature='a{sv}')
-    @dbus_handle_exceptions
-    def GetAll(self, interface_name, sender=None):
-        interface_name = dbus_to_python(interface_name)
-        log.debug1("config.icmptype.%d.GetAll('%s')", self.id, interface_name)
-
-        if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        return {
-            'name': self.obj.name,
-            'filename': self.obj.filename,
-            'path': self.obj.path,
-            'default': self.obj.default,
-        }
-
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
-    @dbus_handle_exceptions
-    def Set(self, interface_name, property_name, new_value, sender=None):
-        interface_name = dbus_to_python(interface_name)
-        property_name = dbus_to_python(property_name)
-        new_value = dbus_to_python(new_value)
-        log.debug1("config.icmptype.%d.Set('%s', '%s', '%s')", self.id,
-                   interface_name, property_name, new_value)
-        self.parent.accessCheck(sender)
-
-        if interface_name != DBUS_INTERFACE_CONFIG_ICMPTYPE:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        raise dbus.exceptions.DBusException(
-            "org.freedesktop.DBus.Error.AccessDenied: "
-            "Property '%s' is not settable" % property_name)
-
-    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
-    def PropertiesChanged(self, interface_name, changed_properties,
-                          invalidated_properties):
-        pass
+        @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
+        def PropertiesChanged(self, interface_name, changed_properties,
+                              invalidated_properties):
+            pass
 
     # S E T T I N G S
 

@@ -132,96 +132,130 @@ class FirewallD(slip.dbus.service.Object):
 
     # property handling
 
-    @dbus_handle_exceptions
-    def _get_property(self, prop):
-        if prop == "version":
+    if hasattr(dbus.service, "property"):
+        # property support in dbus.service
+
+        @dbus.service.property(DBUS_INTERFACE, signature='s')
+        def version(self):
             return VERSION
-        elif prop == "interface_version":
-            return "%d.%d" % (DBUS_INTERFACE_VERSION,
-                              DBUS_INTERFACE_REVISION)
-        elif prop == "state":
+
+        @dbus.service.property(DBUS_INTERFACE, signature='s')
+        def interface_version(self):
+            return "%d.%d" % (DBUS_INTERFACE_VERSION, DBUS_INTERFACE_REVISION)
+
+        @dbus.service.property(DBUS_INTERFACE, signature='s')
+        def state(self):
             return self.fw.get_state()
 
-        elif prop == "IPv4":
+        @dbus.service.property(DBUS_INTERFACE, signature='b')
+        def IPv4(self):
             return self.fw.ip4tables_enabled
 
-        elif prop == "IPv6":
+        @dbus.service.property(DBUS_INTERFACE, signature='b')
+        def IPv6(self):
             return self.fw.ip6tables_enabled
 
-        elif prop == "IPv6_rpfilter":
+        @dbus.service.property(DBUS_INTERFACE, signature='b')
+        def IPv6_rpfilter(self):
             return self.fw.ipv6_rpfilter_enabled
 
-        elif prop == "BRIDGE":
+        @dbus.service.property(DBUS_INTERFACE, signature='b')
+        def BRIDGE(self):
             return self.fw.ebtables_enabled
 
-        else:
+    else:
+        # no property support in dbus.service
+
+        @dbus_handle_exceptions
+        def _get_property(self, prop):
+            if prop == "version":
+                return VERSION
+            elif prop == "interface_version":
+                return "%d.%d" % (DBUS_INTERFACE_VERSION,
+                                  DBUS_INTERFACE_REVISION)
+            elif prop == "state":
+                return self.fw.get_state()
+
+            elif prop == "IPv4":
+                return self.fw.ip4tables_enabled
+
+            elif prop == "IPv6":
+                return self.fw.ip6tables_enabled
+
+            elif prop == "IPv6_rpfilter":
+                return self.fw.ipv6_rpfilter_enabled
+
+            elif prop == "BRIDGE":
+                return self.fw.ebtables_enabled
+
+            else:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.AccessDenied: "
+                    "Property '%s' isn't exported (or may not exist)" % prop)
+
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
+                             out_signature='v')
+        @dbus_handle_exceptions
+        def Get(self, interface_name, property_name, sender=None):
+            # get a property
+            interface_name = dbus_to_python(interface_name)
+            property_name = dbus_to_python(property_name)
+            log.debug1("Get('%s', '%s')", interface_name, property_name)
+
+            if interface_name != DBUS_INTERFACE:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            return self._get_property(property_name)
+
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
+                             out_signature='a{sv}')
+        @dbus_handle_exceptions
+        def GetAll(self, interface_name, sender=None):
+            interface_name = dbus_to_python(interface_name)
+            log.debug1("GetAll('%s')", interface_name)
+
+            if interface_name != DBUS_INTERFACE:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
+            return {
+                'version': self._get_property("version"),
+                'interface_version': self._get_property("interface_version"),
+                'state': self._get_property("state"),
+                'IPv4': self._get_property("IPv4"),
+                'IPv6': self._get_property("IPv6"),
+                'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
+                'BRIDGE': self._get_property("BRIDGE"),
+            }
+
+
+        @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+        @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
+        @dbus_handle_exceptions
+        def Set(self, interface_name, property_name, new_value, sender=None):
+            interface_name = dbus_to_python(interface_name)
+            property_name = dbus_to_python(property_name)
+            new_value = dbus_to_python(new_value)
+            log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
+                       new_value)
+            self.accessCheck(sender)
+
+            if interface_name != DBUS_INTERFACE:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.UnknownInterface: "
+                    "FirewallD does not implement %s" % interface_name)
+
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % prop)
+                "Property '%s' is not settable" % property_name)
 
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
-                         out_signature='v')
-    @dbus_handle_exceptions
-    def Get(self, interface_name, property_name, sender=None):
-        # get a property
-        interface_name = dbus_to_python(interface_name)
-        property_name = dbus_to_python(property_name)
-        log.debug1("Get('%s', '%s')", interface_name, property_name)
-
-        if interface_name != DBUS_INTERFACE:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        return self._get_property(property_name)
-
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
-                         out_signature='a{sv}')
-    @dbus_handle_exceptions
-    def GetAll(self, interface_name, sender=None):
-        interface_name = dbus_to_python(interface_name)
-        log.debug1("GetAll('%s')", interface_name)
-
-        if interface_name != DBUS_INTERFACE:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        return {
-            'version': self._get_property("version"),
-            'interface_version': self._get_property("interface_version"),
-            'state': self._get_property("state"),
-            'IPv4': self._get_property("IPv4"),
-            'IPv6': self._get_property("IPv6"),
-            'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
-            'BRIDGE': self._get_property("BRIDGE"),
-        }
-        
-
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
-    @dbus_handle_exceptions
-    def Set(self, interface_name, property_name, new_value, sender=None):
-        interface_name = dbus_to_python(interface_name)
-        property_name = dbus_to_python(property_name)
-        new_value = dbus_to_python(new_value)
-        log.debug1("Set('%s', '%s', '%s')", interface_name, property_name,
-                   new_value)
-        self.accessCheck(sender)
-
-        if interface_name != DBUS_INTERFACE:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        raise dbus.exceptions.DBusException(
-            "org.freedesktop.DBus.Error.AccessDenied: "
-            "Property '%s' is not settable" % property_name)
-
-    @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
-    def PropertiesChanged(self, interface_name, changed_properties,
-                          invalidated_properties):
-        pass
+        @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
+        def PropertiesChanged(self, interface_name, changed_properties,
+                              invalidated_properties):
+            pass
 
     # reload
 
