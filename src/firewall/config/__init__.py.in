@@ -80,3 +80,6 @@ SYSCTL_CONFIG = '/etc/sysctl.conf'
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"
 FALLBACK_MINIMAL_MARK = 100
+FALLBACK_CLEANUP_ON_EXIT = "yes"
+FALLBACK_LOCKDOWN = "no"
+FALLBACK_IPV6_RPFILTER = "yes"
