@@ -340,10 +340,11 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-service</option>=<replaceable>service</replaceable> <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-service</option>=<replaceable>service</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Add a service for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the amount of seconds and will be removed automatically afterwards.
+	      Add a service for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
 	      The service is one of the firewalld provided services. To get a list of the supported services, use <command>firewall-cmd --get-services</command>.
@@ -384,10 +385,11 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Add the port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the amount of seconds and will be removed automatically afterwards.
+	      Add the port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
 	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
@@ -428,10 +430,11 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-icmp-block</option>=<replaceable>icmptype</replaceable> <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-icmp-block</option>=<replaceable>icmptype</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Add an ICMP block for <replaceable>icmptype</replaceable> for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the amount of seconds and will be removed automatically afterwards.
+	      Add an ICMP block for <replaceable>icmptype</replaceable> for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
 	      The <replaceable>icmptype</replaceable> is the one of the icmp types firewalld supports. To get a listing of supported icmp types: <command>firewall-cmd --get-icmptypes</command>
@@ -475,10 +478,11 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional> <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-forward-port</option>=port=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>:proto=<replaceable>protocol</replaceable><optional>:toport=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional></optional><optional>:toaddr=<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></optional> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Add the <emphasis>IPv4</emphasis> forward port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the amount of seconds and will be removed automatically afterwards.
+	      Add the <emphasis>IPv4</emphasis> forward port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
 	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is a simple IP address.
@@ -519,10 +523,12 @@
 	<!-- add/remove/query masquerade -->
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-masquerade</option> <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-masquerade</option> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Enable <emphasis>IPv4</emphasis> masquerade for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If a timeout is supplied, masquerading will be active for the amount of seconds. Masquerading is useful if the machine is a router and machines connected over an interface in another zone should be able to use the first connection.
+	      Enable <emphasis>IPv4</emphasis> masquerade for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If a timeout is supplied, masquerading will be active for the specified amount of time.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
+	      Masquerading is useful if the machine is a router and machines connected over an interface in another zone should be able to use the first connection.
 	    </para>
 	    <para>
 	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
@@ -569,10 +575,11 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-rich-rule</option>='<replaceable>rule</replaceable>' <optional><option>--timeout</option>=<replaceable>seconds</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-rich-rule</option>='<replaceable>rule</replaceable>' <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Add rich language rule '<replaceable>rule</replaceable>' for <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used. If a timeout is supplied, the <replaceable>rule</replaceable> will be active for the amount of seconds and will be removed automatically afterwards.
+	      Add rich language rule '<replaceable>rule</replaceable>' for <replaceable>zone</replaceable>. This option can be specified multiple times. If zone is omitted, default zone will be used. If a timeout is supplied, the <replaceable>rule</replaceable> will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
 	      For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.

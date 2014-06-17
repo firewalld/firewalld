@@ -288,7 +288,7 @@ assert_bad           "--permanent --zone=external --query-service=dns" # removed
 assert_bad           "--permanent --zone=external --add-service=smtps" # bad service name
 assert_bad           "--permanent --zone=external --add-service=dns --add-interface=dummy0" # impossible combination
 
-assert_good "   --add-service=http --add-service=nfs"
+assert_good "   --add-service=http --add-service=nfs --timeout=1h"
 assert_good " --query-service http"
 assert_good " --query-service=nfs --zone=${default_zone}"
 assert_good "--remove-service=nfs --remove-service=http"
@@ -304,7 +304,7 @@ assert_bad  "--permanent  --query-service nfs"
 
 assert_bad  "   --add-port=666" # no protocol
 assert_bad  "   --add-port=666/dummy" # bad protocol
-assert_good "   --add-port=666/tcp --zone=${default_zone}"
+assert_good "   --add-port=666/tcp --zone=${default_zone} --timeout=30m"
 assert_good "--remove-port=666/tcp"
 assert_good "   --add-port=111-222/udp"
 assert_good " --query-port=111-222/udp --zone=${default_zone}"

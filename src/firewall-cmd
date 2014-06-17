@@ -109,7 +109,8 @@ Service Options
 Options to Adapt and Query Zones
   --list-all           List everything added for or enabled in a zone [P] [Z]
   --list-services      List services added for a zone [P] [Z]
-  --timeout=<seconds>  Enable an option for seconds only
+  --timeout=<timeval>  Enable an option for timeval time, where timeval is
+                       a number followed by one of letters 's' or 'm' or 'h'
                        Usable for options maked with [T]
   --add-service=<service>
                        Add a service for a zone [P] [Z] [T]
@@ -421,7 +422,7 @@ parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-user", 
 
 parser.add_argument("--permanent", action="store_true")
 parser.add_argument("--zone", default="", metavar="<zone>")
-parser.add_argument("--timeout", default=0, type=int, metavar="<seconds>")
+parser.add_argument("--timeout", default="0", metavar="<seconds>")
 
 parser_group_zone = parser.add_mutually_exclusive_group()
 parser_group_zone.add_argument("--add-interface", metavar="<iface>")
@@ -570,7 +571,7 @@ options_zone_adapt_query = \
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
 
-options_zone = a.zone or a.timeout or options_zone_ops
+options_zone = a.zone or a.timeout != "0" or options_zone_ops
 
 options_permanent = a.permanent or options_config or a.zone or options_zone_ops
 
@@ -633,13 +634,48 @@ if options_config and options_zone:
     __fail(parser.format_usage() +
            "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
 
+if a.timeout != "0":
+    value = 0
+    unit = 's'
+    if len(a.timeout) < 1:
+        __fail(parser.format_usage() +
+               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+    elif len(a.timeout) == 1:
+        if a.timeout.isdigit():
+            value = int (a.timeout[0])
+        else:
+            __fail(parser.format_usage() +
+               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+    elif len(a.timeout) > 1:
+        if a.timeout.isdigit():
+            value = int(a.timeout)
+            unit = 's'
+        else:
+            if a.timeout[:-1].isdigit():
+                value = int (a.timeout[:-1])
+            else:
+                __fail(parser.format_usage() +
+                   "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+            unit = a.timeout[-1:].lower()
+    if unit == 's':
+        a.timeout = value
+    elif unit == 'm':
+        a.timeout = value * 60
+    elif unit == 'h':
+        a.timeout = value * 60 * 60
+    else:
+        __fail(parser.format_usage() +
+               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+else:
+    a.timeout = 0
+
 if a.timeout and not (a.add_service or a.add_port or a.add_icmp_block or \
-                          a.add_forward_port or a.add_masquerade or \
-                          a.add_rich_rule):
+                      a.add_forward_port or a.add_masquerade or \
+                      a.add_rich_rule):
     __fail(parser.format_usage() + "Wrong --timeout usage")
 
 if a.permanent:
-    if a.timeout != 0:
+    if a.timeout:
         __fail(parser.format_usage() +
                "Can't specify timeout for permanent action.")
     if options_config and not a.zone:
