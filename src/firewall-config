@@ -1234,7 +1234,7 @@ class FirewallConfig(object):
         self.load_lockdown_whitelist()
 
     def load_zones(self):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
 
         if self.runtime_view:
             zones = self.fw.getZones()
@@ -1280,8 +1280,8 @@ class FirewallConfig(object):
             else:
                 self.zoneStore.append([zone, Pango.Weight.NORMAL])
 
-        if active_zone in zones:
-            _zone = active_zone
+        if selected_zone in zones:
+            _zone = selected_zone
         else:
             _zone = self.defaultZoneLabel.get_text()
 
@@ -1346,7 +1346,7 @@ class FirewallConfig(object):
             self.removeRichRuleButton.set_sensitive(False)
 
     def service_added_cb(self, zone, service, timeout):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.serviceStore.get_iter_first()
         while iter:
@@ -1356,7 +1356,7 @@ class FirewallConfig(object):
             iter = self.serviceStore.iter_next(iter)
 
     def service_removed_cb(self, zone, service):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.serviceStore.get_iter_first()
         while iter:
@@ -1369,15 +1369,15 @@ class FirewallConfig(object):
         iter = model.get_iter(row)
         old_val = model.get(iter, col)[0]
         name = model.get(iter, 1)[0]
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         if self.runtime_view:
             if not old_val:
-                self.fw.addService(active_zone, name)
+                self.fw.addService(selected_zone, name)
             else:
-                self.fw.removeService(active_zone, name)
+                self.fw.removeService(selected_zone, name)
             self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not old_val:
                 settings.addService(name)
@@ -1405,30 +1405,30 @@ class FirewallConfig(object):
             self.removeForwardButton.set_sensitive(False)
 
     def masquerade_check_cb(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         if self.runtime_view:
             if not self.masqueradeCheck.get_active():
-                if not self.fw.queryMasquerade(active_zone):
-                    self.fw.addMasquerade(active_zone)
+                if not self.fw.queryMasquerade(selected_zone):
+                    self.fw.addMasquerade(selected_zone)
                     self.changes_applied()
             else:
-                if self.fw.queryMasquerade(active_zone):
-                    self.fw.removeMasquerade(active_zone)
+                if self.fw.queryMasquerade(selected_zone):
+                    self.fw.removeMasquerade(selected_zone)
                     self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             settings.setMasquerade(not self.masqueradeCheck.get_active())
             zone.update(settings)
             self.changes_applied()
 
     def masquerade_added_cb(self, zone, timeout):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         self.masqueradeCheck.set_active(True)
 
     def masquerade_removed_cb(self, zone):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         self.masqueradeCheck.set_active(False)
 
@@ -1436,14 +1436,14 @@ class FirewallConfig(object):
         iter = model.get_iter(row)
         old_val = model.get(iter, col)[0]
         name = model.get(iter, 1)[0]
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         if self.runtime_view:
             if not old_val:
-                self.fw.addIcmpBlock(active_zone, name)
+                self.fw.addIcmpBlock(selected_zone, name)
             else:
-                self.fw.removeIcmpBlock(active_zone, name)
+                self.fw.removeIcmpBlock(selected_zone, name)
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not old_val:
                 settings.addIcmpBlock(name)
@@ -1453,7 +1453,7 @@ class FirewallConfig(object):
         self.changes_applied()
 
     def icmp_added_cb(self, zone, icmp, timeout):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.icmpStore.get_iter_first()
         while iter:
@@ -1463,7 +1463,7 @@ class FirewallConfig(object):
             iter = self.icmpStore.iter_next(iter)
 
     def icmp_removed_cb(self, zone, icmp):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.icmpStore.get_iter_first()
         while iter:
@@ -1541,7 +1541,7 @@ class FirewallConfig(object):
                                    audit])
 
     def richrule_added_cb(self, zone, rule, timeout):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         obj = Rich_Rule(rule_str=rule)
         iter = self.richRuleStore.get_iter_first()
@@ -1554,7 +1554,7 @@ class FirewallConfig(object):
         self._add_rich_rule(obj)
 
     def richrule_removed_cb(self, zone, rule):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         obj = Rich_Rule(rule_str=rule)
         iter = self.richRuleStore.get_iter_first()
@@ -1572,7 +1572,7 @@ class FirewallConfig(object):
 
     def interface_added_cb(self, zone, interface):
         self.update_active_zones()
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.interfaceStore.get_iter_first()
         while iter:
@@ -1584,7 +1584,7 @@ class FirewallConfig(object):
         self._add_interface(interface)
 
     def interface_removed_cb(self, zone, interface):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.interfaceStore.get_iter_first()
         while iter:
@@ -1605,12 +1605,12 @@ class FirewallConfig(object):
                 self.interfaceStore.remove(iter)
             iter = self.interfaceStore.iter_next(iter)
         # add if zone is active_zone
-        if zone == self.get_active_zone():
+        if zone == self.get_selected_zone():
             self._add_interface(interface)
 
     def source_added_cb(self, zone, source):
         self.update_active_zones()
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.sourceStore.get_iter_first()
         while iter:
@@ -1623,7 +1623,7 @@ class FirewallConfig(object):
 
     def source_removed_cb(self, zone, source):
         self.update_active_zones()
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.sourceStore.get_iter_first()
         while iter:
@@ -1643,7 +1643,7 @@ class FirewallConfig(object):
                 self.sourceStore.remove(iter)
             iter = self.sourceStore.iter_next(iter)
         # add if zone is active_zone
-        if zone == self.get_active_zone():
+        if zone == self.get_selected_zone():
             self.sourceStore.append([source])
 
     def conf_zone_added_cb(self, zone):
@@ -1652,7 +1652,7 @@ class FirewallConfig(object):
         self.zoneStore.append([zone, Pango.Weight.NORMAL])
 
     def conf_zone_updated_cb(self, zone):
-        if self.runtime_view or zone != self.get_active_zone():
+        if self.runtime_view or zone != self.get_selected_zone():
             return
         self.onChangeZone()
 
@@ -1682,7 +1682,7 @@ class FirewallConfig(object):
         else:
             self._error(exception_message)
 
-    def get_active_zone(self):
+    def get_selected_zone(self):
         selection = self.zoneView.get_selection()
         (model, iter) = selection.get_selected()
         if iter:
@@ -1909,7 +1909,7 @@ class FirewallConfig(object):
             iter = self.zoneStore.iter_next(iter)
 
     def onChangeZone(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
 
         ### load zone settings
 
@@ -1926,7 +1926,7 @@ class FirewallConfig(object):
         self.richRuleView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.zoneNotebook.set_tooltip_markup("")
 
-        if not active_zone:
+        if not selected_zone:
             self.zoneEditBox.set_sensitive(False)
             self.zoneNotebook.set_sensitive(False)
 
@@ -1959,19 +1959,19 @@ class FirewallConfig(object):
         if self.runtime_view:
             # load runtime configuration
 
-            services = self.fw.getServices(active_zone)
-            ports = self.fw.getPorts(active_zone)
-            masquerade = self.fw.queryMasquerade(active_zone)
-            forward_ports = self.fw.getForwardPorts(active_zone)
-            icmpblocks = self.fw.getIcmpBlocks(active_zone)
-            rules = self.fw.getRichRules(active_zone)
-            interfaces = self.fw.getInterfaces(active_zone)
-            sources = self.fw.getSources(active_zone)
+            services = self.fw.getServices(selected_zone)
+            ports = self.fw.getPorts(selected_zone)
+            masquerade = self.fw.queryMasquerade(selected_zone)
+            forward_ports = self.fw.getForwardPorts(selected_zone)
+            icmpblocks = self.fw.getIcmpBlocks(selected_zone)
+            rules = self.fw.getRichRules(selected_zone)
+            interfaces = self.fw.getInterfaces(selected_zone)
+            sources = self.fw.getSources(selected_zone)
             default = False
             builtin = False
         else:
             try:
-                zone = self.fw.config().getZoneByName(active_zone)
+                zone = self.fw.config().getZoneByName(selected_zone)
             except:
                 return
 
@@ -2007,13 +2007,13 @@ class FirewallConfig(object):
         # handle unknown services
         for name in _services:
             text = _("Zone '%s': Service '%s' is not available.") % \
-                (active_zone, name)
+                (selected_zone, name)
             result = self._dialog(text, message_type=Gtk.MessageType.WARNING,
                                   title=_("Warning"),
                                   buttons=((_("Remove"), 1),(_("Ignore"), 2)))
             if result == 1:
                 if self.runtime_view:
-                    self.fw.removeService(active_zone, name)
+                    self.fw.removeService(selected_zone, name)
                 else:
                     settings.removeService(name)
                     zone.update(settings)
@@ -2045,13 +2045,13 @@ class FirewallConfig(object):
         # handle unknown icmpblocks
         for name in _icmpblocks:
             text = _("Zone '%s': ICMP type '%s' is not available.") % \
-                (active_zone, name)
+                (selected_zone, name)
             result = self._dialog(text, message_type=Gtk.MessageType.WARNING,
                                   title=_("Warning"),
                                   buttons=((_("Remove"), 1),(_("Ignore"), 2)))
             if result == 1:
                 if self.runtime_view:
-                    self.fw.removeIcmpBlock(active_zone, name)
+                    self.fw.removeIcmpBlock(selected_zone, name)
                 else:
                     settings.removeIcmpBlock(name)
                     zone.update(settings)
@@ -2086,8 +2086,8 @@ class FirewallConfig(object):
     def onRemoveZone(self, *args):
         if self.runtime_view:
             return
-        active_zone = self.get_active_zone()
-        zone = self.fw.config().getZoneByName(active_zone)
+        selected_zone = self.get_selected_zone()
+        zone = self.fw.config().getZoneByName(selected_zone)
         zone.remove()
         self.changes_applied()
         self.load_zones()
@@ -2101,8 +2101,8 @@ class FirewallConfig(object):
     def onLoadDefaultsZone(self, *args):
         if self.runtime_view:
             return
-        active_zone = self.get_active_zone()
-        zone = self.fw.config().getZoneByName(active_zone)
+        selected_zone = self.get_selected_zone()
+        zone = self.fw.config().getZoneByName(selected_zone)
         zone.loadDefaults()
         self.changes_applied()
         self.onChangeZone()
@@ -2161,8 +2161,8 @@ class FirewallConfig(object):
             self.zoneBaseDialogTargetCheck.set_active(True)
             self.zoneBaseDialogTargetCombobox.set_active(0)
         else:
-            active_zone = self.get_active_zone()
-            zone = self.fw.config().getZoneByName(active_zone)
+            selected_zone = self.get_selected_zone()
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             builtin = zone.get_property("builtin")
     
@@ -2218,8 +2218,8 @@ class FirewallConfig(object):
             return
 
         if not add:
-            active_zone = self.get_active_zone()
-            zone = self.fw.config().getZoneByName(active_zone)
+            selected_zone = self.get_selected_zone()
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
         else:
             settings = client.FirewallClientZoneSettings()
@@ -2253,7 +2253,7 @@ class FirewallConfig(object):
             self.add_edit_rich_rule(False)
 
     def onRemoveRichRule(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         selection = self.richRuleView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
@@ -2261,9 +2261,9 @@ class FirewallConfig(object):
         obj = self.richRuleStore.get_value(iter, 0)
 
         if self.runtime_view:
-            self.fw.removeRichRule(active_zone, str(obj))
+            self.fw.removeRichRule(selected_zone, str(obj))
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             settings.removeRichRule(str(obj))
             zone.update(settings)
@@ -2309,7 +2309,7 @@ class FirewallConfig(object):
                      "info": _("info"),
                      "debug": _("debug"), }
 
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
 
         old_obj = None
         iter = None
@@ -2460,13 +2460,13 @@ class FirewallConfig(object):
             return
 
         if self.runtime_view:
-            if not self.fw.queryRichRule(active_zone, rule):
-                self.fw.addRichRule(active_zone, rule)
+            if not self.fw.queryRichRule(selected_zone, rule):
+                self.fw.addRichRule(selected_zone, rule)
                 if not add:
-                    self.fw.removeRichRule(active_zone, old_rule)
+                    self.fw.removeRichRule(selected_zone, old_rule)
                 self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not settings.queryRichRule(rule):
                 if not add:
@@ -2951,7 +2951,7 @@ class FirewallConfig(object):
         self.add_edit_interface(True)
 
     def onEditInterface(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         selection = self.interfaceView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
@@ -2959,7 +2959,7 @@ class FirewallConfig(object):
         interface = self.interfaceStore.get_value(iter, 0)
         if interface in self.connections:
             connection = self.connections[interface]
-            editor = ZoneConnectionEditor(self.fw, connection, active_zone)
+            editor = ZoneConnectionEditor(self.fw, connection, selected_zone)
             editor.set_icon(self.icon)
             editor.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
             editor.set_transient_for(self.mainWindow)
@@ -2975,16 +2975,16 @@ class FirewallConfig(object):
             self.onEditInterface()
 
     def onRemoveInterface(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         selection = self.interfaceView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
             return
         interface = self.interfaceStore.get_value(iter, 0)
         if self.runtime_view:
-            self.fw.removeInterface(active_zone, interface)
+            self.fw.removeInterface(selected_zone, interface)
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             settings.removeInterface(interface)
             zone.update(settings)
@@ -3004,7 +3004,7 @@ class FirewallConfig(object):
             self.removeInterfaceButton.set_sensitive(False)
 
     def add_edit_interface(self, add):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         old_interface = None
             
         if add:
@@ -3034,13 +3034,13 @@ class FirewallConfig(object):
             return
 
         if self.runtime_view:
-            if not self.fw.queryInterface(active_zone, interface):
-                self.fw.addInterface(active_zone, interface)
+            if not self.fw.queryInterface(selected_zone, interface):
+                self.fw.addInterface(selected_zone, interface)
                 if not add:
-                    self.fw.removeInterface(active_zone, old_interface)
+                    self.fw.removeInterface(selected_zone, old_interface)
                 self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not settings.queryInterface(interface):
                 if not add:
@@ -3067,16 +3067,16 @@ class FirewallConfig(object):
             self.add_edit_source(False)
 
     def onRemoveSource(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         selection = self.sourceView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
             return
         source = self.sourceStore.get_value(iter, 0)
         if self.runtime_view:
-            self.fw.removeSource(active_zone, source)
+            self.fw.removeSource(selected_zone, source)
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             settings.removeSource(source)
             zone.update(settings)
@@ -3092,7 +3092,7 @@ class FirewallConfig(object):
             self.removeSourceButton.set_sensitive(False)
 
     def add_edit_source(self, add):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
 
         old_source = ""
         if not add:
@@ -3107,13 +3107,13 @@ class FirewallConfig(object):
             return
 
         if self.runtime_view:
-            if not self.fw.querySource(active_zone, source):
-                self.fw.addSource(active_zone, source)
+            if not self.fw.querySource(selected_zone, source):
+                self.fw.addSource(selected_zone, source)
                 if not add:
-                    self.fw.removeSource(active_zone, old_source)
+                    self.fw.removeSource(selected_zone, old_source)
                 self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not settings.querySource(source):
                 if not add:
@@ -3133,7 +3133,7 @@ class FirewallConfig(object):
             self.add_edit_port(False)
 
     def onRemovePort(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         selection = self.portView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
@@ -3142,9 +3142,9 @@ class FirewallConfig(object):
         proto = self.portStore.get_value(iter, 1)
 
         if self.runtime_view:
-            self.fw.removePort(active_zone, port, proto)
+            self.fw.removePort(selected_zone, port, proto)
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             settings.removePort(port, proto)
             zone.update(settings)
@@ -3159,7 +3159,7 @@ class FirewallConfig(object):
             self.portDialogOkButton.set_sensitive(True)
 
     def add_edit_port(self, add):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
 
         old_port = None
         old_proto = None
@@ -3197,13 +3197,13 @@ class FirewallConfig(object):
             return
 
         if self.runtime_view:
-            if not self.fw.queryPort(active_zone, port, proto):
-                self.fw.addPort(active_zone, port, proto)
+            if not self.fw.queryPort(selected_zone, port, proto):
+                self.fw.addPort(selected_zone, port, proto)
                 if not add:
-                    self.fw.removePort(active_zone, old_port, old_proto)
+                    self.fw.removePort(selected_zone, old_port, old_proto)
                 self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not settings.queryPort(port, proto):
                 if not add:
@@ -3290,7 +3290,7 @@ class FirewallConfig(object):
             self.changes_applied()
 
     def port_added_cb(self, zone, port, protocol, timeout):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.portStore.get_iter_first()
         while iter:
@@ -3303,7 +3303,7 @@ class FirewallConfig(object):
         self.portStore.append([port, protocol])
 
     def port_removed_cb(self, zone, port, protocol):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.portStore.get_iter_first()
         while iter:
@@ -3444,7 +3444,7 @@ class FirewallConfig(object):
         return value
 
     def add_edit_forward_port(self, add):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
 
         self.forwardDialogOkButton.set_sensitive(False)
         self.forwardDialogLocalCheck.set_active(True)
@@ -3507,20 +3507,20 @@ class FirewallConfig(object):
             return
 
         if self.runtime_view:
-            if not self.fw.queryForwardPort(active_zone, port, proto,
+            if not self.fw.queryForwardPort(selected_zone, port, proto,
                                             to_port, to_addr):
 
-                self.fw.addForwardPort(active_zone, port, proto,
+                self.fw.addForwardPort(selected_zone, port, proto,
                                        to_port, to_addr)
                 if not add:
-                    self.fw.removeForwardPort(active_zone, old_port, old_proto,
+                    self.fw.removeForwardPort(selected_zone, old_port, old_proto,
                                               old_to_port, old_to_addr)
-                if add and to_addr and not self.fw.queryMasquerade(active_zone):
+                if add and to_addr and not self.fw.queryMasquerade(selected_zone):
                     if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
-                        self.fw.addMasquerade(active_zone)
+                        self.fw.addMasquerade(selected_zone)
                 self.changes_applied()
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             if not settings.queryForwardPort(port, proto, to_port, to_addr):
                 if not add:
@@ -3541,13 +3541,13 @@ class FirewallConfig(object):
 
     def forward_port_added_cb(self, zone, port, protocol, to_port, to_address,
                               timeout):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         self._forward_port_added_cb(zone, port, protocol, to_port, to_address)
 
     def forward_port_removed_cb(self, zone, port, protocol, to_port,
                                 to_address):
-        if not self.runtime_view or zone != self.get_active_zone():
+        if not self.runtime_view or zone != self.get_selected_zone():
             return
         self._forward_port_removed_cb(zone, port, protocol, to_port, to_address)
 
@@ -3577,7 +3577,7 @@ class FirewallConfig(object):
             iter = self.forwardStore.iter_next(iter)
 
     def onRemoveForwardPort(self, *args):
-        active_zone = self.get_active_zone()
+        selected_zone = self.get_selected_zone()
         selection = self.forwardView.get_selection()
         (model, iter) = selection.get_selected()
         if iter is None:
@@ -3588,10 +3588,10 @@ class FirewallConfig(object):
         to_addr = self.forwardStore.get_value(iter, 3)
 
         if self.runtime_view:
-            self.fw.removeForwardPort(active_zone, port, proto,
+            self.fw.removeForwardPort(selected_zone, port, proto,
                                       to_port, to_addr)
         else:
-            zone = self.fw.config().getZoneByName(active_zone)
+            zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
             settings.removeForwardPort(port, proto, to_port, to_addr)
             zone.update(settings)
