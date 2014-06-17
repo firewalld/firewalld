@@ -1273,8 +1273,9 @@ class FirewallConfig(object):
                 self.icmpStore.append([False, obj.get_property("name")])
 
         # zones
+        active_zones = self.fw.getActiveZones().keys()
         for zone in zones:
-            if zone == self.default_zone:
+            if zone in active_zones:
                 self.zoneStore.append([zone, Pango.Weight.BOLD])
             else:
                 self.zoneStore.append([zone, Pango.Weight.NORMAL])
