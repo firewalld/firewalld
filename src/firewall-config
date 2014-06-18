@@ -1899,14 +1899,8 @@ class FirewallConfig(object):
             new_default_zone != self.default_zone)
 
     def default_zone_changed_cb(self, zone):
+        self.default_zone = zone
         self.defaultZoneLabel.set_text(zone)
-        iter = self.zoneStore.get_iter_first()
-        while iter:
-            if self.zoneStore.get_value(iter, 0) == zone:
-                self.zoneStore.set_value(iter, 1, Pango.Weight.BOLD)
-            else:
-                self.zoneStore.set_value(iter, 1, Pango.Weight.NORMAL)
-            iter = self.zoneStore.iter_next(iter)
 
     def onChangeZone(self, *args):
         selected_zone = self.get_selected_zone()
