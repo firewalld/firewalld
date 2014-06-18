@@ -1233,7 +1233,7 @@ class FirewallConfig(object):
         self.load_direct()
         self.load_lockdown_whitelist()
 
-    def load_zones(self):
+    def _update_zoneStore(self):
         selected_zone = self.get_selected_zone()
 
         if self.runtime_view:
@@ -1249,28 +1249,6 @@ class FirewallConfig(object):
         selection.set_mode(Gtk.SelectionMode.NONE)
 
         self.zoneStore.clear()
-        self.serviceStore.clear()
-        self.portStore.clear()
-        self.forwardStore.clear()
-        self.icmpStore.clear()
-        self.richRuleStore.clear()
-        self.interfaceStore.clear()
-        self.sourceStore.clear()
-
-        if self.runtime_view:
-            for item in self.fw.listServices():
-                self.serviceStore.append([False, item])
-            for item in self.fw.listIcmpTypes():
-                self.icmpStore.append([False, item])
-        else:
-            items = self.fw.config().listServices()
-            for item in items:
-                obj = self.fw.config().getService(item)
-                self.serviceStore.append([False, obj.get_property("name")])
-            items = self.fw.config().listIcmpTypes()
-            for item in items:
-                obj = self.fw.config().getIcmpType(item)
-                self.icmpStore.append([False, obj.get_property("name")])
 
         # zones
         active_zones = self.fw.getActiveZones().keys()
@@ -1295,6 +1273,33 @@ class FirewallConfig(object):
             iter = self.zoneStore.iter_next(iter)
         # fallback
         selection.select_path(0)
+
+    def load_zones(self):
+        self.zoneStore.clear()
+        self.serviceStore.clear()
+        self.portStore.clear()
+        self.forwardStore.clear()
+        self.icmpStore.clear()
+        self.richRuleStore.clear()
+        self.interfaceStore.clear()
+        self.sourceStore.clear()
+
+        if self.runtime_view:
+            for item in self.fw.listServices():
+                self.serviceStore.append([False, item])
+            for item in self.fw.listIcmpTypes():
+                self.icmpStore.append([False, item])
+        else:
+            items = self.fw.config().listServices()
+            for item in items:
+                obj = self.fw.config().getService(item)
+                self.serviceStore.append([False, obj.get_property("name")])
+            items = self.fw.config().listIcmpTypes()
+            for item in items:
+                obj = self.fw.config().getIcmpType(item)
+                self.icmpStore.append([False, obj.get_property("name")])
+
+        self._update_zoneStore()
 
     def get_active_service(self):
         selection = self.serviceConfServiceView.get_selection()
@@ -1584,6 +1589,7 @@ class FirewallConfig(object):
         self._add_interface(interface)
 
     def interface_removed_cb(self, zone, interface):
+        self.update_active_zones()
         if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.interfaceStore.get_iter_first()
@@ -1592,7 +1598,6 @@ class FirewallConfig(object):
                 self.interfaceStore.remove(iter)
                 break
             iter = self.interfaceStore.iter_next(iter)
-        self.update_active_zones()
 
     def zone_of_interface_changed_cb(self, zone, interface):
         self.update_active_zones()
@@ -1746,8 +1751,6 @@ class FirewallConfig(object):
         self.load_lockdown_whitelist()
 
     def update_active_zones(self):
-        self.active_zones.clear()
-
         # remove all entries for the left menu
         left_menu_children = self.left_menu.get_children()
         for child in left_menu_children:
@@ -1767,6 +1770,9 @@ class FirewallConfig(object):
         if not self.fw.connected:
             return
 
+        self._update_zoneStore()
+
+        self.active_zones.clear()
         active_zones = self.fw.getActiveZones()
         if active_zones:
             self.active_zones = active_zones
