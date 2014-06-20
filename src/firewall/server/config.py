@@ -374,7 +374,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        if property_name in [ "MinimalMark", "CleanupOnExit" ]:
+        if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown" ]:
             if property_name == "MinimalMark":
                 try:
                     foo = int(new_value)
@@ -385,7 +385,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
-            if property_name in [ "CleanupOnExit" ]:
+            if property_name in [ "CleanupOnExit", "Lockdown" ]:
                 if new_value.lower() not in [ "yes", "no", "true", "false" ]:
                     raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
@@ -393,7 +393,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             self.config.get_firewalld_conf().write()
             self.PropertiesChanged(interface_name,
                                    { property_name: new_value }, [ ])
-        elif property_name in [ "DefaultZone", "Lockdown" ]:
+        elif property_name in [ "DefaultZone" ]:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.PropertyReadOnly: "
                 "Property '%s' is read-only" % property_name)
