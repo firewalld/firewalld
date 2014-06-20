@@ -162,7 +162,11 @@ class Firewall:
         try:
             self.policies.lockdown_whitelist.read()
         except Exception as msg:
-            log.error("Failed to load lockdown whitelist '%s': %s",
+            if self.policies.query_lockdown():
+                log.error("Failed to load lockdown whitelist '%s': %s",
+                      self.policies.lockdown_whitelist.filename, msg)
+            else:
+                log.debug1("Failed to load lockdown whitelist '%s': %s",
                       self.policies.lockdown_whitelist.filename, msg)
 
         # copy policies to config interface
