@@ -135,6 +135,10 @@ def icmptype_writer(icmptype, path=None):
         except Exception as msg:
             raise IOError("Backup of '%s' failed: %s" % (name, msg))
 
+    dirpath = os.path.dirname(name)
+    if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
+        os.mkdir(dirpath, 0o750)
+
     f = io.open(name, mode='wt', encoding='UTF-8')
     handler = IO_Object_XMLGenerator(f)
     handler.startDocument()
