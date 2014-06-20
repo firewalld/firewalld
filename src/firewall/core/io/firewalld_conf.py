@@ -24,7 +24,8 @@ import io
 import tempfile
 import shutil
 
-from firewall.config import FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
+from firewall.config import ETC_FIREWALLD, \
+                            FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
     FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
@@ -147,6 +148,9 @@ class firewalld_conf:
 
         # handled keys
         done = [ ]
+
+        if not os.path.exists(ETC_FIREWALLD):
+            os.mkdir(ETC_FIREWALLD, 0o750)
 
         try:
             temp_file = tempfile.NamedTemporaryFile(mode='wt',

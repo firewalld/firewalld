@@ -522,6 +522,8 @@ def zone_writer(zone, path=None):
 
     dirpath = os.path.dirname(name)
     if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
+        if not os.path.exists(ETC_FIREWALLD):
+            os.mkdir(ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
     f = io.open(name, mode='wt', encoding='UTF-8')

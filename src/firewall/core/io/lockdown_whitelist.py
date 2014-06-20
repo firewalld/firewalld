@@ -316,6 +316,9 @@ class LockdownWhitelist(IO_Object):
             except Exception as msg:
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
+        if not os.path.exists(ETC_FIREWALLD):
+            os.mkdir(ETC_FIREWALLD, 0o750)
+
         f = io.open(self.filename, mode='wt', encoding='UTF-8')
         handler = IO_Object_XMLGenerator(f)
         handler.startDocument()
