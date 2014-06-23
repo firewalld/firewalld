@@ -320,7 +320,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             if value != None:
                 return value
             else:
-                return "no"
+                return FALLBACK_LOCKDOWN
 
         @dbus.service.property(DBUS_INTERFACE_CONFIG, signature='i')
         @dbus_handle_exceptions
@@ -357,7 +357,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             if value != None:
                 return value
             else:
-                return "yes"
+                return FALLBACK_CLEANUP_ON_EXIT
 
         @CleanupOnExit.setter
         @dbus_handle_exceptions
@@ -388,9 +388,9 @@ class FirewallDConfig(slip.dbus.service.Object):
                 elif prop == "MinimalMark":
                     return FALLBACK_MINIMAL_MARK
                 elif prop == "CleanupOnExit":
-                    return "yes"
+                    return FALLBACK_CLEANUP_ON_EXIT
                 elif prop == "Lockdown":
-                    return "no"
+                    return FALLBACK_LOCKDOWN
             else:
                 raise dbus.exceptions.DBusException(
                     "org.freedesktop.DBus.Error.AccessDenied: "
