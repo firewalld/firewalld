@@ -322,6 +322,19 @@ class FirewallDConfig(slip.dbus.service.Object):
             else:
                 return FALLBACK_LOCKDOWN
 
+        @Lockdown.setter
+        @dbus_handle_exceptions
+        def Lockdown(self, value):
+            try:
+                new_value = str(new_value)
+            except:
+                raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
+                                    (value, "Lockdown"))
+            self.config.get_firewalld_conf().set("Lockdown", value)
+            self.config.get_firewalld_conf().write()
+            self.PropertiesChanged(DBUS_INTERFACE_CONFIG,
+                                   { "Lockdown": value }, [ ])
+
         @dbus.service.property(DBUS_INTERFACE_CONFIG, signature='i')
         @dbus_handle_exceptions
         def MinimalMark(self):
