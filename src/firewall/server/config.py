@@ -326,7 +326,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         @dbus_handle_exceptions
         def Lockdown(self, value):
             try:
-                new_value = str(new_value)
+                value = str(value)
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                     (value, "Lockdown"))
@@ -354,7 +354,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             except:
                 raise FirewallError(INVALID_MARK, value)
             try:
-                new_value = str(new_value)
+                value = str(value)
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                     (value, "MinimalMark"))
@@ -376,7 +376,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         @dbus_handle_exceptions
         def CleanupOnExit(self, value):
             try:
-                new_value = str(new_value)
+                value = str(value)
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                     (value, "CleanupOnExit"))
