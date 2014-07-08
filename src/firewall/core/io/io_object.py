@@ -69,7 +69,7 @@ class IO_Object(object):
         for char in name:
             if not char.isalnum() and char not in self.ADDITIONAL_ALNUM_CHARS:
                 raise FirewallError(INVALID_NAME,
-                                 "'%s' is not allowed in %s" % ((char, name)))
+                                 "'%s' is not allowed in '%s'" % ((char, name)))
 
     def check_config(self, config):
         if len(config) != len(self.IMPORT_EXPORT_STRUCTURE):
@@ -254,10 +254,18 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
 
 def check_port(port):
     port_range = getPortRange(port)
-    if port_range == -2 or port_range == -1 or port_range == None or \
-            (len(port_range) == 2 and port_range[0] >= port_range[1]):
-        raise FirewallError(INVALID_PORT, port)
+    if port_range == -2:
+        raise FirewallError(INVALID_PORT,
+                            "port number in '%s' is too big" % port)
+    elif port_range == -1:
+        raise FirewallError(INVALID_PORT, "'%s' is invalid port range" % port)
+    elif port_range == None:
+        raise FirewallError(INVALID_PORT,
+                            "port range '%s' is ambiguous" % port)
+    elif len(port_range) == 2 and port_range[0] >= port_range[1]:
+        raise FirewallError(INVALID_PORT, "'%s' is invalid port range" % port)
 
 def check_protocol(protocol):
     if not protocol in [ "tcp", "udp" ]:
-        raise FirewallError(INVALID_PROTOCOL, protocol)
+        raise FirewallError(INVALID_PROTOCOL,
+                            "'%s' not from {'tcp'|'udp'}" % protocol)

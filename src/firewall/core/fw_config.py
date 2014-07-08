@@ -167,9 +167,15 @@ class FirewallConfig:
         return name in self._default_icmptypes
 
     def load_icmptype_defaults(self, obj):
-        if obj.name not in self._icmptypes or self._icmptypes[obj.name] != obj or \
-                obj.name not in self._default_icmptypes:
-            raise FirewallError(NO_DEFAULTS, obj.name)
+        if obj.name not in self._icmptypes:
+            raise FirewallError(NO_DEFAULTS,
+                                "'%s' not in self._icmptypes" % obj.name)
+        elif self._icmptypes[obj.name] != obj:
+            raise FirewallError(NO_DEFAULTS,
+                                "self._icmptypes[%s] != obj" % obj.name)
+        elif obj.name not in self._default_icmptypes:
+            raise FirewallError(NO_DEFAULTS,
+                            "'%s' not in self._default_icmptypes" % obj.name)
         self._remove_icmptype(obj)
         return self._default_icmptypes[obj.name]
 
@@ -196,7 +202,7 @@ class FirewallConfig:
         except:
             pass
         else:
-            raise FirewallError(NAME_CONFLICT, name)
+            raise FirewallError(NAME_CONFLICT, "new_icmptype(): '%s'" % name)
 
         x = IcmpType()
         x.check_name(name)
@@ -275,9 +281,11 @@ class FirewallConfig:
 
     def _remove_icmptype(self, obj):
         if obj.name not in self._icmptypes:
-            raise FirewallError(INVALID_ICMPTYPE, obj.name)
+            raise FirewallError(INVALID_ICMPTYPE,
+                                "'%s' not in self._icmptypes" % obj.name)
         if obj.path != ETC_FIREWALLD_ICMPTYPES:
-            raise FirewallError(INVALID_DIRECTORY, obj.path)
+            raise FirewallError(INVALID_DIRECTORY,
+                        "'%s' != '%s'" % (obj.path, ETC_FIREWALLD_ICMPTYPES))
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._icmptypes[obj.name]
 
@@ -288,7 +296,8 @@ class FirewallConfig:
 
     def check_builtin_icmptype(self, obj):
         if self.is_builtin_icmptype(obj):
-            raise FirewallError(BUILTIN_ICMPTYPE, obj.name)
+            raise FirewallError(BUILTIN_ICMPTYPE,
+                                "'%s' is built-in icmp type" % obj.name)
 
     def remove_icmptype(self, obj):
         self.check_builtin_icmptype(obj)
@@ -320,7 +329,7 @@ class FirewallConfig:
             return self._services[name]
         elif name in self._default_services:
             return self._default_services[name]
-        raise FirewallError(INVALID_SERVICE, name)
+        raise FirewallError(INVALID_SERVICE, "get_service(): '%s'" % name)
 
     def service_has_defaults(self, name):
         return (name in self._services and name in self._default_services)
@@ -329,9 +338,15 @@ class FirewallConfig:
         return name in self._default_services
 
     def load_service_defaults(self, obj):
-        if obj.name not in self._services or self._services[obj.name] != obj or \
-                obj.name not in self._default_services:
-            raise FirewallError(NO_DEFAULTS, obj.name)
+        if obj.name not in self._services:
+            raise FirewallError(NO_DEFAULTS,
+                                "'%s' not in self._services" % obj.name)
+        elif self._services[obj.name] != obj:
+            raise FirewallError(NO_DEFAULTS,
+                                "self._services[%s] != obj" % obj.name)
+        elif obj.name not in self._default_services:
+            raise FirewallError(NO_DEFAULTS,
+                            "'%s' not in self._default_services" % obj.name)
         self._remove_service(obj)
         return self._default_services[obj.name]
 
@@ -358,7 +373,7 @@ class FirewallConfig:
         except:
             pass
         else:
-            raise FirewallError(NAME_CONFLICT, name)
+            raise FirewallError(NAME_CONFLICT, "new_service(): '%s'" % name)
 
         x = Service()
         x.check_name(name)
@@ -437,9 +452,11 @@ class FirewallConfig:
 
     def _remove_service(self, obj):
         if obj.name not in self._services:
-            raise FirewallError(INVALID_SERVICE, obj.name)
+            raise FirewallError(INVALID_SERVICE,
+                                "'%s' not in self._services" % obj.name)
         if obj.path != ETC_FIREWALLD_SERVICES:
-            raise FirewallError(INVALID_DIRECTORY, obj.path)
+            raise FirewallError(INVALID_DIRECTORY,
+                        "'%s' != '%s'" % (obj.path, ETC_FIREWALLD_SERVICES))
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._services[obj.name]
 
@@ -450,7 +467,8 @@ class FirewallConfig:
 
     def check_builtin_service(self, obj):
         if self.is_builtin_service(obj):
-            raise FirewallError(BUILTIN_SERVICE, obj.name)
+            raise FirewallError(BUILTIN_SERVICE,
+                                "'%s' is built-in service" % obj.name)
 
     def remove_service(self, obj):
         self.check_builtin_service(obj)
@@ -488,7 +506,7 @@ class FirewallConfig:
             return self._zones[name]
         elif name in self._default_zones:
             return self._default_zones[name]
-        raise FirewallError(INVALID_ZONE, name)
+        raise FirewallError(INVALID_ZONE, "get_zone(): %s" % name)
 
     def zone_has_defaults(self, name):
         return (name in self._zones and name in self._default_zones)
@@ -497,9 +515,15 @@ class FirewallConfig:
         return name in self._default_zones
 
     def load_zone_defaults(self, obj):
-        if obj.name not in self._zones or self._zones[obj.name] != obj or \
-                obj.name not in self._default_zones:
-            raise FirewallError(NO_DEFAULTS, obj.name)
+        if obj.name not in self._zones:
+            raise FirewallError(NO_DEFAULTS,
+                                "'%s' not in self._zones" % obj.name)
+        elif self._zones[obj.name] != obj:
+            raise FirewallError(NO_DEFAULTS,
+                                "self._zones[%s] != obj" % obj.name)
+        elif obj.name not in self._default_zones:
+            raise FirewallError(NO_DEFAULTS,
+                                "'%s' not in self._default_zones" % obj.name)
         self._remove_zone(obj)
         return self._default_zones[obj.name]
 
@@ -528,7 +552,7 @@ class FirewallConfig:
         except:
             pass
         else:
-            raise FirewallError(NAME_CONFLICT, name)
+            raise FirewallError(NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
         x.check_name(name)
@@ -609,9 +633,11 @@ class FirewallConfig:
 
     def _remove_zone(self, obj):
         if obj.name not in self._zones:
-            raise FirewallError(INVALID_ZONE, obj.name)
+            raise FirewallError(INVALID_ZONE,
+                                "'%s' not in self._zones" % obj.name)
         if not obj.path.startswith(ETC_FIREWALLD_ZONES):
-            raise FirewallError(INVALID_DIRECTORY, obj.path)
+            raise FirewallError(INVALID_DIRECTORY,
+                "'%s' doesn't start with '%s'" % (obj.path, ETC_FIREWALLD_ZONES))
         os.remove("%s/%s.xml" % (ETC_FIREWALLD_ZONES, obj.name))
         del self._zones[obj.name]
 
@@ -622,7 +648,7 @@ class FirewallConfig:
 
     def check_builtin_zone(self, obj):
         if self.is_builtin_zone(obj):
-            raise FirewallError(BUILTIN_ZONE, obj.name)
+            raise FirewallError(BUILTIN_ZONE, "'%s' is built-in zone" % obj.name)
 
     def remove_zone(self, obj):
         self.check_builtin_zone(obj)

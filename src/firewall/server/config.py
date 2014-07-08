@@ -129,7 +129,8 @@ class FirewallDConfig(slip.dbus.service.Object):
             return
 
         if not name.endswith(".xml"):
-            raise FirewallError(INVALID_FILENAME, name)
+            raise FirewallError(INVALID_FILENAME,
+                                "'%s' doesn't end with '.xml'" % name)
 
         if name.startswith(FIREWALLD_ICMPTYPES) or \
                 name.startswith(ETC_FIREWALLD_ICMPTYPES):

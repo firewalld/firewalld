@@ -66,12 +66,12 @@ class FirewallPolicies:
 
     def enable_lockdown(self):
         if self._lockdown:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED, "enable_lockdown()")
         self._lockdown = True
 
     def disable_lockdown(self):
         if not self._lockdown:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED, "disable_lockdown()")
         self._lockdown = False
 
     def query_lockdown(self):

@@ -170,10 +170,10 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
         for iface in added_ifaces:
             if self.parent.getZoneOfInterface(iface):
-                raise FirewallError(ZONE_CONFLICT)    # or move to new zone ?
+                raise FirewallError(ZONE_CONFLICT, iface)  # or move to new zone ?
         for source in added_sources:
             if self.parent.getZoneOfSource(source):
-                raise FirewallError(ZONE_CONFLICT)    # or move to new zone ?
+                raise FirewallError(ZONE_CONFLICT, source) # or move to new zone ?
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions

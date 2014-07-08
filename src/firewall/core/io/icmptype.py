@@ -75,7 +75,8 @@ class IcmpType(IO_Object):
         if item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(INVALID_DESTINATION, destination)
+                    raise FirewallError(INVALID_DESTINATION,
+                                 "'%s' not from {'ipv4'|'ipv6'}" % destination)
 
 # PARSER
 

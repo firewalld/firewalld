@@ -565,7 +565,8 @@ class Firewall:
                 rule[i:i+1] = [ "REJECT", "--reject-with",
                                 ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
             else:
-                raise FirewallError(EBTABLES_NO_REJECT)
+                raise FirewallError(EBTABLES_NO_REJECT,
+                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
         # replace %%ICMP%%
         try:
@@ -576,7 +577,8 @@ class Firewall:
             if ipv in [ "ipv4", "ipv6" ]:
                 rule[i] = ipXtables.ICMP[ipv]
             else:
-                raise FirewallError(INVALID_IPV, ipv)
+                raise FirewallError(INVALID_IPV,
+                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
         if ipv == "ipv4":
             # do not call if disabled
@@ -591,7 +593,8 @@ class Firewall:
             if self.ebtables_enabled:
                 return self._ebtables.set_rule(rule)
         else:
-            raise FirewallError(INVALID_IPV, ipv)
+            raise FirewallError(INVALID_IPV,
+                                "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
 
         return ""
 
@@ -622,20 +625,21 @@ class Firewall:
         if range == -2 or range == -1 or range == None or \
                 (len(range) == 2 and range[0] >= range[1]):
             if range == -2:
-                log.debug2("'%s': port > 65535" % port)
+                log.debug1("'%s': port > 65535" % port)
             elif range == -1:
-                log.debug2("'%s': port is invalid" % port)
+                log.debug1("'%s': port is invalid" % port)
             elif range == None:
-                log.debug2("'%s': port is ambiguous" % port)
+                log.debug1("'%s': port is ambiguous" % port)
             elif len(range) == 2 and range[0] >= range[1]:
-                log.debug2("'%s': range start >= end" % port)
+                log.debug1("'%s': range start >= end" % port)
             raise FirewallError(INVALID_PORT, port)
 
     def check_protocol(self, protocol):
         if not protocol:
             raise FirewallError(MISSING_PROTOCOL)
         if not protocol in [ "tcp", "udp" ]:
-            raise FirewallError(INVALID_PROTOCOL, protocol)
+            raise FirewallError(INVALID_PROTOCOL,
+                                "'%s' not in {'tcp'|'udp'}" % protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):
@@ -649,7 +653,8 @@ class Firewall:
             if not functions.checkIP6nMask(source):
                 raise FirewallError(INVALID_ADDR, source)
         else:
-            raise FirewallError(INVALID_IPV)
+            raise FirewallError(INVALID_IPV,
+                                "'%s' not in {'ipv4'|'ipv6'}")
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
@@ -725,7 +730,8 @@ class Firewall:
 
     def enable_panic_mode(self):
         if self._panic:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                                "panic mode already enabled")
 
         # TODO: use rule in raw table not default chain policy
         try:
@@ -736,7 +742,8 @@ class Firewall:
 
     def disable_panic_mode(self):
         if not self._panic:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                                "panic mode is not enabled")
 
         # TODO: use rule in raw table not default chain policy
         try:

@@ -87,7 +87,7 @@ class Zone(IO_Object):
         for i, (el, val) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
             if el == element:
                 return i
-        raise FirewallError(UNKNOWN_ERROR)
+        raise FirewallError(UNKNOWN_ERROR, "index_of()")
 
     def __init__(self):
         super(Zone, self).__init__()
@@ -160,7 +160,8 @@ class Zone(IO_Object):
             existing_services = self.fw_config.get_services()
             for service in config:
                 if not service in existing_services:
-                    raise FirewallError(INVALID_SERVICE, service)
+                    raise FirewallError(INVALID_SERVICE,
+                                  "'%s' not among existing services" % service)
         elif item == "ports":
             for port in config:
                 check_port(port[0])
@@ -169,18 +170,21 @@ class Zone(IO_Object):
             existing_icmptypes = self.fw_config.get_icmptypes()
             for icmptype in config:
                 if not icmptype in existing_icmptypes:
-                    raise FirewallError(INVALID_ICMPTYPE, icmptype)
+                    raise FirewallError(INVALID_ICMPTYPE,
+                               "'%s' not among existing icmp types" % icmptype)
         elif item == "forward_ports":
             for fwd_port in config:
                 check_port(fwd_port[0])
                 check_protocol(fwd_port[1])
                 if not fwd_port[2] and not fwd_port[3]:
-                    raise FirewallError(INVALID_FORWARD, fwd_port)
+                    raise FirewallError(INVALID_FORWARD,
+                             "'%s' is missing to-port AND to-addr " % fwd_port)
                 if fwd_port[2]:
                     check_port(fwd_port[2])
                 if fwd_port[3]:
                     if not checkIP(fwd_port[3]):
-                        raise FirewallError(INVALID_ADDR, fwd_port[3])
+                        raise FirewallError(INVALID_ADDR,
+                           "to-addr '%s' is not a valid address" % fwd_port[3])
         elif item == "target":
             if config not in ZONE_TARGETS:
                 raise FirewallError(INVALID_TARGET, config)
@@ -491,11 +495,11 @@ def zone_reader(filename, path):
     zone = Zone()
     if not filename.endswith(".xml"):
         raise FirewallError(INVALID_NAME,
-                            "%s is missing .xml suffix" % filename)
+                            "'%s' is missing .xml suffix" % filename)
     zone.name = filename[:-4]
     if len(zone.name) > max_zone_name_len():
         raise FirewallError(INVALID_NAME,
-                            "%s has %d chars, max is %d" % (zone.name, len(zone.name), max_zone_name_len()))
+                            "'%s' has %d chars, max is %d" % (zone.name, len(zone.name), max_zone_name_len()))
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path

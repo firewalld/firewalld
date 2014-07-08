@@ -90,11 +90,13 @@ class FirewallDirect:
         if add:
             if table_id in self._chains and \
                     chain in self._chains[table_id]:
-                raise FirewallError(ALREADY_ENABLED)
+                raise FirewallError(ALREADY_ENABLED,
+                     "chain '%s' already is in '%s:%s'" % (chain, ipv, table))
         else:
             if table_id not in self._chains or \
                     not chain in self._chains[table_id]:
-                raise FirewallError(NOT_ENABLED)
+                raise FirewallError(NOT_ENABLED,
+                    "chain '%s' is not in '%s:%s'" % (chain, ipv, table))
 
         rule = [ "-t", table ]
         if add:
@@ -162,11 +164,16 @@ class FirewallDirect:
         if enable:
             if chain_id in self._rules and \
                     rule_id in self._rules[chain_id]:
-                raise FirewallError(ALREADY_ENABLED)
+                raise FirewallError(ALREADY_ENABLED,
+                                    "rule '%s' already is in '%s:%s:%s'" % \
+                                    (args, ipv, table, chain))
         else:
             if not chain_id in self._rules or \
                     not rule_id in self._rules[chain_id]:
-                raise FirewallError(NOT_ENABLED)
+                raise FirewallError(NOT_ENABLED,
+                                    "rule '%s' is not in '%s:%s:%s'" % \
+                                    (args, ipv, table, chain))
+
             # get priority of rule
             priority = self._rules[chain_id][rule_id]
 

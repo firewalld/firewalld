@@ -96,9 +96,12 @@ class Service(IO_Object):
         elif item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(INVALID_DESTINATION, destination)
+                    raise FirewallError(INVALID_DESTINATION,
+                                    "'%s' not in {'ipv4'|'ipv6'}" % destination)
                 if not check_address(destination, config[destination]):
-                    raise FirewallError(INVALID_ADDR, config[destination])
+                    raise FirewallError(INVALID_ADDR,
+                                        "'%s' is not valid %s address" % \
+                                        (config[destination], destination))
 
 # PARSER
 
@@ -121,11 +124,9 @@ class service_ContentHandler(IO_Object_ContentHandler):
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
-                    s = attrs[x]
-                    if x == "ipv4" and not checkIPnMask(s):
-                        raise FirewallError(INVALID_DESTINATION, s)
-                    if x == "ipv6" and not checkIP6nMask(s):
-                        raise FirewallError(INVALID_DESTINATION, s)
+                    if not check_address(x, attrs[x]):
+                        raise FirewallError(INVALID_ADDR,
+                                "'%s' is not valid %s address" % (attrs[x], x))
                     self.item.destination[x] = attrs[x]
         elif name == "module":
             self.item.modules.append(attrs["name"])
@@ -134,7 +135,7 @@ def service_reader(filename, path):
     service = Service()
     if not filename.endswith(".xml"):
         raise FirewallError(INVALID_NAME,
-                            "%s is missing .xml suffix" % filename)
+                            "'%s' is missing .xml suffix" % filename)
     service.name = filename[:-4]
     service.check_name(service.name)
     service.filename = filename

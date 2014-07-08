@@ -300,7 +300,7 @@ class LockdownWhitelist(IO_Object):
         self.cleanup()
         if not self.filename.endswith(".xml"):
             raise FirewallError(INVALID_NAME,
-                                "%s is missing .xml suffix" % self.filename)
+                                "'%s' is missing .xml suffix" % self.filename)
         handler = lockdown_whitelist_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)

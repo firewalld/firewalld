@@ -59,7 +59,8 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                 return
             ipv = attrs["ipv"]
             if ipv not in [ "ipv4", "ipv6", "eb" ]:
-                raise FirewallError(INVALID_IPV, ipv)
+                raise FirewallError(INVALID_IPV,
+                                    "'%s' not from {'ipv4'|'ipv6'|'eb'}" % ipv)
             table = attrs["table"]
             chain = attrs["chain"]
             try:
@@ -316,7 +317,7 @@ class Direct(IO_Object):
         self.cleanup()
         if not self.filename.endswith(".xml"):
             raise FirewallError(INVALID_NAME,
-                                "%s is missing .xml suffix" % self.filename)
+                                "'%s' is missing .xml suffix" % self.filename)
         handler = direct_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)

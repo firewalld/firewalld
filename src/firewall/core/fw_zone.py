@@ -473,9 +473,11 @@ class FirewallZone:
         interface_id = self.__interface_id(interface)
 
         if interface_id in _obj.settings["interfaces"]:
-            raise FirewallError(ZONE_ALREADY_SET)
+            raise FirewallError(ZONE_ALREADY_SET,
+                         "'%s' already bound to '%s'" % (interface_id, zone))
         if self.get_zone_of_interface(interface) != None:
-            raise FirewallError(ZONE_CONFLICT)
+            raise FirewallError(ZONE_CONFLICT,
+                                "'%s' already bound to a zone" % interface)
 
         self.__interface(True, _zone, interface)
 
@@ -511,10 +513,13 @@ class FirewallZone:
         self._fw.check_panic()
         zoi = self.get_zone_of_interface(interface)
         if zoi == None:
-            raise FirewallError(UNKNOWN_INTERFACE, interface)
+            raise FirewallError(UNKNOWN_INTERFACE,
+                                "'%s' is not in any zone" % interface)
         _zone = zoi if zone == "" else self._fw.check_zone(zone)
         if zoi != _zone:
-            raise FirewallError(ZONE_CONFLICT)
+            raise FirewallError(ZONE_CONFLICT,
+                                "remove_interface(%s, %s): zoi='%s'" % \
+                                (zone, interface, zoi))
 
         _obj = self._zones[_zone]
         interface_id = self.__interface_id(interface)
@@ -609,9 +614,11 @@ class FirewallZone:
         source_id = self.__source_id(source)
 
         if source_id in _obj.settings["sources"]:
-            raise FirewallError(ZONE_ALREADY_SET)
+            raise FirewallError(ZONE_ALREADY_SET,
+                            "'%s' already bound to '%s'" % (source_id, zone))
         if self.get_zone_of_source(source) != None:
-            raise FirewallError(ZONE_CONFLICT)
+            raise FirewallError(ZONE_CONFLICT,
+                                "'%s' already bound to a zone" % source_id)
 
         self.__source(True, _zone, source_id[0], source_id[1])
 
@@ -639,10 +646,13 @@ class FirewallZone:
         self._fw.check_panic()
         zos = self.get_zone_of_source(source)
         if zos == None:
-            raise FirewallError(UNKNOWN_SOURCE, source)
+            raise FirewallError(UNKNOWN_SOURCE,
+                                "'%s' is not in any zone" % source)
         _zone = zos if zone == "" else self._fw.check_zone(zone)
         if zos != _zone:
-            raise FirewallError(ZONE_CONFLICT)
+            raise FirewallError(ZONE_CONFLICT,
+                                "remove_source(%s, %s): zos='%s'" % \
+                                (zone, source, zos))
 
         _obj = self._zones[_zone]
         source_id = self.__source_id(source)
@@ -1009,7 +1019,8 @@ class FirewallZone:
 
         rule_id = self.__rule_id(rule)
         if rule_id in _obj.settings["rules"]:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (rule, zone))
 
         if _obj.applied:
             mark = self.__rule(True, _zone, rule, None)
@@ -1028,7 +1039,8 @@ class FirewallZone:
 
         rule_id = self.__rule_id(rule)
         if not rule_id in _obj.settings["rules"]:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                                "'%s' not in '%s'" % (rule, zone))
 
         if "mark" in _obj.settings["rules"][rule_id]:
             mark = _obj.settings["rules"][rule_id]["mark"]
@@ -1120,7 +1132,8 @@ class FirewallZone:
 
         service_id = self.__service_id(service)
         if service_id in _obj.settings["services"]:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (service_id, zone))
 
         if _obj.applied:
             self.__service(True, _zone, service)
@@ -1137,7 +1150,8 @@ class FirewallZone:
 
         service_id = self.__service_id(service)
         if not service_id in _obj.settings["services"]:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                                "'%s' not in '%s'" % (service, zone))
 
         if _obj.applied:
             self.__service(False, _zone, service)
@@ -1195,7 +1209,8 @@ class FirewallZone:
 
         port_id = self.__port_id(port, protocol)
         if port_id in _obj.settings["ports"]:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                          "'%s:%s' already in '%s'" % (port, protocol, zone))
 
         if _obj.applied:
             self.__port(True, _zone, port, protocol)
@@ -1212,7 +1227,8 @@ class FirewallZone:
 
         port_id = self.__port_id(port, protocol)
         if not port_id in _obj.settings["ports"]:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                             "'%s:%s' not in '%s'" % (port, protocol, zone))
 
         if _obj.applied:
             self.__port(False, _zone, port, protocol)
@@ -1275,7 +1291,8 @@ class FirewallZone:
 
         masquerade_id = self.__masquerade_id()
         if masquerade_id in _obj.settings["masquerade"]:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                                "masquerade already enabled in '%s'" % zone)
 
         if _obj.applied:
             self.__masquerade(True, _zone)
@@ -1292,7 +1309,8 @@ class FirewallZone:
 
         masquerade_id = self.__masquerade_id()
         if masquerade_id not in _obj.settings["masquerade"]:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                                "masquerade not enabled in '%s'" % zone)
 
         if _obj.applied:
             self.__masquerade(False, _zone)
@@ -1316,7 +1334,8 @@ class FirewallZone:
             if not check_single_address(ipv, toaddr):
                 raise FirewallError(INVALID_ADDR, toaddr)
         if not toport and not toaddr:
-            raise FirewallError(INVALID_FORWARD)
+            raise FirewallError(INVALID_FORWARD,
+                            "port-forwarding is missing to-port AND to-addr")
 
     def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
         self.check_forward_port("ipv4", port, protocol, toport, toaddr)
@@ -1391,7 +1410,9 @@ class FirewallZone:
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         if forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                                "'%s:%s:%s:%s' already in '%s'" % \
+                                (port, protocol, toport, toaddr, zone))
 
         mark = self._fw.new_mark()
         if _obj.applied:
@@ -1411,7 +1432,9 @@ class FirewallZone:
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         if not forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                                "'%s:%s:%s:%s' not in '%s'" % \
+                                (port, protocol, toport, toaddr, zone))
 
         mark = _obj.settings["forward_ports"][forward_id]["mark"]
 
@@ -1490,7 +1513,8 @@ class FirewallZone:
 
         icmp_id = self.__icmp_block_id(icmp)
         if icmp_id in _obj.settings["icmp_blocks"]:
-            raise FirewallError(ALREADY_ENABLED)
+            raise FirewallError(ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (icmp, zone))
 
         if _obj.applied:
             self.__icmp_block(True, _zone, icmp)
@@ -1507,7 +1531,8 @@ class FirewallZone:
 
         icmp_id = self.__icmp_block_id(icmp)
         if not icmp_id in _obj.settings["icmp_blocks"]:
-            raise FirewallError(NOT_ENABLED)
+            raise FirewallError(NOT_ENABLED,
+                                "'%s' not in '%s'" % (icmp, zone))
 
         if _obj.applied:
             self.__icmp_block(False, _zone, icmp)
