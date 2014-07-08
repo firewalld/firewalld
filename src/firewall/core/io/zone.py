@@ -50,7 +50,7 @@ class Zone(IO_Object):
         ( "rules_str", [ "" ] ),                       # as
         )
     DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasas)'
-    ADDITIONAL_ALNUM_CHARS = [ "_", "/" ]
+    ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
