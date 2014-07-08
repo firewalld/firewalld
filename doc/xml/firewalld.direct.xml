@@ -57,10 +57,15 @@
     <title>Description</title>
 
     <para>
-      A firewalld direct configuration file contains the information about permanent direct chains and rules.
-
-      These are the chains, rules and passthrough ...
+     Direct configuration gives a more direct access to the firewall. It requires user to know basic ip(6)tables concepts, i.e. <literal>table</literal> (filter/mangle/nat/...), <literal>chain</literal> (INPUT/OUTPUT/FORWARD/...), <literal>commands</literal> (-A/-D/-I/...), <literal>parameters</literal> (-p/-s/-d/-j/...) and <literal>targets</literal> (ACCEPT/DROP/REJECT/...).
+     Direct configuration should be used only as a last resort when it's not possible to use <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+     See also <literal>Direct Options</literal> in <citerefentry><refentrytitle>firewall-cmd</refentrytitle><manvolnum>1</manvolnum></citerefentry>.
     </para>
+
+    <para>
+      A firewalld direct configuration file contains informations about permanent direct chains, rules and passthrough ...
+    </para>
+
     <para>
        This is the structure of a direct configuration file:
 
@@ -140,7 +145,7 @@
 	  <term>table="<replaceable>table</replaceable>"</term>
           <listitem>
 	    <para>
-              The table name where the chain will be created. This can be one of the tables that casn be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
+              The table name where the rule will be added. This can be one of the tables that casn be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -150,6 +155,7 @@
           <listitem>
 	    <para>
               The name of the chain where the rule will be added. This can be either a built-in chain or a chain that has been created with the chain tag.
+              If the chain name is a built-in chain, then the rule will be added to <replaceable>chain</replaceable>_direct, else the supplied chain name is used. <replaceable>chain</replaceable>_direct is created internally for all built-in chains to make sure that the added rules do not conflict with the rules created by firewalld.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -166,10 +172,6 @@
 
       <para>
 	The <replaceable>args</replaceable> can be any arguments of iptables or ip6tables, that do not conflict with the table or chain attributes.
-      </para>
-
-      <para>
-	If the chain name is a built-in chain, then the rule will be added to <replaceable>chain</replaceable>_direct, else the supplied chain name is used. <replaceable>chain</replaceable>_direct is created internally for all built-in chains to make sure that the added rules do not conflict with the rules created by firewalld.
       </para>
     </refsect2>
 
