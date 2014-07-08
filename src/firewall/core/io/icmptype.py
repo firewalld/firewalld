@@ -103,7 +103,8 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 def icmptype_reader(filename, path):
     icmptype = IcmpType()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME, filename)
+        raise FirewallError(INVALID_NAME,
+                            "%s is missing .xml suffix" % filename)
     icmptype.name = filename[:-4]
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename

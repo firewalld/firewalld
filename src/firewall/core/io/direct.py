@@ -315,7 +315,8 @@ class Direct(IO_Object):
     def read(self):
         self.cleanup()
         if not self.filename.endswith(".xml"):
-            raise FirewallError(INVALID_NAME, self.filename)
+            raise FirewallError(INVALID_NAME,
+                                "%s is missing .xml suffix" % self.filename)
         handler = direct_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)

@@ -65,10 +65,11 @@ class IO_Object(object):
                                 "'%s' not of type %s, but %s" % (name, type(""),
                                                                  type(name)))
         if len(name) < 1:
-            raise FirewallError(INVALID_NAME, name)
+            raise FirewallError(INVALID_NAME, "name can't be empty")
         for char in name:
             if not char.isalnum() and char not in self.ADDITIONAL_ALNUM_CHARS:
-                raise FirewallError(INVALID_NAME, name)
+                raise FirewallError(INVALID_NAME,
+                                 "'%s' is not allowed in %s" % ((char, name)))
 
     def check_config(self, config):
         if len(config) != len(self.IMPORT_EXPORT_STRUCTURE):

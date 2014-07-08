@@ -133,7 +133,8 @@ class service_ContentHandler(IO_Object_ContentHandler):
 def service_reader(filename, path):
     service = Service()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME, filename)
+        raise FirewallError(INVALID_NAME,
+                            "%s is missing .xml suffix" % filename)
     service.name = filename[:-4]
     service.check_name(service.name)
     service.filename = filename

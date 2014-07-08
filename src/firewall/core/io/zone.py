@@ -187,8 +187,12 @@ class Zone(IO_Object):
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
-        if name[0] == '/' or name [-1] == '/' or name.count('/') > 1:
-            raise FirewallError(INVALID_NAME, name)
+        if name.startswith('/'):
+            raise FirewallError(INVALID_NAME, "'%s' can't start with '/'" % name)
+        elif name.endswith('/'):
+            raise FirewallError(INVALID_NAME, "'%s' can't end with '/'" % name)
+        elif name.count('/') > 1:
+            raise FirewallError(INVALID_NAME, "more than one '/' in '%s'" % name)
 
     def combine(self, zone):
         self.combined = True
@@ -486,10 +490,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 def zone_reader(filename, path):
     zone = Zone()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME, filename)
+        raise FirewallError(INVALID_NAME,
+                            "%s is missing .xml suffix" % filename)
     zone.name = filename[:-4]
     if len(zone.name) > max_zone_name_len():
-        raise FirewallError(INVALID_NAME, filename)
+        raise FirewallError(INVALID_NAME,
+                            "%s has %d chars, max is %d" % (zone.name, len(zone.name), max_zone_name_len()))
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
