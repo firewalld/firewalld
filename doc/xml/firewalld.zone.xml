@@ -122,11 +122,11 @@
 	  <term>target="<literal>ACCEPT</literal>|<literal>%%REJECT%%</literal>|<literal>DROP</literal>"</term>
           <listitem>
 	    <para>
-	      Can be used to accept, reject or drop every packet that doesn't match any rule.
+	      Can be used to accept, reject or drop every packet that doesn't match any rule (port, service, etc.).
 	      The <literal>ACCEPT</literal> target is used in <literal>trusted</literal> zone to accept every packet not matching any rule.
 	      The <literal>%%REJECT%%</literal> target is used in <literal>block</literal> zone to reject (with default firewalld reject type) every packet not matching any rule.
 	      The <literal>DROP</literal> target is used in <literal>drop</literal> zone to drop every packet not matching any rule.
-	      The default target is <literal>{chain}_{zone}</literal> and will be used if the target is not specified.
+	      If the target is not specified, every packet not matching any rule will be rejected.
 	    </para>
 	  </listitem>
 	</varlistentry>
