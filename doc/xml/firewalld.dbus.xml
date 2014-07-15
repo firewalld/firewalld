@@ -385,7 +385,7 @@
             <term><methodname>queryChain</methodname>(s: ipv, s: table, s: chain) &rarr; b</term>
             <listitem>
               <para>
-		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
               </para>
             </listitem>
           </varlistentry>
@@ -401,7 +401,7 @@
             <term><methodname>removeChain</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
               </para>
             </listitem>
           </varlistentry>
@@ -409,7 +409,7 @@
             <term><methodname>removeRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
               </para>
             </listitem>
           </varlistentry>
@@ -417,7 +417,7 @@
             <term><methodname>removeRules</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>.
+		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
               </para>
             </listitem>
           </varlistentry>
