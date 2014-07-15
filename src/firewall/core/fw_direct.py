@@ -82,9 +82,21 @@ class FirewallDirect:
                     except FirewallError as error:
                         log.warning(str(error))
 
+    def _check_ipv_table(self, ipv, table):
+        ipvs = [ 'ipv4', 'ipv6', 'eb' ]
+        if ipv not in ipvs:
+            raise FirewallError(INVALID_IPV,
+                                "'%s' not in '%s'" % (ipv, ipvs))
+        tables = ipXtables.CHAINS.keys() if ipv in [ 'ipv4', 'ipv6' ] \
+                                         else ebtables.CHAINS.keys()
+        if table not in tables:
+            raise FirewallError(INVALID_TABLE,
+                                "'%s' not in '%s'" % (table, tables))
+
     # DIRECT CHAIN
 
     def __chain(self, add, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         table_id = (ipv, table)
 
         if add:
@@ -126,11 +138,13 @@ class FirewallDirect:
         self.__chain(False, ipv, table, chain)
 
     def query_chain(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         table_id = (ipv, table)
         return (table_id in self._chains and \
                     chain in self._chains[table_id])
 
     def get_chains(self, ipv, table):
+        self._check_ipv_table(ipv, table)
         table_id = (ipv, table)
         if table_id in self._chains:
             return self._chains[table_id]
@@ -147,6 +161,7 @@ class FirewallDirect:
     # DIRECT RULE
 
     def __rule(self, enable, ipv, table, chain, priority, args):
+        self._check_ipv_table(ipv, table)
         _chain = chain
         # use "%s_chain" for built-in chains
 
@@ -260,11 +275,13 @@ class FirewallDirect:
         self.__rule(False, ipv, table, chain, priority, args)
 
     def query_rule(self, ipv, table, chain, priority, args):
+        self._check_ipv_table(ipv, table)
         chain_id = (ipv, table, chain)
         return (chain_id in self._rules and \
                 (priority, args) in self._rules[chain_id])
 
     def get_rules(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         chain_id = (ipv, table, chain)
         if chain_id in self._rules:
             return list(self._rules[chain_id].keys())
