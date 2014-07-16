@@ -128,12 +128,9 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.PropertiesChanged(DBUS_INTERFACE_CONFIG, props, [])
             return
 
-        if not name.endswith(".xml"):
-            raise FirewallError(INVALID_FILENAME,
-                                "'%s' doesn't end with '.xml'" % name)
-
-        if name.startswith(FIREWALLD_ICMPTYPES) or \
-                name.startswith(ETC_FIREWALLD_ICMPTYPES):
+        if (name.startswith(FIREWALLD_ICMPTYPES) or \
+            name.startswith(ETC_FIREWALLD_ICMPTYPES)) and \
+           name.endswith(".xml"):
             (what, obj) = self.config.update_icmptype_from_path(name)
             if what == "new":
                 self._addIcmpType(obj)
@@ -142,8 +139,9 @@ class FirewallDConfig(slip.dbus.service.Object):
             elif what == "update":
                 self._updateIcmpType(obj)
 
-        elif name.startswith(FIREWALLD_SERVICES) or \
-                name.startswith(ETC_FIREWALLD_SERVICES):
+        elif (name.startswith(FIREWALLD_SERVICES) or \
+              name.startswith(ETC_FIREWALLD_SERVICES)) and \
+             name.endswith(".xml"):
             (what, obj) = self.config.update_service_from_path(name)
             if what == "new":
                 self._addService(obj)
@@ -152,8 +150,9 @@ class FirewallDConfig(slip.dbus.service.Object):
             elif what == "update":
                 self._updateService(obj)
 
-        elif name.startswith(FIREWALLD_ZONES) or \
-                name.startswith(ETC_FIREWALLD_ZONES):
+        elif (name.startswith(FIREWALLD_ZONES) or \
+              name.startswith(ETC_FIREWALLD_ZONES)) and \
+             name.endswith(".xml"):
             (what, obj) = self.config.update_zone_from_path(name)
             if what == "new":
                 self._addZone(obj)
