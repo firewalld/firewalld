@@ -128,9 +128,9 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.PropertiesChanged(DBUS_INTERFACE_CONFIG, props, [])
             return
 
-        if not name.endswith(".xml"):
+        if not (name.endswith(".xml") or name.endswith(".conf")):
             raise FirewallError(INVALID_FILENAME,
-                                "'%s' doesn't end with '.xml'" % name)
+                            "'%s' doesn't end with '.xml' or '.conf'" % name)
 
         if name.startswith(FIREWALLD_ICMPTYPES) or \
                 name.startswith(ETC_FIREWALLD_ICMPTYPES):

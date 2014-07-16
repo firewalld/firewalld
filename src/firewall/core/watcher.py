@@ -61,6 +61,8 @@ class Watcher(object):
 
     def _file_changed_cb(self, monitor, gio_file, gio_other_file, event):
         filename = gio_file.get_parse_name()
+        if not (filename.endswith(".xml") or filename.endswith(".conf")):
+            return
         if filename in self._blocked:
             if filename in self._timeouts:
                 GLib.source_remove(self._timeouts[filename])
