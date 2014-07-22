@@ -431,7 +431,7 @@
             <term>ChainAdded(s: ipv, s: table, s: chain)</term>
             <listitem>
               <para>
-		Emitted when <replaceable>chain</replaceable> has been changed into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>. 
+		Emitted when <replaceable>chain</replaceable> has been changed into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. 
               </para>
             </listitem>
           </varlistentry>
@@ -439,7 +439,7 @@
             <term>ChainRemoved(s: ipv, s: table, s: chain)</term>
             <listitem>
               <para>
-		Emitted when <replaceable>chain</replaceable> has been changed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal>. 
+		Emitted when <replaceable>chain</replaceable> has been changed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. 
               </para>
             </listitem>
           </varlistentry>
