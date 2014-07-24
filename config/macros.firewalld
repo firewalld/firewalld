@@ -1,0 +1,6 @@
+# RPM macros for packages installing firewalld services/zones
+
+# put this into %post otherwise firewalld won't load new service/zone file
+%firewalld_reload() \
+test -f %{_bindir}/firewall-cmd && firewall-cmd --reload --quiet || : \
+%{nil}
