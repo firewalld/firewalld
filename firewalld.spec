@@ -53,7 +53,7 @@ firewalld.
 %setup -q
 
 %build
-%configure --enable-sysconfig
+%configure --enable-sysconfig --enable-rpmmacros
 
 %install
 make install DESTDIR=%{buildroot}
@@ -148,6 +148,7 @@ fi
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
+%{_rpmconfigdir}/macros.d/macros.firewalld
 
 %files -n firewall-applet
 %{_bindir}/firewall-applet

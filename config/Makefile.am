@@ -136,7 +136,8 @@ EXTRA_DIST = \
 	zones/work.xml \
 	firewalld.init \
 	firewalld.service.in \
-	firewalld.sysconfig
+	firewalld.sysconfig \
+	macros.firewalld
 
 INSTALL_TARGETS = install-config
 UNINSTALL_TARGETS = uninstall-config
@@ -152,6 +153,11 @@ endif
 if INSTALL_SYSCONFIG
 INSTALL_TARGETS += install-sysconfig
 UNINSTALL_TARGETS += uninstall-sysconfig
+endif
+
+if INSTALL_RPMMACROS
+INSTALL_TARGETS += install-rpmmacros
+UNINSTALL_TARGETS += uninstall-rpmmacros
 endif
 
 edit = sed \
@@ -170,6 +176,14 @@ install-sysconfig:
 uninstall-sysconfig:
 	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
 	rmdir $(DESTDIR)$(sysconfdir)/sysconfig || :
+
+install-rpmmacros:
+	$(MKDIR_P) $(DESTDIR)$(prefix)/lib/rpm/macros.d
+	$(INSTALL_DATA) $(srcdir)/macros.firewalld $(DESTDIR)$(prefix)/lib/rpm/macros.d
+
+uninstall-rpmmacros:
+	rm -f $(DESTDIR)$(prefix)/lib/rpm/macros.d/macros.firewalld
+	rmdir $(DESTDIR)$(prefix)/lib/rpm/macros.d || :
 
 install-init: install-sysconfig
 	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/rc.d/init.d

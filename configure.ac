@@ -46,6 +46,12 @@ AC_ARG_ENABLE([sysconfig],
 AM_CONDITIONAL(INSTALL_SYSCONFIG, [test x$INSTALL_SYSCONFIG = xyes])
 AC_SUBST(INSTALL_SYSCONFIG)
 
+AC_ARG_ENABLE([rpmmacros],
+    [AS_HELP_STRING([--enable-rpmmacros], [Install rpm macros file])],
+    [INSTALL_RPMMACROS="${enableval}"], [INSTALL_RPMMACROS='no'])
+AM_CONDITIONAL(INSTALL_RPMMACROS, [test x$INSTALL_RPMMACROS = xyes])
+AC_SUBST(INSTALL_RPMMACROS)
+
 AC_ARG_WITH([systemd-unitdir],
        AS_HELP_STRING([--with-systemd-unitdir], [Directory for systemd service files]),
        [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="${prefix}/lib/systemd/system"])
