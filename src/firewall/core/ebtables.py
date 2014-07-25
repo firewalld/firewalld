@@ -32,6 +32,7 @@ BUILT_IN_CHAINS = {
 }
 
 DEFAULT_RULES = { }
+OUR_CHAINS = {}  # chains created by firewalld
 
 class ebtables:
     ipv = "ipv4"
