@@ -406,7 +406,7 @@ class Firewall:
                 rule.pop(1)
 
             table = None
-            for t in ipXtables.CHAINS.keys():
+            for t in ipXtables.BUILT_IN_CHAINS.keys():
                 if t in rule:
                     table = t
             if table and not self.is_table_available(ipv, table):

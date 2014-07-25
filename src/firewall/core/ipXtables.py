@@ -34,7 +34,7 @@ PROC_IPxTABLE_NAMES = {
     "ipv6": "/proc/net/ip6_tables_names",
 }
 
-CHAINS = {
+BUILT_IN_CHAINS = {
     "security": [ "INPUT", "OUTPUT", "FORWARD" ],
     "raw": [ "PREROUTING", "OUTPUT" ],
     "mangle": [ "PREROUTING", "POSTROUTING", "INPUT", "OUTPUT", "FORWARD" ],
@@ -53,38 +53,49 @@ ICMP = {
 }
 
 DEFAULT_RULES = { }
+OUR_CHAINS = {} # chains created by firewalld
 
 DEFAULT_RULES["security"] = [ ]
-for chain in CHAINS["security"]:
+OUR_CHAINS["security"] = set()
+for chain in BUILT_IN_CHAINS["security"]:
     DEFAULT_RULES["security"].append("-N %s_direct" % chain)
     DEFAULT_RULES["security"].append("-I %s 1 -j %s_direct" % (chain, chain))
+    OUR_CHAINS["security"].add("%s_direct" % chain)
 
 DEFAULT_RULES["raw"] = [ ]
-for chain in CHAINS["raw"]:
+OUR_CHAINS["raw"] = set()
+for chain in BUILT_IN_CHAINS["raw"]:
     DEFAULT_RULES["raw"].append("-N %s_direct" % chain)
     DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
+    OUR_CHAINS["raw"].add("%s_direct" % chain)
 
 DEFAULT_RULES["mangle"] = [ ]
-for chain in CHAINS["mangle"]:
+OUR_CHAINS["mangle"] = set()
+for chain in BUILT_IN_CHAINS["mangle"]:
     DEFAULT_RULES["mangle"].append("-N %s_direct" % chain)
     DEFAULT_RULES["mangle"].append("-I %s 1 -j %s_direct" % (chain, chain))
+    OUR_CHAINS["mangle"].add("%s_direct" % chain)
 
     if chain == "PREROUTING":
         DEFAULT_RULES["mangle"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["mangle"].append("-N %s_ZONES" % chain)
         DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
         DEFAULT_RULES["mangle"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
+        OUR_CHAINS["mangle"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
 DEFAULT_RULES["nat"] = [ ]
-for chain in CHAINS["nat"]:
+OUR_CHAINS["nat"] = set()
+for chain in BUILT_IN_CHAINS["nat"]:
     DEFAULT_RULES["nat"].append("-N %s_direct" % chain)
     DEFAULT_RULES["nat"].append("-I %s 1 -j %s_direct" % (chain, chain))
+    OUR_CHAINS["nat"].add("%s_direct" % chain)
 
     if chain in [ "PREROUTING", "POSTROUTING" ]:
         DEFAULT_RULES["nat"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["nat"].append("-N %s_ZONES" % chain)
         DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
         DEFAULT_RULES["nat"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
+        OUR_CHAINS["nat"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
 
 DEFAULT_RULES["filter"] = [
     "-N INPUT_direct",
@@ -119,6 +130,11 @@ DEFAULT_RULES["filter"] = [
 
     "-I OUTPUT 1 -j OUTPUT_direct",
 ]
+OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
+                          "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
+                          "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
+                          "FORWARD_OUT_ZONES", "OUTPUT_direct"])
+
 
 class ip4tables:
     ipv = "ipv4"
@@ -147,7 +163,7 @@ class ip4tables:
 
     def available_tables(self, table=None):
         ret = []
-        tables = [ table ] if table else CHAINS.keys()
+        tables = [ table ] if table else BUILT_IN_CHAINS.keys()
         for table in tables:
             try:
                 self.__run(["-t", table, "-L"])
@@ -183,13 +199,13 @@ class ip4tables:
         if which == "used":
             tables = self.used_tables()
         else:
-            tables = list(CHAINS.keys())
+            tables = list(BUILT_IN_CHAINS.keys())
 
         if "nat" in tables:
             tables.remove("nat") # nat can not set policies in nat table
 
         for table in tables:
-            for chain in CHAINS[table]:
+            for chain in BUILT_IN_CHAINS[table]:
                 self.__run([ "-t", table, "-P", chain, policy ])
 
 class ip6tables(ip4tables):

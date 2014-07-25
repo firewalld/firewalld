@@ -25,7 +25,7 @@ from firewall.core.logger import log
 PROC_IPxTABLE_NAMES = {
 }
 
-CHAINS = {
+BUILT_IN_CHAINS = {
     "broute": [ "BROUTING" ],
     "nat": [ "PREROUTING", "POSTROUTING", "OUTPUT" ],
     "filter": [ "INPUT", "OUTPUT", "FORWARD" ],
@@ -60,7 +60,7 @@ class ebtables:
 
     def available_tables(self, table=None):
         ret = []
-        tables = [ table ] if table else CHAINS.keys()
+        tables = [ table ] if table else BUILT_IN_CHAINS.keys()
         for table in tables:
             try:
                 self.__run(["-t", table, "-L"])
@@ -71,7 +71,7 @@ class ebtables:
         return ret
 
     def used_tables(self):
-        return list(CHAINS.keys())
+        return list(BUILT_IN_CHAINS.keys())
 
     def flush(self):
         tables = self.used_tables()
@@ -86,13 +86,13 @@ class ebtables:
         if which == "used":
             tables = self.used_tables()
         else:
-            tables = list(CHAINS.keys())
+            tables = list(BUILT_IN_CHAINS.keys())
 
         if "nat" in tables:
             tables.remove("nat") # nat can not set policies in nat table
 
         for table in tables:
-            for chain in CHAINS[table]:
+            for chain in BUILT_IN_CHAINS[table]:
                 self.__run([ "-t", table, "-P", chain, policy ])
 
 ebtables_available_tables = ebtables().available_tables()

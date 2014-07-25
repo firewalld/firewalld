@@ -87,16 +87,32 @@ class FirewallDirect:
         if ipv not in ipvs:
             raise FirewallError(INVALID_IPV,
                                 "'%s' not in '%s'" % (ipv, ipvs))
-        tables = ipXtables.CHAINS.keys() if ipv in [ 'ipv4', 'ipv6' ] \
-                                         else ebtables.CHAINS.keys()
+        tables = ipXtables.BUILT_IN_CHAINS.keys() if ipv in [ 'ipv4', 'ipv6' ] \
+                                         else ebtables.BUILT_IN_CHAINS.keys()
         if table not in tables:
             raise FirewallError(INVALID_TABLE,
                                 "'%s' not in '%s'" % (table, tables))
+
+    def _check_builtin_chain(self, ipv, table, chain):
+        if ipv in ['ipv4', 'ipv6']:
+            built_in_chains = ipXtables.BUILT_IN_CHAINS[table]
+            our_chains = ipXtables.OUR_CHAINS[table]
+        else:
+            built_in_chains = ebtables.BUILT_IN_CHAINS[table]
+            our_chains = ebtables.OUR_CHAINS[table]
+        if chain in built_in_chains:
+            raise FirewallError(BUILTIN_CHAIN,
+                 "chain '%s' is built-in chain" % chain)
+        if chain in our_chains:
+            raise FirewallError(BUILTIN_CHAIN,
+                 "chain '%s' is reserved" % chain)
+
 
     # DIRECT CHAIN
 
     def __chain(self, add, ipv, table, chain):
         self._check_ipv_table(ipv, table)
+        self._check_builtin_chain(ipv, table, chain)
         table_id = (ipv, table)
 
         if add:
@@ -139,9 +155,10 @@ class FirewallDirect:
 
     def query_chain(self, ipv, table, chain):
         self._check_ipv_table(ipv, table)
+        self._check_builtin_chain(ipv, table, chain)
         table_id = (ipv, table)
-        return (table_id in self._chains and \
-                    chain in self._chains[table_id])
+        return (table_id in self._chains and
+                   chain in self._chains[table_id])
 
     def get_chains(self, ipv, table):
         self._check_ipv_table(ipv, table)
@@ -166,9 +183,9 @@ class FirewallDirect:
         # use "%s_chain" for built-in chains
 
         if ipv in [ "ipv4", "ipv6" ]:
-            _CHAINS = ipXtables.CHAINS
+            _CHAINS = ipXtables.BUILT_IN_CHAINS
         else:
-            _CHAINS = ebtables.CHAINS
+            _CHAINS = ebtables.BUILT_IN_CHAINS
 
         if table in _CHAINS and chain in _CHAINS[table]:
             _chain = "%s_direct" % (chain)

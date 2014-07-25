@@ -26,7 +26,8 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.core.rich import *
 from firewall.errors import *
-from firewall.core.ipXtables import ip4tables_available_tables, ip6tables_available_tables
+from firewall.core.ipXtables import ip4tables_available_tables,\
+    ip6tables_available_tables, OUR_CHAINS
 
 mangle = []
 if "mangle" in ip4tables_available_tables:
@@ -187,6 +188,10 @@ class FirewallZone:
                 ipvs.append("ipv6")
 
             for ipv in ipvs:
+                OUR_CHAINS[table].update(set([_zone,
+                                              "%s_log" % _zone,
+                                              "%s_deny" % _zone,
+                                              "%s_allow" % _zone]))
                 chains.append((ipv, [ _zone, "-t", table ]))
                 chains.append((ipv, [ "%s_log" % (_zone), "-t", table ]))
                 chains.append((ipv, [ "%s_deny" % (_zone), "-t", table ]))
