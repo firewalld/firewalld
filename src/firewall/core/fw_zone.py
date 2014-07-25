@@ -242,6 +242,7 @@ class FirewallZone:
             ret = self._fw.handle_chains(chains, create)
             if ret:
                 # also create rules
+                (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
 
                 (cleanup_chains, msg) = ret
