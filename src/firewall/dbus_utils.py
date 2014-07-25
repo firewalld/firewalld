@@ -91,17 +91,17 @@ def command_of_sender(bus, sender):
 def user_of_sender(bus, sender):
     return user_of_uid(uid_of_sender(bus, sender))
 
-def dbus_to_python(obj):
-    if obj == None:
-        return obj
+def dbus_to_python(obj, expected_type=None):
+    if obj is None:
+        python_obj = obj
     elif isinstance(obj, dbus.Boolean):
-        return obj == True
+        python_obj = bool(obj)
     elif isinstance(obj, dbus.String):
-        return obj.encode('utf-8') if PY2 else str(obj)
-    elif PY2 and isinstance(obj, dbus.UTF8String): # Python3 has no UTF8String
-        return str(obj)
+        python_obj = obj.encode('utf-8') if PY2 else str(obj)
+    elif PY2 and isinstance(obj, dbus.UTF8String):  # Python3 has no UTF8String
+        python_obj = str(obj)
     elif isinstance(obj, dbus.ObjectPath):
-        return str(obj)
+        python_obj = str(obj)
     elif isinstance(obj, dbus.Byte) or \
             isinstance(obj, dbus.Int16) or \
             isinstance(obj, dbus.Int32) or \
@@ -109,20 +109,32 @@ def dbus_to_python(obj):
             isinstance(obj, dbus.UInt16) or \
             isinstance(obj, dbus.UInt32) or \
             isinstance(obj, dbus.UInt64):
-        return int(obj)
+        python_obj = int(obj)
     elif isinstance(obj, dbus.Double):
-        return float(obj)
+        python_obj = float(obj)
     elif isinstance(obj, dbus.Array):
-        return [dbus_to_python(x) for x in obj]
+        python_obj = [dbus_to_python(x) for x in obj]
     elif isinstance(obj, dbus.Struct):
-        return tuple([dbus_to_python(x) for x in obj])
+        python_obj = tuple([dbus_to_python(x) for x in obj])
     elif isinstance(obj, dbus.Dictionary):
-        return {dbus_to_python(k):dbus_to_python(v) for k,v in obj.items()}
+        python_obj = {dbus_to_python(k): dbus_to_python(v) for k, v in obj.items()}
     elif isinstance(obj, bool) or \
          isinstance(obj, str) or isinstance(obj, bytes) or \
          isinstance(obj, int) or isinstance(obj, float) or \
          isinstance(obj, list) or isinstance(obj, tuple) or \
          isinstance(obj, dict):
-        return obj
+        python_obj = obj
     else:
         raise TypeError("Unhandled %s" % obj)
+
+    if expected_type is not None:
+        if (expected_type == bool and not isinstance(python_obj, bool)) or \
+           (expected_type == str and not isinstance(python_obj, str)) or \
+           (expected_type == int and not isinstance(python_obj, int)) or \
+           (expected_type == float and not isinstance(python_obj, float)) or \
+           (expected_type == list and not isinstance(python_obj, list)) or \
+           (expected_type == tuple and not isinstance(python_obj, tuple)) or \
+           (expected_type == dict and not isinstance(python_obj, dict)):
+            raise TypeError("%s is %s, expected %s" % (python_obj, type(python_obj), expected_type))
+
+    return python_obj
