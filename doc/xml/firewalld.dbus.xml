@@ -330,6 +330,7 @@
             <listitem>
               <para>
 		Add a new <replaceable>chain</replaceable> to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Make sure there's no other chain with this name already.
               </para>
             </listitem>
           </varlistentry>
@@ -346,6 +347,7 @@
             <listitem>
               <para>
 		Get all chains added to all tables in format: ipv, table, chain.
+		This concerns only chains previously added with <methodname>addChain</methodname>.
               </para>
             </listitem>
           </varlistentry>
@@ -353,7 +355,8 @@
             <term><methodname>getAllRules</methodname>() &rarr; a(sssias)</term>
             <listitem>
               <para>
-		Get all rules added to all chains in all tables in format: ipv, table, chain, priority, rule
+		Get all rules added to all chains in all tables in format: ipv, table, chain, priority, rule.
+		This concerns only rules previously added with <methodname>addRule</methodname>.
               </para>
             </listitem>
           </varlistentry>
@@ -362,6 +365,7 @@
             <listitem>
               <para>
 		Get all chains added to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		This concerns only chains previously added with <methodname>addChain</methodname>.
               </para>
             </listitem>
           </varlistentry>
@@ -370,14 +374,7 @@
             <listitem>
               <para>
 		Get all rules added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry id="FirewallD1.direct.Methods.passthrough">
-            <term><methodname>passthrough</methodname>(s: ipv, as: args) &rarr; s</term>
-            <listitem>
-              <para>
-		Pass a command through to the firewall. <replaceable>ipv</replaceable> can be either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
+		This concerns only rules previously added with <methodname>addRule</methodname>.
               </para>
             </listitem>
           </varlistentry>
@@ -386,6 +383,7 @@
             <listitem>
               <para>
 		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		This concerns only chains previously added with <methodname>addChain</methodname>.
               </para>
             </listitem>
           </varlistentry>
@@ -394,6 +392,7 @@
             <listitem>
               <para>
 		Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		This concerns only rules previously added with <methodname>addRule</methodname>.
               </para>
             </listitem>
           </varlistentry>
@@ -402,6 +401,7 @@
             <listitem>
               <para>
 		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Only chains previously added with <methodname>addChain</methodname> can be removed this way.
               </para>
             </listitem>
           </varlistentry>
@@ -410,6 +410,7 @@
             <listitem>
               <para>
 		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Only rules previously added with <methodname>addRule</methodname> can be removed this way.
               </para>
             </listitem>
           </varlistentry>
@@ -418,6 +419,15 @@
             <listitem>
               <para>
 		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		This concerns only rules previously added with <methodname>addRule</methodname>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.passthrough">
+            <term><methodname>passthrough</methodname>(s: ipv, as: args) &rarr; s</term>
+            <listitem>
+              <para>
+		Pass a command through to the firewall. <replaceable>ipv</replaceable> can be either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
               </para>
             </listitem>
           </varlistentry>

@@ -807,8 +807,6 @@
 	  <listitem>
 	    <para>
 	      Get all chains added to all tables.
-	    </para>
-	    <para>
 	      This option concerns only chains previously added with <option>--direct --add-chain</option>.
 	    </para>
 	  </listitem>
@@ -819,8 +817,6 @@
 	  <listitem>
 	    <para>
 	      Get all chains added to table <replaceable>table</replaceable> as a space separated list.
-	    </para>
-	    <para>
 	      This option concerns only chains previously added with <option>--direct --add-chain</option>.
 	    </para>
 	  </listitem>
@@ -830,7 +826,7 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--add-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
 	  <listitem>
 	    <para>
-	      Add a new chain with name <replaceable>chain</replaceable> to table <replaceable>table</replaceable>.
+	      Add a new chain with name <replaceable>chain</replaceable> to table <replaceable>table</replaceable>. Make sure there's no other chain with this name already.
 	    </para>
 	    <para>
 	      There already exist basic chains to use with direct options, for example <literal>INPUT_direct</literal> chain (see <literal>iptables-save | grep direct</literal> output for all of them).
@@ -843,7 +839,8 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--remove-chain</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable></term>
 	  <listitem>
 	    <para>
-	      Remove the chain with name <replaceable>chain</replaceable> from table <replaceable>table</replaceable>.
+	      Remove chain with name <replaceable>chain</replaceable> from table <replaceable>table</replaceable>.
+	      Only chains previously added with <option>--direct --add-chain</option> can be removed this way.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -853,8 +850,6 @@
 	  <listitem>
 	    <para>
 	      Return whether a chain with name <replaceable>chain</replaceable> exists in table <replaceable>table</replaceable>. Returns 0 if true, 1 otherwise.
-	    </para>
-	    <para>
 	      This option concerns only chains previously added with <option>--direct --add-chain</option>.
 	    </para>
 	  </listitem>
@@ -867,6 +862,7 @@
 	  <listitem>
 	    <para>
 	      Get all rules added to all chains in all tables as a newline separated list of the priority and arguments.
+	      This option concerns only rules previously added with <option>--direct --add-rule</option>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -876,6 +872,7 @@
 	  <listitem>
 	    <para>
 	      Get all rules added to chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable> as a newline separated list of the priority and arguments.
+	      This option concerns only rules previously added with <option>--direct --add-rule</option>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -897,6 +894,7 @@
 	  <listitem>
 	    <para>
 	      Remove a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> from chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable>.
+	      Only rules previously added with <option>--direct --add-rule</option> can be removed this way.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -906,8 +904,6 @@
 	  <listitem>
 	    <para>
 	      Remove all rules in the chain with name <replaceable>chain</replaceable> exists in table <replaceable>table</replaceable>.
-	    </para>
-	    <para>
 	      This option concerns only rules previously added with <option>--direct --add-rule</option> in this chain.
 	    </para>
 	  </listitem>
@@ -917,7 +913,8 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--query-rule</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>table</replaceable> <replaceable>chain</replaceable> <replaceable>priority</replaceable> <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
-	      Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable>. Returns 0 if true, 1 otherwise.
+	      Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in chain <replaceable>chain</replaceable> in table <replaceable>table</replaceable>.
+	      Returns 0 if true, 1 otherwise. This option concerns only rules previously added with <option>--direct --add-rule</option>.
 	    </para>
 	  </listitem>
 	</varlistentry>
