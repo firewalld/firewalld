@@ -146,6 +146,10 @@ _firewall_cmd()
         [[ ${words[@]} == *--permanent* ]] && opts="${OPTIONS_DIRECT} ${OPTIONS_DIRECT_PERMANENT}" || opts="${OPTIONS_DIRECT} --permanent"
         COMPREPLY=( $( compgen -W "${opts}" -- "$cur" ) )
         ;;
+    --*-rich-rule)
+        # to not be matched with --*-rule below
+        return 0
+        ;;
     --passthrough|--*-chain|--get-chains|--*-rule|--get-rules)
         COMPREPLY=( $( compgen -W 'ipv4 ipv6 eb' -- "$cur" ) )
         ;;
