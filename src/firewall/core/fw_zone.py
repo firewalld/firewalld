@@ -276,6 +276,9 @@ class FirewallZone:
 
     # generate settings record with sender, timeout, mark
     def __gen_settings(self, timeout, sender, mark=None):
+        if int(timeout) < 0:
+            raise FirewallError(INVALID_VALUE,
+                                "timeout '%d' is not positive number" % timeout)
         ret = {
             "date": time.time(),
             "sender": sender,

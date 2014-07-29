@@ -1004,7 +1004,7 @@ class FirewallD(slip.dbus.service.Object):
         timeout = dbus_to_python(timeout, int)
         log.debug1("zone.addRichRule('%s', '%s')" % (zone, rule))
         obj = Rich_Rule(rule_str=rule)
-        _zone = self.fw.zone.add_rule(zone, obj)
+        _zone = self.fw.zone.add_rule(zone, obj, timeout)
 
         if timeout > 0:
             tag = GLib.timeout_add_seconds(timeout, self.disableTimedRichRule,
