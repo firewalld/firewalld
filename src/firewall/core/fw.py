@@ -659,6 +659,13 @@ class Firewall:
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
 
+    def check_timeout(self, timeout):
+        if not isinstance(timeout, int):
+            raise TypeError("%s is %s, expected int" % (timeout, type(timeout)))
+        if int(timeout) < 0:
+            raise FirewallError(INVALID_VALUE,
+                                "timeout '%d' is not positive number" % timeout)
+
     # RELOAD
 
     def reload(self, stop=False):

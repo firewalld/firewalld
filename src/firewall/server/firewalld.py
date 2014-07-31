@@ -998,7 +998,6 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='s')
     @dbus_handle_exceptions
     def addRichRule(self, zone, rule, timeout, sender=None):
-        # timeout not possible for masquerade
         zone = dbus_to_python(zone, str)
         rule = dbus_to_python(rule, str)
         timeout = dbus_to_python(timeout, int)
@@ -1019,7 +1018,6 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='s')
     @dbus_handle_exceptions
     def removeRichRule(self, zone, rule, sender=None):
-        # timeout not possible for masquerade
         zone = dbus_to_python(zone, str)
         rule = dbus_to_python(rule, str)
         log.debug1("zone.removeRichRule('%s', '%s')" % (zone, rule))
@@ -1034,7 +1032,6 @@ class FirewallD(slip.dbus.service.Object):
                          out_signature='b')
     @dbus_handle_exceptions
     def queryRichRule(self, zone, rule, sender=None):
-        # timeout not possible for masquerade
         zone = dbus_to_python(zone, str)
         rule = dbus_to_python(rule, str)
         log.debug1("zone.queryRichRule('%s', '%s')" % (zone, rule))

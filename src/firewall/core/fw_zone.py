@@ -276,9 +276,6 @@ class FirewallZone:
 
     # generate settings record with sender, timeout, mark
     def __gen_settings(self, timeout, sender, mark=None):
-        if int(timeout) < 0:
-            raise FirewallError(INVALID_VALUE,
-                                "timeout '%d' is not positive number" % timeout)
         ret = {
             "date": time.time(),
             "sender": sender,
@@ -1023,6 +1020,7 @@ class FirewallZone:
 
     def add_rule(self, zone, rule, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1136,6 +1134,7 @@ class FirewallZone:
 
     def add_service(self, zone, service, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1213,6 +1212,7 @@ class FirewallZone:
 
     def add_port(self, zone, port, protocol, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1295,6 +1295,7 @@ class FirewallZone:
 
     def add_masquerade(self, zone, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1414,6 +1415,7 @@ class FirewallZone:
     def add_forward_port(self, zone, port, protocol, toport=None,
                          toaddr=None, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
@@ -1517,6 +1519,7 @@ class FirewallZone:
 
     def add_icmp_block(self, zone, icmp, timeout=0, sender=None):
         _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
         self._fw.check_panic()
         _obj = self._zones[_zone]
 
