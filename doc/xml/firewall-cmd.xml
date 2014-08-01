@@ -669,10 +669,10 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-interface</option>=<replaceable>interface</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--remove-interface</option>=<replaceable>interface</replaceable></term>
 	  <listitem>
 	    <para>
-	      Remove binding of interface <replaceable>interface</replaceable> from zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	      Remove binding of interface <replaceable>interface</replaceable> from zone it was previously added to.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -731,10 +731,10 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Remove binding of source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> from zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	      Remove binding of source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> from zone it was previously added to.
 	    </para>
 	  </listitem>
 	</varlistentry>

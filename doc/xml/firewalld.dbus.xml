@@ -1081,7 +1081,7 @@
             <listitem>
               <para>
 		Remove binding of <replaceable>interface</replaceable> from <replaceable>zone</replaceable>.
-		If <replaceable>zone</replaceable> is empty, use default zone.
+		If <replaceable>zone</replaceable> is empty, the interface will be removed from zone it belongs to.
               </para>
               <para>
 		Returns name of zone.
@@ -1141,7 +1141,7 @@
             <listitem>
               <para>
 		Remove binding of <replaceable>source</replaceable> from <replaceable>zone</replaceable>.
-		If <replaceable>zone</replaceable> is empty, use default zone.
+		If <replaceable>zone</replaceable> is empty, the source will be removed from zone it belongs to.
               </para>
               <para>
 		Returns name of zone.
