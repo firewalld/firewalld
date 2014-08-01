@@ -856,7 +856,9 @@
             <term><methodname>changeZoneOfInterface</methodname>(s: zone, s: interface) &rarr; s</term>
             <listitem>
               <para>
-		Change a zone an <replaceable>interface</replaceable> is part of to <replaceable>zone</replaceable>.
+		Change a zone an <replaceable>interface</replaceable> is bound to to <replaceable>zone</replaceable>.
+		It's basically removeInterface(<replaceable>interface</replaceable>) followed by addInterface(<replaceable>zone</replaceable>, <replaceable>interface</replaceable>).
+		If <replaceable>interface</replaceable> has not been bound to a zone before, it behaves like <methodname>addInterface</methodname>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
               <para>
@@ -868,7 +870,9 @@
             <term><methodname>changeZoneOfSource</methodname>(s: zone, s: source) &rarr; s</term>
             <listitem>
               <para>
-		Change a zone an <replaceable>source</replaceable> is part of to <replaceable>zone</replaceable>.
+		Change a zone an <replaceable>source</replaceable> is bound to to <replaceable>zone</replaceable>.
+		It's basically removeSource(<replaceable>source</replaceable>) followed by addSource(<replaceable>zone</replaceable>, <replaceable>source</replaceable>).
+		If <replaceable>source</replaceable> has not been bound to a zone before, it behaves like <methodname>addSource</methodname>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
               <para>

@@ -654,7 +654,10 @@
 	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-interface</option>=<replaceable>interface</replaceable></term>
 	  <listitem>
 	    <para>
-	      Change zone the interface <replaceable>interface</replaceable> is bound to to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If old and new zone are the same, the call will be ignored without an error. If the interface has not been bound to a zone before, it will behave like <option>--add-interface</option>.
+	      Change zone the interface <replaceable>interface</replaceable> is bound to to zone <replaceable>zone</replaceable>.
+	      It's basically <option>--remove-interface</option> followed by <option>--add-interface</option>.
+	      If the interface has not been bound to a zone before, it behaves like <option>--add-interface</option>.
+	      If zone is omitted, default zone will be used.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -716,7 +719,10 @@
 	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
 	  <listitem>
 	    <para>
-	      Change zone the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. If old and new zone are the same, the call will be ignored without an error. If the source has not been bound to a zone before, it will behave like <option>--add-source</option>.
+	      Change zone the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to to zone <replaceable>zone</replaceable>.
+	      It's basically <option>--remove-source</option> followed by <option>--add-source</option>.
+	      If the source has not been bound to a zone before, it behaves like <option>--add-source</option>.
+	      If zone is omitted, default zone will be used.
 	    </para>
 	  </listitem>
 	</varlistentry>
