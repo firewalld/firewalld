@@ -351,7 +351,7 @@ def checkUid(uid):
             uid = int(uid)
         except:
             return False
-    if uid >= 0 or uid <= 2**31-1:
+    if uid >= 0 and uid <= 2**31-1:
         return True
     return False
 
