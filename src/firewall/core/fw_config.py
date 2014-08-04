@@ -123,7 +123,7 @@ class FirewallConfig:
 
     def update_lockdown_whitelist(self):
         if not os.path.exists(LOCKDOWN_WHITELIST):
-            self._policies.lockdown_whitelist.clear()
+            self._policies.lockdown_whitelist.cleanup()
         else:
             self._policies.lockdown_whitelist.read()
 
@@ -137,7 +137,7 @@ class FirewallConfig:
 
     def update_direct(self):
         if not os.path.exists(FIREWALLD_DIRECT):
-            self._direct.clear()
+            self._direct.cleanup()
         else:
             self._direct.read()
 
