@@ -154,6 +154,9 @@ class LockdownWhitelist(IO_Object):
             raise FirewallError(INVALID_COMMAND, command)
         if command not in self.commands:
             self.commands.append(command)
+        else:
+            raise FirewallError(ALREADY_ENABLED,
+                                'Command "%s" already in whitelist' % command)
 
     def remove_command(self, command):
         if command in self.commands:
@@ -185,6 +188,10 @@ class LockdownWhitelist(IO_Object):
             raise FirewallError(INVALID_UID, str(uid))
         if uid not in self.uids:
             self.uids.append(uid)
+        else:
+            raise FirewallError(ALREADY_ENABLED,
+                                'Uid "%s" already in whitelist' % uid)
+
 
     def remove_uid(self, uid):
         if uid in self.uids:
@@ -209,6 +216,10 @@ class LockdownWhitelist(IO_Object):
             raise FirewallError(INVALID_USER, user)
         if user not in self.users:
             self.users.append(user)
+        else:
+            raise FirewallError(ALREADY_ENABLED,
+                                'User "%s" already in whitelist' % user)
+
 
     def remove_user(self, user):
         if user in self.users:
@@ -277,6 +288,10 @@ class LockdownWhitelist(IO_Object):
             raise FirewallError(INVALID_CONTEXT, context)
         if context not in self.contexts:
             self.contexts.append(context)
+        else:
+            raise FirewallError(ALREADY_ENABLED,
+                                'Context "%s" already in whitelist' % context)
+
 
     def remove_context(self, context):
         if context in self.contexts:
