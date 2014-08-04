@@ -128,7 +128,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
     def Set(self, interface_name, property_name, new_value, sender=None):
         interface_name = dbus_to_python(interface_name, str)
         property_name = dbus_to_python(property_name, str)
-        new_value = dbus_to_python(new_value, dict)
+        new_value = dbus_to_python(new_value)
         log.debug1("config.icmptype.%d.Set('%s', '%s', '%s')", self.id,
                    interface_name, property_name, new_value)
         self.parent.accessCheck(sender)
