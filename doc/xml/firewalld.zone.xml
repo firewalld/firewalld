@@ -151,7 +151,11 @@
     <refsect2 id="interface">
       <title>interface</title>
       <para>
-	Is an optional empty-element tag and can be used several times. It can be used to bind an interface to a zone. An interface entry has exactly one attribute:
+	Is an optional empty-element tag and can be used several times. It can be used to bind an interface to a zone.
+	You don't need this for NetworkManager-managed interfaces, because NetworkManager binds interfaces to zones automatically.
+	See also 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	You can use it as a fallback mechanism for interfaces that can't be managed via NetworkManager.
+	An interface entry has exactly one attribute:
       </para>
       <variablelist>
 	<varlistentry>

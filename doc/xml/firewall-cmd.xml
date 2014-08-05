@@ -647,6 +647,10 @@
 	    <para>
 	      Bind interface <replaceable>interface</replaceable> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
 	    </para>
+	    <para>
+	      As a end user you don't need this in most cases, because NetworkManager adds interfaces into zones automatically.
+	      For permanent association of interface with a zone, see 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	    </para>
 	  </listitem>
 	</varlistentry>
 
