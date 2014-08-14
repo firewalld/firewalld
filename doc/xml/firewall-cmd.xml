@@ -648,8 +648,10 @@
 	      Bind interface <replaceable>interface</replaceable> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
 	    </para>
 	    <para>
-	      As a end user you don't need this in most cases, because NetworkManager adds interfaces into zones automatically.
-	      For permanent association of interface with a zone, see 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	      As a end user you don't need this in most cases, because NetworkManager (or legacy network service) adds interfaces into zones automatically (according to <option>ZONE=</option> option from ifcfg-<replaceable>interface</replaceable> file).
+	      You should do it only if there's no /etc/sysconfig/network-scripts/ifcfg-<replaceable>interface</replaceable> file.
+	      If there is such file and you add interface to zone with this <option>--add-interface</option> option, make sure the zone is the same in both cases, otherwise the behaviour would be undefined.
+	      For permanent association of interface with a zone, see also 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 	    </para>
 	  </listitem>
 	</varlistentry>

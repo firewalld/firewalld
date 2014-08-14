@@ -123,7 +123,12 @@
       firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options. Permanent configuration is loaded from XML files in <filename class="directory">/usr/lib/firewalld</filename> or <filename class="directory">/etc/firewalld</filename> (see <xref linkend="directories"/>).
     </para>
     <para>
-      If NetworkManager is not used, there are some limitations: firewalld will not get notified about network device renames. If firewalld gets started after the network is already up, the connections are not bound to a zone. Manually created interfaces are not bound to a zone. Please add them to a zone with <command>firewall-cmd --zone=zone --add-interface=interface</command>.
+      If NetworkManager is not used, there are some limitations: firewalld will not get notified about network device renames.
+      If firewalld gets started after the network is already up, the connections and manually created interfaces are not bound to a zone.
+      You can add them to a zone with <command>firewall-cmd [--permanent] --zone=<replaceable>zone</replaceable> --add-interface=<replaceable>interface</replaceable></command>,
+      but make sure that if there's a /etc/sysconfig/network-scripts/ifcfg-<replaceable>interface</replaceable>,
+      the zone specified there with ZONE=<replaceable>zone</replaceable>
+      is the same (or both are empty/missing for default zone), otherwise the behaviour would be undefined.
     </para>
 
     <refsect2>
