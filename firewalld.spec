@@ -70,6 +70,17 @@ desktop-file-install --delete-original \
 %post
 %systemd_post firewalld.service
 
+# on upgrade allow ipp-client service in active home/internal/work
+# if cups-browsed service is enabled to not break someones printing (RHBZ#1105639)
+if [ $1 -eq 2 && systemctl is-enabled cups-browsed ]; then
+  ZONES=( 'home' 'internal' 'work' )
+  N_ZONES=${#ZONES[@]}
+  for (( i=0;i<$N_ZONES;i++)); do
+    zone=${ZONES[${i}]}
+    [[ $(firewall-cmd --get-active-zones) = *${zone}* ]] && firewall-cmd --permanent --zone ${zone} --add-service "ipp-client"
+  done
+fi
+
 %preun
 %systemd_preun firewalld.service
 
