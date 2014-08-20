@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-28 19:03+0200\n"
+"POT-Creation-Date: 2014-08-20 18:15+0200\n"
 "PO-Revision-Date: 2014-02-04 07:40+0000\n"
 "Last-Translator: Manoj Kumar Giri <mgiri@redhat.com>\n"
 "Language-Team: Oriya (http://www.transifex.com/projects/p/fedora/language/"
@@ -34,17 +34,17 @@ msgstr "ଅଗ୍ନିକବଚ"
 msgid "Firewall Configuration"
 msgstr "ଅଗ୍ନିକବଚର ବିନ୍ଯାସ"
 
-#: ../src/firewall/core/io/io_object.py:150
+#: ../src/firewall/core/io/io_object.py:151
 #, python-format
 msgid "Unexpected element '%s'"
 msgstr "ଅପ୍ରତ୍ଯାଶିତ ଉପାଦାନ '%s'"
 
-#: ../src/firewall/core/io/io_object.py:157
+#: ../src/firewall/core/io/io_object.py:158
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
 msgstr "ଉପାଦାନ '%s': ଅନୁପସ୍ଥିତ '%s' ଗୁଣ"
 
-#: ../src/firewall/core/io/io_object.py:165
+#: ../src/firewall/core/io/io_object.py:166
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "ଉପାଦାନ '%s': ଅପ୍ରତ୍ୟାଶିତ ଗୁଣ '%s'"
@@ -63,23 +63,23 @@ msgstr "FirewallD କୁ ଆରମ୍ଭ କରୁ ନାହିଁ, ପୂର୍
 msgid "Fork #1 failed: %d (%s)"
 msgstr "ଫର୍କ #1 ବିଫଳ ହୋଇଛି: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5162
+#: ../src/firewall-applet:106 ../src/firewall-config:5163
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "ସଂଯୋଗ '%s' ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5187 ../src/firewall-config:5213
+#: ../src/firewall-config:5188 ../src/firewall-config:5214
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଅଞ୍ଚଳ"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5245
+#: ../src/firewall-applet:189 ../src/firewall-config:5246
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "ଅନ୍ତରାପୃଷ୍ଠ '%s' ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5301
+#: ../src/firewall-applet:245 ../src/firewall-config:5302
 #, c-format
 msgid "Select zone for source %s"
 msgstr "ଉତ୍ସ '%s'ପାଇଁ ଅଞ୍ଚଳ ବାଛନ୍ତୁ"
@@ -132,23 +132,23 @@ msgstr "ସିଲ୍ଡ ଉପର ଅଞ୍ଚଳ:"
 msgid "Shields Down Zone:"
 msgstr "ସିଲ୍ଡ ତଳ ଅଞ୍ଚଳ:"
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1760
+#: ../src/firewall-applet:622 ../src/firewall-config:1764
 msgid "Connections"
 msgstr "ସଂଯୋଗଗୁଡିକ"
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1801
-#: ../src/firewall-config:1827 ../src/firewall-config:1852
+#: ../src/firewall-applet:717 ../src/firewall-config:1808
+#: ../src/firewall-config:1834 ../src/firewall-config:1859
 #: ../src/firewall-config.glade.h:62
 msgid "Zone"
 msgstr "କ୍ଷେତ୍ର"
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1813
+#: ../src/firewall-applet:679 ../src/firewall-config:1820
 #: ../src/firewall-config.glade.h:94
 msgid "Interfaces"
 msgstr "ଅନ୍ତରାପୃଷ୍ଠ"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1839
+#: ../src/firewall-applet:704 ../src/firewall-config:1846
 #: ../src/firewall-config.glade.h:99
 msgid "Sources"
 msgstr "ଉତ୍ସ"
@@ -280,7 +280,7 @@ msgstr "ନିଷ୍କ୍ରିୟ ହୋଇଛି"
 msgid "Failed to load icons."
 msgstr "ଚିତ୍ର ସଂକେତ ଧାରଣ କରିବାରେ ଅସଫଳ।"
 
-#: ../src/firewall-config:358 ../src/firewall-config:1720
+#: ../src/firewall-config:358 ../src/firewall-config:1726
 msgid "Runtime"
 msgstr "ଚାଲୁଥିବା ସମୟ"
 
@@ -342,8 +342,8 @@ msgstr "ଲଗ"
 msgid "Audit"
 msgstr "ସମ୍ପାଦନ"
 
-#: ../src/firewall-config:1155 ../src/firewall-config:2011
-#: ../src/firewall-config:2049
+#: ../src/firewall-config:1155 ../src/firewall-config:2012
+#: ../src/firewall-config:2050
 msgid "Warning"
 msgstr "ଚେତାବନୀ"
 
@@ -355,174 +355,174 @@ msgstr "ତ୍ରୁଟି"
 msgid "Changes applied."
 msgstr "ପରିବର୍ତ୍ତନଗୁଡ଼ିକୁ ପ୍ରୟୋଗ କରାଯାଇଛି।"
 
-#: ../src/firewall-config:1488 ../src/firewall-config:2796
+#: ../src/firewall-config:1494 ../src/firewall-config:2797
 msgid "accept"
 msgstr "ଗ୍ରହଣ କରନ୍ତୁ"
 
-#: ../src/firewall-config:1490 ../src/firewall-config:2798
-#: ../src/firewall-config:2908
+#: ../src/firewall-config:1496 ../src/firewall-config:2799
+#: ../src/firewall-config:2909
 msgid "reject"
 msgstr "ଅସ୍ବୀକାର କରନ୍ତୁ"
 
-#: ../src/firewall-config:1494 ../src/firewall-config:2803
+#: ../src/firewall-config:1500 ../src/firewall-config:2804
 msgid "drop"
 msgstr "ପକାଅ"
 
-#: ../src/firewall-config:1496 ../src/firewall-config:1530
-#: ../src/firewall-config:1535
+#: ../src/firewall-config:1502 ../src/firewall-config:1536
+#: ../src/firewall-config:1541
 msgid "limit"
 msgstr "ସୀମା"
 
-#: ../src/firewall-config:1507 ../src/firewall-config:2335
-#: ../src/firewall-config:2489 ../src/firewall-config:2760
+#: ../src/firewall-config:1513 ../src/firewall-config:2336
+#: ../src/firewall-config:2490 ../src/firewall-config:2761
 #: ../src/firewall-config.glade.h:207
 msgid "service"
 msgstr "ସର୍ଭିସ"
 
-#: ../src/firewall-config:1509 ../src/firewall-config:2341
-#: ../src/firewall-config:2491 ../src/firewall-config:2763
+#: ../src/firewall-config:1515 ../src/firewall-config:2342
+#: ../src/firewall-config:2492 ../src/firewall-config:2764
 #: ../src/firewall-config.glade.h:208
 msgid "port"
 msgstr "ପୋର୍ଟ"
 
-#: ../src/firewall-config:1512 ../src/firewall-config:2346
-#: ../src/firewall-config:2500 ../src/firewall-config:2769
+#: ../src/firewall-config:1518 ../src/firewall-config:2347
+#: ../src/firewall-config:2501 ../src/firewall-config:2770
 #: ../src/firewall-config.glade.h:209
 msgid "protocol"
 msgstr "ପ୍ରୋଟୋକଲ"
 
-#: ../src/firewall-config:1514 ../src/firewall-config:2351
-#: ../src/firewall-config:2783 ../src/firewall-config:2920
+#: ../src/firewall-config:1520 ../src/firewall-config:2352
+#: ../src/firewall-config:2784 ../src/firewall-config:2921
 #: ../src/firewall-config.glade.h:212
 msgid "masquerade"
 msgstr "ଛଦ୍ମ ବେଶ"
 
-#: ../src/firewall-config:1528
+#: ../src/firewall-config:1534
 msgid "level"
 msgstr "ସ୍ତର"
 
-#: ../src/firewall-config:1532 ../src/firewall-config:1537
+#: ../src/firewall-config:1538 ../src/firewall-config:1543
 msgid "yes"
 msgstr "ହଁ"
 
-#: ../src/firewall-config:1670
+#: ../src/firewall-config:1676
 msgid "Authorization failed."
 msgstr "ବୈଧିକରଣ ବିଫଳ ହୋଇଛି।"
 
-#: ../src/firewall-config:1673
+#: ../src/firewall-config:1679
 msgid "Invalid name"
 msgstr "ଅବୈଧ ନାମ"
 
-#: ../src/firewall-config:1677
+#: ../src/firewall-config:1683
 msgid "Name already exists"
 msgstr "ନାମ ପୂର୍ବରୁ ଅବସ୍ଥିତ ଅଛି"
 
-#: ../src/firewall-config:2008
+#: ../src/firewall-config:2009
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "ଅଞ୍ଚଳ '%s': ସର୍ଭିସ '%s' ଉପଲବ୍ଧ ନାହିଁ।"
 
-#: ../src/firewall-config:2012 ../src/firewall-config:2050
+#: ../src/firewall-config:2013 ../src/firewall-config:2051
 msgid "Remove"
 msgstr "ହଟାଅ"
 
-#: ../src/firewall-config:2012 ../src/firewall-config:2050
+#: ../src/firewall-config:2013 ../src/firewall-config:2051
 msgid "Ignore"
 msgstr "ଆଗ୍ରହ୍ଯ କରିଦିଅନ୍ତୁ"
 
-#: ../src/firewall-config:2046
+#: ../src/firewall-config:2047
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "ଅଞ୍ଚଳ '%s': ICMP ପ୍ରକାର '%s' ଉପଲବ୍ଧ ନାହିଁ।"
 
-#: ../src/firewall-config:2189
+#: ../src/firewall-config:2190
 msgid "Built-in zone, rename not supported."
 msgstr "ପୂର୍ବନିର୍ମିତ ଅଞ୍ଚଳ, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
-#: ../src/firewall-config:2298 ../src/firewall-config:2735
+#: ../src/firewall-config:2299 ../src/firewall-config:2736
 #: ../src/firewall-config.glade.h:192
 msgid "second"
 msgstr "ସେକଣ୍ଡ"
 
-#: ../src/firewall-config:2299 ../src/firewall-config:2736
+#: ../src/firewall-config:2300 ../src/firewall-config:2737
 #: ../src/firewall-config.glade.h:193
 msgid "minute"
 msgstr "ମିନିଟ"
 
-#: ../src/firewall-config:2300 ../src/firewall-config:2737
+#: ../src/firewall-config:2301 ../src/firewall-config:2738
 #: ../src/firewall-config.glade.h:194
 msgid "hour"
 msgstr "ଘଣ୍ଟା"
 
-#: ../src/firewall-config:2301 ../src/firewall-config:2738
+#: ../src/firewall-config:2302 ../src/firewall-config:2739
 #: ../src/firewall-config.glade.h:195
 msgid "day"
 msgstr "ଦିନ"
 
-#: ../src/firewall-config:2302 ../src/firewall-config:2739
+#: ../src/firewall-config:2303 ../src/firewall-config:2740
 #: ../src/firewall-config.glade.h:198
 msgid "emergency"
 msgstr "ଜରୁରୀକାଳୀନ"
 
-#: ../src/firewall-config:2303 ../src/firewall-config:2740
+#: ../src/firewall-config:2304 ../src/firewall-config:2741
 #: ../src/firewall-config.glade.h:199
 msgid "alert"
 msgstr "ଚେତାବନୀ"
 
-#: ../src/firewall-config:2304 ../src/firewall-config:2741
+#: ../src/firewall-config:2305 ../src/firewall-config:2742
 #: ../src/firewall-config.glade.h:200
 msgid "critical"
 msgstr "ଗୁରୁତର"
 
-#: ../src/firewall-config:2305 ../src/firewall-config:2742
+#: ../src/firewall-config:2306 ../src/firewall-config:2743
 #: ../src/firewall-config.glade.h:201
 msgid "error"
 msgstr "ତୃଟି"
 
-#: ../src/firewall-config:2306 ../src/firewall-config:2743
+#: ../src/firewall-config:2307 ../src/firewall-config:2744
 #: ../src/firewall-config.glade.h:202
 msgid "warning"
 msgstr "ଚେତାବନୀ"
 
-#: ../src/firewall-config:2307 ../src/firewall-config:2744
+#: ../src/firewall-config:2308 ../src/firewall-config:2745
 #: ../src/firewall-config.glade.h:203
 msgid "notice"
 msgstr "ଅଧିସୂଚନା"
 
-#: ../src/firewall-config:2308 ../src/firewall-config:2745
+#: ../src/firewall-config:2309 ../src/firewall-config:2746
 #: ../src/firewall-config.glade.h:204
 msgid "info"
 msgstr "ସୂଚନା"
 
-#: ../src/firewall-config:2309 ../src/firewall-config:2746
+#: ../src/firewall-config:2310 ../src/firewall-config:2747
 #: ../src/firewall-config.glade.h:205
 msgid "debug"
 msgstr "ତୃଟିମୁକ୍ତ କରନ୍ତୁ"
 
-#: ../src/firewall-config:2354 ../src/firewall-config:2502
-#: ../src/firewall-config:2772 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2355 ../src/firewall-config:2503
+#: ../src/firewall-config:2773 ../src/firewall-config.glade.h:210
 msgid "icmp-block"
 msgstr "icmp-ବ୍ଲକ"
 
-#: ../src/firewall-config:2359 ../src/firewall-config:2504
-#: ../src/firewall-config:2775 ../src/firewall-config:2928
+#: ../src/firewall-config:2360 ../src/firewall-config:2505
+#: ../src/firewall-config:2776 ../src/firewall-config:2929
 #: ../src/firewall-config.glade.h:211
 msgid "forward-port"
 msgstr "ଅଗ୍ରସରଣ-ପୋର୍ଟ"
 
-#: ../src/firewall-config:2482 ../src/firewall-config:2681
-#: ../src/firewall-config:2695 ../src/firewall-config:2750
-#: ../src/firewall-config:2851 ../src/firewall-config:2876
+#: ../src/firewall-config:2483 ../src/firewall-config:2682
+#: ../src/firewall-config:2696 ../src/firewall-config:2751
+#: ../src/firewall-config:2852 ../src/firewall-config:2877
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2484 ../src/firewall-config:2683
-#: ../src/firewall-config:2697 ../src/firewall-config:2752
-#: ../src/firewall-config:2853 ../src/firewall-config:2878
+#: ../src/firewall-config:2485 ../src/firewall-config:2684
+#: ../src/firewall-config:2698 ../src/firewall-config:2753
+#: ../src/firewall-config:2854 ../src/firewall-config:2879
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3536
+#: ../src/firewall-config:3537
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -531,11 +531,11 @@ msgstr ""
 "ଅନ୍ୟ ଏକ ତନ୍ତ୍ରକୁ ପଠାଇବା ଉପଯୋଗୀ ହୋଇଥାଏ ଯଦି ଅନ୍ତରାପୃଷ୍ଠ ଛଦ୍ମବେଶ ଧାରଣ କରିଥାଏ।\n"
 "ଆପଣ ଏହି ଅଞ୍ଚଳକୁ ଛଦ୍ମବେଶ ଧାରଣ କରାଇବାକୁ ଚାହୁଁଛନ୍ତି କି?"
 
-#: ../src/firewall-config:3778
+#: ../src/firewall-config:3779
 msgid "Built-in service, rename not supported."
 msgstr "ପୂର୍ବନିର୍ମିତ ସର୍ଭିସ, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 
-#: ../src/firewall-config:4141
+#: ../src/firewall-config:4142
 msgid "Built-in icmp, rename not supported."
 msgstr "ପୂର୍ବନିର୍ମିତ icmp, ପୁନଃ ନାମକରଣ ସମର୍ଥିତ ନୁହଁ।"
 

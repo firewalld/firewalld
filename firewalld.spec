@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.10
+Version: 0.3.11
 Release: 1%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
@@ -72,12 +72,13 @@ desktop-file-install --delete-original \
 
 # on upgrade allow ipp-client service in active home/internal/work
 # if cups-browsed service is enabled to not break someones printing (RHBZ#1105639)
-if [ $1 -eq 2 && systemctl is-enabled cups-browsed ]; then
+systemctl -q is-enabled cups-browsed
+if [[ "$?" -eq 0 && "$1" -eq 2 ]]; then
   ZONES=( 'home' 'internal' 'work' )
   N_ZONES=${#ZONES[@]}
   for (( i=0;i<$N_ZONES;i++)); do
     zone=${ZONES[${i}]}
-    [[ $(firewall-cmd --get-active-zones) = *${zone}* ]] && firewall-cmd --permanent --zone ${zone} --add-service "ipp-client"
+    [[ $(firewall-cmd --get-active-zones) = *${zone}* ]] && firewall-cmd -q --permanent --zone ${zone} --add-service "ipp-client"
   done
 fi
 
@@ -181,6 +182,30 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed Aug 20 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.11-1
+- firewalld:
+  - improve error messages
+  - check built-in chains in direct chain handling functions (RHBZ#1120619)
+  - dbus_to_python() check whether input is of expected type (RHBZ#1122018)
+  - handle negative timeout values (RHBZ#1124476)
+  - warn when Command/Uid/Use/Context already in lockdown whitelist (RHBZ#1126405)
+  - make --lockdown-{on,off} work again (RHBZ#1111573)
+- firewall-cmd:
+  - --timeout now accepts time units (RHBZ#994044)
+- firewall-config:
+  - show active (not default) zones in bold (RHBZ#993655)
+- configuration:
+  - remove ipp-client service from all zones (RHBZ#1105639).
+  - fallbacks for missing values in firewalld.conf
+  - create missing dirs under /etc if needed
+  - add -Es to python command in lockdown-whitelist.xml (RHBZ#1099065)
+- docs:
+  - 'direct' methods concern only chains/rules added via 'direct' (RHBZ#1120619)
+  - --remove-[interface/source] don't need a zone to be specified (RHBZ#1125851)
+  - various fixes in firewalld.zone(5), firewalld.dbus(5), firewalld.direct(5)
+- others:
+  - rpm macros for easier packaging of e.g. services
+
 * Wed May 28 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.10-1
 - new services: freeipa-*, puppermaster, amanda-k5, synergy,
                 xmpp-*, tor, privoxy, sane
