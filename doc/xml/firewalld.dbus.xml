@@ -1543,6 +1543,14 @@
               <para>
 		Get settings of permanent lockdown-whitelist configuration.
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>commands (as)</parameter>: see <literal>command</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>selinux (as)</parameter>: see <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>user (as)</parameter>: see <literal>name</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>uid (ai)</parameter>: see <literal>id</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.policies.Methods.setLockdownWhitelist">
