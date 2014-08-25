@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.3.11
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: http://fedorahosted.org/firewalld
 License: GPLv2+
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
@@ -33,6 +33,8 @@ Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
 Requires: pygobject3-base
+Requires: libnotify
+Requires: NetworkManager-glib
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also 
@@ -44,6 +46,7 @@ Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
 Requires: pygobject3-base
+Requires: NetworkManager-glib
 
 %description -n firewall-config
 The firewall configuration application provides an configuration interface for 
@@ -182,6 +185,9 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Aug 25 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.11-2
+- add few Requires to spec (RHBZ#1133167)
+
 * Wed Aug 20 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.11-1
 - firewalld:
   - improve error messages
