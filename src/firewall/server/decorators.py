@@ -23,6 +23,7 @@ from dbus.exceptions import DBusException
 from decorator import decorator
 
 from firewall.core.logger import log
+from firewall.config.dbus import DBUS_INTERFACE
 from firewall.errors import *
 
 ############################################################################
@@ -30,6 +31,9 @@ from firewall.errors import *
 # Exception handler decorators
 #
 ############################################################################
+
+class FirewallDBusException(dbus.DBusException):
+    _dbus_error_name = "%s.Exception" % DBUS_INTERFACE
 
 @decorator
 def handle_exceptions(func, *args, **kwargs):
@@ -53,13 +57,13 @@ def dbus_handle_exceptions(func, *args, **kwargs):
         return func(*args, **kwargs)
     except FirewallError as error:
         log.error(str(error))
-        raise DBusException(str(error))
+        raise FirewallDBusException(str(error))
     except DBusException as e:
         # only log DBusExceptions once
         raise e
     except Exception as e:
         log.exception()
-        raise DBusException(str(e))
+        raise FirewallDBusException(str(e))
 
 def dbus_service_method(*args, **kwargs):
     kwargs.setdefault("sender_keyword", "sender")
