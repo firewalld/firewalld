@@ -210,9 +210,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         name = dbus_to_python(name, str)
         log.debug1("config.service.%d.rename('%s')", self.id, name)
         self.parent.accessCheck(sender)
-        new_service = self.config.rename_service(self.obj, name)
-        self.parent._addService(new_service)
-        self.parent.removeService(self.obj)
+        self.obj = self.config.rename_service(self.obj, name)
         self.Renamed(name)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE, signature='s')

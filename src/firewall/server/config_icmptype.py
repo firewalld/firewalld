@@ -210,9 +210,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         name = dbus_to_python(name, str)
         log.debug1("config.icmptype.%d.rename('%s')", self.id, name)
         self.parent.accessCheck(sender)
-        new_icmptype = self.config.rename_icmptype(self.obj, name)
-        self.parent._addIcmpType(new_icmptype)
-        self.parent.removeIcmpType(self.obj)
+        self.obj = self.config.rename_icmptype(self.obj, name)
         self.Renamed(name)
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_ICMPTYPE, signature='s')

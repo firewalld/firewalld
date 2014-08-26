@@ -917,12 +917,15 @@ class FirewallConfig(object):
         self.fw.connect("config:zone-added", self.conf_zone_added_cb)
         self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
         self.fw.connect("config:zone-removed", self.conf_zone_removed_cb)
+        self.fw.connect("config:zone-renamed", self.conf_zone_renamed_cb)
         self.fw.connect("config:service-added", self.conf_service_added_cb)
         self.fw.connect("config:service-updated", self.conf_service_updated_cb)
         self.fw.connect("config:service-removed", self.conf_service_removed_cb)
+        self.fw.connect("config:service-renamed", self.conf_service_renamed_cb)
         self.fw.connect("config:icmptype-added", self.conf_icmp_added_cb)
         self.fw.connect("config:icmptype-updated", self.conf_icmp_updated_cb)
         self.fw.connect("config:icmptype-removed", self.conf_icmp_removed_cb)
+        self.fw.connect("config:icmptype-renamed", self.conf_icmp_renamed_cb)
         self.fw.connect("config:policies:lockdown-whitelist-updated",
                         self.lockdown_whitelist_updated_cb)
 
@@ -1670,6 +1673,30 @@ class FirewallConfig(object):
                 self.zoneStore.remove(iter)
                 break
             iter = self.zoneStore.iter_next(iter)
+
+    def conf_zone_renamed_cb(self, zone):
+        if self.runtime_view:
+            return
+
+        # Get all zones, renamed the one that is missing.
+        # If more or less than one is missing, update zone store.
+
+        zones = [ self.fw.config().getZone(z).get_property("name")
+                  for z in self.fw.config().listZones() ]
+
+        use_iter = None
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) not in zones:
+                if use_iter != None:
+                    return self._update_zoneStore()
+                use_iter = iter
+            iter = self.zoneStore.iter_next(iter)
+
+        if use_iter == None:
+            return self._update_zoneStore()
+
+        self.zoneStore.set_value(use_iter, 0, zone)
 
     def _exception_handler(self, exception_message):
         if "NotAuthorizedException" in exception_message:
@@ -3687,6 +3714,30 @@ class FirewallConfig(object):
                 break
             iter = self.serviceConfServiceStore.iter_next(iter)
 
+    def conf_service_renamed_cb(self, service):
+        if self.runtime_view:
+            return
+
+        # Get all services, renamed the one that is missing.
+        # If more or less than one is missing, update service store.
+
+        services = [ self.fw.config().getService(z).get_property("name")
+                     for z in self.fw.config().listServices() ]
+
+        use_iter = None
+        iter = self.serviceConfServiceStore.get_iter_first()
+        while iter:
+            if self.serviceConfServiceStore.get_value(iter, 0) not in services:
+                if use_iter != None:
+                    return self.load_services()
+                use_iter = iter
+            iter = self.serviceConfServiceStore.iter_next(iter)
+
+        if use_iter == None:
+            return self.load_services()
+
+        self.serviceConfServiceStore.set_value(use_iter, 0, service)
+
     def onServiceConfAddService(self, *args):
         self.add_edit_service(True)
 
@@ -4250,6 +4301,30 @@ class FirewallConfig(object):
                 self.icmpDialogIcmpStore.remove(iter)
                 break
             iter = self.icmpDialogIcmpStore.iter_next(iter)
+
+    def conf_icmp_renamed_cb(self, icmp):
+        if self.runtime_view:
+            return
+
+        # Get all icmps, renamed the one that is missing.
+        # If more or less than one is missing, update icmp store.
+
+        icmps = [ self.fw.config().getIcmpType(z).get_property("name")
+                  for z in self.fw.config().listIcmpTypes() ]
+
+        use_iter = None
+        iter = self.icmpDialogIcmpStore.get_iter_first()
+        while iter:
+            if self.icmpDialogIcmpStore.get_value(iter, 0) not in icmps:
+                if use_iter != None:
+                    return self.load_icmps()
+                use_iter = iter
+            iter = self.icmpDialogIcmpStore.iter_next(iter)
+
+        if use_iter == None:
+            return self.load_icmps()
+
+        self.icmpDialogIcmpStore.set_value(use_iter, 0, icmp)
 
     def lockdown_check_cb(self, *args):
         if self.fw.queryLockdown():
