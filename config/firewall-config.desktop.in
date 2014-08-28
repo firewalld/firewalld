@@ -3,7 +3,8 @@ _Name=Firewall
 _Comment=Firewall Configuration
 Icon=firewall-config
 Categories=System;Settings;Security;
-Keywords=firewall;network;security;iptables;netfilter;
+# Translators: These are searchable keywords for the firewall configuration tool
+_Keywords=firewall;network;security;iptables;netfilter;
 Exec=/usr/bin/firewall-config
 Type=Application
 StartupNotify=true
