@@ -91,7 +91,11 @@
     ]
     [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
     [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
-    [ &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt; ]
+    [
+      &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |
+      &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
+      &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
+    ]
     &lt;/rule&gt;
   ]
 &lt;/zone&gt;
@@ -338,7 +342,12 @@
   ]
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
-  [ &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt; ]
+  [
+    &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |
+    &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
+    &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
+  ]
+
 &lt;/rule&gt;
       </programlisting>
       <para>
@@ -349,7 +358,9 @@
   &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [family="<replaceable>bool</replaceable>"]/&gt;
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
-  &lt;accept/&gt; | &lt;reject [type="<replaceable>rejecttype</replaceable>"]/&gt; | &lt;drop/&gt;
+  &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |
+  &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
+  &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
 &lt;/rule&gt;
       </programlisting>
 
