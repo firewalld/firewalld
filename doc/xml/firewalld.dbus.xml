@@ -12,6 +12,7 @@
   Copyright (C) 2010-2014 Red Hat, Inc.
   Authors:
   Thomas Woerner <twoerner@redhat.com>
+  Jiri Popelka <jpopelka@redhat.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -123,6 +124,9 @@
 		All incoming and outgoing packets are dropped, active connections will expire.
 		Enable this only if there are serious problems with your network environment.
               </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -132,6 +136,9 @@
 		Disable panic mode.
 		After disabling panic mode established connections might work again, if panic mode was enabled for a short period of time. 
               </para>
+	      <para>
+		Possible errors: NOT_ENABLED, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry>
@@ -154,6 +161,9 @@
                   <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' or 'ipv6', see <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
+	      <para>
+		Possible errors: INVALID_ICMPTYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getServiceSettings">
@@ -174,6 +184,9 @@
                   <varlistentry><term><parameter>destinations (a{ss})</parameter>: dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'. See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
+	      <para>
+		Possible errors: INVALID_SERVICE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getZoneSettings">
@@ -201,6 +214,9 @@
                   <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.listIcmpTypes">
@@ -216,7 +232,8 @@
             <term><methodname>listServices</methodname>() &rarr; as</term>
             <listitem>
               <para>
-		Return list of service names.
+		Return array of service names (s) in runtime configuration.
+		For permanent configuration see <link linkend="FirewallD1.config.Methods.listServices">org.fedoraproject.FirewallD1.config.Methods.listServices</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -224,7 +241,7 @@
             <term><methodname>queryPanicMode</methodname>() &rarr; b</term>
             <listitem>
               <para>
-		Return true if panic mode is enabled, false otherwise.
+		Return true if panic mode is enabled, false otherwise. In panic mode all incoming and outgoing packets are dropped.
               </para>
             </listitem>
           </varlistentry>
@@ -233,6 +250,9 @@
             <listitem>
               <para>
 		Reload firewall rules and keep state information.
+		Current permanent configuration will become new runtime configuration,
+		i.e. all runtime only changes done until reload are lost with
+		reload if they have not been also in permanent configuration.
               </para>
             </listitem>
           </varlistentry>
@@ -240,8 +260,13 @@
             <term><methodname>setDefaultZone</methodname>(s: <parameter>zone</parameter>) &rarr; Nothing</term>
             <listitem>
               <para>
-		Set default zone to <replaceable>zone</replaceable>.
+		Set default zone for connections and interfaces where no zone has been selected to <replaceable>zone</replaceable>.
+		Setting the default zone changes the zone for the connections or interfaces, that are using the default zone.
+		This is a runtime and permanent change.
               </para>
+	      <para>
+		Possible errors: ZONE_ALREADY_SET, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -319,7 +344,9 @@
     <refsect2 id="FirewallD1.direct">
       <title>org.fedoraproject.FirewallD1.direct</title>
       <para>
-	This interface enables more direct access to the firewall. It enables runtime manipulation with chains and rules. For permanent configuration see org.fedoraproject.FirewallD1.config.direct interface.
+	This interface enables more direct access to the firewall.
+	It enables runtime manipulation with chains and rules.
+	For permanent configuration see <link linkend="FirewallD1.config.direct">org.fedoraproject.FirewallD1.config.direct</link> interface.
       </para>
 
       <refsect3 id="FirewallD1.direct.Methods">
@@ -329,17 +356,28 @@
             <term><methodname>addChain</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
               <para>
-		Add a new <replaceable>chain</replaceable> to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Add a new <replaceable>chain</replaceable> to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		Make sure there's no other chain with this name already.
+		There already exist basic chains to use with direct methods, for example <literal>INPUT_direct</literal> chain.
+		These chains are jumped into before chains for zones, i.e. every rule put into <literal>INPUT_direct</literal> will be checked before rules in zones.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, ALREADY_ENABLED, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.addRule">
             <term><methodname>addRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
             <listitem>
               <para>
-		Add a rule with the arguments <replaceable>args</replaceable> to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Add a rule with the arguments <replaceable>args</replaceable> to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		The priority is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down.
+		Rules with the same priority are on the same level and the order of these rules is not fixed and may change.
+		If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, ALREADY_ENABLED, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.getAllChains">
@@ -348,6 +386,14 @@
               <para>
 		Get all chains added to all tables in format: ipv, table, chain.
 		This concerns only chains previously added with <methodname>addChain</methodname>.
+		Return value is a array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>).
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+                  <varlistentry><term><parameter>table (s)</parameter>: one of <literal>filter</literal>, <literal>mangle</literal>, <literal>nat</literal>, <literal>raw</literal>, <literal>security</literal></term></varlistentry>
+                  <varlistentry><term><parameter>chain (s)</parameter>: name of a chain.</term></varlistentry>
+                </variablelist>
               </para>
             </listitem>
           </varlistentry>
@@ -357,6 +403,16 @@
               <para>
 		Get all rules added to all chains in all tables in format: ipv, table, chain, priority, rule.
 		This concerns only rules previously added with <methodname>addRule</methodname>.
+		Return value is a array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>, <parameter>priority</parameter>, array of <parameter>arguments</parameter>).
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+                  <varlistentry><term><parameter>table (s)</parameter>: one of <literal>filter</literal>, <literal>mangle</literal>, <literal>nat</literal>, <literal>raw</literal>, <literal>security</literal></term></varlistentry>
+                  <varlistentry><term><parameter>chain (s)</parameter>: name of a chain.</term></varlistentry>
+		  <varlistentry><term><parameter>priority (i)</parameter>: used to order rules.</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
               </para>
             </listitem>
           </varlistentry>
@@ -364,71 +420,105 @@
             <term><methodname>getChains</methodname>(s: ipv, s: table) &rarr; as</term>
             <listitem>
               <para>
-		Get all chains added to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Return an array of chains (s) added to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only chains previously added with <methodname>addChain</methodname>.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.getRules">
             <term><methodname>getRules</methodname>(s: ipv, s: table, s: chain) &rarr; a(ias)</term>
             <listitem>
               <para>
-		Get all rules added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Get all rules added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only rules previously added with <methodname>addRule</methodname>.
+		This concerns only rules previously added with <methodname>addRule</methodname>.
+		Return value is a array of (<parameter>priority</parameter>, array of <parameter>arguments</parameter>).
               </para>
+              <para>
+                <variablelist>
+		  <varlistentry><term><parameter>priority (i)</parameter>: used to order rules.</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.queryChain">
             <term><methodname>queryChain</methodname>(s: ipv, s: table, s: chain) &rarr; b</term>
             <listitem>
               <para>
-		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only chains previously added with <methodname>addChain</methodname>.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.queryRule">
             <term><methodname>queryRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; b</term>
             <listitem>
               <para>
-		Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only rules previously added with <methodname>addRule</methodname>.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.removeChain">
             <term><methodname>removeChain</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		Only chains previously added with <methodname>addChain</methodname> can be removed this way.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, NOT_ENABLED, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.removeRule">
             <term><methodname>removeRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		Only rules previously added with <methodname>addRule</methodname> can be removed this way.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, NOT_ENABLED, COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.removeRules">
             <term><methodname>removeRules</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only rules previously added with <methodname>addRule</methodname>.
               </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.passthrough">
             <term><methodname>passthrough</methodname>(s: ipv, as: args) &rarr; s</term>
             <listitem>
               <para>
-		Pass a command through to the firewall. <replaceable>ipv</replaceable> can be either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
+		Pass a command through to the firewall.
+		<replaceable>ipv</replaceable> can be either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
+		<replaceable>args</replaceable> can be all iptables, ip6tables and ebtables command line arguments.
               </para>
+	      <para>
+		Possible errors: COMMAND_FAILED
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -441,7 +531,7 @@
             <term>ChainAdded(s: ipv, s: table, s: chain)</term>
             <listitem>
               <para>
-		Emitted when <replaceable>chain</replaceable> has been added into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. 
+		Emitted when <replaceable>chain</replaceable> has been added into <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). 
               </para>
             </listitem>
           </varlistentry>
@@ -449,7 +539,7 @@
             <term>ChainRemoved(s: ipv, s: table, s: chain)</term>
             <listitem>
               <para>
-		Emitted when <replaceable>chain</replaceable> has been removed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>. 
+		Emitted when <replaceable>chain</replaceable> has been removed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). 
               </para>
             </listitem>
           </varlistentry>
@@ -457,7 +547,7 @@
             <term>RuleAdded(s: ipv, s: table, s: chain, i: priority, as: args)</term>
             <listitem>
               <para>
-		Emitted when a rule with <replaceable>args</replaceable> has been added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Emitted when a rule with <replaceable>args</replaceable> has been added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
               </para>
             </listitem>
           </varlistentry>
@@ -465,7 +555,7 @@
             <term>RuleRemoved(s: ipv, s: table, s: chain, i: priority, as: args)</term>
             <listitem>
               <para>
-		Emitted when a rule with <replaceable>args</replaceable> has been removed from <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> or <literal>ipv6</literal> or <literal>eb</literal>.
+		Emitted when a rule with <replaceable>args</replaceable> has been removed from <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
               </para>
             </listitem>
           </varlistentry>
@@ -479,7 +569,7 @@
 	Enables firewalld to be able to lock down configuration changes from local applications.
 	Local applications or services are able to change the firewall configuration if they are running as root (example: libvirt).
 	With these operations administrator can lock the firewall configuration so that either none or only applications that are in the whitelist are able to request firewall changes.
-	For permanent configuration see org.fedoraproject.FirewallD1.config.policies interface.
+	For permanent configuration see <link linkend="FirewallD1.config.policies">org.fedoraproject.FirewallD1.config.policies</link> interface.
       </para>
 
       <refsect3 id="FirewallD1.policies.Methods">
@@ -490,7 +580,11 @@
             <listitem>
               <para>
 		Add <replaceable>command</replaceable> to whitelist.
+		See <literal>command</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.addLockdownWhitelistContext">
@@ -498,7 +592,11 @@
             <listitem>
               <para>
 		Add <replaceable>context</replaceable> to whitelist.
+		See <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.addLockdownWhitelistUid">
@@ -506,15 +604,23 @@
             <listitem>
               <para>
 		Add user id <replaceable>uid</replaceable> to whitelist.
+		See <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.addLockdownWhitelistUser">
             <term><methodname>addLockdownWhitelistUser</methodname>(s: user) &rarr; Nothing</term>
             <listitem>
               <para>
-		Add <replaceable>user</replaceable> to whitelist.
+		Add <replaceable>user</replaceable> name to whitelist.
+		See <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.disableLockdown">
@@ -522,7 +628,11 @@
             <listitem>
               <para>
 		Disable lockdown.
+		This is a runtime and permanent change.
               </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.enableLockdown">
@@ -530,14 +640,19 @@
             <listitem>
               <para>
 		Enable lockdown.
+		Be careful - if the calling application/user is not on lockdown whitelist when you enable lockdown you won't be able to disable it again with the application, you would need to edit firewalld.conf.
+		This is a runtime and permanent change.
               </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.getLockdownWhitelistCommands">
             <term><methodname>getLockdownWhitelistCommands</methodname>() &rarr; as</term>
             <listitem>
               <para>
-		List all command lines that are on whitelist.
+		List all command lines (s) that are on whitelist.
               </para>
             </listitem>
           </varlistentry>
@@ -545,7 +660,7 @@
             <term><methodname>getLockdownWhitelistContexts</methodname>() &rarr; as</term>
             <listitem>
               <para>
-		List all contexts that are on whitelist.
+		List all contexts (s) that are on whitelist.
               </para>
             </listitem>
           </varlistentry>
@@ -553,7 +668,7 @@
             <term><methodname>getLockdownWhitelistUids</methodname>() &rarr; ai</term>
             <listitem>
               <para>
-		List all user ids that are on whitelist.
+		List all user ids (i) that are on whitelist.
               </para>
             </listitem>
           </varlistentry>
@@ -561,7 +676,7 @@
             <term><methodname>getLockdownWhitelistUsers</methodname>() &rarr; as</term>
             <listitem>
               <para>
-		List all users that are on whitelist.
+		List all users (s) that are on whitelist.
               </para>
             </listitem>
           </varlistentry>
@@ -611,6 +726,9 @@
               <para>
 		Remove <replaceable>command</replaceable> from whitelist.
               </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.removeLockdownWhitelistContext">
@@ -619,6 +737,9 @@
               <para>
 		Remove <replaceable>context</replaceable> from whitelist.
               </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.removeLockdownWhitelistUid">
@@ -627,6 +748,9 @@
               <para>
 		Remove user id <replaceable>uid</replaceable> from whitelist.
               </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.policies.Methods.removeLockdownWhitelistUser">
@@ -635,6 +759,9 @@
               <para>
 		Remove <replaceable>user</replaceable> from whitelist.
               </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -731,7 +858,7 @@
       <title>org.fedoraproject.FirewallD1.zone</title>
       <para>
 	Operations in this interface allows to get, add, remove and query runtime zone's settings.
-	For permanent configuration see org.fedoraproject.FirewallD1.config.zone interface.
+	For permanent settings see <link linkend="FirewallD1.config.zone">org.fedoraproject.FirewallD1.config.zone</link> interface.
       </para>
 
       <refsect3 id="FirewallD1.zone.Methods">
@@ -741,114 +868,155 @@
             <term><methodname>addForwardPort</methodname>(s: zone, s: port, s: protocol, s: toport, s: toaddr, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Add the IPv4 forward port for <replaceable>zone</replaceable>.
+		Add the IPv4 forward port into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
 		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
 		The destination address is a simple IP address.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the forward port was added.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, INVALID_ADDR, INVALID_FORWARD, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addIcmpBlock">
             <term><methodname>addIcmpBlock</methodname>(s: zone, s: icmp, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Add an ICMP block <replaceable>icmp</replaceable> for <replaceable>zone</replaceable>.
+		Add an ICMP block <replaceable>icmp</replaceable> into <replaceable>zone</replaceable>.
+		The <replaceable>icmp</replaceable> is the one of the icmp types firewalld supports.
+		To get a listing of supported icmp types use <link linkend="FirewallD1.Methods.listIcmpTypes">org.fedoraproject.FirewallD1.Methods.listIcmpTypes</link>
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the ICMP block was added.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ICMPTYPE, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addInterface">
             <term><methodname>addInterface</methodname>(s: zone, s: interface) &rarr; s</term>
             <listitem>
               <para>
-		Bind <replaceable>interface</replaceable> to <replaceable>zone</replaceable>.
+		Bind <replaceable>interface</replaceable> with <replaceable>zone</replaceable>.
+		From now on all traffic going through the <replaceable>interface</replaceable> will respect the <replaceable>zone</replaceable>'s settings.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the interface was bound.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_INTERFACE, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addMasquerade">
             <term><methodname>addMasquerade</methodname>(s: zone, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Enable IPv4 masquerade for <replaceable>zone</replaceable>.
+		Enable IPv4 masquerade in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, masquerading will be active for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone in which the masquerade was enabled.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addPort">
             <term><methodname>addPort</methodname>(s: zone, s: port, s: protocol, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Add port for <replaceable>zone</replaceable>.
+		Add port into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
 		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the port was added.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addRichRule">
             <term><methodname>addRichRule</methodname>(s: zone, s: rule, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Add rich language <replaceable>rule</replaceable> for <replaceable>zone</replaceable>.
+		Add rich language <replaceable>rule</replaceable> into <replaceable>zone</replaceable>.
+		For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the rich language rule was added.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_RULE, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addService">
             <term><methodname>addService</methodname>(s: zone, s: service, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Add <replaceable>service</replaceable> for <replaceable>zone</replaceable>.
+		Add <replaceable>service</replaceable> into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		To get a list of supported services, use <link linkend="FirewallD1.Methods.listServices">org.fedoraproject.FirewallD1.Methods.listServices</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the service was added.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_SERVICE, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addSource">
             <term><methodname>addSource</methodname>(s: zone, s: source) &rarr; s</term>
             <listitem>
               <para>
-		Bind <replaceable>source</replaceable> to <replaceable>zone</replaceable>.
+		Bind <replaceable>source</replaceable> with <replaceable>zone</replaceable>.
+		From now on all traffic going from this <replaceable>source</replaceable> will respect the <replaceable>zone</replaceable>'s settings.
+		A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6.
+		For IPv4, the mask can be a network mask or a plain number.
+		For IPv6 the mask is a plain number. Use of host names is not supported.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
               </para>
               <para>
 		Returns name of zone to which the source was bound.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ADDR, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.changeZone">
             <term><methodname>changeZone</methodname>(s: zone, s: interface) &rarr; s</term>
             <listitem>
               <para>
-		This function is deprecated, use changeZoneOfInterface instead.
+		This function is deprecated, use <link linkend="FirewallD1.zone.Methods.changeZoneOfInterface">org.fedoraproject.FirewallD1.zone.Methods.changeZoneOfInterface</link> instead.
               </para>
             </listitem>
           </varlistentry>
@@ -862,8 +1030,11 @@
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
               <para>
-		Returns name of zone.
+		Returns name of zone to which the interface was bound.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, ZONE_ALREADY_SET, ZONE_CONFLICT
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.changeZoneOfSource">
@@ -876,8 +1047,11 @@
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
               <para>
-		Returns name of zone.
+		Returns name of zone to which the source was bound.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, ZONE_ALREADY_SET, ZONE_CONFLICT
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getActiveZones">
@@ -887,76 +1061,110 @@
 		Return dictionary of currently active zones altogether with interfaces and sources used in these zones.
 		Active zones are zones, that have a binding to an interface or source.
               </para>
+              <para>
+		Return value is a dictionary where keys are zone names (s) and values are again dictionaries where keys are either 'interfaces' or 'sources' and values are arrays of interface names (s) or sources (s).
+              </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getForwardPorts">
             <term><methodname>getForwardPorts</methodname>(s: zone) &rarr; aas</term>
             <listitem>
               <para>
-		Return list of IPv4 forward ports added for <replaceable>zone</replaceable>.
+		Return array of IPv4 forward ports previously added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+              <para>
+		Return value is array of 4-tuples, where each 4-tuple consists of (port, protocol, to-port, to-addr). to-addr might be empty in case of local forwarding.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getIcmpBlocks">
             <term><methodname>getIcmpBlocks</methodname>(s: zone) &rarr; as</term>
             <listitem>
               <para>
-		Return list of Internet Control Message Protocol (ICMP) type blocks added for <replaceable>zone</replaceable>.
+		Return array of ICMP type (s) blocks previously added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getInterfaces">
             <term><methodname>getInterfaces</methodname>(s: zone) &rarr; as</term>
             <listitem>
               <para>
-		Return list of interfaces of a <replaceable>zone</replaceable>.
+		Return array of interfaces (s) previously bound with <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getPorts">
             <term><methodname>getPorts</methodname>(s: zone) &rarr; aas</term>
             <listitem>
               <para>
-		Return list of enabled ports in a <replaceable>zone</replaceable>.
+		Return array of ports (2-tuple of port and protocol) previously enabled in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getRichRules">
             <term><methodname>getRichRules</methodname>(s: zone) &rarr; as</term>
             <listitem>
               <para>
-		Return list of rich language rules added for <replaceable>zone</replaceable>.
+		Return array of rich language rules (s) previously added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getServices">
             <term><methodname>getServices</methodname>(s: zone) &rarr; as</term>
             <listitem>
               <para>
-		Return list of enabled services in a <replaceable>zone</replaceable>.
+		Return array of services (s) previously enabled in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getSources">
             <term><methodname>getSources</methodname>(s: zone) &rarr; as</term>
             <listitem>
               <para>
-		Return list of sources of a <replaceable>zone</replaceable>.
+		Return array of sources (s) previously bound with <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getZoneOfInterface">
             <term><methodname>getZoneOfInterface</methodname>(s: interface) &rarr; s</term>
             <listitem>
               <para>
-		Return name of zone the <replaceable>interface</replaceable> is bound to or empty string.
+		Return name (s) of zone the <replaceable>interface</replaceable> is bound to or empty string.
               </para>
             </listitem>
           </varlistentry>
@@ -964,7 +1172,7 @@
             <term><methodname>getZoneOfSource</methodname>(s: source) &rarr; s</term>
             <listitem>
               <para>
-		Return name of zone the <replaceable>source</replaceable> is bound to or empty string.
+		Return name (s) of zone the <replaceable>source</replaceable> is bound to or empty string.
               </para>
             </listitem>
           </varlistentry>
@@ -972,7 +1180,10 @@
             <term><methodname>getZones</methodname>() &rarr; as</term>
             <listitem>
               <para>
-		Return names of predefined zones.
+		Return array of names (s) of predefined zones known to current runtime environment.
+		For list of zones known to permanent environment see <link linkend="FirewallD1.config.Methods.listZones">org.fedoraproject.FirewallD1.config.Methods.listZones</link>.
+		The lists (of zones known to runtime and permanent environment) will contain same zones in most cases,
+		but might differ for example if <link linkend="FirewallD1.config.Methods.addZone">org.fedoraproject.FirewallD1.config.Methods.addZone</link> has been called recently, but firewalld has not been reloaded since then.
               </para>
             </listitem>
           </varlistentry>
@@ -988,18 +1199,24 @@
             <term><methodname>queryForwardPort</methodname>(s: zone, s: port, s: protocol, s: toport, s: toaddr) &rarr; b</term>
             <listitem>
               <para>
-		Return whether the IPv4 forward port has been added for <replaceable>zone</replaceable>.
+		Return whether the IPv4 forward port (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>) has been added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, INVALID_ADDR, INVALID_FORWARD
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryIcmpBlock">
             <term><methodname>queryIcmpBlock</methodname>(s: zone, s: icmp) &rarr; b</term>
             <listitem>
               <para>
-		Return whether an ICMP block for <replaceable>icmp</replaceable> has been added for <replaceable>zone</replaceable>.
+		Return whether an ICMP block for <replaceable>icmp</replaceable> has been added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ICMPTYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryInterface">
@@ -1009,33 +1226,45 @@
 		Query whether <replaceable>interface</replaceable> has been bound to <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_INTERFACE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryMasquerade">
             <term><methodname>queryMasquerade</methodname>(s: zone) &rarr; b</term>
             <listitem>
               <para>
-		Return whether IPv4 masquerading has been enabled for <replaceable>zone</replaceable>
+		Return whether IPv4 masquerading has been enabled in <replaceable>zone</replaceable>
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryPort">
             <term><methodname>queryPort</methodname>(s: zone, s: port, s: protocol) &rarr; b</term>
             <listitem>
               <para>
-		Return whether <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been added for <replaceable>zone</replaceable>.
+		Return whether <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been added in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryRichRule">
             <term><methodname>queryRichRule</methodname>(s: zone, s: rule) &rarr; b</term>
             <listitem>
               <para>
-		Return whether rich rule <replaceable>rule</replaceable> has been added for <replaceable>zone</replaceable>.
+		Return whether rich rule <replaceable>rule</replaceable> has been added in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_RULE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryService">
@@ -1045,6 +1274,9 @@
 		Return whether <replaceable>service</replaceable> has been added for <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_SERVICE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.querySource">
@@ -1054,18 +1286,24 @@
 		Query whether <replaceable>source</replaceable>has been bound to <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ADDR
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeForwardPort">
             <term><methodname>removeForwardPort</methodname>(s: zone, s: port, s: protocol, s: toport, s: toaddr) &rarr; s</term>
             <listitem>
               <para>
-		Remove IPv4 forward port from <replaceable>zone</replaceable>.
+		Remove IPv4 forward port ((<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>)) from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
               <para>
 		Returns name of zone from which the forward port was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, INVALID_ADDR, INVALID_FORWARD, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeIcmpBlock">
@@ -1078,6 +1316,9 @@
               <para>
 		Returns name of zone from which the ICMP block was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ICMPTYPE, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeInterface">
@@ -1088,8 +1329,11 @@
 		If <replaceable>zone</replaceable> is empty, the interface will be removed from zone it belongs to.
               </para>
               <para>
-		Returns name of zone.
+		Returns name of zone from which the <replaceable>interface</replaceable> was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_INTERFACE, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeMasquerade">
@@ -1102,18 +1346,24 @@
               <para>
 		Returns name of zone for which the masquerade was disabled.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removePort">
             <term><methodname>removePort</methodname>(s: zone, s: port, s: protocol) &rarr; s</term>
             <listitem>
               <para>
-		Remove port from <replaceable>zone</replaceable>.
+		Remove port/protocol from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
               </para>
               <para>
 		Returns name of zone from which the port was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeRichRule">
@@ -1126,6 +1376,9 @@
               <para>
 		Returns name of zone from which the rich language rule was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_RULE, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeService">
@@ -1138,6 +1391,9 @@
               <para>
 		Returns name of zone from which the service was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_SERVICE, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeSource">
@@ -1148,8 +1404,11 @@
 		If <replaceable>zone</replaceable> is empty, the source will be removed from zone it belongs to.
               </para>
               <para>
-		Returns name of zone.
+		Returns name of zone from which the <replaceable>source</replaceable> was removed.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ADDR, NOT_ENABLED, INVALID_COMMAND
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1327,48 +1586,106 @@
             <term><methodname>addIcmpType</methodname>(s: icmptype, (sssas): settings) &rarr; o</term>
             <listitem>
               <para>
-		Add <replaceable>icmptype</replaceable> with given <replaceable>settings</replaceable>.
+		Add <replaceable>icmptype</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>destinations</parameter>.
+		Returns object path of the new icmp type.
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>icmptype</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' or 'ipv6', see <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.addService">
             <term><methodname>addService</methodname>(s: service, (sssa(ss)asa{ss}): settings) &rarr; o</term>
             <listitem>
               <para>
-		Add <replaceable>service</replaceable> with given <replaceable>settings</replaceable>.
+		Add <replaceable>service</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter>.
+		Returns object path of the new icmp type.
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>module names (as)</parameter>: array of kernel netfilter helpers, see <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>destinations (a{ss})</parameter>: dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'. See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.addZone">
             <term><methodname>addZone</methodname>(s: zone, (sssbsasa(ss)asba(ssss)asasas): settings) &rarr; o</term>
             <listitem>
               <para>
-		Add <replaceable>zone</replaceable> with given <replaceable>settings</replaceable>.
+		Add <replaceable>zone</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>UNUSED (b)</parameter>: this boolean value is no longer used for anything.</term></varlistentry>
+                  <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp-blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward-ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getIcmpTypeByName">
             <term><methodname>getIcmpTypeByName</methodname>(s: icmptype) &rarr; o</term>
             <listitem>
               <para>
-		Return object path of <replaceable>icmptype</replaceable>.
+		Return object path (permanent configuration) of <replaceable>icmptype</replaceable> with given name.
               </para>
+	      <para>
+		Possible errors: INVALID_ICMPTYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getServiceByName">
             <term><methodname>getServiceByName</methodname>(s: service) &rarr; o</term>
             <listitem>
               <para>
-		Return object path of <replaceable>service</replaceable>.
+		Return object path (permanent configuration) of <replaceable>service</replaceable> with given name.
               </para>
+	      <para>
+		Possible errors: INVALID_SERVICE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getZoneByName">
             <term><methodname>getZoneByName</methodname>(s: zone) &rarr; o</term>
             <listitem>
               <para>
-		Return object path of <replaceable>zone</replaceable>.
+		Return object path (permanent configuration) of <replaceable>zone</replaceable> with given name.
               </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getZoneOfInterface">
@@ -1400,7 +1717,8 @@
             <term><methodname>listServices</methodname>() &rarr; ao</term>
             <listitem>
               <para>
-		List services objects paths.
+		Return array of objects paths (o) of <link linkend="FirewallD1.config.service">services</link> in permanent configuration.
+		For runtime configuration see <link linkend="FirewallD1.Methods.listServices">org.fedoraproject.FirewallD1.Methods.listServices</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -1408,7 +1726,10 @@
             <term><methodname>listZones</methodname>() &rarr; ao</term>
             <listitem>
               <para>
-		List zones object paths.
+		List object paths of zones known to permanent environment.
+		For list of zones known to runtime environment see <link linkend="FirewallD1.zone.Methods.getZones">org.fedoraproject.FirewallD1.zone.Methods.getZones</link>.
+		The lists (of zones known to runtime and permanent environment) will contain same zones in most cases,
+		but might differ for example if <link linkend="FirewallD1.config.Methods.addZone">org.fedoraproject.FirewallD1.config.Methods.addZone</link> has been called recently, but firewalld has not been reloaded since then.
               </para>
             </listitem>
           </varlistentry>
@@ -1488,7 +1809,8 @@
     <refsect2 id="FirewallD1.config.direct">
       <title>org.fedoraproject.FirewallD1.config.direct</title>
       <para>
-	Interface for permanent direct configuration <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>. For runtime direct configuration see org.fedoraproject.FirewallD1.direct interface.
+	Interface for permanent direct configuration, see also <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	For runtime direct configuration see <link linkend="FirewallD1.direct">org.fedoraproject.FirewallD1.direct</link> interface.
       </para>
 
       <refsect3 id="FirewallD1.config.direct.Methods">
@@ -1498,7 +1820,14 @@
             <term><methodname>getSettings</methodname>() &rarr; (a(sss)a(sssias)a(sas))</term>
             <listitem>
               <para>
-		Get settings of permanent direct configuration.
+		Get settings of permanent direct configuration in format: array of <parameter>chains</parameter>, array of <parameter>rules</parameter>, array of <parameter>passthroughs</parameter>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>chains (a(sss))</parameter>: array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>), see 'chain' in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>.
+                  <varlistentry><term><parameter>rules (a(sssias))</parameter>: array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>, <parameter>priority</parameter>, array of <parameter>arguments</parameter>), see 'rule' in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>.
+                  <varlistentry><term><parameter>passthroughs (a(sas))</parameter>: array of (<parameter>ipv</parameter>, array of <parameter>arguments</parameter>), see passthrough in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>.
+                </variablelist>
               </para>
             </listitem>
           </varlistentry>
@@ -1507,7 +1836,18 @@
             <listitem>
               <para>
 		Update permanent direct configuration with given <replaceable>settings</replaceable>.
+		Settings are in format: array of <parameter>chains</parameter>, array of <parameter>rules</parameter>, array of <parameter>passthroughs</parameter>.
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>chains (a(sss))</parameter>: array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>), see 'chain' in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>.
+                  <varlistentry><term><parameter>rules (a(sssias))</parameter>: array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>, <parameter>priority</parameter>, array of <parameter>arguments</parameter>), see 'rule' in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>.
+                  <varlistentry><term><parameter>passthroughs (a(sas))</parameter>: array of (<parameter>ipv</parameter>, array of <parameter>arguments</parameter>), see passthrough in <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>.
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1531,8 +1871,8 @@
     <refsect2 id="FirewallD1.config.policies">
       <title>org.fedoraproject.FirewallD1.config.policies</title>
       <para>
-	Interface for permanent lockdown-whitelist configuration <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-	For runtime configuration see org.fedoraproject.FirewallD1.policies interface.
+	Interface for permanent lockdown-whitelist configuration, see also <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	For runtime configuration see <link linkend="FirewallD1.policies">org.fedoraproject.FirewallD1.policies</link> interface.
       </para>
       <refsect3 id="FirewallD1.config.policies.Methods">
         <title>Methods</title>
@@ -1541,14 +1881,14 @@
             <term><methodname>getLockdownWhitelist</methodname>() &rarr; (asasasai)</term>
             <listitem>
               <para>
-		Get settings of permanent lockdown-whitelist configuration.
+		Get settings of permanent lockdown-whitelist configuration in format: <parameter>commands</parameter>, <parameter>selinux contexts</parameter>, <parameter>users</parameter>, <parameter>uids</parameter>
               </para>
               <para>
                 <variablelist>
                   <varlistentry><term><parameter>commands (as)</parameter>: see <literal>command</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>selinux (as)</parameter>: see <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>user (as)</parameter>: see <literal>name</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>uid (ai)</parameter>: see <literal>id</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>selinux contexts (as)</parameter>: see <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>users (as)</parameter>: see <literal>name</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>uids (ai)</parameter>: see <literal>id</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
             </listitem>
@@ -1558,7 +1898,19 @@
             <listitem>
               <para>
 		Set permanent lockdown-whitelist configuration to <replaceable>settings</replaceable>.
+		Settings are in format: <parameter>commands</parameter>, <parameter>selinux contexts</parameter>, <parameter>users</parameter>, <parameter>uids</parameter>
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>commands (as)</parameter>: see <literal>command</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>selinux contexts (as)</parameter>: see <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>users (as)</parameter>: see <literal>name</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>uids (ai)</parameter>: see <literal>id</literal> attribute of <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1582,7 +1934,7 @@
     <refsect2 id="FirewallD1.config.zone">
       <title>org.fedoraproject.FirewallD1.config.zone</title>
       <para>
-	Interface for permanent zone configuration <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	Interface for permanent zone configuration, see also <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
       </para>
       <refsect3 id="FirewallD1.config.zone.Methods">
         <title>Methods</title>
@@ -1620,6 +1972,9 @@
               <para>
 		Load default settings for built-in zone.
               </para>
+	      <para>
+		Possible errors: NO_DEFAULTS
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.remove">
@@ -1628,6 +1983,9 @@
               <para>
 		Remove not built-in zone.
               </para>
+	      <para>
+		Possible errors: BUILTIN_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.rename">
@@ -1636,6 +1994,9 @@
               <para>
 		Rename not built-in zone to <replaceable>name</replaceable>.
               </para>
+	      <para>
+		Possible errors: BUILTIN_ZONE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.update">
@@ -1643,7 +2004,28 @@
             <listitem>
               <para>
 		Update settings of zone to <replaceable>settings</replaceable>.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>UNUSED (b)</parameter>: this boolean value is no longer used for anything.</term></varlistentry>
+                  <varlistentry><term><parameter>target (s)</parameter>: see <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>services (as)</parameter>: array of service names, see <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>icmp-blocks (as)</parameter>: array of icmp-blocks. See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>masquerade (b)</parameter>: see <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>forward-ports (a(ssss))</parameter>: array of (port, protocol, to-port, to-addr). See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1721,7 +2103,7 @@
     <refsect2 id="FirewallD1.config.service">
       <title>org.fedoraproject.FirewallD1.config.service</title>
       <para>
-	Interface for permanent service configuration <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	Interface for permanent service configuration, see also <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
       </para>
 
       <refsect3 id="FirewallD1.config.service.Methods">
@@ -1753,14 +2135,20 @@
               <para>
 		Load default settings for built-in service.
               </para>
+	      <para>
+		Possible errors: NO_DEFAULTS
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.remove">
             <term><methodname>remove</methodname>() &rarr; Nothing</term>
             <listitem>
               <para>
-		Remove not built-in zone.
+		Remove not built-in service.
               </para>
+	      <para>
+		Possible errors: BUILTIN_SERVICE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.rename">
@@ -1769,6 +2157,9 @@
               <para>
 		Rename not built-in service to <replaceable>name</replaceable>.
               </para>
+	      <para>
+		Possible errors: BUILTIN_SERVICE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.update">
@@ -1776,7 +2167,21 @@
             <listitem>
               <para>
 		Update settings of service to <replaceable>settings</replaceable>.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter>.
               </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>module names (as)</parameter>: array of kernel netfilter helpers, see <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>destinations (a{ss})</parameter>: dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'. See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_TYPE
+	      </para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -1854,7 +2259,7 @@
     <refsect2 id="FirewallD1.config.icmptype">
       <title>org.fedoraproject.FirewallD1.config.icmptype</title>
       <para>
-	Interface for permanent icmp type configuration <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	Interface for permanent icmp type configuration, see also <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
       </para>
 
       <refsect3 id="FirewallD1.config.icmptype.Methods">
@@ -1884,6 +2289,9 @@
               <para>
 		Load default settings for built-in icmp type.
               </para>
+	      <para>
+		Possible errors: NO_DEFAULTS
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.icmptype.Methods.remove">
@@ -1892,6 +2300,9 @@
               <para>
 		Remove not built-in icmp type.
               </para>
+	      <para>
+		Possible errors: BUILTIN_ICMPTYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.icmptype.Methods.rename">
@@ -1900,6 +2311,9 @@
               <para>
 		Rename not built-in icmp type to <replaceable>name</replaceable>.
               </para>
+	      <para>
+		Possible errors: BUILTIN_ICMPTYPE
+	      </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.icmptype.Methods.update">
@@ -1907,6 +2321,15 @@
             <listitem>
               <para>
 		Update settings of icmp type to <replaceable>settings</replaceable>.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>destinations</parameter>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see description tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
               </para>
             </listitem>
           </varlistentry>
