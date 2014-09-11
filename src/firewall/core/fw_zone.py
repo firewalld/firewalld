@@ -485,6 +485,7 @@ class FirewallZone:
             raise FirewallError(ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % interface)
 
+        log.debug1("Setting zone of interface '%s' to '%s'" % (interface, _zone))
         self.__interface(True, _zone, interface)
 
         _obj.settings["interfaces"][interface_id] = \
