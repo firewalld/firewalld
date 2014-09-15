@@ -870,7 +870,7 @@ if a.permanent:
             try:
                 priority = int(a.add_rule[3])
             except ValueError:
-                __fail("wrong priority\nusage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                __fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             settings.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1],
                              a.add_rule[2], priority, splitArgs(a.add_rule[4]))
         elif a.remove_rule:
@@ -1114,7 +1114,7 @@ elif a.direct:
         try:
             priority = int(a.add_rule[3])
         except ValueError:
-            __fail("wrong priority\nusage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            __fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         fw.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
                    priority, splitArgs(a.add_rule[4]))
     elif a.remove_rule:
