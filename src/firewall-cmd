@@ -1361,10 +1361,6 @@ elif a.remove_icmp_block:
 elif a.query_icmp_block:
     __print_query_result(fw.queryIcmpBlock(zone, a.query_icmp_block))
 
-# zone target
-elif a.get_target:
-    __print_and_exit(fw.getZoneSettings(zone).getTarget())
-
 # list all
 elif a.list_all:
     __list_all(fw, zone if zone else fw.getDefaultZone())
