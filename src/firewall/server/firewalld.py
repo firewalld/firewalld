@@ -617,7 +617,7 @@ class FirewallD(slip.dbus.service.Object):
         # returns zone settings for zone
         zone = dbus_to_python(zone, str)
         log.debug1("getZoneSettings(%s)", zone)
-        return self.fw.zone.get_zone(zone).export_config()
+        return self.fw.zone.get_config_with_settings(zone)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
     @dbus_service_method(DBUS_INTERFACE, in_signature='',

@@ -370,6 +370,21 @@ class FirewallZone:
         if len(obj.interfaces) == 0 and len(obj.sources) == 0:
             self.unapply_zone_settings(zone)
 
+    def get_config_with_settings(self, zone):
+        """
+        :return: exported config updated with runtime settings
+        """
+        config = self.get_zone(zone).export_config()
+        config = config[:5] + (self.list_services(zone),
+                               self.list_ports(zone),
+                               self.list_icmp_blocks(zone),
+                               self.query_masquerade(zone),
+                               self.list_forward_ports(zone),
+                               self.list_interfaces(zone),
+                               self.list_sources(zone),
+                               self.list_rules(zone))
+        return config
+
     # handle chains, modules and rules for a zone
     def handle_cmr(self, zone, chains, modules, rules, enable):
         cleanup_chains = None
