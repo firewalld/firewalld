@@ -696,6 +696,7 @@ class FirewallD(slip.dbus.service.Object):
     # ZONES
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    # TODO: shouldn't this be in DBUS_INTERFACE instead of DBUS_INTERFACE_ZONE ?
     @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
