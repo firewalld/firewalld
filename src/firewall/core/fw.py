@@ -217,13 +217,8 @@ class Firewall:
                            FIREWALLD_DIRECT, msg)
             else:
                 self.direct.set_config((obj.get_all_chains(),
-                                        obj.get_all_rules()))
-                for ipv, args in obj.get_all_passthroughs().items():
-                    for arg in args:
-                        try:
-                            self.direct.passthrough(ipv, arg)
-                        except FirewallError as error:
-                            log.warning(str(error))
+                                        obj.get_all_rules(),
+                                        obj.get_all_passthroughs()))
         self.config.set_direct(copy.deepcopy(obj))
 
         # check if default_zone is a valid zone

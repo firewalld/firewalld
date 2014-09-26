@@ -1735,6 +1735,22 @@
                         <property name="use_underline">True</property>
                       </object>
                     </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="menuitem5">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Make runtime configuration permanent</property>
+                        <property name="label" translatable="yes">Runtime To permant</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="onRuntimeToPermanent" swapped="no"/>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -3544,7 +3560,7 @@
                                                 <property name="can_focus">False</property>
                                                 <property name="yalign">0.49000000953674316</property>
                                                 <property name="stock">gtk-network</property>
-                                                <property name="icon_size">1</property>
+                                                <property name="icon-size">1</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>
@@ -3602,7 +3618,7 @@
                                                 <property name="visible">True</property>
                                                 <property name="can_focus">False</property>
                                                 <property name="stock">gtk-network</property>
-                                                <property name="icon_size">1</property>
+                                                <property name="icon-size">1</property>
                                               </object>
                                               <packing>
                                                 <property name="expand">False</property>
@@ -4330,21 +4346,6 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label97">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
-                                    <property name="yalign">0</property>
-                                    <property name="label" translatable="yes">Passthrough rules can only be modified for the permanent configuration.</property>
-                                    <property name="wrap">True</property>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">2</property>
-                                  </packing>
-                                </child>
-                                <child>
                                   <object class="GtkLabel" id="label88">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
@@ -4356,7 +4357,7 @@
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
-                                    <property name="position">3</property>
+                                    <property name="position">2</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -4392,7 +4393,7 @@
                                   <packing>
                                     <property name="expand">True</property>
                                     <property name="fill">True</property>
-                                    <property name="position">4</property>
+                                    <property name="position">3</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -4461,7 +4462,7 @@
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">True</property>
-                                    <property name="position">5</property>
+                                    <property name="position">4</property>
                                   </packing>
                                 </child>
                               </object>
@@ -6593,7 +6594,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="stock">gtk-network</property>
-                                    <property name="icon_size">1</property>
+                                    <property name="icon-size">1</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -6683,7 +6684,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="stock">gtk-network</property>
-                                    <property name="icon_size">1</property>
+                                    <property name="icon-size">1</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -7306,7 +7307,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="stock">gtk-properties</property>
-                                    <property name="icon_size">1</property>
+                                    <property name="icon-size">1</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>

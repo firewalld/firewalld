@@ -55,15 +55,16 @@ class FirewallDirect:
         self._chains = LastUpdatedOrderedDict()
         self._rules = LastUpdatedOrderedDict()
         self._rule_priority_positions = { }
+        self._passthroughs = LastUpdatedOrderedDict()
 
     def cleanup(self):
         self.__init_vars()
 
     def get_config(self):
-        return (self._chains, self._rules)
+        return (self._chains, self._rules, self._passthroughs)
 
     def set_config(self, config):
-        (_chains, _rules) = config
+        (_chains, _rules, _passthroughs) = config
         for table_id in _chains:
             (ipv, table) = table_id
             for chain in _chains[table_id]:
@@ -79,6 +80,14 @@ class FirewallDirect:
                 if not self.query_rule(ipv, table, chain, priority, args):
                     try:
                         self.add_rule(ipv, table, chain, priority, args)
+                    except FirewallError as error:
+                        log.warning(str(error))
+
+        for ipv in _passthroughs:
+            for args in _passthroughs[ipv]:
+                if not self.query_passthrough(ipv, args):
+                    try:
+                        self.add_passthrough(ipv, args)
                     except FirewallError as error:
                         log.warning(str(error))
 
@@ -309,10 +318,10 @@ class FirewallDirect:
         for key in self._rules:
             (ipv, table, chain) = key
             for (priority, args) in self._rules[key]:
-                r.append((ipv, table, chain, priority, args))
+                r.append((ipv, table, chain, priority, list(args)))
         return r
 
-    # DIRECT PASSTROUGH
+    # DIRECT PASSTROUGH (untracked)
 
     def passthrough(self, ipv, args):
         try:
@@ -320,3 +329,64 @@ class FirewallDirect:
         except Exception as msg:
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)
+
+    # DIRECT PASSTROUGH (tracked)
+
+    def _check_ipv(self, ipv):
+        ipvs = [ 'ipv4', 'ipv6', 'eb' ]
+        if ipv not in ipvs:
+            raise FirewallError(INVALID_IPV,
+                                "'%s' not in '%s'" % (ipv, ipvs))
+
+    def __passthrough(self, enable, ipv, args):
+        self._check_ipv(ipv)
+
+        passthrough_id = (ipv, args)
+        if enable:
+            if ipv in self._passthroughs and args in self._passthroughs[ipv]:
+                raise FirewallError(ALREADY_ENABLED,
+                                    "passthrough '%s', '%s'" % (ipv, args))
+        else:
+            if not ipv in self._passthroughs or \
+               args not in self._passthroughs[ipv]:
+                raise FirewallError(NOT_ENABLED,
+                                    "passthrough '%s', '%s'" % (ipv, args))
+
+        try:
+            self._fw.rule(ipv, args)
+        except Exception as msg:
+            log.debug2(msg)
+            raise FirewallError(COMMAND_FAILED, msg)
+
+        if enable:
+            if not ipv in self._passthroughs:
+                self._passthroughs[ipv] = [ ]
+            self._passthroughs[ipv].append(args)
+        else:
+            self._passthroughs[ipv].remove(args)
+            if len(self._passthroughs[ipv]) == 0:
+                del self._passthroughs[ipv]
+
+    def add_passthrough(self, ipv, args):
+        self.__passthrough(True, ipv, list(args))
+
+    def remove_passthrough(self, ipv, args):
+        self.__passthrough(False, ipv, list(args))
+
+    def query_passthrough(self, ipv, args):
+        return (ipv in self._passthroughs and \
+                list(args) in self._passthroughs[ipv])
+
+    def get_all_passthroughs(self):
+        r = [ ]
+        for ipv in self._passthroughs:
+            for args in self._passthroughs[ipv]:
+                r.append((ipv, list(args)))
+        return r
+
+    def get_passthroughs(self, ipv):
+        r = [ ]
+        if ipv in self._passthroughs:
+            for args in self._passthroughs[ipv]:
+                r.append(list(args))
+        return r

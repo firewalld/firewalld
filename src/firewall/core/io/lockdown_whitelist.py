@@ -143,9 +143,9 @@ class LockdownWhitelist(IO_Object):
         """ HACK. I haven't been able to make sax parser return
             strings encoded (because of python 2) instead of in unicode.
             Get rid of it once we throw out python 2 support."""
-        self.commands = u2b_if_py2(self.commands)
-        self.contexts = u2b_if_py2(self.contexts)
-        self.users = u2b_if_py2(self.users)
+        self.commands = [ u2b_if_py2(x) for x in self.commands ]
+        self.contexts = [ u2b_if_py2(x) for x in self.contexts ]
+        self.users = [ u2b_if_py2(x) for x in self.users ]
 
     # commands
 

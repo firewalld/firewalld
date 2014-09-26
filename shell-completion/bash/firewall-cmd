@@ -66,10 +66,9 @@ OPTIONS_PERMANENT="${OPTIONS_CONFIG} --zone= ${OPTIONS_ZONE} \
 
 OPTIONS_DIRECT="--passthrough \
         --add-chain --remove-chain --query-chain --get-chains --get-all-chains \
-         --add-rule --remove-rule  --query-rule  --get-rules  --get-all-rules"
-
-OPTIONS_DIRECT_PERMANENT="--add-passthrough --remove-passthrough \
-                  --query-passthrough --get-passthroughs --get-all-passthroughs"
+         --add-rule --remove-rule  --query-rule  --get-rules  --get-all-rules \
+         --add-passthrough --remove-passthrough \
+         --query-passthrough --get-passthroughs --get-all-passthroughs"
 
 # these all can be used as a "first" option
 OPTIONS_GENERAL="--help --version \
@@ -139,11 +138,11 @@ _firewall_cmd()
         _available_interfaces
         ;;
     --permanent)
-        [[ ${words[@]} == *--direct* ]] && opts="${OPTIONS_DIRECT} ${OPTIONS_DIRECT_PERMANENT}" || opts="${OPTIONS_PERMANENT} --direct"
+        [[ ${words[@]} == *--direct* ]] && opts="${OPTIONS_DIRECT}" || opts="${OPTIONS_PERMANENT} --direct"
         COMPREPLY=( $( compgen -W "${opts}" -- "$cur" ) )
         ;;
     --direct)
-        [[ ${words[@]} == *--permanent* ]] && opts="${OPTIONS_DIRECT} ${OPTIONS_DIRECT_PERMANENT}" || opts="${OPTIONS_DIRECT} --permanent"
+        [[ ${words[@]} == *--permanent* ]] && opts="${OPTIONS_DIRECT}" || opts="${OPTIONS_DIRECT} --permanent"
         COMPREPLY=( $( compgen -W "${opts}" -- "$cur" ) )
         ;;
     --*-rich-rule)

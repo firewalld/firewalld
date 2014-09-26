@@ -25,7 +25,7 @@ import io
 import shutil
 
 from firewall.fw_types import *
-from firewall.functions import splitArgs, joinArgs
+from firewall.functions import splitArgs, joinArgs, u2b_if_py2
 from firewall.errors import *
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
@@ -51,7 +51,8 @@ class direct_ContentHandler(IO_Object_ContentHandler):
             ipv = attrs["ipv"]
             table = attrs["table"]
             chain = attrs["chain"]
-            self.item.add_chain(ipv, table, chain)
+            self.item.add_chain(u2b_if_py2(ipv), u2b_if_py2(table),
+                                u2b_if_py2(chain))
 
         elif name == "rule":
             if not self.direct:
@@ -69,14 +70,15 @@ class direct_ContentHandler(IO_Object_ContentHandler):
                 log.error("Parse Error: %s is not a valid priority" % 
                           attrs["priority"])
                 return
-            self._rule = [ipv, table, chain, priority]
+            self._rule = [ u2b_if_py2(ipv), u2b_if_py2(table),
+                           u2b_if_py2(chain), priority ]
 
         elif name == "passthrough":
             if not self.direct:
                 log.error("Parse Error: command outside of direct")
                 return
             ipv = attrs["ipv"]
-            self._passthrough = [ipv]
+            self._passthrough = [ u2b_if_py2(ipv) ]
 
         else:
             log.error('Unknown XML element %s' % name)
@@ -88,7 +90,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         if name == "rule":
             if self._element:
                 # add arguments
-                self._rule.append(splitArgs(self._element))
+                self._rule.append([ u2b_if_py2(x) for x in splitArgs(self._element) ])
                 self.item.add_rule(*self._rule)
             else:
                 log.error("Error: rule does not have any arguments, ignoring.")
@@ -96,7 +98,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         elif name == "passthrough":
             if self._element:
                 # add arguments
-                self._passthrough.append(splitArgs(self._element))
+                self._passthrough.append([ u2b_if_py2(x) for x in splitArgs(self._element) ])
                 self.item.add_passthrough(*self._passthrough)
             else:
                 log.error("Error: passthrough does not have any arguments, " +

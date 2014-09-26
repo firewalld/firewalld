@@ -764,12 +764,15 @@ class FirewallClientDirect(object):
     def getAllPassthroughs(self):
         return self.settings[2]
     @handle_exceptions
+    def setAllPassthroughs(self, passthroughs):
+        self.settings[2] = passthroughs
+    @handle_exceptions
+    def removeAllPassthroughs(self):
+        self.settings[2] = passthroughs
+    @handle_exceptions
     def getPassthroughs(self, ipv):
         return [ entry[1] for entry in self.settings[2] \
                  if entry[0] == ipv ]
-    @handle_exceptions
-    def setAllPassthroughs(self, passthroughs):
-        self.settings[2] = passthroughs
     @handle_exceptions
     def addPassthrough(self, ipv, args):
         idx = (ipv, args)
@@ -1005,6 +1008,8 @@ class FirewallClient(object):
             "direct:chain-removed": "ChainRemoved",
             "direct:rule-added": "RuleAdded",
             "direct:rule-removed": "RuleRemoved",
+            "direct:passthrough-added": "PassthroughAdded",
+            "direct:passthrough-removed": "PassthroughRemoved",
             "config:direct:updated": "config:direct:Updated",
             # policy callbacks
             "lockdown-enabled": "LockdownEnabled",
@@ -1192,6 +1197,11 @@ class FirewallClient(object):
     @handle_exceptions
     def complete_reload(self):
         self.fw.completeReload()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def runtimeToPermanent(self):
+        self.fw.runtimeToPermanent()
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1565,6 +1575,38 @@ class FirewallClient(object):
     @handle_exceptions
     def passthrough(self, ipv, args):
         return dbus_to_python(self.fw_direct.passthrough(ipv, args))
+
+    # tracked passthrough
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getAllPassthroughs(self):
+        return dbus_to_python(self.fw_direct.getAllPassthroughs())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeAllPassthroughs(self):
+        self.fw_direct.removeAllPassthroughs()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getPassthroughs(self, ipv):
+        return dbus_to_python(self.fw_direct.getPassthroughs(ipv))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addPassthrough(self, ipv, args):
+        self.fw_direct.addPassthrough(ipv, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removePassthrough(self, ipv, args):
+        self.fw_direct.removePassthrough(ipv, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryPassthrough(self, ipv, args):
+        return dbus_to_python(self.fw_direct.queryPassthrough(ipv, args))
 
     # lockdown
 

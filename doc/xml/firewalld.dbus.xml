@@ -269,6 +269,17 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.Methods.runtimeToPermanent">
+            <term><methodname>runtimeToPermanent</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Make runtime settings permanent. Replaces permanent settings with runtime settings for zones, services, icmptypes, direct and policies (lockdown whitelist).
+              </para>
+	      <para>
+		Possible errors: RT_TO_PERM_FAILED
+	      </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
 
@@ -366,6 +377,17 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.addPasstrough">
+            <term><methodname>addPassthrough</methodname>(s: ipv, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add a tracked passthrough rule with the arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, ALREADY_ENABLED, COMMAND_FAILED
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.addRule">
             <term><methodname>addRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
             <listitem>
@@ -393,6 +415,22 @@
                   <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
                   <varlistentry><term><parameter>table (s)</parameter>: one of <literal>filter</literal>, <literal>mangle</literal>, <literal>nat</literal>, <literal>raw</literal>, <literal>security</literal></term></varlistentry>
                   <varlistentry><term><parameter>chain (s)</parameter>: name of a chain.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.getAllPassthroughs">
+            <term><methodname>getAllPassthroughs</methodname>() &rarr; a(sas)</term>
+            <listitem>
+              <para>
+		Get all tracked passthrough rules added in all ipv types in format: ipv, rule.
+		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+		Return value is a array of (<parameter>ipv</parameter>, array of <parameter>arguments</parameter>).
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
                 </variablelist>
               </para>
             </listitem>
@@ -460,6 +498,18 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.queryPassthrough">
+            <term><methodname>queryPassthrough</methodname>(s: ipv, as: args) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a tracked passthrough rule with the arguments <replaceable>args</replaceable> exists for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.queryRule">
             <term><methodname>queryRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; b</term>
             <listitem>
@@ -496,6 +546,18 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.removePassthrough">
+            <term><methodname>removePassthrough</methodname>(s: ipv, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove a tracked passthrough rule with arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		Only rules previously added with <methodname>addPassthrough</methodname> can be removed this way.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, NOT_ENABLED, COMMAND_FAILED
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.removeRules">
             <term><methodname>removeRules</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
@@ -515,6 +577,7 @@
 		Pass a command through to the firewall.
 		<replaceable>ipv</replaceable> can be either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
 		<replaceable>args</replaceable> can be all iptables, ip6tables and ebtables command line arguments.
+		 This command is untracked, which means that firewalld is not able to provide information about this command later on.
               </para>
 	      <para>
 		Possible errors: COMMAND_FAILED
@@ -540,6 +603,22 @@
             <listitem>
               <para>
 		Emitted when <replaceable>chain</replaceable> has been removed from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables). 
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.direct.Signals.PassthroughAdded">
+            <term>PassthroughAdded(s: ipv, as: args)</term>
+            <listitem>
+              <para>
+		Emitted when a tracked passthruogh rule with <replaceable>args</replaceable> has been added for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.direct.Signals.PassthroughRemoved">
+            <term>PassthroughRemoved(s: ipv, as: args)</term>
+            <listitem>
+              <para>
+		Emitted when a tracked passthrough rule with <replaceable>args</replaceable> has been removed for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
               </para>
             </listitem>
           </varlistentry>

@@ -912,6 +912,8 @@ class FirewallConfig(object):
         self.fw.connect("direct:chain-removed", self.direct_chain_removed_cb)
         self.fw.connect("direct:rule-added", self.direct_rule_added_cb)
         self.fw.connect("direct:rule-removed", self.direct_rule_removed_cb)
+        self.fw.connect("direct:passthrough-added", self.direct_passthrough_added_cb)
+        self.fw.connect("direct:passthrough-removed", self.direct_passthrough_removed_cb)
         self.fw.connect("config:direct:updated", self.direct_updated_cb)
 
         self.fw.connect("config:zone-added", self.conf_zone_added_cb)
@@ -1769,7 +1771,6 @@ class FirewallConfig(object):
             self.serviceConfPortBox.show()
             self.serviceConfModuleBox.show()
             self.icmpDialogIcmpEditBox.show()
-        self.directPassthroughBox.set_sensitive(not self.runtime_view)
 
         self.load_zones()
         self.load_services()
@@ -1922,6 +1923,9 @@ class FirewallConfig(object):
                 self.fw.setDefaultZone(new_default_zone)
                 self.default_zone = new_default_zone
                 self.changes_applied()
+
+    def onRuntimeToPermanent(self, *args):
+        self.fw.runtimeToPermanent()
 
     def on_defaultZoneViewSelection_changed(self, selection):
         (model, iter) = selection.get_selected()
@@ -4348,7 +4352,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             chains = self.fw.getAllChains()
             rules = self.fw.getAllRules()
-            passthroughs = [ ]
+            passthroughs = self.fw.getAllPassthroughs()
         else:
             direct = self.fw.config().direct()
             settings = direct.getSettings()
@@ -5166,6 +5170,34 @@ class FirewallConfig(object):
                 settings.removePassthrough(ipv, split_args)
                 self.fw.config().direct().update(settings)
                 self.changes_applied()
+
+    def direct_passthrough_added_cb(self, ipv, args):
+        print "direct_passthrough_added_cb", repr(ipv), repr(args)
+        if not self.show_direct:
+            return
+        joined_args = joinArgs(args)
+        print "joined_args=%s" % repr(joined_args)
+        iter = self.directPassthroughStore.get_iter_first()
+        while iter:
+            if self.directPassthroughStore.get_value(iter, 0) == ipv and \
+               self.directPassthroughStore.get_value(iter, 1) == joined_args:
+                return
+            iter = self.directPassthroughStore.iter_next(iter)
+        self.directPassthroughStore.append([ipv, joined_args])
+
+    def direct_passthrough_removed_cb(self, ipv, args):
+        print "direct_passthrough_removed_cb", repr(ipv), repr(args)
+        if not self.show_direct:
+            return
+        joined_args = joinArgs(args)
+        print "joined_args=%s" % repr(joined_args)
+        iter = self.directPassthroughStore.get_iter_first()
+        while iter:
+            if self.directPassthroughStore.get_value(iter, 0) == ipv and \
+               self.directPassthroughStore.get_value(iter, 1) == joined_args:
+                self.directPassthroughStore.remove(iter)
+                break
+            iter = self.directPassthroughStore.iter_next(iter)
 
     def add_edit_direct_passthrough(self, add):
         if add:

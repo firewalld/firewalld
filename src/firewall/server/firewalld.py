@@ -259,6 +259,121 @@ class FirewallD(slip.dbus.service.Object):
     def Reloaded(self):
         log.debug1("Reloaded()")
 
+    # runtime to permanent
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @dbus_handle_exceptions
+    def runtimeToPermanent(self, sender=None):
+        """Make runtime configuration permanent
+        """
+        log.debug1("copyRuntimeToPermanent()")
+
+        # Services or icmptypes can not be modified in runtime, but they can
+        # be removed or modified in permanent environment. Therefore copying
+        # of services and icmptypes to permanent is also needed.
+
+        # services
+
+        for name in self.fw.service.get_services():
+            obj = self.fw.service.get_service(name)
+            config = obj.export_config()
+            try:
+                try:
+                    conf_obj = self.config.getServiceByName(name)
+                except FirewallError as e:
+                    if "INVALID_SERVICE" in e:
+                        log.debug1("Creating service '%s'" % name)
+                        self.config.addService(name, config)
+                    else:
+                        raise
+                else:
+                    if conf_obj.getSettings() != config:
+                        log.debug1("Copying service '%s' settings" % name)
+                        conf_obj.update(config)
+                    else:
+                        log.debug1("Service '%s' is identical" % name)
+            except Exception as e:
+                raise FirewallError(RT_TO_PERM_FAILED,
+                                    "service '%s' : %s" % (name, e))
+
+        # icmptypes
+
+        for name in self.fw.icmptype.get_icmptypes():
+            obj = self.fw.icmptype.get_icmptype(name)
+            config = obj.export_config()
+            try:
+                try:
+                    conf_obj = self.config.getIcmpTypeByName(name)
+                except FirewallError as e:
+                    if "INVALID_ICMPTYPE" in e:
+                        log.debug1("Creating icmptype '%s'" % name)
+                        self.config.addIcmpType(name, config)
+                    else:
+                        raise
+                else:
+                    if conf_obj.getSettings() != config:
+                        log.debug1("Copying icmptype '%s' settings" % name)
+                        conf_obj.update(config)
+                    else:
+                        log.debug1("IcmpType '%s' is identical" % name)
+            except Exception as e:
+                raise FirewallError(RT_TO_PERM_FAILED,
+                                "icmptype '%s' : %s" % (name, e))
+
+        # zones
+
+        for name in self.fw.zone.get_zones():
+            obj = self.fw.zone.get_zone(name)
+            config = obj.export_config()
+            try:
+                try:
+                    conf_obj = self.config.getZoneByName(name)
+                except FirewallError as e:
+                    if "INVALID_ZONE" in e:
+                        log.debug1("Creating zone '%s'" % name)
+                        self.config.addZone(name, config)
+                    else:
+                        raise
+                else:
+                    if conf_obj.getSettings() != config:
+                        log.debug1("Copying zone '%s' settings" % name)
+                        conf_obj.update(config)
+                    else:
+                        log.debug1("Zone '%s' is identical" % name)
+            except Exception as e:
+                raise FirewallError(RT_TO_PERM_FAILED,
+                                    "zone '%s' : %s" % (name, e))
+
+        # direct
+
+        # rt_config = self.fw.direct.get_config()
+        config = ( self.fw.direct.get_all_chains(),
+                   self.fw.direct.get_all_rules(),
+                   self.fw.direct.get_all_passthroughs() )
+        try:
+            if self.config.getSettings() != config:
+                log.debug1("Copying direct configuration")
+                self.config.update(config)
+            else:
+                log.debug1("Direct configuration is identical")
+        except Exception as e:
+            raise FirewallError(RT_TO_PERM_FAILED,
+                                "direct configuration: %s" % e)
+
+        # policies
+
+        config = self.fw.policies.lockdown_whitelist.export_config()
+        try:
+            if self.config.getSettings() != config:
+                log.debug1("Copying policies configuration")
+                self.config.setLockdownWhitelist(config)
+            else:
+                log.debug1("Policies configuration is identical")
+        except Exception as e:
+            raise FirewallError(RT_TO_PERM_FAILED,
+                                "policies configuration: %s" % e)
+
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # POLICIES
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -1663,7 +1778,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    # DIRECT PASSTHROUGH
+    # DIRECT PASSTHROUGH (untracked)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
@@ -1676,6 +1791,87 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.passthrough('%s', '%s')" % (ipv, "','".join(args)))
         self.accessCheck(sender)
         return self.fw.direct.passthrough(ipv, args)
+
+    # DIRECT PASSTHROUGH (tracked)
+
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def addPassthrough(self, ipv, args, sender=None):
+        # inserts direct passthrough
+        ipv = dbus_to_python(ipv)
+        args = tuple( dbus_to_python(i) for i in args )
+        log.debug1("direct.addPassthrough('%s', '%s')" % \
+                   (ipv, "','".join(args)))
+        self.accessCheck(sender)
+        self.fw.direct.add_passthrough(ipv, args)
+        self.PassthroughAdded(ipv, args)
+
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removePassthrough(self, ipv, args, sender=None):
+        # removes direct passthrough
+        ipv = dbus_to_python(ipv)
+        args = tuple( dbus_to_python(i) for i in args )
+        log.debug1("direct.removePassthrough('%s', '%s')" % \
+                       (ipv, "','".join(args)))
+        self.accessCheck(sender)
+        self.fw.direct.remove_passthrough(ipv, args)
+        self.PassthroughRemoved(ipv, args)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryPassthrough(self, ipv, args, sender=None):
+        # returns true if a passthrough is enabled
+        ipv = dbus_to_python(ipv)
+        args = tuple( dbus_to_python(i) for i in args )
+        log.debug1("direct.queryPassthrough('%s', '%s')" % \
+                       (ipv, "','".join(args)))
+        return self.fw.direct.query_passthrough(ipv, args)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+                         out_signature='a(sas)')
+    @dbus_handle_exceptions
+    def getAllPassthroughs(self, sender=None):
+        # returns list of all added passthroughs
+        log.debug1("direct.getAllPassthroughs()")
+        return self.fw.direct.get_all_passthroughs()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeAllPassthroughs(self, sender=None):
+        # remove all passhroughs
+        log.debug1("direct.removeAllPassthroughs()")
+        for passthrough in self.getAllPassthroughs():
+            self.removePassthrough(*passthrough)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='s',
+                         out_signature='aas')
+    @dbus_handle_exceptions
+    def getPassthroughs(self, ipv, sender=None):
+        # returns list of all added passthroughs with ipv
+        ipv = dbus_to_python(ipv)
+        log.debug1("direct.getPassthroughs('%s')", ipv)
+        return self.fw.direct.get_passthroughs(ipv)
+
+    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sas')
+    @dbus_handle_exceptions
+    def PassthroughAdded(self, ipv, args):
+        log.debug1("direct.PassthroughAdded('%s', '%s')" % \
+                       (ipv, "','".join(args)))
+
+    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sas')
+    @dbus_handle_exceptions
+    def PassthroughRemoved(self, ipv, args):
+        log.debug1("direct.PassthroughRemoved('%s', '%s')" % \
+                       (ipv, "','".join(args)))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

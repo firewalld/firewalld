@@ -68,6 +68,8 @@ Status Options
   --state              Return and print firewalld state
   --reload             Reload firewall and keep state information
   --complete-reload    Reload firewall and loose state information
+  --runtime-to-permanent
+                       Create permanent from runtime configuration
 
 Permanent Options
   --permanent          Set an option permanently
@@ -205,18 +207,18 @@ Direct Options
                        Return whether a rule with priority has been added to
                        chain in table [P]
   --passthrough {ipv4|ipv6|eb} <arg>...
-                       Pass a command through
+                       Pass a command through (untracked by firewalld)
   --get-all-passthroughs
-                       Get all passthrough rules [P only]
+                       Get all tracked passthrough rules [P]
   --get-passthroughs {ipv4|ipv6|eb} <arg>...
-                       Get passthrough rules [P only]
+                       Get tracked passthrough rules [P]
   --add-passthrough {ipv4|ipv6|eb} <arg>...
-                       Add a new passthrough rule [P only]
+                       Add a new tracked passthrough rule [P]
   --remove-passthrough {ipv4|ipv6|eb} <arg>...
-                       Remove a passthrough rule [P only]
+                       Remove a tracked passthrough rule [P]
   --query-passthrough {ipv4|ipv6|eb} <arg>...
-                       Return whether the passthrough rule has been added
-                       [P only]
+                       Return whether the tracked passthrough rule has been
+                       added [P]
 
 Lockdown Options
   --lockdown-on        Enable lockdown.
@@ -374,6 +376,8 @@ parser_group_standalone.add_argument("-V", "--version", action="store_true")
 parser_group_standalone.add_argument("--state", action="store_true")
 parser_group_standalone.add_argument("--reload", action="store_true")
 parser_group_standalone.add_argument("--complete-reload", action="store_true")
+parser_group_standalone.add_argument("--runtime-to-permanent",
+                                     action="store_true")
 parser_group_standalone.add_argument("--panic-on", action="store_true")
 parser_group_standalone.add_argument("--panic-off", action="store_true")
 parser_group_standalone.add_argument("--query-panic", action="store_true")
@@ -525,7 +529,7 @@ a = parser.parse_args(args)
 
 
 options_standalone = a.help or a.version or \
-    a.state or a.reload or a.complete_reload or \
+    a.state or a.reload or a.complete_reload or a.runtime_to_permanent or \
     a.panic_on or a.panic_off or a.query_panic or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
@@ -583,14 +587,12 @@ options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
            a.get_chains or a.get_all_chains or \
            a.add_rule or a.remove_rule or a.remove_rules or a.query_rule or \
-           a.get_rules or a.get_all_rules
-
-options_direct_permanent = \
+           a.get_rules or a.get_all_rules or \
            a.add_passthrough or a.remove_passthrough or a.query_passthrough or \
            a.get_passthroughs or a.get_all_passthroughs
 
-options_require_permanent = options_direct_permanent or options_permanent_only \
-                            or a.get_target or a.set_target
+options_require_permanent = options_permanent_only or \
+                            a.get_target or a.set_target
 
 # these are supposed to only write out some output
 options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
@@ -606,23 +608,19 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 
 if not (options_standalone or \
         options_config or options_zone_ops or \
-        options_direct or options_direct_permanent or \
-        options_permanent_only):
+        options_direct or options_permanent_only):
     __fail(parser.format_usage() + "No option specified.")
 
 if options_standalone and (options_zone or options_permanent or \
-                           options_direct or options_direct_permanent or \
-                           options_permanent_only):
+                           options_direct or options_permanent_only):
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if (options_direct or options_direct_permanent or options_permanent_only) and \
-   (options_zone):
+if (options_direct or options_permanent_only) and (options_zone):
     __fail(parser.format_usage() +
            "Can't be used with --zone.")
 
-if (a.direct and not (options_direct or options_direct_permanent)) or \
-        ((options_direct or options_direct_permanent) and not a.direct):
+if (a.direct and not options_direct) or (options_direct and not a.direct):
     __fail(parser.format_usage() +
            "Wrong usage of 'direct' options.")
 
@@ -806,7 +804,7 @@ if a.permanent:
         # apply whitelist changes
         fw.config().policies().setLockdownWhitelist(whitelist)
 
-    elif options_direct or options_direct_permanent:
+    elif options_direct:
         settings = fw.config().direct().getSettings()
 
         if a.passthrough:
@@ -1085,6 +1083,8 @@ elif a.reload:
     fw.reload()
 elif a.complete_reload:
     fw.complete_reload()
+elif a.runtime_to_permanent:
+    fw.runtimeToPermanent()
 elif a.direct:
     if a.passthrough:
         if len (a.passthrough) < 2:
@@ -1092,6 +1092,32 @@ elif a.direct:
         msg = fw.passthrough(_check_ipv(a.passthrough[0]), splitArgs(a.passthrough[1]))
         if msg:
             print(msg)
+
+    elif a.add_passthrough:
+        if len (a.add_passthrough) < 2:
+            __fail("usage: --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
+        fw.addPassthrough(_check_ipv(a.add_passthrough[0]),
+                          splitArgs(a.add_passthrough[1]))
+    elif a.remove_passthrough:
+        if len (a.remove_passthrough) < 2:
+            __fail("usage: --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
+        fw.removePassthrough(_check_ipv(a.remove_passthrough[0]),
+                             splitArgs(a.remove_passthrough[1]))
+    elif a.query_passthrough:
+        if len (a.query_passthrough) < 2:
+            __fail("usage: --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
+        __print_query_result(
+            fw.queryPassthrough(_check_ipv(a.query_passthrough[0]),
+                                splitArgs(a.query_passthrough[1])))
+    elif a.get_passthroughs:
+        rules = fw.getPassthroughs(_check_ipv(a.get_passthroughs[0]))
+        for rule in rules:
+            __print(joinArgs(rule))
+        sys.exit(0)
+    elif a.get_all_passthroughs:
+        for (ipv,rule) in fw.getAllPassthroughs():
+            __print("%s %s" % (ipv, joinArgs(rule)))
+        sys.exit(0)
     elif a.add_chain:
         fw.addChain(_check_ipv(a.add_chain[0]), a.add_chain[1], a.add_chain[2])
     elif a.remove_chain:

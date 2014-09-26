@@ -931,21 +931,21 @@
 	  </listitem>
 	</varlistentry>
 
-	<!-- direct passthrough -->
+	<!-- direct untracked passthrough -->
 
 	<varlistentry>
 	  <term><option>--direct</option> <option>--passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
-	      Pass a command through to the firewall. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments.
+	      Pass a command through to the firewall. <replaceable>args</replaceable> can be all <command>iptables</command>, <command>ip6tables</command> and <command>ebtables</command> command line arguments. This command is untracked, which means that firewalld is not able to provide information about this command later on, also not a listing of the untracked passthoughs.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
-	<!-- direct permanent passthrough -->
+	<!-- direct tracked passthrough -->
 
 	<varlistentry>
-	  <term><option>--permanent</option> <option>--direct</option> <option>--get-all-passthroughs</option></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-all-passthroughs</option></term>
 	  <listitem>
 	    <para>
 	      Get all permanent passthrough as a newline separated list of the ipv value and arguments.
@@ -954,7 +954,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--permanent</option> <option>--direct</option> <option>--get-passthroughs</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } </term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-passthroughs</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } </term>
 	  <listitem>
 	    <para>
 	      Get all permanent passthrough rules for the ipv value as a newline separated list of the priority and arguments.
@@ -963,7 +963,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--permanent</option> <option>--direct</option> <option>--add-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--add-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
 	      Add a permanent passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
@@ -972,7 +972,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--permanent</option> <option>--direct</option> <option>--remove-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--remove-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
 	      Remove a permanent passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
@@ -981,7 +981,7 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><option>--permanent</option> <option>--direct</option> <option>--query-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--query-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
 	      Return whether a permanent passthrough rule with the arguments <replaceable>args</replaceable> exists for the ipv value. Returns 0 if true, 1 otherwise.
