@@ -1624,8 +1624,8 @@ class FirewallD(slip.dbus.service.Object):
         chain = dbus_to_python(chain, str)
         priority = dbus_to_python(priority, int)
         args = tuple( dbus_to_python(i, str) for i in args )
-        log.debug1("directQueryRule('%s','%s', %d, '%s')" % \
-                       (table, chain, priority, "','".join(args)))
+        log.debug1("direct.queryRule('%s', '%s', '%s', %d, '%s')" % \
+                       (ipv, table, chain, priority, "','".join(args)))
         return self.fw.direct.query_rule(ipv, table, chain, priority, args)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
