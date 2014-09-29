@@ -102,6 +102,12 @@ class Service(IO_Object):
                     raise FirewallError(INVALID_ADDR,
                                         "'%s' is not valid %s address" % \
                                         (config[destination], destination))
+        elif item == "modules":
+            for module in config:
+                if not module.startswith("nf_conntrack_"):
+                    raise FirewallError(INVALID_MODULE, module)
+                elif len(module.replace("nf_conntrack_", "")) < 1:
+                    raise FirewallError(INVALID_MODULE, module)
 
 # PARSER
 

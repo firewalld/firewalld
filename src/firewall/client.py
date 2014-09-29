@@ -323,6 +323,271 @@ class FirewallClientConfigZone(object):
     def rename(self, name):
         self.fw_zone.rename(name)
 
+    # version
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getVersion(self):
+        return self.fw_zone.getVersion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setVersion(self, version):
+        self.fw_zone.setVersion(version)
+
+    # short
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getShort(self):
+        return self.fw_zone.getShort()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setShort(self, short):
+        self.fw_zone.setShort(short)
+
+    # description
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDescription(self):
+        return self.fw_zone.getDescription()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDescription(self, description):
+        self.fw_zone.setDescription(description)
+
+    # target
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getTarget(self):
+        return self.fw_zone.getTarget()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setTarget(self, target):
+        self.fw_zone.setTarget(target)
+
+    # service
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getServices(self):
+        return self.fw_zone.getServices()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setServices(self, services):
+        self.fw_zone.setServices(services)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addService(self, service):
+        self.fw_zone.addService(service)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeService(self, service):
+        self.fw_zone.removeService(service)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryService(self, service):
+        return self.fw_zone.queryService(service)
+
+    # port
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getPorts(self):
+        return self.fw_zone.getPorts()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setPorts(self, ports):
+        self.fw_zone.setPorts(ports)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addPort(self, port, protocol):
+        self.fw_zone.addPort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removePort(self, port, protocol):
+        self.fw_zone.removePort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryPort(self, port, protocol):
+        return self.fw_zone.queryPort(port, protocol)
+
+    # icmp block
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIcmpBlocks(self):
+        return self.fw_zone.getIcmpBlocks()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setIcmpBlocks(self, icmptypes):
+        self.fw_zone.setIcmpBlocks(icmptypes)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addIcmpBlock(self, icmptype):
+        self.fw_zone.addIcmpBlock(icmptype)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeIcmpBlock(self, icmptype):
+        self.fw_zone.removeIcmpBlock(icmptype)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryIcmpBlock(self, icmptype):
+        return self.fw_zone.queryIcmpBlock(icmptype)
+
+    # masquerade
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getMasquerade(self):
+        return self.fw_zone.getMasquerade()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setMasquerade(self, masquerade):
+        self.fw_zone.setMasquerades(masquerade)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addMasquerade(self):
+        self.fw_zone.addMasquerade()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeMasquerade(self):
+        self.fw_zone.removeMasquerade()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryMasquerade(self):
+        return self.fw_zone.queryMasquerade()
+
+    # forward port
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getForwardPorts(self):
+        return self.fw_zone.getForwardPorts()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setForwardPorts(self, ports):
+        self.fw_zone.setForwardPorts(ports)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addForwardPort(self, port, protocol, toport, toaddr):
+        self.fw_zone.addForwardPort(port, protocol, toport, toaddr)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeForwardPort(self, port, protocol, toport, toaddr):
+        self.fw_zone.removeForwardPort(port, protocol, toport, toaddr)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryForwardPort(self, port, protocol, toport, toaddr):
+        return self.fw_zone.queryForwardPort(port, protocol, toport, toaddr)
+
+    # interface
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getInterfaces(self):
+        return self.fw_zone.getInterfaces()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setInterfaces(self, interfaces):
+        self.fw_zone.setInterfaces(interfaces)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addInterface(self, interface):
+        self.fw_zone.addInterface(interface)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeInterface(self, interface):
+        self.fw_zone.removeInterface(interface)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryInterface(self, interface):
+        return self.fw_zone.queryInterface(interface)
+
+    # source
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSources(self):
+        return self.fw_zone.getSources()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setSources(self, sources):
+        self.fw_zone.setSources(sources)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addSource(self, source):
+        self.fw_zone.addSource(source)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeSource(self, source):
+        self.fw_zone.removeSource(source)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def querySource(self, source):
+        return self.fw_zone.querySource(source)
+
+    # rich rule
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getRichRules(self):
+        return self.fw_zone.getRichRules()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setRichRules(self, rules):
+        self.fw_zone.setRichRules(rules)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addRichRule(self, rule):
+        self.fw_zone.addRichRule(rule)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeRichRule(self, rule):
+        self.fw_zone.removeRichRule(rule)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryRichRule(self, rule):
+        return self.fw_zone.queryRichRule(rule)
+
+
 # service config settings
 
 class FirewallClientServiceSettings(object):
@@ -467,6 +732,130 @@ class FirewallClientConfigService(object):
     def rename(self, name):
         self.fw_service.rename(name)
 
+    # version
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getVersion(self):
+        return self.fw_service.getVersion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setVersion(self, version):
+        self.fw_service.setVersion(version)
+
+    # short
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getShort(self):
+        return self.fw_service.getShort()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setShort(self, short):
+        self.fw_service.setShort(short)
+
+    # description
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDescription(self):
+        return self.fw_service.getDescription()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDescription(self, description):
+        self.fw_service.setDescription(description)
+
+    # port
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getPorts(self):
+        return self.fw_service.getPorts()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setPorts(self, ports):
+        self.fw_service.setPorts(ports)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addPort(self, port, protocol):
+        self.fw_service.addPort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removePort(self, port, protocol):
+        self.fw_service.removePort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryPort(self, port, protocol):
+        return self.fw_service.queryPort(port, protocol)
+
+    # module
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getModules(self):
+        return self.fw_service.getModules()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setModules(self, modules):
+        self.fw_service.setModules(modules)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addModule(self, module, protocol):
+        self.fw_service.addModule(module, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeModule(self, module, protocol):
+        self.fw_service.removeModule(module, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryModule(self, module, protocol):
+        return self.fw_service.queryModule(module, protocol)
+
+    # destination
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDestinations(self):
+        return self.fw_service.getDestinations()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDestinations(self, destinations):
+        self.fw_service.setDestinations(destinations)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDestination(self, destination):
+        return self.fw_service.getDestination(destination)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDestination(self, destination, address):
+        self.fw_service.setDestination(destination, address)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeDestination(self, destination):
+        self.fw_service.removeDestination(destination, address)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryDestination(self, destination, address):
+        return self.fw_service.queryDestination(destination, address)
+
+
+
 # icmptype config settings
 
 class FirewallClientIcmpTypeSettings(object):
@@ -582,6 +971,70 @@ class FirewallClientConfigIcmpType(object):
     def rename(self, name):
         self.fw_icmptype.rename(name)
 
+    # version
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getVersion(self):
+        return self.fw_icmptype.getVersion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setVersion(self, version):
+        self.fw_icmptype.setVersion(version)
+
+    # short
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getShort(self):
+        return self.fw_icmptype.getShort()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setShort(self, short):
+        self.fw_icmptype.setShort(short)
+
+    # description
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDescription(self):
+        return self.fw_icmptype.getDescription()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDescription(self, description):
+        self.fw_icmptype.setDescription(description)
+
+    # destination
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDestinations(self):
+        return self.fw_icmptype.getDestinations()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDestinations(self, destinations):
+        self.fw_icmptype.setDestinations(destinations)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addDestination(self, destination, address):
+        self.fw_icmptype.addDestination(destination, address)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeDestination(self, destination):
+        self.fw_icmptype.removeDestination(destination, address)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryDestination(self, destination, address):
+        return self.fw_icmptype.queryDestination(destination, address)
+
+
 # config.policies lockdown whitelist
 
 class FirewallClientPoliciesLockdownWhitelist(object):
@@ -689,6 +1142,99 @@ class FirewallClientConfigPolicies(object):
     @handle_exceptions
     def setLockdownWhitelist(self, settings):
         self.fw_policies.setLockdownWhitelist(tuple(settings.settings))
+
+    # command
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistCommand(self, command):
+        self.fw_policies.addLockdownWhitelistCommand(command)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistCommand(self, command):
+        self.fw_policies.removeLockdownWhitelistCommand(command)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistCommand(self, command):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistCommand(command))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistCommands(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistCommands())
+
+    # context
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistContext(self, context):
+        self.fw_policies.addLockdownWhitelistContext(context)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistContext(self, context):
+        self.fw_policies.removeLockdownWhitelistContext(context)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistContext(self, context):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistContext(context))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistContexts(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistContexts())
+
+    # user
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistUser(self, user):
+        self.fw_policies.addLockdownWhitelistUser(user)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistUser(self, user):
+        self.fw_policies.removeLockdownWhitelistUser(user)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistUser(self, user):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUser(user))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistUsers(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistUsers())
+
+    # uid
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLockdownWhitelistUids(self):
+        return dbus_to_python(self.fw_policies.getLockdownWhitelistUids())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setLockdownWhitelistUids(self, uids):
+        self.fw_policies.setLockdownWhitelistUids(uids)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addLockdownWhitelistUid(self, uid):
+        self.fw_policies.addLockdownWhitelistUid(uid)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeLockdownWhitelistUid(self, uid):
+        self.fw_policies.removeLockdownWhitelistUid(uid)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryLockdownWhitelistUid(self, uid):
+        return dbus_to_python(self.fw_policies.queryLockdownWhitelistUid(uid))
 
 # config.direct
 
@@ -809,6 +1355,92 @@ class FirewallClientConfigDirect(object):
     @handle_exceptions
     def update(self, settings):
         self.fw_direct.update(tuple(settings.settings))
+
+    # direct chain
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addChain(self, ipv, table, chain):
+        self.fw_direct.addChain(ipv, table, chain)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeChain(self, ipv, table, chain):
+        self.fw_direct.removeChain(ipv, table, chain)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryChain(self, ipv, table, chain):
+        return dbus_to_python(self.fw_direct.queryChain(ipv, table, chain))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getChains(self, ipv, table):
+        return dbus_to_python(self.fw_direct.getChains(ipv, table))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getAllChains(self):
+        return dbus_to_python(self.fw_direct.getAllChains())
+
+    # direct rule
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addRule(self, ipv, table, chain, priority, args):
+        self.fw_direct.addRule(ipv, table, chain, priority, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeRule(self, ipv, table, chain, priority, args):
+        self.fw_direct.removeRule(ipv, table, chain, priority, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeRules(self, ipv, table, chain):
+        self.fw_direct.removeRules(ipv, table, chain)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryRule(self, ipv, table, chain, priority, args):
+        return dbus_to_python(self.fw_direct.queryRule(ipv, table, chain, priority, args))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getRules(self, ipv, table, chain):
+        return dbus_to_python(self.fw_direct.getRules(ipv, table, chain))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getAllRules(self):
+        return dbus_to_python(self.fw_direct.getAllRules())
+
+    # tracked passthrough
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addPassthrough(self, ipv, args):
+        self.fw_direct.addPassthrough(ipv, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removePassthrough(self, ipv, args):
+        self.fw_direct.removePassthrough(ipv, args)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryPassthrough(self, ipv, args):
+        return dbus_to_python(self.fw_direct.queryPassthrough(ipv, args))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getPassthroughs(self, ipv):
+        return dbus_to_python(self.fw_direct.getPassthroughs(ipv))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getAllPassthroughs(self):
+        return dbus_to_python(self.fw_direct.getAllPassthroughs())
 
 # config
 

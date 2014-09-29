@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkIP, uniqify, max_zone_name_len, u2b_if_py2
+from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -188,6 +188,17 @@ class Zone(IO_Object):
         elif item == "target":
             if config not in ZONE_TARGETS:
                 raise FirewallError(INVALID_TARGET, config)
+        elif item == "interfaces":
+            for interface in config:
+                if not checkInterface(interface):
+                    raise FirewallError(INVALID_INTERFACE, interface)
+        elif item == "sources":
+            for source in config:
+                if not checkIPnMask(source) and not checkIP6nMask(source):
+                    raise FirewallError(INVALID_ADDR, source)
+        elif item == "rules_str":
+            for rule in config:
+                r = Rich_Rule(rule_str=rule)
 
     def check_name(self, name):
         super(Zone, self).check_name(name)

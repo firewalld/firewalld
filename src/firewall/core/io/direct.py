@@ -142,17 +142,17 @@ class Direct(IO_Object):
         x = [ ]
         for key in self.chains:
             for chain in self.chains[key]:
-                x.append(list(key) + list([chain]))
+                x.append(tuple(list(key) + list([chain])))
         ret.append(x)
         x = [ ]
         for key in self.rules:
             for rule in self.rules[key]:
-                x.append(list(key) + list(rule))
+                x.append(tuple((key[0], key[1], key[2], rule[0], list(rule[1]))))
         ret.append(x)
         x = [ ]
         for key in self.passthroughs:
             for rule in self.passthroughs[key]:
-                x.append((key, rule))
+                x.append(tuple((key, list(rule))))
         ret.append(x)
         return tuple(ret)
 

@@ -217,3 +217,244 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Renamed(self, name):
         log.debug1("config.service.%d.Renamed('%s')" % (self.id, name))
+
+    # version
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='s')
+    @dbus_handle_exceptions
+    def getVersion(self, sender=None):
+        log.debug1("config.service.%d.getVersion()", self.id)
+        return self.getSettings()[0]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
+    @dbus_handle_exceptions
+    def setVersion(self, version, sender=None):
+        version = dbus_to_python(version, str)
+        log.debug1("config.service.%d.setVersion('%s')", self.id, version)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[0] = version
+        self.update(settings)
+
+    # short
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='s')
+    @dbus_handle_exceptions
+    def getShort(self, sender=None):
+        log.debug1("config.service.%d.getShort()", self.id)
+        return self.getSettings()[1]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
+    @dbus_handle_exceptions
+    def setShort(self, short, sender=None):
+        short = dbus_to_python(short, str)
+        log.debug1("config.service.%d.setShort('%s')", self.id, short)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[1] = short
+        self.update(settings)
+
+    # description
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='s')
+    @dbus_handle_exceptions
+    def getDescription(self, sender=None):
+        log.debug1("config.service.%d.getDescription()", self.id)
+        return self.getSettings()[2]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
+    @dbus_handle_exceptions
+    def setDescription(self, description, sender=None):
+        description = dbus_to_python(description, str)
+        log.debug1("config.service.%d.setDescription('%s')", self.id,
+                   description)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[2] = description
+        self.update(settings)
+
+    # port
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='a(ss)')
+    @dbus_handle_exceptions
+    def getPorts(self, sender=None):
+        log.debug1("config.service.%d.getPorts()", self.id)
+        return self.getSettings()[3]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='a(ss)')
+    @dbus_handle_exceptions
+    def setPorts(self, ports, sender=None):
+        _ports = [ ]
+        # convert embedded lists to tuples
+        for port in dbus_to_python(ports, list):
+            if type(port) == list:
+                _ports.append(tuple(port))
+            else:
+                _ports.append(port)
+        ports = _ports
+        log.debug1("config.service.%d.setPorts('[%s]')", self.id,
+                   ",".join("('%s, '%s')" % (port[0], port[1]) for port in ports))
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[3] = ports
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss')
+    @dbus_handle_exceptions
+    def addPort(self, port, protocol, sender=None):
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("config.service.%d.addPort('%s', '%s')", self.id, port,
+                   protocol)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if (port,protocol) in settings[3]:
+            raise FirewallError(ALREADY_ENABLED, "%s:%s" % (port, protocol))
+        settings[3].append((port,protocol))
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss')
+    @dbus_handle_exceptions
+    def removePort(self, port, protocol, sender=None):
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("config.service.%d.removePort('%s', '%s')", self.id, port,
+                   protocol)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if (port,protocol) not in settings[3]:
+            raise FirewallError(NOT_ENABLED, "%s:%s" % (port, protocol))
+        settings[3].remove((port,protocol))
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryPort(self, port, protocol, sender=None):
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("config.service.%d.queryPort('%s', '%s')", self.id, port,
+                   protocol)
+        return (port,protocol) in self.getSettings()[3]
+
+    # module
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='as')
+    @dbus_handle_exceptions
+    def getModules(self, sender=None):
+        log.debug1("config.service.%d.getModules()", self.id)
+        return sorted(self.getSettings()[4])
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='as')
+    @dbus_handle_exceptions
+    def setModules(self, modules, sender=None):
+        modules = dbus_to_python(modules, list)
+        log.debug1("config.service.%d.setModules('[%s]')", self.id,
+                   ",".join(modules))
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[4] = modules
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
+    @dbus_handle_exceptions
+    def addModule(self, module, sender=None):
+        module = dbus_to_python(module, str)
+        log.debug1("config.service.%d.addModule('%s')", self.id, module)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if module in settings[4]:
+            raise FirewallError(ALREADY_ENABLED, module)
+        settings[4].append(module)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
+    @dbus_handle_exceptions
+    def removeModule(self, module, sender=None):
+        module = dbus_to_python(module, str)
+        log.debug1("config.service.%d.removeModule('%s')", self.id, module)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if module not in settings[4]:
+            raise FirewallError(NOT_ENABLED, module)
+        settings[4].remove(module)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryModule(self, module, sender=None):
+        module = dbus_to_python(module, str)
+        log.debug1("config.service.%d.queryModule('%s')", self.id, module)
+        return module in self.getSettings()[4]
+
+    # destination
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='a{ss}')
+    @dbus_handle_exceptions
+    def getDestinations(self, sender=None):
+        log.debug1("config.service.%d.getDestinations()", self.id)
+        return self.getSettings()[5]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='as')
+    @dbus_handle_exceptions
+    def setDestinations(self, destinations, sender=None):
+        destinations = dbus_to_python(destinations, list)
+        log.debug1("config.service.%d.setDestinations('[%s]')", self.id,
+                   ",".join(destinations))
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[5] = destinations
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getDestination(self, destination, sender=None):
+        destination = dbus_to_python(destination, str)
+        log.debug1("config.service.%d.getDestination('%s')", self.id,
+                   destination)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if destination not in settings[5]:
+            raise FirewallError(NOT_ENABLED, destination)
+        return settings[5][destination]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss')
+    @dbus_handle_exceptions
+    def setDestination(self, destination, address, sender=None):
+        destination = dbus_to_python(destination, str)
+        address = dbus_to_python(address, str)
+        log.debug1("config.service.%d.setDestination('%s', '%s')", self.id,
+                   destination, address)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if destination in settings[5]:
+            raise FirewallError(ALREADY_ENABLED, destination)
+        settings[5][destination] = address
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
+    @dbus_handle_exceptions
+    def removeDestination(self, destination, sender=None):
+        destination = dbus_to_python(destination, str)
+        log.debug1("config.service.%d.removeDestination('%s')", self.id,
+                   destination)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if destination not in settings[5]:
+            raise FirewallError(NOT_ENABLED, destination)
+        settings[5].remove(destination)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryDestination(self, destination, address, sender=None):
+        destination = dbus_to_python(destination, str)
+        address = dbus_to_python(address, str)
+        log.debug1("config.service.%d.queryDestination('%s', '%s')", self.id,
+                   destination, address)
+        settings = self.getSettings()
+        return (destination in self.settings[5] and \
+                address == self.settings[5][destination])

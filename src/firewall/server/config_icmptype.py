@@ -217,3 +217,113 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Renamed(self, name):
         log.debug1("config.icmptype.%d.Renamed('%s')" % (self.id, name))
+
+    # version
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, out_signature='s')
+    @dbus_handle_exceptions
+    def getVersion(self, sender=None):
+        log.debug1("config.icmptype.%d.getVersion()", self.id)
+        return self.getSettings()[0]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s')
+    @dbus_handle_exceptions
+    def setVersion(self, version, sender=None):
+        version = dbus_to_python(version, str)
+        log.debug1("config.icmptype.%d.setVersion('%s')", self.id, version)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[0] = version
+        self.update(settings)
+
+    # short
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, out_signature='s')
+    @dbus_handle_exceptions
+    def getShort(self, sender=None):
+        log.debug1("config.icmptype.%d.getShort()", self.id)
+        return self.getSettings()[1]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s')
+    @dbus_handle_exceptions
+    def setShort(self, short, sender=None):
+        short = dbus_to_python(short, str)
+        log.debug1("config.icmptype.%d.setShort('%s')", self.id, short)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[1] = short
+        self.update(settings)
+
+    # description
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, out_signature='s')
+    @dbus_handle_exceptions
+    def getDescription(self, sender=None):
+        log.debug1("config.icmptype.%d.getDescription()", self.id)
+        return self.getSettings()[2]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s')
+    @dbus_handle_exceptions
+    def setDescription(self, description, sender=None):
+        description = dbus_to_python(description, str)
+        log.debug1("config.icmptype.%d.setDescription('%s')", self.id,
+                   description)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[2] = description
+        self.update(settings)
+
+    # destination
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, out_signature='as')
+    @dbus_handle_exceptions
+    def getDestinations(self, sender=None):
+        log.debug1("config.icmptype.%d.getDestinations()", self.id)
+        return sorted(self.getSettings()[3])
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='as')
+    @dbus_handle_exceptions
+    def setDestinations(self, destinations, sender=None):
+        destinations = dbus_to_python(destinations, list)
+        log.debug1("config.icmptype.%d.setDestinations('[%s]')", self.id,
+                   ",".join(destinations))
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[3] = destinations
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s')
+    @dbus_handle_exceptions
+    def addDestination(self, destination, sender=None):
+        destination = dbus_to_python(destination, str)
+        log.debug1("config.icmptype.%d.addDestination('%s')", self.id,
+                   destination)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if destination in settings[3]:
+            raise FirewallError(ALREADY_ENABLED, destination)
+        settings[3].append(destination)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s')
+    @dbus_handle_exceptions
+    def removeDestination(self, destination, sender=None):
+        destination = dbus_to_python(destination, str)
+        log.debug1("config.icmptype.%d.removeDestination('%s')", self.id,
+                   destination)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if destination not in settings[3]:
+            raise FirewallError(NOT_ENABLED, destination)
+        settings[3].remove(destination)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryDestination(self, destination, sender=None):
+        destination = dbus_to_python(destination, str)
+        log.debug1("config.icmptype.%d.queryDestination('%s')", self.id,
+                   destination)
+        settings = self.getSettings()
+        return (destination in self.settings[3])

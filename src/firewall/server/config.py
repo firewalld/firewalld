@@ -434,6 +434,166 @@ class FirewallDConfig(slip.dbus.service.Object):
     def LockdownWhitelistUpdated(self):
         log.debug1("config.policies.LockdownWhitelistUpdated()")
 
+    # command
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistCommand(self, command, sender=None):
+        command = dbus_to_python(command)
+        log.debug1("config.policies.addLockdownWhitelistCommand('%s')", command)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if command in settings[0]:
+            raise FirewallError(ALREADY_ENABLED, command)
+        settings[0].append(command)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistCommand(self, command, sender=None):
+        command = dbus_to_python(command)
+        log.debug1("config.policies.removeLockdownWhitelistCommand('%s')", command)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if command not in settings[0]:
+            raise FirewallError(NOT_ENABLED, command)
+        settings[0].remove(command)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistCommand(self, command, sender=None):
+        command = dbus_to_python(command)
+        log.debug1("config.policies.queryLockdownWhitelistCommand('%s')", command)
+        return command in self.getLockdownWhitelist()[0]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, out_signature='as')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistCommands(self, sender=None):
+        log.debug1("config.policies.getLockdownWhitelistCommands()")
+        return self.getLockdownWhitelist()[0]
+
+    # context
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistContext(self, context, sender=None):
+        context = dbus_to_python(context)
+        log.debug1("config.policies.addLockdownWhitelistContext('%s')", context)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if context in settings[1]:
+            raise FirewallError(ALREADY_ENABLED, context)
+        settings[1].append(context)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistContext(self, context, sender=None):
+        context = dbus_to_python(context)
+        log.debug1("config.policies.removeLockdownWhitelistContext('%s')", context)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if context not in settings[1]:
+            raise FirewallError(NOT_ENABLED, context)
+        settings[1].remove(context)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistContext(self, context, sender=None):
+        context = dbus_to_python(context)
+        log.debug1("config.policies.queryLockdownWhitelistContext('%s')", context)
+        return context in self.getLockdownWhitelist()[1]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, out_signature='as')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistContexts(self, sender=None):
+        log.debug1("config.policies.getLockdownWhitelistContexts()")
+        return self.getLockdownWhitelist()[1]
+
+    # user
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistUser(self, user, sender=None):
+        user = dbus_to_python(user)
+        log.debug1("config.policies.addLockdownWhitelistUser('%s')", user)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if user in settings[2]:
+            raise FirewallError(ALREADY_ENABLED, user)
+        settings[2].append(user)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistUser(self, user, sender=None):
+        user = dbus_to_python(user)
+        log.debug1("config.policies.removeLockdownWhitelistUser('%s')", user)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if user not in settings[2]:
+            raise FirewallError(NOT_ENABLED, user)
+        settings[2].remove(user)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistUser(self, user, sender=None):
+        user = dbus_to_python(user)
+        log.debug1("config.policies.queryLockdownWhitelistUser('%s')", user)
+        return user in self.getLockdownWhitelist()[2]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, out_signature='as')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistUsers(self, sender=None):
+        log.debug1("config.policies.getLockdownWhitelistUsers()")
+        return self.getLockdownWhitelist()[2]
+
+    # uid
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='i')
+    @dbus_handle_exceptions
+    def addLockdownWhitelistUid(self, uid, sender=None):
+        uid = dbus_to_python(uid)
+        log.debug1("config.policies.addLockdownWhitelistUid(%d)", uid)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if uid in settings[3]:
+            raise FirewallError(ALREADY_ENABLED, uid)
+        settings[3].append(uid)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='i')
+    @dbus_handle_exceptions
+    def removeLockdownWhitelistUid(self, uid, sender=None):
+        uid = dbus_to_python(uid)
+        log.debug1("config.policies.removeLockdownWhitelistUid(%d)", uid)
+        self.accessCheck(sender)
+        settings = list(self.getLockdownWhitelist())
+        if uid not in settings[3]:
+            raise FirewallError(NOT_ENABLED, uid)
+        settings[3].remove(uid)
+        self.setLockdownWhitelist(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, in_signature='i',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryLockdownWhitelistUid(self, uid, sender=None):
+        uid = dbus_to_python(uid)
+        log.debug1("config.policies.queryLockdownWhitelistUid(%d)", uid)
+        return uid in self.getLockdownWhitelist()[3]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_POLICIES, out_signature='ai')
+    @dbus_handle_exceptions
+    def getLockdownWhitelistUids(self, sender=None):
+        log.debug1("config.policies.getLockdownWhitelistUids()")
+        return self.getLockdownWhitelist()[3]
+
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # I C M P T Y P E S
@@ -627,3 +787,213 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def Updated(self):
         log.debug1("config.direct.Updated()")
+
+    # chain
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sss')
+    @dbus_handle_exceptions
+    def addChain(self, ipv, table, chain, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        log.debug1("config.direct.addChain('%s', '%s', '%s')" % \
+                   (ipv, table, chain))
+        self.accessCheck(sender)
+        idx = tuple((ipv, table, chain))
+        settings = list(self.getSettings())
+        if idx in settings[0]:
+            raise FirewallError(ALREADY_ENABLED,
+                                "chain '%s' already is in '%s:%s'" % (chain, ipv, table))
+        settings[0].append(idx)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sss')
+    @dbus_handle_exceptions
+    def removeChain(self, ipv, table, chain, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        log.debug1("config.direct.removeChain('%s', '%s', '%s')" % \
+                   (ipv, table, chain))
+        self.accessCheck(sender)
+        idx = tuple((ipv, table, chain))
+        settings = list(self.getSettings())
+        if idx not in settings[0]:
+            raise FirewallError(NOT_ENABLED,
+                                "chain '%s' is not in '%s:%s'" % (chain, ipv, table))
+        settings[0].remove(idx)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryChain(self, ipv, table, chain, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        log.debug1("config.direct.queryChain('%s', '%s', '%s')" % \
+                   (ipv, table, chain))
+        idx = tuple((ipv, table, chain))
+        return idx in self.getSettings()[0]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='ss',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getChains(self, ipv, table, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        log.debug1("config.direct.getChains('%s', '%s')" % (ipv, table))
+        ret = [ ]
+        for idx in self.getSettings()[0]:
+            if idx[0] == ipv and idx[1] == table:
+                ret.append(idx[2])
+        return ret
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='',
+                         out_signature='a(sss)')
+    @dbus_handle_exceptions
+    def getAllChains(self, sender=None):
+        log.debug1("config.direct.getAllChains()")
+        return self.getSettings()[0]
+
+    # rule
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sssias')
+    @dbus_handle_exceptions
+    def addRule(self, ipv, table, chain, priority, args, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        priority = dbus_to_python(priority)
+        args = dbus_to_python(args)
+        log.debug1("config.direct.addRule('%s', '%s', '%s', %d, '%s')" % \
+                   (ipv, table, chain, priority, "','".join(args)))
+        self.accessCheck(sender)
+        idx = (ipv, table, chain, priority, args)
+        settings = list(self.getSettings())
+        if idx in settings[1]:
+            raise FirewallError(ALREADY_ENABLED,
+                                "rule '%s' already is in '%s:%s:%s'" % \
+                                (args, ipv, table, chain))
+        settings[1].append(idx)
+        self.update(tuple(settings))
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sssias')
+    @dbus_handle_exceptions
+    def removeRule(self, ipv, table, chain, priority, args, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        priority = dbus_to_python(priority)
+        args = dbus_to_python(args)
+        log.debug1("config.direct.removeRule('%s', '%s', '%s', %d, '%s')" % \
+                   (ipv, table, chain, priority, "','".join(args)))
+        self.accessCheck(sender)
+        idx = (ipv, table, chain, priority, args)
+        settings = list(self.getSettings())
+        if idx not in settings[1]:
+            raise FirewallError(NOT_ENABLED,
+                                "rule '%s' is not in '%s:%s:%s'" % \
+                                (args, ipv, table, chain))
+        settings[1].remove(idx)
+        self.update(tuple(settings))
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sssias',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryRule(self, ipv, table, chain, priority, args, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        priority = dbus_to_python(priority)
+        args = dbus_to_python(args)
+        log.debug1("config.direct.queryRule('%s', '%s', '%s', %d, '%s')" % \
+                   (ipv, table, chain, priority, "','".join(args)))
+        idx = (ipv, table, chain, priority, args)
+        return idx in self.getSettings()[1]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sss',
+                         out_signature='a(ias)')
+    @dbus_handle_exceptions
+    def getRules(self, ipv, table, chain, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        log.debug1("config.direct.getRules('%s', '%s', '%s')" % \
+                   (ipv, table, chain))
+        ret = [ ]
+        for idx in self.getSettings()[1]:
+            if idx[0] == ipv and idx[1] == table and idx[2] == chain:
+                ret.append((idx[3], idx[4]))
+        return ret
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='',
+                         out_signature='a(sssias)')
+    @dbus_handle_exceptions
+    def getAllRules(self, sender=None):
+        log.debug1("config.direct.getAllRules()")
+        return self.getSettings()[1]
+
+    # passthrough
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sas')
+    @dbus_handle_exceptions
+    def addPassthrough(self, ipv, args, sender=None):
+        ipv = dbus_to_python(ipv)
+        args = dbus_to_python(args)
+        log.debug1("config.direct.addPassthrough('%s', '%s')" % \
+                   (ipv, "','".join(args)))
+        self.accessCheck(sender)
+        idx = (ipv, args)
+        settings = list(self.getSettings())
+        if idx in settings[2]:
+            raise FirewallError(ALREADY_ENABLED,
+                                "passthrough '%s', '%s'" % (ipv, args))
+        settings[2].append(idx)
+        self.update(settings)
+
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sas')
+    @dbus_handle_exceptions
+    def removePassthrough(self, ipv, args, sender=None):
+        ipv = dbus_to_python(ipv)
+        args = dbus_to_python(args)
+        log.debug1("config.direct.removePassthrough('%s', '%s')" % \
+                   (ipv, "','".join(args)))
+        self.accessCheck(sender)
+        idx = (ipv, args)
+        settings = list(self.getSettings())
+        if idx not in settings[2]:
+            raise FirewallError(NOT_ENABLED,
+                                "passthrough '%s', '%s'" % (ipv, args))
+        settings[2].remove(idx)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sas',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryPassthrough(self, ipv, args, sender=None):
+        ipv = dbus_to_python(ipv)
+        args = dbus_to_python(args)
+        log.debug1("config.direct.queryPassthrough('%s', '%s')" % \
+                   (ipv, "','".join(args)))
+        idx = (ipv, args)
+        return idx in self.getSettings()[2]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='s',
+                         out_signature='aas')
+    @dbus_handle_exceptions
+    def getPassthroughs(self, ipv, sender=None):
+        ipv = dbus_to_python(ipv)
+        log.debug1("config.direct.getPassthroughs('%s')" % (ipv))
+        ret = [ ]
+        for idx in self.getSettings()[2]:
+            if idx[0] == ipv:
+                ret.append(idx[1])
+        return ret
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, out_signature='a(sas)')
+    @dbus_handle_exceptions
+    def getAllPassthroughs(self, sender=None):
+        log.debug1("config.direct.getAllPassthroughs()")
+        return self.getSettings()[2]
