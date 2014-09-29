@@ -1938,6 +1938,7 @@ class FirewallConfig(object):
     def default_zone_changed_cb(self, zone):
         self.default_zone = zone
         self.defaultZoneLabel.set_text(zone)
+        self.update_active_zones()
 
     def onChangeZone(self, *args):
         selected_zone = self.get_selected_zone()
