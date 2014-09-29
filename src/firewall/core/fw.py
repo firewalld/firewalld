@@ -414,6 +414,7 @@ class Firewall:
             try:
                 self.rule(ipv, [ append_delete[enable], ] + rule)
             except Exception as msg:
+                log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
                 log.error(msg)
                 return (rules[:i], msg) # cleanup rules and error message
         return None
@@ -447,6 +448,7 @@ class Firewall:
                 self.rule(ipv, [ "-t", table,
                                  append_delete[enable], chain, ] + rule)
             except Exception as msg:
+                log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
                 log.error(msg)
                 return (rules[:i], msg) # cleanup rules and error message
         return None
