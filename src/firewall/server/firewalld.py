@@ -276,8 +276,7 @@ class FirewallD(slip.dbus.service.Object):
         # services
 
         for name in self.fw.service.get_services():
-            obj = self.fw.service.get_service(name)
-            config = obj.export_config()
+            config = self.getServiceSettings(name)
             try:
                 try:
                     conf_obj = self.config.getServiceByName(name)
@@ -300,8 +299,7 @@ class FirewallD(slip.dbus.service.Object):
         # icmptypes
 
         for name in self.fw.icmptype.get_icmptypes():
-            obj = self.fw.icmptype.get_icmptype(name)
-            config = obj.export_config()
+            config = self.getIcmpTypeSettings(name)
             try:
                 try:
                     conf_obj = self.config.getIcmpTypeByName(name)
@@ -324,8 +322,9 @@ class FirewallD(slip.dbus.service.Object):
         # zones
 
         for name in self.fw.zone.get_zones():
-            obj = self.fw.zone.get_zone(name)
-            config = obj.export_config()
+            # zone runtime settings can be modified, but not service and
+            # icmptye settings
+            config = self.getZoneSettings(name)
             try:
                 try:
                     conf_obj = self.config.getZoneByName(name)
