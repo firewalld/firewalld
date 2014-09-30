@@ -92,9 +92,9 @@ Zone Options
   --delete-zone=<zone> Delete an existing zone [P only]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options maked with [Z]
-  --get-target         Get the zone target [P] [Z]
+  --get-target         Get the zone target [P only] [Z]
   --set-target=<target>
-                       Set the zone target [P] [Z]
+                       Set the zone target [P only] [Z]
 
 IcmpType Options
   --new-icmptype=<icmptype>
@@ -1049,9 +1049,10 @@ if a.permanent:
 
         # zone target
         elif a.get_target:
-            __print_and_exit(fw_settings.getTarget())
+            target = fw_settings.getTarget()
+            __print_and_exit(target if target != "%%REJECT%%" else "REJECT")
         elif a.set_target:
-            fw_settings.setTarget(a.set_target)
+            fw_settings.setTarget(a.set_target if a.set_target != "REJECT" else "%%REJECT%%")
 
         # list all zone settings
         elif a.list_all:
