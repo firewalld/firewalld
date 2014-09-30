@@ -11,11 +11,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-29 10:24+0200\n"
-"PO-Revision-Date: 2013-10-03 08:49+0000\n"
-"Last-Translator: jpopelka <jpopelka@redhat.com>\n"
-"Language-Team: Slovak (http://www.transifex.com/projects/p/fedora/language/"
-"sk/)\n"
+"POT-Creation-Date: 2014-09-30 10:21+0200\n"
+"PO-Revision-Date: 2014-09-29 08:40+0000\n"
+"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"Language-Team: Slovak (http://www.transifex.com/projects/p/firewalld/"
+"language/sk/)\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,26 +68,26 @@ msgstr "Služba FirewallD už beží, preto sa nebude spúšťať znovu."
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5238
+#: ../src/firewall-applet:106 ../src/firewall-config:5274
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5263 ../src/firewall-config:5289
+#: ../src/firewall-config:5299 ../src/firewall-config:5325
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr ""
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5321
+#: ../src/firewall-applet:189 ../src/firewall-config:5357
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Vyberte zónu pre rozhranie „%s“"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5377
+#: ../src/firewall-applet:245 ../src/firewall-config:5413
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "Vyberte zónu pre zdroj %s"
 
 #: ../src/firewall-applet:347
 msgid "Shields Up"
@@ -137,26 +137,26 @@ msgstr ""
 msgid "Shields Down Zone:"
 msgstr ""
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1791
+#: ../src/firewall-applet:622 ../src/firewall-config:1792
 msgid "Connections"
 msgstr "Bez pripojenia."
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1835
-#: ../src/firewall-config:1861 ../src/firewall-config:1886
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-applet:717 ../src/firewall-config:1836
+#: ../src/firewall-config:1862 ../src/firewall-config:1887
+#: ../src/firewall-config.glade.h:61
 msgid "Zone"
 msgstr "Zóna"
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1847
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-applet:679 ../src/firewall-config:1848
+#: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1873
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-applet:704 ../src/firewall-config:1874
+#: ../src/firewall-config.glade.h:98
 msgid "Sources"
-msgstr ""
+msgstr "Zdroje"
 
 #: ../src/firewall-applet:816
 msgid "Connection to FirewallD established."
@@ -181,7 +181,7 @@ msgstr "REŽIM PANIKY"
 #: ../src/firewall-applet:962
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "Predvolená zóna: „%s“"
 
 #: ../src/firewall-applet:970
 msgid ""
@@ -196,7 +196,7 @@ msgstr "Zóna „{zone}“ je aktívna pre rozhranie „{interface}“"
 
 #: ../src/firewall-applet:981
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Zóna „{zone}“ je aktívna pre zdroj {source}"
 
 #: ../src/firewall-applet:985
 msgid "No Active Zones."
@@ -242,7 +242,7 @@ msgstr "Zóna „%s“ je aktivovaná pre rozhranie „%s“"
 
 #: ../src/firewall-applet:1077
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "Zóna „{zone}“ je {activated_deactivated} pre zdroj „{source}“"
 
 #: ../src/firewall-applet:1100
 #, c-format
@@ -272,21 +272,21 @@ msgstr "Skúša sa znovu..."
 #: ../src/firewall-config:80
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "Použité sieťovým pripojením „%s“"
 
 #: ../src/firewall-config:81
 msgid "enabled"
-msgstr ""
+msgstr "povolená"
 
 #: ../src/firewall-config:82
 msgid "disabled"
-msgstr ""
+msgstr "zakázaná"
 
 #: ../src/firewall-config:99
 msgid "Failed to load icons."
 msgstr "Zlyhalo načítanie ikôn."
 
-#: ../src/firewall-config:358 ../src/firewall-config:1753
+#: ../src/firewall-config:358 ../src/firewall-config:1755
 msgid "Runtime"
 msgstr ""
 
@@ -294,7 +294,7 @@ msgstr ""
 msgid "Permanent"
 msgstr ""
 
-#: ../src/firewall-config:420 ../src/firewall-config.glade.h:99
+#: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
 msgid "Service"
 msgstr "Služba"
 
@@ -304,7 +304,7 @@ msgid "Port"
 msgstr "Port"
 
 #: ../src/firewall-config:429 ../src/firewall-config:470
-#: ../src/firewall-config:708 ../src/firewall-config.glade.h:177
+#: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
 msgid "Protocol"
 msgstr "Protokol"
 
@@ -322,11 +322,11 @@ msgstr "Typ Icmp"
 
 #: ../src/firewall-config:526
 msgid "Family"
-msgstr ""
+msgstr "Rodina"
 
 #: ../src/firewall-config:528
 msgid "Action"
-msgstr ""
+msgstr "Akcia"
 
 #: ../src/firewall-config:530
 msgid "Element"
@@ -342,204 +342,204 @@ msgstr ""
 
 #: ../src/firewall-config:536
 msgid "log"
-msgstr ""
+msgstr "záznam"
 
 #: ../src/firewall-config:538
 msgid "Audit"
 msgstr ""
 
-#: ../src/firewall-config:1158 ../src/firewall-config:2039
-#: ../src/firewall-config:2077
+#: ../src/firewall-config:1160 ../src/firewall-config:2044
+#: ../src/firewall-config:2082
 msgid "Warning"
 msgstr "Varovanie"
 
-#: ../src/firewall-config:1167
+#: ../src/firewall-config:1169
 msgid "Error"
 msgstr "Chyba"
 
-#: ../src/firewall-config:1208
+#: ../src/firewall-config:1210
 msgid "Changes applied."
 msgstr ""
 
-#: ../src/firewall-config:1497 ../src/firewall-config:2824
+#: ../src/firewall-config:1499 ../src/firewall-config:2832
 msgid "accept"
-msgstr ""
+msgstr "prijať"
 
-#: ../src/firewall-config:1499 ../src/firewall-config:2826
-#: ../src/firewall-config:2936
+#: ../src/firewall-config:1501 ../src/firewall-config:2834
+#: ../src/firewall-config:2944
 msgid "reject"
 msgstr ""
 
-#: ../src/firewall-config:1503 ../src/firewall-config:2831
+#: ../src/firewall-config:1505 ../src/firewall-config:2839
 msgid "drop"
 msgstr ""
 
-#: ../src/firewall-config:1505 ../src/firewall-config:1539
-#: ../src/firewall-config:1544
+#: ../src/firewall-config:1507 ../src/firewall-config:1541
+#: ../src/firewall-config:1546
 msgid "limit"
-msgstr ""
+msgstr "limit"
 
-#: ../src/firewall-config:1516 ../src/firewall-config:2363
-#: ../src/firewall-config:2517 ../src/firewall-config:2788
-#: ../src/firewall-config.glade.h:207
-msgid "service"
-msgstr ""
-
-#: ../src/firewall-config:1518 ../src/firewall-config:2369
-#: ../src/firewall-config:2519 ../src/firewall-config:2791
+#: ../src/firewall-config:1518 ../src/firewall-config:2371
+#: ../src/firewall-config:2525 ../src/firewall-config:2796
 #: ../src/firewall-config.glade.h:208
-msgid "port"
-msgstr ""
+msgid "service"
+msgstr "služba"
 
-#: ../src/firewall-config:1521 ../src/firewall-config:2374
-#: ../src/firewall-config:2528 ../src/firewall-config:2797
+#: ../src/firewall-config:1520 ../src/firewall-config:2377
+#: ../src/firewall-config:2527 ../src/firewall-config:2799
 #: ../src/firewall-config.glade.h:209
+msgid "port"
+msgstr "port"
+
+#: ../src/firewall-config:1523 ../src/firewall-config:2382
+#: ../src/firewall-config:2536 ../src/firewall-config:2805
+#: ../src/firewall-config.glade.h:210
 msgid "protocol"
-msgstr ""
+msgstr "protokol"
 
-#: ../src/firewall-config:1523 ../src/firewall-config:2379
-#: ../src/firewall-config:2811 ../src/firewall-config:2948
-#: ../src/firewall-config.glade.h:212
+#: ../src/firewall-config:1525 ../src/firewall-config:2387
+#: ../src/firewall-config:2819 ../src/firewall-config:2956
+#: ../src/firewall-config.glade.h:213
 msgid "masquerade"
-msgstr ""
+msgstr "maškaráda"
 
-#: ../src/firewall-config:1537
+#: ../src/firewall-config:1539
 msgid "level"
-msgstr ""
+msgstr "úroveň"
 
-#: ../src/firewall-config:1541 ../src/firewall-config:1546
+#: ../src/firewall-config:1543 ../src/firewall-config:1548
 msgid "yes"
-msgstr ""
+msgstr "áno"
 
-#: ../src/firewall-config:1703
+#: ../src/firewall-config:1705
 msgid "Authorization failed."
 msgstr "Zlyhalo potvrdenie prístupu."
 
-#: ../src/firewall-config:1706
+#: ../src/firewall-config:1708
 msgid "Invalid name"
 msgstr "Neplatný argument %s"
 
-#: ../src/firewall-config:1710
+#: ../src/firewall-config:1712
 msgid "Name already exists"
 msgstr "Názov už existuje"
 
-#: ../src/firewall-config:2036
+#: ../src/firewall-config:2041
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "Zóna „%s“: Služba „%s“ nie je dostupná"
 
-#: ../src/firewall-config:2040 ../src/firewall-config:2078
+#: ../src/firewall-config:2045 ../src/firewall-config:2083
 msgid "Remove"
 msgstr "Odstrániť zónu"
 
-#: ../src/firewall-config:2040 ../src/firewall-config:2078
+#: ../src/firewall-config:2045 ../src/firewall-config:2083
 msgid "Ignore"
 msgstr "Ignorovať"
 
-#: ../src/firewall-config:2074
+#: ../src/firewall-config:2079
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "Zóna „%s“: Typ ICMP „%s“ nie je dostupný."
 
-#: ../src/firewall-config:2217
+#: ../src/firewall-config:2223
 msgid "Built-in zone, rename not supported."
 msgstr "Integrovaná zóna, premenovanie nie je podporované."
 
-#: ../src/firewall-config:2326 ../src/firewall-config:2763
-#: ../src/firewall-config.glade.h:192
-msgid "second"
-msgstr ""
-
-#: ../src/firewall-config:2327 ../src/firewall-config:2764
+#: ../src/firewall-config:2334 ../src/firewall-config:2771
 #: ../src/firewall-config.glade.h:193
-msgid "minute"
-msgstr ""
+msgid "second"
+msgstr "sekunda"
 
-#: ../src/firewall-config:2328 ../src/firewall-config:2765
+#: ../src/firewall-config:2335 ../src/firewall-config:2772
 #: ../src/firewall-config.glade.h:194
-msgid "hour"
-msgstr ""
+msgid "minute"
+msgstr "minúta"
 
-#: ../src/firewall-config:2329 ../src/firewall-config:2766
+#: ../src/firewall-config:2336 ../src/firewall-config:2773
 #: ../src/firewall-config.glade.h:195
-msgid "day"
-msgstr ""
+msgid "hour"
+msgstr "hodina"
 
-#: ../src/firewall-config:2330 ../src/firewall-config:2767
-#: ../src/firewall-config.glade.h:198
+#: ../src/firewall-config:2337 ../src/firewall-config:2774
+#: ../src/firewall-config.glade.h:196
+msgid "day"
+msgstr "deň"
+
+#: ../src/firewall-config:2338 ../src/firewall-config:2775
+#: ../src/firewall-config.glade.h:199
 msgid "emergency"
 msgstr ""
 
-#: ../src/firewall-config:2331 ../src/firewall-config:2768
-#: ../src/firewall-config.glade.h:199
-msgid "alert"
-msgstr ""
-
-#: ../src/firewall-config:2332 ../src/firewall-config:2769
+#: ../src/firewall-config:2339 ../src/firewall-config:2776
 #: ../src/firewall-config.glade.h:200
-msgid "critical"
-msgstr ""
+msgid "alert"
+msgstr "výstraha"
 
-#: ../src/firewall-config:2333 ../src/firewall-config:2770
+#: ../src/firewall-config:2340 ../src/firewall-config:2777
 #: ../src/firewall-config.glade.h:201
-msgid "error"
-msgstr ""
+msgid "critical"
+msgstr "kritické"
 
-#: ../src/firewall-config:2334 ../src/firewall-config:2771
+#: ../src/firewall-config:2341 ../src/firewall-config:2778
 #: ../src/firewall-config.glade.h:202
-msgid "warning"
-msgstr ""
+msgid "error"
+msgstr "chyba"
 
-#: ../src/firewall-config:2335 ../src/firewall-config:2772
+#: ../src/firewall-config:2342 ../src/firewall-config:2779
 #: ../src/firewall-config.glade.h:203
+msgid "warning"
+msgstr "upozornenie"
+
+#: ../src/firewall-config:2343 ../src/firewall-config:2780
+#: ../src/firewall-config.glade.h:204
 msgid "notice"
 msgstr ""
 
-#: ../src/firewall-config:2336 ../src/firewall-config:2773
-#: ../src/firewall-config.glade.h:204
-msgid "info"
-msgstr ""
-
-#: ../src/firewall-config:2337 ../src/firewall-config:2774
+#: ../src/firewall-config:2344 ../src/firewall-config:2781
 #: ../src/firewall-config.glade.h:205
-msgid "debug"
-msgstr ""
+msgid "info"
+msgstr "informácie"
 
-#: ../src/firewall-config:2382 ../src/firewall-config:2530
-#: ../src/firewall-config:2800 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2345 ../src/firewall-config:2782
+#: ../src/firewall-config.glade.h:206
+msgid "debug"
+msgstr "ladenie"
+
+#: ../src/firewall-config:2390 ../src/firewall-config:2538
+#: ../src/firewall-config:2808 ../src/firewall-config.glade.h:211
 msgid "icmp-block"
 msgstr ""
 
-#: ../src/firewall-config:2387 ../src/firewall-config:2532
-#: ../src/firewall-config:2803 ../src/firewall-config:2956
-#: ../src/firewall-config.glade.h:211
+#: ../src/firewall-config:2395 ../src/firewall-config:2540
+#: ../src/firewall-config:2811 ../src/firewall-config:2964
+#: ../src/firewall-config.glade.h:212
 msgid "forward-port"
 msgstr ""
 
-#: ../src/firewall-config:2510 ../src/firewall-config:2709
-#: ../src/firewall-config:2723 ../src/firewall-config:2778
-#: ../src/firewall-config:2879 ../src/firewall-config:2904
+#: ../src/firewall-config:2518 ../src/firewall-config:2717
+#: ../src/firewall-config:2731 ../src/firewall-config:2786
+#: ../src/firewall-config:2887 ../src/firewall-config:2912
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
-#: ../src/firewall-config:2512 ../src/firewall-config:2711
-#: ../src/firewall-config:2725 ../src/firewall-config:2780
-#: ../src/firewall-config:2881 ../src/firewall-config:2906
+#: ../src/firewall-config:2520 ../src/firewall-config:2719
+#: ../src/firewall-config:2733 ../src/firewall-config:2788
+#: ../src/firewall-config:2889 ../src/firewall-config:2914
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
-#: ../src/firewall-config:3564
+#: ../src/firewall-config:3572
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
-#: ../src/firewall-config:3830
+#: ../src/firewall-config:3838
 msgid "Built-in service, rename not supported."
 msgstr "Integrovaná služba, premenovanie nie je podporované."
 
-#: ../src/firewall-config:4193
+#: ../src/firewall-config:4201
 msgid "Built-in icmp, rename not supported."
 msgstr "Integrované icmp, premenovanie nie je podporované."
 
@@ -553,11 +553,11 @@ msgstr "Port a Protokol"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "Prosím, zadajte príkazový riadok."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr ""
+msgstr "Prosím, zadajte kontext."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
@@ -691,7 +691,7 @@ msgstr "ICMP typ"
 
 #: ../src/firewall-config.glade.h:37
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "Prosím, vyberte typ ICMP"
 
 #: ../src/firewall-config.glade.h:39
 msgid "_File"
@@ -743,30 +743,38 @@ msgid "Lockdown"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:51
-msgid "_View"
+msgid "Make runtime configuration permanent"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:52
-msgid "ICMP Types"
+msgid "Runtime To permant"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:53
-msgid "Direct Configuration"
-msgstr ""
+msgid "_View"
+msgstr "_Zobraziť"
 
 #: ../src/firewall-config.glade.h:54
-msgid "Lockdown Whitelist"
+msgid "ICMP Types"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:55
-msgid "_Help"
-msgstr "_Pomocník"
+msgid "Direct Configuration"
+msgstr "Priama konfigurácia"
 
 #: ../src/firewall-config.glade.h:56
-msgid "Configuration:"
+msgid "Lockdown Whitelist"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:57
+msgid "_Help"
+msgstr "_Pomocník"
+
+#: ../src/firewall-config.glade.h:58
+msgid "Configuration:"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:59
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
@@ -776,7 +784,7 @@ msgstr ""
 "konfigurácia. Trvalá konfigurácia bude aktívna aj po znovu načítaní alebo "
 "reštarte služby alebo systému."
 
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:60
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -784,57 +792,67 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"Zóna služby firewalld určuje úroveň dôvery pre sieťové pripojenia, rozhrania "
+"a zdrojové adresy previazané so zónou. Zóna kombinuje služby, porty, "
+"protokoly, maškarádu, presmerovanie portov/paketov, filtre icmp a pravidlá "
+"najvyššej úrovne. Zóna môže byť previazaná s rozhraniami a zdrojovými "
+"adresami."
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:62
 msgid "Add Zone"
 msgstr "Pridať zónu"
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:63
 msgid "Edit Zone"
 msgstr "Upraviť zónu"
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:64
 msgid "Remove Zone"
 msgstr "Odstrániť zónu"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:65
 msgid "Load Zone Defaults"
 msgstr "Načítať predvolené nastavenia zóny"
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:66
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"Tu môžete určiť, ktoré služby sú pre zónu dôveryhodné. Dôveryhodné služby sú "
+"prístupné zo všetkých hostiteľov a sietí, ktoré majú dosah k stroju cez "
+"pripojenia, rozhrania a zdrojov previazaných s touto zónou."
 
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:67
 msgid "Services"
 msgstr "Služby"
 
-#: ../src/firewall-config.glade.h:66
+#: ../src/firewall-config.glade.h:68
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"Pridajte dodatočné porty alebo rozsahy portov, ktoré vyžadujú byť dostupné "
+"pre všetkych hostiteľov alebo siete, ktoré sa môžu pripojiť k stroju."
 
-#: ../src/firewall-config.glade.h:67
+#: ../src/firewall-config.glade.h:69
 msgid "Add Port"
 msgstr "Cieľový port"
 
-#: ../src/firewall-config.glade.h:68
+#: ../src/firewall-config.glade.h:70
 msgid "Edit Port"
 msgstr "Upraviť zónu"
 
-#: ../src/firewall-config.glade.h:69
+#: ../src/firewall-config.glade.h:71
 msgid "Remove Port"
 msgstr "Odstrániť zónu"
 
-#: ../src/firewall-config.glade.h:70
+#: ../src/firewall-config.glade.h:72
 msgid "Ports"
 msgstr "Porty"
 
-#: ../src/firewall-config.glade.h:71
+#: ../src/firewall-config.glade.h:73
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -845,11 +863,11 @@ msgstr ""
 "viditeľná a celá bude reprezentovaná iba jednou ip adresou. Maškaráda "
 "funguje len pre IPv4."
 
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:74
 msgid "Masquerade zone"
 msgstr "Zamaskovať zónu"
 
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:75
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
@@ -857,11 +875,11 @@ msgstr ""
 "Ak povolíte maskovanie, bude pre vaše siete typu IPv4 povolené presmerovanie "
 "IP adries."
 
-#: ../src/firewall-config.glade.h:74
+#: ../src/firewall-config.glade.h:76
 msgid "Masquerading"
 msgstr "Maškaráda"
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:77
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
@@ -872,19 +890,19 @@ msgstr ""
 "lokálnom systéme alebo lokálneho systému do iného systému. Preposielanie na "
 "iný systém je užitočné len ak je na rozhraní maškaráda. Funguje len na IPv4."
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:78
 msgid "Add Forward Port"
 msgstr "Pridať presmerovanie portu"
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:79
 msgid "Edit Forward Port"
 msgstr "Upraviť presmerovanie portu"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:80
 msgid "Remove Forward Port"
 msgstr "Odstrániť presmerovanie portu"
 
-#: ../src/firewall-config.glade.h:79
+#: ../src/firewall-config.glade.h:81
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
@@ -894,7 +912,7 @@ msgstr ""
 "zasielaniu chybových správ medzi počítačmi v sieti, ale tiež pre informačné "
 "správy typu ping."
 
-#: ../src/firewall-config.glade.h:80
+#: ../src/firewall-config.glade.h:82
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -902,91 +920,96 @@ msgstr ""
 "Označte v zozname typy ICMP, ktoré majú byť odmietnuté. Všetky ostatné typy "
 "ICMP budú môcť prejsť firewallom. Predvolené bez obmedzení."
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:83
 msgid "ICMP Filter"
 msgstr "Filter ICMP"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:84
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Tu môžete nastaviť pravidlá jazyka rich (najvyššej úrovne) pre zónu."
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:85
 msgid "Add Rich Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:86
 msgid "Edit Rich Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:87
 msgid "Remove Rich Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:88
 msgid "Rich Rules"
-msgstr ""
+msgstr "Pravidlá najvyššej úrovne"
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:89
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Pridajte záznamy na previazanie rozhraní so zónou. Ak bude rozhranie použité "
+"pripojením, zóna bude nastavená na zónu určenú pre pripojenie."
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:90
 msgid "Add Interface"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.glade.h:91
 msgid "Edit Interface"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:92
 msgid "Remove Interface"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:92
+#: ../src/firewall-config.glade.h:94
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr ""
+"Pridajte záznamy na previazanie zdrojových adries alebo oblastí so zónou."
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:95
 msgid "Add Source"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:96
 msgid "Edit Source"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:97
 msgid "Remove Source"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:99
 msgid "Zones"
-msgstr ""
+msgstr "Zóny"
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:100
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"Služba firewalld je kombináciou portov, protokolov, modulov a cieľových "
+"adries."
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:102
 msgid "Add Service"
 msgstr "Pridať službu"
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:103
 msgid "Edit Service"
 msgstr "Upraviť službu"
 
-#: ../src/firewall-config.glade.h:102
+#: ../src/firewall-config.glade.h:104
 msgid "Remove Service"
 msgstr "Odstrániť službu"
 
-#: ../src/firewall-config.glade.h:103
+#: ../src/firewall-config.glade.h:105
 msgid "Load Service Defaults"
 msgstr "Načítať predvolené nastavenia služby"
 
-#: ../src/firewall-config.glade.h:104
+#: ../src/firewall-config.glade.h:106
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
@@ -995,31 +1018,31 @@ msgstr ""
 "všetkých hostiteľov alebo siete. Môžete tiež pridať protokoly bez "
 "špecifických portov."
 
-#: ../src/firewall-config.glade.h:105
+#: ../src/firewall-config.glade.h:107
 msgid "Add Entry"
 msgstr "Pridať položku"
 
-#: ../src/firewall-config.glade.h:106
+#: ../src/firewall-config.glade.h:108
 msgid "Edit Entry"
 msgstr "Upraviť položku"
 
-#: ../src/firewall-config.glade.h:107
+#: ../src/firewall-config.glade.h:109
 msgid "Remove Entry"
 msgstr "Odstrániť položku"
 
-#: ../src/firewall-config.glade.h:108
+#: ../src/firewall-config.glade.h:110
 msgid "Ports and Protocols"
 msgstr "Porty a protokoly"
 
-#: ../src/firewall-config.glade.h:109
+#: ../src/firewall-config.glade.h:111
 msgid "Netfilter helper modules"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:110
+#: ../src/firewall-config.glade.h:112
 msgid "Modules"
 msgstr "Moduly"
 
-#: ../src/firewall-config.glade.h:111
+#: ../src/firewall-config.glade.h:113
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
@@ -1028,61 +1051,63 @@ msgstr ""
 "Ak určíte cieľové adresy, položka so službou bude obmedzená na cieľové "
 "adresy a typ. Ak sú obidve položky prázdne, bude služba bez obmedzení."
 
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:114
 msgid "IPv4:"
 msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:113
+#: ../src/firewall-config.glade.h:115
 msgid "IPv6:"
 msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:114
+#: ../src/firewall-config.glade.h:116
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"Služby je možné meniť iba v zobrazení trvalej konfigurácie. Konfigurácia "
+"služieb rozhrania je nemenná."
 
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:117
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:116
+#: ../src/firewall-config.glade.h:118
 msgid "Add ICMP Type"
 msgstr "Pridať typ ICMP"
 
-#: ../src/firewall-config.glade.h:117
+#: ../src/firewall-config.glade.h:119
 msgid "Edit ICMP Type"
 msgstr "Upraviť typ ICMP"
 
-#: ../src/firewall-config.glade.h:118
+#: ../src/firewall-config.glade.h:120
 msgid "Remove ICMP Type"
 msgstr "Odstrániť typ ICMP"
 
-#: ../src/firewall-config.glade.h:119
+#: ../src/firewall-config.glade.h:121
 msgid "Load ICMP Type Defaults"
 msgstr "Načítať predvolené nastavenia typu ICMP"
 
-#: ../src/firewall-config.glade.h:120
+#: ../src/firewall-config.glade.h:122
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:121
+#: ../src/firewall-config.glade.h:123
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:122
+#: ../src/firewall-config.glade.h:124
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:123
+#: ../src/firewall-config.glade.h:125
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:124
+#: ../src/firewall-config.glade.h:126
 msgid ""
 "The direct configuration gives a more direct access to the firewall. These "
 "options require user to know basic iptables concepts, i.e. tables, chains, "
@@ -1090,39 +1115,39 @@ msgid ""
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:125
+#: ../src/firewall-config.glade.h:127
 msgid ""
 "The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:126
+#: ../src/firewall-config.glade.h:128
 msgid "Additional chains for use with rules."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:127
+#: ../src/firewall-config.glade.h:129
 msgid "Add Chain"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:128
+#: ../src/firewall-config.glade.h:130
 msgid "Edit Chain"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:129
+#: ../src/firewall-config.glade.h:131
 msgid "Remove Chain"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:130
+#: ../src/firewall-config.glade.h:132
 msgid "Chains"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:131
+#: ../src/firewall-config.glade.h:133
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:132
+#: ../src/firewall-config.glade.h:134
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1132,378 +1157,307 @@ msgid ""
 "following."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:133
+#: ../src/firewall-config.glade.h:135
 msgid "Add Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config.glade.h:136
 msgid "Edit Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:135
+#: ../src/firewall-config.glade.h:137
 msgid "Remove Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:136
+#: ../src/firewall-config.glade.h:138
 msgid "Rules"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:137
+#: ../src/firewall-config.glade.h:139
 msgid ""
 "The passthrough rules are directly passed through to the firewall and are "
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:138
-msgid "Passthrough rules can only be modified for the permanent configuration."
-msgstr ""
-
-#: ../src/firewall-config.glade.h:139
+#: ../src/firewall-config.glade.h:140
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:140
+#: ../src/firewall-config.glade.h:141
 msgid "Add Passthrough"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:141
+#: ../src/firewall-config.glade.h:142
 msgid "Edit Passthrough"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:142
+#: ../src/firewall-config.glade.h:143
 msgid "Remove Passthrough"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:143
+#: ../src/firewall-config.glade.h:144
 msgid "Passthrough"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config.glade.h:145
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:145
+#: ../src/firewall-config.glade.h:146
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:146
+#: ../src/firewall-config.glade.h:147
 msgid "Add Context"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:147
+#: ../src/firewall-config.glade.h:148
 msgid "Edit Context"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:148
+#: ../src/firewall-config.glade.h:149
 msgid "Remove Context"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config.glade.h:150
 msgid "Contexts"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:150
+#: ../src/firewall-config.glade.h:151
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:151
+#: ../src/firewall-config.glade.h:152
 msgid "Add Command Line"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:152
+#: ../src/firewall-config.glade.h:153
 msgid "Edit Command Line"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:153
+#: ../src/firewall-config.glade.h:154
 msgid "Remove Command Line"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:154
+#: ../src/firewall-config.glade.h:155
 msgid "Command lines"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:155
+#: ../src/firewall-config.glade.h:156
 msgid "User names."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:156
+#: ../src/firewall-config.glade.h:157
 msgid "Add User Name"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:157
+#: ../src/firewall-config.glade.h:158
 msgid "Edit User Name"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:158
+#: ../src/firewall-config.glade.h:159
 msgid "Remove User Name"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:159
+#: ../src/firewall-config.glade.h:160
 msgid "User names"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:160
+#: ../src/firewall-config.glade.h:161
 msgid "User ids."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:161
+#: ../src/firewall-config.glade.h:162
 msgid "Add User Id"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:162
+#: ../src/firewall-config.glade.h:163
 msgid "Edit User Id"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:163
+#: ../src/firewall-config.glade.h:164
 msgid "Remove User Id"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:164
+#: ../src/firewall-config.glade.h:165
 msgid "User Ids"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:165
+#: ../src/firewall-config.glade.h:166
 msgid "Default Zone:"
 msgstr "Predvolená zóna:"
 
-#: ../src/firewall-config.glade.h:166
+#: ../src/firewall-config.glade.h:167
 msgid "Current default zone of the system."
 msgstr "Aktuálna predvolená zóna systému."
 
-#: ../src/firewall-config.glade.h:167
+#: ../src/firewall-config.glade.h:168
 msgid "Lockdown:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:168
+#: ../src/firewall-config.glade.h:169
 msgid "Panic Mode:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:169
+#: ../src/firewall-config.glade.h:170
 msgid "Please enter the module name."
 msgstr "Prosím, zadajte názov modulu."
 
-#: ../src/firewall-config.glade.h:170
+#: ../src/firewall-config.glade.h:171
 msgid "Please enter a port and protocol."
 msgstr "Prosím, zadajte port a protokol."
 
-#: ../src/firewall-config.glade.h:171
+#: ../src/firewall-config.glade.h:172
 msgid "Port and/or Protocol"
 msgstr "Port a/alebo protokol"
 
-#: ../src/firewall-config.glade.h:172
+#: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and/or a protocol."
 msgstr "Prosím, zadajte port a/alebo protokol."
 
-#: ../src/firewall-config.glade.h:173
+#: ../src/firewall-config.glade.h:174
 msgid "Other Protocol:"
 msgstr "Iný protokol:"
 
-#: ../src/firewall-config.glade.h:174
+#: ../src/firewall-config.glade.h:175
 msgid "Direct Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:175
+#: ../src/firewall-config.glade.h:176
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:176
+#: ../src/firewall-config.glade.h:177
 msgid "Priority:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:178
+#: ../src/firewall-config.glade.h:179
 msgid "Please enter a protocol."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:179
+#: ../src/firewall-config.glade.h:180
 msgid "Rich Rule"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:180
+#: ../src/firewall-config.glade.h:181
 msgid "Please enter a rich rule."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:181
+#: ../src/firewall-config.glade.h:182
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:182
+#: ../src/firewall-config.glade.h:183
 msgid "Source:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:183
+#: ../src/firewall-config.glade.h:184
 msgid "Destination:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:185
 msgid "Log:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:186
 msgid "Audit:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:186
+#: ../src/firewall-config.glade.h:187
 msgid "ipv4 and ipv6"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:187
+#: ../src/firewall-config.glade.h:188
 msgid "inverted"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:188
+#: ../src/firewall-config.glade.h:189
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:189
+#: ../src/firewall-config.glade.h:190
 msgid "with Type:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:190
+#: ../src/firewall-config.glade.h:191
 msgid "With limit:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:191
+#: ../src/firewall-config.glade.h:192
 msgid "/"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:196
+#: ../src/firewall-config.glade.h:197
 msgid "Prefix:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:197
+#: ../src/firewall-config.glade.h:198
 msgid "Level:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:206
+#: ../src/firewall-config.glade.h:207
 msgid "Element:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:213
+#: ../src/firewall-config.glade.h:214
 msgid "Family:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:214
+#: ../src/firewall-config.glade.h:215
 msgid "Action:"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:215
+#: ../src/firewall-config.glade.h:216
 msgid "Base Service Settings"
 msgstr "Nastavenia základnej služby"
 
-#: ../src/firewall-config.glade.h:216
+#: ../src/firewall-config.glade.h:217
 msgid "Please configure base service settings:"
 msgstr "Prosím, konfigurujte nastavenia základnej služby:"
 
-#: ../src/firewall-config.glade.h:217
+#: ../src/firewall-config.glade.h:218
 msgid "Please select a service."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:218
+#: ../src/firewall-config.glade.h:219
 msgid "User ID"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:219
+#: ../src/firewall-config.glade.h:220
 msgid "Please enter the user id."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:220
+#: ../src/firewall-config.glade.h:221
 msgid "User name"
 msgstr ""
 
-#: ../src/firewall-config.glade.h:221
+#: ../src/firewall-config.glade.h:222
 msgid "Please enter the user name."
 msgstr ""
 
-#: ../src/firewall-config.glade.h:222
+#: ../src/firewall-config.glade.h:223
 msgid "Base Zone Settings"
 msgstr "Nastavenia základnej zóny"
 
-#: ../src/firewall-config.glade.h:223
+#: ../src/firewall-config.glade.h:224
 msgid "Please configure base zone settings:"
 msgstr "Prosím, konfigurujte nastavenia základnej zóny:"
 
-#: ../src/firewall-config.glade.h:224
+#: ../src/firewall-config.glade.h:225
 msgid "Target:"
 msgstr "Cieľ:"
 
-#: ../src/firewall-config.glade.h:225
+#: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Predvolený cieľ"
-
-#~ msgid "port range %s is not unique."
-#~ msgstr "rozsah portov %s nie je jedinečný."
-
-#~ msgid "%s is not a valid range (start port >= end port)."
-#~ msgstr "%s nie je platný rozsah (počiatočný port >= konečný port)"
-
-#~ msgid "%s is not a valid protocol."
-#~ msgstr "%s nie je platný protokol."
-
-#~ msgid "invalid port definition %s."
-#~ msgstr "neplatná definícia portu %s."
-
-#~ msgid "Invalid argument %s"
-#~ msgstr "Neplatný argument %s"
-
-#~ msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-#~ msgstr "možnosť %(option)s: neplatný forward_port '%(value)s': %(error)s."
-
-#~ msgid "option %(option)s: invalid forward_port '%(value)s'."
-#~ msgstr "možnosť %(option)s: neplatný forward_port '%(value)s'."
-
-#~ msgid "invalid interface '%s'."
-#~ msgstr "neplatné rozhranie '%s'."
-
-#~ msgid "Enable firewall (default)"
-#~ msgstr "Povoliť firewall (predvolené)"
-
-#~ msgid "Disable firewall"
-#~ msgstr "Zakázať firewall"
-
-#~ msgid "<module>"
-#~ msgstr "<module>"
-
-#~ msgid "<service>"
-#~ msgstr "<serviço>"
-
-#~ msgid "<port>[-<port>]:<protocol>"
-#~ msgstr "<port>[-<port>]:<protocol>"
-
-#~ msgid "<interface>"
-#~ msgstr "<interface>"
-
-#~ msgid "[<type>:][<table>:]<filename>"
-#~ msgstr "[<type>:][<table>:]<filename>"
-
-#~ msgid ""
-#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-#~ "toaddr=<destination address>]"
-#~ msgstr ""
-#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-#~ "toaddr=<destination address>]"
-
-#~ msgid "<icmp type>"
-#~ msgstr "<icmp type>"
-
-#~ msgid "no such option: %s"
-#~ msgstr "neexistuje možnosť: %s"
-
-#~ msgid "%s option requires an argument"
-#~ msgstr "%s možnosť vyžaduje argument"
-
-#~ msgid "%(option)s option requires %(count)s arguments"
-#~ msgstr "možnosť %(option)s vyžaduje %(count)s argumentov"
-
-#~ msgid "%s option does not take a value"
-#~ msgstr "%s možnosť neprijíma hodnotu"

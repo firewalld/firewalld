@@ -6,17 +6,17 @@
 # Amitakhya Phukan <amitakhya.phukan@gmail.com>, 2006
 # Amitakhya Phukan <aphukan@fedoraproject.org>, 2007-2010
 # Amitakhya Phukan <aphukan@redhat.com>, 2007-2008,2010
-# ngoswami <ngoswami@redhat.com>, 2013
-# ngoswami <ngoswami@redhat.com>, 2013
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2013
+# Nilamdyuti Goswami <ngoswami@redhat.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-09-29 10:24+0200\n"
-"PO-Revision-Date: 2013-10-03 12:36+0000\n"
-"Last-Translator: ngoswami <ngoswami@redhat.com>\n"
-"Language-Team: Assamese (http://www.transifex.com/projects/p/fedora/language/"
-"as/)\n"
+"POT-Creation-Date: 2014-09-30 10:21+0200\n"
+"PO-Revision-Date: 2014-09-29 08:25+0000\n"
+"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"Language-Team: Assamese (http://www.transifex.com/projects/p/firewalld/"
+"language/as/)\n"
 "Language: as\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -69,23 +69,23 @@ msgstr "FirewallD আৰম্ভ কৰা নাই, ইতিমধ্যে 
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 ব্যৰ্থ: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5238
+#: ../src/firewall-applet:106 ../src/firewall-config:5274
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "সংযোগ '%s' ৰ বাবে অঞ্চল বাছক"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
-#: ../src/firewall-config:5263 ../src/firewall-config:5289
+#: ../src/firewall-config:5299 ../src/firewall-config:5325
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "অবিকল্পিত অঞ্চল"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5321
+#: ../src/firewall-applet:189 ../src/firewall-config:5357
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "আন্তঃপৃষ্ঠ '%s' ৰ বাবে অঞ্চল বাছক"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5377
+#: ../src/firewall-applet:245 ../src/firewall-config:5413
 #, c-format
 msgid "Select zone for source %s"
 msgstr "উৎস %s ৰ বাবে অঞ্চল বাছক"
@@ -138,24 +138,24 @@ msgstr "শিল্ড আপ অঞ্চল:"
 msgid "Shields Down Zone:"
 msgstr "শিল্ড ডাউন অঞ্চল:"
 
-#: ../src/firewall-applet:622 ../src/firewall-config:1791
+#: ../src/firewall-applet:622 ../src/firewall-config:1792
 msgid "Connections"
 msgstr "সংযোগসমূহ"
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1835
-#: ../src/firewall-config:1861 ../src/firewall-config:1886
-#: ../src/firewall-config.glade.h:59
+#: ../src/firewall-applet:717 ../src/firewall-config:1836
+#: ../src/firewall-config:1862 ../src/firewall-config:1887
+#: ../src/firewall-config.glade.h:61
 msgid "Zone"
 msgstr "অঞ্চল"
 
-#: ../src/firewall-applet:679 ../src/firewall-config:1847
-#: ../src/firewall-config.glade.h:91
+#: ../src/firewall-applet:679 ../src/firewall-config:1848
+#: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1873
-#: ../src/firewall-config.glade.h:96
+#: ../src/firewall-applet:704 ../src/firewall-config:1874
+#: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr "উৎসসমূহ"
 
@@ -286,7 +286,7 @@ msgstr "অসামৰ্থবান"
 msgid "Failed to load icons."
 msgstr "আইকনসমূহ ল'ড কৰিবলৈ ব্যৰ্থ।"
 
-#: ../src/firewall-config:358 ../src/firewall-config:1753
+#: ../src/firewall-config:358 ../src/firewall-config:1755
 msgid "Runtime"
 msgstr "চলনসময়"
 
@@ -294,7 +294,7 @@ msgstr "চলনসময়"
 msgid "Permanent"
 msgstr "স্থায়ী"
 
-#: ../src/firewall-config:420 ../src/firewall-config.glade.h:99
+#: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
 msgid "Service"
 msgstr "সেৱা"
 
@@ -304,7 +304,7 @@ msgid "Port"
 msgstr "প'ৰ্ট"
 
 #: ../src/firewall-config:429 ../src/firewall-config:470
-#: ../src/firewall-config:708 ../src/firewall-config.glade.h:177
+#: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
 msgid "Protocol"
 msgstr "নিয়মনীতি"
 
@@ -348,187 +348,187 @@ msgstr "লগ"
 msgid "Audit"
 msgstr "অডিট"
 
-#: ../src/firewall-config:1158 ../src/firewall-config:2039
-#: ../src/firewall-config:2077
+#: ../src/firewall-config:1160 ../src/firewall-config:2044
+#: ../src/firewall-config:2082
 msgid "Warning"
 msgstr "সঁকিয়নি"
 
-#: ../src/firewall-config:1167
+#: ../src/firewall-config:1169
 msgid "Error"
 msgstr "ভুল"
 
-#: ../src/firewall-config:1208
+#: ../src/firewall-config:1210
 msgid "Changes applied."
 msgstr "পৰিবৰ্তনসমূহ প্ৰয়োগ কৰা হৈছে।"
 
-#: ../src/firewall-config:1497 ../src/firewall-config:2824
+#: ../src/firewall-config:1499 ../src/firewall-config:2832
 msgid "accept"
 msgstr "গ্ৰহণ কৰক"
 
-#: ../src/firewall-config:1499 ../src/firewall-config:2826
-#: ../src/firewall-config:2936
+#: ../src/firewall-config:1501 ../src/firewall-config:2834
+#: ../src/firewall-config:2944
 msgid "reject"
 msgstr "নাকচ কৰক"
 
-#: ../src/firewall-config:1503 ../src/firewall-config:2831
+#: ../src/firewall-config:1505 ../src/firewall-config:2839
 msgid "drop"
 msgstr "ড্ৰপ কৰক"
 
-#: ../src/firewall-config:1505 ../src/firewall-config:1539
-#: ../src/firewall-config:1544
+#: ../src/firewall-config:1507 ../src/firewall-config:1541
+#: ../src/firewall-config:1546
 msgid "limit"
 msgstr "সীমা"
 
-#: ../src/firewall-config:1516 ../src/firewall-config:2363
-#: ../src/firewall-config:2517 ../src/firewall-config:2788
-#: ../src/firewall-config.glade.h:207
+#: ../src/firewall-config:1518 ../src/firewall-config:2371
+#: ../src/firewall-config:2525 ../src/firewall-config:2796
+#: ../src/firewall-config.glade.h:208
 msgid "service"
 msgstr "সেৱা"
 
-#: ../src/firewall-config:1518 ../src/firewall-config:2369
-#: ../src/firewall-config:2519 ../src/firewall-config:2791
-#: ../src/firewall-config.glade.h:208
+#: ../src/firewall-config:1520 ../src/firewall-config:2377
+#: ../src/firewall-config:2527 ../src/firewall-config:2799
+#: ../src/firewall-config.glade.h:209
 msgid "port"
 msgstr "পৰ্ট"
 
-#: ../src/firewall-config:1521 ../src/firewall-config:2374
-#: ../src/firewall-config:2528 ../src/firewall-config:2797
-#: ../src/firewall-config.glade.h:209
+#: ../src/firewall-config:1523 ../src/firewall-config:2382
+#: ../src/firewall-config:2536 ../src/firewall-config:2805
+#: ../src/firewall-config.glade.h:210
 msgid "protocol"
 msgstr "প্ৰটোকল"
 
-#: ../src/firewall-config:1523 ../src/firewall-config:2379
-#: ../src/firewall-config:2811 ../src/firewall-config:2948
-#: ../src/firewall-config.glade.h:212
+#: ../src/firewall-config:1525 ../src/firewall-config:2387
+#: ../src/firewall-config:2819 ../src/firewall-config:2956
+#: ../src/firewall-config.glade.h:213
 msgid "masquerade"
 msgstr "ছদ্মবেশ"
 
-#: ../src/firewall-config:1537
+#: ../src/firewall-config:1539
 msgid "level"
 msgstr "স্তৰ"
 
-#: ../src/firewall-config:1541 ../src/firewall-config:1546
+#: ../src/firewall-config:1543 ../src/firewall-config:1548
 msgid "yes"
 msgstr "হয়"
 
-#: ../src/firewall-config:1703
+#: ../src/firewall-config:1705
 msgid "Authorization failed."
 msgstr "প্ৰমাণীকৰণ ব্যৰ্থ হল।"
 
-#: ../src/firewall-config:1706
+#: ../src/firewall-config:1708
 msgid "Invalid name"
 msgstr "অবৈধ তৰ্ক %s"
 
-#: ../src/firewall-config:1710
+#: ../src/firewall-config:1712
 msgid "Name already exists"
 msgstr "নাম ইতিমধ্যে অস্তিত্ববান"
 
-#: ../src/firewall-config:2036
+#: ../src/firewall-config:2041
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
 msgstr "অঞ্চল '%s': সেৱা '%s' উপলব্ধ নহয়।"
 
-#: ../src/firewall-config:2040 ../src/firewall-config:2078
+#: ../src/firewall-config:2045 ../src/firewall-config:2083
 msgid "Remove"
 msgstr "আতৰাওক"
 
-#: ../src/firewall-config:2040 ../src/firewall-config:2078
+#: ../src/firewall-config:2045 ../src/firewall-config:2083
 msgid "Ignore"
 msgstr "উপেক্ষা কৰক"
 
-#: ../src/firewall-config:2074
+#: ../src/firewall-config:2079
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
 msgstr "অঞ্চল '%s': ICMP ধৰণ '%s' উপলব্ধ নহয়।"
 
-#: ../src/firewall-config:2217
+#: ../src/firewall-config:2223
 msgid "Built-in zone, rename not supported."
 msgstr "বিলট-ইন অঞ্চল, পুনৰ নামকৰণ সমৰ্থিত নহয়।"
 
-#: ../src/firewall-config:2326 ../src/firewall-config:2763
-#: ../src/firewall-config.glade.h:192
+#: ../src/firewall-config:2334 ../src/firewall-config:2771
+#: ../src/firewall-config.glade.h:193
 msgid "second"
 msgstr "ছেকেণ্ড"
 
-#: ../src/firewall-config:2327 ../src/firewall-config:2764
-#: ../src/firewall-config.glade.h:193
+#: ../src/firewall-config:2335 ../src/firewall-config:2772
+#: ../src/firewall-config.glade.h:194
 msgid "minute"
 msgstr "মিনিট"
 
-#: ../src/firewall-config:2328 ../src/firewall-config:2765
-#: ../src/firewall-config.glade.h:194
+#: ../src/firewall-config:2336 ../src/firewall-config:2773
+#: ../src/firewall-config.glade.h:195
 msgid "hour"
 msgstr "ঘন্টা"
 
-#: ../src/firewall-config:2329 ../src/firewall-config:2766
-#: ../src/firewall-config.glade.h:195
+#: ../src/firewall-config:2337 ../src/firewall-config:2774
+#: ../src/firewall-config.glade.h:196
 msgid "day"
 msgstr "দিন"
 
-#: ../src/firewall-config:2330 ../src/firewall-config:2767
-#: ../src/firewall-config.glade.h:198
+#: ../src/firewall-config:2338 ../src/firewall-config:2775
+#: ../src/firewall-config.glade.h:199
 msgid "emergency"
 msgstr "আপাতকালীন"
 
-#: ../src/firewall-config:2331 ../src/firewall-config:2768
-#: ../src/firewall-config.glade.h:199
+#: ../src/firewall-config:2339 ../src/firewall-config:2776
+#: ../src/firewall-config.glade.h:200
 msgid "alert"
 msgstr "সতৰ্ক"
 
-#: ../src/firewall-config:2332 ../src/firewall-config:2769
-#: ../src/firewall-config.glade.h:200
+#: ../src/firewall-config:2340 ../src/firewall-config:2777
+#: ../src/firewall-config.glade.h:201
 msgid "critical"
 msgstr "মাৰাত্মক"
 
-#: ../src/firewall-config:2333 ../src/firewall-config:2770
-#: ../src/firewall-config.glade.h:201
+#: ../src/firewall-config:2341 ../src/firewall-config:2778
+#: ../src/firewall-config.glade.h:202
 msgid "error"
 msgstr "ত্ৰুটি"
 
-#: ../src/firewall-config:2334 ../src/firewall-config:2771
-#: ../src/firewall-config.glade.h:202
+#: ../src/firewall-config:2342 ../src/firewall-config:2779
+#: ../src/firewall-config.glade.h:203
 msgid "warning"
 msgstr "সতৰ্কবাৰ্তা"
 
-#: ../src/firewall-config:2335 ../src/firewall-config:2772
-#: ../src/firewall-config.glade.h:203
+#: ../src/firewall-config:2343 ../src/firewall-config:2780
+#: ../src/firewall-config.glade.h:204
 msgid "notice"
 msgstr "ঘোষণা"
 
-#: ../src/firewall-config:2336 ../src/firewall-config:2773
-#: ../src/firewall-config.glade.h:204
+#: ../src/firewall-config:2344 ../src/firewall-config:2781
+#: ../src/firewall-config.glade.h:205
 msgid "info"
 msgstr "তথ্য"
 
-#: ../src/firewall-config:2337 ../src/firewall-config:2774
-#: ../src/firewall-config.glade.h:205
+#: ../src/firewall-config:2345 ../src/firewall-config:2782
+#: ../src/firewall-config.glade.h:206
 msgid "debug"
 msgstr "ডিবাগ কৰক"
 
-#: ../src/firewall-config:2382 ../src/firewall-config:2530
-#: ../src/firewall-config:2800 ../src/firewall-config.glade.h:210
+#: ../src/firewall-config:2390 ../src/firewall-config:2538
+#: ../src/firewall-config:2808 ../src/firewall-config.glade.h:211
 msgid "icmp-block"
 msgstr "icmp-block"
 
-#: ../src/firewall-config:2387 ../src/firewall-config:2532
-#: ../src/firewall-config:2803 ../src/firewall-config:2956
-#: ../src/firewall-config.glade.h:211
+#: ../src/firewall-config:2395 ../src/firewall-config:2540
+#: ../src/firewall-config:2811 ../src/firewall-config:2964
+#: ../src/firewall-config.glade.h:212
 msgid "forward-port"
 msgstr "forward-port"
 
-#: ../src/firewall-config:2510 ../src/firewall-config:2709
-#: ../src/firewall-config:2723 ../src/firewall-config:2778
-#: ../src/firewall-config:2879 ../src/firewall-config:2904
+#: ../src/firewall-config:2518 ../src/firewall-config:2717
+#: ../src/firewall-config:2731 ../src/firewall-config:2786
+#: ../src/firewall-config:2887 ../src/firewall-config:2912
 msgid "ipv4"
 msgstr "ipv4"
 
-#: ../src/firewall-config:2512 ../src/firewall-config:2711
-#: ../src/firewall-config:2725 ../src/firewall-config:2780
-#: ../src/firewall-config:2881 ../src/firewall-config:2906
+#: ../src/firewall-config:2520 ../src/firewall-config:2719
+#: ../src/firewall-config:2733 ../src/firewall-config:2788
+#: ../src/firewall-config:2889 ../src/firewall-config:2914
 msgid "ipv6"
 msgstr "ipv6"
 
-#: ../src/firewall-config:3564
+#: ../src/firewall-config:3572
 msgid ""
 "Forwarding to another system is only useful if the interface is "
 "masqueraded.\n"
@@ -538,11 +538,11 @@ msgstr ""
 "থাকে।\n"
 "আপুনি এই অঞ্চলটো মাস্কুৰেড কৰিব বিচাৰে নে?"
 
-#: ../src/firewall-config:3830
+#: ../src/firewall-config:3838
 msgid "Built-in service, rename not supported."
 msgstr "বিলট-ইন সেৱা, পুনৰ নামকৰণ সমৰ্থিত নহয়।"
 
-#: ../src/firewall-config:4193
+#: ../src/firewall-config:4201
 msgid "Built-in icmp, rename not supported."
 msgstr "বিলট-ইন icmp, পুনৰ নামকৰণ সমৰ্থিত নহয়।"
 
@@ -750,30 +750,38 @@ msgid "Lockdown"
 msgstr "লকডাউন"
 
 #: ../src/firewall-config.glade.h:51
+msgid "Make runtime configuration permanent"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:52
+msgid "Runtime To permant"
+msgstr ""
+
+#: ../src/firewall-config.glade.h:53
 msgid "_View"
 msgstr "দৰ্শন (_V)"
 
-#: ../src/firewall-config.glade.h:52
+#: ../src/firewall-config.glade.h:54
 msgid "ICMP Types"
 msgstr "ICMP ধৰণসমূহ"
 
-#: ../src/firewall-config.glade.h:53
+#: ../src/firewall-config.glade.h:55
 msgid "Direct Configuration"
 msgstr "প্ৰত্যক্ষ সংৰূপ"
 
-#: ../src/firewall-config.glade.h:54
+#: ../src/firewall-config.glade.h:56
 msgid "Lockdown Whitelist"
 msgstr "লকডাউন হোৱাইটলিস্ট"
 
-#: ../src/firewall-config.glade.h:55
+#: ../src/firewall-config.glade.h:57
 msgid "_Help"
 msgstr "সহায়তা (_H)"
 
-#: ../src/firewall-config.glade.h:56
+#: ../src/firewall-config.glade.h:58
 msgid "Configuration:"
 msgstr "সংৰূপ:"
 
-#: ../src/firewall-config.glade.h:57
+#: ../src/firewall-config.glade.h:59
 msgid ""
 "Currently visible configuration. Runtime configuration is the actual active "
 "configuration. Permanent configuration will be active after service or "
@@ -782,7 +790,7 @@ msgstr ""
 "বৰ্তমানে দৃশ্য সংৰূপ। চলনসময় সংৰূপ হল প্ৰকৃত সক্ৰিয় সংৰূপ। স্থায়ী সংৰূপ সেৱাৰ পিছত অথবা "
 "চিস্টেম পুনৰ ল'ড অথবা পুনাৰম্ভৰ পিছত সক্ৰিয় হব।"
 
-#: ../src/firewall-config.glade.h:58
+#: ../src/firewall-config.glade.h:60
 msgid ""
 "A firewalld zone defines the level of trust for network connections, "
 "interfaces and source addresses bound to the zone. The zone combines "
@@ -795,23 +803,23 @@ msgstr ""
 "ছদ্মবেশ, পৰ্ট/পেকেট ফৰৱাৰ্ডিং, icmp, ফিল্টাৰসমূহ আৰু সমৃদ্ধ নিয়মসমূহ একত্ৰিত কৰে। "
 "অঞ্চলক আন্তঃপৃষ্ঠসমূহ আৰু উৎস ঠিকনাসমূহলৈ সংযুক্ত কৰিব পাৰি।"
 
-#: ../src/firewall-config.glade.h:60
+#: ../src/firewall-config.glade.h:62
 msgid "Add Zone"
 msgstr "অঞ্চল যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:61
+#: ../src/firewall-config.glade.h:63
 msgid "Edit Zone"
 msgstr "অঞ্চল সম্পাদনা কৰক"
 
-#: ../src/firewall-config.glade.h:62
+#: ../src/firewall-config.glade.h:64
 msgid "Remove Zone"
 msgstr "অঞ্চল আতৰাওক"
 
-#: ../src/firewall-config.glade.h:63
+#: ../src/firewall-config.glade.h:65
 msgid "Load Zone Defaults"
 msgstr "অঞ্চলৰ অবিকল্পিতসমূহ ল'ড কৰক"
 
-#: ../src/firewall-config.glade.h:64
+#: ../src/firewall-config.glade.h:66
 msgid ""
 "Here you can define which services are trusted in the zone. Trusted services "
 "are accessible from all hosts and networks that can reach the machine from "
@@ -821,11 +829,11 @@ msgstr ""
 "নেটৱাৰ্কসমূহ যিসমূহে মেনিচক এই অঞ্চলৰ সৈতে সংযুক্ত সংযোগসমূহ, আন্তঃপৃষ্ঠসমূহ আৰু উৎসসমূহৰ "
 "পৰা প্ৰাপ্ত কৰিব পাৰে সেইসমূহে ভৰষাবান সেৱাসমূহ অভিগম কৰিব পাৰে।"
 
-#: ../src/firewall-config.glade.h:65
+#: ../src/firewall-config.glade.h:67
 msgid "Services"
 msgstr "সেৱাসমূহ"
 
-#: ../src/firewall-config.glade.h:66
+#: ../src/firewall-config.glade.h:68
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
@@ -833,23 +841,23 @@ msgstr ""
 "অতিৰিক্ত পৰ্ট অথবা পৰ্ট বিস্তাৰসমূহ যোগ কৰক, যি মেচিনৰ সৈতে সংযোগ কৰিব পৰা সকলো "
 "হস্ট অথবা নেটৱাৰ্কৰ বাবে অভিগম্য হব লাগে।"
 
-#: ../src/firewall-config.glade.h:67
+#: ../src/firewall-config.glade.h:69
 msgid "Add Port"
 msgstr "প'ৰ্ট"
 
-#: ../src/firewall-config.glade.h:68
+#: ../src/firewall-config.glade.h:70
 msgid "Edit Port"
 msgstr "পৰ্ট সম্পাদনা কৰক"
 
-#: ../src/firewall-config.glade.h:69
+#: ../src/firewall-config.glade.h:71
 msgid "Remove Port"
 msgstr "পৰ্ট আতৰাওক"
 
-#: ../src/firewall-config.glade.h:70
+#: ../src/firewall-config.glade.h:72
 msgid "Ports"
 msgstr "পৰ্টসমূহ"
 
-#: ../src/firewall-config.glade.h:71
+#: ../src/firewall-config.glade.h:73
 msgid ""
 "Masquerading allows you to set up a host or router that connects your local "
 "network to the internet. Your local network will not be visible and the "
@@ -859,11 +867,11 @@ msgstr ""
 "Masquerading সহয়াক । আপোনাৰ স্থানীয় নেটৱৰ্ক প্ৰকাশিত নহ'ব আৰু ইন্টাৰনেটে এটা গৃহস্থ "
 "ৰূপে প্ৰস্তুত কৰা হ'ব । Masquerading অকল IPv4-ৰ ক্ষেত্ৰত প্ৰযোজ্য ।"
 
-#: ../src/firewall-config.glade.h:72
+#: ../src/firewall-config.glade.h:74
 msgid "Masquerade zone"
 msgstr "ছদ্মবেশ অঞ্চল"
 
-#: ../src/firewall-config.glade.h:73
+#: ../src/firewall-config.glade.h:75
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
@@ -871,45 +879,44 @@ msgstr ""
 "যদি আপুনি ছদ্মবেশ সামৰ্থবান কৰে, আপোনাৰ IPv4 নেটৱাৰ্কসমূহৰ বাবে IP ফৰৱাৰ্ডিং "
 "সামৰ্থবান কৰা হব।"
 
-#: ../src/firewall-config.glade.h:74
+#: ../src/firewall-config.glade.h:76
 msgid "Masquerading"
 msgstr "Masquerading"
 
-#: ../src/firewall-config.glade.h:75
+#: ../src/firewall-config.glade.h:77
 msgid ""
 "Add entries to forward ports either from one port to another on the local "
 "system or from the local system to another system. Forwarding to another "
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Add entries to forward ports either from one port to another on the local "
-"system or from the local system to another system. Forwarding to another "
-"system is only useful if the interface is masqueraded. Port forwarding is "
-"IPv4 only."
+"ফৰৱাৰ্ড পৰ্টসমূহলৈ প্ৰৱিষ্টি স্থানীয় চিস্টেমত অথবা স্থানীয় চিস্টেমৰ পৰা অন্য চিস্টেমলৈ "
+"এটা পৰ্টৰ পৰা অন্যলৈ যোগ কৰক। আন্তঃপৃষ্ঠ মাস্কুৰেইডেড থাকিলে অন্য চিস্টেমলৈ ফৰৱাৰ্ডিং "
+"উপযোগী হয়। পৰ্ট ফৰৱাৰ্ডিং কেৱল IPv4।"
 
-#: ../src/firewall-config.glade.h:76
+#: ../src/firewall-config.glade.h:78
 msgid "Add Forward Port"
 msgstr "ফৰৱাৰ্ড পৰ্ট যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:77
+#: ../src/firewall-config.glade.h:79
 msgid "Edit Forward Port"
 msgstr "ফৰৱাৰ্ড পৰ্ট সম্পাদনা কৰক"
 
-#: ../src/firewall-config.glade.h:78
+#: ../src/firewall-config.glade.h:80
 msgid "Remove Forward Port"
 msgstr "ফৰৱাৰ্ড পৰ্ট আতৰাওক"
 
-#: ../src/firewall-config.glade.h:79
+#: ../src/firewall-config.glade.h:81
 msgid ""
 "The Internet Control Message Protocol (ICMP) is mainly used to send error "
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"The Internet Control Message Protocol (ICMP) is mainly used to send error "
-"messages between networked computers, but additionally for informational "
-"messages like ping requests and replies."
+"ইন্টাৰনেট নিয়ন্ত্ৰণ বাৰ্তা প্ৰটোকল (ICMP) মূখ্যভাৱে নেটৱাৰ্ক কমপিউটাৰসমূহৰ মাজত ত্ৰুটি "
+"বাৰ্তাসমূহ পঠাবলৈ ব্যৱহাৰ কৰা হয়, কিন্তু অতিৰিক্তভাৱে তথ্যমূলক বাৰ্তাসমূহ যেনে ping "
+"অনুৰোধ আৰু উত্তৰৰ বাবেও ব্যৱহাৰ কৰা হয়।"
 
-#: ../src/firewall-config.glade.h:80
+#: ../src/firewall-config.glade.h:82
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
@@ -917,31 +924,31 @@ msgstr ""
 "তালিকাত ICMP ৰ ধৰণ চিহ্নিত কৰক, যাক গ্ৰহণ কৰা ন'হ'ব । শেষ সকলো ICMP ধৰণক "
 "ফায়াৰ্ৱালৰ মাজেদি যাব দিয়া হ'ব । অবিকল্পিত মান হ'ল কোনো সীমা নাই ।"
 
-#: ../src/firewall-config.glade.h:81
+#: ../src/firewall-config.glade.h:83
 msgid "ICMP Filter"
 msgstr "ICMP ফিল্টাৰ"
 
-#: ../src/firewall-config.glade.h:82
+#: ../src/firewall-config.glade.h:84
 msgid "Here you can set rich language rules for the zone."
 msgstr "ইয়াত আপুনি অঞ্চলৰ বাবে সমৃদ্ধ ভাষা নিয়মসমূহ সংহতি কৰিব পাৰিব।"
 
-#: ../src/firewall-config.glade.h:83
+#: ../src/firewall-config.glade.h:85
 msgid "Add Rich Rule"
 msgstr "সমৃদ্ধ নিয়ম যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:84
+#: ../src/firewall-config.glade.h:86
 msgid "Edit Rich Rule"
 msgstr "সমৃদ্ধ নিয়ম সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:85
+#: ../src/firewall-config.glade.h:87
 msgid "Remove Rich Rule"
 msgstr "সমৃদ্ধ নিয়ম আতৰাওক"
 
-#: ../src/firewall-config.glade.h:86
+#: ../src/firewall-config.glade.h:88
 msgid "Rich Rules"
 msgstr "সমৃদ্ধ নিয়মসমূহ"
 
-#: ../src/firewall-config.glade.h:87
+#: ../src/firewall-config.glade.h:89
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
@@ -949,39 +956,39 @@ msgstr ""
 "অঞ্চলৰ সৈতে আন্তহপৃষ্ঠসমূহ সংযুক্ত কৰিবলৈ প্ৰৱিষ্টিসমূহ যোগ কৰক। যদি আন্তঃপৃষ্ঠক এটা "
 "সংযোগে ব্যৱহাৰ কৰিব, অঞ্চলক সংযোগত ধাৰ্য্য কৰা অঞ্চললৈ সংহতি কৰা হব।"
 
-#: ../src/firewall-config.glade.h:88
+#: ../src/firewall-config.glade.h:90
 msgid "Add Interface"
 msgstr "আন্তঃপৃষ্ঠ যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:89
+#: ../src/firewall-config.glade.h:91
 msgid "Edit Interface"
 msgstr "আন্তঃপৃষ্ঠ সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:90
+#: ../src/firewall-config.glade.h:92
 msgid "Remove Interface"
 msgstr "আন্তঃপৃষ্ঠ আতৰাওক"
 
-#: ../src/firewall-config.glade.h:92
+#: ../src/firewall-config.glade.h:94
 msgid "Add entries to bind source addresses or areas to the zone."
 msgstr "অঞ্চললৈ উৎস ঠিকনাসমূহ অথবা স্থানসমূহ সংযুক্ত কৰিবলৈ প্ৰৱিষ্টিসমূহ যোগ কৰক।"
 
-#: ../src/firewall-config.glade.h:93
+#: ../src/firewall-config.glade.h:95
 msgid "Add Source"
 msgstr "উৎস যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:94
+#: ../src/firewall-config.glade.h:96
 msgid "Edit Source"
 msgstr "উৎস সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:95
+#: ../src/firewall-config.glade.h:97
 msgid "Remove Source"
 msgstr "উৎস আতৰাওক"
 
-#: ../src/firewall-config.glade.h:97
+#: ../src/firewall-config.glade.h:99
 msgid "Zones"
 msgstr "অঞ্চলবোৰ"
 
-#: ../src/firewall-config.glade.h:98
+#: ../src/firewall-config.glade.h:100
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
@@ -989,23 +996,23 @@ msgstr ""
 "এটা firewalld সেৱা হল পৰ্টসমূহ, প্ৰটোকলসমূহ, মডিউলসমূহ আৰু গন্তব্য ঠিকনাসমূহৰ এটা "
 "সংযুক্তি।"
 
-#: ../src/firewall-config.glade.h:100
+#: ../src/firewall-config.glade.h:102
 msgid "Add Service"
 msgstr "সেৱা যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:101
+#: ../src/firewall-config.glade.h:103
 msgid "Edit Service"
 msgstr "সেৱা সম্পাদনা কৰক"
 
-#: ../src/firewall-config.glade.h:102
+#: ../src/firewall-config.glade.h:104
 msgid "Remove Service"
 msgstr "সেৱা আতৰাওক"
 
-#: ../src/firewall-config.glade.h:103
+#: ../src/firewall-config.glade.h:105
 msgid "Load Service Defaults"
 msgstr "সেৱাৰ অবিকল্পিতসমূহ ল'ড কৰক"
 
-#: ../src/firewall-config.glade.h:104
+#: ../src/firewall-config.glade.h:106
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
@@ -1013,31 +1020,31 @@ msgstr ""
 "অতিৰিক্ত পৰ্ট অথবা পৰ্ট বিস্তাৰসমূহ যোগ কৰক, যি সকলো হস্ট অথবা নেটৱাৰ্কৰ বাবে "
 "অভিগম্য হব লাগে। আপুনি নিৰ্দিষ্ট পৰ্টৰ বাহিৰেও প্ৰটোকলসমূহ যোগ কৰিব পাৰিব।"
 
-#: ../src/firewall-config.glade.h:105
+#: ../src/firewall-config.glade.h:107
 msgid "Add Entry"
 msgstr "নিবেশ যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:106
+#: ../src/firewall-config.glade.h:108
 msgid "Edit Entry"
 msgstr "নিবেশ সম্পাদনা"
 
-#: ../src/firewall-config.glade.h:107
+#: ../src/firewall-config.glade.h:109
 msgid "Remove Entry"
 msgstr "নিবেশ আঁতৰাওক"
 
-#: ../src/firewall-config.glade.h:108
+#: ../src/firewall-config.glade.h:110
 msgid "Ports and Protocols"
 msgstr "পৰ্টসমূহ আৰু প্ৰটোকলসমূহ"
 
-#: ../src/firewall-config.glade.h:109
+#: ../src/firewall-config.glade.h:111
 msgid "Netfilter helper modules"
 msgstr "Netfilter সহায়ক মডিউলসমূহ"
 
-#: ../src/firewall-config.glade.h:110
+#: ../src/firewall-config.glade.h:112
 msgid "Modules"
 msgstr "মডিউলসমূহ"
 
-#: ../src/firewall-config.glade.h:111
+#: ../src/firewall-config.glade.h:113
 msgid ""
 "If you specify destination addresses, the service entry will be limited to "
 "the destination address and type. If both entries are empty, there is no "
@@ -1046,15 +1053,15 @@ msgstr ""
 "যদি আপুনি গন্তব্য ঠিকনাসমূহ ধাৰ্য্য কৰে, সেৱা প্ৰৱিষ্টি গন্তব্য ঠিকনা আৰু ধৰণলৈ সীমিত "
 "থাকিব। যদি দুয়োটা প্ৰৱিষ্টি ৰিক্ত থাকে, তেন্তে কোনো সীমা নাথাকিব।"
 
-#: ../src/firewall-config.glade.h:112
+#: ../src/firewall-config.glade.h:114
 msgid "IPv4:"
 msgstr "IPv4:"
 
-#: ../src/firewall-config.glade.h:113
+#: ../src/firewall-config.glade.h:115
 msgid "IPv6:"
 msgstr "IPv6:"
 
-#: ../src/firewall-config.glade.h:114
+#: ../src/firewall-config.glade.h:116
 msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
@@ -1062,7 +1069,7 @@ msgstr ""
 "সেৱাসমূহক কেৱল স্থায়ী সংৰূপ দৰ্শনত পৰিবৰ্তন কৰিব পাৰি। সেৱাসমূহৰ চলনসময় সংৰূপ "
 "নিৰ্দিষ্ট কৰা আছে।"
 
-#: ../src/firewall-config.glade.h:115
+#: ../src/firewall-config.glade.h:117
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
@@ -1070,35 +1077,35 @@ msgstr ""
 "এটা firewalld icmptype এ firewalld ৰ বাবে এটা ইন্টাৰনেট নিয়ন্ত্ৰণ বাৰ্তা প্ৰটোকল "
 "(ICMP) ধৰণৰ তথ্য প্ৰদান কৰে।"
 
-#: ../src/firewall-config.glade.h:116
+#: ../src/firewall-config.glade.h:118
 msgid "Add ICMP Type"
 msgstr "ICMP ধৰণ যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:117
+#: ../src/firewall-config.glade.h:119
 msgid "Edit ICMP Type"
 msgstr "ICMP ধৰণ সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:118
+#: ../src/firewall-config.glade.h:120
 msgid "Remove ICMP Type"
 msgstr "ICMP ধৰণ আতৰাওক"
 
-#: ../src/firewall-config.glade.h:119
+#: ../src/firewall-config.glade.h:121
 msgid "Load ICMP Type Defaults"
 msgstr "ICMP ধৰণ অবিকল্পিতসমূহ ল'ড কৰক"
 
-#: ../src/firewall-config.glade.h:120
+#: ../src/firewall-config.glade.h:122
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 msgstr "এই ICMP ধৰণ IPv4 আৰু/অথবা IPv6 ৰ বাবে উপলব্ধ আছে নে ধাৰ্য্য কৰক।"
 
-#: ../src/firewall-config.glade.h:121
+#: ../src/firewall-config.glade.h:123
 msgid "IPv4"
 msgstr "IPv4"
 
-#: ../src/firewall-config.glade.h:122
+#: ../src/firewall-config.glade.h:124
 msgid "IPv6"
 msgstr "IPv6"
 
-#: ../src/firewall-config.glade.h:123
+#: ../src/firewall-config.glade.h:125
 msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
@@ -1106,7 +1113,7 @@ msgstr ""
 "ICMP ধৰণসমূহক কেৱল স্থায়ী সংৰূপ দৰ্শনত পৰিবৰ্তন কৰিব পাৰি। ICMP ধৰণসমূহৰ চলনসময় "
 "সংৰূপ নিৰ্দিষ্ট কৰা আছে।"
 
-#: ../src/firewall-config.glade.h:124
+#: ../src/firewall-config.glade.h:126
 msgid ""
 "The direct configuration gives a more direct access to the firewall. These "
 "options require user to know basic iptables concepts, i.e. tables, chains, "
@@ -1118,7 +1125,7 @@ msgstr ""
 "কমান্ডসমূহ, প্ৰাচলসমূহ আৰু লক্ষ্যবোৰ। প্ৰত্যক্ষ সংৰূপক কেৱল শেষ উপায় হিচাপে ব্যৱহাৰ কৰিব "
 "লাগে যেতিয়া অন্য firewalld বৈশিষ্ট্যসমূহ ব্যৱহাৰ কৰা সম্ভব নহয়।"
 
-#: ../src/firewall-config.glade.h:125
+#: ../src/firewall-config.glade.h:127
 msgid ""
 "The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
@@ -1128,33 +1135,33 @@ msgstr ""
 "iptables ৰ বাবে হব, ipv6 ৰ সৈতে ip6tables ৰ বাবে হব আৰু eb ৰ সৈতে ইথাৰনেট "
 "ব্ৰিজবোৰ (ebtables) ৰ বাবে হব।"
 
-#: ../src/firewall-config.glade.h:126
+#: ../src/firewall-config.glade.h:128
 msgid "Additional chains for use with rules."
 msgstr "নিমৰ সৈতে ব্যৱহাৰ কৰিবলৈ অতিৰিক্ত শৃংখল।"
 
-#: ../src/firewall-config.glade.h:127
+#: ../src/firewall-config.glade.h:129
 msgid "Add Chain"
 msgstr "শৃংখল যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:128
+#: ../src/firewall-config.glade.h:130
 msgid "Edit Chain"
 msgstr "শৃংখল সম্পাদনা কৰক"
 
-#: ../src/firewall-config.glade.h:129
+#: ../src/firewall-config.glade.h:131
 msgid "Remove Chain"
 msgstr "শৃংখল আতৰাওক"
 
-#: ../src/firewall-config.glade.h:130
+#: ../src/firewall-config.glade.h:132
 msgid "Chains"
 msgstr "শৃংখলসমূহ"
 
-#: ../src/firewall-config.glade.h:131
+#: ../src/firewall-config.glade.h:133
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
 "এটা প্ৰাথমিকতাৰ সৈতে এটা টেবুলৰ শৃংখললৈ তৰ্কসমূহ args ৰ সৈতে এটা নিয়ম যোগ কৰক।"
 
-#: ../src/firewall-config.glade.h:132
+#: ../src/firewall-config.glade.h:134
 msgid ""
 "The priority is used to order rules. Priority 0 means add rule on top of the "
 "chain, with a higher priority the rule will be added further down. Rules "
@@ -1169,23 +1176,23 @@ msgstr ""
 "যদি আপুনি সুনিশ্চিত কৰিব বিচাৰে যে এটা নিয়ম অন্য এটাৰ পিছত যোগ কৰা হব, প্ৰথমটোৰ "
 "বাবে এটা নিম্ন প্ৰাথমিকতা ব্যৱহাৰ কৰক আৰু নিম্নলিখিতৰ বাবে এটা উচ্চ ব্যৱহাৰ কৰক:"
 
-#: ../src/firewall-config.glade.h:133
+#: ../src/firewall-config.glade.h:135
 msgid "Add Rule"
 msgstr "নিয়ম যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:134
+#: ../src/firewall-config.glade.h:136
 msgid "Edit Rule"
 msgstr "নিয়ম সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:135
+#: ../src/firewall-config.glade.h:137
 msgid "Remove Rule"
 msgstr "নিয়ম আতৰাওক"
 
-#: ../src/firewall-config.glade.h:136
+#: ../src/firewall-config.glade.h:138
 msgid "Rules"
 msgstr "নিয়মসমূহ"
 
-#: ../src/firewall-config.glade.h:137
+#: ../src/firewall-config.glade.h:139
 msgid ""
 "The passthrough rules are directly passed through to the firewall and are "
 "not placed in special chains. All iptables, ip6tables and ebtables options "
@@ -1194,32 +1201,28 @@ msgstr ""
 "পাছথ্ৰু নিয়মসমূহ ফায়াৰৱাললৈ প্ৰত্যক্ষভাৱে প্ৰেৰণ কৰা হয় আৰু বিশেষ শৃংখলত স্থাপন কৰা "
 "নহয়। সকলো iptables, ip6tables আৰু ebtables বিকল্পসমূহ ব্যৱহাৰ কৰিব পাৰি।"
 
-#: ../src/firewall-config.glade.h:138
-msgid "Passthrough rules can only be modified for the permanent configuration."
-msgstr "পাছথ্ৰু নিয়মসমূহ কেৱল স্থায়ী সংৰূপৰ বাবে পৰিবৰ্তন কৰিব পাৰি।"
-
-#: ../src/firewall-config.glade.h:139
+#: ../src/firewall-config.glade.h:140
 msgid "Please be careful with passthrough rules to not damage the firewall."
 msgstr ""
 "অনুগ্ৰহ কৰি পাছথ্ৰু নিয়মসমূহ ব্যৱহাৰ কৰোতে সাৱধান হব যাতে ফায়াৰৱাল ক্ষতিগ্ৰস্থ নহয়।"
 
-#: ../src/firewall-config.glade.h:140
+#: ../src/firewall-config.glade.h:141
 msgid "Add Passthrough"
 msgstr "পাছথ্ৰু যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:141
+#: ../src/firewall-config.glade.h:142
 msgid "Edit Passthrough"
 msgstr "পাছথ্ৰু সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:142
+#: ../src/firewall-config.glade.h:143
 msgid "Remove Passthrough"
 msgstr "পাছথ্ৰু আতৰাওক"
 
-#: ../src/firewall-config.glade.h:143
+#: ../src/firewall-config.glade.h:144
 msgid "Passthrough"
 msgstr "পাছথ্ৰু"
 
-#: ../src/firewall-config.glade.h:144
+#: ../src/firewall-config.glade.h:145
 msgid ""
 "The lockdown feature is a light version of user and application policies for "
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
@@ -1229,7 +1232,7 @@ msgstr ""
 "সংস্কৰণ। ই ফায়াৰৱাললৈ কৰা পৰিবৰ্তনসমূহ সীমিত কৰে। লকডাউন হোৱাইটলিস্টত কমান্ডসমূহ, "
 "পৰিপ্ৰেক্ষতিত, ব্যৱহাৰকাৰীসকল আৰু ব্যৱহাৰকাৰী আইডিসমূহ থাকিব পাৰে।"
 
-#: ../src/firewall-config.glade.h:145
+#: ../src/firewall-config.glade.h:146
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
@@ -1237,23 +1240,23 @@ msgstr ""
 "পৰিপ্ৰেক্ষতিত হল এটা চলি থকা এপ্লিকেচন অথবা সেৱাৰ সুৰক্ষা (SELinux) পৰিপ্ৰেক্ষতিত। "
 "এটা চলি থকা এপ্লিকেচনৰ পৰিপ্ৰেক্ষতিত প্ৰাপ্ত কৰিবলৈ ps -e --context ব্যৱহাৰ কৰক।"
 
-#: ../src/firewall-config.glade.h:146
+#: ../src/firewall-config.glade.h:147
 msgid "Add Context"
 msgstr "পৰিপ্ৰেক্ষতিত যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:147
+#: ../src/firewall-config.glade.h:148
 msgid "Edit Context"
 msgstr "পৰিপ্ৰেক্ষতিত সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:148
+#: ../src/firewall-config.glade.h:149
 msgid "Remove Context"
 msgstr "পৰিপ্ৰেক্ষতিত আতৰাওক"
 
-#: ../src/firewall-config.glade.h:149
+#: ../src/firewall-config.glade.h:150
 msgid "Contexts"
 msgstr "পৰিপ্ৰেক্ষতিতসমূহ"
 
-#: ../src/firewall-config.glade.h:150
+#: ../src/firewall-config.glade.h:151
 msgid ""
 "If a command entry on the whitelist ends with an asterisk '*', then all "
 "command lines starting with the command will match. If the '*' is not there "
@@ -1263,438 +1266,234 @@ msgstr ""
 "কমান্ডৰ সৈতে আৰম্ভ হোৱা সকলো কমান্ড শাৰী মিল খাব। যদি '*' নাই সম্পূৰ্ণ কমান্ড "
 "অন্তৰ্ভুক্ত তৰ্কসমূহ মিল খাব লাগিব।"
 
-#: ../src/firewall-config.glade.h:151
+#: ../src/firewall-config.glade.h:152
 msgid "Add Command Line"
 msgstr "কমান্ড শাৰী যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:152
+#: ../src/firewall-config.glade.h:153
 msgid "Edit Command Line"
 msgstr "কমান্ড শাৰী সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:153
+#: ../src/firewall-config.glade.h:154
 msgid "Remove Command Line"
 msgstr "কমান্ড শাৰী আতৰাওক"
 
-#: ../src/firewall-config.glade.h:154
+#: ../src/firewall-config.glade.h:155
 msgid "Command lines"
 msgstr "কমান্ড শাৰীসমূহ"
 
-#: ../src/firewall-config.glade.h:155
+#: ../src/firewall-config.glade.h:156
 msgid "User names."
 msgstr "ব্যৱহাৰকাৰী নামসমূহ।"
 
-#: ../src/firewall-config.glade.h:156
+#: ../src/firewall-config.glade.h:157
 msgid "Add User Name"
 msgstr "ব্যৱহাৰকাৰী নাম যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:157
+#: ../src/firewall-config.glade.h:158
 msgid "Edit User Name"
 msgstr "ব্যৱহাৰকাৰী নাম সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:158
+#: ../src/firewall-config.glade.h:159
 msgid "Remove User Name"
 msgstr "ব্যৱহাৰকাৰী নাম আতৰাওক"
 
-#: ../src/firewall-config.glade.h:159
+#: ../src/firewall-config.glade.h:160
 msgid "User names"
 msgstr "ব্যৱহাৰকাৰী নামসমূহ"
 
-#: ../src/firewall-config.glade.h:160
+#: ../src/firewall-config.glade.h:161
 msgid "User ids."
 msgstr "ব্যৱহাৰকাৰী আইডিবোৰ।"
 
-#: ../src/firewall-config.glade.h:161
+#: ../src/firewall-config.glade.h:162
 msgid "Add User Id"
 msgstr "ব্যৱহাৰকাৰী আইডি যোগ কৰক"
 
-#: ../src/firewall-config.glade.h:162
+#: ../src/firewall-config.glade.h:163
 msgid "Edit User Id"
 msgstr "ব্যৱহাৰকাৰী আইডি সম্পাদন কৰক"
 
-#: ../src/firewall-config.glade.h:163
+#: ../src/firewall-config.glade.h:164
 msgid "Remove User Id"
 msgstr "ব্যৱহাৰকাৰী আইডি আতৰাওক"
 
-#: ../src/firewall-config.glade.h:164
+#: ../src/firewall-config.glade.h:165
 msgid "User Ids"
 msgstr "ব্যৱহাৰকাৰী আইডিবোৰ"
 
-#: ../src/firewall-config.glade.h:165
+#: ../src/firewall-config.glade.h:166
 msgid "Default Zone:"
 msgstr "অবিকল্পিত অঞ্চল:"
 
-#: ../src/firewall-config.glade.h:166
+#: ../src/firewall-config.glade.h:167
 msgid "Current default zone of the system."
 msgstr "চিস্টেমৰ বৰ্তমান অবিকল্পিত অঞ্চল।"
 
-#: ../src/firewall-config.glade.h:167
+#: ../src/firewall-config.glade.h:168
 msgid "Lockdown:"
 msgstr "লকডাউন:"
 
-#: ../src/firewall-config.glade.h:168
+#: ../src/firewall-config.glade.h:169
 msgid "Panic Mode:"
 msgstr "আতঙ্ক অৱস্থা:"
 
-#: ../src/firewall-config.glade.h:169
+#: ../src/firewall-config.glade.h:170
 msgid "Please enter the module name."
 msgstr "অনুগ্ৰহ কৰি মডিউলৰ নাম সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:170
+#: ../src/firewall-config.glade.h:171
 msgid "Please enter a port and protocol."
 msgstr "অনুগ্ৰহ কৰি এটা পৰ্ট অথবা প্ৰটোকল সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:171
+#: ../src/firewall-config.glade.h:172
 msgid "Port and/or Protocol"
 msgstr "পৰ্ট আৰু/অথবা প্ৰটোকল"
 
-#: ../src/firewall-config.glade.h:172
+#: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and/or a protocol."
 msgstr "অনুগ্ৰহ কৰি এটা পৰ্ট আৰু/অথবা এটা প্ৰটোকল সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:173
+#: ../src/firewall-config.glade.h:174
 msgid "Other Protocol:"
 msgstr "অন্য প্ৰটোকল:"
 
-#: ../src/firewall-config.glade.h:174
+#: ../src/firewall-config.glade.h:175
 msgid "Direct Rule"
 msgstr "প্ৰত্যক্ষ নিয়ম"
 
-#: ../src/firewall-config.glade.h:175
+#: ../src/firewall-config.glade.h:176
 msgid "Please select ipv and table, chain priority and enter the args."
 msgstr "অনুগ্ৰহ কৰি ipv আৰু টেবুল, শৃংখল প্ৰাথমিকতা বাছক আৰু args সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:176
+#: ../src/firewall-config.glade.h:177
 msgid "Priority:"
 msgstr "প্ৰাথমিকতা:"
 
-#: ../src/firewall-config.glade.h:178
+#: ../src/firewall-config.glade.h:179
 msgid "Please enter a protocol."
 msgstr "অনুগ্ৰহ কৰি এটা প্ৰটোকল সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:179
+#: ../src/firewall-config.glade.h:180
 msgid "Rich Rule"
 msgstr "সমৃদ্ধ নিয়ম"
 
-#: ../src/firewall-config.glade.h:180
+#: ../src/firewall-config.glade.h:181
 msgid "Please enter a rich rule."
 msgstr "অনুগ্ৰহ কৰি এটা সমৃদ্ধ নিয়ম সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:181
+#: ../src/firewall-config.glade.h:182
 msgid "For host or network white or blacklisting deactivate the element."
 msgstr "হস্ট অথবা নেটৱাৰ্ক হোৱাইট অথবা ব্লেকলিস্টিংৰ বাবে উপাদানক নিষ্ক্ৰিয় কৰক।"
 
-#: ../src/firewall-config.glade.h:182
+#: ../src/firewall-config.glade.h:183
 msgid "Source:"
 msgstr "উৎস:"
 
-#: ../src/firewall-config.glade.h:183
+#: ../src/firewall-config.glade.h:184
 msgid "Destination:"
 msgstr "গন্তব্য:"
 
-#: ../src/firewall-config.glade.h:184
+#: ../src/firewall-config.glade.h:185
 msgid "Log:"
 msgstr "লগ:"
 
-#: ../src/firewall-config.glade.h:185
+#: ../src/firewall-config.glade.h:186
 msgid "Audit:"
 msgstr "অডিট:"
 
-#: ../src/firewall-config.glade.h:186
+#: ../src/firewall-config.glade.h:187
 msgid "ipv4 and ipv6"
 msgstr "ipv4 আৰু ipv6"
 
-#: ../src/firewall-config.glade.h:187
+#: ../src/firewall-config.glade.h:188
 msgid "inverted"
 msgstr "উলোটা"
 
-#: ../src/firewall-config.glade.h:188
+#: ../src/firewall-config.glade.h:189
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"ইয়াক সামৰ্থবান কৰিবলৈ কাৰ্য্য 'reject' আৰু পৰিয়াল 'ipv4' অথবা 'ipv6' হব লাগিব "
+"(দুয়ো নহয়)।"
 
-#: ../src/firewall-config.glade.h:189
+#: ../src/firewall-config.glade.h:190
 msgid "with Type:"
 msgstr "চিহ্নিত ধৰণৰ সৈতে:"
 
-#: ../src/firewall-config.glade.h:190
+#: ../src/firewall-config.glade.h:191
 msgid "With limit:"
 msgstr "চিহ্নিত সীমাৰ সৈতে:"
 
-#: ../src/firewall-config.glade.h:191
+#: ../src/firewall-config.glade.h:192
 msgid "/"
 msgstr "/"
 
-#: ../src/firewall-config.glade.h:196
+#: ../src/firewall-config.glade.h:197
 msgid "Prefix:"
 msgstr "উপসৰ্গ:"
 
-#: ../src/firewall-config.glade.h:197
+#: ../src/firewall-config.glade.h:198
 msgid "Level:"
 msgstr "স্তৰ:"
 
-#: ../src/firewall-config.glade.h:206
+#: ../src/firewall-config.glade.h:207
 msgid "Element:"
 msgstr "উপাদান:"
 
-#: ../src/firewall-config.glade.h:213
+#: ../src/firewall-config.glade.h:214
 msgid "Family:"
 msgstr "পৰিয়াল:"
 
-#: ../src/firewall-config.glade.h:214
+#: ../src/firewall-config.glade.h:215
 msgid "Action:"
 msgstr "কাৰ্য্য:"
 
-#: ../src/firewall-config.glade.h:215
+#: ../src/firewall-config.glade.h:216
 msgid "Base Service Settings"
 msgstr "ভিত্তি সেৱা সংহতিসমূহ"
 
-#: ../src/firewall-config.glade.h:216
+#: ../src/firewall-config.glade.h:217
 msgid "Please configure base service settings:"
 msgstr "অনুগ্ৰহ কৰি ভিত্তি সেৱা সংহতিসমূহ সংৰূপণ কৰক:"
 
-#: ../src/firewall-config.glade.h:217
+#: ../src/firewall-config.glade.h:218
 msgid "Please select a service."
 msgstr "অনুগ্ৰহ কৰি এটা সেৱা বাছক।"
 
-#: ../src/firewall-config.glade.h:218
+#: ../src/firewall-config.glade.h:219
 msgid "User ID"
 msgstr "ব্যৱহাৰকাৰী ID"
 
-#: ../src/firewall-config.glade.h:219
+#: ../src/firewall-config.glade.h:220
 msgid "Please enter the user id."
 msgstr "অনুগ্ৰহ কৰি ব্যৱহাৰকাৰী আইডি সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:220
+#: ../src/firewall-config.glade.h:221
 msgid "User name"
 msgstr "ব্যৱহাৰকাৰী নাম"
 
-#: ../src/firewall-config.glade.h:221
+#: ../src/firewall-config.glade.h:222
 msgid "Please enter the user name."
 msgstr "অনুগ্ৰহ কৰি ব্যৱহাৰকাৰী নাম সুমুৱাওক।"
 
-#: ../src/firewall-config.glade.h:222
+#: ../src/firewall-config.glade.h:223
 msgid "Base Zone Settings"
 msgstr "ভিত্তি অঞ্চল সংহতিসমূহ"
 
-#: ../src/firewall-config.glade.h:223
+#: ../src/firewall-config.glade.h:224
 msgid "Please configure base zone settings:"
 msgstr "অনুগ্ৰহ কৰি ভিত্তি অঞ্চল সংহতিসমূহ সংৰূপণ কৰক:"
 
-#: ../src/firewall-config.glade.h:224
+#: ../src/firewall-config.glade.h:225
 msgid "Target:"
 msgstr "লক্ষ্য:"
 
-#: ../src/firewall-config.glade.h:225
+#: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "অবিকল্পিত লক্ষ্য"
 
-#~ msgid "Error:"
-#~ msgstr "ত্ৰুটি:"
-
-#~ msgid "Warning:"
-#~ msgstr "সতৰ্কবাৰ্তা:"
-
-#~ msgid "port range %s is not unique."
-#~ msgstr "প'ৰ্টৰ সীমা '%s' অদ্বিতীয় নহয় ।"
-
-#~ msgid "%s is not a valid range (start port >= end port)."
-#~ msgstr "%s বৈধ অঞ্চল নহয় (start port >= end port) ।"
-
-#~ msgid "%s is not a valid protocol."
-#~ msgstr "%s বৈধ আচাৰ বিধি নহয় ।"
-
-#~ msgid "invalid port definition %s."
-#~ msgstr "অবৈধ প'ৰ্টৰ সংজ্ঞা %s ।"
-
-#~ msgid "Invalid argument %s"
-#~ msgstr "অবৈধ তৰ্ক %s"
-
-#~ msgid "option %(option)s: invalid forward_port '%(value)s': %(error)s."
-#~ msgstr "বিকল্প %(option)s: অবৈধ forward_port '%(value)s': %(error)s."
-
-#~ msgid "option %(option)s: invalid forward_port '%(value)s'."
-#~ msgstr "বিকল্প %(option)s: অবৈধ forward_port '%(value)s'."
-
-#~ msgid "invalid interface '%s'."
-#~ msgstr "অবৈধ সংযোগমাধ্যম '%s' ।"
-
-#~ msgid "Enable firewall (default)"
-#~ msgstr "ফায়াৰ্ৱাল সক্ৰিয় কৰা হ'ব (অবিকল্পিত)"
-
-#~ msgid "Disable firewall"
-#~ msgstr "ফায়াৰ্ৱাল নিষ্ক্ৰিয় কৰা হ'ব"
-
-#~ msgid "<module>"
-#~ msgstr "<module>"
-
-#~ msgid "Ignored option, was used to enable an iptables module"
-#~ msgstr ""
-#~ "উপেক্ষিত বিকল্প, এটা iptables মডিউল সামৰ্থবান কৰাৰ বাবে ব্যৱহাৰ কৰা হৈছিল"
-
-#~ msgid "Ignored option, was used to disable an iptables module"
-#~ msgstr ""
-#~ "উপেক্ষিত বিকল্প, এটা iptables মডিউল অসামৰ্থবান কৰাৰ বাবে ব্যৱহাৰ কৰা হৈছিল"
-
-#~ msgid "<service>"
-#~ msgstr "<serviço>"
-
-#~ msgid "Enable a service in the default zone (example: ssh)"
-#~ msgstr "এটা সেৱাক অবিকল্পিত অঞ্চলত সামৰ্থবান কৰক (উদাহৰণস্বৰূপ: ssh)"
-
-#~ msgid "Disable a service in the default zone (example: ssh)"
-#~ msgstr "এটা সেৱাক অবিকল্পিত অঞ্চলত অসামৰ্থবান কৰক (উদাহৰণস্বৰূপ: ssh)"
-
-#~ msgid "<port>[-<port>]:<protocol>"
-#~ msgstr "<port>[-<port>]:<protocol>"
-
-#~ msgid "Enable a port in the default zone (example: ssh:tcp)"
-#~ msgstr "এটা পৰ্টক অবিকল্পিত অঞ্চলত সামৰ্থবান কৰক (উদাহৰণস্বৰূপ: ssh:tcp)"
-
-#~ msgid "<interface>"
-#~ msgstr "<interface>"
-
-#~ msgid "Bind an interface to the trusted zone"
-#~ msgstr "এটা আন্তঃপৃষ্ঠক ভৰষাবান অঞ্চলৰ সৈতে সংযুক্ত কৰক"
-
 #~ msgid ""
-#~ "Enables masquerading in the default zone, interface argument is ignored. "
-#~ "This is IPv4 only."
-#~ msgstr ""
-#~ "ছদ্মবেশক অবিকল্পিত অঞ্চলত সামৰ্থবান কৰে, আন্তঃপৃষ্ঠ তৰ্কক উপেক্ষা কৰা হৈছে। ই কেৱল "
-#~ "IPv4।"
-
-#~ msgid "[<type>:][<table>:]<filename>"
-#~ msgstr "[<type>:][<table>:]<filename>"
-
-#~ msgid ""
-#~ "Ignored option. Was used to add custom rules to the firewall (Example: "
-#~ "ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
-#~ msgstr ""
-#~ "উপেক্ষিত বিকল্প। ফায়াৰৱালত স্বনিৰ্বাচিত নিয়মসমূহ যোগ কৰাৰ বাবে ব্যৱহাৰ কৰা "
-#~ "হৈছিল (উদাহৰণস্বৰূপ: ipv4:filter:/etc/sysconfig/ipv4_filter_addon)"
-
-#~ msgid ""
-#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-#~ "toaddr=<destination address>]"
-#~ msgstr ""
-#~ "if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:"
-#~ "toaddr=<destination address>]"
-
-#~ msgid ""
-#~ "Forward the port with protocol for the interface to either another local "
-#~ "destination port (no destination address given) or to an other "
-#~ "destination address with an optional destination port. This will be added "
-#~ "to the default zone. This is IPv4 only."
-#~ msgstr ""
-#~ "আন্তঃপৃষ্ঠৰ বাবে প্ৰটোকলৰ সৈতে পৰ্টক অন্য স্থানীয় গন্তব্য পৰ্ট (কোনো গন্তব্য ঠিকনা "
-#~ "দিয়া নাই) অথবা এটা বৈকল্পিক গন্তব্য পৰ্টৰ সৈতে এটা অন্য গন্তব্য ঠিকনালৈ ফৰৱাৰ্ড "
-#~ "কৰক। ইয়াক অবিকল্পিত অঞ্চললৈ যোগ কৰা হব। ই কেৱল IPv4।"
-
-#~ msgid "<icmp type>"
-#~ msgstr "<icmp type>"
-
-#~ msgid ""
-#~ "Block this ICMP type in the default zone. The default is to accept all "
-#~ "ICMP types."
-#~ msgstr ""
-#~ "এই ICMP ধৰণৰক অবিকল্পিত অঞ্চলত ৰোধ কৰক। অবিকল্পিত ধৰণ হল সকলো ICMP ধৰণসমূহক "
-#~ "গ্ৰহণ কৰা।"
-
-#~ msgid "no such option: %s"
-#~ msgstr "এই ধৰণৰ বিকল্প অনুপস্থিত: %s"
-
-#~ msgid ""
-#~ "This tool tries to convert system-config-firewall/lokkit options as much "
-#~ "as possible to firewalld, but there are limitations for example with "
-#~ "custom rules, modules and masquerading."
-#~ msgstr ""
-#~ "এই সঁজুলিয়ে system-config-firewall/lokkit বিকল্পসমূহক যিমান সম্ভব firewalld লৈ "
-#~ "পৰিবৰ্তন কৰাৰ চেষ্টা কৰে, কিন্তু কিছুমান ক্ষেত্ৰত যেনে স্বনিৰ্বাচিত নিয়ম, মডিউল আৰু "
-#~ "ছদ্মবেশত কিছুমান সীমা আছে।"
-
-#~ msgid "If no options are given, the configuration from '%s' be migrated."
-#~ msgstr "যদি কোনো বিকল্প দিয়া হোৱা নাই, '%s' ৰ পৰা সংৰূপ প্ৰব্ৰজন কৰিব পৰা যাব।"
-
-#~ msgid "%s option requires an argument"
-#~ msgstr "%s বিকল্পক তৰ্কৰ প্ৰয়োজন"
-
-#~ msgid "%(option)s option requires %(count)s arguments"
-#~ msgstr "%(option)s বিকল্পক %(count)s তৰ্কৰ প্ৰয়োজন"
-
-#~ msgid "%s option does not take a value"
-#~ msgstr "%s বিকল্পই মান নলয়"
-
-#~ msgid "Problem parsing arguments."
-#~ msgstr "তৰ্কবোৰ বিশ্লেষণ কৰোতে সমস্যা।"
-
-#~ msgid "Opening of '%s' failed, exiting."
-#~ msgstr "'%s' খোলোতে ব্যৰ্থ, প্ৰস্থান কৰা হৈছে।"
-
-#~ msgid "Opening default zone '%s'"
-#~ msgstr "অবিকল্পিত অঞ্চল '%s' খোলা হৈছে"
-
-#~ msgid "Unable to open default zone '%s', exiting."
-#~ msgstr "অবিকল্পিত অঞ্চল '%s' খোলিবলৈ অক্ষম, প্ৰস্থান কৰা হৈছে।"
-
-#~ msgid "Unable to open zone '%s', exiting."
-#~ msgstr "অঞ্চল '%s' খোলিবলৈ অক্ষম, প্ৰস্থান কৰা হৈছে।"
-
-#~ msgid "The device '%s' will be bound to the %s zone."
-#~ msgstr "ডিভাইচ '%s' ক %s অঞ্চললৈ সংযুক্ত কৰা হব।"
-
-#~ msgid "Ignoring custom-rule file '%s'"
-#~ msgstr "custom-rule ফাইল '%s' ক উপেক্ষা কৰা হৈছে"
-
-#~ msgid "Ignoring addmodule '%s'"
-#~ msgstr "addmodule '%s' ক উপেক্ষা কৰা হৈছে"
-
-#~ msgid "Ignoring removemodule '%s'"
-#~ msgstr "removemodule '%s' ক উপেক্ষা কৰা হৈছে"
-
-#~ msgid ""
-#~ "Device '%s' was masqueraded, enabling masquerade for the default zone."
-#~ msgstr ""
-#~ "ডিভাইচ '%s' ক ছদ্মবেশ দিয়া হৈছিল, অবিকল্পিত অঞ্চলৰ বাবে ছদ্মবেশ সামৰ্থবান কৰা "
-#~ "হৈছে।"
-
-#~ msgid "Adding port '%s/%s' to default zone."
-#~ msgstr "অবিকল্পিত অঞ্চললৈ পৰ্ট '%s/%s' যোগ কৰা হৈছে।"
-
-#~ msgid "Removing service '%s' from default zone."
-#~ msgstr "সেৱা '%s' ক অবিকল্পিত অঞ্চলৰ পৰা আতৰোৱা হৈছে।"
-
-#~ msgid "Adding service '%s' to default zone."
-#~ msgstr "সেৱা '%s' ক অবিকল্পিত অঞ্চললৈ যোগ কৰা হৈছে।"
-
-#~ msgid "Adding icmpblock '%s' to default zone."
-#~ msgstr "icmpblock '%s' ক অবিকল্পিত অঞ্চললৈ যোগ কৰা হৈছে।"
-
-#~ msgid "Adding forward port %s:%s:%s:%s to default zone."
-#~ msgstr "ফৰৱাৰ্ড পৰ্ট %s:%s:%s:%s ক অবিকল্পিত অঞ্চললৈ যোগ কৰা হৈছে।"
-
-#~ msgid "No changes to default zone needed."
-#~ msgstr "অবিকল্পিত অঞ্চললৈ কোনো পৰিবৰ্তন কৰাৰ প্ৰয়োজন নাই।"
-
-#~ msgid "Changed trusted zone configuration."
-#~ msgstr "ভৰষাবান অঞ্চল সংৰূপ পৰিবৰ্তন কৰা হৈছে।"
-
-#~ msgid ""
-#~ "If one of the trusted interfaces is used for a connection with "
-#~ "NetworkManager or if there is an ifcfg file for this interface, the zone "
-#~ "will be changed to the zone defined in the configuration as soon as it "
-#~ "gets activated. To change the zone of a connection use <command>nm-"
-#~ "connection-editor</command> and set the zone to trusted, for an ifcfg "
-#~ "file, use an editor and add \"ZONE=trusted\". If the zone is not defined "
-#~ "in the ifcfg file, the firewalld default zone will be used."
-#~ msgstr ""
-#~ "যদি ভৰষাবান আন্তঃপৃষ্ঠসমূহৰ এটাক NetworkManager ৰ সৈতে সংযোগৰ বাবে ব্যৱহাৰ কৰা "
-#~ "হয় অথবা যদি এই আন্তঃপৃষ্ঠৰ বাবে এটা ifcfg ফাইল থাকে, অঞ্চল সক্ৰিয় হোৱাৰ লগে "
-#~ "লগে অঞ্চল সংৰূপত বিৱৰিত অঞ্চললৈ সলনি হব। এটা সংযোগৰ অঞ্চল সলনি কৰিবলৈ "
-#~ "<command>nm-connection-editor</command> ব্যৱহাৰ কৰক আৰু অঞ্চলক ভৰষাবানলৈ "
-#~ "সংহতি কৰক, এটা ifcfg ফাইলৰ বাবে, এটা সম্পাদক ব্যৱহাৰ কৰক আৰু \"ZONE=trusted"
-#~ "\" যোগ কৰক। যদি অঞ্চল ifcfg ফাইলত বিৱৰিত নহয়, firewalld অবিকল্পিত অঞ্চল "
-#~ "ব্যৱহাৰ কৰা হব।"
-
-#~ msgid "NetworkManager connection editor is missing."
-#~ msgstr "NetworkManager সংযোগ সম্পাদক নাই।"
+#~ "Passthrough rules can only be modified for the permanent configuration."
+#~ msgstr "পাছথ্ৰু নিয়মসমূহ কেৱল স্থায়ী সংৰূপৰ বাবে পৰিবৰ্তন কৰিব পাৰি।"
