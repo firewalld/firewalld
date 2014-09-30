@@ -450,19 +450,24 @@ assert_good_empty "--permanent --zone=${myzone} --list-icmp-blocks" "${myicmp}"
 assert_good "--permanent --delete-zone=${myzone}"
 
 
-# ... --direct  ...
+# ... --direct ...
 modprobe dummy
-assert_good          "--direct --passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
-assert_good          "--direct --passthrough ipv6 --table filter --append FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
 assert_good          "--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill"
-assert_good          "--direct --passthrough ipv4 --table filter --delete INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
-assert_good          "--direct --passthrough ipv6 --table filter --delete FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
 assert_good          "--direct --passthrough ipv4 --table mangle --delete POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill"
 
-assert_good_contains "--direct --passthrough ipv4 -nvL" "INPUT_ZONES_SOURCE"
+assert_good          "--direct --add-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_good          "--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_good          "--direct --remove-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_bad           "--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+
+assert_good          "--direct --add-passthrough ipv6 --table filter --append FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
+assert_good_contains "--direct --get-passthroughs ipv6" "fd00:dead:beef:ff0::/64"
+assert_good_contains "--direct --get-all-passthroughs" "fd00:dead:beef:ff0::/64"
+assert_good_contains "--direct --passthrough ipv6 -nvL" "fd00:dead:beef:ff0::/64"
+assert_good          "--direct --remove-passthrough ipv6 --table filter --delete FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
+
 assert_bad           "--direct --passthrough ipv5 -nvL" # ipv5
 assert_bad           "--direct --passthrough ipv4" # missing argument
-assert_bad           "--direct --get-all-passthroughs" # --permanent only
 
 assert_good          "--direct --add-chain ipv4 filter mychain"
 assert_good_contains "--direct --get-chains ipv4 filter" "mychain"
