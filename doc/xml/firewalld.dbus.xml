@@ -2150,6 +2150,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.removeRules">
+            <term><methodname>removeRules</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove all rules from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addRule</methodname>.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.removeRules">org.fedoraproject.FirewallD1.direct.Methods.removeRules</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
 

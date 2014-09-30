@@ -912,6 +912,19 @@ class FirewallDConfig(slip.dbus.service.Object):
         idx = (ipv, table, chain, priority, args)
         return idx in self.getSettings()[1]
 
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sss')
+    @dbus_handle_exceptions
+    def removeRules(self, ipv, table, chain, sender=None):
+        ipv = dbus_to_python(ipv)
+        table = dbus_to_python(table)
+        chain = dbus_to_python(chain)
+        log.debug1("config.direct.removeRules('%s', '%s', '%s')" %
+                                             (ipv, table, chain, ))
+        self.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[1] = []
+        self.update(tuple(settings))
+
     @dbus_service_method(DBUS_INTERFACE_CONFIG_DIRECT, in_signature='sss',
                          out_signature='a(ias)')
     @dbus_handle_exceptions
