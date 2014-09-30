@@ -29,6 +29,9 @@ from firewall.functions import splitArgs, joinArgs, u2b_if_py2
 from firewall.errors import *
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
+from firewall.core import ipXtables
+from firewall.core import ebtables
+
 
 class direct_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
@@ -190,9 +193,25 @@ class Direct(IO_Object):
             for args in self.passthroughs[key]:
                 print ("    ('%s')" % ("','".join(args)))
 
+    def _check_ipv(self, ipv):
+        ipvs = ['ipv4', 'ipv6', 'eb']
+        if ipv not in ipvs:
+            raise FirewallError(INVALID_IPV,
+                                "'%s' not in '%s'" % (ipv, ipvs))
+
+    def _check_ipv_table(self, ipv, table):
+        self._check_ipv(ipv)
+
+        tables = ipXtables.BUILT_IN_CHAINS.keys() if ipv in ['ipv4', 'ipv6'] \
+                                         else ebtables.BUILT_IN_CHAINS.keys()
+        if table not in tables:
+            raise FirewallError(INVALID_TABLE,
+                                "'%s' not in '%s'" % (table, tables))
+
     # chains
 
     def add_chain(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table)
         if key not in self.chains:
             self.chains[key] = [ ]
@@ -204,6 +223,7 @@ class Direct(IO_Object):
                         + "already in list, ignoring")
 
     def remove_chain(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table)
         if key in self.chains and chain in self.chains[key]:
             self.chains[key].remove(chain)
@@ -215,10 +235,12 @@ class Direct(IO_Object):
                 (chain, table, ipv))
 
     def query_chain(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table)
         return (key in self.chains and chain in self.chains[key])
 
     def get_chains(self, ipv, table):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table)
         if key in self.chains:
             return self.chains[key]
@@ -232,6 +254,7 @@ class Direct(IO_Object):
     # rules
 
     def add_rule(self, ipv, table, chain, priority, args):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table, chain)
         if key not in self.rules:
             self.rules[key] = LastUpdatedOrderedDict()
@@ -245,6 +268,7 @@ class Direct(IO_Object):
                         + "already in list, ignoring")
 
     def remove_rule(self, ipv, table, chain, priority, args):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table, chain)
         value = (priority, tuple(args))
         if key in self.rules and value in self.rules[key]:
@@ -257,6 +281,7 @@ class Direct(IO_Object):
                 "with ipv '%s' and priority %d not in list" % (ipv, priority))
 
     def remove_rules(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table, chain)
         if key in self.rules:
             for value in self.rules[key].keys():
@@ -265,11 +290,13 @@ class Direct(IO_Object):
                 del self.rules[key]
 
     def query_rule(self, ipv, table, chain, priority, args):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table, chain)
         value = (priority, tuple(args))
         return (key in self.rules and value in self.rules[key])
 
     def get_rules(self, ipv, table, chain):
+        self._check_ipv_table(ipv, table)
         key = (ipv, table, chain)
         if key in self.rules:
             return self.rules[key]
@@ -283,6 +310,7 @@ class Direct(IO_Object):
 #    # passthrough
 #
     def add_passthrough(self, ipv, args):
+        self._check_ipv(ipv)
         if ipv not in self.passthroughs:
             self.passthroughs[ipv] = [ ]
         if args not in self.passthroughs[ipv]:
@@ -293,6 +321,7 @@ class Direct(IO_Object):
                         + "already in list, ignoring")
 
     def remove_passthrough(self, ipv, args):
+        self._check_ipv(ipv)
         if ipv in self.passthroughs and args in self.passthroughs[ipv]:
             self.passthroughs[ipv].remove(args)
             if len(self.passthroughs[ipv]) == 0:
@@ -302,9 +331,11 @@ class Direct(IO_Object):
                 ("',".join(args), ipv) + "not in list"
 
     def query_passthrough(self, ipv, args):
+        self._check_ipv(ipv)
         return (ipv in self.passthroughs and args in self.passthroughs[ipv])
 
     def get_passthroughs(self, ipv):
+        self._check_ipv(ipv)
         if ipv in self.passthroughs:
             return self.passthroughs[ipv]
         else:

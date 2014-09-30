@@ -455,8 +455,11 @@ modprobe dummy
 assert_good          "--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill"
 assert_good          "--direct --passthrough ipv4 --table mangle --delete POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill"
 
+assert_bad           "--direct --add-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv
 assert_good          "--direct --add-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_bad           "--direct --query-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv
 assert_good          "--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_bad           "--direct --remove-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv
 assert_good          "--direct --remove-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
 assert_bad           "--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
 
@@ -473,6 +476,8 @@ assert_good          "--direct --add-chain ipv4 filter mychain"
 assert_good_contains "--direct --get-chains ipv4 filter" "mychain"
 assert_good_contains "--direct --get-all-chains" "ipv4 filter mychain"
 assert_good          "--direct --query-chain ipv4 filter mychain"
+assert_bad           "--direct --add-chain ipv5 filter mychain" # bad ipv
+assert_bad           "--direct --add-chain ipv4 badtable mychain" # bad table name
 
 assert_good          "--direct --add-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_good_contains "--direct --get-rules ipv4 filter mychain" "3 -j ACCEPT"
@@ -480,6 +485,8 @@ assert_good_contains "--direct --get-all-rules" "ipv4 filter mychain 3 -j ACCEPT
 assert_good          "--direct --query-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_good          "--direct --remove-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_bad           "--direct --query-rule ipv4 filter mychain 3 -j ACCEPT"
+assert_bad           "--direct --add-rule ipv5 filter mychain 3 -j ACCEPT" # bad ipv
+assert_bad           "--direct --add-rule ipv4 badtable mychain 3 -j ACCEPT" # bad table name
 
 assert_good          "--direct --add-rule ipv4 filter mychain 3 -s 192.168.1.1 -j ACCEPT"
 assert_good          "--direct --add-rule ipv4 filter mychain 4 -s 192.168.1.2 -j ACCEPT"
@@ -495,6 +502,8 @@ assert_bad           "--direct --query-rule ipv4 filter mychain 4 -s 192.168.1.2
 assert_bad           "--direct --query-rule ipv4 filter mychain 5 -s 192.168.1.3 -j ACCEPT"
 assert_bad           "--direct --query-rule ipv4 filter mychain 6 -s 192.168.1.4 -j ACCEPT"
 
+assert_bad           "--direct --remove-chain ipv5 filter mychain" # bad ipv
+assert_bad           "--direct --remove-chain ipv4 badtable mychain" # bad table name
 assert_good          "--direct --remove-chain ipv4 filter mychain"
 assert_bad           "--direct --query-chain ipv4 filter mychain"
 assert_good          "--direct --remove-chain ipv4 filter dummy" # removing nonexisting chain is just warning
@@ -509,6 +518,7 @@ assert_bad           "--direct --passthrough --get-chains ipv4 filter" # impossi
 
 # ... --permanent --direct ...
 assert_bad           "--permanent --direct --add-passthrough ipv4" # missing argument
+assert_bad           "--permanent --direct --add-passthrough ipv5 -nvL" # bad ipv
 assert_good          "--permanent --direct --add-passthrough ipv4 -nvL"
 assert_good_contains "--permanent --direct --get-passthroughs ipv4" "-nvL"
 assert_good_contains "--permanent --direct --get-all-passthroughs" "ipv4 -nvL"
@@ -522,6 +532,8 @@ assert_good          "--permanent --direct --add-chain ipv4 filter ${mychain_p}"
 assert_good_contains "--permanent --direct --get-chains ipv4 filter" "${mychain_p}"
 assert_good_contains "--permanent --direct --get-all-chains" "ipv4 filter ${mychain_p}"
 assert_good          "--permanent --direct --query-chain ipv4 filter ${mychain_p}"
+assert_bad           "--permanent --direct --add-chain ipv5 filter ${mychain_p}" # bad ipv
+assert_bad           "--permanent --direct --add-chain ipv4 badtable ${mychain_p}" # bad table name
 
 assert_good          "--permanent --direct --add-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
 assert_good_contains "--permanent --direct --get-rules ipv4 filter ${mychain_p}" "ACCEPT"
@@ -529,6 +541,8 @@ assert_good_contains "--permanent --direct --get-all-rules" "ipv4 filter ${mycha
 assert_good          "--permanent --direct --query-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
 assert_good          "--permanent --direct --remove-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
 assert_bad           "--permanent --direct --query-rule ipv4 filter ${mychain_p} 3 -j ACCEPT"
+assert_bad           "--permanent --direct --add-rule ipv5 filter ${mychain_p} 3 -j ACCEPT" # bad ipv
+assert_bad           "--permanent --direct --add-rule ipv4 badtable ${mychain_p} 3 -j ACCEPT" # bad table name
 
 assert_good          "--permanent --direct --add-rule ipv4 filter ${mychain_p} 3 -s 192.168.1.1 -j ACCEPT"
 assert_good          "--permanent --direct --add-rule ipv4 filter ${mychain_p} 4 -s 192.168.1.2 -j ACCEPT"
@@ -544,6 +558,7 @@ assert_bad           "--permanent --direct --query-rule ipv4 filter ${mychain_p}
 assert_bad           "--permanent --direct --query-rule ipv4 filter ${mychain_p} 5 -s 192.168.1.3 -j ACCEPT"
 assert_bad           "--permanent --direct --query-rule ipv4 filter ${mychain_p} 6 -s 192.168.1.4 -j ACCEPT"
 
+assert_bad           "--permanent --direct --remove-chain ipv5 filter ${mychain_p}" # bad ipv
 assert_good          "--permanent --direct --remove-chain ipv4 filter ${mychain_p}"
 assert_bad           "--permanent --direct --query-chain ipv4 filter ${mychain_p}"
 assert_good          "--permanent --direct --remove-chain ipv4 filter dummy" # removing nonexisting chain is just warning

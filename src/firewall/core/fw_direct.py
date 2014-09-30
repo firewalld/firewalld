@@ -91,11 +91,15 @@ class FirewallDirect:
                     except FirewallError as error:
                         log.warning(str(error))
 
-    def _check_ipv_table(self, ipv, table):
-        ipvs = [ 'ipv4', 'ipv6', 'eb' ]
+    def _check_ipv(self, ipv):
+        ipvs = ['ipv4', 'ipv6', 'eb']
         if ipv not in ipvs:
             raise FirewallError(INVALID_IPV,
                                 "'%s' not in '%s'" % (ipv, ipvs))
+
+    def _check_ipv_table(self, ipv, table):
+        self._check_ipv(ipv)
+
         tables = ipXtables.BUILT_IN_CHAINS.keys() if ipv in [ 'ipv4', 'ipv6' ] \
                                          else ebtables.BUILT_IN_CHAINS.keys()
         if table not in tables:
@@ -331,12 +335,6 @@ class FirewallDirect:
             raise FirewallError(COMMAND_FAILED, msg)
 
     # DIRECT PASSTROUGH (tracked)
-
-    def _check_ipv(self, ipv):
-        ipvs = [ 'ipv4', 'ipv6', 'eb' ]
-        if ipv not in ipvs:
-            raise FirewallError(INVALID_IPV,
-                                "'%s' not in '%s'" % (ipv, ipvs))
 
     def __passthrough(self, enable, ipv, args):
         self._check_ipv(ipv)
