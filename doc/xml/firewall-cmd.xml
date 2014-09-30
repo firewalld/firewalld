@@ -948,16 +948,16 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-all-passthroughs</option></term>
 	  <listitem>
 	    <para>
-	      Get all permanent passthrough as a newline separated list of the ipv value and arguments.
+	      Get all passthrough rules as a newline separated list of the ipv value and arguments.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-passthroughs</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } </term>
+	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--get-passthroughs</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> }</term>
 	  <listitem>
 	    <para>
-	      Get all permanent passthrough rules for the ipv value as a newline separated list of the priority and arguments.
+	      Get all passthrough rules for the ipv value as a newline separated list of the priority and arguments.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -966,7 +966,7 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--add-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
-	      Add a permanent passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
+	      Add a passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -975,7 +975,7 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--remove-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
-	      Remove a permanent passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
+	      Remove a passthrough rule with the arguments <replaceable>args</replaceable> for the ipv value.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -984,7 +984,7 @@
 	  <term><optional><option>--permanent</option></optional> <option>--direct</option> <option>--query-passthrough</option> { <literal>ipv4</literal> | <literal>ipv6</literal> | <literal>eb</literal> } <replaceable>args</replaceable></term>
 	  <listitem>
 	    <para>
-	      Return whether a permanent passthrough rule with the arguments <replaceable>args</replaceable> exists for the ipv value. Returns 0 if true, 1 otherwise.
+	      Return whether a passthrough rule with the arguments <replaceable>args</replaceable> exists for the ipv value. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
