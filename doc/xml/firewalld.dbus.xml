@@ -371,17 +371,19 @@
 		Make sure there's no other chain with this name already.
 		There already exist basic chains to use with direct methods, for example <literal>INPUT_direct</literal> chain.
 		These chains are jumped into before chains for zones, i.e. every rule put into <literal>INPUT_direct</literal> will be checked before rules in zones.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.addChain">org.fedoraproject.FirewallD1.config.direct.Methods.addChain</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE, ALREADY_ENABLED, COMMAND_FAILED
 	      </para>
             </listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.direct.Methods.addPasstrough">
+          <varlistentry id="FirewallD1.direct.Methods.addPassthrough">
             <term><methodname>addPassthrough</methodname>(s: ipv, as: args) &rarr; Nothing</term>
             <listitem>
               <para>
 		Add a tracked passthrough rule with the arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.addPassthrough">org.fedoraproject.FirewallD1.config.direct.Methods.addPassthrough</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, ALREADY_ENABLED, COMMAND_FAILED
@@ -396,6 +398,7 @@
 		The priority is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down.
 		Rules with the same priority are on the same level and the order of these rules is not fixed and may change.
 		If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.addRule">org.fedoraproject.FirewallD1.config.direct.Methods.addRule</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE, ALREADY_ENABLED, COMMAND_FAILED
@@ -409,6 +412,7 @@
 		Get all chains added to all tables in format: ipv, table, chain.
 		This concerns only chains previously added with <methodname>addChain</methodname>.
 		Return value is a array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>).
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.getAllChains">org.fedoraproject.FirewallD1.config.direct.Methods.getAllChains</link>.
               </para>
               <para>
                 <variablelist>
@@ -426,6 +430,7 @@
 		Get all tracked passthrough rules added in all ipv types in format: ipv, rule.
 		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
 		Return value is a array of (<parameter>ipv</parameter>, array of <parameter>arguments</parameter>).
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.getAllPassthroughs">org.fedoraproject.FirewallD1.config.direct.Methods.getAllPassthroughs</link>.
               </para>
               <para>
                 <variablelist>
@@ -442,6 +447,7 @@
 		Get all rules added to all chains in all tables in format: ipv, table, chain, priority, rule.
 		This concerns only rules previously added with <methodname>addRule</methodname>.
 		Return value is a array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>, <parameter>priority</parameter>, array of <parameter>arguments</parameter>).
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.getAllRules">org.fedoraproject.FirewallD1.config.direct.Methods.getAllRules</link>.
               </para>
               <para>
                 <variablelist>
@@ -460,6 +466,7 @@
               <para>
 		Return an array of chains (s) added to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only chains previously added with <methodname>addChain</methodname>.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.getChains">org.fedoraproject.FirewallD1.config.direct.Methods.getChains</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE
@@ -472,8 +479,8 @@
               <para>
 		Get all rules added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only rules previously added with <methodname>addRule</methodname>.
-		This concerns only rules previously added with <methodname>addRule</methodname>.
 		Return value is a array of (<parameter>priority</parameter>, array of <parameter>arguments</parameter>).
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.getRules">org.fedoraproject.FirewallD1.config.direct.Methods.getRules</link>.
               </para>
               <para>
                 <variablelist>
@@ -492,6 +499,7 @@
               <para>
 		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only chains previously added with <methodname>addChain</methodname>.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.queryChain">org.fedoraproject.FirewallD1.config.direct.Methods.queryChain</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE
@@ -504,6 +512,7 @@
               <para>
 		Return whether a tracked passthrough rule with the arguments <replaceable>args</replaceable> exists for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.queryPassthrough">org.fedoraproject.FirewallD1.config.direct.Methods.queryPassthrough</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV
@@ -516,6 +525,7 @@
               <para>
 		Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		This concerns only rules previously added with <methodname>addRule</methodname>.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.queryRule">org.fedoraproject.FirewallD1.config.direct.Methods.queryRule</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE
@@ -528,6 +538,7 @@
               <para>
 		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		Only chains previously added with <methodname>addChain</methodname> can be removed this way.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.removeChain">org.fedoraproject.FirewallD1.config.direct.Methods.removeChain</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE, NOT_ENABLED, COMMAND_FAILED
@@ -540,6 +551,7 @@
               <para>
 		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		Only rules previously added with <methodname>addRule</methodname> can be removed this way.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.removeRule">org.fedoraproject.FirewallD1.config.direct.Methods.removeRule</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, INVALID_TABLE, NOT_ENABLED, COMMAND_FAILED
@@ -552,6 +564,7 @@
               <para>
 		Remove a tracked passthrough rule with arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
 		Only rules previously added with <methodname>addPassthrough</methodname> can be removed this way.
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.removePassthrough">org.fedoraproject.FirewallD1.config.direct.Methods.removePassthrough</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_IPV, NOT_ENABLED, COMMAND_FAILED
@@ -1926,6 +1939,214 @@
               </para>
 	      <para>
 		Possible errors: INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.addChain">
+            <term><methodname>addChain</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add a new <replaceable>chain</replaceable> to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		Make sure there's no other chain with this name already.
+		There already exist basic chains to use with direct methods, for example <literal>INPUT_direct</literal> chain.
+		These chains are jumped into before chains for zones, i.e. every rule put into <literal>INPUT_direct</literal> will be checked before rules in zones.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.addChain">org.fedoraproject.FirewallD1.direct.Methods.addChain</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.addPassthrough">
+            <term><methodname>addPassthrough</methodname>(s: ipv, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add a passthrough rule with the arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.addPassthrough">org.fedoraproject.FirewallD1.direct.Methods.addPassthrough</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.addRule">
+            <term><methodname>addRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add a rule with the arguments <replaceable>args</replaceable> to <replaceable>chain</replaceable> in <replaceable>table</replaceable> with <replaceable>priority</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		The priority is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down.
+		Rules with the same priority are on the same level and the order of these rules is not fixed and may change.
+		If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.addRule">org.fedoraproject.FirewallD1.direct.Methods.addRule</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.getAllChains">
+            <term><methodname>getAllChains</methodname>() &rarr; a(sss)</term>
+            <listitem>
+              <para>
+		Get all chains added to all tables in format: ipv, table, chain.
+		This concerns only chains previously added with <methodname>addChain</methodname>.
+		Return value is a array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>).
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.getAllChains">org.fedoraproject.FirewallD1.direct.Methods.getAllChains</link>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+                  <varlistentry><term><parameter>table (s)</parameter>: one of <literal>filter</literal>, <literal>mangle</literal>, <literal>nat</literal>, <literal>raw</literal>, <literal>security</literal></term></varlistentry>
+                  <varlistentry><term><parameter>chain (s)</parameter>: name of a chain.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.getAllPassthroughs">
+            <term><methodname>getAllPassthroughs</methodname>() &rarr; a(sas)</term>
+            <listitem>
+              <para>
+		Get all passthrough rules added in all ipv types in format: ipv, rule.
+		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+		Return value is a array of (<parameter>ipv</parameter>, array of <parameter>arguments</parameter>).
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.getAllPassthroughs">org.fedoraproject.FirewallD1.direct.Methods.getAllPassthroughs</link>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.getAllRules">
+            <term><methodname>getAllRules</methodname>() &rarr; a(sssias)</term>
+            <listitem>
+              <para>
+		Get all rules added to all chains in all tables in format: ipv, table, chain, priority, rule.
+		This concerns only rules previously added with <methodname>addRule</methodname>.
+		Return value is a array of (<parameter>ipv</parameter>, <parameter>table</parameter>, <parameter>chain</parameter>, <parameter>priority</parameter>, array of <parameter>arguments</parameter>).
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.getAllRules">org.fedoraproject.FirewallD1.direct.Methods.getAllRules</link>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+                  <varlistentry><term><parameter>table (s)</parameter>: one of <literal>filter</literal>, <literal>mangle</literal>, <literal>nat</literal>, <literal>raw</literal>, <literal>security</literal></term></varlistentry>
+                  <varlistentry><term><parameter>chain (s)</parameter>: name of a chain.</term></varlistentry>
+		  <varlistentry><term><parameter>priority (i)</parameter>: used to order rules.</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.getChains">
+            <term><methodname>getChains</methodname>(s: ipv, s: table) &rarr; as</term>
+            <listitem>
+              <para>
+		Return an array of chains (s) added to <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only chains previously added with <methodname>addChain</methodname>.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.getChains">org.fedoraproject.FirewallD1.direct.Methods.getChains</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.getRules">
+            <term><methodname>getRules</methodname>(s: ipv, s: table, s: chain) &rarr; a(ias)</term>
+            <listitem>
+              <para>
+		Get all rules added to <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addRule</methodname>.
+		Return value is a array of (<parameter>priority</parameter>, array of <parameter>arguments</parameter>).
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.getRules">org.fedoraproject.FirewallD1.direct.Methods.getRules</link>.
+              </para>
+              <para>
+                <variablelist>
+		  <varlistentry><term><parameter>priority (i)</parameter>: used to order rules.</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.queryChain">
+            <term><methodname>queryChain</methodname>(s: ipv, s: table, s: chain) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a <replaceable>chain</replaceable> exists in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only chains previously added with <methodname>addChain</methodname>.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.queryChain">org.fedoraproject.FirewallD1.direct.Methods.queryChain</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.queryPassthrough">
+            <term><methodname>queryPassthrough</methodname>(s: ipv, as: args) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a tracked passthrough rule with the arguments <replaceable>args</replaceable> exists for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.queryPassthrough">org.fedoraproject.FirewallD1.direct.Methods.queryPassthrough</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.queryRule">
+            <term><methodname>queryRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a rule with <replaceable>priority</replaceable> and the arguments <replaceable>args</replaceable> exists in <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addRule</methodname>.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.queryRule">org.fedoraproject.FirewallD1.direct.Methods.queryRule</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.removeChain">
+            <term><methodname>removeChain</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove a <replaceable>chain</replaceable> from <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		Only chains previously added with <methodname>addChain</methodname> can be removed this way.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.removeChain">org.fedoraproject.FirewallD1.direct.Methods.removeChain</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.removeRule">
+            <term><methodname>removeRule</methodname>(s: ipv, s: table, s: chain, i: priority, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove a rule with <replaceable>priority</replaceable> and arguments <replaceable>args</replaceable> from <replaceable>chain</replaceable> in <replaceable>table</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		Only rules previously added with <methodname>addRule</methodname> can be removed this way.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.removeRule">org.fedoraproject.FirewallD1.direct.Methods.removeRule</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, INVALID_TABLE, NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.removePassthrough">
+            <term><methodname>removePassthrough</methodname>(s: ipv, as: args) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove a passthrough rule with arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		Only rules previously added with <methodname>addPassthrough</methodname> can be removed this way.
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.removePassthrough">org.fedoraproject.FirewallD1.direct.Methods.removePassthrough</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPV, NOT_ENABLED
 	      </para>
             </listitem>
           </varlistentry>
