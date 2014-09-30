@@ -325,7 +325,7 @@ class FirewallDirect:
                 r.append((ipv, table, chain, priority, list(args)))
         return r
 
-    # DIRECT PASSTROUGH (untracked)
+    # DIRECT PASSTHROUGH (untracked)
 
     def passthrough(self, ipv, args):
         try:
@@ -334,7 +334,7 @@ class FirewallDirect:
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)
 
-    # DIRECT PASSTROUGH (tracked)
+    # DIRECT PASSTHROUGH (tracked)
 
     def __passthrough(self, enable, ipv, args):
         self._check_ipv(ipv)

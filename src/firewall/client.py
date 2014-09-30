@@ -1314,7 +1314,7 @@ class FirewallClientDirect(object):
         self.settings[2] = passthroughs
     @handle_exceptions
     def removeAllPassthroughs(self):
-        self.settings[2] = passthroughs
+        self.settings[2] = []
     @handle_exceptions
     def getPassthroughs(self, ipv):
         return [ entry[1] for entry in self.settings[2] \
