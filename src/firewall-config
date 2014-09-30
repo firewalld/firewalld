@@ -2214,7 +2214,8 @@ class FirewallConfig(object):
             else:
                 self.zoneBaseDialogTargetCheck.set_active(False)
                 combobox_select_text(self.zoneBaseDialogTargetCombobox,
-                                     old_target)
+                                     old_target if old_target != "%%REJECT%%"
+                                     else "REJECT")
 
         self.zoneBaseDialogOkButton.set_sensitive(False)
         if builtin:
@@ -2242,6 +2243,8 @@ class FirewallConfig(object):
         target = DEFAULT_ZONE_TARGET
         if not self.zoneBaseDialogTargetCheck.get_active():
             target = self.zoneBaseDialogTargetCombobox.get_active_text()
+            if target == "REJECT":
+                target = "%%REJECT%%"
 
         if old_name == name and \
                 old_version == version and old_short == short and \
