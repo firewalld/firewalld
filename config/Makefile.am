@@ -113,6 +113,7 @@ EXTRA_DIST = \
 	services/samba.xml \
 	services/sane.xml \
 	services/smtp.xml \
+	services/squid.xml \
 	services/ssh.xml \
 	services/synergy.xml \
 	services/telnet.xml \
