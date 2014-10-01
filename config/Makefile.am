@@ -84,6 +84,7 @@ EXTRA_DIST = \
 	services/ipp-client.xml \
 	services/ipp.xml \
 	services/ipsec.xml \
+	services/kadmin.xml \
 	services/kerberos.xml \
 	services/kpasswd.xml \
 	services/ldaps.xml \
