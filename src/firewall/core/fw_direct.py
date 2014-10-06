@@ -350,8 +350,14 @@ class FirewallDirect:
                 raise FirewallError(NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
 
+        if enable:
+            self.check_passthrough(args)
+            _args = args
+        else:
+            _args = self.reverse_passthrough(args)
+
         try:
-            self._fw.rule(ipv, args)
+            self._fw.rule(ipv, _args)
         except Exception as msg:
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)
@@ -388,3 +394,64 @@ class FirewallDirect:
             for args in self._passthroughs[ipv]:
                 r.append(list(args))
         return r
+
+    def check_passthrough(self, args):
+        """ Check if passthough rule is valid (only add, insert and new chain
+        rules are allowed) """
+
+        # The args need to contain either -A, -I, -N
+        for arg in args:
+            if arg in [ "-C", "--check",           # check rule
+                        "-D", "--delete",          # delete rule
+                        "-R", "--replace",         # replace rule
+                        "-L", "--list",            # list rule
+                        "-S", "--list-rules",      # print rules
+                        "-F", "--flush",           # flush rules
+                        "-Z", "--zero",            # zero rules
+                        "-X", "--delete-chain",    # delete chain
+                        "-P", "--policy",          # policy
+                        "-E", "--rename-chain", ]: # rename chain
+                raise FirewallError(INVALID_PASSTHROUGH,
+                                    "arg '%s' is not allowed" % arg)
+        if not "-A" in args and not "-I" in args and not "-N" in args:
+            raise FirewallError(INVALID_PASSTHROUGH,
+                                "no '-A', '-I' or '-N' arg")
+
+    def reverse_passthrough(self, args):
+        """ Reverse valid passthough rule """
+
+        replace_args = {
+            # Append
+            "-A": "-D",
+            "--append": "--delete",
+            # Insert
+            "-I": "-D",
+            "--insert": "--delete",
+            # New chain
+            "-N": "-X",
+            "--new-chain": "--delete-chain",
+        }
+
+        ret_args = args[:]
+
+        for x in replace_args:
+            try:
+                idx = ret_args.index(x)
+            except:
+                continue
+
+            if x in [ "-I", "--insert" ]:
+                # With insert rulenum, then remove it if it is a number
+                # Opt at position idx, chain at position idx+1, [rulenum] at
+                # position idx+2
+                try:
+                    int(ret_args[idx+2])
+                except:
+                    pass
+                else:
+                    ret_args.pop(idx+2)
+
+            ret_args[idx] = replace_args[x]
+            return ret_args
+
+        raise FirewallError(INVALID_PASSTHROUGH, "no '-A', '-I' or '-N' arg")
