@@ -673,6 +673,7 @@
               <para>
 		Add <replaceable>command</replaceable> to whitelist.
 		See <literal>command</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.addLockdownWhitelistCommand">org.fedoraproject.FirewallD1.config.policies.Methods.addLockdownWhitelistCommand</link>.
               </para>
 	      <para>
 		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
@@ -685,6 +686,7 @@
               <para>
 		Add <replaceable>context</replaceable> to whitelist.
 		See <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.addLockdownWhitelistContext">org.fedoraproject.FirewallD1.config.policies.Methods.addLockdownWhitelistContext</link>.
               </para>
 	      <para>
 		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
@@ -697,6 +699,7 @@
               <para>
 		Add user id <replaceable>uid</replaceable> to whitelist.
 		See <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.addLockdownWhitelistUid">org.fedoraproject.FirewallD1.config.policies.Methods.addLockdownWhitelistUid</link>.
               </para>
 	      <para>
 		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
@@ -709,6 +712,7 @@
               <para>
 		Add <replaceable>user</replaceable> name to whitelist.
 		See <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.addLockdownWhitelistUser">org.fedoraproject.FirewallD1.config.policies.Methods.addLockdownWhitelistUser</link>.
               </para>
 	      <para>
 		Possible errors: ALREADY_ENABLED, INVALID_COMMAND
@@ -745,6 +749,7 @@
             <listitem>
               <para>
 		List all command lines (s) that are on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.getLockdownWhitelistCommands">org.fedoraproject.FirewallD1.config.policies.Methods.getLockdownWhitelistCommands</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -753,6 +758,7 @@
             <listitem>
               <para>
 		List all contexts (s) that are on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.getLockdownWhitelistContext">org.fedoraproject.FirewallD1.config.policies.Methods.getLockdownWhitelistContext</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -761,6 +767,7 @@
             <listitem>
               <para>
 		List all user ids (i) that are on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.getLockdownWhitelistUids">org.fedoraproject.FirewallD1.config.policies.Methods.getLockdownWhitelistUids</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -769,6 +776,7 @@
             <listitem>
               <para>
 		List all users (s) that are on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.getLockdownWhitelistUsers">org.fedoraproject.FirewallD1.config.policies.Methods.getLockdownWhitelistUsers</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -785,6 +793,7 @@
             <listitem>
               <para>
 		Query whether <replaceable>command</replaceable> is on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.queryLockdownWhitelistCommand">org.fedoraproject.FirewallD1.config.policies.Methods.queryLockdownWhitelistCommand</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -793,6 +802,7 @@
             <listitem>
               <para>
 		Query whether <replaceable>context</replaceable> is on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.queryLockdownWhitelistContext">org.fedoraproject.FirewallD1.config.policies.Methods.queryLockdownWhitelistContext</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -801,6 +811,7 @@
             <listitem>
               <para>
 		Query whether user id <replaceable>uid</replaceable> is on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.queryLockdownWhitelistUid">org.fedoraproject.FirewallD1.config.policies.Methods.queryLockdownWhitelistUid</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -809,6 +820,7 @@
             <listitem>
               <para>
 		Query whether <replaceable>user</replaceable> is on whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.queryLockdownWhitelistUser">org.fedoraproject.FirewallD1.config.policies.Methods.queryLockdownWhitelistUser</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -817,6 +829,7 @@
             <listitem>
               <para>
 		Remove <replaceable>command</replaceable> from whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.removeLockdownWhitelistCommand">org.fedoraproject.FirewallD1.config.policies.Methods.removeLockdownWhitelistCommand</link>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED
@@ -828,6 +841,7 @@
             <listitem>
               <para>
 		Remove <replaceable>context</replaceable> from whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.removeLockdownWhitelistContext">org.fedoraproject.FirewallD1.config.policies.Methods.removeLockdownWhitelistContext</link>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED
@@ -839,6 +853,7 @@
             <listitem>
               <para>
 		Remove user id <replaceable>uid</replaceable> from whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.removeLockdownWhitelistUid">org.fedoraproject.FirewallD1.config.policies.Methods.removeLockdownWhitelistUid</link>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED
@@ -850,6 +865,7 @@
             <listitem>
               <para>
 		Remove <replaceable>user</replaceable> from whitelist.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.removeLockdownWhitelistUser">org.fedoraproject.FirewallD1.config.policies.Methods.removeLockdownWhitelistUser</link>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED
@@ -2223,6 +2239,178 @@
               </para>
 	      <para>
 		Possible errors: INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.addLockdownWhitelistCommand">
+            <term><methodname>addLockdownWhitelistCommand</methodname>(s: command) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add <replaceable>command</replaceable> to whitelist.
+		See <literal>command</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.addLockdownWhitelistCommand">org.fedoraproject.FirewallD1.policies.Methods.addLockdownWhitelistCommand</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.addLockdownWhitelistContext">
+            <term><methodname>addLockdownWhitelistContext</methodname>(s: context) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add <replaceable>context</replaceable> to whitelist.
+		See <literal>selinux</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.addLockdownWhitelistContext">org.fedoraproject.FirewallD1.policies.Methods.addLockdownWhitelistContext</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.addLockdownWhitelistUid">
+            <term><methodname>addLockdownWhitelistUid</methodname>(i: uid) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add user id <replaceable>uid</replaceable> to whitelist.
+		See <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.addLockdownWhitelistUid">org.fedoraproject.FirewallD1.policies.Methods.addLockdownWhitelistUid</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.addLockdownWhitelistUser">
+            <term><methodname>addLockdownWhitelistUser</methodname>(s: user) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Add <replaceable>user</replaceable> name to whitelist.
+		See <literal>user</literal> option in <citerefentry><refentrytitle>firewalld.lockdown-whitelist</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.addLockdownWhitelistUser">org.fedoraproject.FirewallD1.policies.Methods.addLockdownWhitelistUser</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED, INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.getLockdownWhitelistCommands">
+            <term><methodname>getLockdownWhitelistCommands</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		List all command lines (s) that are on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.getLockdownWhitelistCommands">org.fedoraproject.FirewallD1.policies.Methods.getLockdownWhitelistCommands</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.getLockdownWhitelistContexts">
+            <term><methodname>getLockdownWhitelistContexts</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		List all contexts (s) that are on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.getLockdownWhitelistContexts">org.fedoraproject.FirewallD1.policies.Methods.getLockdownWhitelistContexts</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.getLockdownWhitelistUids">
+            <term><methodname>getLockdownWhitelistUids</methodname>() &rarr; ai</term>
+            <listitem>
+              <para>
+		List all user ids (i) that are on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.getLockdownWhitelistUids">org.fedoraproject.FirewallD1.policies.Methods.getLockdownWhitelistUids</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.getLockdownWhitelistUsers">
+            <term><methodname>getLockdownWhitelistUsers</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		List all users (s) that are on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.getLockdownWhitelistUsers">org.fedoraproject.FirewallD1.policies.Methods.getLockdownWhitelistUsers</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.queryLockdownWhitelistCommand">
+            <term><methodname>queryLockdownWhitelistCommand</methodname>(s: command) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>command</replaceable> is on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.queryLockdownWhitelistCommand">org.fedoraproject.FirewallD1.policies.Methods.queryLockdownWhitelistCommand</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.queryLockdownWhitelistContext">
+            <term><methodname>queryLockdownWhitelistContext</methodname>(s: context) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>context</replaceable> is on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.queryLockdownWhitelistContext">org.fedoraproject.FirewallD1.policies.Methods.queryLockdownWhitelistContext</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.queryLockdownWhitelistUid">
+            <term><methodname>queryLockdownWhitelistUid</methodname>(i: uid) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether user id <replaceable>uid</replaceable> is on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.queryLockdownWhitelistUid">org.fedoraproject.FirewallD1.policies.Methods.queryLockdownWhitelistUid</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.queryLockdownWhitelistUser">
+            <term><methodname>queryLockdownWhitelistUser</methodname>(s: user) &rarr; b</term>
+            <listitem>
+              <para>
+		Query whether <replaceable>user</replaceable> is on whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.queryLockdownWhitelistUser">org.fedoraproject.FirewallD1.policies.Methods.queryLockdownWhitelistUser</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.removeLockdownWhitelistCommand">
+            <term><methodname>removeLockdownWhitelistCommand</methodname>(s: command) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove <replaceable>command</replaceable> from whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.removeLockdownWhitelistCommand">org.fedoraproject.FirewallD1.policies.Methods.removeLockdownWhitelistCommand</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.removeLockdownWhitelistContext">
+            <term><methodname>removeLockdownWhitelistContext</methodname>(s: context) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove <replaceable>context</replaceable> from whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.removeLockdownWhitelistContext">org.fedoraproject.FirewallD1.policies.Methods.removeLockdownWhitelistContext</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.removeLockdownWhitelistUid">
+            <term><methodname>removeLockdownWhitelistUid</methodname>(i: uid) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove user id <replaceable>uid</replaceable> from whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.removeLockdownWhitelistUid">org.fedoraproject.FirewallD1.policies.Methods.removeLockdownWhitelistUid</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.policies.Methods.removeLockdownWhitelistUser">
+            <term><methodname>removeLockdownWhitelistUser</methodname>(s: user) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove <replaceable>user</replaceable> from whitelist.
+		For runtime operation see <link linkend="FirewallD1.policies.Methods.removeLockdownWhitelistUser">org.fedoraproject.FirewallD1.policies.Methods.removeLockdownWhitelistUser</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
 	      </para>
             </listitem>
           </varlistentry>
