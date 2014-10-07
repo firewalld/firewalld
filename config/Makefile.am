@@ -93,6 +93,7 @@ EXTRA_DIST = \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
 	services/mdns.xml \
+	services/mosh.xml \
 	services/mountd.xml \
 	services/ms-wbt.xml \
 	services/mysql.xml \
