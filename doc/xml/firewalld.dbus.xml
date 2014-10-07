@@ -2779,7 +2779,7 @@
                   <varlistentry><term><parameter>version (s)</parameter>: see version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>description (s)</parameter>: see description tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' and/or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
             </listitem>
@@ -2821,7 +2821,7 @@
             <term><methodname>update</methodname>((sssas): settings) &rarr; Nothing</term>
             <listitem>
               <para>
-		Update settings of icmp type to <replaceable>settings</replaceable>.
+		Update permanent settings of icmp type to <replaceable>settings</replaceable>.
 		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>destinations</parameter>.
               </para>
               <para>
@@ -2829,8 +2829,131 @@
                   <varlistentry><term><parameter>version (s)</parameter>: see version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>description (s)</parameter>: see description tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' and/or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.getVersion">
+            <term><methodname>getVersion</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get version of icmp type.
+		See version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.setVersion">
+            <term><methodname>setVersion</methodname>(s: version) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set version of icmp type to <replaceable>version</replaceable>.
+		See version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.getShort">
+            <term><methodname>getShort</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get name of icmp type.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.setShort">
+            <term><methodname>setShort</methodname>(s: short) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set name of icmp type to <replaceable>short</replaceable>.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.getDescription">
+            <term><methodname>getDescription</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get description of icmp type.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.setDescription">
+            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set description of icmp type to <replaceable>description</replaceable>.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.getDescription">
+            <term><methodname>getDescription</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get description of icmp type.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.setDescription">
+            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set description of icmp type to <replaceable>description</replaceable>.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.getDestinations">
+            <term><methodname>getDestinations</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of destinations.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.setDestinations">
+            <term><methodname>setDestinations</methodname>(as: destinations) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set destinations of icmp type to <replaceable>destinations</replaceable>, which is array, either empty or containing strings 'ipv4' and/or 'ipv6'.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.addDestination">
+            <term><methodname>addDestination</methodname>(s: destination) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add a <replaceable>destination</replaceable> ('ipv4' or 'ipv6') to list of destinations of this icmp type.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+      	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.removeDestination">
+            <term><methodname>removeDestination</methodname>(s: destination) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove a <replaceable>destination</replaceable> ('ipv4' or 'ipv6') from list of destinations of this icmp type.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.icmptype.Methods.queryDestination">
+            <term><methodname>queryDestination</methodname>(s: destination) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a <replaceable>destination</replaceable> ('ipv4' or 'ipv6') is in list of destinations of this icmp type.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
           </varlistentry>
