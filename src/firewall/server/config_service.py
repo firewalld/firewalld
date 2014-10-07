@@ -410,51 +410,51 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s',
                          out_signature='s')
     @dbus_handle_exceptions
-    def getDestination(self, destination, sender=None):
-        destination = dbus_to_python(destination, str)
+    def getDestination(self, family, sender=None):
+        family = dbus_to_python(family, str)
         log.debug1("config.service.%d.getDestination('%s')", self.id,
-                   destination)
+                   family)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if destination not in settings[5]:
-            raise FirewallError(NOT_ENABLED, destination)
-        return settings[5][destination]
+        if family not in settings[5]:
+            raise FirewallError(NOT_ENABLED, family)
+        return settings[5][family]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss')
     @dbus_handle_exceptions
-    def setDestination(self, destination, address, sender=None):
-        destination = dbus_to_python(destination, str)
+    def setDestination(self, family, address, sender=None):
+        family = dbus_to_python(family, str)
         address = dbus_to_python(address, str)
         log.debug1("config.service.%d.setDestination('%s', '%s')", self.id,
-                   destination, address)
+                   family, address)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if destination in settings[5]:
-            raise FirewallError(ALREADY_ENABLED, destination)
-        settings[5][destination] = address
+        if family in settings[5]:
+            raise FirewallError(ALREADY_ENABLED, family)
+        settings[5][family] = address
         self.update(settings)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
     @dbus_handle_exceptions
-    def removeDestination(self, destination, sender=None):
-        destination = dbus_to_python(destination, str)
+    def removeDestination(self, family, sender=None):
+        family = dbus_to_python(family, str)
         log.debug1("config.service.%d.removeDestination('%s')", self.id,
-                   destination)
+                   family)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if destination not in settings[5]:
-            raise FirewallError(NOT_ENABLED, destination)
-        settings[5].remove(destination)
+        if family not in settings[5]:
+            raise FirewallError(NOT_ENABLED, family)
+        settings[5].remove(family)
         self.update(settings)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
-    def queryDestination(self, destination, address, sender=None):
-        destination = dbus_to_python(destination, str)
+    def queryDestination(self, family, address, sender=None):
+        family = dbus_to_python(family, str)
         address = dbus_to_python(address, str)
         log.debug1("config.service.%d.queryDestination('%s', '%s')", self.id,
-                   destination, address)
+                   family, address)
         settings = self.getSettings()
-        return (destination in self.settings[5] and \
-                address == self.settings[5][destination])
+        return (family in self.settings[5] and
+                address == self.settings[5][family])
