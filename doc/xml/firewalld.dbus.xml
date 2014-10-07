@@ -2685,6 +2685,248 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getVersion">
+            <term><methodname>getVersion</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get version of service.
+		See <literal>version</literal> attribute of <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setVersion">
+            <term><methodname>setVersion</methodname>(s: version) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set version of service to <replaceable>version</replaceable>.
+		See <literal>version</literal> attribute of <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getShort">
+            <term><methodname>getShort</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get name of service.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setShort">
+            <term><methodname>setShort</methodname>(s: short) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set name of service to <replaceable>short</replaceable>.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getDescription">
+            <term><methodname>getDescription</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get description of service.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setDescription">
+            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set description of service to <replaceable>description</replaceable>.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getDescription">
+            <term><methodname>getDescription</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get description of service.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setDescription">
+            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set description of service to <replaceable>description</replaceable>.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getPorts">
+            <term><methodname>getPorts</methodname>() &rarr; a(ss)</term>
+            <listitem>
+              <para>
+		Get list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) defined in service.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setPorts">
+            <term><methodname>setPorts</methodname>(a(ss): ports) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set ports of service to list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>).
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.addPort">
+            <term><methodname>addPort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) to list of ports in service.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.removePort">
+            <term><methodname>removePort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) from list of ports in service.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.queryPort">
+            <term><methodname>queryPort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) is in list of ports in service.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getModules">
+            <term><methodname>getModules</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of modules (netfilter kernel helpers) used in service.
+		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setModules">
+            <term><methodname>setModules</methodname>(as: modules) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of modules (netfilter kernel helpers) used in service to <replaceable>modules</replaceable>.
+		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.addModule">
+            <term><methodname>addModule</methodname>(s: module) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>module</replaceable> to list of modules (netfilter kernel helpers) used in service.
+		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.removeModule">
+            <term><methodname>removeModule</methodname>(s: module) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>module</replaceable> from list of modules (netfilter kernel helpers) used in service.
+		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.queryModule">
+            <term><methodname>queryModule</methodname>(s: module) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>module</replaceable> is in list of modules (netfilter kernel helpers) used in service.
+		See <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry id="FirewallD1.config.service.Methods.getDestinations">
+            <term><methodname>getDestinations</methodname>() &rarr; a{ss}</term>
+            <listitem>
+              <para>
+		Get list of destinations.
+		Return value is a dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setDestinations">
+            <term><methodname>setDestinations</methodname>(a{ss}: destinations) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set destinations of service to <replaceable>destinations</replaceable>, which is a dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getDestination">
+            <term><methodname>getDestination</methodname>(s: family) &rarr; s</term>
+            <listitem>
+              <para>
+		Permanently set a destination address.
+		destination is in format: (<replaceable>IP_family</replaceable>, <replaceable>IP_address</replaceable>) where <replaceable>IP_family</replaceable> can be either 'ipv4' or 'ipv6'.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setDestination">
+            <term><methodname>setDestination</methodname>(ss: destination) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set a destination address.
+		destination is in format: (<replaceable>IP_family</replaceable>, <replaceable>IP_address</replaceable>) where <replaceable>IP_family</replaceable> can be either 'ipv4' or 'ipv6'.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.removeDestination">
+            <term><methodname>removeDestination</methodname>(s: family) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove a destination with <replaceable>family</replaceable> ('ipv4' or 'ipv6') from service.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.queryDestination">
+            <term><methodname>queryDestination</methodname>(ss: destination) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether a <replaceable>destination</replaceable> is in dictionary of destinations of this service.
+		destination is in format: (<replaceable>IP_family</replaceable>, <replaceable>IP_address</replaceable>) where <replaceable>IP_family</replaceable> can be either 'ipv4' or 'ipv6'.
+		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
 
@@ -2776,9 +3018,9 @@
               </para>
               <para>
                 <variablelist>
-                  <varlistentry><term><parameter>version (s)</parameter>: see version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>icmptype</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>description (s)</parameter>: see description tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' and/or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
@@ -2826,9 +3068,9 @@
               </para>
               <para>
                 <variablelist>
-                  <varlistentry><term><parameter>version (s)</parameter>: see version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>icmptype</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
-                  <varlistentry><term><parameter>description (s)</parameter>: see description tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>destinations (as)</parameter>: array, either empty or containing strings 'ipv4' and/or 'ipv6', see destination tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
@@ -2839,7 +3081,7 @@
             <listitem>
               <para>
 		Get version of icmp type.
-		See version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		See <literal>version</literal> attribute of <literal>icmptype</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
           </varlistentry>
@@ -2848,7 +3090,7 @@
             <listitem>
               <para>
 		Permanently set version of icmp type to <replaceable>version</replaceable>.
-		See version attribute of icmptype tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		See <literal>version</literal> attribute of <literal>icmptype</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
           </varlistentry>
