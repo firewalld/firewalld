@@ -124,6 +124,7 @@ EXTRA_DIST = \
 	services/tftp.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
+	services/vdsm.xml \
 	services/vnc-server.xml \
 	services/wbem-https.xml \
 	services/xmpp-bosh.xml \
