@@ -396,12 +396,12 @@ class FirewallDConfigService(slip.dbus.service.Object):
         log.debug1("config.service.%d.getDestinations()", self.id)
         return self.getSettings()[5]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='as')
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='a{ss}')
     @dbus_handle_exceptions
     def setDestinations(self, destinations, sender=None):
-        destinations = dbus_to_python(destinations, list)
-        log.debug1("config.service.%d.setDestinations('[%s]')", self.id,
-                   ",".join(destinations))
+        destinations = dbus_to_python(destinations, dict)
+        log.debug1("config.service.%d.setDestinations({ipv4:'%s', ipv6:'%s'})",
+                   self.id, destinations.get('ipv4'), destinations.get('ipv6'))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         settings[5] = destinations
