@@ -2739,24 +2739,6 @@
               </para>
             </listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.config.service.Methods.getDescription">
-            <term><methodname>getDescription</methodname>() &rarr; s</term>
-            <listitem>
-              <para>
-		Get description of service.
-		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry id="FirewallD1.config.service.Methods.setDescription">
-            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
-            <listitem>
-              <para>
-		Permanently set description of service to <replaceable>description</replaceable>.
-		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-              </para>
-            </listitem>
-          </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.getPorts">
             <term><methodname>getPorts</methodname>() &rarr; a(ss)</term>
             <listitem>
@@ -3109,24 +3091,6 @@
               <para>
 		Permanently set name of icmp type to <replaceable>short</replaceable>.
 		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry id="FirewallD1.config.icmptype.Methods.getDescription">
-            <term><methodname>getDescription</methodname>() &rarr; s</term>
-            <listitem>
-              <para>
-		Get description of icmp type.
-		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-              </para>
-            </listitem>
-          </varlistentry>
-          <varlistentry id="FirewallD1.config.icmptype.Methods.setDescription">
-            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
-            <listitem>
-              <para>
-		Permanently set description of icmp type to <replaceable>description</replaceable>.
-		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.icmptype</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
           </varlistentry>
