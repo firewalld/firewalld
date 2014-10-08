@@ -758,7 +758,7 @@
             <listitem>
               <para>
 		List all contexts (s) that are on whitelist.
-		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.getLockdownWhitelistContext">org.fedoraproject.FirewallD1.config.policies.Methods.getLockdownWhitelistContext</link>.
+		For permanent operation see <link linkend="FirewallD1.config.policies.Methods.getLockdownWhitelistContexts">org.fedoraproject.FirewallD1.config.policies.Methods.getLockdownWhitelistContexts</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -982,7 +982,7 @@
 		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
 		The destination address is a simple IP address.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addForwardPort">org.fedoraproject.FirewallD1.config.zone.Methods.addForwardPort</link>.
               </para>
               <para>
 		Returns name of zone to which the forward port was added.
@@ -1001,7 +1001,7 @@
 		To get a listing of supported icmp types use <link linkend="FirewallD1.Methods.listIcmpTypes">org.fedoraproject.FirewallD1.Methods.listIcmpTypes</link>
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addIcmpBlock">org.fedoraproject.FirewallD1.config.zone.Methods.addIcmpBlock</link>.
               </para>
               <para>
 		Returns name of zone to which the ICMP block was added.
@@ -1018,7 +1018,7 @@
 		Bind <replaceable>interface</replaceable> with <replaceable>zone</replaceable>.
 		From now on all traffic going through the <replaceable>interface</replaceable> will respect the <replaceable>zone</replaceable>'s settings.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addInterface">org.fedoraproject.FirewallD1.config.zone.Methods.addInterface</link>.
               </para>
               <para>
 		Returns name of zone to which the interface was bound.
@@ -1035,7 +1035,7 @@
 		Enable IPv4 masquerade in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, masquerading will be active for the amount of seconds.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addMasquerade">org.fedoraproject.FirewallD1.config.zone.Methods.addMasquerade</link>.
               </para>
               <para>
 		Returns name of zone in which the masquerade was enabled.
@@ -1054,7 +1054,7 @@
 		The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
 		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addPort">org.fedoraproject.FirewallD1.config.zone.Methods.addPort</link>.
               </para>
               <para>
 		Returns name of zone to which the port was added.
@@ -1072,7 +1072,7 @@
 		For the rich language rule syntax, please have a look at <citerefentry><refentrytitle>firewalld.direct</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addRichRule">org.fedoraproject.FirewallD1.config.zone.Methods.addRichRule</link>.
               </para>
               <para>
 		Returns name of zone to which the rich language rule was added.
@@ -1090,7 +1090,7 @@
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
 		To get a list of supported services, use <link linkend="FirewallD1.Methods.listServices">org.fedoraproject.FirewallD1.Methods.listServices</link>.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addService">org.fedoraproject.FirewallD1.config.zone.Methods.addService</link>.
               </para>
               <para>
 		Returns name of zone to which the service was added.
@@ -1110,7 +1110,7 @@
 		For IPv4, the mask can be a network mask or a plain number.
 		For IPv6 the mask is a plain number. Use of host names is not supported.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.update">org.fedoraproject.FirewallD1.config.zone.Methods.update</link>.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addSource">org.fedoraproject.FirewallD1.config.zone.Methods.addSource</link>.
               </para>
               <para>
 		Returns name of zone to which the source was bound.
@@ -1180,7 +1180,7 @@
               <para>
 		Return array of IPv4 forward ports previously added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getForwardPorts">org.fedoraproject.FirewallD1.config.zone.Methods.getForwardPorts</link>.
               </para>
               <para>
 		Return value is array of 4-tuples, where each 4-tuple consists of (port, protocol, to-port, to-addr). to-addr might be empty in case of local forwarding.
@@ -1196,7 +1196,7 @@
               <para>
 		Return array of ICMP type (s) blocks previously added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getIcmpBlocks">org.fedoraproject.FirewallD1.config.zone.Methods.getIcmpBlocks</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1209,7 +1209,7 @@
               <para>
 		Return array of interfaces (s) previously bound with <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getInterfaces">org.fedoraproject.FirewallD1.config.zone.Methods.getInterfaces</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1222,7 +1222,7 @@
               <para>
 		Return array of ports (2-tuple of port and protocol) previously enabled in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getPorts">org.fedoraproject.FirewallD1.config.zone.Methods.getPorts</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1235,7 +1235,7 @@
               <para>
 		Return array of rich language rules (s) previously added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getRichRules">org.fedoraproject.FirewallD1.config.zone.Methods.getRichRules</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1248,7 +1248,7 @@
               <para>
 		Return array of services (s) previously enabled in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getServices">org.fedoraproject.FirewallD1.config.zone.Methods.getServices</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1261,7 +1261,7 @@
               <para>
 		Return array of sources (s) previously bound with <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSources">org.fedoraproject.FirewallD1.config.zone.Methods.getSources</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1309,6 +1309,7 @@
               <para>
 		Return whether the IPv4 forward port (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>) has been added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryForwardPort">org.fedoraproject.FirewallD1.config.zone.Methods.queryForwardPort</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, INVALID_ADDR, INVALID_FORWARD
@@ -1321,6 +1322,7 @@
               <para>
 		Return whether an ICMP block for <replaceable>icmp</replaceable> has been added into <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryIcmpBlock">org.fedoraproject.FirewallD1.config.zone.Methods.queryIcmpBlock</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_ICMPTYPE
@@ -1333,6 +1335,7 @@
               <para>
 		Query whether <replaceable>interface</replaceable> has been bound to <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryInterface">org.fedoraproject.FirewallD1.config.zone.Methods.queryInterface</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_INTERFACE
@@ -1345,6 +1348,7 @@
               <para>
 		Return whether IPv4 masquerading has been enabled in <replaceable>zone</replaceable>
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryMasquerade">org.fedoraproject.FirewallD1.config.zone.Methods.queryMasquerade</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1357,6 +1361,7 @@
               <para>
 		Return whether <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been added in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryPort">org.fedoraproject.FirewallD1.config.zone.Methods.queryPort</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL
@@ -1369,6 +1374,7 @@
               <para>
 		Return whether rich rule <replaceable>rule</replaceable> has been added in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryRichRule">org.fedoraproject.FirewallD1.config.zone.Methods.queryRichRule</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_RULE
@@ -1381,6 +1387,7 @@
               <para>
 		Return whether <replaceable>service</replaceable> has been added for <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryService">org.fedoraproject.FirewallD1.config.zone.Methods.queryService</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_SERVICE
@@ -1393,6 +1400,7 @@
               <para>
 		Query whether <replaceable>source</replaceable>has been bound to <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.querySource">org.fedoraproject.FirewallD1.config.zone.Methods.querySource</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_ADDR
@@ -1405,6 +1413,7 @@
               <para>
 		Remove IPv4 forward port ((<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>)) from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeForwardPort">org.fedoraproject.FirewallD1.config.zone.Methods.removeForwardPort</link>.
               </para>
               <para>
 		Returns name of zone from which the forward port was removed.
@@ -1420,6 +1429,7 @@
               <para>
 		Remove ICMP block <replaceable>icmp</replaceable> from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeIcmpBlock">org.fedoraproject.FirewallD1.config.zone.Methods.removeIcmpBlock</link>.
               </para>
               <para>
 		Returns name of zone from which the ICMP block was removed.
@@ -1435,6 +1445,7 @@
               <para>
 		Remove binding of <replaceable>interface</replaceable> from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, the interface will be removed from zone it belongs to.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeInterface">org.fedoraproject.FirewallD1.config.zone.Methods.removeInterface</link>.
               </para>
               <para>
 		Returns name of zone from which the <replaceable>interface</replaceable> was removed.
@@ -1450,6 +1461,7 @@
               <para>
 		Disable IPv4 masquerade for <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeMasquerade">org.fedoraproject.FirewallD1.config.zone.Methods.removeMasquerade</link>.
               </para>
               <para>
 		Returns name of zone for which the masquerade was disabled.
@@ -1465,6 +1477,7 @@
               <para>
 		Remove port/protocol from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removePort">org.fedoraproject.FirewallD1.config.zone.Methods.removePort</link>.
               </para>
               <para>
 		Returns name of zone from which the port was removed.
@@ -1480,6 +1493,7 @@
               <para>
 		Remove rich language <replaceable>rule</replaceable> from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeRichRule">org.fedoraproject.FirewallD1.config.zone.Methods.removeRichRule</link>.
               </para>
               <para>
 		Returns name of zone from which the rich language rule was removed.
@@ -1495,6 +1509,7 @@
               <para>
 		Remove <replaceable>service</replaceable> from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeService">org.fedoraproject.FirewallD1.config.zone.Methods.removeService</link>.
               </para>
               <para>
 		Returns name of zone from which the service was removed.
@@ -1510,6 +1525,7 @@
               <para>
 		Remove binding of <replaceable>source</replaceable> from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, the source will be removed from zone it belongs to.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeSource">org.fedoraproject.FirewallD1.config.zone.Methods.removeSource</link>.
               </para>
               <para>
 		Returns name of zone from which the <replaceable>source</replaceable> was removed.
@@ -2527,6 +2543,519 @@
 	      <para>
 		Possible errors: INVALID_TYPE
 	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getVersion">
+            <term><methodname>getVersion</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get version of zone.
+		See <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setVersion">
+            <term><methodname>setVersion</methodname>(s: version) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set version of zone to <replaceable>version</replaceable>.
+		See <literal>version</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getShort">
+            <term><methodname>getShort</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get name of zone.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setShort">
+            <term><methodname>setShort</methodname>(s: short) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set name of zone to <replaceable>short</replaceable>.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getDescription">
+            <term><methodname>getDescription</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get description of zone.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setDescription">
+            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set description of zone to <replaceable>description</replaceable>.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getTarget">
+            <term><methodname>getTarget</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get target of zone.
+		See <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setTarget">
+            <term><methodname>setTarget</methodname>(s: target) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set target of zone to <replaceable>target</replaceable>.
+		See <literal>target</literal> attribute of <literal>zone</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getServices">
+            <term><methodname>getServices</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of service names used in zone.
+		See <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getServices">org.fedoraproject.FirewallD1.zone.Methods.getServices</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setServices">
+            <term><methodname>setServices</methodname>(as: services) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of services used in zone to <replaceable>services</replaceable>.
+		See <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addService">
+            <term><methodname>addService</methodname>(s: service) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>service</replaceable> to list of services used in zone.
+		See <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addService">org.fedoraproject.FirewallD1.zone.Methods.addService</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeService">
+            <term><methodname>removeService</methodname>(s: service) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>service</replaceable> from list of services used in zone.
+		See <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeService">org.fedoraproject.FirewallD1.zone.Methods.removeService</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryService">
+            <term><methodname>queryService</methodname>(s: service) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>service</replaceable> is in list of services used in zone.
+		See <literal>service</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryService">org.fedoraproject.FirewallD1.zone.Methods.queryService</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getPorts">
+            <term><methodname>getPorts</methodname>() &rarr; a(ss)</term>
+            <listitem>
+              <para>
+		Get list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) defined in zone.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getPorts">org.fedoraproject.FirewallD1.zone.Methods.getPorts</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setPorts">
+            <term><methodname>setPorts</methodname>(a(ss): ports) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set ports of zone to list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>).
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addPort">
+            <term><methodname>addPort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) to list of ports of zone.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addPort">org.fedoraproject.FirewallD1.zone.Methods.addPort</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removePort">
+            <term><methodname>removePort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) from list of ports of zone.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removePort">org.fedoraproject.FirewallD1.zone.Methods.removePort</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryPort">
+            <term><methodname>queryPort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) is in list of ports of zone.
+		See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryPort">org.fedoraproject.FirewallD1.zone.Methods.queryPort</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getIcmpBlocks">
+            <term><methodname>getIcmpBlocks</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of icmp type names blocked in zone.
+		See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getIcmpBlocks">org.fedoraproject.FirewallD1.zone.Methods.getIcmpBlocks</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setIcmpBlocks">
+            <term><methodname>setIcmpBlocks</methodname>(as: icmptypes) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of icmp types blocked in zone to <replaceable>icmptypes</replaceable>.
+		See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addIcmpBlock">
+            <term><methodname>addIcmpBlock</methodname>(s: icmptype) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>icmptype</replaceable> to list of icmp types blocked in zone.
+		See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addIcmpBlock">org.fedoraproject.FirewallD1.zone.Methods.addIcmpBlock</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeIcmpBlock">
+            <term><methodname>removeIcmpBlock</methodname>(s: icmptype) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>icmptype</replaceable> from list of icmp types blocked in zone.
+		See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeIcmpBlock">org.fedoraproject.FirewallD1.zone.Methods.removeIcmpBlock</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryIcmpBlock">
+            <term><methodname>queryIcmpBlock</methodname>(s: icmptype) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>icmptype</replaceable> is in list of icmp types blocked in zone.
+		See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryIcmpBlock">org.fedoraproject.FirewallD1.zone.Methods.queryIcmpBlock</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getMasquerade">
+            <term><methodname>getMasquerade</methodname>() &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>masquerade</replaceable> is enabled in zone.
+		This is the same as queryMasquerade() method.
+		See <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setMasquerade">
+            <term><methodname>setMasquerade</methodname>(b: masquerade) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set masquerading in zone to <replaceable>masquerade</replaceable>.
+		See <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addMasquerade">
+            <term><methodname>addMasquerade</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently enable masquerading in zone.
+		See <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addMasquerade">org.fedoraproject.FirewallD1.zone.Methods.addMasquerade</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeMasquerade">
+            <term><methodname>removeMasquerade</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently disable masquerading in zone.
+		See <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeMasquerade">org.fedoraproject.FirewallD1.zone.Methods.removeMasquerade</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryMasquerade">
+            <term><methodname>queryMasquerade</methodname>() &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>masquerade</replaceable> is enabled in zone.
+		This is the same as getMasquerade() method.
+		See <literal>masquerade</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryMasquerade">org.fedoraproject.FirewallD1.zone.Methods.queryMasquerade</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getForwardPorts">
+            <term><methodname>getForwardPorts</methodname>() &rarr; a(ssss)</term>
+            <listitem>
+              <para>
+		Get list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>) defined in zone.
+		See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getForwardPorts">org.fedoraproject.FirewallD1.zone.Methods.getForwardPorts</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setForwardPorts">
+            <term><methodname>setForwardPorts</methodname>(a(ssss): ports) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set forward ports of zone to list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>).
+		See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addForwardPort">
+            <term><methodname>addForwardPort</methodname>(s: port, s: protocol, s: toport, s: toaddr) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>) to list of forward ports of zone.
+		See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addForwardPort">org.fedoraproject.FirewallD1.zone.Methods.addForwardPort</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeForwardPort">
+            <term><methodname>removeForwardPort</methodname>(s: port, s: protocol, s: toport, s: toaddr) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>) from list of forward ports of zone.
+		See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeForwardPort">org.fedoraproject.FirewallD1.zone.Methods.removeForwardPort</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryForwardPort">
+            <term><methodname>queryForwardPort</methodname>(s: port, s: protocol, s: toport, s: toaddr) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>) is in list of forward ports of zone.
+		See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryForwardPort">org.fedoraproject.FirewallD1.zone.Methods.queryForwardPort</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getInterfaces">
+            <term><methodname>getInterfaces</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of interfaces bound to zone.
+		See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getInterfaces">org.fedoraproject.FirewallD1.zone.Methods.getInterfaces</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setInterfaces">
+            <term><methodname>setInterfaces</methodname>(as: interfaces) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of interfaces bound to zone to <replaceable>interfaces</replaceable>.
+		See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addInterface">
+            <term><methodname>addInterface</methodname>(s: interface) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>interface</replaceable> to list of interfaces bound to zone.
+		See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addInterface">org.fedoraproject.FirewallD1.zone.Methods.addInterface</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeInterface">
+            <term><methodname>removeInterface</methodname>(s: interface) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>interface</replaceable> from list of interfaces bound to zone.
+		See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeInterface">org.fedoraproject.FirewallD1.zone.Methods.removeInterface</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryInterface">
+            <term><methodname>queryInterface</methodname>(s: interface) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>interface</replaceable> is in list of interfaces bound to zone.
+		See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryInterface">org.fedoraproject.FirewallD1.zone.Methods.queryInterface</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getSources">
+            <term><methodname>getSources</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of source addresses bound to zone.
+		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getSources">org.fedoraproject.FirewallD1.zone.Methods.getSources</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setSources">
+            <term><methodname>setSources</methodname>(as: sources) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of source addresses bound to zone to <replaceable>sources</replaceable>.
+		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addSource">
+            <term><methodname>addSource</methodname>(s: source) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>source</replaceable> to list of source addresses bound to zone.
+		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addSource">org.fedoraproject.FirewallD1.zone.Methods.addSource</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeSource">
+            <term><methodname>removeSource</methodname>(s: source) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>source</replaceable> from list of source addresses bound to zone.
+		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeSource">org.fedoraproject.FirewallD1.zone.Methods.removeSource</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.querySource">
+            <term><methodname>querySource</methodname>(s: source) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>source</replaceable> is in list of source addresses bound to zone.
+		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.querySource">org.fedoraproject.FirewallD1.zone.Methods.querySource</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getRichRules">
+            <term><methodname>getRichRules</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of rich-language rules in zone.
+		See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getRichRules">org.fedoraproject.FirewallD1.zone.Methods.getRichRules</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setRichRules">
+            <term><methodname>setRichRules</methodname>(as: rules) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of rich-language rules to <replaceable>rules</replaceable>.
+		See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addRichRule">
+            <term><methodname>addRichRule</methodname>(s: rule) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>rule</replaceable> to list of rich-language rules in zone.
+		See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addRichRule">org.fedoraproject.FirewallD1.zone.Methods.addRichRule</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeRichRule">
+            <term><methodname>removeRichRule</methodname>(s: rule) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>rule</replaceable> from list of rich-language rules in zone.
+		See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeRichRule">org.fedoraproject.FirewallD1.zone.Methods.removeRichRule</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryRichRule">
+            <term><methodname>queryRichRule</methodname>(s: rule) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>rule</replaceable> is in list of rich-language rules in zone.
+		See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryRichRule">org.fedoraproject.FirewallD1.zone.Methods.queryRichRule</link>.
+              </para>
             </listitem>
           </varlistentry>
         </variablelist>
