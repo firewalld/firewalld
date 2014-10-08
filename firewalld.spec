@@ -2,7 +2,7 @@ Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.3.11
 Release: 2%{?dist}
-URL: http://fedorahosted.org/firewalld
+URL:     http://www.firewalld.org
 License: GPLv2+
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
 BuildArch: noarch
