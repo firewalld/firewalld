@@ -112,10 +112,9 @@ rule [family="ipv4|ipv6"]
 source [not] address="address[/mask]"
 	  </programlisting>
 	With the source address the origin of a connection attempt can be limited to the source address.
-	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6.
-	The address network family (IPv4/IPv6) has to match rule family.
-	For IPv4, the mask can be a network mask or a plain number.
-	For IPv6 the mask is a plain number. The use of host names is not supported.
+	An address is either a single IP address, or a network IP address.
+	The address has to match the rule family (IPv4/IPv6).
+	Subnet mask is expressed in either dot-decimal (/x.x.x.x) or prefix (/x) notations for IPv4, and in prefix notation (/x) for IPv6 network addresses.
 	It is possible to invert the sense of an address by adding <option>not</option> before <option>address</option>.
 	All but the specified address will match then.
       </para>
@@ -229,20 +228,24 @@ log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
 	</programlisting>
       </para>
       <para>
-	Log new connection attempts to the rule with kernel logging for example in syslog. You can define a prefix text that will be added to the log message as a prefix. Log level can be one of "<option>emerg</option>", "<option>alert</option>", "<option>crit</option>", "<option>error</option>", "<option>warning</option>", "<option>notice</option>", "<option>info</option>" or "<option>debug</option>", where default (i.e. if there's no one specified) is "<option>warning</option>". See <citerefentry><refentrytitle>syslog</refentrytitle><manvolnum>3</manvolnum></citerefentry> for description of levels.
-      </para>
-      <para>
-	It is possible to limit logging: The rate is a natural positive number [1, ..], the duration is of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days. The maximum limit value is "1/d" which means at maximum one log entry per day.
+	Log new connection attempts to the rule with kernel logging for example in syslog.
+	You can define a prefix text that will be added to the log message as a prefix.
+	Log level can be one of "<option>emerg</option>", "<option>alert</option>", "<option>crit</option>", "<option>error</option>", "<option>warning</option>", "<option>notice</option>", "<option>info</option>" or "<option>debug</option>", where default (i.e. if there's no one specified) is "<option>warning</option>". See <citerefentry><refentrytitle>syslog</refentrytitle><manvolnum>3</manvolnum></citerefentry> for description of levels.
+	See Limit section for description of <option>limit</option> tag.
       </para>
     </refsect2>
 
     <refsect2>
       <title>Audit</title>
       <para>
-	Audit provides an alternative way for logging using audit records sent to the service auditd. The audit type will be discovered from the rule action automatically. The use of audit is optional.
+	<programlisting>
+audit [limit value="rate/duration"]
+	</programlisting>
       </para>
       <para>
-	Audit can also be limited using the limit tag, as described in Log.
+	Audit provides an alternative way for logging using audit records sent to the service auditd.
+	Audit type will be discovered from the rule action automatically. Use of audit is optional.
+	See Limit section for description of <option>limit</option> tag.
       </para>
     </refsect2>
 
@@ -256,15 +259,44 @@ log [prefix="prefix text"] [level="log level"] [limit value="rate/duration"]
       </para>
       <para>
 	<programlisting>
-accept | reject [type="reject type"] | drop
+accept [limit value="rate/duration"]
 	</programlisting>
       </para>
       <para>
-	With accept all new connection attempts will be granted. With reject they will not be accepted and there source will get a reject message. The reject type can be set to use an other value. For valid reject types see <option>--reject-with type</option> in <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page. Because reject types are different for IPv4 and IPv6 you have to specify rule family when using reject type. With drop all packets will be dropped immediately, there is no information sent to the source.
+	<programlisting>
+reject [type="reject type"] [limit value="rate/duration"]
+	</programlisting>
       </para>
       <para>
-	Action can also be limited using the limit tag, as described in Log.
+	<programlisting>
+drop [limit value="rate/duration"]
+	</programlisting>
       </para>
+      <para>
+	With <option>accept</option> all new connection attempts will be granted.
+	With <option>reject</option> they will not be accepted and their source will get a reject ICMP(v6) message.
+	The reject type can be set to specify appropriate ICMP(v6) error message.
+	For valid reject types see <option>--reject-with type</option> in <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page.
+	Because reject types are different for IPv4 and IPv6 you have to specify rule family when using reject type.
+	With <option>drop</option> all packets will be dropped immediately, there is no information sent to the source.
+	See Limit section for description of <option>limit</option> tag.
+      </para>
+    </refsect2>
+
+    <refsect2>
+       <title>Limit</title>
+      <para>
+	<programlisting>
+limit value="rate/duration"
+	</programlisting>
+      </para>
+       <para>
+	 It is possible to limit Log, Audit and Action.
+	 A rule using this tag will match until this limit is reached.
+	 The rate is a natural positive number [1, ..]
+	 The duration is of "s", "m", "h", "d". "s" means seconds, "m" minutes, "h" hours and "d" days.
+	 Maximum limit value is "1/d", which means at maximum one match per day.
+       </para>
     </refsect2>
 
     <refsect2>
