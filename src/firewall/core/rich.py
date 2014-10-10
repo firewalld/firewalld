@@ -33,12 +33,12 @@ class Rich_Source(object):
         self.invert = invert
 
     def __str__(self):
-        return 'source %saddress="%s"' % ("NOT " if self.invert else "",
+        return 'source %saddress="%s"' % ("not " if self.invert else "",
                                           self.addr)
 
 class Rich_Destination(Rich_Source):
     def __str__(self):
-        return 'destination %saddress="%s"' % ("NOT " if self.invert else "",
+        return 'destination %saddress="%s"' % ("not " if self.invert else "",
                                                self.addr)
 
 class Rich_Service(object):
@@ -248,21 +248,21 @@ class Rich_Rule(object):
             #print ("in_elements: ", in_elements)
             #print ("index: %s, element: %s, attribute: %s=%s" % (index, element, attr_name, attr_value))
             if attr_name:     # attribute
-                if attr_name not in ['family', 'address', 'invert', 'value', \
-                                 'port', 'protocol', 'to-port', 'to-addr', \
-                                 'name', 'prefix', 'level', 'type']:
+                if attr_name not in ['family', 'address', 'invert', 'value',
+                                     'port', 'protocol', 'to-port', 'to-addr',
+                                     'name', 'prefix', 'level', 'type']:
                     raise FirewallError(INVALID_RULE, "bad attribute '%s'" % attr_name)
             else:             # element
-                if element in ['rule', 'source', 'destination', 'protocol', \
-                             'service', 'port', 'icmp-block', 'masquerade', \
-                             'forward-port', 'log', 'audit', \
-                             'accept', 'drop', 'reject', 'limit', 'NOT', 'EOL']:
+                if element in ['rule', 'source', 'destination', 'protocol',
+                               'service', 'port', 'icmp-block', 'masquerade',
+                               'forward-port', 'log', 'audit',
+                               'accept', 'drop', 'reject', 'limit', 'not', 'NOT', 'EOL']:
                     if element == 'source' and self.source:
                         raise FirewallError(INVALID_RULE, "more than one 'source' element")
                     elif element == 'destination' and self.destination:
                         raise FirewallError(INVALID_RULE, "more than one 'destination' element")
-                    elif element in ['protocol', 'service', 'port', 'icmp-block', \
-                                  'masquerade', 'forward-port'] and self.element:
+                    elif element in ['protocol', 'service', 'port', 'icmp-block',
+                                     'masquerade', 'forward-port'] and self.element:
                         raise FirewallError(INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
                     elif element == 'log' and self.log:
                         raise FirewallError(INVALID_RULE, "more than one 'log' element")
@@ -301,7 +301,7 @@ class Rich_Rule(object):
             elif in_element == 'source':
                 if attr_name in ['address', 'invert']:
                     attrs[attr_name] = attr_value
-                elif element == 'NOT':
+                elif element in ['not', 'NOT']:
                     attrs['invert'] = True
                 else:
                     self.source = Rich_Source(attrs.get('address'), attrs.get('invert'))
@@ -311,7 +311,7 @@ class Rich_Rule(object):
             elif in_element == 'destination':
                 if attr_name in ['address', 'invert']:
                     attrs[attr_name] = attr_value
-                elif element == 'NOT':
+                elif element in ['not', 'NOT']:
                     attrs['invert'] = True
                 else:
                     self.destination = Rich_Destination(attrs.get('address'), attrs.get('invert'))

@@ -44,7 +44,7 @@ rule = ['rule family=ipv4 source address="192.168.0.0/24" service name=tftp log 
 settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
 fw_config.addZone("zone2", settings)
 
-rule = ['rule family=ipv4 source NOT address=192.168.0.0/24 service name=dns log prefix=dns level=info limit value=2/m accept ']
+rule = ['rule family=ipv4 source not address=192.168.0.0/24 service name=dns log prefix=dns level=info limit value=2/m accept ']
 settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
 fw_config.addZone("zone3", settings)
 

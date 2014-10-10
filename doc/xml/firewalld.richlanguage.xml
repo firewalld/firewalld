@@ -49,7 +49,7 @@
     <title>Description</title>
 
     <para>
-      With the rich language more complex firewall rules can be created in an easy to understand way. The language will use keywords with values and will be an abstract representation of ip*tables rules. Zones can be configured using this language, the current configuration will still be supported. 
+      With the rich language more complex firewall rules can be created in an easy to understand way. The language uses keywords with values and is an abstract representation of ip*tables rules.
     </para>
 
     <para>
@@ -61,7 +61,7 @@
     </para>
 
     <para>
-      A rule is part of a zone. A zone can contain several rules. If some rules interact/contradict, the first rule that matches "wins". 
+      A rule is part of a zone. One zone can contain several rules. If some rules interact/contradict, the first rule that matches "wins".
     </para>
 
     <para>
@@ -109,15 +109,15 @@ rule [family="ipv4|ipv6"]
       <title>Source</title>
       <para>
 	  <programlisting>
-source address="address[/mask]" [invert="True"]
+source [not] address="address[/mask]"
 	  </programlisting>
 	With the source address the origin of a connection attempt can be limited to the source address.
 	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6.
 	The address network family (IPv4/IPv6) has to match rule family.
 	For IPv4, the mask can be a network mask or a plain number.
 	For IPv6 the mask is a plain number. The use of host names is not supported.
-	It is possible to invert the sense of an address by adding <option>invert</option>="<replaceable>true</replaceable>" or <option>invert</option>="<replaceable>yes</replaceable>".
-	All but the used address with match.
+	It is possible to invert the sense of an address by adding <option>not</option> before <option>address</option>.
+	All but the specified address will match then.
       </para>
     </refsect2>
 
@@ -125,7 +125,7 @@ source address="address[/mask]" [invert="True"]
       <title>Destination</title>
       <para>
 	<programlisting>
-destination address="address[/mask]" invert="True"
+destination [not] address="address[/mask]"
 	</programlisting>
 	With the destination address the target can be limited to the destination address. The destination address is using the same syntax as the source address.
       </para>
