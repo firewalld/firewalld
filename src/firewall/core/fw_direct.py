@@ -399,6 +399,7 @@ class FirewallDirect:
         """ Check if passthough rule is valid (only add, insert and new chain
         rules are allowed) """
 
+        args = set(args)
         not_allowed = set(["-C", "--check",           # check rule
                            "-D", "--delete",          # delete rule
                            "-R", "--replace",         # replace rule
@@ -411,16 +412,18 @@ class FirewallDirect:
                            "-E", "--rename-chain"])   # rename chain)
         # intersection of args and not_allowed is not empty, i.e.
         # something from args is not allowed
-        if not set(args).isdisjoint(not_allowed):
+        if len(args & not_allowed) > 0:
                 raise FirewallError(INVALID_PASSTHROUGH,
-                                    "arg '%s' is not allowed" % arg)
+                                    "arg '%s' is not allowed" %
+                                    list(args & not_allowed)[0] )
+
         # args need to contain one of -A, -I, -N
         needed = set(["-A", "--append",
                       "-I", "--insert",
                       "-N", "--new-chain"])
         # empty intersection of args and needed, i.e.
         # none from args contains any needed command
-        if set(args).isdisjoint(needed):
+        if len(args & needed) == 0:
             raise FirewallError(INVALID_PASSTHROUGH,
                                 "no '-A', '-I' or '-N' arg")
 
