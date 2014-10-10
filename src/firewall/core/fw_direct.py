@@ -399,21 +399,28 @@ class FirewallDirect:
         """ Check if passthough rule is valid (only add, insert and new chain
         rules are allowed) """
 
-        # The args need to contain either -A, -I, -N
-        for arg in args:
-            if arg in [ "-C", "--check",           # check rule
-                        "-D", "--delete",          # delete rule
-                        "-R", "--replace",         # replace rule
-                        "-L", "--list",            # list rule
-                        "-S", "--list-rules",      # print rules
-                        "-F", "--flush",           # flush rules
-                        "-Z", "--zero",            # zero rules
-                        "-X", "--delete-chain",    # delete chain
-                        "-P", "--policy",          # policy
-                        "-E", "--rename-chain", ]: # rename chain
+        not_allowed = set(["-C", "--check",           # check rule
+                           "-D", "--delete",          # delete rule
+                           "-R", "--replace",         # replace rule
+                           "-L", "--list",            # list rule
+                           "-S", "--list-rules",      # print rules
+                           "-F", "--flush",           # flush rules
+                           "-Z", "--zero",            # zero rules
+                           "-X", "--delete-chain",    # delete chain
+                           "-P", "--policy",          # policy
+                           "-E", "--rename-chain"])   # rename chain)
+        # intersection of args and not_allowed is not empty, i.e.
+        # something from args is not allowed
+        if not set(args).isdisjoint(not_allowed):
                 raise FirewallError(INVALID_PASSTHROUGH,
                                     "arg '%s' is not allowed" % arg)
-        if not "-A" in args and not "-I" in args and not "-N" in args:
+        # args need to contain one of -A, -I, -N
+        needed = set(["-A", "--append",
+                      "-I", "--insert",
+                      "-N", "--new-chain"])
+        # empty intersection of args and needed, i.e.
+        # none from args contains any needed command
+        if set(args).isdisjoint(needed):
             raise FirewallError(INVALID_PASSTHROUGH,
                                 "no '-A', '-I' or '-N' arg")
 
