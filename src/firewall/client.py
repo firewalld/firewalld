@@ -462,7 +462,7 @@ class FirewallClientConfigZone(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def setMasquerade(self, masquerade):
-        self.fw_zone.setMasquerades(masquerade)
+        self.fw_zone.setMasquerade(masquerade)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -494,16 +494,28 @@ class FirewallClientConfigZone(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def addForwardPort(self, port, protocol, toport, toaddr):
+        if toport is None:
+            toport = ''
+        if toaddr is None:
+            toaddr = ''
         self.fw_zone.addForwardPort(port, protocol, toport, toaddr)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def removeForwardPort(self, port, protocol, toport, toaddr):
+        if toport is None:
+            toport = ''
+        if toaddr is None:
+            toaddr = ''
         self.fw_zone.removeForwardPort(port, protocol, toport, toaddr)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def queryForwardPort(self, port, protocol, toport, toaddr):
+        if toport is None:
+            toport = ''
+        if toaddr is None:
+            toaddr = ''
         return self.fw_zone.queryForwardPort(port, protocol, toport, toaddr)
 
     # interface
