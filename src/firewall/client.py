@@ -1708,7 +1708,7 @@ class FirewallClient(object):
     @handle_exceptions
     def setNotAuthorizedLoop(self, enable):
         global not_authorized_loop
-        not_authorized_loop = (enable == True)
+        not_authorized_loop = enable
 
     @handle_exceptions
     def connect(self, name, callback, *args):

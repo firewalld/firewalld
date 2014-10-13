@@ -205,7 +205,7 @@ class Firewall_test:
         if not os.path.isdir(path):
             return
 
-        if combine == True:
+        if combine:
             if path.startswith(ETC_FIREWALLD) and reader_type == "zone":
                 combined_zone = Zone()
                 combined_zone.name = os.path.basename(path)
@@ -289,7 +289,7 @@ class Firewall_test:
                 log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 
-        if combine == True and combined_zone.combined == True:
+        if combine and combined_zone.combined:
             if combined_zone.name in self.zone.get_zones():
                 orig_obj = self.zone.get_zone(combined_zone.name)
                 log.debug1("  Overloading and deactivating %s '%s' ('%s/%s')",
@@ -392,7 +392,7 @@ class Firewall_test:
         return
 
     def query_panic_mode(self):
-        return (self._panic == True)
+        return self._panic
 
     # DEFAULT ZONE
 

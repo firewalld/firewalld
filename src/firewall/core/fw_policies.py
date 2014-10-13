@@ -75,5 +75,5 @@ class FirewallPolicies:
         self._lockdown = False
 
     def query_lockdown(self):
-        return (self._lockdown == True)
+        return self._lockdown
 
