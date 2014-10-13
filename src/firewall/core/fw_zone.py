@@ -398,10 +398,10 @@ class FirewallZone:
 
         # handle modules
         module_return = self._fw.handle_modules(modules, enable)
-        if module_return == None:
+        if module_return is None:
             # handle rules
             rules_return = self._fw.handle_rules2(rules, enable)
-            if rules_return != None:
+            if rules_return is not None:
                 (cleanup_rules, msg) = rules_return
                 cleanup_chains = chains
                 cleanup_modules = modules
@@ -410,8 +410,8 @@ class FirewallZone:
             (cleanup_modules, msg) = module_return
 
         # error case:
-        if cleanup_chains != None or cleanup_modules != None or \
-                cleanup_rules != None:
+        if cleanup_chains is not None or cleanup_modules is not None or \
+                cleanup_rules is not None:
             # cleanup chains
             for (table, chain) in cleanup_chains:
                 if enable:
@@ -419,10 +419,10 @@ class FirewallZone:
                 else:
                     self.add_chain(zone, table, chain)
             # cleanup modules
-            if cleanup_modules != None:
+            if cleanup_modules is not None:
                 self._fw.handle_modules(cleanup_modules, not enable)
             # cleanup rules
-            if cleanup_rules != None:
+            if cleanup_rules is not None:
                 self._fw.handle_rules2(cleanup_rules, not enable)
 
         # cleanup chains last
@@ -431,8 +431,8 @@ class FirewallZone:
                 self.remove_chain(zone, table, chain)
 
         # report error case
-        if cleanup_chains != None or cleanup_modules != None or \
-                cleanup_rules != None:
+        if cleanup_chains is not None or cleanup_modules is not None or \
+                cleanup_rules is not None:
             log.error(msg)
             return msg
 
@@ -496,7 +496,7 @@ class FirewallZone:
         if interface_id in _obj.settings["interfaces"]:
             raise FirewallError(ZONE_ALREADY_SET,
                          "'%s' already bound to '%s'" % (interface_id, zone))
-        if self.get_zone_of_interface(interface) != None:
+        if self.get_zone_of_interface(interface) is not None:
             raise FirewallError(ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % interface)
 
@@ -518,7 +518,7 @@ class FirewallZone:
         if _new_zone == _old_zone:
             return _old_zone
 
-        if _old_zone != None:
+        if _old_zone is not None:
             self.remove_interface(_old_zone, interface)
 
         return self.add_interface(zone, interface, sender)
@@ -528,13 +528,13 @@ class FirewallZone:
 
         self.apply_zone_settings(new_zone)
         self.__interface(True, new_zone, "+", True)
-        if old_zone != None and old_zone != "":
+        if old_zone is not None and old_zone != "":
             self.__interface(False, old_zone, "+", True)
 
     def remove_interface(self, zone, interface):
         self._fw.check_panic()
         zoi = self.get_zone_of_interface(interface)
-        if zoi == None:
+        if zoi is None:
             raise FirewallError(UNKNOWN_INTERFACE,
                                 "'%s' is not in any zone" % interface)
         _zone = zoi if zone == "" else self._fw.check_zone(zone)
@@ -638,7 +638,7 @@ class FirewallZone:
         if source_id in _obj.settings["sources"]:
             raise FirewallError(ZONE_ALREADY_SET,
                             "'%s' already bound to '%s'" % (source_id, zone))
-        if self.get_zone_of_source(source) != None:
+        if self.get_zone_of_source(source) is not None:
             raise FirewallError(ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % source_id)
 
@@ -659,7 +659,7 @@ class FirewallZone:
         if _new_zone == _old_zone:
             return _old_zone
 
-        if _old_zone != None:
+        if _old_zone is not None:
             self.remove_source(_old_zone, source)
 
         return self.add_source(zone, source, sender)
@@ -667,7 +667,7 @@ class FirewallZone:
     def remove_source(self, zone, source):
         self._fw.check_panic()
         zos = self.get_zone_of_source(source)
-        if zos == None:
+        if zos is None:
             raise FirewallError(UNKNOWN_SOURCE,
                                 "'%s' is not in any zone" % source)
         _zone = zos if zone == "" else self._fw.check_zone(zone)
@@ -775,7 +775,7 @@ class FirewallZone:
         modules = [ ]
         rules = [ ]
 
-        if rule.family != None:
+        if rule.family is not None:
             ipvs = [ rule.family ]
         else:
             ipvs = [ "ipv4", "ipv6" ]
@@ -1011,7 +1011,7 @@ class FirewallZone:
                     command += [ "-j", "%%REJECT%%" ]
                     rules.append((ipv, table, "%s_deny" % target, command))
 
-            elif rule.element == None:
+            elif rule.element is None:
                 # source action
                 table = "filter"
                 chains.append([ table, "INPUT" ])
@@ -1029,7 +1029,7 @@ class FirewallZone:
                                     type(rule.element))
 
         msg = self.handle_cmr(zone, chains, modules, rules, enable)
-        if msg != None:
+        if msg is not None:
             raise FirewallError(COMMAND_FAILED, msg)
 
         return mark_id
@@ -1130,15 +1130,15 @@ class FirewallZone:
 
         # handle rules
         ret = self._fw.handle_rules(rules, enable)
-        if ret == None: # no error, handle modules
+        if ret is None: # no error, handle modules
             mod_ret = self._fw.handle_modules(svc.modules, enable)
-            if mod_ret != None: # error loading modules
+            if mod_ret is not None: # error loading modules
                 (cleanup_modules, msg) = mod_ret
                 cleanup_rules = rules
-        else: # ret != None
+        else: # ret is not None
             (cleanup_rules, msg) = ret
 
-        if cleanup_rules!= None or cleanup_modules != None:
+        if cleanup_rules is not None or cleanup_modules is not None:
             if cleanup_rules:
                 self._fw.handle_rules(cleanup_rules, not enable)
             if cleanup_modules:

@@ -89,7 +89,7 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def accessCheck(self, sender):
         if self.fw.policies.query_lockdown():
-            if sender == None:
+            if sender is None:
                 log.error("Lockdown not possible, sender not set.")
                 return
             bus = dbus.SystemBus()

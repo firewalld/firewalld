@@ -122,7 +122,7 @@ class IO_Object(object):
         found = False
         if name in self.PARSER_REQUIRED_ELEMENT_ATTRS:
             found = True
-            if self.PARSER_REQUIRED_ELEMENT_ATTRS[name] != None:
+            if self.PARSER_REQUIRED_ELEMENT_ATTRS[name] is not None:
                 for x in self.PARSER_REQUIRED_ELEMENT_ATTRS[name]:
                     if x in _attrs:
                         _attrs.remove(x)
@@ -259,7 +259,7 @@ def check_port(port):
                             "port number in '%s' is too big" % port)
     elif port_range == -1:
         raise FirewallError(INVALID_PORT, "'%s' is invalid port range" % port)
-    elif port_range == None:
+    elif port_range is None:
         raise FirewallError(INVALID_PORT,
                             "port range '%s' is ambiguous" % port)
     elif len(port_range) == 2 and port_range[0] >= port_range[1]:

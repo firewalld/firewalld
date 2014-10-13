@@ -94,7 +94,7 @@ class firewalld_conf:
             elif pair[1] == '':
                 log.error("Missing value: '%s'", line.strip())
                 continue
-            elif self._config.get(pair[0]) != None:
+            elif self._config.get(pair[0]) is not None:
                 log.error("Duplicate option definition: '%s'", line.strip())
                 continue
             self._config[pair[0]] = pair[1]

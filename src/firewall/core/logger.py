@@ -98,7 +98,7 @@ class _SyslogLog(_StdoutLog):
         if data.endswith("\n"):
             data = data[:len(data)-1]
         if len(data) > 0:
-            if priority == None:
+            if priority is None:
                 syslog.syslog(data)
             else:
                 syslog.syslog(priority, data)

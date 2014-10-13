@@ -186,25 +186,25 @@ class FirewallClientZoneSettings(object):
         self.settings[9] = ports
     @handle_exceptions
     def addForwardPort(self, port, protocol, to_port, to_addr):
-        if to_port == None:
+        if to_port is None:
             to_port = ''
-        if to_addr == None:
+        if to_addr is None:
             to_addr = ''
         if (port,protocol,to_port,to_addr) not in self.settings[9]:
             self.settings[9].append((port,protocol,to_port,to_addr))
     @handle_exceptions
     def removeForwardPort(self, port, protocol, to_port, to_addr):
-        if to_port == None:
+        if to_port is None:
             to_port = ''
-        if to_addr == None:
+        if to_addr is None:
             to_addr = ''
         if (port,protocol,to_port,to_addr) in self.settings[9]:
             self.settings[9].remove((port,protocol,to_port,to_addr))
     @handle_exceptions
     def queryForwardPort(self, port, protocol, to_port, to_addr):
-        if to_port == None:
+        if to_port is None:
             to_port = ''
-        if to_addr == None:
+        if to_addr is None:
             to_addr = ''
         return (port,protocol,to_port,to_addr) in self.settings[9]
 

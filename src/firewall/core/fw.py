@@ -119,7 +119,7 @@ class Firewall:
                 default_zone = self._firewalld_conf.get("DefaultZone")
             if self._firewalld_conf.get("MinimalMark"):
                 mark = self._firewalld_conf.get("MinimalMark")
-                if mark != None:
+                if mark is not None:
                     try:
                         self._min_mark = int(mark)
                     except Exception as msg:
@@ -127,12 +127,12 @@ class Firewall:
                                   "value %d", mark, self._min_mark)
             if self._firewalld_conf.get("CleanupOnExit"):
                 value = self._firewalld_conf.get("CleanupOnExit")
-                if value != None and value.lower() in [ "no", "false" ]:
+                if value is not None and value.lower() in [ "no", "false" ]:
                     self.cleanup_on_exit = False
 
             if self._firewalld_conf.get("Lockdown"):
                 value = self._firewalld_conf.get("Lockdown")
-                if value != None and value.lower() in [ "yes", "true" ]:
+                if value is not None and value.lower() in [ "yes", "true" ]:
                     log.debug1("Lockdown is enabled")
                     try:
                         self.policies.enable_lockdown()
@@ -142,7 +142,7 @@ class Firewall:
 
             if self._firewalld_conf.get("IPv6_rpfilter"):
                 value = self._firewalld_conf.get("IPv6_rpfilter")
-                if value != None:
+                if value is not None:
                     if value.lower() in [ "no", "false" ]:
                         self.ipv6_rpfilter_enabled = False
                     if value.lower() in [ "yes", "true" ]:
@@ -619,13 +619,13 @@ class Firewall:
     def check_port(self, port):
         range = functions.getPortRange(port)
 
-        if range == -2 or range == -1 or range == None or \
+        if range == -2 or range == -1 or range is None or \
                 (len(range) == 2 and range[0] >= range[1]):
             if range == -2:
                 log.debug1("'%s': port > 65535" % port)
             elif range == -1:
                 log.debug1("'%s': port is invalid" % port)
-            elif range == None:
+            elif range is None:
                 log.debug1("'%s': port is ambiguous" % port)
             elif len(range) == 2 and range[0] >= range[1]:
                 log.debug1("'%s': range start >= end" % port)

@@ -83,10 +83,10 @@ class Rich_ForwardPort(object):
         self.protocol = protocol
         self.to_port = to_port
         self.to_address = to_address
-        # do not use None for to_port and to_address, replace it by ""
-        if self.to_port == None:
+        # replace None with "" in to_port and/or to_address
+        if self.to_port is None:
             self.to_port = ""
-        if self.to_address == None:
+        if self.to_address is None:
             self.to_address = ""
 
     def __str__(self):
@@ -191,7 +191,7 @@ class Rich_Limit(object):
 
 class Rich_Rule(object):
     def __init__(self, family=None, rule_str=None):
-        if family != None:
+        if family is not None:
             self.family = str(family)
         else:
             self.family = None
@@ -413,43 +413,43 @@ class Rich_Rule(object):
         self.check()
 
     def check(self):
-        if self.family != None and self.family not in [ "ipv4", "ipv6" ]:
+        if self.family is not None and self.family not in [ "ipv4", "ipv6" ]:
             raise FirewallError(INVALID_FAMILY, self.family)
-        if self.family == None:
-            if self.source != None or self.destination != None:
+        if self.family is None:
+            if self.source is not None or self.destination is not None:
                 raise FirewallError(MISSING_FAMILY)
             if type(self.element) == Rich_ForwardPort:
                 raise FirewallError(MISSING_FAMILY)
 
-        if self.element == None:
-            if self.action == None:
+        if self.element is None:
+            if self.action is None:
                 raise FirewallError(INVALID_RULE, "no element, no action")
-            if self.source == None:
+            if self.source is None:
                 raise FirewallError(INVALID_RULE, "no element, no source")
-            if self.destination != None:
+            if self.destination is not None:
                 raise FirewallError(INVALID_RULE, "destination action")
 
         if type(self.element) not in [ Rich_IcmpBlock,
                                        Rich_ForwardPort,
                                        Rich_Masquerade ]:
-            if self.log == None and self.audit == None and \
-                    self.action == None:
+            if self.log is None and self.audit is None and \
+                    self.action is None:
                 raise FirewallError(INVALID_RULE, "no action, no log, no audit")
 
         # source
-        if self.source != None:
-            if self.family == None:
+        if self.source is not None:
+            if self.family is None:
                 raise FirewallError(INVALID_FAMILY)
-            if self.source.addr == None or \
+            if self.source.addr is None or \
                     not functions.check_address(self.family,
                                                 self.source.addr):
                 raise FirewallError(INVALID_ADDR, str(self.source.addr))
 
         # destination
-        if self.destination != None:
-            if self.family == None:
+        if self.destination is not None:
+            if self.family is None:
                 raise FirewallError(INVALID_FAMILY)
-            if self.destination.addr == None or \
+            if self.destination.addr is None or \
                     not functions.check_address(self.family,
                                                 self.destination.addr):
                 raise FirewallError(INVALID_ADDR, str(self.destination.addr))
@@ -458,7 +458,7 @@ class Rich_Rule(object):
         if type(self.element) == Rich_Service:
             # service availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
-            if self.element.name == None or len(self.element.name) < 1:
+            if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(INVALID_SERVICE, str(self.element.name))
 
         # port
@@ -475,14 +475,14 @@ class Rich_Rule(object):
 
         # masquerade
         elif type(self.element) == Rich_Masquerade:
-            if self.destination != None:
+            if self.destination is not None:
                 raise FirewallError(INVALID_RULE, "masquerade and destination")
 
         # icmp-block
         elif type(self.element) == Rich_IcmpBlock:
             # icmp type availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
-            if self.element.name == None or len(self.element.name) < 1:
+            if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(INVALID_ICMPTYPE, str(self.element.name))
             if self.action and type(self.action) == Rich_Accept:
                 raise FirewallError(INVALID_RULE, "icmpblock and accept")
@@ -502,38 +502,38 @@ class Rich_Rule(object):
                     not functions.check_single_address(self.family,
                                                        self.element.to_address):
                 raise FirewallError(INVALID_ADDR, self.element.to_address)
-            if self.family == None:
+            if self.family is None:
                 raise FirewallError(INVALID_FAMILY)
 
         # other element and not empty?
-        elif self.element != None:
+        elif self.element is not None:
             raise FirewallError(INVALID_RULE, "Unknown element %s" % 
                                 type(self.element))
 
         # log
-        if self.log != None:
+        if self.log is not None:
             if self.log.level and \
                self.log.level not in [ "emerg", "alert", "crit", "error",
                                        "warning", "notice", "info", "debug" ]:
                 raise FirewallError(INVALID_LOG_LEVEL, self.log.level)
 
-            if self.log.limit != None:
+            if self.log.limit is not None:
                 self.log.limit.check()
 
         # audit
-        if self.audit != None:
+        if self.audit is not None:
             if type(self.action) not in [ Rich_Accept, Rich_Reject, Rich_Drop ]:
                 raise FirewallError(INVALID_AUDIT_TYPE, type(self.action))
 
-            if self.audit.limit != None:
+            if self.audit.limit is not None:
                 self.audit.limit.check()
 
         # action
-        if self.action != None:
+        if self.action is not None:
             if type(self.action) == Rich_Reject:
                 self.action.check(self.family)
 
-            if self.action.limit != None:
+            if self.action.limit is not None:
                 self.action.limit.check()
 
     def __str__(self):

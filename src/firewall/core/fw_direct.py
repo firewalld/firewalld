@@ -415,7 +415,7 @@ class FirewallDirect:
         if len(args & not_allowed) > 0:
                 raise FirewallError(INVALID_PASSTHROUGH,
                                     "arg '%s' is not allowed" %
-                                    list(args & not_allowed)[0] )
+                                    list(args & not_allowed)[0])
 
         # args need to contain one of -A, -I, -N
         needed = set(["-A", "--append",
