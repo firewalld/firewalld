@@ -542,9 +542,9 @@ options_lockdown_whitelist = \
     a.list_lockdown_whitelist_contexts or a.add_lockdown_whitelist_context or \
     a.remove_lockdown_whitelist_context or \
     a.query_lockdown_whitelist_context or \
-    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid != None or \
-    a.remove_lockdown_whitelist_uid != None or \
-    a.query_lockdown_whitelist_uid != None or \
+    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid is not None or \
+    a.remove_lockdown_whitelist_uid is not None or \
+    a.query_lockdown_whitelist_uid is not None or \
     a.list_lockdown_whitelist_users or a.add_lockdown_whitelist_user or \
     a.remove_lockdown_whitelist_user or \
     a.query_lockdown_whitelist_user
@@ -751,176 +751,169 @@ if a.permanent:
     # lockdown whitelist
 
     elif options_lockdown_whitelist:
-        whitelist = fw.config().policies().getLockdownWhitelist()
+        policies = fw.config().policies()
 
         # commands
         if a.list_lockdown_whitelist_commands:
-            l = whitelist.getCommands()
+            l = policies.getLockdownWhitelistCommands()
             __print_and_exit("\n".join(l))
         elif a.add_lockdown_whitelist_command:
-            whitelist.addCommand(a.add_lockdown_whitelist_command)
+            policies.addLockdownWhitelistCommand(a.add_lockdown_whitelist_command)
         elif a.remove_lockdown_whitelist_command:
-            whitelist.removeCommand(a.remove_lockdown_whitelist_command)
+            policies.removeLockdownWhitelistCommand(a.remove_lockdown_whitelist_command)
         elif a.query_lockdown_whitelist_command:
-            __print_query_result(whitelist.queryCommand( \
-                                 a.query_lockdown_whitelist_command))
+            r = policies.queryLockdownWhitelistCommand(a.query_lockdown_whitelist_command)
+            __print_query_result(r)
 
         # contexts
         elif a.list_lockdown_whitelist_contexts:
-            l = whitelist.getContexts()
+            l = policies.getLockdownWhitelistContexts()
             __print_and_exit("\n".join(l))
         elif a.add_lockdown_whitelist_context:
-            whitelist.addContext(a.add_lockdown_whitelist_context)
+            policies.addLockdownWhitelistContext(a.add_lockdown_whitelist_context)
         elif a.remove_lockdown_whitelist_context:
-            whitelist.removeContext(a.remove_lockdown_whitelist_context)
+            policies.removeLockdownWhitelistContext(a.remove_lockdown_whitelist_context)
         elif a.query_lockdown_whitelist_context:
-            __print_query_result(whitelist.queryContext( \
-                                 a.query_lockdown_whitelist_context))
+            r = policies.queryLockdownWhitelistContext(a.query_lockdown_whitelist_context)
+            __print_query_result(r)
 
         # uids
         elif a.list_lockdown_whitelist_uids:
-            l = whitelist.getUids()
+            l = policies.getLockdownWhitelistUids()
             __print_and_exit(" ".join(map(str, l)))
-        elif a.add_lockdown_whitelist_uid != None:
-            whitelist.addUid(a.add_lockdown_whitelist_uid)
-        elif a.remove_lockdown_whitelist_uid != None:
-            whitelist.removeUid(a.remove_lockdown_whitelist_uid)
-        elif a.query_lockdown_whitelist_uid != None:
-            __print_query_result(whitelist.queryUid( \
-                                 a.query_lockdown_whitelist_uid))
+        elif a.add_lockdown_whitelist_uid is not None:
+            policies.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
+        elif a.remove_lockdown_whitelist_uid is not None:
+            policies.removeLockdownWhitelistUid(a.remove_lockdown_whitelist_uid)
+        elif a.query_lockdown_whitelist_uid is not None:
+            r = policies.queryLockdownWhitelistUid(a.query_lockdown_whitelist_uid)
+            __print_query_result(r)
 
         # users
         elif a.list_lockdown_whitelist_users:
-            l = whitelist.getUsers()
+            l = policies.getLockdownWhitelistUsers()
             __print_and_exit("\n".join(l))
         elif a.add_lockdown_whitelist_user:
-            whitelist.addUser(a.add_lockdown_whitelist_user)
+            policies.addLockdownWhitelistUser(a.add_lockdown_whitelist_user)
         elif a.remove_lockdown_whitelist_user:
-            whitelist.removeUser(a.remove_lockdown_whitelist_user)
+            policies.removeLockdownWhitelistUser(a.remove_lockdown_whitelist_user)
         elif a.query_lockdown_whitelist_user:
-            __print_query_result(whitelist.queryUser( \
-                                 a.query_lockdown_whitelist_user))
-
-        # apply whitelist changes
-        fw.config().policies().setLockdownWhitelist(whitelist)
+            r = policies.queryLockdownWhitelistUser(a.query_lockdown_whitelist_user)
+            __print_query_result(r)
 
     elif options_direct:
-        settings = fw.config().direct().getSettings()
+        direct = fw.config().direct()
 
         if a.passthrough:
             if len (a.passthrough) < 2:
                 __fail("usage: --permanent --direct --passthrough { ipv4 | ipv6 | eb } <args>")
-            __print(settings.addPassthrough(_check_ipv(a.passthrough[0]),
-                                                       splitArgs(a.passthrough[1])))
+            __print(direct.addPassthrough(_check_ipv(a.passthrough[0]),
+                                                     splitArgs(a.passthrough[1])))
 
         if a.add_passthrough:
             if len (a.add_passthrough) < 2:
                 __fail("usage: --permanent --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
-            __print(settings.addPassthrough(_check_ipv(a.add_passthrough[0]),
-                                            splitArgs(a.add_passthrough[1])))
+            __print(direct.addPassthrough(_check_ipv(a.add_passthrough[0]),
+                                          splitArgs(a.add_passthrough[1])))
 
         elif a.remove_passthrough:
             if len (a.remove_passthrough) < 2:
                 __fail("usage: --permanent --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
-            settings.removePassthrough(_check_ipv(a.remove_passthrough[0]),
-                                       splitArgs(a.remove_passthrough[1]))
+            direct.removePassthrough(_check_ipv(a.remove_passthrough[0]),
+                                     splitArgs(a.remove_passthrough[1]))
         elif a.query_passthrough:
             if len (a.query_passthrough) < 2:
                 __fail("usage: --permanent --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
             __print_query_result(
-                settings.queryPassthrough(_check_ipv(a.query_passthrough[0]),
-                                          splitArgs(a.query_passthrough[1])))
+                direct.queryPassthrough(_check_ipv(a.query_passthrough[0]),
+                                        splitArgs(a.query_passthrough[1])))
             sys.exit(0)
         elif a.get_passthroughs:
-            rules = settings.getPassthroughs(_check_ipv(a.get_passthroughs[0]))
+            rules = direct.getPassthroughs(_check_ipv(a.get_passthroughs[0]))
             for rule in rules:
                 __print(joinArgs(rule))
             sys.exit(0)
         elif a.get_all_passthroughs:
-            for (ipv,rule) in settings.getAllPassthroughs():
+            for (ipv, rule) in direct.getAllPassthroughs():
                 __print("%s %s" % (ipv, joinArgs(rule)))
             sys.exit(0)
 
         elif a.add_chain:
-            settings.addChain(_check_ipv(a.add_chain[0]),
-                              a.add_chain[1], a.add_chain[2])
+            direct.addChain(_check_ipv(a.add_chain[0]),
+                            a.add_chain[1], a.add_chain[2])
         elif a.remove_chain:
-            settings.removeChain(_check_ipv(a.remove_chain[0]),
-                                 a.remove_chain[1], a.remove_chain[2])
+            direct.removeChain(_check_ipv(a.remove_chain[0]),
+                               a.remove_chain[1], a.remove_chain[2])
         elif a.query_chain:
             __print_query_result(
-                settings.queryChain(_check_ipv(a.query_chain[0]),
-                                    a.query_chain[1], a.query_chain[2]))
+                direct.queryChain(_check_ipv(a.query_chain[0]),
+                                  a.query_chain[1], a.query_chain[2]))
             sys.exit(0)
         elif a.get_chains:
             __print_and_exit(
-                    " ".join(settings.getChains(_check_ipv(a.get_chains[0]),
-                                                           a.get_chains[1])))
+                    " ".join(direct.getChains(_check_ipv(a.get_chains[0]),
+                                                         a.get_chains[1])))
             sys.exit(0)
         elif a.get_all_chains:
-            chains = settings.getAllChains()
+            chains = direct.getAllChains()
             for (ipv, table, chain) in chains:
                 __print("%s %s %s" % (ipv, table, chain))
             sys.exit(0)
         elif a.add_rule:
-            if len (a.add_rule) < 5:
+            if len(a.add_rule) < 5:
                 __fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             try:
                 priority = int(a.add_rule[3])
             except ValueError:
                 __fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            settings.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1],
-                             a.add_rule[2], priority, splitArgs(a.add_rule[4]))
+            direct.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1],
+                           a.add_rule[2], priority, splitArgs(a.add_rule[4]))
         elif a.remove_rule:
-            if len (a.remove_rule) < 5:
+            if len(a.remove_rule) < 5:
                 __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             try:
                 priority = int(a.remove_rule[3])
             except ValueError:
                 __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            settings.removeRule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
-                                a.remove_rule[2], priority, splitArgs(a.remove_rule[4]))
+            direct.removeRule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
+                              a.remove_rule[2], priority, splitArgs(a.remove_rule[4]))
         elif a.remove_rules:
-            if len (a.remove_rules) < 3:
+            if len(a.remove_rules) < 3:
                 __fail("usage: --permanent --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
-            settings.removeRules(_check_ipv(a.remove_rules[0]),
-                                 a.remove_rules[1], a.remove_rules[2])
+            direct.removeRules(_check_ipv(a.remove_rules[0]),
+                               a.remove_rules[1], a.remove_rules[2])
         elif a.query_rule:
-            if len (a.query_rule) < 5:
+            if len(a.query_rule) < 5:
                 __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             try:
                 priority = int(a.query_rule[3])
             except ValueError:
                 __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             __print_query_result(
-                    settings.queryRule(_check_ipv(a.query_rule[0]),
-                                       a.query_rule[1], a.query_rule[2],
-                                       priority, splitArgs(a.query_rule[4])))
+                    direct.queryRule(_check_ipv(a.query_rule[0]),
+                                     a.query_rule[1], a.query_rule[2],
+                                     priority, splitArgs(a.query_rule[4])))
             sys.exit(0)
         elif a.get_rules:
-            rules = settings.getRules(_check_ipv(a.get_rules[0]),
-                                      a.get_rules[1], a.get_rules[2])
+            rules = direct.getRules(_check_ipv(a.get_rules[0]),
+                                    a.get_rules[1], a.get_rules[2])
             for (priority, rule) in rules:
                 __print("%d %s" % (priority, joinArgs(rule)))
             sys.exit(0)
         elif a.get_all_rules:
-            rules = settings.getAllRules()
+            rules = direct.getAllRules()
             for (ipv, table, chain, priority, rule) in rules:
                 __print("%s %s %s %d %s" % (ipv, table, chain, priority,
                                             joinArgs(rule)))
             sys.exit(0)
-
-        fw.config().direct().update(settings)
-
     else:
         if zone == "":
             zone = fw.getDefaultZone()
         fw_zone = fw.config().getZoneByName(zone)
-        fw_settings = fw_zone.getSettings()
 
         # interface
         if a.list_interfaces:
-            l = fw_settings.getInterfaces()
+            l = fw_zone.getInterfaces()
             __print_and_exit(" ".join(l))
         elif a.get_zone_of_interface:
             zone = fw.config().getZoneOfInterface(a.get_zone_of_interface)
@@ -933,20 +926,18 @@ if a.permanent:
             if old_zone_name != zone:
                 if old_zone_name:
                     old_zone_obj = fw.config().getZoneByName(old_zone_name)
-                    old_zone_settings = old_zone_obj.getSettings()
-                    old_zone_settings.removeInterface(a.change_interface) # remove from old
-                    old_zone_obj.update(old_zone_settings)
-                fw_settings.addInterface(a.change_interface)              # add to new
+                    old_zone_obj.removeInterface(a.change_interface)  # remove from old
+                fw_zone.addInterface(a.change_interface)              # add to new
         elif a.add_interface:
-            fw_settings.addInterface(a.add_interface)
+            fw_zone.addInterface(a.add_interface)
         elif a.remove_interface:
-            fw_settings.removeInterface(a.remove_interface)
+            fw_zone.removeInterface(a.remove_interface)
         elif a.query_interface:
-            __print_query_result(fw_settings.queryInterface(a.query_interface))
+            __print_query_result(fw_zone.queryInterface(a.query_interface))
 
         # source
         if a.list_sources:
-            sources = fw_settings.getSources()
+            sources = fw_zone.getSources()
             __print_and_exit(" ".join(sources))
         elif a.get_zone_of_source:
             zone = fw.config().getZoneOfSource(a.get_zone_of_source)
@@ -957,105 +948,104 @@ if a.permanent:
         elif a.change_source:
             old_zone_name = fw.config().getZoneOfSource(a.change_source)
             old_zone_obj = fw.config().getZoneByName(old_zone_name)
-            old_zone_settings = old_zone_obj.getSettings()
-            old_zone_settings.removeSource(a.change_source)  # remove from old
-            old_zone_obj.update(old_zone_settings)
-            fw_settings.addSource(a.change_source)           # add to new
+            old_zone_obj.removeSource(a.change_source)  # remove from old
+            fw_zone.addSource(a.change_source)          # add to new
         elif a.add_source:
-            fw_settings.addSource(a.add_source)
+            fw_zone.addSource(a.add_source)
         elif a.remove_source:
-            fw_settings.removeSource(a.remove_source)
+            fw_zone.removeSource(a.remove_source)
         elif a.query_source:
-            __print_query_result(fw_settings.querySource(a.query_source))
+            __print_query_result(fw_zone.querySource(a.query_source))
 
         # rich rules
         if a.list_rich_rules:
-            l = fw_settings.getRichRules()
+            l = fw_zone.getRichRules()
             __print_and_exit("\n".join(l))
         elif a.add_rich_rule:
             for s in a.add_rich_rule:
-                fw_settings.addRichRule(s)
+                fw_zone.addRichRule(s)
         elif a.remove_rich_rule:
             for s in a.remove_rich_rule:
-                fw_settings.removeRichRule(s)
+                fw_zone.removeRichRule(s)
         elif a.query_rich_rule:
-            __print_query_result(fw_settings.queryRichRule(a.query_rich_rule))
+            __print_query_result(fw_zone.queryRichRule(a.query_rich_rule))
 
         # service
         if a.list_services:
-            l = fw_settings.getServices()
+            l = fw_zone.getServices()
             __print_and_exit(" ".join(l))
         elif a.add_service:
             for s in a.add_service:
-                fw_settings.addService(s)
+                fw_zone.addService(s)
         elif a.remove_service:
             for s in a.remove_service:
-                fw_settings.removeService(s)
+                fw_zone.removeService(s)
         elif a.query_service:
-            __print_query_result(fw_settings.queryService(a.query_service))
+            __print_query_result(fw_zone.queryService(a.query_service))
 
         # port
         elif a.list_ports:
-            l = fw_settings.getPorts()
+            l = fw_zone.getPorts()
             __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
         elif a.add_port:
             for port_proto in a.add_port:
                 (port, proto) = __parse_port(port_proto)
-                fw_settings.addPort(port, proto)
+                fw_zone.addPort(port, proto)
         elif a.remove_port:
             for port_proto in a.remove_port:
                 (port, proto) = __parse_port(port_proto)
-                fw_settings.removePort(port, proto)
+                fw_zone.removePort(port, proto)
         elif a.query_port:
             (port, proto) = __parse_port(a.query_port)
-            __print_query_result(fw_settings.queryPort(port, proto))
+            __print_query_result(fw_zone.queryPort(port, proto))
 
         # masquerade
         elif a.add_masquerade:
-            fw_settings.setMasquerade(True)
+            fw_zone.addMasquerade()
         elif a.remove_masquerade:
-            fw_settings.setMasquerade(False)
+            fw_zone.removeMasquerade()
         elif a.query_masquerade:
-            __print_query_result(fw_settings.getMasquerade())
+            __print_query_result(fw_zone.queryMasquerade())
 
         # forward port
         elif a.list_forward_ports:
-            l = fw_settings.getForwardPorts()
+            l = fw_zone.getForwardPorts()
             __print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
         elif a.add_forward_port:
             for fp in a.add_forward_port:
                 (port, protocol, toport, toaddr) = __parse_forward_port(fp)
-                fw_settings.addForwardPort(port, protocol, toport, toaddr)
+                fw_zone.addForwardPort(port, protocol, toport, toaddr)
         elif a.remove_forward_port:
             for fp in a.remove_forward_port:
                 (port, protocol, toport, toaddr) = __parse_forward_port(fp)
-                fw_settings.removeForwardPort(port, protocol, toport, toaddr)
+                fw_zone.removeForwardPort(port, protocol, toport, toaddr)
         elif a.query_forward_port:
             (port, protocol, toport, toaddr) = __parse_forward_port(a.query_forward_port)
-            __print_query_result(fw_settings.queryForwardPort(port, protocol, toport, toaddr))
+            __print_query_result(fw_zone.queryForwardPort(port, protocol, toport, toaddr))
 
         # block icmp
         elif a.list_icmp_blocks:
-            l = fw_settings.getIcmpBlocks()
+            l = fw_zone.getIcmpBlocks()
             __print_and_exit(" ".join(l))
         elif a.add_icmp_block:
             for ib in a.add_icmp_block:
-                fw_settings.addIcmpBlock(ib)
+                fw_zone.addIcmpBlock(ib)
         elif a.remove_icmp_block:
             for ib in a.remove_icmp_block:
-                fw_settings.removeIcmpBlock(ib)
+                fw_zone.removeIcmpBlock(ib)
         elif a.query_icmp_block:
-            __print_query_result(fw_settings.queryIcmpBlock(a.query_icmp_block))
+            __print_query_result(fw_zone.queryIcmpBlock(a.query_icmp_block))
 
         # zone target
         elif a.get_target:
-            target = fw_settings.getTarget()
+            target = fw_zone.getTarget()
             __print_and_exit(target if target != "%%REJECT%%" else "REJECT")
         elif a.set_target:
-            fw_settings.setTarget(a.set_target if a.set_target != "REJECT" else "%%REJECT%%")
+            fw_zone.setTarget(a.set_target if a.set_target != "REJECT" else "%%REJECT%%")
 
         # list all zone settings
         elif a.list_all:
+            fw_settings = fw_zone.getSettings()
             __list_all_permanent(fw_settings, zone if zone else fw.getDefaultZone())
             sys.exit(0)
 
@@ -1069,8 +1059,6 @@ if a.permanent:
                 __list_all_permanent(fw_settings, zone)
                 __print("")
             sys.exit(0)
-
-        fw_zone.update(fw_settings)
 
 elif a.version:
     __print_and_exit(fw.get_property("version"))
@@ -1189,7 +1177,7 @@ elif a.get_zones:
 elif a.get_active_zones:
     zones = fw.getActiveZones()
     for zone in zones:
-        __print("%s" % (zone))
+        __print("%s" % zone)
         for x in [ "interfaces", "sources" ]:
             if x in zones[zone]:
                 __print("  %s: %s" % (x, " ".join(zones[zone][x])))
@@ -1232,7 +1220,7 @@ elif a.add_lockdown_whitelist_command:
 elif a.remove_lockdown_whitelist_command:
     fw.removeLockdownWhitelistCommand(a.remove_lockdown_whitelist_command)
 elif a.query_lockdown_whitelist_command:
-    __print_query_result(fw.queryLockdownWhitelistCommand( \
+    __print_query_result(fw.queryLockdownWhitelistCommand(
                          a.query_lockdown_whitelist_command))
 
 # contexts
@@ -1244,19 +1232,19 @@ elif a.add_lockdown_whitelist_context:
 elif a.remove_lockdown_whitelist_context:
     fw.removeLockdownWhitelistContext(a.remove_lockdown_whitelist_context)
 elif a.query_lockdown_whitelist_context:
-    __print_query_result(fw.queryLockdownWhitelistContext( \
+    __print_query_result(fw.queryLockdownWhitelistContext(
                          a.query_lockdown_whitelist_context))
 
 # uids
 elif a.list_lockdown_whitelist_uids:
     l = fw.getLockdownWhitelistUids()
     __print_and_exit(" ".join(map(str, l)))
-elif a.add_lockdown_whitelist_uid != None:
+elif a.add_lockdown_whitelist_uid is not None:
     fw.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
-elif a.remove_lockdown_whitelist_uid != None:
+elif a.remove_lockdown_whitelist_uid is not None:
     fw.removeLockdownWhitelistUid(a.remove_lockdown_whitelist_uid)
-elif a.query_lockdown_whitelist_uid != None:
-    __print_query_result(fw.queryLockdownWhitelistUid( \
+elif a.query_lockdown_whitelist_uid is not None:
+    __print_query_result(fw.queryLockdownWhitelistUid(
                          a.query_lockdown_whitelist_uid))
 
 # users
@@ -1268,7 +1256,7 @@ elif a.add_lockdown_whitelist_user:
 elif a.remove_lockdown_whitelist_user:
     fw.removeLockdownWhitelistUser(a.remove_lockdown_whitelist_user)
 elif a.query_lockdown_whitelist_user:
-    __print_query_result(fw.queryLockdownWhitelistUser( \
+    __print_query_result(fw.queryLockdownWhitelistUser(
                          a.query_lockdown_whitelist_user))
 
 # interface
