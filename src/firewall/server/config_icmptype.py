@@ -321,7 +321,6 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         else:  # empty means all
             settings[3] = list(set(['ipv4', 'ipv6']) -
                                set([destination]))
-        print "settings[3]:", settings[3]
         self.update(settings)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s',

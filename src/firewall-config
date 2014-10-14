@@ -4222,7 +4222,6 @@ class FirewallConfig(object):
         active_icmp = self.get_active_icmp()
         icmp = self.fw.config().getIcmpTypeByName(active_icmp)
         settings = icmp.getSettings()
-        print "settings:", settings
         if self.icmpDialogDestIpv4Check.get_active():
             if icmp.queryDestination("ipv4"):
                 icmp.removeDestination("ipv4")
