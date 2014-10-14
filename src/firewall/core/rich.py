@@ -477,6 +477,9 @@ class Rich_Rule(object):
         elif type(self.element) == Rich_Masquerade:
             if self.destination is not None:
                 raise FirewallError(INVALID_RULE, "masquerade and destination")
+            if self.action:
+                raise FirewallError(INVALID_RULE, "masquerade and action")
+
 
         # icmp-block
         elif type(self.element) == Rich_IcmpBlock:
@@ -484,8 +487,8 @@ class Rich_Rule(object):
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
                 raise FirewallError(INVALID_ICMPTYPE, str(self.element.name))
-            if self.action and type(self.action) == Rich_Accept:
-                raise FirewallError(INVALID_RULE, "icmpblock and accept")
+            if self.action:
+                raise FirewallError(INVALID_RULE, "icmp-block and action")
 
         # forward-port
         elif type(self.element) == Rich_ForwardPort:
@@ -504,6 +507,8 @@ class Rich_Rule(object):
                 raise FirewallError(INVALID_ADDR, self.element.to_address)
             if self.family is None:
                 raise FirewallError(INVALID_FAMILY)
+            if self.action:
+                raise FirewallError(INVALID_RULE, "forward-port and action")
 
         # other element and not empty?
         elif self.element is not None:

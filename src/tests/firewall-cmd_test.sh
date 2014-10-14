@@ -641,11 +641,18 @@ bad_rules=(
  'rule protocol value="mtp" log level="eror"'               # bad log level
  'rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"'         # bad limit
  'rule protocol value="esp"'                                # no action/log/audit
+ 'rule family="ipv4" icmp-block name="redirect" accept'     # icmp-block & action
+ 'rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept' # forward-port & action
 )
 
 for (( i=0;i<${#bad_rules[@]};i++)); do
   rule=${bad_rules[${i}]}
   assert_rich_bad           "add"    "${rule}"
+done
+
+for (( i=0;i<${#bad_rules[@]};i++)); do
+  rule=${bad_rules[${i}]}
+  assert_rich_bad           "permanent add"    "${rule}"
 done
 
 good_rules=(
@@ -654,7 +661,7 @@ good_rules=(
  'rule protocol value="esp" accept'
  'rule protocol value="sctp" log'
  'rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept'
- 'rule family="ipv4" source NOT address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" drop'
+ 'rule family="ipv4" source not address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" drop'
  'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"'
  'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop'
  'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"'
