@@ -2947,6 +2947,8 @@ class FirewallConfig(object):
                 self.richRuleDialogElementChooser.set_sensitive(False)
                 self.richRuleDialogActionCheck.set_sensitive(False)
                 self.richRuleDialogActionBox.set_sensitive(False)
+                self.richRuleDialogDestinationLabel.set_sensitive(False)
+                self.richRuleDialogDestinationBox.set_sensitive(False)
                 self.richRuleDialogLogCheck.set_sensitive(False)
                 self.richRuleDialogLogGrid.set_sensitive(False)
                 self.richRuleDialogAuditCheck.set_sensitive(False)
@@ -2960,11 +2962,14 @@ class FirewallConfig(object):
                 self.richRuleDialogLogGrid.set_sensitive(False)
                 self.richRuleDialogAuditCheck.set_sensitive(False)
                 self.richRuleDialogAuditBox.set_sensitive(False)
+            elif combolabel == _("icmp-block"):
+                self.richRuleDialogActionCheck.set_sensitive(False)
+                self.richRuleDialogActionBox.set_sensitive(False)
 
         rule = self.richRuleDialog_getRule()
         try:
             rule.check()
-        except Exception as msg:
+        except Exception:
             self.richRuleDialogOkButton.set_sensitive(False)
         else:
             if str(self.richRuleDialog.old_obj) != str(rule):
