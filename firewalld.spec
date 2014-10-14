@@ -1,7 +1,7 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.11
-Release: 2%{?dist}
+Version: 0.3.12
+Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
@@ -72,18 +72,6 @@ desktop-file-install --delete-original \
 
 %post
 %systemd_post firewalld.service
-
-# on upgrade allow ipp-client service in active home/internal/work
-# if cups-browsed service is enabled to not break someones printing (RHBZ#1105639)
-systemctl -q is-enabled cups-browsed
-if [[ "$?" -eq 0 && "$1" -eq 2 ]]; then
-  ZONES=( 'home' 'internal' 'work' )
-  N_ZONES=${#ZONES[@]}
-  for (( i=0;i<$N_ZONES;i++)); do
-    zone=${ZONES[${i}]}
-    [[ $(firewall-cmd --get-active-zones) = *${zone}* ]] && firewall-cmd -q --permanent --zone ${zone} --add-service "ipp-client"
-  done
-fi
 
 %preun
 %systemd_preun firewalld.service
@@ -185,6 +173,37 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Oct 14 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.12-1
+- firewalld:
+  - new runtimeToPermanent and tracked passsthrough support
+  - make permanent D-Bus interfaces more fine grained like the runtime versions (RHBZ#1127706)
+  - richLanguage: allow using destination with forward-port
+  - Rich_Rule.check(): action can't be used with icmp-block/forward-port/masquerade
+  - fixed Python specific D-Bus exception (RHBZ#1132441)
+- firewall-cmd:
+  - new --runtime-to-permanent to create permanent from runtime configuration
+  - use new D-Bus methods for permanent changes
+  - show target REJECT instead of %%REJECT%% (RHBZ#1058794)
+  - --direct: make fail messages consistent (RHBZ#1141835)
+- firewall-config:
+  - richRuleDialog - OK button tooltip indicates problem
+  - use new D-Bus methods for permanent changes
+  - show target REJECT instead of %%REJECT%% (RHBZ#1058794)
+  - update "Change Zones of Connections" menu on default zone change (RHBZ#11120212)
+  - fixed rename of zones, services and icmptypes to not create new entry (RBHZ#1131064)
+- configuration:
+  - new service for Squid HTTP proxy server
+  - new service for Kerberos admin server
+  - new services for syslog and syslog-tls
+  - new services for SNMP and SNMP traps
+  - add Keywords to .desktop to improve software searchability
+- docs:
+  - updated translations
+  - firewalld.richlanguage: improvements suggested by Rufe Glick
+  - firewalld.dbus: various improvements
+  - firewalld.zone: better description of Limit tag
+  - mention new homepage everywhere
+
 * Mon Aug 25 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.11-2
 - add few Requires to spec (RHBZ#1133167)
 
