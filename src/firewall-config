@@ -2956,8 +2956,6 @@ class FirewallConfig(object):
             elif combolabel == _("forward-port"):
                 self.richRuleDialogActionCheck.set_sensitive(False)
                 self.richRuleDialogActionBox.set_sensitive(False)
-                self.richRuleDialogDestinationLabel.set_sensitive(False)
-                self.richRuleDialogDestinationBox.set_sensitive(False)
                 self.richRuleDialogLogCheck.set_sensitive(False)
                 self.richRuleDialogLogGrid.set_sensitive(False)
                 self.richRuleDialogAuditCheck.set_sensitive(False)

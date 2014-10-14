@@ -477,7 +477,7 @@ class Rich_Rule(object):
         elif type(self.element) == Rich_Masquerade:
             if self.destination is not None:
                 raise FirewallError(INVALID_RULE, "masquerade and destination")
-            if self.action:
+            if self.action is not None:
                 raise FirewallError(INVALID_RULE, "masquerade and action")
 
 
@@ -507,7 +507,7 @@ class Rich_Rule(object):
                 raise FirewallError(INVALID_ADDR, self.element.to_address)
             if self.family is None:
                 raise FirewallError(INVALID_FAMILY)
-            if self.action:
+            if self.action is not None:
                 raise FirewallError(INVALID_RULE, "forward-port and action")
 
         # other element and not empty?

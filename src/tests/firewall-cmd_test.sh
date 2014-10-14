@@ -641,6 +641,8 @@ bad_rules=(
  'rule protocol value="mtp" log level="eror"'               # bad log level
  'rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"'         # bad limit
  'rule protocol value="esp"'                                # no action/log/audit
+ 'rule family="ipv4" masquerade drop'                       # masquerade & action
+ 'rule family="ipv4" destination address="192.168.1.0/24" masquerade' # masquerade & destination
  'rule family="ipv4" icmp-block name="redirect" accept'     # icmp-block & action
  'rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept' # forward-port & action
 )
@@ -665,6 +667,7 @@ good_rules=(
  'rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"'
  'rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop'
  'rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"'
+ 'rule family="ipv4" destination address="1.2.3.4" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="9.8.7.6"'
  'rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m"'
  'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirect" level="info" limit value="4/m"'
  'rule family="ipv4" source address="192.168.1.0/24" masquerade'

@@ -213,7 +213,7 @@ forward-port port="port value" protocol="tcp|udp" to-port="port value" to-addr="
 	Forward port/packets from local port value with protocol "tcp" or "udp" to either another port locally or to another machine or to another port on another machine.
       </para>
       <para>
-	The port value can either be a single port number or a port range portid-portid. The destination address is an IP address.
+	The port value can either be a single port number or a port range <replaceable>portid-portid</replaceable>. The <option>to-addr</option> is an IP address.
       </para>
       <para>
 	It is not allowed to specify an action here. forward-port uses the action accept internally.
