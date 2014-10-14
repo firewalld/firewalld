@@ -456,5 +456,5 @@ class FirewallDConfigService(slip.dbus.service.Object):
         log.debug1("config.service.%d.queryDestination('%s', '%s')", self.id,
                    family, address)
         settings = self.getSettings()
-        return (family in self.settings[5] and
-                address == self.settings[5][family])
+        return (family in settings[5] and
+                address == settings[5][family])

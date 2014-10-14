@@ -313,9 +313,15 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
                    destination)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if destination not in settings[3]:
-            raise FirewallError(NOT_ENABLED, destination)
-        settings[3].remove(destination)
+        if settings[3]:
+            if destination not in settings[3]:
+                raise FirewallError(NOT_ENABLED, destination)
+            else:
+                settings[3].remove(destination)
+        else:  # empty means all
+            settings[3] = list(set(['ipv4', 'ipv6']) -
+                               set([destination]))
+        print "settings[3]:", settings[3]
         self.update(settings)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ICMPTYPE, in_signature='s',
@@ -326,4 +332,6 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         log.debug1("config.icmptype.%d.queryDestination('%s')", self.id,
                    destination)
         settings = self.getSettings()
-        return (destination in self.settings[3])
+        # empty means all
+        return (not settings[3] or
+                destination in settings[3])

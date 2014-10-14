@@ -821,18 +821,18 @@ class FirewallClientConfigService(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def addModule(self, module, protocol):
-        self.fw_service.addModule(module, protocol)
+    def addModule(self, module):
+        self.fw_service.addModule(module)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def removeModule(self, module, protocol):
-        self.fw_service.removeModule(module, protocol)
+    def removeModule(self, module):
+        self.fw_service.removeModule(module)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def queryModule(self, module, protocol):
-        return self.fw_service.queryModule(module, protocol)
+    def queryModule(self, module):
+        return self.fw_service.queryModule(module)
 
     # destination
 
@@ -858,7 +858,7 @@ class FirewallClientConfigService(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def removeDestination(self, destination):
+    def removeDestination(self, destination, address):
         self.fw_service.removeDestination(destination, address)
 
     @slip.dbus.polkit.enable_proxy
@@ -1033,18 +1033,18 @@ class FirewallClientConfigIcmpType(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def addDestination(self, destination, address):
-        self.fw_icmptype.addDestination(destination, address)
+    def addDestination(self, destination):
+        self.fw_icmptype.addDestination(destination)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def removeDestination(self, destination):
-        self.fw_icmptype.removeDestination(destination, address)
+        self.fw_icmptype.removeDestination(destination)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def queryDestination(self, destination, address):
-        return self.fw_icmptype.queryDestination(destination, address)
+    def queryDestination(self, destination):
+        return self.fw_icmptype.queryDestination(destination)
 
 
 # config.policies lockdown whitelist
