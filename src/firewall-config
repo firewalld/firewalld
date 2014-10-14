@@ -2787,8 +2787,12 @@ class FirewallConfig(object):
                 rule.element = Rich_Service(
                     self.richRuleDialogElementChooser.get_text())
             elif combolabel == _("port"):
+                text = self.richRuleDialogElementChooser.get_text()
+                port = ""
+                proto = ""
                 try:
-                    (port,proto) = self.richRuleDialogElementChooser.get_text().split("/")
+                    if '/' in text:
+                        (port, proto) = text.split("/")
                 except:
                     return None
                 rule.element = Rich_Port(port, proto)
@@ -2967,13 +2971,15 @@ class FirewallConfig(object):
         rule = self.richRuleDialog_getRule()
         try:
             rule.check()
-        except Exception:
+        except Exception as msg:
             self.richRuleDialogOkButton.set_sensitive(False)
+            self.richRuleDialogOkButton.set_tooltip_text(str(msg))
         else:
             if str(self.richRuleDialog.old_obj) != str(rule):
                 self.richRuleDialogOkButton.set_sensitive(True)
             else:
                 self.richRuleDialogOkButton.set_sensitive(False)
+            self.richRuleDialogOkButton.set_tooltip_text("")
 
     def onAddInterface(self, *args):
         self.add_edit_interface(True)
