@@ -37,7 +37,7 @@ from gi.repository import GObject, GLib
 sys.modules['gobject'] = GObject
 import os
 datadir = None
-if os.getenv("FIREWALLD_DEVEL_ENV") != None:
+if os.getenv("FIREWALLD_DEVEL_ENV") is not None:
     datadir = os.getenv("FIREWALLD_DEVEL_ENV")
     sys.path.insert(0, datadir)
 import dbus
@@ -1388,12 +1388,10 @@ class FirewallConfig(object):
             self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
             if not old_val:
-                settings.addService(name)
+                zone.addService(name)
             else:
-                settings.removeService(name)
-            zone.update(settings)
+                zone.removeService(name)
             self.changes_applied()
 
     def change_port_selection_cb(self, selection):
@@ -1427,9 +1425,7 @@ class FirewallConfig(object):
                     self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            settings.setMasquerade(not self.masqueradeCheck.get_active())
-            zone.update(settings)
+            zone.setMasquerade(not self.masqueradeCheck.get_active())
             self.changes_applied()
 
     def masquerade_added_cb(self, zone, timeout):
@@ -1454,12 +1450,10 @@ class FirewallConfig(object):
                 self.fw.removeIcmpBlock(selected_zone, name)
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
             if not old_val:
-                settings.addIcmpBlock(name)
+                zone.addIcmpBlock(name)
             else:
-                settings.removeIcmpBlock(name)
-            zone.update(settings)
+                zone.removeIcmpBlock(name)
         self.changes_applied()
 
     def icmp_added_cb(self, zone, icmp, timeout):
@@ -1499,7 +1493,7 @@ class FirewallConfig(object):
                 action = _("accept")
             elif type(obj.action) == Rich_Reject:
                 action = _("reject")
-                if obj.action.type != None:
+                if obj.action.type is not None:
                     action += "\n" + obj.action.type
             elif type(obj.action) == Rich_Drop:
                 action = _("drop")
@@ -1690,12 +1684,12 @@ class FirewallConfig(object):
         iter = self.zoneStore.get_iter_first()
         while iter:
             if self.zoneStore.get_value(iter, 0) not in zones:
-                if use_iter != None:
+                if use_iter is not None:
                     return self._update_zoneStore()
                 use_iter = iter
             iter = self.zoneStore.iter_next(iter)
 
-        if use_iter == None:
+        if use_iter is None:
             return self._update_zoneStore()
 
         self.zoneStore.set_value(use_iter, 0, zone)
@@ -2299,9 +2293,7 @@ class FirewallConfig(object):
             self.fw.removeRichRule(selected_zone, str(obj))
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            settings.removeRichRule(str(obj))
-            zone.update(settings)
+            zone.removeRichRule(str(obj))
         self.changes_applied()
 
     def add_edit_rich_rule(self, add):
@@ -2409,7 +2401,7 @@ class FirewallConfig(object):
                 elif type(old_obj.action) == Rich_Reject:
                     action = "reject"
                     self.richRuleDialogActionRejectTypeCombobox.remove_all()
-                    if old_obj.family != None:
+                    if old_obj.family is not None:
                         for icmp in REJECT_TYPES[old_obj.family]:
                             self.richRuleDialogActionRejectTypeCombobox. \
                                                         append(icmp, icmp)
@@ -2490,7 +2482,7 @@ class FirewallConfig(object):
         obj = self.richRuleDialog_getRule()
         old_rule = str(old_obj)
         rule = str(obj)
-        if (old_rule == rule):
+        if old_rule == rule:
             # nothing to change
             return
 
@@ -2502,12 +2494,10 @@ class FirewallConfig(object):
                 self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            if not settings.queryRichRule(rule):
+            if not zone.queryRichRule(rule):
                 if not add:
-                    settings.removeRichRule(old_rule)
-                settings.addRichRule(rule)
-                zone.update(settings)
+                    zone.removeRichRule(old_rule)
+                zone.addRichRule(rule)
                 self.changes_applied()
 
     def on_richRuleDialogElementChooser_clicked(self, *args):
@@ -2540,7 +2530,7 @@ class FirewallConfig(object):
         elif combolabel == _("forward-port"):
             value = self.forwardport_select_dialog(family, old_value)
 
-        if value == None:
+        if value is None:
             return
         self.richRuleDialogElementChooser.set_text(value)
 
@@ -2723,7 +2713,7 @@ class FirewallConfig(object):
         old_address =  self.richRuleDialogSourceChooser.get_text()
 
         address = self.address_select_dialog(family, old_address)
-        if address != None:
+        if address is not None:
             self.richRuleDialogSourceChooser.set_text(address)
 
     def on_richRuleDialogDestinationChooser_clicked(self, *args):
@@ -2737,7 +2727,7 @@ class FirewallConfig(object):
         old_address =  self.richRuleDialogDestinationChooser.get_text()
 
         address = self.address_select_dialog(family, old_address)
-        if address != None:
+        if address is not None:
             self.richRuleDialogDestinationChooser.set_text(address)
 
     def create_fwp_string(self, port, proto, to_port, to_addr):
@@ -2892,7 +2882,7 @@ class FirewallConfig(object):
             family = None
 
         self.richRuleDialogActionRejectTypeCombobox.remove_all()
-        if family != None:
+        if family is not None:
             for icmp in REJECT_TYPES[family]:
                 self.richRuleDialogActionRejectTypeCombobox.append(icmp, icmp)
             old_obj = self.richRuleDialog.old_obj
@@ -2916,7 +2906,7 @@ class FirewallConfig(object):
         else:
             family = None
 
-        if family == None:
+        if family is None:
             self.richRuleDialogSourceLabel.set_sensitive(False)
             self.richRuleDialogSourceBox.set_sensitive(False)
             self.richRuleDialogDestinationLabel.set_sensitive(False)
@@ -2940,7 +2930,7 @@ class FirewallConfig(object):
             self.richRuleDialogActionLimitCheck.get_active())
         self.richRuleDialogActionRejectTypeCombobox.set_sensitive(
             self.richRuleDialogActionRejectTypeCheck.get_active())
-        self.richRuleDialogActionRejectBox.set_sensitive(family != None and \
+        self.richRuleDialogActionRejectBox.set_sensitive(family is not None and \
             self.richRuleDialogActionCombobox.get_active_text() == _("reject"))
         self.richRuleDialogLogGrid.set_sensitive(
             self.richRuleDialogLogCheck.get_active())
@@ -3020,9 +3010,7 @@ class FirewallConfig(object):
             self.fw.removeInterface(selected_zone, interface)
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            settings.removeInterface(interface)
-            zone.update(settings)
+            zone.removeInterface(interface)
         self.changes_applied()
 
     def change_interface_selection_cb(self, selection):
@@ -3064,7 +3052,7 @@ class FirewallConfig(object):
             return
 
         interface = self.interfaceDialogInterfaceEntry.get_text()
-        if (old_interface == interface):
+        if old_interface == interface:
             # nothing to change
             return
 
@@ -3076,12 +3064,10 @@ class FirewallConfig(object):
                 self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            if not settings.queryInterface(interface):
+            if not zone.queryInterface(interface):
                 if not add:
-                    settings.removeInterface(old_interface)
-                settings.addInterface(interface)
-                zone.update(settings)
+                    zone.removeInterface(old_interface)
+                zone.addInterface(interface)
                 self.changes_applied()
 
     def onInterfaceChanged(self, *args):
@@ -3112,9 +3098,7 @@ class FirewallConfig(object):
             self.fw.removeSource(selected_zone, source)
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            settings.removeSource(source)
-            zone.update(settings)
+            zone.removeSource(source)
         self.changes_applied()
 
     def change_source_selection_cb(self, selection):
@@ -3149,12 +3133,10 @@ class FirewallConfig(object):
                 self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            if not settings.querySource(source):
+            if not zone.querySource(source):
                 if not add:
-                    settings.removeSource(old_source)
-                settings.addSource(source)
-                zone.update(settings)
+                    zone.removeSource(old_source)
+                zone.addSource(source)
                 self.changes_applied()
 
     def onAddPort(self, *args):
@@ -3180,9 +3162,7 @@ class FirewallConfig(object):
             self.fw.removePort(selected_zone, port, proto)
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            settings.removePort(port, proto)
-            zone.update(settings)
+            zone.removePort(port, proto)
         self.changes_applied()
 
     def onPortChanged(self, *args):
@@ -3239,12 +3219,10 @@ class FirewallConfig(object):
                 self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            if not settings.queryPort(port, proto):
+            if not zone.queryPort(port, proto):
                 if not add:
-                    settings.removePort(old_port, old_proto)
-                settings.addPort(port, proto)
-                zone.update(settings)
+                    zone.removePort(old_port, old_proto)
+                zone.addPort(port, proto)
                 self.changes_applied()
 
     def onPortProtoChanged(self, *args):
@@ -3316,12 +3294,10 @@ class FirewallConfig(object):
             return
 
         service = self.fw.config().getServiceByName(active_service)
-        settings = service.getSettings()
-        if not settings.queryPort(port, proto):
+        if not service.queryPort(port, proto):
             if not add:
-                settings.removePort(old_port, old_proto)
-            settings.addPort(port, proto)
-            service.update(settings)
+                service.removePort(old_port, old_proto)
+            service.addPort(port, proto)
             self.changes_applied()
 
     def port_added_cb(self, zone, port, protocol, timeout):
@@ -3391,7 +3367,7 @@ class FirewallConfig(object):
                 to_addr_ok = True
             if self.forwardDialog.family == "ipv6" and checkIP6(to_addr):
                 to_addr_ok = True
-            if self.forwardDialog.family == None and \
+            if self.forwardDialog.family is None and \
                (checkIP(to_addr) or checkIP6(to_addr)):
                 to_addr_ok = True
         ok = False
@@ -3438,11 +3414,11 @@ class FirewallConfig(object):
             self.split_fwp_string(old_value)
 
         self.forwardDialogPortEntry.set_text("")
-        if old_port != None:
+        if old_port is not None:
             self.forwardDialogPortEntry.set_text(old_port)
         combobox_select_text(self.forwardDialogProtoCombobox, old_proto)
         self.forwardDialogToPortEntry.set_text("")
-        if old_to_port != None:
+        if old_to_port is not None:
             self.forwardDialogToPortEntry.set_text(old_to_port)
         if old_to_addr:
             if old_to_port:
@@ -3450,7 +3426,7 @@ class FirewallConfig(object):
         else:
             self.forwardDialogLocalCheck.set_active(True)
         self.forwardDialogToAddrEntry.set_text("")
-        if old_to_addr != None:
+        if old_to_addr is not None:
             self.forwardDialogToAddrEntry.set_text(old_to_addr)
 
         self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -3556,16 +3532,14 @@ class FirewallConfig(object):
                 self.changes_applied()
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            if not settings.queryForwardPort(port, proto, to_port, to_addr):
+            if not zone.queryForwardPort(port, proto, to_port, to_addr):
                 if not add:
-                    settings.removeForwardPort(old_port, old_proto,
-                                               old_to_port, old_to_addr)
-                settings.addForwardPort(port, proto, to_port, to_addr)
-                if add and to_addr and not settings.getMasquerade():
+                    zone.removeForwardPort(old_port, old_proto,
+                                           old_to_port, old_to_addr)
+                zone.addForwardPort(port, proto, to_port, to_addr)
+                if add and to_addr and not zone.getMasquerade():
                     if self.masqueradeQueryDialog() == Gtk.ResponseType.YES:
-                        settings.setMasquerade(True)
-                zone.update(settings)
+                        zone.setMasquerade(True)
                 self.changes_applied()
 
     def masqueradeQueryDialog(self):
@@ -3627,9 +3601,7 @@ class FirewallConfig(object):
                                       to_port, to_addr)
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
-            settings = zone.getSettings()
-            settings.removeForwardPort(port, proto, to_port, to_addr)
-            zone.update(settings)
+            zone.removeForwardPort(port, proto, to_port, to_addr)
         self.changes_applied()
 
     def onChangeService(self, *args):
@@ -3736,12 +3708,12 @@ class FirewallConfig(object):
         iter = self.serviceConfServiceStore.get_iter_first()
         while iter:
             if self.serviceConfServiceStore.get_value(iter, 0) not in services:
-                if use_iter != None:
+                if use_iter is not None:
                     return self.load_services()
                 use_iter = iter
             iter = self.serviceConfServiceStore.iter_next(iter)
 
-        if use_iter == None:
+        if use_iter is None:
             return self.load_services()
 
         self.serviceConfServiceStore.set_value(use_iter, 0, service)
@@ -3789,9 +3761,7 @@ class FirewallConfig(object):
         proto = self.serviceConfPortStore.get_value(iter, 1)
 
         service = self.fw.config().getServiceByName(active_service)
-        settings = service.getSettings()
-        settings.removePort(port, proto)
-        service.update(settings)
+        service.removePort(port, proto)
         self.changes_applied()
 
     def change_service_dialog_port_selection_cb(self, selection):
@@ -3913,9 +3883,7 @@ class FirewallConfig(object):
         module = self.serviceConfModuleStore.get_value(iter, 0)
 
         service = self.fw.config().getServiceByName(active_service)
-        settings = service.getSettings()
-        settings.removeModule(module)
-        service.update(settings)
+        service.removeModule(module)
         self.changes_applied()
 
     def onModuleChanged(self, *args):
@@ -3965,38 +3933,32 @@ class FirewallConfig(object):
             return
 
         service = self.fw.config().getServiceByName(active_service)
-        settings = service.getSettings()
-        if not settings.queryModule(module):
+        if not service.queryModule(module):
             if not add:
-                settings.removeModule(old_module)
-            settings.addModule(module)
-            service.update(settings)
+                service.removeModule(old_module)
+            service.addModule(module)
             self.changes_applied()
 
     def onChangeServiceConfDestIpv4(self, *args):
         old_addr = self.serviceConfDestIpv4Chooser.get_text()
         addr = self.address_select_dialog("ipv4", old_addr)
-        if addr == None:
+        if addr is None:
             return
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
-        settings = service.getSettings()
-        if not settings.queryDestination("ipv4", addr):
-            settings.setDestination("ipv4", addr)
-            service.update(settings)
+        if not service.queryDestination("ipv4", addr):
+            service.setDestination("ipv4", addr)
             self.changes_applied()
 
     def onChangeServiceConfDestIpv6(self, *args):
         old_addr = self.serviceConfDestIpv6Chooser.get_text()
         addr = self.address_select_dialog("ipv6", old_addr)
-        if addr == None:
+        if addr is None:
             return
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
-        settings = service.getSettings()
-        if not settings.queryDestination("ipv6", addr):
-            settings.setDestination("ipv6", addr)
-            service.update(settings)
+        if not service.queryDestination("ipv6", addr):
+            service.setDestination("ipv6", addr)
             self.changes_applied()
 
     def onAddressChanged(self, entry, addr_type, old_address):
@@ -4260,28 +4222,24 @@ class FirewallConfig(object):
         active_icmp = self.get_active_icmp()
         icmp = self.fw.config().getIcmpTypeByName(active_icmp)
         settings = icmp.getSettings()
+        print "settings:", settings
         if self.icmpDialogDestIpv4Check.get_active():
-            if settings.queryDestination("ipv4"):
-                settings.removeDestination("ipv4")
-                icmp.update(settings)
+            if icmp.queryDestination("ipv4"):
+                icmp.removeDestination("ipv4")
                 self.changes_applied()
-        elif not settings.queryDestination("ipv4"):
-            settings.addDestination("ipv4")
-            icmp.update(settings)
+        elif not icmp.queryDestination("ipv4"):
+            icmp.addDestination("ipv4")
             self.changes_applied()
 
     def icmp_dialog_dest_ipv6_check_cb(self, *args):
         active_icmp = self.get_active_icmp()
         icmp = self.fw.config().getIcmpTypeByName(active_icmp)
-        settings = icmp.getSettings()
         if self.icmpDialogDestIpv6Check.get_active():
-            if settings.queryDestination("ipv6"):
-                settings.removeDestination("ipv6")
-                icmp.update(settings)
+            if icmp.queryDestination("ipv6"):
+                icmp.removeDestination("ipv6")
                 self.changes_applied()
-        elif not settings.queryDestination("ipv6"):
-            settings.addDestination("ipv6")
-            icmp.update(settings)
+        elif not icmp.queryDestination("ipv6"):
+            icmp.addDestination("ipv6")
             self.changes_applied()
 
     def conf_icmp_added_cb(self, icmp):
@@ -4324,12 +4282,12 @@ class FirewallConfig(object):
         iter = self.icmpDialogIcmpStore.get_iter_first()
         while iter:
             if self.icmpDialogIcmpStore.get_value(iter, 0) not in icmps:
-                if use_iter != None:
+                if use_iter is not None:
                     return self.load_icmps()
                 use_iter = iter
             iter = self.icmpDialogIcmpStore.iter_next(iter)
 
-        if use_iter == None:
+        if use_iter is None:
             return self.load_icmps()
 
         self.icmpDialogIcmpStore.set_value(use_iter, 0, icmp)
@@ -4872,10 +4830,9 @@ class FirewallConfig(object):
             self.fw.removeChain(ipv, table, chain)
             self.changes_applied()
         else:
-            settings = self.fw.config().direct().getSettings()
-            if settings.queryChain(ipv, table, chain):
-                settings.removeChain(ipv, table, chain)
-                self.fw.config().direct().update(settings)
+            direct = self.fw.config().direct()
+            if direct.queryChain(ipv, table, chain):
+                direct.removeChain(ipv, table, chain)
                 self.changes_applied()
 
     def direct_updated_cb(self):
@@ -4953,12 +4910,11 @@ class FirewallConfig(object):
                     self.fw.removeChain(old_ipv, old_table, old_chain)
                 self.changes_applied()
         else:
-            settings = self.fw.config().direct().getSettings()
-            if not settings.queryChain(ipv, table, chain):
+            direct = self.fw.config().direct()
+            if not direct.queryChain(ipv, table, chain):
                 if not add:
-                    settings.removeChain(old_ipv, old_table, old_chain)
-                settings.addChain(ipv, table, chain)
-                self.fw.config().direct().update(settings)
+                    direct.removeChain(old_ipv, old_table, old_chain)
+                direct.addChain(ipv, table, chain)
                 self.changes_applied()
 
     def onDirectChainDialogChanged(self, *args):
@@ -5016,10 +4972,9 @@ class FirewallConfig(object):
             self.fw.removeRule(ipv, table, chain, priority, split_args)
             self.changes_applied()
         else:
-            settings = self.fw.config().direct().getSettings()
-            if settings.queryRule(ipv, table, chain, priority, split_args):
-                settings.removeRule(ipv, table, chain, priority, split_args)
-                self.fw.config().direct().update(settings)
+            direct = self.fw.config().direct()
+            if direct.queryRule(ipv, table, chain, priority, split_args):
+                direct.removeRule(ipv, table, chain, priority, split_args)
                 self.changes_applied()
 
     def direct_rule_added_cb(self, ipv, table, chain, priority, args):
@@ -5108,13 +5063,12 @@ class FirewallConfig(object):
                                        old_priority, split_old_args)
                 self.changes_applied()
         else:
-            settings = self.fw.config().direct().getSettings()
-            if not settings.queryRule(ipv, table, chain, priority, split_args):
+            direct = self.fw.config().direct()
+            if not direct.queryRule(ipv, table, chain, priority, split_args):
                 if not add:
-                    settings.removeRule(old_ipv, old_table, old_chain,
-                                        old_priority, split_old_args)
-                settings.addRule(ipv, table, chain, priority, split_args)
-                self.fw.config().direct().update(settings)
+                    direct.removeRule(old_ipv, old_table, old_chain,
+                                      old_priority, split_old_args)
+                direct.addRule(ipv, table, chain, priority, split_args)
                 self.changes_applied()
 
     def onDirectRuleDialogChanged(self, *args):
@@ -5169,10 +5123,9 @@ class FirewallConfig(object):
             self.fw.removePassthrough(ipv, split_args)
             self.changes_applied()
         else:
-            settings = self.fw.config().direct().getSettings()
-            if settings.queryPassthrough(ipv, split_args):
-                settings.removePassthrough(ipv, split_args)
-                self.fw.config().direct().update(settings)
+            direct = self.fw.config().direct()
+            if direct.queryPassthrough(ipv, split_args):
+                direct.removePassthrough(ipv, split_args)
                 self.changes_applied()
 
     def direct_passthrough_added_cb(self, ipv, args):
@@ -5242,12 +5195,11 @@ class FirewallConfig(object):
                     self.fw.removePassthrough(old_ipv, split_old_args)
                 self.changes_applied()
         else:
-            settings = self.fw.config().direct().getSettings()
-            if not settings.queryPassthrough(ipv, split_args):
+            direct = self.fw.config().direct()
+            if not direct.queryPassthrough(ipv, split_args):
                 if not add:
-                    settings.removePassthrough(old_ipv, split_old_args)
-                settings.addPassthrough(ipv, split_args)
-                self.fw.config().direct().update(settings)
+                    direct.removePassthrough(old_ipv, split_old_args)
+                direct.addPassthrough(ipv, split_args)
                 self.changes_applied()
 
     def onDirectPassthroughDialogChanged(self, *args):
