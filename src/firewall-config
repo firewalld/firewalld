@@ -5131,11 +5131,9 @@ class FirewallConfig(object):
                 self.changes_applied()
 
     def direct_passthrough_added_cb(self, ipv, args):
-        print "direct_passthrough_added_cb", repr(ipv), repr(args)
         if not self.show_direct:
             return
         joined_args = joinArgs(args)
-        print "joined_args=%s" % repr(joined_args)
         iter = self.directPassthroughStore.get_iter_first()
         while iter:
             if self.directPassthroughStore.get_value(iter, 0) == ipv and \
@@ -5145,11 +5143,9 @@ class FirewallConfig(object):
         self.directPassthroughStore.append([ipv, joined_args])
 
     def direct_passthrough_removed_cb(self, ipv, args):
-        print "direct_passthrough_removed_cb", repr(ipv), repr(args)
         if not self.show_direct:
             return
         joined_args = joinArgs(args)
-        print "joined_args=%s" % repr(joined_args)
         iter = self.directPassthroughStore.get_iter_first()
         while iter:
             if self.directPassthroughStore.get_value(iter, 0) == ipv and \
