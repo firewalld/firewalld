@@ -137,6 +137,18 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--runtime-to-permanent</option></term>
+	  <listitem>
+	    <para>
+	      Save active runtime configuration and overwrite permanent configuration with it.
+	      The way this is supposed to work is that when configuring firewalld you do runtime changes only and
+	      once you're happy with the configuration and you tested that it works the way you want, you save
+	      the configuration to disk.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 
@@ -148,9 +160,9 @@
           <term><option>--permanent</option></term>
           <listitem>
 	    <para>
-	      The permanent option <option>--permanent</option> can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. Without the <option>--permanent</option> option, a change will only be part of the runtime configuration. The <option>--permanent</option> option can not be used with all options.
+	      The permanent option <option>--permanent</option> can be used to set options permanently. These changes are not effective immediately, only after service restart/reload or system reboot. Without the <option>--permanent</option> option, a change will only be part of the runtime configuration.
 	    </para>
-	    <para>If you want to make a change in runtime and permanent configuration, use the same call with and without the<option>--permanent</option> option.
+	    <para>If you want to make a change in runtime and permanent configuration, use the same call with and without the <option>--permanent</option> option.
 	    </para>
 	    <para>
 	      The <option>--permanent</option> option can be optionally added to all options further down where it is supported.
