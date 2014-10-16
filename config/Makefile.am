@@ -109,6 +109,7 @@ EXTRA_DIST = \
 	services/puppetmaster.xml \
 	services/radius.xml \
 	services/rpc-bind.xml \
+	services/rsyncd.xml \
 	services/samba-client.xml \
 	services/samba.xml \
 	services/sane.xml \
