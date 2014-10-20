@@ -169,7 +169,7 @@
     <refsect2>
       <title>Direct interface</title>
       <para>
-	The direct interface is mainly used by services or applications to add specific firewall rules. The rules are not permanent and need to get applied after receiving the <option>start</option>, <option>restart</option> or <option>reload</option> message from firewalld using D-Bus.
+	The direct interface is mainly used by services or applications to add specific firewall rules. It requires basic knowledge of ip(6)tables concepts (tables, chains, commands, parameters, targets).
       </para>
     </refsect2>
   </refsect1>
