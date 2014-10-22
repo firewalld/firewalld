@@ -8,13 +8,14 @@
 # Runa Bhattacharjee <runab@fedoraproject.org>, 2008
 # runab <runab@redhat.com>, 2004-2010
 # Saibal Ray, 2014
+# Saibal Ray, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:24+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-16 05:50+0000\n"
+"Last-Translator: Saibal Ray\n"
 "Language-Team: Bengali (India) (http://www.transifex.com/projects/p/"
 "firewalld/language/bn_IN/)\n"
 "Language: bn_IN\n"
@@ -38,7 +39,7 @@ msgstr "ফায়ারওয়াল কনফিগারেশন"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "firewall;network;security;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -752,12 +753,11 @@ msgstr "লকডাউন"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "রানটাইম কনফিগারেশন স্থায়ী করুন"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "স্থায়ী"
+msgstr "রানটাইম থেকে স্থায়ী"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1499,8 +1499,3 @@ msgstr "টার্গেট:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "ডিফল্ট টার্গেট"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr ""
-#~ "Passthrough নিয়ম শুধুমাত্র স্থায়ী কনফিগারেশনের জন্য সংশোধন করা যেতে পারে।"

@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:24+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-21 23:33+0000\n"
+"Last-Translator: Yulia <yulia.poyarkova@redhat.com>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/firewalld/"
 "language/ru/)\n"
 "Language: ru\n"
@@ -43,7 +43,7 @@ msgstr "Настройка межсетевого экрана"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "межсетевой экран;сеть;безопасность;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -760,12 +760,11 @@ msgstr "Блокировка"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Сохранить текущие настройки и сделать их постоянными"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "Постоянные"
+msgstr "Сохранить текущие"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1504,7 +1503,3 @@ msgstr "Цель:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Цель по-умолчанию"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr "Правила трансляции можно изменить только в постоянных настройках."

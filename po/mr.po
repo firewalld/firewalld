@@ -16,8 +16,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:25+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-16 05:10+0000\n"
+"Last-Translator: sandeeps <sshedmak@redhat.com>\n"
 "Language-Team: Marathi (http://www.transifex.com/projects/p/firewalld/"
 "language/mr/)\n"
 "Language: mr\n"
@@ -41,7 +41,7 @@ msgstr "फायरवॉल संयोजना"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "फायरवॉल;नेटवर्क;सुरक्षा;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -751,12 +751,11 @@ msgstr "कुलूपबंद करा"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "रनटाइम संरचना कायमचे करा"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "कायम"
+msgstr "रनटाइम कायमचे करा"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1489,7 +1488,3 @@ msgstr "लक्ष्य:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "पूर्वनिर्धारित लक्ष्य"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr "फक्त कायम संरचनाकरिता पासथ्रु नियम संपादित करणे शक्य आहे."

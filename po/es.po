@@ -3,6 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# beckerde <domingobecker@gmail.com>, 2013
 # Claudio Rodrigo Pereyra Diaz <elsupergomez@gmail.com>, 2012-2013
 # Daniel Cabrera <logan@fedoraproject.org>, 2010
 # beckerde <domingobecker@gmail.com>, 2007-2008
@@ -10,6 +11,7 @@
 # Eduardo Villagrán <eduardo.villagran@usach.cl>, 2006
 # Francisco M.S. <franms@alkur.net>, 2004
 # Francisco Muñoz Santoyo <franms@terra.es>, 2004
+# Gerardo Rosales <grosale86@gmail.com>, 2014
 # Gladys Guerrero <gguerrer@redhat.com>, 2010,2014
 # Gladys Guerrero <gguerrer@redhat.com>, 2010
 # Daniel Cabrera <logan@fedoraproject.org>, 2010
@@ -22,8 +24,8 @@ msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:25+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-20 16:31+0000\n"
+"Last-Translator: Gerardo Rosales <grosale86@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/firewalld/"
 "language/es/)\n"
 "Language: es\n"
@@ -47,7 +49,7 @@ msgstr "Configuración del cortafuegos"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "cortafuegos;red;seguridad;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -766,12 +768,11 @@ msgstr "Bloquear"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Cree la configuración de tiempo de ejecución permanente"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "Permanente"
+msgstr "Tiempo de ejecución a Permanente"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1524,9 +1525,3 @@ msgstr "Objetivo:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Objetivo por defecto:"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr ""
-#~ "Las reglas de paso solo pueden ser modificadas en la configuración "
-#~ "permanente."

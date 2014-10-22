@@ -10,15 +10,15 @@
 # Jayaradha N <jaya@pune.redhat.com>, 2004
 # Jayaradha N <njaya@redhat.com>, 2004-2005
 # Priyadharsini <priyafelix@gmail.com>, 2008,2010
-# shkumar <shkumar@redhat.com>, 2013
+# shkumar <shkumar@redhat.com>, 2013-2014
 # shkumar <shkumar@redhat.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:25+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-16 07:50+0000\n"
+"Last-Translator: shkumar <shkumar@redhat.com>\n"
 "Language-Team: Tamil (http://www.transifex.com/projects/p/firewalld/language/"
 "ta/)\n"
 "Language: ta\n"
@@ -42,7 +42,7 @@ msgstr "ஃபயர்வால் கட்டமைப்பு"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "firewall;network;security;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -760,12 +760,11 @@ msgstr "லாக்டவுன்"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "இயக்கநேர அமைவாக்கத்தை நிரந்தரமானதா"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "நிரந்தரமான"
+msgstr "இயக்க நேரத்திலிருந்து நிரந்தர அமைவுக்கு"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1511,7 +1510,3 @@ msgstr "இலக்கு:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "முன்னிருப்பு இலக்கு"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr "பாஸ்த்ரூ விதிகளை நிரந்தர அமைவாக்கத்திற்கு மட்டுமே மாற்ற முடியும்."

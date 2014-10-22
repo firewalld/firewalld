@@ -5,14 +5,14 @@
 # Translators:
 # denka <dennis@dennis.se>, 2014
 # denka <dennis@dennis.se>, 2014
-# Göran Uddeborg <goeran@uddeborg.se>, 2012-2013
+# Göran Uddeborg <goeran@uddeborg.se>, 2012-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:24+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-15 19:10+0000\n"
+"Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/firewalld/"
 "language/sv/)\n"
 "Language: sv\n"
@@ -36,7 +36,7 @@ msgstr "Brandväggskonfiguration"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "brandvägg;nätverk;säkerhet;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -754,12 +754,11 @@ msgstr "Isolering"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Gör körtidskonfigurationen permanent"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "Permanent"
+msgstr "Körtid till permanent"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1508,7 +1507,3 @@ msgstr "Mål:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Standardmål"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr "Passageregler kan endast ändras för den permanenta konfigurationen."

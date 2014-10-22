@@ -12,7 +12,7 @@
 # Francesco Tombolini <tombo@adamantio.net>, 2005-2008,2010
 # fvalen <fvalen@redhat.com>, 2004
 # Franco Godone <francog@fedoraproject.org>, 2008
-# fvalen <fvalen@redhat.com>, 2004
+# fvalen <fvalen@redhat.com>, 2004,2014
 # fvalen <fvalen@redhat.com>, 2014
 # Germano Massullo <germano.massullo@gmail.com>, 2013
 # Gianluca Sforna <giallu@gmail.com>, 2012
@@ -23,13 +23,14 @@
 # Massimiliano Tropeano <mhacknetxp@hotmail.com>, 2013
 # Paolo Dona' <vik@3jv.com>, 2004
 # tavanofabio <tavano.fabio@gmail.com>, 2013
+# tavanofabio <tavano.fabio@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-10-15 16:06+0200\n"
-"PO-Revision-Date: 2014-09-29 08:25+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2014-10-21 05:00+0000\n"
+"Last-Translator: fvalen <fvalen@redhat.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/firewalld/"
 "language/it/)\n"
 "Language: it\n"
@@ -53,7 +54,7 @@ msgstr "Configurazione del Firewall"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "firewall;rete;sicurezza;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -774,12 +775,11 @@ msgstr "Lockdown"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Rendi la configurazione di runtime permanente"
 
 #: ../src/firewall-config.glade.h:52
-#, fuzzy
 msgid "Runtime To Permanent"
-msgstr "Salvata"
+msgstr "Runtime su permanente"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -1534,9 +1534,3 @@ msgstr "Destinazione:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Destinazione Predefinita"
-
-#~ msgid ""
-#~ "Passthrough rules can only be modified for the permanent configuration."
-#~ msgstr ""
-#~ "Le regole di passthrough possono essere modificate solo per la "
-#~ "configurazione salvata."
