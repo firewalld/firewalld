@@ -140,6 +140,9 @@ EXTRA_DIST = \
 	zones/public.xml \
 	zones/trusted.xml \
 	zones/work.xml \
+	xmlschema/icmptype.xsd \
+	xmlschema/service.xsd \
+	xmlschema/zone.xsd \
 	firewalld.init \
 	firewalld.service.in \
 	firewalld.sysconfig \
@@ -216,6 +219,7 @@ install-config:
 	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
 	cp -r services $(DESTDIR)$(prefixlibdir)
 	cp -r zones $(DESTDIR)$(prefixlibdir)
+	cp -r xmlschema $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
@@ -227,6 +231,8 @@ uninstall-config:
 	rmdir $(DESTDIR)$(prefixlibdir)/services
 	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
 	rmdir $(DESTDIR)$(prefixlibdir)/zones
+	rm -f $(DESTDIR)$(prefixlibdir)/xmlschema/*
+	rmdir $(DESTDIR)$(prefixlibdir)/xmlschema
 
 install-data-local: $(INSTALL_TARGETS)
 

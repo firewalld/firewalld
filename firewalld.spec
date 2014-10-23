@@ -121,9 +121,11 @@ fi
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/services
 %attr(0750,root,root) %dir %{_prefix}/lib/firewalld/zones
+%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/xmlschema
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
+%{_prefix}/lib/firewalld/xmlschema/*.xsd
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
