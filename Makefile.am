@@ -43,7 +43,7 @@ tag:
 	git push --all
 	git push --tags
 
-dist: clean-docs update-docs tx-pull
+dist: clean-docs update-docs
 
 update-docs:
 	make -C doc/xml
@@ -54,7 +54,7 @@ clean-docs:
 tx-pull:
 	tx pull
 
-archive: update-po $(desktop_DATA) tag dist
+archive: tx-pull update-po $(desktop_DATA) tag dist
 	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
 	@echo "Also have a look at https://fedorahosted.org/released/${PACKAGE_NAME}/"
