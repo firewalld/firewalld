@@ -57,7 +57,7 @@
     <title>Description</title>
 
     <para>
-     Direct configuration gives a more direct access to the firewall. It requires user to know basic ip(6)tables concepts, i.e. <literal>table</literal> (filter/mangle/nat/...), <literal>chain</literal> (INPUT/OUTPUT/FORWARD/...), <literal>commands</literal> (-A/-D/-I/...), <literal>parameters</literal> (-p/-s/-d/-j/...) and <literal>targets</literal> (ACCEPT/DROP/REJECT/...).
+     Direct configuration gives a more direct access to the firewall. It requires user to know basic ip(6)tables/ebtables concepts, i.e. <literal>table</literal> (filter/mangle/nat/...), <literal>chain</literal> (INPUT/OUTPUT/FORWARD/...), <literal>commands</literal> (-A/-D/-I/...), <literal>parameters</literal> (-p/-s/-d/-j/...) and <literal>targets</literal> (ACCEPT/DROP/REJECT/...).
      Direct configuration should be used only as a last resort when it's not possible to use <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
      See also <literal>Direct Options</literal> in <citerefentry><refentrytitle>firewall-cmd</refentrytitle><manvolnum>1</manvolnum></citerefentry>.
     </para>
@@ -72,9 +72,9 @@
       <programlisting>
 &lt;?xml version="1.0" encoding="utf-8"?&gt;
 &lt;direct&gt;
-  [ &lt;chain ipv="<literal>ipv4</literal>|<literal>ipv6</literal>" table="<replaceable>table</replaceable>" chain="<replaceable>chain</replaceable>"/&gt; ]
-  [ &lt;rule ipv="<literal>ipv4</literal>|<literal>ipv6</literal>" table="<replaceable>table</replaceable>" chain="<replaceable>chain</replaceable>" priority="<replaceable>priority</replaceable>"&gt; args &lt;/rule&gt; ]
-  [ &lt;passthrough ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"&gt; args &lt;/passthrough&gt; ]
+  [ &lt;chain ipv="<literal>ipv4</literal>|<literal>ipv6</literal>|<literal>eb</literal>" table="<replaceable>table</replaceable>" chain="<replaceable>chain</replaceable>"/&gt; ]
+  [ &lt;rule ipv="<literal>ipv4</literal>|<literal>ipv6</literal>|<literal>eb</literal>" table="<replaceable>table</replaceable>" chain="<replaceable>chain</replaceable>" priority="<replaceable>priority</replaceable>"&gt; args &lt;/rule&gt; ]
+  [ &lt;passthrough ipv="<literal>ipv4</literal>|<literal>ipv6</literal>|<literal>eb</literal>"&gt; args &lt;/passthrough&gt; ]
 &lt;/direct&gt;
       </programlisting>
     </para>
@@ -93,10 +93,10 @@
       </para>
       <variablelist>
 	<varlistentry>
-	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>|<literal>eb</literal>"</term>
           <listitem>
 	    <para>
-              The IP family where the chain will be created. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              The IP family where the chain will be created. This can be either <literal>ipv4</literal>, <literal>ipv6</literal> or <literal>eb</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -105,7 +105,9 @@
 	  <term>table="<replaceable>table</replaceable>"</term>
           <listitem>
 	    <para>
-              The table name where the chain will be created. This can be one of the tables that can be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
+              The table name where the chain will be created.
+	      This can be one of the tables that can be used for iptables, ip6tables or ebtables.
+	      For the possible values, see TABLES section in the iptables, ip6tables or ebtables man pages.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -133,10 +135,10 @@
       </para>
       <variablelist>
 	<varlistentry>
-	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>|<literal>eb</literal>"</term>
           <listitem>
 	    <para>
-              The IP family where the rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              The IP family where the rule will be added. This can be either <literal>ipv4</literal>, <literal>ipv6</literal> or <literal>eb</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -145,7 +147,9 @@
 	  <term>table="<replaceable>table</replaceable>"</term>
           <listitem>
 	    <para>
-              The table name where the rule will be added. This can be one of the tables that casn be used for iptables or ip6tables. For the possible values, please have a look at the TABLES section in the iptables man pages: For ipv="<literal>ipv4</literal>" in <citerefentry><refentrytitle>iptables</refentrytitle><manvolnum>8</manvolnum></citerefentry>, for ipv="<literal>ipv6</literal>" in <citerefentry><refentrytitle>ip6tables</refentrytitle><manvolnum>8</manvolnum></citerefentry>.
+              The table name where the rule will be added.
+	      This can be one of the tables that can be used for iptables, ip6tables or ebtables.
+	      For the possible values, see TABLES section in the iptables, ip6tables or ebtables man pages.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -182,10 +186,10 @@
       </para>
       <variablelist>
 	<varlistentry>
-	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+	  <term>ipv="<literal>ipv4</literal>|<literal>ipv6</literal>|<literal>eb</literal>"</term>
           <listitem>
 	    <para>
-              The IP family where the passthrough rule will be added. This can be either <literal>ipv4</literal> or <literal>ipv6</literal>.
+              The IP family where the passthrough rule will be added. This can be either <literal>ipv4</literal>, <literal>ipv6</literal> or <literal>eb</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
