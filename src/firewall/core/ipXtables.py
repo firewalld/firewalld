@@ -141,10 +141,14 @@ class ip4tables:
 
     def __init__(self):
         self._command = COMMAND[self.ipv]
+        self.wait_option = self._detect_wait_option()
 
     def __run(self, args):
         # convert to string list
-        _args = ["%s" % item for item in args]
+        if self.wait_option:
+            _args = [self.wait_option] + ["%s" % item for item in args]
+        else:
+            _args = ["%s" % item for item in args]
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
         (status, ret) = runProg(self._command, _args)
         if status != 0:
@@ -185,6 +189,18 @@ class ip4tables:
                     tables.append(line.strip())
 
         return tables
+
+    def _detect_wait_option(self):
+        wait_option = ""
+        (status, ret) = runProg(self._command, ["-w", "-L"])  # since iptables-1.4.20
+        if status == 0:
+            wait_option = "-w"  # wait for xtables lock
+            (status, ret) = runProg(self._command, ["-w2", "-L"])  # since iptables > 1.4.21
+            if status == 0:
+                wait_option = "-w2"  # wait max 2 seconds
+            log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
+
+        return wait_option
 
     def flush(self):
         tables = self.used_tables()
