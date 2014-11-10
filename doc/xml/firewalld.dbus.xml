@@ -383,6 +383,8 @@
             <listitem>
               <para>
 		Add a tracked passthrough rule with the arguments <replaceable>args</replaceable> for <replaceable>ipv</replaceable> being either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		Valid commands in args are only <literal>-A/--append</literal>, <literal>-I/--insert</literal> and <literal>-N/--new-chain</literal>.
+		This method is (unlike passthrough method) tracked, i.e. firewalld remembers it. It's useful with <link linkend="FirewallD1.Methods.runtimeToPermanent">org.fedoraproject.FirewallD1.Methods.runtimeToPermanent</link>
 		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.addPassthrough">org.fedoraproject.FirewallD1.config.direct.Methods.addPassthrough</link>.
               </para>
 	      <para>
@@ -435,6 +437,22 @@
               <para>
                 <variablelist>
                   <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.getPassthroughs">
+            <term><methodname>getPassthroughs</methodname>(s: ipv) &rarr; aas</term>
+            <listitem>
+              <para>
+		Get tracked passthrough rules added in either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+		Return value is a array of (array of <parameter>arguments</parameter>).
+		For permanent operation see <link linkend="FirewallD1.config.direct.Methods.getPassthroughs">org.fedoraproject.FirewallD1.config.direct.Methods.getPassthroughs</link>.
+              </para>
+              <para>
+                <variablelist>
 		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
                 </variablelist>
               </para>
@@ -2046,6 +2064,22 @@
               <para>
                 <variablelist>
                   <varlistentry><term><parameter>ipv (s)</parameter>: either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).</term></varlistentry>
+		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.direct.Methods.getPassthroughs">
+            <term><methodname>getPassthroughs</methodname>(s: ipv) &rarr; aas</term>
+            <listitem>
+              <para>
+		Get tracked passthrough rules added in either <literal>ipv4</literal> (iptables) or <literal>ipv6</literal> (ip6tables) or <literal>eb</literal> (ebtables).
+		This concerns only rules previously added with <methodname>addPassthrough</methodname>.
+		Return value is a array of (array of <parameter>arguments</parameter>).
+		For runtime operation see <link linkend="FirewallD1.direct.Methods.getPassthroughs">org.fedoraproject.FirewallD1.direct.Methods.getPassthroughs</link>.
+              </para>
+              <para>
+                <variablelist>
 		  <varlistentry><term><parameter>arguments (as)</parameter>: array of commands, parameters and other iptables/ip6tables/ebtables command line options.</term></varlistentry>
                 </variablelist>
               </para>
