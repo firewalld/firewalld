@@ -444,7 +444,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         settings = list(self.getSettings())
         if family not in settings[5]:
             raise FirewallError(NOT_ENABLED, family)
-        settings[5].remove(family)
+        del settings[5][family]
         self.update(settings)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='ss',
