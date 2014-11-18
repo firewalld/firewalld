@@ -589,6 +589,14 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.direct.Methods.removeAllPassthroughs">
+            <term><methodname>removePassthrough</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove all passthrough rules previously added with <methodname>addPassthrough</methodname>.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.direct.Methods.removeRules">
             <term><methodname>removeRules</methodname>(s: ipv, s: table, s: chain) &rarr; Nothing</term>
             <listitem>
@@ -3404,7 +3412,6 @@
               </para>
             </listitem>
           </varlistentry>
-
           <varlistentry id="FirewallD1.config.service.Methods.getDestinations">
             <term><methodname>getDestinations</methodname>() &rarr; a{ss}</term>
             <listitem>
@@ -3428,8 +3435,7 @@
             <term><methodname>getDestination</methodname>(s: family) &rarr; s</term>
             <listitem>
               <para>
-		Permanently set a destination address.
-		destination is in format: (<replaceable>IP_family</replaceable>, <replaceable>IP_address</replaceable>) where <replaceable>IP_family</replaceable> can be either 'ipv4' or 'ipv6'.
+		Get destination for IP family being either 'ipv4' or 'ipv6'.
 		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
 	      <para>
@@ -3438,11 +3444,11 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.setDestination">
-            <term><methodname>setDestination</methodname>(ss: destination) &rarr; Nothing</term>
+            <term><methodname>setDestination</methodname>(s: family, s: address) &rarr; Nothing</term>
             <listitem>
               <para>
 		Permanently set a destination address.
-		destination is in format: (<replaceable>IP_family</replaceable>, <replaceable>IP_address</replaceable>) where <replaceable>IP_family</replaceable> can be either 'ipv4' or 'ipv6'.
+		destination is in format: (<replaceable>IP family</replaceable>, <replaceable>IP address</replaceable>) where <replaceable>IP family</replaceable> can be either 'ipv4' or 'ipv6'.
 		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
 	      <para>
@@ -3463,11 +3469,11 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.queryDestination">
-            <term><methodname>queryDestination</methodname>(ss: destination) &rarr; b</term>
+            <term><methodname>queryDestination</methodname>(s: family, s: address) &rarr; b</term>
             <listitem>
               <para>
 		Return whether a <replaceable>destination</replaceable> is in dictionary of destinations of this service.
-		destination is in format: (<replaceable>IP_family</replaceable>, <replaceable>IP_address</replaceable>) where <replaceable>IP_family</replaceable> can be either 'ipv4' or 'ipv6'.
+		destination is in format: (<replaceable>IP family</replaceable>, <replaceable>IP address</replaceable>) where <replaceable>IP family</replaceable> can be either 'ipv4' or 'ipv6'.
 		See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
