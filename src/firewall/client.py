@@ -1598,7 +1598,8 @@ class FirewallClient(object):
         self.bus.add_signal_receiver(
             handler_function=self._dbus_connection_changed,
             signal_name="NameOwnerChanged",
-            dbus_interface="org.freedesktop.DBus")
+            dbus_interface="org.freedesktop.DBus",
+            arg0=DBUS_INTERFACE)
 
         for interface in [ DBUS_INTERFACE,
                            DBUS_INTERFACE_ZONE,
