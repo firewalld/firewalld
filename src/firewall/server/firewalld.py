@@ -1847,7 +1847,8 @@ class FirewallD(slip.dbus.service.Object):
     def removeAllPassthroughs(self, sender=None):
         # remove all passhroughs
         log.debug1("direct.removeAllPassthroughs()")
-        for passthrough in self.getAllPassthroughs():
+        # remove in reverse order to avoid removing non-empty chains
+        for passthrough in reversed(self.getAllPassthroughs()):
             self.removePassthrough(*passthrough)
 
     @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
