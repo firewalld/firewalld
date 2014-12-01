@@ -116,12 +116,11 @@ fi
 %{_bindir}/firewall-offline-cmd
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
-%defattr(0640,root,root)
-%attr(0750,root,root) %dir %{_prefix}/lib/firewalld
-%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/icmptypes
-%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/services
-%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/zones
-%attr(0750,root,root) %dir %{_prefix}/lib/firewalld/xmlschema
+%dir %{_prefix}/lib/firewalld
+%dir %{_prefix}/lib/firewalld/icmptypes
+%dir %{_prefix}/lib/firewalld/services
+%dir %{_prefix}/lib/firewalld/zones
+%dir %{_prefix}/lib/firewalld/xmlschema
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
