@@ -21,10 +21,18 @@ Requires: iptables, ebtables
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
+Requires: firewalld-filesystem = %{version}-%{release}
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
 firewall with a D-Bus interface.
+
+%package -n firewalld-filesystem
+Summary: Firewalld directory layout and rpm macros
+
+%description -n firewalld-filesystem
+This package provides directories and rpm macros which
+are required by other packages that add firewalld configuration files.
 
 %package -n firewall-applet
 Summary: Firewall panel applet
@@ -116,11 +124,6 @@ fi
 %{_bindir}/firewall-offline-cmd
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
-%dir %{_prefix}/lib/firewalld
-%dir %{_prefix}/lib/firewalld/icmptypes
-%dir %{_prefix}/lib/firewalld/services
-%dir %{_prefix}/lib/firewalld/zones
-%dir %{_prefix}/lib/firewalld/xmlschema
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
@@ -152,6 +155,13 @@ fi
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
+
+%files -n firewalld-filesystem
+%dir %{_prefix}/lib/firewalld
+%dir %{_prefix}/lib/firewalld/icmptypes
+%dir %{_prefix}/lib/firewalld/services
+%dir %{_prefix}/lib/firewalld/zones
+%dir %{_prefix}/lib/firewalld/xmlschema
 %{_rpmconfigdir}/macros.d/macros.firewalld
 
 %files -n firewall-applet
