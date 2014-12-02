@@ -122,6 +122,7 @@ EXTRA_DIST = \
 	services/telnet.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
+	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
 	services/vdsm.xml \
