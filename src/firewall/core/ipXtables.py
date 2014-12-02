@@ -108,7 +108,8 @@ DEFAULT_RULES["filter"] = [
     "-I INPUT 4 -j INPUT_ZONES_SOURCE",
     "-I INPUT 5 -j INPUT_ZONES",
     "-I INPUT 6 -p %%ICMP%% -j ACCEPT",
-    "-I INPUT 7 -j %%REJECT%%",
+    "-I INPUT 7 -m conntrack --ctstate INVALID -j DROP",
+    "-I INPUT 8 -j %%REJECT%%",
 
     "-N FORWARD_direct",
     "-N FORWARD_IN_ZONES_SOURCE",
@@ -124,7 +125,8 @@ DEFAULT_RULES["filter"] = [
     "-I FORWARD 6 -j FORWARD_OUT_ZONES_SOURCE",
     "-I FORWARD 7 -j FORWARD_OUT_ZONES",
     "-I FORWARD 8 -p %%ICMP%% -j ACCEPT",
-    "-I FORWARD 9 -j %%REJECT%%",
+    "-I FORWARD 9 -m conntrack --ctstate INVALID -j DROP",
+    "-I FORWARD 10 -j %%REJECT%%",
 
     "-N OUTPUT_direct",
 
