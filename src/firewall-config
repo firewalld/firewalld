@@ -1583,6 +1583,7 @@ class FirewallConfig(object):
         self._add_interface(interface)
 
     def interface_removed_cb(self, zone, interface):
+        self.update_active_zones()
         if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.interfaceStore.get_iter_first()
@@ -1591,7 +1592,6 @@ class FirewallConfig(object):
                 self.interfaceStore.remove(iter)
                 break
             iter = self.interfaceStore.iter_next(iter)
-        self.update_active_zones()
 
     def zone_of_interface_changed_cb(self, zone, interface):
         self.update_active_zones()
@@ -1880,6 +1880,14 @@ class FirewallConfig(object):
                 item.add(hbox)
                 item.connect("activate", self.change_zone_source_editor, source, zone)
                 self.left_menu.append(item)
+
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) in self.active_zones.keys():
+                self.zoneStore.set_value(iter, 1, Pango.Weight.BOLD)
+            else:
+                self.zoneStore.set_value(iter, 1, Pango.Weight.NORMAL)
+            iter = self.zoneStore.iter_next(iter)
 
     def onChangeDefaultZone(self, *args):
         self.defaultZoneStore.clear()
