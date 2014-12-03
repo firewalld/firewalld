@@ -812,10 +812,7 @@ class FirewallZone:
                     self.__rule_source(rule.source, command)
                     self.__rule_destination(rule.destination, command)
 
-                    if proto in [ "tcp", "udp" ]:
-                        command += [ "-m", proto, "-p", proto ]
-                    else:
-                        command += [ "-p", proto ]
+                    command += [ "-p", proto ]
                     if port:
                         command += [ "--dport", "%s" % portStr(port) ]
                     if ipv in svc.destination and svc.destination[ipv] != "":
@@ -1105,11 +1102,7 @@ class FirewallZone:
             for (port,proto) in svc.ports:
                 target = DEFAULT_ZONE_TARGET.format(
                     chain=SHORTCUTS["INPUT"], zone=zone)
-                rule = [ "%s_allow" % (target), "-t", "filter" ]
-                if proto in [ "tcp", "udp" ]:
-                    rule += [ "-m", proto, "-p", proto ]
-                else:
-                    rule += [ "-p", proto ]
+                rule = [ "%s_allow" % (target), "-t", "filter", "-p", proto ]
                 if port:
                     rule += [ "--dport", "%s" % portStr(port) ]
                 if ipv in svc.destination and svc.destination[ipv] != "":
