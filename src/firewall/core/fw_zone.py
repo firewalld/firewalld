@@ -815,10 +815,7 @@ class FirewallZone:
                     if proto in [ "tcp", "udp" ]:
                         command += [ "-m", proto, "-p", proto ]
                     else:
-                        if ipv == "ipv4":
-                            command += [ "-p", proto ]
-                        else:
-                            command += [ "-m", "ipv6header", "--header", proto ]
+                        command += [ "-p", proto ]
                     if port:
                         command += [ "--dport", "%s" % portStr(port) ]
                     if ipv in svc.destination and svc.destination[ipv] != "":
@@ -1112,10 +1109,7 @@ class FirewallZone:
                 if proto in [ "tcp", "udp" ]:
                     rule += [ "-m", proto, "-p", proto ]
                 else:
-                    if ipv == "ipv4":
-                        rule += [ "-p", proto ]
-                    else:
-                        rule += [ "-m", "ipv6header", "--header", proto ]
+                    rule += [ "-p", proto ]
                 if port:
                     rule += [ "--dport", "%s" % portStr(port) ]
                 if ipv in svc.destination and svc.destination[ipv] != "":
