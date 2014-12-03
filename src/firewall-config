@@ -1238,7 +1238,7 @@ class FirewallConfig(object):
         self.load_direct()
         self.load_lockdown_whitelist()
 
-    def _update_zoneStore(self):
+    def load_zones(self):
         selected_zone = self.get_selected_zone()
 
         if self.runtime_view:
@@ -1253,33 +1253,6 @@ class FirewallConfig(object):
         selection = self.zoneView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
 
-        self.zoneStore.clear()
-
-        # zones
-        active_zones = self.fw.getActiveZones().keys()
-        for zone in zones:
-            if zone in active_zones:
-                self.zoneStore.append([zone, Pango.Weight.BOLD])
-            else:
-                self.zoneStore.append([zone, Pango.Weight.NORMAL])
-
-        if selected_zone in zones:
-            _zone = selected_zone
-        else:
-            _zone = self.defaultZoneLabel.get_text()
-
-        selection.set_mode(Gtk.SelectionMode.SINGLE)
-
-        iter = self.zoneStore.get_iter_first()
-        while iter:
-            if self.zoneStore.get_value(iter, 0) == _zone:
-                selection.select_iter(iter)
-                return
-            iter = self.zoneStore.iter_next(iter)
-        # fallback
-        selection.select_path(0)
-
-    def load_zones(self):
         self.zoneStore.clear()
         self.serviceStore.clear()
         self.portStore.clear()
@@ -1304,7 +1277,29 @@ class FirewallConfig(object):
                 obj = self.fw.config().getIcmpType(item)
                 self.icmpStore.append([False, obj.get_property("name")])
 
-        self._update_zoneStore()
+        # zones
+        active_zones = self.fw.getActiveZones().keys()
+        for zone in zones:
+            if zone in active_zones:
+                self.zoneStore.append([zone, Pango.Weight.BOLD])
+            else:
+                self.zoneStore.append([zone, Pango.Weight.NORMAL])
+
+        if selected_zone in zones:
+            _zone = selected_zone
+        else:
+            _zone = self.defaultZoneLabel.get_text()
+
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) == _zone:
+                selection.select_iter(iter)
+                return
+            iter = self.zoneStore.iter_next(iter)
+        # fallback
+        selection.select_path(0)
 
     def get_active_service(self):
         selection = self.serviceConfServiceView.get_selection()
@@ -1588,7 +1583,6 @@ class FirewallConfig(object):
         self._add_interface(interface)
 
     def interface_removed_cb(self, zone, interface):
-        self.update_active_zones()
         if not self.runtime_view or zone != self.get_selected_zone():
             return
         iter = self.interfaceStore.get_iter_first()
@@ -1597,6 +1591,7 @@ class FirewallConfig(object):
                 self.interfaceStore.remove(iter)
                 break
             iter = self.interfaceStore.iter_next(iter)
+        self.update_active_zones()
 
     def zone_of_interface_changed_cb(self, zone, interface):
         self.update_active_zones()
@@ -1773,6 +1768,8 @@ class FirewallConfig(object):
         self.load_lockdown_whitelist()
 
     def update_active_zones(self):
+        self.active_zones.clear()
+
         # remove all entries for the left menu
         left_menu_children = self.left_menu.get_children()
         for child in left_menu_children:
@@ -1792,9 +1789,6 @@ class FirewallConfig(object):
         if not self.fw.connected:
             return
 
-        self._update_zoneStore()
-
-        self.active_zones.clear()
         active_zones = self.fw.getActiveZones()
         if active_zones:
             self.active_zones = active_zones
