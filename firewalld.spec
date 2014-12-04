@@ -1,6 +1,6 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.12
+Version: 0.3.13
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -184,6 +184,26 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Dec 04 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.13-1
+- firewalld:
+  - ipXtables: use -w or -w2 if supported (RHBZ#1161745, RHBZ#1151067)
+  - DROP INVALID packets (RHBZ#1169837)
+  - don't use ipv6header for protocol matching. (RHBZ#1065565)
+  - removeAllPassthroughs(): remove passthroughs in reverse order (RHBZ#1167100)
+  - fix config.service.removeDestination() (RHBZ#1164584)
+- firewall-config:
+  - portProtoDialog: other protocol excludes port number/range
+  - better fix for updating zoneStore also in update_active_zones()
+  - fix typo in menu
+- configuration:
+  - new services: tinc, vdsm, mosh, iscsi-target, rsyncd
+  - ship and install XML Schema files. (#8)
+- man pages:
+  - firewalld.dbus, firewalld.direct, firewalld, firewall-cmd
+- spec file:
+  - filesystem subpackage
+  - make dirs&files in /usr/lib/ world-readable (RHBZ#915988)
+
 * Tue Oct 14 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.12-1
 - firewalld:
   - new runtimeToPermanent and tracked passsthrough support
