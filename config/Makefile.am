@@ -26,6 +26,9 @@ gsettings_in_file = org.fedoraproject.FirewallApplet.gschema.xml.in \
 	org.fedoraproject.FirewallConfig.gschema.xml.in
 gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
+xmlschemadir = $(prefixlibdir)/xmlschema
+dist_xmlschema_DATA = xmlschema/icmptype.xsd xmlschema/service.xsd xmlschema/zone.xsd
+
 BUILT_SOURCES = \
 	$(desktop_DATA) \
 	$(appdata_DATA) \
@@ -220,7 +223,6 @@ install-config:
 	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
 	cp -r services $(DESTDIR)$(prefixlibdir)
 	cp -r zones $(DESTDIR)$(prefixlibdir)
-	cp -r xmlschema $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
@@ -232,8 +234,6 @@ uninstall-config:
 	rmdir $(DESTDIR)$(prefixlibdir)/services
 	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
 	rmdir $(DESTDIR)$(prefixlibdir)/zones
-	rm -f $(DESTDIR)$(prefixlibdir)/xmlschema/*
-	rmdir $(DESTDIR)$(prefixlibdir)/xmlschema
 
 install-data-local: $(INSTALL_TARGETS)
 
