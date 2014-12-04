@@ -3250,6 +3250,7 @@ class FirewallConfig(object):
                 self.portProtoDialogOkButton.set_sensitive(True)
 
     def onPortProtoDialogOtherProtoCheckToggled(self, check, *args):
+        self.portProtoDialogPortEntry.set_sensitive(not check.get_active())
         self.portProtoDialogProtoCombobox.set_sensitive(not check.get_active())
         self.portProtoDialogOtherProtoEntry.set_sensitive(check.get_active())
 
