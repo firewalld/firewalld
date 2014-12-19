@@ -218,7 +218,7 @@
       <title>How to set or change a zone for a connection?</title>
 
       <para>
-	The zone is stored into the ifcfg of the connection with <option>ZONE=option</option>. If the option is missing or empty, the default zone set in firewalld is used.
+	The zone is stored into the ifcfg of the connection with <option>ZONE=</option> option. If the option is missing or empty, the default zone set in firewalld is used.
       </para>
       <para>
        If the connection is controlled by NetworkManager, you can also use <command>nm-connection-editor</command> to change the zone.
