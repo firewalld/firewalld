@@ -390,7 +390,7 @@ class FirewallZone:
         cleanup_chains = None
         cleanup_modules = None
         cleanup_rules = None
-        
+
         # handle chains
         if enable:
             for (table, chain) in chains:
@@ -637,7 +637,7 @@ class FirewallZone:
 
         if source_id in _obj.settings["sources"]:
             raise FirewallError(ZONE_ALREADY_SET,
-                            "'%s' already bound to '%s'" % (source_id, zone))
+                            "'%s' already bound to '%s'" % (source_id, _zone))
         if self.get_zone_of_source(source) is not None:
             raise FirewallError(ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % source_id)
@@ -1037,7 +1037,7 @@ class FirewallZone:
         rule_id = self.__rule_id(rule)
         if rule_id in _obj.settings["rules"]:
             raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (rule, zone))
+                                "'%s' already in '%s'" % (rule, _zone))
 
         if _obj.applied:
             mark = self.__rule(True, _zone, rule, None)
@@ -1057,7 +1057,7 @@ class FirewallZone:
         rule_id = self.__rule_id(rule)
         if not rule_id in _obj.settings["rules"]:
             raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (rule, zone))
+                                "'%s' not in '%s'" % (rule, _zone))
 
         if "mark" in _obj.settings["rules"][rule_id]:
             mark = _obj.settings["rules"][rule_id]["mark"]
@@ -1144,7 +1144,7 @@ class FirewallZone:
         service_id = self.__service_id(service)
         if service_id in _obj.settings["services"]:
             raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (service_id, zone))
+                                "'%s' already in '%s'" % (service_id, _zone))
 
         if _obj.applied:
             self.__service(True, _zone, service)
@@ -1162,7 +1162,7 @@ class FirewallZone:
         service_id = self.__service_id(service)
         if not service_id in _obj.settings["services"]:
             raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (service, zone))
+                                "'%s' not in '%s'" % (service, _zone))
 
         if _obj.applied:
             self.__service(False, _zone, service)
@@ -1209,7 +1209,7 @@ class FirewallZone:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
             raise FirewallError(COMMAND_FAILED, msg)
-        
+
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
 
@@ -1222,7 +1222,7 @@ class FirewallZone:
         port_id = self.__port_id(port, protocol)
         if port_id in _obj.settings["ports"]:
             raise FirewallError(ALREADY_ENABLED,
-                          "'%s:%s' already in '%s'" % (port, protocol, zone))
+                          "'%s:%s' already in '%s'" % (port, protocol, _zone))
 
         if _obj.applied:
             self.__port(True, _zone, port, protocol)
@@ -1240,7 +1240,7 @@ class FirewallZone:
         port_id = self.__port_id(port, protocol)
         if not port_id in _obj.settings["ports"]:
             raise FirewallError(NOT_ENABLED,
-                             "'%s:%s' not in '%s'" % (port, protocol, zone))
+                             "'%s:%s' not in '%s'" % (port, protocol, _zone))
 
         if _obj.applied:
             self.__port(False, _zone, port, protocol)
@@ -1305,7 +1305,7 @@ class FirewallZone:
         masquerade_id = self.__masquerade_id()
         if masquerade_id in _obj.settings["masquerade"]:
             raise FirewallError(ALREADY_ENABLED,
-                                "masquerade already enabled in '%s'" % zone)
+                                "masquerade already enabled in '%s'" % _zone)
 
         if _obj.applied:
             self.__masquerade(True, _zone)
@@ -1323,7 +1323,7 @@ class FirewallZone:
         masquerade_id = self.__masquerade_id()
         if masquerade_id not in _obj.settings["masquerade"]:
             raise FirewallError(NOT_ENABLED,
-                                "masquerade not enabled in '%s'" % zone)
+                                "masquerade not enabled in '%s'" % _zone)
 
         if _obj.applied:
             self.__masquerade(False, _zone)
@@ -1426,13 +1426,13 @@ class FirewallZone:
         if forward_id in _obj.settings["forward_ports"]:
             raise FirewallError(ALREADY_ENABLED,
                                 "'%s:%s:%s:%s' already in '%s'" % \
-                                (port, protocol, toport, toaddr, zone))
+                                (port, protocol, toport, toaddr, _zone))
 
         mark = self._fw.new_mark()
         if _obj.applied:
             self.__forward_port(True, _zone, port, protocol, toport, toaddr,
                                 mark_id=mark)
-        
+
         _obj.settings["forward_ports"][forward_id] = \
             self.__gen_settings(timeout, sender, mark=mark)
 
@@ -1448,7 +1448,7 @@ class FirewallZone:
         if not forward_id in _obj.settings["forward_ports"]:
             raise FirewallError(NOT_ENABLED,
                                 "'%s:%s:%s:%s' not in '%s'" % \
-                                (port, protocol, toport, toaddr, zone))
+                                (port, protocol, toport, toaddr, _zone))
 
         mark = _obj.settings["forward_ports"][forward_id]["mark"]
 
@@ -1529,7 +1529,7 @@ class FirewallZone:
         icmp_id = self.__icmp_block_id(icmp)
         if icmp_id in _obj.settings["icmp_blocks"]:
             raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (icmp, zone))
+                                "'%s' already in '%s'" % (icmp, _zone))
 
         if _obj.applied:
             self.__icmp_block(True, _zone, icmp)
@@ -1547,7 +1547,7 @@ class FirewallZone:
         icmp_id = self.__icmp_block_id(icmp)
         if not icmp_id in _obj.settings["icmp_blocks"]:
             raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (icmp, zone))
+                                "'%s' not in '%s'" % (icmp, _zone))
 
         if _obj.applied:
             self.__icmp_block(False, _zone, icmp)
