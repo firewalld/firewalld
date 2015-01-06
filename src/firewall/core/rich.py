@@ -167,7 +167,7 @@ class Rich_Limit(object):
         except:
             raise FirewallError(INVALID_LIMIT, self.value)
 
-        if rate < 0 or duration not in [ "s", "m", "h", "d" ]:
+        if rate < 1 or duration not in [ "s", "m", "h", "d" ]:
             raise FirewallError(INVALID_LIMIT, self.value)
 
         mult = 1
