@@ -183,6 +183,10 @@ class Rich_Limit(object):
         if 10000 * mult / rate == 0:
             raise FirewallError(INVALID_LIMIT, "%s too fast" % self.value)
 
+        if rate == 1 and duration == "d":
+            # iptables (v1.4.21) doesn't accept 1/d
+            raise FirewallError(INVALID_LIMIT, "%s too slow" % self.value)
+
     def __str__(self):
         return 'limit value="%s"' % (self.value)
 
