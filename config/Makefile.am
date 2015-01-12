@@ -76,6 +76,7 @@ EXTRA_DIST = \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
 	services/dns.xml \
+	services/dropbox-lansync.xml \
 	services/ftp.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-ldaps.xml \
