@@ -56,9 +56,50 @@ class FirewallDirect:
         self._rules = LastUpdatedOrderedDict()
         self._rule_priority_positions = { }
         self._passthroughs = LastUpdatedOrderedDict()
+        self._obj = None
 
     def cleanup(self):
         self.__init_vars()
+
+    def set_permanent_config(self, obj):
+        # Apply permanent configuration and save the obj to be able to
+        # remove permanent configuration settings within get_runtime_config
+        # for use in firewalld reload.
+        self._obj = obj
+        self.set_config((obj.get_all_chains(),
+                         obj.get_all_rules(),
+                         obj.get_all_passthroughs()))
+
+    def get_runtime_config(self):
+        # Return only runtime changes
+        # Remove all chains, rules and passthroughs that are in self._obj
+        # (permanent config applied in firewalld _start.
+        chains = LastUpdatedOrderedDict()
+        rules = LastUpdatedOrderedDict()
+        passthroughs = LastUpdatedOrderedDict()
+
+        for table_id in self._chains:
+            (ipv, table) = table_id
+            for chain in self._chains[table_id]:
+                if not self._obj.query_chain(ipv, table, chain):
+                    chains.setdefault(table_id, [ ]).append(chain)
+
+        for chain_id in self._rules:
+            (ipv, table, chain) = chain_id
+            for (priority, args) in self._rules[chain_id]:
+                if not self._obj.query_rule(ipv, table, chain, priority, args):
+                    if not chain_id in rules:
+                        rules[chain_id] = LastUpdatedOrderedDict()
+                    rules[chain_id][rule_id] = priority
+
+        for ipv in self._passthroughs:
+            for args in self._passthroughs[ipv]:
+                if not self._obj.query_passthrough(ipv, args):
+                    if not ipv in passthroughs:
+                        passthroughs[ipv] = [ ]
+                    passthroughs[ipv].append(args)
+
+        return (chains, rules, passthroughs)
 
     def get_config(self):
         return (self._chains, self._rules, self._passthroughs)

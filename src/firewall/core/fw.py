@@ -216,9 +216,7 @@ class Firewall:
                 log.debug1("Failed to load direct rules file '%s': %s",
                            FIREWALLD_DIRECT, msg)
             else:
-                self.direct.set_config((obj.get_all_chains(),
-                                        obj.get_all_rules(),
-                                        obj.get_all_passthroughs()))
+                self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
 
         # check if default_zone is a valid zone
@@ -673,7 +671,7 @@ class Firewall:
         for zone in self.zone.get_zones():
             _zone_interfaces[zone] = self.zone.get_settings(zone)["interfaces"]
         # save direct config
-        _direct_config = self.direct.get_config()
+        _direct_config = self.direct.get_runtime_config()
         _old_dz = self.get_default_zone()
 
         # stop

@@ -85,6 +85,20 @@ assert_bad() {
   fi
 }
 
+assert_bad_contains() {
+  local args="${1}"
+  local value="${2}"
+  local ret
+
+  ret=$(${path}firewall-cmd ${args}) > /dev/null
+  if [[ ( "$?" -ne 0 ) || ( "${ret}" = *${value}* ) ]]; then
+    ((failures++))
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' does contain '${value}')${RESTORE}"
+  else
+    echo "${args} ... OK"
+  fi
+}
+
 # rich rules need separate assert methods because of quotation hell
 assert_rich_good() {
   local operation="${1}"
@@ -562,6 +576,22 @@ assert_bad           "--permanent --direct --remove-chain ipv5 filter ${mychain_
 assert_good          "--permanent --direct --remove-chain ipv4 filter ${mychain_p}"
 assert_bad           "--permanent --direct --query-chain ipv4 filter ${mychain_p}"
 assert_good          "--permanent --direct --remove-chain ipv4 filter dummy" # removing nonexisting chain is just warning
+
+rule1="ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 81"
+rule2="ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 82"
+assert_good          "--permanent --direct --add-rule ${rule1}"
+assert_good_contains "--permanent --direct --get-all-rules" "${rule1}"
+assert_good          "--reload"
+assert_good_contains "--direct --get-all-rules" "${rule1}"
+assert_good          "--permanent --direct --remove-rule ${rule1}"
+assert_good          "--permanent --direct --add-rule ${rule2}"
+assert_good_contains "--permanent --direct --get-all-rules" "${rule2}"
+assert_good          "--reload"
+assert_bad_contains  "--direct --get-all-rules" "${rule1}"
+assert_good_contains "--direct --get-all-rules" "${rule2}"
+assert_good          "--permanent --direct --remove-rule ${rule2}"
+assert_good          "--reload"
+assert_bad_contains  "--direct --get-all-rules" "${rule2}"
 
 # lockdown
 
