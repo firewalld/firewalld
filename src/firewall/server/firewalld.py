@@ -1819,7 +1819,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.remove_passthrough(ipv, args)
         self.PassthroughRemoved(ipv, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='b')
     @dbus_handle_exceptions
@@ -1831,7 +1831,7 @@ class FirewallD(slip.dbus.service.Object):
                        (ipv, "','".join(args)))
         return self.fw.direct.query_passthrough(ipv, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sas)')
     @dbus_handle_exceptions
@@ -1851,7 +1851,7 @@ class FirewallD(slip.dbus.service.Object):
         for passthrough in reversed(self.getAllPassthroughs()):
             self.removePassthrough(*passthrough)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
+    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
     @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='s',
                          out_signature='aas')
     @dbus_handle_exceptions
