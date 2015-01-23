@@ -327,8 +327,8 @@ class Direct(IO_Object):
             if len(self.passthroughs[ipv]) == 0:
                 del self.passthroughs[ipv]
         else:
-            raise ValueError, "Passthrough '%s' for ipv '%s'" % \
-                ("',".join(args), ipv) + "not in list"
+            raise ValueError("Passthrough '%s' for ipv '%s'" % \
+                             ("',".join(args), ipv) + "not in list")
 
     def query_passthrough(self, ipv, args):
         self._check_ipv(ipv)
@@ -339,7 +339,7 @@ class Direct(IO_Object):
         if ipv in self.passthroughs:
             return self.passthroughs[ipv]
         else:
-            raise ValueError, "No passthroughs for ipv '%s'" % (ipv)
+            raise ValueError("No passthroughs for ipv '%s'" % (ipv))
 
     def get_all_passthroughs(self):
         return self.passthroughs
