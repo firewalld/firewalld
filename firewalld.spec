@@ -272,8 +272,9 @@ fi
 
 %changelog
 * Wed Jan 28 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14-0
-- new python2-firewall and python3-firewall sub packages
-- switch to python3 usage
+- enable python2 and python3 bindings for fedora >= 20 and rhel >= 7
+- use python3 bindings on fedora >= 22 and rhel >= 8 for firewalld,
+  firewall-config and firewall-applet
 
 * Thu Dec 04 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.13-1
 - firewalld:
