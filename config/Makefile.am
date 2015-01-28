@@ -112,6 +112,7 @@ EXTRA_DIST = \
 	services/postgresql.xml \
 	services/privoxy.xml \
 	services/proxy-dhcp.xml \
+	services/ptp.xml \
 	services/puppetmaster.xml \
 	services/radius.xml \
 	services/rpc-bind.xml \
