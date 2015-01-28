@@ -208,11 +208,11 @@ fi
 %{_mandir}/man5/firewall*.5*
 
 %files -n python2-firewall
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/config
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core/io
-%attr(0755,root,root) %dir %{python2_sitelib}/firewall/server
+%dir %{python2_sitelib}/firewall
+%dir %{python2_sitelib}/firewall/config
+%dir %{python2_sitelib}/firewall/core
+%dir %{python2_sitelib}/firewall/core/io
+%dir %{python2_sitelib}/firewall/server
 %{python2_sitelib}/firewall/*.py*
 %{python2_sitelib}/firewall/config/*.py*
 %{python2_sitelib}/firewall/core/*.py*
@@ -221,16 +221,16 @@ fi
 
 %if 0%{?with_python3}
 %files -n python3-firewall
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/__pycache__
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/config
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/config/__pycache__
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/__pycache__
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/io
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/io/__pycache__
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/server
-%attr(0755,root,root) %dir %{python3_sitelib}/firewall/server/__pycache__
+%dir %{python3_sitelib}/firewall
+%dir %{python3_sitelib}/firewall/__pycache__
+%dir %{python3_sitelib}/firewall/config
+%dir %{python3_sitelib}/firewall/config/__pycache__
+%dir %{python3_sitelib}/firewall/core
+%dir %{python3_sitelib}/firewall/core/__pycache__
+%dir %{python3_sitelib}/firewall/core/io
+%dir %{python3_sitelib}/firewall/core/io/__pycache__
+%dir %{python3_sitelib}/firewall/server
+%dir %{python3_sitelib}/firewall/server/__pycache__
 %{python3_sitelib}/firewall/__pycache__/*.py*
 %{python3_sitelib}/firewall/*.py*
 %{python3_sitelib}/firewall/config/*.py*
@@ -253,7 +253,6 @@ fi
 
 %files -n firewall-applet
 %{_bindir}/firewall-applet
-%defattr(0644,root,root)
 %{_sysconfdir}/xdg/autostart/firewall-applet.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
 %{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
@@ -261,7 +260,6 @@ fi
 
 %files -n firewall-config
 %{_bindir}/firewall-config
-%defattr(0644,root,root)
 %{_datadir}/firewalld/firewall-config.glade
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
 %{_datadir}/applications/firewall-config.desktop
