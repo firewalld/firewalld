@@ -1,7 +1,14 @@
+%if (0%{?fedora} >= 20 || 0%{?rhel} >= 7)
+%define with_python3 1
+%if (0%{?fedora} >= 22 || 0%{?rhel} >= 8)
+%define use_python3 1
+%endif
+%endif
+
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.13
-Release: 1%{?dist}
+Version: 0.3.14
+Release: 0%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
@@ -13,19 +20,46 @@ BuildRequires: intltool
 BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 BuildRequires: docbook-style-xsl
-Requires: dbus-python
-Requires: python-slip-dbus
-Requires: python-decorator
-Requires: pygobject3-base
+BuildRequires:  python2-devel
+%if 0%{?with_python3}
+BuildRequires:  python3-devel
+%endif #0%{?with_python3}
 Requires: iptables, ebtables
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
 Requires: firewalld-filesystem = %{version}-%{release}
+%if 0%{?use_python3}
+Requires: python3-firewall  = %{version}-%{release}
+%else #0%{?use_python3}
+Requires: python2-firewall  = %{version}-%{release}
+%endif #0%{?use_python3}
 
 %description
 firewalld is a firewall service daemon that provides a dynamic customizable 
 firewall with a D-Bus interface.
+
+%package -n python2-firewall
+Summary: Python2 bindings for firewalld
+Requires: dbus-python
+Requires: python-slip-dbus
+Requires: python-decorator
+Requires: pygobject3-base
+
+%description -n python2-firewall
+Python2 bindings for firewalld.
+
+%if 0%{?with_python3}
+%package -n python3-firewall
+Summary: Python3 bindings for firewalld
+Requires: python3-dbus
+Requires: python3-slip-dbus
+Requires: python3-decorator
+Requires: python3-gobject
+
+%description -n python3-firewall
+Python3 bindings for firewalld.
+%endif #0%{?with_python3}
 
 %package -n firewalld-filesystem
 Summary: Firewalld directory layout and rpm macros
@@ -63,11 +97,38 @@ firewalld.
 %prep
 %setup -q
 
+%if 0%{?with_python3}
+rm -rf %{py3dir}
+cp -a . %{py3dir}
+sed -i -e 's|/usr/bin/python -Es|%{__python3} -Es|' %{py3dir}/fix_python_shebang.sh
+sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
+%endif #0%{?with_python3}
+
 %build
 %configure --enable-sysconfig --enable-rpmmacros
 
+%if 0%{?with_python3}
+pushd %{py3dir}
+%configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
+popd
+%endif #0%{?with_python3}
+
 %install
-make install DESTDIR=%{buildroot}
+%if 0%{?use_python3}
+make -C src install-nobase_dist_pythonDATA PYTHON=%{__python2} DESTDIR=%{buildroot}
+%else
+make install PYTHON=%{__python2} DESTDIR=%{buildroot}
+%endif #0%{?use_python3}
+
+%if 0%{?with_python3}
+pushd %{py3dir}
+%if 0%{?use_python3}
+make install PYTHON=%{__python3} DESTDIR=%{buildroot}
+%else
+make -C src install-nobase_dist_pythonDATA PYTHON=%{__python3} DESTDIR=%{buildroot}
+%endif #0%{?use_python3}
+popd
+%endif #0%{?with_python3}
 
 desktop-file-install --delete-original \
   --dir %{buildroot}%{_sysconfdir}/xdg/autostart \
@@ -142,19 +203,45 @@ fi
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
-%attr(0755,root,root) %dir %{python_sitelib}/firewall
-%attr(0755,root,root) %dir %{python_sitelib}/firewall/config
-%attr(0755,root,root) %dir %{python_sitelib}/firewall/core
-%attr(0755,root,root) %dir %{python_sitelib}/firewall/core/io
-%attr(0755,root,root) %dir %{python_sitelib}/firewall/server
-%{python_sitelib}/firewall/*.py*
-%{python_sitelib}/firewall/config/*.py*
-%{python_sitelib}/firewall/core/*.py*
-%{python_sitelib}/firewall/core/io/*.py*
-%{python_sitelib}/firewall/server/*.py*
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
+
+%files -n python2-firewall
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/config
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core/io
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/server
+%{python2_sitelib}/firewall/*.py*
+%{python2_sitelib}/firewall/config/*.py*
+%{python2_sitelib}/firewall/core/*.py*
+%{python2_sitelib}/firewall/core/io/*.py*
+%{python2_sitelib}/firewall/server/*.py*
+
+%if 0%{?with_python3}
+%files -n python3-firewall
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/config
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/config/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/io
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/io/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/server
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/server/__pycache__
+%{python3_sitelib}/firewall/__pycache__/*.py*
+%{python3_sitelib}/firewall/*.py*
+%{python3_sitelib}/firewall/config/*.py*
+%{python3_sitelib}/firewall/config/__pycache__/*.py*
+%{python3_sitelib}/firewall/core/*.py*
+%{python3_sitelib}/firewall/core/__pycache__/*.py*
+%{python3_sitelib}/firewall/core/io/*.py*
+%{python3_sitelib}/firewall/core/io/__pycache__/*.py*
+%{python3_sitelib}/firewall/server/*.py*
+%{python3_sitelib}/firewall/server/__pycache__/*.py*
+%endif #0%{?with_python3}
 
 %files -n firewalld-filesystem
 %dir %{_prefix}/lib/firewalld
@@ -184,6 +271,10 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed Jan 28 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14-0
+- new python2-firewall and python3-firewall sub packages
+- switch to python3 usage
+
 * Thu Dec 04 2014 Jiri Popelka <jpopelka@redhat.com> - 0.3.13-1
 - firewalld:
   - ipXtables: use -w or -w2 if supported (RHBZ#1161745, RHBZ#1151067)
