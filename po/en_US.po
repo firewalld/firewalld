@@ -3,28 +3,24 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Pedro Marques Daniel <danielthpro@gmail.com>, 2013
-# Pedro Marques Daniel <danielthpro@gmail.com>, 2013
-# Rui Gouveia <rui.gouveia@gmail.com>, 2010
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: firewalld\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-26 15:41+0100\n"
-"PO-Revision-Date: 2014-10-15 10:24-0400\n"
+"PO-Revision-Date: 2014-10-15 14:24+0000\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
-"Language-Team: Portuguese (http://www.transifex.com/projects/p/firewalld/"
-"language/pt/)\n"
-"Language: pt\n"
+"Language-Team: English (United States) (http://www.transifex.com/projects/p/"
+"firewalld/language/en_US/)\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.5.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
-msgstr ""
+msgstr "Firewall Applet"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -32,484 +28,489 @@ msgstr "Firewall"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:38
 msgid "Firewall Configuration"
-msgstr "Configuração da Firewall"
+msgstr "Firewall Configuration"
 
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "firewall;network;security;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
 msgid "Unexpected element '%s'"
-msgstr ""
+msgstr "Unexpected element '%s'"
 
 #: ../src/firewall/core/io/io_object.py:158
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
-msgstr ""
+msgstr "Element '%s': missing '%s' attribute"
 
 #: ../src/firewall/core/io/io_object.py:166
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
-msgstr ""
+msgstr "Element '%s': unexpected attribute '%s'"
 
 #: ../src/firewalld:64 ../src/firewall-offline-cmd:40
 #, c-format
 msgid "You need to be root to run %s."
-msgstr ""
+msgstr "You need to be root to run %s."
 
 #: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "Not starting FirewallD, already running."
 
 #: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "Fork #1 failed: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:5233
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "Select zone for connection '%s'"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
-msgstr ""
+msgstr "Default Zone"
 
 #: ../src/firewall-applet:189 ../src/firewall-config:5316
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr ""
+msgstr "Select zone for interface '%s'"
 
 #: ../src/firewall-applet:245 ../src/firewall-config:5372
 #, c-format
 msgid "Select zone for source %s"
-msgstr ""
+msgstr "Select zone for source %s"
 
 #: ../src/firewall-applet:347
 msgid "Shields Up"
-msgstr ""
+msgstr "Shields Up"
 
 #: ../src/firewall-applet:360
 msgid "Enable Notifications"
-msgstr "Activar Notificações"
+msgstr "Enable Notifications"
 
 #: ../src/firewall-applet:373
 msgid "Edit Firewall Settings..."
-msgstr "Editar Opções da Firewall..."
+msgstr "Edit Firewall Settings..."
 
 #: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
-msgstr ""
+msgstr "Change Zones of Connections..."
 
 #: ../src/firewall-applet:388
 msgid "Configure Shields UP/Down Zones..."
-msgstr ""
+msgstr "Configure Shields UP/Down Zones..."
 
 #: ../src/firewall-applet:397
 msgid "Block all network traffic"
-msgstr "Bloquear todo o tráfego da rede"
+msgstr "Block all network traffic"
 
 #: ../src/firewall-applet:426
 msgid "Configure Shields Up/Down Zones"
-msgstr ""
+msgstr "Configure Shields Up/Down Zones"
 
 #: ../src/firewall-applet:437
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
+msgstr "Here you can select the zones used for Shields Up and Shields Down."
 
 #: ../src/firewall-applet:445
 msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
+"This feature is useful for people using the default zones mostly. For users, "
+"that are changing zones of connections, it might be of limited use."
 
 #: ../src/firewall-applet:460
 msgid "Shields Up Zone:"
-msgstr ""
+msgstr "Shields Up Zone:"
 
 #: ../src/firewall-applet:471
 msgid "Shields Down Zone:"
-msgstr ""
+msgstr "Shields Down Zone:"
 
 #: ../src/firewall-applet:622 ../src/firewall-config:1783
 msgid "Connections"
-msgstr "Conecções"
+msgstr "Connections"
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
 #: ../src/firewall-applet:717 ../src/firewall-config:1824
 #: ../src/firewall-config:1850 ../src/firewall-config:1875
 #: ../src/firewall-config.glade.h:61
 msgid "Zone"
-msgstr "Zona"
+msgstr "Zone"
 
 #: ../src/firewall-applet:679 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
-msgstr "<interface>"
+msgstr "Interfaces"
 
 #: ../src/firewall-applet:704 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
-msgstr ""
+msgstr "Sources"
 
 #: ../src/firewall-applet:816
 msgid "Connection to FirewallD established."
-msgstr ""
+msgstr "Connection to FirewallD established."
 
 #: ../src/firewall-applet:825
 msgid "Connection to FirewallD lost."
-msgstr ""
+msgstr "Connection to FirewallD lost."
 
 #: ../src/firewall-applet:872
 msgid "FirewallD has been reloaded."
-msgstr ""
+msgstr "FirewallD has been reloaded."
 
 #: ../src/firewall-applet:949
 msgid "No connection to firewall daemon"
-msgstr ""
+msgstr "No connection to firewall daemon"
 
 #: ../src/firewall-applet:955
 msgid "PANIC MODE"
-msgstr ""
+msgstr "PANIC MODE"
 
 #: ../src/firewall-applet:962
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "Default Zone: '%s'"
 
 #: ../src/firewall-applet:970
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 
 #: ../src/firewall-applet:973
 msgid "Zone '{zone}' active for interface '{interface}'"
-msgstr ""
+msgstr "Zone '{zone}' active for interface '{interface}'"
 
 #: ../src/firewall-applet:981
 msgid "Zone '{zone}' active for source {source}"
-msgstr ""
+msgstr "Zone '{zone}' active for source {source}"
 
 #: ../src/firewall-applet:985
 msgid "No Active Zones."
-msgstr "Sem Zonas Activas."
+msgstr "No Active Zones."
 
 #: ../src/firewall-applet:994
 #, c-format
 msgid "Default zone changed to '%s'."
-msgstr ""
+msgstr "Default zone changed to '%s'."
 
 #: ../src/firewall-applet:1018
 msgid "All network traffic is blocked."
-msgstr "Todo o tráfego da rede está bloqueado."
+msgstr "All network traffic is blocked."
 
 #: ../src/firewall-applet:1019
 msgid "Network traffic is not blocked anymore."
-msgstr ""
+msgstr "Network traffic is not blocked anymore."
 
 #: ../src/firewall-applet:1034 ../src/firewall-applet:1074
 msgid "activated"
-msgstr "activado"
+msgstr "activated"
 
 #: ../src/firewall-applet:1035 ../src/firewall-applet:1075
 msgid "deactivated"
-msgstr "desactivado"
+msgstr "deactivated"
 
 #: ../src/firewall-applet:1038
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
+"interface '{interface}'"
 
 #: ../src/firewall-applet:1043
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr ""
+msgstr "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 
 #: ../src/firewall-applet:1065
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
-msgstr ""
+msgstr "Zone '%s' activated for interface '%s'"
 
 #: ../src/firewall-applet:1077
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
-msgstr ""
+msgstr "Zone '{zone}' {activated_deactivated} for source '{source}'"
 
 #: ../src/firewall-applet:1100
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
-msgstr ""
+msgstr "Zone '%s' activated for source '%s'"
 
 #: ../src/firewall-applet:1166
 msgid "Firewall-applet"
-msgstr ""
+msgstr "Firewall-applet"
 
 #: ../src/firewall-config:76
 msgid "Connected."
-msgstr "Conectado."
+msgstr "Connected."
 
 #: ../src/firewall-config:77
 msgid "No connection."
-msgstr "Sem conecção."
+msgstr "No connection."
 
 #: ../src/firewall-config:78
 msgid "Waiting ..."
-msgstr ""
+msgstr "Waiting ..."
 
 #: ../src/firewall-config:79
 msgid "Retrying ..."
-msgstr ""
+msgstr "Retrying ..."
 
 #: ../src/firewall-config:80
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "Used by network connection '%s'"
 
 #: ../src/firewall-config:81
 msgid "enabled"
-msgstr ""
+msgstr "enabled"
 
 #: ../src/firewall-config:82
 msgid "disabled"
-msgstr ""
+msgstr "disabled"
 
 #: ../src/firewall-config:99
 msgid "Failed to load icons."
-msgstr ""
+msgstr "Failed to load icons."
 
 #: ../src/firewall-config:358 ../src/firewall-config:1744
 msgid "Runtime"
-msgstr ""
+msgstr "Runtime"
 
 #: ../src/firewall-config:359
 msgid "Permanent"
-msgstr ""
+msgstr "Permanent"
 
 #: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
 msgid "Service"
-msgstr "Serviço"
+msgstr "Service"
 
 #: ../src/firewall-config:427 ../src/firewall-config:468
 #: ../src/firewall-config:706
 msgid "Port"
-msgstr "Porto"
+msgstr "Port"
 
 #: ../src/firewall-config:429 ../src/firewall-config:470
 #: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "Protocol"
 
 #: ../src/firewall-config:472
 msgid "To Port"
-msgstr "Para Porto"
+msgstr "To Port"
 
 #: ../src/firewall-config:474
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "To Address"
 
 #: ../src/firewall-config:511
 msgid "Icmp Type"
-msgstr ""
+msgstr "Icmp Type"
 
 #: ../src/firewall-config:526
 msgid "Family"
-msgstr "Família"
+msgstr "Family"
 
 #: ../src/firewall-config:528
 msgid "Action"
-msgstr "Acção"
+msgstr "Action"
 
 #: ../src/firewall-config:530
 msgid "Element"
-msgstr ""
+msgstr "Element"
 
 #: ../src/firewall-config:532
 msgid "Src"
-msgstr ""
+msgstr "Src"
 
 #: ../src/firewall-config:534
 msgid "Dest"
-msgstr ""
+msgstr "Dest"
 
 #: ../src/firewall-config:536
 msgid "log"
-msgstr ""
+msgstr "log"
 
 #: ../src/firewall-config:538
 msgid "Audit"
-msgstr ""
+msgstr "Audit"
 
 #: ../src/firewall-config:1160 ../src/firewall-config:2040
 #: ../src/firewall-config:2078
 msgid "Warning"
-msgstr "Aviso"
+msgstr "Warning"
 
 #: ../src/firewall-config:1169
 msgid "Error"
-msgstr "Erro"
+msgstr "Error"
 
 #: ../src/firewall-config:1210
 msgid "Changes applied."
-msgstr ""
+msgstr "Changes applied."
 
 #: ../src/firewall-config:1488 ../src/firewall-config:2828
 msgid "accept"
-msgstr ""
+msgstr "accept"
 
 #: ../src/firewall-config:1490 ../src/firewall-config:2830
 #: ../src/firewall-config:2940
 msgid "reject"
-msgstr ""
+msgstr "reject"
 
 #: ../src/firewall-config:1494 ../src/firewall-config:2835
 msgid "drop"
-msgstr ""
+msgstr "drop"
 
 #: ../src/firewall-config:1496 ../src/firewall-config:1530
 #: ../src/firewall-config:1535
 msgid "limit"
-msgstr "limite"
+msgstr "limit"
 
 #: ../src/firewall-config:1507 ../src/firewall-config:2365
 #: ../src/firewall-config:2517 ../src/firewall-config:2788
 #: ../src/firewall-config.glade.h:208
 msgid "service"
-msgstr "serviço"
+msgstr "service"
 
 #: ../src/firewall-config:1509 ../src/firewall-config:2371
 #: ../src/firewall-config:2519 ../src/firewall-config:2791
 #: ../src/firewall-config.glade.h:209
 msgid "port"
-msgstr ""
+msgstr "port"
 
 #: ../src/firewall-config:1512 ../src/firewall-config:2376
 #: ../src/firewall-config:2528 ../src/firewall-config:2801
 #: ../src/firewall-config.glade.h:210
 msgid "protocol"
-msgstr "protocolo"
+msgstr "protocol"
 
 #: ../src/firewall-config:1514 ../src/firewall-config:2381
 #: ../src/firewall-config:2815 ../src/firewall-config:2952
 #: ../src/firewall-config.glade.h:213
 msgid "masquerade"
-msgstr ""
+msgstr "masquerade"
 
 #: ../src/firewall-config:1528
 msgid "level"
-msgstr "nível"
+msgstr "level"
 
 #: ../src/firewall-config:1532 ../src/firewall-config:1537
 msgid "yes"
-msgstr "sim"
+msgstr "yes"
 
 #: ../src/firewall-config:1694
 msgid "Authorization failed."
-msgstr ""
+msgstr "Authorization failed."
 
 #: ../src/firewall-config:1697
 msgid "Invalid name"
-msgstr "Argumento inválido %s"
+msgstr "Invalid name"
 
 #: ../src/firewall-config:1701
 msgid "Name already exists"
-msgstr ""
+msgstr "Name already exists"
 
 #: ../src/firewall-config:2037
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "Zone '%s': Service '%s' is not available."
 
 #: ../src/firewall-config:2041 ../src/firewall-config:2079
 msgid "Remove"
-msgstr "Remover"
+msgstr "Remove"
 
 #: ../src/firewall-config:2041 ../src/firewall-config:2079
 msgid "Ignore"
-msgstr "Ignorar"
+msgstr "Ignore"
 
 #: ../src/firewall-config:2075
 #, c-format
 msgid "Zone '%s': ICMP type '%s' is not available."
-msgstr ""
+msgstr "Zone '%s': ICMP type '%s' is not available."
 
 #: ../src/firewall-config:2219
 msgid "Built-in zone, rename not supported."
-msgstr ""
+msgstr "Built-in zone, rename not supported."
 
 #: ../src/firewall-config:2328 ../src/firewall-config:2763
 #: ../src/firewall-config.glade.h:193
 msgid "second"
-msgstr "segundo"
+msgstr "second"
 
 #: ../src/firewall-config:2329 ../src/firewall-config:2764
 #: ../src/firewall-config.glade.h:194
 msgid "minute"
-msgstr "minuto"
+msgstr "minute"
 
 #: ../src/firewall-config:2330 ../src/firewall-config:2765
 #: ../src/firewall-config.glade.h:195
 msgid "hour"
-msgstr "hora"
+msgstr "hour"
 
 #: ../src/firewall-config:2331 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:196
 msgid "day"
-msgstr "dia"
+msgstr "day"
 
 #: ../src/firewall-config:2332 ../src/firewall-config:2767
 #: ../src/firewall-config.glade.h:199
 msgid "emergency"
-msgstr "emergência"
+msgstr "emergency"
 
 #: ../src/firewall-config:2333 ../src/firewall-config:2768
 #: ../src/firewall-config.glade.h:200
 msgid "alert"
-msgstr "alerta"
+msgstr "alert"
 
 #: ../src/firewall-config:2334 ../src/firewall-config:2769
 #: ../src/firewall-config.glade.h:201
 msgid "critical"
-msgstr "crítico"
+msgstr "critical"
 
 #: ../src/firewall-config:2335 ../src/firewall-config:2770
 #: ../src/firewall-config.glade.h:202
 msgid "error"
-msgstr "erro"
+msgstr "error"
 
 #: ../src/firewall-config:2336 ../src/firewall-config:2771
 #: ../src/firewall-config.glade.h:203
 msgid "warning"
-msgstr "aviso"
+msgstr "warning"
 
 #: ../src/firewall-config:2337 ../src/firewall-config:2772
 #: ../src/firewall-config.glade.h:204
 msgid "notice"
-msgstr ""
+msgstr "notice"
 
 #: ../src/firewall-config:2338 ../src/firewall-config:2773
 #: ../src/firewall-config.glade.h:205
 msgid "info"
-msgstr ""
+msgstr "info"
 
 #: ../src/firewall-config:2339 ../src/firewall-config:2774
 #: ../src/firewall-config.glade.h:206
 msgid "debug"
-msgstr ""
+msgstr "debug"
 
 #: ../src/firewall-config:2384 ../src/firewall-config:2530
 #: ../src/firewall-config:2804 ../src/firewall-config:2969
 #: ../src/firewall-config.glade.h:211
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-block"
 
 #: ../src/firewall-config:2389 ../src/firewall-config:2532
 #: ../src/firewall-config:2807 ../src/firewall-config:2962
 #: ../src/firewall-config.glade.h:212
 msgid "forward-port"
-msgstr ""
+msgstr "forward-port"
 
 #: ../src/firewall-config:2510 ../src/firewall-config:2709
 #: ../src/firewall-config:2723 ../src/firewall-config:2778
@@ -529,177 +530,179 @@ msgid ""
 "masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
+"Do you want to masquerade this zone ?"
 
 #: ../src/firewall-config:3820
 msgid "Built-in service, rename not supported."
-msgstr ""
+msgstr "Built-in service, rename not supported."
 
 #: ../src/firewall-config:4175
 msgid "Built-in icmp, rename not supported."
-msgstr ""
+msgstr "Built-in icmp, rename not supported."
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr "Endereço"
+msgstr "Address"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "Port and Protocol"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "Please enter the command line."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
-msgstr ""
+msgstr "Please enter the context."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Please select default zone from the list below."
-msgstr ""
+msgstr "Please select default zone from the list below."
 
 #: ../src/firewall-config.glade.h:7
 msgid "Direct Chain"
-msgstr ""
+msgstr "Direct Chain"
 
 #: ../src/firewall-config.glade.h:8
 msgid "Please select ipv and table and enter the chain name."
-msgstr ""
+msgstr "Please select ipv and table and enter the chain name."
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
-msgstr ""
+msgstr "Table:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "security"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Chain:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
-msgstr ""
+msgstr "Direct Passthrough Rule"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Please select ipv and enter the args."
-msgstr ""
+msgstr "Please select ipv and enter the args."
 
 #: ../src/firewall-config.glade.h:18
 msgid "Args:"
-msgstr ""
+msgstr "Args:"
 
 #: ../src/firewall-config.glade.h:19
 msgid "Port Forwarding"
-msgstr "Reencaminhamento de Porto"
+msgstr "Port Forwarding"
 
 #: ../src/firewall-config.glade.h:20
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
+"Please select the source and destination options according to your needs."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Port / Port Range:"
-msgstr "Porto / Intervalo de portos:"
+msgstr "Port / Port Range:"
 
 #: ../src/firewall-config.glade.h:22
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP address:"
 
 #: ../src/firewall-config.glade.h:23
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "Protocol:"
 
 #: ../src/firewall-config.glade.h:24
 msgid "Destination"
-msgstr "Destino"
+msgstr "Destination"
 
 #: ../src/firewall-config.glade.h:25
 msgid "Source"
-msgstr ""
+msgstr "Source"
 
 #: ../src/firewall-config.glade.h:26
 msgid "Local forwarding"
-msgstr "Reencaminhamento local"
+msgstr "Local forwarding"
 
 #: ../src/firewall-config.glade.h:27
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "Forward to another port"
 
 #: ../src/firewall-config.glade.h:28
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
+"If you enable local forwarding, you have to specify a port. This port has to "
+"be different to the source port."
 
 #: ../src/firewall-config.glade.h:29
 msgid "Base ICMP Type Settings"
-msgstr ""
+msgstr "Base ICMP Type Settings"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Please configure base ICMP type settings:"
-msgstr ""
+msgstr "Please configure base ICMP type settings:"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Bold entries are mandatory, all others are optional."
-msgstr ""
+msgstr "Bold entries are mandatory, all others are optional."
 
 #: ../src/firewall-config.glade.h:32
 msgid "Name:"
-msgstr "Nome:"
+msgstr "Name:"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Version:"
-msgstr "Versão:"
+msgstr "Version:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Short:"
-msgstr ""
+msgstr "Short:"
 
 #: ../src/firewall-config.glade.h:35
 msgid "Description:"
-msgstr "Descrição:"
+msgstr "Description:"
 
 #: ../src/firewall-config.glade.h:36
 msgid "ICMP Type"
-msgstr "Tipo ICMP"
+msgstr "ICMP Type"
 
 #: ../src/firewall-config.glade.h:37
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "Please select an ICMP type"
 
 #: ../src/firewall-config.glade.h:39
 msgid "_File"
-msgstr "_Ficheiro"
+msgstr "_File"
 
 #: ../src/firewall-config.glade.h:40
 msgid "_Options"
-msgstr "_Opções"
+msgstr "_Options"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Reload Firewalld"
 
 #: ../src/firewall-config.glade.h:42
 msgid ""
@@ -707,68 +710,73 @@ msgid ""
 "runtime configuration. i.e. all runtime only changes done until reload are "
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
+"Reloads firewall rules. Current permanent configuration will become new "
+"runtime configuration. i.e. all runtime only changes done until reload are "
+"lost with reload if they have not been also in permanent configuration."
 
 #: ../src/firewall-config.glade.h:43
 msgid "Change which zone a network connection belongs to."
-msgstr ""
+msgstr "Change which zone a network connection belongs to."
 
 #: ../src/firewall-config.glade.h:45
 msgid "Change Default Zone"
-msgstr ""
+msgstr "Change Default Zone"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Change default zone for connections or interfaces."
-msgstr ""
+msgstr "Change default zone for connections or interfaces."
 
 #: ../src/firewall-config.glade.h:47
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr ""
+msgstr "Panic mode means that all incoming and outgoing packets are dropped."
 
 #: ../src/firewall-config.glade.h:48
 msgid "Panic Mode"
-msgstr ""
+msgstr "Panic Mode"
 
 #: ../src/firewall-config.glade.h:49
 msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
+"Lockdown locks firewall configuration so that only applications on lockdown "
+"whitelist are able to change it."
 
 #: ../src/firewall-config.glade.h:50
 msgid "Lockdown"
-msgstr ""
+msgstr "Lockdown"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Make runtime configuration permanent"
-msgstr ""
+msgstr "Make runtime configuration permanent"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Runtime To Permanent"
-msgstr ""
+msgstr "Runtime To Permanent"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
-msgstr ""
+msgstr "_View"
 
 #: ../src/firewall-config.glade.h:54
 msgid "ICMP Types"
-msgstr ""
+msgstr "ICMP Types"
 
 #: ../src/firewall-config.glade.h:55
 msgid "Direct Configuration"
-msgstr ""
+msgstr "Direct Configuration"
 
 #: ../src/firewall-config.glade.h:56
 msgid "Lockdown Whitelist"
-msgstr ""
+msgstr "Lockdown Whitelist"
 
 #: ../src/firewall-config.glade.h:57
 msgid "_Help"
-msgstr "_Ajuda"
+msgstr "_Help"
 
 #: ../src/firewall-config.glade.h:58
 msgid "Configuration:"
-msgstr ""
+msgstr "Configuration:"
 
 #: ../src/firewall-config.glade.h:59
 msgid ""
@@ -776,6 +784,9 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
+"Currently visible configuration. Runtime configuration is the actual active "
+"configuration. Permanent configuration will be active after service or "
+"system reload or restart."
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -785,22 +796,27 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
+"A firewalld zone defines the level of trust for network connections, "
+"interfaces and source addresses bound to the zone. The zone combines "
+"services, ports, protocols, masquerading, port/packet forwarding, icmp "
+"filters and rich rules. The zone can be bound to interfaces and source "
+"addresses."
 
 #: ../src/firewall-config.glade.h:62
 msgid "Add Zone"
-msgstr "Adicionar Zona"
+msgstr "Add Zone"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Edit Zone"
-msgstr "Editar Zona"
+msgstr "Edit Zone"
 
 #: ../src/firewall-config.glade.h:64
 msgid "Remove Zone"
-msgstr "Remover Zona"
+msgstr "Remove Zone"
 
 #: ../src/firewall-config.glade.h:65
 msgid "Load Zone Defaults"
-msgstr ""
+msgstr "Load Zone Defaults"
 
 #: ../src/firewall-config.glade.h:66
 msgid ""
@@ -808,32 +824,37 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
+"Here you can define which services are trusted in the zone. Trusted services "
+"are accessible from all hosts and networks that can reach the machine from "
+"connections, interfaces and sources bound to this zone."
 
 #: ../src/firewall-config.glade.h:67
 msgid "Services"
-msgstr "Serviços"
+msgstr "Services"
 
 #: ../src/firewall-config.glade.h:68
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks that can connect to the machine."
 
 #: ../src/firewall-config.glade.h:69
 msgid "Add Port"
-msgstr "Para Porto"
+msgstr "Add Port"
 
 #: ../src/firewall-config.glade.h:70
 msgid "Edit Port"
-msgstr ""
+msgstr "Edit Port"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Remove Port"
-msgstr ""
+msgstr "Remove Port"
 
 #: ../src/firewall-config.glade.h:72
 msgid "Ports"
-msgstr ""
+msgstr "Ports"
 
 #: ../src/firewall-config.glade.h:73
 msgid ""
@@ -841,23 +862,25 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"Masquerading permite configurar uma máquina ou router que liga a sua rede "
-"local à Internet. A sua rede local não será visível e as máquinas aparecem "
-"na Internet com um único endereço. Masquerading é válido apenas em IPv4."
+"Masquerading allows you to set up a host or router that connects your local "
+"network to the internet. Your local network will not be visible and the "
+"hosts appear as a single address on the internet. Masquerading is IPv4 only."
 
 #: ../src/firewall-config.glade.h:74
 msgid "Masquerade zone"
-msgstr ""
+msgstr "Masquerade zone"
 
 #: ../src/firewall-config.glade.h:75
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
 msgstr ""
+"If you enable masquerading, IP forwarding will be enabled for your IPv4 "
+"networks."
 
 #: ../src/firewall-config.glade.h:76
 msgid "Masquerading"
-msgstr "Mascarar"
+msgstr "Masquerading"
 
 #: ../src/firewall-config.glade.h:77
 msgid ""
@@ -866,22 +889,22 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Adicione entradas ao reencaminhamento de portos de um porto para outro no "
-"sistema local ou do sistema local para outro sistema. O reencaminhamento "
-"para outro sistema só é útil se o interface estiver configurado como "
-"masqueraded. O reencaminhamento de portos só é suportado em IPv4."
+"Add entries to forward ports either from one port to another on the local "
+"system or from the local system to another system. Forwarding to another "
+"system is only useful if the interface is masqueraded. Port forwarding is "
+"IPv4 only."
 
 #: ../src/firewall-config.glade.h:78
 msgid "Add Forward Port"
-msgstr ""
+msgstr "Add Forward Port"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Edit Forward Port"
-msgstr ""
+msgstr "Edit Forward Port"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Remove Forward Port"
-msgstr ""
+msgstr "Remove Forward Port"
 
 #: ../src/firewall-config.glade.h:81
 msgid ""
@@ -889,131 +912,137 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"O protocolo ICMP (Internet Control Message Protocol) é utilizado "
-"principalmente para enviar mensagens de erro entre computadores em rede, mas "
-"adicionalmente para mensagens informativas como pedidos e respostas de ping."
+"The Internet Control Message Protocol (ICMP) is mainly used to send error "
+"messages between networked computers, but additionally for informational "
+"messages like ping requests and replies."
 
 #: ../src/firewall-config.glade.h:82
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Marque os tipos ICMP, na lista, que devem ser rejeitados. Todos os outros "
-"tipos ICMP serão permitidos na firewall. Por omissão não existem limitações."
+"Mark the ICMP types in the list, which should be rejected. All other ICMP "
+"types are allowed to pass the firewall. The default is no limitation."
 
 #: ../src/firewall-config.glade.h:83
 msgid "ICMP Filter"
-msgstr "Filtro ICMP"
+msgstr "ICMP Filter"
 
 #: ../src/firewall-config.glade.h:84
 msgid "Here you can set rich language rules for the zone."
-msgstr ""
+msgstr "Here you can set rich language rules for the zone."
 
 #: ../src/firewall-config.glade.h:85
 msgid "Add Rich Rule"
-msgstr ""
+msgstr "Add Rich Rule"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Edit Rich Rule"
-msgstr ""
+msgstr "Edit Rich Rule"
 
 #: ../src/firewall-config.glade.h:87
 msgid "Remove Rich Rule"
-msgstr ""
+msgstr "Remove Rich Rule"
 
 #: ../src/firewall-config.glade.h:88
 msgid "Rich Rules"
-msgstr ""
+msgstr "Rich Rules"
 
 #: ../src/firewall-config.glade.h:89
 msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
+"Add entries to bind interfaces to the zone. If the interface will be used by "
+"a connection, the zone will be set to the zone specified in the connection."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Interface"
-msgstr ""
+msgstr "Add Interface"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Edit Interface"
-msgstr ""
+msgstr "Edit Interface"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Remove Interface"
-msgstr ""
+msgstr "Remove Interface"
 
 #: ../src/firewall-config.glade.h:94
 msgid "Add entries to bind source addresses or areas to the zone."
-msgstr ""
+msgstr "Add entries to bind source addresses or areas to the zone."
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add Source"
-msgstr ""
+msgstr "Add Source"
 
 #: ../src/firewall-config.glade.h:96
 msgid "Edit Source"
-msgstr ""
+msgstr "Edit Source"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Remove Source"
-msgstr ""
+msgstr "Remove Source"
 
 #: ../src/firewall-config.glade.h:99
 msgid "Zones"
-msgstr ""
+msgstr "Zones"
 
 #: ../src/firewall-config.glade.h:100
 msgid ""
 "A firewalld service is a combination of ports, protocols, modules and "
 "destination addresses."
 msgstr ""
+"A firewalld service is a combination of ports, protocols, modules and "
+"destination addresses."
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Service"
-msgstr "Adicionar Serviço"
+msgstr "Add Service"
 
 #: ../src/firewall-config.glade.h:103
 msgid "Edit Service"
-msgstr "Editar Serviço"
+msgstr "Edit Service"
 
 #: ../src/firewall-config.glade.h:104
 msgid "Remove Service"
-msgstr "Remover Serviço"
+msgstr "Remove Service"
 
 #: ../src/firewall-config.glade.h:105
 msgid "Load Service Defaults"
-msgstr ""
+msgstr "Load Service Defaults"
 
 #: ../src/firewall-config.glade.h:106
 msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
+"Add additional ports or port ranges, which need to be accessible for all "
+"hosts or networks. You can also add protocols without specific ports."
 
 #: ../src/firewall-config.glade.h:107
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "Add Entry"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "Edit Entry"
 
 #: ../src/firewall-config.glade.h:109
 msgid "Remove Entry"
-msgstr "Remover entrada"
+msgstr "Remove Entry"
 
 #: ../src/firewall-config.glade.h:110
 msgid "Ports and Protocols"
-msgstr ""
+msgstr "Ports and Protocols"
 
 #: ../src/firewall-config.glade.h:111
 msgid "Netfilter helper modules"
-msgstr ""
+msgstr "Netfilter helper modules"
 
 #: ../src/firewall-config.glade.h:112
 msgid "Modules"
-msgstr "Módulos"
+msgstr "Modules"
 
 #: ../src/firewall-config.glade.h:113
 msgid ""
@@ -1021,6 +1050,9 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
+"If you specify destination addresses, the service entry will be limited to "
+"the destination address and type. If both entries are empty, there is no "
+"limitation."
 
 #: ../src/firewall-config.glade.h:114
 msgid "IPv4:"
@@ -1035,32 +1067,36 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
+"Services can only be changed in the permanent configuration view. The "
+"runtime configuration of services is fixed."
 
 #: ../src/firewall-config.glade.h:117
 msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
+"A firewalld icmptype provides the information for an Internet Control "
+"Message Protocol (ICMP) type for firewalld."
 
 #: ../src/firewall-config.glade.h:118
 msgid "Add ICMP Type"
-msgstr ""
+msgstr "Add ICMP Type"
 
 #: ../src/firewall-config.glade.h:119
 msgid "Edit ICMP Type"
-msgstr ""
+msgstr "Edit ICMP Type"
 
 #: ../src/firewall-config.glade.h:120
 msgid "Remove ICMP Type"
-msgstr ""
+msgstr "Remove ICMP Type"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Load ICMP Type Defaults"
-msgstr ""
+msgstr "Load ICMP Type Defaults"
 
 #: ../src/firewall-config.glade.h:122
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr ""
+msgstr "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
 
 #: ../src/firewall-config.glade.h:123
 msgid "IPv4"
@@ -1075,6 +1111,8 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
+"ICMP Types can only be changed in the permanent configuration view. The "
+"runtime configuration of ICMP Types is fixed."
 
 #: ../src/firewall-config.glade.h:126
 msgid ""
@@ -1083,6 +1121,10 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
+"The direct configuration gives a more direct access to the firewall. These "
+"options require user to know basic iptables concepts, i.e. tables, chains, "
+"commands, parameters and targets. Direct configuration should be used only "
+"as a last resort when it is not possible to use other firewalld features."
 
 #: ../src/firewall-config.glade.h:127
 msgid ""
@@ -1090,31 +1132,35 @@ msgid ""
 "will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
 "bridges (ebtables)."
 msgstr ""
+"The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it "
+"will be for iptables, with ipv6 for ip6tables and with eb for ethernet "
+"bridges (ebtables)."
 
 #: ../src/firewall-config.glade.h:128
 msgid "Additional chains for use with rules."
-msgstr ""
+msgstr "Additional chains for use with rules."
 
 #: ../src/firewall-config.glade.h:129
 msgid "Add Chain"
-msgstr ""
+msgstr "Add Chain"
 
 #: ../src/firewall-config.glade.h:130
 msgid "Edit Chain"
-msgstr ""
+msgstr "Edit Chain"
 
 #: ../src/firewall-config.glade.h:131
 msgid "Remove Chain"
-msgstr ""
+msgstr "Remove Chain"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Chains"
-msgstr ""
+msgstr "Chains"
 
 #: ../src/firewall-config.glade.h:133
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
 msgstr ""
+"Add a rule with the arguments args to a chain in a table with a priority."
 
 #: ../src/firewall-config.glade.h:134
 msgid ""
@@ -1125,22 +1171,28 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
+"The priority is used to order rules. Priority 0 means add rule on top of the "
+"chain, with a higher priority the rule will be added further down. Rules "
+"with the same priority are on the same level and the order of these rules is "
+"not fixed and may change. If you want to make sure that a rule will be added "
+"after another one, use a low priority for the first and a higher for the "
+"following."
 
 #: ../src/firewall-config.glade.h:135
 msgid "Add Rule"
-msgstr ""
+msgstr "Add Rule"
 
 #: ../src/firewall-config.glade.h:136
 msgid "Edit Rule"
-msgstr ""
+msgstr "Edit Rule"
 
 #: ../src/firewall-config.glade.h:137
 msgid "Remove Rule"
-msgstr ""
+msgstr "Remove Rule"
 
 #: ../src/firewall-config.glade.h:138
 msgid "Rules"
-msgstr ""
+msgstr "Rules"
 
 #: ../src/firewall-config.glade.h:139
 msgid ""
@@ -1148,26 +1200,29 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
+"The passthrough rules are directly passed through to the firewall and are "
+"not placed in special chains. All iptables, ip6tables and ebtables options "
+"can be used."
 
 #: ../src/firewall-config.glade.h:140
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr ""
+msgstr "Please be careful with passthrough rules to not damage the firewall."
 
 #: ../src/firewall-config.glade.h:141
 msgid "Add Passthrough"
-msgstr ""
+msgstr "Add Passthrough"
 
 #: ../src/firewall-config.glade.h:142
 msgid "Edit Passthrough"
-msgstr ""
+msgstr "Edit Passthrough"
 
 #: ../src/firewall-config.glade.h:143
 msgid "Remove Passthrough"
-msgstr ""
+msgstr "Remove Passthrough"
 
 #: ../src/firewall-config.glade.h:144
 msgid "Passthrough"
-msgstr ""
+msgstr "Passthrough"
 
 #: ../src/firewall-config.glade.h:145
 msgid ""
@@ -1175,28 +1230,33 @@ msgid ""
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
+"The lockdown feature is a light version of user and application policies for "
+"firewalld. It limits changes to the firewall. The lockdown whitelist can "
+"contain commands, contexts, users and user ids."
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
+"The context is the security (SELinux) context of a running application or "
+"service. To get the context of a running application use ps -e --context."
 
 #: ../src/firewall-config.glade.h:147
 msgid "Add Context"
-msgstr ""
+msgstr "Add Context"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Edit Context"
-msgstr ""
+msgstr "Edit Context"
 
 #: ../src/firewall-config.glade.h:149
 msgid "Remove Context"
-msgstr ""
+msgstr "Remove Context"
 
 #: ../src/firewall-config.glade.h:150
 msgid "Contexts"
-msgstr ""
+msgstr "Contexts"
 
 #: ../src/firewall-config.glade.h:151
 msgid ""
@@ -1204,229 +1264,234 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
+"If a command entry on the whitelist ends with an asterisk '*', then all "
+"command lines starting with the command will match. If the '*' is not there "
+"the absolute command inclusive arguments must match."
 
 #: ../src/firewall-config.glade.h:152
 msgid "Add Command Line"
-msgstr ""
+msgstr "Add Command Line"
 
 #: ../src/firewall-config.glade.h:153
 msgid "Edit Command Line"
-msgstr ""
+msgstr "Edit Command Line"
 
 #: ../src/firewall-config.glade.h:154
 msgid "Remove Command Line"
-msgstr ""
+msgstr "Remove Command Line"
 
 #: ../src/firewall-config.glade.h:155
 msgid "Command lines"
-msgstr ""
+msgstr "Command lines"
 
 #: ../src/firewall-config.glade.h:156
 msgid "User names."
-msgstr ""
+msgstr "User names."
 
 #: ../src/firewall-config.glade.h:157
 msgid "Add User Name"
-msgstr ""
+msgstr "Add User Name"
 
 #: ../src/firewall-config.glade.h:158
 msgid "Edit User Name"
-msgstr ""
+msgstr "Edit User Name"
 
 #: ../src/firewall-config.glade.h:159
 msgid "Remove User Name"
-msgstr ""
+msgstr "Remove User Name"
 
 #: ../src/firewall-config.glade.h:160
 msgid "User names"
-msgstr ""
+msgstr "User names"
 
 #: ../src/firewall-config.glade.h:161
 msgid "User ids."
-msgstr ""
+msgstr "User ids."
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add User Id"
-msgstr ""
+msgstr "Add User Id"
 
 #: ../src/firewall-config.glade.h:163
 msgid "Edit User Id"
-msgstr ""
+msgstr "Edit User Id"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Remove User Id"
-msgstr ""
+msgstr "Remove User Id"
 
 #: ../src/firewall-config.glade.h:165
 msgid "User Ids"
-msgstr ""
+msgstr "User Ids"
 
 #: ../src/firewall-config.glade.h:166
 msgid "Default Zone:"
-msgstr ""
+msgstr "Default Zone:"
 
 #: ../src/firewall-config.glade.h:167
 msgid "Current default zone of the system."
-msgstr ""
+msgstr "Current default zone of the system."
 
 #: ../src/firewall-config.glade.h:168
 msgid "Lockdown:"
-msgstr ""
+msgstr "Lockdown:"
 
 #: ../src/firewall-config.glade.h:169
 msgid "Panic Mode:"
-msgstr ""
+msgstr "Panic Mode:"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Please enter the module name."
-msgstr ""
+msgstr "Please enter the module name."
 
 #: ../src/firewall-config.glade.h:171
 msgid "Please enter a port and protocol."
-msgstr ""
+msgstr "Please enter a port and protocol."
 
 #: ../src/firewall-config.glade.h:172
 msgid "Port and/or Protocol"
-msgstr ""
+msgstr "Port and/or Protocol"
 
 #: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and/or a protocol."
-msgstr ""
+msgstr "Please enter a port and/or a protocol."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Other Protocol:"
-msgstr "Outro Protocolo:"
+msgstr "Other Protocol:"
 
 #: ../src/firewall-config.glade.h:175
 msgid "Direct Rule"
-msgstr ""
+msgstr "Direct Rule"
 
 #: ../src/firewall-config.glade.h:176
 msgid "Please select ipv and table, chain priority and enter the args."
-msgstr ""
+msgstr "Please select ipv and table, chain priority and enter the args."
 
 #: ../src/firewall-config.glade.h:177
 msgid "Priority:"
-msgstr ""
+msgstr "Priority:"
 
 #: ../src/firewall-config.glade.h:179
 msgid "Please enter a protocol."
-msgstr ""
+msgstr "Please enter a protocol."
 
 #: ../src/firewall-config.glade.h:180
 msgid "Rich Rule"
-msgstr ""
+msgstr "Rich Rule"
 
 #: ../src/firewall-config.glade.h:181
 msgid "Please enter a rich rule."
-msgstr ""
+msgstr "Please enter a rich rule."
 
 #: ../src/firewall-config.glade.h:182
 msgid "For host or network white or blacklisting deactivate the element."
-msgstr ""
+msgstr "For host or network white or blacklisting deactivate the element."
 
 #: ../src/firewall-config.glade.h:183
 msgid "Source:"
-msgstr "Origem:"
+msgstr "Source:"
 
 #: ../src/firewall-config.glade.h:184
 msgid "Destination:"
-msgstr "Destino:"
+msgstr "Destination:"
 
 #: ../src/firewall-config.glade.h:185
 msgid "Log:"
-msgstr ""
+msgstr "Log:"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Audit:"
-msgstr ""
+msgstr "Audit:"
 
 #: ../src/firewall-config.glade.h:187
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4 and ipv6"
 
 #: ../src/firewall-config.glade.h:188
 msgid "inverted"
-msgstr ""
+msgstr "inverted"
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
 "To enable this Action has to be 'reject' and Family either 'ipv4' or "
 "'ipv6' (not both)."
 msgstr ""
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 
 #: ../src/firewall-config.glade.h:190
 msgid "with Type:"
-msgstr ""
+msgstr "with Type:"
 
 #: ../src/firewall-config.glade.h:191
 msgid "With limit:"
-msgstr ""
+msgstr "With limit:"
 
 #: ../src/firewall-config.glade.h:192
 msgid "/"
-msgstr ""
+msgstr "/"
 
 #: ../src/firewall-config.glade.h:197
 msgid "Prefix:"
-msgstr ""
+msgstr "Prefix:"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Level:"
-msgstr "Nível:"
+msgstr "Level:"
 
 #: ../src/firewall-config.glade.h:207
 msgid "Element:"
-msgstr "Elemento:"
+msgstr "Element:"
 
 #: ../src/firewall-config.glade.h:214
 msgid "Family:"
-msgstr "Família:"
+msgstr "Family:"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Action:"
-msgstr "Acção:"
+msgstr "Action:"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Base Service Settings"
-msgstr ""
+msgstr "Base Service Settings"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Please configure base service settings:"
-msgstr ""
+msgstr "Please configure base service settings:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Please select a service."
-msgstr ""
+msgstr "Please select a service."
 
 #: ../src/firewall-config.glade.h:219
 msgid "User ID"
-msgstr ""
+msgstr "User ID"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Please enter the user id."
-msgstr ""
+msgstr "Please enter the user id."
 
 #: ../src/firewall-config.glade.h:221
 msgid "User name"
-msgstr ""
+msgstr "User name"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter the user name."
-msgstr ""
+msgstr "Please enter the user name."
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base Zone Settings"
-msgstr ""
+msgstr "Base Zone Settings"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base zone settings:"
-msgstr ""
+msgstr "Please configure base zone settings:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Target:"
-msgstr ""
+msgstr "Target:"
 
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
-msgstr ""
+msgstr "Default Target"

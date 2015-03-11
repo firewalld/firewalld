@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Pedro Marques Daniel <danielthpro@gmail.com>, 2013
-# Pedro Marques Daniel <danielthpro@gmail.com>, 2013
-# Rui Gouveia <rui.gouveia@gmail.com>, 2010
+# Asier Iturralde Sarasola <asier.iturralde@gmail.com>, 2012
+# Mikel Olasagasti Uranga <mikel@olasagasti.info>, 2013
+# Mikel Olasagasti Uranga <mikel@olasagasti.info>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -13,9 +13,9 @@ msgstr ""
 "POT-Creation-Date: 2015-02-26 15:41+0100\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
-"Language-Team: Portuguese (http://www.transifex.com/projects/p/firewalld/"
-"language/pt/)\n"
-"Language: pt\n"
+"Language-Team: Basque (http://www.transifex.com/projects/p/firewalld/"
+"language/eu/)\n"
+"Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -24,15 +24,15 @@ msgstr ""
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
-msgstr ""
+msgstr "Suhesiaren applet-a"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
-msgstr "Firewall"
+msgstr "Suhesia"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:38
 msgid "Firewall Configuration"
-msgstr "Configuração da Firewall"
+msgstr "Suhesiaren konfigurazioa"
 
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
@@ -42,31 +42,31 @@ msgstr ""
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
 msgid "Unexpected element '%s'"
-msgstr ""
+msgstr "Ustekabeko '%s' elementua"
 
 #: ../src/firewall/core/io/io_object.py:158
 #, python-format
 msgid "Element '%s': missing '%s' attribute"
-msgstr ""
+msgstr "'%s' elementua: '%s' atributua falta du"
 
 #: ../src/firewall/core/io/io_object.py:166
 #, python-format
 msgid "Element '%s': unexpected attribute '%s'"
-msgstr ""
+msgstr "'%s' elementua: ustekabeko '%s' atributua"
 
 #: ../src/firewalld:64 ../src/firewall-offline-cmd:40
 #, c-format
 msgid "You need to be root to run %s."
-msgstr ""
+msgstr "Root izan behar duzu %s exekutatzeko."
 
 #: ../src/firewalld:87
 msgid "Not starting FirewallD, already running."
-msgstr ""
+msgstr "Ez da FirewallD hasiko, dagoeneko aktibo dago."
 
 #: ../src/firewalld:139
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
-msgstr ""
+msgstr "#1 fork-ak huts egin du: %d (%s)"
 
 #: ../src/firewall-applet:106 ../src/firewall-config:5233
 #, c-format
@@ -95,11 +95,11 @@ msgstr ""
 
 #: ../src/firewall-applet:360
 msgid "Enable Notifications"
-msgstr "Activar Notificações"
+msgstr "Gaitu jakinarazpenak"
 
 #: ../src/firewall-applet:373
 msgid "Edit Firewall Settings..."
-msgstr "Editar Opções da Firewall..."
+msgstr "Editatu suhesiaren ezarpenak..."
 
 #: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
@@ -111,7 +111,7 @@ msgstr ""
 
 #: ../src/firewall-applet:397
 msgid "Block all network traffic"
-msgstr "Bloquear todo o tráfego da rede"
+msgstr "Blokeatu sareko trafiko guztia"
 
 #: ../src/firewall-applet:426
 msgid "Configure Shields Up/Down Zones"
@@ -137,19 +137,19 @@ msgstr ""
 
 #: ../src/firewall-applet:622 ../src/firewall-config:1783
 msgid "Connections"
-msgstr "Conecções"
+msgstr "Konexiorik ez."
 
 #: ../src/firewall-applet:664 ../src/firewall-applet:693
 #: ../src/firewall-applet:717 ../src/firewall-config:1824
 #: ../src/firewall-config:1850 ../src/firewall-config:1875
 #: ../src/firewall-config.glade.h:61
 msgid "Zone"
-msgstr "Zona"
+msgstr ""
 
 #: ../src/firewall-applet:679 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
-msgstr "<interface>"
+msgstr "<interfazea>"
 
 #: ../src/firewall-applet:704 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
@@ -196,7 +196,7 @@ msgstr ""
 
 #: ../src/firewall-applet:985
 msgid "No Active Zones."
-msgstr "Sem Zonas Activas."
+msgstr ""
 
 #: ../src/firewall-applet:994
 #, c-format
@@ -205,7 +205,7 @@ msgstr ""
 
 #: ../src/firewall-applet:1018
 msgid "All network traffic is blocked."
-msgstr "Todo o tráfego da rede está bloqueado."
+msgstr ""
 
 #: ../src/firewall-applet:1019
 msgid "Network traffic is not blocked anymore."
@@ -213,11 +213,11 @@ msgstr ""
 
 #: ../src/firewall-applet:1034 ../src/firewall-applet:1074
 msgid "activated"
-msgstr "activado"
+msgstr "aktibatuta"
 
 #: ../src/firewall-applet:1035 ../src/firewall-applet:1075
 msgid "deactivated"
-msgstr "desactivado"
+msgstr "desaktibatuta"
 
 #: ../src/firewall-applet:1038
 msgid ""
@@ -249,19 +249,19 @@ msgstr ""
 
 #: ../src/firewall-config:76
 msgid "Connected."
-msgstr "Conectado."
+msgstr "Konektatuta."
 
 #: ../src/firewall-config:77
 msgid "No connection."
-msgstr "Sem conecção."
+msgstr "Konexiorik ez."
 
 #: ../src/firewall-config:78
 msgid "Waiting ..."
-msgstr ""
+msgstr "Itxaroten..."
 
 #: ../src/firewall-config:79
 msgid "Retrying ..."
-msgstr ""
+msgstr "Berriz saiatzen..."
 
 #: ../src/firewall-config:80
 #, c-format
@@ -278,7 +278,7 @@ msgstr ""
 
 #: ../src/firewall-config:99
 msgid "Failed to load icons."
-msgstr ""
+msgstr "Huts egin du ikonoak kargatzean."
 
 #: ../src/firewall-config:358 ../src/firewall-config:1744
 msgid "Runtime"
@@ -290,37 +290,37 @@ msgstr ""
 
 #: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
 msgid "Service"
-msgstr "Serviço"
+msgstr "Zerbitzua"
 
 #: ../src/firewall-config:427 ../src/firewall-config:468
 #: ../src/firewall-config:706
 msgid "Port"
-msgstr "Porto"
+msgstr "Ataka"
 
 #: ../src/firewall-config:429 ../src/firewall-config:470
 #: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
 msgid "Protocol"
-msgstr "Protocolo"
+msgstr "Protokoloa"
 
 #: ../src/firewall-config:472
 msgid "To Port"
-msgstr "Para Porto"
+msgstr "Atakara:"
 
 #: ../src/firewall-config:474
 msgid "To Address"
-msgstr "Para Endereço:"
+msgstr "Helbidera:"
 
 #: ../src/firewall-config:511
 msgid "Icmp Type"
-msgstr ""
+msgstr "Icmp mota"
 
 #: ../src/firewall-config:526
 msgid "Family"
-msgstr "Família"
+msgstr ""
 
 #: ../src/firewall-config:528
 msgid "Action"
-msgstr "Acção"
+msgstr ""
 
 #: ../src/firewall-config:530
 msgid "Element"
@@ -345,11 +345,11 @@ msgstr ""
 #: ../src/firewall-config:1160 ../src/firewall-config:2040
 #: ../src/firewall-config:2078
 msgid "Warning"
-msgstr "Aviso"
+msgstr "Abisua"
 
 #: ../src/firewall-config:1169
 msgid "Error"
-msgstr "Erro"
+msgstr "Errorea"
 
 #: ../src/firewall-config:1210
 msgid "Changes applied."
@@ -371,13 +371,13 @@ msgstr ""
 #: ../src/firewall-config:1496 ../src/firewall-config:1530
 #: ../src/firewall-config:1535
 msgid "limit"
-msgstr "limite"
+msgstr ""
 
 #: ../src/firewall-config:1507 ../src/firewall-config:2365
 #: ../src/firewall-config:2517 ../src/firewall-config:2788
 #: ../src/firewall-config.glade.h:208
 msgid "service"
-msgstr "serviço"
+msgstr ""
 
 #: ../src/firewall-config:1509 ../src/firewall-config:2371
 #: ../src/firewall-config:2519 ../src/firewall-config:2791
@@ -389,7 +389,7 @@ msgstr ""
 #: ../src/firewall-config:2528 ../src/firewall-config:2801
 #: ../src/firewall-config.glade.h:210
 msgid "protocol"
-msgstr "protocolo"
+msgstr ""
 
 #: ../src/firewall-config:1514 ../src/firewall-config:2381
 #: ../src/firewall-config:2815 ../src/firewall-config:2952
@@ -399,19 +399,19 @@ msgstr ""
 
 #: ../src/firewall-config:1528
 msgid "level"
-msgstr "nível"
+msgstr ""
 
 #: ../src/firewall-config:1532 ../src/firewall-config:1537
 msgid "yes"
-msgstr "sim"
+msgstr ""
 
 #: ../src/firewall-config:1694
 msgid "Authorization failed."
-msgstr ""
+msgstr "Autentikazioak huts egin du."
 
 #: ../src/firewall-config:1697
 msgid "Invalid name"
-msgstr "Argumento inválido %s"
+msgstr "argumentu baliogabea %s"
 
 #: ../src/firewall-config:1701
 msgid "Name already exists"
@@ -424,11 +424,11 @@ msgstr ""
 
 #: ../src/firewall-config:2041 ../src/firewall-config:2079
 msgid "Remove"
-msgstr "Remover"
+msgstr ""
 
 #: ../src/firewall-config:2041 ../src/firewall-config:2079
 msgid "Ignore"
-msgstr "Ignorar"
+msgstr "ezikusi"
 
 #: ../src/firewall-config:2075
 #, c-format
@@ -442,47 +442,47 @@ msgstr ""
 #: ../src/firewall-config:2328 ../src/firewall-config:2763
 #: ../src/firewall-config.glade.h:193
 msgid "second"
-msgstr "segundo"
+msgstr ""
 
 #: ../src/firewall-config:2329 ../src/firewall-config:2764
 #: ../src/firewall-config.glade.h:194
 msgid "minute"
-msgstr "minuto"
+msgstr ""
 
 #: ../src/firewall-config:2330 ../src/firewall-config:2765
 #: ../src/firewall-config.glade.h:195
 msgid "hour"
-msgstr "hora"
+msgstr ""
 
 #: ../src/firewall-config:2331 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:196
 msgid "day"
-msgstr "dia"
+msgstr ""
 
 #: ../src/firewall-config:2332 ../src/firewall-config:2767
 #: ../src/firewall-config.glade.h:199
 msgid "emergency"
-msgstr "emergência"
+msgstr ""
 
 #: ../src/firewall-config:2333 ../src/firewall-config:2768
 #: ../src/firewall-config.glade.h:200
 msgid "alert"
-msgstr "alerta"
+msgstr ""
 
 #: ../src/firewall-config:2334 ../src/firewall-config:2769
 #: ../src/firewall-config.glade.h:201
 msgid "critical"
-msgstr "crítico"
+msgstr ""
 
 #: ../src/firewall-config:2335 ../src/firewall-config:2770
 #: ../src/firewall-config.glade.h:202
 msgid "error"
-msgstr "erro"
+msgstr ""
 
 #: ../src/firewall-config:2336 ../src/firewall-config:2771
 #: ../src/firewall-config.glade.h:203
 msgid "warning"
-msgstr "aviso"
+msgstr ""
 
 #: ../src/firewall-config:2337 ../src/firewall-config:2772
 #: ../src/firewall-config.glade.h:204
@@ -515,13 +515,13 @@ msgstr ""
 #: ../src/firewall-config:2723 ../src/firewall-config:2778
 #: ../src/firewall-config:2883 ../src/firewall-config:2908
 msgid "ipv4"
-msgstr "ipv4"
+msgstr ""
 
 #: ../src/firewall-config:2512 ../src/firewall-config:2711
 #: ../src/firewall-config:2725 ../src/firewall-config:2780
 #: ../src/firewall-config:2885 ../src/firewall-config:2910
 msgid "ipv6"
-msgstr "ipv6"
+msgstr ""
 
 #: ../src/firewall-config:3558
 msgid ""
@@ -540,11 +540,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
-msgstr "Endereço"
+msgstr "Helbidea"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Port and Protocol"
-msgstr "Porto e Protocolo"
+msgstr "Ataka eta protokoloa"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
@@ -608,50 +608,46 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:19
 msgid "Port Forwarding"
-msgstr "Reencaminhamento de Porto"
+msgstr "Ataka birbidalketa"
 
 #: ../src/firewall-config.glade.h:20
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
-"Por favor, seleccione as opções de origem e destino de acordo com as suas "
-"necessidades."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Port / Port Range:"
-msgstr "Porto / Intervalo de portos:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:22
 msgid "IP address:"
-msgstr "Endereço IP:"
+msgstr "IP helbidea:"
 
 #: ../src/firewall-config.glade.h:23
 msgid "Protocol:"
-msgstr "Protocolo:"
+msgstr "Protokoloa:"
 
 #: ../src/firewall-config.glade.h:24
 msgid "Destination"
-msgstr "Destino"
+msgstr "Helburua"
 
 #: ../src/firewall-config.glade.h:25
 msgid "Source"
-msgstr ""
+msgstr "Iturburua"
 
 #: ../src/firewall-config.glade.h:26
 msgid "Local forwarding"
-msgstr "Reencaminhamento local"
+msgstr "Birbidalketa lokala"
 
 #: ../src/firewall-config.glade.h:27
 msgid "Forward to another port"
-msgstr "Reencaminhar para outro porto"
+msgstr "Birbidali beste ataka batera"
 
 #: ../src/firewall-config.glade.h:28
 msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"Se activar reencaminhamento local, tem de especificar um porto. Este porto "
-"tem de ser diferente do porto de origem."
 
 #: ../src/firewall-config.glade.h:29
 msgid "Base ICMP Type Settings"
@@ -667,23 +663,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:32
 msgid "Name:"
-msgstr "Nome:"
+msgstr "Izena:"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Version:"
-msgstr "Versão:"
+msgstr "Bertsioa:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Short:"
-msgstr ""
+msgstr "Laburra:"
 
 #: ../src/firewall-config.glade.h:35
 msgid "Description:"
-msgstr "Descrição:"
+msgstr "Deskribapena:"
 
 #: ../src/firewall-config.glade.h:36
 msgid "ICMP Type"
-msgstr "Tipo ICMP"
+msgstr "ICMP mota"
 
 #: ../src/firewall-config.glade.h:37
 msgid "Please select an ICMP type"
@@ -691,15 +687,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:39
 msgid "_File"
-msgstr "_Ficheiro"
+msgstr "_Fitxategia"
 
 #: ../src/firewall-config.glade.h:40
 msgid "_Options"
-msgstr "_Opções"
+msgstr "_Aukerak"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Birkargatu Firewalld"
 
 #: ../src/firewall-config.glade.h:42
 msgid ""
@@ -764,7 +760,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:57
 msgid "_Help"
-msgstr "_Ajuda"
+msgstr "_Laguntza"
 
 #: ../src/firewall-config.glade.h:58
 msgid "Configuration:"
@@ -788,15 +784,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:62
 msgid "Add Zone"
-msgstr "Adicionar Zona"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid "Edit Zone"
-msgstr "Editar Zona"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:64
 msgid "Remove Zone"
-msgstr "Remover Zona"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:65
 msgid "Load Zone Defaults"
@@ -811,7 +807,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:67
 msgid "Services"
-msgstr "Serviços"
+msgstr "Zerbitzuak"
 
 #: ../src/firewall-config.glade.h:68
 msgid ""
@@ -821,7 +817,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:69
 msgid "Add Port"
-msgstr "Para Porto"
+msgstr "Atakara"
 
 #: ../src/firewall-config.glade.h:70
 msgid "Edit Port"
@@ -833,7 +829,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:72
 msgid "Ports"
-msgstr ""
+msgstr "Atakak"
 
 #: ../src/firewall-config.glade.h:73
 msgid ""
@@ -841,9 +837,6 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"Masquerading permite configurar uma máquina ou router que liga a sua rede "
-"local à Internet. A sua rede local não será visível e as máquinas aparecem "
-"na Internet com um único endereço. Masquerading é válido apenas em IPv4."
 
 #: ../src/firewall-config.glade.h:74
 msgid "Masquerade zone"
@@ -857,7 +850,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:76
 msgid "Masquerading"
-msgstr "Mascarar"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:77
 msgid ""
@@ -866,10 +859,6 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"Adicione entradas ao reencaminhamento de portos de um porto para outro no "
-"sistema local ou do sistema local para outro sistema. O reencaminhamento "
-"para outro sistema só é útil se o interface estiver configurado como "
-"masqueraded. O reencaminhamento de portos só é suportado em IPv4."
 
 #: ../src/firewall-config.glade.h:78
 msgid "Add Forward Port"
@@ -889,21 +878,16 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"O protocolo ICMP (Internet Control Message Protocol) é utilizado "
-"principalmente para enviar mensagens de erro entre computadores em rede, mas "
-"adicionalmente para mensagens informativas como pedidos e respostas de ping."
 
 #: ../src/firewall-config.glade.h:82
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Marque os tipos ICMP, na lista, que devem ser rejeitados. Todos os outros "
-"tipos ICMP serão permitidos na firewall. Por omissão não existem limitações."
 
 #: ../src/firewall-config.glade.h:83
 msgid "ICMP Filter"
-msgstr "Filtro ICMP"
+msgstr "ICMP iragazkia"
 
 #: ../src/firewall-config.glade.h:84
 msgid "Here you can set rich language rules for the zone."
@@ -971,19 +955,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:102
 msgid "Add Service"
-msgstr "Adicionar Serviço"
+msgstr "Gehitu zerbitzua"
 
 #: ../src/firewall-config.glade.h:103
 msgid "Edit Service"
-msgstr "Editar Serviço"
+msgstr "Editatu zerbitzua"
 
 #: ../src/firewall-config.glade.h:104
 msgid "Remove Service"
-msgstr "Remover Serviço"
+msgstr "Kendu zerbitzua"
 
 #: ../src/firewall-config.glade.h:105
 msgid "Load Service Defaults"
-msgstr ""
+msgstr "Kargatu zerbitzu lehenetsiak"
 
 #: ../src/firewall-config.glade.h:106
 msgid ""
@@ -993,19 +977,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:107
 msgid "Add Entry"
-msgstr "Adicionar Entrada"
+msgstr "Gehitu sarrera"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Edit Entry"
-msgstr "Editar Entrada"
+msgstr "Editatu sarrera"
 
 #: ../src/firewall-config.glade.h:109
 msgid "Remove Entry"
-msgstr "Remover entrada"
+msgstr "Kendu sarrera"
 
 #: ../src/firewall-config.glade.h:110
 msgid "Ports and Protocols"
-msgstr ""
+msgstr "Atakak eta protokoloak"
 
 #: ../src/firewall-config.glade.h:111
 msgid "Netfilter helper modules"
@@ -1013,7 +997,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:112
 msgid "Modules"
-msgstr "Módulos"
+msgstr "Moduluak"
 
 #: ../src/firewall-config.glade.h:113
 msgid ""
@@ -1044,19 +1028,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:118
 msgid "Add ICMP Type"
-msgstr ""
+msgstr "Gehitu ICMP mota"
 
 #: ../src/firewall-config.glade.h:119
 msgid "Edit ICMP Type"
-msgstr ""
+msgstr "Editatu ICMP mota"
 
 #: ../src/firewall-config.glade.h:120
 msgid "Remove ICMP Type"
-msgstr ""
+msgstr "Kendu ICMP mota"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Load ICMP Type Defaults"
-msgstr ""
+msgstr "Kargatu ICMP mota lehenetsiak"
 
 #: ../src/firewall-config.glade.h:122
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
@@ -1279,23 +1263,23 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:170
 msgid "Please enter the module name."
-msgstr ""
+msgstr "Mesedez sartu moduluaren izena."
 
 #: ../src/firewall-config.glade.h:171
 msgid "Please enter a port and protocol."
-msgstr ""
+msgstr "Mesedez sartu ataka bat eta protokoloa."
 
 #: ../src/firewall-config.glade.h:172
 msgid "Port and/or Protocol"
-msgstr ""
+msgstr "Ataka eta/edo protokoloa"
 
 #: ../src/firewall-config.glade.h:173
 msgid "Please enter a port and/or a protocol."
-msgstr ""
+msgstr "Mesedez sartu ataka bat eta/edo protokolo bat."
 
 #: ../src/firewall-config.glade.h:174
 msgid "Other Protocol:"
-msgstr "Outro Protocolo:"
+msgstr "Beste protokolo bat:"
 
 #: ../src/firewall-config.glade.h:175
 msgid "Direct Rule"
@@ -1327,11 +1311,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:183
 msgid "Source:"
-msgstr "Origem:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:184
 msgid "Destination:"
-msgstr "Destino:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:185
 msgid "Log:"
@@ -1373,19 +1357,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:198
 msgid "Level:"
-msgstr "Nível:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:207
 msgid "Element:"
-msgstr "Elemento:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:214
 msgid "Family:"
-msgstr "Família:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:215
 msgid "Action:"
-msgstr "Acção:"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:216
 msgid "Base Service Settings"
@@ -1425,8 +1409,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:225
 msgid "Target:"
-msgstr ""
+msgstr "Helburua"
 
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
-msgstr ""
+msgstr "Helburu lehenetsia"

@@ -5,6 +5,7 @@
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2007-2010
 # zdenek <chmelarz@gmail.com>, 2013
+# zdenek <chmelarz@gmail.com>, 2015
 # Jan Varta <jan.varta@atlas.cz>, 2012
 # Jiří Popelka <jpopelka@redhat.com>, 2013
 # Jiří Popelka <jpopelka@redhat.com>, 2013
@@ -18,11 +19,11 @@
 # zdenek <chmelarz@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: firewalld\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-04 18:56+0100\n"
-"PO-Revision-Date: 2014-10-15 14:24+0000\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"POT-Creation-Date: 2015-02-26 15:41+0100\n"
+"PO-Revision-Date: 2015-02-14 03:21-0500\n"
+"Last-Translator: zdenek <chmelarz@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/firewalld/language/"
 "cs/)\n"
 "Language: cs\n"
@@ -30,6 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Zanata 3.5.1\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
@@ -46,7 +48,7 @@ msgstr "Nastavení firewallu"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr ""
+msgstr "firewall;síť;zabezpečení;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -80,7 +82,7 @@ msgstr "Fork #1 selhal: %d (%s)"
 #: ../src/firewall-applet:106 ../src/firewall-config:5233
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "Vyberte zónu pro připojení '%s'"
 
 #: ../src/firewall-applet:131 ../src/firewall-applet:157
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
@@ -296,11 +298,11 @@ msgstr "Nahrání ikon selhalo."
 
 #: ../src/firewall-config:358 ../src/firewall-config:1744
 msgid "Runtime"
-msgstr ""
+msgstr "Doba běhu"
 
 #: ../src/firewall-config:359
 msgid "Permanent"
-msgstr ""
+msgstr "Trvalý"
 
 #: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
 msgid "Service"
@@ -367,7 +369,7 @@ msgstr "Chyba"
 
 #: ../src/firewall-config:1210
 msgid "Changes applied."
-msgstr ""
+msgstr "Změny aplikovány."
 
 #: ../src/firewall-config:1488 ../src/firewall-config:2828
 msgid "accept"
@@ -413,11 +415,11 @@ msgstr "IP maškaráda"
 
 #: ../src/firewall-config:1528
 msgid "level"
-msgstr ""
+msgstr "úroveň"
 
 #: ../src/firewall-config:1532 ../src/firewall-config:1537
 msgid "yes"
-msgstr ""
+msgstr "ano"
 
 #: ../src/firewall-config:1694
 msgid "Authorization failed."
@@ -456,74 +458,74 @@ msgstr "Vestavěná zóna, přejmenování není možné."
 #: ../src/firewall-config:2328 ../src/firewall-config:2763
 #: ../src/firewall-config.glade.h:193
 msgid "second"
-msgstr ""
+msgstr "vteřina"
 
 #: ../src/firewall-config:2329 ../src/firewall-config:2764
 #: ../src/firewall-config.glade.h:194
 msgid "minute"
-msgstr ""
+msgstr "minuta"
 
 #: ../src/firewall-config:2330 ../src/firewall-config:2765
 #: ../src/firewall-config.glade.h:195
 msgid "hour"
-msgstr ""
+msgstr "hodina"
 
 #: ../src/firewall-config:2331 ../src/firewall-config:2766
 #: ../src/firewall-config.glade.h:196
 msgid "day"
-msgstr ""
+msgstr "den"
 
 #: ../src/firewall-config:2332 ../src/firewall-config:2767
 #: ../src/firewall-config.glade.h:199
 msgid "emergency"
-msgstr ""
+msgstr "nouze"
 
 #: ../src/firewall-config:2333 ../src/firewall-config:2768
 #: ../src/firewall-config.glade.h:200
 msgid "alert"
-msgstr ""
+msgstr "poplach"
 
 #: ../src/firewall-config:2334 ../src/firewall-config:2769
 #: ../src/firewall-config.glade.h:201
 msgid "critical"
-msgstr ""
+msgstr "kritický"
 
 #: ../src/firewall-config:2335 ../src/firewall-config:2770
 #: ../src/firewall-config.glade.h:202
 msgid "error"
-msgstr ""
+msgstr "chyba"
 
 #: ../src/firewall-config:2336 ../src/firewall-config:2771
 #: ../src/firewall-config.glade.h:203
 msgid "warning"
-msgstr ""
+msgstr "varovaní"
 
 #: ../src/firewall-config:2337 ../src/firewall-config:2772
 #: ../src/firewall-config.glade.h:204
 msgid "notice"
-msgstr ""
+msgstr "poznámka"
 
 #: ../src/firewall-config:2338 ../src/firewall-config:2773
 #: ../src/firewall-config.glade.h:205
 msgid "info"
-msgstr ""
+msgstr "informace"
 
 #: ../src/firewall-config:2339 ../src/firewall-config:2774
 #: ../src/firewall-config.glade.h:206
 msgid "debug"
-msgstr ""
+msgstr "ladit"
 
 #: ../src/firewall-config:2384 ../src/firewall-config:2530
 #: ../src/firewall-config:2804 ../src/firewall-config:2969
 #: ../src/firewall-config.glade.h:211
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-block"
 
 #: ../src/firewall-config:2389 ../src/firewall-config:2532
 #: ../src/firewall-config:2807 ../src/firewall-config:2962
 #: ../src/firewall-config.glade.h:212
 msgid "forward-port"
-msgstr ""
+msgstr "přesměrování-portu"
 
 #: ../src/firewall-config:2510 ../src/firewall-config:2709
 #: ../src/firewall-config:2723 ../src/firewall-config:2778
@@ -582,31 +584,31 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:10
 msgid "Table:"
-msgstr ""
+msgstr "Tabulka:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:12
 msgid "raw"
-msgstr ""
+msgstr "raw"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr ""
+msgstr "bezpečnost"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
-msgstr ""
+msgstr "Řetěz:"
 
 #: ../src/firewall-config.glade.h:15
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Direct Passthrough Rule"
@@ -780,7 +782,7 @@ msgstr "_Nápověda"
 
 #: ../src/firewall-config.glade.h:58
 msgid "Configuration:"
-msgstr ""
+msgstr "Konfigurace:"
 
 #: ../src/firewall-config.glade.h:59
 msgid ""
