@@ -82,8 +82,8 @@ class Firewall:
         self._module_refcount = { }
         self._marks = [ ]
         self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
-        self.cleanup_on_exit = True
-        self.ipv6_rpfilter_enabled = True
+        self.cleanup_on_exit = FALLBACK_CLEANUP_ON_EXIT
+        self.ipv6_rpfilter_enabled = FALLBACK_IPV6_RPFILTER
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
