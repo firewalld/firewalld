@@ -46,15 +46,18 @@ tag:
 dist: clean-docs update-docs
 
 update-docs:
-	make -C doc/xml
+	$(MAKE) -C doc/xml
 
 clean-docs:
-	make -C doc/xml clean
+	$(MAKE) -C doc/xml clean
 
-tx-pull:
-	tx pull
+pull-translations:
+	zanata-cli -B pull
 
-archive: tx-pull update-po $(desktop_DATA) tag dist
+push-translations:
+	zanata-cli -B push
+
+archive: pull-translations update-po push-translations $(desktop_DATA) tag dist
 	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
 	@echo "Also have a look at https://fedorahosted.org/released/${PACKAGE_NAME}/"
@@ -76,8 +79,7 @@ test-srpm: dist
 
 update-po:
 	ls $(top_srcdir)/po/*.po | sed 's/.*\/po\///;s/.po//' > $(top_srcdir)/po/LINGUAS
-	make -C po update-po ${PACKAGE_NAME}.pot
-	tx push -s
+	$(MAKE) -C po update-po ${PACKAGE_NAME}.pot
 
 clean-po:
 	@for cat in `cat ${top_srcdir}/po/LINGUAS`; do \
