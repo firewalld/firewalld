@@ -42,6 +42,7 @@ firewall with a D-Bus interface.
 %package -n python-firewall
 Summary: Python2 bindings for firewalld
 Provides: python2-firewall
+Obsoletes: python2-firewall
 Requires: dbus-python
 Requires: python-slip-dbus
 Requires: python-decorator
