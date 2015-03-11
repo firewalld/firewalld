@@ -39,14 +39,15 @@ Requires: python2-firewall  = %{version}-%{release}
 firewalld is a firewall service daemon that provides a dynamic customizable 
 firewall with a D-Bus interface.
 
-%package -n python2-firewall
+%package -n python-firewall
 Summary: Python2 bindings for firewalld
+Provides: python2-firewall
 Requires: dbus-python
 Requires: python-slip-dbus
 Requires: python-decorator
 Requires: pygobject3-base
 
-%description -n python2-firewall
+%description -n python-firewall
 Python2 bindings for firewalld.
 
 %if 0%{?with_python3}
@@ -207,7 +208,7 @@ fi
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 
-%files -n python2-firewall
+%files -n python-firewall
 %dir %{python2_sitelib}/firewall
 %dir %{python2_sitelib}/firewall/config
 %dir %{python2_sitelib}/firewall/core
