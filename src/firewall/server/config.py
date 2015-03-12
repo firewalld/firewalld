@@ -304,7 +304,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                     "Lockdown" ]:
+                     "Lockdown", "IPv6_rpfilter" ]:
             value = self.config.get_firewalld_conf().get(prop)
             if value is not None:
                 if prop == "MinimalMark":
@@ -319,6 +319,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                     return "yes" if FALLBACK_CLEANUP_ON_EXIT else "no"
                 elif prop == "Lockdown":
                     return "yes" if FALLBACK_LOCKDOWN else "no"
+                elif prop == "IPv6_rpfilter":
+                    return "yes" if FALLBACK_IPV6_RPFILTER else "no"
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -357,6 +359,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             'MinimalMark': self._get_property("MinimalMark"),
             'CleanupOnExit': self._get_property("CleanupOnExit"),
             'Lockdown': self._get_property("Lockdown"),
+            'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
@@ -375,7 +378,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown" ]:
+        if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
+                              "IPv6_rpfilter" ]:
             if property_name == "MinimalMark":
                 try:
                     foo = int(new_value)
@@ -386,7 +390,8 @@ class FirewallDConfig(slip.dbus.service.Object):
             except:
                 raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
-            if property_name in [ "CleanupOnExit", "Lockdown" ]:
+            if property_name in [ "CleanupOnExit", "Lockdown",
+                                  "IPv6_rpfilter" ]:
                 if new_value.lower() not in [ "yes", "no", "true", "false" ]:
                     raise FirewallError(INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
