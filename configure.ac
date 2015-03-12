@@ -5,7 +5,7 @@ AC_PREREQ([2.69])
 m4_define([PKG_NAME], firewalld)
 m4_define([PKG_VERSION], m4_bpatsubst(m4_esyscmd([grep "Version:" firewalld.spec]), [Version:\W\([0-9.]*\)\W], [\1]))
 m4_define([PKG_RELEASE], m4_bpatsubst(m4_esyscmd([grep "Release:" firewalld.spec]), [Release:\W\([0-9.]*\).*\W], [\1]))
-m4_define([PKG_TAG], m4_bpatsubst(m4_format(r%s-%s, PKG_VERSION, PKG_RELEASE), [\.], [_]))
+m4_define([PKG_TAG], m4_format(v%s, PKG_VERSION))
 
 AC_INIT(PKG_NAME,PKG_VERSION)
 AC_CONFIG_SRCDIR([src/firewalld])
