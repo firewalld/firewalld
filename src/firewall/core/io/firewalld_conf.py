@@ -69,12 +69,12 @@ class firewalld_conf:
         try:
             f = open(self.filename, "r")
         except Exception as msg:
-            log.error("Failed to open '%s': %s" % (self.filename, msg))
-            self.set("DefaultZone", str(FALLBACK_ZONE))
+            log.error("Failed to load '%s': %s", self.filename, msg)
+            self.set("DefaultZone", FALLBACK_ZONE)
             self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
-            self.set("CleanupOnExit", FALLBACK_CLEANUP_ON_EXIT)
-            self.set("Lockdown", FALLBACK_LOCKDOWN)
-            self.set("IPv6_rpfilter", FALLBACK_IPV6_RPFILTER)
+            self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
+            self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
+            self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
             raise
 
         for line in f:
