@@ -11,7 +11,7 @@ Version: 0.3.14
 Release: 0%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
-Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
+Source0: https://github.com/t-woerner/%{name}/archive/v%{version}.tar.gz
 BuildArch: noarch
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
