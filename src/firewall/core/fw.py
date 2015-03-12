@@ -112,19 +112,14 @@ class Firewall:
         try:
             self._firewalld_conf.read()
         except Exception as msg:
-            log.error("Failed to open firewalld config file '%s': %s",
-                      FIREWALLD_CONF, msg)
+            log.warning("Using fallback firewalld configuration settings.")
         else:
             if self._firewalld_conf.get("DefaultZone"):
                 default_zone = self._firewalld_conf.get("DefaultZone")
+
             if self._firewalld_conf.get("MinimalMark"):
-                mark = self._firewalld_conf.get("MinimalMark")
-                if mark is not None:
-                    try:
-                        self._min_mark = int(mark)
-                    except Exception as msg:
-                        log.error("MinimalMark %s is not valid, using default "
-                                  "value %d", mark, self._min_mark)
+                self._min_mark = int(self._firewalld_conf.get("MinimalMark"))
+
             if self._firewalld_conf.get("CleanupOnExit"):
                 value = self._firewalld_conf.get("CleanupOnExit")
                 if value is not None and value.lower() in [ "no", "false" ]:
