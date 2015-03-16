@@ -147,7 +147,7 @@ class ip4tables:
 
     def __run(self, args):
         # convert to string list
-        if self.wait_option:
+        if self.wait_option and self.wait_option not in args:
             _args = [self.wait_option] + ["%s" % item for item in args]
         else:
             _args = ["%s" % item for item in args]
