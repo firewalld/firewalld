@@ -535,12 +535,16 @@ class Firewall:
             self._ip4tables.flush()
         if self.ip6tables_enabled:
             self._ip6tables.flush()
+        if self.ebtables_enabled:
+            self._ebtables.flush()
 
     def _set_policy(self, policy, which="used"):
         if self.ip4tables_enabled:
             self._ip4tables.set_policy(policy, which)
         if self.ip6tables_enabled:
             self._ip6tables.set_policy(policy, which)
+        if self.ebtables_enabled:
+            self._ebtables.set_policy(policy, which)
 
     # rule function used in handle_ functions
 
