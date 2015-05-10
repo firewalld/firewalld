@@ -97,9 +97,6 @@ class ebtables:
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
-        if "nat" in tables:
-            tables.remove("nat") # nat can not set policies in nat table
-
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
                 self.__run([ "-t", table, "-P", chain, policy ])
