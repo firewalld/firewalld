@@ -43,8 +43,6 @@ for table in BUILT_IN_CHAINS.keys():
         OUR_CHAINS[table].add("%s_direct" % chain)
 
 class ebtables:
-    ipv = "ipv4"
-
     def __init__(self):
         self._command = "/sbin/ebtables"
 
