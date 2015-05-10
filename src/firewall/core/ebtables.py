@@ -33,9 +33,14 @@ BUILT_IN_CHAINS = {
 
 DEFAULT_RULES = { }
 OUR_CHAINS = {}  # chains created by firewalld
-OUR_CHAINS["broute"] = set()
-OUR_CHAINS["nat"] = set()
-OUR_CHAINS["filter"] = set()
+
+for table in BUILT_IN_CHAINS.keys():
+    DEFAULT_RULES[table] = [ ]
+    OUR_CHAINS[table] = set()
+    for chain in BUILT_IN_CHAINS[table]:
+        DEFAULT_RULES[table].append("-N %s_direct -P RETURN" % chain)
+        DEFAULT_RULES[table].append("-I %s 1 -j %s_direct" % (chain, chain))
+        OUR_CHAINS[table].add("%s_direct" % chain)
 
 class ebtables:
     ipv = "ipv4"
