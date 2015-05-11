@@ -75,7 +75,7 @@ rule
   [audit]
   [accept|reject|drop]
       </programlisting>
-      The complete rule is provided as a single line string. A destination is allowed here as long as it does not conflict with the destination of a service and is not allowed for masquerade at all.
+      The complete rule is provided as a single line string. A destination is allowed here as long as it does not conflict with the destination of a service.
     </para>
 
     <para>
@@ -195,7 +195,7 @@ masquerade
 	</programlisting>
       </para>
       <para>
-	Turn on masquerading in the rule. A source address can be provided to limit masquerading to this area, but not a destination address.
+	Turn on masquerading in the rule. A source and also a destination address can be provided to limit masquerading to this area.
       </para>
       <para>
 	It is not allowed to specify an action here.

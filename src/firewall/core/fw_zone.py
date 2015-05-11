@@ -878,6 +878,7 @@ class FirewallZone:
                     chain=SHORTCUTS["POSTROUTING"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
                 command += [ "-j", "MASQUERADE" ]
                 rules.append((ipv, "nat", "%s_allow" % target, command))
 

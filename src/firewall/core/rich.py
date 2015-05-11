@@ -479,8 +479,6 @@ class Rich_Rule(object):
 
         # masquerade
         elif type(self.element) == Rich_Masquerade:
-            if self.destination is not None:
-                raise FirewallError(INVALID_RULE, "masquerade and destination")
             if self.action is not None:
                 raise FirewallError(INVALID_RULE, "masquerade and action")
 
