@@ -186,6 +186,8 @@ class FirewallDirect:
         else:
             rule.append("-X")
         rule.append(chain)
+        if add and ipv == "eb":
+            rule += [ "-P", "RETURN" ]
 
         try:
             self._fw.rule(ipv, rule)
