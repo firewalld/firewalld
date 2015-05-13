@@ -46,7 +46,7 @@ from firewall.errors import *
 #
 ############################################################################
 
-class Firewall:
+class Firewall(object):
     def __init__(self):
         self._firewalld_conf = firewalld_conf(FIREWALLD_CONF)
 
@@ -87,15 +87,15 @@ class Firewall:
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
-        if not "filter" in ipXtables.ip4tables_available_tables:
+        if "filter" not in ipXtables.ip4tables_available_tables:
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
 
-        if not "filter" in ipXtables.ip6tables_available_tables:
+        if "filter" not in ipXtables.ip6tables_available_tables:
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
 
-        if not "filter" in ebtables.ebtables_available_tables:
+        if "filter" not in ebtables.ebtables_available_tables:
             log.error("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
@@ -192,7 +192,7 @@ class Firewall:
         # check minimum required zones
         error = False
         for z in [ "block", "drop", "trusted" ]:
-            if not z in self.zone.get_zones():
+            if z not in self.zone.get_zones():
                 log.fatal("Zone '%s' is not available.", z)
                 error = True
         if error:

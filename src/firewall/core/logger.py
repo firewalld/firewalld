@@ -34,7 +34,7 @@ PY3 = sys.version >= '3'
 # ---------------------------------------------------------------------------
 
 # abstract class for logging targets
-class LogTarget:
+class LogTarget(object):
     """ Abstract class for logging targets. """
     def __init__(self):
         self.fd = None
@@ -141,7 +141,7 @@ class FileLog(LogTarget):
 
 # ---------------------------------------------------------------------------
 
-class Logger:
+class Logger(object):
     r"""
     Format string:
 
@@ -288,7 +288,7 @@ class Logger:
     def close(self):
         """ Close all logging targets """
         for level in range(self.FATAL, self.DEBUG_MAX+1):
-            if not level in self._logging:
+            if level not in self._logging:
                 continue
             for (domain, target, _format) in self._logging[level]:
                 target.close()
@@ -506,7 +506,7 @@ class Logger:
             _domains.clear()
 
         for level in range(_range[0], _range[1]):
-            if not level in _logging:
+            if level not in _logging:
                 continue
             for (domain, target, _format) in _logging[level]:
                 if domain not in _domains:

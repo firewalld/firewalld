@@ -151,7 +151,7 @@ class Zone(IO_Object):
 
     def __setattr__(self, name, value):
         if name == "rules_str":
-            self.rules = [Rich_Rule(rule_str=str) for str in value]
+            self.rules = [Rich_Rule(rule_str=s) for s in value]
         else:
             object.__setattr__(self, name, value)
 
@@ -198,7 +198,7 @@ class Zone(IO_Object):
                     raise FirewallError(INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
-                r = Rich_Rule(rule_str=rule)
+                Rich_Rule(rule_str=rule)
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
@@ -358,7 +358,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule_error = True
                 return
             # zone bound to interface
-            if not "name" in attrs:
+            if "name" not in attrs:
                 log.error('Invalid interface: Name missing.')
                 self._rule_error = True
                 return
@@ -379,7 +379,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule.source = Rich_Source(attrs["address"], invert)
                 return
             # zone bound to source
-            if not "address" in attrs:
+            if "address" not in attrs:
                 log.error('Invalid source: Address missing.')
                 return
             if "family" in attrs:

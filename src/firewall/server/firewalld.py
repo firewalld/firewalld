@@ -1766,14 +1766,14 @@ class FirewallD(slip.dbus.service.Object):
     @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
     def RuleAdded(self, ipv, table, chain, priority, args):
-        log.debug1("direct.RuleAdded('%s', '%s', %d, '%s')" % \
-                       (table, chain, priority, "','".join(args)))
+        log.debug1("direct.RuleAdded('%s', '%s', '%s', %d, '%s')" % \
+                       (ipv, table, chain, priority, "','".join(args)))
 
     @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
     def RuleRemoved(self, ipv, table, chain, priority, args):
-        log.debug1("direct.RuleRemoved('%s', '%s', %d, '%s')" % \
-                       (table, chain, priority, "','".join(args)))
+        log.debug1("direct.RuleRemoved('%s', '%s', '%s', %d, '%s')" % \
+                       (ipv, table, chain, priority, "','".join(args)))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

@@ -33,8 +33,10 @@ from firewall.functions import b2u, u2b, PY2
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
                "IPv6_rpfilter" ]
 
-class firewalld_conf:
+class firewalld_conf(object):
     def __init__(self, filename):
+        self._config = { }
+        self._deleted = [ ]
         self.filename = filename
         self.clear()
 
@@ -53,7 +55,7 @@ class firewalld_conf:
         _key = b2u(key.strip())
         self._config[_key] = b2u(value.strip())
         if _key in self._deleted:
-            self._deleted.remove[_key]
+            self._deleted.remove(_key)
 
     def __str__(self):
         s = ""
@@ -109,8 +111,8 @@ class firewalld_conf:
         # check minimal mark
         value = self.get("MinimalMark")
         try:
-            mark = int(value)
-        except Exception as msg:
+            int(value)
+        except ValueError:
             log.error("MinimalMark '%s' is not valid, using default "
                       "value '%d'", value if value else '',
                       FALLBACK_MINIMAL_MARK)

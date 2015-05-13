@@ -382,8 +382,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                               "IPv6_rpfilter" ]:
             if property_name == "MinimalMark":
                 try:
-                    foo = int(new_value)
-                except:
+                    int(new_value)
+                except ValueError:
                     raise FirewallError(INVALID_MARK, new_value)
             try:
                 new_value = str(new_value)

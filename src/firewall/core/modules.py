@@ -22,7 +22,7 @@
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 
-class modules:
+class modules(object):
     def __init__(self):
         self._load_command = "/sbin/modprobe"
         # Use rmmod instead of modprobe -r (RHBZ#1031102)

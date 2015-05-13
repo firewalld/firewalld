@@ -71,7 +71,7 @@ INTERFACE_ZONE_OPTS = {
     "OUTPUT": "-o",
 }
 
-class FirewallZone:
+class FirewallZone(object):
     def __init__(self, fw):
         self._fw = fw
         self._chains = { }
@@ -115,7 +115,6 @@ class FirewallZone:
             f(name, *args)
         except FirewallError as error:
             msg = str(error)
-            code = FirewallError.get_code(msg)
             log.warning("%s: %s" % (name, msg))
 
     def add_zone(self, obj):
@@ -269,7 +268,7 @@ class FirewallZone:
     def remove_chain(self, zone, table, chain):
         # TODO: add config setting to remove chains optionally if 
         #       table,chain is not used for zone anymore
-#        self.__chain(zone, False, table, chain)
+        #       self.__chain(zone, False, table, chain)
         pass
 
     # settings
@@ -351,7 +350,7 @@ class FirewallZone:
                     elif key == "interfaces":
                         self.__interface(enable, zone, args)
                     elif key == "sources":
-                        self.__source(enable, zone, args)
+                        self.__source(enable, zone, *args)
                     else:
                         log.error("Zone '%s': Unknown setting '%s:%s', "
                                   "unable to apply", zone, key, args)
@@ -914,14 +913,11 @@ class FirewallZone:
                 mark_str = "0x%x" % mark_id
                 port_str = portStr(port)
 
-                dest = [ ]
                 to = ""
                 if toaddr:
                     to += toaddr
 
                 if toport and toport != "":
-                    toport_str = portStr(toport)
-                    dest = [ "--dport", toport_str ]
                     to += ":%s" % portStr(toport, "-")
 
                 mark = [ "-m", "mark", "--mark", mark_str ]
@@ -1055,7 +1051,7 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         rule_id = self.__rule_id(rule)
-        if not rule_id in _obj.settings["rules"]:
+        if rule_id not in _obj.settings["rules"]:
             raise FirewallError(NOT_ENABLED,
                                 "'%s' not in '%s'" % (rule, _zone))
 
@@ -1160,7 +1156,7 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         service_id = self.__service_id(service)
-        if not service_id in _obj.settings["services"]:
+        if service_id not in _obj.settings["services"]:
             raise FirewallError(NOT_ENABLED,
                                 "'%s' not in '%s'" % (service, _zone))
 
@@ -1238,7 +1234,7 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         port_id = self.__port_id(port, protocol)
-        if not port_id in _obj.settings["ports"]:
+        if port_id not in _obj.settings["ports"]:
             raise FirewallError(NOT_ENABLED,
                              "'%s:%s' not in '%s'" % (port, protocol, _zone))
 
@@ -1360,7 +1356,6 @@ class FirewallZone:
         mark_str = "0x%x" % mark_id
         port_str = portStr(port)
 
-        dest = [ ]
         to = ""
         if toaddr:
             to += toaddr
@@ -1368,8 +1363,6 @@ class FirewallZone:
         filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
 
         if toport and toport != "":
-            toport_str = portStr(toport)
-            dest = [ "--dport", toport_str ]
             to += ":%s" % portStr(toport, "-")
 
         mark = [ "-m", "mark", "--mark", mark_str ]
@@ -1545,7 +1538,7 @@ class FirewallZone:
         _obj = self._zones[_zone]
 
         icmp_id = self.__icmp_block_id(icmp)
-        if not icmp_id in _obj.settings["icmp_blocks"]:
+        if icmp_id not in _obj.settings["icmp_blocks"]:
             raise FirewallError(NOT_ENABLED,
                                 "'%s' not in '%s'" % (icmp, _zone))
 

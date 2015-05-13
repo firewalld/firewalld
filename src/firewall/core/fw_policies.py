@@ -26,7 +26,7 @@ from firewall.core.logger import log
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.errors import *
 
-class FirewallPolicies:
+class FirewallPolicies(object):
     def __init__(self):
         self._lockdown = False
         self.lockdown_whitelist = LockdownWhitelist(LOCKDOWN_WHITELIST)
