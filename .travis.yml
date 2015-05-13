@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.7"
+  - "3.4"
+before_install:
+#  - "sudo add-apt-repository ppa:costamagnagianfranco/autoconf -y"
+  - "sudo apt-get update -qq"
+# dependencies
+install:
+  - "sudo apt-get install -y intltool desktop-file-utils xsltproc"
+#  - "sudo apt-get install -y python-dbus python3-dbus python-decorator python-gobject python3-gi"
+# command to run tests
+script: ./autogen.sh && make && make check && make distcheck
+notifications:
+  email: false
