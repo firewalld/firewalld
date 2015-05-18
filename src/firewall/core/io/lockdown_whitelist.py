@@ -58,7 +58,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
             if "id" in attrs:
                 try:
                     uid = int(attrs["id"])
-                except:
+                except ValueError:
                     log.error("Parse Error: %s is not a valid uid" % 
                               attrs["id"])
                     return
@@ -70,7 +70,7 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
             if not self.whitelist:
                 log.error("Parse Error: selinux outside of whitelist")
                 return
-            if not "context" in attrs:
+            if "context" not in attrs:
                 log.error("Parse Error: no context")
                 return
             self.item.add_context(attrs["context"])

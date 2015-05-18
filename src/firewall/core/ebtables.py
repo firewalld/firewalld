@@ -42,7 +42,7 @@ for table in BUILT_IN_CHAINS.keys():
         DEFAULT_RULES[table].append("-I %s 1 -j %s_direct" % (chain, chain))
         OUR_CHAINS[table].add("%s_direct" % chain)
 
-class ebtables:
+class ebtables(object):
     def __init__(self):
         self._command = "/sbin/ebtables"
 

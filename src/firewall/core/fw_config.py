@@ -30,7 +30,7 @@ from firewall.core.io.zone import Zone, zone_reader, zone_writer
 from firewall.functions import portStr
 from firewall.errors import *
 
-class FirewallConfig:
+class FirewallConfig(object):
     def __init__(self, fw):
         self._fw = fw
         self.__init_vars()

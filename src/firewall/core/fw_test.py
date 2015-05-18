@@ -43,7 +43,7 @@ from firewall.errors import *
 #
 ############################################################################
 
-class Firewall_test:
+class Firewall_test(object):
     def __init__(self):
         self._firewalld_conf = firewalld_conf(FIREWALLD_CONF)
 
@@ -164,7 +164,7 @@ class Firewall_test:
         # check minimum required zones
         error = False
         for z in [ "block", "drop", "trusted" ]:
-            if not z in self.zone.get_zones():
+            if z not in self.zone.get_zones():
                 log.fatal("Zone '%s' is not available.", z)
                 error = True
         if error:
@@ -353,7 +353,7 @@ class Firewall_test:
     def check_protocol(self, protocol):
         if not protocol:
             raise FirewallError(MISSING_PROTOCOL)
-        if not protocol in [ "tcp", "udp" ]:
+        if protocol not in [ "tcp", "udp" ]:
             raise FirewallError(INVALID_PROTOCOL, protocol)
 
     def check_ip(self, ip):

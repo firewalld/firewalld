@@ -138,7 +138,7 @@ OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
                           "FORWARD_OUT_ZONES", "OUTPUT_direct"])
 
 
-class ip4tables:
+class ip4tables(object):
     ipv = "ipv4"
 
     def __init__(self):

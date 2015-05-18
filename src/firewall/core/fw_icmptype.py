@@ -21,7 +21,7 @@
 
 from firewall.errors import *
 
-class FirewallIcmpType:
+class FirewallIcmpType(object):
     def __init__(self, fw):
         self._fw = fw
         self._icmptypes = { }

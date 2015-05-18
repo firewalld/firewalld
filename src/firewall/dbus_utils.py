@@ -43,7 +43,7 @@ def pid_of_sender(bus, sender):
 
     try:
         pid = int(dbus_iface.GetConnectionUnixProcessID(sender))
-    except:
+    except ValueError:
         return None
     return pid
 
@@ -56,7 +56,7 @@ def uid_of_sender(bus, sender):
 
     try:
         uid = int(dbus_iface.GetConnectionUnixUser(sender))
-    except:
+    except ValueError:
         return None
     return uid
 
@@ -65,7 +65,7 @@ def user_of_uid(uid):
 
     try:
         pws = pwd.getpwuid(uid)
-    except Exception as msg:
+    except Exception:
         return None
     return pws[0]
 

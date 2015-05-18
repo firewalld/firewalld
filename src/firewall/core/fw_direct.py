@@ -42,7 +42,7 @@ from firewall.errors import *
 #
 ############################################################################
 
-class FirewallDirect:
+class FirewallDirect(object):
     def __init__(self, fw):
         self._fw = fw
         self.__init_vars()
@@ -88,14 +88,14 @@ class FirewallDirect:
             (ipv, table, chain) = chain_id
             for (priority, args) in self._rules[chain_id]:
                 if not self._obj.query_rule(ipv, table, chain, priority, args):
-                    if not chain_id in rules:
+                    if chain_id not in rules:
                         rules[chain_id] = LastUpdatedOrderedDict()
                     rules[chain_id] = (priority, args)
 
         for ipv in self._passthroughs:
             for args in self._passthroughs[ipv]:
                 if not self._obj.query_passthrough(ipv, args):
-                    if not ipv in passthroughs:
+                    if ipv not in passthroughs:
                         passthroughs[ipv] = [ ]
                     passthroughs[ipv].append(args)
 
@@ -176,7 +176,7 @@ class FirewallDirect:
                      "chain '%s' already is in '%s:%s'" % (chain, ipv, table))
         else:
             if table_id not in self._chains or \
-                    not chain in self._chains[table_id]:
+                    chain not in self._chains[table_id]:
                 raise FirewallError(NOT_ENABLED,
                     "chain '%s' is not in '%s:%s'" % (chain, ipv, table))
 
@@ -256,8 +256,8 @@ class FirewallDirect:
                                     "rule '%s' already is in '%s:%s:%s'" % \
                                     (args, ipv, table, chain))
         else:
-            if not chain_id in self._rules or \
-                    not rule_id in self._rules[chain_id]:
+            if chain_id not in self._rules or \
+                    rule_id not in self._rules[chain_id]:
                 raise FirewallError(NOT_ENABLED,
                                     "rule '%s' is not in '%s:%s:%s'" % \
                                     (args, ipv, table, chain))
@@ -325,7 +325,7 @@ class FirewallDirect:
             raise FirewallError(COMMAND_FAILED, msg)
 
         if enable:
-            if not chain_id in self._rules:
+            if chain_id not in self._rules:
                 self._rules[chain_id] = LastUpdatedOrderedDict()
             self._rules[chain_id][rule_id] = priority
             if chain_id not in self._rule_priority_positions:
@@ -388,7 +388,7 @@ class FirewallDirect:
                 raise FirewallError(ALREADY_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
         else:
-            if not ipv in self._passthroughs or \
+            if ipv not in self._passthroughs or \
                args not in self._passthroughs[ipv]:
                 raise FirewallError(NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
@@ -406,7 +406,7 @@ class FirewallDirect:
             raise FirewallError(COMMAND_FAILED, msg)
 
         if enable:
-            if not ipv in self._passthroughs:
+            if ipv not in self._passthroughs:
                 self._passthroughs[ipv] = [ ]
             self._passthroughs[ipv].append(args)
         else:
@@ -456,9 +456,9 @@ class FirewallDirect:
         # intersection of args and not_allowed is not empty, i.e.
         # something from args is not allowed
         if len(args & not_allowed) > 0:
-                raise FirewallError(INVALID_PASSTHROUGH,
-                                    "arg '%s' is not allowed" %
-                                    list(args & not_allowed)[0])
+            raise FirewallError(INVALID_PASSTHROUGH,
+                                "arg '%s' is not allowed" %
+                                list(args & not_allowed)[0])
 
         # args need to contain one of -A, -I, -N
         needed = set(["-A", "--append",

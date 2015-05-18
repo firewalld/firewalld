@@ -69,7 +69,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
             chain = attrs["chain"]
             try:
                 priority = int(attrs["priority"])
-            except:
+            except ValueError:
                 log.error("Parse Error: %s is not a valid priority" % 
                           attrs["priority"])
                 return

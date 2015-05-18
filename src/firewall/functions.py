@@ -42,7 +42,7 @@ def getPortID(port):
             port = port.strip()
         try:
             id = int(port)
-        except:
+        except ValueError:
             try:
                 id = socket.getservbyname(port)
             except:
@@ -131,7 +131,7 @@ def checkIP(ip):
 
     try:
         socket.inet_pton(socket.AF_INET, ip)
-    except socket.error as err:
+    except socket.error:
         return False
     return True
 
@@ -144,7 +144,7 @@ def checkIP6(ip):
 
     try:
         socket.inet_pton(socket.AF_INET6, ip)
-    except socket.error as err:
+    except socket.error:
         return False
     return True
 
@@ -163,7 +163,7 @@ def checkIPnMask(ip):
         else:
             try:
                 i = int(mask)
-            except:
+            except ValueError:
                 return False
             if i < 0 or i > 32:
                 return False
@@ -181,7 +181,7 @@ def checkIP6nMask(ip):
     if mask:
         try:
             i = int(mask)
-        except:
+        except ValueError:
             return False
         if i < 0 or i > 128:
             return False
@@ -191,7 +191,7 @@ def checkIP6nMask(ip):
 def checkProtocol(protocol):
     try:
         i = int(protocol)
-    except:
+    except ValueError:
         # string
         try:
             socket.getprotobyname(protocol)
@@ -349,7 +349,7 @@ def checkUid(uid):
     if type(uid) == str:
         try:
             uid = int(uid)
-        except:
+        except ValueError:
             return False
     if uid >= 0 and uid <= 2**31-1:
         return True

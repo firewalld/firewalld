@@ -23,7 +23,7 @@
 
 from gi.repository import Gtk
 
-class ChooserButton:
+class ChooserButton(object):
     def __init__(self, button, default_label=""):
         self.button = button
         self.default_label = default_label
@@ -128,7 +128,7 @@ class ChooserButton:
         return (x, y, True)
 
 
-class ToolChooserButton:
+class ToolChooserButton(object):
     
     def __init__(self, button, default_label=''):
         
