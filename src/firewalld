@@ -128,27 +128,27 @@ def startup(args):
         server.run_server(args.debug_gc)
 
         # Clean up on exit
-        if not args.nopid:
+        if os.path.exists(pid_file) and not args.nopid:
             os.remove(pid_file)
 
     except OSError as e:
         log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
         log.error(traceback.format_exc())
-        if not args.nopid:
+        if os.path.exists(pid_file) and not args.nopid:
             os.remove(pid_file)
         sys.exit(1)
 
     except dbus.exceptions.DBusException as e:
         log.fatal(str(e))
         log.error(traceback.format_exc())
-        if not args.nopid:
+        if os.path.exists(pid_file) and not args.nopid:
             os.remove(pid_file)
         sys.exit(1)
 
     except IOError as e:
         log.fatal(str(e))
         log.error(traceback.format_exc())
-        if not args.nopid:
+        if os.path.exists(pid_file) and not args.nopid:
             os.remove(pid_file)
         sys.exit(1)
 
