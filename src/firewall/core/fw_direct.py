@@ -90,7 +90,7 @@ class FirewallDirect(object):
                 if not self._obj.query_rule(ipv, table, chain, priority, args):
                     if chain_id not in rules:
                         rules[chain_id] = LastUpdatedOrderedDict()
-                    rules[chain_id] = (priority, args)
+                    rules[chain_id][(priority, args)] = priority
 
         for ipv in self._passthroughs:
             for args in self._passthroughs[ipv]:
