@@ -877,6 +877,7 @@ class FirewallZone(object):
                     chain=SHORTCUTS["POSTROUTING"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
                 command += [ "-j", "MASQUERADE" ]
                 rules.append((ipv, "nat", "%s_allow" % target, command))
 
@@ -887,7 +888,8 @@ class FirewallZone(object):
                 # reverse source/destination !
                 self.__rule_source(rule.destination, command)
                 self.__rule_destination(rule.source, command)
-                command += [ "-j", "ACCEPT" ]
+                command += [ "-m", "conntrack", "--ctstate", "NEW",
+                             "-j", "ACCEPT" ]
                 rules.append((ipv, "filter", "%s_allow" % target, command))
 
             # FORWARD PORT
