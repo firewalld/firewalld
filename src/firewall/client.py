@@ -56,8 +56,10 @@ def handle_exceptions(func, *args, **kwargs):
             if not exception_handler:
                 raise
             if "NotAuthorizedException" in dbus_name:
-                authorized = False
                 exception_handler("NotAuthorizedException")
+            elif "org.freedesktop.DBus.Error" in dbus_name:
+                # dbus error, try again
+                exception_handler(dbus_message)
             else:
                 authorized = True
                 if dbus_message:
