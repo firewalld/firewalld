@@ -1,0 +1,897 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2010-2015 Red Hat, Inc.
+#
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import sys
+from PyQt4 import QtGui, QtCore
+
+from gi.repository import Notify, NetworkManager
+
+import os
+from dbus.mainloop.qt import DBusQtMainLoop
+import functools
+
+from firewall.config import *
+from firewall.config.dbus import *
+from firewall.client import FirewallClient
+from firewall.dbus_utils import dbus_to_python
+from firewall.errors import *
+import dbus
+
+PATH = [ ]
+for p in os.getenv("PATH").split(":"):
+    if p not in PATH:
+        PATH.append(p)
+
+def search_app(app):
+    for p in PATH:
+        _app = "%s/%s" % (p, app)
+        if os.path.exists(_app):
+            return _app
+    return None
+
+APPLET_SCHEMA = "org.fedoraproject.FirewallApplet"
+NM_CONNECTION_EDITOR = ""
+for binary in [ "/usr/bin/nm-connection-editor",
+                    "/bin/nm-connection-editor",
+                "/usr/bin/kde-nm-connection-editor",
+                    "/bin/kde-nm-connection-editor" ]:
+    if os.path.exists(binary):
+        NM_CONNECTION_EDITOR = binary
+        break
+
+PY2 = sys.version < '3'
+
+def escape(text):
+    text = text.replace('&', '&amp;')
+    text = text.replace('>', '&gt;')
+    text = text.replace('<', '&lt;')
+    return text
+
+def fromUTF8(text):
+    if PY2:
+        return QtCore.QString.fromUtf8(text)
+    else:
+        return text        
+
+# ZoneInterfaceEditor #########################################################
+
+class ZoneInterfaceEditor(QtGui.QDialog):
+    def __init__(self, fw, interface, zone):
+        self.fw = fw
+        self.interface = interface
+        self.zone = None
+        self.title = _("Select zone for interface '%s'") % self.interface
+
+        QtGui.QDialog.__init__(self)
+        self.create_ui(zone)
+
+    def create_ui(self, zone):
+        self.setWindowTitle(fromUTF8(escape(self.title)))
+        self.rejected.connect(self.hide)
+
+        self.resize(100, 50)
+
+        vbox = QtGui.QVBoxLayout()
+        vbox.setSpacing(6)
+
+        label = QtGui.QLabel(fromUTF8(escape(self.title)))
+        vbox.addWidget(label)
+
+        self.combo = QtGui.QComboBox()
+        self.fill_zone_combo()
+        self.set_zone(zone)
+        vbox.addWidget(self.combo)
+
+        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok
+                                           | QtGui.QDialogButtonBox.Cancel)
+        self.ok_button = buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        buttonBox.accepted.connect(self.ok)
+        buttonBox.rejected.connect(self.hide)
+        vbox.addWidget(buttonBox)
+        self.ok_button.setEnabled(False)
+
+        self.combo.activated.connect(self.combo_changed)
+        self.setLayout(vbox)
+
+    def combo_changed(self, combo):
+        self.ok_button.setEnabled(self.get_zone() != self.zone)
+
+    def set_zone(self, zone):
+        self.zone = zone
+        self.combo.setCurrentIndex(self.combo.findText(self.zone))
+
+    def get_zone(self):
+        text = str(self.combo.currentText())
+        if text == escape(_("Default Zone")):
+            text = ""
+        return text
+
+    def fill_zone_combo(self):
+        self.combo.clear()
+        self.combo.addItem(fromUTF8(escape(_("Default Zone"))))
+        for z in self.fw.getZones():
+            self.combo.addItem(z)
+
+    def zones_changed(self):
+        zone = self.get_zone()
+        self.fill_zone_combo()
+        self.set_zone(zone)
+
+    def ok(self):
+        self.fw.changeZoneOfInterface(self.get_zone(), self.interface)
+        self.hide()
+
+# ZoneConnectionEditor ########################################################
+
+class ZoneConnectionEditor(ZoneInterfaceEditor):
+    def __init__(self, fw, connection, zone):
+        self.fw = fw
+        self.connection = connection
+        self.zone = None
+        self.title = _("Select zone for connection '%s'") % self.connection
+
+        QtGui.QDialog.__init__(self)
+        self.create_ui(zone)
+
+    def ok(self):
+        # apply changes
+        dbus_obj = self.fw.bus.get_object(NetworkManager.DBUS_INTERFACE,
+                                          NetworkManager.DBUS_PATH_SETTINGS)
+        settings_iface = dbus.Interface(
+            dbus_obj, dbus_interface=NetworkManager.DBUS_IFACE_SETTINGS)
+        conection_obj = None
+        settings = None
+        for connection in dbus_to_python(settings_iface.ListConnections()):
+            connection_obj = self.fw.bus.get_object(
+                NetworkManager.DBUS_INTERFACE, connection)
+            settings = connection_obj.GetSettings()
+            if settings["connection"]["id"] == self.connection:
+                break
+            else:
+                connection_obj = None
+                settings = None
+        if settings and connection_obj:
+            settings["connection"]["zone"] = self.get_zone()
+            connection_obj.Update(settings)
+        self.hide()
+
+# ZoneSourceEditor ############################################################
+
+class ZoneSourceEditor(ZoneInterfaceEditor):
+    def __init__(self, fw, source, zone):
+        self.fw = fw
+        self.source = source
+        self.zone = None
+        self.title = _("Select zone for source '%s'") % self.source
+
+        QtGui.QDialog.__init__(self)
+        self.create_ui(zone)
+
+    def ok(self):
+        self.fw.changeZoneOfSource(self.get_zone(), self.source)
+        self.hide()
+
+# AboutDialog #################################################################
+
+class AboutDialog(QtGui.QDialog):
+    def __init__(self, name, icon, version, url, copyright, authors, license):
+        QtGui.QDialog.__init__(self)
+        self.setWindowIcon(icon)
+        self.setWindowTitle(fromUTF8(escape(_("About %s" % name))))
+        self.resize(500, 250)
+
+        vbox = QtGui.QVBoxLayout()
+        vbox.setSpacing(6)
+
+        hbox = QtGui.QHBoxLayout()
+        hbox.setSpacing(24)
+
+        label = QtGui.QLabel()
+        label.setPixmap(icon.pixmap(150))
+        label.setMinimumSize(150, 150)
+        label.setMaximumSize(150, 150)
+        hbox.addWidget(label)
+
+        vbox2 = QtGui.QVBoxLayout()
+        vbox2.setSpacing(3)
+
+        label = QtGui.QLabel(name)
+        font = label.font()
+        font.setPointSize(font.pointSize()*2)
+        font.setBold(True)
+        label.setFont(font)
+        vbox2.addWidget(label)
+
+        vbox2.addWidget(QtGui.QLabel(version))
+
+        label = QtGui.QLabel("<a href=\"%s\">%s</a>" % (url, url))
+        label.setTextFormat(QtCore.Qt.RichText)
+        label.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        label.setOpenExternalLinks(True)
+
+        vbox2.addWidget(label)
+
+        vbox2.addWidget(QtGui.QLabel(copyright))
+
+        label = QtGui.QLabel(fromUTF8(escape(_("Authors:"))))
+        font = label.font()
+        font.setBold(True)
+        label.setFont(font)
+        vbox2.addWidget(label)
+        vbox2.addWidget(QtGui.QLabel(fromUTF8("<br>".join([ escape(a) for a in authors ]))))
+
+        #vbox2.addStretch()
+
+        hbox.addLayout(vbox2)
+
+        vbox.addLayout(hbox)
+
+        label = QtGui.QLabel(fromUTF8(escape(_("License:"))))
+        font = label.font()
+        font.setBold(True)
+        label.setFont(font)
+        vbox.addWidget(label)
+        textedit = QtGui.QTextEdit()
+        textedit.setReadOnly(True)
+        textedit.setPlainText(license)
+        vbox.addWidget(textedit)
+
+        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
+        buttonBox.rejected.connect(self.hide)
+        vbox.addWidget(buttonBox)
+
+        self.setLayout(vbox)
+
+# TrayApplet ##################################################################
+
+class TrayApplet(QtGui.QSystemTrayIcon):
+    def __init__(self):
+        super(TrayApplet, self).__init__()
+        self.name = _("Firewall Applet Qt")
+        self.prog = "firewall-applet-qt"
+        self.icon_name = "firewall-applet"
+        self.icons = {
+            "normal": QtGui.QIcon.fromTheme(self.icon_name),
+            "error": QtGui.QIcon.fromTheme(self.icon_name+"-error"),
+            "panic": QtGui.QIcon.fromTheme(self.icon_name+"-panic"),
+        }
+        self.timer = None
+        self.mode = None
+        self._blink = False
+        self._blink_count = 0
+        self.connected = False
+
+        self.active_zones = { }
+        self.connections = { }
+        self.connections_uuid = { }
+        self.default_zone = None
+        self.zone_connection_editors = { }
+        self.zone_interface_editors = { }
+        self.zone_source_editors = { }
+
+        # settings
+
+        self.settings = QtCore.QSettings("firewall-applet", "firewalld")
+
+        self.blink_enabled = self.settings.value("blink", False, type=bool)
+        self.blink = self.settings.value("blink-count", 5, type=int)
+        self.show_inactive = self.settings.value("show-inactive", False,
+                                               type=bool)
+
+        # about dialog
+
+        self.about_dialog = AboutDialog(self.name,
+                                        self.icons["normal"],
+                                        VERSION, WEBSITE, COPYRIGHT, AUTHORS,
+                                        LICENSE)
+
+        # urgencies
+
+        self.urgencies = { "noicon": QtGui.QSystemTrayIcon.NoIcon,
+                           "information": QtGui.QSystemTrayIcon.Information,
+                           "warning": QtGui.QSystemTrayIcon.Warning,
+                           "critical": QtGui.QSystemTrayIcon.Critical }
+
+        # actions
+
+        self.notificationsAction = QtGui.QAction(
+            fromUTF8(escape(_("Enable Notifications"))), self)
+        self.notificationsAction.setCheckable(True)
+        self.notificationsAction.setChecked(
+            self.settings.value("notifications", False, type=bool))
+        self.notificationsAction.triggered.connect(self.notification_changed_cb)
+
+        self.settingsAction = QtGui.QAction(
+            fromUTF8(escape(_("Edit Firewall Settings..."))), self)
+        self.settingsAction.triggered.connect(self.configure_cb)
+
+        self.changeZonesAction = QtGui.QAction(
+            fromUTF8(escape(_("Change Zones of Connections..."))), self)
+        self.changeZonesAction.triggered.connect(self.nm_connection_editor)
+
+        self.panicAction = QtGui.QAction(
+            fromUTF8(escape(_("Block all network traffic"))), self)
+        self.panicAction.setCheckable(True)
+        self.panicAction.setChecked(False)
+        self.panicAction.triggered.connect(self.panic_mode_cb)
+        
+        self.aboutAction = QtGui.QAction(fromUTF8(escape(_("About"))), self)
+        self.aboutAction.triggered.connect(self.about_dialog.exec_)
+
+        #self.quitAction = QtGui.QAction(fromUTF8(escape(_("Quit"))), self,
+        #                                triggered=self.quit)
+
+        self.connectionsAction = QtGui.QWidgetAction(self)
+        self.connectionsAction.setDefaultWidget(QtGui.QLabel(
+            fromUTF8("<b>"+escape(_("Connections"))+"</b> ")))
+
+        self.interfacesAction = QtGui.QWidgetAction(self)
+        self.interfacesAction.setDefaultWidget(QtGui.QLabel(
+            fromUTF8("<b>"+escape(_("Interfaces"))+"</b> ")))
+
+        self.sourcesAction = QtGui.QWidgetAction(self)
+        self.sourcesAction.setDefaultWidget(QtGui.QLabel(
+            fromUTF8("<b>"+escape(_("Sources"))+"</b> ")))
+
+        # init
+
+        self.left_menu = QtGui.QMenu()
+        self.left_menu.setStyleSheet('QMenu { margin: 5px; }')
+
+        self.right_menu = QtGui.QMenu()
+        self.right_menu.addAction(self.notificationsAction)
+        self.right_menu.addSeparator()
+        self.right_menu.addAction(self.settingsAction)
+        self.right_menu.addAction(self.changeZonesAction)
+        self.right_menu.addSeparator()
+        self.right_menu.addAction(self.panicAction)
+        self.right_menu.addSeparator()
+        self.right_menu.addAction(self.aboutAction)
+        #self.right_menu.addSeparator()
+        #self.right_menu.addAction(self.quitAction)
+        self.setContextMenu(self.right_menu)
+
+        self.activated.connect(self.activated_cb)
+
+        self.set_mode("error")
+        self.set_icon(self.mode)
+
+        self.setVisible(True)
+
+        # init notification
+
+        Notify.init(self.prog)
+
+        # connect to firewalld
+
+        DBusQtMainLoop(set_as_default=True)
+        self.bus = dbus.SystemBus()
+
+        self.fw = FirewallClient(self.bus, wait=1)
+        self.fw.setExceptionHandler(self._exception_handler)
+        if not self.show_inactive:
+            self.hide()
+
+        self.fw.connect("connection-established", self.connection_established)
+        self.fw.connect("connection-lost", self.connection_lost)
+
+        self.fw.connect("reloaded", self.reloaded),
+        self.fw.connect("default-zone-changed", self.default_zone_changed)
+        self.fw.connect("panic-mode-enabled", self.panic_mode_enabled)
+        self.fw.connect("panic-mode-disabled", self.panic_mode_disabled)
+        self.fw.connect("interface-added", self.interface_added)
+        self.fw.connect("interface-removed", self.interface_removed)
+        self.fw.connect("zone-of-interface-changed",
+                        self.zone_of_interface_changed)
+        self.fw.connect("source-added", self.source_added)
+        self.fw.connect("source-removed", self.source_removed)
+        self.fw.connect("zone-of-source-changed",
+                        self.zone_of_source_changed)
+
+        self.bus.add_signal_receiver(
+            self.nm_signal_receiver,
+            dbus_interface=NetworkManager.DBUS_INTERFACE,
+            signal_name='PropertiesChanged',
+            member_keyword='member')
+        self.nm_signal_receiver()
+
+    def _exception_handler(self, exception_message):
+        if "NotAuthorizedException" in exception_message:
+            self.error(fromUTF8(escape(_("Authorization failed."))))
+        elif "INVALID_NAME" in exception_message:
+            msg = exception_message.replace("INVALID_NAME", _("Invalid name"))
+            self.warning(fromUTF8(escape(msg)))
+        elif "NAME_CONFLICT" in exception_message:
+            msg = exception_message.replace("NAME_CONFLICT",
+                                            _("Name already exists"))
+            self.warning(fromUTF8(escape(msg)))
+        elif "NO_DEFAULTS" in exception_message:
+            pass
+        else:
+            self.error(fromUTF8(exception_message))
+
+    def quit(self):
+        sys.exit(1)
+
+    def set_icon(self, mode):
+        self.setIcon(self.icons[mode])
+
+    def activated_cb(self, reason):
+        if reason == QtGui.QSystemTrayIcon.Trigger:
+            self.left_menu.popup(QtGui.QCursor.pos())
+
+    def update_active_zones(self):
+        self.active_zones.clear()
+
+        # remove all entries for the left menu
+        self.left_menu.clear()
+        
+        # add connections entry
+        self.left_menu.addAction(self.connectionsAction)
+
+        if not self.connected:
+            return
+
+        active_zones = self.fw.getActiveZones()
+        if active_zones:
+            self.active_zones = active_zones
+
+        # get all active connections (NM) and interfaces
+        connections = { }
+        interfaces = { }
+        sources = { }
+        for zone in sorted(self.active_zones):
+            if "interfaces" in self.active_zones[zone]:
+                for interface in sorted(self.active_zones[zone]["interfaces"]):
+                    if interface not in self.connections:
+                        interfaces[interface] = zone
+                    else:
+                        # NM controlled
+                        connection = self.connections[interface]
+                        if connection not in self.connections_uuid:
+                            uuid = None
+                        else:
+                            uuid = self.connections_uuid[connection]
+                        connections[connection] = [ zone, uuid ]
+            if "sources" in self.active_zones[zone]:
+                for source in sorted(self.active_zones[zone]["sources"]):
+                    sources[source] = zone
+
+        binding = _("{entry} (Zone: {zone})")
+
+        # add NM controlled bindings
+        for connection in sorted(connections):
+            zone = connections[connection][0]
+            action = QtGui.QAction(
+                fromUTF8(escape(binding.format(zone=zone, entry=connection))),
+                self)
+            action.triggered.connect(functools.partial(
+                self.zone_connection_editor, connection, zone))
+            self.left_menu.addAction(action)
+
+        # add interfaces entry
+        self.left_menu.addAction(self.interfacesAction)
+
+        # add other interfaces
+        for interface in sorted(interfaces):
+            zone = interfaces[interface]
+            action = QtGui.QAction(
+                fromUTF8(escape(binding.format(zone=zone, entry=interface))),
+                self)
+            action.triggered.connect(functools.partial(
+                self.zone_interface_editor, interface, zone))
+            self.left_menu.addAction(action)
+
+        # add interfaces entry
+        self.left_menu.addAction(self.sourcesAction)
+
+        for source in sorted(sources):
+            zone = sources[source]
+            action = QtGui.QAction(
+                fromUTF8(escape(binding.format(zone=zone, entry=source))),
+                self)
+            action.triggered.connect(functools.partial(
+                self.zone_source_editor, source, zone))
+            self.left_menu.addAction(action)
+
+    def zone_interface_editor(self, interface, zone):
+        if interface in self.zone_interface_editors:
+            self.zone_interface_editors[interface].set_zone(zone)
+            self.zone_interface_editors[interface].show()
+            return self.zone_interface_editors[interface].raise_()
+
+        editor = ZoneInterfaceEditor(self.fw, interface, zone)
+        self.zone_interface_editors[interface] = editor
+        editor.show()
+        editor.raise_()
+        editor.show()
+
+    def zone_connection_editor(self, connection, zone):
+        if connection in self.zone_connection_editors:
+            self.zone_connection_editors[connection].set_zone(zone)
+            self.zone_connection_editors[connection].show()
+            return self.zone_connection_editors[connection].raise_()
+
+        editor = ZoneConnectionEditor(self.fw, connection, zone)
+        self.zone_connection_editors[connection] = editor
+        editor.show()
+        editor.raise_()
+        editor.show()
+
+    def zone_source_editor(self, source, zone):
+        if source in self.zone_source_editors:
+            self.zone_source_editors[source].set_zone(zone)
+            self.zone_source_editors[source].show()
+            return self.zone_source_editors[source].raise_()
+
+        editor = ZoneSourceEditor(self.fw, source, zone)
+        self.zone_source_editors[source] = editor
+        editor.show()
+        editor.raise_()
+        editor.show()
+
+    def nm_signal_receiver(self, *args, **kwargs):
+        self.connections.clear()
+        self.connections_uuid.clear()
+
+        # do not use NMClient could result in python core dump
+
+        NM_IF = NetworkManager.DBUS_INTERFACE
+        NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
+        NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
+        NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
+        NM_PATH = NetworkManager.DBUS_PATH
+        DBUS_PROP = 'org.freedesktop.DBus.Properties'
+
+        try:
+            # get active connections
+            obj = self.bus.get_object(NM_IF, NM_PATH)
+            props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+            connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
+
+            # for all active connections:
+            for active in connections:
+                # get connection and devices from active connection
+                obj = self.bus.get_object(NM_IF, active)
+                props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
+                devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
+
+                # get name (id) from connection
+                obj = self.bus.get_object(NM_IF, connection)
+                iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
+                settings = dbus_to_python(iface.GetSettings())
+                name = settings["connection"]["id"]
+                uuid = settings["connection"]["uuid"]
+                self.connections_uuid[name] = uuid
+
+                # for all devices:
+                for device in devices:
+                    obj = self.bus.get_object(NM_IF, device)
+                    props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                    # get interface from device (first try: IpInterface)
+                    iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
+                    if iface == "":
+                        iface = dbus_to_python(props.Get(NM_IF_D, "Interface"))
+                    self.connections[iface] = name
+
+        except Exception as msg:
+            print(msg)
+
+        self.update_tooltip()
+
+    def notify(self, msg, urgency="noicon", timeout=5):
+        #self.showMessage(fromUTF8(escape(self.name)), msg, self.urgencies[urgency], timeout*1000)
+        n = Notify.Notification.new(escape(self.name), msg,
+                                    self.icon_name)
+        n.set_urgency(Notify.Urgency.NORMAL)
+        try:
+            n.show()
+        except:
+            return
+
+    def notification_changed_cb(self):
+        self.settings.setValue("notifications",
+                               self.notificationsAction.isChecked())
+
+    def __blink(self, arg=None):
+        if self._blink_count != 0:
+            if self._blink_count > 0 and self._blink:
+                self._blink_count -= 1
+            self._blink = not self._blink
+            #self.timer = GLib.timeout_add_seconds(1, self.__blink, None)
+        if not self._blink:
+            self.set_icon(self.mode)
+        else:
+            self.set_icon("normal")
+
+    def get_mode(self):
+        return self.mode
+
+    def set_mode(self, mode):
+        if self.mode != mode:
+            if self.timer:
+                #GLib.source_remove(self.timer)
+                self.timer = None
+                self._blink = False
+            self.mode = mode
+
+        elif self.mode == mode and self.timer:
+            if self._blink_count == 0:
+                self._blink_count += 1
+            return
+
+        if mode == "normal":
+            self.set_icon(mode)
+            return
+
+        if self.blink_enabled and self.blink_count != 0:
+            self._blink = True
+            self._blink_count = self.blink_count
+            self.__blink()
+
+    def update_tooltip(self):
+        if self.get_mode() == "error":
+            self.setToolTip(fromUTF8("<big><b>" + \
+                                     _("No connection to firewall daemon") + \
+                                     "</b></big>"))
+            return
+
+        messages = [ ]
+
+        if self.panicAction.isChecked():
+            messages.append("<big><b>" + \
+                            _("All network traffic is blocked.") + \
+                            "</b></big>")
+
+        if self.default_zone:
+            messages.append(_("Default Zone: '%s'") % self.default_zone)
+
+        if len(self.active_zones) > 0:
+            for zone in sorted(self.active_zones):
+                if "interfaces" in self.active_zones[zone]:
+                    for interface in sorted(self.active_zones[zone]["interfaces"]):
+                        if interface in self.connections:
+                            connection = self.connections[interface]
+                            text = _("Zone '{zone}' active for connection "
+                                     "'{connection}' on interface '{interface}'")
+                        else:
+                            text = _("Zone '{zone}' active for interface "
+                                     "'{interface}'")
+                            connection = None
+                        messages.append(text.format(zone=zone,
+                                                    connection=connection,
+                                                    interface=interface))
+                if "sources" in self.active_zones[zone]:
+                    for source in sorted(self.active_zones[zone]["sources"]):
+                        text = _("Zone '{zone}' active for source {source}")
+                        connection = None
+                        messages.append(text.format(zone=zone, source=source))
+        else:
+            messages.append(_("No Active Zones."))
+
+        tooltip = "<nobr>"+"</nobr><br><nobr>".join(messages)+"</nobr>"
+        self.setToolTip(fromUTF8("<font size=\"3\">"+tooltip+"</font>"))
+        
+    def panic_mode_cb(self):
+        if not self.fw or not self.connected:
+            return
+        if self.panicAction.isChecked():
+            self.fw.enablePanicMode()
+        else:
+            self.fw.disablePanicMode()
+        self.panicAction.setChecked(not self.panicAction.isChecked())
+
+    def nm_connection_editor(self, item, uuid=None):
+        if NM_CONNECTION_EDITOR == "":
+            self.warning("NetworkManager connection editor is missing.")
+            return
+
+        if uuid:
+            if "kde-" in NM_CONNECTION_EDITOR:
+                os.system("%s %s &" % (NM_CONNECTION_EDITOR, uuid))
+            else:
+                os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
+        else:
+            os.system("%s &" % NM_CONNECTION_EDITOR)
+
+    def warning(self, text):
+        QtGui.QMessageBox.warning(None, fromUTF8(escape(self.name)), text)
+
+    def error(self, text):
+        QtGui.QMessageBox.critical(None, fromUTF8(escape(self.name)), text)
+
+    def configure_cb(self, widget):
+        os.system("firewall-config &")
+
+    # firewallClient signal receivers
+
+    def connection_established(self, first=False):
+        self.show()
+        self.set_mode("normal")
+        self.default_zone = self.fw.getDefaultZone()
+        self.connected = True
+        self.update_active_zones()
+
+        self.panicAction.setChecked(self.fw.queryPanicMode())
+        
+        self.update_tooltip()
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Connection to FirewallD established.")))
+
+    def connection_lost(self):
+        self.connected = False
+        self.default_zone = None
+        self.set_mode("error")
+        self.update_active_zones()
+        self.update_tooltip()
+        self.panicAction.setChecked(False)
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Connection to FirewallD lost.")))
+        if not self.show_inactive:
+            self.hide()
+
+    def reloaded(self):
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("FirewallD has been reloaded.")))
+
+    def default_zone_changed(self, zone):
+        self.default_zone = zone
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Default zone changed to '%s'.") % zone))
+        self.update_active_zones()
+        self.update_tooltip()
+
+    def _panic_mode(self, enable):
+        self.panicAction.setChecked(enable)
+
+        self.update_tooltip()
+
+        if enable:
+            self.set_mode("panic")
+        else:
+            self.set_mode("normal")
+
+        if self.notificationsAction.isChecked():
+            ed = { 1: _("All network traffic is blocked."),
+                   0: _("Network traffic is not blocked anymore.") }
+            self.notify(escape(ed[enable]))
+
+    def panic_mode_enabled(self):
+        self._panic_mode(True)
+
+    def panic_mode_disabled(self):
+        self._panic_mode(False)
+
+    def _interface(self, zone, interface, enable):
+        self.update_active_zones()
+        self.update_tooltip()
+
+        # close dialog of removed interface
+        if not enable:
+            if interface in self.connections:
+                connection = self.connections[interface]
+                if connection in self.zone_connection_editors:
+                    self.zone_connection_editors[connection].hide()
+                    del self.zone_connection_editors[connection]
+            elif interface in self.zone_interface_editors:
+                self.zone_interface_editors[interface].hide()
+                del self.zone_interface_editors[interface]
+
+        # send notification if enabled
+        if self.notificationsAction.isChecked():
+            ed = { 1: _("activated"),
+                   0: _("deactivated") }
+            if interface in self.connections:
+                connection = self.connections[interface]
+                text = _("Zone '{zone}' {activated_deactivated} for "
+                         "connection '{connection}' on "
+                         "interface '{interface}'")
+            else:
+                connection = None
+                text = _("Zone '{zone}' {activated_deactivated} for "
+                         "interface '{interface}'")
+            self.notify(escape(text.format(
+                zone=zone, activated_deactivated=ed[enable],
+                connection=connection, interface=interface)))
+
+    def interface_added(self, zone, interface):
+        self._interface(zone, interface, True)
+
+    def interface_removed(self, zone, interface):
+        self._interface(zone, interface, False)
+
+    def zone_of_interface_changed(self, zone, interface):
+        # update zone editor
+        if interface in self.zone_interface_editors:
+            self.zone_interface_editors[interface].set_zone(zone)
+
+        self.update_active_zones()
+        self.update_tooltip()
+
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Zone '%s' activated for interface '%s'") % \
+                               (zone, interface)))
+
+    def _source(self, zone, source, enable):
+        self.update_active_zones()
+        self.update_tooltip()
+
+        # close dialog of removed source
+        if not enable:
+            if source in self.zone_source_editors:
+                self.zone_source_editors[source].hide()
+                del self.zone_source_editors[source]
+
+        # send notification if enabled
+        if self.notificationsAction.isChecked():
+            ed = { 1: _("activated"),
+                   0: _("deactivated") }
+            connection = None
+            text = _("Zone '{zone}' {activated_deactivated} for "
+                     "source '{source}'")
+            self.notify(escape(text.format(
+                zone=zone, activated_deactivated=ed[enable], source=source)))
+
+    def source_added(self, zone, source):
+        self._source(zone, source, True)
+
+    def source_removed(self, zone, source):
+        self._source(zone, source, False)
+
+    def zone_of_source_changed(self, zone, source):
+        index = source
+        if source in self.zone_source_editors:
+            self.zone_source_editors[source].set_zone(zone)
+
+        # update zone editor
+        if index in self.zone_interface_editors:
+            self.zone_interface_editors[index].set_zone(zone)
+
+        self.update_active_zones()
+        self.update_tooltip()
+
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Zone '%s' activated for source '%s'") % \
+                               (zone, source)))
+
+# MAIN ########################################################################
+
+if len(sys.argv) > 1:
+    print("""Usage: %s [options]
+
+Options:
+  -h, --help     show this help message and exit
+"""  % sys.argv[0])
+    sys.exit(1)
+
+app = QtGui.QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(False)
+
+if not QtGui.QSystemTrayIcon.isSystemTrayAvailable():
+    QtGui.QMessageBox.critical(None, "Systray",
+                               fromUTF8(escape(_("No system tray available"))))
+    sys.exit(1)
+
+applet = TrayApplet()
+applet.show()
+sys.exit(app.exec_())
