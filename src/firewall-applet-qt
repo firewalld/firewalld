@@ -34,6 +34,7 @@ from firewall.config.dbus import *
 from firewall.client import FirewallClient
 from firewall.dbus_utils import dbus_to_python
 from firewall.errors import *
+import slip.dbus
 import dbus
 
 PATH = [ ]
@@ -383,7 +384,12 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         # connect to firewalld
 
         DBusQtMainLoop(set_as_default=True)
-        self.bus = dbus.SystemBus()
+        try:
+            self.bus = slip.dbus.SystemBus()
+            self.bus.default_timeout = None
+        except Exception as msg:
+            print("Not using slip", msg)
+            self.bus = dbus.SystemBus()
 
         self.fw = FirewallClient(self.bus, wait=1)
         self.fw.setExceptionHandler(self._exception_handler)
