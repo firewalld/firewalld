@@ -75,7 +75,7 @@ Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
-Requires: gtk3
+Requires: PyQt4
 Requires: pygobject3-base
 Requires: libnotify
 Requires: NetworkManager-glib
