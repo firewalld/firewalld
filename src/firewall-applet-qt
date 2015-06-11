@@ -48,7 +48,6 @@ def search_app(app):
             return _app
     return None
 
-APPLET_SCHEMA = "org.fedoraproject.FirewallApplet"
 NM_CONNECTION_EDITOR = ""
 for binary in [ "/usr/bin/nm-connection-editor",
                     "/bin/nm-connection-editor",
