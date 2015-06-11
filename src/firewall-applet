@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2015 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -21,32 +21,21 @@
 #
 
 import sys
+from PyQt4 import QtGui, QtCore
 
-try:
-    from gi.repository import Gtk
-    Gtk.init (sys.argv)
-except RuntimeError as e:
-    print ("firewall-applet: %s" % e)
-    print ("This is a graphical application and requires DISPLAY to be set.")
-    sys.exit (1)
-
-from gi.repository import GLib, GObject, Gio, Notify, NetworkManager
-
-# force use of pygobject3 in python-slip
-sys.modules['gobject'] = GObject
+from gi.repository import Notify, NetworkManager
 
 import os
-import dbus.mainloop.glib
-import slip.dbus
+from dbus.mainloop.qt import DBusQtMainLoop
+import functools
 
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.client import FirewallClient
-from firewall.dbus_utils import dbus_to_python, command_of_pid
-from firewall.functions import ppid_of_pid
+from firewall.dbus_utils import dbus_to_python
 from firewall.errors import *
+import slip.dbus
 import dbus
-
 
 PATH = [ ]
 for p in os.getenv("PATH").split(":"):
@@ -60,18 +49,6 @@ def search_app(app):
             return _app
     return None
 
-def check_gnome3():
-    pid = os.getpid()
-    while pid != None:
-        ppid = ppid_of_pid(pid)
-        if ppid:
-            cmd = command_of_pid(ppid)
-            if cmd != None and "gnome-shell" in cmd:
-                return True
-        pid = ppid
-    return False
-
-APPLET_SCHEMA = "org.fedoraproject.FirewallApplet"
 NM_CONNECTION_EDITOR = ""
 for binary in [ "/usr/bin/nm-connection-editor",
                     "/bin/nm-connection-editor",
@@ -81,16 +58,7 @@ for binary in [ "/usr/bin/nm-connection-editor",
         NM_CONNECTION_EDITOR = binary
         break
 
-def combobox_select_text(combobox, value):
-    model = combobox.get_model()
-    iter = model.get_iter_first()
-    while iter:
-        if model.get_value(iter, 0) == value:
-            combobox.set_active_iter(iter)
-            return True
-        iter = model.iter_next(iter)
-    combobox.set_active(0)
-    return False
+PY2 = sys.version < '3'
 
 def escape(text):
     text = text.replace('&', '&amp;')
@@ -98,70 +66,94 @@ def escape(text):
     text = text.replace('<', '&lt;')
     return text
 
-class ZoneConnectionEditor(Gtk.Dialog):
-    def __init__(self, fw, connection, zone):
+def fromUTF8(text):
+    if PY2:
+        return QtCore.QString.fromUtf8(text)
+    else:
+        return text        
+
+# ZoneInterfaceEditor #########################################################
+
+class ZoneInterfaceEditor(QtGui.QDialog):
+    def __init__(self, fw, interface, zone):
         self.fw = fw
-        self.connection = connection
-        self.zone = zone
-        self.title = _("Select zone for connection '%s'") % self.connection
+        self.interface = interface
+        self.zone = None
+        self.title = _("Select zone for interface '%s'") % self.interface
 
-        super(ZoneConnectionEditor, self).__init__(self.title)
+        QtGui.QDialog.__init__(self)
+        self.create_ui(zone)
 
-        self.set_property("width-request", 100)
-        self.resize_to_geometry(100, 50)
-        self.set_resizable(True)
+    def create_ui(self, zone):
+        self.setWindowTitle(fromUTF8(escape(self.title)))
+        self.rejected.connect(self.hide)
 
-        self.add_button("gtk-close", 1)
-        self.ok_button = self.add_button("gtk-ok", 2)
-        self.ok_button.set_sensitive(False)
+        self.resize(100, 50)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(12)
-        vbox.set_homogeneous(False)
+        vbox = QtGui.QVBoxLayout()
+        vbox.setSpacing(6)
 
-        label = Gtk.Label()
-        label.set_text(self.title)
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
+        label = QtGui.QLabel(fromUTF8(escape(self.title)))
+        vbox.addWidget(label)
 
-        self.combo = Gtk.ComboBoxText()
-        zones = self.fw.getZones()
-        self.combo.append_text(_("Default Zone"))
-        for zone in zones:
-            self.combo.append_text(zone)
-        vbox.pack_start(self.combo, True, True, 0)
+        self.combo = QtGui.QComboBox()
+        self.fill_zone_combo()
+        self.set_zone(zone)
+        vbox.addWidget(self.combo)
 
-        box = self.get_content_area()
-        box.set_border_width(6)
-        box.set_homogeneous(False)
-        box.pack_start(vbox, False, True, 0)
+        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok
+                                           | QtGui.QDialogButtonBox.Cancel)
+        self.ok_button = buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        buttonBox.accepted.connect(self.ok)
+        buttonBox.rejected.connect(self.hide)
+        vbox.addWidget(buttonBox)
+        self.ok_button.setEnabled(False)
 
-        combobox_select_text(self.combo, self.zone)
-        self.combo.connect("changed", self.combo_changed)
+        self.combo.activated.connect(self.combo_changed)
+        self.setLayout(vbox)
 
     def combo_changed(self, combo):
-        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
+        self.ok_button.setEnabled(self.get_zone() != self.zone)
 
     def set_zone(self, zone):
-        old_zone = self.zone
         self.zone = zone
-        if self.combo.get_active_text() == old_zone:
-            combobox_select_text(self.combo, self.zone)
-        else:
-            self.combo_changed(None)
+        self.combo.setCurrentIndex(self.combo.findText(self.zone))
 
     def get_zone(self):
-        text = self.combo.get_active_text()
-        if text == _("Default Zone"):
+        text = str(self.combo.currentText())
+        if text == escape(_("Default Zone")):
             text = ""
         return text
 
-    def run(self):
-        result = super(ZoneConnectionEditor, self).run()
-        if result != 2:
-            return
+    def fill_zone_combo(self):
+        self.combo.clear()
+        self.combo.addItem(fromUTF8(escape(_("Default Zone"))))
+        for z in self.fw.getZones():
+            self.combo.addItem(z)
+
+    def zones_changed(self):
+        zone = self.get_zone()
+        self.fill_zone_combo()
+        self.set_zone(zone)
+
+    def ok(self):
+        self.fw.changeZoneOfInterface(self.get_zone(), self.interface)
+        self.hide()
+
+# ZoneConnectionEditor ########################################################
+
+class ZoneConnectionEditor(ZoneInterfaceEditor):
+    def __init__(self, fw, connection, zone):
+        self.fw = fw
+        self.connection = connection
+        self.zone = None
+        self.title = _("Select zone for connection '%s'") % self.connection
+
+        QtGui.QDialog.__init__(self)
+        self.create_ui(zone)
+
+    def ok(self):
+        # apply changes
         dbus_obj = self.fw.bus.get_object(NetworkManager.DBUS_INTERFACE,
                                           NetworkManager.DBUS_PATH_SETTINGS)
         settings_iface = dbus.Interface(
@@ -180,130 +172,108 @@ class ZoneConnectionEditor(Gtk.Dialog):
         if settings and connection_obj:
             settings["connection"]["zone"] = self.get_zone()
             connection_obj.Update(settings)
+        self.hide()
 
-class ZoneInterfaceEditor(Gtk.Dialog):
-    def __init__(self, fw, interface, zone):
-        self.fw = fw
-        self.interface = interface
-        self.zone = zone
-        self.title = _("Select zone for interface '%s'") % self.interface
+# ZoneSourceEditor ############################################################
 
-        super(ZoneInterfaceEditor, self).__init__(self.title)
-
-        self.set_property("width-request", 100)
-        self.resize_to_geometry(100, 50)
-        self.set_resizable(True)
-
-        self.add_button("gtk-close", 1)
-        self.ok_button = self.add_button("gtk-ok", 2)
-        self.ok_button.set_sensitive(False)
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(12)
-        vbox.set_homogeneous(False)
-
-        label = Gtk.Label()
-        label.set_text(self.title)
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
-
-        self.combo = Gtk.ComboBoxText()
-        zones = self.fw.getZones()
-        for zone in zones:
-            self.combo.append_text(zone)
-        vbox.pack_start(self.combo, True, True, 0)
-
-        box = self.get_content_area()
-        box.set_border_width(6)
-        box.set_homogeneous(False)
-        box.pack_start(vbox, False, True, 0)
-
-        combobox_select_text(self.combo, self.zone)
-        self.combo.connect("changed", self.combo_changed)
-
-    def combo_changed(self, combo):
-        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
-
-    def set_zone(self, zone):
-        old_zone = self.zone
-        self.zone = zone
-        if self.combo.get_active_text() == old_zone:
-            combobox_select_text(self.combo, self.zone)
-        else:
-            self.combo_changed(None)
-
-    def get_zone(self):
-        return self.combo.get_active_text()
-
-class ZoneSourceEditor(Gtk.Dialog):
+class ZoneSourceEditor(ZoneInterfaceEditor):
     def __init__(self, fw, source, zone):
         self.fw = fw
         self.source = source
-        self.zone = zone
-        self.title = _("Select zone for source %s") % self.source
+        self.zone = None
+        self.title = _("Select zone for source '%s'") % self.source
 
-        super(ZoneSourceEditor, self).__init__(self.title)
+        QtGui.QDialog.__init__(self)
+        self.create_ui(zone)
 
-        self.set_property("width-request", 100)
-        self.resize_to_geometry(100, 50)
-        self.set_resizable(True)
+    def ok(self):
+        self.fw.changeZoneOfSource(self.get_zone(), self.source)
+        self.hide()
 
-        self.add_button("gtk-close", 1)
-        self.ok_button = self.add_button("gtk-ok", 2)
-        self.ok_button.set_sensitive(False)
+# AboutDialog #################################################################
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(12)
-        vbox.set_homogeneous(False)
+class AboutDialog(QtGui.QDialog):
+    def __init__(self, name, icon, version, url, copyright, authors, license):
+        QtGui.QDialog.__init__(self)
+        self.setWindowIcon(icon)
+        self.setWindowTitle(fromUTF8(escape(_("About %s" % name))))
+        self.resize(500, 250)
 
-        label = Gtk.Label()
-        label.set_text(self.title)
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
+        vbox = QtGui.QVBoxLayout()
+        vbox.setSpacing(6)
 
-        self.combo = Gtk.ComboBoxText()
-        zones = self.fw.getZones()
-        for zone in zones:
-            self.combo.append_text(zone)
-        vbox.pack_start(self.combo, True, True, 0)
+        hbox = QtGui.QHBoxLayout()
+        hbox.setSpacing(24)
 
-        box = self.get_content_area()
-        box.set_border_width(6)
-        box.set_homogeneous(False)
-        box.pack_start(vbox, False, True, 0)
+        label = QtGui.QLabel()
+        label.setPixmap(icon.pixmap(150))
+        label.setMinimumSize(150, 150)
+        label.setMaximumSize(150, 150)
+        hbox.addWidget(label)
 
-        combobox_select_text(self.combo, self.zone)
-        self.combo.connect("changed", self.combo_changed)
+        vbox2 = QtGui.QVBoxLayout()
+        vbox2.setSpacing(3)
 
-    def combo_changed(self, combo):
-        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
+        label = QtGui.QLabel(name)
+        font = label.font()
+        font.setPointSize(font.pointSize()*2)
+        font.setBold(True)
+        label.setFont(font)
+        vbox2.addWidget(label)
 
-    def set_zone(self, zone):
-        old_zone = self.zone
-        self.zone = zone
-        if self.combo.get_active_text() == old_zone:
-            combobox_select_text(self.combo, self.zone)
-        else:
-            self.combo_changed(None)
+        vbox2.addWidget(QtGui.QLabel(version))
 
-    def get_zone(self):
-        return self.combo.get_active_text()
+        label = QtGui.QLabel("<a href=\"%s\">%s</a>" % (url, url))
+        label.setTextFormat(QtCore.Qt.RichText)
+        label.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
+        label.setOpenExternalLinks(True)
 
-class TrayApplet(object):
-    @staticmethod
-    def position_function(menu, icon):
-        return (Gtk.StatusIcon.position_menu(menu, icon))
+        vbox2.addWidget(label)
 
+        vbox2.addWidget(QtGui.QLabel(copyright))
+
+        label = QtGui.QLabel(fromUTF8(escape(_("Authors:"))))
+        font = label.font()
+        font.setBold(True)
+        label.setFont(font)
+        vbox2.addWidget(label)
+        vbox2.addWidget(QtGui.QLabel(fromUTF8("<br>".join([ escape(a) for a in authors ]))))
+
+        #vbox2.addStretch()
+
+        hbox.addLayout(vbox2)
+
+        vbox.addLayout(hbox)
+
+        label = QtGui.QLabel(fromUTF8(escape(_("License:"))))
+        font = label.font()
+        font.setBold(True)
+        label.setFont(font)
+        vbox.addWidget(label)
+        textedit = QtGui.QTextEdit()
+        textedit.setReadOnly(True)
+        textedit.setPlainText(license)
+        vbox.addWidget(textedit)
+
+        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
+        buttonBox.rejected.connect(self.hide)
+        vbox.addWidget(buttonBox)
+
+        self.setLayout(vbox)
+
+# TrayApplet ##################################################################
+
+class TrayApplet(QtGui.QSystemTrayIcon):
     def __init__(self):
-        self.name = _("Firewall Applet")
+        super(TrayApplet, self).__init__()
+        self.name = _("Firewall Applet Qt")
+        self.prog = "firewall-applet-qt"
         self.icon_name = "firewall-applet"
-        self.settings = Gio.Settings.new(APPLET_SCHEMA)
-
-        self.icons = { "normal": None, "error": None, "panic": None, }
+        self.icons = {
+            "normal": QtGui.QIcon.fromTheme(self.icon_name),
+            "error": QtGui.QIcon.fromTheme(self.icon_name+"-error"),
+            "panic": QtGui.QIcon.fromTheme(self.icon_name+"-panic"),
+        }
         self.timer = None
         self.mode = None
         self._blink = False
@@ -318,188 +288,102 @@ class TrayApplet(object):
         self.zone_interface_editors = { }
         self.zone_source_editors = { }
 
-        # fix gnome 3 applet icon handling?
-        self.fix_gnome3 = check_gnome3()
+        # settings
 
-        # get blink bool and blink count from user settings
-        self.blink_enabled = self.settings.get_boolean("blink")
-        self.settings.connect("changed::blink",
-                              self.bool_changed, self.blink_enabled)
-        self.blink_count = self.settings.get_int("blink-count")
-        self.settings.connect("changed::blink-count",
-                              self.int_changed, self.blink_count)
+        self.settings = QtCore.QSettings("firewall-applet", "firewalld")
 
-        self.show_inactive = self.settings.get_boolean("show-inactive")
-        self.settings.connect("changed::show-inactive",
-                              self.show_inactive_changed)
+        self.blink_enabled = self.settings.value("blink", False, type=bool)
+        self.blink = self.settings.value("blink-count", 5, type=int)
+        self.show_inactive = self.settings.value("show-inactive", False,
+                                               type=bool)
 
-        self.icontheme = Gtk.IconTheme.get_default()
+        # about dialog
 
-        self.statusicon = Gtk.StatusIcon.new()
-        self.statusicon.set_from_icon_name(self.icon_name)
+        self.about_dialog = AboutDialog(self.name,
+                                        self.icons["normal"],
+                                        VERSION, WEBSITE, COPYRIGHT, AUTHORS,
+                                        LICENSE)
 
-        self.left_menu = Gtk.Menu.new()
-        self.left_menu.set_reserve_toggle_size(False)
+        # urgencies
 
-        self.right_menu = Gtk.Menu.new()
+        self.urgencies = { "noicon": QtGui.QSystemTrayIcon.NoIcon,
+                           "information": QtGui.QSystemTrayIcon.Information,
+                           "warning": QtGui.QSystemTrayIcon.Warning,
+                           "critical": QtGui.QSystemTrayIcon.Critical }
 
-        self.shieldsup_check = Gtk.CheckMenuItem.new_with_mnemonic(
-            _("Shields Up"))        
-        self.shieldsup_check.set_active(False)
-        self.shieldsup_check_id = \
-            self.shieldsup_check.connect('toggled',
-                                         self.shieldsup_check_toggled)
-        self.right_menu.append(self.shieldsup_check)
+        # actions
 
-        self.settings.connect("changed::shields-up",
-                              self.settings_shields_up_changed)
-        self.settings.connect("changed::shields-down",
-                              self.settings_shields_down_changed)
+        self.notificationsAction = QtGui.QAction(
+            fromUTF8(escape(_("Enable Notifications"))), self)
+        self.notificationsAction.setCheckable(True)
+        self.notificationsAction.setChecked(
+            self.settings.value("notifications", False, type=bool))
+        self.notificationsAction.triggered.connect(self.notification_changed_cb)
 
-        self.notification_check = Gtk.CheckMenuItem.new_with_mnemonic(
-            _("Enable Notifications"))
-        self.notification_check.set_active(self.settings.get_boolean(
-                "notifications"))
-        self.settings.connect("changed::notifications",
-                              self.settings_check_changed,
-                              self.notification_check)
-        self.notification_check.connect('toggled',
-                                        self.notification_check_toggled,
-                                        self.settings, "notifications")
-        self.right_menu.append(self.notification_check)
+        self.settingsAction = QtGui.QAction(
+            fromUTF8(escape(_("Edit Firewall Settings..."))), self)
+        self.settingsAction.triggered.connect(self.configure_cb)
 
-        self.right_menu.append(Gtk.SeparatorMenuItem.new())
+        self.changeZonesAction = QtGui.QAction(
+            fromUTF8(escape(_("Change Zones of Connections..."))), self)
+        self.changeZonesAction.triggered.connect(self.nm_connection_editor)
 
-        item = Gtk.ImageMenuItem.new_with_mnemonic(_("Edit Firewall Settings..."))
-        item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
-                                                Gtk.IconSize.MENU))
-        item.connect("activate", self.configure_cb)
-        if not search_app("firewall-config"):
-            item.set_sensitive(False)
-        self.right_menu.append(item)
+        self.panicAction = QtGui.QAction(
+            fromUTF8(escape(_("Block all network traffic"))), self)
+        self.panicAction.setCheckable(True)
+        self.panicAction.setChecked(False)
+        self.panicAction.triggered.connect(self.panic_mode_cb)
         
-        item = Gtk.ImageMenuItem.new_with_mnemonic(_("Change Zones of Connections..."))
-        item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
-                                                Gtk.IconSize.MENU))
-        item.connect("activate", self.nm_connection_editor)
-        item.set_sensitive(NM_CONNECTION_EDITOR != "")
-        self.right_menu.append(item)
+        self.aboutAction = QtGui.QAction(fromUTF8(escape(_("About"))), self)
+        self.aboutAction.triggered.connect(self.about_dialog.exec_)
 
-        item = Gtk.ImageMenuItem.new_with_mnemonic(_("Configure Shields UP/Down Zones..."))
-        item.set_image(Gtk.Image.new_from_stock("gtk-preferences",
-                                                Gtk.IconSize.MENU))
-        item.connect("activate", self.configure_shields_cb)
-        self.right_menu.append(item)
+        #self.quitAction = QtGui.QAction(fromUTF8(escape(_("Quit"))), self,
+        #                                triggered=self.quit)
 
-        self.right_menu.append(Gtk.SeparatorMenuItem.new())
+        self.connectionsAction = QtGui.QWidgetAction(self)
+        self.connectionsAction.setDefaultWidget(QtGui.QLabel(
+            fromUTF8("<b>"+escape(_("Connections"))+"</b> ")))
 
-        self.panic_check = Gtk.CheckMenuItem.new_with_mnemonic(\
-            _("Block all network traffic"))
-        self.panic_check.set_active(False)
-        self.panic_check_id = self.panic_check.connect("toggled",
-                                                       self.panic_mode_cb)
-        self.right_menu.append(self.panic_check)
+        self.interfacesAction = QtGui.QWidgetAction(self)
+        self.interfacesAction.setDefaultWidget(QtGui.QLabel(
+            fromUTF8("<b>"+escape(_("Interfaces"))+"</b> ")))
 
-        self.right_menu.append(Gtk.SeparatorMenuItem.new())
+        self.sourcesAction = QtGui.QWidgetAction(self)
+        self.sourcesAction.setDefaultWidget(QtGui.QLabel(
+            fromUTF8("<b>"+escape(_("Sources"))+"</b> ")))
 
-        item = Gtk.ImageMenuItem.new_from_stock(Gtk.STOCK_ABOUT, None)
-        item.connect('activate', self.about_cb)
-        self.right_menu.append(item)
+        # init
 
-        self.statusicon.connect("activate", self.left_menu_cb,
-                                self.left_menu)
-        self.statusicon.connect("popup-menu", self.right_menu_cb,
-                                self.right_menu)
-        self.statusicon.connect("size-changed", self.size_changed)
+        self.left_menu = QtGui.QMenu()
+        self.left_menu.setStyleSheet('QMenu { margin: 5px; }')
 
-        self.about_dialog = Gtk.AboutDialog.new()
-        self.about_dialog.set_name(self.name)
-        self.about_dialog.set_version(VERSION)
-        self.about_dialog.set_license(LICENSE)
-        self.about_dialog.set_wrap_license(True)
-        self.about_dialog.set_copyright(COPYRIGHT)
-        self.about_dialog.set_authors(AUTHORS)
-        self.about_dialog.set_logo_icon_name(self.icon_name)
+        self.right_menu = QtGui.QMenu()
+        self.right_menu.addAction(self.notificationsAction)
+        self.right_menu.addSeparator()
+        self.right_menu.addAction(self.settingsAction)
+        self.right_menu.addAction(self.changeZonesAction)
+        self.right_menu.addSeparator()
+        self.right_menu.addAction(self.panicAction)
+        self.right_menu.addSeparator()
+        self.right_menu.addAction(self.aboutAction)
+        #self.right_menu.addSeparator()
+        #self.right_menu.addAction(self.quitAction)
+        self.setContextMenu(self.right_menu)
 
-        # shields up/down configure dialog
+        self.activated.connect(self.activated_cb)
 
-        self.shields_dialog = Gtk.Dialog(title=_("Configure Shields Up/Down Zones"))
-        self.shields_dialog.set_property("width-request", 400)
-        self.shields_dialog.resize_to_geometry(400, 100)
-        self.shields_dialog.add_buttons("gtk-close", 1)
-        self.shields_dialog.set_icon_name(self.icon_name)
-        self.shields_dialog.set_modal(True)
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(12)
-        vbox.set_homogeneous(False)
+        self.set_mode("error")
+        self.set_icon(self.mode)
 
-        label = Gtk.Label()
-        label.set_text(_("Here you can select the zones used for Shields "
-                         "Up and Shields Down."))
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
-
-        label = Gtk.Label()
-        label.set_text(_("This feature is useful for people using the "
-                         "default zones mostly. For users, that are "
-                         "changing zones of connections, it might be of "
-                         "limited use."))
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
-
-        grid = Gtk.Grid()
-        grid.set_row_spacing(6)
-        grid.set_column_spacing(6)
-        grid.set_border_width(6)
-
-        label = Gtk.Label()
-        label.set_text(_("Shields Up Zone:"))
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(1, 0.5)
-        grid.attach(label, 0, 0, 1, 1)
-
-        self.shields_up_combo = Gtk.ComboBoxText()
-        self.shields_up_combo.connect("changed", self.shields_up_changed)
-        grid.attach(self.shields_up_combo, 1, 0, 1, 1)
-
-        label = Gtk.Label()
-        label.set_text(_("Shields Down Zone:"))
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(1, 0.5)
-        grid.attach(label, 0, 1, 1, 1)
-
-        self.shields_down_combo = Gtk.ComboBoxText()
-        self.shields_down_combo.connect("changed", self.shields_down_changed)
-        grid.attach(self.shields_down_combo, 1, 1, 1, 1)
-
-        button = Gtk.Button(label="Set To Default")
-        button.connect("clicked", self.reset_shields_up_zone)
-        grid.attach(button, 2, 0, 1, 1)
-
-        button = Gtk.Button(label="Set To Default")
-        button.connect("clicked", self.reset_shields_down_zone)
-        grid.attach(button, 2, 1, 1, 1)
-
-        vbox.pack_start(grid, True, True, 0)
-
-        box = self.shields_dialog.get_content_area()
-        box.set_border_width(6)
-        box.set_homogeneous(False)
-        box.pack_start(vbox, False, True, 0)
+        self.setVisible(True)
 
         # init notification
 
-        Notify.init(self.name)
+        Notify.init(self.prog)
 
-        # status icon
+        # connect to firewalld
 
-        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+        DBusQtMainLoop(set_as_default=True)
         try:
             self.bus = slip.dbus.SystemBus()
             self.bus.default_timeout = None
@@ -508,12 +392,13 @@ class TrayApplet(object):
             self.bus = dbus.SystemBus()
 
         self.fw = FirewallClient(self.bus, wait=1)
-        self.set_mode("error")
+        self.fw.setExceptionHandler(self._exception_handler)
         if not self.show_inactive:
-            self.hide_icon()
+            self.hide()
 
         self.fw.connect("connection-established", self.connection_established)
         self.fw.connect("connection-lost", self.connection_lost)
+
         self.fw.connect("reloaded", self.reloaded),
         self.fw.connect("default-zone-changed", self.default_zone_changed)
         self.fw.connect("panic-mode-enabled", self.panic_mode_enabled)
@@ -534,96 +419,39 @@ class TrayApplet(object):
             member_keyword='member')
         self.nm_signal_receiver()
 
-    def set_icon(self, mode):
-        self.statusicon.set_from_pixbuf(self.icons[mode])
-        if self.fix_gnome3 and (self.fw.connected or self.show_inactive):
-            self.hide_icon()
-            self.show_icon()
-
-    def size_changed(self, statusicon, size):
-        _dict = { "normal": "",
-                  "error": "-error",
-                  "panic": "-panic" }
-        for _type in _dict:
-            name = "firewall-applet%s" % _dict[_type]
-            info = self.icontheme.lookup_icon(name, size, 0)
-            if info:
-                self.icons[_type] = info.load_icon()
-            else:
-                print("Icon '%s' could not be loaded" % name)
-        self.set_icon(self.mode)
-
-    def settings_check_changed(self, settings, key, button):
-        button.set_active(settings.get_boolean(key))
-
-    def bool_changed(self, settings, key, item):
-        item = settings.get_boolean(key)
-
-    def show_inactive_changed(self, settings, key):
-        self.show_inactive = settings.get_boolean(key)
-        if not self.fw.connected:
-            if self.show_inactive:
-                self.show_icon()
-            else:
-                self.hide_icon()
-
-    def int_changed(self, settings, key, item):
-        item = settings.get_int(key)
-
-    def shieldsup_check_toggled(self, button):
-        if button.get_active():
-            zone = self.settings.get_string("shields-up")
+    def _exception_handler(self, exception_message):
+        if "NotAuthorizedException" in exception_message:
+            self.error(fromUTF8(escape(_("Authorization failed."))))
+        elif "INVALID_NAME" in exception_message:
+            msg = exception_message.replace("INVALID_NAME", _("Invalid name"))
+            self.warning(fromUTF8(escape(msg)))
+        elif "NAME_CONFLICT" in exception_message:
+            msg = exception_message.replace("NAME_CONFLICT",
+                                            _("Name already exists"))
+            self.warning(fromUTF8(escape(msg)))
+        elif "NO_DEFAULTS" in exception_message:
+            pass
         else:
-            zone = self.settings.get_string("shields-down")
+            self.error(fromUTF8(exception_message))
 
-        if self.fw.connected and self.fw.getDefaultZone() != zone:
-            try:
-                self.fw.setDefaultZone(zone)
-            except dbus.exceptions.DBusException as e:
-                print("Error: %s" % e.get_dbus_message())
+    def quit(self):
+        sys.exit(1)
 
-    def notification_check_toggled(self, button, settings, key):
-        settings.set_boolean(key, button.get_active())
+    def set_icon(self, mode):
+        self.setIcon(self.icons[mode])
 
-    def notify(self, msg, sender=None, urgency=Notify.Urgency.NORMAL,
-               timeout=5):
-        n = Notify.Notification.new(self.name, msg, self.icon_name)
-        n.set_urgency(urgency)
-        try:
-            n.show()
-        except:
-            return
-        if self.fix_gnome3:
-            GLib.timeout_add_seconds(timeout, self.close_notification, n)
-
-    def close_notification(self, n):
-        n.close()
-        self.hide_icon()
-        self.show_icon()
-
-    def hide_icon(self):
-        self.statusicon.set_visible(False)
-
-    def show_icon(self):
-        self.statusicon.set_visible(True)
+    def activated_cb(self, reason):
+        if reason == QtGui.QSystemTrayIcon.Trigger:
+            self.left_menu.popup(QtGui.QCursor.pos())
 
     def update_active_zones(self):
         self.active_zones.clear()
 
         # remove all entries for the left menu
-        left_menu_children = self.left_menu.get_children()
-        for child in left_menu_children:
-            self.left_menu.remove(child)
-            child.destroy()
-
-        # add connecitons entry
-        item = Gtk.MenuItem.new()
-        label = Gtk.Label()
-        label.set_markup("<b>"+escape(_("Connections"))+"</b>")
-        label.set_alignment(0, 0.5)
-        item.add(label)
-        item.connect("select", self.no_select)
-        self.left_menu.append(item)
+        self.left_menu.clear()
+        
+        # add connections entry
+        self.left_menu.addAction(self.connectionsAction)
 
         if not self.connected:
             return
@@ -653,455 +481,80 @@ class TrayApplet(object):
                 for source in sorted(self.active_zones[zone]["sources"]):
                     sources[source] = zone
 
-        # add NM controlled entries
+        binding = _("{entry} (Zone: {zone})")
+
+        # add NM controlled bindings
         for connection in sorted(connections):
-            [ zone, uuid ] = connections[connection]
-            
-            item = Gtk.MenuItem.new()
-            hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-            label = Gtk.Label()
-            label.set_markup("%s\n<small>%s: %s</small>" % \
-                                 (connection, escape(_("Zone")), zone))
-            label.set_alignment(0, 0.5)
-            label.set_padding(12, 0)
-            hbox.pack_start(label, True, True, 0)
-#            # only sensitive if nm_connection_editor exists
-#            if NM_CONNECTION_EDITOR == "":
-#                item.set_sensitive(False)
-            item.add(hbox)
-#            item.connect("activate", self.nm_connection_editor, uuid)
-            item.connect("activate", self.change_zone_connection_editor, connection, zone)
-            self.left_menu.append(item)
-
-        if len(interfaces) > 0:
-            item = Gtk.MenuItem.new()
-            label = Gtk.Label()
-            label.set_markup("<b>"+escape(_("Interfaces"))+"</b>")
-            label.set_alignment(0, 0.5)
-            item.add(label)
-            item.connect("select", self.no_select)
-            self.left_menu.append(item)
-
-            # add other interfaces
-            for interface in sorted(interfaces):
-                zone = interfaces[interface]
-
-                item = Gtk.MenuItem.new()
-                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-                label = Gtk.Label()
-                label.set_markup("%s\n<small>%s: %s</small>" % \
-                                     (interface, escape(_("Zone")), zone))
-                label.set_alignment(0, 0.5)
-                label.set_padding(12, 0)
-                hbox.pack_start(label, True, True, 0)
-                item.add(hbox)
-                item.connect("activate", self.change_zone_interface_editor, interface, zone)
-                self.left_menu.append(item)
-
-        if len(sources) > 0:
-            item = Gtk.MenuItem.new()
-            label = Gtk.Label()
-            label.set_markup("<b>"+escape(_("Sources"))+"</b>")
-            label.set_alignment(0, 0.5)
-            item.add(label)
-            item.connect("select", self.no_select)
-            self.left_menu.append(item)
-
-            for source in sorted(sources):
-                zone = sources[source]
-
-                item = Gtk.MenuItem.new()
-                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
-                label = Gtk.Label()
-                label.set_markup("%s\n<small>%s: %s</small>" % \
-                                     (source, escape(_("Zone")),
-                                      zone))
-                label.set_alignment(0, 0.5)
-                label.set_padding(12, 0)
-                hbox.pack_start(label, True, True, 0)
-                item.add(hbox)
-                item.connect("activate", self.change_zone_source_editor, source, zone)
-                self.left_menu.append(item)
-
-    def nm_connection_editor(self, item, uuid=None):
-        if NM_CONNECTION_EDITOR == "":
-            self._warning("NetworkManager connection editor is missing.")
-            return
-
-        if uuid:
-            if "kde-" in NM_CONNECTION_EDITOR:
-                os.system("%s %s &" % (NM_CONNECTION_EDITOR, uuid))
-            else:
-                os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
-        else:
-            os.system("%s &" % NM_CONNECTION_EDITOR)
-
-    def change_zone_interface_editor(self, item, interface, zone):
-        if interface in self.zone_interface_editors:
-            return self.zone_interface_editors[interface].present()
-
-        editor = ZoneInterfaceEditor(self.fw, interface, zone)
-        editor.set_icon_name(self.icon_name)
-        self.zone_interface_editors[interface] = editor
-
-        editor.show_all()
-        result = editor.run()
-        editor.hide()
-        if result == 2:
-            self.fw.changeZoneOfInterface(editor.get_zone(), interface)
-        del self.zone_interface_editors[interface]
-
-    def change_zone_connection_editor(self, item, connection, zone):
-        if connection in self.zone_connection_editors:
-            return self.zone_connection_editors[connection].present()
-
-        editor = ZoneConnectionEditor(self.fw, connection, zone)
-        editor.set_icon_name(self.icon_name)
-        self.zone_connection_editors[connection] = editor
-
-        editor.show_all()
-        editor.run()
-        editor.hide()
-        del self.zone_connection_editors[connection]
-
-    def change_zone_source_editor(self, item, source, zone):
-        if source in self.zone_source_editors:
-            return self.zone_source_editors[source].present()
-
-        editor = ZoneSourceEditor(self.fw, source, zone)
-        editor.set_icon_name(self.icon_name)
-        self.zone_source_editors[source] = editor
-
-        editor.show_all()
-        result = editor.run()
-        editor.hide()
-        if result == 2:
-            self.fw.changeZoneOfSource(editor.get_zone(), source)
-        del self.zone_source_editors[source]
-
-    def connection_established(self, first=False):
-        self.show_icon()
-        self.set_mode("normal")
-        self.default_zone = self.fw.getDefaultZone()
-        self.connected = True
-        self.update_active_zones()
-
-        self.shields_up_combo.get_model().clear()
-        self.shields_down_combo.get_model().clear()
-        zones = self.fw.getZones()
-        for zone in zones:
-            self.shields_up_combo.append_text(zone)
-            self.shields_down_combo.append_text(zone)
-
-        if self.settings.get_string("shields-up") not in zones:
-            self.warning("Shields Up zone '%s' not found" % \
-                             self.settings.get_string("shields-up"), 
-                         "Resetting to default value...")
-            self.settings.reset("shields-up")
-        if self.settings.get_string("shields-down") not in zones:
-            self.warning("Shields Down zone '%s' not found" % \
-                             self.settings.get_string("shields-down"), 
-                         "Resetting to default value...")
-            self.settings.reset("shields-down")
-
-        self.shieldsup_check.handler_block(self.shieldsup_check_id)
-        if self.default_zone == self.settings.get_string("shields-up"):
-            self.shieldsup_check.set_active(True)
-        else:
-            self.shieldsup_check.set_active(False)
-        self.shieldsup_check.handler_unblock(self.shieldsup_check_id)
-
-        self.update_tooltip()
-        if self.notification_check.get_active():
-            self.notify(_("Connection to FirewallD established."))
-
-    def connection_lost(self):
-        self.connected = False
-        self.default_zone = None
-        self.set_mode("error")
-        self.update_active_zones()
-        self.update_tooltip()
-        if self.notification_check.get_active():
-            self.notify(_("Connection to FirewallD lost."))
-        if not self.show_inactive:
-            self.hide_icon()
-
-    def panic_mode_cb(self, check):
-        if not self.fw or not self.connected:
-            return
-        if check.get_active():
-            self.fw.enablePanicMode()
-        else:
-            self.fw.disablePanicMode()
-        
-    def left_menu_cb(self, widget, menu):
-        menu.show_all()
-        menu.popup(None, None, self.position_function,
-                   self.statusicon, 1, Gtk.get_current_event_time())
-
-    def right_menu_cb(self, widget, button, time, menu):
-        if button != 3:
-            return
-        menu.show_all()
-        menu.popup(None, None, self.position_function,
-                   self.statusicon, button, time)
-
-    def no_select(self, item):
-        item.deselect()
-
-    def about_cb(self, widget):
-        self.about_dialog.run()
-        self.about_dialog.hide()
-
-    def configure_cb(self, widget):
-        os.system("firewall-config &")
-
-    def combobox_select_text(self, combobox, value):
-        model = combobox.get_model()
-        iter = model.get_iter_first()
-        while iter:
-            if model.get_value(iter, 0) == value:
-                combobox.set_active_iter(iter)
-                return True
-            iter = model.iter_next(iter)
-        combobox.set_active(0)
-        return False
-
-    def reloaded(self):
-        if self.notification_check.get_active():
-            self.notify(_("FirewallD has been reloaded."))
-
-    def shields_up_changed(self, *args):
-        text = self.shields_up_combo.get_active_text()
-        if text and text != self.settings.get_string("shields-up"):
-            self.settings.set_string("shields-up", text)
-
-    def shields_down_changed(self, *args):
-        text = self.shields_down_combo.get_active_text()
-        if text and text != self.settings.get_string("shields-down"):
-            self.settings.set_string("shields-down", text)
-
-    def settings_shields_up_changed(self, *args):
-        self.combobox_select_text(self.shields_up_combo,
-                                  self.settings.get_string("shields-up"))
-        #TODO: apply zone if shields-up enabled
-
-    def settings_shields_down_changed(self, *args):
-        self.combobox_select_text(self.shields_down_combo,
-                                  self.settings.get_string("shields-down"))
-        #TODO: apply zone if shields-down enabled?
-
-    def reset_shields_up_zone(self, *args):
-        self.settings.reset("shields-up")
-
-    def reset_shields_down_zone(self, *args):
-        self.settings.reset("shields-down")
-
-    def configure_shields_cb(self, widget):
-        self.combobox_select_text(self.shields_up_combo,
-                                  self.settings.get_string("shields-up"))
-        self.combobox_select_text(self.shields_down_combo,
-                                  self.settings.get_string("shields-down"))
-
-        self.shields_dialog.show_all()
-        self.shields_dialog.run()
-        self.shields_dialog.hide()
-
-    def __blink(self, arg=None):
-        if self._blink_count != 0:
-            if self._blink_count > 0 and self._blink:
-                self._blink_count -= 1
-            self._blink = not self._blink
-            self.timer = GLib.timeout_add_seconds(1, self.__blink, None)
-        if not self._blink:
-            self.set_icon(self.mode)
-        else:
-            self.set_icon("normal")
-
-    def get_mode(self):
-        return self.mode
-
-    def set_mode(self, mode):
-        if self.mode != mode:
-            if self.timer:
-                GLib.source_remove(self.timer)
-                self.timer = None
-                self._blink = False
-            self.mode = mode
-
-        elif self.mode == mode and self.timer:
-            if self._blink_count == 0:
-                self._blink_count += 1
-            return
-
-        if mode == "normal":
-            self.set_icon(mode)
-            return
-
-        if self.blink_enabled and self.blink_count != 0:
-            self._blink = True
-            self._blink_count = self.blink_count
-            self.__blink()
-
-    def update_tooltip(self):
-        if self.get_mode() == "error":
-            self.tooltip = "<span color='#FF0000'>" + \
-                _("No connection to firewall daemon") + "</span>"
-            self.statusicon.set_tooltip_markup(self.tooltip)
-            return
-
-        if self.panic_check.get_active():
-            self.tooltip = "<big><b><span color='#FF0000'>" + \
-                _("PANIC MODE") + "</span></b></big>"
-            self.statusicon.set_tooltip_markup(self.tooltip)
-            return
-
-        messages = [ ]
-
-        if self.default_zone:
-            messages.append(_("Default Zone: '%s'" % self.default_zone))
-
-        if len(self.active_zones) > 0:
-            for zone in sorted(self.active_zones):
-                if "interfaces" in self.active_zones[zone]:
-                    for interface in sorted(self.active_zones[zone]["interfaces"]):
-                        if interface in self.connections:
-                            connection = self.connections[interface]
-                            text = _("Zone '{zone}' active for connection "
-                                     "'{connection}' on interface '{interface}'")
-                        else:
-                            text = _("Zone '{zone}' active for interface "
-                                     "'{interface}'")
-                            connection = None
-                        messages.append(text.format(zone=zone,
-                                                    connection=connection,
-                                                    interface=interface))
-                if "sources" in self.active_zones[zone]:
-                    for source in sorted(self.active_zones[zone]["sources"]):
-                        text = _("Zone '{zone}' active for source {source}")
-                        connection = None
-                        messages.append(text.format(zone=zone, source=source))
-        else:
-            messages.append(_("No Active Zones."))
-
-        self.tooltip = "\n".join(messages)
-
-        self.statusicon.set_tooltip_markup(self.tooltip)
-
-    def default_zone_changed(self, zone):
-        self.default_zone = zone
-        if self.notification_check.get_active():
-            self.notify(_("Default zone changed to '%s'.") % zone)
-        self.update_active_zones()
-        self.update_tooltip()
-
-        # in case something else changes default zone
-        if self.default_zone == self.settings.get_string("shields-up"):
-            self.shieldsup_check.set_active(True)
-        else:
-            self.shieldsup_check.set_active(False)
-
-
-    def _panic_mode(self, enable):
-        self.panic_check.handler_block(self.panic_check_id)
-        self.panic_check.set_active(enable)
-        self.panic_check.handler_unblock(self.panic_check_id)
-
-        self.update_tooltip()
-
-        if enable:
-            self.set_mode("panic")
-        else:
-            self.set_mode("normal")
-
-        if self.notification_check.get_active():
-            ed = { 1: _("All network traffic is blocked."),
-                   0: _("Network traffic is not blocked anymore.") }
-            self.notify(ed[enable])
-
-    def panic_mode_enabled(self):
-        self._panic_mode(True)
-
-    def panic_mode_disabled(self):
-        self._panic_mode(False)
-
-    def _interface(self, zone, interface, enable):
-        self.update_active_zones()
-        self.update_tooltip()
-
-        # send notification if enabled
-        if self.notification_check.get_active():
-            ed = { 1: _("activated"),
-                   0: _("deactivated") }
-            if interface in self.connections:
-                connection = self.connections[interface]
-                text = _("Zone '{zone}' {activated_deactivated} for "
-                         "connection '{connection}' on "
-                         "interface '{interface}'")
-            else:
-                connection = None
-                text = _("Zone '{zone}' {activated_deactivated} for "
-                         "interface '{interface}'")
-            self.notify(text.format(zone=zone,
-                                    activated_deactivated=ed[enable],
-                                    connection=connection,
-                                    interface=interface))
-
-    def interface_added(self, zone, interface):
-        self._interface(zone, interface, True)
-
-    def interface_removed(self, zone, interface):
-        self._interface(zone, interface, False)
-
-    def zone_of_interface_changed(self, zone, interface):
-        # update zone editor
+            zone = connections[connection][0]
+            action = QtGui.QAction(
+                fromUTF8(escape(binding.format(zone=zone, entry=connection))),
+                self)
+            action.triggered.connect(functools.partial(
+                self.zone_connection_editor, connection, zone))
+            self.left_menu.addAction(action)
+
+        # add interfaces entry
+        self.left_menu.addAction(self.interfacesAction)
+
+        # add other interfaces
+        for interface in sorted(interfaces):
+            zone = interfaces[interface]
+            action = QtGui.QAction(
+                fromUTF8(escape(binding.format(zone=zone, entry=interface))),
+                self)
+            action.triggered.connect(functools.partial(
+                self.zone_interface_editor, interface, zone))
+            self.left_menu.addAction(action)
+
+        # add interfaces entry
+        self.left_menu.addAction(self.sourcesAction)
+
+        for source in sorted(sources):
+            zone = sources[source]
+            action = QtGui.QAction(
+                fromUTF8(escape(binding.format(zone=zone, entry=source))),
+                self)
+            action.triggered.connect(functools.partial(
+                self.zone_source_editor, source, zone))
+            self.left_menu.addAction(action)
+
+    def zone_interface_editor(self, interface, zone):
         if interface in self.zone_interface_editors:
             self.zone_interface_editors[interface].set_zone(zone)
+            self.zone_interface_editors[interface].show()
+            return self.zone_interface_editors[interface].raise_()
 
-        self.update_active_zones()
-        self.update_tooltip()
+        editor = ZoneInterfaceEditor(self.fw, interface, zone)
+        self.zone_interface_editors[interface] = editor
+        editor.show()
+        editor.raise_()
+        editor.show()
 
-        if self.notification_check.get_active():
-            self.notify(_("Zone '%s' activated for interface '%s'") % \
-                            (zone, interface))
+    def zone_connection_editor(self, connection, zone):
+        if connection in self.zone_connection_editors:
+            self.zone_connection_editors[connection].set_zone(zone)
+            self.zone_connection_editors[connection].show()
+            return self.zone_connection_editors[connection].raise_()
 
-    def _source(self, zone, source, enable):
-        self.update_active_zones()
-        self.update_tooltip()
+        editor = ZoneConnectionEditor(self.fw, connection, zone)
+        self.zone_connection_editors[connection] = editor
+        editor.show()
+        editor.raise_()
+        editor.show()
 
-        # send notification if enabled
-        if self.notification_check.get_active():
-            ed = { 1: _("activated"),
-                   0: _("deactivated") }
-            connection = None
-            text = _("Zone '{zone}' {activated_deactivated} for "
-                     "source '{source}'")
-            self.notify(text.format(zone=zone,
-                                    activated_deactivated=ed[enable],
-                                    source=source))
+    def zone_source_editor(self, source, zone):
+        if source in self.zone_source_editors:
+            self.zone_source_editors[source].set_zone(zone)
+            self.zone_source_editors[source].show()
+            return self.zone_source_editors[source].raise_()
 
-    def source_added(self, zone, source):
-        self._source(zone, source, True)
-
-    def source_removed(self, zone, source):
-        self._source(zone, source, False)
-
-    def zone_of_source_changed(self, zone, source):
-        index = source
-
-        # update zone editor
-        if index in self.zone_interface_editors:
-            self.zone_interface_editors[index].set_zone(zone)
-
-        self.update_active_zones()
-        self.update_tooltip()
-
-        if self.notification_check.get_active():
-            self.notify(_("Zone '%s' activated for source '%s'") % \
-                            (zone, source))
+        editor = ZoneSourceEditor(self.fw, source, zone)
+        self.zone_source_editors[source] = editor
+        editor.show()
+        editor.raise_()
+        editor.show()
 
     def nm_signal_receiver(self, *args, **kwargs):
-        #print("nm_signal_receiver", args, kwargs)
         self.connections.clear()
         self.connections_uuid.clear()
 
@@ -1151,29 +604,282 @@ class TrayApplet(object):
 
         self.update_tooltip()
 
-    def warning(self, text, secondary_text=None):
-        self.message(text, secondary_text=secondary_text,
-                     msg_type=Gtk.MessageType.WARNING)
+    def notify(self, msg, urgency="noicon", timeout=5):
+        #self.showMessage(fromUTF8(escape(self.name)), msg, self.urgencies[urgency], timeout*1000)
+        n = Notify.Notification.new(escape(self.name), msg,
+                                    self.icon_name)
+        n.set_urgency(Notify.Urgency.NORMAL)
+        try:
+            n.show()
+        except:
+            return
 
-    def error(self, text, secondary_text=None):
-        self.message(text, secondary_text=secondary_text,
-                     msg_type=Gtk.MessageType.ERROR)
+    def notification_changed_cb(self):
+        self.settings.setValue("notifications",
+                               self.notificationsAction.isChecked())
 
-    def message(self, text, secondary_text=None, msg_type=Gtk.MessageType.INFO,
-                buttons=[ ("gtk-close", Gtk.ResponseType.CLOSE) ]):
-        dialog = Gtk.MessageDialog(parent=None, flags=0, message_type=msg_type,
-                                   buttons=None, message_format=text)
-        dialog.set_title(_("Firewall-applet"))
-        for (button, response) in buttons:
-            dialog.add_button(button, response)
-        if secondary_text != None:
-            dialog.format_secondary_text(secondary_text)
-        dialog.show_all()
-        result = dialog.run()
-        dialog.hide()
-        return result
+    def __blink(self, arg=None):
+        if self._blink_count != 0:
+            if self._blink_count > 0 and self._blink:
+                self._blink_count -= 1
+            self._blink = not self._blink
+            #self.timer = GLib.timeout_add_seconds(1, self.__blink, None)
+        if not self._blink:
+            self.set_icon(self.mode)
+        else:
+            self.set_icon("normal")
 
-# MAIN
+    def get_mode(self):
+        return self.mode
+
+    def set_mode(self, mode):
+        if self.mode != mode:
+            if self.timer:
+                #GLib.source_remove(self.timer)
+                self.timer = None
+                self._blink = False
+            self.mode = mode
+
+        elif self.mode == mode and self.timer:
+            if self._blink_count == 0:
+                self._blink_count += 1
+            return
+
+        if mode == "normal":
+            self.set_icon(mode)
+            return
+
+        if self.blink_enabled and self.blink_count != 0:
+            self._blink = True
+            self._blink_count = self.blink_count
+            self.__blink()
+
+    def update_tooltip(self):
+        if self.get_mode() == "error":
+            self.setToolTip(fromUTF8("<big><b>" + \
+                                     _("No connection to firewall daemon") + \
+                                     "</b></big>"))
+            return
+
+        messages = [ ]
+
+        if self.panicAction.isChecked():
+            messages.append("<big><b>" + \
+                            _("All network traffic is blocked.") + \
+                            "</b></big>")
+
+        if self.default_zone:
+            messages.append(_("Default Zone: '%s'") % self.default_zone)
+
+        if len(self.active_zones) > 0:
+            for zone in sorted(self.active_zones):
+                if "interfaces" in self.active_zones[zone]:
+                    for interface in sorted(self.active_zones[zone]["interfaces"]):
+                        if interface in self.connections:
+                            connection = self.connections[interface]
+                            text = _("Zone '{zone}' active for connection "
+                                     "'{connection}' on interface '{interface}'")
+                        else:
+                            text = _("Zone '{zone}' active for interface "
+                                     "'{interface}'")
+                            connection = None
+                        messages.append(text.format(zone=zone,
+                                                    connection=connection,
+                                                    interface=interface))
+                if "sources" in self.active_zones[zone]:
+                    for source in sorted(self.active_zones[zone]["sources"]):
+                        text = _("Zone '{zone}' active for source {source}")
+                        connection = None
+                        messages.append(text.format(zone=zone, source=source))
+        else:
+            messages.append(_("No Active Zones."))
+
+        tooltip = "<nobr>"+"</nobr><br><nobr>".join(messages)+"</nobr>"
+        self.setToolTip(fromUTF8("<font size=\"3\">"+tooltip+"</font>"))
+        
+    def panic_mode_cb(self):
+        if not self.fw or not self.connected:
+            return
+        if self.panicAction.isChecked():
+            self.fw.enablePanicMode()
+        else:
+            self.fw.disablePanicMode()
+        self.panicAction.setChecked(not self.panicAction.isChecked())
+
+    def nm_connection_editor(self, item, uuid=None):
+        if NM_CONNECTION_EDITOR == "":
+            self.warning("NetworkManager connection editor is missing.")
+            return
+
+        if uuid:
+            if "kde-" in NM_CONNECTION_EDITOR:
+                os.system("%s %s &" % (NM_CONNECTION_EDITOR, uuid))
+            else:
+                os.system("%s --edit=%s &" % (NM_CONNECTION_EDITOR, uuid))
+        else:
+            os.system("%s &" % NM_CONNECTION_EDITOR)
+
+    def warning(self, text):
+        QtGui.QMessageBox.warning(None, fromUTF8(escape(self.name)), text)
+
+    def error(self, text):
+        QtGui.QMessageBox.critical(None, fromUTF8(escape(self.name)), text)
+
+    def configure_cb(self, widget):
+        os.system("firewall-config &")
+
+    # firewallClient signal receivers
+
+    def connection_established(self, first=False):
+        self.show()
+        self.set_mode("normal")
+        self.default_zone = self.fw.getDefaultZone()
+        self.connected = True
+        self.update_active_zones()
+
+        self.panicAction.setChecked(self.fw.queryPanicMode())
+        
+        self.update_tooltip()
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Connection to FirewallD established.")))
+
+    def connection_lost(self):
+        self.connected = False
+        self.default_zone = None
+        self.set_mode("error")
+        self.update_active_zones()
+        self.update_tooltip()
+        self.panicAction.setChecked(False)
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Connection to FirewallD lost.")))
+        if not self.show_inactive:
+            self.hide()
+
+    def reloaded(self):
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("FirewallD has been reloaded.")))
+
+    def default_zone_changed(self, zone):
+        self.default_zone = zone
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Default zone changed to '%s'.") % zone))
+        self.update_active_zones()
+        self.update_tooltip()
+
+    def _panic_mode(self, enable):
+        self.panicAction.setChecked(enable)
+
+        self.update_tooltip()
+
+        if enable:
+            self.set_mode("panic")
+        else:
+            self.set_mode("normal")
+
+        if self.notificationsAction.isChecked():
+            ed = { 1: _("All network traffic is blocked."),
+                   0: _("Network traffic is not blocked anymore.") }
+            self.notify(escape(ed[enable]))
+
+    def panic_mode_enabled(self):
+        self._panic_mode(True)
+
+    def panic_mode_disabled(self):
+        self._panic_mode(False)
+
+    def _interface(self, zone, interface, enable):
+        self.update_active_zones()
+        self.update_tooltip()
+
+        # close dialog of removed interface
+        if not enable:
+            if interface in self.connections:
+                connection = self.connections[interface]
+                if connection in self.zone_connection_editors:
+                    self.zone_connection_editors[connection].hide()
+                    del self.zone_connection_editors[connection]
+            elif interface in self.zone_interface_editors:
+                self.zone_interface_editors[interface].hide()
+                del self.zone_interface_editors[interface]
+
+        # send notification if enabled
+        if self.notificationsAction.isChecked():
+            ed = { 1: _("activated"),
+                   0: _("deactivated") }
+            if interface in self.connections:
+                connection = self.connections[interface]
+                text = _("Zone '{zone}' {activated_deactivated} for "
+                         "connection '{connection}' on "
+                         "interface '{interface}'")
+            else:
+                connection = None
+                text = _("Zone '{zone}' {activated_deactivated} for "
+                         "interface '{interface}'")
+            self.notify(escape(text.format(
+                zone=zone, activated_deactivated=ed[enable],
+                connection=connection, interface=interface)))
+
+    def interface_added(self, zone, interface):
+        self._interface(zone, interface, True)
+
+    def interface_removed(self, zone, interface):
+        self._interface(zone, interface, False)
+
+    def zone_of_interface_changed(self, zone, interface):
+        # update zone editor
+        if interface in self.zone_interface_editors:
+            self.zone_interface_editors[interface].set_zone(zone)
+
+        self.update_active_zones()
+        self.update_tooltip()
+
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Zone '%s' activated for interface '%s'") % \
+                               (zone, interface)))
+
+    def _source(self, zone, source, enable):
+        self.update_active_zones()
+        self.update_tooltip()
+
+        # close dialog of removed source
+        if not enable:
+            if source in self.zone_source_editors:
+                self.zone_source_editors[source].hide()
+                del self.zone_source_editors[source]
+
+        # send notification if enabled
+        if self.notificationsAction.isChecked():
+            ed = { 1: _("activated"),
+                   0: _("deactivated") }
+            connection = None
+            text = _("Zone '{zone}' {activated_deactivated} for "
+                     "source '{source}'")
+            self.notify(escape(text.format(
+                zone=zone, activated_deactivated=ed[enable], source=source)))
+
+    def source_added(self, zone, source):
+        self._source(zone, source, True)
+
+    def source_removed(self, zone, source):
+        self._source(zone, source, False)
+
+    def zone_of_source_changed(self, zone, source):
+        index = source
+        if source in self.zone_source_editors:
+            self.zone_source_editors[source].set_zone(zone)
+
+        # update zone editor
+        if index in self.zone_interface_editors:
+            self.zone_interface_editors[index].set_zone(zone)
+
+        self.update_active_zones()
+        self.update_tooltip()
+
+        if self.notificationsAction.isChecked():
+            self.notify(escape(_("Zone '%s' activated for source '%s'") % \
+                               (zone, source)))
+
+# MAIN ########################################################################
 
 if len(sys.argv) > 1:
     print("""Usage: %s [options]
@@ -1183,6 +889,14 @@ Options:
 """  % sys.argv[0])
     sys.exit(1)
 
-mainloop = GLib.MainLoop()
+app = QtGui.QApplication(sys.argv)
+app.setQuitOnLastWindowClosed(False)
+
+if not QtGui.QSystemTrayIcon.isSystemTrayAvailable():
+    QtGui.QMessageBox.critical(None, "Systray",
+                               fromUTF8(escape(_("No system tray available"))))
+    sys.exit(1)
+
 applet = TrayApplet()
-mainloop.run()
+applet.show()
+sys.exit(app.exec_())
