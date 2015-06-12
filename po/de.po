@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -32,16 +32,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-26 15:41+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2014-10-16 01:50-0400\n"
 "Last-Translator: hpeters <hpeters@redhat.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
 "language/de/)\n"
 "Language: de\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.5.1\n"
+"X-Generator: Zanata 3.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
@@ -209,7 +209,8 @@ msgstr "Standardzone: »%s«"
 
 #: ../src/firewall-applet:970
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
@@ -555,8 +556,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3558
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, falls die "
@@ -694,7 +694,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Bold entries are mandatory, all others are optional."
@@ -1281,9 +1282,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
@@ -1469,8 +1470,8 @@ msgstr "invertiert"
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Zum Aktivieren muss diese Aktion 'reject' sein und die Familie muss entweder "
 "'ipv4' oder 'ipv6' sein (nicht beides)."

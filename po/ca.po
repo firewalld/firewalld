@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Angels Sala <m_angels15@yahoo.es>, 2004
 # Josep Puigdemont <josep.puigdemont@gmail.com>, 2004-2006
@@ -10,26 +10,26 @@
 # Pedro <pedro.babelia@gmail.com>, 2005
 # Robert Antoni Buj i Gelonch, 2014
 # Xavier Conde Rueda <xavi.conde@gmail.com>, 2009
-# Robert Antoni Buj Gelonch <robert.buj@gmail.com>, 2015. #zanata
+# Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2015. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-26 15:41+0100\n"
-"PO-Revision-Date: 2015-03-08 07:04-0400\n"
-"Last-Translator: Robert Antoni Buj Gelonch <robert.buj@gmail.com>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
-"language/ca/)\n"
-"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-05-09 12:39-0400\n"
+"Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
+"language/ca/)\n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.5.1\n"
+"X-Generator: Zanata 3.6.2\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
 msgid "Firewall Applet"
-msgstr "Miniaplicació de tallafoc"
+msgstr "Miniaplicació del tallafoc"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -37,7 +37,7 @@ msgstr "Tallafoc"
 
 #: ../config/firewall-config.desktop.in.h:2 ../src/firewall-config.glade.h:38
 msgid "Firewall Configuration"
-msgstr "Configureu el tallafoc"
+msgstr "Configuració del tallafoc"
 
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
@@ -100,11 +100,11 @@ msgstr "Escuts aixecats"
 
 #: ../src/firewall-applet:360
 msgid "Enable Notifications"
-msgstr "Habilita notificacions"
+msgstr "Habilita les notificacions"
 
 #: ../src/firewall-applet:373
 msgid "Edit Firewall Settings..."
-msgstr "Edita les preferències del tallafoc..."
+msgstr "Edita els ajustos del tallafoc..."
 
 #: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
@@ -164,15 +164,15 @@ msgstr "Interfícies"
 #: ../src/firewall-applet:704 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
-msgstr "Origens"
+msgstr "Orígens"
 
 #: ../src/firewall-applet:816
 msgid "Connection to FirewallD established."
-msgstr "S'ha establer la connexió amb el FirewallD."
+msgstr "S'ha establert la connexió amb FirewallD."
 
 #: ../src/firewall-applet:825
 msgid "Connection to FirewallD lost."
-msgstr "S'ha perdut la connexió al FirewallD."
+msgstr "S'ha perdut la connexió amb FirewallD."
 
 #: ../src/firewall-applet:872
 msgid "FirewallD has been reloaded."
@@ -193,7 +193,8 @@ msgstr "Zona per defecte: '%s'"
 
 #: ../src/firewall-applet:970
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "La zona '{zone}' es troba activa per a la connexió '{connection}' en la "
 "interfície '{interface}'"
@@ -260,7 +261,7 @@ msgstr "La zona '%s' es va activar per a l'origen '%s'"
 
 #: ../src/firewall-applet:1166
 msgid "Firewall-applet"
-msgstr "Miniaplicació de tallafoc"
+msgstr "Miniaplicació del tallafoc"
 
 #: ../src/firewall-config:76
 msgid "Connected."
@@ -276,7 +277,7 @@ msgstr "A l'espera ..."
 
 #: ../src/firewall-config:79
 msgid "Retrying ..."
-msgstr "Tornant-ho a intentar ..."
+msgstr "S'està tornant a intentar ..."
 
 #: ../src/firewall-config:80
 #, c-format
@@ -319,11 +320,11 @@ msgstr "Protocol"
 
 #: ../src/firewall-config:472
 msgid "To Port"
-msgstr "Al port"
+msgstr "Cap al port"
 
 #: ../src/firewall-config:474
 msgid "To Address"
-msgstr "A l'adreça"
+msgstr "Cap a l'adreça"
 
 #: ../src/firewall-config:511
 msgid "Icmp Type"
@@ -360,7 +361,7 @@ msgstr "Revisa"
 #: ../src/firewall-config:1160 ../src/firewall-config:2040
 #: ../src/firewall-config:2078
 msgid "Warning"
-msgstr "Avís"
+msgstr "Advertència"
 
 #: ../src/firewall-config:1169
 msgid "Error"
@@ -426,7 +427,7 @@ msgstr "Autentificació fallida."
 
 #: ../src/firewall-config:1697
 msgid "Invalid name"
-msgstr "argument %s invàlid"
+msgstr "el nom no ès vàlid"
 
 #: ../src/firewall-config:1701
 msgid "Name already exists"
@@ -452,7 +453,7 @@ msgstr "Zona '%s': El tipus d'ICMP '%s' no està disponible."
 
 #: ../src/firewall-config:2219
 msgid "Built-in zone, rename not supported."
-msgstr "Servei incorporada, no és permet el canvi de nom."
+msgstr "Zona integrada, no es permet el canvi de nom."
 
 #: ../src/firewall-config:2328 ../src/firewall-config:2763
 #: ../src/firewall-config.glade.h:193
@@ -540,21 +541,20 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3558
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "El reenviament a un altre sistema tan sols és útil si la interfície de xarxa "
-"està emmascarada..\n"
+"està emmascarada.\n"
 "Voleu emmascarar aquesta zona?"
 
 #: ../src/firewall-config:3820
 msgid "Built-in service, rename not supported."
-msgstr "Servei incorporat, no és permet el canvi de nom."
+msgstr "Servei integrat, no es permet el canvi de nom."
 
 #: ../src/firewall-config:4175
 msgid "Built-in icmp, rename not supported."
-msgstr "ICMP incorporat, no és permet el canvi de nom."
+msgstr "ICMP integrat, no es permet el canvi de nom."
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
@@ -566,7 +566,7 @@ msgstr "Port i protocol"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr "Introduïu la línia de comades."
+msgstr "Introduïu la línia d'ordres."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Please enter the context."
@@ -602,7 +602,7 @@ msgstr "en cru"
 
 #: ../src/firewall-config.glade.h:13
 msgid "security"
-msgstr "segretat"
+msgstr "seguretat"
 
 #: ../src/firewall-config.glade.h:14
 msgid "Chain:"
@@ -632,7 +632,7 @@ msgstr "Reenviament de ports"
 msgid ""
 "Please select the source and destination options according to your needs."
 msgstr ""
-"Seleccioneu les opcions d'origen i destí segons les vostres necessitats."
+"Seleccioneu les opcions d'origen i de destí segons les vostres necessitats."
 
 #: ../src/firewall-config.glade.h:21
 msgid "Port / Port Range:"
@@ -672,11 +672,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:29
 msgid "Base ICMP Type Settings"
-msgstr "Base de les preferències del tipus d'ICMP"
+msgstr "Base dels ajustos del tipus d'ICMP"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Please configure base ICMP type settings:"
-msgstr "Configureu la base de les preferències del tipus d'ICMP:"
+msgstr "Configureu la base dels ajustos del tipus d'ICMP:"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Bold entries are mandatory, all others are optional."
@@ -692,7 +692,7 @@ msgstr "Versió:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Short:"
-msgstr "Breu:"
+msgstr "Resum:"
 
 #: ../src/firewall-config.glade.h:35
 msgid "Description:"
@@ -700,7 +700,7 @@ msgstr "Descripció:"
 
 #: ../src/firewall-config.glade.h:36
 msgid "ICMP Type"
-msgstr "Tipus ICMP"
+msgstr "Tipus d'ICMP"
 
 #: ../src/firewall-config.glade.h:37
 msgid "Please select an ICMP type"
@@ -725,13 +725,13 @@ msgid ""
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
 "Torna a carregar les regles del tallafoc. L'actual configuració permanent es "
-"convertirà en nova configuració temps d'execució. Tots els canvis fets en el "
-"temps d'execució fins a la nova recàrrega es perdran sí no s'han fet també "
-"en la configuració permanent."
+"convertirà en nova configuració temps d'execució. P. ex. tots els canvis que "
+"s'hagin fet en el temps d'execució fins a la nova recàrrega es perdran sí no "
+"s'han fet també en la configuració permanent."
 
 #: ../src/firewall-config.glade.h:43
 msgid "Change which zone a network connection belongs to."
-msgstr "Canvia la zona a la que pertany una connexió de xarxa."
+msgstr "Canvia la zona a la qual pertany una connexió de xarxa."
 
 #: ../src/firewall-config.glade.h:45
 msgid "Change Default Zone"
@@ -757,9 +757,9 @@ msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
-"El confinament bloqueja la configuració del tallafoc d'aquesta manera "
-"únicament les aplicacions en la llista blanca del confinament són capaces de "
-"canviar-la."
+"El confinament bloqueja la configuració del tallafoc, d'aquesta manera "
+"únicament les aplicacions en la llista blanca del confinament poden canviar-"
+"ho."
 
 #: ../src/firewall-config.glade.h:50
 msgid "Lockdown"
@@ -771,7 +771,7 @@ msgstr "Fes permanent la configuració temps d'execució"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Runtime To Permanent"
-msgstr "Temps d'execució a permanent."
+msgstr "Temps d'execució a permanent"
 
 #: ../src/firewall-config.glade.h:53
 msgid "_View"
@@ -804,8 +804,9 @@ msgid ""
 "system reload or restart."
 msgstr ""
 "La configuració actualment visible. La configuració en temps d'execució és "
-"l'actual configuració activa. La configuració permanent serà la configuració "
-"activa després que el servei o el sistema es torni a carregar o iniciar."
+"la veritable configuració activa. La configuració permanent serà la "
+"configuració activa després que el servei o el sistema es torni a carregar o "
+"iniciar."
 
 #: ../src/firewall-config.glade.h:60
 msgid ""
@@ -823,7 +824,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:62
 msgid "Add Zone"
-msgstr "Afegeix un a zona"
+msgstr "Afegeix una zona"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Edit Zone"
@@ -857,8 +858,9 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
-"Afegiu ports addicionals o rang de ports que hagin de ser accessibles per a "
-"tots els amfitrions o xarxes per a que es puguin connectar amb la màquina."
+"Afegiu els ports o els rangs de ports addicionals que hagin de ser "
+"accessibles per a tots els amfitrions o xarxes perquè es puguin connectar "
+"amb la màquina."
 
 #: ../src/firewall-config.glade.h:69
 msgid "Add Port"
@@ -933,18 +935,18 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"El protocol de missatges de control d'internet (ICMP) s'usa principlament "
-"per enviar missatges d'error entre ordinadors de xarxa, però també per a "
-"missatges d'informació com ara peticions de ping i respostes."
+"ICMP (Internet Control Message Protocol) s'utilitza principalment per enviar "
+"els missatges d'error entre ordinadors en xarxa, però addicionalment per als "
+"missatges d'informació com ara sol·licituds i respostes del ping."
 
 #: ../src/firewall-config.glade.h:82
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"Marqueu en la llista els tipus d'ICMP que han de ser rebutjats. Tots els "
-"altres tipus d'ICMP tenen permès passar pel tallafoc. Per defecte no hi ha "
-"cap limitació."
+"Marqueu a la llista els tipus d'ICMP que han de rebutjar-se. Tots els altres "
+"tipus d'ICMP tenen permès passar pel tallafoc. Per defecte no hi ha cap "
+"limitació."
 
 #: ../src/firewall-config.glade.h:83
 msgid "ICMP Filter"
@@ -952,11 +954,12 @@ msgstr "Filtre ICMP"
 
 #: ../src/firewall-config.glade.h:84
 msgid "Here you can set rich language rules for the zone."
-msgstr "Aquí podeu establir regles del llenguatge d'enriquiment per a la zona."
+msgstr ""
+"Aquí podeu establir les regles del llenguatge d'enriquiment per a la zona."
 
 #: ../src/firewall-config.glade.h:85
 msgid "Add Rich Rule"
-msgstr "Afegeix regla d'enriquiment"
+msgstr "Afegeix una regla d'enriquiment"
 
 #: ../src/firewall-config.glade.h:86
 msgid "Edit Rich Rule"
@@ -975,9 +978,9 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
-"Afegiu entrades per enllaçar interfícies a la zona. Si la interfície serà "
-"utilitzada per una connexió, la zona s'establirà a la zona indicada en la "
-"connexió."
+"Afegiu entrades per crear un vincle entre les interfícies i la zona. Si la "
+"interfície serà utilitzada per una connexió, la zona s'establirà a la zona "
+"indicada en la connexió."
 
 #: ../src/firewall-config.glade.h:90
 msgid "Add Interface"
@@ -993,7 +996,9 @@ msgstr "Suprimeix la interfície"
 
 #: ../src/firewall-config.glade.h:94
 msgid "Add entries to bind source addresses or areas to the zone."
-msgstr "Afegiu entrades per enllaçar adreces d'origen o àrees a la zona."
+msgstr ""
+"Afegiu entrades per crear un vincle entre les adreces d'origen o àrees amb "
+"la zona."
 
 #: ../src/firewall-config.glade.h:95
 msgid "Add Source"
@@ -1040,13 +1045,13 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks. You can also add protocols without specific ports."
 msgstr ""
-"Afegiu ports o rangs de ports addicions que hagin de ser accessibles per a "
-"tots els amfitrions o xarxes. També podeu afegir protocols sense la "
-"necessitat d'especificar un port en concret."
+"Afegiu els ports o els rangs de ports addicionals que hagin de ser "
+"accessibles per a tots els amfitrions o xarxes. També podeu afegir protocols "
+"sense la necessitat d'especificar un port en concret."
 
 #: ../src/firewall-config.glade.h:107
 msgid "Add Entry"
-msgstr "Afegeix entrada"
+msgstr "Afegeix una entrada"
 
 #: ../src/firewall-config.glade.h:108
 msgid "Edit Entry"
@@ -1075,8 +1080,8 @@ msgid ""
 "limitation."
 msgstr ""
 "Si especifiqueu una adreça de destinació, l'entada del servei estarà "
-"limitada a l'adreça de destinació i al tipus. Si ambdós entrades estan "
-"buides no hi ha cap limitació."
+"limitada a l'adreça de destinació i al tipus. Si ambdues entrades estan "
+"buides, aleshores no hi ha cap limitació."
 
 #: ../src/firewall-config.glade.h:114
 msgid "IPv4:"
@@ -1091,8 +1096,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"El serveis únicament es poden canviar en la vista de configuració permanent. "
-"La configuració en temps d'execució dels serveis és fixa."
+"Els serveis es poden canviar únicament en la vista de configuració permanent."
+" La configuració en temps d'execució dels serveis és fixa."
 
 #: ../src/firewall-config.glade.h:117
 msgid ""
@@ -1116,7 +1121,7 @@ msgstr "Suprimeix el tipus d'ICMP"
 
 #: ../src/firewall-config.glade.h:121
 msgid "Load ICMP Type Defaults"
-msgstr "Carrega els valor per defecte de l'ICMP"
+msgstr "Carrega els valor per defecte d'ICMP"
 
 #: ../src/firewall-config.glade.h:122
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
@@ -1200,11 +1205,10 @@ msgid ""
 msgstr ""
 "La prioritat s'utilitza per ordenar les regles. Una prioritat 0 significa "
 "que s'afegeix al principi de l'encadenament, amb una prioritat superior la "
-"regla serà afegida per sota. Les regles amb  la mateixa prioritat estan en "
-"el mateix nivell i l'ordre d'aquestes regles no es fixa i pot canviar. Si "
-"voleu assegurar-vos que una regla sigui afegida després d'una altra, "
-"utilitzeu una prioritat inferior per a la primera i superior per a la "
-"següent."
+"regla serà afegida per sota. Les regles amb la mateixa prioritat estan en el "
+"mateix nivell i l'ordre d'aquestes regles no es fixa i pot canviar. Si voleu "
+"assegurar-vos que una regla sigui afegida després d'una altra, utilitzeu una "
+"prioritat inferior per a la primera i superior per a la següent."
 
 #: ../src/firewall-config.glade.h:135
 msgid "Add Rule"
@@ -1260,14 +1264,14 @@ msgid ""
 msgstr ""
 "La funció de confinament és una versió lleugera de les polítiques d'usuari i "
 "aplicació per a firewalld. Limita els canvis al tallafoc. La llista blanca "
-"de confinaments pot contenir ordres, contexts, usuaris i ID d'usuaris."
+"de confinaments pot contenir ordres, contexts, usuaris i Ids. d'usuari."
 
 #: ../src/firewall-config.glade.h:146
 msgid ""
 "The context is the security (SELinux) context of a running application or "
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
-"Aquest context es el context de seguretat (SELinux) d'una aplicació o servei "
+"Aquest context és el context de seguretat (SELinux) d'una aplicació o servei "
 "en execució. Per obtenir el context d'una aplicació en execució, utilitzeu "
 "ps -e --context."
 
@@ -1294,8 +1298,8 @@ msgid ""
 "the absolute command inclusive arguments must match."
 msgstr ""
 "Si l'entrada d'una ordre en una llista blanca acaba amb '*', aleshores totes "
-"les línies de comandes que comencin amb la comanda coincidiran. Si no hi ha "
-"'*' els arguments inclusius de la comanda absoluta han de coincidir."
+"les línies d'ordres que comencin amb la comanda coincidiran. Si no hi ha '*' "
+"els arguments inclusius de la comanda absoluta han de coincidir."
 
 #: ../src/firewall-config.glade.h:152
 msgid "Add Command Line"
@@ -1335,23 +1339,23 @@ msgstr "Noms d'usuaris"
 
 #: ../src/firewall-config.glade.h:161
 msgid "User ids."
-msgstr "ID d'usuaris"
+msgstr "Ids. d'usuari"
 
 #: ../src/firewall-config.glade.h:162
 msgid "Add User Id"
-msgstr "Afegeix un ID d'usuari"
+msgstr "Afegeix un Id. d'usuari"
 
 #: ../src/firewall-config.glade.h:163
 msgid "Edit User Id"
-msgstr "Edita l'ID d'usuari"
+msgstr "Edita l'Id. d'usuari"
 
 #: ../src/firewall-config.glade.h:164
 msgid "Remove User Id"
-msgstr "Suprimeix l'ID d'usuari"
+msgstr "Suprimeix l'Id. d'usuari"
 
 #: ../src/firewall-config.glade.h:165
 msgid "User Ids"
-msgstr "ID d'usuaris"
+msgstr "Ids. d'usuari"
 
 #: ../src/firewall-config.glade.h:166
 msgid "Default Zone:"
@@ -1447,11 +1451,11 @@ msgstr "inverteix"
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Per habilitar-ho l'acció ha de ser 'rebutja' i la família 'ipv4' o "
-"'ipv6' (no ambdós)."
+"Per habilitar-ho l'acció ha de ser 'rebutja' i la família 'ipv4' o 'ipv6' "
+"(no ambdós)."
 
 #: ../src/firewall-config.glade.h:190
 msgid "with Type:"
@@ -1479,7 +1483,7 @@ msgstr "Element:"
 
 #: ../src/firewall-config.glade.h:214
 msgid "Family:"
-msgstr "Familia:"
+msgstr "Família:"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Action:"
@@ -1487,11 +1491,11 @@ msgstr "Acció:"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Base Service Settings"
-msgstr "Base de les preferències del servei"
+msgstr "Base dels ajustos del servei"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Please configure base service settings:"
-msgstr "Configureu la base de les preferències del serve:"
+msgstr "Configureu la base dels ajustos del servei:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Please select a service."
@@ -1499,11 +1503,11 @@ msgstr "Seleccioneu un servei."
 
 #: ../src/firewall-config.glade.h:219
 msgid "User ID"
-msgstr "ID d'usuari"
+msgstr "Id. d'usuari"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Please enter the user id."
-msgstr "Especifiqueu l'id d'usuari."
+msgstr "Especifiqueu l'id. d'usuari."
 
 #: ../src/firewall-config.glade.h:221
 msgid "User name"
@@ -1515,11 +1519,11 @@ msgstr "Introduïu el nom d'usuari."
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base Zone Settings"
-msgstr "Base de les preferències de la zona"
+msgstr "Base dels ajustos de la zona"
 
 #: ../src/firewall-config.glade.h:224
 msgid "Please configure base zone settings:"
-msgstr "Configureu la base de les preferències de la zona:"
+msgstr "Configureu la base dels ajustos de la zona:"
 
 #: ../src/firewall-config.glade.h:225
 msgid "Target:"
