@@ -1,17 +1,17 @@
-%if (0%{?fedora} >= 20 || 0%{?rhel} >= 7)
-%define with_python3 1
-%if (0%{?fedora} >= 22 || 0%{?rhel} >= 8)
-%define use_python3 1
+%if (0%{?fedora} >= 13 || 0%{?rhel} >= 7)
+%global with_python3 1
+%if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
+%global use_python3 1
 %endif
 %endif
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.14
+Version: 0.3.14.1
 Release: 0%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
-Source0: https://github.com/t-woerner/%{name}/archive/v%{version}.tar.gz
+Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
 BuildArch: noarch
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
@@ -32,7 +32,7 @@ Requires: firewalld-filesystem = %{version}-%{release}
 %if 0%{?use_python3}
 Requires: python3-firewall  = %{version}-%{release}
 %else #0%{?use_python3}
-Requires: python2-firewall  = %{version}-%{release}
+Requires: python-firewall  = %{version}-%{release}
 %endif #0%{?use_python3}
 
 %description
@@ -75,8 +75,13 @@ Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
+%if 0%{?with_python3}
+Requires: python3-PyQt4
+Requires: python3-gobject
+%else
 Requires: PyQt4
 Requires: pygobject3-base
+%endif
 Requires: libnotify
 Requires: NetworkManager-glib
 
@@ -89,7 +94,11 @@ Summary: Firewall configuration application
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
+%if 0%{?with_python3}
+Requires: python3-gobject
+%else
 Requires: pygobject3-base
+%endif
 Requires: NetworkManager-glib
 
 %description -n firewall-config
@@ -102,8 +111,10 @@ firewalld.
 %if 0%{?with_python3}
 rm -rf %{py3dir}
 cp -a . %{py3dir}
+%if 0%{?use_python3}
 sed -i -e 's|/usr/bin/python -Es|%{__python3} -Es|' %{py3dir}/fix_python_shebang.sh
 sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
+%endif #0%{?use_python3}
 %endif #0%{?with_python3}
 
 %build
@@ -210,11 +221,11 @@ fi
 %{_mandir}/man5/firewall*.5*
 
 %files -n python-firewall
-%dir %{python2_sitelib}/firewall
-%dir %{python2_sitelib}/firewall/config
-%dir %{python2_sitelib}/firewall/core
-%dir %{python2_sitelib}/firewall/core/io
-%dir %{python2_sitelib}/firewall/server
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/config
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/core/io
+%attr(0755,root,root) %dir %{python2_sitelib}/firewall/server
 %{python2_sitelib}/firewall/*.py*
 %{python2_sitelib}/firewall/config/*.py*
 %{python2_sitelib}/firewall/core/*.py*
@@ -223,16 +234,16 @@ fi
 
 %if 0%{?with_python3}
 %files -n python3-firewall
-%dir %{python3_sitelib}/firewall
-%dir %{python3_sitelib}/firewall/__pycache__
-%dir %{python3_sitelib}/firewall/config
-%dir %{python3_sitelib}/firewall/config/__pycache__
-%dir %{python3_sitelib}/firewall/core
-%dir %{python3_sitelib}/firewall/core/__pycache__
-%dir %{python3_sitelib}/firewall/core/io
-%dir %{python3_sitelib}/firewall/core/io/__pycache__
-%dir %{python3_sitelib}/firewall/server
-%dir %{python3_sitelib}/firewall/server/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/config
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/config/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/io
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/core/io/__pycache__
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/server
+%attr(0755,root,root) %dir %{python3_sitelib}/firewall/server/__pycache__
 %{python3_sitelib}/firewall/__pycache__/*.py*
 %{python3_sitelib}/firewall/*.py*
 %{python3_sitelib}/firewall/config/*.py*
@@ -255,13 +266,14 @@ fi
 
 %files -n firewall-applet
 %{_bindir}/firewall-applet
+%defattr(0644,root,root)
 %{_sysconfdir}/xdg/autostart/firewall-applet.desktop
 %{_datadir}/icons/hicolor/*/apps/firewall-applet*.*
-%{_datadir}/glib-2.0/schemas/org.fedoraproject.FirewallApplet.gschema.xml
 %{_mandir}/man1/firewall-applet*.1*
 
 %files -n firewall-config
 %{_bindir}/firewall-config
+%defattr(0644,root,root)
 %{_datadir}/firewalld/firewall-config.glade
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
 %{_datadir}/applications/firewall-config.desktop
@@ -271,6 +283,10 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Fri Jun 12 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14.1-0
+- spec file adaptions from Fedora
+- dropped gtk applet remain: org.fedoraproject.FirewallApplet.gschema.xml
+
 * Fri Jun 12 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14-1
 - firewalld:
   - print real zone names in error messages
@@ -310,7 +326,6 @@ fi
   - migrated to zanata
 - build environment:
   - no need for autoconf-2.69, 2.68 is sufficient
-
 
 * Wed Jan 28 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14-0
 - enable python2 and python3 bindings for fedora >= 20 and rhel >= 7
