@@ -40,7 +40,7 @@ tag:
 		git commit -a -m "$(PACKAGE_TAG)"; \
 	fi
 	git tag -f $(PACKAGE_TAG)
-	git push --all
+	git push
 	git push --tags
 
 dist: clean-docs update-docs
