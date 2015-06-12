@@ -266,8 +266,8 @@ class AboutDialog(QtGui.QDialog):
 class TrayApplet(QtGui.QSystemTrayIcon):
     def __init__(self):
         super(TrayApplet, self).__init__()
-        self.name = _("Firewall Applet Qt")
-        self.prog = "firewall-applet-qt"
+        self.name = _("Firewall Applet")
+        self.prog = "firewall-applet"
         self.icon_name = "firewall-applet"
         self.icons = {
             "normal": QtGui.QIcon.fromTheme(self.icon_name),
