@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Christian Rose <menthos@menthos.com>, 2002
 # Keld Simonsen <keld@dkuug.dk>, 2002-2005
@@ -11,19 +11,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 15:41+0100\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2015-06-12 13:58+0200\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Danish (http://www.transifex.com/projects/p/firewalld/"
 "language/da/)\n"
 "Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
 msgid "Firewall Applet"
 msgstr ""
 
@@ -55,198 +55,189 @@ msgstr ""
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr ""
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
-#, c-format
-msgid "You need to be root to run %s."
-msgstr ""
-
-#: ../src/firewalld:87
-msgid "Not starting FirewallD, already running."
-msgstr ""
-
-#: ../src/firewalld:139
+#: ../src/firewalld:135
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr ""
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5233
+#: ../src/firewalld:158 ../src/firewall-offline-cmd:40
 #, c-format
-msgid "Select zone for connection '%s'"
+msgid "You need to be root to run %s."
 msgstr ""
 
-#: ../src/firewall-applet:131 ../src/firewall-applet:157
+#: ../src/firewalld:168
+msgid "Not starting FirewallD, already running."
+msgstr ""
+
+#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#, c-format
+msgid "Select zone for interface '%s'"
+msgstr ""
+
+#: ../src/firewall-applet:124 ../src/firewall-applet:130
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr ""
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5316
+#: ../src/firewall-applet:150 ../src/firewall-config:5233
 #, c-format
-msgid "Select zone for interface '%s'"
+msgid "Select zone for connection '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5372
+#: ../src/firewall-applet:184
 #, c-format
-msgid "Select zone for source %s"
+msgid "Select zone for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:347
-msgid "Shields Up"
+#: ../src/firewall-applet:199
+#, c-format
+msgid "About %s"
 msgstr ""
 
-#: ../src/firewall-applet:360
+#: ../src/firewall-applet:235
+msgid "Authors:"
+msgstr ""
+
+#: ../src/firewall-applet:248
+msgid "License:"
+msgstr ""
+
+#: ../src/firewall-applet:317
 msgid "Enable Notifications"
 msgstr ""
 
-#: ../src/firewall-applet:373
+#: ../src/firewall-applet:324
 msgid "Edit Firewall Settings..."
 msgstr ""
 
-#: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr ""
 
-#: ../src/firewall-applet:388
-msgid "Configure Shields UP/Down Zones..."
-msgstr ""
-
-#: ../src/firewall-applet:397
+#: ../src/firewall-applet:332
 msgid "Block all network traffic"
 msgstr ""
 
-#: ../src/firewall-applet:426
-msgid "Configure Shields Up/Down Zones"
+#: ../src/firewall-applet:337
+msgid "About"
 msgstr ""
 
-#: ../src/firewall-applet:437
-msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr ""
-
-#: ../src/firewall-applet:445
-msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
-msgstr ""
-
-#: ../src/firewall-applet:460
-msgid "Shields Up Zone:"
-msgstr ""
-
-#: ../src/firewall-applet:471
-msgid "Shields Down Zone:"
-msgstr ""
-
-#: ../src/firewall-applet:622 ../src/firewall-config:1783
+#: ../src/firewall-applet:345 ../src/firewall-config:1783
 msgid "Connections"
 msgstr ""
 
-#: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1824
-#: ../src/firewall-config:1850 ../src/firewall-config:1875
-#: ../src/firewall-config.glade.h:61
-msgid "Zone"
-msgstr ""
-
-#: ../src/firewall-applet:679 ../src/firewall-config:1836
+#: ../src/firewall-applet:349 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<grænseflade>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1862
+#: ../src/firewall-applet:353 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr ""
 
-#: ../src/firewall-applet:816
-msgid "Connection to FirewallD established."
+#: ../src/firewall-applet:424 ../src/firewall-config:1694
+msgid "Authorization failed."
 msgstr ""
 
-#: ../src/firewall-applet:825
-msgid "Connection to FirewallD lost."
+#: ../src/firewall-applet:426 ../src/firewall-config:1697
+msgid "Invalid name"
+msgstr "Ugyldigt argument %s"
+
+#: ../src/firewall-applet:430 ../src/firewall-config:1701
+msgid "Name already exists"
 msgstr ""
 
-#: ../src/firewall-applet:872
-msgid "FirewallD has been reloaded."
+#: ../src/firewall-applet:484
+msgid "{entry} (Zone: {zone})"
 msgstr ""
 
-#: ../src/firewall-applet:949
+#: ../src/firewall-applet:660
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:955
-msgid "PANIC MODE"
+#: ../src/firewall-applet:668 ../src/firewall-applet:780
+msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:962
+#: ../src/firewall-applet:672
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:970
+#: ../src/firewall-applet:680
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:973
+#: ../src/firewall-applet:683
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:981
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for source {source}"
 msgstr ""
 
-#: ../src/firewall-applet:985
+#: ../src/firewall-applet:695
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:994
+#: ../src/firewall-applet:744
+msgid "Connection to FirewallD established."
+msgstr ""
+
+#: ../src/firewall-applet:754
+msgid "Connection to FirewallD lost."
+msgstr ""
+
+#: ../src/firewall-applet:760
+msgid "FirewallD has been reloaded."
+msgstr ""
+
+#: ../src/firewall-applet:765
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:1018
-msgid "All network traffic is blocked."
-msgstr ""
-
-#: ../src/firewall-applet:1019
+#: ../src/firewall-applet:781
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:1034 ../src/firewall-applet:1074
+#: ../src/firewall-applet:807 ../src/firewall-applet:852
 msgid "activated"
 msgstr ""
 
-#: ../src/firewall-applet:1035 ../src/firewall-applet:1075
+#: ../src/firewall-applet:808 ../src/firewall-applet:853
 msgid "deactivated"
 msgstr ""
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:811
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:1043
+#: ../src/firewall-applet:816
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:1065
+#: ../src/firewall-applet:837
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:1077
+#: ../src/firewall-applet:855
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 
-#: ../src/firewall-applet:1100
+#: ../src/firewall-applet:879
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:1166
-msgid "Firewall-applet"
+#: ../src/firewall-applet:897
+msgid "No system tray available"
 msgstr ""
 
 #: ../src/firewall-config:76
@@ -407,16 +398,9 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
-#: ../src/firewall-config:1694
-msgid "Authorization failed."
-msgstr ""
-
-#: ../src/firewall-config:1697
-msgid "Invalid name"
-msgstr "Ugyldigt argument %s"
-
-#: ../src/firewall-config:1701
-msgid "Name already exists"
+#: ../src/firewall-config:1824 ../src/firewall-config:1850
+#: ../src/firewall-config:1875 ../src/firewall-config.glade.h:61
+msgid "Zone"
 msgstr ""
 
 #: ../src/firewall-config:2037
@@ -527,7 +511,8 @@ msgstr ""
 
 #: ../src/firewall-config:3558
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -537,6 +522,11 @@ msgstr ""
 
 #: ../src/firewall-config:4175
 msgid "Built-in icmp, rename not supported."
+msgstr ""
+
+#: ../src/firewall-config:5372
+#, c-format
+msgid "Select zone for source %s"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:1
@@ -1353,8 +1343,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:190

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # ioza1964, 2013
 # ioza1964, 2013
@@ -15,19 +15,19 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 15:41+0100\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2015-06-12 13:58+0200\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Greek (http://www.transifex.com/projects/p/firewalld/language/"
 "el/)\n"
 "Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
 msgid "Firewall Applet"
 msgstr "Μικροεφαρμογή τείχους προστασίας"
 
@@ -59,179 +59,165 @@ msgstr "Στοιχείο '%s': Λείπει '%s' ιδιότητα"
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "Στοιχείο '%s': Μη αναμενόμενη λειτουργία '%s'"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
-#, c-format
-msgid "You need to be root to run %s."
-msgstr "Θα πρέπει να είστε υπερχρήστης για να εκτελέσετε %s."
-
-#: ../src/firewalld:87
-msgid "Not starting FirewallD, already running."
-msgstr "Δεν εκκινείται το FirewallD, τρέχει ήδη."
-
-#: ../src/firewalld:139
+#: ../src/firewalld:135
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Fork #1 απέτυχε: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5233
+#: ../src/firewalld:158 ../src/firewall-offline-cmd:40
 #, c-format
-msgid "Select zone for connection '%s'"
-msgstr ""
+msgid "You need to be root to run %s."
+msgstr "Θα πρέπει να είστε υπερχρήστης για να εκτελέσετε %s."
 
-#: ../src/firewall-applet:131 ../src/firewall-applet:157
+#: ../src/firewalld:168
+msgid "Not starting FirewallD, already running."
+msgstr "Δεν εκκινείται το FirewallD, τρέχει ήδη."
+
+#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#, c-format
+msgid "Select zone for interface '%s'"
+msgstr "Ζώνη '%s' ενεργοποιήθηκε για την διεπαφή '%s'"
+
+#: ../src/firewall-applet:124 ../src/firewall-applet:130
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr ""
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5316
+#: ../src/firewall-applet:150 ../src/firewall-config:5233
 #, c-format
-msgid "Select zone for interface '%s'"
-msgstr "Ζώνη '%s' ενεργοποιήθηκε για την διεπαφή '%s'"
-
-#: ../src/firewall-applet:245 ../src/firewall-config:5372
-#, c-format
-msgid "Select zone for source %s"
+msgid "Select zone for connection '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:347
-msgid "Shields Up"
-msgstr "Ασπίδες πάνω"
+#: ../src/firewall-applet:184
+#, fuzzy, c-format
+msgid "Select zone for source '%s'"
+msgstr "Ζώνη '%s' ενεργοποιήθηκε για την διεπαφή '%s'"
 
-#: ../src/firewall-applet:360
+#: ../src/firewall-applet:199
+#, c-format
+msgid "About %s"
+msgstr ""
+
+#: ../src/firewall-applet:235
+msgid "Authors:"
+msgstr ""
+
+#: ../src/firewall-applet:248
+msgid "License:"
+msgstr ""
+
+#: ../src/firewall-applet:317
 msgid "Enable Notifications"
 msgstr "Ενεργοποίηση ειδοποιήσεων"
 
-#: ../src/firewall-applet:373
+#: ../src/firewall-applet:324
 msgid "Edit Firewall Settings..."
 msgstr "Επεξεργασία ρυθμίσεων τείχους προστασίας..."
 
-#: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr "Αλλάξτε τις Ζώνες Σύνδεσης "
 
-#: ../src/firewall-applet:388
-msgid "Configure Shields UP/Down Zones..."
-msgstr "Επεξεργασία ζωνών ασπίδων πάνω/κάτω..."
-
-#: ../src/firewall-applet:397
+#: ../src/firewall-applet:332
 msgid "Block all network traffic"
 msgstr "Φραγή όλης της κίνησης δικτύου"
 
-#: ../src/firewall-applet:426
-msgid "Configure Shields Up/Down Zones"
-msgstr "Επεξεργασία ζωνών ασπίδων πάνω/κάτω"
-
-#: ../src/firewall-applet:437
-msgid "Here you can select the zones used for Shields Up and Shields Down."
+#: ../src/firewall-applet:337
+msgid "About"
 msgstr ""
-"Εδώ μπορείτε να επιλέξετε τις ζώνες που χρησιμοποιούνται για τις ασπίδες "
-"πάνω και ασπίδες κάτω."
 
-#: ../src/firewall-applet:445
-msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
-msgstr ""
-"Αυτό το χαρακτηριστικό είναι χρήσιμο για τους ανθρώπους που χρησιμοποιούν "
-"τις προεπιλεγμένες ζώνες περισσότερο. Για χρήστες, που αλλάζουν ζώνες από "
-"συνδέσεις, μπορεί να είναι περιορισμένης χρήσης."
-
-#: ../src/firewall-applet:460
-msgid "Shields Up Zone:"
-msgstr "Ζώνη ασπίδων πάνω:"
-
-#: ../src/firewall-applet:471
-msgid "Shields Down Zone:"
-msgstr "Ζώνη ασπίδων κάτω:"
-
-#: ../src/firewall-applet:622 ../src/firewall-config:1783
+#: ../src/firewall-applet:345 ../src/firewall-config:1783
 msgid "Connections"
 msgstr "Δεν υπάρχει σύνδεση."
 
-#: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1824
-#: ../src/firewall-config:1850 ../src/firewall-config:1875
-#: ../src/firewall-config.glade.h:61
-msgid "Zone"
-msgstr "Ζώνη"
-
-#: ../src/firewall-applet:679 ../src/firewall-config:1836
+#: ../src/firewall-applet:349 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<περιβάλλον>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1862
+#: ../src/firewall-applet:353 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr ""
 
-#: ../src/firewall-applet:816
-msgid "Connection to FirewallD established."
-msgstr "Η σύνδεση στο FirewallD επιτεύχθηκε."
+#: ../src/firewall-applet:424 ../src/firewall-config:1694
+msgid "Authorization failed."
+msgstr "Η εξουσιοδότηση απέτυχε."
 
-#: ../src/firewall-applet:825
-msgid "Connection to FirewallD lost."
-msgstr "Η σύνδεση στο FirewallD χάθηκε."
+#: ../src/firewall-applet:426 ../src/firewall-config:1697
+msgid "Invalid name"
+msgstr "Το όρισμα %s είναι λάθος."
 
-#: ../src/firewall-applet:872
-msgid "FirewallD has been reloaded."
-msgstr "Έγινε επανεκκίνηση του FirewallD"
+#: ../src/firewall-applet:430 ../src/firewall-config:1701
+msgid "Name already exists"
+msgstr "Το όνομα ήδη υπάρχει "
 
-#: ../src/firewall-applet:949
+#: ../src/firewall-applet:484
+msgid "{entry} (Zone: {zone})"
+msgstr ""
+
+#: ../src/firewall-applet:660
 msgid "No connection to firewall daemon"
 msgstr "Δεν υπάρχει σύνδεση στον δαίμονα του Firewall"
 
-#: ../src/firewall-applet:955
-msgid "PANIC MODE"
-msgstr "ΛΕΙΤΟΥΡΓΙΑ ΠΑΝΙΚΟΥ"
+#: ../src/firewall-applet:668 ../src/firewall-applet:780
+msgid "All network traffic is blocked."
+msgstr "Όλη η κίνηση δικτύου είναι φραγμένη."
 
-#: ../src/firewall-applet:962
+#: ../src/firewall-applet:672
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:970
+#: ../src/firewall-applet:680
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Ζώνη '{zone}' ενεργή για σύνδεση '{connection}' στην διεπαφή '{interface}'"
 
-#: ../src/firewall-applet:973
+#: ../src/firewall-applet:683
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "Ζώνη '{zone}' ενεργή για την διεπαφή '{interface}'"
 
-#: ../src/firewall-applet:981
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for source {source}"
 msgstr ""
 
-#: ../src/firewall-applet:985
+#: ../src/firewall-applet:695
 msgid "No Active Zones."
 msgstr "Δεν υπάρχουν ενεργές ζώνες"
 
-#: ../src/firewall-applet:994
+#: ../src/firewall-applet:744
+msgid "Connection to FirewallD established."
+msgstr "Η σύνδεση στο FirewallD επιτεύχθηκε."
+
+#: ../src/firewall-applet:754
+msgid "Connection to FirewallD lost."
+msgstr "Η σύνδεση στο FirewallD χάθηκε."
+
+#: ../src/firewall-applet:760
+msgid "FirewallD has been reloaded."
+msgstr "Έγινε επανεκκίνηση του FirewallD"
+
+#: ../src/firewall-applet:765
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Η προεπιλεγμένη ζώνη άλλαξε σε '%s'."
 
-#: ../src/firewall-applet:1018
-msgid "All network traffic is blocked."
-msgstr "Όλη η κίνηση δικτύου είναι φραγμένη."
-
-#: ../src/firewall-applet:1019
+#: ../src/firewall-applet:781
 msgid "Network traffic is not blocked anymore."
 msgstr "Η κίνηση δικτύου δεν είναι άλλο φραγμένη."
 
-#: ../src/firewall-applet:1034 ../src/firewall-applet:1074
+#: ../src/firewall-applet:807 ../src/firewall-applet:852
 msgid "activated"
 msgstr "ενεργοποιήθηκε"
 
-#: ../src/firewall-applet:1035 ../src/firewall-applet:1075
+#: ../src/firewall-applet:808 ../src/firewall-applet:853
 msgid "deactivated"
 msgstr "απενεργοποιήθηκε"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:811
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -239,27 +225,27 @@ msgstr ""
 "Ζώνη '{zone}' {activated_deactivated} για σύνδεση '{connection}' στην "
 "διεπαφή '{interface}'"
 
-#: ../src/firewall-applet:1043
+#: ../src/firewall-applet:816
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "Ζώνη '{zone}' {activated_deactivated} για την διεπαφή '{interface}'"
 
-#: ../src/firewall-applet:1065
+#: ../src/firewall-applet:837
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Ζώνη '%s' ενεργοποιήθηκε για την διεπαφή '%s'"
 
-#: ../src/firewall-applet:1077
+#: ../src/firewall-applet:855
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 
-#: ../src/firewall-applet:1100
+#: ../src/firewall-applet:879
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:1166
-msgid "Firewall-applet"
-msgstr "Μικροεφαρμογή-Τείχους προστασίας"
+#: ../src/firewall-applet:897
+msgid "No system tray available"
+msgstr ""
 
 #: ../src/firewall-config:76
 msgid "Connected."
@@ -419,17 +405,10 @@ msgstr ""
 msgid "yes"
 msgstr ""
 
-#: ../src/firewall-config:1694
-msgid "Authorization failed."
-msgstr "Η εξουσιοδότηση απέτυχε."
-
-#: ../src/firewall-config:1697
-msgid "Invalid name"
-msgstr "Το όρισμα %s είναι λάθος."
-
-#: ../src/firewall-config:1701
-msgid "Name already exists"
-msgstr "Το όνομα ήδη υπάρχει "
+#: ../src/firewall-config:1824 ../src/firewall-config:1850
+#: ../src/firewall-config:1875 ../src/firewall-config.glade.h:61
+msgid "Zone"
+msgstr "Ζώνη"
 
 #: ../src/firewall-config:2037
 #, c-format
@@ -539,7 +518,8 @@ msgstr ""
 
 #: ../src/firewall-config:3558
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -550,6 +530,11 @@ msgstr "Ενσωματωμένη υπηρεσία, η μετονομασία δ�
 #: ../src/firewall-config:4175
 msgid "Built-in icmp, rename not supported."
 msgstr "Ενσωματωμένος icmp, η μετονομασία δεν υποστηρίζεται."
+
+#: ../src/firewall-config:5372
+#, c-format
+msgid "Select zone for source %s"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
@@ -1377,8 +1362,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:190
@@ -1456,3 +1441,37 @@ msgstr "Στόχος:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Προεπιλεγμένος στόχος"
+
+#~ msgid "Shields Up"
+#~ msgstr "Ασπίδες πάνω"
+
+#~ msgid "Configure Shields UP/Down Zones..."
+#~ msgstr "Επεξεργασία ζωνών ασπίδων πάνω/κάτω..."
+
+#~ msgid "Configure Shields Up/Down Zones"
+#~ msgstr "Επεξεργασία ζωνών ασπίδων πάνω/κάτω"
+
+#~ msgid "Here you can select the zones used for Shields Up and Shields Down."
+#~ msgstr ""
+#~ "Εδώ μπορείτε να επιλέξετε τις ζώνες που χρησιμοποιούνται για τις ασπίδες "
+#~ "πάνω και ασπίδες κάτω."
+
+#~ msgid ""
+#~ "This feature is useful for people using the default zones mostly. For "
+#~ "users, that are changing zones of connections, it might be of limited use."
+#~ msgstr ""
+#~ "Αυτό το χαρακτηριστικό είναι χρήσιμο για τους ανθρώπους που χρησιμοποιούν "
+#~ "τις προεπιλεγμένες ζώνες περισσότερο. Για χρήστες, που αλλάζουν ζώνες από "
+#~ "συνδέσεις, μπορεί να είναι περιορισμένης χρήσης."
+
+#~ msgid "Shields Up Zone:"
+#~ msgstr "Ζώνη ασπίδων πάνω:"
+
+#~ msgid "Shields Down Zone:"
+#~ msgstr "Ζώνη ασπίδων κάτω:"
+
+#~ msgid "PANIC MODE"
+#~ msgstr "ΛΕΙΤΟΥΡΓΙΑ ΠΑΝΙΚΟΥ"
+
+#~ msgid "Firewall-applet"
+#~ msgstr "Μικροεφαρμογή-Τείχους προστασίας"

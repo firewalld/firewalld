@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Igor Miletic <grejigl-gnomeprevod@yahoo.ca>, 2008
 # Miloš Komarčević <kmilos@gmail.com>, 2005
@@ -11,20 +11,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 15:41+0100\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2015-06-12 13:58+0200\n"
 "PO-Revision-Date: 2015-05-07 06:04-0400\n"
 "Last-Translator: Momcilo Medic <medicmomcilo@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/firewalld/"
 "language/sr/)\n"
 "Language: sr\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
 msgid "Firewall Applet"
 msgstr "Аплет заштитног зида"
 
@@ -56,177 +56,165 @@ msgstr "Елементу '%s': недостаје '%s' атрибут"
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "Елемент '%s': неочекивани атрибут '%s'"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
-#, c-format
-msgid "You need to be root to run %s."
-msgstr "Морате бити root да извршите %s."
-
-#: ../src/firewalld:87
-msgid "Not starting FirewallD, already running."
-msgstr "Не покрећем FirewallD, већ је покренут."
-
-#: ../src/firewalld:139
+#: ../src/firewalld:135
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Рачвање #1 није успело: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5233
+#: ../src/firewalld:158 ../src/firewall-offline-cmd:40
 #, c-format
-msgid "Select zone for connection '%s'"
-msgstr "Одаберите зону за везу '%s'"
+msgid "You need to be root to run %s."
+msgstr "Морате бити root да извршите %s."
 
-#: ../src/firewall-applet:131 ../src/firewall-applet:157
+#: ../src/firewalld:168
+msgid "Not starting FirewallD, already running."
+msgstr "Не покрећем FirewallD, већ је покренут."
+
+#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#, c-format
+msgid "Select zone for interface '%s'"
+msgstr "Одаберите зону за интерфејс '%s'"
+
+#: ../src/firewall-applet:124 ../src/firewall-applet:130
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "Подразумевана зона"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5316
+#: ../src/firewall-applet:150 ../src/firewall-config:5233
 #, c-format
-msgid "Select zone for interface '%s'"
-msgstr "Одаберите зону за интерфејс '%s'"
+msgid "Select zone for connection '%s'"
+msgstr "Одаберите зону за везу '%s'"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5372
-#, c-format
-msgid "Select zone for source %s"
+#: ../src/firewall-applet:184
+#, fuzzy, c-format
+msgid "Select zone for source '%s'"
 msgstr "Одаберите зону за извор %s"
 
-#: ../src/firewall-applet:347
-msgid "Shields Up"
-msgstr "Подигни штитове"
+#: ../src/firewall-applet:199
+#, c-format
+msgid "About %s"
+msgstr ""
 
-#: ../src/firewall-applet:360
+#: ../src/firewall-applet:235
+msgid "Authors:"
+msgstr ""
+
+#: ../src/firewall-applet:248
+msgid "License:"
+msgstr ""
+
+#: ../src/firewall-applet:317
 msgid "Enable Notifications"
 msgstr "Омогући обавештења"
 
-#: ../src/firewall-applet:373
+#: ../src/firewall-applet:324
 msgid "Edit Firewall Settings..."
 msgstr "Измени подешавања заштитног зида..."
 
-#: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr "Промени зоне веза..."
 
-#: ../src/firewall-applet:388
-msgid "Configure Shields UP/Down Zones..."
-msgstr "Подеси зоне за подигнуте/спуштене штитове..."
-
-#: ../src/firewall-applet:397
+#: ../src/firewall-applet:332
 msgid "Block all network traffic"
 msgstr "Заустави сав мрежни саобраћај"
 
-#: ../src/firewall-applet:426
-msgid "Configure Shields Up/Down Zones"
-msgstr "Подеси зоне за подигнуте/спуштене штитове"
-
-#: ../src/firewall-applet:437
-msgid "Here you can select the zones used for Shields Up and Shields Down."
+#: ../src/firewall-applet:337
+msgid "About"
 msgstr ""
-"Овде можете подесити зоне које се користе за подигнуте и спуштене штитове."
 
-#: ../src/firewall-applet:445
-msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
-msgstr ""
-"Ова могућност је корисна људима који највише користе подразумевану зону. За "
-"кориснике, који мењају зоне веза, она може бити делимично корисна."
-
-#: ../src/firewall-applet:460
-msgid "Shields Up Zone:"
-msgstr "Зона подигнутих штитова:"
-
-#: ../src/firewall-applet:471
-msgid "Shields Down Zone:"
-msgstr "Зона спуштених штитова:"
-
-#: ../src/firewall-applet:622 ../src/firewall-config:1783
+#: ../src/firewall-applet:345 ../src/firewall-config:1783
 msgid "Connections"
 msgstr "Везе"
 
-#: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1824
-#: ../src/firewall-config:1850 ../src/firewall-config:1875
-#: ../src/firewall-config.glade.h:61
-msgid "Zone"
-msgstr "Зона"
-
-#: ../src/firewall-applet:679 ../src/firewall-config:1836
+#: ../src/firewall-applet:349 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<спрега>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1862
+#: ../src/firewall-applet:353 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr "Извори"
 
-#: ../src/firewall-applet:816
-msgid "Connection to FirewallD established."
-msgstr "Упостављена веза са FirewallD-ом."
+#: ../src/firewall-applet:424 ../src/firewall-config:1694
+msgid "Authorization failed."
+msgstr "Неуспешно овлашћење."
 
-#: ../src/firewall-applet:825
-msgid "Connection to FirewallD lost."
-msgstr "Изгубљена веза са FirewallD-ом."
+#: ../src/firewall-applet:426 ../src/firewall-config:1697
+msgid "Invalid name"
+msgstr "Неисправан аргумент %s"
 
-#: ../src/firewall-applet:872
-msgid "FirewallD has been reloaded."
-msgstr "FirewallD је поново учитан."
+#: ../src/firewall-applet:430 ../src/firewall-config:1701
+msgid "Name already exists"
+msgstr "Име већ постоји"
 
-#: ../src/firewall-applet:949
+#: ../src/firewall-applet:484
+msgid "{entry} (Zone: {zone})"
+msgstr ""
+
+#: ../src/firewall-applet:660
 msgid "No connection to firewall daemon"
 msgstr "Нема везе до сервиса заштитног зида"
 
-#: ../src/firewall-applet:955
-msgid "PANIC MODE"
-msgstr "МОД ПАНИКЕ"
+#: ../src/firewall-applet:668 ../src/firewall-applet:780
+msgid "All network traffic is blocked."
+msgstr "Сав мрежни саобраћај је блокиран."
 
-#: ../src/firewall-applet:962
+#: ../src/firewall-applet:672
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Подразумевана зона: '%s'"
 
-#: ../src/firewall-applet:970
+#: ../src/firewall-applet:680
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Зона '{zone}' је активна за везу '{connection}' на интерфејсу '{interface}'"
 
-#: ../src/firewall-applet:973
+#: ../src/firewall-applet:683
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "Зона '{zone}' је активна за интерфејс '{interface}'"
 
-#: ../src/firewall-applet:981
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for source {source}"
 msgstr "Зона '{zone}' је активна за извор {source}"
 
-#: ../src/firewall-applet:985
+#: ../src/firewall-applet:695
 msgid "No Active Zones."
 msgstr "Нема активних зона."
 
-#: ../src/firewall-applet:994
+#: ../src/firewall-applet:744
+msgid "Connection to FirewallD established."
+msgstr "Упостављена веза са FirewallD-ом."
+
+#: ../src/firewall-applet:754
+msgid "Connection to FirewallD lost."
+msgstr "Изгубљена веза са FirewallD-ом."
+
+#: ../src/firewall-applet:760
+msgid "FirewallD has been reloaded."
+msgstr "FirewallD је поново учитан."
+
+#: ../src/firewall-applet:765
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Подразумевана зона промењена на '%s'."
 
-#: ../src/firewall-applet:1018
-msgid "All network traffic is blocked."
-msgstr "Сав мрежни саобраћај је блокиран."
-
-#: ../src/firewall-applet:1019
+#: ../src/firewall-applet:781
 msgid "Network traffic is not blocked anymore."
 msgstr "Мрежни саобраћај више није блокиран."
 
-#: ../src/firewall-applet:1034 ../src/firewall-applet:1074
+#: ../src/firewall-applet:807 ../src/firewall-applet:852
 msgid "activated"
 msgstr "активирана"
 
-#: ../src/firewall-applet:1035 ../src/firewall-applet:1075
+#: ../src/firewall-applet:808 ../src/firewall-applet:853
 msgid "deactivated"
 msgstr "деактивирана"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:811
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -234,27 +222,27 @@ msgstr ""
 "Зона '{zone}' је {activated_deactivated} за везу '{connection}' на "
 "интерфејсу '{interface}'"
 
-#: ../src/firewall-applet:1043
+#: ../src/firewall-applet:816
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "Зона '{zone}' је {activated_deactivated} за интерфејс '{interface}'"
 
-#: ../src/firewall-applet:1065
+#: ../src/firewall-applet:837
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Зона '%s' је активирана за интерфејс '%s'"
 
-#: ../src/firewall-applet:1077
+#: ../src/firewall-applet:855
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "Зона '{zone}' је {activated_deactivated} за извор '{source}'"
 
-#: ../src/firewall-applet:1100
+#: ../src/firewall-applet:879
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "Зона '%s' је активирана за извор '%s'"
 
-#: ../src/firewall-applet:1166
-msgid "Firewall-applet"
-msgstr "Аплет заштитног зида"
+#: ../src/firewall-applet:897
+msgid "No system tray available"
+msgstr ""
 
 #: ../src/firewall-config:76
 msgid "Connected."
@@ -414,17 +402,10 @@ msgstr "ниво"
 msgid "yes"
 msgstr "да"
 
-#: ../src/firewall-config:1694
-msgid "Authorization failed."
-msgstr "Неуспешно овлашћење."
-
-#: ../src/firewall-config:1697
-msgid "Invalid name"
-msgstr "Неисправан аргумент %s"
-
-#: ../src/firewall-config:1701
-msgid "Name already exists"
-msgstr "Име већ постоји"
+#: ../src/firewall-config:1824 ../src/firewall-config:1850
+#: ../src/firewall-config:1875 ../src/firewall-config.glade.h:61
+msgid "Zone"
+msgstr "Зона"
 
 #: ../src/firewall-config:2037
 #, c-format
@@ -534,7 +515,8 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3558
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Преусмеравање на други систем је корисно само ако је интерфејс маскиран.\n"
@@ -547,6 +529,11 @@ msgstr "Уграђени сервис, промена имена није под
 #: ../src/firewall-config:4175
 msgid "Built-in icmp, rename not supported."
 msgstr "Уграђени icmp, промена имена није подржана."
+
+#: ../src/firewall-config:5372
+#, c-format
+msgid "Select zone for source %s"
+msgstr "Одаберите зону за извор %s"
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
@@ -920,7 +907,6 @@ msgstr ""
 "Протокол за контролисање интернет порука (ICMP — Internet Control Message "
 "Protocol) се углавном користи за слање порука о грешкама између умрежених "
 "рачунара, али и додатно за информативне поруке попут пинг захтева и одговора."
-""
 
 #: ../src/firewall-config.glade.h:82
 msgid ""
@@ -1244,8 +1230,8 @@ msgid ""
 "service. To get the context of a running application use ps -e --context."
 msgstr ""
 "Контекст је безбедносни (SELinux) контекст програма који се извршава или "
-"сервиса. Да бисте добили контекст програма који се извршава користите ps -e -"
-"-context."
+"сервиса. Да бисте добили контекст програма који се извршава користите ps -e "
+"--context."
 
 #: ../src/firewall-config.glade.h:147
 msgid "Add Context"
@@ -1419,11 +1405,11 @@ msgstr "обрнуто"
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
-"Да омогућите ово Акција мора бити 'одбиј' и Породица или 'ipv4' или 'ipv6' "
-"(не оба)."
+"Да омогућите ово Акција мора бити 'одбиј' и Породица или 'ipv4' или "
+"'ipv6' (не оба)."
 
 #: ../src/firewall-config.glade.h:190
 msgid "with Type:"
@@ -1500,3 +1486,35 @@ msgstr "Циљ:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Подразумевани циљ"
+
+#~ msgid "Shields Up"
+#~ msgstr "Подигни штитове"
+
+#~ msgid "Configure Shields UP/Down Zones..."
+#~ msgstr "Подеси зоне за подигнуте/спуштене штитове..."
+
+#~ msgid "Configure Shields Up/Down Zones"
+#~ msgstr "Подеси зоне за подигнуте/спуштене штитове"
+
+#~ msgid "Here you can select the zones used for Shields Up and Shields Down."
+#~ msgstr ""
+#~ "Овде можете подесити зоне које се користе за подигнуте и спуштене штитове."
+
+#~ msgid ""
+#~ "This feature is useful for people using the default zones mostly. For "
+#~ "users, that are changing zones of connections, it might be of limited use."
+#~ msgstr ""
+#~ "Ова могућност је корисна људима који највише користе подразумевану зону. "
+#~ "За кориснике, који мењају зоне веза, она може бити делимично корисна."
+
+#~ msgid "Shields Up Zone:"
+#~ msgstr "Зона подигнутих штитова:"
+
+#~ msgid "Shields Down Zone:"
+#~ msgstr "Зона спуштених штитова:"
+
+#~ msgid "PANIC MODE"
+#~ msgstr "МОД ПАНИКЕ"
+
+#~ msgid "Firewall-applet"
+#~ msgstr "Аплет заштитног зида"

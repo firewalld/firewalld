@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003
 # Yuri Chornoivan <yurchor@ukr.net>, 2010-2014
@@ -10,20 +10,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-26 15:41+0100\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2015-06-12 13:58+0200\n"
 "PO-Revision-Date: 2014-10-15 11:11-0400\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/firewalld/"
 "language/uk/)\n"
 "Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:302
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
 msgid "Firewall Applet"
 msgstr "Аплет брандмауера"
 
@@ -39,7 +39,8 @@ msgstr "Налаштовування мережного екрану"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
-"firewall;network;security;iptables;netfilter;брандмауер;файрвол;екран;мережа;безпека;захист;айпітейблс;нетфільтр;"
+"firewall;network;security;iptables;netfilter;брандмауер;файрвол;екран;мережа;"
+"безпека;захист;айпітейблс;нетфільтр;"
 
 #: ../src/firewall/core/io/io_object.py:151
 #, python-format
@@ -56,178 +57,166 @@ msgstr "Елемент «%s»: пропущено атрибут «%s»"
 msgid "Element '%s': unexpected attribute '%s'"
 msgstr "Елемент «%s»: неочікуваний атрибут «%s»"
 
-#: ../src/firewalld:64 ../src/firewall-offline-cmd:40
-#, c-format
-msgid "You need to be root to run %s."
-msgstr "Запускати %s можна лише від імені адміністратора (root)."
-
-#: ../src/firewalld:87
-msgid "Not starting FirewallD, already running."
-msgstr "Немає сенсу запускати FirewallD, його вже запущено."
-
-#: ../src/firewalld:139
+#: ../src/firewalld:135
 #, c-format
 msgid "Fork #1 failed: %d (%s)"
 msgstr "Помилка розгалуження 1: %d (%s)"
 
-#: ../src/firewall-applet:106 ../src/firewall-config:5233
+#: ../src/firewalld:158 ../src/firewall-offline-cmd:40
 #, c-format
-msgid "Select zone for connection '%s'"
-msgstr "Виберіть зону для з’єднання «%s»"
+msgid "You need to be root to run %s."
+msgstr "Запускати %s можна лише від імені адміністратора (root)."
 
-#: ../src/firewall-applet:131 ../src/firewall-applet:157
+#: ../src/firewalld:168
+msgid "Not starting FirewallD, already running."
+msgstr "Немає сенсу запускати FirewallD, його вже запущено."
+
+#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#, c-format
+msgid "Select zone for interface '%s'"
+msgstr "Виберіть зону для інтерфейсу «%s»"
+
+#: ../src/firewall-applet:124 ../src/firewall-applet:130
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "Типова зона"
 
-#: ../src/firewall-applet:189 ../src/firewall-config:5316
+#: ../src/firewall-applet:150 ../src/firewall-config:5233
 #, c-format
-msgid "Select zone for interface '%s'"
-msgstr "Виберіть зону для інтерфейсу «%s»"
+msgid "Select zone for connection '%s'"
+msgstr "Виберіть зону для з’єднання «%s»"
 
-#: ../src/firewall-applet:245 ../src/firewall-config:5372
-#, c-format
-msgid "Select zone for source %s"
+#: ../src/firewall-applet:184
+#, fuzzy, c-format
+msgid "Select zone for source '%s'"
 msgstr "Виберіть зону для джерела %s"
 
-#: ../src/firewall-applet:347
-msgid "Shields Up"
-msgstr "Відкрити"
+#: ../src/firewall-applet:199
+#, c-format
+msgid "About %s"
+msgstr ""
 
-#: ../src/firewall-applet:360
+#: ../src/firewall-applet:235
+msgid "Authors:"
+msgstr ""
+
+#: ../src/firewall-applet:248
+msgid "License:"
+msgstr ""
+
+#: ../src/firewall-applet:317
 msgid "Enable Notifications"
 msgstr "Увімкнути сповіщення"
 
-#: ../src/firewall-applet:373
+#: ../src/firewall-applet:324
 msgid "Edit Firewall Settings..."
 msgstr "Змінити параметри брандмауера…"
 
-#: ../src/firewall-applet:381 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr "Змінити зони з’єднань…"
 
-#: ../src/firewall-applet:388
-msgid "Configure Shields UP/Down Zones..."
-msgstr "Налаштувати відкриту і закриту зони…"
-
-#: ../src/firewall-applet:397
+#: ../src/firewall-applet:332
 msgid "Block all network traffic"
 msgstr "Заблокувати весь обмін даними мережею"
 
-#: ../src/firewall-applet:426
-msgid "Configure Shields Up/Down Zones"
-msgstr "Налаштування відкритої і закритої зон"
-
-#: ../src/firewall-applet:437
-msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "Тут ви можете вибрати відкриту і закриту зони."
-
-#: ../src/firewall-applet:445
-msgid ""
-"This feature is useful for people using the default zones mostly. For users, "
-"that are changing zones of connections, it might be of limited use."
+#: ../src/firewall-applet:337
+msgid "About"
 msgstr ""
-"Ця можливість буде корисною для тих, хто переважно використовує типові зони. "
-"Доцільність її використання у системах, де зони змінюються залежно від "
-"з’єднань, є доволі сумнівною."
 
-#: ../src/firewall-applet:460
-msgid "Shields Up Zone:"
-msgstr "Відкрита зона:"
-
-#: ../src/firewall-applet:471
-msgid "Shields Down Zone:"
-msgstr "Закрита зона:"
-
-#: ../src/firewall-applet:622 ../src/firewall-config:1783
+#: ../src/firewall-applet:345 ../src/firewall-config:1783
 msgid "Connections"
 msgstr "Немає з’єднання."
 
-#: ../src/firewall-applet:664 ../src/firewall-applet:693
-#: ../src/firewall-applet:717 ../src/firewall-config:1824
-#: ../src/firewall-config:1850 ../src/firewall-config:1875
-#: ../src/firewall-config.glade.h:61
-msgid "Zone"
-msgstr "Зона"
-
-#: ../src/firewall-applet:679 ../src/firewall-config:1836
+#: ../src/firewall-applet:349 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<інтерфейс>"
 
-#: ../src/firewall-applet:704 ../src/firewall-config:1862
+#: ../src/firewall-applet:353 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr "Джерела"
 
-#: ../src/firewall-applet:816
-msgid "Connection to FirewallD established."
-msgstr "Встановлено зв’язок з FirewallD."
+#: ../src/firewall-applet:424 ../src/firewall-config:1694
+msgid "Authorization failed."
+msgstr "Спроба уповноваження зазнала невдачі."
 
-#: ../src/firewall-applet:825
-msgid "Connection to FirewallD lost."
-msgstr "Зв’язок з FirewallD втрачено."
+#: ../src/firewall-applet:426 ../src/firewall-config:1697
+msgid "Invalid name"
+msgstr "Неправильний аргумент %s"
 
-#: ../src/firewall-applet:872
-msgid "FirewallD has been reloaded."
-msgstr "FirewallD перезавантажено."
+#: ../src/firewall-applet:430 ../src/firewall-config:1701
+msgid "Name already exists"
+msgstr "Назва вже існує"
 
-#: ../src/firewall-applet:949
+#: ../src/firewall-applet:484
+msgid "{entry} (Zone: {zone})"
+msgstr ""
+
+#: ../src/firewall-applet:660
 msgid "No connection to firewall daemon"
 msgstr "Немає зв’язку з фоновою службою брандмауера"
 
-#: ../src/firewall-applet:955
-msgid "PANIC MODE"
-msgstr "Режим супербезпеки"
+#: ../src/firewall-applet:668 ../src/firewall-applet:780
+msgid "All network traffic is blocked."
+msgstr "Весь обмін даними мережею заблоковано."
 
-#: ../src/firewall-applet:962
+#: ../src/firewall-applet:672
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "Типова зона: «%s»"
 
-#: ../src/firewall-applet:970
+#: ../src/firewall-applet:680
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface "
-"'{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "Зона «{zone}» використовується для з’єднання «{connection}» на інтерфейсі "
 "«{interface}»"
 
-#: ../src/firewall-applet:973
+#: ../src/firewall-applet:683
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "На інтерфейсі «{interface}» працює зона «{zone}»"
 
-#: ../src/firewall-applet:981
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for source {source}"
 msgstr "Зону «{zone}» задіяно для джерела {source}"
 
-#: ../src/firewall-applet:985
+#: ../src/firewall-applet:695
 msgid "No Active Zones."
 msgstr "Немає активних зон."
 
-#: ../src/firewall-applet:994
+#: ../src/firewall-applet:744
+msgid "Connection to FirewallD established."
+msgstr "Встановлено зв’язок з FirewallD."
+
+#: ../src/firewall-applet:754
+msgid "Connection to FirewallD lost."
+msgstr "Зв’язок з FirewallD втрачено."
+
+#: ../src/firewall-applet:760
+msgid "FirewallD has been reloaded."
+msgstr "FirewallD перезавантажено."
+
+#: ../src/firewall-applet:765
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "Типову зону змінено на «%s»."
 
-#: ../src/firewall-applet:1018
-msgid "All network traffic is blocked."
-msgstr "Весь обмін даними мережею заблоковано."
-
-#: ../src/firewall-applet:1019
+#: ../src/firewall-applet:781
 msgid "Network traffic is not blocked anymore."
 msgstr "Обмін даними мережею повністю розблоковано."
 
-#: ../src/firewall-applet:1034 ../src/firewall-applet:1074
+#: ../src/firewall-applet:807 ../src/firewall-applet:852
 msgid "activated"
 msgstr "увімкнено"
 
-#: ../src/firewall-applet:1035 ../src/firewall-applet:1075
+#: ../src/firewall-applet:808 ../src/firewall-applet:853
 msgid "deactivated"
 msgstr "вимкнено"
 
-#: ../src/firewall-applet:1038
+#: ../src/firewall-applet:811
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -235,27 +224,27 @@ msgstr ""
 "Зону «{zone}» {activated_deactivated} для з’єднання «{connection}» на "
 "інтерфейсі «{interface}»"
 
-#: ../src/firewall-applet:1043
+#: ../src/firewall-applet:816
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "Зону «{zone}» {activated_deactivated} для інтерфейсу «{interface}»"
 
-#: ../src/firewall-applet:1065
+#: ../src/firewall-applet:837
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "Для інтерфейсу «%2$s» задіяно зону «%1$s»"
 
-#: ../src/firewall-applet:1077
+#: ../src/firewall-applet:855
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "Зону «{zone}» {activated_deactivated} для джерела «{source}»"
 
-#: ../src/firewall-applet:1100
+#: ../src/firewall-applet:879
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "Зону «%s» задіяно для джерела «%s»"
 
-#: ../src/firewall-applet:1166
-msgid "Firewall-applet"
-msgstr "Аплет брандмауера"
+#: ../src/firewall-applet:897
+msgid "No system tray available"
+msgstr ""
 
 #: ../src/firewall-config:76
 msgid "Connected."
@@ -415,17 +404,10 @@ msgstr "рівень"
 msgid "yes"
 msgstr "так"
 
-#: ../src/firewall-config:1694
-msgid "Authorization failed."
-msgstr "Спроба уповноваження зазнала невдачі."
-
-#: ../src/firewall-config:1697
-msgid "Invalid name"
-msgstr "Неправильний аргумент %s"
-
-#: ../src/firewall-config:1701
-msgid "Name already exists"
-msgstr "Назва вже існує"
+#: ../src/firewall-config:1824 ../src/firewall-config:1850
+#: ../src/firewall-config:1875 ../src/firewall-config.glade.h:61
+msgid "Zone"
+msgstr "Зона"
 
 #: ../src/firewall-config:2037
 #, c-format
@@ -535,7 +517,8 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:3558
 msgid ""
-"Forwarding to another system is only useful if the interface is masqueraded.\n"
+"Forwarding to another system is only useful if the interface is "
+"masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Переспрямовування до іншої системи працюватиме, лише якщо інтерфейс "
@@ -549,6 +532,11 @@ msgstr "Вбудована служба, підтримки перейменув
 #: ../src/firewall-config:4175
 msgid "Built-in icmp, rename not supported."
 msgstr "Вбудований ICMP, підтримки перейменування не передбачено."
+
+#: ../src/firewall-config:5372
+#, c-format
+msgid "Select zone for source %s"
+msgstr "Виберіть зону для джерела %s"
 
 #: ../src/firewall-config.glade.h:1
 msgid "Address"
@@ -578,7 +566,6 @@ msgstr "Безпосередній ланцюжок"
 msgid "Please select ipv and table and enter the chain name."
 msgstr ""
 "Будь ласка виберіть версію протоколу IP та таблицю та введіть назву ланцюжка."
-""
 
 #: ../src/firewall-config.glade.h:9
 msgid "ipv:"
@@ -742,7 +729,6 @@ msgstr "Змінити типову зону для з’єднань або і�
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
 "Режим супербезпеки означає, що усіх вхідні та вихідні пакети відкидатимуться."
-""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Panic Mode"
@@ -1287,9 +1273,9 @@ msgid ""
 "the absolute command inclusive arguments must match."
 msgstr ""
 "Якщо запис команди у «білому» списку завершується зірочкою, «*», його буде "
-"використано для обробки усіх рядків команд, що починаються відповідним чином."
-" Якщо у записі немає «*», обробка виконуватиметься лише для вказано разом з "
-"аргументами команди."
+"використано для обробки усіх рядків команд, що починаються відповідним "
+"чином. Якщо у записі немає «*», обробка виконуватиметься лише для вказано "
+"разом з аргументами команди."
 
 #: ../src/firewall-config.glade.h:152
 msgid "Add Command Line"
@@ -1441,8 +1427,8 @@ msgstr "інвертування"
 
 #: ../src/firewall-config.glade.h:189
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
-"(not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or "
+"'ipv6' (not both)."
 msgstr ""
 "Щоб можна було скористатися цим, значення «Дія» має бути «відмова», а "
 "«Сімейством» має бути «ipv4» або «ipv6» (не обидва)."
@@ -1522,3 +1508,35 @@ msgstr "Призначення:"
 #: ../src/firewall-config.glade.h:226
 msgid "Default Target"
 msgstr "Типове призначення"
+
+#~ msgid "Shields Up"
+#~ msgstr "Відкрити"
+
+#~ msgid "Configure Shields UP/Down Zones..."
+#~ msgstr "Налаштувати відкриту і закриту зони…"
+
+#~ msgid "Configure Shields Up/Down Zones"
+#~ msgstr "Налаштування відкритої і закритої зон"
+
+#~ msgid "Here you can select the zones used for Shields Up and Shields Down."
+#~ msgstr "Тут ви можете вибрати відкриту і закриту зони."
+
+#~ msgid ""
+#~ "This feature is useful for people using the default zones mostly. For "
+#~ "users, that are changing zones of connections, it might be of limited use."
+#~ msgstr ""
+#~ "Ця можливість буде корисною для тих, хто переважно використовує типові "
+#~ "зони. Доцільність її використання у системах, де зони змінюються залежно "
+#~ "від з’єднань, є доволі сумнівною."
+
+#~ msgid "Shields Up Zone:"
+#~ msgstr "Відкрита зона:"
+
+#~ msgid "Shields Down Zone:"
+#~ msgstr "Закрита зона:"
+
+#~ msgid "PANIC MODE"
+#~ msgstr "Режим супербезпеки"
+
+#~ msgid "Firewall-applet"
+#~ msgstr "Аплет брандмауера"
