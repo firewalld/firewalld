@@ -892,11 +892,6 @@ Options:
 app = QtGui.QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
 
-if not QtGui.QSystemTrayIcon.isSystemTrayAvailable():
-    QtGui.QMessageBox.critical(None, "Systray",
-                               fromUTF8(escape(_("No system tray available"))))
-    sys.exit(1)
-
 applet = TrayApplet()
 applet.show()
 sys.exit(app.exec_())
