@@ -57,7 +57,7 @@ pull-translations:
 push-translations:
 	zanata-cli -B push
 
-archive: pull-translations update-po push-translations $(desktop_DATA) tag dist
+archive: $(desktop_DATA) tag dist
 	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
 	@echo "Also have a look at https://fedorahosted.org/released/${PACKAGE_NAME}/"

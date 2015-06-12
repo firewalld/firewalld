@@ -271,6 +271,47 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Fri Jun 12 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14-1
+- firewalld:
+  - print real zone names in error messages
+  - iptables 1.4.21 does not accept limits of 1/day, minimum is 2/day now
+  - rate limit fix for rich rules
+  - fix readdition of removed permanent direct settings
+  - adaption of the polkit domains to use PK_ACTION_DIRECT_INFO
+  - fixed two minor Python3 issues in firewall.core.io.direct
+  - fixed use of fallback configuration values
+  - fixed use without firewalld.conf
+  - firewalld main restructureization
+  - IPv6_rpfilter now also available as a property on D-Bus in the config interface
+  - fixed wait option use for ipXtables
+  - added --concurrent support for ebtables
+  - richLanguage: allow masquerading with destination
+  - richLanguage: limit masquerading forward rule to new connections
+  - ipXtables: No dns lookups in available_tables and _detect_wait_option
+  - full ebtables support: start, stop, reload, panic mode, direct chains and rules
+  - fix for reload with direct rules
+  - fix or flaws found by landscape.io
+  - pid file handling fixes in case of pid file removal
+  - fix for client issue in case of a dbus NoReply error
+- configuration
+  - new services: dropbox-lansync, ptp
+  - new icmptypes: timestamp-request, timestamp-reply
+- man pages:
+  - firewalld.zones(5): fixed typos
+  - firewalld.conf(5): Fixed wrong reference to firewalld.lockdown-whitelist page
+- firewall-applet:
+  - new version using Qt4 fixing several issues with the Gtk version
+- spec file:
+  - enabled Python3 support: new backends python-firewall and python3-firewall
+  - some cleanup
+- git:
+  - migrated to github
+- translations:
+  - migrated to zanata
+- build environment:
+  - no need for autoconf-2.69, 2.68 is sufficient
+
+
 * Wed Jan 28 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14-0
 - enable python2 and python3 bindings for fedora >= 20 and rhel >= 7
 - use python3 bindings on fedora >= 22 and rhel >= 8 for firewalld,
