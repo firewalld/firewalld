@@ -66,6 +66,13 @@ def escape(text):
 
 FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
 
+NM_IF = NetworkManager.DBUS_INTERFACE
+NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
+NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
+NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
+NM_PATH = NetworkManager.DBUS_PATH
+DBUS_PROPS = 'org.freedesktop.DBus.Properties'
+
 class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
@@ -1082,24 +1089,17 @@ class FirewallConfig(object):
 
         # do not use NMClient could result in python core dump
 
-        NM_IF = NetworkManager.DBUS_INTERFACE
-        NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
-        NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
-        NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
-        NM_PATH = NetworkManager.DBUS_PATH
-        DBUS_PROP = 'org.freedesktop.DBus.Properties'
-
         try:
             # get active connections
             obj = self.fw.bus.get_object(NM_IF, NM_PATH)
-            props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+            props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
             connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
 
             # for all active connections:
             for active in connections:
                 # get connection and devices from active connection
                 obj = self.fw.bus.get_object(NM_IF, active)
-                props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
                 connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
                 devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
 
@@ -1114,7 +1114,7 @@ class FirewallConfig(object):
                 # for all devices:
                 for device in devices:
                     obj = self.fw.bus.get_object(NM_IF, device)
-                    props = dbus.Interface(obj, dbus_interface=DBUS_PROP)
+                    props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
                     # get interface from device (first try: IpInterface)
                     iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
                     if iface == "":
@@ -5289,16 +5289,25 @@ class ZoneConnectionEditor(Gtk.Dialog):
         result = super(ZoneConnectionEditor, self).run()
         if result != 2:
             return
-        dbus_obj = self.fw.bus.get_object(NetworkManager.DBUS_INTERFACE,
-                                          NetworkManager.DBUS_PATH_SETTINGS)
-        settings_iface = dbus.Interface(
-            dbus_obj, dbus_interface=NetworkManager.DBUS_IFACE_SETTINGS)
+
+        obj = self.fw.bus.get_object(NM_IF, NM_PATH)
+        props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
+        active_connections = props.Get(NM_IF, "ActiveConnections")
+
         conection_obj = None
         settings = None
-        for connection in dbus_to_python(settings_iface.ListConnections()):
-            connection_obj = self.fw.bus.get_object(
-                NetworkManager.DBUS_INTERFACE, connection)
-            settings = connection_obj.GetSettings()
+
+        for active in active_connections:
+            active_obj = self.fw.bus.get_object(NM_IF, active)
+            active_props = dbus.Interface(active_obj, dbus_interface=DBUS_PROPS)
+            connection = active_props.Get(NM_IF_C_A, "Connection")
+
+            # get settings for connection
+            connection_obj = self.fw.bus.get_object(NM_IF, connection)
+            connection_iface = dbus.Interface(connection_obj,
+                                              dbus_interface=NM_IF_S_C)
+            settings = connection_iface.GetSettings()
+
             if settings["connection"]["id"] == self.connection:
                 break
             else:
