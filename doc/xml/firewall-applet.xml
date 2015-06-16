@@ -10,7 +10,7 @@
 <!--
   This file is part of firewalld.
 
-  Copyright (C) 2010-2013 Red Hat, Inc.
+  Copyright (C) 2010-2015 Red Hat, Inc.
   Authors:
   Thomas Woerner <twoerner@redhat.com>
 
@@ -62,7 +62,7 @@
   <refsect1 id="options">
     <title>Options</title>
     <para>
-      <command>firewall-applet</command> does not support any special options. The only options that can be used are the general options that Gtk uses for Gtk application initialization. For more information on these options, please have a look at the runtime documentation for Gtk.
+      <command>firewall-applet</command> does not support any special options.
     </para>
     <para>
       The following options are supported:
@@ -82,10 +82,17 @@
 
   </refsect1>
 
-  <refsect1 id="gsettings">
-    <title>GSettings</title>
+  <refsect1 id="qsettings">
+    <title>QSettings</title>
     <para>
-      <command>firewall-applet</command> has additional settings to adapt the look and feel. The used backend depends on the distribution and can be either dconf or GConf. The path to the settings is <filename class="directory">org.fedoraproject.FirewallApplet</filename>. You can use <command>dconf-editor</command> or <command>gconf-editor</command> to see and modify them.
+      <command>firewall-applet</command> has additional settings to adapt the look and feel. QSettings is used and stores them in <filename class="directory">~/.config/firewall/applet.conf</filename>.
+    </para>
+    <para>
+      Here is an example <filename class="directory">applet.conf</filename> file:
+      <programlisting>
+[General]
+notifications=true
+      </programlisting>
     </para>
     <para>
       The following settings are supported:
@@ -140,30 +147,6 @@
 	  </para>
 	  <para>
 	    This setting defaults to <option>false</option>.
-	  </para>
-	</listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><option>shields-up</option></term>
-        <listitem>
-	  <para>
-	    The shields-up zone name to be used if shields-up is enabled.
-	  </para>
-	  <para>
-	    This setting defaults to '<option>block</option>'.
-	  </para>
-	</listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term><option>shields-down</option></term>
-        <listitem>
-	  <para>
-	    The shields-down zone name to be used if shields-up has been deactivated again.
-	  </para>
-	  <para>
-	    This setting defaults to '<option>public</option>'.
 	  </para>
 	</listitem>
       </varlistentry>
