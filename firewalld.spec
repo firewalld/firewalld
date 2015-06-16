@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.3.14.1
+Version: 0.3.14.2
 Release: 0%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -283,6 +283,11 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Jun 16 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14.2-0
+- firewall-applet, firewall-config: Only honour active connections
+- firewall-applet: Change QSettings path and file names
+- Updated translations, marked translations for "Connections" as fuzzy
+
 * Fri Jun 12 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14.1-0
 - spec file adaptions from Fedora
 - dropped gtk applet remain: org.fedoraproject.FirewallApplet.gschema.xml
