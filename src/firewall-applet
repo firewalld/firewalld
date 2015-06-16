@@ -305,10 +305,10 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # settings
 
-        self.settings = QtCore.QSettings("firewall-applet", "firewalld")
+        self.settings = QtCore.QSettings("firewall", "applet")
 
-        self.blink_enabled = self.settings.value("blink", False, type=bool)
-        self.blink = self.settings.value("blink-count", 5, type=int)
+        self.blink = self.settings.value("blink", False, type=bool)
+        self.blink_count = self.settings.value("blink-count", 5, type=int)
         self.show_inactive = self.settings.value("show-inactive", False,
                                                type=bool)
 
@@ -657,7 +657,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             self.set_icon(mode)
             return
 
-        if self.blink_enabled and self.blink_count != 0:
+        if self.blink and self.blink_count != 0:
             self._blink = True
             self._blink_count = self.blink_count
             self.__blink()
