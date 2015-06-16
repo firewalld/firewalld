@@ -75,7 +75,7 @@ Summary: Firewall panel applet
 Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
-%if 0%{?with_python3}
+%if 0%{?use_python3}
 Requires: python3-PyQt4
 Requires: python3-gobject
 %else
@@ -94,7 +94,7 @@ Summary: Firewall configuration application
 Requires: %{name} = %{version}-%{release}
 Requires: hicolor-icon-theme
 Requires: gtk3
-%if 0%{?with_python3}
+%if 0%{?use_python3}
 Requires: python3-gobject
 %else
 Requires: pygobject3-base
@@ -284,6 +284,7 @@ fi
 
 %changelog
 * Tue Jun 16 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14.2-0
+- fixed requirements for -applet and -config
 - firewall-applet, firewall-config: Only honour active connections
 - firewall-applet: Change QSettings path and file names
 - Updated translations, marked translations for "Connections" as fuzzy
