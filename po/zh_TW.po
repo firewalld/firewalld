@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 13:58+0200\n"
+"POT-Creation-Date: 2015-06-16 15:22+0200\n"
 "PO-Revision-Date: 2014-10-16 11:11-0400\n"
 "Last-Translator: Chester Cheng <ccheng@redhat.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/"
@@ -27,7 +27,7 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:284
 msgid "Firewall Applet"
 msgstr "防火牆面板程式"
 
@@ -73,150 +73,151 @@ msgstr "您需要是 root 身份才能執行 %s。"
 msgid "Not starting FirewallD, already running."
 msgstr "不啟動 FirewallD，已經在執行中。"
 
-#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#: ../src/firewall-applet:89 ../src/firewall-config:5325
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "選取「%s」介面的界域"
 
-#: ../src/firewall-applet:124 ../src/firewall-applet:130
+#: ../src/firewall-applet:131 ../src/firewall-applet:137
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "預設界域"
 
-#: ../src/firewall-applet:150 ../src/firewall-config:5233
+#: ../src/firewall-applet:157 ../src/firewall-config:5233
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "選取「%s」連線的界域"
 
-#: ../src/firewall-applet:184
+#: ../src/firewall-applet:199
 #, c-format
 msgid "Select zone for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:199
+#: ../src/firewall-applet:214
 #, c-format
 msgid "About %s"
 msgstr ""
 
-#: ../src/firewall-applet:235
+#: ../src/firewall-applet:250
 msgid "Authors:"
 msgstr ""
 
-#: ../src/firewall-applet:248
+#: ../src/firewall-applet:263
 msgid "License:"
 msgstr ""
 
-#: ../src/firewall-applet:317
+#: ../src/firewall-applet:332
 msgid "Enable Notifications"
 msgstr "啟用通知"
 
-#: ../src/firewall-applet:324
+#: ../src/firewall-applet:339
 msgid "Edit Firewall Settings..."
 msgstr "編輯防火牆設定..."
 
-#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:343 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr "變更連線的界域..."
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:347
 msgid "Block all network traffic"
 msgstr "封鎖所有網路交通"
 
-#: ../src/firewall-applet:337
+#: ../src/firewall-applet:352
 msgid "About"
 msgstr ""
 
-#: ../src/firewall-applet:345 ../src/firewall-config:1783
+#: ../src/firewall-applet:360 ../src/firewall-config:1783
+#, fuzzy
 msgid "Connections"
 msgstr "連線"
 
-#: ../src/firewall-applet:349 ../src/firewall-config:1836
+#: ../src/firewall-applet:364 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "介面"
 
-#: ../src/firewall-applet:353 ../src/firewall-config:1862
+#: ../src/firewall-applet:368 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr "來源"
 
-#: ../src/firewall-applet:424 ../src/firewall-config:1694
+#: ../src/firewall-applet:439 ../src/firewall-config:1694
 msgid "Authorization failed."
 msgstr "授權失敗。"
 
-#: ../src/firewall-applet:426 ../src/firewall-config:1697
+#: ../src/firewall-applet:441 ../src/firewall-config:1697
 msgid "Invalid name"
 msgstr "無效的引數 %s"
 
-#: ../src/firewall-applet:430 ../src/firewall-config:1701
+#: ../src/firewall-applet:445 ../src/firewall-config:1701
 msgid "Name already exists"
 msgstr "名稱已經存在"
 
-#: ../src/firewall-applet:484
+#: ../src/firewall-applet:499
 msgid "{entry} (Zone: {zone})"
 msgstr ""
 
-#: ../src/firewall-applet:660
+#: ../src/firewall-applet:668
 msgid "No connection to firewall daemon"
 msgstr "未有連接防火牆幕後程式的連線"
 
-#: ../src/firewall-applet:668 ../src/firewall-applet:780
+#: ../src/firewall-applet:676 ../src/firewall-applet:788
 msgid "All network traffic is blocked."
 msgstr "所有網路交通已封鎖。"
 
-#: ../src/firewall-applet:672
+#: ../src/firewall-applet:680
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "預設界域：「%s」"
 
-#: ../src/firewall-applet:680
+#: ../src/firewall-applet:688
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr "界域「{zone}」使用中：連線「{connection}」，介面「{interface}」"
 
-#: ../src/firewall-applet:683
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "界域「{zone}」使用中：介面「{interface}」"
 
-#: ../src/firewall-applet:691
+#: ../src/firewall-applet:699
 msgid "Zone '{zone}' active for source {source}"
 msgstr "界域「{zone}」使用中：來源 {source}"
 
-#: ../src/firewall-applet:695
+#: ../src/firewall-applet:703
 msgid "No Active Zones."
 msgstr "無使用中界域。"
 
-#: ../src/firewall-applet:744
+#: ../src/firewall-applet:752
 msgid "Connection to FirewallD established."
 msgstr "與 FirewallD 的連線已建立。"
 
-#: ../src/firewall-applet:754
+#: ../src/firewall-applet:762
 msgid "Connection to FirewallD lost."
 msgstr "與 FirewallD 的連線已中斷。"
 
-#: ../src/firewall-applet:760
+#: ../src/firewall-applet:768
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD 已重新載入。"
 
-#: ../src/firewall-applet:765
+#: ../src/firewall-applet:773
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "預設界域變更為「%s」。"
 
-#: ../src/firewall-applet:781
+#: ../src/firewall-applet:789
 msgid "Network traffic is not blocked anymore."
 msgstr "網路交通已不再封鎖。"
 
-#: ../src/firewall-applet:807 ../src/firewall-applet:852
+#: ../src/firewall-applet:815 ../src/firewall-applet:860
 msgid "activated"
 msgstr "已啟動"
 
-#: ../src/firewall-applet:808 ../src/firewall-applet:853
+#: ../src/firewall-applet:816 ../src/firewall-applet:861
 msgid "deactivated"
 msgstr "已停止"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:819
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -224,120 +225,116 @@ msgstr ""
 "界域「{zone}」{activated_deactivated}：連線「{connection}」，介面"
 "「{interface}」"
 
-#: ../src/firewall-applet:816
+#: ../src/firewall-applet:824
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "界域「{zone}」{activated_deactivated}：介面「{interface}」"
 
-#: ../src/firewall-applet:837
+#: ../src/firewall-applet:845
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "界域「%s」已啟動：介面「%s」"
 
-#: ../src/firewall-applet:855
+#: ../src/firewall-applet:863
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "界域「{zone}」{activated_deactivated}：來源「{source}」"
 
-#: ../src/firewall-applet:879
+#: ../src/firewall-applet:887
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "界域「%s」已啟動：來源「%s」"
 
-#: ../src/firewall-applet:897
-msgid "No system tray available"
-msgstr ""
-
-#: ../src/firewall-config:76
+#: ../src/firewall-config:83
 msgid "Connected."
 msgstr "已連接。"
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:84
 msgid "No connection."
 msgstr "無連線。"
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:85
 msgid "Waiting ..."
 msgstr "等候中..."
 
-#: ../src/firewall-config:79
+#: ../src/firewall-config:86
 msgid "Retrying ..."
 msgstr "重試中..."
 
-#: ../src/firewall-config:80
+#: ../src/firewall-config:87
 #, c-format
 msgid "Used by network connection '%s'"
 msgstr "由「%s」網路連線使用"
 
-#: ../src/firewall-config:81
+#: ../src/firewall-config:88
 msgid "enabled"
 msgstr "已啟用"
 
-#: ../src/firewall-config:82
+#: ../src/firewall-config:89
 msgid "disabled"
 msgstr "已停用"
 
-#: ../src/firewall-config:99
+#: ../src/firewall-config:106
 msgid "Failed to load icons."
 msgstr "無法載入圖示。"
 
-#: ../src/firewall-config:358 ../src/firewall-config:1744
+#: ../src/firewall-config:365 ../src/firewall-config:1744
 msgid "Runtime"
 msgstr "執行時期"
 
-#: ../src/firewall-config:359
+#: ../src/firewall-config:366
 msgid "Permanent"
 msgstr "永久"
 
-#: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
+#: ../src/firewall-config:427 ../src/firewall-config.glade.h:101
 msgid "Service"
 msgstr "服務"
 
-#: ../src/firewall-config:427 ../src/firewall-config:468
-#: ../src/firewall-config:706
+#: ../src/firewall-config:434 ../src/firewall-config:475
+#: ../src/firewall-config:713
 msgid "Port"
 msgstr "連接埠"
 
-#: ../src/firewall-config:429 ../src/firewall-config:470
-#: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
+#: ../src/firewall-config:436 ../src/firewall-config:477
+#: ../src/firewall-config:715 ../src/firewall-config.glade.h:178
 msgid "Protocol"
 msgstr "協定"
 
-#: ../src/firewall-config:472
+#: ../src/firewall-config:479
 msgid "To Port"
 msgstr "至連接埠"
 
-#: ../src/firewall-config:474
+#: ../src/firewall-config:481
 msgid "To Address"
 msgstr "至位址"
 
-#: ../src/firewall-config:511
+#: ../src/firewall-config:518
 msgid "Icmp Type"
 msgstr "Icmp 類型"
 
-#: ../src/firewall-config:526
+#: ../src/firewall-config:533
 msgid "Family"
 msgstr "家庭"
 
-#: ../src/firewall-config:528
+#: ../src/firewall-config:535
 msgid "Action"
 msgstr "動作"
 
-#: ../src/firewall-config:530
+#: ../src/firewall-config:537
 msgid "Element"
 msgstr "元素"
 
-#: ../src/firewall-config:532
+#: ../src/firewall-config:539
 msgid "Src"
 msgstr "來源"
 
-#: ../src/firewall-config:534
+#: ../src/firewall-config:541
 msgid "Dest"
 msgstr "目標"
 
-#: ../src/firewall-config:536
+#: ../src/firewall-config:543
 msgid "log"
 msgstr "記錄"
 
-#: ../src/firewall-config:538
+#: ../src/firewall-config:545
 msgid "Audit"
 msgstr "稽核"
 
@@ -532,7 +529,7 @@ msgstr "內建服務，不支援重新命名。"
 msgid "Built-in icmp, rename not supported."
 msgstr "內建 icmp，不支援重新命名。"
 
-#: ../src/firewall-config:5372
+#: ../src/firewall-config:5381
 #, c-format
 msgid "Select zone for source %s"
 msgstr "選取 %s 來源的界域"

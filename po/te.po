@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 13:58+0200\n"
+"POT-Creation-Date: 2015-06-16 15:22+0200\n"
 "PO-Revision-Date: 2014-10-16 04:51-0400\n"
 "Last-Translator: Krishnababu Krothapalli <krisnababu@gmail.com>\n"
 "Language-Team: Telugu (http://www.transifex.com/projects/p/firewalld/"
@@ -26,7 +26,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:284
 msgid "Firewall Applet"
 msgstr "ఫైర్వాల్ ఆప్లెట్"
 
@@ -72,152 +72,153 @@ msgstr "మీరు %s అమలు చెయ్యడానికి రూట
 msgid "Not starting FirewallD, already running."
 msgstr "ప్రారంభ కాదు, ఇప్పటికే నడుస్తున్న FirewallD."
 
-#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#: ../src/firewall-applet:89 ../src/firewall-config:5325
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "ఇంటర్ఫేస్ '%s' కొరకు జోన్ ఎంపికచేయి"
 
-#: ../src/firewall-applet:124 ../src/firewall-applet:130
+#: ../src/firewall-applet:131 ../src/firewall-applet:137
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr "అప్రమేయ క్షేత్రం"
 
-#: ../src/firewall-applet:150 ../src/firewall-config:5233
+#: ../src/firewall-applet:157 ../src/firewall-config:5233
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "అనుసంధానం '%s' కొరకు క్షేత్రం ఎంపికచేయి"
 
-#: ../src/firewall-applet:184
+#: ../src/firewall-applet:199
 #, c-format
 msgid "Select zone for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:199
+#: ../src/firewall-applet:214
 #, c-format
 msgid "About %s"
 msgstr ""
 
-#: ../src/firewall-applet:235
+#: ../src/firewall-applet:250
 msgid "Authors:"
 msgstr ""
 
-#: ../src/firewall-applet:248
+#: ../src/firewall-applet:263
 msgid "License:"
 msgstr ""
 
-#: ../src/firewall-applet:317
+#: ../src/firewall-applet:332
 msgid "Enable Notifications"
 msgstr "నోటిఫికేషన్లను ప్రారంభించు"
 
-#: ../src/firewall-applet:324
+#: ../src/firewall-applet:339
 msgid "Edit Firewall Settings..."
 msgstr "ఫైర్వాల్ సెట్టింగ్లను సవరించండి..."
 
-#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:343 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr "అనుసంధానాల జోన్ మార్చు..."
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:347
 msgid "Block all network traffic"
 msgstr "అన్నీ నెట్వర్క్ ట్రాఫిక్ నిరోధించు"
 
-#: ../src/firewall-applet:337
+#: ../src/firewall-applet:352
 msgid "About"
 msgstr ""
 
-#: ../src/firewall-applet:345 ../src/firewall-config:1783
+#: ../src/firewall-applet:360 ../src/firewall-config:1783
+#, fuzzy
 msgid "Connections"
 msgstr "అనుసంధానాలు"
 
-#: ../src/firewall-applet:349 ../src/firewall-config:1836
+#: ../src/firewall-applet:364 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<interface>"
 
-#: ../src/firewall-applet:353 ../src/firewall-config:1862
+#: ../src/firewall-applet:368 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr "మూలాలు"
 
-#: ../src/firewall-applet:424 ../src/firewall-config:1694
+#: ../src/firewall-applet:439 ../src/firewall-config:1694
 msgid "Authorization failed."
 msgstr "ధృవీకరణ విఫలమైంది."
 
-#: ../src/firewall-applet:426 ../src/firewall-config:1697
+#: ../src/firewall-applet:441 ../src/firewall-config:1697
 msgid "Invalid name"
 msgstr "చెల్లని ఆర్గుమెంట్ %s"
 
-#: ../src/firewall-applet:430 ../src/firewall-config:1701
+#: ../src/firewall-applet:445 ../src/firewall-config:1701
 msgid "Name already exists"
 msgstr "పేరు యిప్పటికే వుంది"
 
-#: ../src/firewall-applet:484
+#: ../src/firewall-applet:499
 msgid "{entry} (Zone: {zone})"
 msgstr ""
 
-#: ../src/firewall-applet:660
+#: ../src/firewall-applet:668
 msgid "No connection to firewall daemon"
 msgstr "ఫైర్వాల్ డెమోన్ కోసం కనెక్షన్ లేదు"
 
-#: ../src/firewall-applet:668 ../src/firewall-applet:780
+#: ../src/firewall-applet:676 ../src/firewall-applet:788
 msgid "All network traffic is blocked."
 msgstr "నెట్వర్కు ట్రాఫిక్ అంచా నిరోధించబడెను."
 
-#: ../src/firewall-applet:672
+#: ../src/firewall-applet:680
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr "అప్రమేయ జోన్: '%s'"
 
-#: ../src/firewall-applet:680
+#: ../src/firewall-applet:688
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 "ఇంటర్ఫేస్ '{interface}' పైన అనుసంధానం '{connection}'  కొరకు జోన్  '{zone}' "
 "క్రియాశీలపరచబడెను"
 
-#: ../src/firewall-applet:683
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr "ఇంటర్ఫేస్  '{interface}' కొరకు జోన్ '{zone}' క్రియాశీలపరచబడెను"
 
-#: ../src/firewall-applet:691
+#: ../src/firewall-applet:699
 msgid "Zone '{zone}' active for source {source}"
 msgstr "జోన్ '{zone}' మూలం {source} కొరకు క్రియాశీలపరచబడెను"
 
-#: ../src/firewall-applet:695
+#: ../src/firewall-applet:703
 msgid "No Active Zones."
 msgstr "క్రియాశీల జోన్స్ లేవు."
 
-#: ../src/firewall-applet:744
+#: ../src/firewall-applet:752
 msgid "Connection to FirewallD established."
 msgstr "FirewallD కనెక్షన్ స్థాపించబడింది."
 
-#: ../src/firewall-applet:754
+#: ../src/firewall-applet:762
 msgid "Connection to FirewallD lost."
 msgstr "FirewallD కనెక్షన్ కోల్పోయింది."
 
-#: ../src/firewall-applet:760
+#: ../src/firewall-applet:768
 msgid "FirewallD has been reloaded."
 msgstr "FirewallD తిరిగిలోడైంది."
 
-#: ../src/firewall-applet:765
+#: ../src/firewall-applet:773
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr "అప్రమేయ జోన్ '%s' కు మార్చబడెను."
 
-#: ../src/firewall-applet:781
+#: ../src/firewall-applet:789
 msgid "Network traffic is not blocked anymore."
 msgstr "నెట్వర్కు ట్రాఫిక్ నిరోధించబడుటలేదు."
 
-#: ../src/firewall-applet:807 ../src/firewall-applet:852
+#: ../src/firewall-applet:815 ../src/firewall-applet:860
 msgid "activated"
 msgstr "క్రియాశీలం"
 
-#: ../src/firewall-applet:808 ../src/firewall-applet:853
+#: ../src/firewall-applet:816 ../src/firewall-applet:861
 msgid "deactivated"
 msgstr "క్రియాహీనం"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:819
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
@@ -225,120 +226,116 @@ msgstr ""
 "జోన్ '{zone}' {activated_deactivated} అనుసంధానం '{connection}' కొరకు ఇంటర్ఫేస్ "
 "'{interface}' పైన"
 
-#: ../src/firewall-applet:816
+#: ../src/firewall-applet:824
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr "జోన్ '{zone}' {activated_deactivated} ఇంటర్ఫేస్ '{interface}' కొరకు"
 
-#: ../src/firewall-applet:837
+#: ../src/firewall-applet:845
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr "జోన్ '%s' ఇంటర్ఫేస్ '%s' కొరకు క్రియాశీలమైంది"
 
-#: ../src/firewall-applet:855
+#: ../src/firewall-applet:863
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr "జోన్ '{zone}' {activated_deactivated} వనరు '{source}' కొరకు"
 
-#: ../src/firewall-applet:879
+#: ../src/firewall-applet:887
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr "జోన్ '%s' మూలం '%s' కొరకు క్రియాశీలమైంది"
 
-#: ../src/firewall-applet:897
-msgid "No system tray available"
-msgstr ""
-
-#: ../src/firewall-config:76
+#: ../src/firewall-config:83
 msgid "Connected."
 msgstr "అనుసంధానమైంది."
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:84
 msgid "No connection."
 msgstr "అనుసంధానంలేదు."
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:85
 msgid "Waiting ..."
 msgstr "వేచివుంది ..."
 
-#: ../src/firewall-config:79
+#: ../src/firewall-config:86
 msgid "Retrying ..."
 msgstr "తిరిగిప్రయత్నిస్తోంది ..."
 
-#: ../src/firewall-config:80
+#: ../src/firewall-config:87
 #, c-format
 msgid "Used by network connection '%s'"
 msgstr "నెట్వర్కు అనుసంధానం '%s' చేత వుపయోగించబడింది"
 
-#: ../src/firewall-config:81
+#: ../src/firewall-config:88
 msgid "enabled"
 msgstr "చేతనమైన"
 
-#: ../src/firewall-config:82
+#: ../src/firewall-config:89
 msgid "disabled"
 msgstr "అచేతనమైన"
 
-#: ../src/firewall-config:99
+#: ../src/firewall-config:106
 msgid "Failed to load icons."
 msgstr "ప్రతిమలు లోడుచేయుటకు విఫలమైంది."
 
-#: ../src/firewall-config:358 ../src/firewall-config:1744
+#: ../src/firewall-config:365 ../src/firewall-config:1744
 msgid "Runtime"
 msgstr "రన్‌టైమ్"
 
-#: ../src/firewall-config:359
+#: ../src/firewall-config:366
 msgid "Permanent"
 msgstr "శాశ్వత"
 
-#: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
+#: ../src/firewall-config:427 ../src/firewall-config.glade.h:101
 msgid "Service"
 msgstr "సేవ"
 
-#: ../src/firewall-config:427 ../src/firewall-config:468
-#: ../src/firewall-config:706
+#: ../src/firewall-config:434 ../src/firewall-config:475
+#: ../src/firewall-config:713
 msgid "Port"
 msgstr "పోర్టును"
 
-#: ../src/firewall-config:429 ../src/firewall-config:470
-#: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
+#: ../src/firewall-config:436 ../src/firewall-config:477
+#: ../src/firewall-config:715 ../src/firewall-config.glade.h:178
 msgid "Protocol"
 msgstr "చట్టం"
 
-#: ../src/firewall-config:472
+#: ../src/firewall-config:479
 msgid "To Port"
 msgstr "ఈ పోర్ట్‍‌కు"
 
-#: ../src/firewall-config:474
+#: ../src/firewall-config:481
 msgid "To Address"
 msgstr "పంపవలిసిన చిరునామా"
 
-#: ../src/firewall-config:511
+#: ../src/firewall-config:518
 msgid "Icmp Type"
 msgstr "Icmp రకం"
 
-#: ../src/firewall-config:526
+#: ../src/firewall-config:533
 msgid "Family"
 msgstr "ఫ్యామిలీ"
 
-#: ../src/firewall-config:528
+#: ../src/firewall-config:535
 msgid "Action"
 msgstr "చర్య"
 
-#: ../src/firewall-config:530
+#: ../src/firewall-config:537
 msgid "Element"
 msgstr "మూలకం"
 
-#: ../src/firewall-config:532
+#: ../src/firewall-config:539
 msgid "Src"
 msgstr "మూలం"
 
-#: ../src/firewall-config:534
+#: ../src/firewall-config:541
 msgid "Dest"
 msgstr "గమ్యం"
 
-#: ../src/firewall-config:536
+#: ../src/firewall-config:543
 msgid "log"
 msgstr "లాగ్"
 
-#: ../src/firewall-config:538
+#: ../src/firewall-config:545
 msgid "Audit"
 msgstr "ఆడిట్"
 
@@ -533,7 +530,7 @@ msgstr "బిల్ట్-ఇన్ సేవ, తిరిగిపేరు �
 msgid "Built-in icmp, rename not supported."
 msgstr "బిల్ట్-ఇన్ icmp, తిరిగిపేరు పెట్టుటకు తోడ్పాటులేదు."
 
-#: ../src/firewall-config:5372
+#: ../src/firewall-config:5381
 #, c-format
 msgid "Select zone for source %s"
 msgstr "మూలం %s కొరకు జోన్ ఎంపికచేయి"

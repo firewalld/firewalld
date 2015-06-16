@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-12 13:58+0200\n"
+"POT-Creation-Date: 2015-06-16 15:22+0200\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Basque (http://www.transifex.com/projects/p/firewalld/"
@@ -22,7 +22,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.6.2\n"
 
-#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:269
+#: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:284
 msgid "Firewall Applet"
 msgstr "Suhesiaren applet-a"
 
@@ -68,269 +68,266 @@ msgstr "Root izan behar duzu %s exekutatzeko."
 msgid "Not starting FirewallD, already running."
 msgstr "Ez da FirewallD hasiko, dagoeneko aktibo dago."
 
-#: ../src/firewall-applet:82 ../src/firewall-config:5316
+#: ../src/firewall-applet:89 ../src/firewall-config:5325
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:124 ../src/firewall-applet:130
+#: ../src/firewall-applet:131 ../src/firewall-applet:137
 #: ../src/firewall-config:5258 ../src/firewall-config:5284
 #: ../src/firewall-config.glade.h:5
 msgid "Default Zone"
 msgstr ""
 
-#: ../src/firewall-applet:150 ../src/firewall-config:5233
+#: ../src/firewall-applet:157 ../src/firewall-config:5233
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:184
+#: ../src/firewall-applet:199
 #, c-format
 msgid "Select zone for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:199
+#: ../src/firewall-applet:214
 #, c-format
 msgid "About %s"
 msgstr ""
 
-#: ../src/firewall-applet:235
+#: ../src/firewall-applet:250
 msgid "Authors:"
 msgstr ""
 
-#: ../src/firewall-applet:248
+#: ../src/firewall-applet:263
 msgid "License:"
 msgstr ""
 
-#: ../src/firewall-applet:317
+#: ../src/firewall-applet:332
 msgid "Enable Notifications"
 msgstr "Gaitu jakinarazpenak"
 
-#: ../src/firewall-applet:324
+#: ../src/firewall-applet:339
 msgid "Edit Firewall Settings..."
 msgstr "Editatu suhesiaren ezarpenak..."
 
-#: ../src/firewall-applet:328 ../src/firewall-config.glade.h:44
+#: ../src/firewall-applet:343 ../src/firewall-config.glade.h:44
 msgid "Change Zones of Connections..."
 msgstr ""
 
-#: ../src/firewall-applet:332
+#: ../src/firewall-applet:347
 msgid "Block all network traffic"
 msgstr "Blokeatu sareko trafiko guztia"
 
-#: ../src/firewall-applet:337
+#: ../src/firewall-applet:352
 msgid "About"
 msgstr ""
 
-#: ../src/firewall-applet:345 ../src/firewall-config:1783
+#: ../src/firewall-applet:360 ../src/firewall-config:1783
+#, fuzzy
 msgid "Connections"
 msgstr "Konexiorik ez."
 
-#: ../src/firewall-applet:349 ../src/firewall-config:1836
+#: ../src/firewall-applet:364 ../src/firewall-config:1836
 #: ../src/firewall-config.glade.h:93
 msgid "Interfaces"
 msgstr "<interfazea>"
 
-#: ../src/firewall-applet:353 ../src/firewall-config:1862
+#: ../src/firewall-applet:368 ../src/firewall-config:1862
 #: ../src/firewall-config.glade.h:98
 msgid "Sources"
 msgstr ""
 
-#: ../src/firewall-applet:424 ../src/firewall-config:1694
+#: ../src/firewall-applet:439 ../src/firewall-config:1694
 msgid "Authorization failed."
 msgstr "Autentikazioak huts egin du."
 
-#: ../src/firewall-applet:426 ../src/firewall-config:1697
+#: ../src/firewall-applet:441 ../src/firewall-config:1697
 msgid "Invalid name"
 msgstr "argumentu baliogabea %s"
 
-#: ../src/firewall-applet:430 ../src/firewall-config:1701
+#: ../src/firewall-applet:445 ../src/firewall-config:1701
 msgid "Name already exists"
 msgstr ""
 
-#: ../src/firewall-applet:484
+#: ../src/firewall-applet:499
 msgid "{entry} (Zone: {zone})"
 msgstr ""
 
-#: ../src/firewall-applet:660
+#: ../src/firewall-applet:668
 msgid "No connection to firewall daemon"
 msgstr ""
 
-#: ../src/firewall-applet:668 ../src/firewall-applet:780
+#: ../src/firewall-applet:676 ../src/firewall-applet:788
 msgid "All network traffic is blocked."
 msgstr ""
 
-#: ../src/firewall-applet:672
+#: ../src/firewall-applet:680
 #, c-format
 msgid "Default Zone: '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:680
+#: ../src/firewall-applet:688
 msgid ""
 "Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:683
+#: ../src/firewall-applet:691
 msgid "Zone '{zone}' active for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:691
+#: ../src/firewall-applet:699
 msgid "Zone '{zone}' active for source {source}"
 msgstr ""
 
-#: ../src/firewall-applet:695
+#: ../src/firewall-applet:703
 msgid "No Active Zones."
 msgstr ""
 
-#: ../src/firewall-applet:744
+#: ../src/firewall-applet:752
 msgid "Connection to FirewallD established."
 msgstr ""
 
-#: ../src/firewall-applet:754
+#: ../src/firewall-applet:762
 msgid "Connection to FirewallD lost."
 msgstr ""
 
-#: ../src/firewall-applet:760
+#: ../src/firewall-applet:768
 msgid "FirewallD has been reloaded."
 msgstr ""
 
-#: ../src/firewall-applet:765
+#: ../src/firewall-applet:773
 #, c-format
 msgid "Default zone changed to '%s'."
 msgstr ""
 
-#: ../src/firewall-applet:781
+#: ../src/firewall-applet:789
 msgid "Network traffic is not blocked anymore."
 msgstr ""
 
-#: ../src/firewall-applet:807 ../src/firewall-applet:852
+#: ../src/firewall-applet:815 ../src/firewall-applet:860
 msgid "activated"
 msgstr "aktibatuta"
 
-#: ../src/firewall-applet:808 ../src/firewall-applet:853
+#: ../src/firewall-applet:816 ../src/firewall-applet:861
 msgid "deactivated"
 msgstr "desaktibatuta"
 
-#: ../src/firewall-applet:811
+#: ../src/firewall-applet:819
 msgid ""
 "Zone '{zone}' {activated_deactivated} for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:816
+#: ../src/firewall-applet:824
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
 msgstr ""
 
-#: ../src/firewall-applet:837
+#: ../src/firewall-applet:845
 #, c-format
 msgid "Zone '%s' activated for interface '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:855
+#: ../src/firewall-applet:863
 msgid "Zone '{zone}' {activated_deactivated} for source '{source}'"
 msgstr ""
 
-#: ../src/firewall-applet:879
+#: ../src/firewall-applet:887
 #, c-format
 msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
-#: ../src/firewall-applet:897
-msgid "No system tray available"
-msgstr ""
-
-#: ../src/firewall-config:76
+#: ../src/firewall-config:83
 msgid "Connected."
 msgstr "Konektatuta."
 
-#: ../src/firewall-config:77
+#: ../src/firewall-config:84
 msgid "No connection."
 msgstr "Konexiorik ez."
 
-#: ../src/firewall-config:78
+#: ../src/firewall-config:85
 msgid "Waiting ..."
 msgstr "Itxaroten..."
 
-#: ../src/firewall-config:79
+#: ../src/firewall-config:86
 msgid "Retrying ..."
 msgstr "Berriz saiatzen..."
 
-#: ../src/firewall-config:80
+#: ../src/firewall-config:87
 #, c-format
 msgid "Used by network connection '%s'"
 msgstr ""
 
-#: ../src/firewall-config:81
+#: ../src/firewall-config:88
 msgid "enabled"
 msgstr ""
 
-#: ../src/firewall-config:82
+#: ../src/firewall-config:89
 msgid "disabled"
 msgstr ""
 
-#: ../src/firewall-config:99
+#: ../src/firewall-config:106
 msgid "Failed to load icons."
 msgstr "Huts egin du ikonoak kargatzean."
 
-#: ../src/firewall-config:358 ../src/firewall-config:1744
+#: ../src/firewall-config:365 ../src/firewall-config:1744
 msgid "Runtime"
 msgstr ""
 
-#: ../src/firewall-config:359
+#: ../src/firewall-config:366
 msgid "Permanent"
 msgstr ""
 
-#: ../src/firewall-config:420 ../src/firewall-config.glade.h:101
+#: ../src/firewall-config:427 ../src/firewall-config.glade.h:101
 msgid "Service"
 msgstr "Zerbitzua"
 
-#: ../src/firewall-config:427 ../src/firewall-config:468
-#: ../src/firewall-config:706
+#: ../src/firewall-config:434 ../src/firewall-config:475
+#: ../src/firewall-config:713
 msgid "Port"
 msgstr "Ataka"
 
-#: ../src/firewall-config:429 ../src/firewall-config:470
-#: ../src/firewall-config:708 ../src/firewall-config.glade.h:178
+#: ../src/firewall-config:436 ../src/firewall-config:477
+#: ../src/firewall-config:715 ../src/firewall-config.glade.h:178
 msgid "Protocol"
 msgstr "Protokoloa"
 
-#: ../src/firewall-config:472
+#: ../src/firewall-config:479
 msgid "To Port"
 msgstr "Atakara:"
 
-#: ../src/firewall-config:474
+#: ../src/firewall-config:481
 msgid "To Address"
 msgstr "Helbidera:"
 
-#: ../src/firewall-config:511
+#: ../src/firewall-config:518
 msgid "Icmp Type"
 msgstr "Icmp mota"
 
-#: ../src/firewall-config:526
+#: ../src/firewall-config:533
 msgid "Family"
 msgstr ""
 
-#: ../src/firewall-config:528
+#: ../src/firewall-config:535
 msgid "Action"
 msgstr ""
 
-#: ../src/firewall-config:530
+#: ../src/firewall-config:537
 msgid "Element"
 msgstr ""
 
-#: ../src/firewall-config:532
+#: ../src/firewall-config:539
 msgid "Src"
 msgstr ""
 
-#: ../src/firewall-config:534
+#: ../src/firewall-config:541
 msgid "Dest"
 msgstr ""
 
-#: ../src/firewall-config:536
+#: ../src/firewall-config:543
 msgid "log"
 msgstr ""
 
-#: ../src/firewall-config:538
+#: ../src/firewall-config:545
 msgid "Audit"
 msgstr ""
 
@@ -523,7 +520,7 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:5372
+#: ../src/firewall-config:5381
 #, c-format
 msgid "Select zone for source %s"
 msgstr ""
