@@ -285,6 +285,7 @@ fi
 %changelog
 * Tue Jun 16 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14.2-0
 - fixed requirements for -applet and -config
+- adapted firewall-applet man page to new version
 - firewall-applet, firewall-config: Only honour active connections
 - firewall-applet: Change QSettings path and file names
 - Updated translations, marked translations for "Connections" as fuzzy
