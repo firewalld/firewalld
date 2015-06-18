@@ -82,6 +82,7 @@ def setup_logging(args):
             log.addDebugLogging("*", log.stdout)
 
 def startup(args):
+    pid_file = "/var/run/firewalld.pid"
     try:
         if not args.nofork:
             # do the UNIX double-fork magic, see Stevens' "Advanced
@@ -119,7 +120,6 @@ def startup(args):
 
         if not args.nopid:
             # write the pid file
-            pid_file = "/var/run/firewalld.pid"
             with open(pid_file, "w") as f:
                 f.write(str(os.getpid()))
 
@@ -128,27 +128,27 @@ def startup(args):
         server.run_server(args.debug_gc)
 
         # Clean up on exit
-        if os.path.exists(pid_file) and not args.nopid:
+        if not args.nopid and os.path.exists(pid_file):
             os.remove(pid_file)
 
     except OSError as e:
         log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
         log.error(traceback.format_exc())
-        if os.path.exists(pid_file) and not args.nopid:
+        if not args.nopid and os.path.exists(pid_file):
             os.remove(pid_file)
         sys.exit(1)
 
     except dbus.exceptions.DBusException as e:
         log.fatal(str(e))
         log.error(traceback.format_exc())
-        if os.path.exists(pid_file) and not args.nopid:
+        if not args.nopid and os.path.exists(pid_file):
             os.remove(pid_file)
         sys.exit(1)
 
     except IOError as e:
         log.fatal(str(e))
         log.error(traceback.format_exc())
-        if os.path.exists(pid_file) and not args.nopid:
+        if not args.nopid and os.path.exists(pid_file):
             os.remove(pid_file)
         sys.exit(1)
 
