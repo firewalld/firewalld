@@ -357,9 +357,9 @@ class AboutDialog(QtGui.QDialog):
         hbox.setSpacing(24)
 
         label = QtGui.QLabel()
-        label.setPixmap(icon.pixmap(150))
-        label.setMinimumSize(150, 150)
-        label.setMaximumSize(150, 150)
+        label.setPixmap(icon.pixmap(96))
+        label.setMinimumSize(96, 96)
+        label.setMaximumSize(96, 96)
         hbox.addWidget(label)
 
         vbox2 = QtGui.QVBoxLayout()
@@ -383,28 +383,34 @@ class AboutDialog(QtGui.QDialog):
 
         vbox2.addWidget(QtGui.QLabel(copyright))
 
-        label = QtGui.QLabel(fromUTF8(escape(_("Authors:"))))
-        font = label.font()
-        font.setBold(True)
-        label.setFont(font)
-        vbox2.addWidget(label)
-        vbox2.addWidget(QtGui.QLabel(fromUTF8("<br>".join([ escape(a) for a in authors ]))))
-
-        #vbox2.addStretch()
-
         hbox.addLayout(vbox2)
 
         vbox.addLayout(hbox)
 
-        label = QtGui.QLabel(fromUTF8(escape(_("License:"))))
-        font = label.font()
-        font.setBold(True)
-        label.setFont(font)
-        vbox.addWidget(label)
-        textedit = QtGui.QTextEdit()
+        tabs = QtGui.QTabWidget()
+        tabs.setStyleSheet("QTabWidget::tab { padding: 1px 1px 1px 1px; }")
+
+        tab = QtGui.QWidget()
+        vbox3 = QtGui.QVBoxLayout()
+        textedit = QtGui.QPlainTextEdit()
+        #textedit.setStyleSheet("QPlainTextEdit { border: 0; padding: 0; }")
+        textedit.setReadOnly(True)
+        textedit.setPlainText(fromUTF8("\n".join(authors)))
+        vbox3.addWidget(textedit)
+        tab.setLayout(vbox3)
+        tabs.addTab(tab, fromUTF8(escape(_("Authors"))))
+
+        tab = QtGui.QWidget()
+        vbox3 = QtGui.QVBoxLayout()
+        textedit = QtGui.QPlainTextEdit()
+        #textedit.setStyleSheet("QPlainTextEdit { border: 0; padding: 0; }")
         textedit.setReadOnly(True)
         textedit.setPlainText(license)
-        vbox.addWidget(textedit)
+        vbox3.addWidget(textedit)
+        tab.setLayout(vbox3)
+        tabs.addTab(tab, fromUTF8(escape(_("License"))))
+
+        vbox.addWidget(tabs)
 
         buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
         buttonBox.rejected.connect(self.hide)
