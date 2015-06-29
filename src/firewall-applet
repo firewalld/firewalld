@@ -105,7 +105,6 @@ class ZoneInterfaceEditor(QtGui.QDialog):
 
         self.combo = QtGui.QComboBox()
         self.fill_zone_combo()
-        self.set_zone(zone)
         vbox.addWidget(self.combo)
 
         buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok
@@ -114,17 +113,19 @@ class ZoneInterfaceEditor(QtGui.QDialog):
         buttonBox.accepted.connect(self.ok)
         buttonBox.rejected.connect(self.hide)
         vbox.addWidget(buttonBox)
-        self.ok_button.setEnabled(False)
+        self.ok_button.setDisabled(True)
 
         self.combo.activated.connect(self.combo_changed)
         self.setLayout(vbox)
+        self.set_zone(zone)
 
-    def combo_changed(self, combo):
-        self.ok_button.setEnabled(self.get_zone() != self.zone)
+    def combo_changed(self):
+        self.ok_button.setDisabled(self.get_zone() == self.zone)
 
     def set_zone(self, zone):
         self.zone = zone
         self.combo.setCurrentIndex(self.combo.findText(self.zone))
+        self.combo_changed()
 
     def get_zone(self):
         text = str(self.combo.currentText())
