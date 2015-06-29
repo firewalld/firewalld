@@ -85,13 +85,17 @@
   <refsect1 id="qsettings">
     <title>QSettings</title>
     <para>
-      <command>firewall-applet</command> has additional settings to adapt the look and feel. QSettings is used and stores them in <filename class="directory">~/.config/firewall/applet.conf</filename>.
+      <command>firewall-applet</command> has additional settings to adapt the look and feel. QSettings is used and stores them in <filename class="directory">~/.config/firewall/applet.conf</filename>. The file is automatically reloaded if it has been changed and the new settings will immediately be effective.
+    </para>
+    <para>
+      There is also the global config file <filename class="directory">/etc/firewall/applet.conf</filename>, which contains the default values. The settings in this file will be overloaded by settings in the user settings file.
     </para>
     <para>
       Here is an example <filename class="directory">applet.conf</filename> file:
       <programlisting>
 [General]
 notifications=true
+show-inactive=true
       </programlisting>
     </para>
     <para>
@@ -149,6 +153,30 @@ notifications=true
 	    This setting defaults to <option>false</option>.
 	  </para>
 	</listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>shields-up</option></term>
+        <listitem>
+         <para>
+           The shields-up zone name to be used if shields-up is enabled.
+         </para>
+         <para>
+           This setting defaults to '<option>block</option>'.
+         </para>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>shields-down</option></term>
+        <listitem>
+         <para>
+           The shields-down zone name to be used if shields-up has been deactivated again.
+         </para>
+         <para>
+           This setting defaults to '<option>public</option>'.
+         </para>
+       </listitem>
       </varlistentry>
 
       <varlistentry>
