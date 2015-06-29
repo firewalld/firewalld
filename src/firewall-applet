@@ -311,10 +311,12 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         self.settings = QtCore.QSettings("firewall", "applet")
 
-        self.blink = self.settings.value("blink", False, type=bool)
-        self.blink_count = self.settings.value("blink-count", 5, type=int)
-        self.show_inactive = self.settings.value("show-inactive", False,
-                                               type=bool)
+        # file system watcher
+
+        self.watcher = QtCore.QFileSystemWatcher(self)
+        if os.path.exists(self.settings.fileName()):
+            self.watcher.addPath(self.settings.fileName())
+        self.watcher.fileChanged.connect(self.load_settings)
 
         # about dialog
 
@@ -335,8 +337,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.notificationsAction = QtGui.QAction(
             fromUTF8(escape(_("Enable Notifications"))), self)
         self.notificationsAction.setCheckable(True)
-        self.notificationsAction.setChecked(
-            self.settings.value("notifications", False, type=bool))
+        self.notificationsAction.setChecked(False)
         self.notificationsAction.triggered.connect(self.notification_changed_cb)
 
         self.settingsAction = QtGui.QAction(
@@ -436,6 +437,8 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             member_keyword='member')
         self.nm_signal_receiver()
 
+        self.load_settings()
+
     def _exception_handler(self, exception_message):
         if "NotAuthorizedException" in exception_message:
             self.error(fromUTF8(escape(_("Authorization failed."))))
@@ -456,6 +459,32 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
     def set_icon(self, mode):
         self.setIcon(self.icons[mode])
+
+    def load_settings(self):
+        self.settings.sync()
+
+        # fix lost watch file by file move
+        files = [ str(name) for name in self.watcher.files()]
+        if self.settings.fileName() not in files:
+            if os.path.exists(self.settings.fileName()):
+                self.watcher.addPath(self.settings.fileName())
+
+        notifications = self.settings.value("notifications", False, type=bool)
+        self.notificationsAction.setChecked(notifications)
+        self.show_inactive = self.settings.value("show-inactive", False,
+                                                 type=bool)
+        self.blink = self.settings.value("blink", False, type=bool)
+        self.blink_count = self.settings.value("blink-count", 5, type=int)
+
+        #print("notifications=%s" % notifications)
+        #print("blink=%s" % self.blink)
+        #print("blink-count=%s" % self.blink_count)
+        #print("show-inactive=%s" % self.show_inactive)
+
+        if not self.connected:
+            self.setVisible(self.show_inactive)
+        else:
+            self.setVisible(True)
 
     def activated_cb(self, reason):
         if reason == QtGui.QSystemTrayIcon.Trigger:
@@ -627,6 +656,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
     def notification_changed_cb(self):
         self.settings.setValue("notifications",
                                self.notificationsAction.isChecked())
+        self.settings.sync()
 
     def __blink(self, arg=None):
         if self._blink_count != 0:

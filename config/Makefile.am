@@ -14,6 +14,9 @@ applet_desktop_FILES = firewall-applet.desktop.in
 applet_desktopdir = $(sysconfdir)/xdg/autostart
 applet_desktop_DATA = $(applet_desktop_FILES:.in=)
 
+confdir = $(sysconfdir)/firewall
+dist_conf_DATA = applet.conf
+
 polkit1_action_FILES = org.fedoraproject.FirewallD1.server.policy.in \
                        org.fedoraproject.FirewallD1.desktop.policy.in
 polkit1_actiondir = $(datadir)/polkit-1/actions
