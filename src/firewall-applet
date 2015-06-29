@@ -206,6 +206,141 @@ class ZoneSourceEditor(ZoneInterfaceEditor):
         self.fw.changeZoneOfSource(self.get_zone(), self.source)
         self.hide()
 
+# ShieldsEditor #########################################################
+
+class ShieldsEditor(QtGui.QDialog):
+    def __init__(self, fw, settings, shields_up, shields_down):
+        self.fw = fw
+        self.settings = settings
+        self.shields_up = shields_up
+        self.shields_down = shields_down
+        self.title = _("Configure Shields Up/Down Zones")
+
+        QtGui.QDialog.__init__(self)
+        self.create_ui()
+
+    def create_ui(self):
+        self.setWindowTitle(fromUTF8(escape(self.title)))
+        self.rejected.connect(self.hide)
+
+        vbox = QtGui.QVBoxLayout()
+        vbox.setSpacing(6)
+
+        label = QtGui.QLabel(fromUTF8(escape(
+            _("Here you can select the zones used for Shields Up and "
+              "Shields Down."))))
+        label.setWordWrap(True)
+        vbox.addWidget(label)
+
+        label = QtGui.QLabel(fromUTF8(escape(
+            _("This feature is useful for people using the default zones "
+              "mostly. For users, that are changing zones of connections, it "
+              "might be of limited use."))))
+        label.setWordWrap(True)
+        vbox.addWidget(label)
+
+        grid = QtGui.QGridLayout()
+        grid.setSpacing(6)
+
+        label = QtGui.QLabel(fromUTF8(escape(_("Shields Up Zone:"))))
+        label.setWordWrap(True)
+        grid.addWidget(label, 0, 0, 1, 1)
+
+        self.shields_up_combo = QtGui.QComboBox()
+        #self.fill_combo(self.shields_up_combo)
+        #self.set_shields_up(self.shields_up)
+        grid.addWidget(self.shields_up_combo, 0, 1, 1, 1)
+
+        button = QtGui.QPushButton(_("Reset To Default"))
+        button.clicked.connect(self.reset_shields_up)
+        grid.addWidget(button, 0, 2, 1, 1)
+
+        label = QtGui.QLabel(fromUTF8(escape(_("Shields Down Zone:"))))
+        label.setWordWrap(True)
+        grid.addWidget(label, 1, 0, 1, 1)
+
+        self.shields_down_combo = QtGui.QComboBox()
+        #self.fill_combo(self.shields_down_combo)
+        #self.set_shields_down(self.shields_down)
+        grid.addWidget(self.shields_down_combo, 1, 1, 1, 1)
+
+        button = QtGui.QPushButton(_("Reset To Default"))
+        button.clicked.connect(self.reset_shields_down)
+        grid.addWidget(button, 1, 2, 1, 1)
+
+        vbox.addLayout(grid)
+
+        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok
+                                           | QtGui.QDialogButtonBox.Cancel)
+        self.ok_button = buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        buttonBox.accepted.connect(self.ok)
+        buttonBox.rejected.connect(self.hide)
+        vbox.addWidget(buttonBox)
+        self.ok_button.setDisabled(True)
+
+        self.shields_up_combo.activated.connect(self.shields_combo_changed)
+        self.shields_down_combo.activated.connect(self.shields_combo_changed)
+
+        self.setLayout(vbox)
+
+    def shields_combo_changed(self):
+        self.ok_button.setDisabled(
+            self.get_shields_up() == self.shields_up and \
+            self.get_shields_down() == self.shields_down)
+
+    def set_shields_up(self, zone):
+        self.shields_up = zone
+        if self.shields_up_combo.count() > 0:
+            self.shields_up_combo.setCurrentIndex(
+                self.shields_up_combo.findText(self.shields_up))
+        self.shields_combo_changed()
+
+    def set_shields_down(self, zone):
+        self.shields_down = zone
+        if self.shields_down_combo.count() > 0:
+            self.shields_down_combo.setCurrentIndex(
+                self.shields_down_combo.findText(self.shields_down))
+        self.shields_combo_changed()
+
+    def reset_shields_up(self):
+        self.set_shields_up(self.shields_up)
+        # remove user key to get fallback again
+        self.settings.remove("shields-up")
+
+    def reset_shields_down(self):
+        self.set_shields_down(self.shields_down)
+        # remove user key to get fallback again
+        self.settings.remove("shields-down")
+
+    def get_shields_up(self):
+        return str(self.shields_up_combo.currentText())
+
+    def get_shields_down(self):
+        return str(self.shields_down_combo.currentText())
+
+    def zones_changed(self):
+        up_zone = self.shields_up
+        if self.get_shields_up():
+            up_zone = self.get_shields_up()
+        down_zone = self.shields_down
+        if self.get_shields_down():
+            down_zone = self.get_shields_down()
+
+        for z in self.fw.getZones():
+            self.shields_up_combo.addItem(z)
+            self.shields_down_combo.addItem(z)
+
+        self.set_shields_up(up_zone)
+        self.set_shields_down(down_zone)
+
+    def ok(self):
+        if self.shields_up != self.get_shields_up():
+            self.settings.setValue("shields-up", self.get_shields_up())
+        if self.shields_down != self.get_shields_down():
+            self.settings.setValue("shields-down", self.get_shields_down())
+        self.settings.sync()
+        self.hide()
+
 # AboutDialog #################################################################
 
 class AboutDialog(QtGui.QDialog):
@@ -334,6 +469,12 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # actions
 
+        self.shieldsupAction = QtGui.QAction(fromUTF8(escape(_("Shields Up"))),
+                                             self)
+        self.shieldsupAction.setCheckable(True)
+        self.shieldsupAction.setChecked(False)
+        self.shieldsupAction.triggered.connect(self.shieldsup_changed_cb)
+
         self.notificationsAction = QtGui.QAction(
             fromUTF8(escape(_("Enable Notifications"))), self)
         self.notificationsAction.setCheckable(True)
@@ -347,6 +488,10 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.changeZonesAction = QtGui.QAction(
             fromUTF8(escape(_("Change Zones of Connections..."))), self)
         self.changeZonesAction.triggered.connect(self.nm_connection_editor)
+
+        self.shieldsAction = QtGui.QAction(
+            fromUTF8(escape(_("Configure Shields UP/Down Zones..."))), self)
+        self.shieldsAction.triggered.connect(self.configure_shields)
 
         self.panicAction = QtGui.QAction(
             fromUTF8(escape(_("Block all network traffic"))), self)
@@ -378,10 +523,12 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.left_menu.setStyleSheet('QMenu { margin: 5px; }')
 
         self.right_menu = QtGui.QMenu()
+        self.right_menu.addAction(self.shieldsupAction)
         self.right_menu.addAction(self.notificationsAction)
         self.right_menu.addSeparator()
         self.right_menu.addAction(self.settingsAction)
         self.right_menu.addAction(self.changeZonesAction)
+        self.right_menu.addAction(self.shieldsAction)
         self.right_menu.addSeparator()
         self.right_menu.addAction(self.panicAction)
         self.right_menu.addSeparator()
@@ -437,6 +584,8 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             member_keyword='member')
         self.nm_signal_receiver()
 
+        self.shields_editor = ShieldsEditor(self.fw, self.settings, None, None)
+
         self.load_settings()
 
     def _exception_handler(self, exception_message):
@@ -475,6 +624,15 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                                                  type=bool)
         self.blink = self.settings.value("blink", False, type=bool)
         self.blink_count = self.settings.value("blink-count", 5, type=int)
+
+        self.shields_up = self.settings.value("shields-up", "block", type=str)
+        if self.default_zone:
+            self.shieldsupAction.setChecked(
+                self.default_zone == self.shields_up)
+        self.shields_editor.set_shields_up(self.shields_up)
+        self.shields_down = self.settings.value("shields-down", "public",
+                                                type=str)
+        self.shields_editor.set_shields_down(self.shields_down)
 
         #print("notifications=%s" % notifications)
         #print("blink=%s" % self.blink)
@@ -653,6 +811,18 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         except:
             return
 
+    def shieldsup_changed_cb(self):
+        if self.shieldsupAction.isChecked():
+            zone = str(self.shields_up)
+        else:
+            zone = str(self.shields_down)
+
+        if self.fw.connected and self.fw.getDefaultZone() != zone:
+            try:
+                self.fw.setDefaultZone(zone)
+            except dbus.exceptions.DBusException as e:
+                print("Error: %s" % e.get_dbus_message())
+
     def notification_changed_cb(self):
         self.settings.setValue("notifications",
                                self.notificationsAction.isChecked())
@@ -753,6 +923,10 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             self.fw.disablePanicMode()
         self.panicAction.setChecked(not self.panicAction.isChecked())
 
+    def configure_shields(self):
+        self.shields_editor.show()
+        self.shields_editor.raise_()
+
     def nm_connection_editor(self, item, uuid=None):
         if NM_CONNECTION_EDITOR == "":
             self.warning("NetworkManager connection editor is missing.")
@@ -783,9 +957,13 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.default_zone = self.fw.getDefaultZone()
         self.connected = True
         self.update_active_zones()
+        self.shields_editor.zones_changed()
 
         self.panicAction.setChecked(self.fw.queryPanicMode())
-        
+        if self.shields_up:
+            self.shieldsupAction.setChecked(
+                self.default_zone == self.shields_up)
+
         self.update_tooltip()
         if self.notificationsAction.isChecked():
             self.notify(escape(_("Connection to FirewallD established.")))
@@ -809,6 +987,9 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.default_zone = zone
         if self.notificationsAction.isChecked():
             self.notify(escape(_("Default zone changed to '%s'.") % zone))
+        if self.shields_up:
+            self.shieldsupAction.setChecked(
+                self.default_zone == self.shields_up)
         self.update_active_zones()
         self.update_tooltip()
 
