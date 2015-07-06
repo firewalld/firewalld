@@ -201,6 +201,7 @@ fi
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
+%{_prefix}/lib/firewalld/xmlschema/check.sh
 %{_prefix}/lib/firewalld/xmlschema/*.xsd
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf

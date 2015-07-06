@@ -30,6 +30,7 @@ gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
 xmlschemadir = $(prefixlibdir)/xmlschema
 dist_xmlschema_DATA = xmlschema/icmptype.xsd xmlschema/service.xsd xmlschema/zone.xsd
+dist_xmlschema_SCRIPTS = xmlschema/check.sh
 
 BUILT_SOURCES = \
 	$(desktop_DATA) \
