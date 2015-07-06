@@ -124,14 +124,14 @@ class firewalld_conf(object):
             log.error("CleanupOnExit '%s' is not valid, using default "
                       "value %s", value if value else '',
                       FALLBACK_CLEANUP_ON_EXIT)
-            self.set("CleanupOnExit", FALLBACK_CLEANUP_ON_EXIT)
+            self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
 
         # check lockdown
         value = self.get("Lockdown")
         if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
             log.error("Lockdown '%s' is not valid, using default "
                       "value %s", value if value else '', FALLBACK_LOCKDOWN)
-            self.set("Lockdown", FALLBACK_LOCKDOWN)
+            self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")
@@ -139,7 +139,7 @@ class firewalld_conf(object):
             log.error("IPv6_rpfilter '%s' is not valid, using default "
                       "value %s", value if value else '',
                       FALLBACK_IPV6_RPFILTER)
-            self.set("IPv6_rpfilter", FALLBACK_IPV6_RPFILTER)
+            self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
 
 
     # save to self.filename if there are key/value changes
