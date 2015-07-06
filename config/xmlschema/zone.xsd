@@ -4,7 +4,7 @@ elementFormDefault="qualified">
 
 <xs:element name="zone">
   <xs:complexType>
-    <xs:sequence>
+    <xs:choice maxOccurs="unbounded">
       <xs:element name="short" type="xs:string" minOccurs="0"/>
       <xs:element name="description" type="xs:string" minOccurs="0"/>
       <xs:element name="interface" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
@@ -15,7 +15,7 @@ elementFormDefault="qualified">
       <xs:element name="masquerade" type="emptytype" minOccurs="0"/>
       <xs:element name="forward-port" type="fwporttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="rule" type="ruletype" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
+    </xs:choice>
     <xs:attribute name="version" type="xs:string"/>
     <xs:attribute name="target" type="zonetargettype"/>
   </xs:complexType>
@@ -70,7 +70,7 @@ elementFormDefault="qualified">
 </xs:complexType>
 
 <xs:complexType name="ruletype">
-  <xs:sequence>
+  <xs:choice maxOccurs="unbounded">
     <xs:element name="source" type="sourcetype" minOccurs="0"/>
     <xs:element name="destination" type="sourcetype" minOccurs="0"/>
     <xs:choice>
@@ -89,7 +89,7 @@ elementFormDefault="qualified">
       <xs:element name="reject" type="rejecttype"/>
       <xs:sequence></xs:sequence>
     </xs:choice>
-  </xs:sequence>
+  </xs:choice>
   <xs:attribute name="family" type="familyrestrict"/>
 </xs:complexType>
 
