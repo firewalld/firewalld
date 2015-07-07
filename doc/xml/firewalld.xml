@@ -123,12 +123,23 @@
       firewalld provides support for zones, predefined services and ICMP types and has a separation of runtime and permanent configuration options. Permanent configuration is loaded from XML files in <filename class="directory">/usr/lib/firewalld</filename> or <filename class="directory">/etc/firewalld</filename> (see <xref linkend="directories"/>).
     </para>
     <para>
-      If NetworkManager is not used, there are some limitations: firewalld will not get notified about network device renames.
-      If firewalld gets started after the network is already up, the connections and manually created interfaces are not bound to a zone.
-      You can add them to a zone with <command>firewall-cmd [--permanent] --zone=<replaceable>zone</replaceable> --add-interface=<replaceable>interface</replaceable></command>,
+      If NetworkManager is not in use and firewalld gets started after the network is already up, the connections and manually created interfaces are not bound to the zone specified in the ifcfg file.
+      The interfaces will automatically be handled by the default zone.
+      firewalld will also not get notified about network device renames.
+      All this also applies to interfaces that are not controlled by NetworkManager if <replaceable>NM_CONTROLLED=no</replaceable> is set.
+    </para>
+    <para>
+      You can add these interfaces to a zone with <command>firewall-cmd [--permanent] --zone=<replaceable>zone</replaceable> --add-interface=<replaceable>interface</replaceable></command>,
       but make sure that if there's a /etc/sysconfig/network-scripts/ifcfg-<replaceable>interface</replaceable>,
       the zone specified there with ZONE=<replaceable>zone</replaceable>
       is the same (or both are empty/missing for default zone), otherwise the behaviour would be undefined.
+    </para>
+    <para>
+      If firewalld gets reloaded, it will restore the interface bindings that were in place before reloading to keep interface bindings stable in the case of NetworkManager uncontrolled interfaces.
+      This mechanism is not possible in the case of a firewalld service restart.
+    </para>
+    <para>
+      It is essential to keep the ZONE= setting in the ifcfg file consistent to the binding in firewalld in the case of NetworkManager uncontrolled interfaces.
     </para>
 
     <refsect2>
