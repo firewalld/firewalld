@@ -210,8 +210,7 @@ class Firewall(object):
             except Exception as msg:
                 log.debug1("Failed to load direct rules file '%s': %s",
                            FIREWALLD_DIRECT, msg)
-            else:
-                self.direct.set_permanent_config(obj)
+        self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
 
         # check if default_zone is a valid zone
