@@ -5294,9 +5294,6 @@ class ZoneConnectionEditor(Gtk.Dialog):
         props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
         active_connections = props.Get(NM_IF, "ActiveConnections")
 
-        conection_obj = None
-        settings = None
-
         for active in active_connections:
             active_obj = self.fw.bus.get_object(NM_IF, active)
             active_props = dbus.Interface(active_obj, dbus_interface=DBUS_PROPS)
@@ -5309,13 +5306,9 @@ class ZoneConnectionEditor(Gtk.Dialog):
             settings = connection_iface.GetSettings()
 
             if settings["connection"]["id"] == self.connection:
+                settings["connection"]["zone"] = self.get_zone()
+                connection_iface.Update(settings)
                 break
-            else:
-                connection_obj = None
-                settings = None
-        if settings and connection_obj:
-            settings["connection"]["zone"] = self.get_zone()
-            connection_obj.Update(settings)
 
 class ZoneInterfaceEditor(Gtk.Dialog):
     def __init__(self, fw, interface, zone):
