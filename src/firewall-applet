@@ -856,10 +856,13 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             self.set_icon(mode)
             return
 
-        if self.blink and self.blink_count != 0:
-            self._blink = True
-            self._blink_count = self.blink_count
-            self.__blink()
+        if self.blink:
+            if self.blink_count != 0:
+                self._blink = True
+                self._blink_count = self.blink_count
+                self.__blink()
+        else:
+            self.set_icon(mode)
 
     def update_tooltip(self):
         if self.get_mode() == "error":
