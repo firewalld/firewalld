@@ -31,6 +31,7 @@ import functools
 
 from firewall.config import *
 from firewall.config.dbus import *
+from firewall.core.watcher import Watcher
 from firewall.client import FirewallClient
 from firewall.dbus_utils import dbus_to_python
 from firewall.errors import *
@@ -447,10 +448,9 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # file system watcher
 
-        self.watcher = QtCore.QFileSystemWatcher(self)
-        if os.path.exists(self.settings.fileName()):
-            self.watcher.addPath(self.settings.fileName())
-        self.watcher.fileChanged.connect(self.load_settings)
+        self.watcher = Watcher(self.load_settings, 2)
+        self.watcher.add_watch_file("/etc/firewall/applet.conf")
+        self.watcher.add_watch_file(str(self.settings.fileName()))
 
         # about dialog
 
@@ -608,14 +608,8 @@ class TrayApplet(QtGui.QSystemTrayIcon):
     def set_icon(self, mode):
         self.setIcon(self.icons[mode])
 
-    def load_settings(self):
+    def load_settings(self, name=None):
         self.settings.sync()
-
-        # fix lost watch file by file move
-        files = [ str(name) for name in self.watcher.files()]
-        if self.settings.fileName() not in files:
-            if os.path.exists(self.settings.fileName()):
-                self.watcher.addPath(self.settings.fileName())
 
         notifications = self.settings.value("notifications", False, type=bool)
         self.notificationsAction.setChecked(notifications)
@@ -633,6 +627,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                                                 type=str)
         self.shields_editor.set_shields_down(self.shields_down)
 
+        #print("shields-up=%s" % self.shields_up)
         #print("notifications=%s" % notifications)
         #print("blink=%s" % self.blink)
         #print("blink-count=%s" % self.blink_count)
