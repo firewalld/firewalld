@@ -57,7 +57,11 @@ Summary: Python3 bindings for firewalld
 Requires: python3-dbus
 Requires: python3-slip-dbus
 Requires: python3-decorator
+%if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
+Requires: python3-gobject-base
+%else
 Requires: python3-gobject
+%endif
 
 %description -n python3-firewall
 Python3 bindings for firewalld.
