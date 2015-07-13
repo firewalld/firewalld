@@ -308,7 +308,7 @@ def __print_all(zone, interfaces, sources, services, ports, masquerade, forward_
     attributes = []
     if zone == fw.getDefaultZone():
         attributes.append("default")
-    if interfaces:
+    if interfaces or sources:
         attributes.append("active")
     if attributes:
         zone = zone + " (%s)" % ", ".join(attributes)
