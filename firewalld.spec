@@ -1,4 +1,4 @@
-%if (0%{?fedora} >= 13 || 0%{?rhel} >= 7)
+%if (0%{?fedora} >= 13 || 0%{?rhel} > 7)
 %global with_python3 1
 %if (0%{?fedora} >= 23 || 0%{?rhel} >= 8)
 %global use_python3 1
