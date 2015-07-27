@@ -1132,7 +1132,7 @@ class FirewallConfig(object):
                 if interface in self.connections:
                     comment = self.used_by % self.connections[interface]
                 self.interfaceStore.set_value(iter, 1, comment)
-            iter = self.portStore.iter_next(iter)
+            iter = self.interfaceStore.iter_next(iter)
         self.change_interface_selection_cb(self.interfaceView.get_selection())
 
     def _dialog(self, text, msg=None, title=None,
