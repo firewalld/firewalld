@@ -1116,6 +1116,14 @@ class FirewallZone(object):
                 rule += [ "-j", "ACCEPT" ]
                 rules.append((ipv, rule))
 
+            for protocol in svc.protocols:
+                target = DEFAULT_ZONE_TARGET.format(
+                    chain=SHORTCUTS["INPUT"], zone=zone)
+                rules.append((ipv, [ "%s_allow" % (target),
+                                     "-t", "filter", "-p", protocol,
+                                     "-m", "conntrack", "--ctstate", "NEW",
+                                     "-j", "ACCEPT" ]))
+
         cleanup_rules = None
         cleanup_modules = None
         msg = None
