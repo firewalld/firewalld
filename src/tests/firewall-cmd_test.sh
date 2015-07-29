@@ -672,7 +672,6 @@ bad_rules=(
  'rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"'         # bad limit
  'rule protocol value="esp"'                                # no action/log/audit
  'rule family="ipv4" masquerade drop'                       # masquerade & action
- 'rule family="ipv4" destination address="192.168.1.0/24" masquerade' # masquerade & destination
  'rule family="ipv4" icmp-block name="redirect" accept'     # icmp-block & action
  'rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept' # forward-port & action
 )
@@ -701,6 +700,7 @@ good_rules=(
  'rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m"'
  'rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirect" level="info" limit value="4/m"'
  'rule family="ipv4" source address="192.168.1.0/24" masquerade'
+ 'rule family="ipv4" destination address="192.168.1.0/24" masquerade' # masquerade & destination
  'rule family="ipv6" masquerade'
  'rule forward-port port="2222" to-port="22" to-addr="192.168.100.2" protocol="tcp" family="ipv4" source address="192.168.2.100"')
 
