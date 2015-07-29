@@ -83,7 +83,7 @@ class FirewallClientZoneSettings(object):
             self.settings = settings
         else:
             self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
-                             [], False, [], [], [], []]
+                             [], False, [], [], [], [], []]
 
     @handle_exceptions
     def __repr__(self):
@@ -154,6 +154,24 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[6]
+
+    @handle_exceptions
+    def getProtocols(self):
+        return self.settings[13]
+    @handle_exceptions
+    def setProtocols(self, protocols):
+        self.settings[13] = protocols
+    @handle_exceptions
+    def addProtocol(self, protocol):
+        if protocol not in self.settings[13]:
+            self.settings[13].append(protocol)
+    @handle_exceptions
+    def removeProtocol(self, protocol):
+        if protocol in self.settings[13]:
+            self.settings[13].remove(protocol)
+    @handle_exceptions
+    def queryProtocol(self, protocol):
+        return protocol in self.settings[13]
 
     @handle_exceptions
     def getIcmpBlocks(self):
@@ -427,6 +445,33 @@ class FirewallClientConfigZone(object):
     def queryPort(self, port, protocol):
         return self.fw_zone.queryPort(port, protocol)
 
+    # protocol
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getProtocols(self):
+        return self.fw_zone.getProtocols()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setProtocols(self, protocols):
+        self.fw_zone.setProtocols(protocols)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addProtocol(self, protocol):
+        self.fw_zone.addProtocol(protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeProtocol(self, protocol):
+        self.fw_zone.removeProtocol(protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryProtocol(self, protocol):
+        return self.fw_zone.queryProtocol(protocol)
+
     # icmp block
 
     @slip.dbus.polkit.enable_proxy
@@ -610,7 +655,7 @@ class FirewallClientServiceSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", [], [], {}]
+            self.settings = ["", "", "", [], [], {}, []]
 
     @handle_exceptions
     def __repr__(self):
@@ -654,6 +699,24 @@ class FirewallClientServiceSettings(object):
     @handle_exceptions
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[3]
+
+    @handle_exceptions
+    def getProtocols(self):
+        return self.settings[6]
+    @handle_exceptions
+    def setProtocols(self, protocols):
+        self.settings[6] = protocols
+    @handle_exceptions
+    def addProtocol(self, protocol):
+        if protocol not in self.settings[6]:
+            self.settings[6].append(protocol)
+    @handle_exceptions
+    def removeProtocol(self, protocol):
+        if protocol in self.settings[6]:
+            self.settings[6].remove(protocol)
+    @handle_exceptions
+    def queryProtocol(self, protocol):
+        return protocol in self.settings[6]
 
     @handle_exceptions
     def getModules(self):
@@ -808,6 +871,33 @@ class FirewallClientConfigService(object):
     @handle_exceptions
     def queryPort(self, port, protocol):
         return self.fw_service.queryPort(port, protocol)
+
+    # protocol
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getProtocols(self):
+        return self.fw_service.getProtocols()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setProtocols(self, protocols):
+        self.fw_service.setProtocols(protocols)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addProtocol(self, protocol):
+        self.fw_service.addProtocol(protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeProtocol(self, protocol):
+        self.fw_service.removeProtocol(protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryProtocol(self, protocol):
+        return self.fw_service.queryProtocol(protocol)
 
     # module
 
@@ -1635,6 +1725,8 @@ class FirewallClient(object):
             "service-removed": "ServiceRemoved",
             "port-added": "PortAdded",
             "port-removed": "PortRemoved",
+            "protocol-added": "ProtocolAdded",
+            "protocol-removed": "ProtocolRemoved",
             "masquerade-added": "MasqueradeAdded",
             "masquerade-removed": "MasqueradeRemoved",
             "forward-port-added": "ForwardPortAdded",
@@ -2076,6 +2168,28 @@ class FirewallClient(object):
     @handle_exceptions
     def removePort(self, zone, port, protocol):
         return dbus_to_python(self.fw_zone.removePort(zone, port, protocol))
+
+    # protocols
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addProtocol(self, zone, protocol, timeout=0):
+        return dbus_to_python(self.fw_zone.addProtocol(zone, protocol, timeout))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getProtocols(self, zone):
+        return dbus_to_python(self.fw_zone.getProtocols(zone))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryProtocol(self, zone, protocol):
+        return dbus_to_python(self.fw_zone.queryProtocol(zone, protocol))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeProtocol(self, zone, protocol):
+        return dbus_to_python(self.fw_zone.removeProtocol(zone, protocol))
 
     # masquerade
 

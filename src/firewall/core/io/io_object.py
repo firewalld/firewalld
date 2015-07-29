@@ -26,7 +26,7 @@ import sys
 
 from firewall.config import *
 from firewall.errors import *
-from firewall.functions import getPortRange, b2u
+from firewall.functions import getPortRange, b2u, checkProtocol
 
 PY2 = sys.version < '3'
 
@@ -265,7 +265,11 @@ def check_port(port):
     elif len(port_range) == 2 and port_range[0] >= port_range[1]:
         raise FirewallError(INVALID_PORT, "'%s' is invalid port range" % port)
 
-def check_protocol(protocol):
+def check_tcpudp(protocol):
     if protocol not in [ "tcp", "udp" ]:
         raise FirewallError(INVALID_PROTOCOL,
                             "'%s' not from {'tcp'|'udp'}" % protocol)
+
+def check_protocol(protocol):
+    if not checkProtocol(protocol):
+        raise FirewallError(INVALID_PROTOCOL, protocol)

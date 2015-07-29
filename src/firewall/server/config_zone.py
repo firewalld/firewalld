@@ -431,6 +431,57 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                    protocol)
         return (port,protocol) in self.getSettings()[6]
 
+    # protocol
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_handle_exceptions
+    def getProtocols(self, sender=None):
+        log.debug1("config.zone.%d.getProtocols()", self.id)
+        return self.getSettings()[13]
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_handle_exceptions
+    def setProtocols(self, protocols, sender=None):
+        protocols = dbus_to_python(protocols, list)
+        log.debug1("config.zone.%d.setProtocols('[%s]')", self.id,
+                   ",".join(protocols))
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[13] = protocols
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_handle_exceptions
+    def addProtocol(self, protocol, sender=None):
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("config.zone.%d.addProtocol('%s')", self.id, protocol)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if protocol in settings[13]:
+            raise FirewallError(ALREADY_ENABLED, protocol)
+        settings[13].append(protocol)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_handle_exceptions
+    def removeProtocol(self, protocol, sender=None):
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("config.zone.%d.removeProtocol('%s')", self.id, protocol)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if protocol not in settings[13]:
+            raise FirewallError(NOT_ENABLED, protocol)
+        settings[13].remove(protocol)
+        self.update(settings)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryProtocol(self, protocol, sender=None):
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("config.zone.%d.queryProtocol('%s')", self.id, protocol)
+        return protocol in self.getSettings()[13]
+
     # icmp block
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')

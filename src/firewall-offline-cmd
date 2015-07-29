@@ -96,7 +96,7 @@ Zone Options
   --new-zone=<zone>    Add a new zone
   --delete-zone=<zone> Delete an existing zone
   --zone=<zone>        Use this zone to set or query options, else default zone
-                       Usable for options maked with [Z]
+                       Usable for options marked with [Z]
   --get-target         Get the zone target
   --set-target=<target>
                        Set the zone target
@@ -129,6 +129,13 @@ Options to Adapt and Query Zones
                        Remove the port from a zone [Z]
   --query-port=<portid>[-<portid>]/<protocol>
                        Return whether the port has been added for zone [Z]
+  --list-protocols     List protocols added for a zone [Z]
+  --add-protocol=<protocol>
+                       Add the protocol for a zone [Z]
+  --remove-protocol=<protocol>
+                       Remove the protocol from a zone [Z]
+  --query-protocol=<protocol>
+                       Return whether the protocol has been added for zone [Z]
   --list-icmp-blocks   List Internet ICMP type blocks added for a zone [Z]
   --add-icmp-block=<icmptype>
                        Add an ICMP block for a zone [Z]
@@ -218,7 +225,6 @@ Direct Options
                        Remove a passthrough rule
   --query-passthrough {ipv4|ipv6|eb} <arg>...
                        Return whether the passthrough rule has been added
-                      
 
 Lockdown Options
   --lockdown-on        Enable lockdown.
@@ -330,7 +336,7 @@ def _check_ipv(value):
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
     return value
 
-def __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules):
+def __print_all(zone, interfaces, sources, services, ports, protocols, masquerade, forward_ports, icmp_blocks, rules):
     attributes = []
     if zone == fw.get_default_zone():
         attributes.append("default")
@@ -341,6 +347,7 @@ def __print_all(zone, interfaces, sources, services, ports, masquerade, forward_
     __print("  sources: " + " ".join(sources))
     __print("  services: " + " ".join(services))
     __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
+    __print("  protocols: " + " ".join(protocols))
     __print("  masquerade: %s" % ("yes" if masquerade else "no"))
     __print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
     __print("  icmp-blocks: " + " ".join(icmp_blocks))
@@ -351,11 +358,12 @@ def __list_all_permanent(fw_settings, zone):
     sources = fw_settings.getSources()
     services = fw_settings.getServices()
     ports = fw_settings.getPorts()
+    protocols = fw_settings.getProtocols()
     masquerade = fw_settings.getMasquerade()
     forward_ports = fw_settings.getForwardPorts()
     icmp_blocks = fw_settings.getIcmpBlocks()
     rules = fw_settings.getRichRules()
-    __print_all(zone, interfaces, sources, services, ports, masquerade, forward_ports, icmp_blocks, rules)
+    __print_all(zone, interfaces, sources, services, ports, protocols, masquerade, forward_ports, icmp_blocks, rules)
 
 def __print_query_result(value):
     if value:
@@ -485,6 +493,9 @@ parser_group_zone.add_argument("--query-service", metavar="<zone>")
 parser_group_zone.add_argument("--add-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--query-port", metavar="<port>")
+parser_group_zone.add_argument("--add-protocol", metavar="<protocol>", action='append')
+parser_group_zone.add_argument("--remove-protocol", metavar="<protocol>", action='append')
+parser_group_zone.add_argument("--query-protocol", metavar="<protocol>")
 parser_group_zone.add_argument("--add-masquerade", action="store_true")
 parser_group_zone.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone.add_argument("--query-masquerade", action="store_true")
@@ -497,6 +508,7 @@ parser_group_zone.add_argument("--query-forward-port", metavar="<port>")
 parser_group_zone.add_argument("--list-rich-rules", action="store_true")
 parser_group_zone.add_argument("--list-services", action="store_true")
 parser_group_zone.add_argument("--list-ports", action="store_true")
+parser_group_zone.add_argument("--list-protocols", action="store_true")
 parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
 parser_group_zone.add_argument("--list-forward-ports", action="store_true")
 parser_group_zone.add_argument("--list-all", action="store_true")
@@ -600,6 +612,7 @@ options_config = a.get_zones or a.get_services or a.get_icmptypes or \
 options_zone_action_action = \
     a.add_service or a.remove_service_from_zone or a.query_service or \
     a.add_port or a.remove_port or a.query_port or \
+    a.add_protocol or a.remove_protocol or a.query_protocol or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
     a.add_forward_port or a.remove_forward_port or a.query_forward_port
 
@@ -612,9 +625,9 @@ options_zone_interfaces_sources = \
 options_zone_adapt_query = \
     a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
-    a.list_services or a.list_ports or a.list_icmp_blocks or \
-    a.list_forward_ports or a.list_rich_rules or a.list_all or \
-    a.get_target or a.set_target
+    a.list_services or a.list_ports or a.list_protocols or \
+    a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
+    a.list_all or a.get_target or a.set_target
 
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
@@ -638,8 +651,9 @@ options_direct = \
 options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.list_lockdown_whitelist_commands or a.list_lockdown_whitelist_contexts or \
  a.list_lockdown_whitelist_uids or a.list_lockdown_whitelist_users or \
- a.list_services or a.list_ports or a.list_icmp_blocks or a.list_forward_ports \
- or a.list_rich_rules or a.list_interfaces or a.list_sources or \
+ a.list_services or a.list_ports or a.list_protocols or a.list_icmp_blocks or \
+ a.list_forward_ports or a.list_rich_rules or a.list_interfaces or \
+ a.list_sources or \
  a.get_default_zone or a.get_zone_of_interface or \
  a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes or \
  a.get_target or a.set_target
@@ -1093,6 +1107,19 @@ try:
         elif a.query_port:
             (port, proto) = __parse_port(a.query_port)
             __print_query_result(fw_settings.queryPort(port, proto))
+
+        # protocol
+        elif a.list_protocols:
+            l = fw_settings.getProtocols()
+            __print_and_exit(" ".join(l))
+        elif a.add_protocol:
+            for proto in a.add_protocol:
+                fw_settings.addProtocol(proto)
+        elif a.remove_protocol:
+            for proto in a.remove_protocol:
+                fw_settings.removeProtocol(proto)
+        elif a.query_protocol:
+            __print_query_result(fw_settings.queryProtocol(a.query_protocol))
 
         # masquerade
         elif a.add_masquerade:

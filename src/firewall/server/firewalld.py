@@ -1350,6 +1350,88 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    # PROTOCOLS
+
+    @dbus_handle_exceptions
+    def disableTimedProtocol(self, zone, protocol):
+        log.debug1("zone.disableTimedProtocol('%s', '%s')" % (zone, protocol))
+        del self._timeouts[zone][(protocol)]
+        self.fw.zone.remove_protocol(zone, protocol)
+        self.ProtocolRemoved(zone, protocol)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addProtocol(self, zone, protocol, timeout, sender=None):
+        # adds protocol <protocol> if not enabled already to zone
+        zone = dbus_to_python(zone, str)
+        protocol = dbus_to_python(protocol, str)
+        timeout = dbus_to_python(timeout, int)
+        log.debug1("zone.enableProtocol('%s', '%s')" % (zone, protocol))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.add_protocol(zone, protocol, timeout, sender)
+
+        if timeout > 0:
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedProtocol,
+                                           _zone, protocol)
+            self.addTimeout(_zone, protocol, tag)
+
+        self.ProtocolAdded(_zone, protocol, timeout)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeProtocol(self, zone, protocol, sender=None):
+        # removes protocol<protocol> if enabled from zone
+        zone = dbus_to_python(zone, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("zone.removeProtocol('%s', '%s')" % (zone, protocol))
+        self.accessCheck(sender)
+        _zone= self.fw.zone.remove_protocol(zone, protocol)
+
+        self.removeTimeout(_zone, protocol)
+        self.ProtocolRemoved(_zone, protocol)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryProtocol(self, zone, protocol, sender=None):
+        # returns true if a protocol is enabled for zone
+        zone = dbus_to_python(zone, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("zone.queryProtocol('%s', '%s')" % (zone, protocol))
+        return self.fw.zone.query_protocol(zone, protocol)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getProtocols(self, zone, sender=None):
+        # returns the list of enabled protocols
+        # TODO: should be renamed to listProtocols()
+        # because is called by firewall-cmd --zone --list-protocols
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.getProtocols('%s')" % (zone))
+        return self.fw.zone.list_protocols(zone)
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus_handle_exceptions
+    def ProtocolAdded(self, zone, protocol, timeout=0):
+        log.debug1("zone.ProtocolAdded('%s', '%s', %d)" % \
+                       (zone, protocol, timeout))
+
+    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus_handle_exceptions
+    def ProtocolRemoved(self, zone, protocol):
+        log.debug1("zone.ProtocolRemoved('%s', '%s')" % (zone, protocol))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
     # MASQUERADE
 
     @dbus_handle_exceptions

@@ -70,6 +70,7 @@
   &lt;short&gt;<replaceable>My Service</replaceable>&lt;/short&gt;
   &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
   &lt;port port="<replaceable>137</replaceable>" protocol="<replaceable>tcp</replaceable>"/&gt;
+  &lt;protcol value="<replaceable>igmp</replaceable>"/&gt;
   &lt;module name="<replaceable>nf_conntrack_netbios_ns</replaceable>"/&gt;
   &lt;destination ipv4="<replaceable>224.0.0.251</replaceable>" ipv6="<replaceable>ff02::fb</replaceable>"/&gt;
 &lt;/service&gt;
@@ -135,7 +136,29 @@
 	  <term>protocol="<replaceable>string</replaceable>"</term>
           <listitem>
 	    <para>
-              If a port is given, the protocol value can either be <option>tcp</option> or <option>udp</option>. If no port is given, it can be any protocol from <filename>/etc/protocols</filename> to have a protocol match only.
+              The protocol value can either be <option>tcp</option> or <option>udp</option>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	For compatibility with older firewalld versions, it is possible to add protocols with the port option where the port is empty. With the addition of native protocol support in the service, this it not needed anymore. These entries will automatically be converted to protocols. With the next modification of the service file, the enries will be listed as protocols.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_protocol">
+      <title>protocol</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one protocol entry. A protocol entry has exactly one attribute:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>value="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The protocol can be any protocol supported by the system. Please have a look at <filename>/etc/protocols</filename> for supported protocols.
 	    </para>
 	  </listitem>
 	</varlistentry>

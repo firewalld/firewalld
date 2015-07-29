@@ -627,7 +627,7 @@ class Firewall(object):
                 log.debug1("'%s': range start >= end" % port)
             raise FirewallError(INVALID_PORT, port)
 
-    def check_protocol(self, protocol):
+    def check_tcpudp(self, protocol):
         if not protocol:
             raise FirewallError(MISSING_PROTOCOL)
         if not protocol in [ "tcp", "udp" ]:

@@ -167,12 +167,12 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getServiceSettings">
-            <term><methodname>getServiceSettings</methodname>(s: <parameter>service</parameter>) &rarr; (sssa(ss)asa{ss})</term>
+            <term><methodname>getServiceSettings</methodname>(s: <parameter>service</parameter>) &rarr; (sssa(ss)asa{ss}as)</term>
             <listitem>
               <para>
                 Return runtime settings of given <replaceable>service</replaceable>.
                 For getting permanent settings see <link linkend="FirewallD1.config.service.Methods.getSettings">org.fedoraproject.FirewallD1.config.service.Methods.getSettings</link>.
-                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter>.
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter> and array of <parameter>protocols</parameter>.
               </para>
               <para>
                 <variablelist>
@@ -182,6 +182,7 @@
                   <varlistentry><term><parameter>ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>module names (as)</parameter>: array of kernel netfilter helpers, see <literal>module</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>destinations (a{ss})</parameter>: dictionary of {IP family : IP address} where 'IP family' key can be either 'ipv4' or 'ipv6'. See <literal>destination</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
 	      <para>
@@ -190,12 +191,12 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getZoneSettings">
-            <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasas)</term>
+            <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasasas)</term>
             <listitem>
               <para>
                 Return runtime settings of given <replaceable>zone</replaceable>.
                 For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSettings">org.fedoraproject.FirewallD1.config.zone.Methods.getSettings</link>.
-                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter> and array of <parameter>protocols</parameter>.
               </para>
               <para>
                 <variablelist>
@@ -212,6 +213,8 @@
                   <varlistentry><term><parameter>interfaces (as)</parameter>: array of interfaces. See <literal>interface</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+		  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols, see <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+
                 </variablelist>
               </para>
 	      <para>
@@ -1090,6 +1093,24 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.addProtocol">
+            <term><methodname>addProtocol</methodname>(s: zone, s: protocol, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add protocol into <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		The protocol can be any protocol supported by the system. Please have a look at <filename>/etc/protocols</filename> for supported protocols.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addPort">org.fedoraproject.FirewallD1.config.zone.Methods.addPort</link>.
+              </para>
+              <para>
+		Returns name of zone to which the protocol was added.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PROTOCOL, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addRichRule">
             <term><methodname>addRichRule</methodname>(s: zone, s: rule, i: timeout) &rarr; s</term>
             <listitem>
@@ -1255,6 +1276,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.getProtocols">
+            <term><methodname>getProtocols</methodname>(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return array of protocols (s) previously enabled in <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getPorts">org.fedoraproject.FirewallD1.config.zone.Methods.getPorts</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getRichRules">
             <term><methodname>getRichRules</methodname>(s: zone) &rarr; as</term>
             <listitem>
@@ -1394,6 +1428,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.queryProtocol">
+            <term><methodname>queryProtocol</methodname>(s: zone, s: protocol) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>protocol</replaceable> has been added in <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryPort">org.fedoraproject.FirewallD1.config.zone.Methods.queryPort</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PROTOCOL
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryRichRule">
             <term><methodname>queryRichRule</methodname>(s: zone, s: rule) &rarr; b</term>
             <listitem>
@@ -1501,7 +1548,7 @@
             <term><methodname>removePort</methodname>(s: zone, s: port, s: protocol) &rarr; s</term>
             <listitem>
               <para>
-		Remove port/protocol from <replaceable>zone</replaceable>.
+		Remove <replaceable>port</replaceable>/<replaceable>protocol</replaceable> from <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removePort">org.fedoraproject.FirewallD1.config.zone.Methods.removePort</link>.
               </para>
@@ -1510,6 +1557,22 @@
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, NOT_ENABLED, INVALID_COMMAND
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.removeProtocol">
+            <term><methodname>removeProtocol</methodname>(s: zone, s: protocol) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove protocol from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removePort">org.fedoraproject.FirewallD1.config.zone.Methods.removePort</link>.
+              </para>
+              <para>
+		Returns name of zone from which the protocol was removed.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PROTOCOL, NOT_ENABLED, INVALID_COMMAND
 	      </para>
             </listitem>
           </varlistentry>
@@ -1644,6 +1707,22 @@
             <listitem>
               <para>
 		Emitted when <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.ProtocolAdded">
+            <term>ProtocolAdded(s: zone, s: protocol, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>protocol</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.ProtocolRemoved">
+            <term>ProtocolRemoved(s: zone, s: protocol)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>protocol</replaceable> has been removed from <replaceable>zone</replaceable>.
               </para>
             </listitem>
           </varlistentry>

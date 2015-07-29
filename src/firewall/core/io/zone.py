@@ -48,8 +48,9 @@ class Zone(IO_Object):
         ( "interfaces", [ "" ] ),                      # as
         ( "sources", [ "" ] ),                         # as
         ( "rules_str", [ "" ] ),                       # as
+        ( "protocols", [ "", ], ),                     # as
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasas)'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasas)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -98,6 +99,7 @@ class Zone(IO_Object):
         self.target = DEFAULT_ZONE_TARGET
         self.services = [ ]
         self.ports = [ ]
+        self.protocols = [ ]
         self.icmp_blocks = [ ]
         self.masquerade = False
         self.forward_ports = [ ]
@@ -116,6 +118,7 @@ class Zone(IO_Object):
         self.target = DEFAULT_ZONE_TARGET
         del self.services[:]
         del self.ports[:]
+        del self.protocols[:]
         del self.icmp_blocks[:]
         self.masquerade = False
         del self.forward_ports[:]
@@ -136,6 +139,7 @@ class Zone(IO_Object):
         self.target = u2b_if_py2(self.target)
         self.services = [u2b_if_py2(s) for s in self.services]
         self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
+        self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
         self.icmp_blocks = [u2b_if_py2(i) for i in self.icmp_blocks]
         self.forward_ports = [(u2b_if_py2(p1),u2b_if_py2(p2),u2b_if_py2(p3),u2b_if_py2(p4)) for (p1,p2,p3,p4) in self.forward_ports]
         self.interfaces = [u2b_if_py2(i) for i in self.interfaces]
@@ -165,7 +169,10 @@ class Zone(IO_Object):
         elif item == "ports":
             for port in config:
                 check_port(port[0])
-                check_protocol(port[1])
+                check_tcpudp(port[1])
+        elif item == "protocols":
+            for proto in config:
+                check_protocol(proto)
         elif item == "icmp_blocks" and self.fw_config:
             existing_icmptypes = self.fw_config.get_icmptypes()
             for icmptype in config:
@@ -175,7 +182,7 @@ class Zone(IO_Object):
         elif item == "forward_ports":
             for fwd_port in config:
                 check_port(fwd_port[0])
-                check_protocol(fwd_port[1])
+                check_tcpudp(fwd_port[1])
                 if not fwd_port[2] and not fwd_port[3]:
                     raise FirewallError(INVALID_FORWARD,
                              "'%s' is missing to-port AND to-addr " % fwd_port)
@@ -228,6 +235,9 @@ class Zone(IO_Object):
         for port in zone.ports:
             if port not in self.ports:
                 self.ports.append(port)
+        for proto in zone.protocols:
+            if proto not in self.protocols:
+                self.protocols.append(protocol)
         for icmp in zone.icmp_blocks:
             if icmp not in self.icmp_blocks:
                 self.icmp_blocks.append(icmp)
@@ -307,6 +317,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule.element = Rich_Protocol(attrs["value"])
             else:
                 log.error('Protocol allowed only in rule.')
+            if attrs["value"] not in self.item.protocols:
+                self.item.protocols.append(attrs["value"])
         elif name == "icmp-block":
             if self._rule:
                 if self._rule.element:
@@ -598,6 +610,12 @@ def zone_writer(zone, path=None):
     for port in uniqify(zone.ports):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("port", { "port": port[0], "protocol": port[1] })
+        handler.ignorableWhitespace("\n")
+
+    # protocols
+    for protocol in uniqify(zone.protocols):
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("protocol", { "value": protocol })
         handler.ignorableWhitespace("\n")
 
     # icmp-blocks

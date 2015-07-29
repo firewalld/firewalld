@@ -39,8 +39,9 @@ class Service(IO_Object):
         ( "ports", [ ( "", "" ), ], ),   # a(ss)
         ( "modules", [ "", ], ),         # as
         ( "destination", { "": "", }, ), # a{ss}
+        ( "protocols", [ "", ], ),       # as
         )
-    DBUS_SIGNATURE = '(sssa(ss)asa{ss})'
+    DBUS_SIGNATURE = '(sssa(ss)asa{ss}as)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -50,6 +51,7 @@ class Service(IO_Object):
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "service": [ "name", "version" ],
         "port": [ "port", "protocol" ],
+        "protocol": [ "value" ],
         "module": [ "name" ],
         "destination": [ "ipv4", "ipv6" ],
         }
@@ -60,6 +62,7 @@ class Service(IO_Object):
         self.short = ""
         self.description = ""
         self.ports = [ ]
+        self.protocols = [ ]
         self.modules = [ ]
         self.destination = { }
 
@@ -68,6 +71,7 @@ class Service(IO_Object):
         self.short = ""
         self.description = ""
         del self.ports[:]
+        del self.protocols[:]
         del self.modules[:]
         self.destination.clear()
 
@@ -81,17 +85,23 @@ class Service(IO_Object):
         self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
         self.modules = [u2b_if_py2(m) for m in self.modules]
         self.destination = {u2b_if_py2(k):u2b_if_py2(v) for k,v in self.destination.items()}
+        self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
 
     def _check_config(self, config, item):
         if item == "ports":
             for port in config:
                 if port[0] != "":
                     check_port(port[0])
-                    check_protocol(port[1])
+                    check_tcpudp(port[1])
                 else:
                     # only protocol
                     if not checkProtocol(port[1]):
                         raise FirewallError(INVALID_PROTOCOL, port[1])
+
+        if item == "protocols":
+            for proto in config:
+                if not checkProtocol(proto):
+                    raise FirewallError(INVALID_PROTOCOL, proto)
 
         elif item == "destination":
             for destination in config:
@@ -126,7 +136,12 @@ class service_ContentHandler(IO_Object_ContentHandler):
         elif name == "description":
             pass
         elif name == "port":
-            self.item.ports.append((attrs["port"], attrs["protocol"]))
+            if attrs["port"] != "":
+                self.item.ports.append((attrs["port"], attrs["protocol"]))
+            else:
+                self.item.protocols.append(attrs["protocol"])
+        elif name == "protocol":
+            self.item.protocols.append(attrs["value"])
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
@@ -210,6 +225,12 @@ def service_writer(service, path=None):
     for port in service.ports:
         handler.ignorableWhitespace("  ")
         handler.simpleElement("port", { "port": port[0], "protocol": port[1] })
+        handler.ignorableWhitespace("\n")
+
+    # protocols
+    for protocol in service.protocols:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("protocol", { "value": protocol })
         handler.ignorableWhitespace("\n")
 
     # modules

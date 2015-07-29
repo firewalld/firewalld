@@ -121,7 +121,8 @@ class FirewallZone(object):
         obj.settings = { x : {} for x in [ "interfaces", "sources",
                                            "services", "ports",
                                            "masquerade", "forward_ports",
-                                           "icmp_blocks", "rules" ] }
+                                           "icmp_blocks", "rules",
+                                           "protocols" ] }
 
         self._zones[obj.name] = obj
 
@@ -146,6 +147,8 @@ class FirewallZone(object):
                 self._error2warning(self.add_service, obj.name, args)
             for args in obj.ports:
                 self._error2warning(self.add_port, obj.name, *args)
+            for args in obj.protocols:
+                self._error2warning(self.add_protocol, obj.name, args)
             if obj.masquerade:
                 self._error2warning(self.add_masquerade, obj.name)
             for args in obj.rules:
@@ -306,6 +309,8 @@ class FirewallZone(object):
                         self.add_service(zone, args)
                     elif key == "ports":
                         self.add_port(zone, *args)
+                    elif key == "protocols":
+                        self.add_protocol(zone, *args)
                     elif key == "masquerade":
                         self.add_masquerade(zone)
                     elif key == "rules":
@@ -341,6 +346,8 @@ class FirewallZone(object):
                         self.__service(enable, zone, args)
                     elif key == "ports":
                         self.__port(enable, zone, *args)
+                    elif key == "protocols":
+                        self.__protocol(enable, zone, args)
                     elif key == "masquerade":
                         self.__masquerade(enable, zone)
                     elif key == "rules":
@@ -1180,7 +1187,7 @@ class FirewallZone(object):
 
     def check_port(self, port, protocol):
         self._fw.check_port(port)
-        self._fw.check_protocol(protocol)
+        self._fw.check_tcpudp(protocol)
 
     def __port_id(self, port, protocol):
         self.check_port(port, protocol)
@@ -1260,6 +1267,76 @@ class FirewallZone(object):
         if not checkProtocol(protocol):
             raise FirewallError(INVALID_PROTOCOL, protocol)
 
+    def __protocol_id(self, protocol):
+        self.check_protocol(protocol)
+        return protocol
+
+    def __protocol(self, enable, zone, protocol):
+        if enable:
+            self.add_chain(zone, "filter", "INPUT")
+
+        rules = [ ]
+        for ipv in [ "ipv4", "ipv6" ]:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                     zone=zone)
+            rules.append((ipv, [ "%s_allow" % (target),
+                                 "-t", "filter", "-p", protocol,
+                                 "-m", "conntrack", "--ctstate", "NEW",
+                                 "-j", "ACCEPT" ]))
+
+        # handle rules
+        ret = self._fw.handle_rules(rules, enable)
+        if ret:
+            (cleanup_rules, msg) = ret
+            self._fw.handle_rules(cleanup_rules, not enable)
+            raise FirewallError(COMMAND_FAILED, msg)
+
+        if not enable:
+            self.remove_chain(zone, "filter", "INPUT")
+
+    def add_protocol(self, zone, protocol, timeout=0, sender=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        protocol_id = self.__protocol_id(protocol)
+        if protocol_id in _obj.settings["protocols"]:
+            raise FirewallError(ALREADY_ENABLED,
+                          "'%s' already in '%s'" % (protocol, _zone))
+
+        if _obj.applied:
+            self.__protocol(True, _zone, protocol)
+
+        _obj.settings["protocols"][protocol_id] = \
+            self.__gen_settings(timeout, sender)
+
+        return _zone
+
+    def remove_protocol(self, zone, protocol):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        protocol_id = self.__protocol_id(protocol)
+        if protocol_id not in _obj.settings["protocols"]:
+            raise FirewallError(NOT_ENABLED,
+                             "'%s' not in '%s'" % (protocol, _zone))
+
+        if _obj.applied:
+            self.__protocol(False, _zone, protocol)
+
+        if protocol_id in _obj.settings["protocols"]:
+            del _obj.settings["protocols"][protocol_id]
+
+        return _zone
+
+    def query_protocol(self, zone, protocol):
+        return self.__protocol_id(protocol) in self.get_settings(zone)["protocols"]
+
+    def list_protocols(self, zone):
+        return list(self.get_settings(zone)["protocols"].keys())
+
     # MASQUERADE
 
     def __masquerade_id(self):
@@ -1338,7 +1415,7 @@ class FirewallZone(object):
 
     def check_forward_port(self, ipv, port, protocol, toport=None, toaddr=None):
         self._fw.check_port(port)
-        self._fw.check_protocol(protocol)
+        self._fw.check_tcpudp(protocol)
         if toport:
             self._fw.check_port(toport)
         if toaddr:
