@@ -43,12 +43,13 @@ OPTIONS_ZONE_INTERFACES_SOURCES="\
 
 OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
                        --add-port= --remove-port= --query-port= \
+                       --add-protocol= --remove-protocol= --query-protocol= \
                        --add-icmp-block= --remove-icmp-block= --query-icmp-block= \
                        --add-forward-port= --remove-forward-port= --query-forward-port="
 
 OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule= \
                     --add-masquerade --remove-masquerade --query-masquerade \
-                    --list-services --list-ports --list-icmp-blocks \
+                    --list-services --list-ports --list-protocols --list-icmp-blocks \
                     --list-forward-ports --list-rich-rules --list-all"
 
 # can be used with/without preceding --zone=<zone>
@@ -114,6 +115,7 @@ _firewall_cmd()
         ;;
     --list-services|--add-service=*|--remove-service=*|--query-service=*|\
     --list-ports|--add-port=*|--remove-port=*|--query-port=*|\
+    --list-protocols|--add-protocol=*|--remove-protocol=*|--query-protocol=*|\
     --list-icmp-blocks|--add-icmp-block=*|--remove-icmp-block=*|--query-icmp-block=*|\
     --list-forward-ports|--add-forward-port=*|--remove-forward-port=*|--query-forward-port=*|\
     --list-interfaces|--add-interface=*|--remove-interface=*|--query-interface=*|\
