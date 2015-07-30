@@ -22,8 +22,10 @@
 
 import sys
 import string
+import gi
 
 try:
+    gi.require_version('Gtk', '3.0')
     from gi.repository import Gtk, Gdk, Pango, Gio
     Gtk.init (sys.argv)
 except RuntimeError as e:
@@ -31,6 +33,7 @@ except RuntimeError as e:
     print ("This is a graphical application and requires DISPLAY to be set.")
     sys.exit (1)
 
+gi.require_version('NetworkManager', '1.0')
 from gi.repository import NetworkManager
 
 from gi.repository import GObject, GLib
