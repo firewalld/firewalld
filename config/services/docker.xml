@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Docker</short>
+  <description>Docker is the protocol used to control the Docker service remotely. If you plan to make your Docker server publicly available, enable this option. This option is not required for controlling Docker locally.</description>
+  <port protocol="tcp" port="2375"/>
+</service>
