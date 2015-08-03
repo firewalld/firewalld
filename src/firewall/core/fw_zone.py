@@ -71,6 +71,14 @@ INTERFACE_ZONE_OPTS = {
     "OUTPUT": "-o",
 }
 
+SOURCE_ZONE_OPTS = { }
+# transform INTERFACE_ZONE_OPTS for source address
+for x in INTERFACE_ZONE_OPTS:
+    if INTERFACE_ZONE_OPTS[x] == "-i":
+        SOURCE_ZONE_OPTS[x] = "-s"
+    if INTERFACE_ZONE_OPTS[x] == "-o":
+        SOURCE_ZONE_OPTS[x] = "-d"
+
 class FirewallZone(object):
     def __init__(self, fw):
         self._fw = fw
@@ -589,28 +597,11 @@ class FirewallZone(object):
                 if enable:
                     self.add_chain(zone, table, chain)
 
-                # handle trust and block zone directly, accept or reject
-                # others will be placed into the proper zone chains
-                opt = INTERFACE_ZONE_OPTS[chain]
-
-                # transform INTERFACE_ZONE_OPTS for source address
-                if opt == "-i":
-                    opt = "-s"
-                if opt == "-o":
-                    opt = "-d"
-
-                target = self._zones[zone].target.format(
-                    chain=SHORTCUTS[chain], zone=zone)
-                if target in [ "REJECT", "%%REJECT%%" ] and \
-                        chain not in [ "INPUT", "FORWARD", "OUTPUT" ]:
-                    # REJECT is only valid in the INPUT, FORWARD and
-                    # OUTPUT chains, and user-defined chains which are 
-                    # only called from those chains
-                    continue
-                if target == "DROP" and table == "nat":
-                    # DROP is not supported in nat table
-                    continue
-                # append rule
+                # handle all zone bindings in the same way
+                # trust, block and drop zone targets are handled in __chain
+                opt = SOURCE_ZONE_OPTS[chain]
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                                    zone=zone)
                 if self._zones[zone].target == DEFAULT_ZONE_TARGET:
                     action = "-g"
                 else:
