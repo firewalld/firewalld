@@ -2248,7 +2248,8 @@ class FirewallConfig(object):
             self.zoneBaseDialogVersionEntry.set_text(old_version)
             self.zoneBaseDialogShortEntry.set_text(old_short)
             self.zoneBaseDialogDescText.get_buffer().set_text(old_desc)
-            if old_target == DEFAULT_ZONE_TARGET:
+            if old_target == "default" or \
+               old_target == DEFAULT_ZONE_TARGET:
                 self.zoneBaseDialogTargetCheck.set_active(True)
                 self.zoneBaseDialogTargetCombobox.set_active(0)
             else:
@@ -2280,7 +2281,7 @@ class FirewallConfig(object):
         buffer = self.zoneBaseDialogDescText.get_buffer()
         desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
                                False)
-        target = DEFAULT_ZONE_TARGET
+        target = "default" # this has been DEFAULT_ZONE_TARGET before
         if not self.zoneBaseDialogTargetCheck.get_active():
             target = self.zoneBaseDialogTargetCombobox.get_active_text()
             if target == "REJECT":
