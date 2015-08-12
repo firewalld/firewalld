@@ -33,7 +33,8 @@ class ChooserButton(object):
         self._icon = None
 
         children = self.button.get_children()
-        if len(children) == 1 and type(children[0]) == Gtk.HBox:
+        if len(children) == 1 and \
+           (type(children[0]) == Gtk.HBox or type(children[0]) == Gtk.Box):
             children = children[0].get_children()
             for child in children:
                 if type(child) == Gtk.Label:
