@@ -460,7 +460,7 @@ class FirewallConfig(object):
         self.protocolView.append_column(
             Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0))
         self.protocolView.set_model(self.protocolStore)
-        self.protocolStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.protocolStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.protocolView.get_selection().connect("changed",
                                               self.change_protocol_selection_cb)
 
@@ -712,7 +712,7 @@ class FirewallConfig(object):
 
         self.serviceConfPortView = builder.get_object("serviceConfPortView")
         self.serviceConfPortStore = Gtk.ListStore(GObject.TYPE_STRING,
-                                                    GObject.TYPE_STRING)
+                                                  GObject.TYPE_STRING)
         self.serviceConfPortView.append_column(
             Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
         self.serviceConfPortView.append_column(
@@ -733,7 +733,7 @@ class FirewallConfig(object):
         self.serviceConfProtocolView.append_column(
             Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0))
         self.serviceConfProtocolView.set_model(self.serviceConfProtocolStore)
-        self.serviceConfProtocolStore.set_sort_column_id(1,
+        self.serviceConfProtocolStore.set_sort_column_id(0,
                                                          Gtk.SortType.ASCENDING)
         self.serviceConfProtocolView.get_selection().connect(\
             "changed", self.change_service_dialog_protocol_selection_cb)
