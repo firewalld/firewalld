@@ -109,6 +109,21 @@
               </packing>
             </child>
             <child>
+              <object class="GtkLabel" id="addressDialogLabel2">
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">The ...</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkBox" id="box20">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -118,10 +133,12 @@
                   <object class="GtkEntry" id="addressDialogAddressEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">60</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">40</property>
+                    <property name="max_width_chars">60</property>
                     <property name="shadow_type">none</property>
                   </object>
                   <packing>
@@ -134,7 +151,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">1</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -237,10 +254,12 @@
                   <object class="GtkEntry" id="commandDialogCommandEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">1024</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
+                    <property name="max_width_chars">1024</property>
                     <signal name="changed" handler="onCommandChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -356,10 +375,12 @@
                   <object class="GtkEntry" id="contextDialogContextEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">1024</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
+                    <property name="max_width_chars">1024</property>
                     <signal name="changed" handler="onContextChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -610,11 +631,13 @@
                   <object class="GtkEntry" id="directChainDialogChainEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="valign">start</property>
                     <property name="hexpand">True</property>
                     <property name="max_length">31</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">20</property>
+                    <property name="max_width_chars">31</property>
                     <signal name="changed" handler="onDirectChainDialogChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -824,10 +847,12 @@
                   <object class="GtkEntry" id="directPassthroughDialogArgsEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="valign">start</property>
                     <property name="max_length">1024</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">50</property>
+                    <property name="max_width_chars">1024</property>
                     <signal name="changed" handler="onDirectPassthroughDialogChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -1141,6 +1166,7 @@
                     <property name="max_length">11</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">11</property>
+                    <property name="max_width_chars">11</property>
                     <signal name="changed" handler="onForwardChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -1152,11 +1178,13 @@
                   <object class="GtkEntry" id="forwardDialogToAddrEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="hexpand">True</property>
                     <property name="max_length">60</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">25</property>
+                    <property name="max_width_chars">60</property>
                     <signal name="changed" handler="onForwardChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -1168,10 +1196,12 @@
                   <object class="GtkEntry" id="forwardDialogToPortEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="hexpand">True</property>
                     <property name="max_length">11</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">11</property>
+                    <property name="max_width_chars">11</property>
                     <signal name="changed" handler="onForwardChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -2950,7 +2980,7 @@
                                   <object class="GtkLabel" id="label61">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add entries to bind source addresses or areas to the zone.</property>
+                                    <property name="label" translatable="yes">Add entries to bind source addresses or areas to the zone. You can also bind to a MAC source address, but with limitations. Port forwarding and masquerading will not work for MAC source bindings.</property>
                                     <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
@@ -5631,10 +5661,12 @@
                   <object class="GtkEntry" id="interfaceDialogInterfaceEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">60</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
+                    <property name="max_width_chars">60</property>
                     <property name="shadow_type">none</property>
                     <signal name="changed" handler="onInterfaceChanged" swapped="no"/>
                   </object>
@@ -5666,6 +5698,127 @@
     </action-widgets>
   </object>
   <object class="GtkTextBuffer" id="logTextBuffer"/>
+  <object class="GtkDialog" id="macDialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Address</property>
+    <property name="modal">True</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="dialog-vbox38">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area38">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="macDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="macDialogOkButton">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="vbox27">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="macDialogLabel">
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a MAC address.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="box21">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkEntry" id="macDialogMacEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="halign">start</property>
+                    <property name="max_length">17</property>
+                    <property name="invisible_char">•</property>
+                    <property name="activates_default">True</property>
+                    <property name="width_chars">17</property>
+                    <property name="max_width_chars">17</property>
+                    <property name="shadow_type">none</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-1">macDialogCancelButton</action-widget>
+      <action-widget response="1">macDialogOkButton</action-widget>
+    </action-widgets>
+  </object>
   <object class="GtkDialog" id="moduleDialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -5752,10 +5905,12 @@
                   <object class="GtkEntry" id="moduleDialogModuleEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">50</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
+                    <property name="max_width_chars">60</property>
                     <signal name="changed" handler="onModuleChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -5885,10 +6040,12 @@
                   <object class="GtkEntry" id="portDialogPortEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="max_length">50</property>
+                    <property name="halign">start</property>
+                    <property name="max_length">32</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
-                    <property name="width_chars">25</property>
+                    <property name="width_chars">11</property>
+                    <property name="max_width_chars">32</property>
                     <signal name="changed" handler="onPortChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -6068,6 +6225,7 @@
                     <property name="max_length">31</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">31</property>
+                    <property name="max_width_chars">31</property>
                     <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -6102,6 +6260,7 @@
                     <property name="max_length">1024</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">50</property>
+                    <property name="max_width_chars">1024</property>
                     <signal name="changed" handler="onDirectRuleDialogChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -6328,6 +6487,7 @@
                     <property name="max_length">50</property>
                     <property name="invisible_char">●</property>
                     <property name="width_chars">25</property>
+                    <property name="max_width_chars">50</property>
                     <signal name="changed" handler="onProtoChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -6553,6 +6713,22 @@
                     <property name="hexpand">True</property>
                     <property name="spacing">3</property>
                     <child>
+                      <object class="GtkComboBoxText" id="richRuleDialogSourceTypeCombobox">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <items>
+                          <item>IP</item>
+                          <item>MAC</item>
+                        </items>
+                        <signal name="changed" handler="on_richRuleDialog_changed" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkButton" id="richRuleDialogSourceChooser">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -6609,7 +6785,7 @@
                       <packing>
                         <property name="expand">True</property>
                         <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -6626,7 +6802,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
@@ -7724,6 +7900,166 @@
       <action-widget response="1">serviceDialogOkButton</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkDialog" id="sourceDialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Address</property>
+    <property name="modal">True</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="dialog-vbox31">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area31">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="sourceDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="sourceDialogOkButton">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="vbox9">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="sourceDialogLabel">
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a source address.</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkGrid" id="grid1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="row_spacing">6</property>
+                <property name="column_spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="label43">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Type:</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="sourceDialogTypeCombobox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <items>
+                      <item translatable="yes">IP</item>
+                      <item translatable="yes">MAC</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label44">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Address:</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="sourceDialogAddressEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="halign">start</property>
+                    <property name="max_length">60</property>
+                    <property name="invisible_char">•</property>
+                    <property name="activates_default">True</property>
+                    <property name="width_chars">40</property>
+                    <property name="max_width_chars">60</property>
+                    <property name="shadow_type">none</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-1">sourceDialogCancelButton</action-widget>
+      <action-widget response="1">sourceDialogOkButton</action-widget>
+    </action-widgets>
+  </object>
   <object class="GtkDialog" id="uidDialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -7805,14 +8141,17 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="border_width">6</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkEntry" id="uidDialogUidEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">5</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">5</property>
+                    <property name="max_width_chars">5</property>
                     <signal name="changed" handler="onUidChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -7928,10 +8267,12 @@
                   <object class="GtkEntry" id="userDialogUserEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="max_length">256</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">20</property>
+                    <property name="max_width_chars">256</property>
                     <signal name="changed" handler="onUserChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -8166,9 +8507,13 @@
                   <object class="GtkEntry" id="zoneBaseDialogNameEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="halign">start</property>
                     <property name="hexpand">True</property>
+                    <property name="max_length">17</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
+                    <property name="width_chars">17</property>
+                    <property name="max_width_chars">17</property>
                     <signal name="changed" handler="onZoneBaseDialogChanged" swapped="no"/>
                   </object>
                   <packing>

@@ -584,7 +584,6 @@ class FirewallConfig(object):
             "richRuleDialogElementBox")
         self.richRuleDialogElementCombobox = builder.get_object( \
             "richRuleDialogElementCombobox")
-        
 
         self.richRuleDialogElementChooser = ChooserButton(builder.get_object( \
             "richRuleDialogElementChooser"))
@@ -610,10 +609,10 @@ class FirewallConfig(object):
             "richRuleDialogActionLimitDurationCombobox")
         self.richRuleDialogSourceLabel = builder.get_object( \
             "richRuleDialogSourceLabel")
-        self.richRuleDialogSourceBox = builder.get_object( \
-            "richRuleDialogSourceBox")
         self.richRuleDialogSourceInvertCheck = builder.get_object( \
             "richRuleDialogSourceInvertCheck")
+        self.richRuleDialogSourceTypeCombobox = builder.get_object( \
+            "richRuleDialogSourceTypeCombobox")
         self.richRuleDialogSourceChooser = ChooserButton(builder.get_object( \
                 "richRuleDialogSourceChooser"))
         self.richRuleDialogDestinationLabel = builder.get_object( \
@@ -677,7 +676,7 @@ class FirewallConfig(object):
         self.removeInterfaceButton = builder.get_object("removeInterfaceButton")
 
         self.sourceView = builder.get_object("sourceView")
-        self.sourceStore = Gtk.ListStore(GObject.TYPE_STRING) # 
+        self.sourceStore = Gtk.ListStore(GObject.TYPE_STRING) # source
         self.sourceView.append_column(
             Gtk.TreeViewColumn("Source", Gtk.CellRendererText(), text=0))
         self.sourceView.set_model(self.sourceStore)
@@ -774,12 +773,31 @@ class FirewallConfig(object):
 
         self.addressDialog = builder.get_object("addressDialog")
         self.addressDialogLabel = builder.get_object("addressDialogLabel")
+        self.addressDialogLabel2 = builder.get_object("addressDialogLabel2")
         self.addressDialogOkButton = \
             builder.get_object("addressDialogOkButton")
         self.addressDialogCancelButton = \
             builder.get_object("addressDialogCancelButton")
         self.addressDialogAddressEntry = \
             builder.get_object("addressDialogAddressEntry")
+
+        self.macDialog = builder.get_object("macDialog")
+        self.macDialogOkButton = \
+            builder.get_object("macDialogOkButton")
+        self.macDialogCancelButton = \
+            builder.get_object("macDialogCancelButton")
+        self.macDialogMacEntry = \
+            builder.get_object("macDialogMacEntry")
+
+        self.sourceDialog = builder.get_object("sourceDialog")
+        self.sourceDialogOkButton = \
+            builder.get_object("sourceDialogOkButton")
+        self.sourceDialogCancelButton = \
+            builder.get_object("sourceDialogCancelButton")
+        self.sourceDialogAddressTypeCombobox = \
+            builder.get_object("sourceDialogAddressTypeCombobox")
+        self.sourceDialogAddressEntry = \
+            builder.get_object("sourceDialogAddressEntry")
 
         self.serviceBaseDialog = builder.get_object("serviceBaseDialog")
         self.serviceBaseDialogOkButton = \
@@ -1527,9 +1545,12 @@ class FirewallConfig(object):
             if obj.action.limit:
                 action += "\n" + _("limit") + " " + obj.action.limit.value
         if obj.source:
-            src = obj.source.addr
             if obj.source.invert:
-                src = "! %s" % src
+                src = "! "
+            if obj.source.addr:
+                src += "IP: %s" % obj.source.addr
+            elif obj.source.mac:
+                src += "MAC: %s" % obj.source.mac
         if obj.destination:
             dest = obj.destination.addr
             if obj.destination.invert:
@@ -2218,6 +2239,11 @@ class FirewallConfig(object):
         self.zoneBaseDialogTargetCombobox.set_sensitive(not val)
 
     def add_edit_zone(self, add):
+        l = max_zone_name_len()
+        self.zoneBaseDialogNameEntry.set_max_length(l)
+        self.zoneBaseDialogNameEntry.set_width_chars(l)
+        self.zoneBaseDialogNameEntry.set_max_width_chars(l)
+
         if add:
             builtin = False
             old_name = None
@@ -2356,6 +2382,8 @@ class FirewallConfig(object):
         self.richRuleDialogActionLimitRateEntry.set_text("")
         self.richRuleDialogActionLimitDurationCombobox.set_active(0)
         self.richRuleDialogSourceInvertCheck.set_active(False)
+        self.richRuleDialogSourceTypeCombobox.set_active(0)
+
         self.richRuleDialogSourceChooser.set_text("")
         self.richRuleDialogDestinationInvertCheck.set_active(False)
         self.richRuleDialogDestinationChooser.set_text("")
@@ -2474,7 +2502,14 @@ class FirewallConfig(object):
 
             # source
             if old_obj.source:
-                self.richRuleDialogSourceChooser.set_text(old_obj.source.addr)
+                if old_obj.source.addr:
+                    combobox_select_text(self.richRuleDialogSourceTypeCombobox,
+                                         "IP")
+                    self.richRuleDialogSourceChooser.set_text(old_obj.source.addr)
+                elif old_obj.source.mac:
+                    combobox_select_text(self.richRuleDialogSourceTypeCombobox,
+                                         "MAC")
+                    self.richRuleDialogSourceChooser.set_text(old_obj.source.mac)
                 self.richRuleDialogSourceInvertCheck.set_active( \
                     old_obj.source.invert == True)
 
@@ -2756,18 +2791,28 @@ class FirewallConfig(object):
         return icmptype
 
     def on_richRuleDialogSourceChooser_clicked(self, *args):
-        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
-        if combolabel == _("ipv4"):
-            family = "ipv4"
-        elif combolabel == _("ipv6"):
-            family = "ipv6"
-        else:
-            family = None
         old_address =  self.richRuleDialogSourceChooser.get_text()
 
-        address = self.address_select_dialog(family, old_address)
-        if address is not None:
-            self.richRuleDialogSourceChooser.set_text(address)
+        _type = self.richRuleDialogSourceTypeCombobox.get_active_text()
+
+        if _type == "IP":
+            combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+            if combolabel == _("ipv4"):
+                family = "ipv4"
+            elif combolabel == _("ipv6"):
+                family = "ipv6"
+            else:
+                family = None
+
+            address = self.address_select_dialog(family, old_address)
+            if address is not None:
+                self.richRuleDialogSourceChooser.set_text(address)
+
+        if _type == "MAC":
+            address = self.mac_select_dialog(old_address)
+            if address is not None:
+                self.richRuleDialogSourceChooser.set_text(address)
+
 
     def on_richRuleDialogDestinationChooser_clicked(self, *args):
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
@@ -2887,11 +2932,17 @@ class FirewallConfig(object):
                 rule.action = Rich_Drop(limit)
 
         # source
-        if self.richRuleDialogSourceBox.is_sensitive() and \
+        if self.richRuleDialogSourceChooser.is_sensitive() and \
            (self.richRuleDialogSourceChooser.get_text() != "" \
             or self.richRuleDialogSourceInvertCheck.get_active()):
+            txt = self.richRuleDialogSourceTypeCombobox.get_active_text()
+            addr = mac = None
+            if txt == "IP":
+                addr = self.richRuleDialogSourceChooser.get_text()
+            if txt == "MAC":
+                mac = self.richRuleDialogSourceChooser.get_text()
             rule.source = Rich_Source(
-                self.richRuleDialogSourceChooser.get_text(),
+                addr, mac,
                 self.richRuleDialogSourceInvertCheck.get_active())
 
         # destination
@@ -2962,15 +3013,17 @@ class FirewallConfig(object):
             family = "ipv6"
         else:
             family = None
+        mac_source = (self.richRuleDialogSourceTypeCombobox.get_active_text()
+                      == "MAC")
 
         if family is None:
-            self.richRuleDialogSourceLabel.set_sensitive(False)
-            self.richRuleDialogSourceBox.set_sensitive(False)
+            self.richRuleDialogSourceChooser.set_sensitive(mac_source)
+            self.richRuleDialogSourceInvertCheck.set_sensitive(mac_source)
             self.richRuleDialogDestinationLabel.set_sensitive(False)
             self.richRuleDialogDestinationBox.set_sensitive(False)
         else:
-            self.richRuleDialogSourceLabel.set_sensitive(True)
-            self.richRuleDialogSourceBox.set_sensitive(True)
+            self.richRuleDialogSourceChooser.set_sensitive(True)
+            self.richRuleDialogSourceInvertCheck.set_sensitive(True)
             self.richRuleDialogDestinationLabel.set_sensitive(True)
             self.richRuleDialogDestinationBox.set_sensitive(True)
 
@@ -3181,7 +3234,7 @@ class FirewallConfig(object):
                 return
             old_source = self.sourceStore.get_value(iter, 0)
 
-        source = self.address_select_dialog(None, old_source)
+        source = self.address_select_dialog(None, old_source, True)
         if not source:
             return
 
@@ -3198,6 +3251,77 @@ class FirewallConfig(object):
                     zone.removeSource(old_source)
                 zone.addSource(source)
                 self.changes_applied()
+
+    def on_macDialog_changed(self, entry, old_mac):
+        text = entry.get_text()
+        if text == "":
+            self.macDialogOkButton.set_sensitive(True)
+            return
+
+        self.macDialogOkButton.set_sensitive(False)
+        if check_mac(text) and text != old_mac:
+            self.macDialogOkButton.set_sensitive(True)
+
+    def mac_select_dialog(self, old_mac):
+        self.macDialogMacEntry.set_text(old_mac)
+        handler_id = self.macDialogMacEntry.connect("changed",
+                                                    self.on_macDialog_changed,
+                                                    old_mac)
+        self.macDialogOkButton.set_sensitive(False)
+
+        self.macDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.macDialog.set_transient_for(self.mainWindow)
+        self.macDialog.show_all()
+        result = self.macDialog.run()
+        self.macDialog.hide()
+
+        self.macDialogMacEntry.disconnect(handler_id)
+
+        mac = self.macDialogMacEntry.get_text()
+
+        if result != 1 or old_mac == mac:
+            return None
+        return mac
+
+    def on_sourceDialog_changed(self, old_type, old_source):
+        _type = self.sourceDialogAddressTypeCombobox.get_active_text()
+        _source = self.sourceDialogAddressEntry.get_text()
+
+        self.sourceDialogOkButton.set_sensitive(False)
+
+        if old_source != _source:
+            if _type == "MAC" and check_mac(_source):
+                self.sourceDialogOkButton.set_sensitive(True)
+            elif _type == "IP" and (checkIP(_source) or checkIP6(_source)):
+                self.sourceDialogOkButton.set_sensitive(True)
+
+    def source_select_dialog(self, old_type, old_source):
+        combobox_select_text(self.sourceDialogAddressTypeCombobox, "MAC")
+
+        self.sourceDialogAddressEntry.set_text(old_source)
+
+        h_type_id = self.sourceDialogTypeCombobox.connect(
+            "changed", self.on_sourceDialog_changed, old_type, old_source)
+        h_addr_id = self.sourceDialogAddressEntry.connect(
+            "changed", self.on_sourceDialog_changed, old_type, old_source)
+
+
+        self.macDialogOkButton.set_sensitive(False)
+
+        self.macDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.macDialog.set_transient_for(self.mainWindow)
+        self.macDialog.show_all()
+        result = self.macDialog.run()
+        self.macDialog.hide()
+
+        self.macDialogMacEntry.disconnect(handler_id)
+
+        mac = self.macDialogMacEntry.get_text()
+
+        if result != 1 or old_mac == mac:
+            return None
+        return mac
+
 
     def onAddPort(self, *args):
         self.add_edit_port(True)
@@ -4191,7 +4315,7 @@ class FirewallConfig(object):
             service.setDestination("ipv6", addr)
             self.changes_applied()
 
-    def onAddressChanged(self, entry, addr_type, old_address):
+    def onAddressChanged(self, entry, addr_type, old_address, mac_allowed):
         text = entry.get_text()
         if text == "":
             self.addressDialogOkButton.set_sensitive(True)
@@ -4208,18 +4332,29 @@ class FirewallConfig(object):
             if (checkIPnMask(text) or checkIP6nMask(text)) \
                and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
+        if mac_allowed:
+            if check_mac(text) and text != old_address:
+                self.addressDialogOkButton.set_sensitive(True)
 
-    def address_select_dialog(self, addr_type, old_address):
+    def address_select_dialog(self, addr_type, old_address, mac_allowed=False):
         if addr_type == "ipv4":
-            self.addressDialogLabel.set_markup("Please enter an ipv4 address with the form address[/mask].\nThe mask can be a network mask or a number")
+            label1 = _("Please enter an ipv4 address with the form address[/mask].")
+            label2 = _("The mask can be a network mask or a number.")
         elif addr_type == "ipv6":
-            self.addressDialogLabel.set_markup("Please enter an ipv6 address with the form address[/mask].\nThe mask is a number.")
+            label1 = _("Please enter an ipv6 address with the form address[/mask].")
+            label2 = _("The mask is a number.")
         else:
-            self.addressDialogLabel.set_markup("Please enter an ipv4 or ipv6 address with the form address[/mask].\nThe mask can be a network mask or a number for ipv4.\nThe mask is a number for ipv6.")
+            label1 = _("Please enter an ipv4 or ipv6 address with the form address[/mask].")
+            label2 = _("The mask can be a network mask or a number for ipv4.\nThe mask is a number for ipv6.")
+        if mac_allowed:
+            label1 += _("\nA MAC address is also possible.")
+        self.addressDialogLabel.set_markup(label1)
+        self.addressDialogLabel2.set_markup(label2)
 
         self.addressDialogAddressEntry.set_text(old_address)
-        handler_id = self.addressDialogAddressEntry.connect(\
-            "changed", self.onAddressChanged, addr_type, old_address)
+        handler_id = self.addressDialogAddressEntry.connect(
+            "changed", self.onAddressChanged, addr_type, old_address,
+            mac_allowed)
         self.addressDialogOkButton.set_sensitive(False)
 
         self.addressDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
