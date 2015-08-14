@@ -109,10 +109,10 @@ rule [family="ipv4|ipv6"]
       <title>Source</title>
       <para>
 	  <programlisting>
-source [not] address="address[/mask]"
+source [not] address="address[/mask]"|mac="mac-address"
 	  </programlisting>
 	With the source address the origin of a connection attempt can be limited to the source address.
-	An address is either a single IP address, or a network IP address.
+	An address is either a single IP address, or a network IP address. Or a MAC address.
 	The address has to match the rule family (IPv4/IPv6).
 	Subnet mask is expressed in either dot-decimal (/x.x.x.x) or prefix (/x) notations for IPv4, and in prefix notation (/x) for IPv6 network addresses.
 	It is possible to invert the sense of an address by adding <option>not</option> before <option>address</option>.

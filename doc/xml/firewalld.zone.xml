@@ -179,14 +179,14 @@
     <refsect2 id="source">
       <title>source</title>
       <para>
-	Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. A source entry has exactly one attribute:
+	Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. This can also be a MAC address. A source entry has exactly one attribute:
       </para>
       <variablelist>
 	<varlistentry>
 	  <term>address="<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional>"</term>
           <listitem>
 	    <para>
-	      The source to be bound to the zone. The source is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	      The source to be bound to the zone. The source is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address (no mask). The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
 	    </para>
 	  </listitem>
 	</varlistentry>
