@@ -59,6 +59,12 @@ class ChooserButton(object):
     def set_sensitive(self, value):
         self.button.set_sensitive(value)
 
+    def get_sensitive(self):
+        return self.button.get_sensitive()
+
+    def is_sensitive(self):
+        return self.button.is_sensitive()
+
     def connect(self, type, *args):
         self.button.connect(type, *args)
 
