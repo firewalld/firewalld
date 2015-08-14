@@ -23,7 +23,7 @@ import time
 from firewall.core.base import *
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
-    checkProtocol, enable_ip_forwarding, check_single_address
+    checkProtocol, enable_ip_forwarding, check_single_address, check_mac
 from firewall.core.rich import *
 from firewall.errors import *
 from firewall.core.ipXtables import ip4tables_available_tables,\
@@ -582,6 +582,8 @@ class FirewallZone(object):
             return "ipv4"
         elif checkIP6nMask(source):
             return "ipv6"
+        elif check_mac(source):
+            return ""
         else:
             raise FirewallError(INVALID_ADDR, source)
 
@@ -592,24 +594,52 @@ class FirewallZone(object):
     def __source(self, enable, zone, ipv, source):
         rules = [ ]
 
-        for table in ZONE_CHAINS:
-            for chain in ZONE_CHAINS[table]:
-                # create needed chains if not done already
-                if enable:
-                    self.add_chain(zone, table, chain)
+        # For mac source bindings ipv is an empty string, the mac source will
+        # be added for ipv4 and ipv6
+        if ipv == "":
+            for ipv in [ "ipv4", "ipv6" ]:
+                for table in ZONE_CHAINS:
+                    for chain in ZONE_CHAINS[table]:
+                        # create needed chains if not done already
+                        if enable:
+                            self.add_chain(zone, table, chain)
 
-                # handle all zone bindings in the same way
-                # trust, block and drop zone targets are handled in __chain
-                opt = SOURCE_ZONE_OPTS[chain]
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                    zone=zone)
-                if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                    action = "-g"
-                else:
-                    action = "-j"
-                rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
-                         opt, source, action, target ]
-                rules.append((ipv, rule))
+                        opt = SOURCE_ZONE_OPTS[chain]
+                        # for zone mac source bindings the features are limited
+                        # outgoing can not be set
+                        if opt == "-d":
+                            continue
+
+                        target = DEFAULT_ZONE_TARGET.format(
+                            chain=SHORTCUTS[chain], zone=zone)
+                        if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                            action = "-g"
+                        else:
+                            action = "-j"
+                        rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                                 "-m", "mac", "--mac-source", source,
+                                 action, target ]
+                        rules.append((ipv, rule))
+
+        else:
+            for table in ZONE_CHAINS:
+                for chain in ZONE_CHAINS[table]:
+                    # create needed chains if not done already
+                    if enable:
+                        self.add_chain(zone, table, chain)
+
+                    # handle all zone bindings in the same way
+                    # trust, block and drop zone targets are handled in __chain
+                    opt = SOURCE_ZONE_OPTS[chain]
+                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                                        zone=zone)
+                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                        action = "-g"
+                    else:
+                        action = "-j"
+                    rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                             opt, source, action, target ]
+                    rules.append((ipv, rule))
 
         # handle rules
         ret = self._fw.handle_rules(rules, enable)
@@ -618,11 +648,6 @@ class FirewallZone(object):
             self._fw.handle_rules(cleanup_rules, not enable)
             log.debug2(msg)
             raise FirewallError(COMMAND_FAILED, msg)
-
-#        if not enable:
-#            for table in ZONE_CHAINS:
-#                for chain in ZONE_CHAINS[table]:
-#                    self.remove_chain(zone, table, chain)
 
     def add_source(self, zone, source, sender=None):
         self._fw.check_panic()
@@ -702,9 +727,15 @@ class FirewallZone(object):
 
     def __rule_source(self, source, command):
         if source:
-            if source.invert:
-                command.append("!")
-            command += [ "-s", source.addr ]
+            if source.addr:
+                if source.invert:
+                    command.append("!")
+                command += [ "-s", source.addr ]
+            if hasattr(source, "mac") and source.mac:
+                command += [ "-m", "mac" ]
+                if source.invert:
+                    command.append("!")
+                command += [ "--mac-source", source.mac ]
 
     def __rule_destination(self, destination, command):
         if destination:
