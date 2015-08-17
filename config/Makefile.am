@@ -75,6 +75,8 @@ EXTRA_DIST = \
 	services/amanda-k5-client.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
+	services/ceph.xml \
+	services/ceph-mon.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
