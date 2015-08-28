@@ -95,18 +95,24 @@ Zone Options
   --get-target         Get the zone target [P only] [Z]
   --set-target=<target>
                        Set the zone target [P only] [Z]
+  --info-zone=<zone>
+                       Print information about a zone
 
 IcmpType Options
   --new-icmptype=<icmptype>
                        Add a new icmptype [P only]
   --delete-icmptype=<icmptype>
                        Delete an existing icmptype [P only]
+  --info-icmptype=<icmptype>
+                       Print information about an icmptype
 
 Service Options
   --new-service=<service>
                        Add a new service [P only]
   --delete-service=<service>
                        Delete an existing service [P only]
+  --info-service=<service>
+                       Print information about a service
 
 Options to Adapt and Query Zones
   --list-all           List everything added for or enabled in a zone [P] [Z]
@@ -354,6 +360,46 @@ def __list_all_permanent(fw_settings, zone):
     rules = fw_settings.getRichRules()
     __print_all(zone, interfaces, sources, services, ports, protocols, masquerade, forward_ports, icmp_blocks, rules)
 
+def __print_zone_info(zone, settings):
+    interfaces = settings.getInterfaces()
+    sources = settings.getSources()
+    services = settings.getServices()
+    ports = settings.getPorts()
+    protocols = settings.getProtocols()
+    masquerade = settings.getMasquerade()
+    forward_ports = settings.getForwardPorts()
+    icmp_blocks = settings.getIcmpBlocks()
+    rules = settings.getRichRules()
+    __print(zone)
+    __print("  interfaces: " + " ".join(interfaces))
+    __print("  sources: " + " ".join(sources))
+    __print("  services: " + " ".join(services))
+    __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
+    __print("  protocols: " + " ".join(protocols))
+    __print("  masquerade: %s" % ("yes" if masquerade else "no"))
+    __print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
+    __print("  icmp-blocks: " + " ".join(icmp_blocks))
+    __print("  rich rules: \n\t" + "\n\t".join(rules))
+
+def __print_service_info(service, settings):
+    ports = settings.getPorts()
+    protocols = settings.getProtocols()
+    modules = settings.getModules()
+    destinations = settings.getDestinations()
+    __print(service)
+    __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
+    __print("  protocols: " + " ".join(protocols))
+    __print("  modules: " + " ".join(modules))
+    __print("  destination: " + " ".join(["%s:%s" % (k,v)
+                                          for k,v in destinations.items()]))
+
+def __print_icmptype_info(icmptype, settings):
+    destinations = settings.getDestinations()
+    if len(destinations) == 0:
+        destinations = [ "ipv4", "ipv6" ]
+    __print(icmptype)
+    __print("  destination: " + " ".join(destinations))
+
 def __print_query_result(value):
     if value:
         __print_and_exit("yes")
@@ -404,6 +450,10 @@ parser_group_standalone.add_argument("--get-active-zones", action="store_true")
 parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>")
 parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>")
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
+
+parser_group_standalone.add_argument("--info-zone", metavar="<zone>")
+parser_group_standalone.add_argument("--info-service", metavar="<service>")
+parser_group_standalone.add_argument("--info-icmptype", metavar="<icmptype>")
 
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
@@ -565,7 +615,8 @@ options_lockdown_whitelist = \
 
 options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  options_lockdown_whitelist or a.list_all_zones or \
-                 a.get_zone_of_interface or a.get_zone_of_source
+                 a.get_zone_of_interface or a.get_zone_of_source or \
+                 a.info_zone or a.info_icmptype or a.info_service
 
 options_zone_action_action = \
     a.add_service or a.remove_service or a.query_service or \
@@ -617,7 +668,8 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.list_forward_ports or a.list_rich_rules or a.list_interfaces or \
  a.list_sources or a.get_default_zone or a.get_active_zones or \
  a.get_zone_of_interface or a.get_zone_of_source or a.get_zones or \
- a.get_services or a.get_icmptypes or a.get_target
+ a.get_services or a.get_icmptypes or a.get_target or \
+ a.info_zone or a.info_icmptype or a.info_service
 
 # Check various impossible combinations of options
 
@@ -747,6 +799,11 @@ if a.permanent:
         zone = fw.config().getZoneByName(a.delete_zone)
         zone.remove()
 
+    elif a.info_zone:
+        zone = fw.config().getZoneByName(a.info_zone)
+        __print_zone_info(a.info_zone, zone.getSettings())
+        sys.exit(0)
+
     elif a.new_service:
         config = fw.config()
         config.addService(a.new_service, FirewallClientServiceSettings())
@@ -755,6 +812,11 @@ if a.permanent:
         service = fw.config().getServiceByName(a.delete_service)
         service.remove()
 
+    elif a.info_service:
+        service = fw.config().getServiceByName(a.info_service)
+        __print_service_info(a.info_service, service.getSettings())
+        sys.exit(0)
+
     elif a.new_icmptype:
         config = fw.config()
         config.addIcmpType(a.new_icmptype, FirewallClientIcmpTypeSettings())
@@ -762,6 +824,11 @@ if a.permanent:
     elif a.delete_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.delete_icmptype)
         icmptype.remove()
+
+    elif a.info_icmptype:
+        icmptype = fw.config().getIcmpTypeByName(a.info_icmptype)
+        __print_icmptype_info(a.info_icmptype, icmptype.getSettings())
+        sys.exit(0)
 
     # lockdown whitelist
 
@@ -1427,6 +1494,18 @@ elif a.list_all_zones:
     for zone in fw.getZones():
         __list_all(fw, zone)
         __print("")
+    sys.exit(0)
+
+elif a.info_zone:
+    __print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone))
+    sys.exit(0)
+
+elif a.info_service:
+    __print_service_info(a.info_service, fw.getServiceSettings(a.info_service))
+    sys.exit(0)
+
+elif a.info_icmptype:
+    __print_icmptype_info(a.info_icmptype, fw.getIcmpTypeSettings(a.info_icmptype))
     sys.exit(0)
 
 __print_and_exit("success")
