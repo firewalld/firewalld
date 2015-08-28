@@ -158,7 +158,13 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         """get settings for zone
         """
         log.debug1("config.zone.%d.getSettings()", self.id)
-        return self.config.get_zone_config(self.obj)
+        settings = self.config.get_zone_config(self.obj)
+        if settings[4] == DEFAULT_ZONE_TARGET:
+            # convert to list, fix target, convert back to tuple
+            _settings = list(settings)
+            _settings[4] = "default"
+            settings = tuple(_settings)
+        return settings
 
     def _checkDuplicateInterfacesSources(self, settings):
         """Assignment of interfaces/sources to zones is different from other
@@ -186,6 +192,11 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings = dbus_to_python(settings)
         log.debug1("config.zone.%d.update('...')", self.id)
         self.parent.accessCheck(sender)
+        if settings[4] == "default":
+            # convert to list, fix target, convert back to tuple
+            _settings = list(settings)
+            _settings[4] = DEFAULT_ZONE_TARGET
+            settings = tuple(_settings)
         self._checkDuplicateInterfacesSources(settings)
         self.obj = self.config.set_zone_config(self.obj, settings)
         self.Updated(self.obj.name)

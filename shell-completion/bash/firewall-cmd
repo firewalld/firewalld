@@ -32,8 +32,9 @@ OPTIONS_LOCKDOWN="--add-lockdown-whitelist-command= --remove-lockdown-whitelist-
        --query-lockdown-whitelist-user= --list-lockdown-whitelist-users"
 
 # can be used as standalone or with --permanent
-OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes
-                ${OPTIONS_LOCKDOWN} --list-all-zones"
+OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes \
+                ${OPTIONS_LOCKDOWN} --list-all-zones \
+                --info-zone --info-service --info-icmptype"
 
 OPTIONS_ZONE_INTERFACES_SOURCES="\
             --add-interface= --remove-interface= --query-interface= \
@@ -89,7 +90,7 @@ _firewall_cmd()
     firewall-cmd --state 1> /dev/null || return
 
     case $prev in
-    --zone|--set-default-zone)
+    --zone|--set-default-zone|--info-zone)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-zones`' -- "$cur" ) )
         else
@@ -106,7 +107,7 @@ _firewall_cmd()
           COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
         fi
         ;;
-    --*-icmp-block)
+    --*-icmp-block|info-icmptype)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-icmptypes`' -- "$cur" ) )
         else
