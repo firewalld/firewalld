@@ -758,6 +758,11 @@ class FirewallDConfig(slip.dbus.service.Object):
         settings = dbus_to_python(settings)
         log.debug1("config.addZone('%s')", zone)
         self.accessCheck(sender)
+        if settings[4] == "default":
+            # convert to list, fix target, convert back to tuple
+            _settings = list(settings)
+            _settings[4] = DEFAULT_ZONE_TARGET
+            settings = tuple(_settings)
         obj = self.config.new_zone(zone, settings)
         config_zone = self._addZone(obj)
         return config_zone

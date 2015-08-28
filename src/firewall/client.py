@@ -29,6 +29,7 @@ import dbus.mainloop.glib
 import slip.dbus
 
 from firewall.config import *
+from firewall.errors import FirewallError
 from firewall.config.dbus import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.dbus_utils import dbus_to_python
@@ -36,6 +37,8 @@ import dbus
 from decorator import decorator
 from firewall.functions import b2u
 from firewall.core.rich import Rich_Rule
+
+import traceback
 
 exception_handler = None
 not_authorized_loop = False
@@ -66,11 +69,16 @@ def handle_exceptions(func, *args, **kwargs):
                     exception_handler(dbus_message)
                 else:
                     exception_handler(b2u(str(e)))
-        except Exception as e:
+        except FirewallError as e:
             if not exception_handler:
                 raise
             else:
                 exception_handler(b2u(str(e)))
+        except Exception as e:
+            if not exception_handler:
+                raise
+            else:
+                exception_handler(b2u(traceback.format_exc()))
         if not not_authorized_loop:
             break
 

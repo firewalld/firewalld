@@ -261,6 +261,30 @@
 	</varlistentry>
 
 	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--info-zone=<replaceable>zone</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print information about the zone <replaceable>zone</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>zone</replaceable>
+  interfaces: <replaceable>interface1</replaceable> ..
+  sources: <replaceable>source1</replaceable> ..
+  services: <replaceable>service1</replaceable> ..
+  ports: <replaceable>port1</replaceable> ..
+  protocols: <replaceable>protocol1</replaceable> ..
+  forward-ports:
+        <replaceable>forward-port1</replaceable>
+        ..
+  icmp-blocks: <replaceable>icmp-type1</replaceable> ..
+  rich rules:
+        <replaceable>rich-rule1</replaceable>
+        ..
+              </programlisting>
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
 	  <term><optional><option>--permanent</option></optional> <option>--list-all-zones</option></term>
 	  <listitem>
 	    <para>
@@ -815,6 +839,21 @@
     <refsect2 id="service_options">
       <title>Service Options</title>
       <variablelist>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--info-service=<replaceable>service</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print information about the service <replaceable>service</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>service</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+  protocols: <replaceable>protocol1</replaceable> ..
+  modules: <replaceable>module1</replaceable> ..
+  destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
+              </programlisting>
+	    </para>
+	  </listitem>
+	</varlistentry>
        <varlistentry>
          <term><option>--permanent</option> <option>--new-service</option>=<replaceable>service</replaceable></term>
          <listitem>
@@ -838,6 +877,18 @@
     <refsect2 id="icmptype_options">
       <title>Internet Control Message Protocol (ICMP) type Options</title>
       <variablelist>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--info-icmptype=<replaceable>icmptype</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print information about the icmptype <replaceable>icmptype</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>icmptype</replaceable>
+  destination: <replaceable>ipv1</replaceable> ..
+              </programlisting>
+	    </para>
+	  </listitem>
+	</varlistentry>
        <varlistentry>
          <term><option>--permanent</option> <option>--new-icmptype</option>=<replaceable>icmptype</replaceable></term>
          <listitem>

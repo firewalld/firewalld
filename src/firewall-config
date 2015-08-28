@@ -460,7 +460,7 @@ class FirewallConfig(object):
         self.protocolView.append_column(
             Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0))
         self.protocolView.set_model(self.protocolStore)
-        self.protocolStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.protocolStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         self.protocolView.get_selection().connect("changed",
                                               self.change_protocol_selection_cb)
 
@@ -712,7 +712,7 @@ class FirewallConfig(object):
 
         self.serviceConfPortView = builder.get_object("serviceConfPortView")
         self.serviceConfPortStore = Gtk.ListStore(GObject.TYPE_STRING,
-                                                    GObject.TYPE_STRING)
+                                                  GObject.TYPE_STRING)
         self.serviceConfPortView.append_column(
             Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
         self.serviceConfPortView.append_column(
@@ -733,7 +733,7 @@ class FirewallConfig(object):
         self.serviceConfProtocolView.append_column(
             Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0))
         self.serviceConfProtocolView.set_model(self.serviceConfProtocolStore)
-        self.serviceConfProtocolStore.set_sort_column_id(1,
+        self.serviceConfProtocolStore.set_sort_column_id(0,
                                                          Gtk.SortType.ASCENDING)
         self.serviceConfProtocolView.get_selection().connect(\
             "changed", self.change_service_dialog_protocol_selection_cb)
@@ -2248,7 +2248,8 @@ class FirewallConfig(object):
             self.zoneBaseDialogVersionEntry.set_text(old_version)
             self.zoneBaseDialogShortEntry.set_text(old_short)
             self.zoneBaseDialogDescText.get_buffer().set_text(old_desc)
-            if old_target == DEFAULT_ZONE_TARGET:
+            if old_target == "default" or \
+               old_target == DEFAULT_ZONE_TARGET:
                 self.zoneBaseDialogTargetCheck.set_active(True)
                 self.zoneBaseDialogTargetCombobox.set_active(0)
             else:
@@ -2280,7 +2281,7 @@ class FirewallConfig(object):
         buffer = self.zoneBaseDialogDescText.get_buffer()
         desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
                                False)
-        target = DEFAULT_ZONE_TARGET
+        target = "default" # this has been DEFAULT_ZONE_TARGET before
         if not self.zoneBaseDialogTargetCheck.get_active():
             target = self.zoneBaseDialogTargetCombobox.get_active_text()
             if target == "REJECT":
@@ -3003,8 +3004,6 @@ class FirewallConfig(object):
                 self.richRuleDialogElementChooser.set_sensitive(False)
                 self.richRuleDialogActionCheck.set_sensitive(False)
                 self.richRuleDialogActionBox.set_sensitive(False)
-                self.richRuleDialogDestinationLabel.set_sensitive(False)
-                self.richRuleDialogDestinationBox.set_sensitive(False)
                 self.richRuleDialogLogCheck.set_sensitive(False)
                 self.richRuleDialogLogGrid.set_sensitive(False)
                 self.richRuleDialogAuditCheck.set_sensitive(False)
