@@ -480,8 +480,9 @@ class FirewallDConfigService(slip.dbus.service.Object):
                    family, address)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if family in settings[5]:
-            raise FirewallError(ALREADY_ENABLED, family)
+        if family in settings[5] and settings[5][family] == address:
+            raise FirewallError(ALREADY_ENABLED, "'%s': '%s'" % (family,
+                                                                 address))
         settings[5][family] = address
         self.update(settings)
 

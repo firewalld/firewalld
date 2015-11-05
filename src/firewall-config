@@ -4177,7 +4177,10 @@ class FirewallConfig(object):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
         if not service.queryDestination("ipv4", addr):
-            service.setDestination("ipv4", addr)
+            if addr != "":
+                service.setDestination("ipv4", addr)
+            else:
+                service.removeDestination("ipv4")
             self.changes_applied()
 
     def onChangeServiceConfDestIpv6(self, *args):
@@ -4188,7 +4191,10 @@ class FirewallConfig(object):
         active_service = self.get_active_service()
         service = self.fw.config().getServiceByName(active_service)
         if not service.queryDestination("ipv6", addr):
-            service.setDestination("ipv6", addr)
+            if addr != "":
+                service.setDestination("ipv6", addr)
+            else:
+                service.removeDestination("ipv6")
             self.changes_applied()
 
     def onAddressChanged(self, entry, addr_type, old_address):
