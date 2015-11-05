@@ -958,8 +958,8 @@ class FirewallClientConfigService(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def removeDestination(self, destination, address):
-        self.fw_service.removeDestination(destination, address)
+    def removeDestination(self, destination):
+        self.fw_service.removeDestination(destination)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
