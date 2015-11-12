@@ -88,6 +88,7 @@ Requires: pygobject3-base
 %endif
 Requires: libnotify
 Requires: NetworkManager-glib
+Requires: dbus-x11
 
 %description -n firewall-applet
 The firewall panel applet provides a status information of firewalld and also 
@@ -104,6 +105,7 @@ Requires: python3-gobject
 Requires: pygobject3-base
 %endif
 Requires: NetworkManager-glib
+Requires: dbus-x11
 
 %description -n firewall-config
 The firewall configuration application provides an configuration interface for 
