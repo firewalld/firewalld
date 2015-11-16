@@ -973,6 +973,19 @@ class FirewallZone(object):
 
 
                 # INPUT
+
+                # icmp filter: reject for targets default and accept, accept
+                # for targets reject and drop
+                if self._zones[zone].target in [ DEFAULT_ZONE_TARGET,
+                                                 "ACCEPT" ]:
+                    final_target = [ "-j", "%%REJECT%%" ]
+                    target_format = "%s_deny"
+                elif self._zones[zone].target in [ "REJECT", "%%REJECT%%",
+                                                   "DROP" ]:
+                    final_target = [ "-m", "conntrack", "--ctstate", "NEW",
+                                     "-j", "ACCEPT" ]
+                    target_format = "%s_allow"
+
                 target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                     zone=zone)
                 command = [ ]
@@ -984,8 +997,8 @@ class FirewallZone(object):
                 if rule.action:
                     self.__rule_action(ipv, table, target, rule, command, rules)
                 else:
-                    command += [ "-j", "%%REJECT%%" ]
-                    rules.append((ipv, table, "%s_deny" % target, command))
+                    command += final_target
+                    rules.append((ipv, table, target_format % target, command))
 
                 # FORWARD_IN
                 target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_IN"],
@@ -999,8 +1012,8 @@ class FirewallZone(object):
                 if rule.action:
                     self.__rule_action(ipv, table, target, rule, command, rules)
                 else:
-                    command += [ "-j", "%%REJECT%%" ]
-                    rules.append((ipv, table, "%s_deny" % target, command))
+                    command += final_target
+                    rules.append((ipv, table, target_format % target, command))
 
             elif rule.element is None:
                 # source action
@@ -1558,6 +1571,16 @@ class FirewallZone(object):
             self.add_chain(zone, "filter", "INPUT")
             self.add_chain(zone, "filter", "FORWARD_IN")
 
+        # icmp filter: reject for targets default and accept, accept
+        # for targets reject and drop
+        if self._zones[zone].target in [ DEFAULT_ZONE_TARGET, "ACCEPT" ]:
+            final_target = [ "-j", "%%REJECT%%" ]
+            target_format = "%s_deny"
+        elif self._zones[zone].target in [ "REJECT", "%%REJECT%%", "DROP" ]:
+            final_target = [ "-m", "conntrack", "--ctstate", "NEW",
+                             "-j", "ACCEPT" ]
+            target_format = "%s_allow"
+
         rules = [ ]
         for ipv in [ "ipv4", "ipv6" ]:
             if ict.destination and ipv not in ict.destination:
@@ -1572,14 +1595,14 @@ class FirewallZone(object):
 
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                      zone=zone)
-            rules.append((ipv, [ "%s_deny" % (target),
-                                 "-t", "filter", ] + proto + \
-                              match + [ "-j", "%%REJECT%%" ]))
+            rules.append((ipv, [ target_format % (target),
+                                 "-t", "filter", ] + proto +
+                          match + final_target))
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_IN"], zone=zone)
-            rules.append((ipv, [ "%s_deny" % (target),
-                                 "-t", "filter", ] + proto + \
-                              match + [ "-j", "%%REJECT%%" ]))
+            rules.append((ipv, [ target_format % (target),
+                                 "-t", "filter", ] + proto +
+                          match + final_target))
 
         # handle rules
         ret = self._fw.handle_rules(rules, enable)
