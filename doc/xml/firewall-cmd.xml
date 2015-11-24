@@ -777,7 +777,7 @@
 	Binding a source to a zone means that this zone settings will be used to restrict traffic from this source.
       </para>
       <para>
-	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address (no mask). For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
       </para>
       <para>
 	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).

@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2
+from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -62,7 +62,7 @@ class Zone(IO_Object):
         "forward-port": [ "port", "protocol" ],
         "interface": [ "name" ],
         "rule": None,
-        "source": [ "address" ],
+        "source": None,
         "destination": [ "address" ],
         "protocol": [ "value" ],
         "log":  None,
@@ -77,7 +77,7 @@ class Zone(IO_Object):
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
-        "source": [ "invert", "family" ],
+        "source": [ "address", "mac", "invert", "family" ],
         "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
@@ -201,7 +201,8 @@ class Zone(IO_Object):
                     raise FirewallError(INVALID_INTERFACE, interface)
         elif item == "sources":
             for source in config:
-                if not checkIPnMask(source) and not checkIP6nMask(source):
+                if not checkIPnMask(source) and not checkIP6nMask(source) and \
+                   not check_mac(source):
                     raise FirewallError(INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
@@ -388,7 +389,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 if "invert" in attrs and \
                         attrs["invert"].lower() in [ "yes", "true" ]:
                     invert = True
-                self._rule.source = Rich_Source(attrs["address"], invert)
+                addr = mac = None
+                if "address" in attrs:
+                    addr = attrs["address"]
+                if "mac" in attrs:
+                    mac = attrs["mac"]
+                self._rule.source = Rich_Source(addr, mac, invert)
                 return
             # zone bound to source
             if "address" not in attrs:
@@ -400,9 +406,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
-            entry = attrs["address"]
-            if entry not in self.item.sources:
-                self.item.sources.append(entry)
+            if "address" in attrs:
+                entry = attrs["address"]
+                if entry not in self.item.sources:
+                    self.item.sources.append(entry)
 
         elif name == "destination":
             if not self._rule:
@@ -652,7 +659,11 @@ def zone_writer(zone, path=None):
 
         # source
         if rule.source:
-            attrs = { "address": rule.source.addr }
+            attrs = { }
+            if rule.addr:
+                attrs["address"] = rule.source.addr
+            if rule.mac:
+                attrs["mac"] = rule.source.mac
             if rule.source.invert:
                 attrs["invert"] = "True"
             handler.ignorableWhitespace("    ")

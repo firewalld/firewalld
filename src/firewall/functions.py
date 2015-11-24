@@ -307,6 +307,18 @@ def check_single_address(ipv, source):
     else:
         return False
 
+def check_mac(mac):
+    if len(mac) == 12+5:
+        # 0 1 : 3 4 : 6 7 : 9 10 : 12 13 : 15 16
+        for i in (2, 5, 8, 11, 14):
+            if mac[i] != ":":
+                return False
+        for i in (0, 1, 3, 4, 6, 7, 9, 10, 12, 13, 15, 16):
+            if mac[i] not in string.hexdigits:
+                return False
+        return True
+    return False
+
 def uniqify(input):
     # removes duplicates from list, whilst preserving order
     output = []
