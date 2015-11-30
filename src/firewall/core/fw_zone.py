@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2012 Red Hat, Inc.
+# Copyright (C) 2011-2015 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -23,7 +23,8 @@ import time
 from firewall.core.base import *
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
-    checkProtocol, enable_ip_forwarding, check_single_address, check_mac
+    checkProtocol, enable_ip_forwarding, check_single_address, check_mac, \
+    checkIP, checkIP6
 from firewall.core.rich import *
 from firewall.errors import *
 from firewall.core.ipXtables import ip4tables_available_tables,\
@@ -575,6 +576,13 @@ class FirewallZone(object):
     def list_interfaces(self, zone):
         return sorted(self.get_settings(zone)["interfaces"].keys())
 
+    # IPSETS
+
+    def ipset_family(self, name):
+        if self._fw.ipset.get_type(name) == "hash:mac":
+            return None
+        return self._fw.ipset.get_family(name)
+
     # SOURCES
 
     def check_source(self, source):
@@ -584,6 +592,8 @@ class FirewallZone(object):
             return "ipv6"
         elif check_mac(source):
             return ""
+        elif source.startswith("ipset:"):
+            return self.ipset_family(source[6:])
         else:
             raise FirewallError(INVALID_ADDR, source)
 
@@ -634,15 +644,21 @@ class FirewallZone(object):
 
                     # handle all zone bindings in the same way
                     # trust, block and drop zone targets are handled in __chain
-                    opt = SOURCE_ZONE_OPTS[chain]
-                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                        zone=zone)
                     if self._zones[zone].target == DEFAULT_ZONE_TARGET:
                         action = "-g"
                     else:
                         action = "-j"
-                    rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
-                             opt, source, action, target ]
+                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                                        zone=zone)
+
+                    if source.startswith("ipset:"):
+                        rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                                 "-m", "set", "--match-set", source[6:], "src",
+                                 action, target ]
+                    else:
+                        opt = SOURCE_ZONE_OPTS[chain]
+                        rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                                 opt, source, action, target ]
                     rules.append((ipv, rule))
 
         # handle rules
@@ -739,17 +755,40 @@ class FirewallZone(object):
         self.check_rule(rule)
         return (str(rule))
 
+    def __rule_source_ipv(self, source):
+        if not source:
+            return None
+
+        if source.addr:
+            if checkIPnMask(source.addr):
+                return "ipv4"
+            elif checkIP6nMask(source.addr):
+                return "ipv6"
+        elif hasattr(source, "mac") and source.mac:
+            return ""
+        elif hasattr(source, "ipset") and source.ipset:
+            return self.ipset_family(source.ipset)
+
+        return None
+
     def __rule_source(self, source, command):
         if source:
             if source.addr:
                 if source.invert:
                     command.append("!")
                 command += [ "-s", source.addr ]
-            if hasattr(source, "mac") and source.mac:
+
+            elif hasattr(source, "mac") and source.mac:
                 command += [ "-m", "mac" ]
                 if source.invert:
                     command.append("!")
                 command += [ "--mac-source", source.mac ]
+
+            elif hasattr(source, "ipset") and source.ipset:
+                command += [ "-m", "set" ]
+                if source.invert:
+                    command.append("!")
+                command += [ "--match-set", source.ipset, "src" ]
 
     def __rule_destination(self, destination, command):
         if destination:
@@ -822,6 +861,17 @@ class FirewallZone(object):
             ipvs = [ rule.family ]
         else:
             ipvs = [ "ipv4", "ipv6" ]
+
+        source_ipv = self.__rule_source_ipv(rule.source)
+        if source_ipv != None:
+            if rule.family != None:
+                # rule family is defined by user, no way to change it
+                if rule.family != source_ipv:
+                    raise FirewallError(INVALID_RULE,
+                                        "Source address family '%s' conflicts with rule family '%s'." % (source_ipv, rule.family))
+            else:
+                # use the source family as rule family
+                ipvs = [ source_ipv ]
 
         for ipv in ipvs:
 
