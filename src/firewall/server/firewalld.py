@@ -39,6 +39,7 @@ from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid
 from firewall.core.io.zone import Zone
+from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.errors import *
@@ -154,6 +155,9 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "BRIDGE":
             return self.fw.ebtables_enabled
 
+        elif prop == "IPSet":
+            return self.fw.ipset_enabled
+
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -195,6 +199,7 @@ class FirewallD(slip.dbus.service.Object):
             'IPv6': self._get_property("IPv6"),
             'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
             'BRIDGE': self._get_property("BRIDGE"),
+            'IPSet': self._get_property("IPSet"),
         }
         
 
@@ -1966,3 +1971,97 @@ class FirewallD(slip.dbus.service.Object):
             Use-case is GUI (RHBZ#994729).
         """
         pass
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # IPSETS
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryIPSet(self, ipset, sender=None):
+        # returns true if a set with the name exists
+        ipset = dbus_to_python(ipset)
+        log.debug1("ipset.queryIPSet('%s')" % (ipset))
+        return self.fw.ipset.query_ipset(ipset)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getIPSets(self, sender=None):
+        # returns list of added sets
+        log.debug1("ipsets.getIPSets()")
+        return self.fw.ipset.get_ipsets()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='s',
+                         out_signature=IPSet.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getIPSetSettings(self, ipset, sender=None):
+        # returns ipset settings for ipset
+        ipset = dbus_to_python(ipset, str)
+        log.debug1("getIPSetSettings(%s)", ipset)
+        return self.fw.ipset.get_ipset(ipset).export_config()
+
+    # set entries # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='ss',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def addEntry(self, ipset, entry, sender=None):
+        # adds ipset entry
+        ipset = dbus_to_python(ipset)
+        entry = dbus_to_python(entry)
+        log.debug1("ipset.addEntry('%s', '%s')" % (ipset, entry))
+        self.accessCheck(sender)
+        self.fw.ipset.add_entry(ipset, entry)
+        self.EntryAdded(ipset, entry)
+
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='ss',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def removeEntry(self, ipset, entry, sender=None):
+        # removes ipset entry
+        ipset = dbus_to_python(ipset)
+        entry = dbus_to_python(entry)
+        log.debug1("ipset.removeEntry('%s', '%s')" % (ipset, entry))
+        self.accessCheck(sender)
+        self.fw.ipset.remove_entry(ipset, entry)
+        self.EntryRemoved(ipset, entry)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='ss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryEntry(self, ipset, entry, sender=None):
+        # returns true if the entry exists in the ipset
+        ipset = dbus_to_python(ipset)
+        entry = dbus_to_python(entry)
+        log.debug1("ipset.queryEntry('%s', '%s')" % (ipset, entry))
+        return self.fw.ipset.query_entry(ipset, entry)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='s',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getEntries(self, ipset, sender=None):
+        # returns list of added entries for the ipset
+        ipset = dbus_to_python(ipset)
+        log.debug1("ipset.getEntries('%s')" % ipset)
+        return self.fw.ipset.get_entries(ipset)
+
+    @dbus.service.signal(DBUS_INTERFACE_IPSET, signature='ss')
+    @dbus_handle_exceptions
+    def EntryAdded(self, ipset, entry):
+        ipset = dbus_to_python(ipset)
+        entry = dbus_to_python(entry)
+        log.debug1("ipset.EntryAdded('%s', '%s')" % (ipset, entry))
+
+    @dbus.service.signal(DBUS_INTERFACE_IPSET, signature='ss')
+    @dbus_handle_exceptions
+    def EntryRemoved(self, ipset, entry):
+        ipset = dbus_to_python(ipset)
+        entry = dbus_to_python(entry)
+        log.debug1("ipset.EntryRemoved('%s', '%s')" % (ipset, entry))

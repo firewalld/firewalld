@@ -36,9 +36,11 @@ from firewall.server.decorators import *
 from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
+from firewall.server.config_ipset import FirewallDConfigIPSet
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
+from firewall.core.io.ipset import IPSet
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.direct import Direct
 from firewall.dbus_utils import dbus_to_python, \
@@ -66,6 +68,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.path = args[0]
         self._init_vars()
         self.watcher = Watcher(self.watch_updater, 5)
+        self.watcher.add_watch_dir(FIREWALLD_IPSETS)
+        self.watcher.add_watch_dir(ETC_FIREWALLD_IPSETS)
         self.watcher.add_watch_dir(FIREWALLD_ICMPTYPES)
         self.watcher.add_watch_dir(ETC_FIREWALLD_ICMPTYPES)
         self.watcher.add_watch_dir(FIREWALLD_SERVICES)
@@ -78,6 +82,8 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     @handle_exceptions
     def _init_vars(self):
+        self.ipsets = [ ]
+        self.ipset_idx = 0
         self.icmptypes = [ ]
         self.icmptype_idx = 0
         self.services = [ ]
@@ -85,6 +91,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.zones = [ ]
         self.zone_idx = 0
 
+        for ipset in self.config.get_ipsets():
+            self._addIPSet(self.config.get_ipset(ipset))
         for icmptype in self.config.get_icmptypes():
             self._addIcmpType(self.config.get_icmptype(icmptype))
         for service in self.config.get_services():
@@ -98,6 +106,10 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     @handle_exceptions
     def reload(self):
+        while len(self.ipsets) > 0:
+            x = self.ipsets.pop()
+            x.unregister()
+            del x
         while len(self.icmptypes) > 0:
             x = self.icmptypes.pop()
             x.unregister()
@@ -160,6 +172,17 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.removeZone(obj)
             elif what == "update":
                 self._updateZone(obj)
+
+        elif (name.startswith(FIREWALLD_IPSETS) or \
+              name.startswith(ETC_FIREWALLD_IPSETS)) and \
+             name.endswith(".xml"):
+            (what, obj) = self.config.update_ipset_from_path(name)
+            if what == "new":
+                self._addIPSet(obj)
+            elif what == "remove":
+                self.removeIPSet(obj)
+            elif what == "update":
+                self._updateIPSet(obj)
 
         elif name == LOCKDOWN_WHITELIST:
             self.config.update_lockdown_whitelist()
@@ -273,6 +296,34 @@ class FirewallDConfig(slip.dbus.service.Object):
                 zone.unregister()
                 self.zones.remove(zone)
                 del zone
+
+    @handle_exceptions
+    def _addIPSet(self, obj):
+        # TODO: check for idx overflow
+        config_ipset = FirewallDConfigIPSet(self, \
+            self.config, obj, self.ipset_idx, self.path,
+            "%s/%d" % (DBUS_PATH_CONFIG_IPSET, self.ipset_idx))
+        self.ipsets.append(config_ipset)
+        self.ipset_idx += 1
+        self.IPSetAdded(obj.name)
+        return config_ipset
+
+    @handle_exceptions
+    def _updateIPSet(self, obj):
+        for ipset in self.ipsets:
+            if ipset.obj.name == obj.name and ipset.obj.path == obj.path and \
+                    ipset.obj.filename == obj.filename:
+                ipset.obj = obj
+                ipset.Updated(obj.name)
+
+    @handle_exceptions
+    def removeIPSet(self, obj):
+        for ipset in self.ipsets:
+            if ipset.obj == obj:
+                ipset.Removed(obj.name)
+                ipset.unregister()
+                self.ipsets.remove(ipset)
+                del ipset
 
     # access check
 
@@ -601,6 +652,50 @@ class FirewallDConfig(slip.dbus.service.Object):
         return self.getLockdownWhitelist()[3]
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # I P S E T S
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG, out_signature='ao')
+    @dbus_handle_exceptions
+    def listIPSets(self, sender=None):
+        """list ipsets objects paths
+        """
+        log.debug1("config.listIPSets()")
+        return self.ipsets
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG, in_signature='s',
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def getIPSetByName(self, ipset, sender=None):
+        """object path of ipset with given name
+        """
+        ipset = dbus_to_python(ipset, str)
+        log.debug1("config.getIPSetByName('%s')", ipset)
+        for obj in self.ipsets:
+            if obj.obj.name == ipset:
+                return obj
+        raise FirewallError(INVALID_IPSET, ipset)
+
+    @dbus_service_method(DBUS_INTERFACE_CONFIG,
+                         in_signature='s'+IPSet.DBUS_SIGNATURE,
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def addIPSet(self, ipset, settings, sender=None):
+        """add ipset with given name and settings
+        """
+        ipset = dbus_to_python(ipset, str)
+        settings = dbus_to_python(settings)
+        log.debug1("config.addIPSet('%s')", ipset)
+        self.accessCheck(sender)
+        obj = self.config.new_ipset(ipset, settings)
+        config_ipset = self._addIPSet(obj)
+        return config_ipset
+
+    @dbus.service.signal(DBUS_INTERFACE_CONFIG, signature='s')
+    @dbus_handle_exceptions
+    def IPSetAdded(self, ipset):
+        ipset = dbus_to_python(ipset, str)
+        log.debug1("config.IPSetAdded('%s')" % (ipset))
 
     # I C M P T Y P E S
 
