@@ -27,6 +27,7 @@ from firewall.core.logger import log
 from firewall.core.io.icmptype import IcmpType, icmptype_reader, icmptype_writer
 from firewall.core.io.service import Service, service_reader, service_writer
 from firewall.core.io.zone import Zone, zone_reader, zone_writer
+from firewall.core.io.ipset import IPSet, ipset_reader, ipset_writer
 from firewall.functions import portStr
 from firewall.errors import *
 
@@ -36,15 +37,17 @@ class FirewallConfig(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
-                   self._icmptypes, self._services, self._zones,
-                   self._default_icmptypes, self._default_services, self._default_zones,
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
+                   self._ipsets, self._icmptypes, self._services, self._zones,
+                   self._default_ipsets, self._default_icmptypes, self._default_services, self._default_zones,
                    self._firewalld_conf, self._policies, self._direct)
 
     def __init_vars(self):
+        self._ipsets = { }
         self._icmptypes = { }
         self._services = { }
         self._zones = { }
+        self._default_ipsets = { }
         self._default_icmptypes = { }
         self._default_services = { }
         self._default_zones = { }
@@ -53,6 +56,13 @@ class FirewallConfig(object):
         self._direct = None
 
     def cleanup(self):
+        for x in list(self._default_ipsets.keys()):
+            self._default_ipsets[x].cleanup()
+            del self._default_ipsets[x]
+        for x in list(self._ipsets.keys()):
+            self._ipsets[x].cleanup()
+            del self._ipsets[x]
+
         for x in list(self._default_icmptypes.keys()):
             self._default_icmptypes[x].cleanup()
             del self._default_icmptypes[x]
@@ -140,6 +150,177 @@ class FirewallConfig(object):
             self._direct.cleanup()
         else:
             self._direct.read()
+
+    # ipset
+
+    def get_ipsets(self):
+        return sorted(set(list(self._ipsets.keys()) + \
+                          list(self._default_ipsets.keys())))
+
+    def add_ipset(self, obj):
+        if obj.default:
+            self._default_ipsets[obj.name] = obj
+        else:
+            self._ipsets[obj.name] = obj
+
+    def get_ipset(self, name):
+        if name in self._ipsets:
+            return self._ipsets[name]
+        elif name in self._default_ipsets:
+            return self._default_ipsets[name]
+        raise FirewallError(INVALID_IPSET, name)
+
+    def ipset_has_defaults(self, name):
+        return (name in self._ipsets and name in self._default_ipsets)
+
+    def ipset_is_default(self, name):
+        return name in self._default_ipsets
+
+    def load_ipset_defaults(self, obj):
+        if obj.name not in self._ipsets:
+            raise FirewallError(NO_DEFAULTS,
+                                "'%s' not in self._ipsets" % obj.name)
+        elif self._ipsets[obj.name] != obj:
+            raise FirewallError(NO_DEFAULTS,
+                                "self._ipsets[%s] != obj" % obj.name)
+        elif obj.name not in self._default_ipsets:
+            raise FirewallError(NO_DEFAULTS,
+                            "'%s' not in self._default_ipsets" % obj.name)
+        self._remove_ipset(obj)
+        return self._default_ipsets[obj.name]
+
+    def get_ipset_config(self, obj):
+        return obj.export_config()
+
+    def set_ipset_config(self, obj, config):
+        if obj.default:
+            x = copy.copy(obj)
+            x.import_config(config)
+            x.path = ETC_FIREWALLD_IPSETS
+            x.default = False
+            self.add_ipset(x)
+            ipset_writer(x)
+            return x
+        else:
+            obj.import_config(config)
+            ipset_writer(obj)
+            return obj
+
+    def new_ipset(self, name, config):
+        try:
+            self.get_ipset(name)
+        except:
+            pass
+        else:
+            raise FirewallError(NAME_CONFLICT, "new_ipset(): '%s'" % name)
+
+        x = IPSet()
+        x.check_name(name)
+        x.import_config(config)
+        x.name = name
+        x.filename = "%s.xml" % name
+        x.path = ETC_FIREWALLD_IPSETS
+        x.default = False
+
+        ipset_writer(x)
+        self.add_ipset(x)
+        return x
+
+    def update_ipset_from_path(self, name):
+        filename = os.path.basename(name)
+        path = os.path.dirname(name)
+
+        if not os.path.exists(name):
+            # removed file
+
+            if path == ETC_FIREWALLD_IPSETS:
+                # removed custom ipset
+                for x in self._ipsets.keys():
+                    obj = self._ipsets[x]
+                    if obj.filename == filename:
+                        del self._ipsets[x]
+                        if obj.name in self._default_ipsets:
+                            return ("update", self._default_ipsets[obj.name])
+                        return ("remove", obj)
+            else:
+                # removed builtin ipset
+                for x in self._default_ipsets.keys():
+                    obj = self._default_ipsets[x]
+                    if obj.filename == filename:
+                        del self._default_ipsets[x]
+                        if obj.name not in self._ipsets:
+                            # update dbus ipset
+                            return ("remove", obj)
+                        else:
+                            # builtin hidden, no update needed
+                            return (None, None)
+
+            # ipset not known to firewalld, yet (timeout, ..)
+            return (None, None)
+
+        # new or updated file
+
+        obj = ipset_reader(filename, path)
+
+        # new ipset
+        if obj.name not in self._default_ipsets and obj.name not in self._ipsets:
+            self.add_ipset(obj)
+            return ("new", obj)
+
+        # updated ipset
+        if path == ETC_FIREWALLD_IPSETS:
+            # custom ipset update
+            if obj.name in self._ipsets:
+                self._ipsets[obj.name] = obj
+            return ("update", obj)
+        else:
+            if obj.name in self._default_ipsets:
+                # builtin ipset update
+                del self._default_ipsets[obj.name]
+                self._default_ipsets[obj.name] = obj
+
+                if obj.name not in self._ipsets:
+                    # update dbus ipset
+                    return ("update", obj)
+                else:
+                    # builtin hidden, no update needed
+                    return (None, None)
+
+        # ipset not known to firewalld, yet (timeout, ..)
+        return (None, None)
+
+    def _remove_ipset(self, obj):
+        if obj.name not in self._ipsets:
+            raise FirewallError(INVALID_IPSET,
+                                "'%s' not in self._ipsets" % obj.name)
+        if obj.path != ETC_FIREWALLD_IPSETS:
+            raise FirewallError(INVALID_DIRECTORY,
+                        "'%s' != '%s'" % (obj.path, ETC_FIREWALLD_IPSETS))
+        os.remove("%s/%s.xml" % (obj.path, obj.name))
+        del self._ipsets[obj.name]
+
+    def is_builtin_ipset(self, obj):
+        if obj.default or obj.name in self._default_ipsets:
+            return True
+        return False
+
+    def check_builtin_ipset(self, obj):
+        if self.is_builtin_ipset(obj):
+            raise FirewallError(BUILTIN_IPSET,
+                                "'%s' is built-in icmp type" % obj.name)
+
+    def remove_ipset(self, obj):
+        self.check_builtin_ipset(obj)
+        self._remove_ipset(obj)
+
+    def rename_ipset(self, obj, name):
+        self.check_builtin_ipset(obj)
+        new_ipset = self._copy_ipset(obj, name)
+        self._remove_ipset(obj)
+        return new_ipset
+
+    def _copy_ipset(self, obj, name):
+        return self.new_ipset(name, obj.export_config())
 
     # icmptypes
 
