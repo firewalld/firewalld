@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.ipset">
+
+  <refentryinfo>
+    <title>firewalld.ipset</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.ipset</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.ipset</refname>
+    <refpurpose>firewalld ipset configuration files</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/ipsets/ipset.xml</filename>
+<filename><config.prefix/>/lib/firewalld/ipsets/ipset.xml</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      A firewalld ipset configuration file provides the information of an ip set for firewalld. The most important configuration options are type, option and entry.
+    </para>
+
+    <para>
+      This example configuration file shows the structure of an ipset configuration file:
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;ipset type="<replaceable>hash:ip</replaceable>"&gt;
+  &lt;short&gt;<replaceable>My Ipset</replaceable>&lt;/short&gt;
+  &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
+  &lt;entry&gt;<replaceable>1.2.3.4</replaceable>&lt;/entry&gt;
+  &lt;entry&gt;<replaceable>1.2.3.5</replaceable>&lt;/entry&gt;
+  &lt;entry&gt;<replaceable>1.2.3.6</replaceable>&lt;/entry&gt;
+&lt;/ipset&gt;
+      </programlisting>
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      The config can contain these tags and attributes. Some of them are mandatory, others optional.
+    </para>
+
+    <refsect2 id="options_ipset">
+      <title>ipset</title>
+      <para>
+	The mandatory ipset start and end tag defines the ipset. This tag can only be used once in a ipset configuration file. There is one mandatory and also optional attributes for ipsets:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>type="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              The mandatory type of the ipset. This cas be one of these types: <replaceable>hash:ip</replaceable>, <replaceable>hash:net</replaceable>, <replaceable>hash:mac</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term>version="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              To give the ipset a version.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_short">
+      <title>short</title>
+      <para>
+	Is an optional start and end tag and is used to give an icmptype a more	readable name.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_description">
+      <title>description</title>
+      <para>
+	Is an optional start and end tag to have a description for a icmptype.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_option">
+      <title>option</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one option. Mostly all attributes of an option entry are mandatory:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>name="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The mandatory option name <replaceable>string</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>value="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              The optional value of the option.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+
+      <para>
+	The supported options are: family: <replaceable>"inet"</replaceable>|<replaceable>"inet6"</replaceable>, timeout: <replaceable>integer</replaceable>, hashsize: <replaceable>integer</replaceable>, maxelem: <replaceable>integer</replaceable>. For more information on these options, please have a look at the ipset documentation.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_entry">
+      <title>entry</title>
+      <para>
+	Is an optional start and end tag and can be used several times to have more than one entry entry. An entry entry does not have attributes.
+      </para>
+
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>
