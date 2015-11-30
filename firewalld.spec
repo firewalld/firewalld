@@ -24,7 +24,7 @@ BuildRequires:  python2-devel
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
-Requires: iptables, ebtables
+Requires: iptables, ebtables, ipset
 Requires(post): systemd
 Requires(preun): systemd
 Requires(postun): systemd
