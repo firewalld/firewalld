@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema path="/org/fedoraproject/FirewallConfig/" id="org.fedoraproject.FirewallConfig">
+    <key type="b" name="show-ipsets">
+      <default>false</default>
+      <summary>Shows IPSets tab if true</summary>
+    </key>
     <key type="b" name="show-icmp-types">
       <default>false</default>
       <summary>Shows ICMP types tab if true</summary>
