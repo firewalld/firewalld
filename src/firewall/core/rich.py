@@ -28,19 +28,28 @@ REJECT_TYPES = {
 }
 
 class Rich_Source(object):
-    def __init__(self, addr, mac, invert=False):
+    def __init__(self, addr, mac, ipset, invert=False):
         self.addr = addr
         if self.addr == "":
             self.addr = None
         self.mac = mac
         if self.mac == "":
             self.mac = None
+        else:
+            self.mac = self.mac.upper()
+        self.ipset = ipset
+        if self.ipset == "":
+            self.ipset = None
         self.invert = invert
 
     def __str__(self):
-        return 'source%s%s' % (" NOT" if self.invert else "",
-                               ' address="%s"' % self.addr if self.addr \
-                               else ' mac="%s"' % self.mac)
+        if self.addr:
+            x = ' address="%s"' % self.addr
+        elif self.mac:
+            x = ' mac="%s"' % self.mac
+        elif self.ipset:
+            x = ' ipset="%s"' % self.ipset
+        return 'source%s%s' % (" NOT" if self.invert else "", x)
 
 class Rich_Destination(object):
     def __init__(self, addr, invert=False):
@@ -262,7 +271,8 @@ class Rich_Rule(object):
             #print ("in_elements: ", in_elements)
             #print ("index: %s, element: %s, attribute: %s=%s" % (index, element, attr_name, attr_value))
             if attr_name:     # attribute
-                if attr_name not in ['family', 'address', 'mac', 'invert', 'value', \
+                if attr_name not in ['family', 'address', 'mac', 'ipset',
+                                     'invert', 'value',
                                      'port', 'protocol', 'to-port', 'to-addr',
                                      'name', 'prefix', 'level', 'type']:
                     raise FirewallError(INVALID_RULE, "bad attribute '%s'" % attr_name)
@@ -313,12 +323,12 @@ class Rich_Rule(object):
                 else:
                     in_elements.append(element) # push into stack
             elif in_element == 'source':
-                if attr_name in ['address', 'mac', 'invert']:
+                if attr_name in ['address', 'mac', 'ipset', 'invert']:
                     attrs[attr_name] = attr_value
                 elif element in ['not', 'NOT']:
                     attrs['invert'] = True
                 else:
-                    self.source = Rich_Source(attrs.get('address'), attrs.get('mac'), attrs.get('invert'))
+                    self.source = Rich_Source(attrs.get('address'), attrs.get('mac'), attrs.get('ipset'), attrs.get('invert'))
                     in_elements.pop() # source
                     attrs.clear()
                     index = index -1 # return token to input
@@ -464,6 +474,11 @@ class Rich_Rule(object):
             elif self.source.mac is not None:
                 if not functions.check_mac(self.source.mac):
                     raise FirewallError(INVALID_MAC, str(self.source.mac))
+
+            elif self.source.ipset is not None:
+                if not functions.check_ipset(self.source.ipset):
+                    raise FirewallError(INVALID_IPSET, str(self.source.ipset))
+
             else:
                 raise FirewallError(INVALID_RULE, "invalid source")
 
