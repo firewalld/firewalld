@@ -34,7 +34,8 @@ OPTIONS_LOCKDOWN="--add-lockdown-whitelist-command= --remove-lockdown-whitelist-
 # can be used as standalone or with --permanent
 OPTIONS_CONFIG="--get-zones --get-services --get-icmptypes \
                 ${OPTIONS_LOCKDOWN} --list-all-zones \
-                --info-zone --info-service --info-icmptype"
+                --info-zone --info-service --info-icmptype \
+		--info-ipset"
 
 OPTIONS_ZONE_INTERFACES_SOURCES="\
             --add-interface= --remove-interface= --query-interface= \
@@ -53,13 +54,20 @@ OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule
                     --list-services --list-ports --list-protocols --list-icmp-blocks \
                     --list-forward-ports --list-rich-rules --list-all"
 
+OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry="
+
+OPTIONS_IPSET_ADAPT_QUERY="--list-entries"
+
 # can be used with/without preceding --zone=<zone>
 OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
               ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}"
 
+OPTIONS_IPSET="${OPTIONS_IPSETACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
+
 OPTIONS_PERMANENT_ONLY="--new-icmptype= --delete-icmptype= \
                         --new-service= --delete-service= \
                         --new-zone= --delete-zone= \
+                        --new-ipset= --delete-ipset= \
                         --get-target --set-target="
 
 # can be used after --permanent
@@ -99,6 +107,16 @@ _firewall_cmd()
         ;;
     --zone=*)
         COMPREPLY=( $( compgen -W "${OPTIONS_ZONE}" -- "$cur" ) )
+        ;;
+    --ipset=*)
+        COMPREPLY=( $( compgen -W "${OPTIONS_IPSET}" -- "$cur" ) )
+        ;;
+    --*-ipset)
+        if [[ ${words[@]} == *--permanent* ]]; then
+          COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-ipsets`' -- "$cur" ) )
+        else
+          COMPREPLY=( $( compgen -W '`firewall-cmd --get-ipsets`' -- "$cur" ) )
+        fi
         ;;
     --*-service)
         if [[ ${words[@]} == *--permanent* ]]; then

@@ -836,6 +836,85 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id="ipset_options">
+      <title>IPSet Options</title>
+      <variablelist>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
+         <listitem>
+           <para>
+             Add a new permanent ipset with specifying the type and optional options.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--delete-ipset</option>=<replaceable>ipset</replaceable></term>
+         <listitem>
+           <para>
+             Delete an existing permanent ipset.
+           </para>
+         </listitem>
+       </varlistentry>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--info-ipset=<replaceable>ipset</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print information about the ipset <replaceable>ipset</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>ipset</replaceable>
+  type: <replaceable>type</replaceable>
+  options: <replaceable>option1[=value1]</replaceable> ..
+  entries: <replaceable>entry1</replaceable> ..
+              </programlisting>
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--list-ipsets</option></term>
+	  <listitem>
+	    <para>
+	      List defined ipsets.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--add-entry</option>=<replaceable>entry</replaceable></term>
+         <listitem>
+           <para>
+             Add a new entry to the ipset.
+           </para>
+         </listitem>
+       </varlistentry>
+
+	<varlistentry>
+         <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--remove-entry</option>=<replaceable>entry</replaceable></term>
+         <listitem>
+           <para>
+             Remove an entry from the ipset.
+           </para>
+         </listitem>
+       </varlistentry>
+
+	<varlistentry>
+         <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--query-entry</option>=<replaceable>entry</replaceable></term>
+         <listitem>
+           <para>
+	     Return whether the entry has been added to an ipset. Returns 0 if true, 1 otherwise.
+           </para>
+         </listitem>
+       </varlistentry>
+
+	<varlistentry>
+         <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--get-entries</option></term>
+         <listitem>
+           <para>
+             List all entries of the ipset.
+           </para>
+         </listitem>
+       </varlistentry>
+      </variablelist>
+    </refsect2>
+
     <refsect2 id="service_options">
       <title>Service Options</title>
       <variablelist>
