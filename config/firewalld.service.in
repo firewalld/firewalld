@@ -3,7 +3,7 @@ Description=firewalld - dynamic firewall daemon
 Before=network.target
 Before=libvirtd.service
 Before=NetworkManager.service
-Conflicts=iptables.service ip6tables.service ebtables.service
+Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/firewalld
