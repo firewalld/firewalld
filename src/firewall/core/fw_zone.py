@@ -592,6 +592,10 @@ class FirewallZone(object):
         return (ipv, source)
 
     def __source(self, enable, zone, ipv, source):
+        # make sure mac addresses are unique
+        if check_mac(source):
+            source = source.upper()
+
         rules = [ ]
 
         # For mac source bindings ipv is an empty string, the mac source will
@@ -656,6 +660,9 @@ class FirewallZone(object):
         if not _obj.applied:
             self.apply_zone_settings(zone)
 
+        if check_mac(source):
+            source = source.upper()
+
         source_id = self.__source_id(source)
 
         if source_id in _obj.settings["sources"]:
@@ -682,6 +689,9 @@ class FirewallZone(object):
         if _new_zone == _old_zone:
             return _old_zone
 
+        if check_mac(source):
+            source = source.upper()
+
         if _old_zone is not None:
             self.remove_source(_old_zone, source)
 
@@ -689,6 +699,8 @@ class FirewallZone(object):
 
     def remove_source(self, zone, source):
         self._fw.check_panic()
+        if check_mac(source):
+            source = source.upper()
         zos = self.get_zone_of_source(source)
         if zos is None:
             raise FirewallError(UNKNOWN_SOURCE,
@@ -711,6 +723,8 @@ class FirewallZone(object):
         return _zone
 
     def query_source(self, zone, source):
+        if check_mac(source):
+            source = source.upper()
         return self.__source_id(source) in self.get_settings(zone)["sources"]
 
     def list_sources(self, zone):
