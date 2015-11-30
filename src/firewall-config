@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2014 Red Hat, Inc.
+# Copyright (C) 2011-2015 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -51,9 +51,11 @@ from firewall import client
 from firewall.functions import *
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.ipset import IPSET_MAXNAMELEN, IPSET_TYPES
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
+from firewall.core.io.ipset import IPSet
 from firewall.core.rich import *
 
 if not datadir:
@@ -128,6 +130,8 @@ class FirewallConfig(object):
         self.mainToolbar.hide()
 
         self.mainNotebook = builder.get_object("mainNotebook")
+        self.ipsetsBox = builder.get_object("ipsetsBox")
+        self.ipsetsMenuitem = builder.get_object("ipsetsMenuitem")
         self.icmpTypesBox = builder.get_object("icmpTypesBox")
         self.icmpTypesMenuitem = builder.get_object("icmpTypesMenuitem")
         self.directBox = builder.get_object("directBox")
@@ -526,6 +530,83 @@ class FirewallConfig(object):
         self.forwardDialogToAddrEntry = \
             builder.get_object("forwardDialogToAddrEntry")
 
+        self.ipsetConfIPSetView = builder.get_object("ipsetConfIPSetView")
+        self.ipsetConfIPSetStore = Gtk.ListStore(GObject.TYPE_STRING)  # name
+        self.ipsetConfIPSetView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.ipsetConfIPSetView.set_model(self.ipsetConfIPSetStore)
+        self.ipsetConfIPSetStore.set_sort_column_id(
+            0, Gtk.SortType.ASCENDING)
+        self.ipsetConfIPSetView.get_selection().connect("changed",
+                                                        self.onChangeIPSet)
+
+        self.ipsetConfEntryLabel = builder.get_object("ipsetConfEntryLabel")
+        self.ipsetConfTimeoutLabel = builder.get_object("ipsetConfTimeoutLabel")
+        self.ipsetConfEntrySW = builder.get_object("ipsetConfEntrySW")
+        self.ipsetConfEntryView = builder.get_object("ipsetConfEntryView")
+        self.ipsetConfEntryStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.ipsetConfEntryView.append_column(
+            Gtk.TreeViewColumn(_("Entry"), Gtk.CellRendererText(), text=0))
+        self.ipsetConfEntryView.set_model(self.ipsetConfEntryStore)
+        self.ipsetConfEntryStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.ipsetConfEntryView.get_selection().connect(\
+            "changed", self.change_ipset_conf_entry_selection_cb)
+
+        self.ipsetConfIPSetEditBox = \
+            builder.get_object("ipsetConfIPSetEditBox")
+        self.ipsetConfEntryBox = \
+            builder.get_object("ipsetConfEntryBox")
+
+        self.ipsetConfEditIPSetButton = \
+            builder.get_object("ipsetConfEditIPSetButton")
+        self.ipsetConfRemoveIPSetButton = \
+            builder.get_object("ipsetConfRemoveIPSetButton")
+        self.ipsetConfLoadDefaultsIPSetButton = \
+            builder.get_object("ipsetConfLoadDefaultsIPSetButton")
+
+        self.ipsetConfEditEntryButton = \
+            builder.get_object("ipsetConfEditEntryButton")
+        self.ipsetConfRemoveEntryButton = \
+            builder.get_object("ipsetConfRemoveEntryButton")
+
+        self.ipsetEntryDialog = \
+            builder.get_object("ipsetEntryDialog")
+
+        self.ipsetEntryDialogCancelButton = \
+            builder.get_object("ipsetEntryDialogCancelButton")
+        self.ipsetEntryDialogOkButton = \
+            builder.get_object("ipsetEntryDialogOkButton")
+        self.ipsetEntryDialogEntryEntry = \
+            builder.get_object("ipsetEntryDialogEntryEntry")
+
+        self.ipsetBaseDialog = builder.get_object("ipsetBaseDialog")
+        self.ipsetBaseDialogOkButton = \
+            builder.get_object("ipsetBaseDialogOkButton")
+
+        self.ipsetBaseDialogNameEntry = \
+            builder.get_object("ipsetBaseDialogNameEntry")
+        self.ipsetBaseDialogVersionEntry = \
+            builder.get_object("ipsetBaseDialogVersionEntry")
+        self.ipsetBaseDialogShortEntry = \
+            builder.get_object("ipsetBaseDialogShortEntry")
+        self.ipsetBaseDialogDescText = \
+            builder.get_object("ipsetBaseDialogDescText")
+        self.ipsetBaseDialogDescText.get_buffer().connect(\
+            "changed", self.onIPSetBaseDialogChanged)
+        self.ipsetBaseDialogTypeCombobox = \
+            builder.get_object("ipsetBaseDialogTypeCombobox")
+
+        self.ipsetBaseDialogFamilyLabel = \
+            builder.get_object("ipsetBaseDialogFamilyLabel")
+        self.ipsetBaseDialogFamilyCombobox = \
+            builder.get_object("ipsetBaseDialogFamilyCombobox")
+        self.ipsetBaseDialogTimeoutEntry = \
+            builder.get_object("ipsetBaseDialogTimeoutEntry")
+        self.ipsetBaseDialogHashsizeEntry = \
+            builder.get_object("ipsetBaseDialogHashsizeEntry")
+        self.ipsetBaseDialogMaxelemEntry = \
+            builder.get_object("ipsetBaseDialogMaxelemEntry")
+
         self.icmpView = builder.get_object("icmpView")
         self.icmpStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, # checked
                                        GObject.TYPE_STRING)  # name
@@ -789,6 +870,24 @@ class FirewallConfig(object):
         self.macDialogMacEntry = \
             builder.get_object("macDialogMacEntry")
 
+        self.ipsetDialog = builder.get_object("ipsetDialog")
+        self.ipsetDialogOkButton = \
+            builder.get_object("ipsetDialogOkButton")
+        self.ipsetDialogCancelButton = \
+            builder.get_object("ipsetDialogCancelButton")
+        self.ipsetDialogIPSetView = \
+            builder.get_object("ipsetDialogIPSetView")
+
+        self.ipsetDialogIPSetStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                                   GObject.TYPE_STRING)
+        self.ipsetDialogIPSetView.append_column(
+            Gtk.TreeViewColumn("IPSet", Gtk.CellRendererText(), text=0))
+        self.ipsetDialogIPSetView.append_column(
+            Gtk.TreeViewColumn("Type", Gtk.CellRendererText(), text=1))
+        self.ipsetDialogIPSetView.set_model(self.ipsetDialogIPSetStore)
+        self.ipsetDialogIPSetView.get_selection().connect( \
+            "changed", self.change_ipset_selection_cb)
+
         self.sourceDialog = builder.get_object("sourceDialog")
         self.sourceDialogOkButton = \
             builder.get_object("sourceDialogOkButton")
@@ -938,6 +1037,9 @@ class FirewallConfig(object):
         self.fw.connect("zone-of-source-changed",
                         self.zone_of_source_changed_cb)
 
+        self.fw.connect("ipset-entry-added", self.ipset_entry_added_cb)
+        self.fw.connect("ipset-entry-removed", self.ipset_entry_removed_cb)
+
         self.fw.connect("lockdown-whitelist-command-added",
                         self.lockdown_whitelist_command_added_cb)
         self.fw.connect("lockdown-whitelist-command-removed",
@@ -967,6 +1069,10 @@ class FirewallConfig(object):
         self.fw.connect("config:zone-updated", self.conf_zone_updated_cb)
         self.fw.connect("config:zone-removed", self.conf_zone_removed_cb)
         self.fw.connect("config:zone-renamed", self.conf_zone_renamed_cb)
+        self.fw.connect("config:ipset-added", self.conf_ipset_added_cb)
+        self.fw.connect("config:ipset-updated", self.conf_ipset_updated_cb)
+        self.fw.connect("config:ipset-removed", self.conf_ipset_removed_cb)
+        self.fw.connect("config:ipset-renamed", self.conf_ipset_renamed_cb)
         self.fw.connect("config:service-added", self.conf_service_added_cb)
         self.fw.connect("config:service-updated", self.conf_service_updated_cb)
         self.fw.connect("config:service-removed", self.conf_service_removed_cb)
@@ -980,6 +1086,10 @@ class FirewallConfig(object):
 
         # settings
         
+        self.settings.connect("changed::show-ipsets",
+                              self.settings_show_ipsets_changed)
+        self.settings_show_ipsets_changed(self.settings, "show-ipsets")
+
         self.settings.connect("changed::show-icmp-types",
                               self.settings_show_icmp_types_changed)
         self.settings_show_icmp_types_changed(self.settings, "show-icmp-types")
@@ -1071,6 +1181,20 @@ class FirewallConfig(object):
         if result == 2:
             self.fw.changeZoneOfSource(editor.get_zone(), source)
         del self.zone_source_editors[source]
+
+    def onViewIPSet_toggled(self, button):
+        self.settings.set_boolean("show-ipsets", button.get_active())
+
+    def settings_show_ipsets_changed(self, settings, key):
+        self.show_ipsets = settings.get_boolean(key)
+        self.ipsetsBox.set_visible(self.show_ipsets)
+        self.ipsetsMenuitem.set_active(self.show_ipsets)
+
+        if self.show_ipsets:
+            if self.fw.connected:
+                self.load_ipsets()
+        else:
+            self.ipsetConfIPSetStore.clear()
 
     def onViewICMPTypes_toggled(self, button):
         self.settings.set_boolean("show-icmp-types", button.get_active())
@@ -1272,6 +1396,7 @@ class FirewallConfig(object):
     def reload_cb(self):
         self.default_zone = self.fw.getDefaultZone()
         self.defaultZoneLabel.set_text(self.default_zone)
+        self.load_ipsets()
         self.load_zones()
         self.load_services()
         self.load_icmps()
@@ -1551,6 +1676,8 @@ class FirewallConfig(object):
                 src += "IP: %s" % obj.source.addr
             elif obj.source.mac:
                 src += "MAC: %s" % obj.source.mac
+            elif obj.source.ipset:
+                src += "ipset:%s" % obj.source.ipset
         if obj.destination:
             dest = obj.destination.addr
             if obj.destination.invert:
@@ -1733,12 +1860,12 @@ class FirewallConfig(object):
         while iter:
             if self.zoneStore.get_value(iter, 0) not in zones:
                 if use_iter is not None:
-                    return self._update_zoneStore()
+                    return self.load_zones()
                 use_iter = iter
             iter = self.zoneStore.iter_next(iter)
 
         if use_iter is None:
-            return self._update_zoneStore()
+            return self.load_zones()
 
         self.zoneStore.set_value(use_iter, 0, zone)
 
@@ -1803,6 +1930,7 @@ class FirewallConfig(object):
 
         if self.runtime_view:
             self.zoneEditBox.hide()
+            self.ipsetConfIPSetEditBox.hide()
             self.serviceConfServiceEditBox.hide()
             self.serviceConfPortBox.hide()
             self.serviceConfProtocolBox.hide()
@@ -1810,12 +1938,14 @@ class FirewallConfig(object):
             self.icmpDialogIcmpEditBox.hide()
         else:
             self.zoneEditBox.show()
+            self.ipsetConfIPSetEditBox.show()
             self.serviceConfServiceEditBox.show()
             self.serviceConfPortBox.show()
             self.serviceConfProtocolBox.show()
             self.serviceConfModuleBox.show()
             self.icmpDialogIcmpEditBox.show()
 
+        self.load_ipsets()
         self.load_zones()
         self.load_services()
         self.load_icmps()
@@ -2510,6 +2640,10 @@ class FirewallConfig(object):
                     combobox_select_text(self.richRuleDialogSourceTypeCombobox,
                                          "MAC")
                     self.richRuleDialogSourceChooser.set_text(old_obj.source.mac)
+                elif old_obj.source.ipset:
+                    combobox_select_text(self.richRuleDialogSourceTypeCombobox,
+                                         "ipset")
+                    self.richRuleDialogSourceChooser.set_text(old_obj.source.ipset)
                 self.richRuleDialogSourceInvertCheck.set_active( \
                     old_obj.source.invert == True)
 
@@ -2795,24 +2929,28 @@ class FirewallConfig(object):
 
         _type = self.richRuleDialogSourceTypeCombobox.get_active_text()
 
-        if _type == "IP":
-            combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
-            if combolabel == _("ipv4"):
-                family = "ipv4"
-            elif combolabel == _("ipv6"):
-                family = "ipv6"
-            else:
-                family = None
+        combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
+        if combolabel == _("ipv4"):
+            family = "ipv4"
+        elif combolabel == _("ipv6"):
+            family = "ipv6"
+        else:
+            family = None
 
+        if _type == "IP":
             address = self.address_select_dialog(family, old_address)
             if address is not None:
                 self.richRuleDialogSourceChooser.set_text(address)
 
-        if _type == "MAC":
+        elif _type == "MAC":
             address = self.mac_select_dialog(old_address)
             if address is not None:
-                self.richRuleDialogSourceChooser.set_text(address)
+                self.richRuleDialogSourceChooser.set_text(address.upper())
 
+        elif _type == "ipset":
+            address = self.ipset_select_dialog(old_address, family)
+            if address is not None:
+                self.richRuleDialogSourceChooser.set_text(address)
 
     def on_richRuleDialogDestinationChooser_clicked(self, *args):
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
@@ -2941,8 +3079,10 @@ class FirewallConfig(object):
                 addr = self.richRuleDialogSourceChooser.get_text()
             if txt == "MAC":
                 mac = self.richRuleDialogSourceChooser.get_text()
+            if txt == "ipset":
+                ipset = self.richRuleDialogSourceChooser.get_text()
             rule.source = Rich_Source(
-                addr, mac,
+                addr, mac, ipset,
                 self.richRuleDialogSourceInvertCheck.get_active())
 
         # destination
@@ -3013,12 +3153,14 @@ class FirewallConfig(object):
             family = "ipv6"
         else:
             family = None
-        mac_source = (self.richRuleDialogSourceTypeCombobox.get_active_text()
-                      == "MAC")
+        v4v6_source = (self.richRuleDialogSourceTypeCombobox.get_active_text()
+                       == "MAC" or \
+                       self.richRuleDialogSourceTypeCombobox.get_active_text()
+                       == "ipset")
 
         if family is None:
-            self.richRuleDialogSourceChooser.set_sensitive(mac_source)
-            self.richRuleDialogSourceInvertCheck.set_sensitive(mac_source)
+            self.richRuleDialogSourceChooser.set_sensitive(v4v6_source)
+            self.richRuleDialogSourceInvertCheck.set_sensitive(v4v6_source)
             self.richRuleDialogDestinationLabel.set_sensitive(False)
             self.richRuleDialogDestinationBox.set_sensitive(False)
         else:
@@ -3234,7 +3376,7 @@ class FirewallConfig(object):
                 return
             old_source = self.sourceStore.get_value(iter, 0)
 
-        source = self.address_select_dialog(None, old_source, True)
+        source = self.address_select_dialog(None, old_source, True, True)
         if not source:
             return
 
@@ -3281,7 +3423,73 @@ class FirewallConfig(object):
 
         if result != 1 or old_mac == mac:
             return None
-        return mac
+        return mac.upper()
+
+    def change_ipset_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.ipsetDialogOkButton.set_sensitive(True)
+        else:
+            self.ipsetDialogOkButton.set_sensitive(False)
+
+    def ipset_select_dialog(self, old_ipset="", ipv=None):
+        self.ipsetDialogIPSetStore.clear()
+
+        ipsets = { }
+        if self.runtime_view:
+            for x in self.fw.getIPSets():
+                settings = self.fw.getIPSetSettings(x)
+                ipsets[x] = settings
+        else:
+            for i in self.fw.config().listIPSets():
+                obj = self.fw.config().getIPSet(i)
+                ipsets[obj.get_property("name")] = obj.getSettings()
+
+        for i in sorted(ipsets.keys()):
+            # for all hash:ip and hash:net types, ipv has to match the family
+            # of the set
+            ipset_type = ipsets[i].getType()
+            if ipset_type in [ "hash:ip", "hash:net" ]:
+                opts = ipsets[i].getOptions()
+                if "family" in opts:
+                    if opts["family"] == "inet6" and ipv != "ipv6":
+                        continue
+                else:
+                    if ipv == "ipv6" or ipv == None:
+                        continue
+            self.ipsetDialogIPSetStore.append([i, ipset_type])
+
+        selection = self.ipsetDialogIPSetView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+        #selection.select_path(0)
+        iter = self.ipsetDialogIPSetStore.get_iter_first()
+        while iter:
+            if self.ipsetDialogIPSetStore.get_value(iter, 0) == old_ipset:
+                selection.select_iter(iter)
+            iter = self.ipsetDialogIPSetStore.iter_next(iter)
+
+        self.ipsetDialogOkButton.set_sensitive(False)
+        self.ipsetDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.ipsetDialog.set_transient_for(self.mainWindow)
+        self.ipsetDialog.show_all()
+
+        result = self.ipsetDialog.run()
+        self.ipsetDialog.hide()
+
+        #self.ipsetDialogIPSetEntry.disconnect(handler_id)
+
+        #ipset = self.ipsetDialogIPSetEntry.get_text()
+
+        if result != 1:
+            return None
+
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return None
+        ipset = self.ipsetDialogIPSetStore.get_value(iter, 0)
+        if old_ipset == ipset:
+            return None
+        return ipset
 
     def on_sourceDialog_changed(self, old_type, old_source):
         _type = self.sourceDialogAddressTypeCombobox.get_active_text()
@@ -3293,6 +3501,8 @@ class FirewallConfig(object):
             if _type == "MAC" and check_mac(_source):
                 self.sourceDialogOkButton.set_sensitive(True)
             elif _type == "IP" and (checkIP(_source) or checkIP6(_source)):
+                self.sourceDialogOkButton.set_sensitive(True)
+            elif _type == "ipset":
                 self.sourceDialogOkButton.set_sensitive(True)
 
     def source_select_dialog(self, old_type, old_source):
@@ -4282,7 +4492,7 @@ class FirewallConfig(object):
 
         module = self.moduleDialogModuleEntry.get_text()
         
-        if (old_module == module and old_proto == proto):
+        if (old_module == module):
             # nothing to change
             return
 
@@ -4321,7 +4531,8 @@ class FirewallConfig(object):
                 service.removeDestination("ipv6")
             self.changes_applied()
 
-    def onAddressChanged(self, entry, addr_type, old_address, mac_allowed):
+    def onAddressChanged(self, entry, addr_type, old_address, mac_allowed,
+                         ipset_allowed):
         text = entry.get_text()
         if text == "":
             self.addressDialogOkButton.set_sensitive(True)
@@ -4341,8 +4552,19 @@ class FirewallConfig(object):
         if mac_allowed:
             if check_mac(text) and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
+        if ipset_allowed:
+            if text.startswith("ipset:"):
+                ipset = text[6:]
+                if self.runtime_view:
+                    ipsets = self.fw.getIPSets()
+                else:
+                    ipsets = [self.fw.config().getIPSet(s).get_property("name") \
+                              for s in self.fw.config().listIPSets()]
+                if ipset in ipsets:
+                    self.addressDialogOkButton.set_sensitive(True)
 
-    def address_select_dialog(self, addr_type, old_address, mac_allowed=False):
+    def address_select_dialog(self, addr_type, old_address, mac_allowed=False,
+                              ipset_allowed=False):
         if addr_type == "ipv4":
             label1 = _("Please enter an ipv4 address with the form address[/mask].")
             label2 = _("The mask can be a network mask or a number.")
@@ -4354,13 +4576,15 @@ class FirewallConfig(object):
             label2 = _("The mask can be a network mask or a number for ipv4.\nThe mask is a number for ipv6.")
         if mac_allowed:
             label1 += _("\nA MAC address is also possible.")
+        if ipset_allowed:
+            label1 += _("\nFor an ipset use the 'ipset:' prefix.")
         self.addressDialogLabel.set_markup(label1)
         self.addressDialogLabel2.set_markup(label2)
 
         self.addressDialogAddressEntry.set_text(old_address)
         handler_id = self.addressDialogAddressEntry.connect(
             "changed", self.onAddressChanged, addr_type, old_address,
-            mac_allowed)
+            mac_allowed, ipset_allowed)
         self.addressDialogOkButton.set_sensitive(False)
 
         self.addressDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -4374,9 +4598,460 @@ class FirewallConfig(object):
         address = self.addressDialogAddressEntry.get_text()
         #TODO: addr check according to addr_type
 
+        if check_mac(address):
+            address = address.upper()
+
         if result != 1 or old_address == address:
             return None
         return address
+
+    def get_active_ipset(self):
+        selection = self.ipsetConfIPSetView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter:
+            return self.ipsetConfIPSetStore.get_value(iter, 0)
+        return None
+
+    def load_ipsets(self):
+        if not self.show_ipsets:
+            return
+        active_ipset = self.get_active_ipset()
+
+        if self.runtime_view:
+            ipsets = self.fw.getIPSets()
+        else:
+            ipsets = [self.fw.config().getIPSet(s).get_property("name") \
+                        for s in self.fw.config().listIPSets()]
+            ipsets.sort()
+
+        selection = self.ipsetConfIPSetView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.NONE)
+
+        # reset and fill notebook content according to view
+
+        self.ipsetConfIPSetStore.clear()
+
+        # ipsets
+
+        for ipset in ipsets:
+            self.ipsetConfIPSetStore.append([ipset])
+
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
+        iter = self.ipsetConfIPSetStore.get_iter_first()
+        while iter:
+            if self.ipsetConfIPSetStore.get_value(iter, 0) == \
+                    active_ipset:
+                selection.select_iter(iter)
+                return
+            iter = self.ipsetConfIPSetStore.iter_next(iter)
+        selection.select_path(0)
+
+    def onIPSetConfAddIPSet(self, *args):
+        self.add_edit_ipset(True)
+
+    def onIPSetConfRemoveIPSet(self, *args):
+        active_ipset = self.get_active_ipset()
+        ipset = self.fw.config().getIPSetByName(active_ipset)
+        ipset.remove()
+        self.changes_applied()
+        self.load_ipsets()
+        self.onChangeIPSet()
+
+    def onIPSetConfEditIPSet(self, *args):
+        self.add_edit_ipset(False)
+
+    def onIPSetConfLoadDefaultsIPSet(self, *args):
+        active_ipset = self.get_active_ipset()
+        ipset = self.fw.config().getIPSetByName(active_ipset)
+        ipset.loadDefaults()
+        self.changes_applied()
+        self.onChangeIPSet()
+
+    def onIPSetBaseDialogChanged(self, *args):
+        def check_ipset_name(ipset):
+            return (len(ipset) <= IPSET_MAXNAMELEN, ipset)
+
+        OK=True
+        if args and (args[0] == self.ipsetBaseDialogNameEntry):
+            additional_chars = "".join(IPSet.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.ascii_letters+string.digits+additional_chars
+            OK = self.entry_changed(args[0], allowed_chars, check_ipset_name)
+        self.ipsetBaseDialogOkButton.set_sensitive(OK)
+
+    def add_edit_ipset(self, add):
+        self.ipsetBaseDialogTypeCombobox.remove_all()
+        for x in IPSET_TYPES:
+            self.ipsetBaseDialogTypeCombobox.append_text(x)
+
+        if add:
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_ipset_type = None
+            old_options = { }
+
+            self.ipsetBaseDialogNameEntry.set_text("")
+            self.ipsetBaseDialogVersionEntry.set_text("")
+            self.ipsetBaseDialogShortEntry.set_text("")
+            self.ipsetBaseDialogDescText.get_buffer().set_text("")
+            self.ipsetBaseDialogTypeCombobox.set_active(0)
+            self.ipsetBaseDialogFamilyCombobox.set_active(0)
+            self.ipsetBaseDialogTimeoutEntry.set_text("")
+            self.ipsetBaseDialogHashsizeEntry.set_text("")
+            self.ipsetBaseDialogMaxelemEntry.set_text("")
+        else:
+            active_ipset = self.get_active_ipset()
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            settings = ipset.getSettings()
+            builtin = ipset.get_property("builtin")
+
+            old_name = ipset.get_property("name")
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+            old_ipset_type = settings.getType()
+            old_options = settings.getOptions()
+
+            self.ipsetBaseDialogNameEntry.set_text(old_name)
+            self.ipsetBaseDialogVersionEntry.set_text(old_version)
+            self.ipsetBaseDialogShortEntry.set_text(old_short)
+            self.ipsetBaseDialogDescText.get_buffer().set_text(old_desc)
+            combobox_select_text(self.ipsetBaseDialogTypeCombobox,
+                                 old_ipset_type)
+            if "family" in old_options and \
+               old_options["family"] in [ "inet", "inet6" ]:
+                combobox_select_text(self.ipsetBaseDialogFamilyCombobox,
+                                     old_options["family"])
+            else:
+                self.ipsetBaseDialogFamilyCombobox.set_active(0)
+            if "timeout" in old_options:
+                self.ipsetBaseDialogTimeoutEntry.set_text(
+                    old_options["timeout"])
+            else:
+                self.ipsetBaseDialogTimeoutEntry.set_text("")
+            if "hashsize" in old_options:
+                self.ipsetBaseDialogHashsizeEntry.set_text(
+                    old_options["hashsize"])
+            else:
+                self.ipsetBaseDialogHashsizeEntry.set_text("")
+            if "maxelem" in old_options:
+                self.ipsetBaseDialogMaxelemEntry.set_text(
+                    old_options["maxelem"])
+            else:
+                self.ipsetBaseDialogMaxelemEntry.set_text("")
+
+        self.ipsetBaseDialogOkButton.set_sensitive(False)
+        if builtin:
+            self.ipsetBaseDialogNameEntry.set_tooltip_markup(\
+                _("Built-in ipset, rename not supported."))
+        else:
+            self.ipsetBaseDialogNameEntry.set_tooltip_markup("")
+        self.ipsetBaseDialogNameEntry.set_sensitive(not builtin)
+
+        self.ipsetBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.ipsetBaseDialog.set_transient_for(self.mainWindow)
+        self.ipsetBaseDialog.show_all()
+        result = self.ipsetBaseDialog.run()
+        self.ipsetBaseDialog.hide()
+
+        if result != 1:
+            return
+
+        name = self.ipsetBaseDialogNameEntry.get_text()
+        version = self.ipsetBaseDialogVersionEntry.get_text()
+        short = self.ipsetBaseDialogShortEntry.get_text()
+        buffer = self.ipsetBaseDialogDescText.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
+                               False)
+        ipset_type = self.ipsetBaseDialogTypeCombobox.get_active_text()
+        options = { }
+        if self.ipsetBaseDialogFamilyCombobox.is_sensitive():
+            x = self.ipsetBaseDialogFamilyCombobox.get_active_text()
+            if x != "inet":
+                options["family"] = x
+        if self.ipsetBaseDialogTimeoutEntry.is_sensitive():
+            x = self.ipsetBaseDialogTimeoutEntry.get_text()
+            if x != "":
+                options["timeout"] = x
+        x = self.ipsetBaseDialogHashsizeEntry.get_text()
+        if x != "":
+            options["hashsize"] = x
+        x = self.ipsetBaseDialogMaxelemEntry.get_text()
+        if x != "":
+            options["maxelem"] = x
+
+        if old_name == name and \
+                old_version == version and old_short == short and \
+                old_desc == desc and old_ipset_type == ipset_type and \
+                old_options == options:
+            # no changes
+            return
+
+        if not add:
+            active_ipset = self.get_active_ipset()
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            settings = ipset.getSettings()
+        else:
+            settings = client.FirewallClientIPSetSettings()
+
+        if old_version != version or old_short != short or \
+                old_desc != desc or old_ipset_type != ipset_type or \
+                old_options != options:
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            settings.setType(ipset_type)
+            settings.setOptions(options)
+            if not add:
+                ipset.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            ipset.rename(name)
+        else:
+            self.fw.config().addIPSet(name, settings)
+        self.changes_applied()
+
+    def onIPSetChanged(self, *args):
+        if self.ipsetBaseDialogTypeCombobox.get_active_text() == "hash:mac":
+            self.ipsetBaseDialogFamilyLabel.set_sensitive(False)
+            self.ipsetBaseDialogFamilyCombobox.set_sensitive(False)
+        else:
+            self.ipsetBaseDialogFamilyLabel.set_sensitive(True)
+            self.ipsetBaseDialogFamilyCombobox.set_sensitive(True)
+
+        self.ipsetBaseDialogOkButton.set_sensitive(True)
+
+    def onIPSetConfAddEntry(self, *args):
+        self.add_edit_ipset_entry(True)
+
+    def onIPSetConfEditEntry(self, *args):
+        self.add_edit_ipset_entry(False)
+
+    def onIPSetConfEntryClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS and \
+           not self.runtime_view:
+            self.add_edit_ipset_entry(False)
+
+    def onIPSetConfRemoveEntry(self, *args):
+        active_ipset = self.get_active_ipset()
+        selection = self.ipsetConfEntryView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        entry = self.ipsetConfEntryStore.get_value(iter, 0)
+
+        if self.runtime_view:
+            if self.fw.queryEntry(active_ipset, entry):
+                self.fw.removeEntry(active_ipset, entry)
+                self.changes_applied()
+        else:
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            ipset.removeEntry(entry)
+            self.changes_applied()
+
+    def onIPSetEntryChanged(self, *args):
+        settings = self.active_ipset_settings
+        entry = self.ipsetEntryDialogEntryEntry.get_text()
+
+        try:
+            IPSet.check_entry(entry, settings.getOptions(), settings.getType())
+        except Exception as e:
+            self.ipsetEntryDialogOkButton.set_sensitive(False)
+        else:
+            self.ipsetEntryDialogOkButton.set_sensitive(True)
+
+    def change_ipset_conf_entry_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.ipsetConfEditEntryButton.set_sensitive(True)
+            self.ipsetConfRemoveEntryButton.set_sensitive(True)
+        else:
+            self.ipsetConfEditEntryButton.set_sensitive(False)
+            self.ipsetConfRemoveEntryButton.set_sensitive(False)
+
+    def add_edit_ipset_entry(self, add):
+        active_ipset = self.get_active_ipset()
+        if self.runtime_view:
+            settings = self.fw.getIPSetSettings(active_ipset)
+        else:
+            settings = self.fw.config().getIPSetByName(active_ipset).getSettings()
+        self.active_ipset_settings = settings
+
+        self.ipsetEntryDialogEntryEntry.set_text("")
+
+        old_entry = None
+
+        if not add:
+            selection = self.ipsetConfEntryView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_entry = self.ipsetConfEntryStore.get_value(iter, 0)
+
+        if old_entry:
+            self.ipsetEntryDialogEntryEntry.set_text(old_entry)
+
+        self.ipsetEntryDialogOkButton.set_sensitive(False)
+
+        self.ipsetEntryDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.ipsetEntryDialog.set_transient_for(self.mainWindow)
+        self.ipsetEntryDialog.show_all()
+        result = self.ipsetEntryDialog.run()
+        self.ipsetEntryDialog.hide()
+        self.active_ipset_settings = None
+
+        if result != 1:
+            return
+
+        entry = self.ipsetEntryDialogEntryEntry.get_text()
+
+        if (old_entry == entry):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.queryEntry(active_ipset, entry):
+                self.fw.addEntry(active_ipset, entry)
+                if not add:
+                    self.fw.removeEntry(active_ipset, old_entry)
+                self.changes_applied()
+        else:
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            if not ipset.queryEntry(entry):
+                if not add:
+                    ipset.removeEntry(old_entry)
+                ipset.addEntry(entry)
+                self.changes_applied()
+
+    def ipset_entry_added_cb(self, ipset, entry):
+        if not self.runtime_view or ipset != self.get_active_ipset():
+            return
+        iter = self.ipsetConfEntryStore.get_iter_first()
+        while iter:
+            if self.ipsetConfEntryStore.get_value(iter, 0) == entry:
+                # already there
+                return
+            iter = self.ipsetConfEntryStore.iter_next(iter)
+        # nothing found, so add it
+        self.ipsetConfEntryStore.append([entry])
+
+    def ipset_entry_removed_cb(self, ipset, entry):
+        if not self.runtime_view or ipset != self.get_active_ipset():
+            return
+        iter = self.ipsetConfEntryStore.get_iter_first()
+        while iter:
+            if self.ipsetConfEntryStore.get_value(iter, 0) == entry:
+                self.ipsetConfEntryStore.remove(iter)
+                break
+            iter = self.ipsetConfEntryStore.iter_next(iter)
+
+    def conf_ipset_added_cb(self, ipset):
+        if self.runtime_view:
+            return
+        self.ipsetConfIPSetStore.append([ipset])
+
+    def conf_ipset_updated_cb(self, ipset):
+        if self.runtime_view or ipset != self.get_active_ipset():
+            return
+        self.onChangeIPSet()
+
+    def conf_ipset_removed_cb(self, ipset):
+        if self.runtime_view:
+            return
+        iter = self.ipsetConfIPSetStore.get_iter_first()
+        while iter:
+            if self.ipsetConfIPSetStore.get_value(iter, 0) == ipset:
+                self.ipsetConfIPSetStore.remove(iter)
+                break
+            iter = self.ipsetConfIPSetStore.iter_next(iter)
+
+    def conf_ipset_renamed_cb(self, ipset):
+        if self.runtime_view:
+            return
+
+        # Get all ipsets, renamed the one that is missing.
+        # If more or less than one is missing, update ipset store.
+
+        ipsets = [ self.fw.config().getIPSet(z).get_property("name")
+                  for z in self.fw.config().listIPSets() ]
+
+        use_iter = None
+        iter = self.ipsetConfIPSetStore.get_iter_first()
+        while iter:
+            if self.ipsetConfIPSetStore.get_value(iter, 0) not in ipsets:
+                if use_iter is not None:
+                    return self.load_ipsets()
+                use_iter = iter
+            iter = self.ipsetConfIPSetStore.iter_next(iter)
+
+        if use_iter is None:
+            return self.load_ipsets()
+
+        self.ipsetConfIPSetStore.set_value(use_iter, 0, ipset)
+
+    def onChangeIPSet(self, *args):
+        active_ipset = self.get_active_ipset()
+
+        self.ipsetConfEntryStore.clear()
+
+        self.ipsetConfEntryView.get_selection().set_mode(
+            Gtk.SelectionMode.NONE)
+
+        if not active_ipset:
+            self.ipsetConfIPSetEditBox.set_sensitive(False)
+            return
+
+        self.ipsetConfIPSetEditBox.set_sensitive(True)
+
+        entries = [ ]
+
+        if self.runtime_view:
+            # load runtime configuration
+
+            settings = self.fw.getIPSetSettings(active_ipset)
+            entries = settings.getEntries()
+            options = settings.getOptions()
+            default = False
+            builtin = False
+        else:
+            try:
+                ipset = self.fw.config().getIPSetByName(active_ipset)
+            except:
+                return
+
+            # load permanent configuration
+            settings = ipset.getSettings()
+            entries = settings.getEntries()
+            options = settings.getOptions()
+            default = ipset.get_property("default")
+            builtin = ipset.get_property("builtin")
+
+        if "timeout" in options:
+            self.ipsetConfEntrySW.hide()
+            self.ipsetConfEntryBox.hide()
+            self.ipsetConfEntryLabel.hide()
+            self.ipsetConfTimeoutLabel.show()
+        else:
+            self.ipsetConfEntrySW.show()
+            self.ipsetConfEntryBox.show()
+            self.ipsetConfEntryLabel.show()
+            self.ipsetConfTimeoutLabel.hide()
+
+            # set entries
+            for item in entries:
+                self.ipsetConfEntryStore.append([item])
+
+            self.ipsetConfEntryView.get_selection().set_mode(
+                Gtk.SelectionMode.SINGLE)
+
+        self.ipsetConfRemoveIPSetButton.set_sensitive(not builtin)
+        self.ipsetConfLoadDefaultsIPSetButton.set_sensitive(not default)
 
     def get_active_icmp(self):
         selection = self.icmpDialogIcmpView.get_selection()
