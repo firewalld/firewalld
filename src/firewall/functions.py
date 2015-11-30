@@ -25,6 +25,7 @@ import shlex, pipes
 import string
 import sys
 from firewall.core.logger import log
+from firewall.core.ipset import IPSET_MAXNAMELEN
 
 PY2 = sys.version < '3'
 
@@ -318,6 +319,11 @@ def check_mac(mac):
                 return False
         return True
     return False
+
+def check_ipset(ipset):
+    if len(ipset) > IPSET_MAXNAMELEN:
+        return False
+    return True
 
 def uniqify(input):
     # removes duplicates from list, whilst preserving order
