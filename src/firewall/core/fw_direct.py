@@ -25,15 +25,7 @@ from firewall import functions
 from firewall.fw_types import *
 from firewall.core import ipXtables
 from firewall.core import ebtables
-from firewall.core import modules
-from firewall.core.fw_icmptype import FirewallIcmpType
-from firewall.core.fw_service import FirewallService
-from firewall.core.fw_zone import FirewallZone
 from firewall.core.logger import log
-from firewall.core.io.firewalld_conf import firewalld_conf
-from firewall.core.io.service import service_reader
-from firewall.core.io.icmptype import icmptype_reader
-from firewall.core.io.zone import zone_reader
 from firewall.errors import *
 
 ############################################################################
