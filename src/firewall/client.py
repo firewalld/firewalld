@@ -762,6 +762,201 @@ class FirewallClientServiceSettings(object):
         return (dest_type in self.settings[5] and \
                     address == self.settings[5][dest_type])
 
+# ipset config settings
+
+class FirewallClientIPSetSettings(object):
+    @handle_exceptions
+    def __init__(self, settings=None):
+        if settings:
+            self.settings = settings
+        else:
+            self.settings = ["", "", "", "", {}, []]
+
+    @handle_exceptions
+    def __repr__(self):
+        return '%s(%r)' % (self.__class__, self.settings)
+
+    @handle_exceptions
+    def getVersion(self):
+        return self.settings[0]
+    @handle_exceptions
+    def setVersion(self, version):
+        self.settings[0] = version
+
+    @handle_exceptions
+    def getShort(self):
+        return self.settings[1]
+    @handle_exceptions
+    def setShort(self, short):
+        self.settings[1] = short
+
+    @handle_exceptions
+    def getDescription(self):
+        return self.settings[2]
+    @handle_exceptions
+    def setDescription(self, description):
+        self.settings[2] = description
+
+    @handle_exceptions
+    def getType(self):
+        return self.settings[3]
+    @handle_exceptions
+    def setType(self, ipset_type):
+        self.settings[3] = ipset_type
+
+    @handle_exceptions
+    def getOptions(self):
+        return self.settings[4]
+    @handle_exceptions
+    def setOptions(self, options):
+        self.settings[4] = options
+    @handle_exceptions
+    def addOption(self, key, value):
+        self.settings[4][key] = value
+    @handle_exceptions
+    def removeOption(self, key):
+        if key in self.settings[4]:
+            del self.settings[4][key]
+    @handle_exceptions
+    def queryOption(self, key, value):
+        return key in self.settings[4] and self.settings[4][key] == value
+
+    @handle_exceptions
+    def getEntries(self):
+        return self.settings[5]
+    @handle_exceptions
+    def setEntries(self, entries):
+        self.settings[5] = entries
+    @handle_exceptions
+    def addEntry(self, entry):
+        if entry not in self.settings[5]:
+            self.settings[5].append(entry)
+    @handle_exceptions
+    def removeEntry(self, entry):
+        if entry in self.settings[5]:
+            self.settings[5].remove(entry)
+    @handle_exceptions
+    def queryEntry(self, entry):
+        return entry in self.settings[5]
+
+# ipset config
+
+class FirewallClientConfigIPSet(object):
+    @handle_exceptions
+    def __init__(self, bus, path):
+        self.bus = bus
+        self.path = path
+        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
+        self.fw_ipset = dbus.Interface(self.dbus_obj,
+                                       dbus_interface=DBUS_INTERFACE_CONFIG_IPSET)
+        self.fw_properties = dbus.Interface(
+            self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def get_property(self, prop):
+        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_IPSET,
+                                                     prop))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def get_properties(self):
+        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_IPSET))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def set_property(self, prop, value):
+        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_IPSET, prop, value)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSettings(self):
+        return FirewallClientIPSetSettings(list(dbus_to_python(\
+                    self.fw_ipset.getSettings())))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def update(self, settings):
+        self.fw_ipset.update(tuple(settings.settings))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def loadDefaults(self):
+        self.fw_ipset.loadDefaults()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def remove(self):
+        self.fw_ipset.remove()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def rename(self, name):
+        self.fw_ipset.rename(name)
+
+    # version
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getVersion(self):
+        return self.fw_ipset.getVersion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setVersion(self, version):
+        self.fw_ipset.setVersion(version)
+
+    # short
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getShort(self):
+        return self.fw_ipset.getShort()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setShort(self, short):
+        self.fw_ipset.setShort(short)
+
+    # description
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getDescription(self):
+        return self.fw_ipset.getDescription()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setDescription(self, description):
+        self.fw_ipset.setDescription(description)
+
+    # entry
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getEntries(self):
+        return self.fw_ipset.getEntries()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setEntries(self, entries):
+        self.fw_ipset.setEntries(entries)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addEntry(self, entry):
+        self.fw_ipset.addEntry(entry)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeEntry(self, entry):
+        self.fw_ipset.removeEntry(entry)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryEntry(self, entry):
+        return self.fw_ipset.queryEntry(entry)
+
 # service config
 
 class FirewallClientConfigService(object):
@@ -1587,6 +1782,30 @@ class FirewallClientConfig(object):
     def set_property(self, prop, value):
         self.fw_properties.Set(DBUS_INTERFACE_CONFIG, prop, value)
 
+    # ipset
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def listIPSets(self):
+        return dbus_to_python(self.fw_config.listIPSets())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIPSet(self, path):
+        return FirewallClientConfigIPSet(self.bus, path)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIPSetByName(self, name):
+        path = dbus_to_python(self.fw_config.getIPSetByName(name))
+        return FirewallClientConfigIPSet(self.bus, path)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addIPSet(self, name, settings):
+        path = self.fw_config.addIPSet(name, tuple(settings.settings))
+        return FirewallClientConfigIPSet(self.bus, path)
+
     # zone
 
     @slip.dbus.polkit.enable_proxy
@@ -1702,10 +1921,12 @@ class FirewallClient(object):
             arg0=DBUS_INTERFACE)
 
         for interface in [ DBUS_INTERFACE,
+                           DBUS_INTERFACE_IPSET,
                            DBUS_INTERFACE_ZONE,
                            DBUS_INTERFACE_DIRECT,
                            DBUS_INTERFACE_POLICIES,
                            DBUS_INTERFACE_CONFIG,
+                           DBUS_INTERFACE_CONFIG_IPSET,
                            DBUS_INTERFACE_CONFIG_ZONE,
                            DBUS_INTERFACE_CONFIG_SERVICE,
                            DBUS_INTERFACE_CONFIG_DIRECT,
@@ -1750,6 +1971,9 @@ class FirewallClient(object):
             "source-added": "SourceAdded",
             "source-removed": "SourceRemoved",
             "zone-of-source-changed": "ZoneOfSourceChanged",
+            # ipset callbacks
+            "ipset-entry-added": "EntryAdded",
+            "ipset-entry-removed": "EntryRemoved",
             # direct callbacks
             "direct:chain-added": "ChainAdded",
             "direct:chain-removed": "ChainRemoved",
@@ -1771,6 +1995,10 @@ class FirewallClient(object):
             "lockdown-whitelist-user-removed": "LockdownWhitelistUserRemoved",
             # firewalld.config callbacks
             "config:policies:lockdown-whitelist-updated": "config:policies:LockdownWhitelistUpdated",
+            "config:ipset-added": "config:IPSetAdded",
+            "config:ipset-updated": "config:IPSetUpdated",
+            "config:ipset-removed": "config:IPSetRemoved",
+            "config:ipset-renamed": "config:IPSetRenamed",
             "config:zone-added": "config:ZoneAdded",
             "config:zone-updated": "config:ZoneUpdated",
             "config:zone-removed": "config:ZoneRemoved",
@@ -1799,6 +2027,7 @@ class FirewallClient(object):
     @handle_exceptions
     def _init_vars(self):
         self.fw = None
+        self.fw_ipset = None
         self.fw_zone = None
         self.fw_direct = None
         self.fw_properties = None
@@ -1850,6 +2079,8 @@ class FirewallClient(object):
             self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, DBUS_PATH)
             self.fw = dbus.Interface(self.dbus_obj,
                                      dbus_interface=DBUS_INTERFACE)
+            self.fw_ipset = dbus.Interface(self.dbus_obj,
+                                           dbus_interface=DBUS_INTERFACE_IPSET)
             self.fw_zone = dbus.Interface(self.dbus_obj,
                                           dbus_interface=DBUS_INTERFACE_ZONE)
             self.fw_direct = dbus.Interface(
@@ -1900,6 +2131,8 @@ class FirewallClient(object):
         # pimp signal name
         if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
             signal = "config:Zone" + signal
+        elif interface.startswith(DBUS_INTERFACE_CONFIG_IPSET):
+            signal = "config:IPSet" + signal
         elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
             signal = "config:Service" + signal
         elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
@@ -1989,6 +2222,32 @@ class FirewallClient(object):
     def getZoneSettings(self, zone):
         return FirewallClientZoneSettings(list(dbus_to_python(\
                     self.fw.getZoneSettings(zone))))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIPSets(self):
+        return dbus_to_python(self.fw_ipset.getIPSets())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIPSetSettings(self, ipset):
+        return FirewallClientIPSetSettings(list(dbus_to_python(\
+                    self.fw_ipset.getIPSetSettings(ipset))))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addEntry(self, ipset, entry):
+        self.fw_ipset.addEntry(ipset, entry)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeEntry(self, ipset, entry):
+        self.fw_ipset.removeEntry(ipset, entry)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryEntry(self, ipset, entry):
+        return dbus_to_python(self.fw_ipset.queryEntry(ipset, entry))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
