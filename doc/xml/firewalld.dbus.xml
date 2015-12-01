@@ -3817,6 +3817,14 @@
       <refsect3 id="FirewallD1.config.zone.Properties">
         <title>Properties</title>
         <variablelist>
+          <varlistentry id="FirewallD1.config.zone.Properties.builtin">
+            <term>builtin - b - (ro)</term>
+            <listitem>
+              <para>
+		True if zone is build-in, false else.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Properties.default">
             <term>default - b - (ro)</term>
             <listitem>
@@ -4250,6 +4258,14 @@
       <refsect3 id="FirewallD1.config.service.Properties">
         <title>Properties</title>
         <variablelist>
+          <varlistentry id="FirewallD1.config.service.Properties.builtin">
+            <term>builtin - b - (ro)</term>
+            <listitem>
+              <para>
+		True if service is build-in, false else.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.service.Properties.default">
             <term>default - b - (ro)</term>
             <listitem>
@@ -4504,6 +4520,14 @@
       <refsect3 id="FirewallD1.config.icmptype.Properties">
         <title>Properties</title>
         <variablelist>
+          <varlistentry id="FirewallD1.config.icmptype.Properties.builtin">
+            <term>builtin - b - (ro)</term>
+            <listitem>
+              <para>
+		True if icmptype is build-in, false else.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.icmptype.Properties.default">
             <term>default - b - (ro)</term>
             <listitem>
