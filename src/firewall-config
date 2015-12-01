@@ -3074,7 +3074,7 @@ class FirewallConfig(object):
            (self.richRuleDialogSourceChooser.get_text() != "" \
             or self.richRuleDialogSourceInvertCheck.get_active()):
             txt = self.richRuleDialogSourceTypeCombobox.get_active_text()
-            addr = mac = None
+            addr = mac = ipset = None
             if txt == "IP":
                 addr = self.richRuleDialogSourceChooser.get_text()
             if txt == "MAC":
