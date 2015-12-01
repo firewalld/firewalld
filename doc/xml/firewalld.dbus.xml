@@ -56,6 +56,7 @@
   Interfaces
     <link linkend="FirewallD1">org.fedoraproject.FirewallD1</link>
     <link linkend="FirewallD1.direct">org.fedoraproject.FirewallD1.direct</link>
+    <link linkend="FirewallD1.ipset">org.fedoraproject.FirewallD1.ipset</link>
     <link linkend="FirewallD1.policies">org.fedoraproject.FirewallD1.policies</link>
     <link linkend="FirewallD1.zone">org.fedoraproject.FirewallD1.zone</link>
     org.freedesktop.DBus.Introspectable
@@ -78,6 +79,12 @@
 /org/fedoraproject/FirewallD1/config/service/i
   Interfaces:
     <link linkend="FirewallD1.config.service">org.fedoraproject.FirewallD1.config.service</link>
+    org.freedesktop.DBus.Introspectable
+    org.freedesktop.DBus.Properties
+
+/org/fedoraproject/FirewallD1/config/ipset/i
+  Interfaces
+    <link linkend="FirewallD1.config.ipset">org.fedoraproject.FirewallD1.config.ipset</link>
     org.freedesktop.DBus.Introspectable
     org.freedesktop.DBus.Properties
 
@@ -367,6 +374,138 @@
         </variablelist>
       </refsect3>
     </refsect2>
+
+    <refsect2 id="FirewallD1.ipset">
+      <title>org.fedoraproject.FirewallD1.ipset</title>
+      <para>
+	Operations in this interface allows to get, add, remove and query runtime ipset settings.
+	For permanent configuration see <link linkend="FirewallD1.config.ipset">org.fedoraproject.FirewallD1.config.ipset</link> interface.
+      </para>
+
+      <refsect3 id="FirewallD1.ipset.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.ipset.Methods.addEntry">
+            <term><methodname>addEntry</methodname>(s: ipset, s: entry) &rarr; as</term>
+            <listitem>
+              <para>
+		Add a new <replaceable>entry</replaceable> to <replaceable>ipset</replaceable>.
+		The entry must match the type of the ipset. If the ipset is using the timeout option, it is not possible to see the entries, as they are timing out automatically in the kernel.
+		For permanent operation see <link linkend="FirewallD1.config.ipset.Methods.addEntry">org.fedoraproject.FirewallD1.config.ipset.Methods.addEntry</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPSET, IPSET_WITH_TIMEOUT
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.ipset.Methods.getEntries">
+            <term><methodname>getEntries</methodname>(s: ipset) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Get all entries added to the <replaceable>ipset</replaceable>.
+		If the ipset is using the timeout option, it is not possible to see the entries, as they are timing out automatically in the kernel.
+		Return value is a array of <parameter>entry</parameter>.
+		For permanent operation see <link linkend="FirewallD1.config.ipset.Methods.getEntries">org.fedoraproject.FirewallD1.config.ipset.Methods.getEntries</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPSET, IPSET_WITH_TIMEOUT
+	      </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry id="FirewallD1.ipset.Methods.getIPSetSettings">
+            <term><methodname>getSettings</methodname>(s: ipset) &rarr; (ssssa{ss}as)</term>
+            <listitem>
+              <para>
+                Return runtime settings of given <replaceable>ipset</replaceable>.
+		For getting permanent settings see <link linkend="FirewallD1.config.ipset.Methods.getSettings">org.fedoraproject.FirewallD1.config.ipset.Methods.getSettings</link>.
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>type</parameter>, dictionary of <parameter>options</parameter> and array of <parameter>entries</parameter>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>type (s)</parameter>: see <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>options (a{ss})</parameter>: dictionary of {option : value} . See <literal>options</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>entries (as)</parameter>: array of entries, see <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_IPSET
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.ipset.Methods.getIPSets">
+            <term><methodname>getIPSets</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Return array of ipset names (s) in runtime configuration.
+		For permanent configuration see <link linkend="FirewallD1.config.Methods.listServices">org.fedoraproject.FirewallD1.config.Methods.listIPSets</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.ipset.Methods.queryEntry">
+            <term><methodname>queryService</methodname>(s: ipset, s: entry) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>entry</replaceable> has been added to <replaceable>ipset</replaceable>.
+		For permanent operation see <link linkend="FirewallD1.config.ipset.Methods.queryEntry">org.fedoraproject.FirewallD1.config.ipset.Methods.queryEntry</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPSET
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.ipset.Methods.queryIPSet">
+            <term><methodname>queryService</methodname>(s: ipset) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>ipset</replaceable> is defined in runtime configuration.
+              </para>
+            </listitem>
+          </varlistentry>
+
+
+          <varlistentry id="FirewallD1.ipset.Methods.removeEntry">
+            <term><methodname>removeEntry</methodname>(s: ipset, s: entry) &rarr; as</term>
+            <listitem>
+              <para>
+		Removes an <replaceable>entry</replaceable> from <replaceable>ipset</replaceable>.
+		For permanent operation see <link linkend="FirewallD1.config.ipset.Methods.removeEntry">org.fedoraproject.FirewallD1.config.ipset.Methods.removeEntry</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPSET, IPSET_WITH_TIMEOUT
+	      </para>
+            </listitem>
+          </varlistentry>
+	</variablelist>
+      </refsect3>
+
+      <refsect3 id="FirewallD1.ipset.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.ipset.Signals.EntryAdded">
+            <term>EntryAdded(s: ipset, s: entry)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>entry</replaceable> has been added to <replaceable>ipset</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.ipset.Signals.EntryRemoved">
+            <term>EntryRemoved(s: ipset, s: entry)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>entry</replaceable> has been removed from <replaceable>ipset</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+
+	</variablelist>
+      </refsect3>
+    </refsect2>
+
 
     <refsect2 id="FirewallD1.direct">
       <title>org.fedoraproject.FirewallD1.direct</title>
@@ -1826,6 +1965,28 @@
       <refsect3 id="FirewallD1.config.Methods">
         <title>Methods</title>
         <variablelist>
+          <varlistentry id="FirewallD1.config.Methods.addIPSet">
+            <term><methodname>addIPSet</methodname>(s: ipset, (ssssa{ss}as): settings) &rarr; o</term>
+            <listitem>
+              <para>
+		Add <replaceable>ipset</replaceable> with given <replaceable>settings</replaceable> into permanent configuration.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>type</parameter>, dictionary of <parameter>options</parameter> and array of <parameter>entries</parameter>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>type (s)</parameter>: see <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>options (a{ss})</parameter>: dictionary of {option : value} . See <literal>options</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>entries (as)</parameter>: array of entries, see <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: NAME_CONFLICT, INVALID_NAME, INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.addIcmpType">
             <term><methodname>addIcmpType</methodname>(s: icmptype, (sssas): settings) &rarr; o</term>
             <listitem>
@@ -1901,6 +2062,17 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getIPSetByName">
+            <term><methodname>getIPSetByName</methodname>(s: ipset) &rarr; o</term>
+            <listitem>
+              <para>
+		Return object path (permanent configuration) of <replaceable>ipset</replaceable> with given name.
+              </para>
+	      <para>
+		Possible errors: INVALID_IPSET
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getIcmpTypeByName">
             <term><methodname>getIcmpTypeByName</methodname>(s: icmptype) &rarr; o</term>
             <listitem>
@@ -1947,6 +2119,15 @@
             <listitem>
               <para>
 		Return name of zone the <replaceable>source</replaceable> is bound to or empty string.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.listIPSets">
+            <term><methodname>listIPSets</methodname>() &rarr; ao</term>
+            <listitem>
+              <para>
+                Return array of object paths (o) of <link linkend="FirewallD1.config.ipset">ipset</link> in permanent configuration.
+                For runtime configuration see <link linkend="FirewallD1.ipset.Methods.getIPSets">org.fedoraproject.FirewallD1.ipset.Methods.getIPSets</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -2583,6 +2764,349 @@
             <listitem>
               <para>
 		Emitted when permanent lockdown-whitelist configuration has been updated.
+              </para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </refsect3>
+    </refsect2>
+
+    <refsect2 id="FirewallD1.config.ipset">
+      <title>org.fedoraproject.FirewallD1.config.ipset</title>
+      <para>
+	Interface for permanent ipset configuration, see also <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+      </para>
+      <refsect3 id="FirewallD1.config.ipset.Methods">
+        <title>Methods</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.config.ipset.Methods.addEntry">
+            <term><methodname>addEntry</methodname>(s: entry) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add <replaceable>entry</replaceable> to list of entries of ipset.
+		See <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.ipset.Methods.addEntry">org.fedoraproject.FirewallD1.ipset.Methods.addEntry</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.addOption">
+            <term><methodname>addEntry</methodname>(s: key, s:value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add (<replaceable>key</replaceable>, <replaceable>value</replaceable>) to the ipset.
+		See <literal>option</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getDescription">
+            <term><methodname>getDescription</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get description of ipset.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getEntries">
+            <term><methodname>getEntries</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of entries added to ipset.
+		See <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.ipset.Methods.getEntries">org.fedoraproject.FirewallD1.ipset.Methods.getEntries</link>.
+              </para>
+	      <para>
+		Possible errors: IPSET_WITH_TIMEOUT
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getOptions">
+            <term><methodname>getEntries</methodname>() &rarr; a{ss}</term>
+            <listitem>
+              <para>
+		Get dictionary of <parameter>options</parameter> set for ipset.
+		See <literal>option</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getSettings">
+            <term><methodname>getSettings</methodname>() &rarr; (ssssa{ss}as)</term>
+            <listitem>
+              <para>
+                Return permament settings of the ipset.
+		For getting runtime settings see <link linkend="FirewallD1.ipset.Methods.getIPSetSettings">org.fedoraproject.FirewallD1.ipset.Methods.getIPSetSettings</link>.
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>type</parameter>, dictionary of <parameter>options</parameter> and array of <parameter>entries</parameter>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>type (s)</parameter>: see <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>options (a{ss})</parameter>: dictionary of {option : value} . See <literal>options</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>entries (as)</parameter>: array of entries, see <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getShort">
+            <term><methodname>getShort</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get name of ipset.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getType">
+            <term><methodname>getType</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get type of ipset.
+		See <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.getVersion">
+            <term><methodname>getVersion</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Get version of ipset.
+		See <literal>version</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.ipset.Methods.loadDefaults">
+            <term><methodname>loadDefaults</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Load default settings for built-in ipset.
+              </para>
+	      <para>
+		Possible errors: NO_DEFAULTS
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.queryEntry">
+            <term><methodname>queryEntry</methodname>(s: entry) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>entry</replaceable> has been added to <replaceable>ipset</replaceable>.
+		For runtime operation see <link linkend="FirewallD1.ipset.Methods.queryEntry">org.fedoraproject.FirewallD1.ipset.Methods.queryEntry</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.queryOption">
+            <term><methodname>queryOption</methodname>(s: key, s:value) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether (<replaceable>key</replaceable>, <replaceable>value</replaceable>) has been added to options of the <replaceable>ipset</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.remove">
+            <term><methodname>remove</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Remove not built-in ipset.
+              </para>
+	      <para>
+		Possible errors: BUILTIN_IPSET
+	      </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.ipset.Methods.removeEntry">
+            <term><methodname>removeEntry</methodname>(s: entry) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>entry</replaceable> from ipset.
+		See <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.ipset.Methods.removeEntry">org.fedoraproject.FirewallD1.ipset.Methods.removeEntry</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.ipset.Methods.removeOption">
+            <term><methodname>removeOption</methodname>(s: key, s:value) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove (<replaceable>key</replaceable>, <replaceable>value</replaceable>) from the ipset.
+		See <literal>option</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.rename">
+            <term><methodname>rename</methodname>(s: name) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Rename not built-in ipset to <replaceable>name</replaceable>.
+              </para>
+	      <para>
+		Possible errors: BUILTIN_IPSET
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.setDescription">
+            <term><methodname>setDescription</methodname>(s: description) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set description of ipset to <replaceable>description</replaceable>.
+		See <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.ipset.Methods.setEntries">
+            <term><methodname>setEntries</methodname>(as: entries) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of entries to <replaceable>entries</replaceable>.
+		See <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.ipset.Methods.setOptions">
+            <term><methodname>setOptions</methodname>(a{ss}: options) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set dict of options to <replaceable>options</replaceable>.
+		See <literal>option</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.setShort">
+            <term><methodname>setShort</methodname>(s: short) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set name of ipset to <replaceable>short</replaceable>.
+		See <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.setType">
+            <term><methodname>setType</methodname>(s: type) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set type of ipset to <replaceable>type</replaceable>.
+		See <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Methods.setVersion">
+            <term><methodname>setVersion</methodname>(s: version) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set version of ipset to <replaceable>version</replaceable>.
+		See <literal>version</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry id="FirewallD1.config.ipset.Methods.update">
+            <term><methodname>update</methodname>((ssssa{ss}as): settings) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Update settings of ipset to <replaceable>settings</replaceable>.
+                Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>type</parameter>, dictionary of <parameter>options</parameter> and array of <parameter>entries</parameter>.
+              </para>
+              <para>
+                <variablelist>
+                  <varlistentry><term><parameter>version (s)</parameter>: see <literal>version</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>name (s)</parameter>: see <literal>short</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>description (s)</parameter>: see <literal>description</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>type (s)</parameter>: see <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>options (a{ss})</parameter>: dictionary of {option : value} . See <literal>options</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                  <varlistentry><term><parameter>entries (as)</parameter>: array of entries, see <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+                </variablelist>
+              </para>
+	      <para>
+		Possible errors: INVALID_TYPE
+	      </para>
+            </listitem>
+          </varlistentry>
+	</variablelist>
+      </refsect3>
+      
+      <refsect3 id="FirewallD1.config.ipset.Signals">
+        <title>Signals</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.config.ipset.Signals.Removed">
+            <term>Removed(s: name)</term>
+            <listitem>
+              <para>
+		Emitted when ipset with <replaceable>name</replaceable> has been removed.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Signals.Renamed">
+            <term>Renamed(s: name)</term>
+            <listitem>
+              <para>
+		Emitted when ipset has been renamed to <replaceable>name</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Signals.Updated">
+            <term>Updated(s: name)</term>
+            <listitem>
+              <para>
+		Emitted when ipset with <replaceable>name</replaceable> has been updated.
+              </para>
+            </listitem>
+          </varlistentry>
+	</variablelist>
+      </refsect3>
+
+      <refsect3 id="FirewallD1.config.ipset.Properties">
+        <title>Properties</title>
+        <variablelist>
+          <varlistentry id="FirewallD1.config.ipset.Properties.builtin">
+            <term>builtin - b - (ro)</term>
+            <listitem>
+              <para>
+		True if ipset is build-in, false else.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Properties.default">
+            <term>default - b - (ro)</term>
+            <listitem>
+              <para>
+		True if build-in ipset has default settings. False if it has been modified. Always False for not build-in ipsets.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Properties.filename">
+            <term>filename - s - (ro)</term>
+            <listitem>
+              <para>
+		Name (including .xml extension) of file where the configuration is stored.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Properties.name">
+            <term>name - s - (ro)</term>
+            <listitem>
+              <para>
+		Name of ipset.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.ipset.Properties.path">
+            <term>path - s - (ro)</term>
+            <listitem>
+              <para>
+		Path to directory where the ipset configuration is stored. Should be either /usr/lib/firewalld/ipsets or /etc/firewalld/ipsets.
               </para>
             </listitem>
           </varlistentry>
