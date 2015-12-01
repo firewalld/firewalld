@@ -88,7 +88,8 @@ class IPSet(IO_Object):
         if "family" in options:
             if options["family"] == "inet6":
                 family = "ipv6"
-        family = "ipv4"
+            else:
+                family = "ipv4"
 
         if ipset_type == "hash:ip":
             if "-" in entry:
