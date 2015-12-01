@@ -660,9 +660,9 @@ def zone_writer(zone, path=None):
         # source
         if rule.source:
             attrs = { }
-            if rule.addr:
+            if rule.source.addr:
                 attrs["address"] = rule.source.addr
-            if rule.mac:
+            if rule.source.mac:
                 attrs["mac"] = rule.source.mac
             if rule.source.invert:
                 attrs["invert"] = "True"
