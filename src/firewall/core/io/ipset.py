@@ -85,11 +85,10 @@ class IPSet(IO_Object):
 
     @staticmethod
     def check_entry(entry, options, ipset_type):
+        family = "ipv4"
         if "family" in options:
             if options["family"] == "inet6":
                 family = "ipv6"
-            else:
-                family = "ipv4"
 
         if ipset_type == "hash:ip":
             if "-" in entry:
