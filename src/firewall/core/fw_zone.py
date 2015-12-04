@@ -610,7 +610,7 @@ class FirewallZone(object):
 
         # For mac source bindings ipv is an empty string, the mac source will
         # be added for ipv4 and ipv6
-        if ipv == "":
+        if ipv == "" or ipv == None:
             for ipv in [ "ipv4", "ipv6" ]:
                 for table in ZONE_CHAINS:
                     for chain in ZONE_CHAINS[table]:
@@ -630,9 +630,14 @@ class FirewallZone(object):
                             action = "-g"
                         else:
                             action = "-j"
-                        rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 "-m", "mac", "--mac-source", source,
-                                 action, target ]
+                        if source.startswith("ipset:"):
+                            rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                                     "-m", "set", "--match-set", source[6:],
+                                     "src", action, target ]
+                        else:
+                            rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
+                                     "-m", "mac", "--mac-source", source,
+                                     action, target ]
                         rules.append((ipv, rule))
 
         else:
