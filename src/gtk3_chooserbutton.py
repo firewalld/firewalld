@@ -66,7 +66,10 @@ class ChooserButton(object):
         return self.button.is_sensitive()
 
     def connect(self, type, *args):
-        self.button.connect(type, *args)
+        return self.button.connect(type, *args)
+
+    def disconnect(self, *args):
+        self.button.disconnect(*args)
 
     def get_text(self):
         return self.text
