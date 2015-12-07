@@ -977,7 +977,7 @@ class FirewallZone(object):
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
-                command += [ "-j", "MASQUERADE" ]
+                command += [ "!", "-o", "lo", "-j", "MASQUERADE" ]
                 rules.append((ipv, "nat", "%s_allow" % target, command))
 
                 # FORWARD_OUT
@@ -1452,7 +1452,7 @@ class FirewallZone(object):
         for ipv in [ "ipv4" ]: # IPv4 only!
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["POSTROUTING"], zone=zone)
-            rules.append((ipv, [ "%s_allow" % (target), "!", "-i", "lo",
+            rules.append((ipv, [ "%s_allow" % (target), "!", "-o", "lo",
                                  "-t", "nat", "-j", "MASQUERADE" ]))
             # FORWARD_OUT
             target = DEFAULT_ZONE_TARGET.format(
