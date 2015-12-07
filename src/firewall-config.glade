@@ -6516,7 +6516,7 @@
               <object class="GtkLabel" id="label115">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select an ICMP type</property>
+                <property name="label" translatable="yes">Please select an ipset:</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
@@ -8954,7 +8954,7 @@
               <object class="GtkLabel" id="sourceDialogLabel">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a source address.</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a source.</property>
                 <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
@@ -8966,67 +8966,84 @@
               </packing>
             </child>
             <child>
-              <object class="GtkGrid" id="grid1">
+              <object class="GtkBox" id="sourceDialogSourceBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="border_width">6</property>
-                <property name="row_spacing">6</property>
-                <property name="column_spacing">6</property>
+                <property name="hexpand">True</property>
+                <property name="spacing">3</property>
                 <child>
-                  <object class="GtkLabel" id="label43">
+                  <object class="GtkComboBoxText" id="sourceDialogSourceTypeCombobox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">Type:</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkComboBoxText" id="sourceDialogTypeCombobox">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">start</property>
                     <items>
-                      <item translatable="yes">IP</item>
-                      <item translatable="yes">MAC</item>
-                      <item translatable="yes">ipset</item>
+                      <item>IP</item>
+                      <item>MAC</item>
+                      <item>ipset</item>
                     </items>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkLabel" id="label44">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">end</property>
-                    <property name="label" translatable="yes">Address:</property>
-                  </object>
-                  <packing>
-                    <property name="left_attach">0</property>
-                    <property name="top_attach">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="sourceDialogAddressEntry">
+                  <object class="GtkButton" id="sourceDialogSourceChooser">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="halign">start</property>
-                    <property name="max_length">60</property>
-                    <property name="invisible_char">•</property>
-                    <property name="activates_default">True</property>
-                    <property name="width_chars">40</property>
-                    <property name="max_width_chars">60</property>
-                    <property name="shadow_type">none</property>
+                    <property name="receives_default">True</property>
+                    <property name="focus_on_click">False</property>
+                    <signal name="clicked" handler="on_sourceDialogSourceChooser_clicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="hbox20">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">4</property>
+                        <child>
+                          <object class="GtkLabel" id="label43">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="width_chars">0</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator" id="separator11">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="image6">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="icon_name">gtk-network</property>
+                            <property name="icon_size">1</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">1</property>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
               </object>

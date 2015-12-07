@@ -893,10 +893,10 @@ class FirewallConfig(object):
             builder.get_object("sourceDialogOkButton")
         self.sourceDialogCancelButton = \
             builder.get_object("sourceDialogCancelButton")
-        self.sourceDialogAddressTypeCombobox = \
-            builder.get_object("sourceDialogAddressTypeCombobox")
-        self.sourceDialogAddressEntry = \
-            builder.get_object("sourceDialogAddressEntry")
+        self.sourceDialogSourceTypeCombobox = \
+            builder.get_object("sourceDialogSourceTypeCombobox")
+        self.sourceDialogSourceChooser = ChooserButton(builder.get_object( \
+                "sourceDialogSourceChooser"))
 
         self.serviceBaseDialog = builder.get_object("serviceBaseDialog")
         self.serviceBaseDialogOkButton = \
@@ -3376,7 +3376,8 @@ class FirewallConfig(object):
                 return
             old_source = self.sourceStore.get_value(iter, 0)
 
-        source = self.address_select_dialog(None, old_source, True, True)
+        #source = self.address_select_dialog(None, old_source, True, True)
+        source = self.source_select_dialog(old_source)
         if not source:
             return
 
@@ -3386,6 +3387,9 @@ class FirewallConfig(object):
                 if not add:
                     self.fw.removeSource(selected_zone, old_source)
                 self.changes_applied()
+            else:
+                self._warning("Source '%s' already bound to zone '%s'" % \
+                              (old_source, selected_zone))
         else:
             zone = self.fw.config().getZoneByName(selected_zone)
             if not zone.querySource(source):
@@ -3393,6 +3397,9 @@ class FirewallConfig(object):
                     zone.removeSource(old_source)
                 zone.addSource(source)
                 self.changes_applied()
+            else:
+                self._warning("Source '%s' already bound to zone '%s'" % \
+                              (old_source, selected_zone))
 
     def on_macDialog_changed(self, entry, old_mac):
         text = entry.get_text()
@@ -3452,7 +3459,8 @@ class FirewallConfig(object):
             if ipset_type in [ "hash:ip", "hash:net" ]:
                 opts = ipsets[i].getOptions()
                 if "family" in opts:
-                    if opts["family"] == "inet6" and ipv != "ipv6":
+                    if opts["family"] == "inet6" and \
+                       (ipv != "ipv6" and ipv != "all"):
                         continue
                 else:
                     if ipv == "ipv6" or ipv == None:
@@ -3491,9 +3499,9 @@ class FirewallConfig(object):
             return None
         return ipset
 
-    def on_sourceDialog_changed(self, old_type, old_source):
-        _type = self.sourceDialogAddressTypeCombobox.get_active_text()
-        _source = self.sourceDialogAddressEntry.get_text()
+    def on_sourceDialog_changed(self, arg, old_type, old_source):
+        _type = self.sourceDialogSourceTypeCombobox.get_active_text()
+        _source = self.sourceDialogSourceChooser.get_text()
 
         self.sourceDialogOkButton.set_sensitive(False)
 
@@ -3505,33 +3513,65 @@ class FirewallConfig(object):
             elif _type == "ipset":
                 self.sourceDialogOkButton.set_sensitive(True)
 
-    def source_select_dialog(self, old_type, old_source):
-        combobox_select_text(self.sourceDialogAddressTypeCombobox, "MAC")
+    def on_sourceDialogSourceChooser_clicked(self, *args):
+        old_address =  self.sourceDialogSourceChooser.get_text()
 
-        self.sourceDialogAddressEntry.set_text(old_source)
+        _type = self.sourceDialogSourceTypeCombobox.get_active_text()
 
-        h_type_id = self.sourceDialogTypeCombobox.connect(
+        if _type == "IP":
+            address = self.address_select_dialog(None, old_address)
+            if address is not None:
+                self.sourceDialogSourceChooser.set_text(address)
+
+        elif _type == "MAC":
+            address = self.mac_select_dialog(old_address)
+            if address is not None:
+                self.sourceDialogSourceChooser.set_text(address.upper())
+
+        elif _type == "ipset":
+            address = self.ipset_select_dialog(old_address, "all")
+            if address is not None:
+                self.sourceDialogSourceChooser.set_text(address)
+
+    def source_select_dialog(self, old_source):
+        if old_source:
+            if old_source.startswith("ipset:"):
+                old_type = "ipset"
+                old_source = old_source[6:]
+            elif check_mac(old_source):
+                old_type = "MAC"
+            else:
+                old_type = "IP"
+            combobox_select_text(self.sourceDialogSourceTypeCombobox, old_type)
+        else:
+            old_type = None
+            self.sourceDialogSourceTypeCombobox.set_active(0)
+
+        self.sourceDialogSourceChooser.set_text(old_source)
+
+        h_type_id = self.sourceDialogSourceTypeCombobox.connect(
             "changed", self.on_sourceDialog_changed, old_type, old_source)
-        h_addr_id = self.sourceDialogAddressEntry.connect(
-            "changed", self.on_sourceDialog_changed, old_type, old_source)
+        h_addr_id = self.sourceDialogSourceChooser.connect(
+            "clicked", self.on_sourceDialog_changed, old_type, old_source)
 
+        self.sourceDialogOkButton.set_sensitive(False)
 
-        self.macDialogOkButton.set_sensitive(False)
+        self.sourceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.sourceDialog.set_transient_for(self.mainWindow)
+        self.sourceDialog.show_all()
+        result = self.sourceDialog.run()
+        self.sourceDialog.hide()
 
-        self.macDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.macDialog.set_transient_for(self.mainWindow)
-        self.macDialog.show_all()
-        result = self.macDialog.run()
-        self.macDialog.hide()
+        self.sourceDialogSourceTypeCombobox.disconnect(h_type_id)
+        self.sourceDialogSourceChooser.disconnect(h_addr_id)
 
-        self.macDialogMacEntry.disconnect(handler_id)
+        source = self.sourceDialogSourceChooser.get_text()
+        if self.sourceDialogSourceTypeCombobox.get_active_text() == "ipset":
+            source = "ipset:%s" % source
 
-        mac = self.macDialogMacEntry.get_text()
-
-        if result != 1 or old_mac == mac:
+        if result != 1 or old_source == source:
             return None
-        return mac
-
+        return source
 
     def onAddPort(self, *args):
         self.add_edit_port(True)
@@ -4531,8 +4571,7 @@ class FirewallConfig(object):
                 service.removeDestination("ipv6")
             self.changes_applied()
 
-    def onAddressChanged(self, entry, addr_type, old_address, mac_allowed,
-                         ipset_allowed):
+    def onAddressChanged(self, entry, addr_type, old_address):
         text = entry.get_text()
         if text == "":
             self.addressDialogOkButton.set_sensitive(True)
@@ -4549,22 +4588,8 @@ class FirewallConfig(object):
             if (checkIPnMask(text) or checkIP6nMask(text)) \
                and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
-        if mac_allowed:
-            if check_mac(text) and text != old_address:
-                self.addressDialogOkButton.set_sensitive(True)
-        if ipset_allowed:
-            if text.startswith("ipset:"):
-                ipset = text[6:]
-                if self.runtime_view:
-                    ipsets = self.fw.getIPSets()
-                else:
-                    ipsets = [self.fw.config().getIPSet(s).get_property("name") \
-                              for s in self.fw.config().listIPSets()]
-                if ipset in ipsets:
-                    self.addressDialogOkButton.set_sensitive(True)
 
-    def address_select_dialog(self, addr_type, old_address, mac_allowed=False,
-                              ipset_allowed=False):
+    def address_select_dialog(self, addr_type, old_address):
         if addr_type == "ipv4":
             label1 = _("Please enter an ipv4 address with the form address[/mask].")
             label2 = _("The mask can be a network mask or a number.")
@@ -4574,17 +4599,12 @@ class FirewallConfig(object):
         else:
             label1 = _("Please enter an ipv4 or ipv6 address with the form address[/mask].")
             label2 = _("The mask can be a network mask or a number for ipv4.\nThe mask is a number for ipv6.")
-        if mac_allowed:
-            label1 += _("\nA MAC address is also possible.")
-        if ipset_allowed:
-            label1 += _("\nFor an ipset use the 'ipset:' prefix.")
         self.addressDialogLabel.set_markup(label1)
         self.addressDialogLabel2.set_markup(label2)
 
         self.addressDialogAddressEntry.set_text(old_address)
         handler_id = self.addressDialogAddressEntry.connect(
-            "changed", self.onAddressChanged, addr_type, old_address,
-            mac_allowed, ipset_allowed)
+            "changed", self.onAddressChanged, addr_type, old_address)
         self.addressDialogOkButton.set_sensitive(False)
 
         self.addressDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
