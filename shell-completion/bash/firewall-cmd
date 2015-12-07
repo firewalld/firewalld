@@ -76,7 +76,7 @@ OPTIONS_PERMANENT="${OPTIONS_CONFIG} --zone= ${OPTIONS_ZONE} \
 
 OPTIONS_DIRECT="--passthrough \
         --add-chain --remove-chain --query-chain --get-chains --get-all-chains \
-         --add-rule --remove-rule  --query-rule  --get-rules  --get-all-rules \
+         --add-rule --remove-rule  --remove-rules --query-rule  --get-rules  --get-all-rules \
          --add-passthrough --remove-passthrough \
          --query-passthrough --get-passthroughs --get-all-passthroughs"
 
@@ -170,7 +170,7 @@ _firewall_cmd()
         # to not be matched with --*-rule below
         return 0
         ;;
-    --passthrough|--*-chain|--get-chains|--*-rule|--get-rules)
+    --passthrough|--*-chain|--get-chains|--*-rule|--get-rules|--remove-rules)
         COMPREPLY=( $( compgen -W 'ipv4 ipv6 eb' -- "$cur" ) )
         ;;
     ipv4|ipv6|eb)
@@ -179,7 +179,7 @@ _firewall_cmd()
         else
             COMPREPLY=( $( compgen -W 'nat filter mangle' -- "$cur" ) )
         fi
-        ;;      
+        ;;
     *)
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W "${OPTIONS_GENERAL}" -- "$cur") )
