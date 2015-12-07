@@ -65,7 +65,8 @@ def setup_logging(args):
     log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
     log.setDateFormat("%Y-%m-%d %H:%M:%S")
     log.setFormat("%(date)s %(label)s%(message)s")
-    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR ])
+    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR ],
+                       fmt="%(label)s%(message)s")
     log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR ])
     log.setInfoLogging("*", log_file, [ log.WARNING ])
     log.setDebugLogLevel(log.NO_INFO)
