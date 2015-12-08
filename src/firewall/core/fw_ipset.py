@@ -38,13 +38,7 @@ class FirewallIPSet(object):
 
     def cleanup(self):
         for ipset in self.get_ipsets():
-            obj = self._ipsets[ipset]
-            if obj.applied:
-                try:
-                    self._fw._ipset.destroy(obj.name)
-                except Exception as msg:
-                    log.error("Failed to destroy ipset '%s'" % obj.name)
-                    log.error(msg)
+            self.remove_ipset(ipset)
 
         self._ipsets.clear()
 
@@ -74,14 +68,16 @@ class FirewallIPSet(object):
 
     def remove_ipset(self, name):
         obj = self._ipsets[name]
-        if obj.applied:
+        try:
             self._fw._ipset.destroy(name)
+        except Exception as msg:
+            log.error("Failed to destroy ipset '%s'" % name)
+            log.error(msg)
         del self._ipsets[name]
 
     def apply_ipsets(self):
         for ipset in self.get_ipsets():
             obj = self._ipsets[ipset]
-            applied = False
 
             try:
                 self._fw._ipset.create(obj.name, obj.type, obj.options)
@@ -89,10 +85,8 @@ class FirewallIPSet(object):
                 log.error("Failed to create ipset '%s'" % obj.name)
                 log.error(msg)
             else:
-                applied = True
                 if "timeout" not in obj.options:
                     # no entries visible for ipsets with timeout
-                    obj.applied = applied
                     continue
 
                 for entry in obj.entries:
@@ -102,8 +96,6 @@ class FirewallIPSet(object):
                         log.error("Failed to add entry '%s' to ipset '%s'" % \
                                   (entry, obj.name))
                         log.error(msg)
-
-            obj.applied = applied
 
     # TYPE
 
