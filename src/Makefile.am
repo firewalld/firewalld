@@ -23,6 +23,7 @@ nobase_dist_python_DATA = \
 	firewall/core/fw_config.py \
 	firewall/core/fw_direct.py \
 	firewall/core/fw_icmptype.py \
+	firewall/core/fw_ipset.py \
 	firewall/core/fw_policies.py \
 	firewall/core/fw.py \
 	firewall/core/fw_service.py \
@@ -32,11 +33,13 @@ nobase_dist_python_DATA = \
 	firewall/core/io/direct.py \
 	firewall/core/io/firewalld_conf.py \
 	firewall/core/io/icmptype.py \
+	firewall/core/io/ipset.py \
 	firewall/core/io/__init__.py \
 	firewall/core/io/io_object.py \
 	firewall/core/io/lockdown_whitelist.py \
 	firewall/core/io/service.py \
 	firewall/core/io/zone.py \
+	firewall/core/ipset.py \
 	firewall/core/ipXtables.py \
 	firewall/core/logger.py \
 	firewall/core/modules.py \
@@ -44,6 +47,7 @@ nobase_dist_python_DATA = \
 	firewall/core/rich.py \
 	firewall/core/watcher.py \
 	firewall/server/config_icmptype.py \
+	firewall/server/config_ipset.py \
 	firewall/server/config.py \
 	firewall/server/config_service.py \
 	firewall/server/config_zone.py \
