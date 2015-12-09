@@ -29,12 +29,14 @@ from firewall.core.fw_zone import FirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
+from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
 from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
+from firewall.core.io.ipset import ipset_reader
 from firewall.errors import *
 
 ############################################################################
@@ -50,6 +52,7 @@ class Firewall_test(object):
         self.ip4tables_enabled = False
         self.ip6tables_enabled = False
         self.ebtables_enabled = False
+        self.ipset_enabled = False
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
@@ -57,15 +60,17 @@ class Firewall_test(object):
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
         self.policies = FirewallPolicies()
+        self.ipset = FirewallIPSet(self)
 
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
-             self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled)
+             self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
+             self.ipset_enabled)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -138,6 +143,10 @@ class Firewall_test(object):
 
         # copy policies to config interface
         self.config.set_policies(copy.deepcopy(self.policies))
+
+        # load ipset files
+        self._loader(FIREWALLD_IPSETS, "ipset")
+        self._loader(ETC_FIREWALLD_IPSETS, "ipset")
 
         # load icmptype files
         self._loader(FIREWALLD_ICMPTYPES, "icmptype")
@@ -280,6 +289,17 @@ class Firewall_test(object):
                         combined_zone.combine(obj)
                     else:
                         self.zone.add_zone(obj)
+                elif reader_type == "ipset":
+                    obj = ipset_reader(filename, path)
+                    if obj.name in self.ipset.get_ipsets():
+                        orig_obj = self.ipset.get_ipset(obj.name)
+                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                                   orig_obj.name, orig_obj.path,
+                                   orig_obj.filename)
+                        self.ipset.remove_ipset(orig_obj.name)
+                    self.ipset.add_ipset(obj)
+                    # add a deep copy to the configuration interface
+                    self.config.add_ipset(copy.deepcopy(obj))
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:
@@ -305,6 +325,7 @@ class Firewall_test(object):
     def cleanup(self):
         self.icmptype.cleanup()
         self.service.cleanup()
+        # no self.ipset.cleanup(), this would remove active ipsets
         self.zone.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
@@ -319,6 +340,9 @@ class Firewall_test(object):
 
     def check_panic(self):
         return
+
+    def check_ipset(self, ipset):
+        self.ipset.check_ipset(ipset)
 
     def check_zone(self, zone):
         _zone = zone
