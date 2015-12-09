@@ -95,8 +95,7 @@ Zone Options
   --get-target         Get the zone target [P only] [Z]
   --set-target=<target>
                        Set the zone target [P only] [Z]
-  --info-zone=<zone>
-                       Print information about a zone
+  --info-zone=<zone>   Print information about a zone
 
 IPSet Options
   --new-ipset=<ipset> --type=<ipset type> [--option=<key>[=<value>]]..
@@ -342,49 +341,6 @@ def _check_ipv(value):
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
     return value
 
-def __print_all(zone, interfaces, sources, services, ports, protocols, masquerade, forward_ports, icmp_blocks, rules):
-    attributes = []
-    if zone == fw.getDefaultZone():
-        attributes.append("default")
-    if interfaces or sources:
-        attributes.append("active")
-    if attributes:
-        zone = zone + " (%s)" % ", ".join(attributes)
-    __print(zone)
-    __print("  interfaces: " + " ".join(interfaces))
-    __print("  sources: " + " ".join(sources))
-    __print("  services: " + " ".join(services))
-    __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
-    __print("  protocols: " + " ".join(protocols))
-    __print("  masquerade: %s" % ("yes" if masquerade else "no"))
-    __print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
-    __print("  icmp-blocks: " + " ".join(icmp_blocks))
-    __print("  rich rules: \n\t" + "\n\t".join(rules))
-
-def __list_all(fw, zone):
-    interfaces = fw.getInterfaces(zone)
-    sources = fw.getSources(zone)
-    services = fw.getServices(zone)
-    ports = fw.getPorts(zone)
-    protocols = fw.getProtocols(zone)
-    masquerade = fw.queryMasquerade(zone)
-    forward_ports = fw.getForwardPorts(zone)
-    icmp_blocks = fw.getIcmpBlocks(zone)
-    rules = fw.getRichRules(zone)
-    __print_all(zone, interfaces, sources, services, ports, protocols, masquerade, forward_ports, icmp_blocks, rules)
-
-def __list_all_permanent(fw_settings, zone):
-    interfaces = fw_settings.getInterfaces()
-    sources = fw_settings.getSources()
-    services = fw_settings.getServices()
-    ports = fw_settings.getPorts()
-    protocols = fw_settings.getProtocols()
-    masquerade = fw_settings.getMasquerade()
-    forward_ports = fw_settings.getForwardPorts()
-    icmp_blocks = fw_settings.getIcmpBlocks()
-    rules = fw_settings.getRichRules()
-    __print_all(zone, interfaces, sources, services, ports, protocols, masquerade, forward_ports, icmp_blocks, rules)
-
 def __print_zone_info(zone, settings):
     interfaces = settings.getInterfaces()
     sources = settings.getSources()
@@ -395,6 +351,14 @@ def __print_zone_info(zone, settings):
     forward_ports = settings.getForwardPorts()
     icmp_blocks = settings.getIcmpBlocks()
     rules = settings.getRichRules()
+
+    attributes = []
+    if zone == fw.getDefaultZone():
+        attributes.append("default")
+    if interfaces or sources:
+        attributes.append("active")
+    if attributes:
+        zone = zone + " (%s)" % ", ".join(attributes)
     __print(zone)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
@@ -1269,8 +1233,7 @@ if a.permanent:
 
         # list all zone settings
         elif a.list_all:
-            fw_settings = fw_zone.getSettings()
-            __list_all_permanent(fw_settings, zone if zone else fw.getDefaultZone())
+            __print_zone_info(zone, fw_zone.getSettings())
             sys.exit(0)
 
         # list everything
@@ -1279,8 +1242,7 @@ if a.permanent:
             names = [fw.config().getZone(z).get_property("name") for z in zones]
             for zone in sorted(names):
                 fw_zone = fw.config().getZoneByName(zone)
-                fw_settings = fw_zone.getSettings()
-                __list_all_permanent(fw_settings, zone)
+                __print_zone_info(zone, fw_zone.getSettings())
                 __print("")
             sys.exit(0)
 
@@ -1638,13 +1600,14 @@ elif a.query_icmp_block:
 
 # list all
 elif a.list_all:
-    __list_all(fw, zone if zone else fw.getDefaultZone())
+    z = zone if zone else fw.getDefaultZone()
+    __print_zone_info(z, fw.getZoneSettings(z))
     sys.exit(0)
 
 # list everything
 elif a.list_all_zones:
     for zone in fw.getZones():
-        __list_all(fw, zone)
+        __print_zone_info(zone, fw.getZoneSettings(zone))
         __print("")
     sys.exit(0)
 
