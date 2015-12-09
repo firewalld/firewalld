@@ -103,10 +103,8 @@ IPSet Options
                        Add a new ipset [P only]
   --delete-ipset=<ipset>
                        Delete an existing ipset [P only]
-  --info-ipset=<ipset>
-                       Print information about an ipset
-  --list-ipsets
-                       List ipsets
+  --info-ipset=<ipset> Print information about an ipset
+  --get-ipsets         Print predefined ipsets
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset [P]
   --ipset=<ipset> --remove-entry=<entry>
@@ -580,7 +578,7 @@ parser_ipset.add_argument("--remove-option", metavar="<key>[=<value>]")
 parser_ipset.add_argument("--query-option", metavar="<key>[=<value>]")
 parser_ipset.add_argument("--get-options", action="store_true")
 
-parser_ipset.add_argument("--list-ipsets", action="store_true")
+parser_ipset.add_argument("--get-ipsets", action="store_true")
 parser_ipset.add_argument("--add-entry", metavar="<entry>")
 parser_ipset.add_argument("--remove-entry", metavar="<entry>")
 parser_ipset.add_argument("--query-entry", metavar="<entry>")
@@ -673,7 +671,7 @@ options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  options_lockdown_whitelist or a.list_all_zones or \
                  a.get_zone_of_interface or a.get_zone_of_source or \
                  a.info_zone or a.info_icmptype or a.info_service or \
-                 a.info_ipset or a.list_ipsets
+                 a.info_ipset or a.get_ipsets
 
 options_zone_action_action = \
     a.add_service or a.remove_service or a.query_service or \
@@ -730,7 +728,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_zone_of_interface or a.get_zone_of_source or a.get_zones or \
  a.get_services or a.get_icmptypes or a.get_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
- a.info_ipset or a.list_ipsets or a.get_entries
+ a.info_ipset or a.get_ipsets or a.get_entries
 
 # Check various impossible combinations of options
 
@@ -846,7 +844,7 @@ but your connections/interfaces are in zone '%s' (see --get-active-zones)
 You most likely need to use --zone=%s option.\n""" % (default, ",".join(active), active[0]))
 
 if a.permanent:
-    if a.list_ipsets:
+    if a.get_ipsets:
         ipsets = fw.config().listIPSets()
         l = [fw.config().getIPSet(i).get_property("name") for i in ipsets]
         __print_and_exit(" ".join(sorted(l)))
@@ -1424,7 +1422,7 @@ elif a.query_panic:
     __print_query_result(fw.queryPanicMode())
 
 # ipset
-elif a.list_ipsets:
+elif a.get_ipsets:
     ipsets = fw.getIPSets()
     __print_and_exit(" ".join(sorted(ipsets)))
 
