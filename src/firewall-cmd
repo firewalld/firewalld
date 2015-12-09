@@ -818,6 +818,9 @@ if a.quiet and options_list_get:
     a.quiet = False
     __fail("-q/--quiet can't be used with this option(s)")
 
+if options_ipset and not a.ipset:
+    __print_and_exit("No ipset specified")
+
 if a.help:
     __usage()
     sys.exit(0)
@@ -830,9 +833,6 @@ if fw.connected == False:
         __print_and_exit ("not running", NOT_RUNNING)
     else:
         __print_and_exit ("FirewallD is not running", NOT_RUNNING)
-
-if options_ipset and not a.ipset:
-    __print_and_exit("No ipset specified")
 
 if options_zone_ops and not zone:
     default = fw.getDefaultZone()
