@@ -493,6 +493,27 @@ assert_good_empty "--permanent --zone=${myzone} --list-services" "${myservice}"
 assert_good_empty "--permanent --zone=${myzone} --list-icmp-blocks" "${myicmp}"
 assert_good "--permanent --delete-zone=${myzone}"
 
+# ipset tests
+ipset="myipset"
+source="ipset:${ipset}"
+zone="public"
+assert_good "--permanent --new-ipset=${ipset} --type=hash:ip"
+assert_good "--reload"
+assert_good_empty "--ipset=${ipset} --get-entries"
+assert_good "--ipset=${ipset} --add-entry=1.2.3.4"
+assert_good_notempty "--ipset=${ipset} --get-entries"
+assert_bad "--ipset=${ipset} --add-entry=1.2.3.400"
+assert_good "--ipset=${ipset} --remove-entry=1.2.3.4"
+assert_good_empty "--ipset=${ipset} --get-entries"
+
+assert_good "--zone=${zone} --add-source=${source}"
+assert_good_contains "--get-zone-of-source=${source}" "${zone}"
+assert_good_contains "--zone=public --list-sources" "${source}"
+assert_good "--zone=${zone} --query-source=${source}"
+assert_good "--zone=${zone} --remove-source=${source}"
+
+assert_good "--permanent --delete-ipset=${ipset}"
+assert_good "--reload"
 
 # ... --direct ...
 modprobe dummy
