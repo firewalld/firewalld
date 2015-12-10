@@ -19,6 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os.path, errno
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 
@@ -45,11 +46,27 @@ for table in BUILT_IN_CHAINS.keys():
 class ebtables(object):
     def __init__(self):
         self._command = "/sbin/ebtables"
+        self._restore_command = "/sbin/ebtables-restore"
+        self.ebtables_lock = "/var/lib/ebtables/lock"
+        self.__remove_dangling_lock()
+
+    def __remove_dangling_lock(self):
+        if os.path.exists(self.ebtables_lock):
+            (status, ret) = runProg("pidof", [ "-s", "ebtables" ])
+            if ret == "":
+                log.warning("Removing dangling ebtables lock file: '%s'" %
+                            self.ebtables_lock)
+                try:
+                    os.unlink(self.ebtables_lock)
+                except OSError as e:
+                    if e.errno != errno.ENOENT:
+                        raise
 
     def __run(self, args):
         # convert to string list
         _args = ["--concurrent"] + ["%s" % item for item in args]
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
+        self.__remove_dangling_lock()
         (status, ret) = runProg(self._command, _args)
         if status != 0:
             raise ValueError("'%s %s' failed: %s" % (self._command,
