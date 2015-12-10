@@ -102,6 +102,22 @@ Zone Options
                        Set the zone target
   --info-zone=<zone>   Print information about a zone
 
+IPSet Options
+  --new-ipset=<ipset> --type=<ipset type> [--option=<key>[=<value>]]..
+                       Add a new ipset
+  --delete-ipset=<ipset>
+                       Delete an existing ipset
+  --info-ipset=<ipset> Print information about an ipset
+  --get-ipsets         Print predefined ipsets
+  --ipset=<ipset> --add-entry=<entry>
+                       Add a new entry to an ipset
+  --ipset=<ipset> --remove-entry=<entry>
+                       Remove an entry from an ipset
+  --ipset=<ipset> --query-entry=<entry>
+                       Return whether ipset has an entry
+  --ipset=<ipset> --get-entries
+                       List entries of an ipset
+
 IcmpType Options
   --new-icmptype=<icmptype>
                        Add a new icmptype
@@ -336,6 +352,15 @@ def __parse_forward_port(value):
         __fail("missing destination")
     return (port, protocol, toport, toaddr)
 
+def __parse_ipset_option(value):
+    args = value.split("=")
+    if len(args) == 1:
+        return (args[0], "")
+    elif len(args) == 2:
+        return args
+    else:
+        __fail("invalid ipset option '%s'" % (value))
+
 def _check_ipv(value):
     if value != "ipv4" and value != "ipv6" and value != "eb":
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
@@ -380,6 +405,16 @@ def __print_icmptype_info(icmptype, settings):
         destinations = [ "ipv4", "ipv6" ]
     __print(icmptype)
     __print("  destination: " + " ".join(destinations))
+
+def __print_ipset_info(ipset, settings):
+    ipset_type = settings.getType()
+    options = settings.getOptions()
+    entries = settings.getEntries()
+    __print(ipset)
+    __print("  type: " + ipset_type)
+    __print("  options: " + " ".join(["%s=%s" % (k,v) if v else k
+                                      for k,v in options.items()]))
+    __print("  entries: " + " ".join(entries))
 
 def __print_query_result(value):
     if value:
@@ -461,6 +496,7 @@ parser_group_standalone.add_argument("--list-all-zones", action="store_true")
 parser_group_standalone.add_argument("--info-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--info-service", metavar="<service>")
 parser_group_standalone.add_argument("--info-icmptype", metavar="<icmptype>")
+parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
 
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
@@ -469,6 +505,8 @@ parser_group_config.add_argument("--new-service", metavar="<service>")
 parser_group_config.add_argument("--delete-service", metavar="<service>")
 parser_group_config.add_argument("--new-zone", metavar="<zone>")
 parser_group_config.add_argument("--delete-zone", metavar="<zone>")
+parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
 
 parser_group_lockdown_whitelist = parser.add_mutually_exclusive_group()
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-commands", action="store_true")
@@ -534,6 +572,22 @@ parser_group_zone.add_argument("--list-forward-ports", action="store_true")
 parser_group_zone.add_argument("--list-all", action="store_true")
 parser_group_zone.add_argument("--get-target", action="store_true")
 parser_group_zone.add_argument("--set-target", metavar="<target>")
+
+parser.add_argument("--option", metavar="<key>[=<value>]", action='append')
+parser.add_argument("--type", metavar="<ipsettype>")
+parser.add_argument("--ipset", metavar="<ipset>")
+
+parser_ipset = parser.add_mutually_exclusive_group()
+parser_ipset.add_argument("--add-option", metavar="<key>[=<value>]")
+parser_ipset.add_argument("--remove-option", metavar="<key>[=<value>]")
+parser_ipset.add_argument("--query-option", metavar="<key>[=<value>]")
+parser_ipset.add_argument("--get-options", action="store_true")
+
+parser_ipset.add_argument("--get-ipsets", action="store_true")
+parser_ipset.add_argument("--add-entry", metavar="<entry>")
+parser_ipset.add_argument("--remove-entry", metavar="<entry>")
+parser_ipset.add_argument("--query-entry", metavar="<entry>")
+parser_ipset.add_argument("--get-entries", action="store_true")
 
 parser.add_argument("--direct", action="store_true")
 
@@ -628,7 +682,8 @@ options_lockdown_whitelist = \
 options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  options_lockdown_whitelist or a.list_all_zones or \
                  a.get_zone_of_interface or a.get_zone_of_source or \
-                 a.info_zone or a.info_icmptype or a.info_service
+                 a.info_zone or a.info_icmptype or a.info_service or \
+                 a.info_ipset or a.get_ipsets
 
 options_zone_action_action = \
     a.add_service or a.remove_service_from_zone or a.query_service or \
@@ -655,10 +710,14 @@ options_zone_ops = options_zone_interfaces_sources or \
 
 options_zone = a.zone or options_zone_ops
 
+options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
+                a.get_entries or a.new_ipset or a.delete_ipset
+
 options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
                     a.new_service or a.delete_service or \
-                    a.new_zone or a.delete_zone
+                    a.new_zone or a.delete_zone or \
+                    a.ipset or options_ipset
 
 options_direct = \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -678,13 +737,14 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_default_zone or a.get_zone_of_interface or \
  a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes or \
  a.get_target or a.set_target or \
- a.info_zone or a.info_icmptype or a.info_service
+ a.info_zone or a.info_icmptype or a.info_service or \
+ a.info_ipset or a.get_ipsets or a.get_entries
 
 ###############################################################################
 
 # Check various impossible combinations of options
 
-if not (options_lokkit or options_standalone or \
+if not (options_lokkit or options_standalone or options_ipset or \
         options_permanent or options_direct):
     __fail(parser.format_usage() + "No option specified.")
 
@@ -694,9 +754,12 @@ if options_lokkit and (options_standalone or \
            "Can't use lokkit options with other options.")
 
 if options_standalone and (options_permanent or \
-                           options_direct):
+                           options_direct or options_ipset):
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
+
+if (options_ipset and not a.ipset):
+    __fail(parser.format_usage() + "No ipset specified.")
 
 if options_direct and options_zone:
     __fail(parser.format_usage() +
@@ -709,6 +772,9 @@ if (a.direct and not options_direct) or (options_direct and not a.direct):
 if options_config and options_zone:
     __fail(parser.format_usage() +
            "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
+
+if options_ipset and not a.ipset:
+    __print_and_exit("No ipset specified")
 
 if a.help:
     __usage()
@@ -869,6 +935,63 @@ try:
 
         __print_icmptype_info(a.info_icmptype, settings)
         sys.exit(0)
+
+    # ipsets
+    elif a.get_ipsets:
+        ipsets = fw.config.get_ipsets()
+        __print_and_exit(" ".join(sorted(ipsets)))
+
+    elif a.new_ipset:
+        if not a.type:
+            __fail(parser.format_usage() + "No type specified.")
+
+        settings = FirewallClientIPSetSettings()
+        settings.setType(a.type)
+        if a.option:
+            for opt in a.option:
+                settings.addOption(*__parse_ipset_option(opt))
+        config = fw.config
+        settings.setType(a.type)
+        config.addIPSet(a.new_ipset, settings)
+
+    elif a.delete_ipset:
+        ipset = fw.config.get_ipset(a.delete_ipset)
+        ipset.remove()
+
+    elif a.info_ipset:
+        ipset = fw.config.get_ipset(a.info_ipset)
+        settings = FirewallClientIPSetSettings(
+            list(fw.config.get_ipset_config(ipset)))
+        __print_ipset_info(a.info_ipset, settings)
+        sys.exit(0)
+
+    elif a.add_entry:
+        ipset = fw.config.get_ipset(a.ipset)
+        settings = FirewallClientIPSetSettings(
+            list(fw.config.get_ipset_config(ipset)))
+        settings.addEntry(a.add_entry)
+        fw.config.set_ipset_config(ipset, settings.settings)
+
+    elif a.remove_entry:
+        ipset = fw.config.get_ipset(a.ipset)
+        settings = FirewallClientIPSetSettings(
+            list(fw.config.get_ipset_config(ipset)))
+        settings.removeEntry(a.remove_entry)
+        fw.config.set_ipset_config(ipset, settings.settings)
+
+    elif a.query_entry:
+        ipset = fw.config.get_ipset(a.ipset)
+        settings = FirewallClientIPSetSettings(
+            list(fw.config.get_ipset_config(ipset)))
+        r = settings.queryEntry(a.query_entry)
+        __print_query_result(r)
+
+    elif a.get_entries:
+        ipset = fw.config.get_ipset(a.ipset)
+        settings = FirewallClientIPSetSettings(
+            list(fw.config.get_ipset_config(ipset)))
+        l = settings.getEntries()
+        __print_and_exit("\n".join(l))
 
     # lockdown whitelist
 
