@@ -23,10 +23,16 @@ import os.path
 
 from firewall.core.prog import runProg
 from firewall.core.logger import log
+from firewall.functions import tempFile
 
 COMMAND = {
     "ipv4": "/sbin/iptables",
     "ipv6": "/sbin/ip6tables",
+}
+
+RESTORE_COMMAND = {
+    "ipv4": "/sbin/iptables-restore",
+    "ipv6": "/sbin/ip6tables-restore",
 }
 
 PROC_IPxTABLE_NAMES = {
@@ -133,16 +139,16 @@ DEFAULT_RULES["filter"] = [
     "-I OUTPUT 1 -j OUTPUT_direct",
 ]
 OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
-                          "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
-                          "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
-                          "FORWARD_OUT_ZONES", "OUTPUT_direct"])
-
+                            "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
+                            "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
+                            "FORWARD_OUT_ZONES", "OUTPUT_direct"])
 
 class ip4tables(object):
     ipv = "ipv4"
 
     def __init__(self):
         self._command = COMMAND[self.ipv]
+        self._restore_command = RESTORE_COMMAND[self.ipv]
         self.wait_option = self._detect_wait_option()
 
     def __run(self, args):
@@ -156,6 +162,43 @@ class ip4tables(object):
         if status != 0:
             raise ValueError("'%s %s' failed: %s" % (self._command,
                                                      " ".join(_args), ret))
+        return ret
+
+    def set_rules(self, rules, flush=False):
+        temp_file = tempFile()
+
+        table = None
+        for rule in rules:
+            try:
+                i = rule.index("-t")
+            except:
+                pass
+            else:
+                if len(rule) >= i+1:
+                    rule.pop(i)
+                    _table = rule.pop(i)
+                    if _table != table:
+                        if table != None:
+                            temp_file.write("COMMIT\n")
+                        table = _table
+                        temp_file.write("*%s\n" % table)
+            temp_file.write(" ".join(rule) + "\n")
+
+        temp_file.write("COMMIT\n")
+        temp_file.close()
+
+        log.debug2("%s: %s %s", self.__class__, self._restore_command, "...")
+        args = [ ]
+        if not flush:
+            args.append("-n")
+
+        (status, ret) = runProg(self._restore_command, args,
+                                stdin=temp_file.name)
+        if status != 0:
+            os.unlink(temp_file.name)
+            raise ValueError("'%s %s' failed: %s" % (self._restore_command,
+                                                     " ".join(args), ret))
+        os.unlink(temp_file.name)
         return ret
 
     def set_rule(self, rule):
@@ -204,16 +247,22 @@ class ip4tables(object):
 
         return wait_option
 
-    def flush(self):
+    def flush(self, individual=False):
         tables = self.used_tables()
+        rules = [ ]
         for table in tables:
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
             for flag in [ "-F", "-X", "-Z" ]:
-                self.__run([ "-t", table, flag ])
+                if individual:
+                    self.__run([ "-t", table, flag ])
+                else:
+                    rules.append([ "-t", table, flag ])
+        if len(rules) > 0:
+            self.set_rules(rules)
 
-    def set_policy(self, policy, which="used"):
+    def set_policy(self, policy, which="used", individual=False):
         if which == "used":
             tables = self.used_tables()
         else:
@@ -222,9 +271,15 @@ class ip4tables(object):
         if "nat" in tables:
             tables.remove("nat") # nat can not set policies in nat table
 
+        rules = [ ]
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
-                self.__run([ "-t", table, "-P", chain, policy ])
+                if individual:
+                    self.__run([ "-t", table, "-P", chain, policy ])
+                else:
+                    rules.append([ "-t", table, "-P", chain, policy ])
+        if len(rules) > 0:
+            self.set_rules(rules)
 
 class ip6tables(ip4tables):
     ipv = "ipv6"

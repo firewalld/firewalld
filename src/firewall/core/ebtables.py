@@ -22,6 +22,7 @@
 import os.path, errno
 from firewall.core.prog import runProg
 from firewall.core.logger import log
+from firewall.functions import tempFile
 
 PROC_IPxTABLE_NAMES = {
 }
@@ -73,6 +74,35 @@ class ebtables(object):
                                                      " ".join(args), ret))
         return ret
 
+    def set_rules(self, rules, flush=False):
+        temp_file = tempFile()
+
+        table = None
+        for rule in rules:
+            try:
+                i = rule.index("-t")
+            except:
+                pass
+            else:
+                if len(rule) >= i+1:
+                    rule.pop(i)
+                    _table = rule.pop(i)
+                    if _table != table:
+                        table = _table
+                        temp_file.write("*%s\n" % table)
+                temp_file.write(" ".join(rule) + "\n")
+        temp_file.close()
+
+        log.debug2("%s: %s %s", self.__class__, self._restore_command, "...")
+        (status, ret) = runProg(self._restore_command, [ ],
+                                stdin=temp_file.name)
+        if status != 0:
+            os.unlink(temp_file.name)
+            raise ValueError("'%s %s' failed: %s" % (self._restore_command,
+                                                     " ".join(args), ret))
+        os.unlink(temp_file.name)
+        return ret
+
     def set_rule(self, rule):
         return self.__run(rule)
 
@@ -97,23 +127,35 @@ class ebtables(object):
     def used_tables(self):
         return list(BUILT_IN_CHAINS.keys())
 
-    def flush(self):
+    def flush(self, individual=False):
         tables = self.used_tables()
+        rules = [ ]
         for table in tables:
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
             for flag in [ "-F", "-X", "-Z" ]:
-                self.__run([ "-t", table, flag ])
+                if individual:
+                    self.__run([ "-t", table, flag ])
+                else:
+                    rules.append([ "-t", table, flag ])
+        if len(rules) > 0:
+            self.set_rules(rules)
 
-    def set_policy(self, policy, which="used"):
+    def set_policy(self, policy, which="used", individual=False):
         if which == "used":
             tables = self.used_tables()
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
+        rules = [ ]
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
-                self.__run([ "-t", table, "-P", chain, policy ])
+                if individual:
+                    self.__run([ "-t", table, "-P", chain, policy ])
+                else:
+                    rules.append([ "-t", table, "-P", chain, policy ])
+        if len(rules) > 0:
+            self.set_rules(rules)
 
 ebtables_available_tables = ebtables().available_tables()
