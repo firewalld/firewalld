@@ -416,7 +416,7 @@ class FirewallZone(object):
         module_return = self._fw.handle_modules(modules, enable)
         if module_return is None:
             # handle rules
-            rules_return = self._fw.handle_rules2(rules, enable)
+            rules_return = self._fw.handle_rules(rules, enable)
             if rules_return is not None:
                 (cleanup_rules, msg) = rules_return
                 cleanup_chains = chains
@@ -439,7 +439,7 @@ class FirewallZone(object):
                 self._fw.handle_modules(cleanup_modules, not enable)
             # cleanup rules
             if cleanup_rules is not None:
-                self._fw.handle_rules2(cleanup_rules, not enable)
+                self._fw.handle_rules(cleanup_rules, not enable)
 
         # cleanup chains last
         if not enable:

@@ -416,7 +416,18 @@ class Firewall(object):
         # appends rules
         # returns None if all worked, else (cleanup rules, error message)
         for i,value in enumerate(rules):
-            if len(value) == 3:
+            table = chain = None
+            if len(value) == 5:
+                (ipv, table, chain, rule, insert) = value
+                # drop insert rule number if it exists
+                if insert and not enable and isinstance(rule[1], int):
+                    rule.pop(1)
+            elif len(value) == 4:
+                (ipv, table, chain, rule) = value
+                # drop insert rule number if it exists
+                if insert and not enable and isinstance(rule[1], int):
+                    rule.pop(1)
+            elif len(value) == 3:
                 (ipv, rule, insert) = value
             else:
                 (ipv, rule) = value
@@ -425,53 +436,23 @@ class Firewall(object):
             if insert and not enable and isinstance(rule[1], int):
                 rule.pop(1)
 
-            table = None
-            for t in ipXtables.BUILT_IN_CHAINS.keys():
-                if t in rule:
-                    table = t
             if table and not self.is_table_available(ipv, table):
                 if ((ipv == "ipv4" and self.ip4tables_enabled) or
                     (ipv == "ipv6" and self.ip6tables_enabled)):
                     log.error("Unable to add %s into %s %s" % (rule, ipv, table))
                 continue
 
-            # run
-            try:
-                self.rule(ipv, [ append_delete[enable], ] + rule)
-            except Exception as msg:
-                log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
-                log.error(msg)
-                return (rules[:i], msg) # cleanup rules and error message
-        return None
-
-    def handle_rules2(self, rules, enable, insert=False):
-        if insert:
-            append_delete = { True: "-I", False: "-D", }
-        else:
-            append_delete = { True: "-A", False: "-D", }
-
-        # appends rules
-        # returns None if all worked, else (cleanup rules, error message)
-        for i,value in enumerate(rules):
-            if len(value) == 5:
-                (ipv, table, chain, rule, insert) = value
+            if table != None:
+                _rule = [ "-t", table, append_delete[enable], ]
             else:
-                (ipv, table, chain, rule) = value
-
-            # drop insert rule number if it exists
-            if insert and not enable and isinstance(rule[1], int):
-                rule.pop(1)
-
-            if not self.is_table_available(ipv, table):
-                if ((ipv == "ipv4" and self.ip4tables_enabled) or
-                    (ipv == "ipv6" and self.ip6tables_enabled)):
-                    log.error("Unable to add %s into %s %s" % (rule, ipv, table))
-                continue
+                _rule = [ append_delete[enable], ]
+            if chain != None:
+                _rule.append(chain)
+            _rule += [ "%s" % item for item in rule ]
 
             # run
             try:
-                self.rule(ipv, [ "-t", table,
-                                 append_delete[enable], chain, ] + rule)
+                self.rule(ipv, _rule)
             except Exception as msg:
                 log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
                 log.error(msg)
