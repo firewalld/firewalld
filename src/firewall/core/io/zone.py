@@ -320,9 +320,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     return
                 self._rule.element = Rich_Protocol(attrs["value"])
             else:
-                log.error('Protocol allowed only in rule.')
-            if attrs["value"] not in self.item.protocols:
-                self.item.protocols.append(attrs["value"])
+                if attrs["value"] not in self.item.protocols:
+                    self.item.protocols.append(attrs["value"])
         elif name == "icmp-block":
             if self._rule:
                 if self._rule.element:
