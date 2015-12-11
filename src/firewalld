@@ -124,6 +124,9 @@ def startup(args):
             with open(pid_file, "w") as f:
                 f.write(str(os.getpid()))
 
+        if not os.path.exists(config.FIREWALLD_TEMPDIR):
+            os.mkdir(config.FIREWALLD_TEMPDIR, 0o750)
+
         # Start the server mainloop here
         from firewall.server import server
         server.run_server(args.debug_gc)

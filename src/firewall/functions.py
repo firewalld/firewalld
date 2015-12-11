@@ -24,8 +24,10 @@ import os.path
 import shlex, pipes
 import string
 import sys
+import tempfile
 from firewall.core.logger import log
 from firewall.core.ipset import IPSET_MAXNAMELEN
+from firewall.config import FIREWALLD_TEMPDIR
 
 PY2 = sys.version < '3'
 
@@ -251,6 +253,15 @@ def firewalld_is_active():
         return True
 
     return False
+
+def tempFile():
+    try:
+        return tempfile.NamedTemporaryFile(mode='wt', prefix="temp.",
+                                           dir=FIREWALLD_TEMPDIR, delete=False)
+    except Exception as msg:
+        log.error("Failed to create temporary file: %s" % msg)
+        raise
+    return None
 
 def readfile(filename):
     try:
