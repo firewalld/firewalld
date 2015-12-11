@@ -21,14 +21,17 @@
 
 import os
 
-def runProg(prog, argv=[ ]):
+def runProg(prog, argv=[ ], stdin=None):
     args = [ prog ] + argv
 
     (rfd, wfd) = os.pipe()
     pid = os.fork()
     if pid == 0:
         try:
-            fd = os.open("/dev/null", os.O_RDONLY)
+            if stdin != None:
+                fd = os.open(stdin, os.O_RDONLY)
+            else:
+                fd = os.open("/dev/null", os.O_RDONLY)
             if fd != 0:
                 os.dup2(fd, 0)
                 os.close(fd)
