@@ -621,8 +621,14 @@ class FirewallZone(object):
                         opt = SOURCE_ZONE_OPTS[chain]
                         # for zone mac source bindings the features are limited
                         # outgoing can not be set
-                        if opt == "-d":
-                            continue
+                        if source.startswith("ipset:"):
+                            if opt == "-d":
+                                opt = "dst"
+                            else:
+                                opt = "src"
+                        else:
+                            if opt == "-d":
+                                continue
 
                         target = DEFAULT_ZONE_TARGET.format(
                             chain=SHORTCUTS[chain], zone=zone)
@@ -633,7 +639,7 @@ class FirewallZone(object):
                         if source.startswith("ipset:"):
                             rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
                                      "-m", "set", "--match-set", source[6:],
-                                     "src", action, target ]
+                                     opt, action, target ]
                         else:
                             rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
                                      "-m", "mac", "--mac-source", source,
@@ -655,13 +661,17 @@ class FirewallZone(object):
                         action = "-j"
                     target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                         zone=zone)
+                    opt = SOURCE_ZONE_OPTS[chain]
 
                     if source.startswith("ipset:"):
+                        if opt == "-d":
+                            opt = "dst"
+                        else:
+                            opt = "src"
                         rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 "-m", "set", "--match-set", source[6:], "src",
+                                 "-m", "set", "--match-set", source[6:], opt,
                                  action, target ]
                     else:
-                        opt = SOURCE_ZONE_OPTS[chain]
                         rule = [ "%s_ZONES_SOURCE" % chain, "-t", table,
                                  opt, source, action, target ]
                     rules.append((ipv, rule))
