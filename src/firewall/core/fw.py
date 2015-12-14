@@ -587,6 +587,14 @@ class Firewall(object):
                 raise FirewallError(INVALID_IPV,
                                     "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
+        # remove leading and trailing '"' for use with execve
+        i = 0
+        while i < len(rule):
+            x = rule[i]
+            if len(x) > 2 and x[0] == '"' and x[-1] == '"':
+                rule[i] = x[1:-1]
+            i += 1
+
         if ipv == "ipv4":
             # do not call if disabled
             if self.ip4tables_enabled:

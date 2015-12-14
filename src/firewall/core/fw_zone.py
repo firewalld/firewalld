@@ -823,9 +823,9 @@ class FirewallZone(object):
         _command = command[:]
         _command += [ "-j", "LOG" ]
         if rule.log.prefix:
-            _command += [ "--log-prefix", '%s' % rule.log.prefix ]
+            _command += [ "--log-prefix", '"%s"' % rule.log.prefix ]
         if rule.log.level:
-            _command += [ "--log-level", '%s' % rule.log.level ]
+            _command += [ "--log-level", '"%s"' % rule.log.level ]
         _command += self.__rule_limit(rule.log.limit)
         rules.append((ipv, table, chain, _command))
 
