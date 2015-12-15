@@ -613,6 +613,55 @@ class Firewall(object):
 
         return ""
 
+    def rules(self, ipv, rules):
+        _rules = [ ]
+
+        for rule in rules:
+            # replace %%REJECT%%
+            try:
+                i = rule.index("%%REJECT%%")
+            except:
+                pass
+            else:
+                if ipv in [ "ipv4", "ipv6" ]:
+                    rule[i:i+1] = [ "REJECT", "--reject-with",
+                                    ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
+                else:
+                    raise FirewallError(EBTABLES_NO_REJECT,
+                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+
+            # replace %%ICMP%%
+            try:
+                i = rule.index("%%ICMP%%")
+            except:
+                pass
+            else:
+                if ipv in [ "ipv4", "ipv6" ]:
+                    rule[i] = ipXtables.ICMP[ipv]
+                else:
+                    raise FirewallError(INVALID_IPV,
+                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+
+            _rules.append(rule)
+
+        if ipv == "ipv4":
+            # do not call if disabled
+            if self.ip4tables_enabled:
+                return self._ip4tables.set_rules(_rules)
+        elif ipv == "ipv6":
+            # do not call if disabled
+            if self.ip6tables_enabled:
+                return self._ip6tables.set_rules(_rules)
+        elif ipv == "eb":
+            # do not call if disabled
+            if self.ebtables_enabled:
+                return self._ebtables.set_rules(_rules)
+        else:
+            raise FirewallError(INVALID_IPV,
+                                "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
+
+        return ""
+
     # check functions
 
     def check_panic(self):
