@@ -25,13 +25,14 @@ import tempfile
 import shutil
 
 from firewall.config import ETC_FIREWALLD, \
-                            FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
-    FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER
+    FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
+    FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER, \
+    FALLBACK_INDIVIDUAL_CALLS
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
-               "IPv6_rpfilter" ]
+               "IPv6_rpfilter", "IndividualCalls" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -77,6 +78,7 @@ class firewalld_conf(object):
             self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
             self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
+            self.set("IndividualCalls", FALLBACK_INDIVIDUAL_CALLS)
             raise
 
         for line in f:
@@ -141,6 +143,11 @@ class firewalld_conf(object):
                       FALLBACK_IPV6_RPFILTER)
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
 
+        # check individual calls
+        if not self.get("IndividualCalls"):
+            log.error("IndividualCalls is not set, using default value '%s'",
+                      FALLBACK_INDIVIDUAL_CALLS)
+            self.set("IndividualCalls", str(FALLBACK_INDIVIDUAL_CALLS))
 
     # save to self.filename if there are key/value changes
     def write(self):

@@ -75,12 +75,12 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
              self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
-             self.ipset_enabled)
+             self.ipset_enabled, self._individual_calls)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -88,9 +88,11 @@ class Firewall(object):
         self._default_zone = ""
         self._module_refcount = { }
         self._marks = [ ]
-        self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
+        # fallback settings will be overloaded by firewalld.conf
+        self._min_mark = FALLBACK_MINIMAL_MARK
         self.cleanup_on_exit = FALLBACK_CLEANUP_ON_EXIT
         self.ipv6_rpfilter_enabled = FALLBACK_IPV6_RPFILTER
+        self._individual_calls = FALLBACK_INDIVIDUAL_CALLS
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -160,6 +162,12 @@ class Firewall(object):
                 log.debug1("IPv6 rpfilter is enabled")
             else:
                 log.debug1("IPV6 rpfilter is disabled")
+
+            if self._firewalld_conf.get("IndividualCalls"):
+                value = self._firewalld_conf.get("IndividualCalls")
+                if value is not None and value.lower() in [ "yes", "true" ]:
+                    log.debug1("IndividualCalls is enabled")
+                    self._individual_calls = True
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 

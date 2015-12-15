@@ -355,7 +355,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                     "Lockdown", "IPv6_rpfilter" ]:
+                     "Lockdown", "IPv6_rpfilter", "IndividualCalls" ]:
             value = self.config.get_firewalld_conf().get(prop)
             if value is not None:
                 if prop == "MinimalMark":
@@ -372,6 +372,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                     return "yes" if FALLBACK_LOCKDOWN else "no"
                 elif prop == "IPv6_rpfilter":
                     return "yes" if FALLBACK_IPV6_RPFILTER else "no"
+                elif prop == "IndividualCalls":
+                    return "yes" if FALLBACK_INDIVIDUAL_CALLS else "no"
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
