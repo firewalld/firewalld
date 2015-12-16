@@ -96,15 +96,18 @@ class Firewall(object):
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
-        if "filter" not in ipXtables.ip4tables_available_tables:
+        if self.ip4tables_enabled and \
+           "filter" not in ipXtables.ip4tables_available_tables:
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
 
-        if "filter" not in ipXtables.ip6tables_available_tables:
+        if self.ip6tables_enabled and \
+           "filter" not in ipXtables.ip6tables_available_tables:
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
 
-        if "filter" not in ebtables.ebtables_available_tables:
+        if self.ebtables_enabled and \
+           "filter" not in ebtables.ebtables_available_tables:
             log.error("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
@@ -262,8 +265,8 @@ class Firewall(object):
         self._state = "RUNNING"
 
     def start(self):
-        self._check_tables()
         self._start_check()
+        self._check_tables()
         self._flush()
         self._set_policy("ACCEPT")
         self._start()
@@ -421,6 +424,7 @@ class Firewall(object):
         else:
             append_delete = { True: "-A", False: "-D", }
 
+        _rules = { }
         # appends rules
         # returns None if all worked, else (cleanup rules, error message)
         for i,value in enumerate(rules):
@@ -458,26 +462,50 @@ class Firewall(object):
                 _rule.append(chain)
             _rule += [ "%s" % item for item in rule ]
 
-            # run
-            try:
-                self.rule(ipv, _rule)
-            except Exception as msg:
-                log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
-                log.error(msg)
-                return (rules[:i], msg) # cleanup rules and error message
+            if self._individual_calls:
+                ## run
+                try:
+                    self.rule(ipv, _rule)
+                except Exception as msg:
+                    log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
+                    log.error(msg)
+                    return (rules[:i], msg) # cleanup rules and error message
+            else:
+                _rules.setdefault(ipv, []).append(_rule)
+
+        try:
+            for ipv in _rules:
+                self.rules(ipv, _rules[ipv])
+        except Exception as msg:
+            log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
+            log.error(msg)
+            return ([ ], msg) # no cleanup rules and error message
+
         return None
 
     def handle_chains(self, rules, enable):
         new_delete = { True: "-N", False: "-X" }
 
+        _rules = { }
         # appends chains
         # returns None if all worked, else (cleanup chains, error message)
         for i,(ipv, rule) in enumerate(rules):
-            try:
-                self.rule(ipv, [ new_delete[enable], ] + rule)
-            except Exception as msg:
-                log.error(msg)
-                return (rules[:i], msg) # cleanup chains and error message
+            _rule = [ new_delete[enable], ] + rule
+            if self._individual_calls:
+                try:
+                    self.rule(ipv, _rule)
+                except Exception as msg:
+                    log.error(msg)
+                    return (rules[:i], msg) # cleanup chains and error message
+            else:
+                _rules.setdefault(ipv, []).append(_rule)
+        try:
+            for ipv in _rules:
+                self.rules(ipv, _rules[ipv])
+        except Exception as msg:
+            log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
+            log.error(msg)
+            return ([ ], msg) # no cleanup rules and error message
         return None
 
     def handle_modules(self, modules, enable):
@@ -516,20 +544,20 @@ class Firewall(object):
         else:
             default_rules = ebtables.DEFAULT_RULES
 
+        rules = { }
         for table in default_rules:
             if not self.is_table_available(ipv, table):
                 continue
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
                 _rule = prefix + rule.split()
-                self.rule(ipv, _rule)
+                if self._individual_calls:
+                    self.rule(ipv, _rule)
+                else:
+                    rules.setdefault(ipv, []).append(_rule)
 
-#                try:
-#                except Exception as msg:
-# TODO: better handling of init error
-#                    if "Chain already exists." in msg:
-#                        continue
-#                    raise FirewallError, <code>
+        for ipv in rules:
+            self.rules(ipv, rules[ipv])
 
     def _apply_default_rules(self):
         for ipv in [ "ipv4", "ipv6", "eb" ]:
@@ -537,35 +565,48 @@ class Firewall(object):
 
         if self.ipv6_rpfilter_enabled and \
            self.is_table_available("ipv6", "raw"):
-            rule = [ "-t", "raw", "-I", "PREROUTING", "1",
-                     "-p", "icmpv6", "--icmpv6-type=router-advertisement",
-                     "-j", "ACCEPT" ]       # RHBZ#1058505
-            self.rule("ipv6", rule)
-            rule = [ "-t", "raw", "-I", "PREROUTING", "2",
-                     "-m", "rpfilter", "--invert", "-j", "DROP" ]
-            try:
+            if self._individual_calls:
+                rule = [ "-t", "raw", "-I", "PREROUTING", "1",
+                         "-p", "icmpv6", "--icmpv6-type=router-advertisement",
+                         "-j", "ACCEPT" ]       # RHBZ#1058505
                 self.rule("ipv6", rule)
-            except ValueError:    # some problem with ip6t_rpfilter module ?
-                rule = [ "-t", "raw", "-D", "PREROUTING", "1"]
-                self.rule("ipv6", rule)
+                rule = [ "-t", "raw", "-I", "PREROUTING", "2",
+                         "-m", "rpfilter", "--invert", "-j", "DROP" ]
+                try:
+                    self.rule("ipv6", rule)
+                except ValueError:    # some problem with ip6t_rpfilter module ?
+                    rule = [ "-t", "raw", "-D", "PREROUTING", "1"]
+                    self.rule("ipv6", rule)
+            else:
+                rules = [
+                    [ "-t", "raw", "-I", "PREROUTING", "1",
+                      "-p", "icmpv6", "--icmpv6-type=router-advertisement",
+                      "-j", "ACCEPT" ],       # RHBZ#1058505
+                    [ "-t", "raw", "-I", "PREROUTING", "2",
+                      "-m", "rpfilter", "--invert", "-j", "DROP" ]
+                ]
+                return self._ip6tables.set_rules(rules)
 
     # flush and policy
 
     def _flush(self):
         if self.ip4tables_enabled:
-            self._ip4tables.flush()
+            self._ip4tables.flush(individual=self._individual_calls)
         if self.ip6tables_enabled:
-            self._ip6tables.flush()
+            self._ip6tables.flush(individual=self._individual_calls)
         if self.ebtables_enabled:
-            self._ebtables.flush()
+            self._ebtables.flush(individual=self._individual_calls)
 
     def _set_policy(self, policy, which="used"):
         if self.ip4tables_enabled:
-            self._ip4tables.set_policy(policy, which)
+            self._ip4tables.set_policy(policy, which,
+                                       individual=self._individual_calls)
         if self.ip6tables_enabled:
-            self._ip6tables.set_policy(policy, which)
+            self._ip6tables.set_policy(policy, which,
+                                       individual=self._individual_calls)
         if self.ebtables_enabled:
-            self._ebtables.set_policy(policy, which)
+            self._ebtables.set_policy(policy, which,
+                                      individual=self._individual_calls)
 
     # rule function used in handle_ functions
 
