@@ -117,6 +117,14 @@
 	</listitem>
       </varlistentry>
 
+      <varlistentry>
+	<term><option>IndividualCalls</option></term>
+        <listitem>
+	  <para>
+	    If this option is disabled (it is by default), combined -restore calls are used and not individual calls to apply changes to the firewall. The use of individiual calls increases the time that is needed to apply changes and to start the daemon, but is good for debugging as error messages are more specific.
+	  </para>
+	</listitem>
+      </varlistentry>
     </variablelist>
 
   </refsect1>
