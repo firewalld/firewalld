@@ -391,12 +391,14 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 if "invert" in attrs and \
                         attrs["invert"].lower() in [ "yes", "true" ]:
                     invert = True
-                addr = mac = None
+                addr = mac = ipset = None
                 if "address" in attrs:
                     addr = attrs["address"]
                 if "mac" in attrs:
                     mac = attrs["mac"]
-                self._rule.source = Rich_Source(addr, mac, invert)
+                if "ipset" in attrs:
+                    ipset = attrs["ipset"]
+                self._rule.source = Rich_Source(addr, mac, ipset, invert=invert)
                 return
             # zone bound to source
             if "address" not in attrs:
