@@ -29,7 +29,7 @@ import dbus.mainloop.glib
 import slip.dbus
 
 from firewall.config import *
-from firewall.errors import FirewallError
+from firewall.errors import FirewallError, ALREADY_ENABLED, NOT_ENABLED
 from firewall.config.dbus import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.dbus_utils import dbus_to_python
@@ -137,10 +137,14 @@ class FirewallClientZoneSettings(object):
     def addService(self, service):
         if service not in self.settings[5]:
             self.settings[5].append(service)
+        else:
+            raise FirewallError(ALREADY_ENABLED, service)
     @handle_exceptions
     def removeService(self, service):
         if service in self.settings[5]:
             self.settings[5].remove(service)
+        else:
+            raise FirewallError(NOT_ENABLED, service)
     @handle_exceptions
     def queryService(self, service):
         return service in self.settings[5]
@@ -155,10 +159,14 @@ class FirewallClientZoneSettings(object):
     def addPort(self, port, protocol):
         if (port,protocol) not in self.settings[6]:
             self.settings[6].append((port,protocol))
+        else:
+            raise FirewallError(ALREADY_ENABLED, "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def removePort(self, port, protocol):
         if (port,protocol) in self.settings[6]:
             self.settings[6].remove((port,protocol))
+        else:
+            raise FirewallError(NOT_ENABLED, "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[6]
@@ -173,10 +181,14 @@ class FirewallClientZoneSettings(object):
     def addProtocol(self, protocol):
         if protocol not in self.settings[13]:
             self.settings[13].append(protocol)
+        else:
+            raise FirewallError(ALREADY_ENABLED, protocol)
     @handle_exceptions
     def removeProtocol(self, protocol):
         if protocol in self.settings[13]:
             self.settings[13].remove(protocol)
+        else:
+            raise FirewallError(NOT_ENABLED, protocol)
     @handle_exceptions
     def queryProtocol(self, protocol):
         return protocol in self.settings[13]
@@ -191,10 +203,14 @@ class FirewallClientZoneSettings(object):
     def addIcmpBlock(self, icmptype):
         if icmptype not in self.settings[7]:
             self.settings[7].append(icmptype)
+        else:
+            raise FirewallError(ALREADY_ENABLED, icmptype)
     @handle_exceptions
     def removeIcmpBlock(self, icmptype):
         if icmptype in self.settings[7]:
             self.settings[7].remove(icmptype)
+        else:
+            raise FirewallError(NOT_ENABLED, icmptype)
     @handle_exceptions
     def queryIcmpBlock(self, icmptype):
         return icmptype in self.settings[7]
@@ -220,6 +236,9 @@ class FirewallClientZoneSettings(object):
             to_addr = ''
         if (port,protocol,to_port,to_addr) not in self.settings[9]:
             self.settings[9].append((port,protocol,to_port,to_addr))
+        else:
+            raise FirewallError(ALREADY_ENABLED, "'%s:%s:%s:%s'" % \
+                                (port, protocol, toport, toaddr))
     @handle_exceptions
     def removeForwardPort(self, port, protocol, to_port, to_addr):
         if to_port is None:
@@ -228,6 +247,9 @@ class FirewallClientZoneSettings(object):
             to_addr = ''
         if (port,protocol,to_port,to_addr) in self.settings[9]:
             self.settings[9].remove((port,protocol,to_port,to_addr))
+        else:
+            raise FirewallError(NOT_ENABLED, "'%s:%s:%s:%s'" % \
+                                (port, protocol, toport, toaddr))
     @handle_exceptions
     def queryForwardPort(self, port, protocol, to_port, to_addr):
         if to_port is None:
@@ -246,10 +268,14 @@ class FirewallClientZoneSettings(object):
     def addInterface(self, interface):
         if interface not in self.settings[10]:
             self.settings[10].append(interface)
+        else:
+            raise FirewallError(ALREADY_ENABLED, interface)
     @handle_exceptions
     def removeInterface(self, interface):
         if interface in self.settings[10]:
             self.settings[10].remove(interface)
+        else:
+            raise FirewallError(NOT_ENABLED, interface)
     @handle_exceptions
     def queryInterface(self, interface):
         return interface in self.settings[10]
@@ -264,10 +290,14 @@ class FirewallClientZoneSettings(object):
     def addSource(self, source):
         if source not in self.settings[11]:
             self.settings[11].append(source)
+        else:
+            raise FirewallError(ALREADY_ENABLED, source)
     @handle_exceptions
     def removeSource(self, source):
         if source in self.settings[11]:
             self.settings[11].remove(source)
+        else:
+            raise FirewallError(NOT_ENABLED, source)
     @handle_exceptions
     def querySource(self, source):
         return source in self.settings[11]
@@ -284,11 +314,15 @@ class FirewallClientZoneSettings(object):
         rule = str(Rich_Rule(rule_str=rule))
         if rule not in self.settings[12]:
             self.settings[12].append(rule)
+        else:
+            raise FirewallError(ALREADY_ENABLED, rule)
     @handle_exceptions
     def removeRichRule(self, rule):
         rule = str(Rich_Rule(rule_str=rule))
         if rule in self.settings[12]:
             self.settings[12].remove(rule)
+        else:
+            raise FirewallError(NOT_ENABLED, rule)
     @handle_exceptions
     def queryRichRule(self, rule):
         rule = str(Rich_Rule(rule_str=rule))
@@ -700,10 +734,14 @@ class FirewallClientServiceSettings(object):
     def addPort(self, port, protocol):
         if (port,protocol) not in self.settings[3]:
             self.settings[3].append((port,protocol))
+        else:
+            raise FirewallError(ALREADY_ENABLED, "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def removePort(self, port, protocol):
         if (port,protocol) in self.settings[3]:
             self.settings[3].remove((port,protocol))
+        else:
+            raise FirewallError(NOT_ENABLED, "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[3]
@@ -718,10 +756,14 @@ class FirewallClientServiceSettings(object):
     def addProtocol(self, protocol):
         if protocol not in self.settings[6]:
             self.settings[6].append(protocol)
+        else:
+            raise FirewallError(ALREADY_ENABLED, protocol)
     @handle_exceptions
     def removeProtocol(self, protocol):
         if protocol in self.settings[6]:
             self.settings[6].remove(protocol)
+        else:
+            raise FirewallError(NOT_ENABLED, protocol)
     @handle_exceptions
     def queryProtocol(self, protocol):
         return protocol in self.settings[6]
@@ -736,10 +778,14 @@ class FirewallClientServiceSettings(object):
     def addModule(self, module):
         if module not in self.settings[4]:
             self.settings[4].append(module)
+        else:
+            raise FirewallError(ALREADY_ENABLED, module)
     @handle_exceptions
     def removeModule(self, module):
         if module in self.settings[4]:
             self.settings[4].remove(module)
+        else:
+            raise FirewallError(NOT_ENABLED, module)
     @handle_exceptions
     def queryModule(self, module):
         return module in self.settings[4]
@@ -752,11 +798,18 @@ class FirewallClientServiceSettings(object):
         self.settings[5] = destinations
     @handle_exceptions
     def setDestination(self, dest_type, address):
-        self.settings[5][dest_type] = address
+        if not dest_type in self.settings[5] or \
+           self.settings[5][dest_type] != address:
+            self.settings[5][dest_type] = address
+        else:
+            raise FirewallError(ALREADY_ENABLED, "'%s:%s'" % \
+                                (dest_type, address))
     @handle_exceptions
     def removeDestination(self, dest_type):
         if dest_type in self.settings[5]:
             del self.settings[5][dest_type]
+        else:
+            raise FirewallError(NOT_ENABLED, "'%s'" % dest_type)
     @handle_exceptions
     def queryDestination(self, dest_type, address):
         return (dest_type in self.settings[5] and \
@@ -812,11 +865,17 @@ class FirewallClientIPSetSettings(object):
         self.settings[4] = options
     @handle_exceptions
     def addOption(self, key, value):
-        self.settings[4][key] = value
+        if not key in self.settings[4] or self.settings[4][key] != value:
+            self.settings[4][key] = value
+        else:
+            raise FirewallError(ALREADY_ENABLED, "'%s=%s'" % (key,value)
+                                if value else key)
     @handle_exceptions
     def removeOption(self, key):
         if key in self.settings[4]:
             del self.settings[4][key]
+        else:
+            raise FirewallError(NOT_ENABLED, key)
     @handle_exceptions
     def queryOption(self, key, value):
         return key in self.settings[4] and self.settings[4][key] == value
@@ -831,10 +890,14 @@ class FirewallClientIPSetSettings(object):
     def addEntry(self, entry):
         if entry not in self.settings[5]:
             self.settings[5].append(entry)
+        else:
+            raise FirewallError(ALREADY_ENABLED, entry)
     @handle_exceptions
     def removeEntry(self, entry):
         if entry in self.settings[5]:
             self.settings[5].remove(entry)
+        else:
+            raise FirewallError(NOT_ENABLED, entry)
     @handle_exceptions
     def queryEntry(self, entry):
         return entry in self.settings[5]
