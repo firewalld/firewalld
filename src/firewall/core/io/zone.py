@@ -202,7 +202,7 @@ class Zone(IO_Object):
         elif item == "sources":
             for source in config:
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
-                   not check_mac(source):
+                   not check_mac(source) and not source.startswith("ipset:"):
                     raise FirewallError(INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
