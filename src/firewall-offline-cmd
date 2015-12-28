@@ -578,10 +578,10 @@ parser.add_argument("--type", metavar="<ipsettype>")
 parser.add_argument("--ipset", metavar="<ipset>")
 
 parser_ipset = parser.add_mutually_exclusive_group()
-parser_ipset.add_argument("--add-option", metavar="<key>[=<value>]")
-parser_ipset.add_argument("--remove-option", metavar="<key>[=<value>]")
-parser_ipset.add_argument("--query-option", metavar="<key>[=<value>]")
-parser_ipset.add_argument("--get-options", action="store_true")
+#parser_ipset.add_argument("--add-option", metavar="<key>[=<value>]")
+#parser_ipset.add_argument("--remove-option", metavar="<key>[=<value>]")
+#parser_ipset.add_argument("--query-option", metavar="<key>[=<value>]")
+#parser_ipset.add_argument("--get-options", action="store_true")
 
 parser_ipset.add_argument("--get-ipsets", action="store_true")
 parser_ipset.add_argument("--add-entry", metavar="<entry>")
@@ -772,9 +772,6 @@ if (a.direct and not options_direct) or (options_direct and not a.direct):
 if options_config and options_zone:
     __fail(parser.format_usage() +
            "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
-
-if options_ipset and not a.ipset:
-    __print_and_exit("No ipset specified")
 
 if a.help:
     __usage()

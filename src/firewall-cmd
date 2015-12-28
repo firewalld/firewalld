@@ -537,10 +537,10 @@ parser.add_argument("--type", metavar="<ipsettype>")
 parser.add_argument("--ipset", metavar="<ipset>")
 
 parser_ipset = parser.add_mutually_exclusive_group()
-parser_ipset.add_argument("--add-option", metavar="<key>[=<value>]")
-parser_ipset.add_argument("--remove-option", metavar="<key>[=<value>]")
-parser_ipset.add_argument("--query-option", metavar="<key>[=<value>]")
-parser_ipset.add_argument("--get-options", action="store_true")
+#parser_ipset.add_argument("--add-option", metavar="<key>[=<value>]")
+#parser_ipset.add_argument("--remove-option", metavar="<key>[=<value>]")
+#parser_ipset.add_argument("--query-option", metavar="<key>[=<value>]")
+#parser_ipset.add_argument("--get-options", action="store_true")
 
 parser_ipset.add_argument("--get-ipsets", action="store_true")
 parser_ipset.add_argument("--add-entry", metavar="<entry>")
@@ -781,9 +781,6 @@ if a.quiet and options_list_get:
     # it makes no sense to use --quiet with these options
     a.quiet = False
     __fail("-q/--quiet can't be used with this option(s)")
-
-if options_ipset and not a.ipset:
-    __print_and_exit("No ipset specified")
 
 if a.help:
     __usage()
