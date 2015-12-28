@@ -668,6 +668,8 @@ def zone_writer(zone, path=None):
                 attrs["address"] = rule.source.addr
             if rule.source.mac:
                 attrs["mac"] = rule.source.mac
+            if rule.source.ipset:
+                attrs["ipset"] = rule.source.ipset
             if rule.source.invert:
                 attrs["invert"] = "True"
             handler.ignorableWhitespace("    ")
