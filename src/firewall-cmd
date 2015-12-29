@@ -120,6 +120,14 @@ IcmpType Options
                        Delete an existing icmptype [P only]
   --info-icmptype=<icmptype>
                        Print information about an icmptype
+  --icmptype=<icmptype> --add-destination=<ipv>
+                       Enable destination for ipv in icmptype [P only]
+  --icmptype=<icmptype> --remove-destination=<ipv>
+                       Disable destination for ipv in icmptype [P only]
+  --icmptype=<icmptype> --query-destination=<ipv>
+                       Return whether destiantion ipv is enabled in icmptype [P only]
+  --icmptype=<icmptype> --get-destinations
+                       List destinations in icmptype [P only]
 
 Service Options
   --new-service=<service>
@@ -128,6 +136,38 @@ Service Options
                        Delete an existing service [P only]
   --info-service=<service>
                        Print information about a service
+  --service=<service> --add-port=<portid>[-<portid>]/<protocol>
+                       Add a new port to service [P only]
+  --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
+                       Remove an entry from service [P only]
+  --service=<service> --query-port=<portid>[-<portid>]/<protocol>
+                       Return whether the port has been added for service [P only]
+  --service=<service> --get-ports
+                       List ports of service [P only]
+  --service=<service> --add-protocol=<protocol>
+                       Add a new protocol to service [P only]
+  --service=<service> --remove-protocol=<protocol>
+                       Remove an entry from service [P only]
+  --service=<service> --query-protocol=<protocol>
+                       Return whether the protocol has been added for service [P only]
+  --service=<service> --get-protocols
+                       List protocols of service [P only]
+  --service=<service> --add-module=<module>
+                       Add a new module to service [P only]
+  --service=<service> --remove-module=<module>
+                       Remove an entry from service [P only]
+  --service=<service> --query-module=<module>
+                       Return whether the module has been added for service [P only]
+  --service=<service> --get-modules
+                       List modules of service [P only]
+  --service=<service> --add-destination=<ipv>:<address>[/<mask>]
+                       Set destination for ipv to address in service [P only]
+  --service=<service> --remove-destination=<ipv>
+                       Disable destination for ipv i service [P only]
+  --service=<service> --query-destination=<ipv>:<address>[/<mask>]
+                       Return whether destiantion ipv is set for service [P only]
+  --service=<service> --get-destinations
+                       List destinations in service [P only]
 
 Options to Adapt and Query Zones
   --list-all           List everything added for or enabled in a zone [P] [Z]
@@ -335,6 +375,18 @@ def __parse_ipset_option(value):
         return args
     else:
         __fail("invalid ipset option '%s'" % (value))
+
+def _check_destination_ipv(value):
+    if value not in [ "ipv4", "ipv6" ]:
+        __fail("invalid argument: %s (choose from 'ipv4', 'ipv6')" % value)
+    return value
+
+def __parse_service_destination(value):
+    try:
+        (ipv, destination) = value.split(":", 1)
+    except Exception as e:
+        __fail("bad destination, correct syntax is ipv:address[/mask]")
+    return (_check_destination_ipv(ipv), destination)
 
 def _check_ipv(value):
     if value != "ipv4" and value != "ipv6" and value != "eb":
@@ -548,6 +600,28 @@ parser_ipset.add_argument("--remove-entry", metavar="<entry>")
 parser_ipset.add_argument("--query-entry", metavar="<entry>")
 parser_ipset.add_argument("--get-entries", action="store_true")
 
+parser.add_argument("--icmptype", metavar="<icmptype>")
+
+parser_icmptype = parser.add_mutually_exclusive_group()
+parser_icmptype.add_argument("--add-destination", metavar="<ipv>", action='append')
+parser_icmptype.add_argument("--remove-destination", metavar="<ipv>", action='append')
+parser_icmptype.add_argument("--query-destination", metavar="<ipv>")
+parser_icmptype.add_argument("--get-destinations", action="store_true")
+
+parser.add_argument("--service", metavar="<service>")
+
+parser_service = parser.add_mutually_exclusive_group()
+parser_service.add_argument("--get-ports", action="store_true")
+parser_service.add_argument("--get-protocols", action="store_true")
+
+parser_service.add_argument("--add-module", metavar="<module>", action='append')
+parser_service.add_argument("--remove-module", metavar="<module>", action='append')
+parser_service.add_argument("--query-module", metavar="<module>")
+parser_service.add_argument("--get-modules", action="store_true")
+
+parser_service.add_argument("--set-destination", metavar="<destination>")
+parser_service.add_argument("--get-destination", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -664,12 +738,28 @@ options_zone = a.zone or a.timeout != "0" or options_zone_ops
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or a.get_entries
 
-options_permanent = a.permanent or options_config or a.zone or options_zone_ops or a.ipset or options_ipset
+options_icmptype = a.add_destination or a.remove_destination or \
+                   a.query_destination or a.get_destinations
+
+options_service = a.add_port or a.remove_port or a.query_port or \
+                  a.get_ports or \
+                  a.add_protocol or a.remove_protocol or a.query_protocol or \
+                  a.get_protocols or \
+                  a.add_module or a.remove_module or a.query_module or \
+                  a.get_modules or \
+                  a.set_destination or a.remove_destination or \
+                  a.query_destination or a.get_destinations
+
+options_permanent = a.permanent or options_config or \
+                    a.zone or options_zone_ops or \
+                    a.ipset or options_ipset
 
 options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          a.new_service or a.delete_service or \
                          a.new_zone or a.delete_zone or \
-                         a.new_ipset or a.delete_ipset
+                         a.new_ipset or a.delete_ipset or \
+                         (a.icmptype and options_icmptype) or \
+                         (a.service and options_service)
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -692,11 +782,13 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_zone_of_interface or a.get_zone_of_source or a.get_zones or \
  a.get_services or a.get_icmptypes or a.get_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
- a.info_ipset or a.get_ipsets or a.get_entries
+ a.info_ipset or a.get_ipsets or a.get_entries or \
+ a.get_destinations
 
 # Check various impossible combinations of options
 
 if not (options_standalone or options_ipset or \
+        options_icmptype or options_service or \
         options_config or options_zone_ops or \
         options_direct or options_permanent_only):
     __fail(parser.format_usage() + "No option specified.")
@@ -710,9 +802,12 @@ if options_standalone and (options_zone or options_permanent or \
 if (options_ipset and not a.ipset):
     __fail(parser.format_usage() + "No ipset specified.")
 
+if (options_icmptype and not a.icmptype) and \
+   not (options_service and a.service):
+    __fail(parser.format_usage() + "No icmptype specified.")
+
 if (options_direct or options_permanent_only) and (options_zone):
-    __fail(parser.format_usage() +
-           "Can't be used with --zone.")
+    __fail(parser.format_usage() + "Can't be used with --zone.")
 
 if (a.direct and not options_direct) or (options_direct and not a.direct):
     __fail(parser.format_usage() +
@@ -795,7 +890,7 @@ if fw.connected == False:
     else:
         __print_and_exit ("FirewallD is not running", NOT_RUNNING)
 
-if options_zone_ops and not zone:
+if options_zone_ops and not zone and not (a.service and options_service):
     default = fw.getDefaultZone()
     __print_if_verbose("No zone specified, using default zone, i.e. '%s'" % default)
     active = list(fw.getActiveZones().keys())
@@ -906,6 +1001,113 @@ if a.permanent:
         icmptype = fw.config().getIcmpTypeByName(a.info_icmptype)
         __print_icmptype_info(a.info_icmptype, icmptype.getSettings())
         sys.exit(0)
+
+    elif a.icmptype:
+        icmptype = fw.config().getIcmpTypeByName(a.icmptype)
+        settings = icmptype.getSettings()
+
+        if a.add_destination:
+            for ipv in a.add_destination:
+                settings.addDestination(_check_destination_ipv(ipv))
+            icmptype.update(settings)
+
+        elif a.remove_destination:
+            for ipv in a.remove_destination:
+                settings.removeDestination(_check_destination_ipv(ipv))
+            icmptype.update(settings)
+
+        elif a.query_destination:
+            r = a.query_destination in settings.getDestinations()
+            __print_query_result(r)
+
+        elif a.get_destinations:
+            l = settings.getDestinations()
+            if len(l) == 0:
+                l = [ "ipv4", "ipv6" ]
+            __print_and_exit("\n".join(l))
+
+        else:
+            __fail(parser.format_usage() + "Unknown option")
+
+    elif a.service:
+        service = fw.config().getServiceByName(a.service)
+        settings = service.getSettings()
+
+        if a.add_port:
+            for port_proto in a.add_port:
+                (port, proto) = __parse_port(port_proto)
+                settings.addPort(port, proto)
+            service.update(settings)
+
+        elif a.remove_port:
+            for port_proto in a.remove_port:
+                (port, proto) = __parse_port(port_proto)
+                settings.removePort(port, proto)
+            service.update(settings)
+
+        elif a.query_port:
+            (port, proto) = __parse_port(a.query_port)
+            __print_query_result(settings.queryPort(port, proto))
+
+        elif a.get_ports:
+            l = settings.getPorts()
+            __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+
+        elif a.add_protocol:
+            for protocol in a.add_protocol:
+                settings.addProtocol(protocol)
+            service.update(settings)
+
+        elif a.remove_protocol:
+            for protocol in a.remove_protocol:
+                settings.removeProtocol(protocol)
+            service.update(settings)
+
+        elif a.query_protocol:
+            __print_query_result(settings.queryProtocol(a.query_protocol))
+
+        elif a.get_protocols:
+            l = settings.getProtocols()
+            __print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+
+        elif a.add_module:
+            for module in a.add_module:
+                settings.addModule(module)
+            service.update(settings)
+
+        elif a.remove_module:
+            for module in a.remove_module:
+                settings.removeModule(module)
+            service.update(settings)
+
+        elif a.query_module:
+            __print_query_result(settings.queryModule(a.query_module))
+
+        elif a.get_modules:
+            l = settings.getModules()
+            __print_and_exit(" ".join(["%s" % module for module in l]))
+
+        elif a.set_destination:
+            (ipv, dest) = __parse_service_destination(a.set_destination)
+            settings.setDestination(ipv, dest)
+            service.update(settings)
+
+        elif a.remove_destination:
+            for dest in a.remove_destination:
+                settings.removeDestination(
+                    _check_destination_ipv(dest))
+            service.update(settings)
+
+        elif a.query_destination:
+            (ipv, dest) = __parse_service_destination(a.query_destination)
+            __print_query_result(settings.queryDestination(ipv, dest))
+
+        elif a.get_destinations:
+            l = settings.getDestinations()
+            __print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+
+        else:
+            __fail(parser.format_usage() + "Unknown option")
 
     # lockdown whitelist
 
