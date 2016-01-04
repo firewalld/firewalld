@@ -97,6 +97,20 @@ assert_bad() {
   fi
 }
 
+assert_bad_contains() {
+  local args="${1}"
+  local value="${2}"
+  local ret
+
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  if [[ ( "$?" -ne 0 ) || ( "${ret}" = *${value}* ) ]]; then
+    ((failures++))
+    echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' does contain '${value}')${RESTORE}"
+  else
+    echo "${args} ... OK"
+  fi
+}
+
 # rich rules need separate assert methods because of quotation hell
 assert_rich_good() {
   local operation="${1}"
@@ -219,6 +233,8 @@ EOF
 lokkit_opts=""
 test_lokkit_opts
 
+# disable dns again for later tests
+assert_good --remove-service=${service1}
 
 default_zone=$(${path}firewall-offline-cmd --get-default-zone)
 zone="home"
@@ -309,6 +325,21 @@ assert_good "--remove-port 80/tcp --remove-port=443-444/udp"
 assert_bad  " --query-port=80/tcp"
 assert_bad  " --query-port=443-444/udp"
 
+assert_bad  "    --add-protocol=dummy" # bad protocol
+assert_good "    --add-protocol=mux"
+assert_good " --remove-protocol=mux     --zone=${default_zone}"
+assert_good "    --add-protocol=dccp --zone=${default_zone}"
+assert_good " --query-protocol=dccp"
+assert_good "--remove-protocol dccp"
+assert_bad  " --query-protocol=dccp"
+
+assert_good "   --add-protocol=ddp --add-protocol gre"
+assert_good " --query-protocol=ddp --zone=${default_zone}"
+assert_good " --query-protocol=gre"
+assert_good "--remove-protocol ddp --remove-protocol=gre"
+assert_bad  " --query-protocol=ddp"
+assert_bad  " --query-protocol=gre"
+
 assert_good "   --add-masquerade --zone=${default_zone}"
 assert_good " --query-masquerade "
 assert_good "--remove-masquerade"
@@ -374,17 +405,55 @@ assert_good "--zone=${myzone} --add-service=${myservice}"
 assert_good "--zone=${myzone} --add-icmp-block=${myicmp}"
 assert_good_contains "--zone=${myzone} --list-services" "${myservice}"
 assert_good_contains "--zone=${myzone} --list-icmp-blocks" "${myicmp}"
-# delete all
+# delete the service and icmptype
 assert_good "--delete-service=${myservice}"
 assert_good "--delete-icmptype=${myicmp}"
+# make sure they were removed also from the zone
+assert_good_empty "--zone=${myzone} --list-services" "${myservice}"
+assert_good_empty "--zone=${myzone} --list-icmp-blocks" "${myicmp}"
+# delete the zone
 assert_good "--delete-zone=${myzone}"
 
+# ipset tests
+ipset="myipset"
+source="ipset:${ipset}"
+zone="public"
+assert_good "--new-ipset=${ipset} --type=hash:ip"
+assert_good_empty "--ipset=${ipset} --get-entries"
+assert_good "--ipset=${ipset} --add-entry=1.2.3.4"
+assert_good_notempty "--ipset=${ipset} --get-entries"
+assert_bad "--ipset=${ipset} --add-entry=1.2.3.400"
+assert_good "--ipset=${ipset} --remove-entry=1.2.3.4"
+assert_good_empty "--ipset=${ipset} --get-entries"
 
-# ... --direct  ...
+assert_good "--zone=${zone} --add-source=${source}"
+assert_good_contains "--get-zone-of-source=${source}" "${zone}"
+assert_good_contains "--zone=public --list-sources" "${source}"
+assert_good "--zone=${zone} --query-source=${source}"
+assert_good "--zone=${zone} --remove-source=${source}"
+
+assert_good "--delete-ipset=${ipset}"
+
+# ... --direct ...
+assert_bad           "--direct --add-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv
+assert_good          "--direct --add-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_bad           "--direct --query-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv
+assert_good          "--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_bad           "--direct --remove-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv
+assert_good          "--direct --remove-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+assert_bad           "--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT"
+
+assert_good          "--direct --add-passthrough ipv6 --table filter --append FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
+assert_good_contains "--direct --get-passthroughs ipv6" "fd00:dead:beef:ff0::/64"
+assert_good_contains "--direct --get-all-passthroughs" "fd00:dead:beef:ff0::/64"
+assert_good          "--direct --remove-passthrough ipv6 --table filter --append FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT"
+
 assert_good          "--direct --add-chain ipv4 filter mychain"
 assert_good_contains "--direct --get-chains ipv4 filter" "mychain"
 assert_good_contains "--direct --get-all-chains" "ipv4 filter mychain"
 assert_good          "--direct --query-chain ipv4 filter mychain"
+assert_bad           "--direct --add-chain ipv5 filter mychain" # bad ipv
+assert_bad           "--direct --add-chain ipv4 badtable mychain" # bad table name
 
 assert_good          "--direct --add-rule ipv4 filter mychain 3 -j ACCEPT"
 assert_good_contains "--direct --get-rules ipv4 filter mychain" "3 -j ACCEPT"
