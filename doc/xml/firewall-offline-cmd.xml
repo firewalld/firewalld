@@ -970,7 +970,138 @@
            </para>
          </listitem>
        </varlistentry>
-      </variablelist>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new port to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a port from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the port has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-ports</option></term>
+         <listitem>
+           <para>
+             List ports added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-protocol</option>=<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new protocol to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-protocol</option>=<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a protocol from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-protocol</option>=<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the protocol has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-protocols</option></term>
+         <listitem>
+           <para>
+             List protocols added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-module</option>=<replaceable>module</replaceable></term>
+         <listitem>
+           <para>
+             Add a new module to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-module</option>=<replaceable>module</replaceable></term>
+         <listitem>
+           <para>
+             Remove a module from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-module</option>=<replaceable>module</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the module has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-modules</option></term>
+         <listitem>
+           <para>
+             List modules added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-destination</option>=<replaceable>ipv</replaceable>:<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+         <listitem>
+           <para>
+             Set destination for ipv to address[/mask] in the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-destination</option>=<replaceable>ipv</replaceable></term>
+         <listitem>
+           <para>
+             Remove the destination for ipv from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-destination</option>=<replaceable>ipv</replaceable>:<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+         <listitem>
+           <para>
+             Return wether the destination ipv to address[/mask] has been set in the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-destinations</option></term>
+         <listitem>
+           <para>
+             List destinations added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+     </variablelist>
     </refsect2>
 
     <refsect2 id="icmptype_options">
@@ -1002,6 +1133,39 @@
          <listitem>
            <para>
              Delete an existing permanent icmptype.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--add-destination</option>=<replaceable>ipv</replaceable></term>
+         <listitem>
+           <para>
+             Enable destination for ipv in permanent icmptype. ipv is one of <literal>ipv4</literal> or <literal>ipv6</literal>.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--remove-destination</option>=<replaceable>ipv</replaceable></term>
+         <listitem>
+           <para>
+             Disable destination for ipv in permanent icmptype. ipv is one of <literal>ipv4</literal> or <literal>ipv6</literal>.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--query-destination</option>=<replaceable>ipv</replaceable></term>
+         <listitem>
+           <para>
+             Return whether destination for ipv is enabled in permanent icmptype. ipv is one of <literal>ipv4</literal> or <literal>ipv6</literal>.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-destinations</option></term>
+         <listitem>
+           <para>
+              List destinations in permanent icmptype.
            </para>
          </listitem>
        </varlistentry>
