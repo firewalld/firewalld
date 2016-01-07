@@ -1927,6 +1927,7 @@ class FirewallConfig(object):
         self.serviceConfDestinationGrid.set_sensitive(not self.runtime_view)
         self.icmpDialogDestIpv4Check.set_sensitive(not self.runtime_view)
         self.icmpDialogDestIpv6Check.set_sensitive(not self.runtime_view)
+        self.ipsetConfEntryBox.set_sensitive(False)
 
         if self.runtime_view:
             self.zoneEditBox.hide()
@@ -5025,9 +5026,11 @@ class FirewallConfig(object):
 
         if not active_ipset:
             self.ipsetConfIPSetEditBox.set_sensitive(False)
+            self.ipsetConfEntryBox.set_sensitive(False)
             return
 
         self.ipsetConfIPSetEditBox.set_sensitive(True)
+        self.ipsetConfEntryBox.set_sensitive(True)
 
         entries = [ ]
 
