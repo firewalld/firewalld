@@ -57,7 +57,8 @@ IPSET_CREATE_OPTIONS = {
 
 class ipset:
     def __init__(self):
-        self._command = "/usr/sbin/ipset"
+        command_path = lambda cmd: cmd if os.path.exists(cmd) else "/usr" + cmd
+        self._command = command_path("/sbin/ipset")
 
     def __run(self, args):
         # convert to string list

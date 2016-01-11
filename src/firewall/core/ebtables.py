@@ -46,8 +46,9 @@ for table in BUILT_IN_CHAINS.keys():
 
 class ebtables(object):
     def __init__(self):
-        self._command = "/sbin/ebtables"
-        self._restore_command = "/sbin/ebtables-restore"
+        command_path = lambda cmd: cmd if os.path.exists(cmd) else "/usr" + cmd
+        self._command = command_path("/sbin/ebtables")
+        self._restore_command = command_path("/sbin/ebtables-restore")
         self.ebtables_lock = "/var/lib/ebtables/lock"
         self.__remove_dangling_lock()
 
