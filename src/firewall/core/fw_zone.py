@@ -511,7 +511,7 @@ class FirewallZone(object):
 
         if interface_id in _obj.settings["interfaces"]:
             raise FirewallError(ZONE_ALREADY_SET,
-                         "'%s' already bound to '%s'" % (interface_id, zone))
+                         "'%s' already bound to '%s'" % (interface, zone))
         if self.get_zone_of_interface(interface) is not None:
             raise FirewallError(ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % interface)
@@ -698,10 +698,10 @@ class FirewallZone(object):
 
         if source_id in _obj.settings["sources"]:
             raise FirewallError(ZONE_ALREADY_SET,
-                            "'%s' already bound to '%s'" % (source_id, _zone))
+                            "'%s' already bound to '%s'" % (source, _zone))
         if self.get_zone_of_source(source) is not None:
             raise FirewallError(ZONE_CONFLICT,
-                                "'%s' already bound to a zone" % source_id)
+                                "'%s' already bound to a zone" % source)
 
         self.__source(True, _zone, source_id[0], source_id[1])
 
@@ -1259,7 +1259,7 @@ class FirewallZone(object):
         service_id = self.__service_id(service)
         if service_id in _obj.settings["services"]:
             raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (service_id, _zone))
+                                "'%s' already in '%s'" % (service, _zone))
 
         if _obj.applied:
             self.__service(True, _zone, service)
