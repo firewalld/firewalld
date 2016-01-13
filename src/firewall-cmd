@@ -96,6 +96,7 @@ Zone Options
   --set-target=<target>
                        Set the zone target [P only] [Z]
   --info-zone=<zone>   Print information about a zone
+  --path-zone=<zone>   Print file path of a zone [P only]
 
 IPSet Options
   --new-ipset=<ipset> --type=<ipset type> [--option=<key>[=<value>]]..
@@ -103,6 +104,7 @@ IPSet Options
   --delete-ipset=<ipset>
                        Delete an existing ipset [P only]
   --info-ipset=<ipset> Print information about an ipset
+  --path-ipset=<ipset> Print file path of an ipset [P only]
   --get-ipsets         Print predefined ipsets
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset [P]
@@ -120,6 +122,8 @@ IcmpType Options
                        Delete an existing icmptype [P only]
   --info-icmptype=<icmptype>
                        Print information about an icmptype
+  --path-icmptype=<icmptype>
+                       Print file path of an icmptype [P only]
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype [P only]
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -136,6 +140,8 @@ Service Options
                        Delete an existing service [P only]
   --info-service=<service>
                        Print information about a service
+  --path-service=<service>
+                       Print file path of a service [P only]
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service [P only]
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -516,6 +522,10 @@ parser_group_config.add_argument("--new-zone", metavar="<zone>")
 parser_group_config.add_argument("--delete-zone", metavar="<zone>")
 parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
 parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--path-zone", metavar="<zone>")
+parser_group_config.add_argument("--path-service", metavar="<service>")
+parser_group_config.add_argument("--path-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--path-ipset", metavar="<ipset>")
 
 parser_group_lockdown_whitelist = parser.add_mutually_exclusive_group()
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-commands", action="store_true")
@@ -759,7 +769,9 @@ options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          a.new_zone or a.delete_zone or \
                          a.new_ipset or a.delete_ipset or \
                          (a.icmptype and options_icmptype) or \
-                         (a.service and options_service)
+                         (a.service and options_service) or \
+                         a.path_zone or a.path_icmptype or a.path_service or \
+                         a.path_ipset
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -939,6 +951,11 @@ if a.permanent:
         __print_ipset_info(a.info_ipset, ipset.getSettings())
         sys.exit(0)
 
+    elif a.path_ipset:
+        ipset = fw.config().getIPSetByName(a.path_ipset)
+        __print_and_exit("%s/%s" % (ipset.get_property("path"),
+                                    ipset.get_property("filename")))
+
     elif a.add_entry:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
@@ -976,6 +993,11 @@ if a.permanent:
         __print_zone_info(a.info_zone, zone.getSettings())
         sys.exit(0)
 
+    elif a.path_zone:
+        zone = fw.config().getZoneByName(a.path_zone)
+        __print_and_exit("%s/%s" % (zone.get_property("path"),
+                                    zone.get_property("filename")))
+
     elif a.new_service:
         config = fw.config()
         config.addService(a.new_service, FirewallClientServiceSettings())
@@ -989,6 +1011,11 @@ if a.permanent:
         __print_service_info(a.info_service, service.getSettings())
         sys.exit(0)
 
+    elif a.path_service:
+        service = fw.config().getServiceByName(a.path_service)
+        __print_and_exit("%s/%s" % (service.get_property("path"),
+                                    service.get_property("filename")))
+
     elif a.new_icmptype:
         config = fw.config()
         config.addIcmpType(a.new_icmptype, FirewallClientIcmpTypeSettings())
@@ -1001,6 +1028,11 @@ if a.permanent:
         icmptype = fw.config().getIcmpTypeByName(a.info_icmptype)
         __print_icmptype_info(a.info_icmptype, icmptype.getSettings())
         sys.exit(0)
+
+    elif a.path_icmptype:
+        icmptype = fw.config().getIcmpTypeByName(a.path_icmptype)
+        __print_and_exit("%s/%s" % (icmptype.get_property("path"),
+                                    icmptype.get_property("filename")))
 
     elif a.icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.icmptype)
