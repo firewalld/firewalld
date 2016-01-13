@@ -70,6 +70,8 @@ OPTIONS_PERMANENT_ONLY="--new-icmptype= --delete-icmptype= \
                         --new-ipset= --delete-ipset= \
                         --get-target --set-target="
 
+OPTIONS_NEW_IPSET="--type= --option="
+
 # can be used after --permanent
 OPTIONS_PERMANENT="${OPTIONS_CONFIG} --zone= ${OPTIONS_ZONE} \
                    ${OPTIONS_PERMANENT_ONLY}"
@@ -98,6 +100,13 @@ _firewall_cmd()
     firewall-cmd --state 1> /dev/null || return
 
     case $prev in
+    --new-ipset*)
+        if [[ "$cur" == -* ]]; then
+            COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
+        fi
+        ;;
+    --new-*)
+        ;;
     --zone|--set-default-zone|--info-zone)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-zones`' -- "$cur" ) )
@@ -182,7 +191,11 @@ _firewall_cmd()
         ;;
     *)
         if [[ "$cur" == -* ]]; then
-            COMPREPLY=( $( compgen -W "${OPTIONS_GENERAL}" -- "$cur") )
+	    if [[ ${words[@]} == *--new-ipset* ]]; then
+		COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
+	    else
+		COMPREPLY=( $( compgen -W "${OPTIONS_GENERAL}" -- "$cur") )
+	    fi
         fi
         ;;
     esac
