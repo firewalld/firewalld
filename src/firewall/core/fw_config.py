@@ -170,12 +170,6 @@ class FirewallConfig(object):
             return self._default_ipsets[name]
         raise FirewallError(INVALID_IPSET, name)
 
-    def ipset_has_defaults(self, name):
-        return (name in self._ipsets and name in self._default_ipsets)
-
-    def ipset_is_default(self, name):
-        return name in self._default_ipsets
-
     def load_ipset_defaults(self, obj):
         if obj.name not in self._ipsets:
             raise FirewallError(NO_DEFAULTS,
@@ -341,12 +335,6 @@ class FirewallConfig(object):
             return self._default_icmptypes[name]
         raise FirewallError(INVALID_ICMPTYPE, name)
 
-    def icmptype_has_defaults(self, name):
-        return (name in self._icmptypes and name in self._default_icmptypes)
-
-    def icmptype_is_default(self, name):
-        return name in self._default_icmptypes
-
     def load_icmptype_defaults(self, obj):
         if obj.name not in self._icmptypes:
             raise FirewallError(NO_DEFAULTS,
@@ -511,12 +499,6 @@ class FirewallConfig(object):
         elif name in self._default_services:
             return self._default_services[name]
         raise FirewallError(INVALID_SERVICE, "get_service(): '%s'" % name)
-
-    def service_has_defaults(self, name):
-        return (name in self._services and name in self._default_services)
-
-    def service_is_default(self, name):
-        return name in self._default_services
 
     def load_service_defaults(self, obj):
         if obj.name not in self._services:
@@ -688,12 +670,6 @@ class FirewallConfig(object):
         elif name in self._default_zones:
             return self._default_zones[name]
         raise FirewallError(INVALID_ZONE, "get_zone(): %s" % name)
-
-    def zone_has_defaults(self, name):
-        return (name in self._zones and name in self._default_zones)
-
-    def zone_is_default(self, name):
-        return name in self._default_zones
 
     def load_zone_defaults(self, obj):
         if obj.name not in self._zones:
