@@ -39,7 +39,7 @@ class FirewallConfig(object):
     def __repr__(self):
         return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
                    self._ipsets, self._icmptypes, self._services, self._zones,
-                   self._default_ipsets, self._default_icmptypes, self._default_services, self._default_zones,
+                   self._builtin_ipsets, self._builtin_icmptypes, self._builtin_services, self._builtin_zones,
                    self._firewalld_conf, self._policies, self._direct)
 
     def __init_vars(self):
@@ -47,39 +47,39 @@ class FirewallConfig(object):
         self._icmptypes = { }
         self._services = { }
         self._zones = { }
-        self._default_ipsets = { }
-        self._default_icmptypes = { }
-        self._default_services = { }
-        self._default_zones = { }
+        self._builtin_ipsets = { }
+        self._builtin_icmptypes = { }
+        self._builtin_services = { }
+        self._builtin_zones = { }
         self._firewalld_conf = None
         self._policies = None
         self._direct = None
 
     def cleanup(self):
-        for x in list(self._default_ipsets.keys()):
-            self._default_ipsets[x].cleanup()
-            del self._default_ipsets[x]
+        for x in list(self._builtin_ipsets.keys()):
+            self._builtin_ipsets[x].cleanup()
+            del self._builtin_ipsets[x]
         for x in list(self._ipsets.keys()):
             self._ipsets[x].cleanup()
             del self._ipsets[x]
 
-        for x in list(self._default_icmptypes.keys()):
-            self._default_icmptypes[x].cleanup()
-            del self._default_icmptypes[x]
+        for x in list(self._builtin_icmptypes.keys()):
+            self._builtin_icmptypes[x].cleanup()
+            del self._builtin_icmptypes[x]
         for x in list(self._icmptypes.keys()):
             self._icmptypes[x].cleanup()
             del self._icmptypes[x]
 
-        for x in list(self._default_services.keys()):
-            self._default_services[x].cleanup()
-            del self._default_services[x]
+        for x in list(self._builtin_services.keys()):
+            self._builtin_services[x].cleanup()
+            del self._builtin_services[x]
         for x in list(self._services.keys()):
             self._services[x].cleanup()
             del self._services[x]
 
-        for x in list(self._default_zones.keys()):
-            self._default_zones[x].cleanup()
-            del self._default_zones[x]
+        for x in list(self._builtin_zones.keys()):
+            self._builtin_zones[x].cleanup()
+            del self._builtin_zones[x]
         for x in list(self._zones.keys()):
             self._zones[x].cleanup()
             del self._zones[x]
@@ -155,19 +155,19 @@ class FirewallConfig(object):
 
     def get_ipsets(self):
         return sorted(set(list(self._ipsets.keys()) + \
-                          list(self._default_ipsets.keys())))
+                          list(self._builtin_ipsets.keys())))
 
     def add_ipset(self, obj):
-        if obj.default:
-            self._default_ipsets[obj.name] = obj
+        if obj.builtin:
+            self._builtin_ipsets[obj.name] = obj
         else:
             self._ipsets[obj.name] = obj
 
     def get_ipset(self, name):
         if name in self._ipsets:
             return self._ipsets[name]
-        elif name in self._default_ipsets:
-            return self._default_ipsets[name]
+        elif name in self._builtin_ipsets:
+            return self._builtin_ipsets[name]
         raise FirewallError(INVALID_IPSET, name)
 
     def load_ipset_defaults(self, obj):
@@ -177,11 +177,11 @@ class FirewallConfig(object):
         elif self._ipsets[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._ipsets[%s] != obj" % obj.name)
-        elif obj.name not in self._default_ipsets:
+        elif obj.name not in self._builtin_ipsets:
             raise FirewallError(NO_DEFAULTS,
-                            "'%s' not in self._default_ipsets" % obj.name)
+                            "'%s' not in self._builtin_ipsets" % obj.name)
         self._remove_ipset(obj)
-        return self._default_ipsets[obj.name]
+        return self._builtin_ipsets[obj.name]
 
     def get_ipset_config(self, obj):
         return obj.export_config()
@@ -214,7 +214,8 @@ class FirewallConfig(object):
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_IPSETS
-        x.default = False
+        # It is not possible to add a new one with a name of a buitin
+        x.default = True
 
         ipset_writer(x)
         self.add_ipset(x)
@@ -233,15 +234,15 @@ class FirewallConfig(object):
                     obj = self._ipsets[x]
                     if obj.filename == filename:
                         del self._ipsets[x]
-                        if obj.name in self._default_ipsets:
-                            return ("update", self._default_ipsets[obj.name])
+                        if obj.name in self._builtin_ipsets:
+                            return ("update", self._builtin_ipsets[obj.name])
                         return ("remove", obj)
             else:
                 # removed builtin ipset
-                for x in self._default_ipsets.keys():
-                    obj = self._default_ipsets[x]
+                for x in self._builtin_ipsets.keys():
+                    obj = self._builtin_ipsets[x]
                     if obj.filename == filename:
-                        del self._default_ipsets[x]
+                        del self._builtin_ipsets[x]
                         if obj.name not in self._ipsets:
                             # update dbus ipset
                             return ("remove", obj)
@@ -257,7 +258,7 @@ class FirewallConfig(object):
         obj = ipset_reader(filename, path)
 
         # new ipset
-        if obj.name not in self._default_ipsets and obj.name not in self._ipsets:
+        if obj.name not in self._builtin_ipsets and obj.name not in self._ipsets:
             self.add_ipset(obj)
             return ("new", obj)
 
@@ -268,10 +269,10 @@ class FirewallConfig(object):
                 self._ipsets[obj.name] = obj
             return ("update", obj)
         else:
-            if obj.name in self._default_ipsets:
+            if obj.name in self._builtin_ipsets:
                 # builtin ipset update
-                del self._default_ipsets[obj.name]
-                self._default_ipsets[obj.name] = obj
+                del self._builtin_ipsets[obj.name]
+                self._builtin_ipsets[obj.name] = obj
 
                 if obj.name not in self._ipsets:
                     # update dbus ipset
@@ -293,13 +294,8 @@ class FirewallConfig(object):
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._ipsets[obj.name]
 
-    def is_builtin_ipset(self, obj):
-        if obj.default or obj.name in self._default_ipsets:
-            return True
-        return False
-
     def check_builtin_ipset(self, obj):
-        if self.is_builtin_ipset(obj):
+        if obj.builtin:
             raise FirewallError(BUILTIN_IPSET,
                                 "'%s' is built-in icmp type" % obj.name)
 
@@ -320,19 +316,19 @@ class FirewallConfig(object):
 
     def get_icmptypes(self):
         return sorted(set(list(self._icmptypes.keys()) + \
-                          list(self._default_icmptypes.keys())))
+                          list(self._builtin_icmptypes.keys())))
 
     def add_icmptype(self, obj):
-        if obj.default:
-            self._default_icmptypes[obj.name] = obj
+        if obj.builtin:
+            self._builtin_icmptypes[obj.name] = obj
         else:
             self._icmptypes[obj.name] = obj
 
     def get_icmptype(self, name):
         if name in self._icmptypes:
             return self._icmptypes[name]
-        elif name in self._default_icmptypes:
-            return self._default_icmptypes[name]
+        elif name in self._builtin_icmptypes:
+            return self._builtin_icmptypes[name]
         raise FirewallError(INVALID_ICMPTYPE, name)
 
     def load_icmptype_defaults(self, obj):
@@ -342,11 +338,11 @@ class FirewallConfig(object):
         elif self._icmptypes[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._icmptypes[%s] != obj" % obj.name)
-        elif obj.name not in self._default_icmptypes:
+        elif obj.name not in self._builtin_icmptypes:
             raise FirewallError(NO_DEFAULTS,
-                            "'%s' not in self._default_icmptypes" % obj.name)
+                            "'%s' not in self._builtin_icmptypes" % obj.name)
         self._remove_icmptype(obj)
-        return self._default_icmptypes[obj.name]
+        return self._builtin_icmptypes[obj.name]
 
     def get_icmptype_config(self, obj):
         return obj.export_config()
@@ -379,7 +375,8 @@ class FirewallConfig(object):
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ICMPTYPES
-        x.default = False
+        # It is not possible to add a new one with a name of a buitin
+        x.default = True
 
         icmptype_writer(x)
         self.add_icmptype(x)
@@ -398,15 +395,15 @@ class FirewallConfig(object):
                     obj = self._icmptypes[x]
                     if obj.filename == filename:
                         del self._icmptypes[x]
-                        if obj.name in self._default_icmptypes:
-                            return ("update", self._default_icmptypes[obj.name])
+                        if obj.name in self._builtin_icmptypes:
+                            return ("update", self._builtin_icmptypes[obj.name])
                         return ("remove", obj)
             else:
                 # removed builtin icmptype
-                for x in self._default_icmptypes.keys():
-                    obj = self._default_icmptypes[x]
+                for x in self._builtin_icmptypes.keys():
+                    obj = self._builtin_icmptypes[x]
                     if obj.filename == filename:
-                        del self._default_icmptypes[x]
+                        del self._builtin_icmptypes[x]
                         if obj.name not in self._icmptypes:
                             # update dbus icmptype
                             return ("remove", obj)
@@ -422,7 +419,7 @@ class FirewallConfig(object):
         obj = icmptype_reader(filename, path)
 
         # new icmptype
-        if obj.name not in self._default_icmptypes and obj.name not in self._icmptypes:
+        if obj.name not in self._builtin_icmptypes and obj.name not in self._icmptypes:
             self.add_icmptype(obj)
             return ("new", obj)
 
@@ -433,10 +430,10 @@ class FirewallConfig(object):
                 self._icmptypes[obj.name] = obj
             return ("update", obj)
         else:
-            if obj.name in self._default_icmptypes:
+            if obj.name in self._builtin_icmptypes:
                 # builtin icmptype update
-                del self._default_icmptypes[obj.name]
-                self._default_icmptypes[obj.name] = obj
+                del self._builtin_icmptypes[obj.name]
+                self._builtin_icmptypes[obj.name] = obj
 
                 if obj.name not in self._icmptypes:
                     # update dbus icmptype
@@ -458,13 +455,8 @@ class FirewallConfig(object):
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._icmptypes[obj.name]
 
-    def is_builtin_icmptype(self, obj):
-        if obj.default or obj.name in self._default_icmptypes:
-            return True
-        return False
-
     def check_builtin_icmptype(self, obj):
-        if self.is_builtin_icmptype(obj):
+        if obj.builtin:
             raise FirewallError(BUILTIN_ICMPTYPE,
                                 "'%s' is built-in icmp type" % obj.name)
 
@@ -485,19 +477,19 @@ class FirewallConfig(object):
 
     def get_services(self):
         return sorted(set(list(self._services.keys()) + \
-                          list(self._default_services.keys())))
+                          list(self._builtin_services.keys())))
 
     def add_service(self, obj):
-        if obj.default:
-            self._default_services[obj.name] = obj
+        if obj.builtin:
+            self._builtin_services[obj.name] = obj
         else:
             self._services[obj.name] = obj
 
     def get_service(self, name):
         if name in self._services:
             return self._services[name]
-        elif name in self._default_services:
-            return self._default_services[name]
+        elif name in self._builtin_services:
+            return self._builtin_services[name]
         raise FirewallError(INVALID_SERVICE, "get_service(): '%s'" % name)
 
     def load_service_defaults(self, obj):
@@ -507,11 +499,11 @@ class FirewallConfig(object):
         elif self._services[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._services[%s] != obj" % obj.name)
-        elif obj.name not in self._default_services:
+        elif obj.name not in self._builtin_services:
             raise FirewallError(NO_DEFAULTS,
-                            "'%s' not in self._default_services" % obj.name)
+                            "'%s' not in self._builtin_services" % obj.name)
         self._remove_service(obj)
-        return self._default_services[obj.name]
+        return self._builtin_services[obj.name]
 
     def get_service_config(self, obj):
         return obj.export_config()
@@ -544,7 +536,8 @@ class FirewallConfig(object):
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_SERVICES
-        x.default = False
+        # It is not possible to add a new one with a name of a buitin
+        x.default = True
 
         service_writer(x)
         self.add_service(x)
@@ -563,15 +556,15 @@ class FirewallConfig(object):
                     obj = self._services[x]
                     if obj.filename == filename:
                         del self._services[x]
-                        if obj.name in self._default_services:
-                            return ("update", self._default_services[obj.name])
+                        if obj.name in self._builtin_services:
+                            return ("update", self._builtin_services[obj.name])
                         return ("remove", obj)
             else:
                 # removed builtin service
-                for x in self._default_services.keys():
-                    obj = self._default_services[x]
+                for x in self._builtin_services.keys():
+                    obj = self._builtin_services[x]
                     if obj.filename == filename:
-                        del self._default_services[x]
+                        del self._builtin_services[x]
                         if obj.name not in self._services:
                             # update dbus service
                             return ("remove", obj)
@@ -587,7 +580,7 @@ class FirewallConfig(object):
         obj = service_reader(filename, path)
 
         # new service
-        if obj.name not in self._default_services and obj.name not in self._services:
+        if obj.name not in self._builtin_services and obj.name not in self._services:
             self.add_service(obj)
             return ("new", obj)
 
@@ -598,10 +591,10 @@ class FirewallConfig(object):
                 self._services[obj.name] = obj
             return ("update", obj)
         else:
-            if obj.name in self._default_services:
+            if obj.name in self._builtin_services:
                 # builtin service update
-                del self._default_services[obj.name]
-                self._default_services[obj.name] = obj
+                del self._builtin_services[obj.name]
+                self._builtin_services[obj.name] = obj
 
                 if obj.name not in self._services:
                     # update dbus service
@@ -623,13 +616,8 @@ class FirewallConfig(object):
         os.remove("%s/%s.xml" % (obj.path, obj.name))
         del self._services[obj.name]
 
-    def is_builtin_service(self, obj):
-        if obj.default or obj.name in self._default_services:
-            return True
-        return False
-
     def check_builtin_service(self, obj):
-        if self.is_builtin_service(obj):
+        if obj.builtin:
             raise FirewallError(BUILTIN_SERVICE,
                                 "'%s' is built-in service" % obj.name)
 
@@ -650,25 +638,25 @@ class FirewallConfig(object):
 
     def get_zones(self):
         return sorted(set(list(self._zones.keys()) + \
-                          list(self._default_zones.keys())))
+                          list(self._builtin_zones.keys())))
 
     def add_zone(self, obj):
-        if obj.default:
-            self._default_zones[obj.name] = obj
+        if obj.builtin:
+            self._builtin_zones[obj.name] = obj
         else:
             self._zones[obj.name] = obj
 
     def forget_zone(self, name):
-        if name in self._default_zones:
-            del self._default_zones[name]
+        if name in self._builtin_zones:
+            del self._builtin_zones[name]
         if name in self._zones:
             del self._zones[name]
 
     def get_zone(self, name):
         if name in self._zones:
             return self._zones[name]
-        elif name in self._default_zones:
-            return self._default_zones[name]
+        elif name in self._builtin_zones:
+            return self._builtin_zones[name]
         raise FirewallError(INVALID_ZONE, "get_zone(): %s" % name)
 
     def load_zone_defaults(self, obj):
@@ -678,11 +666,11 @@ class FirewallConfig(object):
         elif self._zones[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._zones[%s] != obj" % obj.name)
-        elif obj.name not in self._default_zones:
+        elif obj.name not in self._builtin_zones:
             raise FirewallError(NO_DEFAULTS,
-                                "'%s' not in self._default_zones" % obj.name)
+                                "'%s' not in self._builtin_zones" % obj.name)
         self._remove_zone(obj)
-        return self._default_zones[obj.name]
+        return self._builtin_zones[obj.name]
 
     def get_zone_config(self, obj):
         return obj.export_config()
@@ -718,7 +706,8 @@ class FirewallConfig(object):
         x.name = name
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ZONES
-        x.default = False
+        # It is not possible to add a new one with a name of a buitin
+        x.default = True
 
         zone_writer(x)
         self.add_zone(x)
@@ -737,15 +726,15 @@ class FirewallConfig(object):
                     obj = self._zones[x]
                     if obj.filename == filename:
                         del self._zones[x]
-                        if obj.name in self._default_zones:
-                            return ("update", self._default_zones[obj.name])
+                        if obj.name in self._builtin_zones:
+                            return ("update", self._builtin_zones[obj.name])
                         return ("remove", obj)
             else:
                 # removed builtin zone
-                for x in self._default_zones.keys():
-                    obj = self._default_zones[x]
+                for x in self._builtin_zones.keys():
+                    obj = self._builtin_zones[x]
                     if obj.filename == filename:
-                        del self._default_zones[x]
+                        del self._builtin_zones[x]
                         if obj.name not in self._zones:
                             # update dbus zone
                             return ("remove", obj)
@@ -762,7 +751,7 @@ class FirewallConfig(object):
         obj.fw_config = self
 
         # new zone
-        if obj.name not in self._default_zones and obj.name not in self._zones:
+        if obj.name not in self._builtin_zones and obj.name not in self._zones:
             self.add_zone(obj)
             return ("new", obj)
 
@@ -773,10 +762,10 @@ class FirewallConfig(object):
                 self._zones[obj.name] = obj
             return ("update", obj)
         else:
-            if obj.name in self._default_zones:
+            if obj.name in self._builtin_zones:
                 # builtin zone update
-                del self._default_zones[obj.name]
-                self._default_zones[obj.name] = obj
+                del self._builtin_zones[obj.name]
+                self._builtin_zones[obj.name] = obj
 
                 if obj.name not in self._zones:
                     # update dbus zone
@@ -798,13 +787,8 @@ class FirewallConfig(object):
         os.remove("%s/%s.xml" % (ETC_FIREWALLD_ZONES, obj.name))
         del self._zones[obj.name]
 
-    def is_builtin_zone(self, obj):
-        if obj.default or obj.name in self._default_zones:
-            return True
-        return False
-
     def check_builtin_zone(self, obj):
-        if self.is_builtin_zone(obj):
+        if obj.builtin:
             raise FirewallError(BUILTIN_ZONE, "'%s' is built-in zone" % obj.name)
 
     def remove_zone(self, obj):
