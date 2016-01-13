@@ -310,6 +310,8 @@ class Firewall(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.icmptype.remove_icmptype(orig_obj.name)
+                    elif obj.path.startswith(ETC_FIREWALLD):
+                        obj.default = True
                     self.icmptype.add_icmptype(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_icmptype(copy.deepcopy(obj))
@@ -321,6 +323,8 @@ class Firewall(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.service.remove_service(orig_obj.name)
+                    elif obj.path.startswith(ETC_FIREWALLD):
+                        obj.default = True
                     self.service.add_service(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_service(copy.deepcopy(obj))
@@ -347,6 +351,8 @@ class Firewall(object):
                                        reader_type,
                                        orig_obj.name, orig_obj.path,
                                        orig_obj.filename)
+                    elif obj.path.startswith(ETC_FIREWALLD):
+                        obj.default = True
                     self.config.add_zone(config_obj)
                     if combine:
                         log.debug1("  Combining %s '%s' ('%s/%s')",
@@ -363,6 +369,8 @@ class Firewall(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.ipset.remove_ipset(orig_obj.name)
+                    elif obj.path.startswith(ETC_FIREWALLD):
+                        obj.default = True
                     self.ipset.add_ipset(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_ipset(copy.deepcopy(obj))
