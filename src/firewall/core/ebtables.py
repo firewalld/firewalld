@@ -49,12 +49,14 @@ class ebtables(object):
         self._command = "/sbin/ebtables"
         self._restore_command = "/sbin/ebtables-restore"
         self.ebtables_lock = "/var/lib/ebtables/lock"
+        self.restore_noflush_option = self._detect_restore_noflush_option()
         self.__remove_dangling_lock()
 
     def __remove_dangling_lock(self):
         if os.path.exists(self.ebtables_lock):
             (status, ret) = runProg("pidof", [ "-s", "ebtables" ])
-            if ret == "":
+            (status2, ret2) = runProg("pidof", [ "-s", "ebtables-restore" ])
+            if ret == "" and ret2 == "":
                 log.warning("Removing dangling ebtables lock file: '%s'" %
                             self.ebtables_lock)
                 try:
@@ -62,6 +64,16 @@ class ebtables(object):
                 except OSError as e:
                     if e.errno != errno.ENOENT:
                         raise
+
+    def _detect_restore_noflush_option(self):
+        # Do not change any rules, just try to use the restore command
+        # with --noflush
+        rules = [ ]
+        try:
+            self.set_rules(rules, flush=False)
+        except ValueError as e:
+            return False
+        return True
 
     def __run(self, args):
         # convert to string list
@@ -94,7 +106,10 @@ class ebtables(object):
         temp_file.close()
 
         log.debug2("%s: %s %s", self.__class__, self._restore_command, "...")
-        (status, ret) = runProg(self._restore_command, [ ],
+        args = [ ]
+        if not flush:
+            args.append("--noflush")
+        (status, ret) = runProg(self._restore_command, args,
                                 stdin=temp_file.name)
         if status != 0:
             os.unlink(temp_file.name)

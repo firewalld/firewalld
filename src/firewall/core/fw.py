@@ -172,6 +172,10 @@ class Firewall(object):
                     log.debug1("IndividualCalls is enabled")
                     self._individual_calls = True
 
+            if not self._individual_calls and \
+               not self._ebtables.restore_noflush_option:
+                log.debug1("ebtables-restore is not supporting the --noflush option, will therefore not be used")
+
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
         # apply default rules
@@ -462,7 +466,8 @@ class Firewall(object):
                 _rule.append(chain)
             _rule += [ "%s" % item for item in rule ]
 
-            if self._individual_calls:
+            if self._individual_calls or \
+               (ipv == "eb" and not self._ebtables.restore_noflush_option):
                 ## run
                 try:
                     self.rule(ipv, _rule)
@@ -491,7 +496,8 @@ class Firewall(object):
         # returns None if all worked, else (cleanup chains, error message)
         for i,(ipv, rule) in enumerate(rules):
             _rule = [ new_delete[enable], ] + rule
-            if self._individual_calls:
+            if self._individual_calls or \
+               (ipv == "eb" and not self._ebtables.restore_noflush_option):
                 try:
                     self.rule(ipv, _rule)
                 except Exception as msg:
@@ -551,7 +557,8 @@ class Firewall(object):
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
                 _rule = prefix + rule.split()
-                if self._individual_calls:
+                if self._individual_calls or \
+                   (ipv == "eb" and not self._ebtables.restore_noflush_option):
                     self.rule(ipv, _rule)
                 else:
                     rules.setdefault(ipv, []).append(_rule)
@@ -566,6 +573,8 @@ class Firewall(object):
         if self.ipv6_rpfilter_enabled and \
            self.is_table_available("ipv6", "raw"):
             if self._individual_calls:
+                # here is no check for ebtables.restore_noflush_option needed
+                # as ebtables is not used in here
                 rule = [ "-t", "raw", "-I", "PREROUTING", "1",
                          "-p", "icmpv6", "--icmpv6-type=router-advertisement",
                          "-j", "ACCEPT" ]       # RHBZ#1058505
@@ -595,7 +604,8 @@ class Firewall(object):
         if self.ip6tables_enabled:
             self._ip6tables.flush(individual=self._individual_calls)
         if self.ebtables_enabled:
-            self._ebtables.flush(individual=self._individual_calls)
+            self._ebtables.flush(individual=(self._individual_calls or \
+                                             not self._ebtables.restore_noflush_option))
 
     def _set_policy(self, policy, which="used"):
         if self.ip4tables_enabled:
@@ -606,7 +616,8 @@ class Firewall(object):
                                        individual=self._individual_calls)
         if self.ebtables_enabled:
             self._ebtables.set_policy(policy, which,
-                                      individual=self._individual_calls)
+                                      individual=(self._individual_calls or \
+                                                  not self._ebtables.restore_noflush_option))
 
     # rule function used in handle_ functions
 
