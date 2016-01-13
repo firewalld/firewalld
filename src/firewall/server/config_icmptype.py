@@ -96,7 +96,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         elif property_name == "default":
             return self.obj.default
         elif property_name == "builtin":
-            return self.config.is_builtin_icmptype(self.obj)
+            return self.obj.builtin
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
