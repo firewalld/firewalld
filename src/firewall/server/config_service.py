@@ -120,6 +120,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
             'filename': self.obj.filename,
             'path': self.obj.path,
             'default': self.obj.default,
+            'builtin': self.obj.builtin,
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
