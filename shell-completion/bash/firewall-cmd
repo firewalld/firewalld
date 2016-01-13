@@ -125,7 +125,7 @@ _firewall_cmd()
           COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
         fi
         ;;
-    --*-icmp-block|info-icmptype)
+    --*-icmp-block|--info-icmptype)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-icmptypes`' -- "$cur" ) )
         else
