@@ -125,7 +125,7 @@ def dbus_to_python(obj, expected_type=None):
          isinstance(obj, dict):
         python_obj = obj
     else:
-        raise TypeError("Unhandled %s" % obj)
+        raise TypeError("Unhandled %s" % repr(obj))
 
     if expected_type is not None:
         if (expected_type == bool and not isinstance(python_obj, bool)) or \
