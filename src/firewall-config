@@ -2208,7 +2208,7 @@ class FirewallConfig(object):
             builtin = zone.get_property("builtin")
 
         self.zoneNotebook.set_sensitive(True)
-        self.zoneEditRemoveButton.set_sensitive(not builtin)
+        self.zoneEditRemoveButton.set_sensitive(not builtin and default)
         self.zoneEditLoadDefaultsButton.set_sensitive(not default)
 
         # set services
@@ -2376,6 +2376,7 @@ class FirewallConfig(object):
         self.zoneBaseDialogNameEntry.set_max_width_chars(l)
 
         if add:
+            default = True
             builtin = False
             old_name = None
             old_version = None
@@ -2393,6 +2394,7 @@ class FirewallConfig(object):
             selected_zone = self.get_selected_zone()
             zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
+            default = zone.get_property("default")
             builtin = zone.get_property("builtin")
     
             old_name = zone.get_property("name")
@@ -2421,7 +2423,7 @@ class FirewallConfig(object):
                 _("Built-in zone, rename not supported."))
         else:
             self.zoneBaseDialogNameEntry.set_tooltip_markup("")
-        self.zoneBaseDialogNameEntry.set_sensitive(not builtin)
+        self.zoneBaseDialogNameEntry.set_sensitive(not builtin and default)
 
         self.zoneBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.zoneBaseDialog.set_transient_for(self.mainWindow)
@@ -4221,7 +4223,7 @@ class FirewallConfig(object):
             default = service.get_property("default")
             builtin = service.get_property("builtin")
 
-        self.serviceConfRemoveServiceButton.set_sensitive(not builtin)
+        self.serviceConfRemoveServiceButton.set_sensitive(not builtin and default)
         self.serviceConfLoadDefaultsServiceButton.set_sensitive(not default)
 
         # set ports
@@ -4380,6 +4382,7 @@ class FirewallConfig(object):
 
     def add_edit_service(self, add):
         if add:
+            default = True
             builtin = False
             old_name = None
             old_version = None
@@ -4395,6 +4398,7 @@ class FirewallConfig(object):
             active_service = self.get_active_service()
             service = self.fw.config().getServiceByName(active_service)
             settings = service.getSettings()
+            default = service.get_property("default")
             builtin = service.get_property("builtin")
     
             old_name = service.get_property("name")
@@ -4413,7 +4417,7 @@ class FirewallConfig(object):
                 _("Built-in service, rename not supported."))
         else:
             self.serviceBaseDialogNameEntry.set_tooltip_markup("")
-        self.serviceBaseDialogNameEntry.set_sensitive(not builtin)
+        self.serviceBaseDialogNameEntry.set_sensitive(not builtin and default)
 
         self.serviceBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.serviceBaseDialog.set_transient_for(self.mainWindow)
@@ -4706,6 +4710,7 @@ class FirewallConfig(object):
             self.ipsetBaseDialogTypeCombobox.append_text(x)
 
         if add:
+            default = True
             builtin = False
             old_name = None
             old_version = None
@@ -4727,6 +4732,7 @@ class FirewallConfig(object):
             active_ipset = self.get_active_ipset()
             ipset = self.fw.config().getIPSetByName(active_ipset)
             settings = ipset.getSettings()
+            default = ipset.get_property("default")
             builtin = ipset.get_property("builtin")
 
             old_name = ipset.get_property("name")
@@ -4770,7 +4776,7 @@ class FirewallConfig(object):
                 _("Built-in ipset, rename not supported."))
         else:
             self.ipsetBaseDialogNameEntry.set_tooltip_markup("")
-        self.ipsetBaseDialogNameEntry.set_sensitive(not builtin)
+        self.ipsetBaseDialogNameEntry.set_sensitive(not builtin and default)
 
         self.ipsetBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.ipsetBaseDialog.set_transient_for(self.mainWindow)
@@ -5073,7 +5079,7 @@ class FirewallConfig(object):
             self.ipsetConfEntryView.get_selection().set_mode(
                 Gtk.SelectionMode.SINGLE)
 
-        self.ipsetConfRemoveIPSetButton.set_sensitive(not builtin)
+        self.ipsetConfRemoveIPSetButton.set_sensitive(not builtin and default)
         self.ipsetConfLoadDefaultsIPSetButton.set_sensitive(not default)
 
     def get_active_icmp(self):
@@ -5155,7 +5161,7 @@ class FirewallConfig(object):
             default = icmp.get_property("default")
             builtin = icmp.get_property("builtin")
 
-        self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin)
+        self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin and default)
         self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not default)
 
         ipv4 = "ipv4" in destination
@@ -5190,6 +5196,7 @@ class FirewallConfig(object):
 
     def add_edit_icmp(self, add):
         if add:
+            default = True
             builtin = False
             old_name = None
             old_version = None
@@ -5205,6 +5212,7 @@ class FirewallConfig(object):
             active_icmp = self.get_active_icmp()
             icmp = self.fw.config().getIcmpTypeByName(active_icmp)
             settings = icmp.getSettings()
+            default = icmp.get_property("default")
             builtin = icmp.get_property("builtin")
     
             old_name = icmp.get_property("name")
@@ -5223,7 +5231,7 @@ class FirewallConfig(object):
                 _("Built-in icmp, rename not supported."))
         else:
             self.icmpBaseDialogNameEntry.set_tooltip_markup("")
-        self.icmpBaseDialogNameEntry.set_sensitive(not builtin)
+        self.icmpBaseDialogNameEntry.set_sensitive(not builtin and default)
 
         self.icmpBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.icmpBaseDialog.set_transient_for(self.mainWindow)
