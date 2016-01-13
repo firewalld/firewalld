@@ -110,7 +110,8 @@ def icmptype_reader(filename, path):
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename
     icmptype.path = path
-    icmptype.default = False if path.startswith(ETC_FIREWALLD) else True
+    icmptype.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    icmptype.default = icmptype.builtin
     handler = icmptype_ContentHandler(icmptype)
     parser = sax.make_parser()
     parser.setContentHandler(handler)

@@ -177,7 +177,8 @@ def ipset_reader(filename, path):
     ipset.check_name(ipset.name)
     ipset.filename = filename
     ipset.path = path
-    ipset.default = False if path.startswith(ETC_FIREWALLD) else True
+    ipset.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    ipset.default = ipset.builtin
     handler = ipset_ContentHandler(ipset)
     parser = sax.make_parser()
     parser.setContentHandler(handler)

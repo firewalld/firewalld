@@ -537,7 +537,8 @@ def zone_reader(filename, path):
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
-    zone.default = False if path.startswith(ETC_FIREWALLD) else True
+    zone.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    zone.default = zone.builtin
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
     parser.setContentHandler(handler)

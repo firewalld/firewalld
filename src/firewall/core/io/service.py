@@ -161,7 +161,8 @@ def service_reader(filename, path):
     service.check_name(service.name)
     service.filename = filename
     service.path = path
-    service.default = False if path.startswith(ETC_FIREWALLD) else True
+    service.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    service.default = service.builtin
     handler = service_ContentHandler(service)
     parser = sax.make_parser()
     parser.setContentHandler(handler)
