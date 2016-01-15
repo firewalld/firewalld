@@ -68,26 +68,30 @@ class FirewallIPSet(object):
 
     def remove_ipset(self, name):
         obj = self._ipsets[name]
-        try:
-            self._fw._ipset.destroy(name)
-        except Exception as msg:
-            log.error("Failed to destroy ipset '%s'" % name)
-            log.error(msg)
+        if obj.applied:
+            try:
+                self._fw._ipset.destroy(name)
+            except Exception as msg:
+                log.error("Failed to destroy ipset '%s'" % name)
+                log.error(msg)
         del self._ipsets[name]
 
-    def apply_ipsets(self):
+    def apply_ipsets(self, individual=False):
         for ipset in self.get_ipsets():
             obj = self._ipsets[ipset]
+            obj.applied = False
 
-            try:
-                self._fw._ipset.create(obj.name, obj.type, obj.options)
-            except Exception as msg:
-                log.error("Failed to create ipset '%s'" % obj.name)
-                log.error(msg)
-            else:
-                if "timeout" not in obj.options:
-                    # no entries visible for ipsets with timeout
-                    continue
+            if individual:
+                try:
+                    self._fw._ipset.create(obj.name, obj.type, obj.options)
+                except Exception as msg:
+                    log.error("Failed to create ipset '%s'" % obj.name)
+                    log.error(msg)
+                else:
+                    obj.applied = True
+                    if "timeout" not in obj.options:
+                        # no entries visible for ipsets with timeout
+                        continue
 
                 for entry in obj.entries:
                     try:
@@ -96,6 +100,16 @@ class FirewallIPSet(object):
                         log.error("Failed to add entry '%s' to ipset '%s'" % \
                                   (entry, obj.name))
                         log.error(msg)
+            else:
+                try:
+                    self._fw._ipset.restore(obj.name, obj.type, obj.entries,
+                                            obj.options, None)
+                except Exception as msg:
+                    log.error("Failed to add entries to ipset '%s'" % \
+                              obj.name)
+                    log.error(msg)
+                else:
+                    obj.applied = True
 
     # TYPE
 

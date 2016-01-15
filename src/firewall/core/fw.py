@@ -200,8 +200,6 @@ class Firewall(object):
         self._loader(FIREWALLD_IPSETS, "ipset")
         self._loader(ETC_FIREWALLD_IPSETS, "ipset")
 
-        self.ipset.apply_ipsets()
-
         # load icmptype files
         self._loader(FIREWALLD_ICMPTYPES, "icmptype")
         self._loader(ETC_FIREWALLD_ICMPTYPES, "icmptype")
@@ -232,6 +230,9 @@ class Firewall(object):
                 error = True
         if error:
             sys.exit(1)
+
+        # apply settings for loaded ipsets
+        self.ipset.apply_ipsets(self._individual_calls)
 
         # apply settings for loaded zones
         self.zone.apply_zones()
