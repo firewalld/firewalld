@@ -931,6 +931,21 @@ class FirewallZone(object):
                     self.__rule_audit(ipv, table, target, rule, command, rules)
                     self.__rule_action(ipv, table, target, rule, command, rules)
 
+                for proto in svc.protocols:
+                    table = "filter"
+                    command = [ ]
+                    self.__rule_source(rule.source, command)
+                    self.__rule_destination(rule.destination, command)
+
+                    command += [ "-p", proto ]
+                    if ipv in svc.destination and svc.destination[ipv] != "":
+                        command += [ "-d",  svc.destination[ipv] ]
+                    command += [ "-m", "conntrack", "--ctstate", "NEW" ]
+
+                    self.__rule_log(ipv, table, target, rule, command, rules)
+                    self.__rule_audit(ipv, table, target, rule, command, rules)
+                    self.__rule_action(ipv, table, target, rule, command, rules)
+
             # PORT
             elif type(rule.element) == Rich_Port:
                 port = rule.element.port
