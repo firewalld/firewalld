@@ -90,6 +90,7 @@ class ebtables(object):
         temp_file = tempFile()
 
         table = None
+        table_rules = { }
         for rule in rules:
             try:
                 i = rule.index("-t")
@@ -98,17 +99,25 @@ class ebtables(object):
             else:
                 if len(rule) >= i+1:
                     rule.pop(i)
-                    _table = rule.pop(i)
-                    if _table != table:
-                        table = _table
-                        temp_file.write("*%s\n" % table)
+                    table = rule.pop(i)
+
+            table_rules.setdefault(table, []).append(rule)
+
+        for table in table_rules:
+            temp_file.write("*%s\n" % table)
+            for rule in table_rules[table]:
                 temp_file.write(" ".join(rule) + "\n")
+            temp_file.write("COMMIT\n")
+
         temp_file.close()
 
-        log.debug2("%s: %s %s", self.__class__, self._restore_command, "...")
+        stat = os.stat(temp_file.name)
+        log.debug2("%s: %s %s", self.__class__, self._restore_command,
+                   "%s: %d" % (temp_file.name, stat.st_size))
         args = [ ]
         if not flush:
             args.append("--noflush")
+
         (status, ret) = runProg(self._restore_command, args,
                                 stdin=temp_file.name)
         if status != 0:
