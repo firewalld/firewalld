@@ -63,6 +63,7 @@ class IPSet(IO_Object):
         self.type = ""
         self.entries = [ ]
         self.options = { }
+        self.applied = False
 
     def cleanup(self):
         self.version = ""
@@ -71,6 +72,7 @@ class IPSet(IO_Object):
         self.type = ""
         del self.entries[:]
         self.options.clear()
+        self.applied = False
 
     def encode_strings(self):
         """ HACK. I haven't been able to make sax parser return
