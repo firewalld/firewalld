@@ -187,44 +187,41 @@ class FirewallZone(object):
 
         chains = [ ]
         rules = [ ]
-        zones = [ DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                  zone=zone) ]
+        _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
 
-        # TODO: simplify for one zone only
-        for _zone in zones:
-            ipvs = []
-            if self._fw.is_table_available("ipv4", table):
-                ipvs.append("ipv4")
-            if self._fw.is_table_available("ipv6", table):
-                ipvs.append("ipv6")
+        ipvs = []
+        if self._fw.is_table_available("ipv4", table):
+            ipvs.append("ipv4")
+        if self._fw.is_table_available("ipv6", table):
+            ipvs.append("ipv6")
 
-            for ipv in ipvs:
-                OUR_CHAINS[table].update(set([_zone,
-                                              "%s_log" % _zone,
-                                              "%s_deny" % _zone,
-                                              "%s_allow" % _zone]))
-                chains.append((ipv, [ _zone, "-t", table ]))
-                chains.append((ipv, [ "%s_log" % (_zone), "-t", table ]))
-                chains.append((ipv, [ "%s_deny" % (_zone), "-t", table ]))
-                chains.append((ipv, [ "%s_allow" % (_zone), "-t", table ]))
-                rules.append((ipv, [ _zone, 1, "-t", table,
-                                     "-j", "%s_log" % (_zone) ]))
-                rules.append((ipv, [ _zone, 2, "-t", table,
-                                     "-j", "%s_deny" % (_zone) ]))
-                rules.append((ipv, [ _zone, 3, "-t", table,
-                                     "-j", "%s_allow" % (_zone) ]))
+        for ipv in ipvs:
+            OUR_CHAINS[table].update(set([_zone,
+                                          "%s_log" % _zone,
+                                          "%s_deny" % _zone,
+                                          "%s_allow" % _zone]))
+            chains.append((ipv, [ _zone, "-t", table ]))
+            chains.append((ipv, [ "%s_log" % (_zone), "-t", table ]))
+            chains.append((ipv, [ "%s_deny" % (_zone), "-t", table ]))
+            chains.append((ipv, [ "%s_allow" % (_zone), "-t", table ]))
+            rules.append((ipv, [ _zone, 1, "-t", table,
+                                 "-j", "%s_log" % (_zone) ]))
+            rules.append((ipv, [ _zone, 2, "-t", table,
+                                 "-j", "%s_deny" % (_zone) ]))
+            rules.append((ipv, [ _zone, 3, "-t", table,
+                                 "-j", "%s_allow" % (_zone) ]))
 
-                # Handle trust, block and drop zones:
-                # Add an additional rule with the zone target (accept, reject
-                # or drop) to the base _zone only in the filter table.
-                # Otherwise it is not be possible to have a zone with drop
-                # target, that is allowing traffic that is locally initiated
-                # or that adds additional rules. (RHBZ#1055190)
-                target = self._zones[zone].target
-                if table == "filter" and \
-                   target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
-                   chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    rules.append((ipv, [ _zone, 4, "-t", table, "-j", target ]))
+            # Handle trust, block and drop zones:
+            # Add an additional rule with the zone target (accept, reject
+            # or drop) to the base _zone only in the filter table.
+            # Otherwise it is not be possible to have a zone with drop
+            # target, that is allowing traffic that is locally initiated
+            # or that adds additional rules. (RHBZ#1055190)
+            target = self._zones[zone].target
+            if table == "filter" and \
+               target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
+               chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                rules.append((ipv, [ _zone, 4, "-t", table, "-j", target ]))
 
         if create:
             # handle chains first
