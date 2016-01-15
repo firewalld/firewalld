@@ -353,6 +353,7 @@ class Firewall(object):
                                        orig_obj.filename)
                     elif obj.path.startswith(ETC_FIREWALLD):
                         obj.default = True
+                        config_obj.default = True
                     self.config.add_zone(config_obj)
                     if combine:
                         log.debug1("  Combining %s '%s' ('%s/%s')",
