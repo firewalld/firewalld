@@ -23,6 +23,7 @@ import os.path
 
 from firewall.core.prog import runProg
 from firewall.core.logger import log
+from firewall.functions import tempFile
 
 IPSET_MAXNAMELEN = 32
 IPSET_TYPES = [
@@ -144,8 +145,47 @@ class ipset:
             args.append(set_name)
         return self.__run(args)
 
-    def restore(self, filename):
-        return self.__run([ "restore", "<", filename ])
+    def restore(self, set_name, type_name, entries,
+                create_options=None, entry_options=None):
+        self.check_name(set_name)
+        self.check_type(type_name)
+
+        temp_file = tempFile()
+
+        if ' ' in set_name:
+            set_name = "'%s'" % set_name
+        args = [ "create", set_name, type_name ]
+        if create_options:
+            for k,v in create_options.items():
+                args.append(k)
+                if v != "":
+                    args.append(v)
+        temp_file.write(" ".join(args))
+        temp_file.write("\n")
+
+        for entry in entries:
+            if ' ' in entry:
+                entry = "'%s'" % entry
+            if entry_options:
+                temp_file.write("add %s %s %s\n" % (set_name, entry,
+                                                    " ".join(entry_options)))
+            else:
+                temp_file.write("add %s %s\n" % (set_name, entry))
+        temp_file.close()
+
+        stat = os.stat(temp_file.name)
+        log.debug2("%s: %s restore %s", self.__class__, self._command,
+                   "%s: %d" % (temp_file.name, stat.st_size))
+
+        args = [ "restore" ]
+        (status, ret) = runProg(self._command, args,
+                                stdin=temp_file.name)
+        if status != 0:
+            os.unlink(temp_file.name)
+            raise ValueError("'%s %s' failed: %s" % (self._command,
+                                                     " ".join(args), ret))
+        os.unlink(temp_file.name)
+        return ret
 
     def flush(self, set_name):
         args = [ "flush" ]
