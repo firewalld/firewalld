@@ -21,6 +21,7 @@
 
 from firewall import functions
 from firewall.errors import *
+from firewall.core.ipset import check_ipset_name
 
 REJECT_TYPES = {
     "ipv4": ["icmp-host-prohibited", "host-prohib", "icmp-net-unreachable", "net-unreach", "icmp-host-unreachable", "host-unreach", "icmp-port-unreachable", "port-unreach", "icmp-proto-unreachable", "proto-unreach", "icmp-net-prohibited", "net-prohib", "tcp-reset", "tcp-rst", "icmp-admin-prohibited", "admin-prohib"],
@@ -476,7 +477,7 @@ class Rich_Rule(object):
                     raise FirewallError(INVALID_MAC, str(self.source.mac))
 
             elif self.source.ipset is not None:
-                if not functions.check_ipset(self.source.ipset):
+                if not check_ipset_name(self.source.ipset):
                     raise FirewallError(INVALID_IPSET, str(self.source.ipset))
 
             else:

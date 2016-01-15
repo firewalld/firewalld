@@ -737,9 +737,6 @@ class Firewall(object):
         if self._panic:
             raise FirewallError(PANIC_MODE)
 
-    def check_ipset(self, ipset):
-        self.ipset.check_ipset(ipset)
-
     def check_zone(self, zone):
         _zone = zone
         if not _zone or _zone == "":

@@ -341,9 +341,6 @@ class Firewall_test(object):
     def check_panic(self):
         return
 
-    def check_ipset(self, ipset):
-        self.ipset.check_ipset(ipset)
-
     def check_zone(self, zone):
         _zone = zone
         if not _zone or _zone == "":
