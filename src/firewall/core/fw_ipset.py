@@ -105,8 +105,7 @@ class FirewallIPSet(object):
                     self._fw._ipset.restore(obj.name, obj.type, obj.entries,
                                             obj.options, None)
                 except Exception as msg:
-                    log.error("Failed to add entries to ipset '%s'" % \
-                              obj.name)
+                    log.error("Failed to create ipset '%s'" % obj.name)
                     log.error(msg)
                 else:
                     obj.applied = True
