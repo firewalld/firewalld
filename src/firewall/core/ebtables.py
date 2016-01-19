@@ -22,7 +22,7 @@
 import os.path, errno
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import tempFile
+from firewall.functions import tempFile, readfile
 
 PROC_IPxTABLE_NAMES = {
 }
@@ -120,11 +120,25 @@ class ebtables(object):
 
         (status, ret) = runProg(self._restore_command, args,
                                 stdin=temp_file.name)
+
+        if log.getDebugLogLevel() > 2:
+            try:
+                lines = readfile(temp_file.name)
+            except:
+                pass
+            else:
+                i = 1
+                for line in readfile(temp_file.name):
+                    log.debug3("%8d: %s" % (i, line), nofmt=1, nl=0)
+                    if not line.endswith("\n"):
+                        log.debug3("", nofmt=1)
+                    i += 1
+
+        os.unlink(temp_file.name)
+
         if status != 0:
-            os.unlink(temp_file.name)
             raise ValueError("'%s %s' failed: %s" % (self._restore_command,
                                                      " ".join(args), ret))
-        os.unlink(temp_file.name)
         return ret
 
     def set_rule(self, rule):
