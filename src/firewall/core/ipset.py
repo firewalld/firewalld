@@ -154,7 +154,7 @@ class ipset:
 
         if ' ' in set_name:
             set_name = "'%s'" % set_name
-        args = [ "create", set_name, type_name ]
+        args = [ "create", set_name, type_name, "-exist" ]
         if create_options:
             for k,v in create_options.items():
                 args.append(k)
