@@ -29,7 +29,11 @@ gsettings_in_file = org.fedoraproject.FirewallConfig.gschema.xml.in
 gsettings_SCHEMAS = $(gsettings_in_file:.xml.in=.xml)
 
 xmlschemadir = $(prefixlibdir)/xmlschema
-dist_xmlschema_DATA = xmlschema/icmptype.xsd xmlschema/service.xsd xmlschema/zone.xsd
+dist_xmlschema_DATA = \
+	xmlschema/icmptype.xsd \
+	xmlschema/ipset.xsd \
+	xmlschema/service.xsd \
+	xmlschema/zone.xsd
 dist_xmlschema_SCRIPTS = xmlschema/check.sh
 
 BUILT_SOURCES = \
@@ -71,24 +75,29 @@ EXTRA_DIST = \
 	icmptypes/router-solicitation.xml \
 	icmptypes/source-quench.xml \
 	icmptypes/time-exceeded.xml \
+	icmptypes/timestamp-reply.xml \
+	icmptypes/timestamp-request.xml \
+	ipsets/README \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
-	services/ceph.xml \
 	services/ceph-mon.xml \
+	services/ceph.xml \
+	services/dhcp.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
-	services/dhcp.xml \
 	services/dns.xml \
+	services/docker-registry.xml \
 	services/dropbox-lansync.xml \
-	services/ftp.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-ldaps.xml \
 	services/freeipa-replication.xml \
+	services/ftp.xml \
 	services/high-availability.xml \
-	services/https.xml \
 	services/http.xml \
+	services/https.xml \
+	services/imap.xml \
 	services/imaps.xml \
 	services/ipp-client.xml \
 	services/ipp.xml \
@@ -97,8 +106,8 @@ EXTRA_DIST = \
 	services/kadmin.xml \
 	services/kerberos.xml \
 	services/kpasswd.xml \
-	services/ldaps.xml \
 	services/ldap.xml \
+	services/ldaps.xml \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
 	services/mdns.xml \
@@ -113,11 +122,13 @@ EXTRA_DIST = \
 	services/pmproxy.xml \
 	services/pmwebapi.xml \
 	services/pmwebapis.xml \
+	services/pop3.xml \
 	services/pop3s.xml \
 	services/postgresql.xml \
 	services/privoxy.xml \
 	services/proxy-dhcp.xml \
 	services/ptp.xml \
+	services/pulseaudio.xml \
 	services/puppetmaster.xml \
 	services/radius.xml \
 	services/rpc-bind.xml \
@@ -126,9 +137,14 @@ EXTRA_DIST = \
 	services/samba.xml \
 	services/sane.xml \
 	services/smtp.xml \
+	services/smtps.xml \
+	services/snmp.xml \
+	services/snmptrap.xml \
 	services/squid.xml \
 	services/ssh.xml \
 	services/synergy.xml \
+	services/syslog-tls.xml \
+	services/syslog.xml \
 	services/telnet.xml \
 	services/tftp-client.xml \
 	services/tftp.xml \
@@ -151,9 +167,7 @@ EXTRA_DIST = \
 	zones/public.xml \
 	zones/trusted.xml \
 	zones/work.xml \
-	xmlschema/icmptype.xsd \
-	xmlschema/service.xsd \
-	xmlschema/zone.xsd \
+	$(dist_xmlschema_DATA) \
 	firewalld.init \
 	firewalld.service.in \
 	firewalld.sysconfig \
@@ -224,19 +238,24 @@ uninstall-service: uninstall-sysconfig
 install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/icmptypes
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/ipsets
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/services
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
 	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
 	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
+	cp -r ipsets $(DESTDIR)$(prefixlibdir)
 	cp -r services $(DESTDIR)$(prefixlibdir)
 	cp -r zones $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
+	rmdir $(DESTDIR)$(sconfdir)/ipsets
 	rmdir $(DESTDIR)$(sconfdir)/services
 	rmdir $(DESTDIR)$(sconfdir)/zones
 	rm -f $(DESTDIR)$(prefixlibdir)/icmptypes/*
 	rmdir $(DESTDIR)$(prefixlibdir)/icmptypes
+	rm -f $(DESTDIR)$(prefixlibdir)/ipsets/*
+	rmdir $(DESTDIR)$(prefixlibdir)/ipsets
 	rm -f $(DESTDIR)$(prefixlibdir)/services/*
 	rmdir $(DESTDIR)$(prefixlibdir)/services
 	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
