@@ -193,6 +193,15 @@ def ipset_reader(filename, path):
         # no entries visible for ipsets with timeout
         log.warning("ipset '%s' uses timeout, entries are removed" % ipset.name)
         del ipset.entries[:]
+    i = 0
+    while i < len(ipset.entries):
+        try:
+            ipset.check_entry(ipset.entries[i], ipset.options, ipset.type)
+        except FirewallError as e:
+            log.warning("ipset '%s': %s, ignoring." % (ipset.name, e))
+            ipset.entries.pop(i)
+        else:
+            i += 1
     if PY2:
         ipset.encode_strings()
 
