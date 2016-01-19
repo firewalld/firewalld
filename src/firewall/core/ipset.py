@@ -160,8 +160,7 @@ class ipset:
                 args.append(k)
                 if v != "":
                     args.append(v)
-        temp_file.write(" ".join(args))
-        temp_file.write("\n")
+        temp_file.write("%s\n" % " ".join(args))
 
         for entry in entries:
             if ' ' in entry:
