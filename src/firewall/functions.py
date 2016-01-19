@@ -263,13 +263,13 @@ def tempFile():
     return None
 
 def readfile(filename):
+    i = 1
     try:
         with open(filename, "r") as f:
-            line = "".join(f.readlines())
+            return f.readlines()
     except Exception as e:
         log.error('Failed to read file "%s": %s' % (filename, e))
-        return None
-    return line
+    return None
 
 def writefile(filename, line):
     try:
