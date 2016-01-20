@@ -175,9 +175,18 @@ class ebtables(object):
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
+            msgs = {
+                "-F": "flush",
+                "-X": "delete chains",
+                "-Z": "zero counters",
+            }
             for flag in [ "-F", "-X", "-Z" ]:
                 if individual:
-                    self.__run([ "-t", table, flag ])
+                    try:
+                        self.__run([ "-t", table, flag ])
+                    except Exception as msg:
+                        log.error("Failed to %s %s: %s",
+                                  msgs[flag], self.ipv, msg)
                 else:
                     rules.append([ "-t", table, flag ])
         if len(rules) > 0:
@@ -193,7 +202,10 @@ class ebtables(object):
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
                 if individual:
-                    self.__run([ "-t", table, "-P", chain, policy ])
+                    try:
+                        self.__run([ "-t", table, "-P", chain, policy ])
+                    except Exception as msg:
+                        log.error("Failed to set policy for %s: %s", ipv, msg)
                 else:
                     rules.append([ "-t", table, "-P", chain, policy ])
         if len(rules) > 0:
