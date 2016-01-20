@@ -24,6 +24,7 @@ import os.path
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
+from firewall.config import COMMANDS
 
 IPSET_MAXNAMELEN = 32
 IPSET_TYPES = [
@@ -58,7 +59,7 @@ IPSET_CREATE_OPTIONS = {
 
 class ipset:
     def __init__(self):
-        self._command = "/usr/sbin/ipset"
+        self._command = COMMANDS["ipset"]
 
     def __run(self, args):
         # convert to string list

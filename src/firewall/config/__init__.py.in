@@ -81,6 +81,17 @@ LOCKDOWN_WHITELIST = ETC_FIREWALLD + '/lockdown-whitelist.xml'
 
 SYSCTL_CONFIG = '/etc/sysctl.conf'
 
+# commands used by backends
+COMMANDS = {
+    "ipv4":         "@IPTABLES@",
+    "ipv4-restore": "@IPTABLES_RESTORE@",
+    "ipv6":         "@IP6TABLES@",
+    "ipv6-restore": "@IP6TABLES_RESTORE@",
+    "eb":           "@EBTABLES@",
+    "eb-restore":   "@EBTABLES_RESTORE@",
+    "ipset":        "@IPSET@",
+}
+
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"
 FALLBACK_MINIMAL_MARK = 100

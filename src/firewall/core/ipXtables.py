@@ -24,16 +24,7 @@ import os.path
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
-
-COMMAND = {
-    "ipv4": "/sbin/iptables",
-    "ipv6": "/sbin/ip6tables",
-}
-
-RESTORE_COMMAND = {
-    "ipv4": "/sbin/iptables-restore",
-    "ipv6": "/sbin/ip6tables-restore",
-}
+from firewall.config import COMMANDS
 
 PROC_IPxTABLE_NAMES = {
     "ipv4": "/proc/net/ip_tables_names",
@@ -147,8 +138,8 @@ class ip4tables(object):
     ipv = "ipv4"
 
     def __init__(self):
-        self._command = COMMAND[self.ipv]
-        self._restore_command = RESTORE_COMMAND[self.ipv]
+        self._command = COMMANDS[self.ipv]
+        self._restore_command = COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
 
     def __run(self, args):

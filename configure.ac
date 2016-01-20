@@ -62,6 +62,41 @@ AC_ARG_WITH([bashcompletiondir],
        [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
 AC_SUBST(BASHCOMPLETIONDIR)
 
+AC_ARG_WITH([iptables],
+       AS_HELP_STRING([--with-iptables], [Path to iptables executable]),
+       [IPTABLES=$withval], [IPTABLES="/usr/sbin/iptables"])
+AC_SUBST(IPTABLES)
+
+AC_ARG_WITH([iptables-restore],
+       AS_HELP_STRING([--with-iptables-restore], [Path to iptables-restore executable]),
+       [IPTABLES_RESTORE=$withval], [IPTABLES_RESTORE="/usr/sbin/iptables-restore"])
+AC_SUBST(IPTABLES_RESTORE)
+
+AC_ARG_WITH([ip6tables],
+       AS_HELP_STRING([--with-ip6tables], [Path to ip6tables executable]),
+       [IP6TABLES=$withval], [IP6TABLES="/usr/sbin/ip6tables"])
+AC_SUBST(IP6TABLES)
+
+AC_ARG_WITH([ip6tables-restore],
+       AS_HELP_STRING([--with-ip6tables-restore], [Path to ip6tables-restore executable]),
+       [IP6TABLES_RESTORE=$withval], [IP6TABLES_RESTORE="/usr/sbin/ip6tables-restore"])
+AC_SUBST(IP6TABLES_RESTORE)
+
+AC_ARG_WITH([ebtables],
+       AS_HELP_STRING([--with-ebtables], [Path to ebtables executable]),
+       [EBTABLES=$withval], [EBTABLES="/usr/sbin/ebtables"])
+AC_SUBST(EBTABLES)
+
+AC_ARG_WITH([ebtables-restore],
+       AS_HELP_STRING([--with-ebtables-restore], [Path to ebtables-restore executable]),
+       [EBTABLES_RESTORE=$withval], [EBTABLES_RESTORE="/usr/sbin/ebtables-restore"])
+AC_SUBST(EBTABLES_RESTORE)
+
+AC_ARG_WITH([ipset],
+       AS_HELP_STRING([--with-ipset], [Path to ipset executable]),
+       [IPSET=$withval], [IPSET="/usr/sbin/ipset"])
+AC_SUBST(IPSET)
+
 #############################################################
 
 AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')

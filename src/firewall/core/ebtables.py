@@ -23,6 +23,7 @@ import os.path, errno
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
+from firewall.config import COMMANDS
 
 PROC_IPxTABLE_NAMES = {
 }
@@ -45,9 +46,11 @@ for table in BUILT_IN_CHAINS.keys():
         OUR_CHAINS[table].add("%s_direct" % chain)
 
 class ebtables(object):
+    ipv = "eb"
+
     def __init__(self):
-        self._command = "/sbin/ebtables"
-        self._restore_command = "/sbin/ebtables-restore"
+        self._command = COMMANDS[self.ipv]
+        self._restore_command = COMMANDS["%s-restore" % self.ipv]
         self.ebtables_lock = "/var/lib/ebtables/lock"
         self.restore_noflush_option = self._detect_restore_noflush_option()
         self.__remove_dangling_lock()
