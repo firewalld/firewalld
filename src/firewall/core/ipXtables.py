@@ -147,8 +147,10 @@ class ip4tables(object):
     ipv = "ipv4"
 
     def __init__(self):
-        self._command = COMMAND[self.ipv]
-        self._restore_command = RESTORE_COMMAND[self.ipv]
+        command_path = lambda cmd: cmd if os.path.exists(cmd) else "/usr" + cmd
+        self._command = command_path(COMMAND[self.ipv])
+        self._restore_command = command_path(RESTORE_COMMAND[self.ipv])
+
         self.wait_option = self._detect_wait_option()
 
     def __run(self, args):
