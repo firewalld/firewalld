@@ -54,7 +54,7 @@ AC_SUBST(INSTALL_RPMMACROS)
 
 AC_ARG_WITH([systemd-unitdir],
        AS_HELP_STRING([--with-systemd-unitdir], [Directory for systemd service files]),
-       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="${prefix}/lib/systemd/system"])
+       [SYSTEMD_UNITDIR=$withval], [SYSTEMD_UNITDIR="\${prefix}/lib/systemd/system"])
 AC_SUBST(SYSTEMD_UNITDIR)
 
 AC_ARG_WITH([bashcompletiondir],
