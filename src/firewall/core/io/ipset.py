@@ -48,11 +48,12 @@ class IPSet(IO_Object):
         "short": None,
         "description": None,
         "ipset": [ "type" ],
+        "option": [ "name" ],
         "entry": None,
     }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "ipset": [ "version" ],
-        "option": [ "name", "value" ],
+        "option": [ "value" ],
     }
 
     def __init__(self):
