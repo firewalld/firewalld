@@ -163,13 +163,43 @@ class ipset_ContentHandler(IO_Object_ContentHandler):
             value = ""
             if "value" in attrs:
                 value = attrs["value"]
-            self.item.options[attrs["name"]] = value
+
+            if attrs["name"] not in \
+               [ "family", "timeout", "hashsize", "maxelem" ]:
+                raise FirewallError(
+                    INVALID_OPTION,
+                    "Unknown option '%s'" % attrs["name"])
+            if self.item.type == "hash:mac" and attrs["name"] in [ "family" ]:
+                raise FirewallError(
+                    INVALID_OPTION,
+                    "Unsupported option '%s' for type '%s'" % \
+                    (attrs["name"], self.item.type))
+            if attrs["name"] in [ "family", "timeout", "hashsize", "maxelem" ] \
+               and not value:
+                raise FirewallError(
+                    INVALID_OPTION,
+                    "Missing mandatory value of option '%s'" % attrs["name"])
+            if attrs["name"] in [ "timeout", "hashsize", "maxelem" ]:
+                try:
+                    x = int(value)
+                except Exception as e:
+                    raise FirewallError(
+                        INVALID_VALUE,
+                        "Option '%s': Value '%s' is not an integer" % \
+                        (attrs["name"], value))
+            if attrs["name"] not in self.item.options:
+                self.item.options[attrs["name"]] = value
+            else:
+                log.warning("Option %s already set, ignoring.", attrs["name"])
         elif name == "entry":
             pass
     def endElement(self, name):
         IO_Object_ContentHandler.endElement(self, name)
         if name == "entry":
-            self.item.entries.append(self._element)
+            if self._element not in self.item.entries:
+                self.item.entries.append(self._element)
+            else:
+                log.warning("Entry %s already set, ignoring.", self._element)
 
 def ipset_reader(filename, path):
     ipset = IPSet()
@@ -192,14 +222,14 @@ def ipset_reader(filename, path):
     del parser
     if "timeout" in ipset.options:
         # no entries visible for ipsets with timeout
-        log.warning("ipset '%s' uses timeout, entries are removed" % ipset.name)
+        log.warning("timeout option is set, entries are removed")
         del ipset.entries[:]
     i = 0
     while i < len(ipset.entries):
         try:
             ipset.check_entry(ipset.entries[i], ipset.options, ipset.type)
         except FirewallError as e:
-            log.warning("ipset '%s': %s, ignoring." % (ipset.name, e))
+            log.warning("%s, ignoring.", e)
             ipset.entries.pop(i)
         else:
             i += 1
