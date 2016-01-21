@@ -2688,6 +2688,7 @@ class FirewallConfig(object):
                         smhd[duration], insensitive=True)
 
         self.richRuleDialogOkButton.set_sensitive(False)
+        self.on_richRuleDialog_changed()
 
         self.richRuleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.richRuleDialog.set_transient_for(self.mainWindow)
