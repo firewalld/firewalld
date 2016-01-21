@@ -107,7 +107,8 @@ class Service(IO_Object):
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
                     raise FirewallError(INVALID_DESTINATION,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % destination)
+                                        "'%s' not in {'ipv4'|'ipv6'}" % \
+                                        destination)
                 if not check_address(destination, config[destination]):
                     raise FirewallError(INVALID_ADDR,
                                         "'%s' is not valid %s address" % \
@@ -127,7 +128,7 @@ class service_ContentHandler(IO_Object_ContentHandler):
         self.item.parser_check_element_attrs(name, attrs)
         if name == "service":
             if "name" in attrs:
-                log.warning("Ignoring deprecated attribute name='%s'" % 
+                log.warning("Ignoring deprecated attribute name='%s'",
                             attrs["name"])
             if "version" in attrs:
                 self.item.version = attrs["version"]
@@ -137,20 +138,46 @@ class service_ContentHandler(IO_Object_ContentHandler):
             pass
         elif name == "port":
             if attrs["port"] != "":
-                self.item.ports.append((attrs["port"], attrs["protocol"]))
+                entry = (attrs["port"], attrs["protocol"])
+                if entry not in self.item.ports:
+                    self.item.ports.append(entry)
+                else:
+                    log.warning("Port '%s/%s' already set, ignoring.",
+                                attrs["port"], attrs["protocol"])
             else:
-                self.item.protocols.append(attrs["protocol"])
+                if attrs["protocol"] not in self.item.protocols:
+                    self.item.protocols.append(attrs["protocol"])
+                else:
+                    log.warning("Protocol '%s' already set, ignoring.",
+                                attrs["protocol"])
         elif name == "protocol":
-            self.item.protocols.append(attrs["value"])
+            if attrs["value"] not in self.item.protocols:
+                self.item.protocols.append(attrs["value"])
+            else:
+                log.warning("Protocol '%s' already set, ignoring.",
+                            attrs["value"])
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
                     if not check_address(x, attrs[x]):
                         raise FirewallError(INVALID_ADDR,
                                 "'%s' is not valid %s address" % (attrs[x], x))
-                    self.item.destination[x] = attrs[x]
+                    if x in self.item.destination:
+                        log.warning("Destination address for '%s' already set, ignoring",
+                                    x)
+                    else:
+                        self.item.destination[x] = attrs[x]
         elif name == "module":
-            self.item.modules.append(attrs["name"])
+            if attrs["name"].startswith("nf_conntrack_") and \
+               len(attrs["name"].replace("nf_conntrack_", "")) > 0:
+                if attrs["name"] not in self.item.modules:
+                    self.item.modules.append(attrs["name"])
+                else:
+                    log.warning("Module '%s' already set, ignoring.",
+                                attrs["name"])
+            else:
+                log.warning("Invalid module '%s'", attrs["name"])
+
 
 def service_reader(filename, path):
     service = Service()
