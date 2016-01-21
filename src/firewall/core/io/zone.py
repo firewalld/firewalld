@@ -271,12 +271,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         if name == "zone":
             if "name" in attrs:
-                log.warning("Ignoring deprecated attribute name='%s'" % 
+                log.warning("Ignoring deprecated attribute name='%s'",
                             attrs["name"])
             if "version" in attrs:
                 self.item.version = attrs["version"]
             if "immutable" in attrs:
-                log.warning("Ignoring deprecated attribute immutable='%s'" % 
+                log.warning("Ignoring deprecated attribute immutable='%s'",
                             attrs["immutable"])
             if "target" in attrs:
                 target = attrs["target"]
@@ -292,17 +292,23 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         elif name == "service":
             if self._rule:
                 if self._rule.element:
-                    log.error('Invalid rule: More than one element, ignoring.')
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 self._rule.element = Rich_Service(attrs["name"])
                 return
             if attrs["name"] not in self.item.services:
                 self.item.services.append(attrs["name"])
+            else:
+                log.warning("Service '%s' already set, ignoring.",
+                            attrs["name"])
+
         elif name == "port":
             if self._rule:
                 if self._rule.element:
-                    log.error('Invalid rule: More than one element, ignoring.')
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 self._rule.element = Rich_Port(attrs["port"],
@@ -311,38 +317,56 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             entry = (portStr(port, "-"), protocol)
             if entry not in self.item.ports:
                 self.item.ports.append(entry)
+            else:
+                log.warning("Port '%s/%s' already set, ignoring.",
+                            attrs["port"], attrs["protocol"])
+
         elif name == "protocol":
             if self._rule:
                 if self._rule.element:
-                    log.error('Invalid rule: More than one element, ignoring.')
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 self._rule.element = Rich_Protocol(attrs["value"])
             else:
                 if attrs["value"] not in self.item.protocols:
                     self.item.protocols.append(attrs["value"])
+                else:
+                    log.warning("Protocol '%s' already set, ignoring.",
+                                attrs["value"])
         elif name == "icmp-block":
             if self._rule:
                 if self._rule.element:
-                    log.error('Invalid rule: More than one element, ignoring.')
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 self._rule.element = Rich_IcmpBlock(attrs["name"])
                 return
             if attrs["name"] not in self.item.icmp_blocks:
                 self.item.icmp_blocks.append(attrs["name"])
+            else:
+                log.warning("icmp-block '%s' already set, ignoring.",
+                            attrs["name"])
+
         elif name == "masquerade":
             if "enabled" in attrs:
-                log.warning("Ignoring deprecated attribute enabled='%s'" %
+                log.warning("Ignoring deprecated attribute enabled='%s'",
                             attrs["enabled"])
             if self._rule:
                 if self._rule.element:
-                    log.error('Invalid rule: More than one element, ignoring.')
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 self._rule.element = Rich_Masquerade()
             else:
-                self.item.masquerade = True
+                if self.item.masquerade:
+                    log.warning("Masquerade already set, ignoring.")
+                else:
+                    self.item.masquerade = True
+
         elif name == "forward-port":
             to_port = ""
             if "to-port" in attrs:
@@ -353,7 +377,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
             if self._rule:
                 if self._rule.element:
-                    log.error('Invalid rule: More than one element, ignoring.')
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 self._rule.element = Rich_ForwardPort(attrs["port"],
@@ -364,25 +389,34 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                      portStr(to_port, "-"), str(to_addr))
             if entry not in self.item.forward_ports:
                 self.item.forward_ports.append(entry)
+            else:
+                log.warning("Forward port %s/%s%s%s already set, ignoring.",
+                            attrs["port"], attrs["protocol"],
+                            " >%s" % to_port if to_port else "",
+                            " @%s" % to_addr if to_addr else "")
 
         elif name == "interface":
             if self._rule:
-                log.error('Invalid rule: interface use in rule.')
+                log.warning('Invalid rule: interface use in rule.')
                 self._rule_error = True
                 return
             # zone bound to interface
             if "name" not in attrs:
-                log.error('Invalid interface: Name missing.')
+                log.warning('Invalid interface: Name missing.')
                 self._rule_error = True
                 return
-            name = attrs["name"]
-            if name not in self.item.interfaces:
-                self.item.interfaces.append(name)
-            
+            attrs["name"]
+            if attrs["name"] not in self.item.interfaces:
+                self.item.interfaces.append(attrs["name"])
+            else:
+                log.warning("Interface '%s' already set, ignoring.",
+                            attrs["name"])
+
         elif name == "source":
             if self._rule:
                 if self._rule.source:
-                    log.error('Invalid rule: More than one source')
+                    log.warning("Invalid rule: More than one source in rule '%s', ignoring.",
+                                str(self._rule))
                     self._rule_error = True
                     return
                 invert = False
@@ -406,10 +440,10 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.warning('Invalid source: Address and ipset.')
                 return
             if "family" in attrs:
-                log.warning("Ignoring deprecated attribute family='%s'" %
+                log.warning("Ignoring deprecated attribute family='%s'",
                             attrs["family"])
             if "invert" in attrs:
-                log.error('Invalid source: Invertion not allowed here.')
+                log.warning('Invalid source: Invertion not allowed here.')
                 return
             if "ipset" in attrs:
                 entry = "ipset:%s" % attrs["ipset"]
@@ -422,14 +456,18 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 entry = attrs["address"]
                 if entry not in self.item.sources:
                     self.item.sources.append(entry)
+                else:
+                    log.warning("Source '%s' already set, ignoring.",
+                                attrs["address"])
 
         elif name == "destination":
             if not self._rule:
-                log.error('Invalid rule: Destination outside of rule')
+                log.warning('Invalid rule: Destination outside of rule')
                 self._rule_error = True
                 return
             if self._rule.destination:
-                log.error('Invalid rule: More than one destination')
+                log.warning("Invalid rule: More than one destination in rule '%s', ignoring.",
+                            str(self._rule))
                 return
             invert = False
             if "invert" in attrs and \
@@ -440,11 +478,11 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name in [ "accept", "reject", "drop" ]:
             if not self._rule:
-                log.error('Invalid rule: Action outside of rule')
+                log.warning('Invalid rule: Action outside of rule')
                 self._rule_error = True
                 return
             if self._rule.action:
-                log.error('Invalid rule: More than one action')
+                log.warning('Invalid rule: More than one action')
                 self._rule_error = True
                 return
             if name == "accept":
@@ -460,17 +498,17 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "log":
             if not self._rule:
-                log.error('Invalid rule: Log outside of rule')
+                log.warning('Invalid rule: Log outside of rule')
                 return
             if self._rule.log:
-                log.error('Invalid rule: More than one log')
+                log.warning('Invalid rule: More than one log')
                 return
             level = None
             if "level" in attrs:
                 level = attrs["level"]
                 if level not in [ "emerg", "alert", "crit", "error",
                                   "warning", "notice", "info", "debug" ]:
-                    log.error('Invalid rule: Invalid log level')
+                    log.warning('Invalid rule: Invalid log level')
                     self._rule_error = True
                     return
             prefix = attrs["prefix"] if "prefix" in attrs else None
@@ -479,10 +517,11 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 
         elif name == "audit":
             if not self._rule:
-                log.error('Invalid rule: Audit outside of rule')
+                log.warning('Invalid rule: Audit outside of rule')
                 return
             if self._rule.audit:
-                log.error('Invalid rule: More than one audit')
+                log.warning("Invalid rule: More than one audit in rule '%s', ignoring.",
+                            str(self._rule))
                 self._rule_error = True
                 return            
             self._rule.audit = Rich_Audit()
@@ -493,27 +532,27 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "family" in attrs:
                 family = attrs["family"]
                 if family not in [ "ipv4", "ipv6" ]:
-                    log.error('Invalid rule: Rule family "%s" invalid' % 
-                              attrs["family"])
+                    log.warning('Invalid rule: Rule family "%s" invalid',
+                                attrs["family"])
                     self._rule_error = True
                     return
             self._rule = Rich_Rule(family)
-            self.item.rules.append(self._rule)
 
         elif name == "limit":
             if not self._limit_ok:
-                log.error('Invalid rule: Limit outside of action, log and audit')
+                log.warning('Invalid rule: Limit outside of action, log and audit')
                 self._rule_error = True
                 return
             if self._limit_ok.limit:
-                log.error('Invalid rule: More than one limit')
+                log.warning("Invalid rule: More than one limit in rule '%s', ignoring.",
+                            str(self._rule))
                 self._rule_error = True
                 return
             value = attrs["value"]
             self._limit_ok.limit = Rich_Limit(value)
 
         else:
-            log.error('Unknown XML element %s' % name)
+            log.warning("Unknown XML element '%s'", name)
             return
 
     def endElement(self, name):
@@ -524,10 +563,14 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 try:
                     self._rule.check()
                 except Exception as e:
-                    log.error("%s: %s" % (e, str(self._rule)))
-                    self._rule_error = True
-            if self._rule_error and self._rule in self.item.rules:
-                self.item.rules.remove(self._rule)
+                    log.warning("%s: %s", e, str(self._rule))
+                else:
+                    if str(self._rule) not in \
+                       [ str(x) for x in self.item.rules ]:
+                        self.item.rules.append(self._rule)
+                    else:
+                        log.warning("Rule '%s' already set, ignoring.",
+                                    str(self._rule))
             self._rule = None
             self._rule_error = False
         elif name in [ "accept", "reject", "drop", "log", "audit" ]:
@@ -726,7 +769,7 @@ def zone_writer(zone, path=None):
                 if rule.element.to_address != "":
                     attrs["to-addr"] = rule.element.to_address
             else:
-                log.error('Unknown element "%s"' % type(rule.element))
+                log.warning("Unknown element '%s'", type(rule.element))
 
             handler.ignorableWhitespace("    ")
             handler.simpleElement(element, attrs)
@@ -783,7 +826,7 @@ def zone_writer(zone, path=None):
             elif type(rule.action) == Rich_Drop:
                 action = "drop"
             else:
-                log.error('Unknown action "%s"' % type(rule.action))
+                log.warning("Unknown action '%s'", type(rule.action))
             if rule.action.limit:
                 handler.ignorableWhitespace("    ")
                 handler.startElement(action, attrs)
