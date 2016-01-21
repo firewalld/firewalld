@@ -77,7 +77,7 @@ class Zone(IO_Object):
         "masquerade": [ "enabled" ],
         "forward-port": [ "to-port", "to-addr" ],
         "rule": [ "family" ],
-        "source": [ "address", "mac", "invert", "family" ],
+        "source": [ "address", "mac", "invert", "family", "ipset" ],
         "destination": [ "invert" ],
         "log": [ "prefix", "level" ],
         "reject": [ "type" ],
@@ -399,8 +399,11 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule.source = Rich_Source(addr, mac, ipset, invert=invert)
                 return
             # zone bound to source
-            if "address" not in attrs:
-                log.error('Invalid source: Address missing.')
+            if "address" not in attrs and not "ipset" in attrs:
+                log.warning('Invalid source: No address no ipset.')
+                return
+            if "address" in attrs and "ipset" in attrs:
+                log.warning('Invalid source: Address and ipset.')
                 return
             if "family" in attrs:
                 log.warning("Ignoring deprecated attribute family='%s'" %
@@ -408,6 +411,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs:
                 log.error('Invalid source: Invertion not allowed here.')
                 return
+            if "ipset" in attrs:
+                entry = "ipset:%s" % attrs["ipset"]
+                if entry not in self.item.sources:
+                    self.item.sources.append(entry)
+                else:
+                    log.warning("Source '%s' already set, ignoring.",
+                                attrs["address"])
             if "address" in attrs:
                 entry = attrs["address"]
                 if entry not in self.item.sources:
@@ -607,7 +617,10 @@ def zone_writer(zone, path=None):
     # source
     for source in uniqify(zone.sources):
         handler.ignorableWhitespace("  ")
-        handler.simpleElement("source", { "address": source })
+        if "ipset:" in source:
+            handler.simpleElement("source", { "ipset": source[6:] })
+        else:
+            handler.simpleElement("source", { "address": source })
         handler.ignorableWhitespace("\n")
 
     # services

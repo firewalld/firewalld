@@ -71,7 +71,7 @@
   [ &lt;short&gt;<replaceable>short description</replaceable>&lt;/short&gt; ]
   [ &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt; ]
   [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
-  [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"/&gt; ]
+  [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
   [ &lt;service name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
   [ &lt;protcol value="<replaceable>protocol</replaceable>"/&gt; ]
@@ -80,7 +80,7 @@
   [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
   [
     &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
-    [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
+    [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
     [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
     [
       &lt;service name="<replaceable>string</replaceable>"/&gt; |
