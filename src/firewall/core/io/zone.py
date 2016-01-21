@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac
+from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -308,8 +308,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule.element = Rich_Port(attrs["port"],
                                                attrs["protocol"])
                 return
-            # TODO: fix port string according to fw_zone.__port_id()
-            entry = (attrs["port"], attrs["protocol"])
+            entry = (portStr(port, "-"), protocol)
             if entry not in self.item.ports:
                 self.item.ports.append(entry)
         elif name == "protocol":
@@ -361,9 +360,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                                       attrs["protocol"],
                                                       to_port, to_addr)
                 return
-            # TODO: fix port string according to fw_zone.__forward_port_id()
-            entry = (attrs["port"], attrs["protocol"], to_port,
-                     to_addr)
+            entry = (portStr(attrs["port"], "-"), attrs["protocol"],
+                     portStr(to_port, "-"), str(to_addr))
             if entry not in self.item.forward_ports:
                 self.item.forward_ports.append(entry)
 
