@@ -216,6 +216,7 @@ class FirewallConfig(object):
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_IPSETS
         # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
         x.default = True
 
         ipset_writer(x)
@@ -383,6 +384,7 @@ class FirewallConfig(object):
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ICMPTYPES
         # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
         x.default = True
 
         icmptype_writer(x)
@@ -550,6 +552,7 @@ class FirewallConfig(object):
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_SERVICES
         # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
         x.default = True
 
         service_writer(x)
@@ -726,6 +729,7 @@ class FirewallConfig(object):
         x.filename = "%s.xml" % name
         x.path = ETC_FIREWALLD_ZONES
         # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
         x.default = True
 
         zone_writer(x)
