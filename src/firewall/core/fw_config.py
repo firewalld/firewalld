@@ -256,7 +256,12 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        obj = ipset_reader(filename, path)
+        log.debug1("Loading ipset file '%s'", filename)
+        try:
+            obj = ipset_reader(filename, path)
+        except Exception as msg:
+            log.error("Failed to load ipset file '%s': %s", filename, msg)
+            return (None, None)
 
         # new ipset
         if obj.name not in self._builtin_ipsets and obj.name not in self._ipsets:
@@ -418,7 +423,12 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        obj = icmptype_reader(filename, path)
+        log.debug1("Loading icmptype file '%s'", filename)
+        try:
+            obj = icmptype_reader(filename, path)
+        except Exception as msg:
+            log.error("Failed to load icmptype file '%s': %s", filename, msg)
+            return (None, None)
 
         # new icmptype
         if obj.name not in self._builtin_icmptypes and obj.name not in self._icmptypes:
@@ -580,7 +590,12 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        obj = service_reader(filename, path)
+        log.debug1("Loading service file '%s'", filename)
+        try:
+            obj = service_reader(filename, path)
+        except Exception as msg:
+            log.error("Failed to load service file '%s': %s", filename, msg)
+            return (None, None)
 
         # new service
         if obj.name not in self._builtin_services and obj.name not in self._services:
@@ -751,7 +766,13 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        obj = zone_reader(filename, path)
+        log.debug1("Loading zone file '%s'", filename)
+        try:
+            obj = zone_reader(filename, path)
+        except Exception as msg:
+            log.error("Failed to load zone file '%s': %s", filename, msg)
+            return (None, None)
+
         obj.fw_config = self
 
         # new zone
