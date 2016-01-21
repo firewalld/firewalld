@@ -299,7 +299,7 @@ assert_good "   --add-service=dns --zone=${default_zone}"
 assert_good " --query-service dns"
 assert_good "--remove-service=dns"
 assert_bad  " --query-service=dns"
-assert_bad  "   --add-service=smtps" # bad service name
+assert_bad  "   --add-service=smtpssssssss" # bad service name
 assert_bad  "   --add-service=dns --add-interface=dummy0" # impossible combination
 
 assert_good "   --add-service=http --add-service=nfs"
