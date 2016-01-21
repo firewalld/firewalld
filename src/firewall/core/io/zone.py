@@ -314,7 +314,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule.element = Rich_Port(attrs["port"],
                                                attrs["protocol"])
                 return
-            entry = (portStr(port, "-"), protocol)
+            entry = (portStr(attrs["port"], "-"), attrs["protocol"])
             if entry not in self.item.ports:
                 self.item.ports.append(entry)
             else:
