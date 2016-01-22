@@ -158,7 +158,7 @@ class ip4tables(object):
     def set_rules(self, rules, flush=False):
         temp_file = tempFile()
 
-        table = None
+        table = "filter"
         table_rules = { }
         for rule in rules:
             try:
