@@ -413,6 +413,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             'CleanupOnExit': self._get_property("CleanupOnExit"),
             'Lockdown': self._get_property("Lockdown"),
             'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
+            'IndividualCalls': self._get_property("IndividualCalls"),
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
