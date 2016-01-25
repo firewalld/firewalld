@@ -22,7 +22,12 @@
 import os
 
 def runProg(prog, argv=[ ], stdin=None):
-    args = [ prog ] + argv
+
+    # Make sure we split arguments with spaces into separate
+    # words.
+    args = [arg.split(' ') for arg in argv]
+    # flatten the argument list and append it to the command
+    args = [ prog ] + [arg for sub_arg in args for arg in sub_arg]
 
     (rfd, wfd) = os.pipe()
     pid = os.fork()
