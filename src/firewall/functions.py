@@ -224,6 +224,16 @@ def checkInterface(iface):
     #    return False
     return True
 
+def checkUINT32(val):
+    try:
+        x = int(val, 0)
+    except:
+        return False
+    else:
+        if x >= 0 and x <= 4294967295:
+            return True
+    return False
+
 def firewalld_is_active():
     """ Check if firewalld is active
 
