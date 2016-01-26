@@ -70,6 +70,7 @@ class Zone(IO_Object):
         "accept": None,
         "reject": None,
         "drop": None,
+        "mark": [ "set" ],
         "limit": [ "value" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
@@ -476,7 +477,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             self._rule.destination = Rich_Destination(attrs["address"],
                                                       invert)
 
-        elif name in [ "accept", "reject", "drop" ]:
+        elif name in [ "accept", "reject", "drop", "mark" ]:
             if not self._rule:
                 log.warning('Invalid rule: Action outside of rule')
                 self._rule_error = True
@@ -487,13 +488,16 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 return
             if name == "accept":
                 self._rule.action = Rich_Accept()
-            if name == "reject":
+            elif name == "reject":
                 _type = None
                 if "type" in attrs:
                     _type = attrs["type"]
                 self._rule.action = Rich_Reject(_type)
-            if name == "drop":
+            elif name == "drop":
                 self._rule.action = Rich_Drop()
+            elif name == "mark":
+                _set = attrs["set"]
+                self._rule.action = Rich_Mark(_set)
             self._limit_ok = self._rule.action
 
         elif name == "log":
@@ -573,7 +577,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                     str(self._rule))
             self._rule = None
             self._rule_error = False
-        elif name in [ "accept", "reject", "drop", "log", "audit" ]:
+        elif name in [ "accept", "reject", "drop", "mark", "log", "audit" ]:
             self._limit_ok = None
 
 def zone_reader(filename, path):
@@ -825,6 +829,9 @@ def zone_writer(zone, path=None):
                     attrs["type"] = rule.action.type
             elif type(rule.action) == Rich_Drop:
                 action = "drop"
+            elif type(rule.action) == Rich_Mark:
+                action = "mark"
+                attrs["set"] = rule.action.set
             else:
                 log.warning("Unknown action '%s'", type(rule.action))
             if rule.action.limit:

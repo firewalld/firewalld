@@ -166,6 +166,34 @@ class Rich_Drop(Rich_Accept):
         return "drop%s" % (" %s" % self.limit if self.limit else "")
 
 
+class Rich_Mark(object):
+    def __init__(self, _set, limit=None):
+        self.set = _set
+        self.limit = limit
+
+    def __str__(self):
+        return "mark set=%s%s" % (self.set,
+                                  " %s" % self.limit if self.limit else "")
+
+    def check(self):
+        if self.set is not None:
+            x = self.set
+        else:
+            raise FirewallError(INVALID_MARK, "no value set")
+
+        if "/" in x:
+            splits = x.split("/")
+            if len(splits) != 2:
+                raise FirewallError(INVALID_MARK, x)
+            if not functions.checkUINT32(splits[0]) or \
+               not functions.checkUINT32(splits[1]):
+                # value and mask are uint32
+                raise FirewallError(INVALID_MARK, x)
+        else:
+            if not functions.checkUINT32(x):
+                # value is uint32
+                raise FirewallError(INVALID_MARK, x)
+
 class Rich_Limit(object):
     def __init__(self, value):
         self.value = value
@@ -275,13 +303,14 @@ class Rich_Rule(object):
                 if attr_name not in ['family', 'address', 'mac', 'ipset',
                                      'invert', 'value',
                                      'port', 'protocol', 'to-port', 'to-addr',
-                                     'name', 'prefix', 'level', 'type']:
+                                     'name', 'prefix', 'level', 'type',
+                                     'set']:
                     raise FirewallError(INVALID_RULE, "bad attribute '%s'" % attr_name)
             else:             # element
                 if element in ['rule', 'source', 'destination', 'protocol',
                                'service', 'port', 'icmp-block', 'masquerade',
                                'forward-port', 'log', 'audit',
-                               'accept', 'drop', 'reject', 'limit', 'not', 'NOT', 'EOL']:
+                               'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL']:
                     if element == 'source' and self.source:
                         raise FirewallError(INVALID_RULE, "more than one 'source' element")
                     elif element == 'destination' and self.destination:
@@ -293,7 +322,7 @@ class Rich_Rule(object):
                         raise FirewallError(INVALID_RULE, "more than one 'log' element")
                     elif element == 'audit' and self.audit:
                         raise FirewallError(INVALID_RULE, "more than one 'audit' element")
-                    elif element in ['accept', 'drop', 'reject'] and self.action:
+                    elif element in ['accept', 'drop', 'reject', 'mark'] and self.action:
                         raise FirewallError(INVALID_RULE, "more than one 'action' element. There cannot be both '%s' and '%s' in one rule." % (element, self.action))
                 else:
                     raise FirewallError(INVALID_RULE, "unknown element %s" % element)
@@ -423,6 +452,17 @@ class Rich_Rule(object):
                     in_elements.append('limit')
                 else:
                     self.action = Rich_Reject(attrs.get('type'), attrs.get('limit'))
+                    in_elements.pop() # accept
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'mark':
+                if attr_name == 'set':
+                    attrs[attr_name] = attr_value
+                elif element == 'limit':
+                    in_elements.append('limit')
+                else:
+                    self.action = Rich_Mark(attrs.get('set'),
+                                            attrs.get('limit'))
                     in_elements.pop() # accept
                     attrs.clear()
                     index = index -1 # return token to input
@@ -574,6 +614,8 @@ class Rich_Rule(object):
         if self.action is not None:
             if type(self.action) == Rich_Reject:
                 self.action.check(self.family)
+            elif type(self.action) == Rich_Mark:
+                self.action.check()
 
             if self.action.limit is not None:
                 self.action.limit.check()

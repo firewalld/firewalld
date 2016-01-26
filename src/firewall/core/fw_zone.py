@@ -843,7 +843,8 @@ class FirewallZone(object):
         _command += self.__rule_limit(rule.audit.limit)
         rules.append((ipv, table, chain, _command))
 
-    def __rule_action(self, ipv, table, target, rule, command, rules):
+    def __rule_action(self, zone, ipv, table, target, rule, command, chains,
+                      rules):
         if not rule.action:
             return
         _command = command[:]
@@ -858,6 +859,13 @@ class FirewallZone(object):
         elif type(rule.action) ==  Rich_Drop:
             chain = "%s_deny" % target
             _command += [ "-j", "DROP" ]
+        elif type(rule.action) == Rich_Mark:
+            chains.append([ "mangle", "PREROUTING" ])
+            table = "mangle"
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
+                                                zone=zone)
+            chain = "%s_allow" % target
+            _command += [ "-j", "MARK", "--set-xmark", rule.action.set ]
         else:
             raise FirewallError(INVALID_RULE,
                                 "Unknown action %s" % type(rule.action))
@@ -922,11 +930,13 @@ class FirewallZone(object):
                         command += [ "--dport", "%s" % portStr(port) ]
                     if ipv in svc.destination and svc.destination[ipv] != "":
                         command += [ "-d",  svc.destination[ipv] ]
-                    command += [ "-m", "conntrack", "--ctstate", "NEW" ]
+                    if type(rule.action) != Rich_Mark:
+                        command += [ "-m", "conntrack", "--ctstate", "NEW" ]
 
                     self.__rule_log(ipv, table, target, rule, command, rules)
                     self.__rule_audit(ipv, table, target, rule, command, rules)
-                    self.__rule_action(ipv, table, target, rule, command, rules)
+                    self.__rule_action(zone, ipv, table, target, rule, command,
+                                       chains, rules)
 
                 for proto in svc.protocols:
                     table = "filter"
@@ -937,11 +947,13 @@ class FirewallZone(object):
                     command += [ "-p", proto ]
                     if ipv in svc.destination and svc.destination[ipv] != "":
                         command += [ "-d",  svc.destination[ipv] ]
-                    command += [ "-m", "conntrack", "--ctstate", "NEW" ]
+                    if type(rule.action) != Rich_Mark:
+                        command += [ "-m", "conntrack", "--ctstate", "NEW" ]
 
                     self.__rule_log(ipv, table, target, rule, command, rules)
                     self.__rule_audit(ipv, table, target, rule, command, rules)
-                    self.__rule_action(ipv, table, target, rule, command, rules)
+                    self.__rule_action(zone, ipv, table, target, rule, command,
+                                       chains, rules)
 
             # PORT
             elif type(rule.element) == Rich_Port:
@@ -958,12 +970,14 @@ class FirewallZone(object):
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
                 command += [ "-m", protocol, "-p", protocol,
-                           "--dport", portStr(port),
-                           "-m", "conntrack", "--ctstate", "NEW" ]
+                           "--dport", portStr(port) ]
+                if type(rule.action) != Rich_Mark:
+                    command += [ "-m", "conntrack", "--ctstate", "NEW" ]
 
                 self.__rule_log(ipv, table, target, rule, command, rules)
                 self.__rule_audit(ipv, table, target, rule, command, rules)
-                self.__rule_action(ipv, table, target, rule, command, rules)
+                self.__rule_action(zone, ipv, table, target, rule, command,
+                                   chains, rules)
 
             # PROTOCOL
             elif type(rule.element) == Rich_Protocol:
@@ -978,12 +992,14 @@ class FirewallZone(object):
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
-                command += [ "-p", protocol, 
-                             "-m", "conntrack", "--ctstate", "NEW" ]
+                command += [ "-p", protocol ]
+                if type(rule.action) != Rich_Mark:
+                    command += ["-m", "conntrack", "--ctstate", "NEW" ]
 
                 self.__rule_log(ipv, table, target, rule, command, rules)
                 self.__rule_audit(ipv, table, target, rule, command, rules)
-                self.__rule_action(ipv, table, target, rule, command, rules)
+                self.__rule_action(zone, ipv, table, target, rule, command,
+                                   chains, rules)
 
             # MASQUERADE
             elif type(rule.element) == Rich_Masquerade:
@@ -1104,7 +1120,8 @@ class FirewallZone(object):
                 self.__rule_log(ipv, table, target, rule, command, rules)
                 self.__rule_audit(ipv, table, target, rule, command, rules)
                 if rule.action:
-                    self.__rule_action(ipv, table, target, rule, command, rules)
+                    self.__rule_action(zone, ipv, table, target, rule, command,
+                                       chains, rules)
                 else:
                     command += [ "-j", "%%REJECT%%" ]
                     rules.append((ipv, table, "%s_deny" % target, command))
@@ -1119,7 +1136,8 @@ class FirewallZone(object):
                 self.__rule_log(ipv, table, target, rule, command, rules)
                 self.__rule_audit(ipv, table, target, rule, command, rules)
                 if rule.action:
-                    self.__rule_action(ipv, table, target, rule, command, rules)
+                    self.__rule_action(zone, ipv, table, target, rule, command,
+                                       chains, rules)
                 else:
                     command += [ "-j", "%%REJECT%%" ]
                     rules.append((ipv, table, "%s_deny" % target, command))
@@ -1134,7 +1152,8 @@ class FirewallZone(object):
                 self.__rule_source(rule.source, command)
                 self.__rule_log(ipv, table, target, rule, command, rules)
                 self.__rule_audit(ipv, table, target, rule, command, rules)
-                self.__rule_action(ipv, table, target, rule, command, rules)
+                self.__rule_action(zone, ipv, table, target, rule, command,
+                                   chains, rules)
 
             # EVERYTHING ELSE
             else:

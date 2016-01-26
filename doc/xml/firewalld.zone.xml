@@ -95,7 +95,8 @@
     [
       &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |
       &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
-      &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
+      &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt; |
+      &lt;mark set="<replaceable>mark</replaceable>[/<replaceable>mask</replaceable>]"&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/mark&gt;
     ]
     &lt;/rule&gt;
   ]
@@ -363,7 +364,8 @@
   [
     &lt;accept&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/accept&gt; |
     &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
-    &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
+    &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt; |
+    &lt;mark set="<replaceable>mark</replaceable>[/<replaceable>mask</replaceable>]"&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/mark&gt;
   ]
 
 &lt;/rule&gt;

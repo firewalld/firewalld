@@ -680,6 +680,10 @@ class FirewallConfig(object):
             "richRuleDialogActionRejectTypeCheck")
         self.richRuleDialogActionRejectTypeCombobox = builder.get_object( \
             "richRuleDialogActionRejectTypeCombobox")
+        self.richRuleDialogActionMarkBox = builder.get_object( \
+            "richRuleDialogActionMarkBox")
+        self.richRuleDialogActionMarkChooser = ChooserButton(builder.get_object( \
+            "richRuleDialogActionMarkChooser"))
         self.richRuleDialogActionLimitCheck = builder.get_object( \
             "richRuleDialogActionLimitCheck")
         self.richRuleDialogActionLimitBox = builder.get_object( \
@@ -897,6 +901,16 @@ class FirewallConfig(object):
             builder.get_object("sourceDialogSourceTypeCombobox")
         self.sourceDialogSourceChooser = ChooserButton(builder.get_object( \
                 "sourceDialogSourceChooser"))
+
+        self.markDialog = builder.get_object("markDialog")
+        self.markDialogOkButton = \
+            builder.get_object("markDialogOkButton")
+        self.markDialogCancelButton = \
+            builder.get_object("markDialogCancelButton")
+        self.markDialogMarkEntry = \
+            builder.get_object("markDialogMarkEntry")
+        self.markDialogMaskEntry = \
+            builder.get_object("markDialogMaskEntry")
 
         self.serviceBaseDialog = builder.get_object("serviceBaseDialog")
         self.serviceBaseDialogOkButton = \
@@ -1667,6 +1681,9 @@ class FirewallConfig(object):
                     action += "\n" + obj.action.type
             elif type(obj.action) == Rich_Drop:
                 action = _("drop")
+            elif type(obj.action) == Rich_Mark:
+                action = _("mark")
+                action += "\nset " + obj.action.set
             if obj.action.limit:
                 action += "\n" + _("limit") + " " + obj.action.limit.value
         if obj.source:
@@ -2511,6 +2528,7 @@ class FirewallConfig(object):
         self.richRuleDialogActionCombobox.set_active(0)
         self.richRuleDialogActionRejectTypeCheck.set_active(False)
         self.richRuleDialogActionRejectTypeCombobox.set_active(0)
+        self.richRuleDialogActionMarkChooser.set_text("")
         self.richRuleDialogActionLimitCheck.set_active(False)
         self.richRuleDialogActionLimitRateEntry.set_text("")
         self.richRuleDialogActionLimitDurationCombobox.set_active(0)
@@ -2623,6 +2641,10 @@ class FirewallConfig(object):
                                 set_active_id(REJECT_TYPES[old_obj.family][0])
                 elif type(old_obj.action) == Rich_Drop:
                     action = "drop"
+                elif type(old_obj.action) == Rich_Mark:
+                    action = "mark"
+                    self.richRuleDialogActionMarkChooser.set_text(old_obj.action.set)
+
                 combobox_select_text(self.richRuleDialogActionCombobox, action)
 
                 if old_obj.action.limit:
@@ -3072,6 +3094,9 @@ class FirewallConfig(object):
                 rule.action = Rich_Reject(_type, limit)
             elif combolabel == _("drop"):
                 rule.action = Rich_Drop(limit)
+            elif combolabel == _("mark"):
+                _set = self.richRuleDialogActionMarkChooser.get_text()
+                rule.action = Rich_Mark(_set, limit)
 
         # source
         if self.richRuleDialogSourceChooser.is_sensitive() and \
@@ -3149,6 +3174,28 @@ class FirewallConfig(object):
     def on_richRuleDialogElementCombobox_changed(self, *args):
         self.richRuleDialogElementChooser.set_text("")
 
+    def on_richRuleDialogActionMarkChooser_clicked(self, *args):
+        old_value = self.richRuleDialogActionMarkChooser.get_text()
+        if "/" in old_value:
+            try:
+                (old_mark, old_mask) = old_value.split("/")
+            except:
+                return
+        else:
+            old_mark = old_value
+            old_mask = ""
+
+        _value = self.mark_select_dialog(old_mark, old_mask)
+        if _value is None:
+            return
+
+        (mark, mask) = _value
+        if mask != "":
+            value = "%s/%s" % (mark, mask)
+        else:
+            value = mark
+        self.richRuleDialogActionMarkChooser.set_text(value)
+
     def on_richRuleDialog_changed(self, *args):
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
         if combolabel == _("ipv4"):
@@ -3188,6 +3235,7 @@ class FirewallConfig(object):
             self.richRuleDialogActionRejectTypeCheck.get_active())
         self.richRuleDialogActionRejectBox.set_sensitive(family is not None and \
             self.richRuleDialogActionCombobox.get_active_text() == _("reject"))
+        self.richRuleDialogActionMarkBox.set_sensitive(self.richRuleDialogActionCombobox.get_active_text() == _("mark"))
         self.richRuleDialogLogGrid.set_sensitive(
             self.richRuleDialogLogCheck.get_active())
         self.richRuleDialogLogLimitBox.set_sensitive(
@@ -3404,6 +3452,46 @@ class FirewallConfig(object):
             else:
                 self._warning("Source '%s' already bound to zone '%s'" % \
                               (old_source, selected_zone))
+
+    def on_markDialog_changed(self, entry, old_mark, old_mask):
+        mark = self.markDialogMarkEntry.get_text()
+        mask = self.markDialogMaskEntry.get_text()
+
+        if not checkUINT32(mark):
+            self.markDialogOkButton.set_sensitive(False)
+        else:
+            if mask != "" and not checkUINT32(mask):
+                self.markDialogOkButton.set_sensitive(False)
+            else:
+                if old_mark != mark or old_mask != mask:
+                    self.markDialogOkButton.set_sensitive(True)
+
+    def mark_select_dialog(self, old_mark, old_mask):
+        self.markDialogMarkEntry.set_text(old_mark)
+        self.markDialogMaskEntry.set_text(old_mask)
+
+        handler_id1 = self.markDialogMarkEntry.connect(
+            "changed", self.on_markDialog_changed, old_mark, old_mask)
+        handler_id2 = self.markDialogMaskEntry.connect(
+            "changed", self.on_markDialog_changed, old_mark, old_mask)
+
+        self.markDialogOkButton.set_sensitive(False)
+
+        self.markDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.markDialog.set_transient_for(self.mainWindow)
+        self.markDialog.show_all()
+        result = self.markDialog.run()
+        self.markDialog.hide()
+
+        self.markDialogMarkEntry.disconnect(handler_id1)
+        self.markDialogMaskEntry.disconnect(handler_id2)
+
+        mark = self.markDialogMarkEntry.get_text()
+        mask = self.markDialogMaskEntry.get_text()
+
+        if result != 1 or (old_mark == mark and old_mask == mask):
+            return None
+        return (mark, mask)
 
     def on_macDialog_changed(self, entry, old_mac):
         text = entry.get_text()

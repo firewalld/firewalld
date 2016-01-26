@@ -73,7 +73,7 @@ rule
   service|port|protocol|icmp-block|masquerade|forward-port
   [log]
   [audit]
-  [accept|reject|drop]
+  [accept|reject|drop|mark]
       </programlisting>
       The complete rule is provided as a single line string. A destination is allowed here as long as it does not conflict with the destination of a service.
     </para>
@@ -85,7 +85,7 @@ rule
   source
   [log]
   [audit]
-  accept|reject|drop
+  accept|reject|drop|mark
       </programlisting>
       This is used to grant or limit access from a source to this machine or machines that are reachable by this machine. A destination is not allowed here.
     </para>
@@ -252,7 +252,7 @@ audit [limit value="rate/duration"]
     <refsect2>
       <title>Action</title>
       <para>
-	An action can be one of <option>accept</option>, <option>reject</option> or <option>drop</option>.
+	An action can be one of <option>accept</option>, <option>reject</option>, <option>drop</option> or <option>mark</option>.
       </para>
       <para>
 	The rule can either contain an element or also a source only. If the rule contains an element, then new connection matching the element will be handled with the action. If the rule does not contain an element, then everything from the source address will be handled with the action.
@@ -273,12 +273,18 @@ drop [limit value="rate/duration"]
 	</programlisting>
       </para>
       <para>
+	<programlisting>
+mark set="mark[/mask]" [limit value="rate/duration"]
+	</programlisting>
+      </para>
+      <para>
 	With <option>accept</option> all new connection attempts will be granted.
 	With <option>reject</option> they will not be accepted and their source will get a reject ICMP(v6) message.
 	The reject type can be set to specify appropriate ICMP(v6) error message.
 	For valid reject types see <option>--reject-with type</option> in <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page.
 	Because reject types are different for IPv4 and IPv6 you have to specify rule family when using reject type.
 	With <option>drop</option> all packets will be dropped immediately, there is no information sent to the source.
+	With <option>mark</option> all packets will be marked in the <option>PREROUTING</option> chain in the <option>mange</option> table with the mark and mask combination.
 	See Limit section for description of <option>limit</option> tag.
       </para>
     </refsect2>
