@@ -566,7 +566,10 @@ class Firewall(object):
                 continue
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
-                _rule = prefix + rule.split()
+                if type(rule) == list:
+                    _rule = prefix + rule
+                else:
+                    _rule = prefix + functions.splitArgs(rule)
                 if self._individual_calls or \
                    (ipv == "eb" and not self._ebtables.restore_noflush_option):
                     self.rule(ipv, _rule)
@@ -582,29 +585,21 @@ class Firewall(object):
 
         if self.ipv6_rpfilter_enabled and \
            self.is_table_available("ipv6", "raw"):
-            if self._individual_calls:
-                # here is no check for ebtables.restore_noflush_option needed
-                # as ebtables is not used in here
-                rule = [ "-t", "raw", "-I", "PREROUTING", "1",
-                         "-p", "icmpv6", "--icmpv6-type=router-advertisement",
-                         "-j", "ACCEPT" ]       # RHBZ#1058505
-                self.rule("ipv6", rule)
-                rule = [ "-t", "raw", "-I", "PREROUTING", "2",
-                         "-m", "rpfilter", "--invert", "-j", "DROP" ]
-                try:
-                    self.rule("ipv6", rule)
-                except ValueError:    # some problem with ip6t_rpfilter module ?
-                    rule = [ "-t", "raw", "-D", "PREROUTING", "1"]
-                    self.rule("ipv6", rule)
-            else:
-                rules = [
-                    [ "-t", "raw", "-I", "PREROUTING", "1",
-                      "-p", "icmpv6", "--icmpv6-type=router-advertisement",
-                      "-j", "ACCEPT" ],       # RHBZ#1058505
-                    [ "-t", "raw", "-I", "PREROUTING", "2",
-                      "-m", "rpfilter", "--invert", "-j", "DROP" ]
-                ]
-                return self._ip6tables.set_rules(rules)
+            # here is no check for ebtables.restore_noflush_option needed
+            # as ebtables is not used in here
+            rules = [
+                ("ipv6", [ "PREROUTING", 1, "-t", "raw",
+                           "-p", "icmpv6", "--icmpv6-type=router-advertisement",
+                           "-j", "ACCEPT" ]), # RHBZ#1058505
+                ("ipv6", [ "PREROUTING", 2, "-t", "raw",
+                           "-m", "rpfilter", "--invert", "-j", "DROP" ]),
+            ]
+            # handle rules
+            ret = self.handle_rules(rules, True, insert=True)
+            if ret:
+                (cleanup_rules, msg) = ret
+                self.handle_rules(cleanup_rules, False)
+                log.error(msg)
 
     # flush and policy
 
