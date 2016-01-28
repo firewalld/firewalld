@@ -172,8 +172,7 @@ class FirewallConfig(object):
 
     def load_ipset_defaults(self, obj):
         if obj.name not in self._ipsets:
-            raise FirewallError(NO_DEFAULTS,
-                                "'%s' not in self._ipsets" % obj.name)
+            raise FirewallError(NO_DEFAULTS, obj.name)
         elif self._ipsets[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._ipsets[%s] != obj" % obj.name)
@@ -341,8 +340,7 @@ class FirewallConfig(object):
 
     def load_icmptype_defaults(self, obj):
         if obj.name not in self._icmptypes:
-            raise FirewallError(NO_DEFAULTS,
-                                "'%s' not in self._icmptypes" % obj.name)
+            raise FirewallError(NO_DEFAULTS, obj.name)
         elif self._icmptypes[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._icmptypes[%s] != obj" % obj.name)
@@ -510,8 +508,7 @@ class FirewallConfig(object):
 
     def load_service_defaults(self, obj):
         if obj.name not in self._services:
-            raise FirewallError(NO_DEFAULTS,
-                                "'%s' not in self._services" % obj.name)
+            raise FirewallError(NO_DEFAULTS, obj.name)
         elif self._services[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._services[%s] != obj" % obj.name)
@@ -685,8 +682,7 @@ class FirewallConfig(object):
 
     def load_zone_defaults(self, obj):
         if obj.name not in self._zones:
-            raise FirewallError(NO_DEFAULTS,
-                                "'%s' not in self._zones" % obj.name)
+            raise FirewallError(NO_DEFAULTS, obj.name)
         elif self._zones[obj.name] != obj:
             raise FirewallError(NO_DEFAULTS,
                                 "self._zones[%s] != obj" % obj.name)
