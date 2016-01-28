@@ -257,7 +257,7 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        log.debug1("Loading ipset file '%s'", filename)
+        log.debug1("Loading ipset file '%s'", name)
         try:
             obj = ipset_reader(filename, path)
         except Exception as msg:
@@ -425,7 +425,7 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        log.debug1("Loading icmptype file '%s'", filename)
+        log.debug1("Loading icmptype file '%s'", name)
         try:
             obj = icmptype_reader(filename, path)
         except Exception as msg:
@@ -593,7 +593,7 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        log.debug1("Loading service file '%s'", filename)
+        log.debug1("Loading service file '%s'", name)
         try:
             obj = service_reader(filename, path)
         except Exception as msg:
@@ -770,7 +770,7 @@ class FirewallConfig(object):
 
         # new or updated file
 
-        log.debug1("Loading zone file '%s'", filename)
+        log.debug1("Loading zone file '%s'", name)
         try:
             obj = zone_reader(filename, path)
         except Exception as msg:
