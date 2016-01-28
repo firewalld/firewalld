@@ -191,6 +191,7 @@ class FirewallConfig(object):
             x = copy.copy(obj)
             x.import_config(config)
             x.path = ETC_FIREWALLD_IPSETS
+            x.builtin = False
             if obj.path != x.path:
                 x.default = False
             self.add_ipset(x)
@@ -359,6 +360,7 @@ class FirewallConfig(object):
             x = copy.copy(obj)
             x.import_config(config)
             x.path = ETC_FIREWALLD_ICMPTYPES
+            x.builtin = False
             if obj.path != x.path:
                 x.default = False
             self.add_icmptype(x)
@@ -527,6 +529,7 @@ class FirewallConfig(object):
             x = copy.copy(obj)
             x.import_config(config)
             x.path = ETC_FIREWALLD_SERVICES
+            x.builtin = False
             if obj.path != x.path:
                 x.default = False
             self.add_service(x)
@@ -702,6 +705,7 @@ class FirewallConfig(object):
             x.fw_config = self
             x.import_config(config)
             x.path = ETC_FIREWALLD_ZONES
+            x.builtin = False
             if obj.path != x.path:
                 x.default = False
             self.add_zone(x)
