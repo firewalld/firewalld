@@ -42,6 +42,7 @@ UNKNOWN_SOURCE      =   30
 RT_TO_PERM_FAILED   =   31
 IPSET_WITH_TIMEOUT  =   32
 BUILTIN_IPSET       =   33
+ALREADY_SET         =   34
 
 INVALID_ACTION      =  100
 INVALID_SERVICE     =  101
@@ -100,6 +101,12 @@ import sys
 class FirewallError(Exception):
     def __init__(self, code, msg=None):
         self.code = code
+        if msg is not None:
+            # escape msg if needed
+            try:
+                x = str(msg)
+            except UnicodeEncodeError:
+                msg = unicode(msg).encode("unicode_escape")
         self.msg = msg
 
     def __repr__(self):
