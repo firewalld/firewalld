@@ -818,7 +818,9 @@ if (options_icmptype and not a.icmptype) and \
    not (options_service and a.service):
     __fail(parser.format_usage() + "No icmptype specified.")
 
-if (options_direct or options_permanent_only) and (options_zone):
+if (options_direct or options_permanent_only) and \
+   (options_zone and not a.zone) and (options_service and not a.service) and \
+   (options_icmptype and a.icmptype):
     __fail(parser.format_usage() + "Can't be used with --zone.")
 
 if (a.direct and not options_direct) or (options_direct and not a.direct):
