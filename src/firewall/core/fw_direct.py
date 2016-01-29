@@ -230,8 +230,10 @@ class FirewallDirect(object):
 
     def __rule(self, enable, ipv, table, chain, priority, args):
         self._check_ipv_table(ipv, table)
+        if ipv in [ "ipv4", "ipv6" ]:
+            self._fw.zone.create_zone_base_by_chain(ipv, table, chain)
+
         _chain = chain
-        # use "%s_chain" for built-in chains
 
         if ipv in [ "ipv4", "ipv6" ]:
             _CHAINS = ipXtables.BUILT_IN_CHAINS
@@ -390,6 +392,29 @@ class FirewallDirect(object):
 
         if enable:
             self.check_passthrough(args)
+            # try to find out if a zone chain should be used
+            if ipv in [ "ipv4", "ipv6" ]:
+                table = "filter"
+                try:
+                    i = args.index("-t")
+                except:
+                    pass
+                else:
+                    if len(args) >= i+1:
+                        table = args[i+1]
+                chain = None
+                for opt in [ "-A", "--append",
+                             "-I", "--insert",
+                             "-N", "--new-chain" ]:
+                    try:
+                        i = args.index(opt)
+                    except:
+                        pass
+                    else:
+                        if len(args) >= i+1:
+                            chain = args[i+1]
+                if table and chain:
+                    self._fw.zone.create_zone_base_by_chain(ipv, table, chain)
             _args = args
         else:
             _args = self.reverse_passthrough(args)

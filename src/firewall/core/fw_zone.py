@@ -193,6 +193,14 @@ class FirewallZone(object):
                 return (splits[1], _chain)
         return None
 
+    def create_zone_base_by_chain(self, ipv, table, chain):
+        # Create zone base chains if the chain is reserved for a zone
+        if ipv in [ "ipv4", "ipv6" ]:
+            x = self.zone_from_chain(ipv, table, chain)
+            if x != None:
+                (_zone, _chain) = x
+                self.add_chain(_zone, table, _chain)
+
     # dynamic chain handling
 
     def __chain(self, zone, create, table, chain):
