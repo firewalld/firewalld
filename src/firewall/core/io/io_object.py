@@ -26,7 +26,8 @@ import sys
 
 from firewall.config import *
 from firewall.errors import *
-from firewall.functions import getPortRange, b2u, checkProtocol
+from firewall import functions
+from firewall.functions import b2u
 
 PY2 = sys.version < '3'
 
@@ -253,7 +254,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
         saxutils.XMLGenerator.ignorableWhitespace(self, b2u(content))
 
 def check_port(port):
-    port_range = getPortRange(port)
+    port_range = functions.getPortRange(port)
     if port_range == -2:
         raise FirewallError(INVALID_PORT,
                             "port number in '%s' is too big" % port)
@@ -271,5 +272,11 @@ def check_tcpudp(protocol):
                             "'%s' not from {'tcp'|'udp'}" % protocol)
 
 def check_protocol(protocol):
-    if not checkProtocol(protocol):
+    if not functions.checkProtocol(protocol):
         raise FirewallError(INVALID_PROTOCOL, protocol)
+
+def check_address(ipv, addr):
+    if not functions.check_address(ipv, addr):
+        raise FirewallError(INVALID_ADDR,
+                            "'%s' is not valid %s address" % (addr, ipv))
+

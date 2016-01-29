@@ -26,7 +26,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkProtocol, check_address, \
+from firewall.functions import checkProtocol, \
                                checkIPnMask, checkIP6nMask, u2b_if_py2
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
@@ -95,13 +95,11 @@ class Service(IO_Object):
                     check_tcpudp(port[1])
                 else:
                     # only protocol
-                    if not checkProtocol(port[1]):
-                        raise FirewallError(INVALID_PROTOCOL, port[1])
+                    check_protocol(port[1])
 
         if item == "protocols":
             for proto in config:
-                if not checkProtocol(proto):
-                    raise FirewallError(INVALID_PROTOCOL, proto)
+                check_protocol(proto)
 
         elif item == "destination":
             for destination in config:
@@ -109,10 +107,8 @@ class Service(IO_Object):
                     raise FirewallError(INVALID_DESTINATION,
                                         "'%s' not in {'ipv4'|'ipv6'}" % \
                                         destination)
-                if not check_address(destination, config[destination]):
-                    raise FirewallError(INVALID_ADDR,
-                                        "'%s' is not valid %s address" % \
-                                        (config[destination], destination))
+                check_address(destination, config[destination])
+
         elif item == "modules":
             for module in config:
                 if not module.startswith("nf_conntrack_"):
@@ -138,6 +134,8 @@ class service_ContentHandler(IO_Object_ContentHandler):
             pass
         elif name == "port":
             if attrs["port"] != "":
+                check_port(attrs["port"])
+                check_tcpudp(attrs["protocol"])
                 entry = (attrs["port"], attrs["protocol"])
                 if entry not in self.item.ports:
                     self.item.ports.append(entry)
@@ -145,12 +143,14 @@ class service_ContentHandler(IO_Object_ContentHandler):
                     log.warning("Port '%s/%s' already set, ignoring.",
                                 attrs["port"], attrs["protocol"])
             else:
+                check_protocol(attrs["protocol"])
                 if attrs["protocol"] not in self.item.protocols:
                     self.item.protocols.append(attrs["protocol"])
                 else:
                     log.warning("Protocol '%s' already set, ignoring.",
                                 attrs["protocol"])
         elif name == "protocol":
+            check_protocol(attrs["value"])
             if attrs["value"] not in self.item.protocols:
                 self.item.protocols.append(attrs["value"])
             else:
@@ -159,9 +159,7 @@ class service_ContentHandler(IO_Object_ContentHandler):
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
-                    if not check_address(x, attrs[x]):
-                        raise FirewallError(INVALID_ADDR,
-                                "'%s' is not valid %s address" % (attrs[x], x))
+                    check_address(x, attrs[x])
                     if x in self.item.destination:
                         log.warning("Destination address for '%s' already set, ignoring",
                                     x)

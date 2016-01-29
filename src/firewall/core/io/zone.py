@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
+from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
@@ -315,6 +315,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule.element = Rich_Port(attrs["port"],
                                                attrs["protocol"])
                 return
+            check_port(attrs["port"])
+            check_tcpudp(attrs["protocol"])
             entry = (portStr(attrs["port"], "-"), attrs["protocol"])
             if entry not in self.item.ports:
                 self.item.ports.append(entry)
@@ -331,6 +333,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     return
                 self._rule.element = Rich_Protocol(attrs["value"])
             else:
+                check_protocol(attrs["value"])
                 if attrs["value"] not in self.item.protocols:
                     self.item.protocols.append(attrs["value"])
                 else:
@@ -386,6 +389,16 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                                       attrs["protocol"],
                                                       to_port, to_addr)
                 return
+
+            check_port(attrs["port"])
+            check_tcpudp(attrs["protocol"])
+            if to_port:
+                check_port(to_port)
+            if to_addr:
+                if not checkIP(to_addr):
+                    raise FirewallError(INVALID_ADDR,
+                                        "to-addr '%s' is not a valid address" \
+                                        % to_addr)
             entry = (portStr(attrs["port"], "-"), attrs["protocol"],
                      portStr(to_port, "-"), str(to_addr))
             if entry not in self.item.forward_ports:
@@ -446,6 +459,11 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs:
                 log.warning('Invalid source: Invertion not allowed here.')
                 return
+            if "address" in attrs:
+                if not checkIPnMask(attrs["address"]) and \
+                   not checkIP6nMask(attrs["address"]) and \
+                   not check_mac(attrs["address"]):
+                    raise FirewallError(INVALID_ADDR, source)
             if "ipset" in attrs:
                 entry = "ipset:%s" % attrs["ipset"]
                 if entry not in self.item.sources:
