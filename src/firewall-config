@@ -1423,7 +1423,7 @@ class FirewallConfig(object):
     def reload_cb(self):
         self.default_zone = self.fw.getDefaultZone()
         self.defaultZoneLabel.set_text(self.default_zone)
-        self.log_denied = self.fw.get_log_denied
+        self.log_denied = self.fw.getLogDenied()
         self.logDeniedLabel.set_text(self.log_denied)
         self.load_ipsets()
         self.load_zones()
