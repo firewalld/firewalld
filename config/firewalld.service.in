@@ -3,6 +3,9 @@ Description=firewalld - dynamic firewall daemon
 Before=network.target
 Before=libvirtd.service
 Before=NetworkManager.service
+After=dbus.service
+After=syslog.target
+After=polkit.service
 Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
 
 [Service]
