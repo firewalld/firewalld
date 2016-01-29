@@ -8,7 +8,7 @@
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
 Version: 0.4.0
-Release: 0%{?dist}
+Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
 Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
@@ -293,6 +293,21 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Fri Jan 29 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.0-1
+- Several new services
+- Lots of bug fixes
+- Speed up: Using -restore commands
+- Optimizations
+- ipset support
+- MAC address support
+- Enhancements
+  - Rich language
+  - documentation
+  - firewall-config
+  - firewall-applet
+  - Command line tools
+- Log of denied packets
+
 * Tue Jun 16 2015 Thomas Woerner <twoerner@redhat.com> - 0.3.14.2-0
 - fixed requirements for -applet and -config
 - adapted firewall-applet man page to new version
