@@ -171,6 +171,28 @@ class FirewallZone(object):
 
             obj.applied = applied
 
+    # zone from chain
+
+    def zone_from_chain(self, ipv, table, chain):
+        if not "_" in chain:
+            # no zone chain
+            return None
+        splits = chain.split("_")
+        if len(splits) < 2:
+            return None
+        _chain = None
+        for x in SHORTCUTS:
+            if splits[0] == SHORTCUTS[x]:
+                _chain = x
+        if _chain is not None:
+            # next part needs to be zone name
+            if splits[1] not in self.get_zones():
+                return None
+            if len(splits) == 2 or \
+               (len(splits) == 3 and splits[2] in [ "log", "deny", "allow" ]):
+                return (splits[1], _chain)
+        return None
+
     # dynamic chain handling
 
     def __chain(self, zone, create, table, chain):

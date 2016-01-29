@@ -152,7 +152,10 @@ class FirewallDirect(object):
         if chain in our_chains:
             raise FirewallError(BUILTIN_CHAIN,
                  "chain '%s' is reserved" % chain)
-
+        if ipv in [ "ipv4", "ipv6" ]:
+            if self._fw.zone.zone_from_chain(ipv, table, chain) != None:
+                raise FirewallError(INVALID_CHAIN,
+                                    "Chain '%s' is reserved" % chain)
 
     # DIRECT CHAIN
 
