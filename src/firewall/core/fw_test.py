@@ -303,10 +303,10 @@ class Firewall_test(object):
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:
-                log.error("Failed to load %s file '%s': %s", reader_type,
+                log.warning("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
             except Exception as msg:
-                log.error("Failed to load %s file '%s':", reader_type, name)
+                log.warning("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 
         if combine and combined_zone.combined:
