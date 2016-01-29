@@ -27,12 +27,12 @@ import shutil
 from firewall.config import ETC_FIREWALLD, \
     FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
     FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER, \
-    FALLBACK_INDIVIDUAL_CALLS
+    FALLBACK_INDIVIDUAL_CALLS, FALLBACK_LOG_DENIED, LOG_DENIED_VALUES
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
-               "IPv6_rpfilter", "IndividualCalls" ]
+               "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -79,6 +79,7 @@ class firewalld_conf(object):
             self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
             self.set("IndividualCalls", FALLBACK_INDIVIDUAL_CALLS)
+            self.set("LogDenied", FALLBACK_LOG_DENIED)
             raise
 
         for line in f:
@@ -148,6 +149,13 @@ class firewalld_conf(object):
             log.error("IndividualCalls is not set, using default value '%s'",
                       FALLBACK_INDIVIDUAL_CALLS)
             self.set("IndividualCalls", str(FALLBACK_INDIVIDUAL_CALLS))
+
+        # check log denied
+        value = self.get("LogDenied")
+        if not value or value not in LOG_DENIED_VALUES:
+            log.error("LogDenied '%s' is invalid, using default value '%s'",
+                      value, FALLBACK_LOG_DENIED)
+            self.set("LogDenied", str(FALLBACK_LOG_DENIED))
 
     # save to self.filename if there are key/value changes
     def write(self):

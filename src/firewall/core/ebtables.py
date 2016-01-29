@@ -35,6 +35,7 @@ BUILT_IN_CHAINS = {
 }
 
 DEFAULT_RULES = { }
+LOG_RULES = { }
 OUR_CHAINS = {}  # chains created by firewalld
 
 for table in BUILT_IN_CHAINS.keys():

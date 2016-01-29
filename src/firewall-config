@@ -400,6 +400,15 @@ class FirewallConfig(object):
         self.defaultZoneView.get_selection().connect(\
             "changed", self.on_defaultZoneViewSelection_changed)
 
+        self.logDeniedLabel = builder.get_object("logDeniedLabel")
+        self.logDeniedDialog = builder.get_object("logDeniedDialog")
+        self.logDeniedDialogOkButton = \
+            builder.get_object("logDeniedDialogOkButton")
+        self.logDeniedDialogValueCombobox = \
+            builder.get_object("logDeniedDialogValueCombobox")
+        for value in LOG_DENIED_VALUES:
+            self.logDeniedDialogValueCombobox.append_text(value)
+
         self.zoneEditBox = builder.get_object("zoneEditBox")
         self.zoneEditBox.hide()
         self.zoneEditLoadDefaultsButton = \
@@ -1028,6 +1037,8 @@ class FirewallConfig(object):
         self.fw.connect("lockdown-enabled", self.lockdown_enabled_cb)
         self.fw.connect("lockdown-disabled", self.lockdown_disabled_cb)
 
+        self.fw.connect("log-denied-changed", self.log_denied_changed_cb)
+
         self.fw.connect("service-added", self.service_added_cb)
         self.fw.connect("service-removed", self.service_removed_cb)
         self.fw.connect("port-added", self.port_added_cb)
@@ -1355,6 +1366,8 @@ class FirewallConfig(object):
             self.statusLabel.set_text(self.connected)
             self.default_zone = self.fw.getDefaultZone()
             self.defaultZoneLabel.set_text(self.default_zone)
+            self.log_denied = self.fw.getLogDenied()
+            self.logDeniedLabel.set_text(self.log_denied)
             if self.fw.queryLockdown():
                 self.lockdownLabel.set_text(self.enabled)
             else:
@@ -1410,6 +1423,8 @@ class FirewallConfig(object):
     def reload_cb(self):
         self.default_zone = self.fw.getDefaultZone()
         self.defaultZoneLabel.set_text(self.default_zone)
+        self.log_denied = self.fw.get_log_denied
+        self.logDeniedLabel.set_text(self.log_denied)
         self.load_ipsets()
         self.load_zones()
         self.load_services()
@@ -2122,6 +2137,29 @@ class FirewallConfig(object):
                 self.fw.setDefaultZone(new_default_zone)
                 self.default_zone = new_default_zone
                 self.changes_applied()
+
+    def on_logDeniedDialogValueCombobox_changed(self, combo):
+        self.logDeniedDialogOkButton.set_sensitive(
+            combo.get_active_text() != self.log_denied)
+
+    def onChangeLogDenied(self, *args):
+        combobox_select_text(self.logDeniedDialogValueCombobox,
+                             self.fw.getLogDenied())
+        self.logDeniedDialogOkButton.set_sensitive(False)
+        self.logDeniedDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.logDeniedDialog.set_transient_for(self.mainWindow)
+        self.logDeniedDialog.show_all()
+        result = self.logDeniedDialog.run()
+        self.logDeniedDialog.hide()
+        if result == 1:
+            value = self.logDeniedDialogValueCombobox.get_active_text()
+            if value != self.log_denied:
+                self.fw.setLogDenied(value)
+                self.changes_applied()
+
+    def log_denied_changed_cb(self, value):
+        self.logDeniedLabel.set_text(value)
+        combobox_select_text(self.logDeniedDialogValueCombobox, value)
 
     def onRuntimeToPermanent(self, *args):
         self.fw.runtimeToPermanent()

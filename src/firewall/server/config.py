@@ -355,7 +355,8 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                     "Lockdown", "IPv6_rpfilter", "IndividualCalls" ]:
+                     "Lockdown", "IPv6_rpfilter", "IndividualCalls",
+                     "LogDenied" ]:
             value = self.config.get_firewalld_conf().get(prop)
             if value is not None:
                 if prop == "MinimalMark":
@@ -374,6 +375,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                     return "yes" if FALLBACK_IPV6_RPFILTER else "no"
                 elif prop == "IndividualCalls":
                     return "yes" if FALLBACK_INDIVIDUAL_CALLS else "no"
+                elif prop == "LogDenied":
+                    return FALLBACK_LOG_DENIED
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -414,6 +417,7 @@ class FirewallDConfig(slip.dbus.service.Object):
             'Lockdown': self._get_property("Lockdown"),
             'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
             'IndividualCalls': self._get_property("IndividualCalls"),
+            'LogDenied': self._get_property("LogDenied"),
         }
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)

@@ -1675,6 +1675,17 @@
                       </object>
                     </child>
                     <child>
+                      <object class="GtkImageMenuItem" id="menuitem11">
+                        <property name="label" translatable="yes">Change Log Denied</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="tooltip_text" translatable="yes">Change LogDenied value.</property>
+                        <property name="image">image15</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="onChangeLogDenied" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -5849,7 +5860,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="label130">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Default Zone:</property>
@@ -5879,10 +5890,10 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label17">
+              <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Lockdown:</property>
+                <property name="label" translatable="yes" context="Meaning: Log of denied packets. But this is too long. LogDenied is also the parameter used in firewalld.conf.">Log Denied:</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
@@ -5894,7 +5905,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="lockdownLabel">
+              <object class="GtkLabel" id="logDeniedLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="has_tooltip">True</property>
@@ -5909,6 +5920,36 @@
               </packing>
             </child>
             <child>
+              <object class="GtkLabel" id="label17">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Lockdown:</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lockdownLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
+                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
+                <property name="label">label</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">7</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkLabel" id="label19">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
@@ -5920,7 +5961,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">6</property>
+                <property name="position">8</property>
               </packing>
             </child>
             <child>
@@ -5935,7 +5976,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">7</property>
+                <property name="position">9</property>
               </packing>
             </child>
           </object>
@@ -6682,6 +6723,126 @@
     <action-widgets>
       <action-widget response="-1">ipsetEntryDialogCancelButton</action-widget>
       <action-widget response="1">ipsetEntryDialogOkButton</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkDialog" id="logDeniedDialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Log Denied</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="dialog-vbox44">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area44">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="logDeniedDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="logDeniedDialogOkButton">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="vbox31">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">5</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label131">
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="valign">start</property>
+                <property name="label" translatable="yes">Please select the log denied value:</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox" id="box26">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkComboBoxText" id="logDeniedDialogValueCombobox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">True</property>
+                    <property name="border_width">6</property>
+                    <signal name="changed" handler="on_logDeniedDialogValueCombobox_changed" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-1">logDeniedDialogCancelButton</action-widget>
+      <action-widget response="1">logDeniedDialogOkButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkTextBuffer" id="logTextBuffer"/>
@@ -9233,6 +9394,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
+                <property name="border_width">6</property>
                 <property name="spacing">3</property>
                 <child>
                   <object class="GtkComboBoxText" id="sourceDialogSourceTypeCombobox">

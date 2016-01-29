@@ -223,6 +223,14 @@ class FirewallZone(object):
                chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                 rules.append((ipv, [ _zone, 4, "-t", table, "-j", target ]))
 
+            if self._fw._log_denied != "off":
+                if table == "filter" and \
+                   chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                    if target in [ "REJECT", "%%REJECT%%" ]:
+                        rules.append((ipv, [ _zone, 4, "-t", table, "-j", "LOG", "--log-prefix", "\"%s_REJECT: \"" % _zone ]))
+                    if target == "DROP":
+                        rules.append((ipv, [ _zone, 4, "-t", table, "-j", "LOG", "--log-prefix", "\"%s_DROP: \"" % _zone ]))
+
         if create:
             # handle chains first
             ret = self._fw.handle_chains(chains, create)

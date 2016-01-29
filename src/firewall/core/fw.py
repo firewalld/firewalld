@@ -75,12 +75,12 @@ class Firewall(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
              self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
-             self.ipset_enabled, self._individual_calls)
+             self.ipset_enabled, self._individual_calls, self._log_denied)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -93,6 +93,7 @@ class Firewall(object):
         self.cleanup_on_exit = FALLBACK_CLEANUP_ON_EXIT
         self.ipv6_rpfilter_enabled = FALLBACK_IPV6_RPFILTER
         self._individual_calls = FALLBACK_INDIVIDUAL_CALLS
+        self._log_denied = FALLBACK_LOG_DENIED
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -171,6 +172,14 @@ class Firewall(object):
                 if value is not None and value.lower() in [ "yes", "true" ]:
                     log.debug1("IndividualCalls is enabled")
                     self._individual_calls = True
+
+            if self._firewalld_conf.get("LogDenied"):
+                value = self._firewalld_conf.get("LogDenied")
+                if value is None or value.lower() == "no":
+                    self._log_denied = "off"
+                else:
+                    self._log_denied = value.lower()
+                    log.debug1("LogDenied is set to '%s'", self._log_denied)
 
             if not self._individual_calls and \
                not self._ebtables.restore_noflush_option:
@@ -555,10 +564,18 @@ class Firewall(object):
 
     # apply default rules
     def __apply_default_rules(self, ipv):
+        default_rules = { }
+
         if ipv in [ "ipv4", "ipv6" ]:
-            default_rules = ipXtables.DEFAULT_RULES
+            x = ipXtables
         else:
-            default_rules = ebtables.DEFAULT_RULES
+            x = ebtables
+        for table in x.DEFAULT_RULES:
+            default_rules[table] = x.DEFAULT_RULES[table][:]
+
+        if self._log_denied != "off":
+            for table in x.LOG_RULES:
+                default_rules.setdefault(table, []).extend(x.LOG_RULES[table])
 
         rules = { }
         for table in default_rules:
@@ -594,6 +611,11 @@ class Firewall(object):
                 ("ipv6", [ "PREROUTING", 2, "-t", "raw",
                            "-m", "rpfilter", "--invert", "-j", "DROP" ]),
             ]
+            if self._log_denied != "off":
+                rules.append(("ipv6", [ "PREROUTING", 2, "-t", "raw",
+                                        "-m", "rpfilter", "--invert",
+                                        "-j", "LOG",
+                                        "--log-prefix", "rpfilter_DROP: " ]))
             # handle rules
             ret = self.handle_rules(rules, True, insert=True)
             if ret:
@@ -652,6 +674,23 @@ class Firewall(object):
                 raise FirewallError(INVALID_IPV,
                                     "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
+        # replace %%LOGTYPE%%
+        try:
+            i = rule.index("%%LOGTYPE%%")
+        except:
+            pass
+        else:
+            if self._log_denied == "off":
+                return ""
+            if ipv not in [ "ipv4", "ipv6" ]:
+                raise FirewallError(INVALID_IPV,
+                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+            if self._log_denied in [ "unicast", "broadcast", "multicast" ]:
+                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
+                                self._log_denied ]
+            else:
+                rule.pop(i)
+
         # remove leading and trailing '"' for use with execve
         i = 0
         while i < len(rule):
@@ -706,6 +745,24 @@ class Firewall(object):
                 else:
                     raise FirewallError(INVALID_IPV,
                                         "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+
+            # replace %%LOGTYPE%%
+            try:
+                i = rule.index("%%LOGTYPE%%")
+            except:
+                pass
+            else:
+                if self._log_denied == "off":
+                    continue
+                if ipv not in [ "ipv4", "ipv6" ]:
+                    raise FirewallError(INVALID_IPV,
+                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                if self._log_denied in [ "unicast", "broadcast",
+                                         "multicast" ]:
+                    rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
+                                    self._log_denied ]
+                else:
+                    rule.pop(i)
 
             _rules.append(rule)
 
@@ -894,6 +951,26 @@ class Firewall(object):
 
     def query_panic_mode(self):
         return self._panic
+
+    # LOG DENIED
+
+    def get_log_denied(self):
+        return self._log_denied
+
+    def set_log_denied(self, value):
+        if value not in LOG_DENIED_VALUES:
+            raise FirewallError(INVALID_VALUE, "'%s', choose from '%s'" % \
+                                (value, "','".join(LOG_DENIED_VALUES)))
+
+        if value != self.get_log_denied():
+            self._log_denied = value
+            self._firewalld_conf.set("LogDenied", value)
+            self._firewalld_conf.write()
+
+            # now reload the firewall
+            self.reload()
+        else:
+            raise FirewallError(ALREADY_SET, value)
 
     # DEFAULT ZONE
 

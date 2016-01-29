@@ -50,6 +50,7 @@ ICMP = {
 }
 
 DEFAULT_RULES = { }
+LOG_RULES = { }
 OUR_CHAINS = {} # chains created by firewalld
 
 DEFAULT_RULES["security"] = [ ]
@@ -129,6 +130,15 @@ DEFAULT_RULES["filter"] = [
 
     "-I OUTPUT 1 -j OUTPUT_direct",
 ]
+
+LOG_RULES["filter"] = [
+    "-I INPUT 7 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
+    "-I INPUT 9 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
+
+    "-I FORWARD 9 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
+    "-I FORWARD 11 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
+]
+
 OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
                             "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
                             "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",

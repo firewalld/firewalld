@@ -2009,6 +2009,7 @@ class FirewallClient(object):
             "connection-established": "connection-established",
             "connection-lost": "connection-lost",
             # firewalld callbacks
+            "log-denied-changed": "LogDeniedChanged",
             "default-zone-changed": "DefaultZoneChanged",
             "panic-mode-enabled": "PanicModeEnabled",
             "panic-mode-disabled": "PanicModeDisabled",
@@ -2338,6 +2339,18 @@ class FirewallClient(object):
     def getIcmpTypeSettings(self, icmptype):
         return FirewallClientIcmpTypeSettings(list(dbus_to_python(\
                     self.fw.getIcmpTypeSettings(icmptype))))
+
+    # log denied
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getLogDenied(self):
+        return dbus_to_python(self.fw.getLogDenied())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setLogDenied(self, value):
+        self.fw.setLogDenied(value)
 
     # default zone
 

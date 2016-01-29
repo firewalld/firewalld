@@ -92,6 +92,8 @@ COMMANDS = {
     "ipset":        "@IPSET@",
 }
 
+LOG_DENIED_VALUES = [ "all", "unicast", "broadcast", "multicast", "off" ]
+
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"
 FALLBACK_MINIMAL_MARK = 100
@@ -99,3 +101,4 @@ FALLBACK_CLEANUP_ON_EXIT = True
 FALLBACK_LOCKDOWN = False
 FALLBACK_IPV6_RPFILTER = True
 FALLBACK_INDIVIDUAL_CALLS = False
+FALLBACK_LOG_DENIED = "off"

@@ -149,6 +149,27 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--get-log-denied</option></term>
+	  <listitem>
+	    <para>
+	      Print the log denied setting.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--set-log-denied</option>=<replaceable>value</replaceable></term>
+	  <listitem>
+	    <para>
+	      Add logging rules right before reject and drop rules in the INPUT, FORWARD and OUTPUT chains for the default rules and also final reject and drop rules in zones for the configured link-layer packet type. The possible values are: <replaceable>all</replaceable>, <replaceable>unicast</replaceable>, <replaceable>broadcast</replaceable>, <replaceable>multicast</replaceable> and <replaceable>off</replaceable>. The default setting is <replaceable>off</replaceable>, which disables the logging.
+	    </para>
+	    <para>
+	      This is a runtime and permanent change and will also reload the firewall to be able to add the logging rules.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 

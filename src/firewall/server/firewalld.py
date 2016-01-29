@@ -782,6 +782,34 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    # LOG DENIED
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='s')
+    @dbus_handle_exceptions
+    def getLogDenied(self, sender=None):
+        # returns the log denied value
+        log.debug1("getLogDenied()")
+        return self.fw.get_log_denied()
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @dbus_service_method(DBUS_INTERFACE, in_signature='s', out_signature='')
+    @dbus_handle_exceptions
+    def setLogDenied(self, value, sender=None):
+        # set the log denied value
+        value = dbus_to_python(value, str)
+        log.debug1("setLogDenied('%s')" % value)
+        self.accessCheck(sender)
+        self.fw.set_log_denied(value)
+        self.LogDeniedChanged(value)
+
+    @dbus.service.signal(DBUS_INTERFACE, signature='s')
+    @dbus_handle_exceptions
+    def LogDeniedChanged(self, value):
+        log.debug1("LogDeniedChanged('%s')" % (value))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
     # DEFAULT ZONE
 
     @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
