@@ -26,7 +26,7 @@ import string
 import sys
 import tempfile
 from firewall.core.logger import log
-from firewall.config import FIREWALLD_TEMPDIR
+from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 
 PY2 = sys.version < '3'
 
@@ -240,11 +240,11 @@ def firewalld_is_active():
     @return True if there is a firewalld pid file and the pid is used by firewalld
     """
 
-    if not os.path.exists("/var/run/firewalld.pid"):
+    if not os.path.exists(FIREWALLD_PIDFILE):
         return False
 
     try:
-        with open("/var/run/firewalld.pid", "r") as fd:
+        with open(FIREWALLD_PIDFILE, "r") as fd:
             pid = fd.readline()
     except:
         return False
