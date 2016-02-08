@@ -265,6 +265,9 @@ def firewalld_is_active():
 
 def tempFile():
     try:
+        if not os.path.exists(FIREWALLD_TEMPDIR):
+            os.mkdir(FIREWALLD_TEMPDIR, 0o750)
+
         return tempfile.NamedTemporaryFile(mode='wt', prefix="temp.",
                                            dir=FIREWALLD_TEMPDIR, delete=False)
     except Exception as msg:
