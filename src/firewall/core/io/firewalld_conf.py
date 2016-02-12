@@ -78,7 +78,7 @@ class firewalld_conf(object):
             self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
             self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
-            self.set("IndividualCalls", FALLBACK_INDIVIDUAL_CALLS)
+            self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
             self.set("LogDenied", FALLBACK_LOG_DENIED)
             raise
 
@@ -145,10 +145,12 @@ class firewalld_conf(object):
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
 
         # check individual calls
-        if not self.get("IndividualCalls"):
-            log.error("IndividualCalls is not set, using default value '%s'",
+        value = self.get("IndividualCalls")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            log.error("IndividualCalls '%s' is not valid, using default "
+                      "value %s", value if value else '',
                       FALLBACK_INDIVIDUAL_CALLS)
-            self.set("IndividualCalls", str(FALLBACK_INDIVIDUAL_CALLS))
+            self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
 
         # check log denied
         value = self.get("LogDenied")
