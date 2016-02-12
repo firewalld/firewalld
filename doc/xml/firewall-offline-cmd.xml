@@ -267,6 +267,33 @@
 	  </listitem>
 	</varlistentry>
 
+        <varlistentry>
+          <term><option>--save-default-zone</option></term>
+          <listitem>
+            <para>
+              Save current default zone name for future restore
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--get-saved-zone</option></term>
+          <listitem>
+            <para>
+              Print current saved zone
+            </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--restore-saved-zone</option></term>
+          <listitem>
+            <para>
+              Set saved zone as default
+            </para>
+          </listitem>
+        </varlistentry>
+
 	<varlistentry>
 	  <term><option>--set-default-zone</option>=<replaceable>zone</replaceable></term>
 	  <listitem>

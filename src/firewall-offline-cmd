@@ -102,6 +102,10 @@ Zone Options
                        Set the zone target
   --info-zone=<zone>   Print information about a zone
 
+  --save-default-zone  Save current default zone name for future restore
+  --get-saved-zone     Print current saved zone
+  --restore-saved-zone Set saved zone as default
+
 IPSet Options
   --new-ipset=<ipset> --type=<ipset type> [--option=<key>[=<value>]]..
                        Add a new ipset
@@ -550,6 +554,10 @@ parser_group_standalone.add_argument("--info-service", metavar="<service>")
 parser_group_standalone.add_argument("--info-icmptype", metavar="<icmptype>")
 parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
 
+parser_group_standalone.add_argument("--save-default-zone", action="store_true")
+parser_group_standalone.add_argument("--get-saved-zone", action="store_true")
+parser_group_standalone.add_argument("--restore-saved-zone", action="store_true")
+
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
 parser_group_config.add_argument("--delete-icmptype", metavar="<icmptype>")
@@ -737,7 +745,8 @@ options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
 options_standalone = a.help or a.version or \
     a.policy_server or a.policy_desktop or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
-    a.get_default_zone or a.set_default_zone
+    a.get_default_zone or a.set_default_zone or \
+    a.save_default_zone or a.get_saved_zone or a.restore_saved_zone
 
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
@@ -824,6 +833,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.list_forward_ports or a.list_rich_rules or a.list_interfaces or \
  a.list_sources or \
  a.get_default_zone or a.get_zone_of_interface or \
+ a.save_default_zone or a.get_saved_zone or a.restore_saved_zone or \
  a.get_zone_of_source or a.get_zones or a.get_services or a.get_icmptypes or \
  a.get_target or a.set_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
@@ -966,7 +976,29 @@ try:
         __print_and_exit(fw.get_default_zone())
     elif a.set_default_zone:
         fw.set_default_zone(a.set_default_zone)
+    elif a.save_default_zone:
+        default_zone = fw.get_default_zone()
+        with open(FIREWALLD_SAVED_ZONE, 'w') as f:
+            f.write(default_zone)
+            __print_and_exit("Current zone %s saved in %s" % (default_zone,
+                                                              FIREWALLD_SAVED_ZONE))
+    elif a.get_saved_zone:
+        if os.path.exists(FIREWALLD_SAVED_ZONE):
+            with open(FIREWALLD_SAVED_ZONE, 'r') as f:
+                __print_and_exit("%s" % f.read())
+        __print_and_exit("No zone saved previously")
+    elif a.restore_saved_zone:
+        saved_zone = None
+        if os.path.exists(FIREWALLD_SAVED_ZONE):
+            with open(FIREWALLD_SAVED_ZONE, 'r') as f:
+                saved_zone = f.read().strip()
 
+            if saved_zone is not None:
+                fw.set_default_zone(saved_zone)
+                os.unlink(FIREWALLD_SAVED_ZONE)
+                __print_and_exit("Default zone now is: %s" % saved_zone)
+
+        __print_and_exit("No zone saved previously")
     # lockdown
     elif a.lockdown_on:
         fw.enable_lockdown()
