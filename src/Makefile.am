@@ -61,7 +61,7 @@ EXTRA_DIST = \
 
 CLEANFILES = *~ *\# .\#* *.py?
 
-install-data-local:
+install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS
 	@echo "Fixing python shebang"
 	@list='$(dist_bin_SCRIPTS)'; \
 	for p in $$list; do \
