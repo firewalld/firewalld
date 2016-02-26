@@ -217,7 +217,7 @@ class Zone(IO_Object):
             raise FirewallError(INVALID_NAME, "'%s' can't end with '/'" % name)
         elif name.count('/') > 1:
             raise FirewallError(INVALID_NAME, "more than one '/' in '%s'" % name)
-        elif len(name) > max_zone_name_len():
+        elif len(name[name.find('/')]) > max_zone_name_len():
             raise FirewallError(INVALID_NAME,
                                 "'%s' has %d chars, max is %d" % (name, len(name), max_zone_name_len()))
 
