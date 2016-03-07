@@ -73,6 +73,8 @@ FIREWALLD_IPSETS = USR_LIB_FIREWALLD + '/ipsets'
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
+FIREWALLD_PIDFILE = "/var/run/firewalld.pid"
+
 FIREWALLD_TEMPDIR = '/run/firewalld'
 
 FIREWALLD_DIRECT = ETC_FIREWALLD + '/direct.xml'
