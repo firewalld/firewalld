@@ -25,7 +25,7 @@ from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.errors import *
-from firewall.core import ipset
+from firewall.core.ipset import remove_default_create_options
 from firewall.core.io.ipset import IPSet
 
 class FirewallIPSet(object):
@@ -36,9 +36,21 @@ class FirewallIPSet(object):
     def __repr__(self):
         return '%s(%r)' % (self.__class__, self._ipsets)
 
-    def cleanup(self):
+    def cleanup(self, reload=False):
+        active = { }
+        if reload:
+            active = self._fw._ipset.get_active_terse()
+
         for name in self.get_ipsets():
-            self.remove_ipset(name)
+            keep = False
+            obj = self._ipsets[name]
+            if reload and "timeout" in obj.options:
+                if name in active and obj.type == active[name][0] and \
+                   remove_default_create_options(obj.options) == \
+                   active[name][1]:
+                    # keep ipset for reload
+                    keep = True
+            self.remove_ipset(name, keep)
 
         self._ipsets.clear()
 
@@ -66,14 +78,16 @@ class FirewallIPSet(object):
     def add_ipset(self, obj):
         self._ipsets[obj.name] = obj
 
-    def remove_ipset(self, name):
+    def remove_ipset(self, name, keep=False):
         obj = self._ipsets[name]
-        if obj.applied:
+        if obj.applied and not keep:
             try:
                 self._fw._ipset.destroy(name)
             except Exception as msg:
                 log.error("Failed to destroy ipset '%s'" % name)
                 log.error(msg)
+        else:
+            log.debug1("Keeping ipset '%s' because of timeout option", name)
         del self._ipsets[name]
 
     def apply_ipsets(self, individual=False):

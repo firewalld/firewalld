@@ -407,11 +407,11 @@ class Firewall(object):
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
 
-    def cleanup(self):
+    def cleanup(self, reload=False):
         self.icmptype.cleanup()
         self.service.cleanup()
         self.zone.cleanup()
-        self.ipset.cleanup()
+        self.ipset.cleanup(reload=reload)
         self.config.cleanup()
         self.direct.cleanup()
         self.policies.cleanup()
@@ -870,7 +870,7 @@ class Firewall(object):
         self._flush()
         if stop:
             self._modules.unload_firewall_modules()
-        self.cleanup()
+        self.cleanup(reload=True)
 
         # start
         self._start()
