@@ -147,6 +147,44 @@ class ipset:
             args.extend(options)
         return self.__run(args).split("\n")
 
+    def get_active_terse(self):
+        """ Get active ipsets (only headers) """
+        lines = self.list(options=["-terse"])
+
+        ret = { }
+        _name = _type = None
+        _options = { }
+        for line in lines:
+            if len(line) < 1:
+                continue
+            pair = [ x.strip() for x in line.split(":", 1) ]
+            if len(pair) != 2:
+                continue
+            elif pair[0] == "Name":
+                _name = pair[1]
+            elif pair[0] == "Type":
+                _type = pair[1]
+            elif pair[0] == "Header":
+                splits = pair[1].split()
+                i = 0
+                while i < len(splits):
+                    x = splits[i]
+                    if x in [ "family", "hashsize", "maxelem", "timeout" ]:
+                        if len(splits) > i:
+                            i += 1
+                            _options[x] = splits[i]
+                        else:
+                            log.error("Malformed ipset list -terse output: %s",
+                                      line)
+                            return { }
+                    i += 1
+                if _name and _type:
+                    ret[_name] = (_type,
+                                  remove_default_create_options(_options))
+                _name = _type = None
+                _options.clear()
+        return ret
+
     def save(self, set_name=None):
         args = [ "save" ]
         if set_name:
