@@ -139,11 +139,13 @@ class ipset:
             args.append("%s" % " ".join(options))
         return self.__run(args)
 
-    def list(self, set_name=None):
+    def list(self, set_name=None, options=None):
         args = [ "list" ]
         if set_name:
             args.append(set_name)
-        return self.__run(args).split()
+        if options:
+            args.extend(options)
+        return self.__run(args).split("\n")
 
     def save(self, set_name=None):
         args = [ "save" ]
