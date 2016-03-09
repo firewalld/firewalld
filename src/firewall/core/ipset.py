@@ -56,6 +56,11 @@ IPSET_CREATE_OPTIONS = {
 #    "counters": None,
 #    "comment": None,
 }
+IPSET_DEFAULT_CREATE_OPTIONS = {
+    "family": "inet",
+    "hashsize": "1024",
+    "maxelem": "65536",
+}
 
 class ipset:
     def __init__(self):
@@ -221,3 +226,12 @@ def check_ipset_name(name):
     if len(name) > IPSET_MAXNAMELEN:
         return False
     return True
+
+def remove_default_create_options(options):
+    """ Return only non default create options """
+    _options = options.copy()
+    for x in IPSET_DEFAULT_CREATE_OPTIONS:
+        if x in _options and \
+           IPSET_DEFAULT_CREATE_OPTIONS[x] == _options[x]:
+            del _options[x]
+    return _options
