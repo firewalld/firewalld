@@ -979,6 +979,22 @@
          </listitem>
        </varlistentry>
        <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
          <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
          <listitem>
            <para>

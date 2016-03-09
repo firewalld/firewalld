@@ -141,6 +141,10 @@ Service Options
                        Delete an existing service
   --info-service=<service>
                        Print information about a service
+  --service=<service> --set-description=<description>
+                       Set new description to service
+  --service=<service> --get-description
+                       Print description for service
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -680,6 +684,9 @@ parser_service.add_argument("--get-modules", action="store_true")
 parser_service.add_argument("--set-destination", metavar="<destination>")
 parser_service.add_argument("--get-destination", action="store_true")
 
+parser_service.add_argument("--set-description", metavar="<description>")
+parser_service.add_argument("--get-description", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -751,6 +758,8 @@ options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.service or a.remove_service or a.port or \
                  a.trust or a.masq or a.forward_port or a.block_icmp
 
+options_desc_xml_file = a.set_description or a.get_description
+
 options_standalone = a.help or a.version or \
     a.policy_server or a.policy_desktop or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
@@ -814,7 +823,8 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.add_module or a.remove_module or a.query_module or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
-                  a.query_destination or a.get_destinations
+                  a.query_destination or a.get_destinations or \
+                  options_desc_xml_file
 
 options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
@@ -845,7 +855,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_target or a.set_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
- a.get_destinations
+ a.get_destinations or a.get_description
 
 ###############################################################################
 
@@ -1178,6 +1188,13 @@ try:
         elif a.get_destinations:
             l = settings.getDestinations()
             __print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            fw.config.set_service_config(service, settings.settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
 
         else:
             __fail(parser.format_usage() + "Unknown option")

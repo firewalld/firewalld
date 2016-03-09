@@ -145,6 +145,10 @@ Service Options
                        Print information about a service
   --path-service=<service>
                        Print file path of a service [P only]
+  --service=<service> --set-description=<description>
+                       Set new description to service [P only]
+  --service=<service> --get-description
+                       Print description for service [P only]
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service [P only]
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -654,6 +658,9 @@ parser_service.add_argument("--get-modules", action="store_true")
 parser_service.add_argument("--set-destination", metavar="<destination>")
 parser_service.add_argument("--get-destination", action="store_true")
 
+parser_service.add_argument("--set-description", metavar="<description>")
+parser_service.add_argument("--get-description", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -723,6 +730,8 @@ options_standalone = a.help or a.version or \
     a.get_default_zone or a.set_default_zone or \
     a.get_active_zones or a.get_log_denied or a.set_log_denied
 
+options_desc_xml_file = a.set_description or a.get_description
+
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
     a.remove_lockdown_whitelist_command or \
@@ -780,7 +789,8 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.add_module or a.remove_module or a.query_module or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
-                  a.query_destination or a.get_destinations
+                  a.query_destination or a.get_destinations or \
+                  options_desc_xml_file
 
 options_permanent = a.permanent or options_config or \
                     a.zone or options_zone_ops or \
@@ -817,7 +827,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_services or a.get_icmptypes or a.get_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
- a.get_destinations
+ a.get_destinations or a.get_description
 
 # Check various impossible combinations of options
 
@@ -1161,6 +1171,13 @@ if a.permanent:
         elif a.get_destinations:
             l = settings.getDestinations()
             __print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            service.update(settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
