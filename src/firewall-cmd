@@ -157,6 +157,10 @@ Service Options
                        Set new description to service [P only]
   --service=<service> --get-description
                        Print description for service [P only]
+  --service=<service> --set-short=<description>
+                       Set new short description to service [P only]
+  --service=<service> --get-short
+                       Print short description for service [P only]
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service [P only]
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -672,6 +676,9 @@ parser_service.add_argument("--get-destination", action="store_true")
 parser_service.add_argument("--set-description", metavar="<description>")
 parser_service.add_argument("--get-description", action="store_true")
 
+parser_service.add_argument("--set-short", metavar="<description>")
+parser_service.add_argument("--get-short", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -741,7 +748,8 @@ options_standalone = a.help or a.version or \
     a.get_default_zone or a.set_default_zone or \
     a.get_active_zones or a.get_log_denied or a.set_log_denied
 
-options_desc_xml_file = a.set_description or a.get_description
+options_desc_xml_file = a.set_description or a.get_description or \
+                        a.set_short or a.get_short
 
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
@@ -1199,6 +1207,13 @@ if a.permanent:
 
         elif a.get_description:
             __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            service.update(settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")

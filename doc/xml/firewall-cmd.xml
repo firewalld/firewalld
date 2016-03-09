@@ -1027,6 +1027,22 @@
          </listitem>
        </varlistentry>
        <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
          <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
          <listitem>
            <para>

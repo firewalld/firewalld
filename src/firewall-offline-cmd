@@ -156,6 +156,10 @@ Service Options
                        Set new description to service
   --service=<service> --get-description
                        Print description for service
+  --service=<service> --set-short=<description>
+                       Set new short description to service
+  --service=<service> --get-short
+                       Print short description for service
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -698,6 +702,9 @@ parser_service.add_argument("--get-destination", action="store_true")
 parser_service.add_argument("--set-description", metavar="<description>")
 parser_service.add_argument("--get-description", action="store_true")
 
+parser_service.add_argument("--set-short", metavar="<description>")
+parser_service.add_argument("--get-short", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -769,7 +776,8 @@ options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.service or a.remove_service or a.port or \
                  a.trust or a.masq or a.forward_port or a.block_icmp
 
-options_desc_xml_file = a.set_description or a.get_description
+options_desc_xml_file = a.set_description or a.get_description or \
+                        a.set_short or a.get_short
 
 options_standalone = a.help or a.version or \
     a.policy_server or a.policy_desktop or \
@@ -1214,6 +1222,13 @@ try:
 
         elif a.get_description:
             __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            fw.config.set_service_config(service, settings.settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
