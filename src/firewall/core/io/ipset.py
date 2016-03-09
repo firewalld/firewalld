@@ -220,9 +220,10 @@ def ipset_reader(filename, path):
         parser.parse(f)
     del handler
     del parser
-    if "timeout" in ipset.options:
+    if "timeout" in ipset.options and len(ipset.entries) > 0:
         # no entries visible for ipsets with timeout
-        log.warning("timeout option is set, entries are removed")
+        log.warning("ipset '%s': timeout option is set, entries are ignored",
+                    ipset.name)
         del ipset.entries[:]
     i = 0
     while i < len(ipset.entries):
