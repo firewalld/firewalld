@@ -443,6 +443,7 @@ def __print_service_info(service, settings):
     ports = settings.getPorts()
     protocols = settings.getProtocols()
     modules = settings.getModules()
+    description = settings.getDescription()
     destinations = settings.getDestinations()
     __print(service)
     __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
@@ -450,6 +451,7 @@ def __print_service_info(service, settings):
     __print("  modules: " + " ".join(modules))
     __print("  destination: " + " ".join(["%s:%s" % (k,v)
                                           for k,v in destinations.items()]))
+    __print("  description: " + description)
 
 def __print_icmptype_info(icmptype, settings):
     destinations = settings.getDestinations()
