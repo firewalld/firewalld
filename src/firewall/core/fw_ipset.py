@@ -37,16 +37,16 @@ class FirewallIPSet(object):
         return '%s(%r)' % (self.__class__, self._ipsets)
 
     def cleanup(self):
-        for ipset in self.get_ipsets():
-            self.remove_ipset(ipset)
+        for name in self.get_ipsets():
+            self.remove_ipset(name)
 
         self._ipsets.clear()
 
     # ipsets
 
-    def check_ipset(self, ipset):
-        if ipset not in self.get_ipsets():
-            raise FirewallError(INVALID_IPSET, ipset)
+    def check_ipset(self, name):
+        if name not in self.get_ipsets():
+            raise FirewallError(INVALID_IPSET, name)
 
     def get_ipsets(self):
         return sorted(self._ipsets.keys())
@@ -77,8 +77,8 @@ class FirewallIPSet(object):
         del self._ipsets[name]
 
     def apply_ipsets(self, individual=False):
-        for ipset in self.get_ipsets():
-            obj = self._ipsets[ipset]
+        for name in self.get_ipsets():
+            obj = self._ipsets[name]
             obj.applied = False
 
             if individual:
@@ -112,13 +112,13 @@ class FirewallIPSet(object):
 
     # TYPE
 
-    def get_type(self, ipset):
-        return self.get_ipset(ipset).type
+    def get_type(self, name):
+        return self.get_ipset(name).type
 
     # OPTIONS
 
-    def get_family(self, ipset):
-        obj = self.get_ipset(ipset)
+    def get_family(self, name):
+        obj = self.get_ipset(name)
         if "family" in obj.options:
             if obj.options["family"] == "inet6":
                 return "ipv6"
@@ -129,19 +129,19 @@ class FirewallIPSet(object):
     def __entry_id(self, entry):
         return entry
 
-    def __entry(self, enable, ipset, entry):
+    def __entry(self, enable, name, entry):
         pass
 
-    def add_entry(self, ipset, entry, sender=None):
-        obj = self.get_ipset(ipset)
+    def add_entry(self, name, entry, sender=None):
+        obj = self.get_ipset(name)
         if "timeout" in obj.options:
             # no entries visible for ipsets with timeout
-            raise FirewallError(IPSET_WITH_TIMEOUT, ipset)
+            raise FirewallError(IPSET_WITH_TIMEOUT, name)
 
         IPSet.check_entry(entry, obj.options, obj.type)
         if entry in obj.entries:
             raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already is in '%s'" % (entry, ipset))
+                                "'%s' already is in '%s'" % (entry, name))
 
         try:
             self._fw._ipset.add(obj.name, entry)
@@ -154,16 +154,16 @@ class FirewallIPSet(object):
                 # no entries visible for ipsets with timeout
                 obj.entries.append(entry)
 
-    def remove_entry(self, ipset, entry, sender=None):
-        obj = self.get_ipset(ipset)
+    def remove_entry(self, name, entry, sender=None):
+        obj = self.get_ipset(name)
         if "timeout" in obj.options:
             # no entries visible for ipsets with timeout
-            raise FirewallError(IPSET_WITH_TIMEOUT, ipset)
+            raise FirewallError(IPSET_WITH_TIMEOUT, name)
 
         # no entry check for removal
         if entry not in obj.entries:
             raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (entry, ipset))
+                                "'%s' not in '%s'" % (entry, name))
         try:
             self._fw._ipset.delete(obj.name, entry)
         except Exception as msg:
@@ -175,27 +175,27 @@ class FirewallIPSet(object):
                 # no entries visible for ipsets with timeout
                 obj.entries.remove(entry)
 
-    def query_entry(self, ipset, entry, sender=None):
-        obj = self.get_ipset(ipset)
+    def query_entry(self, name, entry, sender=None):
+        obj = self.get_ipset(name)
         if "timeout" in obj.options:
             # no entries visible for ipsets with timeout
-            raise FirewallError(IPSET_WITH_TIMEOUT, ipset)
+            raise FirewallError(IPSET_WITH_TIMEOUT, name)
 
         return (entry in obj.entries)
 
-    def get_entries(self, ipset, sender=None):
-        obj = self.get_ipset(ipset)
+    def get_entries(self, name, sender=None):
+        obj = self.get_ipset(name)
         if "timeout" in obj.options:
             # no entries visible for ipsets with timeout
-            raise FirewallError(IPSET_WITH_TIMEOUT, ipset)
+            raise FirewallError(IPSET_WITH_TIMEOUT, name)
 
         return obj.entries
 
-    def set_entries(self, ipset, entries, sender=None):
-        obj = self.get_ipset(ipset)
+    def set_entries(self, name, entries, sender=None):
+        obj = self.get_ipset(name)
         if "timeout" in obj.options:
             # no entries visible for ipsets with timeout
-            raise FirewallError(IPSET_WITH_TIMEOUT, ipset)
+            raise FirewallError(IPSET_WITH_TIMEOUT, name)
 
         for entry in entries:
             IPSet.check_entry(entry, obj.options, obj.type)

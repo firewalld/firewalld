@@ -217,7 +217,7 @@ class ipset:
         return self.__run([ "version" ])
 
 
-def check_ipset_name(ipset):
-    if len(ipset) > IPSET_MAXNAMELEN:
+def check_ipset_name(name):
+    if len(name) > IPSET_MAXNAMELEN:
         return False
     return True
