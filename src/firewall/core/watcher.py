@@ -41,6 +41,15 @@ class Watcher(object):
             Gio.FileMonitorFlags.NONE, None)
         self._monitors[filename].connect("changed", self._file_changed_cb)
 
+    def get_watches(self):
+        return self._monitors.keys()
+        
+    def has_watch(self, filename):
+        return filename in self._monitors
+
+    def remove_watch(self, filename):
+        del self._monitors[filename]
+
     def block_source(self, filename):
         if filename not in self._blocked:
             self._blocked.append(filename)
