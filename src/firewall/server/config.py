@@ -22,6 +22,7 @@
 from gi.repository import GObject
 import sys
 sys.modules['gobject'] = GObject
+import os
 
 import dbus
 import dbus.service
@@ -76,6 +77,10 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(ETC_FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(FIREWALLD_ZONES)
         self.watcher.add_watch_dir(ETC_FIREWALLD_ZONES)
+        for filename in sorted(os.listdir(ETC_FIREWALLD_ZONES)):
+            path = "%s/%s" % (ETC_FIREWALLD_ZONES, filename)
+            if os.path.isdir(path):
+                self.watcher.add_watch_dir(path)
         self.watcher.add_watch_file(LOCKDOWN_WHITELIST)
         self.watcher.add_watch_file(FIREWALLD_DIRECT)
         self.watcher.add_watch_file(FIREWALLD_CONF)
@@ -163,15 +168,27 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self._updateService(obj)
 
         elif (name.startswith(FIREWALLD_ZONES) or \
-              name.startswith(ETC_FIREWALLD_ZONES)) and \
-             name.endswith(".xml"):
-            (what, obj) = self.config.update_zone_from_path(name)
-            if what == "new":
-                self._addZone(obj)
-            elif what == "remove":
-                self.removeZone(obj)
-            elif what == "update":
-                self._updateZone(obj)
+              name.startswith(ETC_FIREWALLD_ZONES)):
+            if name.endswith(".xml"):
+                (what, obj) = self.config.update_zone_from_path(name)
+                if what == "new":
+                    self._addZone(obj)
+                elif what == "remove":
+                    self.removeZone(obj)
+                elif what == "update":
+                    self._updateZone(obj)
+            elif name.startswith(ETC_FIREWALLD_ZONES):
+                # possible combined zone base directory
+                x = name.replace(ETC_FIREWALLD_ZONES, "").strip("/")
+                if len(x) < 1 or "/" in x:
+                    # if there is a / in x, then it is a sub sub directory
+                    # ignore it
+                    return
+                if os.path.isdir(name):
+                    if not self.watcher.has_watch(name):
+                        self.watcher.add_watch_dir(name)
+                elif self.watcher.has_watch(name):
+                    self.watcher.remove_watch(name)
 
         elif (name.startswith(FIREWALLD_IPSETS) or \
               name.startswith(ETC_FIREWALLD_IPSETS)) and \

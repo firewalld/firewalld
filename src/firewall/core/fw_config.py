@@ -743,7 +743,7 @@ class FirewallConfig(object):
         if not os.path.exists(name):
             # removed file
 
-            if path == ETC_FIREWALLD_ZONES:
+            if path.startswith(ETC_FIREWALLD_ZONES):
                 # removed custom zone
                 for x in self._zones.keys():
                     obj = self._zones[x]
@@ -779,13 +779,19 @@ class FirewallConfig(object):
 
         obj.fw_config = self
 
+        if path.startswith(ETC_FIREWALLD_ZONES) and \
+           len(path) > len(ETC_FIREWALLD_ZONES):
+            # custom combined zone part
+            obj.name = "%s/%s" % (os.path.basename(path),
+                                  os.path.basename(filename)[0:-4])
+
         # new zone
         if obj.name not in self._builtin_zones and obj.name not in self._zones:
             self.add_zone(obj)
             return ("new", obj)
 
         # updated zone
-        if path == ETC_FIREWALLD_ZONES:
+        if path.startswith(ETC_FIREWALLD_ZONES):
             # custom zone update
             if obj.name in self._zones:
                 self._zones[obj.name] = obj
