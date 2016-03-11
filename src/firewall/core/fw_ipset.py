@@ -43,13 +43,18 @@ class FirewallIPSet(object):
 
         for name in self.get_ipsets():
             keep = False
-            obj = self._ipsets[name]
-            if reload and "timeout" in obj.options:
-                if name in active and obj.type == active[name][0] and \
-                   remove_default_create_options(obj.options) == \
-                   active[name][1]:
-                    # keep ipset for reload
-                    keep = True
+            try:
+                obj = self._fw.config.get_ipset(name)
+            except FirewallError:
+                # no ipset in config interface with this name
+                pass
+            else:
+                if reload and "timeout" in obj.options:
+                    if name in active and obj.type == active[name][0] and \
+                       remove_default_create_options(obj.options) == \
+                       active[name][1]:
+                        # keep ipset for reload
+                        keep = True
             self.remove_ipset(name, keep)
 
         self._ipsets.clear()
