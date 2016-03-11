@@ -604,9 +604,6 @@ def zone_reader(filename, path):
         raise FirewallError(INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     zone.name = filename[:-4]
-    if len(zone.name) > max_zone_name_len():
-        raise FirewallError(INVALID_NAME,
-                            "'%s' has %d chars, max is %d" % (zone.name, len(zone.name), max_zone_name_len()))
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
