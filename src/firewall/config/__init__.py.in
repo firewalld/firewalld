@@ -81,6 +81,8 @@ FIREWALLD_DIRECT = ETC_FIREWALLD + '/direct.xml'
 
 LOCKDOWN_WHITELIST = ETC_FIREWALLD + '/lockdown-whitelist.xml'
 
+FIREWALLD_SAVED_ZONE = FIREWALLD_ZONES + '/zone_saved'
+
 SYSCTL_CONFIG = '/etc/sysctl.conf'
 
 # commands used by backends

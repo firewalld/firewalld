@@ -191,6 +191,18 @@ assert_good             "--list-all"
 assert_good "--permanent --list-all-zones"
 assert_good "--permanent --list-all"
 
+# --save-default-zone, --get-saved-zone, --restore-saved-zone
+zone="dmz"
+assert_good          "--set-default-zone=${zone}"
+assert_good_equals   "--get-default-zone" "${zone}"
+assert_good_notempty "--save-default-zone"
+assert_good_notempty "--get-saved-zone"
+public_zone='public'
+assert_good          "--set-default-zone=${public_zone}"
+assert_good_equals   "--get-default-zone" "${public_zone}"
+assert_good_notempty "--restore-saved-zone"
+assert_good_equals   "--get-default-zone" "${zone}"
+
 iface="dummy0"
 zone="work"
 assert_good          "--zone=${zone} --add-interface=${iface}"
