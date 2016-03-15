@@ -1069,9 +1069,6 @@ class FirewallZone(object):
 
             # FORWARD PORT
             elif type(rule.element) == Rich_ForwardPort:
-                if enable:
-                    enable_ip_forwarding(ipv)
-
                 port = rule.element.port
                 protocol = rule.element.protocol
                 toport = rule.element.to_port
@@ -1079,6 +1076,7 @@ class FirewallZone(object):
                 self.check_forward_port(ipv, port, protocol, toport, toaddr)
 
                 if enable:
+                    enable_ip_forwarding(ipv)
                     mark_id = self._fw.new_mark()
 
                 filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
