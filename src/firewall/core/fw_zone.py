@@ -1102,8 +1102,13 @@ class FirewallZone(object):
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
-                command += [ "-p", protocol, "--dport", port_str,
-                             "-j", "MARK", "--set-mark", mark_str ]
+                command += [ "-p", protocol, "--dport", port_str ]
+
+                # log
+                self.__rule_log(ipv, "mangle", target, rule, command, rules)
+
+                # mark for later dnat using mark
+                command += [ "-j", "MARK", "--set-mark", mark_str ]
                 rules.append((ipv, "mangle", "%s_allow" % target, command))
 
                 # local and remote
