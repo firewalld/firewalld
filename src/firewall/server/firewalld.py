@@ -136,27 +136,30 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop == "version":
-            return VERSION
+            return dbus.String(VERSION)
         elif prop == "interface_version":
-            return "%d.%d" % (DBUS_INTERFACE_VERSION,
-                              DBUS_INTERFACE_REVISION)
+            return dbus.String("%d.%d" % (DBUS_INTERFACE_VERSION,
+                                          DBUS_INTERFACE_REVISION))
         elif prop == "state":
-            return self.fw.get_state()
+            return dbus.String(self.fw.get_state())
 
         elif prop == "IPv4":
-            return self.fw.ip4tables_enabled
+            return dbus.Boolean(self.fw.ip4tables_enabled)
 
         elif prop == "IPv6":
-            return self.fw.ip6tables_enabled
+            return dbus.Boolean(self.fw.ip6tables_enabled)
 
         elif prop == "IPv6_rpfilter":
-            return self.fw.ipv6_rpfilter_enabled
+            return dbus.Boolean(self.fw.ipv6_rpfilter_enabled)
 
         elif prop == "BRIDGE":
-            return self.fw.ebtables_enabled
+            return dbus.Boolean(self.fw.ebtables_enabled)
 
         elif prop == "IPSet":
-            return self.fw.ipset_enabled
+            return dbus.Boolean(self.fw.ipset_enabled)
+
+        elif prop == "IPSetTypes":
+            return dbus.Array(self.fw.ipset_supported_types, "s")
 
         else:
             raise dbus.exceptions.DBusException(
@@ -191,17 +194,12 @@ class FirewallD(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        return {
-            'version': self._get_property("version"),
-            'interface_version': self._get_property("interface_version"),
-            'state': self._get_property("state"),
-            'IPv4': self._get_property("IPv4"),
-            'IPv6': self._get_property("IPv6"),
-            'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
-            'BRIDGE': self._get_property("BRIDGE"),
-            'IPSet': self._get_property("IPSet"),
-        }
-        
+        ret = { }
+        for x in [ "version", "interface_version", "state",
+                   "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
+                   "IPSet", "IPSetTypes" ]:
+            ret[x] = self._get_property(x)
+        return dbus.Dictionary(ret, signature="sv")
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
