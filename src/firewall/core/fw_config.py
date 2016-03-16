@@ -302,9 +302,9 @@ class FirewallConfig(object):
         del self._ipsets[obj.name]
 
     def check_builtin_ipset(self, obj):
-        if obj.builtin:
+        if obj.builtin or not obj.default:
             raise FirewallError(BUILTIN_IPSET,
-                                "'%s' is built-in icmp type" % obj.name)
+                                "'%s' is built-in ipset" % obj.name)
 
     def remove_ipset(self, obj):
         self.check_builtin_ipset(obj)
@@ -470,7 +470,7 @@ class FirewallConfig(object):
         del self._icmptypes[obj.name]
 
     def check_builtin_icmptype(self, obj):
-        if obj.builtin:
+        if obj.builtin or not obj.default:
             raise FirewallError(BUILTIN_ICMPTYPE,
                                 "'%s' is built-in icmp type" % obj.name)
 
@@ -638,7 +638,7 @@ class FirewallConfig(object):
         del self._services[obj.name]
 
     def check_builtin_service(self, obj):
-        if obj.builtin:
+        if obj.builtin or not obj.default:
             raise FirewallError(BUILTIN_SERVICE,
                                 "'%s' is built-in service" % obj.name)
 
@@ -823,7 +823,7 @@ class FirewallConfig(object):
         del self._zones[obj.name]
 
     def check_builtin_zone(self, obj):
-        if obj.builtin:
+        if obj.builtin or not obj.default:
             raise FirewallError(BUILTIN_ZONE, "'%s' is built-in zone" % obj.name)
 
     def remove_zone(self, obj):
