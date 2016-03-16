@@ -51,7 +51,7 @@ from firewall import client
 from firewall.functions import *
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.base import DEFAULT_ZONE_TARGET
-from firewall.core.ipset import IPSET_MAXNAMELEN, IPSET_TYPES
+from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
@@ -4833,7 +4833,7 @@ class FirewallConfig(object):
 
     def add_edit_ipset(self, add):
         self.ipsetBaseDialogTypeCombobox.remove_all()
-        for x in IPSET_TYPES:
+        for x in self.fw.get_property("IPSetTypes"):
             self.ipsetBaseDialogTypeCombobox.append_text(x)
 
         if add:
