@@ -61,6 +61,7 @@ class Firewall(object):
         self.ebtables_enabled = True
         self._ipset = ipset.ipset()
         self.ipset_enabled = True
+        self.ipset_supported_types = [ ]
 
         self._modules = modules.modules()
 
@@ -121,7 +122,12 @@ class Firewall(object):
             x = self._ipset.list()
         except:
             log.error("ipset not usable, disabling ipset usage in firewall.")
+            # ipset is not usable, no supported types
             self.ipset_enabled = False
+            self.ipset_supported_types = [ ]
+        else:
+            # ipset is usable, get all supported types
+            self.ipset_supported_types = self._ipset.supported_types()
 
     def _start(self):
         # initialize firewall
