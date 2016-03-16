@@ -82,7 +82,7 @@ class ipset:
                                 "ipset name '%s' is not valid" % name)
 
     def supported_types(self):
-        ret = { }
+        ret = [ ]
         output = ""
         try:
             output = self.__run(["--help"])
@@ -95,7 +95,8 @@ class ipset:
             #print(line)
             if in_types:
                 splits = line.strip().split(None, 2)
-                ret[splits[0]] = splits[2]
+                if splits[0] not in ret and splits[0] in IPSET_TYPES:
+                    ret.append(splits[0])
             if line.startswith("Supported set types:"):
                 in_types = True
         return ret
