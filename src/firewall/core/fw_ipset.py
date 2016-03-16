@@ -81,6 +81,9 @@ class FirewallIPSet(object):
             log.warning("%s: %s" % (name, msg))
 
     def add_ipset(self, obj):
+        if obj.type not in self._fw.ipset_supported_types:
+            raise FirewallError(INVALID_TYPE,
+                                "'%s' is not supported by ipset." % obj.type)
         self._ipsets[obj.name] = obj
 
     def remove_ipset(self, name, keep=False):
