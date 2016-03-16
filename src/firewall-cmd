@@ -73,6 +73,7 @@ Status Options
   --get-log-denied     Print the log denied value
   --set-log-denied=<value>
                        Set log denied value
+  --get-ipset-types    Print the supported ipset types
 
 Permanent Options
   --permanent          Set an option permanently
@@ -494,6 +495,7 @@ parser_group_standalone.add_argument("--reload", action="store_true")
 parser_group_standalone.add_argument("--complete-reload", action="store_true")
 parser_group_standalone.add_argument("--runtime-to-permanent",
                                      action="store_true")
+parser_group_standalone.add_argument("--get-ipset-types", action="store_true")
 parser_group_standalone.add_argument("--get-log-denied", action="store_true")
 parser_group_standalone.add_argument("--set-log-denied", metavar="<value>")
 parser_group_standalone.add_argument("--panic-on", action="store_true")
@@ -704,7 +706,8 @@ options_standalone = a.help or a.version or \
     a.panic_on or a.panic_off or a.query_panic or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
-    a.get_active_zones or a.get_log_denied or a.set_log_denied
+    a.get_active_zones or a.get_log_denied or a.set_log_denied or \
+    a.get_ipset_types
 
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
@@ -1496,6 +1499,9 @@ elif a.get_log_denied:
     __print_and_exit(fw.getLogDenied())
 elif a.set_log_denied:
     fw.setLogDenied(a.set_log_denied)
+elif a.get_ipset_types:
+    types = fw.get_property("IPSetTypes")
+    __print_and_exit(" ".join(types))
 elif a.reload:
     fw.reload()
 elif a.complete_reload:
