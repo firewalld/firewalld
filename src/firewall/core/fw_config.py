@@ -273,6 +273,7 @@ class FirewallConfig(object):
         if path == ETC_FIREWALLD_IPSETS:
             # custom ipset update
             if obj.name in self._ipsets:
+                obj.default = self._ipsets[obj.name].default
                 self._ipsets[obj.name] = obj
             return ("update", obj)
         else:
@@ -441,6 +442,7 @@ class FirewallConfig(object):
         if path == ETC_FIREWALLD_ICMPTYPES:
             # custom icmptype update
             if obj.name in self._icmptypes:
+                obj.default = self._icmptypes[obj.name].default
                 self._icmptypes[obj.name] = obj
             return ("update", obj)
         else:
@@ -609,6 +611,7 @@ class FirewallConfig(object):
         if path == ETC_FIREWALLD_SERVICES:
             # custom service update
             if obj.name in self._services:
+                obj.default = self._services[obj.name].default
                 self._services[obj.name] = obj
             return ("update", obj)
         else:
@@ -794,6 +797,7 @@ class FirewallConfig(object):
         if path.startswith(ETC_FIREWALLD_ZONES):
             # custom zone update
             if obj.name in self._zones:
+                obj.default = self._zones[obj.name].default
                 self._zones[obj.name] = obj
             return ("update", obj)
         else:
