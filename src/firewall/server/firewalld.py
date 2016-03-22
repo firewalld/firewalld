@@ -1902,7 +1902,14 @@ class FirewallD(slip.dbus.service.Object):
         args = tuple( dbus_to_python(i, str) for i in args )
         log.debug1("direct.passthrough('%s', '%s')" % (ipv, "','".join(args)))
         self.accessCheck(sender)
-        return self.fw.direct.passthrough(ipv, args)
+        try:
+            return self.fw.direct.passthrough(ipv, args)
+        except FirewallError as error:
+            msg = str(error)
+            if "COMMAND_FAILED" in msg:
+                log.warning(msg)
+                raise FirewallDBusException(msg)
+            raise
 
     # DIRECT PASSTHROUGH (tracked)
 
