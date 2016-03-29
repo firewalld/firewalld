@@ -429,8 +429,10 @@ def __print_zone_info(zone, settings, verbose = False):
     icmp_blocks = settings.getIcmpBlocks()
     rules = settings.getRichRules()
     description = settings.getDescription()
+    short_description = settings.getShort()
     __print(zone)
     if verbose:
+        __print("  summary: " + short_description)
         __print("  description: " + description)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
