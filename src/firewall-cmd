@@ -402,7 +402,7 @@ def _check_ipv(value):
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
     return value
 
-def __print_zone_info(zone, settings):
+def __print_zone_info(zone, settings, verbose = False):
     interfaces = settings.getInterfaces()
     sources = settings.getSources()
     services = settings.getServices()
@@ -412,6 +412,7 @@ def __print_zone_info(zone, settings):
     forward_ports = settings.getForwardPorts()
     icmp_blocks = settings.getIcmpBlocks()
     rules = settings.getRichRules()
+    description = settings.getDescription()
 
     attributes = []
     if zone == fw.getDefaultZone():
@@ -421,6 +422,8 @@ def __print_zone_info(zone, settings):
     if attributes:
         zone = zone + " (%s)" % ", ".join(attributes)
     __print(zone)
+    if verbose:
+        __print("  description: " + description)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
     __print("  services: " + " ".join(services))
@@ -1003,7 +1006,7 @@ if a.permanent:
 
     elif a.info_zone:
         zone = fw.config().getZoneByName(a.info_zone)
-        __print_zone_info(a.info_zone, zone.getSettings())
+        __print_zone_info(a.info_zone, zone.getSettings(), True)
         sys.exit(0)
 
     elif a.path_zone:
@@ -1860,7 +1863,7 @@ elif a.list_all_zones:
     sys.exit(0)
 
 elif a.info_zone:
-    __print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone))
+    __print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), True)
     sys.exit(0)
 
 elif a.info_service:
