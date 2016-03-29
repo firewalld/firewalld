@@ -453,9 +453,11 @@ def __print_service_info(service, settings):
 def __print_icmptype_info(icmptype, settings):
     destinations = settings.getDestinations()
     description = settings.getDescription()
+    short_description = settings.getShort()
     if len(destinations) == 0:
         destinations = [ "ipv4", "ipv6" ]
     __print(icmptype)
+    __print("  summary: " + short_description)
     __print("  destination: " + " ".join(destinations))
     __print("  description: " + description)
 
