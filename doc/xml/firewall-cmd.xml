@@ -1169,6 +1169,22 @@
        </varlistentry>
 
        <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
          <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--add-destination</option>=<replaceable>ipv</replaceable></term>
          <listitem>
            <para>

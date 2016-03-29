@@ -127,6 +127,10 @@ IcmpType Options
                        Print information about an icmptype
   --path-icmptype=<icmptype>
                        Print file path of an icmptype [P only]
+  --icmptype=<icmptype> --set-description=<description>
+                       Set new description to icmptype [P only]
+  --icmptype=<icmptype> --get-description
+                       Print description for icmptype [P only]
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype [P only]
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -780,7 +784,8 @@ options_zone = a.zone or a.timeout != "0" or options_zone_ops
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or a.get_entries
 
 options_icmptype = a.add_destination or a.remove_destination or \
-                   a.query_destination or a.get_destinations
+                   a.query_destination or a.get_destinations or \
+                   options_desc_xml_file
 
 options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or \
@@ -847,7 +852,7 @@ if (options_ipset and not a.ipset):
     __fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
-   not (options_service and a.service):
+   not (options_service and a.service) and not options_desc_xml_file:
     __fail(parser.format_usage() + "No icmptype specified.")
 
 if (options_direct or options_permanent_only) and \
@@ -1091,6 +1096,13 @@ if a.permanent:
             if len(l) == 0:
                 l = [ "ipv4", "ipv6" ]
             __print_and_exit("\n".join(l))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            icmptype.update(settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
