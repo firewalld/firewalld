@@ -466,11 +466,13 @@ def __print_ipset_info(ipset, settings):
     ipset_type = settings.getType()
     options = settings.getOptions()
     entries = settings.getEntries()
+    description = settings.getDescription()
     __print(ipset)
     __print("  type: " + ipset_type)
     __print("  options: " + " ".join(["%s=%s" % (k,v) if v else k
                                       for k,v in options.items()]))
     __print("  entries: " + " ".join(entries))
+    __print("  description: " + description)
 
 def __print_query_result(value):
     if value:
