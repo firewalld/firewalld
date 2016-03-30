@@ -109,6 +109,10 @@ IPSet Options
   --info-ipset=<ipset> Print information about an ipset
   --path-ipset=<ipset> Print file path of an ipset [P only]
   --get-ipsets         Print predefined ipsets
+  --ipset=<ipset> --set-description=<description>
+                       Set new description to ipset [P only]
+  --ipset=<ipset> --get-description
+                       Print description for ipset [P only]
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset [P]
   --ipset=<ipset> --remove-entry=<entry>
@@ -781,7 +785,8 @@ options_zone_ops = options_zone_interfaces_sources or \
 
 options_zone = a.zone or a.timeout != "0" or options_zone_ops
 
-options_ipset = a.add_entry or a.remove_entry or a.query_entry or a.get_entries
+options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
+                a.get_entries or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
                    a.query_destination or a.get_destinations or \
@@ -848,7 +853,7 @@ if options_standalone and (options_zone or options_permanent or \
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if (options_ipset and not a.ipset):
+if (options_ipset and not options_desc_xml_file and not a.ipset):
     __fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
@@ -1352,9 +1357,7 @@ if a.permanent:
                 __print("%s %s %s %d %s" % (ipv, table, chain, priority,
                                             joinArgs(rule)))
             sys.exit(0)
-    elif options_ipset:
-        if not a.ipset:
-            __fail("usage: --ipset<ipset> ...")
+    elif a.ipset:
         fw_ipset = fw.config().getIPSetByName(a.ipset)
 
         if a.add_entry:
@@ -1363,6 +1366,12 @@ if a.permanent:
             fw_ipset.removeInterface(a.remove_interface)
         elif a.query_entry:
             __print_query_result(fw_zone.queryInterface(a.query_interface))
+        elif a.set_description:
+            fw_ipset.setDescription(a.set_description)
+        elif a.get_description:
+            __print_and_exit(fw_ipset.getDescription())
+        else:
+            __fail(parser.format_usage() + "Unknown option")
 
 
     else:

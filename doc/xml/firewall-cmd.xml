@@ -899,6 +899,22 @@
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
          <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--add-entry</option>=<replaceable>entry</replaceable></term>
          <listitem>
            <para>

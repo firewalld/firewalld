@@ -109,6 +109,10 @@ IPSet Options
                        Delete an existing ipset
   --info-ipset=<ipset> Print information about an ipset
   --get-ipsets         Print predefined ipsets
+  --ipset=<ipset> --set-description=<description>
+                       Set new description to ipset
+  --ipset=<ipset> --get-description
+                       Print description for ipset
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset
   --ipset=<ipset> --remove-entry=<entry>
@@ -815,7 +819,7 @@ options_zone_ops = options_zone_interfaces_sources or \
 options_zone = a.zone or options_zone_ops
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
-                a.get_entries
+                a.get_entries or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
                    a.query_destination or a.get_destinations or \
@@ -882,7 +886,7 @@ if options_standalone and (options_permanent or \
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if (options_ipset and not a.ipset):
+if (options_ipset and not options_desc_xml_file and not a.ipset):
     __fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
@@ -1212,59 +1216,78 @@ try:
             __fail(parser.format_usage() + "Unknown option")
 
     # ipsets
-    elif a.get_ipsets:
-        ipsets = fw.config.get_ipsets()
-        __print_and_exit(" ".join(sorted(ipsets)))
+    elif a.ipset:
+        if a.get_ipsets:
+            ipsets = fw.config.get_ipsets()
+            __print_and_exit(" ".join(sorted(ipsets)))
 
-    elif a.new_ipset:
-        if not a.type:
-            __fail(parser.format_usage() + "No type specified.")
+        elif a.new_ipset:
+            if not a.type:
+                __fail(parser.format_usage() + "No type specified.")
 
-        settings = FirewallClientIPSetSettings()
-        settings.setType(a.type)
-        if a.option:
-            for opt in a.option:
-                settings.addOption(*__parse_ipset_option(opt))
-        fw.config.new_ipset(a.new_ipset, settings.settings)
+            settings = FirewallClientIPSetSettings()
+            settings.setType(a.type)
+            if a.option:
+                for opt in a.option:
+                    settings.addOption(*__parse_ipset_option(opt))
+            fw.config.new_ipset(a.new_ipset, settings.settings)
 
-    elif a.delete_ipset:
-        ipset = fw.config.get_ipset(a.delete_ipset)
-        fw.config.remove_ipset(ipset)
+        elif a.delete_ipset:
+            ipset = fw.config.get_ipset(a.delete_ipset)
+            fw.config.remove_ipset(ipset)
 
-    elif a.info_ipset:
-        ipset = fw.config.get_ipset(a.info_ipset)
-        settings = FirewallClientIPSetSettings(
+        elif a.info_ipset:
+            ipset = fw.config.get_ipset(a.info_ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            __print_ipset_info(a.info_ipset, settings)
+            sys.exit(0)
+
+        elif a.add_entry:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
             list(fw.config.get_ipset_config(ipset)))
-        __print_ipset_info(a.info_ipset, settings)
-        sys.exit(0)
+            settings.addEntry(a.add_entry)
+            fw.config.set_ipset_config(ipset, settings.settings)
 
-    elif a.add_entry:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        settings.addEntry(a.add_entry)
-        fw.config.set_ipset_config(ipset, settings.settings)
+        elif a.remove_entry:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            settings.removeEntry(a.remove_entry)
+            fw.config.set_ipset_config(ipset, settings.settings)
 
-    elif a.remove_entry:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        settings.removeEntry(a.remove_entry)
-        fw.config.set_ipset_config(ipset, settings.settings)
+        elif a.query_entry:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            r = settings.queryEntry(a.query_entry)
+            __print_query_result(r)
 
-    elif a.query_entry:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        r = settings.queryEntry(a.query_entry)
-        __print_query_result(r)
+        elif a.get_entries:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            l = settings.getEntries()
+            __print_and_exit("\n".join(l))
 
-    elif a.get_entries:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        l = settings.getEntries()
-        __print_and_exit("\n".join(l))
+        elif a.set_description:
+             ipset = fw.config.get_ipset(a.ipset)
+             settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+             settings.setDescription(a.set_description)
+
+             fw.config.set_ipset_config(ipset, settings.settings)
+
+        elif a.get_description:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+
+            __print_and_exit(settings.getDescription())
+
+        else:
+            __fail(parser.format_usage() + "Unknown option")
 
     # lockdown whitelist
 
