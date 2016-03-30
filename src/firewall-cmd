@@ -196,6 +196,9 @@ Options to Adapt and Query Zones
   --timeout=<timeval>  Enable an option for timeval time, where timeval is
                        a number followed by one of letters 's' or 'm' or 'h'
                        Usable for options marked with [T]
+  --set-description=<description>
+                       Set new description to zone [P only] [Z]
+  --get-description    Print description for zone [P only] [Z]
   --add-service=<service>
                        Add a service for a zone [P] [Z] [T]
   --remove-service=<service>
@@ -783,7 +786,8 @@ options_zone_adapt_query = \
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
 
-options_zone = a.zone or a.timeout != "0" or options_zone_ops
+options_zone = a.zone or a.timeout != "0" or options_zone_ops or \
+               options_desc_xml_file
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
                 a.get_entries or options_desc_xml_file
@@ -862,7 +866,7 @@ if (options_icmptype and not a.icmptype) and \
 
 if (options_direct or options_permanent_only) and \
    (options_zone and not a.zone) and (options_service and not a.service) and \
-   (options_icmptype and a.icmptype):
+   (options_icmptype and a.icmptype) and not options_desc_xml_file:
     __fail(parser.format_usage() + "Can't be used with --zone.")
 
 if (a.direct and not options_direct) or (options_direct and not a.direct):
@@ -1538,6 +1542,15 @@ if a.permanent:
                 __print_zone_info(zone, fw_zone.getSettings())
                 __print("")
             sys.exit(0)
+
+        # set zone description
+        elif a.set_description:
+            fw_zone.setDescription(a.set_description)
+
+        # get zone description
+        elif a.get_description:
+            __print_and_exit(fw_zone.getDescription())
+
 
 elif a.version:
     __print_and_exit(fw.get_property("version"))

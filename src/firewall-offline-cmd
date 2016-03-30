@@ -97,6 +97,9 @@ Zone Options
   --delete-zone=<zone> Delete an existing zone
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options marked with [Z]
+  --set-description=<description>
+                       Set new description to zone
+  --get-description    Print description for zone
   --get-target         Get the zone target
   --set-target=<target>
                        Set the zone target
@@ -816,7 +819,7 @@ options_zone_adapt_query = \
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
 
-options_zone = a.zone or options_zone_ops
+options_zone = a.zone or options_zone_ops or options_desc_xml_file
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
                 a.get_entries or options_desc_xml_file
@@ -872,7 +875,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 
 if not (options_lokkit or options_standalone or options_ipset or \
         options_icmptype or options_service or \
-        options_permanent or options_direct):
+        options_permanent or options_direct or options_desc_xml_file):
     __fail(parser.format_usage() + "No option specified.")
 
 if options_lokkit and (options_standalone or \
@@ -1646,6 +1649,12 @@ try:
                 __print_zone_info(zone, fw_settings)
                 __print("")
             sys.exit(0)
+
+        elif a.set_description:
+            fw_settings.setDescription(a.set_description)
+
+        elif a.get_description:
+            __print_and_exit(fw_settings.getDescription())
 
         fw.config.set_zone_config(fw_zone, fw_settings.settings)
 

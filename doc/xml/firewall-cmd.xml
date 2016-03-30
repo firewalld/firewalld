@@ -349,6 +349,22 @@
 	</varlistentry>
 
 	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
           <term><option>--permanent</option> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-target</option></term>
           <listitem>
             <para>
