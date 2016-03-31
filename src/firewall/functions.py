@@ -60,13 +60,28 @@ def getPortRange(ports):
     @return Array containing start and end port id for a valid range or -1 if port can not be found and -2 if port is too big for integer input or -1 for invalid ranges or None if the range is ambiguous.
     """
 
-    if isinstance(ports, int):
+    # "<port-id>" case
+    if isinstance(ports, int) or ports.isdigit():
         id = getPortID(ports)
         if id >= 0:
             return (id,)
         return id
 
     splits = ports.split("-")
+
+    # "<port-id>-<port-id>" case
+    if len(splits) == 2 and splits[0].isdigit() and splits[1].isdigit():
+        id1 = getPortID(splits[0])
+        id2 = getPortID(splits[1])
+        if id1 >= 0 and id2 >= 0:
+            if id1 < id2:
+                return (id1, id2)
+            elif id1 > id2:
+                return (id2, id1)
+            else: # ids are the same
+                return (i1,)
+
+    # everything else "<port-str>[-<port-str>]"
     matched = [ ]
     for i in range(len(splits), 0, -1):
         id1 = getPortID("-".join(splits[:i]))
