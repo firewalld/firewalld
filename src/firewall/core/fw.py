@@ -612,7 +612,8 @@ class Firewall(object):
             # as ebtables is not used in here
             rules = [
                 ("ipv6", [ "PREROUTING", 1, "-t", "raw",
-                           "-p", "icmpv6", "--icmpv6-type=router-advertisement",
+                           "-p", "ipv6-icmp",
+                           "--icmpv6-type=router-advertisement",
                            "-j", "ACCEPT" ]), # RHBZ#1058505
                 ("ipv6", [ "PREROUTING", 2, "-t", "raw",
                            "-m", "rpfilter", "--invert", "-j", "DROP" ]),
