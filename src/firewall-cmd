@@ -211,6 +211,9 @@ Options to Adapt and Query Zones
   --set-description=<description>
                        Set new description to zone [P only] [Z]
   --get-description    Print description for zone [P only] [Z]
+  --set-short=<description>
+                       Set new short description to zone [P only] [Z]
+  --get-short          Print short description for zone [P only] [Z]
   --add-service=<service>
                        Add a service for a zone [P] [Z] [T]
   --remove-service=<service>
@@ -1584,6 +1587,14 @@ if a.permanent:
         # get zone description
         elif a.get_description:
             __print_and_exit(fw_zone.getDescription())
+
+        # set zone short description
+        elif a.set_short:
+            fw_zone.setShort(a.set_short)
+
+        # get zone short description
+        elif a.get_short:
+            __print_and_exit(fw_zone.getShort())
 
 
 elif a.version:

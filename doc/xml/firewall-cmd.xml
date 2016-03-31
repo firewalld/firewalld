@@ -365,6 +365,22 @@
          </listitem>
 	</varlistentry>
 	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
           <term><option>--permanent</option> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-target</option></term>
           <listitem>
             <para>

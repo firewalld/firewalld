@@ -1701,6 +1701,12 @@ try:
         elif a.get_description:
             __print_and_exit(fw_settings.getDescription())
 
+        elif a.set_short:
+            fw_settings.setShort(a.set_short)
+
+        elif a.get_short:
+            __print_and_exit(fw_settings.getShort())
+
         fw.config.set_zone_config(fw_zone, fw_settings.settings)
 
 except Exception as msg:
