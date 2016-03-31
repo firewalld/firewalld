@@ -187,7 +187,7 @@ class Firewall(object):
                     self._log_denied = value.lower()
                     log.debug1("LogDenied is set to '%s'", self._log_denied)
 
-            if not self._individual_calls and \
+            if self.ebtables_enabled and not self._individual_calls and \
                not self._ebtables.restore_noflush_option:
                 log.debug1("ebtables-restore is not supporting the --noflush option, will therefore not be used")
 
