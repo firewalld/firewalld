@@ -1233,6 +1233,23 @@
          </listitem>
        </varlistentry>
        <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
          <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--add-destination</option>=<replaceable>ipv</replaceable></term>
          <listitem>
            <para>

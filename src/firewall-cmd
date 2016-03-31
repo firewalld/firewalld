@@ -135,6 +135,10 @@ IcmpType Options
                        Set new description to icmptype [P only]
   --icmptype=<icmptype> --get-description
                        Print description for icmptype [P only]
+  --icmptype=<icmptype> --set-short=<description>
+                       Set new short description to icmptype [P only]
+  --icmptype=<icmptype> --get-short
+                       Print short description for icmptype [P only]
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype [P only]
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -1120,6 +1124,13 @@ if a.permanent:
 
         elif a.get_description:
             __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            icmptype.update(settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")

@@ -136,6 +136,10 @@ IcmpType Options
                        Set new description to icmptype
   --icmptype=<icmptype> --get-description
                        Print description for icmptype
+  --icmptype=<icmptype> --set-short=<description>
+                       Set new short description to icmptype
+  --icmptype=<icmptype> --get-short
+                       Print short description for icmptype
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -1134,6 +1138,13 @@ try:
 
         elif a.get_description:
             __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            fw.config.set_icmptype_config(icmptype, settings.settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
