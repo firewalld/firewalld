@@ -113,6 +113,10 @@ IPSet Options
                        Set new description to ipset [P only]
   --ipset=<ipset> --get-description
                        Print description for ipset [P only]
+  --ipset=<ipset> --set-short=<description>
+                       Set new short description to ipset [P only]
+  --ipset=<ipset> --get-short
+                       Print short description for ipset [P only]
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset [P]
   --ipset=<ipset> --remove-entry=<entry>
@@ -1400,6 +1404,10 @@ if a.permanent:
             fw_ipset.setDescription(a.set_description)
         elif a.get_description:
             __print_and_exit(fw_ipset.getDescription())
+        elif a.set_short:
+            fw_ipset.setShort(a.set_short)
+        elif a.get_short:
+            __print_and_exit(fw_ipset.getShort())
         else:
             __fail(parser.format_usage() + "Unknown option")
 

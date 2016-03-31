@@ -116,6 +116,10 @@ IPSet Options
                        Set new description to ipset
   --ipset=<ipset> --get-description
                        Print description for ipset
+  --ipset=<ipset> --set-short=<description>
+                       Set new short description to ipset
+  --ipset=<ipset> --get-short
+                       Print short description for ipset
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset
   --ipset=<ipset> --remove-entry=<entry>
@@ -1314,6 +1318,21 @@ try:
                 list(fw.config.get_ipset_config(ipset)))
 
             __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+             ipset = fw.config.get_ipset(a.ipset)
+             settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+             settings.setShort(a.set_short)
+
+             fw.config.set_ipset_config(ipset, settings.settings)
+
+        elif a.get_short:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
