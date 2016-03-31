@@ -37,7 +37,9 @@ from firewall.core.logger import log
 from firewall.server.decorators import *
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
-    command_of_sender, context_of_sender, uid_of_sender, user_of_uid
+    command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \
+    dbus_introspection_prepare_properties, \
+    dbus_introspection_add_properties
 from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
@@ -62,9 +64,11 @@ class FirewallD(slip.dbus.service.Object):
     def __init__(self, *args, **kwargs):
         super(FirewallD, self).__init__(*args, **kwargs)
         self.fw = Firewall()
-        self.path = args[0]
+        self.busname = args[0]
+        self.path = args[1]
+        dbus_introspection_prepare_properties(self, DBUS_INTERFACE)
         self.start()
-        self.config = FirewallDConfig(self.fw.config, self.path,
+        self.config = FirewallDConfig(self.fw.config, self.busname,
                                       DBUS_PATH_CONFIG)
 
     def __del__(self):
@@ -229,6 +233,17 @@ class FirewallD(slip.dbus.service.Object):
         invalidated_properties = dbus_to_python(invalidated_properties)
         log.debug1("PropertiesChanged('%s', '%s', '%s')",
                    interface_name, changed_properties, invalidated_properties)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
+    @dbus_handle_exceptions
+    def Introspect(self, sender=None):
+        log.debug2("Introspect()")
+
+        data = super(FirewallD, self).Introspect(self.path,
+                                                 self.busname.get_bus())
+
+        return dbus_introspection_add_properties(self, data, DBUS_INTERFACE)
 
     # reload
 

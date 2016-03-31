@@ -29,7 +29,9 @@ import slip.dbus
 import slip.dbus.service
 
 from firewall.config import *
-from firewall.dbus_utils import dbus_to_python
+from firewall.dbus_utils import dbus_to_python, \
+    dbus_introspection_prepare_properties, \
+    dbus_introspection_add_properties
 from firewall.config.dbus import *
 from firewall.core.fw import Firewall
 from firewall.core.io.ipset import IPSet
@@ -59,8 +61,11 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
         self.config = config
         self.obj = ipset
         self.id = id
-        self.path = args[0]
+        self.busname = args[0]
+        self.path = args[1]
         self._log_prefix = "config.ipset.%d" % self.id
+        dbus_introspection_prepare_properties(self,
+                                              DBUS_INTERFACE_CONFIG_IPSET)
 
     @dbus_handle_exceptions
     def __del__(self):
@@ -73,6 +78,24 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     # P R O P E R T I E S
+
+    @dbus_handle_exceptions
+    def _get_property(self, property_name):
+        if property_name == "name":
+            return dbus.String(self.obj.name)
+        elif property_name == "filename":
+            return dbus.String(self.obj.filename)
+        elif property_name == "path":
+            return dbus.String(self.obj.path)
+        elif property_name == "default":
+            return dbus.Boolean(self.obj.default)
+        elif property_name == "builtin":
+            return dbus.Boolean(self.obj.builtin)
+        else:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.AccessDenied: "
+                "Property '%s' isn't exported (or may not exist)" % \
+                    property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
@@ -89,21 +112,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        if property_name == "name":
-            return self.obj.name
-        elif property_name == "filename":
-            return self.obj.filename
-        elif property_name == "path":
-            return self.obj.path
-        elif property_name == "default":
-            return self.obj.default
-        elif property_name == "builtin":
-            return self.obj.builtin
-        else:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % \
-                    property_name)
+        return self._get_property(property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
@@ -117,13 +126,10 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        return {
-            'name': self.obj.name,
-            'filename': self.obj.filename,
-            'path': self.obj.path,
-            'default': self.obj.default,
-            'builtin': self.obj.builtin,
-        }
+        ret = { }
+        for x in [ "name", "filename", "path", "default", "builtin" ]:
+            ret[x] = self._get_property(x)
+        return dbus.Dictionary(ret, signature="sv")
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
@@ -153,6 +159,18 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
         invalidated_properties = dbus_to_python(invalidated_properties)
         log.debug1("%s.PropertiesChanged('%s', '%s', '%s')", self._log_prefix,
                    interface_name, changed_properties, invalidated_properties)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
+    @dbus_handle_exceptions
+    def Introspect(self, sender=None):
+        log.debug2("%s.Introspect()", self._log_prefix)
+
+        data = super(FirewallDConfigIPSet, self).Introspect(
+            self.path, self.busname.get_bus())
+
+        return dbus_introspection_add_properties(self, data,
+                                                 DBUS_INTERFACE_CONFIG_IPSET)
 
     # S E T T I N G S
 
@@ -184,6 +202,8 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         self.obj = self.config.load_ipset_defaults(self.obj)
         self.Updated(self.obj.name)
+        #self.PropertiesChanged(DBUS_INTERFACE_CONFIG_IPSET,
+        #                       { "default": True }, [ ])
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_IPSET, signature='s')
     @dbus_handle_exceptions
@@ -219,6 +239,8 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         self.obj = self.config.rename_ipset(self.obj, name)
         self.Renamed(name)
+        #self.PropertiesChanged(DBUS_INTERFACE_CONFIG_IPSET,
+        #                       { "name": name }, [ ])
 
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_IPSET, signature='s')
     @dbus_handle_exceptions

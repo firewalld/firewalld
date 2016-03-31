@@ -45,7 +45,9 @@ from firewall.core.io.ipset import IPSet
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.direct import Direct
 from firewall.dbus_utils import dbus_to_python, \
-    command_of_sender, context_of_sender, uid_of_sender, user_of_uid
+    command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \
+    dbus_introspection_prepare_properties, \
+    dbus_introspection_add_properties
 from firewall.errors import *
 
 ############################################################################
@@ -66,7 +68,8 @@ class FirewallDConfig(slip.dbus.service.Object):
     def __init__(self, config, *args, **kwargs):
         super(FirewallDConfig, self).__init__(*args, **kwargs)
         self.config = config
-        self.path = args[0]
+        self.busname = args[0]
+        self.path = args[1]
         self._init_vars()
         self.watcher = Watcher(self.watch_updater, 5)
         self.watcher.add_watch_dir(FIREWALLD_IPSETS)
@@ -84,6 +87,12 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_file(LOCKDOWN_WHITELIST)
         self.watcher.add_watch_file(FIREWALLD_DIRECT)
         self.watcher.add_watch_file(FIREWALLD_CONF)
+
+        dbus_introspection_prepare_properties(self, DBUS_INTERFACE_CONFIG,
+                                              { "CleanupOnExit": "readwrite",
+                                                "IPv6_rpfilter": "readwrite",
+                                                "Lockdown": "readwrite",
+                                                "MinimalMark": "readwrite" })
 
     @handle_exceptions
     def _init_vars(self):
@@ -214,7 +223,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _addIcmpType(self, obj):
         # TODO: check for idx overflow
         config_icmptype = FirewallDConfigIcmpType(self, \
-            self.config, obj, self.icmptype_idx, self.path,
+            self.config, obj, self.icmptype_idx, self.busname,
             "%s/%d" % (DBUS_PATH_CONFIG_ICMPTYPE, self.icmptype_idx))
         self.icmptypes.append(config_icmptype)
         self.icmptype_idx += 1
@@ -252,7 +261,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _addService(self, obj):
         # TODO: check for idx overflow
         config_service = FirewallDConfigService(self, \
-            self.config, obj, self.service_idx, self.path,
+            self.config, obj, self.service_idx, self.busname,
             "%s/%d" % (DBUS_PATH_CONFIG_SERVICE, self.service_idx))
         self.services.append(config_service)
         self.service_idx += 1
@@ -290,7 +299,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _addZone(self, obj):
         # TODO: check for idx overflow
         config_zone = FirewallDConfigZone(self, \
-            self.config, obj, self.zone_idx, self.path,
+            self.config, obj, self.zone_idx, self.busname,
             "%s/%d" % (DBUS_PATH_CONFIG_ZONE, self.zone_idx))
         self.zones.append(config_zone)
         self.zone_idx += 1
@@ -318,7 +327,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _addIPSet(self, obj):
         # TODO: check for idx overflow
         config_ipset = FirewallDConfigIPSet(self, \
-            self.config, obj, self.ipset_idx, self.path,
+            self.config, obj, self.ipset_idx, self.busname,
             "%s/%d" % (DBUS_PATH_CONFIG_IPSET, self.ipset_idx))
         self.ipsets.append(config_ipset)
         self.ipset_idx += 1
@@ -371,29 +380,62 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     @dbus_handle_exceptions
     def _get_property(self, prop):
-        if prop in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
-                     "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                     "LogDenied" ]:
-            value = self.config.get_firewalld_conf().get(prop)
-            if value is not None:
-                if prop == "MinimalMark":
-                    value = int(value)
-                return value
+        if prop not in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
+                         "Lockdown", "IPv6_rpfilter", "IndividualCalls",
+                         "LogDenied" ]:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.AccessDenied: "
+                "Property '%s' isn't exported (or may not exist)" % prop)
+
+        value = self.config.get_firewalld_conf().get(prop)
+
+        if prop == "DefaultZone":
+            if value is None:
+                value = FALLBACK_ZONE
+            return dbus.String(value)
+        elif prop == "MinimalMark":
+            if value is None:
+                value = FALLBACK_MINIMAL_MARK
             else:
-                if prop == "DefaultZone":
-                    return FALLBACK_ZONE
-                elif prop == "MinimalMark":
-                    return FALLBACK_MINIMAL_MARK
-                elif prop == "CleanupOnExit":
-                    return "yes" if FALLBACK_CLEANUP_ON_EXIT else "no"
-                elif prop == "Lockdown":
-                    return "yes" if FALLBACK_LOCKDOWN else "no"
-                elif prop == "IPv6_rpfilter":
-                    return "yes" if FALLBACK_IPV6_RPFILTER else "no"
-                elif prop == "IndividualCalls":
-                    return "yes" if FALLBACK_INDIVIDUAL_CALLS else "no"
-                elif prop == "LogDenied":
-                    return FALLBACK_LOG_DENIED
+                value = int(value)
+            return dbus.Int32(value)
+        elif prop == "CleanupOnExit":
+            if value is None:
+                value = "yes" if FALLBACK_CLEANUP_ON_EXIT else "no"
+            return dbus.String(value)
+        elif prop == "Lockdown":
+            if value is None:
+                value = "yes" if FALLBACK_LOCKDOWN else "no"
+            return dbus.String(value)
+        elif prop == "IPv6_rpfilter":
+            if value is None:
+                value = "yes" if FALLBACK_IPV6_RPFILTER else "no"
+            return dbus.String(value)
+        elif prop == "IndividualCalls":
+            if value is None:
+                value = "yes" if FALLBACK_INDIVIDUAL_CALLS else "no"
+            return dbus.String(value)
+        elif prop == "LogDenied":
+            if value is None:
+                value = FALLBACK_LOG_DENIED
+            return dbus.String(value)
+
+    @dbus_handle_exceptions
+    def _get_dbus_property(self, prop):
+        if prop == "DefaultZone":
+            return dbus.String(self._get_property(prop))
+        elif prop == "MinimalMark":
+            return dbus.Int32(self._get_property(prop))
+        elif prop == "CleanupOnExit":
+            return dbus.String(self._get_property(prop))
+        elif prop == "Lockdown":
+            return dbus.String(self._get_property(prop))
+        elif prop == "IPv6_rpfilter":
+            return dbus.String(self._get_property(prop))
+        elif prop == "IndividualCalls":
+            return dbus.String(self._get_property(prop))
+        elif prop == "LogDenied":
+            return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -413,7 +455,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        return self._get_property(property_name)
+        return self._get_dbus_property(property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
@@ -427,15 +469,11 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
 
-        return {
-            'DefaultZone': self._get_property("DefaultZone"),
-            'MinimalMark': self._get_property("MinimalMark"),
-            'CleanupOnExit': self._get_property("CleanupOnExit"),
-            'Lockdown': self._get_property("Lockdown"),
-            'IPv6_rpfilter': self._get_property("IPv6_rpfilter"),
-            'IndividualCalls': self._get_property("IndividualCalls"),
-            'LogDenied': self._get_property("LogDenied"),
-        }
+        ret = { }
+        for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
+                   "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]:
+            ret[x] = self._get_property(x)
+        return dbus.Dictionary(ret, signature="sv")
 
     @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
@@ -491,6 +529,17 @@ class FirewallDConfig(slip.dbus.service.Object):
         invalidated_properties = dbus_to_python(invalidated_properties)
         log.debug1("config.PropertiesChanged('%s', '%s', '%s')",
                    interface_name, changed_properties, invalidated_properties)
+
+    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
+    @dbus_handle_exceptions
+    def Introspect(self, sender=None):
+        log.debug2("config.Introspect()")
+
+        data = super(FirewallDConfig, self).Introspect(self.path,
+                                                       self.busname.get_bus())
+        return dbus_introspection_add_properties(self, data,
+                                                 DBUS_INTERFACE_CONFIG)
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 

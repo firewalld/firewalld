@@ -22,6 +22,9 @@
 import dbus
 import pwd
 import sys
+from xml.dom import minidom
+
+from firewall.core.logger import log
 
 PY2 = sys.version < '3'
 
@@ -138,3 +141,70 @@ def dbus_to_python(obj, expected_type=None):
             raise TypeError("%s is %s, expected %s" % (python_obj, type(python_obj), expected_type))
 
     return python_obj
+
+def dbus_signature(obj):
+    if isinstance(obj, dbus.Boolean):
+        return 'b'
+    elif isinstance(obj, dbus.String):
+        return 's'
+    elif isinstance(obj, dbus.ObjectPath):
+        return 'o'
+    elif isinstance(obj, dbus.Byte):
+        return 'y'
+    elif isinstance(obj, dbus.Int16):
+        return 'n'
+    elif isinstance(obj, dbus.Int32):
+        return 'i'
+    elif isinstance(obj, dbus.Int64):
+        return 'x'
+    elif isinstance(obj, dbus.UInt16):
+        return 'q'
+    elif isinstance(obj, dbus.UInt32):
+        return 'u'
+    elif isinstance(obj, dbus.UInt64):
+        return 't'
+    elif isinstance(obj, dbus.Double):
+        return 'd'
+    elif isinstance(obj, dbus.Array):
+        if len(obj.signature) > 1:
+            return 'a(%s)' % obj.signature
+        else:
+            return 'a%s' % obj.signature
+    elif isinstance(obj, dbus.Struct):
+        return '(%s)' % obj.signature
+    elif isinstance(obj, dbus.Dictionary):
+        return 'a{%s}' % obj.signature
+    elif PY2 and isinstance(obj, dbus.UTF8String):
+        return 's'
+    else:
+        raise TypeError("Unhandled %s" % repr(obj))
+
+def dbus_introspection_prepare_properties(obj, interface, access={}):
+    dip = { }
+    dip[interface] = { }
+
+    for key,value in obj.GetAll(interface).items():
+        dip[interface][key] = { "type": dbus_signature(value) }
+        if key in access:
+            dip[interface][key]["access"] = access[key]
+        else:
+            dip[interface][key]["access"] = "read"
+
+    obj._fw_dbus_properties = dip
+
+def dbus_introspection_add_properties(obj, data, interface):
+    doc = minidom.parseString(data)
+
+    if hasattr(obj, "_fw_dbus_properties"):
+        for node in doc.getElementsByTagName("interface"):
+            if node.hasAttribute("name") and \
+               node.getAttribute("name") == interface:
+                if interface in obj._fw_dbus_properties:
+                    for key,items in obj._fw_dbus_properties[interface].items():
+                        prop = doc.createElement("property")
+                        prop.setAttribute("name", key)
+                        prop.setAttribute("type", items["type"])
+                        prop.setAttribute("access", items["access"])
+                        node.appendChild(prop)
+    log.debug10(doc.toxml())
+    return doc.toxml()
