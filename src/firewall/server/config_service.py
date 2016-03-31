@@ -59,6 +59,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         self.obj = service
         self.id = id
         self.path = args[0]
+        self._log_prefix = "config.service.%d" % self.id
 
     @dbus_handle_exceptions
     def __del__(self):
@@ -79,7 +80,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         # get a property
         interface_name = dbus_to_python(interface_name, str)
         property_name = dbus_to_python(property_name, str)
-        log.debug1("config.service.%d.Get('%s', '%s')", self.id,
+        log.debug1("%s.Get('%s', '%s')", self._log_prefix,
                    interface_name, property_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_SERVICE:
@@ -108,7 +109,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def GetAll(self, interface_name, sender=None):
         interface_name = dbus_to_python(interface_name, str)
-        log.debug1("config.service.%d.GetAll('%s')", self.id, interface_name)
+        log.debug1("%s.GetAll('%s')", self._log_prefix, interface_name)
 
         if interface_name != DBUS_INTERFACE_CONFIG_SERVICE:
             raise dbus.exceptions.DBusException(
@@ -130,7 +131,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         interface_name = dbus_to_python(interface_name, str)
         property_name = dbus_to_python(property_name, str)
         new_value = dbus_to_python(new_value)
-        log.debug1("config.service.%d.Set('%s', '%s', '%s')", self.id,
+        log.debug1("%s.Set('%s', '%s', '%s')", self._log_prefix,
                    interface_name, property_name, new_value)
         self.parent.accessCheck(sender)
 
@@ -146,7 +147,11 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
-        pass
+        interface_name = dbus_to_python(interface_name, str)
+        changed_properties = dbus_to_python(changed_properties)
+        invalidated_properties = dbus_to_python(invalidated_properties)
+        log.debug1("%s.PropertiesChanged('%s', '%s', '%s')", self._log_prefix,
+                   interface_name, changed_properties, invalidated_properties)
 
     # S E T T I N G S
 
@@ -155,7 +160,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def getSettings(self, sender=None):
         """get settings for service
         """
-        log.debug1("config.service.%d.getSettings()", self.id)
+        log.debug1("%s.getSettings()", self._log_prefix)
         return self.config.get_service_config(self.obj)
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature=Service.DBUS_SIGNATURE)
@@ -164,7 +169,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         """update settings for service
         """
         settings = dbus_to_python(settings)
-        log.debug1("config.service.%d.update('...')", self.id)
+        log.debug1("%s.update('...')", self._log_prefix)
         self.parent.accessCheck(sender)
         self.obj = self.config.set_service_config(self.obj, settings)
         self.Updated(self.obj.name)
@@ -174,7 +179,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def loadDefaults(self, sender=None):
         """load default settings for builtin service
         """
-        log.debug1("config.service.%d.loadDefaults()", self.id)
+        log.debug1("%s.loadDefaults()", self._log_prefix)
         self.parent.accessCheck(sender)
         self.obj = self.config.load_service_defaults(self.obj)
         self.Updated(self.obj.name)
@@ -182,7 +187,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE, signature='s')
     @dbus_handle_exceptions
     def Updated(self, name):
-        log.debug1("config.service.%d.Updated('%s')" % (self.id, name))
+        log.debug1("%s.Updated('%s')" % (self._log_prefix, name))
 
     # R E M O V E
 
@@ -191,7 +196,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def remove(self, sender=None):
         """remove service
         """
-        log.debug1("config.service.%d.removeService()", self.id)
+        log.debug1("%s.removeService()", self._log_prefix)
         self.parent.accessCheck(sender)
         self.config.remove_service(self.obj)
         self.parent.removeService(self.obj)
@@ -199,7 +204,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE, signature='s')
     @dbus_handle_exceptions
     def Removed(self, name):
-        log.debug1("config.service.%d.Removed('%s')" % (self.id, name))
+        log.debug1("%s.Removed('%s')" % (self._log_prefix, name))
 
     # R E N A M E
 
@@ -209,7 +214,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         """rename service
         """
         name = dbus_to_python(name, str)
-        log.debug1("config.service.%d.rename('%s')", self.id, name)
+        log.debug1("%s.rename('%s')", self._log_prefix, name)
         self.parent.accessCheck(sender)
         self.obj = self.config.rename_service(self.obj, name)
         self.Renamed(name)
@@ -217,21 +222,21 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus.service.signal(DBUS_INTERFACE_CONFIG_SERVICE, signature='s')
     @dbus_handle_exceptions
     def Renamed(self, name):
-        log.debug1("config.service.%d.Renamed('%s')" % (self.id, name))
+        log.debug1("%s.Renamed('%s')" % (self._log_prefix, name))
 
     # version
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='s')
     @dbus_handle_exceptions
     def getVersion(self, sender=None):
-        log.debug1("config.service.%d.getVersion()", self.id)
+        log.debug1("%s.getVersion()", self._log_prefix)
         return self.getSettings()[0]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
     @dbus_handle_exceptions
     def setVersion(self, version, sender=None):
         version = dbus_to_python(version, str)
-        log.debug1("config.service.%d.setVersion('%s')", self.id, version)
+        log.debug1("%s.setVersion('%s')", self._log_prefix, version)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         settings[0] = version
@@ -242,14 +247,14 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='s')
     @dbus_handle_exceptions
     def getShort(self, sender=None):
-        log.debug1("config.service.%d.getShort()", self.id)
+        log.debug1("%s.getShort()", self._log_prefix)
         return self.getSettings()[1]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
     @dbus_handle_exceptions
     def setShort(self, short, sender=None):
         short = dbus_to_python(short, str)
-        log.debug1("config.service.%d.setShort('%s')", self.id, short)
+        log.debug1("%s.setShort('%s')", self._log_prefix, short)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         settings[1] = short
@@ -260,14 +265,14 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='s')
     @dbus_handle_exceptions
     def getDescription(self, sender=None):
-        log.debug1("config.service.%d.getDescription()", self.id)
+        log.debug1("%s.getDescription()", self._log_prefix)
         return self.getSettings()[2]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='s')
     @dbus_handle_exceptions
     def setDescription(self, description, sender=None):
         description = dbus_to_python(description, str)
-        log.debug1("config.service.%d.setDescription('%s')", self.id,
+        log.debug1("%s.setDescription('%s')", self._log_prefix,
                    description)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -279,7 +284,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='a(ss)')
     @dbus_handle_exceptions
     def getPorts(self, sender=None):
-        log.debug1("config.service.%d.getPorts()", self.id)
+        log.debug1("%s.getPorts()", self._log_prefix)
         return self.getSettings()[3]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='a(ss)')
@@ -293,7 +298,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
             else:
                 _ports.append(port)
         ports = _ports
-        log.debug1("config.service.%d.setPorts('[%s]')", self.id,
+        log.debug1("%s.setPorts('[%s]')", self._log_prefix,
                    ",".join("('%s, '%s')" % (port[0], port[1]) for port in ports))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -305,7 +310,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def addPort(self, port, protocol, sender=None):
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
-        log.debug1("config.service.%d.addPort('%s', '%s')", self.id, port,
+        log.debug1("%s.addPort('%s', '%s')", self._log_prefix, port,
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -319,7 +324,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def removePort(self, port, protocol, sender=None):
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
-        log.debug1("config.service.%d.removePort('%s', '%s')", self.id, port,
+        log.debug1("%s.removePort('%s', '%s')", self._log_prefix, port,
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -334,7 +339,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def queryPort(self, port, protocol, sender=None):
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
-        log.debug1("config.service.%d.queryPort('%s', '%s')", self.id, port,
+        log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
                    protocol)
         return (port,protocol) in self.getSettings()[3]
 
@@ -343,14 +348,14 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='as')
     @dbus_handle_exceptions
     def getProtocols(self, sender=None):
-        log.debug1("config.service.%d.getProtocols()", self.id)
+        log.debug1("%s.getProtocols()", self._log_prefix)
         return self.getSettings()[6]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='as')
     @dbus_handle_exceptions
     def setProtocols(self, protocols, sender=None):
         protocols = dbus_to_python(protocols, list)
-        log.debug1("config.service.%d.setProtocols('[%s]')", self.id,
+        log.debug1("%s.setProtocols('[%s]')", self._log_prefix,
                    ",".join(protocols))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -361,7 +366,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addProtocol(self, protocol, sender=None):
         protocol = dbus_to_python(protocol, str)
-        log.debug1("config.service.%d.addProtocol('%s')", self.id, protocol)
+        log.debug1("%s.addProtocol('%s')", self._log_prefix, protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if protocol in settings[6]:
@@ -373,7 +378,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeProtocol(self, protocol, sender=None):
         protocol = dbus_to_python(protocol, str)
-        log.debug1("config.service.%d.removeProtocol('%s')", self.id, protocol)
+        log.debug1("%s.removeProtocol('%s')", self._log_prefix, protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if protocol not in settings[6]:
@@ -386,7 +391,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryProtocol(self, protocol, sender=None):
         protocol = dbus_to_python(protocol, str)
-        log.debug1("config.service.%d.queryProtocol(%s')", self.id, protocol)
+        log.debug1("%s.queryProtocol(%s')", self._log_prefix, protocol)
         return protocol in self.getSettings()[6]
 
     # module
@@ -394,14 +399,14 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='as')
     @dbus_handle_exceptions
     def getModules(self, sender=None):
-        log.debug1("config.service.%d.getModules()", self.id)
+        log.debug1("%s.getModules()", self._log_prefix)
         return sorted(self.getSettings()[4])
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='as')
     @dbus_handle_exceptions
     def setModules(self, modules, sender=None):
         modules = dbus_to_python(modules, list)
-        log.debug1("config.service.%d.setModules('[%s]')", self.id,
+        log.debug1("%s.setModules('[%s]')", self._log_prefix,
                    ",".join(modules))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -412,7 +417,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def addModule(self, module, sender=None):
         module = dbus_to_python(module, str)
-        log.debug1("config.service.%d.addModule('%s')", self.id, module)
+        log.debug1("%s.addModule('%s')", self._log_prefix, module)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if module in settings[4]:
@@ -424,7 +429,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeModule(self, module, sender=None):
         module = dbus_to_python(module, str)
-        log.debug1("config.service.%d.removeModule('%s')", self.id, module)
+        log.debug1("%s.removeModule('%s')", self._log_prefix, module)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if module not in settings[4]:
@@ -437,7 +442,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryModule(self, module, sender=None):
         module = dbus_to_python(module, str)
-        log.debug1("config.service.%d.queryModule('%s')", self.id, module)
+        log.debug1("%s.queryModule('%s')", self._log_prefix, module)
         return module in self.getSettings()[4]
 
     # destination
@@ -445,15 +450,15 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, out_signature='a{ss}')
     @dbus_handle_exceptions
     def getDestinations(self, sender=None):
-        log.debug1("config.service.%d.getDestinations()", self.id)
+        log.debug1("%s.getDestinations()", self._log_prefix)
         return self.getSettings()[5]
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG_SERVICE, in_signature='a{ss}')
     @dbus_handle_exceptions
     def setDestinations(self, destinations, sender=None):
         destinations = dbus_to_python(destinations, dict)
-        log.debug1("config.service.%d.setDestinations({ipv4:'%s', ipv6:'%s'})",
-                   self.id, destinations.get('ipv4'), destinations.get('ipv6'))
+        log.debug1("%s.setDestinations({ipv4:'%s', ipv6:'%s'})",
+                   self._log_prefix, destinations.get('ipv4'), destinations.get('ipv6'))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         settings[5] = destinations
@@ -464,7 +469,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getDestination(self, family, sender=None):
         family = dbus_to_python(family, str)
-        log.debug1("config.service.%d.getDestination('%s')", self.id,
+        log.debug1("%s.getDestination('%s')", self._log_prefix,
                    family)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -477,7 +482,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def setDestination(self, family, address, sender=None):
         family = dbus_to_python(family, str)
         address = dbus_to_python(address, str)
-        log.debug1("config.service.%d.setDestination('%s', '%s')", self.id,
+        log.debug1("%s.setDestination('%s', '%s')", self._log_prefix,
                    family, address)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -491,7 +496,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def removeDestination(self, family, sender=None):
         family = dbus_to_python(family, str)
-        log.debug1("config.service.%d.removeDestination('%s')", self.id,
+        log.debug1("%s.removeDestination('%s')", self._log_prefix,
                    family)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -506,7 +511,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     def queryDestination(self, family, address, sender=None):
         family = dbus_to_python(family, str)
         address = dbus_to_python(address, str)
-        log.debug1("config.service.%d.queryDestination('%s', '%s')", self.id,
+        log.debug1("%s.queryDestination('%s', '%s')", self._log_prefix,
                    family, address)
         settings = self.getSettings()
         return (family in settings[5] and

@@ -224,7 +224,11 @@ class FirewallD(slip.dbus.service.Object):
     @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties,
                           invalidated_properties):
-        pass
+        interface_name = dbus_to_python(interface_name, str)
+        changed_properties = dbus_to_python(changed_properties)
+        invalidated_properties = dbus_to_python(invalidated_properties)
+        log.debug1("PropertiesChanged('%s', '%s', '%s')",
+                   interface_name, changed_properties, invalidated_properties)
 
     # reload
 
