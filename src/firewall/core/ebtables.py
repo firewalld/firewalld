@@ -58,9 +58,9 @@ class ebtables(object):
 
     def __remove_dangling_lock(self):
         if os.path.exists(self.ebtables_lock):
-            (status, ret) = runProg("pidof", [ "-s", "ebtables" ])
-            (status2, ret2) = runProg("pidof", [ "-s", "ebtables-restore" ])
-            if ret == "" and ret2 == "":
+            ret = runProg("pidof", [ "-s", "ebtables" ])
+            ret2 = runProg("pidof", [ "-s", "ebtables-restore" ])
+            if ret[1] == "" and ret2[1] == "":
                 log.warning("Removing dangling ebtables lock file: '%s'" %
                             self.ebtables_lock)
                 try:
@@ -75,7 +75,7 @@ class ebtables(object):
         rules = [ ]
         try:
             self.set_rules(rules, flush=False)
-        except ValueError as e:
+        except ValueError:
             return False
         return True
 
@@ -98,7 +98,7 @@ class ebtables(object):
         for rule in rules:
             try:
                 i = rule.index("-t")
-            except:
+            except Exception:
                 pass
             else:
                 if len(rule) >= i+1:
@@ -127,7 +127,7 @@ class ebtables(object):
 
         if log.getDebugLogLevel() > 2:
             try:
-                lines = readfile(temp_file.name)
+                readfile(temp_file.name)
             except:
                 pass
             else:
