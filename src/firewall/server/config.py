@@ -31,6 +31,7 @@ import slip.dbus.service
 
 from firewall.config import *
 from firewall.config.dbus import *
+from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.watcher import Watcher
 from firewall.core.logger import log
 from firewall.server.decorators import *
@@ -915,7 +916,7 @@ class FirewallDConfig(slip.dbus.service.Object):
         if len(ret) > 1:
             # Even it shouldn't happen, it's actually possible that
             # the same source is in several zone XML files
-            return " ".join(ret) + "  (ERROR: source '%s' is in %s zone XML files, can be only in one)" % (iface, len(ret))
+            return " ".join(ret) + "  (ERROR: source '%s' is in %s zone XML files, can be only in one)" % (source, len(ret))
         return ret[0] if ret else ""
 
     @dbus_service_method(DBUS_INTERFACE_CONFIG,
