@@ -2179,17 +2179,11 @@ class FirewallClient(object):
 
     @handle_exceptions
     def _signal_receiver(self, *args, **kwargs):
-        _args = [ ]
-        for arg in args:
-            _args.append(dbus_to_python(arg))
-        args = _args
-        if not "member" in kwargs:
+        if not "member" in kwargs or not "interface" in kwargs:
             return
+
         signal = kwargs["member"]
         interface = kwargs["interface"]
-
-        cb = None
-        cb_args = [ ]
 
         # config signals need special treatment
         # pimp signal name
@@ -2208,16 +2202,16 @@ class FirewallClient(object):
         elif interface == DBUS_INTERFACE_CONFIG_DIRECT:
             signal = "config:direct:" + signal
 
+        cb = None
         for callback in self._callbacks:
             if self._callbacks[callback] == signal and \
                     self._callbacks[callback] in self._callback:
                 cb = self._callback[self._callbacks[callback]]
-        if not cb:
+        if cb is None:
             return
 
-        cb_args.extend(args)
-
-        # call back ...
+        # call back with args converted to python types ...
+        cb_args = [ dbus_to_python(arg) for arg in args ]
         try:
             if cb[1]:
                 # add call data
