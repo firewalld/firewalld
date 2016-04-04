@@ -796,7 +796,7 @@ class FirewallClientServiceSettings(object):
         self.settings[5] = destinations
     @handle_exceptions
     def setDestination(self, dest_type, address):
-        if not dest_type in self.settings[5] or \
+        if dest_type not in self.settings[5] or \
            self.settings[5][dest_type] != address:
             self.settings[5][dest_type] = address
         else:
@@ -863,7 +863,7 @@ class FirewallClientIPSetSettings(object):
         self.settings[4] = options
     @handle_exceptions
     def addOption(self, key, value):
-        if not key in self.settings[4] or self.settings[4][key] != value:
+        if key not in self.settings[4] or self.settings[4][key] != value:
             self.settings[4][key] = value
         else:
             raise FirewallError(ALREADY_ENABLED, "'%s=%s'" % (key,value)
@@ -2175,7 +2175,7 @@ class FirewallClient(object):
 
     @handle_exceptions
     def _signal_receiver(self, *args, **kwargs):
-        if not "member" in kwargs or not "interface" in kwargs:
+        if "member" not in kwargs or "interface" not in kwargs:
             return
 
         signal = kwargs["member"]
