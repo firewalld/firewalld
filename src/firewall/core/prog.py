@@ -21,7 +21,9 @@
 
 import os
 
-def runProg(prog, argv=[ ], stdin=None):
+def runProg(prog, argv=None, stdin=None):
+    if argv is None:
+        argv = [ ]
     args = [ prog ] + argv
 
     (rfd, wfd) = os.pipe()
