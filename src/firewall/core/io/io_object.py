@@ -149,14 +149,14 @@ class UnexpectedElementError(Exception):
     def __init__(self, name):
         self.name = name
     def __str__(self):
-        return _("Unexpected element '%s'") % (self.name)
+        return "Unexpected element '%s'" % (self.name)
 
 class MissingAttributeError(Exception):
     def __init__(self, name, attribute):
         self.name = name
         self.attribute = attribute
     def __str__(self):
-        return _("Element '%s': missing '%s' attribute") % \
+        return "Element '%s': missing '%s' attribute" % \
             (self.name, self.attribute)
 
 class UnexpectedAttributeError(Exception):
@@ -164,7 +164,7 @@ class UnexpectedAttributeError(Exception):
         self.name = name
         self.attribute = attribute
     def __str__(self):
-        return _("Element '%s': unexpected attribute '%s'") % \
+        return "Element '%s': unexpected attribute '%s'" % \
             (self.name, self.attribute)
 
 class IO_Object_ContentHandler(sax.handler.ContentHandler):
