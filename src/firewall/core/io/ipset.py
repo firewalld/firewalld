@@ -26,7 +26,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall.errors import *
-from firewall.functions import checkProtocol, check_address, \
+from firewall.functions import checkProtocol, check_address, checkIP, checkIP6, \
                                checkIPnMask, checkIP6nMask, u2b_if_py2, \
                                check_mac
 from firewall.core.io.io_object import *
