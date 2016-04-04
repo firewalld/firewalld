@@ -819,6 +819,7 @@ log = Logger()
 
 # ---------------------------------------------------------------------------
 
+"""
 # Example
 if __name__ == '__main__':
     log.setInfoLogLevel(log.INFO2)
@@ -866,5 +867,6 @@ if __name__ == '__main__':
         a = b
     except Exception as e:
         log.exception()
+"""
 
 # vim:ts=4:sw=4:showmatch:expandtab
