@@ -21,6 +21,7 @@
 
 import os.path
 
+from firewall.errors import *
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
