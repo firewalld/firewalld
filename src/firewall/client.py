@@ -249,7 +249,7 @@ class FirewallClientZoneSettings(object):
             self.settings[9].remove((port,protocol,to_port,to_addr))
         else:
             raise FirewallError(NOT_ENABLED, "'%s:%s:%s:%s'" % \
-                                (port, protocol, toport, toaddr))
+                                (port, protocol, to_port, to_addr))
     @handle_exceptions
     def queryForwardPort(self, port, protocol, to_port, to_addr):
         if to_port is None:
