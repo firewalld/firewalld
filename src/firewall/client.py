@@ -47,8 +47,6 @@ not_authorized_loop = False
 def handle_exceptions(func, *args, **kwargs):
     """Decorator to handle exceptions
     """
-    global exception_handler
-    global not_authorized_loop
     authorized = False
     while not authorized:
         try:
@@ -2100,7 +2098,6 @@ class FirewallClient(object):
 
     @handle_exceptions
     def getExceptionHandler(self):
-        global exception_handler
         return exception_handler
 
     @handle_exceptions
@@ -2110,7 +2107,6 @@ class FirewallClient(object):
 
     @handle_exceptions
     def getNotAuthorizedLoop(self):
-        global not_authorized_loop
         return not_authorized_loop
 
     @handle_exceptions
