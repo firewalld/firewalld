@@ -179,7 +179,9 @@ def dbus_signature(obj):
     else:
         raise TypeError("Unhandled %s" % repr(obj))
 
-def dbus_introspection_prepare_properties(obj, interface, access={}):
+def dbus_introspection_prepare_properties(obj, interface, access=None):
+    if access is None:
+        access = { }
     dip = { }
     dip[interface] = { }
 
