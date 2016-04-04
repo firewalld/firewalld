@@ -242,7 +242,7 @@ class Zone(IO_Object):
                 self.ports.append(port)
         for proto in zone.protocols:
             if proto not in self.protocols:
-                self.protocols.append(protocol)
+                self.protocols.append(proto)
         for icmp in zone.icmp_blocks:
             if icmp not in self.icmp_blocks:
                 self.icmp_blocks.append(icmp)
@@ -463,7 +463,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 if not checkIPnMask(attrs["address"]) and \
                    not checkIP6nMask(attrs["address"]) and \
                    not check_mac(attrs["address"]):
-                    raise FirewallError(INVALID_ADDR, source)
+                    raise FirewallError(INVALID_ADDR, attrs["address"])
             if "ipset" in attrs:
                 entry = "ipset:%s" % attrs["ipset"]
                 if entry not in self.item.sources:
