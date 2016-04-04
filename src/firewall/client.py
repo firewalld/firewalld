@@ -1971,7 +1971,7 @@ class FirewallClient(object):
             try:
                 self.bus = slip.dbus.SystemBus()
                 self.bus.default_timeout = None
-            except:
+            except Exception:
                 print("Not using slip")
                 self.bus = dbus.SystemBus()
         else:
