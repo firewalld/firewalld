@@ -21,8 +21,6 @@
 
 
 from firewall.core.logger import log
-from firewall.functions import checkIPnMask, checkIP6nMask, \
-    checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.errors import FirewallError, \
     INVALID_IPSET, INVALID_TYPE, IPSET_WITH_TIMEOUT, ALREADY_ENABLED, NOT_ENABLED
 from firewall.core.ipset import remove_default_create_options
