@@ -206,7 +206,8 @@ class ebtables(object):
                     try:
                         self.__run([ "-t", table, "-P", chain, policy ])
                     except Exception as msg:
-                        log.error("Failed to set policy for %s: %s", ipv, msg)
+                        log.error("Failed to set policy for %s: %s", self.ipv,
+                                  msg)
                 else:
                     rules.append([ "-t", table, "-P", chain, policy ])
         if len(rules) > 0:
