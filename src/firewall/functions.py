@@ -79,7 +79,7 @@ def getPortRange(ports):
             elif id1 > id2:
                 return (id2, id1)
             else: # ids are the same
-                return (i1,)
+                return (id1,)
 
     # everything else "<port-str>[-<port-str>]"
     matched = [ ]
