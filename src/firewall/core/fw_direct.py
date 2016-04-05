@@ -19,14 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os.path
-from firewall.config import *
-from firewall import functions
-from firewall.fw_types import *
+from firewall import config
+from firewall.fw_types import LastUpdatedOrderedDict
 from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core.logger import log
-from firewall.errors import *
+from firewall import errors
 
 ############################################################################
 #
@@ -96,15 +94,15 @@ class FirewallDirect(object):
     def get_config(self):
         return (self._chains, self._rules, self._passthroughs)
 
-    def set_config(self, config):
-        (_chains, _rules, _passthroughs) = config
+    def set_config(self, conf):
+        (_chains, _rules, _passthroughs) = conf
         for table_id in _chains:
             (ipv, table) = table_id
             for chain in _chains[table_id]:
                 if not self.query_chain(ipv, table, chain):
                     try:
                         self.add_chain(ipv, table, chain)
-                    except FirewallError as error:
+                    except errors.FirewallError as error:
                         log.warning(str(error))
 
         for chain_id in _rules:
@@ -113,7 +111,7 @@ class FirewallDirect(object):
                 if not self.query_rule(ipv, table, chain, priority, args):
                     try:
                         self.add_rule(ipv, table, chain, priority, args)
-                    except FirewallError as error:
+                    except errors.FirewallError as error:
                         log.warning(str(error))
 
         for ipv in _passthroughs:
@@ -121,14 +119,14 @@ class FirewallDirect(object):
                 if not self.query_passthrough(ipv, args):
                     try:
                         self.add_passthrough(ipv, args)
-                    except FirewallError as error:
+                    except errors.FirewallError as error:
                         log.warning(str(error))
 
     def _check_ipv(self, ipv):
         ipvs = ['ipv4', 'ipv6', 'eb']
         if ipv not in ipvs:
-            raise FirewallError(INVALID_IPV,
-                                "'%s' not in '%s'" % (ipv, ipvs))
+            raise errors.FirewallError(errors.INVALID_IPV,
+                                       "'%s' not in '%s'" % (ipv, ipvs))
 
     def _check_ipv_table(self, ipv, table):
         self._check_ipv(ipv)
@@ -136,8 +134,8 @@ class FirewallDirect(object):
         tables = ipXtables.BUILT_IN_CHAINS.keys() if ipv in [ 'ipv4', 'ipv6' ] \
                                          else ebtables.BUILT_IN_CHAINS.keys()
         if table not in tables:
-            raise FirewallError(INVALID_TABLE,
-                                "'%s' not in '%s'" % (table, tables))
+            raise errors.FirewallError(errors.INVALID_TABLE,
+                                       "'%s' not in '%s'" % (table, tables))
 
     def _check_builtin_chain(self, ipv, table, chain):
         if ipv in ['ipv4', 'ipv6']:
@@ -147,15 +145,15 @@ class FirewallDirect(object):
             built_in_chains = ebtables.BUILT_IN_CHAINS[table]
             our_chains = ebtables.OUR_CHAINS[table]
         if chain in built_in_chains:
-            raise FirewallError(BUILTIN_CHAIN,
+            raise errors.FirewallError(errors.BUILTIN_CHAIN,
                  "chain '%s' is built-in chain" % chain)
         if chain in our_chains:
-            raise FirewallError(BUILTIN_CHAIN,
+            raise errors.FirewallError(errors.BUILTIN_CHAIN,
                  "chain '%s' is reserved" % chain)
         if ipv in [ "ipv4", "ipv6" ]:
-            if self._fw.zone.zone_from_chain(ipv, table, chain) != None:
-                raise FirewallError(INVALID_CHAIN,
-                                    "Chain '%s' is reserved" % chain)
+            if self._fw.zone.zone_from_chain(ipv, table, chain) is not None:
+                raise errors.FirewallError(errors.INVALID_CHAIN,
+                                           "Chain '%s' is reserved" % chain)
 
     # DIRECT CHAIN
 
@@ -167,12 +165,12 @@ class FirewallDirect(object):
         if add:
             if table_id in self._chains and \
                     chain in self._chains[table_id]:
-                raise FirewallError(ALREADY_ENABLED,
+                raise errors.FirewallError(errors.ALREADY_ENABLED,
                      "chain '%s' already is in '%s:%s'" % (chain, ipv, table))
         else:
             if table_id not in self._chains or \
                     chain not in self._chains[table_id]:
-                raise FirewallError(NOT_ENABLED,
+                raise errors.FirewallError(errors.NOT_ENABLED,
                     "chain '%s' is not in '%s:%s'" % (chain, ipv, table))
 
         rule = [ "-t", table ]
@@ -188,7 +186,7 @@ class FirewallDirect(object):
             self._fw.rule(ipv, rule)
         except Exception as msg:
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if add:
             self._chains.setdefault(table_id, [ ]).append(chain)
@@ -249,13 +247,13 @@ class FirewallDirect(object):
         if enable:
             if chain_id in self._rules and \
                     rule_id in self._rules[chain_id]:
-                raise FirewallError(ALREADY_ENABLED,
+                raise errors.FirewallError(errors.ALREADY_ENABLED,
                                     "rule '%s' already is in '%s:%s:%s'" % \
                                     (args, ipv, table, chain))
         else:
             if chain_id not in self._rules or \
                     rule_id not in self._rules[chain_id]:
-                raise FirewallError(NOT_ENABLED,
+                raise errors.FirewallError(errors.NOT_ENABLED,
                                     "rule '%s' is not in '%s:%s:%s'" % \
                                     (args, ipv, table, chain))
 
@@ -319,7 +317,7 @@ class FirewallDirect(object):
             self._fw.rule(ipv, rule)
         except Exception as msg:
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if enable:
             if chain_id not in self._rules:
@@ -372,22 +370,21 @@ class FirewallDirect(object):
             return self._fw.rule(ipv, args)
         except Exception as msg:
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
     # DIRECT PASSTHROUGH (tracked)
 
     def __passthrough(self, enable, ipv, args):
         self._check_ipv(ipv)
 
-        passthrough_id = (ipv, args)
         if enable:
             if ipv in self._passthroughs and args in self._passthroughs[ipv]:
-                raise FirewallError(ALREADY_ENABLED,
+                raise errors.FirewallError(errors.ALREADY_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
         else:
             if ipv not in self._passthroughs or \
                args not in self._passthroughs[ipv]:
-                raise FirewallError(NOT_ENABLED,
+                raise errors.FirewallError(errors.NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
 
         if enable:
@@ -397,7 +394,7 @@ class FirewallDirect(object):
                 table = "filter"
                 try:
                     i = args.index("-t")
-                except:
+                except Exception:
                     pass
                 else:
                     if len(args) >= i+1:
@@ -408,7 +405,7 @@ class FirewallDirect(object):
                              "-N", "--new-chain" ]:
                     try:
                         i = args.index(opt)
-                    except:
+                    except Exception:
                         pass
                     else:
                         if len(args) >= i+1:
@@ -423,7 +420,7 @@ class FirewallDirect(object):
             self._fw.rule(ipv, _args)
         except Exception as msg:
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if enable:
             if ipv not in self._passthroughs:
@@ -476,7 +473,7 @@ class FirewallDirect(object):
         # intersection of args and not_allowed is not empty, i.e.
         # something from args is not allowed
         if len(args & not_allowed) > 0:
-            raise FirewallError(INVALID_PASSTHROUGH,
+            raise errors.FirewallError(errors.INVALID_PASSTHROUGH,
                                 "arg '%s' is not allowed" %
                                 list(args & not_allowed)[0])
 
@@ -487,7 +484,7 @@ class FirewallDirect(object):
         # empty intersection of args and needed, i.e.
         # none from args contains any needed command
         if len(args & needed) == 0:
-            raise FirewallError(INVALID_PASSTHROUGH,
+            raise errors.FirewallError(errors.INVALID_PASSTHROUGH,
                                 "no '-A', '-I' or '-N' arg")
 
     def reverse_passthrough(self, args):
@@ -510,7 +507,7 @@ class FirewallDirect(object):
         for x in replace_args:
             try:
                 idx = ret_args.index(x)
-            except:
+            except Exception:
                 continue
 
             if x in [ "-I", "--insert" ]:
@@ -519,7 +516,7 @@ class FirewallDirect(object):
                 # position idx+2
                 try:
                     int(ret_args[idx+2])
-                except:
+                except Exception:
                     pass
                 else:
                     ret_args.pop(idx+2)
@@ -527,4 +524,5 @@ class FirewallDirect(object):
             ret_args[idx] = replace_args[x]
             return ret_args
 
-        raise FirewallError(INVALID_PASSTHROUGH, "no '-A', '-I' or '-N' arg")
+        raise errors.FirewallError(errors.INVALID_PASSTHROUGH,
+                                   "no '-A', '-I' or '-N' arg")
