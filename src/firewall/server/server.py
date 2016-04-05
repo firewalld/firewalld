@@ -37,7 +37,7 @@ import dbus.service
 import dbus.mainloop.glib
 import slip.dbus
 
-from firewall.config.dbus import *
+from firewall import config
 from firewall.core.logger import log
 from firewall.server.firewalld import FirewallD
 
@@ -78,22 +78,22 @@ def run_server(debug_gc=False):
                       ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
                 print("GARBAGE OBJECTS (%d):\n" % len(gc.garbage))
                 for x in gc.garbage:
-                    print(type(x),"\n  ",)
+                    print(type(x), "\n  ", )
                     print(pformat(x))
                 print("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                       "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
-            id = GLib.timeout_add_seconds(gc_timeout, gc_collect)
+            GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
     try:
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         bus = dbus.SystemBus()
-        name = dbus.service.BusName(DBUS_INTERFACE, bus=bus)
-        service = FirewallD(name, DBUS_PATH)
+        name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+        service = FirewallD(name, config.dbus.DBUS_PATH)
 
         mainloop = GLib.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)
         if debug_gc:
-            id = GLib.timeout_add_seconds(gc_timeout, gc_collect)
+            GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
         # use unix_signal_add if available, else unix_signal_add_full
         if hasattr(GLib, 'unix_signal_add'):
