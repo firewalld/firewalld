@@ -173,7 +173,7 @@ class FirewallZone(object):
     # zone from chain
 
     def zone_from_chain(self, ipv, table, chain):
-        if not "_" in chain:
+        if "_" not in chain:
             # no zone chain
             return None
         splits = chain.split("_")
@@ -196,7 +196,7 @@ class FirewallZone(object):
         # Create zone base chains if the chain is reserved for a zone
         if ipv in [ "ipv4", "ipv6" ]:
             x = self.zone_from_chain(ipv, table, chain)
-            if x != None:
+            if x is not None:
                 (_zone, _chain) = x
                 self.add_chain(_zone, table, _chain)
 
@@ -253,7 +253,7 @@ class FirewallZone(object):
                chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                 rules.append((ipv, [ _zone, 4, "-t", table, "-j", target ]))
 
-            if self._fw._log_denied != "off":
+            if self._fw.get_log_denied() != "off":
                 if table == "filter" and \
                    chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                     if target in [ "REJECT", "%%REJECT%%" ]:
@@ -652,7 +652,7 @@ class FirewallZone(object):
 
         # For mac source bindings ipv is an empty string, the mac source will
         # be added for ipv4 and ipv6
-        if ipv == "" or ipv == None:
+        if ipv == "" or ipv is None:
             for ipv in [ "ipv4", "ipv6" ]:
                 for table in ZONE_CHAINS:
                     for chain in ZONE_CHAINS[table]:
@@ -932,8 +932,8 @@ class FirewallZone(object):
             ipvs = [ "ipv4", "ipv6" ]
 
         source_ipv = self.__rule_source_ipv(rule.source)
-        if source_ipv != None:
-            if rule.family != None:
+        if source_ipv is not None:
+            if rule.family is not None:
                 # rule family is defined by user, no way to change it
                 if rule.family != source_ipv:
                     raise errors.FirewallError(
@@ -1723,7 +1723,7 @@ class FirewallZone(object):
         _obj = self._zones[_zone]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if not forward_id in _obj.settings["forward_ports"]:
+        if forward_id not in _obj.settings["forward_ports"]:
             raise errors.FirewallError(errors.NOT_ENABLED,
                                        "'%s:%s:%s:%s' not in '%s'" % \
                                        (port, protocol, toport, toaddr, _zone))
