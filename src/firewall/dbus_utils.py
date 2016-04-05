@@ -33,12 +33,12 @@ def command_of_pid(pid):
     try:
         with open("/proc/%d/cmdline" % pid, "r") as f:
             cmd = f.readlines()[0].replace('\0', " ").strip()
-    except:
+    except Exception:
         return None
     return cmd
 
 def pid_of_sender(bus, sender):
-    """ Get pid from sender string using 
+    """ Get pid from sender string using
     org.freedesktop.DBus.GetConnectionUnixProcessID """
 
     dbus_obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
@@ -51,7 +51,7 @@ def pid_of_sender(bus, sender):
     return pid
 
 def uid_of_sender(bus, sender):
-    """ Get user id from sender string using 
+    """ Get user id from sender string using
     org.freedesktop.DBus.GetConnectionUnixUser """
 
     dbus_obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
@@ -73,15 +73,15 @@ def user_of_uid(uid):
     return pws[0]
 
 def context_of_sender(bus, sender):
-    """ Get SELinux context from sender string using 
+    """ Get SELinux context from sender string using
     org.freedesktop.DBus.GetConnectionSELinuxSecurityContext """
 
     dbus_obj = bus.get_object('org.freedesktop.DBus', '/org/freedesktop/DBus')
     dbus_iface = dbus.Interface(dbus_obj, 'org.freedesktop.DBus')
 
     try:
-        context =  dbus_iface.GetConnectionSELinuxSecurityContext(sender)
-    except:
+        context = dbus_iface.GetConnectionSELinuxSecurityContext(sender)
+    except Exception:
         return None
 
     return "".join(map(chr, dbus_to_python(context)))
@@ -185,24 +185,25 @@ def dbus_introspection_prepare_properties(obj, interface, access=None):
     dip = { }
     dip[interface] = { }
 
-    for key,value in obj.GetAll(interface).items():
+    for key, value in obj.GetAll(interface).items():
         dip[interface][key] = { "type": dbus_signature(value) }
         if key in access:
             dip[interface][key]["access"] = access[key]
         else:
             dip[interface][key]["access"] = "read"
 
-    obj._fw_dbus_properties = dip
+    setattr(obj, "_fw_dbus_properties", dip)
 
 def dbus_introspection_add_properties(obj, data, interface):
     doc = minidom.parseString(data)
 
     if hasattr(obj, "_fw_dbus_properties"):
+        dip = getattr(obj, "_fw_dbus_properties")
         for node in doc.getElementsByTagName("interface"):
             if node.hasAttribute("name") and \
                node.getAttribute("name") == interface:
-                if interface in obj._fw_dbus_properties:
-                    for key,items in obj._fw_dbus_properties[interface].items():
+                if interface in dip:
+                    for key,items in dip[interface].items():
                         prop = doc.createElement("property")
                         prop.setAttribute("name", key)
                         prop.setAttribute("type", items["type"])
