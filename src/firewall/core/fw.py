@@ -19,9 +19,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os.path
+import os.path, sys
 import copy
-from firewall.config import *
+from firewall import config
 from firewall import functions
 from firewall.core import ipXtables
 from firewall.core import ebtables
@@ -41,7 +41,7 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.core.io.ipset import ipset_reader
-from firewall.errors import *
+from firewall import errors
 
 ############################################################################
 #
@@ -51,7 +51,7 @@ from firewall.errors import *
 
 class Firewall(object):
     def __init__(self):
-        self.firewalld_conf = firewalld_conf(FIREWALLD_CONF)
+        self.firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
 
         self.ip4tables_backend = ipXtables.ip4tables()
         self.ip4tables_enabled = True
@@ -90,11 +90,11 @@ class Firewall(object):
         self._module_refcount = { }
         self._marks = [ ]
         # fallback settings will be overloaded by firewalld.conf
-        self._min_mark = FALLBACK_MINIMAL_MARK
-        self.cleanup_on_exit = FALLBACK_CLEANUP_ON_EXIT
-        self.ipv6_rpfilter_enabled = FALLBACK_IPV6_RPFILTER
-        self._individual_calls = FALLBACK_INDIVIDUAL_CALLS
-        self._log_denied = FALLBACK_LOG_DENIED
+        self._min_mark = config.FALLBACK_MINIMAL_MARK
+        self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
+        self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
+        self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
+        self._log_denied = config.FALLBACK_LOG_DENIED
 
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
@@ -119,7 +119,7 @@ class Firewall(object):
 
     def _start_check(self):
         try:
-            x = self.ipset_backend.list()
+            self.ipset_backend.list()
         except:
             log.error("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
@@ -131,10 +131,10 @@ class Firewall(object):
 
     def _start(self):
         # initialize firewall
-        default_zone = FALLBACK_ZONE
+        default_zone = config.FALLBACK_ZONE
 
         # load firewalld config
-        log.debug1("Loading firewalld config file '%s'", FIREWALLD_CONF)
+        log.debug1("Loading firewalld config file '%s'", config.FIREWALLD_CONF)
         try:
             self.firewalld_conf.read()
         except Exception as msg:
@@ -157,7 +157,7 @@ class Firewall(object):
                     log.debug1("Lockdown is enabled")
                     try:
                         self.policies.enable_lockdown()
-                    except FirewallError:
+                    except errors.FirewallError:
                         # already enabled, this is probably reload
                         pass
 
@@ -212,26 +212,26 @@ class Firewall(object):
         self.config.set_policies(copy.deepcopy(self.policies))
 
         # load ipset files
-        self._loader(FIREWALLD_IPSETS, "ipset")
-        self._loader(ETC_FIREWALLD_IPSETS, "ipset")
+        self._loader(config.FIREWALLD_IPSETS, "ipset")
+        self._loader(config.ETC_FIREWALLD_IPSETS, "ipset")
 
         # load icmptype files
-        self._loader(FIREWALLD_ICMPTYPES, "icmptype")
-        self._loader(ETC_FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
 
         if len(self.icmptype.get_icmptypes()) == 0:
             log.error("No icmptypes found.")
 
         # load service files
-        self._loader(FIREWALLD_SERVICES, "service")
-        self._loader(ETC_FIREWALLD_SERVICES, "service")
+        self._loader(config.FIREWALLD_SERVICES, "service")
+        self._loader(config.ETC_FIREWALLD_SERVICES, "service")
 
         if len(self.service.get_services()) == 0:
             log.error("No services found.")
 
         # load zone files
-        self._loader(FIREWALLD_ZONES, "zone")
-        self._loader(ETC_FIREWALLD_ZONES, "zone")
+        self._loader(config.FIREWALLD_ZONES, "zone")
+        self._loader(config.ETC_FIREWALLD_ZONES, "zone")
 
         if len(self.zone.get_zones()) == 0:
             log.fatal("No zones found.")
@@ -253,14 +253,15 @@ class Firewall(object):
         self.zone.apply_zones()
 
         # load direct rules
-        obj = Direct(FIREWALLD_DIRECT)
-        if os.path.exists(FIREWALLD_DIRECT):
-            log.debug1("Loading direct rules file '%s'" % FIREWALLD_DIRECT)
+        obj = Direct(config.FIREWALLD_DIRECT)
+        if os.path.exists(config.FIREWALLD_DIRECT):
+            log.debug1("Loading direct rules file '%s'" % \
+                       config.FIREWALLD_DIRECT)
             try:
                 obj.read()
             except Exception as msg:
                 log.debug1("Failed to load direct rules file '%s': %s",
-                           FIREWALLD_DIRECT, msg)
+                           config.FIREWALLD_DIRECT, msg)
         self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
 
@@ -297,7 +298,7 @@ class Firewall(object):
             return
 
         if combine:
-            if path.startswith(ETC_FIREWALLD) and reader_type == "zone":
+            if path.startswith(config.ETC_FIREWALLD) and reader_type == "zone":
                 combined_zone = Zone()
                 combined_zone.name = os.path.basename(path)
                 combined_zone.check_name(combined_zone.name)
@@ -308,7 +309,7 @@ class Firewall(object):
 
         for filename in sorted(os.listdir(path)):
             if not filename.endswith(".xml"):
-                if path.startswith(ETC_FIREWALLD) and \
+                if path.startswith(config.ETC_FIREWALLD) and \
                         reader_type == "zone" and \
                         os.path.isdir("%s/%s" % (path, filename)):
                     self._loader("%s/%s" % (path, filename), reader_type,
@@ -326,7 +327,7 @@ class Firewall(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.icmptype.remove_icmptype(orig_obj.name)
-                    elif obj.path.startswith(ETC_FIREWALLD):
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
                     self.icmptype.add_icmptype(obj)
                     # add a deep copy to the configuration interface
@@ -339,7 +340,7 @@ class Firewall(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.service.remove_service(orig_obj.name)
-                    elif obj.path.startswith(ETC_FIREWALLD):
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
                     self.service.add_service(obj)
                     # add a deep copy to the configuration interface
@@ -367,7 +368,7 @@ class Firewall(object):
                                        reader_type,
                                        orig_obj.name, orig_obj.path,
                                        orig_obj.filename)
-                    elif obj.path.startswith(ETC_FIREWALLD):
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
                         config_obj.default = True
                     self.config.add_zone(config_obj)
@@ -386,14 +387,14 @@ class Firewall(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.ipset.remove_ipset(orig_obj.name)
-                    elif obj.path.startswith(ETC_FIREWALLD):
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
                     self.ipset.add_ipset(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_ipset(copy.deepcopy(obj))
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
-            except FirewallError as msg:
+            except errors.FirewallError as msg:
                 log.error("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
             except Exception as msg:
@@ -666,8 +667,8 @@ class Firewall(object):
                 rule[i:i+1] = [ "REJECT", "--reject-with",
                                 ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
             else:
-                raise FirewallError(EBTABLES_NO_REJECT,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                raise errors.FirewallError(errors.EBTABLES_NO_REJECT,
+                                           "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
         # replace %%ICMP%%
         try:
@@ -678,8 +679,8 @@ class Firewall(object):
             if ipv in [ "ipv4", "ipv6" ]:
                 rule[i] = ipXtables.ICMP[ipv]
             else:
-                raise FirewallError(INVALID_IPV,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                raise errors.FirewallError(errors.INVALID_IPV,
+                                           "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
         # replace %%LOGTYPE%%
         try:
@@ -690,8 +691,8 @@ class Firewall(object):
             if self._log_denied == "off":
                 return ""
             if ipv not in [ "ipv4", "ipv6" ]:
-                raise FirewallError(INVALID_IPV,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                raise errors.FirewallError(errors.INVALID_IPV,
+                                           "'%s' not in {'ipv4'|'ipv6'}" % ipv)
             if self._log_denied in [ "unicast", "broadcast", "multicast" ]:
                 rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
                                 self._log_denied ]
@@ -719,8 +720,8 @@ class Firewall(object):
             if self.ebtables_enabled:
                 return self.ebtables_backend.set_rule(rule)
         else:
-            raise FirewallError(INVALID_IPV,
-                                "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
+            raise errors.FirewallError(errors.INVALID_IPV,
+                                       "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
 
         return ""
 
@@ -738,8 +739,8 @@ class Firewall(object):
                     rule[i:i+1] = [ "REJECT", "--reject-with",
                                     ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
                 else:
-                    raise FirewallError(EBTABLES_NO_REJECT,
-                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                    raise errors.FirewallError(errors.EBTABLES_NO_REJECT,
+                                               "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
             # replace %%ICMP%%
             try:
@@ -750,8 +751,8 @@ class Firewall(object):
                 if ipv in [ "ipv4", "ipv6" ]:
                     rule[i] = ipXtables.ICMP[ipv]
                 else:
-                    raise FirewallError(INVALID_IPV,
-                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                    raise errors.FirewallError(errors.INVALID_IPV,
+                                               "'%s' not in {'ipv4'|'ipv6'}" % ipv)
 
             # replace %%LOGTYPE%%
             try:
@@ -762,8 +763,8 @@ class Firewall(object):
                 if self._log_denied == "off":
                     continue
                 if ipv not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(INVALID_IPV,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                    raise errors.FirewallError(errors.INVALID_IPV,
+                                               "'%s' not in {'ipv4'|'ipv6'}" % ipv)
                 if self._log_denied in [ "unicast", "broadcast",
                                          "multicast" ]:
                     rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
@@ -786,8 +787,8 @@ class Firewall(object):
             if self.ebtables_enabled:
                 return self.ebtables_backend.set_rules(_rules)
         else:
-            raise FirewallError(INVALID_IPV,
-                                "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
+            raise errors.FirewallError(errors.INVALID_IPV,
+                                       "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
 
         return ""
 
@@ -795,19 +796,19 @@ class Firewall(object):
 
     def check_panic(self):
         if self._panic:
-            raise FirewallError(PANIC_MODE)
+            raise errors.FirewallError(errors.PANIC_MODE)
 
     def check_zone(self, zone):
         _zone = zone
         if not _zone or _zone == "":
             _zone = self.get_default_zone()
         if _zone not in self.zone.get_zones():
-            raise FirewallError(INVALID_ZONE, _zone)
+            raise errors.FirewallError(errors.INVALID_ZONE, _zone)
         return _zone
 
     def check_interface(self, interface):
         if not functions.checkInterface(interface):
-            raise FirewallError(INVALID_INTERFACE, interface)
+            raise errors.FirewallError(errors.INVALID_INTERFACE, interface)
 
     def check_service(self, service):
         self.service.check_service(service)
@@ -825,29 +826,29 @@ class Firewall(object):
                 log.debug1("'%s': port is ambiguous" % port)
             elif len(range) == 2 and range[0] >= range[1]:
                 log.debug1("'%s': range start >= end" % port)
-            raise FirewallError(INVALID_PORT, port)
+            raise errors.FirewallError(errors.INVALID_PORT, port)
 
     def check_tcpudp(self, protocol):
         if not protocol:
-            raise FirewallError(MISSING_PROTOCOL)
+            raise errors.FirewallError(errors.MISSING_PROTOCOL)
         if not protocol in [ "tcp", "udp" ]:
-            raise FirewallError(INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'}" % protocol)
+            raise errors.FirewallError(errors.INVALID_PROTOCOL,
+                                       "'%s' not in {'tcp'|'udp'}" % protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):
-            raise FirewallError(INVALID_ADDR, ip)
+            raise errors.FirewallError(errors.INVALID_ADDR, ip)
 
     def check_address(self, ipv, source):
         if ipv == "ipv4":
             if not functions.checkIPnMask(source):
-                raise FirewallError(INVALID_ADDR, source)
+                raise errors.FirewallError(errors.INVALID_ADDR, source)
         elif ipv == "ipv6":
             if not functions.checkIP6nMask(source):
-                raise FirewallError(INVALID_ADDR, source)
+                raise errors.FirewallError(errors.INVALID_ADDR, source)
         else:
-            raise FirewallError(INVALID_IPV,
-                                "'%s' not in {'ipv4'|'ipv6'}")
+            raise errors.FirewallError(errors.INVALID_IPV,
+                                       "'%s' not in {'ipv4'|'ipv6'}")
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
@@ -856,8 +857,8 @@ class Firewall(object):
         if not isinstance(timeout, int):
             raise TypeError("%s is %s, expected int" % (timeout, type(timeout)))
         if int(timeout) < 0:
-            raise FirewallError(INVALID_VALUE,
-                                "timeout '%d' is not positive number" % timeout)
+            raise errors.FirewallError(errors.INVALID_VALUE,
+                                       "timeout '%d' is not positive number" % timeout)
 
     # RELOAD
 
@@ -934,26 +935,26 @@ class Firewall(object):
 
     def enable_panic_mode(self):
         if self._panic:
-            raise FirewallError(ALREADY_ENABLED,
-                                "panic mode already enabled")
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "panic mode already enabled")
 
         # TODO: use rule in raw table not default chain policy
         try:
             self._set_policy("DROP", "all")
         except Exception as msg:
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
         self._panic = True
 
     def disable_panic_mode(self):
         if not self._panic:
-            raise FirewallError(NOT_ENABLED,
-                                "panic mode is not enabled")
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "panic mode is not enabled")
 
         # TODO: use rule in raw table not default chain policy
         try:
             self._set_policy("ACCEPT", "all")
         except Exception as msg:
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
         self._panic = False
 
     def query_panic_mode(self):
@@ -965,9 +966,9 @@ class Firewall(object):
         return self._log_denied
 
     def set_log_denied(self, value):
-        if value not in LOG_DENIED_VALUES:
-            raise FirewallError(INVALID_VALUE, "'%s', choose from '%s'" % \
-                                (value, "','".join(LOG_DENIED_VALUES)))
+        if value not in config.LOG_DENIED_VALUES:
+            raise errors.FirewallError(errors.INVALID_VALUE, "'%s', choose from '%s'" % \
+                                       (value, "','".join(config.LOG_DENIED_VALUES)))
 
         if value != self.get_log_denied():
             self._log_denied = value
@@ -977,7 +978,7 @@ class Firewall(object):
             # now reload the firewall
             self.reload()
         else:
-            raise FirewallError(ALREADY_SET, value)
+            raise errors.FirewallError(errors.ALREADY_SET, value)
 
     # DEFAULT ZONE
 
@@ -1003,4 +1004,4 @@ class Firewall(object):
                     # (not those that were added to specific zone same as default)
                     self.zone.change_zone_of_interface("", iface)
         else:
-            raise FirewallError(ZONE_ALREADY_SET, _zone)
+            raise errors.FirewallError(errors.ZONE_ALREADY_SET, _zone)
