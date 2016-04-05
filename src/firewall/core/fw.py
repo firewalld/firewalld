@@ -120,7 +120,7 @@ class Firewall(object):
     def _start_check(self):
         try:
             self.ipset_backend.list()
-        except:
+        except Exception:
             log.error("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
             self.ipset_enabled = False
@@ -189,7 +189,7 @@ class Firewall(object):
 
             if self.ebtables_enabled and not self._individual_calls and \
                not self.ebtables_backend.restore_noflush_option:
-                log.debug1("ebtables-restore is not supporting the --noflush option, will therefore not be used")
+                log.debug1("ebtables-restore is not supporting the --noflush option, disabling.")
 
         self.config.set_firewalld_conf(copy.deepcopy(self.firewalld_conf))
 
@@ -409,7 +409,7 @@ class Firewall(object):
                            orig_obj.filename)
                 try:
                     self.zone.remove_zone(combined_zone.name)
-                except:
+                except Exception:
                     pass
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
@@ -660,7 +660,7 @@ class Firewall(object):
         # replace %%REJECT%%
         try:
             i = rule.index("%%REJECT%%")
-        except:
+        except Exception:
             pass
         else:
             if ipv in [ "ipv4", "ipv6" ]:
@@ -673,7 +673,7 @@ class Firewall(object):
         # replace %%ICMP%%
         try:
             i = rule.index("%%ICMP%%")
-        except:
+        except Exception:
             pass
         else:
             if ipv in [ "ipv4", "ipv6" ]:
@@ -685,7 +685,7 @@ class Firewall(object):
         # replace %%LOGTYPE%%
         try:
             i = rule.index("%%LOGTYPE%%")
-        except:
+        except Exception:
             pass
         else:
             if self._log_denied == "off":
@@ -732,7 +732,7 @@ class Firewall(object):
             # replace %%REJECT%%
             try:
                 i = rule.index("%%REJECT%%")
-            except:
+            except Exception:
                 pass
             else:
                 if ipv in [ "ipv4", "ipv6" ]:
@@ -745,7 +745,7 @@ class Firewall(object):
             # replace %%ICMP%%
             try:
                 i = rule.index("%%ICMP%%")
-            except:
+            except Exception:
                 pass
             else:
                 if ipv in [ "ipv4", "ipv6" ]:
@@ -757,7 +757,7 @@ class Firewall(object):
             # replace %%LOGTYPE%%
             try:
                 i = rule.index("%%LOGTYPE%%")
-            except:
+            except Exception:
                 pass
             else:
                 if self._log_denied == "off":
@@ -814,24 +814,24 @@ class Firewall(object):
         self.service.check_service(service)
 
     def check_port(self, port):
-        range = functions.getPortRange(port)
+        _range = functions.getPortRange(port)
 
-        if range == -2 or range == -1 or range is None or \
-                (len(range) == 2 and range[0] >= range[1]):
-            if range == -2:
+        if _range == -2 or _range == -1 or _range is None or \
+                (len(_range) == 2 and _range[0] >= _range[1]):
+            if _range == -2:
                 log.debug1("'%s': port > 65535" % port)
-            elif range == -1:
+            elif _range == -1:
                 log.debug1("'%s': port is invalid" % port)
-            elif range is None:
+            elif _range is None:
                 log.debug1("'%s': port is ambiguous" % port)
-            elif len(range) == 2 and range[0] >= range[1]:
+            elif len(_range) == 2 and _range[0] >= _range[1]:
                 log.debug1("'%s': range start >= end" % port)
             raise errors.FirewallError(errors.INVALID_PORT, port)
 
     def check_tcpudp(self, protocol):
         if not protocol:
             raise errors.FirewallError(errors.MISSING_PROTOCOL)
-        if not protocol in [ "tcp", "udp" ]:
+        if protocol not in [ "tcp", "udp" ]:
             raise errors.FirewallError(errors.INVALID_PROTOCOL,
                                        "'%s' not in {'tcp'|'udp'}" % protocol)
 
