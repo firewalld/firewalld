@@ -102,8 +102,8 @@ class IPSet(IO_Object):
                         "entry '%s' does not match ipset type '%s'" % \
                         (entry, ipset_type))
                 for split in splits:
-                    if (family == "ipv4" and not checkIP(entry)) or \
-                       (family == "ipv6" and not checkIP6(entry)):
+                    if (family == "ipv4" and not checkIP(split)) or \
+                       (family == "ipv6" and not checkIP6(split)):
                         raise FirewallError(
                             INVALID_ENTRY,
                             "entry '%s' does not match ipset type '%s'" % \
