@@ -63,6 +63,9 @@ class FirewallIPSet(object):
         if name not in self.get_ipsets():
             raise FirewallError(INVALID_IPSET, name)
 
+    def query_ipset(self, name):
+        return name in self.get_ipsets()
+
     def get_ipsets(self):
         return sorted(self._ipsets.keys())
 
