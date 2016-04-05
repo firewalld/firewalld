@@ -47,8 +47,9 @@ from firewall.server.firewalld import FirewallD
 #
 ############################################################################
 
-def sighup(data):
-    os.system("firewall-cmd --reload &")
+def sighup(service):
+    service.reload()
+    return True
 
 def sigterm(mainloop):
     mainloop.quit()
@@ -101,7 +102,7 @@ def run_server(debug_gc=False):
             unix_signal_add = GLib.unix_signal_add_full
 
         unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGHUP,
-                        sighup, None)
+                        sighup, service)
         unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGTERM,
                         sigterm, mainloop)
 
