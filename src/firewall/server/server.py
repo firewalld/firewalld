@@ -25,7 +25,7 @@
 #   Thomas Liu  <tliu@redhat.com>
 #   Dan Walsh <dwalsh@redhat.com>
 
-import os, sys
+import sys
 import signal
 
 # force use of pygobject3 in python-slip
