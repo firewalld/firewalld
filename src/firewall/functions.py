@@ -38,34 +38,37 @@ def getPortID(port):
     """
     
     if isinstance(port, int):
-        id = port
+        _id = port
     else:
         if port:
             port = port.strip()
         try:
-            id = int(port)
+            _id = int(port)
         except ValueError:
             try:
-                id = socket.getservbyname(port)
-            except:
+                _id = socket.getservbyname(port)
+            except Exception:
                 return -1
-    if id > 65535:
+    if _id > 65535:
         return -2
-    return id
+    return _id
 
 def getPortRange(ports):
     """ Get port range for port range string or single port id
 
     @param ports an integer or port string or port range string
-    @return Array containing start and end port id for a valid range or -1 if port can not be found and -2 if port is too big for integer input or -1 for invalid ranges or None if the range is ambiguous.
+    @return Array containing start and end port id for a valid range or
+      -1 if port can not be found or
+      -2 if port is too big for integer input or
+      -1 for invalid ranges or None if the range is ambiguous.
     """
 
     # "<port-id>" case
     if isinstance(ports, int) or ports.isdigit():
-        id = getPortID(ports)
-        if id >= 0:
-            return (id,)
-        return id
+        _id = getPortID(ports)
+        if _id >= 0:
+            return (_id,)
+        return _id
 
     splits = ports.split("-")
 
@@ -117,13 +120,13 @@ def portStr(port, delimiter=":"):
     if port == "":
         return ""
 
-    range = getPortRange(port)
-    if isinstance(range, int) and range < 0:
+    _range = getPortRange(port)
+    if isinstance(_range, int) and _range < 0:
         return None
-    elif len(range) == 1:
-        return "%s" % range
+    elif len(_range) == 1:
+        return "%s" % _range
     else:
-        return "%s%s%s" % (range[0], delimiter, range[1])
+        return "%s%s%s" % (_range[0], delimiter, _range[1])
 
 def getServiceName(port, proto):
     """ Check and Get service name from port and proto string combination using socket.getservbyport
@@ -135,7 +138,7 @@ def getServiceName(port, proto):
 
     try:
         name = socket.getservbyport(int(port), proto)
-    except:
+    except Exception:
         return None
     return name
 
@@ -212,7 +215,7 @@ def checkProtocol(protocol):
         # string
         try:
             socket.getprotobyname(protocol)
-        except:
+        except Exception:
             return False
     else:
         if i < 0 or i > 255:
@@ -242,7 +245,7 @@ def checkInterface(iface):
 def checkUINT32(val):
     try:
         x = int(val, 0)
-    except:
+    except Exception:
         return False
     else:
         if x >= 0 and x <= 4294967295:
@@ -261,7 +264,7 @@ def firewalld_is_active():
     try:
         with open(FIREWALLD_PIDFILE, "r") as fd:
             pid = fd.readline()
-    except:
+    except Exception:
         return False
 
     if not os.path.exists("/proc/%s" % pid):
@@ -270,7 +273,7 @@ def firewalld_is_active():
     try:
         with open("/proc/%s/cmdline" % pid, "r") as fd:
             cmdline = fd.readline()
-    except:
+    except Exception:
         return False
 
     if "firewalld" in cmdline:
@@ -291,7 +294,6 @@ def tempFile():
     return None
 
 def readfile(filename):
-    i = 1
     try:
         with open(filename, "r") as f:
             return f.readlines()
@@ -316,16 +318,16 @@ def enable_ip_forwarding(ipv):
     return False
 
 def check_port(port):
-    range = getPortRange(port)
-    if range == -2 or range == -1 or range is None or \
-            (len(range) == 2 and range[0] >= range[1]):
-        if range == -2:
+    _range = getPortRange(port)
+    if _range == -2 or _range == -1 or _range is None or \
+            (len(_range) == 2 and _range[0] >= _range[1]):
+        if _range == -2:
             log.debug2("'%s': port > 65535" % port)
-        elif range == -1:
+        elif _range == -1:
             log.debug2("'%s': port is invalid" % port)
-        elif range is None:
+        elif _range is None:
             log.debug2("'%s': port is ambiguous" % port)
-        elif len(range) == 2 and range[0] >= range[1]:
+        elif len(_range) == 2 and _range[0] >= _range[1]:
             log.debug2("'%s': range start >= end" % port)
         return False
     return True
@@ -358,10 +360,10 @@ def check_mac(mac):
         return True
     return False
 
-def uniqify(input):
+def uniqify(_input):
     # removes duplicates from list, whilst preserving order
     output = []
-    for x in input:
+    for x in _input:
         if x not in output:
             output.append(x)
     return output
@@ -372,7 +374,7 @@ def ppid_of_pid(pid):
         f = os.popen("ps -o ppid -h -p %d 2>/dev/null" % pid)
         pid = int(f.readlines()[0].strip())
         f.close()
-    except:
+    except Exception:
         return None
     return pid
 
@@ -464,5 +466,5 @@ def u2b(string):
 def u2b_if_py2(string):
     """ unicode to bytes only if Python 2"""
     if PY2 and isinstance(string, unicode):
-            return string.encode('UTF-8', 'replace')
+        return string.encode('UTF-8', 'replace')
     return string
