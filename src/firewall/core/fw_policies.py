@@ -19,21 +19,19 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import time
-from firewall.config import LOCKDOWN_WHITELIST
-from firewall.core.base import *
+from firewall import config
 from firewall.core.logger import log
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
-from firewall.errors import *
+from firewall import errors
 
 class FirewallPolicies(object):
     def __init__(self):
         self._lockdown = False
-        self.lockdown_whitelist = LockdownWhitelist(LOCKDOWN_WHITELIST)
+        self.lockdown_whitelist = LockdownWhitelist(config.LOCKDOWN_WHITELIST)
 
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__, self._lockdown,
-                                           self.lockdown_whitelist)
+                               self.lockdown_whitelist)
 
     def cleanup(self):
         self._lockdown = False
@@ -66,12 +64,13 @@ class FirewallPolicies(object):
 
     def enable_lockdown(self):
         if self._lockdown:
-            raise FirewallError(ALREADY_ENABLED, "enable_lockdown()")
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "enable_lockdown()")
         self._lockdown = True
 
     def disable_lockdown(self):
         if not self._lockdown:
-            raise FirewallError(NOT_ENABLED, "disable_lockdown()")
+            raise errors.FirewallError(errors.NOT_ENABLED, "disable_lockdown()")
         self._lockdown = False
 
     def query_lockdown(self):
