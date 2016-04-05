@@ -479,16 +479,17 @@ class Firewall(object):
                 rule.pop(1)
 
             if table and not self.is_table_available(ipv, table):
-                if ((ipv == "ipv4" and self.ip4tables_enabled) or
-                    (ipv == "ipv6" and self.ip6tables_enabled)):
-                    log.error("Unable to add %s into %s %s" % (rule, ipv, table))
+                if (ipv == "ipv4" and self.ip4tables_enabled) or \
+                   (ipv == "ipv6" and self.ip6tables_enabled):
+                    log.error("Unable to add %s into %s %s" % (rule, ipv,
+                                                               table))
                 continue
 
-            if table != None:
+            if table is not None:
                 _rule = [ "-t", table, append_delete[enable], ]
             else:
                 _rule = [ append_delete[enable], ]
-            if chain != None:
+            if chain is not None:
                 _rule.append(chain)
             _rule += [ "%s" % item for item in rule ]
 
