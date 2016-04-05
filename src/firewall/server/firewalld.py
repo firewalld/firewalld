@@ -29,12 +29,12 @@ import dbus.service
 import slip.dbus
 import slip.dbus.service
 
-from firewall.config import *
-from firewall.config.dbus import *
+from firewall import config
 from firewall.core.fw import Firewall
 from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
-from firewall.server.decorators import *
+from firewall.server.decorators import handle_exceptions, \
+    dbus_handle_exceptions, dbus_service_method, FirewallDBusException
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \
@@ -44,7 +44,7 @@ from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
-from firewall.errors import *
+from firewall import errors
 
 ############################################################################
 #
@@ -57,8 +57,8 @@ class FirewallD(slip.dbus.service.Object):
 
     persistent = True
     """ Make FirewallD persistent. """
-    default_polkit_auth_required = PK_ACTION_INFO
-    """ Use PK_ACTION_INFO as a default """
+    default_polkit_auth_required = config.dbus.PK_ACTION_INFO
+    """ Use config.dbus.PK_ACTION_INFO as a default """
 
     @handle_exceptions
     def __init__(self, *args, **kwargs):
@@ -66,10 +66,10 @@ class FirewallD(slip.dbus.service.Object):
         self.fw = Firewall()
         self.busname = args[0]
         self.path = args[1]
-        dbus_introspection_prepare_properties(self, DBUS_INTERFACE)
+        dbus_introspection_prepare_properties(self, config.dbus.DBUS_INTERFACE)
         self.start()
         self.config = FirewallDConfig(self.fw.config, self.busname,
-                                      DBUS_PATH_CONFIG)
+                                      config.dbus.DBUS_PATH_CONFIG)
 
     def __del__(self):
         self.stop()
@@ -110,7 +110,8 @@ class FirewallD(slip.dbus.service.Object):
             command = command_of_sender(bus, sender)
             if self.fw.policies.access_check("command", command):
                 return
-            raise FirewallError(ACCESS_DENIED, "lockdown is enabled")
+            raise errors.FirewallError(errors.ACCESS_DENIED,
+                                       "lockdown is enabled")
 
     # timeout functions
 
@@ -140,10 +141,10 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def _get_property(self, prop):
         if prop == "version":
-            return dbus.String(VERSION)
+            return dbus.String(config.VERSION)
         elif prop == "interface_version":
-            return dbus.String("%d.%d" % (DBUS_INTERFACE_VERSION,
-                                          DBUS_INTERFACE_REVISION))
+            return dbus.String("%d.%d" % (config.dbus.DBUS_INTERFACE_VERSION,
+                                          config.dbus.DBUS_INTERFACE_REVISION))
         elif prop == "state":
             return dbus.String(self.fw.get_state())
 
@@ -179,7 +180,7 @@ class FirewallD(slip.dbus.service.Object):
         property_name = dbus_to_python(property_name, str)
         log.debug1("Get('%s', '%s')", interface_name, property_name)
 
-        if interface_name != DBUS_INTERFACE:
+        if interface_name != config.dbus.DBUS_INTERFACE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -193,7 +194,7 @@ class FirewallD(slip.dbus.service.Object):
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("GetAll('%s')", interface_name)
 
-        if interface_name != DBUS_INTERFACE:
+        if interface_name != config.dbus.DBUS_INTERFACE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -205,7 +206,7 @@ class FirewallD(slip.dbus.service.Object):
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
@@ -216,7 +217,7 @@ class FirewallD(slip.dbus.service.Object):
                    new_value)
         self.accessCheck(sender)
 
-        if interface_name != DBUS_INTERFACE:
+        if interface_name != config.dbus.DBUS_INTERFACE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -234,7 +235,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("PropertiesChanged('%s', '%s', '%s')",
                    interface_name, changed_properties, invalidated_properties)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
     def Introspect(self, sender=None):
@@ -243,12 +244,12 @@ class FirewallD(slip.dbus.service.Object):
         data = super(FirewallD, self).Introspect(self.path,
                                                  self.busname.get_bus())
 
-        return dbus_introspection_add_properties(self, data, DBUS_INTERFACE)
+        return dbus_introspection_add_properties(self, data, config.dbus.DBUS_INTERFACE)
 
     # reload
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def reload(self, sender=None):
         """Reload the firewall rules.
@@ -261,8 +262,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # complete_reload
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def completeReload(self, sender=None):
         """Completely reload the firewall.
@@ -276,15 +277,15 @@ class FirewallD(slip.dbus.service.Object):
         self.config.reload()
         self.Reloaded()
 
-    @dbus.service.signal(DBUS_INTERFACE)
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE)
     @dbus_handle_exceptions
     def Reloaded(self):
         log.debug1("Reloaded()")
 
     # runtime to permanent
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def runtimeToPermanent(self, sender=None):
         """Make runtime configuration permanent
@@ -298,102 +299,102 @@ class FirewallD(slip.dbus.service.Object):
         # services
 
         for name in self.fw.service.get_services():
-            config = self.getServiceSettings(name)
+            conf = self.getServiceSettings(name)
             try:
                 try:
                     conf_obj = self.config.getServiceByName(name)
-                except FirewallError as e:
+                except errors.FirewallError as e:
                     if "INVALID_SERVICE" in e:
                         log.debug1("Creating service '%s'" % name)
-                        self.config.addService(name, config)
+                        self.config.addService(name, conf)
                     else:
                         raise
                 else:
-                    if conf_obj.getSettings() != config:
+                    if conf_obj.getSettings() != conf:
                         log.debug1("Copying service '%s' settings" % name)
-                        conf_obj.update(config)
+                        conf_obj.update(conf)
                     else:
                         log.debug1("Service '%s' is identical" % name)
             except Exception as e:
-                raise FirewallError(RT_TO_PERM_FAILED,
-                                    "service '%s' : %s" % (name, e))
+                raise errors.FirewallError(errors.RT_TO_PERM_FAILED,
+                                           "service '%s' : %s" % (name, e))
 
         # icmptypes
 
         for name in self.fw.icmptype.get_icmptypes():
-            config = self.getIcmpTypeSettings(name)
+            conf = self.getIcmpTypeSettings(name)
             try:
                 try:
                     conf_obj = self.config.getIcmpTypeByName(name)
-                except FirewallError as e:
+                except errors.FirewallError as e:
                     if "INVALID_ICMPTYPE" in e:
                         log.debug1("Creating icmptype '%s'" % name)
-                        self.config.addIcmpType(name, config)
+                        self.config.addIcmpType(name, conf)
                     else:
                         raise
                 else:
-                    if conf_obj.getSettings() != config:
+                    if conf_obj.getSettings() != conf:
                         log.debug1("Copying icmptype '%s' settings" % name)
-                        conf_obj.update(config)
+                        conf_obj.update(conf)
                     else:
                         log.debug1("IcmpType '%s' is identical" % name)
             except Exception as e:
-                raise FirewallError(RT_TO_PERM_FAILED,
-                                "icmptype '%s' : %s" % (name, e))
+                raise errors.FirewallError(errors.RT_TO_PERM_FAILED,
+                                           "icmptype '%s' : %s" % (name, e))
 
         # zones
 
         for name in self.fw.zone.get_zones():
             # zone runtime settings can be modified, but not service and
             # icmptye settings
-            config = self.getZoneSettings(name)
+            conf = self.getZoneSettings(name)
             try:
                 try:
                     conf_obj = self.config.getZoneByName(name)
-                except FirewallError as e:
+                except errors.FirewallError as e:
                     if "INVALID_ZONE" in e:
                         log.debug1("Creating zone '%s'" % name)
-                        self.config.addZone(name, config)
+                        self.config.addZone(name, conf)
                     else:
                         raise
                 else:
-                    if conf_obj.getSettings() != config:
+                    if conf_obj.getSettings() != conf:
                         log.debug1("Copying zone '%s' settings" % name)
-                        conf_obj.update(config)
+                        conf_obj.update(conf)
                     else:
                         log.debug1("Zone '%s' is identical" % name)
             except Exception as e:
-                raise FirewallError(RT_TO_PERM_FAILED,
-                                    "zone '%s' : %s" % (name, e))
+                raise errors.FirewallError(errors.RT_TO_PERM_FAILED,
+                                           "zone '%s' : %s" % (name, e))
 
         # direct
 
-        # rt_config = self.fw.direct.get_config()
-        config = ( self.fw.direct.get_all_chains(),
-                   self.fw.direct.get_all_rules(),
-                   self.fw.direct.get_all_passthroughs() )
+        # rt_conf = self.fw.direct.get_config()
+        conf = ( self.fw.direct.get_all_chains(),
+                 self.fw.direct.get_all_rules(),
+                 self.fw.direct.get_all_passthroughs() )
         try:
-            if self.config.getSettings() != config:
+            if self.config.getSettings() != conf:
                 log.debug1("Copying direct configuration")
-                self.config.update(config)
+                self.config.update(conf)
             else:
                 log.debug1("Direct configuration is identical")
         except Exception as e:
-            raise FirewallError(RT_TO_PERM_FAILED,
-                                "direct configuration: %s" % e)
+            raise errors.FirewallError(errors.RT_TO_PERM_FAILED,
+                                       "direct configuration: %s" % e)
 
         # policies
 
-        config = self.fw.policies.lockdown_whitelist.export_config()
+        conf = self.fw.policies.lockdown_whitelist.export_config()
         try:
-            if self.config.getSettings() != config:
+            if self.config.getSettings() != conf:
                 log.debug1("Copying policies configuration")
-                self.config.setLockdownWhitelist(config)
+                self.config.setLockdownWhitelist(conf)
             else:
                 log.debug1("Policies configuration is identical")
         except Exception as e:
-            raise FirewallError(RT_TO_PERM_FAILED,
-                                "policies configuration: %s" % e)
+            raise errors.FirewallError(errors.RT_TO_PERM_FAILED,
+                                       "policies configuration: %s" % e)
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # POLICIES
@@ -401,8 +402,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # lockdown
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='')
     @dbus_handle_exceptions
     def enableLockdown(self, sender=None):
@@ -413,8 +414,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.enable_lockdown()
         self.LockdownEnabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='')
     @dbus_handle_exceptions
     def disableLockdown(self, sender=None):
@@ -425,8 +426,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.disable_lockdown()
         self.LockdownDisabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryLockdown(self, sender=None):
@@ -436,12 +437,12 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.query_lockdown()
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='')
     @dbus_handle_exceptions
     def LockdownEnabled(self):
         log.debug1("LockdownEnabled()")
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='')
     @dbus_handle_exceptions
     def LockdownDisabled(self):
         log.debug1("LockdownDisabled()")
@@ -450,8 +451,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # command
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='')
     @dbus_handle_exceptions
     def addLockdownWhitelistCommand(self, command, sender=None):
@@ -463,8 +464,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.add_command(command)
         self.LockdownWhitelistCommandAdded(command)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='')
     @dbus_handle_exceptions
     def removeLockdownWhitelistCommand(self, command, sender=None):
@@ -476,8 +477,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_command(command)
         self.LockdownWhitelistCommandRemoved(command)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryLockdownWhitelistCommand(self, command, sender=None):
@@ -488,8 +489,8 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_command(command)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def getLockdownWhitelistCommands(self, sender=None):
@@ -499,20 +500,20 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.get_commands()
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='s')
     @dbus_handle_exceptions
     def LockdownWhitelistCommandAdded(self, command):
         log.debug1("LockdownWhitelistCommandAdded('%s')" % command)
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='s')
     @dbus_handle_exceptions
     def LockdownWhitelistCommandRemoved(self, command):
         log.debug1("LockdownWhitelistCommandRemoved('%s')" % command)
 
     # uid
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='i',
                          out_signature='')
     @dbus_handle_exceptions
     def addLockdownWhitelistUid(self, uid, sender=None):
@@ -524,8 +525,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.add_uid(uid)
         self.LockdownWhitelistUidAdded(uid)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='i',
                          out_signature='')
     @dbus_handle_exceptions
     def removeLockdownWhitelistUid(self, uid, sender=None):
@@ -537,8 +538,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_uid(uid)
         self.LockdownWhitelistUidRemoved(uid)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='i',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='i',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryLockdownWhitelistUid(self, uid, sender=None):
@@ -549,8 +550,8 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_uid(uid)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='ai')
     @dbus_handle_exceptions
     def getLockdownWhitelistUids(self, sender=None):
@@ -560,20 +561,20 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.get_uids()
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='i')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='i')
     @dbus_handle_exceptions
     def LockdownWhitelistUidAdded(self, uid):
         log.debug1("LockdownWhitelistUidAdded(%d)" % uid)
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='i')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='i')
     @dbus_handle_exceptions
     def LockdownWhitelistUidRemoved(self, uid):
         log.debug1("LockdownWhitelistUidRemoved(%d)" % uid)
 
     # user
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='')
     @dbus_handle_exceptions
     def addLockdownWhitelistUser(self, user, sender=None):
@@ -585,8 +586,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.add_user(user)
         self.LockdownWhitelistUserAdded(user)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='')
     @dbus_handle_exceptions
     def removeLockdownWhitelistUser(self, user, sender=None):
@@ -598,8 +599,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_user(user)
         self.LockdownWhitelistUserRemoved(user)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryLockdownWhitelistUser(self, user, sender=None):
@@ -610,8 +611,8 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_user(user)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def getLockdownWhitelistUsers(self, sender=None):
@@ -621,20 +622,20 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.get_users()
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='s')
     @dbus_handle_exceptions
     def LockdownWhitelistUserAdded(self, user):
         log.debug1("LockdownWhitelistUserAdded('%s')" % user)
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='s')
     @dbus_handle_exceptions
     def LockdownWhitelistUserRemoved(self, user):
         log.debug1("LockdownWhitelistUserRemoved('%s')" % user)
 
     # context
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='')
     @dbus_handle_exceptions
     def addLockdownWhitelistContext(self, context, sender=None):
@@ -646,8 +647,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.add_context(context)
         self.LockdownWhitelistContextAdded(context)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='')
     @dbus_handle_exceptions
     def removeLockdownWhitelistContext(self, context, sender=None):
@@ -659,8 +660,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.policies.lockdown_whitelist.remove_context(context)
         self.LockdownWhitelistContextRemoved(context)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryLockdownWhitelistContext(self, context, sender=None):
@@ -671,8 +672,8 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.has_context(context)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_POLICIES_INFO)
-    @dbus_service_method(DBUS_INTERFACE_POLICIES, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_POLICIES_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_POLICIES, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def getLockdownWhitelistContexts(self, sender=None):
@@ -682,12 +683,12 @@ class FirewallD(slip.dbus.service.Object):
         # no access check here
         return self.fw.policies.lockdown_whitelist.get_contexts()
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='s')
     @dbus_handle_exceptions
     def LockdownWhitelistContextAdded(self, context):
         log.debug1("LockdownWhitelistContextAdded('%s')" % context)
 
-    @dbus.service.signal(DBUS_INTERFACE_POLICIES, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_POLICIES, signature='s')
     @dbus_handle_exceptions
     def LockdownWhitelistContextRemoved(self, context):
         log.debug1("LockdownWhitelistContextRemoved('%s')" % context)
@@ -696,8 +697,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # PANIC
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def enablePanicMode(self, sender=None):
         """Enable panic mode.
@@ -709,8 +710,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.enable_panic_mode()
         self.PanicModeEnabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def disablePanicMode(self, sender=None):
         """Disable panic mode.
@@ -723,20 +724,20 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.disable_panic_mode()
         self.PanicModeDisabled()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='b')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='b')
     @dbus_handle_exceptions
     def queryPanicMode(self, sender=None):
         # returns True if in panic mode
         log.debug1("queryPanicMode()")
         return self.fw.query_panic_mode()
 
-    @dbus.service.signal(DBUS_INTERFACE, signature='')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='')
     @dbus_handle_exceptions
     def PanicModeEnabled(self):
         log.debug1("PanicModeEnabled()")
 
-    @dbus.service.signal(DBUS_INTERFACE, signature='')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='')
     @dbus_handle_exceptions
     def PanicModeDisabled(self):
         log.debug1("PanicModeDisabled()")
@@ -745,8 +746,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # list functions
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getZoneSettings(self, zone, sender=None):
@@ -755,8 +756,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("getZoneSettings(%s)", zone)
         return self.fw.zone.get_config_with_settings(zone)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def listServices(self, sender=None):
@@ -766,8 +767,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("listServices()")
         return self.fw.service.get_services()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=Service.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getServiceSettings(self, service, sender=None):
@@ -776,8 +777,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("getServiceSettings(%s)", service)
         return self.fw.service.get_service(service).export_config()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def listIcmpTypes(self, sender=None):
@@ -787,8 +788,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("listIcmpTypes()")
         return self.fw.icmptype.get_icmptypes()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=IcmpType.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getIcmpTypeSettings(self, icmptype, sender=None):
@@ -801,16 +802,16 @@ class FirewallD(slip.dbus.service.Object):
 
     # LOG DENIED
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='s')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='s')
     @dbus_handle_exceptions
     def getLogDenied(self, sender=None):
         # returns the log denied value
         log.debug1("getLogDenied()")
         return self.fw.get_log_denied()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='s', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s', out_signature='')
     @dbus_handle_exceptions
     def setLogDenied(self, value, sender=None):
         # set the log denied value
@@ -820,7 +821,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.set_log_denied(value)
         self.LogDeniedChanged(value)
 
-    @dbus.service.signal(DBUS_INTERFACE, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions
     def LogDeniedChanged(self, value):
         log.debug1("LogDeniedChanged('%s')" % (value))
@@ -829,16 +830,16 @@ class FirewallD(slip.dbus.service.Object):
 
     # DEFAULT ZONE
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='s')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='s')
     @dbus_handle_exceptions
     def getDefaultZone(self, sender=None):
         # returns the system default zone
         log.debug1("getDefaultZone()")
         return self.fw.get_default_zone()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='s', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s', out_signature='')
     @dbus_handle_exceptions
     def setDefaultZone(self, zone, sender=None):
         # set the system default zone
@@ -848,7 +849,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.set_default_zone(zone)
         self.DefaultZoneChanged(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions
     def DefaultZoneChanged(self, zone):
         log.debug1("DefaultZoneChanged('%s')" % (zone))
@@ -859,9 +860,9 @@ class FirewallD(slip.dbus.service.Object):
 
     # ZONES
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    # TODO: shouldn't this be in DBUS_INTERFACE instead of DBUS_INTERFACE_ZONE ?
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    # TODO: shouldn't this be in config.dbus.DBUS_INTERFACE instead of config.dbus.DBUS_INTERFACE_ZONE ?
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def getZones(self, sender=None):
@@ -869,8 +870,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getZones()")
         return self.fw.zone.get_zones()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='',
                          out_signature='a{sa{sas}}')
     @dbus_handle_exceptions
     def getActiveZones(self, sender=None):
@@ -888,8 +889,8 @@ class FirewallD(slip.dbus.service.Object):
                     zones[zone]["sources"] = sources
         return zones
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='s')
     @dbus_handle_exceptions
     def getZoneOfInterface(self, interface, sender=None):
@@ -907,8 +908,8 @@ class FirewallD(slip.dbus.service.Object):
             return zone
         return ""
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='s')
     @dbus_handle_exceptions
     def getZoneOfSource(self, source, sender=None):
@@ -920,8 +921,8 @@ class FirewallD(slip.dbus.service.Object):
             return zone
         return ""
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def isImmutable(self, zone, sender=None):
@@ -932,8 +933,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # INTERFACES
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def addInterface(self, zone, interface, sender=None):
@@ -949,8 +950,8 @@ class FirewallD(slip.dbus.service.Object):
         self.InterfaceAdded(_zone, interface)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def changeZone(self, zone, interface, sender=None):
@@ -963,8 +964,8 @@ class FirewallD(slip.dbus.service.Object):
         interface = dbus_to_python(interface, str)
         return self.changeZoneOfInterface(zone, interface, sender)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def changeZoneOfInterface(self, zone, interface, sender=None):
@@ -980,8 +981,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ZoneOfInterfaceChanged(_zone, interface)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeInterface(self, zone, interface, sender=None):
@@ -997,8 +998,8 @@ class FirewallD(slip.dbus.service.Object):
         self.InterfaceRemoved(_zone, interface)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryInterface(self, zone, interface, sender=None):
@@ -1010,8 +1011,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.queryInterface('%s', '%s')" % (zone, interface))
         return self.fw.zone.query_interface(zone, interface)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getInterfaces(self, zone, sender=None):
@@ -1024,12 +1025,12 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getInterfaces('%s')" % (zone))
         return self.fw.zone.list_interfaces(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def InterfaceAdded(self, zone, interface):
         log.debug1("zone.InterfaceAdded('%s', '%s')" % (zone, interface))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ZoneChanged(self, zone, interface):
         """
@@ -1037,14 +1038,14 @@ class FirewallD(slip.dbus.service.Object):
         """
         log.debug1("zone.ZoneChanged('%s', '%s')" % (zone, interface))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ZoneOfInterfaceChanged(self, zone, interface):
         log.debug1("zone.ZoneOfInterfaceChanged('%s', '%s')" % (zone,
                                                                 interface))
         self.ZoneChanged(zone, interface)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def InterfaceRemoved(self, zone, interface):
         log.debug1("zone.InterfaceRemoved('%s', '%s')" % (zone, interface))
@@ -1053,8 +1054,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # SOURCES
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def addSource(self, zone, source, sender=None):
@@ -1070,8 +1071,8 @@ class FirewallD(slip.dbus.service.Object):
         self.SourceAdded(_zone, source)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def changeZoneOfSource(self, zone, source, sender=None):
@@ -1087,8 +1088,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ZoneOfSourceChanged(_zone, source)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeSource(self, zone, source, sender=None):
@@ -1104,8 +1105,8 @@ class FirewallD(slip.dbus.service.Object):
         self.SourceRemoved(_zone, source)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def querySource(self, zone, source, sender=None):
@@ -1117,8 +1118,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.querySource('%s', '%s')" % (zone, source))
         return self.fw.zone.query_source(zone, source)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getSources(self, zone, sender=None):
@@ -1131,17 +1132,17 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getSources('%s')" % (zone))
         return self.fw.zone.list_sources(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def SourceAdded(self, zone, source):
         log.debug1("zone.SourceAdded('%s', '%s')" % (zone, source))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ZoneOfSourceChanged(self, zone, source):
         log.debug1("zone.ZoneOfSourceChanged('%s', '%s')" % (zone, source))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def SourceRemoved(self, zone, source):
         log.debug1("zone.SourceRemoved('%s', '%s')" % (zone, source))
@@ -1158,8 +1159,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_rule(zone, obj)
         self.RichRuleRemoved(zone, rule)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ssi',
                          out_signature='s')
     @dbus_handle_exceptions
     def addRichRule(self, zone, rule, timeout, sender=None):
@@ -1178,8 +1179,8 @@ class FirewallD(slip.dbus.service.Object):
         self.RichRuleAdded(_zone, rule, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeRichRule(self, zone, rule, sender=None):
@@ -1192,8 +1193,8 @@ class FirewallD(slip.dbus.service.Object):
         self.RichRuleRemoved(_zone, rule)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryRichRule(self, zone, rule, sender=None):
@@ -1203,8 +1204,8 @@ class FirewallD(slip.dbus.service.Object):
         obj = Rich_Rule(rule_str=rule)
         return self.fw.zone.query_rule(zone, obj)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getRichRules(self, zone, sender=None):
@@ -1215,12 +1216,12 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getRichRules('%s')" % (zone))
         return self.fw.zone.list_rules(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
     def RichRuleAdded(self, zone, rule, timeout):
         log.debug1("zone.RichRuleAdded('%s', '%s', %d)" % (zone, rule, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def RichRuleRemoved(self, zone, rule):
         log.debug1("zone.RichRuleRemoved('%s', '%s')" % (zone, rule))
@@ -1236,8 +1237,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_service(zone, service)
         self.ServiceRemoved(zone, service)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ssi',
                          out_signature='s')
     @dbus_handle_exceptions
     def addService(self, zone, service, timeout, sender=None):
@@ -1258,8 +1259,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ServiceAdded(_zone, service, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeService(self, zone, service, sender=None):
@@ -1275,8 +1276,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ServiceRemoved(_zone, service)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryService(self, zone, service, sender=None):
@@ -1286,8 +1287,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.queryService('%s', '%s')" % (zone, service))
         return self.fw.zone.query_service(zone, service)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getServices(self, zone, sender=None):
@@ -1298,13 +1299,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getServices('%s')" % (zone))
         return self.fw.zone.list_services(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
     def ServiceAdded(self, zone, service, timeout):
         log.debug1("zone.ServiceAdded('%s', '%s', %d)" % \
                        (zone, service, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ServiceRemoved(self, zone, service):
         log.debug1("zone.ServiceRemoved('%s', '%s')" % (zone, service))
@@ -1321,8 +1322,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_port(zone, port, protocol)
         self.PortRemoved(zone, port, protocol)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssi',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sssi',
                          out_signature='s')
     @dbus_handle_exceptions
     def addPort(self, zone, port, protocol, timeout, sender=None):
@@ -1344,8 +1345,8 @@ class FirewallD(slip.dbus.service.Object):
         self.PortAdded(_zone, port, protocol, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removePort(self, zone, port, protocol, sender=None):
@@ -1362,8 +1363,8 @@ class FirewallD(slip.dbus.service.Object):
         self.PortRemoved(_zone, port, protocol)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryPort(self, zone, port, protocol, sender=None):
@@ -1374,8 +1375,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.queryPort('%s', '%s', '%s')" % (zone, port, protocol))
         return self.fw.zone.query_port(zone, port, protocol)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='aas')
     @dbus_handle_exceptions
     def getPorts(self, zone, sender=None):
@@ -1386,13 +1387,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getPorts('%s')" % (zone))
         return self.fw.zone.list_ports(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssi')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sssi')
     @dbus_handle_exceptions
     def PortAdded(self, zone, port, protocol, timeout=0):
         log.debug1("zone.PortAdded('%s', '%s', '%s', %d)" % \
                        (zone, port, protocol, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sss')
     @dbus_handle_exceptions
     def PortRemoved(self, zone, port, protocol):
         log.debug1("zone.PortRemoved('%s', '%s', '%s')" % \
@@ -1409,8 +1410,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_protocol(zone, protocol)
         self.ProtocolRemoved(zone, protocol)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ssi',
                          out_signature='s')
     @dbus_handle_exceptions
     def addProtocol(self, zone, protocol, timeout, sender=None):
@@ -1430,8 +1431,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ProtocolAdded(_zone, protocol, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeProtocol(self, zone, protocol, sender=None):
@@ -1446,8 +1447,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ProtocolRemoved(_zone, protocol)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryProtocol(self, zone, protocol, sender=None):
@@ -1457,8 +1458,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.queryProtocol('%s', '%s')" % (zone, protocol))
         return self.fw.zone.query_protocol(zone, protocol)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getProtocols(self, zone, sender=None):
@@ -1469,13 +1470,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getProtocols('%s')" % (zone))
         return self.fw.zone.list_protocols(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
     def ProtocolAdded(self, zone, protocol, timeout=0):
         log.debug1("zone.ProtocolAdded('%s', '%s', %d)" % \
                        (zone, protocol, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def ProtocolRemoved(self, zone, protocol):
         log.debug1("zone.ProtocolRemoved('%s', '%s')" % (zone, protocol))
@@ -1490,8 +1491,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_masquerade(zone)
         self.MasqueradeRemoved(zone)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='si',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='si',
                          out_signature='s')
     @dbus_handle_exceptions
     def addMasquerade(self, zone, timeout, sender=None):
@@ -1510,8 +1511,8 @@ class FirewallD(slip.dbus.service.Object):
         self.MasqueradeAdded(_zone, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeMasquerade(self, zone, sender=None):
@@ -1525,8 +1526,8 @@ class FirewallD(slip.dbus.service.Object):
         self.MasqueradeRemoved(_zone)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryMasquerade(self, zone, sender=None):
@@ -1535,12 +1536,12 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.queryMasquerade('%s')" % (zone))
         return self.fw.zone.query_masquerade(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='si')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='si')
     @dbus_handle_exceptions
     def MasqueradeAdded(self, zone, timeout=0):
         log.debug1("zone.MasqueradeAdded('%s', %d)" % (zone, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='s')
     @dbus_handle_exceptions
     def MasqueradeRemoved(self, zone):
         log.debug1("zone.MasqueradeRemoved('%s')" % (zone))
@@ -1555,8 +1556,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_forward_port(zone, port, protocol, toport, toaddr)
         self.ForwardPortRemoved(zone, port, protocol, toport, toaddr)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssssi',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sssssi',
                          out_signature='s')
     @dbus_handle_exceptions
     def addForwardPort(self, zone, port, protocol, toport, toaddr, timeout,
@@ -1584,8 +1585,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ForwardPortAdded(_zone, port, protocol, toport, toaddr, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sssss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeForwardPort(self, zone, port, protocol, toport, toaddr,
@@ -1606,8 +1607,8 @@ class FirewallD(slip.dbus.service.Object):
         self.ForwardPortRemoved(_zone, port, protocol, toport, toaddr)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='sssss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sssss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryForwardPort(self, zone, port, protocol, toport, toaddr,
@@ -1623,8 +1624,8 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.zone.query_forward_port(zone, port, protocol, toport,
                                                toaddr)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='aas')
     @dbus_handle_exceptions
     def getForwardPorts(self, zone, sender=None):
@@ -1635,14 +1636,14 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getForwardPorts('%s')" % (zone))
         return self.fw.zone.list_forward_ports(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssssi')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sssssi')
     @dbus_handle_exceptions
     def ForwardPortAdded(self, zone, port, protocol, toport, toaddr,
                          timeout=0):
         log.debug1("zone.ForwardPortAdded('%s', '%s', '%s', '%s', '%s', %d)" % \
                        (zone, port, protocol, toport, toaddr, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='sssss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sssss')
     @dbus_handle_exceptions
     def ForwardPortRemoved(self, zone, port, protocol, toport, toaddr):
         log.debug1("zone.ForwardPortRemoved('%s', '%s', '%s', '%s', '%s')" % \
@@ -1659,8 +1660,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.zone.remove_icmp_block(zone, icmp)
         self.IcmpBlockRemoved(zone, icmp)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ssi',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ssi',
                          out_signature='s')
     @dbus_handle_exceptions
     def addIcmpBlock(self, zone, icmp, timeout, sender=None):
@@ -1680,8 +1681,8 @@ class FirewallD(slip.dbus.service.Object):
         self.IcmpBlockAdded(_zone, icmp, timeout)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='s')
     @dbus_handle_exceptions
     def removeIcmpBlock(self, zone, icmp, sender=None):
@@ -1696,8 +1697,8 @@ class FirewallD(slip.dbus.service.Object):
         self.IcmpBlockRemoved(_zone, icmp)
         return _zone
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryIcmpBlock(self, zone, icmp, sender=None):
@@ -1707,8 +1708,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.queryIcmpBlock('%s', '%s')" % (zone, icmp))
         return self.fw.zone.query_icmp_block(zone, icmp)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(DBUS_INTERFACE_ZONE, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getIcmpBlocks(self, zone, sender=None):
@@ -1719,13 +1720,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.getIcmpBlocks('%s')" % (zone))
         return self.fw.zone.list_icmp_blocks(zone)
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ssi')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ssi')
     @dbus_handle_exceptions
     def IcmpBlockAdded(self, zone, icmp, timeout=0):
         log.debug1("zone.IcmpBlockAdded('%s', '%s', %d)" % \
                        (zone, icmp, timeout))
 
-    @dbus.service.signal(DBUS_INTERFACE_ZONE, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='ss')
     @dbus_handle_exceptions
     def IcmpBlockRemoved(self, zone, icmp):
         log.debug1("zone.IcmpBlockRemoved('%s', '%s')" % (zone, icmp))
@@ -1736,8 +1737,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # DIRECT CHAIN
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='')
     @dbus_handle_exceptions
     def addChain(self, ipv, table, chain, sender=None):
@@ -1750,8 +1751,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.add_chain(ipv, table, chain)
         self.ChainAdded(ipv, table, chain)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='')
     @dbus_handle_exceptions
     def removeChain(self, ipv, table, chain, sender=None):
@@ -1764,8 +1765,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.remove_chain(ipv, table, chain)
         self.ChainRemoved(ipv, table, chain)
     
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryChain(self, ipv, table, chain, sender=None):
@@ -1776,8 +1777,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.queryChain('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.query_chain(ipv, table, chain)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='ss',
                          out_signature='as')
     @dbus_handle_exceptions
     def getChains(self, ipv, table, sender=None):
@@ -1787,8 +1788,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getChains('%s', '%s')" % (ipv, table))
         return self.fw.direct.get_chains(ipv, table)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sss)')
     @dbus_handle_exceptions
     def getAllChains(self, sender=None):
@@ -1796,12 +1797,12 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getAllChains()")
         return self.fw.direct.get_all_chains()
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sss')
     @dbus_handle_exceptions
     def ChainAdded(self, ipv, table, chain):
         log.debug1("direct.ChainAdded('%s', '%s', '%s')" % (ipv, table, chain))
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sss')
     @dbus_handle_exceptions
     def ChainRemoved(self, ipv, table, chain):
         log.debug1("direct.ChainRemoved('%s', '%s', '%s')" % (ipv, table, chain))
@@ -1810,8 +1811,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # DIRECT RULE
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='')
     @dbus_handle_exceptions
     def addRule(self, ipv, table, chain, priority, args, sender=None):
@@ -1827,8 +1828,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.add_rule(ipv, table, chain, priority, args)
         self.RuleAdded(ipv, table, chain, priority, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='')
     @dbus_handle_exceptions
     def removeRule(self, ipv, table, chain, priority, args, sender=None):
@@ -1844,8 +1845,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.remove_rule(ipv, table, chain, priority, args)
         self.RuleRemoved(ipv, table, chain, priority, args)
     
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='')
     @dbus_handle_exceptions
     def removeRules(self, ipv, table, chain, sender=None):
@@ -1859,8 +1860,8 @@ class FirewallD(slip.dbus.service.Object):
             self.fw.direct.remove_rule(ipv, table, chain, priority, args)
             self.RuleRemoved(ipv, table, chain, priority, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sssias',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sssias',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryRule(self, ipv, table, chain, priority, args, sender=None):
@@ -1874,8 +1875,8 @@ class FirewallD(slip.dbus.service.Object):
                        (ipv, table, chain, priority, "','".join(args)))
         return self.fw.direct.query_rule(ipv, table, chain, priority, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sss',
                          out_signature='a(ias)')
     @dbus_handle_exceptions
     def getRules(self, ipv, table, chain, sender=None):
@@ -1886,8 +1887,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getRules('%s', '%s', '%s')" % (ipv, table, chain))
         return self.fw.direct.get_rules(ipv, table, chain)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sssias)')
     @dbus_handle_exceptions
     def getAllRules(self, sender=None):
@@ -1895,13 +1896,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getAllRules()")
         return self.fw.direct.get_all_rules()
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
     def RuleAdded(self, ipv, table, chain, priority, args):
         log.debug1("direct.RuleAdded('%s', '%s', '%s', %d, '%s')" % \
                        (ipv, table, chain, priority, "','".join(args)))
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sssias')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sssias')
     @dbus_handle_exceptions
     def RuleRemoved(self, ipv, table, chain, priority, args):
         log.debug1("direct.RuleRemoved('%s', '%s', '%s', %d, '%s')" % \
@@ -1911,8 +1912,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # DIRECT PASSTHROUGH (untracked)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='s')
     @dbus_handle_exceptions
     def passthrough(self, ipv, args, sender=None):
@@ -1923,7 +1924,7 @@ class FirewallD(slip.dbus.service.Object):
         self.accessCheck(sender)
         try:
             return self.fw.direct.passthrough(ipv, args)
-        except FirewallError as error:
+        except errors.FirewallError as error:
             msg = str(error)
             if "COMMAND_FAILED" in msg:
                 log.warning(msg)
@@ -1932,7 +1933,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # DIRECT PASSTHROUGH (tracked)
 
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='')
     @dbus_handle_exceptions
     def addPassthrough(self, ipv, args, sender=None):
@@ -1945,7 +1946,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.add_passthrough(ipv, args)
         self.PassthroughAdded(ipv, args)
 
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='')
     @dbus_handle_exceptions
     def removePassthrough(self, ipv, args, sender=None):
@@ -1958,8 +1959,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.remove_passthrough(ipv, args)
         self.PassthroughRemoved(ipv, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='sas',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryPassthrough(self, ipv, args, sender=None):
@@ -1970,8 +1971,8 @@ class FirewallD(slip.dbus.service.Object):
                        (ipv, "','".join(args)))
         return self.fw.direct.query_passthrough(ipv, args)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='a(sas)')
     @dbus_handle_exceptions
     def getAllPassthroughs(self, sender=None):
@@ -1979,8 +1980,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getAllPassthroughs()")
         return self.fw.direct.get_all_passthroughs()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='',
                          out_signature='')
     @dbus_handle_exceptions
     def removeAllPassthroughs(self, sender=None):
@@ -1990,8 +1991,8 @@ class FirewallD(slip.dbus.service.Object):
         for passthrough in reversed(self.getAllPassthroughs()):
             self.removePassthrough(*passthrough)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_DIRECT_INFO)
-    @dbus_service_method(DBUS_INTERFACE_DIRECT, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='s',
                          out_signature='aas')
     @dbus_handle_exceptions
     def getPassthroughs(self, ipv, sender=None):
@@ -2000,13 +2001,13 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("direct.getPassthroughs('%s')", ipv)
         return self.fw.direct.get_passthroughs(ipv)
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sas')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sas')
     @dbus_handle_exceptions
     def PassthroughAdded(self, ipv, args):
         log.debug1("direct.PassthroughAdded('%s', '%s')" % \
                        (ipv, "','".join(args)))
 
-    @dbus.service.signal(DBUS_INTERFACE_DIRECT, signature='sas')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_DIRECT, signature='sas')
     @dbus_handle_exceptions
     def PassthroughRemoved(self, ipv, args):
         log.debug1("direct.PassthroughRemoved('%s', '%s')" % \
@@ -2014,8 +2015,8 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_ALL)
-    @dbus_service_method(DBUS_INTERFACE, in_signature='', out_signature='')
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_ALL)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='', out_signature='')
     @dbus_handle_exceptions
     def authorizeAll(self, sender=None):
         """ PK_ACTION_ALL implies all other actions, i.e. once a subject is
@@ -2028,8 +2029,8 @@ class FirewallD(slip.dbus.service.Object):
     # IPSETS
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryIPSet(self, ipset, sender=None):
@@ -2038,8 +2039,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipset.queryIPSet('%s')" % (ipset))
         return self.fw.ipset.query_ipset(ipset)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def getIPSets(self, sender=None):
@@ -2047,8 +2048,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipsets.getIPSets()")
         return self.fw.ipset.get_ipsets()
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='s',
                          out_signature=IPSet.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getIPSetSettings(self, ipset, sender=None):
@@ -2059,7 +2060,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # set entries # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='ss',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='ss',
                          out_signature='')
     @dbus_handle_exceptions
     def addEntry(self, ipset, entry, sender=None):
@@ -2071,7 +2072,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.ipset.add_entry(ipset, entry)
         self.EntryAdded(ipset, entry)
 
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='ss',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='ss',
                          out_signature='')
     @dbus_handle_exceptions
     def removeEntry(self, ipset, entry, sender=None):
@@ -2083,8 +2084,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.ipset.remove_entry(ipset, entry)
         self.EntryRemoved(ipset, entry)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='ss',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryEntry(self, ipset, entry, sender=None):
@@ -2094,8 +2095,8 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipset.queryEntry('%s', '%s')" % (ipset, entry))
         return self.fw.ipset.query_entry(ipset, entry)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
-    @dbus_service_method(DBUS_INTERFACE_IPSET, in_signature='s',
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='s',
                          out_signature='as')
     @dbus_handle_exceptions
     def getEntries(self, ipset, sender=None):
@@ -2104,14 +2105,14 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipset.getEntries('%s')" % ipset)
         return self.fw.ipset.get_entries(ipset)
 
-    @dbus.service.signal(DBUS_INTERFACE_IPSET, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_IPSET, signature='ss')
     @dbus_handle_exceptions
     def EntryAdded(self, ipset, entry):
         ipset = dbus_to_python(ipset)
         entry = dbus_to_python(entry)
         log.debug1("ipset.EntryAdded('%s', '%s')" % (ipset, entry))
 
-    @dbus.service.signal(DBUS_INTERFACE_IPSET, signature='ss')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_IPSET, signature='ss')
     @dbus_handle_exceptions
     def EntryRemoved(self, ipset, entry):
         ipset = dbus_to_python(ipset)
