@@ -20,13 +20,12 @@
 #
 
 import time
-from firewall.core.base import *
+from firewall.core import base
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
-    checkProtocol, enable_ip_forwarding, check_single_address, check_mac, \
-    checkIP, checkIP6
-from firewall.core.rich import *
-from firewall.errors import *
+    checkProtocol, enable_ip_forwarding, check_single_address, check_mac
+from firewall.core import rich
+from firewall import errors
 from firewall.core.ipXtables import ip4tables_available_tables,\
     ip6tables_available_tables, OUR_CHAINS
 
@@ -122,7 +121,7 @@ class FirewallZone(object):
         # transform errors into warnings
         try:
             f(name, *args)
-        except FirewallError as error:
+        except errors.FirewallError as error:
             msg = str(error)
             log.warning("%s: %s" % (name, msg))
 
@@ -181,8 +180,8 @@ class FirewallZone(object):
         if len(splits) < 2:
             return None
         _chain = None
-        for x in SHORTCUTS:
-            if splits[0] == SHORTCUTS[x]:
+        for x in base.SHORTCUTS:
+            if splits[0] == base.SHORTCUTS[x]:
                 _chain = x
         if _chain is not None:
             # next part needs to be zone name
@@ -217,7 +216,8 @@ class FirewallZone(object):
 
         chains = [ ]
         rules = [ ]
-        _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
+        _zone = base.DEFAULT_ZONE_TARGET.format(
+            chain=base.SHORTCUTS[chain], zone=zone)
 
         ipvs = []
         if self._fw.is_table_available("ipv4", table):
@@ -257,9 +257,13 @@ class FirewallZone(object):
                 if table == "filter" and \
                    chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                     if target in [ "REJECT", "%%REJECT%%" ]:
-                        rules.append((ipv, [ _zone, 4, "-t", table, "-j", "LOG", "--log-prefix", "\"%s_REJECT: \"" % _zone ]))
+                        rules.append((ipv, [ _zone, 4, "-t", table,
+                                             "-j", "LOG", "--log-prefix",
+                                             "\"%s_REJECT: \"" % _zone ]))
                     if target == "DROP":
-                        rules.append((ipv, [ _zone, 4, "-t", table, "-j", "LOG", "--log-prefix", "\"%s_DROP: \"" % _zone ]))
+                        rules.append((ipv, [ _zone, 4, "-t", table,
+                                             "-j", "LOG", "--log-prefix",
+                                             "\"%s_DROP: \"" % _zone ]))
 
         if create:
             # handle chains first
@@ -268,7 +272,7 @@ class FirewallZone(object):
                 (cleanup_chains, msg) = ret
                 log.debug2(msg)
                 self._fw.handle_chains(cleanup_chains, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
             # handle rules
             ret = self._fw.handle_rules(rules, create, insert=True)
@@ -278,7 +282,7 @@ class FirewallZone(object):
 
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise errors.FirewallError(errors.COMMAND_FAILED, msg)
         else:
             # reverse rule order for cleanup
             rules.reverse()
@@ -287,8 +291,8 @@ class FirewallZone(object):
             if ret:
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
-            
+                raise errors.FirewallError(errors.COMMAND_FAILED, msg)
+
             # cleanup chains
             ret = self._fw.handle_chains(chains, create)
             if ret:
@@ -298,7 +302,7 @@ class FirewallZone(object):
 
                 (cleanup_chains, msg) = ret
                 self._fw.handle_chains(cleanup_chains, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if create:
             self._chains.setdefault(zone, { }).setdefault(table, [ ]).append(chain)
@@ -313,7 +317,7 @@ class FirewallZone(object):
         self.__chain(zone, True, table, chain)
 
     def remove_chain(self, zone, table, chain):
-        # TODO: add config setting to remove chains optionally if 
+        # TODO: add config setting to remove chains optionally if
         #       table,chain is not used for zone anymore
         #       self.__chain(zone, False, table, chain)
         pass
@@ -358,7 +362,7 @@ class FirewallZone(object):
                     elif key == "masquerade":
                         self.add_masquerade(zone)
                     elif key == "rules":
-                        self.add_rule(zone, Rich_Rule(rule_str=args))
+                        self.add_rule(zone, rich.Rich_Rule(rule_str=args))
                     elif key == "interfaces":
                         self.change_zone_of_interface(zone, args)
                     elif key == "sources":
@@ -370,7 +374,7 @@ class FirewallZone(object):
                     if args in _obj.settings[key]:
                         _obj.settings[key][args] = settings[key][args]
 
-        except FirewallError as msg:
+        except errors.FirewallError as msg:
             log.error(msg)
 
     def __zone_settings(self, enable, zone):
@@ -396,7 +400,7 @@ class FirewallZone(object):
                         self.__masquerade(enable, zone)
                     elif key == "rules":
                         mark = self.__rule(enable, zone,
-                                           Rich_Rule(rule_str=args), None)
+                                           rich.Rich_Rule(rule_str=args), None)
                         obj.settings["rules"][args]["mark"] = mark
                     elif key == "interfaces":
                         self.__interface(enable, zone, args)
@@ -405,7 +409,7 @@ class FirewallZone(object):
                     else:
                         log.error("Zone '%s': Unknown setting '%s:%s', "
                                   "unable to apply", zone, key, args)
-                except FirewallError as msg:
+                except errors.FirewallError as msg:
                     log.error(msg)
         obj.applied = enable
 
@@ -510,9 +514,9 @@ class FirewallZone(object):
                     # handle all zones in the same way here, now
                     # trust and block zone targets are handled now in __chain
                     opt = INTERFACE_ZONE_OPTS[chain]
-                    target = DEFAULT_ZONE_TARGET.format(
-                        chain=SHORTCUTS[chain], zone=zone)
-                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                    target = base.DEFAULT_ZONE_TARGET.format(
+                        chain=base.SHORTCUTS[chain], zone=zone)
+                    if self._zones[zone].target == base.DEFAULT_ZONE_TARGET:
                         action = "-g"
                     else:
                         action = "-j"
@@ -528,7 +532,7 @@ class FirewallZone(object):
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
 #        if not enable:
 #            for table in ZONE_CHAINS:
@@ -545,11 +549,13 @@ class FirewallZone(object):
         interface_id = self.__interface_id(interface)
 
         if interface_id in _obj.settings["interfaces"]:
-            raise FirewallError(ZONE_ALREADY_SET,
-                         "'%s' already bound to '%s'" % (interface, zone))
+            raise errors.FirewallError(
+                errors.ZONE_ALREADY_SET,
+                "'%s' already bound to '%s'" % (interface, zone))
         if self.get_zone_of_interface(interface) is not None:
-            raise FirewallError(ZONE_CONFLICT,
-                                "'%s' already bound to a zone" % interface)
+            raise errors.FirewallError(
+                errors.ZONE_CONFLICT,
+                "'%s' already bound to a zone" % interface)
 
         log.debug1("Setting zone of interface '%s' to '%s'" % (interface, _zone))
         self.__interface(True, _zone, interface)
@@ -586,13 +592,14 @@ class FirewallZone(object):
         self._fw.check_panic()
         zoi = self.get_zone_of_interface(interface)
         if zoi is None:
-            raise FirewallError(UNKNOWN_INTERFACE,
-                                "'%s' is not in any zone" % interface)
+            raise errors.FirewallError(
+                errors.UNKNOWN_INTERFACE,
+                "'%s' is not in any zone" % interface)
         _zone = zoi if zone == "" else self._fw.check_zone(zone)
         if zoi != _zone:
-            raise FirewallError(ZONE_CONFLICT,
-                                "remove_interface(%s, %s): zoi='%s'" % \
-                                (zone, interface, zoi))
+            raise errors.FirewallError(
+                errors.ZONE_CONFLICT,
+                "remove_interface(%s, %s): zoi='%s'" % (zone, interface, zoi))
 
         _obj = self._zones[_zone]
         interface_id = self.__interface_id(interface)
@@ -630,7 +637,7 @@ class FirewallZone(object):
         elif source.startswith("ipset:"):
             return self.ipset_family(source[6:])
         else:
-            raise FirewallError(INVALID_ADDR, source)
+            raise errors.FirewallError(errors.INVALID_ADDR, source)
 
     def __source_id(self, source):
         ipv = self.check_source(source)
@@ -665,9 +672,9 @@ class FirewallZone(object):
                             if opt == "-d":
                                 continue
 
-                        target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS[chain], zone=zone)
-                        if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                        target = base.DEFAULT_ZONE_TARGET.format(
+                            chain=base.SHORTCUTS[chain], zone=zone)
+                        if self._zones[zone].target == base.DEFAULT_ZONE_TARGET:
                             action = "-g"
                         else:
                             action = "-j"
@@ -690,12 +697,12 @@ class FirewallZone(object):
 
                     # handle all zone bindings in the same way
                     # trust, block and drop zone targets are handled in __chain
-                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                    if self._zones[zone].target == base.DEFAULT_ZONE_TARGET:
                         action = "-g"
                     else:
                         action = "-j"
-                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                        zone=zone)
+                    target = base.DEFAULT_ZONE_TARGET.format(
+                        chain=base.SHORTCUTS[chain], zone=zone)
                     opt = SOURCE_ZONE_OPTS[chain]
 
                     if source.startswith("ipset:"):
@@ -717,7 +724,7 @@ class FirewallZone(object):
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
     def add_source(self, zone, source, sender=None):
         self._fw.check_panic()
@@ -732,11 +739,13 @@ class FirewallZone(object):
         source_id = self.__source_id(source)
 
         if source_id in _obj.settings["sources"]:
-            raise FirewallError(ZONE_ALREADY_SET,
-                            "'%s' already bound to '%s'" % (source, _zone))
+            raise errors.FirewallError(
+                errors.ZONE_ALREADY_SET,
+                "'%s' already bound to '%s'" % (source, _zone))
         if self.get_zone_of_source(source) is not None:
-            raise FirewallError(ZONE_CONFLICT,
-                                "'%s' already bound to a zone" % source)
+            raise errors.FirewallError(
+                errors.ZONE_CONFLICT,
+                "'%s' already bound to a zone" % source)
 
         self.__source(True, _zone, source_id[0], source_id[1])
 
@@ -769,13 +778,14 @@ class FirewallZone(object):
             source = source.upper()
         zos = self.get_zone_of_source(source)
         if zos is None:
-            raise FirewallError(UNKNOWN_SOURCE,
-                                "'%s' is not in any zone" % source)
+            raise errors.FirewallError(
+                errors.UNKNOWN_SOURCE,
+                "'%s' is not in any zone" % source)
         _zone = zos if zone == "" else self._fw.check_zone(zone)
         if zos != _zone:
-            raise FirewallError(ZONE_CONFLICT,
-                                "remove_source(%s, %s): zos='%s'" % \
-                                (zone, source, zos))
+            raise errors.FirewallError(
+                errors.ZONE_CONFLICT,
+                "remove_source(%s, %s): zos='%s'" % (zone, source, zos))
 
         _obj = self._zones[_zone]
         source_id = self.__source_id(source)
@@ -803,7 +813,7 @@ class FirewallZone(object):
 
     def __rule_id(self, rule):
         self.check_rule(rule)
-        return (str(rule))
+        return tuple(str(rule))
 
     def __rule_source_ipv(self, source):
         if not source:
@@ -869,11 +879,11 @@ class FirewallZone(object):
             return
         chain = "%s_log" % target
         _command = command[:]
-        if type(rule.action) == Rich_Accept:
+        if type(rule.action) == rich.Rich_Accept:
             _type = "accept"
-        elif type(rule.action) == Rich_Reject:
+        elif type(rule.action) == rich.Rich_Reject:
             _type = "reject"
-        elif type(rule.action) ==  Rich_Drop:
+        elif type(rule.action) == rich.Rich_Drop:
             _type = "drop"
         else:
             _type = "unknown"
@@ -886,27 +896,28 @@ class FirewallZone(object):
         if not rule.action:
             return
         _command = command[:]
-        if type(rule.action) == Rich_Accept:
+        if type(rule.action) == rich.Rich_Accept:
             chain = "%s_allow" % target
             _command += [ "-j", "ACCEPT" ]
-        elif type(rule.action) == Rich_Reject:
+        elif type(rule.action) == rich.Rich_Reject:
             chain = "%s_deny" % target
             _command += [ "-j", "REJECT" ]
             if rule.action.type:
                 _command += [ "--reject-with", rule.action.type ]
-        elif type(rule.action) ==  Rich_Drop:
+        elif type(rule.action) ==  rich.Rich_Drop:
             chain = "%s_deny" % target
             _command += [ "-j", "DROP" ]
-        elif type(rule.action) == Rich_Mark:
+        elif type(rule.action) == rich.Rich_Mark:
             chains.append([ "mangle", "PREROUTING" ])
             table = "mangle"
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
-                                                zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["PREROUTING"], zone=zone)
             chain = "%s_allow" % target
             _command += [ "-j", "MARK", "--set-xmark", rule.action.set ]
         else:
-            raise FirewallError(INVALID_RULE,
-                                "Unknown action %s" % type(rule.action))
+            raise errors.FirewallError(
+                errors.INVALID_RULE,
+                "Unknown action %s" % type(rule.action))
         _command += self.__rule_limit(rule.action.limit)
         rules.append((ipv, table, chain, _command))
 
@@ -925,8 +936,10 @@ class FirewallZone(object):
             if rule.family != None:
                 # rule family is defined by user, no way to change it
                 if rule.family != source_ipv:
-                    raise FirewallError(INVALID_RULE,
-                                        "Source address family '%s' conflicts with rule family '%s'." % (source_ipv, rule.family))
+                    raise errors.FirewallError(
+                        errors.INVALID_RULE,
+                        "Source address family '%s' conflicts with rule family '%s'." % \
+                        (source_ipv, rule.family))
             else:
                 # use the source family as rule family
                 ipvs = [ source_ipv ]
@@ -934,27 +947,29 @@ class FirewallZone(object):
         for ipv in ipvs:
 
             # SERVICE
-            if type(rule.element) == Rich_Service:
+            if type(rule.element) == rich.Rich_Service:
                 svc = self._fw.service.get_service(rule.element.name)
 
                 if len(svc.destination) > 0:
                     if ipv not in svc.destination:
                         # destination is set, only use if it contains ipv
-                        raise FirewallError(INVALID_RULE,
-                                            "Service %s is not usable with %s" % 
-                                            (rule.element.name, ipv))
+                        raise errors.FirewallError(
+                            errors.INVALID_RULE,
+                            "Service %s is not usable with %s" % \
+                            (rule.element.name, ipv))
                     if svc.destination[ipv] != "" and rule.destination:
                         # we can not use two destinations at the same time
-                        raise FirewallError(INVALID_RULE,
-                                            "Destination conflict with service.")
+                        raise errors.FirewallError(
+                            errors.INVALID_RULE,
+                            "Destination conflict with service.")
 
                 table = "filter"
                 chains.append([table, "INPUT" ])
-                if type(rule.action) == Rich_Accept:
+                if type(rule.action) == rich.Rich_Accept:
                     # only load modules for accept action
                     modules += svc.modules
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
 
                 # create rules
                 for (port,proto) in svc.ports:
@@ -968,7 +983,7 @@ class FirewallZone(object):
                         command += [ "--dport", "%s" % portStr(port) ]
                     if ipv in svc.destination and svc.destination[ipv] != "":
                         command += [ "-d",  svc.destination[ipv] ]
-                    if type(rule.action) != Rich_Mark:
+                    if type(rule.action) != rich.Rich_Mark:
                         command += [ "-m", "conntrack", "--ctstate", "NEW" ]
 
                     self.__rule_log(ipv, table, target, rule, command, rules)
@@ -984,8 +999,8 @@ class FirewallZone(object):
 
                     command += [ "-p", proto ]
                     if ipv in svc.destination and svc.destination[ipv] != "":
-                        command += [ "-d",  svc.destination[ipv] ]
-                    if type(rule.action) != Rich_Mark:
+                        command += [ "-d", svc.destination[ipv] ]
+                    if type(rule.action) != rich.Rich_Mark:
                         command += [ "-m", "conntrack", "--ctstate", "NEW" ]
 
                     self.__rule_log(ipv, table, target, rule, command, rules)
@@ -994,22 +1009,22 @@ class FirewallZone(object):
                                        chains, rules)
 
             # PORT
-            elif type(rule.element) == Rich_Port:
+            elif type(rule.element) == rich.Rich_Port:
                 port = rule.element.port
                 protocol = rule.element.protocol
                 self.check_port(port, protocol)
 
                 table = "filter"
                 chains.append([ table, "INPUT" ])
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
 
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
                 command += [ "-m", protocol, "-p", protocol,
-                           "--dport", portStr(port) ]
-                if type(rule.action) != Rich_Mark:
+                             "--dport", portStr(port) ]
+                if type(rule.action) != rich.Rich_Mark:
                     command += [ "-m", "conntrack", "--ctstate", "NEW" ]
 
                 self.__rule_log(ipv, table, target, rule, command, rules)
@@ -1018,20 +1033,20 @@ class FirewallZone(object):
                                    chains, rules)
 
             # PROTOCOL
-            elif type(rule.element) == Rich_Protocol:
+            elif type(rule.element) == rich.Rich_Protocol:
                 protocol = rule.element.value
                 self.check_protocol(protocol)
 
                 table = "filter"
                 chains.append([ table, "INPUT" ])
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
 
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
                 command += [ "-p", protocol ]
-                if type(rule.action) != Rich_Mark:
+                if type(rule.action) != rich.Rich_Mark:
                     command += ["-m", "conntrack", "--ctstate", "NEW" ]
 
                 self.__rule_log(ipv, table, target, rule, command, rules)
@@ -1040,7 +1055,7 @@ class FirewallZone(object):
                                    chains, rules)
 
             # MASQUERADE
-            elif type(rule.element) == Rich_Masquerade:
+            elif type(rule.element) == rich.Rich_Masquerade:
                 if enable:
                     enable_ip_forwarding(ipv)
 
@@ -1048,8 +1063,8 @@ class FirewallZone(object):
                 chains.append([ "filter", "FORWARD_OUT" ])
 
                 # POSTROUTING
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["POSTROUTING"], zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["POSTROUTING"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
@@ -1057,8 +1072,8 @@ class FirewallZone(object):
                 rules.append((ipv, "nat", "%s_allow" % target, command))
 
                 # FORWARD_OUT
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["FORWARD_OUT"], zone=zone)
                 command = [ ]
                 # reverse source/destination !
                 self.__rule_source(rule.destination, command)
@@ -1068,7 +1083,7 @@ class FirewallZone(object):
                 rules.append((ipv, "filter", "%s_allow" % target, command))
 
             # FORWARD PORT
-            elif type(rule.element) == Rich_ForwardPort:
+            elif type(rule.element) == rich.Rich_ForwardPort:
                 port = rule.element.port
                 protocol = rule.element.protocol
                 toport = rule.element.to_port
@@ -1097,8 +1112,8 @@ class FirewallZone(object):
 
                 mark = [ "-m", "mark", "--mark", mark_str ]
 
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["PREROUTING"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
@@ -1116,8 +1131,8 @@ class FirewallZone(object):
                     [ "-j", "DNAT", "--to-destination", to ]
                 rules.append((ipv, "nat", "%s_allow" % target, command))
 
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS[filter_chain], zone=zone)
                 command = [ "-m", "conntrack", "--ctstate", "NEW" ] + \
                     mark + [ "-j", "ACCEPT" ]
                 rules.append((ipv, "filter", "%s_allow" % target, command))
@@ -1127,17 +1142,19 @@ class FirewallZone(object):
                     mark_id = None
 
             # ICMP BLOCK
-            elif type(rule.element) == Rich_IcmpBlock:
+            elif type(rule.element) == rich.Rich_IcmpBlock:
                 ict = self._fw.icmptype.get_icmptype(rule.element.name)
 
-                if rule.action and type(rule.action) == Rich_Accept:
+                if rule.action and type(rule.action) == rich.Rich_Accept:
                     # icmp block might have reject or drop action, but not accept
-                    raise FirewallError(INVALID_RULE,
-                                        "IcmpBlock not usable with accept action")
+                    raise errors.FirewallError(
+                        errors.INVALID_RULE,
+                        "IcmpBlock not usable with accept action")
                 if ict.destination and ipv not in ict.destination:
-                    raise FirewallError(INVALID_RULE,
-                                        "IcmpBlock %s not usable with %s" % 
-                                        (rule.element.name, ipv))
+                    raise errors.FirewallError(
+                        errors.INVALID_RULE,
+                        "IcmpBlock %s not usable with %s" % \
+                        (rule.element.name, ipv))
 
                 table = "filter"
                 chains.append([ table, "INPUT" ])
@@ -1148,12 +1165,12 @@ class FirewallZone(object):
                     match = [ "-m", "icmp", "--icmp-type", rule.element.name ]
                 else:
                     proto = [ "-p", "ipv6-icmp" ]
-                    match = [ "-m", "icmp6", "--icmpv6-type", rule.element.name ]
-
+                    match = [ "-m", "icmp6", "--icmpv6-type",
+                              rule.element.name ]
 
                 # INPUT
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
@@ -1168,8 +1185,8 @@ class FirewallZone(object):
                     rules.append((ipv, table, "%s_deny" % target, command))
 
                 # FORWARD_IN
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_IN"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["FORWARD_IN"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_destination(rule.destination, command)
@@ -1187,8 +1204,8 @@ class FirewallZone(object):
                 # source action
                 table = "filter"
                 chains.append([ table, "INPUT" ])
-                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                    zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
                 self.__rule_log(ipv, table, target, rule, command, rules)
@@ -1198,12 +1215,13 @@ class FirewallZone(object):
 
             # EVERYTHING ELSE
             else:
-                raise FirewallError(INVALID_RULE, "Unknown element %s" % 
-                                    type(rule.element))
+                raise errors.FirewallError(
+                    errors.INVALID_RULE,
+                    "Unknown element %s" % type(rule.element))
 
         msg = self.handle_cmr(zone, chains, modules, rules, enable)
         if msg is not None:
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         return mark_id
 
@@ -1215,8 +1233,8 @@ class FirewallZone(object):
 
         rule_id = self.__rule_id(rule)
         if rule_id in _obj.settings["rules"]:
-            raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (rule, _zone))
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "'%s' already in '%s'" % (rule, _zone))
 
         if _obj.applied:
             mark = self.__rule(True, _zone, rule, None)
@@ -1235,8 +1253,8 @@ class FirewallZone(object):
 
         rule_id = self.__rule_id(rule)
         if rule_id not in _obj.settings["rules"]:
-            raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (rule, _zone))
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "'%s' not in '%s'" % (rule, _zone))
 
         if "mark" in _obj.settings["rules"][rule_id]:
             mark = _obj.settings["rules"][rule_id]["mark"]
@@ -1279,8 +1297,8 @@ class FirewallZone(object):
 
             # handle rules
             for (port,proto) in svc.ports:
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["INPUT"], zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
                 rule = [ "%s_allow" % (target), "-t", "filter", "-p", proto ]
                 if port:
                     rule += [ "--dport", "%s" % portStr(port) ]
@@ -1291,8 +1309,8 @@ class FirewallZone(object):
                 rules.append((ipv, rule))
 
             for protocol in svc.protocols:
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["INPUT"], zone=zone)
+                target = base.DEFAULT_ZONE_TARGET.format(
+                    chain=base.SHORTCUTS["INPUT"], zone=zone)
                 rules.append((ipv, [ "%s_allow" % (target),
                                      "-t", "filter", "-p", protocol,
                                      "-m", "conntrack", "--ctstate", "NEW",
@@ -1317,7 +1335,7 @@ class FirewallZone(object):
                 self._fw.handle_rules(cleanup_rules, not enable)
             if cleanup_modules:
                 self._fw.handle_modules(cleanup_modules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1330,8 +1348,9 @@ class FirewallZone(object):
 
         service_id = self.__service_id(service)
         if service_id in _obj.settings["services"]:
-            raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (service, _zone))
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "'%s' already in '%s'" % \
+                                       (service, _zone))
 
         if _obj.applied:
             self.__service(True, _zone, service)
@@ -1348,8 +1367,8 @@ class FirewallZone(object):
 
         service_id = self.__service_id(service)
         if service_id not in _obj.settings["services"]:
-            raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (service, _zone))
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "'%s' not in '%s'" % (service, _zone))
 
         if _obj.applied:
             self.__service(False, _zone, service)
@@ -1360,7 +1379,7 @@ class FirewallZone(object):
         return _zone
 
     def query_service(self, zone, service):
-        return (self.__service_id(service) in self.get_settings(zone)["services"])
+        return self.__service_id(service) in self.get_settings(zone)["services"]
 
     def list_services(self, zone):
         return sorted(self.get_settings(zone)["services"].keys())
@@ -1381,8 +1400,8 @@ class FirewallZone(object):
 
         rules = [ ]
         for ipv in [ "ipv4", "ipv6" ]:
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                     zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["INPUT"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "filter",
                                  "-m", protocol, "-p", protocol,
@@ -1395,7 +1414,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1408,8 +1427,9 @@ class FirewallZone(object):
 
         port_id = self.__port_id(port, protocol)
         if port_id in _obj.settings["ports"]:
-            raise FirewallError(ALREADY_ENABLED,
-                          "'%s:%s' already in '%s'" % (port, protocol, _zone))
+            raise errors.FirewallError(
+                errors.ALREADY_ENABLED,
+                "'%s:%s' already in '%s'" % (port, protocol, _zone))
 
         if _obj.applied:
             self.__port(True, _zone, port, protocol)
@@ -1426,8 +1446,9 @@ class FirewallZone(object):
 
         port_id = self.__port_id(port, protocol)
         if port_id not in _obj.settings["ports"]:
-            raise FirewallError(NOT_ENABLED,
-                             "'%s:%s' not in '%s'" % (port, protocol, _zone))
+            raise errors.FirewallError(
+                errors.NOT_ENABLED,
+                "'%s:%s' not in '%s'" % (port, protocol, _zone))
 
         if _obj.applied:
             self.__port(False, _zone, port, protocol)
@@ -1447,7 +1468,7 @@ class FirewallZone(object):
 
     def check_protocol(self, protocol):
         if not checkProtocol(protocol):
-            raise FirewallError(INVALID_PROTOCOL, protocol)
+            raise errors.FirewallError(errors.INVALID_PROTOCOL, protocol)
 
     def __protocol_id(self, protocol):
         self.check_protocol(protocol)
@@ -1459,8 +1480,8 @@ class FirewallZone(object):
 
         rules = [ ]
         for ipv in [ "ipv4", "ipv6" ]:
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                     zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["INPUT"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "filter", "-p", protocol,
                                  "-m", "conntrack", "--ctstate", "NEW",
@@ -1471,7 +1492,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1484,8 +1505,9 @@ class FirewallZone(object):
 
         protocol_id = self.__protocol_id(protocol)
         if protocol_id in _obj.settings["protocols"]:
-            raise FirewallError(ALREADY_ENABLED,
-                          "'%s' already in '%s'" % (protocol, _zone))
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "'%s' already in '%s'" % \
+                                       (protocol, _zone))
 
         if _obj.applied:
             self.__protocol(True, _zone, protocol)
@@ -1502,8 +1524,8 @@ class FirewallZone(object):
 
         protocol_id = self.__protocol_id(protocol)
         if protocol_id not in _obj.settings["protocols"]:
-            raise FirewallError(NOT_ENABLED,
-                             "'%s' not in '%s'" % (protocol, _zone))
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "'%s' not in '%s'" % (protocol, _zone))
 
         if _obj.applied:
             self.__protocol(False, _zone, protocol)
@@ -1532,13 +1554,13 @@ class FirewallZone(object):
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["POSTROUTING"], zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["POSTROUTING"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target), "!", "-o", "lo",
                                  "-t", "nat", "-j", "MASQUERADE" ]))
             # FORWARD_OUT
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["FORWARD_OUT"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "filter", "-j", "ACCEPT" ]))
 
@@ -1547,7 +1569,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "nat", "POSTROUTING")
@@ -1561,8 +1583,9 @@ class FirewallZone(object):
 
         masquerade_id = self.__masquerade_id()
         if masquerade_id in _obj.settings["masquerade"]:
-            raise FirewallError(ALREADY_ENABLED,
-                                "masquerade already enabled in '%s'" % _zone)
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "masquerade already enabled in '%s'" % \
+                                       _zone)
 
         if _obj.applied:
             self.__masquerade(True, _zone)
@@ -1579,8 +1602,8 @@ class FirewallZone(object):
 
         masquerade_id = self.__masquerade_id()
         if masquerade_id not in _obj.settings["masquerade"]:
-            raise FirewallError(NOT_ENABLED,
-                                "masquerade not enabled in '%s'" % _zone)
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "masquerade not enabled in '%s'" % _zone)
 
         if _obj.applied:
             self.__masquerade(False, _zone)
@@ -1602,10 +1625,11 @@ class FirewallZone(object):
             self._fw.check_port(toport)
         if toaddr:
             if not check_single_address(ipv, toaddr):
-                raise FirewallError(INVALID_ADDR, toaddr)
+                raise errors.FirewallError(errors.INVALID_ADDR, toaddr)
         if not toport and not toaddr:
-            raise FirewallError(INVALID_FORWARD,
-                            "port-forwarding is missing to-port AND to-addr")
+            raise errors.FirewallError(
+                errors.INVALID_FORWARD,
+                "port-forwarding is missing to-port AND to-addr")
 
     def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
         self.check_forward_port("ipv4", port, protocol, toport, toaddr)
@@ -1636,8 +1660,8 @@ class FirewallZone(object):
 
         rules = [ ]
         for ipv in [ "ipv4" ]: # IPv4 only!
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["PREROUTING"], zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["PREROUTING"], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "mangle",
                                  "-p", protocol, "--dport", port_str,
@@ -1648,8 +1672,8 @@ class FirewallZone(object):
                                  "-p", protocol ] + mark + \
                               [ "-j", "DNAT", "--to-destination", to ]))
 
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
-                                                zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS[filter_chain], zone=zone)
             rules.append((ipv, [ "%s_allow" % (target),
                                  "-t", "filter",
                                  "-m", "conntrack", "--ctstate", "NEW" ] + \
@@ -1662,7 +1686,7 @@ class FirewallZone(object):
             self._fw.handle_rules(cleanup_rules, not enable)
             if enable:
                 self._fw.del_mark(mark_id)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "mangle", "PREROUTING")
@@ -1678,9 +1702,9 @@ class FirewallZone(object):
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         if forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(ALREADY_ENABLED,
-                                "'%s:%s:%s:%s' already in '%s'" % \
-                                (port, protocol, toport, toaddr, _zone))
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "'%s:%s:%s:%s' already in '%s'" % \
+                                       (port, protocol, toport, toaddr, _zone))
 
         mark = self._fw.new_mark()
         if _obj.applied:
@@ -1700,9 +1724,9 @@ class FirewallZone(object):
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         if not forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(NOT_ENABLED,
-                                "'%s:%s:%s:%s' not in '%s'" % \
-                                (port, protocol, toport, toaddr, _zone))
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "'%s:%s:%s:%s' not in '%s'" % \
+                                       (port, protocol, toport, toaddr, _zone))
 
         mark = _obj.settings["forward_ports"][forward_id]["mark"]
 
@@ -1752,13 +1776,13 @@ class FirewallZone(object):
                 proto = [ "-p", "ipv6-icmp" ]
                 match = [ "-m", "icmp6", "--icmpv6-type", icmp ]
 
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                     zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["INPUT"], zone=zone)
             rules.append((ipv, [ "%s_deny" % (target),
                                  "-t", "filter", ] + proto + \
                               match + [ "-j", "%%REJECT%%" ]))
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["FORWARD_IN"], zone=zone)
+            target = base.DEFAULT_ZONE_TARGET.format(
+                chain=base.SHORTCUTS["FORWARD_IN"], zone=zone)
             rules.append((ipv, [ "%s_deny" % (target),
                                  "-t", "filter", ] + proto + \
                               match + [ "-j", "%%REJECT%%" ]))
@@ -1768,7 +1792,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise errors.FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1782,8 +1806,8 @@ class FirewallZone(object):
 
         icmp_id = self.__icmp_block_id(icmp)
         if icmp_id in _obj.settings["icmp_blocks"]:
-            raise FirewallError(ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (icmp, _zone))
+            raise errors.FirewallError(errors.ALREADY_ENABLED,
+                                       "'%s' already in '%s'" % (icmp, _zone))
 
         if _obj.applied:
             self.__icmp_block(True, _zone, icmp)
@@ -1800,8 +1824,8 @@ class FirewallZone(object):
 
         icmp_id = self.__icmp_block_id(icmp)
         if icmp_id not in _obj.settings["icmp_blocks"]:
-            raise FirewallError(NOT_ENABLED,
-                                "'%s' not in '%s'" % (icmp, _zone))
+            raise errors.FirewallError(errors.NOT_ENABLED,
+                                       "'%s' not in '%s'" % (icmp, _zone))
 
         if _obj.applied:
             self.__icmp_block(False, _zone, icmp)
