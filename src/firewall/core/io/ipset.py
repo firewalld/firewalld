@@ -184,7 +184,7 @@ class ipset_ContentHandler(io_object.IO_Object_ContentHandler):
             if attrs["name"] in [ "timeout", "hashsize", "maxelem" ]:
                 try:
                     int(value)
-                except Exception as e:
+                except Exception:
                     raise errors.FirewallError(
                         errors.INVALID_VALUE,
                         "Option '%s': Value '%s' is not an integer" % \
