@@ -120,7 +120,7 @@ class Service(IO_Object):
 
 class service_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
-        IO_Object_ContentHandler.startElement(self, name)
+        IO_Object_ContentHandler.startElement(self, name, attrs)
         self.item.parser_check_element_attrs(name, attrs)
         if name == "service":
             if "name" in attrs:

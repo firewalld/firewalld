@@ -39,7 +39,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         self.direct = False
 
     def startElement(self, name, attrs):
-        IO_Object_ContentHandler.startElement(self, name)
+        IO_Object_ContentHandler.startElement(self, name, attrs)
         self.item.parser_check_element_attrs(name, attrs)
 
         if name == "direct":

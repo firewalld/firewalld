@@ -174,7 +174,7 @@ class IO_Object_ContentHandler(sax.handler.ContentHandler):
     def startDocument(self):
         self._element = ""
 
-    def startElement(self, name):
+    def startElement(self, name, attrs):
         self._element = ""
 
     def endElement(self, name):

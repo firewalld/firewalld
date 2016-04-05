@@ -25,7 +25,7 @@ import shutil
 
 from firewall.config import ETC_FIREWALLD
 from firewall import errors
-from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, \
+from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, \
     checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io import io_object
@@ -277,7 +277,7 @@ class zone_ContentHandler(io_object.IO_Object_ContentHandler):
         self._limit_ok = None
 
     def startElement(self, name, attrs):
-        io_object.IO_Object_ContentHandler.startElement(self, name)
+        io_object.IO_Object_ContentHandler.startElement(self, name, attrs)
         if self._rule_error:
             return
 
@@ -432,7 +432,6 @@ class zone_ContentHandler(io_object.IO_Object_ContentHandler):
                 log.warning('Invalid interface: Name missing.')
                 self._rule_error = True
                 return
-            attrs["name"]
             if attrs["name"] not in self.item.interfaces:
                 self.item.interfaces.append(attrs["name"])
             else:
@@ -461,7 +460,7 @@ class zone_ContentHandler(io_object.IO_Object_ContentHandler):
                                                      invert=invert)
                 return
             # zone bound to source
-            if "address" not in attrs and not "ipset" in attrs:
+            if "address" not in attrs and "ipset" not in attrs:
                 log.warning('Invalid source: No address no ipset.')
                 return
             if "address" in attrs and "ipset" in attrs:
