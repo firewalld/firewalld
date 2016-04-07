@@ -113,6 +113,7 @@ class Firewall(object):
             log.error("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
+        # is there at least support for ipv4 or ipv6
         if not self.ip4tables_enabled and not self.ip6tables_enabled:
             log.fatal("No IPv4 and IPv6 firewall.")
             sys.exit(1)
@@ -129,7 +130,7 @@ class Firewall(object):
             # ipset is usable, get all supported types
             self.ipset_supported_types = self._ipset.supported_types()
 
-    def _start(self):
+    def _start(self, reload=False):
         # initialize firewall
         default_zone = FALLBACK_ZONE
 
@@ -193,8 +194,7 @@ class Firewall(object):
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
-        # apply default rules
-        self._apply_default_rules()
+        self._start_check()
 
         # load lockdown whitelist
         log.debug1("Loading lockdown whitelist")
@@ -246,24 +246,6 @@ class Firewall(object):
         if error:
             sys.exit(1)
 
-        # apply settings for loaded ipsets
-        self.ipset.apply_ipsets(self._individual_calls)
-
-        # apply settings for loaded zones
-        self.zone.apply_zones()
-
-        # load direct rules
-        obj = Direct(FIREWALLD_DIRECT)
-        if os.path.exists(FIREWALLD_DIRECT):
-            log.debug1("Loading direct rules file '%s'" % FIREWALLD_DIRECT)
-            try:
-                obj.read()
-            except Exception as msg:
-                log.debug1("Failed to load direct rules file '%s': %s",
-                           FIREWALLD_DIRECT, msg)
-        self.direct.set_permanent_config(obj)
-        self.config.set_direct(copy.deepcopy(obj))
-
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():
             if "public" in self.zone.get_zones():
@@ -279,17 +261,51 @@ class Firewall(object):
         else:
             log.debug1("Using default zone '%s'", default_zone)
 
+        # load direct rules
+        obj = Direct(FIREWALLD_DIRECT)
+        if os.path.exists(FIREWALLD_DIRECT):
+            log.debug1("Loading direct rules file '%s'" % FIREWALLD_DIRECT)
+            try:
+                obj.read()
+            except Exception as msg:
+                log.debug1("Failed to load direct rules file '%s': %s",
+                           FIREWALLD_DIRECT, msg)
+        self.direct.set_permanent_config(obj)
+        self.config.set_direct(copy.deepcopy(obj))
+
+        if reload:
+            self._set_policy("DROP")
+
+        # check if needed tables are there
+        self._check_tables()
+
+        # flush rules
+        self._flush()
+
+        # apply default rules
+        log.debug1("Applying default rule set")
+        self._apply_default_rules()
+
+        # apply settings for loaded ipsets
+        log.debug1("Applying ipsets")
+        self.ipset.apply_ipsets(self._individual_calls)
+
+        # apply settings for loaded zones
+        log.debug1("Applying used zones")
+        self.zone.apply_zones()
+
         self._default_zone = self.check_zone(default_zone)
         self.zone.change_default_zone(None, self._default_zone)
+
+        # apply direct chains, rules and passthrough rules
+        log.debug1("Applying direct chains rules and and passthrough rules")
+        self.direct.apply_direct()
 
         self._state = "RUNNING"
 
     def start(self):
-        self._start_check()
-        self._check_tables()
-        self._flush()
-        self._set_policy("ACCEPT")
         self._start()
+        self._set_policy("ACCEPT")
 
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
@@ -413,11 +429,11 @@ class Firewall(object):
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
 
-    def cleanup(self, reload=False):
+    def cleanup(self):
         self.icmptype.cleanup()
         self.service.cleanup()
         self.zone.cleanup()
-        self.ipset.cleanup(reload=reload)
+        self.ipset.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
         self.policies.cleanup()
@@ -633,6 +649,8 @@ class Firewall(object):
     # flush and policy
 
     def _flush(self):
+        log.debug1("Flushing rule set")
+
         if self.ip4tables_enabled:
             self._ip4tables.flush(individual=self._individual_calls)
         if self.ip6tables_enabled:
@@ -642,6 +660,8 @@ class Firewall(object):
                                              not self._ebtables.restore_noflush_option))
 
     def _set_policy(self, policy, which="used"):
+        log.debug1("Setting policy to '%s'", policy)
+
         if self.ip4tables_enabled:
             self._ip4tables.set_policy(policy, which,
                                        individual=self._individual_calls)
@@ -861,7 +881,7 @@ class Firewall(object):
 
     # RELOAD
 
-    def reload(self, stop=False):
+    def reload(self):
         _panic = self._panic
 
         # save zone interfaces
@@ -873,14 +893,10 @@ class Firewall(object):
         _old_dz = self.get_default_zone()
 
         # stop
-        self._set_policy("DROP")
-        self._flush()
-        if stop:
-            self._modules.unload_firewall_modules()
-        self.cleanup(reload=True)
+        self.cleanup()
 
         # start
-        self._start()
+        self._start(reload=True)
 
         # handle interfaces in the default zone and move them to the new 
         # default zone if it changed

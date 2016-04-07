@@ -54,13 +54,15 @@ class FirewallDirect(object):
         self.__init_vars()
 
     def set_permanent_config(self, obj):
+        self._obj = obj
+
+    def apply_direct(self):
         # Apply permanent configuration and save the obj to be able to
         # remove permanent configuration settings within get_runtime_config
         # for use in firewalld reload.
-        self._obj = obj
-        self.set_config((obj.get_all_chains(),
-                         obj.get_all_rules(),
-                         obj.get_all_passthroughs()))
+        self.set_config((self._obj.get_all_chains(),
+                         self._obj.get_all_rules(),
+                         self._obj.get_all_passthroughs()))
 
     def get_runtime_config(self):
         # Return only runtime changes
