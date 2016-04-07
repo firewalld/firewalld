@@ -63,6 +63,11 @@ class Firewall(object):
         self.ipset_enabled = True
         self.ipset_supported_types = [ ]
 
+        self.available_tables = { }
+        self.available_tables["ipv4"] = self._ip4tables.available_tables()
+        self.available_tables["ipv6"] = self._ip6tables.available_tables()
+        self.available_tables["eb"] = self._ebtables.available_tables()
+
         self._modules = modules.modules()
 
         self.icmptype = FirewallIcmpType(self)
@@ -99,17 +104,17 @@ class Firewall(object):
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
         if self.ip4tables_enabled and \
-           "filter" not in ipXtables.ip4tables_available_tables:
+           "filter" not in self.get_available_tables("ipv4"):
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
 
         if self.ip6tables_enabled and \
-           "filter" not in ipXtables.ip6tables_available_tables:
+           "filter" not in self.get_available_tables("ipv6"):
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
 
         if self.ebtables_enabled and \
-           "filter" not in ebtables.ebtables_available_tables:
+           "filter" not in self.get_available_tables("eb"):
             log.error("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
@@ -429,6 +434,11 @@ class Firewall(object):
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
 
+    def get_available_tables(self, ipv):
+        if ipv in [ "ipv4", "ipv6", "eb" ]:
+            return self.available_tables[ipv]
+        return [ ]
+
     def cleanup(self):
         self.icmptype.cleanup()
         self.service.cleanup()
@@ -493,10 +503,11 @@ class Firewall(object):
             if insert and not enable and isinstance(rule[1], int):
                 rule.pop(1)
 
-            if table and not self.is_table_available(ipv, table):
+            if table and table not in self.get_available_tables(ipv):
                 if ((ipv == "ipv4" and self.ip4tables_enabled) or
                     (ipv == "ipv6" and self.ip6tables_enabled)):
-                    log.error("Unable to add %s into %s %s" % (rule, ipv, table))
+                    log.error("Unable to add %s into %s %s" % (rule, ipv,
+                                                               table))
                 continue
 
             if table != None:
@@ -579,11 +590,6 @@ class Firewall(object):
                         del self._module_refcount[module]
         return None
 
-    def is_table_available(self, ipv, table):
-        return ((ipv == "ipv4" and table in ipXtables.ip4tables_available_tables) or
-                (ipv == "ipv6" and table in ipXtables.ip6tables_available_tables) or
-                (ipv == "eb" and table in ebtables.ebtables_available_tables))
-
     # apply default rules
     def __apply_default_rules(self, ipv):
         default_rules = { }
@@ -601,7 +607,7 @@ class Firewall(object):
 
         rules = { }
         for table in default_rules:
-            if not self.is_table_available(ipv, table):
+            if table not in self.get_available_tables(ipv):
                 continue
             prefix = [ "-t", table ]
             for rule in default_rules[table]:
@@ -623,7 +629,7 @@ class Firewall(object):
             self.__apply_default_rules(ipv)
 
         if self.ipv6_rpfilter_enabled and \
-           self.is_table_available("ipv6", "raw"):
+           "raw" in self.get_available_tables("ipv6"):
             # here is no check for ebtables.restore_noflush_option needed
             # as ebtables is not used in here
             rules = [

@@ -27,64 +27,66 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkIP, checkIP6
 from firewall.core.rich import *
 from firewall.errors import *
-from firewall.core.ipXtables import ip4tables_available_tables,\
-    ip6tables_available_tables, OUR_CHAINS
-
-mangle = []
-if "mangle" in ip4tables_available_tables:
-    mangle.append("ipv4")
-if "mangle" in ip6tables_available_tables:
-    mangle.append("ipv6")
-
-nat = []
-if "nat" in ip4tables_available_tables:
-    nat.append("ipv4")
-else:
-    if "ipv4" in mangle:
-        mangle.remove("ipv4")
-if "nat" in ip6tables_available_tables:
-    nat.append("ipv6")
-else:
-    if "ipv6" in mangle:
-        mangle.remove("ipv6")
-
-ZONE_CHAINS = {
-    "filter": {
-        "INPUT": [ "ipv4", "ipv6" ],
-        "FORWARD_IN": [ "ipv4", "ipv6" ],
-        "FORWARD_OUT": [ "ipv4", "ipv6" ],
-        },
-    "nat": {
-        "PREROUTING": nat,
-        "POSTROUTING": nat,
-        },
-    "mangle": {
-        "PREROUTING": mangle,
-        },
-}
-
-INTERFACE_ZONE_OPTS = {
-    "PREROUTING": "-i",
-    "POSTROUTING": "-o",
-    "INPUT": "-i",
-    "FORWARD_IN": "-i",
-    "FORWARD_OUT": "-o",
-    "OUTPUT": "-o",
-}
-
-SOURCE_ZONE_OPTS = { }
-# transform INTERFACE_ZONE_OPTS for source address
-for x in INTERFACE_ZONE_OPTS:
-    if INTERFACE_ZONE_OPTS[x] == "-i":
-        SOURCE_ZONE_OPTS[x] = "-s"
-    if INTERFACE_ZONE_OPTS[x] == "-o":
-        SOURCE_ZONE_OPTS[x] = "-d"
+from firewall.core.ipXtables import OUR_CHAINS
 
 class FirewallZone(object):
     def __init__(self, fw):
         self._fw = fw
         self._chains = { }
         self._zones = { }
+
+        ip4tables_tables = self._fw.get_available_tables("ipv4")
+        ip6tables_tables = self._fw.get_available_tables("ipv6")
+
+        mangle = []
+        if "mangle" in ip4tables_tables:
+            mangle.append("ipv4")
+        if "mangle" in ip6tables_tables:
+            mangle.append("ipv6")
+
+        nat = []
+        if "nat" in ip4tables_tables:
+            nat.append("ipv4")
+        else:
+            if "ipv4" in mangle:
+                mangle.remove("ipv4")
+
+        if "nat" in ip6tables_tables:
+            nat.append("ipv6")
+        else:
+            if "ipv6" in mangle:
+                mangle.remove("ipv6")
+
+        self.zone_chains = {
+            "filter": {
+                "INPUT": [ "ipv4", "ipv6" ],
+                "FORWARD_IN": [ "ipv4", "ipv6" ],
+                "FORWARD_OUT": [ "ipv4", "ipv6" ],
+            },
+            "nat": {
+                "PREROUTING": nat,
+                "POSTROUTING": nat,
+            },
+            "mangle": {
+                "PREROUTING": mangle,
+            },
+        }
+
+        self.interface_zone_opts = {
+            "PREROUTING": "-i",
+            "POSTROUTING": "-o",
+            "INPUT": "-i",
+            "FORWARD_IN": "-i",
+            "FORWARD_OUT": "-o",
+            "OUTPUT": "-o",
+        }
+
+        ## transform self.interface_zone_opts for source address
+        tbl = { "-i": "-s",
+                "-o": "-d" }
+        self.source_zone_opts = {
+            key: tbl[val] for key,val in self.interface_zone_opts.items()
+        }
 
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__, self._chains, self._zones)
@@ -219,10 +221,10 @@ class FirewallZone(object):
         rules = [ ]
         _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
 
-        ipvs = []
-        if self._fw.is_table_available("ipv4", table):
+        ipvs = [ ]
+        if table in self._fw.get_available_tables("ipv4"):
             ipvs.append("ipv4")
-        if self._fw.is_table_available("ipv6", table):
+        if table in self._fw.get_available_tables("ipv4"):
             ipvs.append("ipv6")
 
         for ipv in ipvs:
@@ -500,16 +502,16 @@ class FirewallZone(object):
 
     def __interface(self, enable, zone, interface, append=False):
         rules = [ ]
-        for table in ZONE_CHAINS:
-            for chain in ZONE_CHAINS[table]:
+        for table in self.zone_chains:
+            for chain in self.zone_chains[table]:
                 # create needed chains if not done already
                 if enable:
                     self.add_chain(zone, table, chain)
 
-                for ipv in ZONE_CHAINS[table][chain]:
+                for ipv in self.zone_chains[table][chain]:
                     # handle all zones in the same way here, now
                     # trust and block zone targets are handled now in __chain
-                    opt = INTERFACE_ZONE_OPTS[chain]
+                    opt = self.interface_zone_opts[chain]
                     target = DEFAULT_ZONE_TARGET.format(
                         chain=SHORTCUTS[chain], zone=zone)
                     if self._zones[zone].target == DEFAULT_ZONE_TARGET:
@@ -531,8 +533,8 @@ class FirewallZone(object):
             raise FirewallError(COMMAND_FAILED, msg)
 
 #        if not enable:
-#            for table in ZONE_CHAINS:
-#                for chain in ZONE_CHAINS[table]:
+#            for table in self.zone_chains:
+#                for chain in self.zone_chains[table]:
 #                    self.remove_chain(zone, table, chain)
 
     def add_interface(self, zone, interface, sender=None):
@@ -647,13 +649,13 @@ class FirewallZone(object):
         # be added for ipv4 and ipv6
         if ipv == "" or ipv == None:
             for ipv in [ "ipv4", "ipv6" ]:
-                for table in ZONE_CHAINS:
-                    for chain in ZONE_CHAINS[table]:
+                for table in self.zone_chains:
+                    for chain in self.zone_chains[table]:
                         # create needed chains if not done already
                         if enable:
                             self.add_chain(zone, table, chain)
 
-                        opt = SOURCE_ZONE_OPTS[chain]
+                        opt = self.source_zone_opts[chain]
                         # for zone mac source bindings the features are limited
                         # outgoing can not be set
                         if source.startswith("ipset:"):
@@ -682,8 +684,8 @@ class FirewallZone(object):
                         rules.append((ipv, rule))
 
         else:
-            for table in ZONE_CHAINS:
-                for chain in ZONE_CHAINS[table]:
+            for table in self.zone_chains:
+                for chain in self.zone_chains[table]:
                     # create needed chains if not done already
                     if enable:
                         self.add_chain(zone, table, chain)
@@ -696,7 +698,7 @@ class FirewallZone(object):
                         action = "-j"
                     target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
                                                         zone=zone)
-                    opt = SOURCE_ZONE_OPTS[chain]
+                    opt = self.source_zone_opts[chain]
 
                     if source.startswith("ipset:"):
                         if opt == "-d":

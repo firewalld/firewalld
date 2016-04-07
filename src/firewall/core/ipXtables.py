@@ -302,6 +302,3 @@ class ip4tables(object):
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
-
-ip4tables_available_tables = ip4tables().available_tables()
-ip6tables_available_tables = ip6tables().available_tables()

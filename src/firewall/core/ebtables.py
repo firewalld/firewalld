@@ -226,5 +226,3 @@ class ebtables(object):
                     rules.append([ "-t", table, "-P", chain, policy ])
         if len(rules) > 0:
             self.set_rules(rules)
-
-ebtables_available_tables = ebtables().available_tables()
