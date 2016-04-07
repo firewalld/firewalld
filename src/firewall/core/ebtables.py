@@ -54,6 +54,7 @@ class ebtables(object):
         self._restore_command = COMMANDS["%s-restore" % self.ipv]
         self.ebtables_lock = "/var/lib/ebtables/lock"
         self.restore_noflush_option = self._detect_restore_noflush_option()
+        self.concurrent_option = self._detect_concurrent_option()
         self.__remove_dangling_lock()
 
     def __remove_dangling_lock(self):
@@ -69,6 +70,16 @@ class ebtables(object):
                     if e.errno != errno.ENOENT:
                         raise
 
+    def _detect_concurrent_option(self):
+        # Do not change any rules, just try to use the --concurrent option
+        # with -L
+        concurrent_option = ""
+        (status, ret) = runProg(self._command, ["--concurrent", "-L"])
+        if status == 0:
+            concurrent_option = "--concurrent"  # concurrent for ebtables lock
+
+        return concurrent_option
+
     def _detect_restore_noflush_option(self):
         # Do not change any rules, just try to use the restore command
         # with --noflush
@@ -81,7 +92,10 @@ class ebtables(object):
 
     def __run(self, args):
         # convert to string list
-        _args = ["--concurrent"] + ["%s" % item for item in args]
+        _args = [ ]
+        if self.concurrent_option and self.concurrent_option not in args:
+            _args.append(self.concurrent_option)
+        _args += ["%s" % item for item in args]
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
         self.__remove_dangling_lock()
         (status, ret) = runProg(self._command, _args)
