@@ -4850,7 +4850,7 @@ class FirewallConfig(object):
             self.ipsetBaseDialogVersionEntry.set_text("")
             self.ipsetBaseDialogShortEntry.set_text("")
             self.ipsetBaseDialogDescText.get_buffer().set_text("")
-            self.ipsetBaseDialogTypeCombobox.set_active(0)
+            combobox_select_text(self.ipsetBaseDialogTypeCombobox, "hash:ip")
             self.ipsetBaseDialogFamilyCombobox.set_active(0)
             self.ipsetBaseDialogTimeoutEntry.set_text("")
             self.ipsetBaseDialogHashsizeEntry.set_text("")
