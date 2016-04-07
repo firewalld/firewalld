@@ -652,12 +652,22 @@ class Firewall(object):
         log.debug1("Flushing rule set")
 
         if self.ip4tables_enabled:
-            self._ip4tables.flush(individual=self._individual_calls)
+            try:
+                self._ip4tables.flush(individual=self._individual_calls)
+            except Exception as e:
+                log.error("Failed to flush ipv4 firewall: %s" % e)
         if self.ip6tables_enabled:
-            self._ip6tables.flush(individual=self._individual_calls)
+            try:
+                self._ip6tables.flush(individual=self._individual_calls)
+            except Exception as e:
+                log.error("Failed to flush ipv6 firewall: %s" % e)
         if self.ebtables_enabled:
-            self._ebtables.flush(individual=(self._individual_calls or \
-                                             not self._ebtables.restore_noflush_option))
+            try:
+                self._ebtables.flush(
+                    individual=self._individual_calls or \
+                    not self._ebtables.restore_noflush_option)
+            except Exception as e:
+                log.error("Failed to flush eb firewall: %s" % e)
 
     def _set_policy(self, policy, which="used"):
         log.debug1("Setting policy to '%s'", policy)
