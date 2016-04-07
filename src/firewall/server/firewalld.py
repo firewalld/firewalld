@@ -66,8 +66,8 @@ class FirewallD(slip.dbus.service.Object):
         self.fw = Firewall()
         self.busname = args[0]
         self.path = args[1]
-        dbus_introspection_prepare_properties(self, DBUS_INTERFACE)
         self.start()
+        dbus_introspection_prepare_properties(self, DBUS_INTERFACE)
         self.config = FirewallDConfig(self.fw.config, self.busname,
                                       DBUS_PATH_CONFIG)
 
