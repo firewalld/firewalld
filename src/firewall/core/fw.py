@@ -673,15 +673,26 @@ class Firewall(object):
         log.debug1("Setting policy to '%s'", policy)
 
         if self.ip4tables_enabled:
-            self._ip4tables.set_policy(policy, which,
-                                       individual=self._individual_calls)
+            try:
+                self._ip4tables.set_policy(policy, which,
+                                           individual=self._individual_calls)
+            except Exception as e:
+                log.error("Failed to set policy of ipv4 firewall: %s" % e)
+
         if self.ip6tables_enabled:
-            self._ip6tables.set_policy(policy, which,
-                                       individual=self._individual_calls)
+            try:
+                self._ip6tables.set_policy(policy, which,
+                                           individual=self._individual_calls)
+            except Exception as e:
+                log.error("Failed to set policy of ipv6 firewall: %s" % e)
         if self.ebtables_enabled:
-            self._ebtables.set_policy(policy, which,
-                                      individual=(self._individual_calls or \
-                                                  not self._ebtables.restore_noflush_option))
+            try:
+                self._ebtables.set_policy(
+                    policy, which,
+                    individual=self._individual_calls or \
+                    not self._ebtables.restore_noflush_option)
+            except Exception as e:
+                log.error("Failed to set policy of eb firewall: %s" % e)
 
     # rule function used in handle_ functions
 
