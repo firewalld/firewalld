@@ -110,6 +110,14 @@ IPSet Options
   --info-ipset=<ipset> Print information about an ipset
   --path-ipset=<ipset> Print file path of an ipset [P only]
   --get-ipsets         Print predefined ipsets
+  --ipset=<ipset> --set-description=<description>
+                       Set new description to ipset [P only]
+  --ipset=<ipset> --get-description
+                       Print description for ipset [P only]
+  --ipset=<ipset> --set-short=<description>
+                       Set new short description to ipset [P only]
+  --ipset=<ipset> --get-short
+                       Print short description for ipset [P only]
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset [P]
   --ipset=<ipset> --remove-entry=<entry>
@@ -128,6 +136,14 @@ IcmpType Options
                        Print information about an icmptype
   --path-icmptype=<icmptype>
                        Print file path of an icmptype [P only]
+  --icmptype=<icmptype> --set-description=<description>
+                       Set new description to icmptype [P only]
+  --icmptype=<icmptype> --get-description
+                       Print description for icmptype [P only]
+  --icmptype=<icmptype> --set-short=<description>
+                       Set new short description to icmptype [P only]
+  --icmptype=<icmptype> --get-short
+                       Print short description for icmptype [P only]
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype [P only]
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -146,6 +162,14 @@ Service Options
                        Print information about a service
   --path-service=<service>
                        Print file path of a service [P only]
+  --service=<service> --set-description=<description>
+                       Set new description to service [P only]
+  --service=<service> --get-description
+                       Print description for service [P only]
+  --service=<service> --set-short=<description>
+                       Set new short description to service [P only]
+  --service=<service> --get-short
+                       Print short description for service [P only]
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service [P only]
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -185,6 +209,12 @@ Options to Adapt and Query Zones
   --timeout=<timeval>  Enable an option for timeval time, where timeval is
                        a number followed by one of letters 's' or 'm' or 'h'
                        Usable for options marked with [T]
+  --set-description=<description>
+                       Set new description to zone [P only] [Z]
+  --get-description    Print description for zone [P only] [Z]
+  --set-short=<description>
+                       Set new short description to zone [P only] [Z]
+  --get-short          Print short description for zone [P only] [Z]
   --add-service=<service>
                        Add a service for a zone [P] [Z] [T]
   --remove-service=<service>
@@ -403,7 +433,7 @@ def _check_ipv(value):
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
     return value
 
-def __print_zone_info(zone, settings):
+def __print_zone_info(zone, settings, verbose = False):
     interfaces = settings.getInterfaces()
     sources = settings.getSources()
     services = settings.getServices()
@@ -413,6 +443,8 @@ def __print_zone_info(zone, settings):
     forward_ports = settings.getForwardPorts()
     icmp_blocks = settings.getIcmpBlocks()
     rules = settings.getRichRules()
+    description = settings.getDescription()
+    short_description = settings.getShort()
 
     attributes = []
     if zone == fw.getDefaultZone():
@@ -422,6 +454,9 @@ def __print_zone_info(zone, settings):
     if attributes:
         zone = zone + " (%s)" % ", ".join(attributes)
     __print(zone)
+    if verbose:
+        __print("  summary: " + short_description)
+        __print("  description: " + description)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
     __print("  services: " + " ".join(services))
@@ -436,30 +471,42 @@ def __print_service_info(service, settings):
     ports = settings.getPorts()
     protocols = settings.getProtocols()
     modules = settings.getModules()
+    description = settings.getDescription()
     destinations = settings.getDestinations()
+    short_description = settings.getShort()
     __print(service)
+    __print("  summary: " + short_description)
     __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
     __print("  protocols: " + " ".join(protocols))
     __print("  modules: " + " ".join(modules))
     __print("  destination: " + " ".join(["%s:%s" % (k,v)
                                           for k,v in destinations.items()]))
+    __print("  description: " + description)
 
 def __print_icmptype_info(icmptype, settings):
     destinations = settings.getDestinations()
+    description = settings.getDescription()
+    short_description = settings.getShort()
     if len(destinations) == 0:
         destinations = [ "ipv4", "ipv6" ]
     __print(icmptype)
+    __print("  summary: " + short_description)
     __print("  destination: " + " ".join(destinations))
+    __print("  description: " + description)
 
 def __print_ipset_info(ipset, settings):
     ipset_type = settings.getType()
     options = settings.getOptions()
     entries = settings.getEntries()
+    description = settings.getDescription()
+    short_description = settings.getShort()
     __print(ipset)
+    __print("  summary: " + short_description)
     __print("  type: " + ipset_type)
     __print("  options: " + " ".join(["%s=%s" % (k,v) if v else k
                                       for k,v in options.items()]))
     __print("  entries: " + " ".join(entries))
+    __print("  description: " + description)
 
 def __print_query_result(value):
     if value:
@@ -639,6 +686,12 @@ parser_service.add_argument("--get-modules", action="store_true")
 parser_service.add_argument("--set-destination", metavar="<destination>")
 parser_service.add_argument("--get-destination", action="store_true")
 
+parser_service.add_argument("--set-description", metavar="<description>")
+parser_service.add_argument("--get-description", action="store_true")
+
+parser_service.add_argument("--set-short", metavar="<description>")
+parser_service.add_argument("--get-short", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -709,6 +762,9 @@ options_standalone = a.help or a.version or \
     a.get_active_zones or a.get_log_denied or a.set_log_denied or \
     a.get_ipset_types
 
+options_desc_xml_file = a.set_description or a.get_description or \
+                        a.set_short or a.get_short
+
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
     a.remove_lockdown_whitelist_command or \
@@ -752,12 +808,15 @@ options_zone_adapt_query = \
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
 
-options_zone = a.zone or a.timeout != "0" or options_zone_ops
+options_zone = a.zone or a.timeout != "0" or options_zone_ops or \
+               options_desc_xml_file
 
-options_ipset = a.add_entry or a.remove_entry or a.query_entry or a.get_entries
+options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
+                a.get_entries or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
-                   a.query_destination or a.get_destinations
+                   a.query_destination or a.get_destinations or \
+                   options_desc_xml_file
 
 options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or \
@@ -766,7 +825,8 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.add_module or a.remove_module or a.query_module or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
-                  a.query_destination or a.get_destinations
+                  a.query_destination or a.get_destinations or \
+                  options_desc_xml_file
 
 options_permanent = a.permanent or options_config or \
                     a.zone or options_zone_ops or \
@@ -803,7 +863,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_services or a.get_icmptypes or a.get_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
- a.get_destinations
+ a.get_destinations or a.get_description
 
 # Check various impossible combinations of options
 
@@ -819,16 +879,16 @@ if options_standalone and (options_zone or options_permanent or \
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if (options_ipset and not a.ipset):
+if (options_ipset and not options_desc_xml_file and not a.ipset):
     __fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
-   not (options_service and a.service):
+   not (options_service and a.service) and not options_desc_xml_file:
     __fail(parser.format_usage() + "No icmptype specified.")
 
 if (options_direct or options_permanent_only) and \
    (options_zone and not a.zone) and (options_service and not a.service) and \
-   (options_icmptype and a.icmptype):
+   (options_icmptype and a.icmptype) and not options_desc_xml_file:
     __fail(parser.format_usage() + "Can't be used with --zone.")
 
 if (a.direct and not options_direct) or (options_direct and not a.direct):
@@ -1000,7 +1060,7 @@ if a.permanent:
 
     elif a.info_zone:
         zone = fw.config().getZoneByName(a.info_zone)
-        __print_zone_info(a.info_zone, zone.getSettings())
+        __print_zone_info(a.info_zone, zone.getSettings(), True)
         sys.exit(0)
 
     elif a.path_zone:
@@ -1067,6 +1127,20 @@ if a.permanent:
             if len(l) == 0:
                 l = [ "ipv4", "ipv6" ]
             __print_and_exit("\n".join(l))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            icmptype.update(settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            icmptype.update(settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
@@ -1147,6 +1221,20 @@ if a.permanent:
         elif a.get_destinations:
             l = settings.getDestinations()
             __print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            service.update(settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            service.update(settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
 
         else:
             __fail(parser.format_usage() + "Unknown option")
@@ -1309,9 +1397,7 @@ if a.permanent:
                 __print("%s %s %s %d %s" % (ipv, table, chain, priority,
                                             joinArgs(rule)))
             sys.exit(0)
-    elif options_ipset:
-        if not a.ipset:
-            __fail("usage: --ipset<ipset> ...")
+    elif a.ipset:
         fw_ipset = fw.config().getIPSetByName(a.ipset)
 
         if a.add_entry:
@@ -1320,6 +1406,16 @@ if a.permanent:
             fw_ipset.removeInterface(a.remove_interface)
         elif a.query_entry:
             __print_query_result(fw_zone.queryInterface(a.query_interface))
+        elif a.set_description:
+            fw_ipset.setDescription(a.set_description)
+        elif a.get_description:
+            __print_and_exit(fw_ipset.getDescription())
+        elif a.set_short:
+            fw_ipset.setShort(a.set_short)
+        elif a.get_short:
+            __print_and_exit(fw_ipset.getShort())
+        else:
+            __fail(parser.format_usage() + "Unknown option")
 
 
     else:
@@ -1486,6 +1582,23 @@ if a.permanent:
                 __print_zone_info(zone, fw_zone.getSettings())
                 __print("")
             sys.exit(0)
+
+        # set zone description
+        elif a.set_description:
+            fw_zone.setDescription(a.set_description)
+
+        # get zone description
+        elif a.get_description:
+            __print_and_exit(fw_zone.getDescription())
+
+        # set zone short description
+        elif a.set_short:
+            fw_zone.setShort(a.set_short)
+
+        # get zone short description
+        elif a.get_short:
+            __print_and_exit(fw_zone.getShort())
+
 
 elif a.version:
     __print_and_exit(fw.get_property("version"))
@@ -1860,7 +1973,7 @@ elif a.list_all_zones:
     sys.exit(0)
 
 elif a.info_zone:
-    __print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone))
+    __print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), True)
     sys.exit(0)
 
 elif a.info_service:

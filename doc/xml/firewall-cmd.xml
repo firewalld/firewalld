@@ -349,6 +349,38 @@
 	</varlistentry>
 
 	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
           <term><option>--permanent</option> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-target</option></term>
           <listitem>
             <para>
@@ -899,6 +931,38 @@
 	  </listitem>
 	</varlistentry>
 	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
          <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--add-entry</option>=<replaceable>entry</replaceable></term>
          <listitem>
            <para>
@@ -975,6 +1039,38 @@
          <listitem>
            <para>
              Delete an existing permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for service
            </para>
          </listitem>
        </varlistentry>
@@ -1148,6 +1244,39 @@
          <listitem>
            <para>
              Delete an existing permanent icmptype.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for icmptype
            </para>
          </listitem>
        </varlistentry>

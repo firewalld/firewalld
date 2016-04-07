@@ -97,6 +97,9 @@ Zone Options
   --delete-zone=<zone> Delete an existing zone
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options marked with [Z]
+  --set-description=<description>
+                       Set new description to zone
+  --get-description    Print description for zone
   --get-target         Get the zone target
   --set-target=<target>
                        Set the zone target
@@ -109,6 +112,14 @@ IPSet Options
                        Delete an existing ipset
   --info-ipset=<ipset> Print information about an ipset
   --get-ipsets         Print predefined ipsets
+  --ipset=<ipset> --set-description=<description>
+                       Set new description to ipset
+  --ipset=<ipset> --get-description
+                       Print description for ipset
+  --ipset=<ipset> --set-short=<description>
+                       Set new short description to ipset
+  --ipset=<ipset> --get-short
+                       Print short description for ipset
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset
   --ipset=<ipset> --remove-entry=<entry>
@@ -125,6 +136,14 @@ IcmpType Options
                        Delete an existing icmptype
   --info-icmptype=<icmptype>
                        Print information about an icmptype
+  --icmptype=<icmptype> --set-description=<description>
+                       Set new description to icmptype
+  --icmptype=<icmptype> --get-description
+                       Print description for icmptype
+  --icmptype=<icmptype> --set-short=<description>
+                       Set new short description to icmptype
+  --icmptype=<icmptype> --get-short
+                       Print short description for icmptype
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -141,6 +160,14 @@ Service Options
                        Delete an existing service
   --info-service=<service>
                        Print information about a service
+  --service=<service> --set-description=<description>
+                       Set new description to service
+  --service=<service> --get-description
+                       Print description for service
+  --service=<service> --set-short=<description>
+                       Set new short description to service
+  --service=<service> --get-short
+                       Print short description for service
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
@@ -418,7 +445,7 @@ def _check_ipv(value):
         __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
     return value
 
-def __print_zone_info(zone, settings):
+def __print_zone_info(zone, settings, verbose = False):
     interfaces = settings.getInterfaces()
     sources = settings.getSources()
     services = settings.getServices()
@@ -428,7 +455,12 @@ def __print_zone_info(zone, settings):
     forward_ports = settings.getForwardPorts()
     icmp_blocks = settings.getIcmpBlocks()
     rules = settings.getRichRules()
+    description = settings.getDescription()
+    short_description = settings.getShort()
     __print(zone)
+    if verbose:
+        __print("  summary: " + short_description)
+        __print("  description: " + description)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
     __print("  services: " + " ".join(services))
@@ -443,30 +475,42 @@ def __print_service_info(service, settings):
     ports = settings.getPorts()
     protocols = settings.getProtocols()
     modules = settings.getModules()
+    description = settings.getDescription()
     destinations = settings.getDestinations()
+    short_description = settings.getShort()
     __print(service)
+    __print("  summary: " + short_description)
     __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
     __print("  protocols: " + " ".join(protocols))
     __print("  modules: " + " ".join(modules))
     __print("  destination: " + " ".join(["%s:%s" % (k,v)
                                           for k,v in destinations.items()]))
+    __print("  description: " + description)
 
 def __print_icmptype_info(icmptype, settings):
     destinations = settings.getDestinations()
+    description = settings.getDescription()
+    short_description = settings.getShort()
     if len(destinations) == 0:
         destinations = [ "ipv4", "ipv6" ]
     __print(icmptype)
+    __print("  summary: " + short_description)
     __print("  destination: " + " ".join(destinations))
+    __print("  description: " + description)
 
 def __print_ipset_info(ipset, settings):
     ipset_type = settings.getType()
     options = settings.getOptions()
     entries = settings.getEntries()
+    description = settings.getDescription()
+    short_description = settings.getShort()
     __print(ipset)
+    __print("  summary: " + short_description)
     __print("  type: " + ipset_type)
     __print("  options: " + " ".join(["%s=%s" % (k,v) if v else k
                                       for k,v in options.items()]))
     __print("  entries: " + " ".join(entries))
+    __print("  description: " + description)
 
 def __print_query_result(value):
     if value:
@@ -663,6 +707,12 @@ parser_service.add_argument("--get-modules", action="store_true")
 parser_service.add_argument("--set-destination", metavar="<destination>")
 parser_service.add_argument("--get-destination", action="store_true")
 
+parser_service.add_argument("--set-description", metavar="<description>")
+parser_service.add_argument("--get-description", action="store_true")
+
+parser_service.add_argument("--set-short", metavar="<description>")
+parser_service.add_argument("--get-short", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 parser_direct = parser.add_mutually_exclusive_group()
@@ -734,6 +784,9 @@ options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.service or a.remove_service or a.port or \
                  a.trust or a.masq or a.forward_port or a.block_icmp
 
+options_desc_xml_file = a.set_description or a.get_description or \
+                        a.set_short or a.get_short
+
 options_standalone = a.help or a.version or \
     a.policy_server or a.policy_desktop or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
@@ -782,13 +835,14 @@ options_zone_adapt_query = \
 options_zone_ops = options_zone_interfaces_sources or \
                options_zone_action_action or options_zone_adapt_query
 
-options_zone = a.zone or options_zone_ops
+options_zone = a.zone or options_zone_ops or options_desc_xml_file
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
-                a.get_entries
+                a.get_entries or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
-                   a.query_destination or a.get_destinations
+                   a.query_destination or a.get_destinations or \
+                   options_desc_xml_file
 
 options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or \
@@ -797,7 +851,8 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.add_module or a.remove_module or a.query_module or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
-                  a.query_destination or a.get_destinations
+                  a.query_destination or a.get_destinations or \
+                  options_desc_xml_file
 
 options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
@@ -828,7 +883,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_target or a.set_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
- a.get_destinations
+ a.get_destinations or a.get_description
 
 ###############################################################################
 
@@ -836,7 +891,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 
 if not (options_lokkit or options_standalone or options_ipset or \
         options_icmptype or options_service or \
-        options_permanent or options_direct):
+        options_permanent or options_direct or options_desc_xml_file):
     __fail(parser.format_usage() + "No option specified.")
 
 if options_lokkit and (options_standalone or \
@@ -850,11 +905,11 @@ if options_standalone and (options_permanent or \
     __fail(parser.format_usage() +
            "Can't use stand-alone options with other options.")
 
-if (options_ipset and not a.ipset):
+if (options_ipset and not options_desc_xml_file and not a.ipset):
     __fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
-   not (options_service and a.service):
+   not (options_service and a.service) and not options_desc_xml_file:
     __fail(parser.format_usage() + "No icmptype specified.")
 
 if (options_service and a.service and len(a.service) > 0):
@@ -991,7 +1046,7 @@ try:
         zone = fw.config.get_zone(a.info_zone)
         settings = FirewallClientZoneSettings(
             list(fw.config.get_zone_config(zone)))
-        __print_zone_info(a.info_zone, settings)
+        __print_zone_info(a.info_zone, settings, True)
         sys.exit(0)
 
     # services
@@ -1081,6 +1136,20 @@ try:
                 l = [ "ipv4", "ipv6" ]
             __print_and_exit("\n".join(l))
 
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            fw.config.set_icmptype_config(icmptype, settings.settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            fw.config.set_icmptype_config(icmptype, settings.settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
+
         else:
             __fail(parser.format_usage() + "Unknown option")
 
@@ -1162,63 +1231,111 @@ try:
             l = settings.getDestinations()
             __print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
 
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            fw.config.set_service_config(service, settings.settings)
+
+        elif a.get_description:
+            __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            fw.config.set_service_config(service, settings.settings)
+
+        elif a.get_short:
+            __print_and_exit(settings.getShort())
+
         else:
             __fail(parser.format_usage() + "Unknown option")
 
     # ipsets
-    elif a.get_ipsets:
-        ipsets = fw.config.get_ipsets()
-        __print_and_exit(" ".join(sorted(ipsets)))
+    elif a.ipset:
+        if a.get_ipsets:
+            ipsets = fw.config.get_ipsets()
+            __print_and_exit(" ".join(sorted(ipsets)))
 
-    elif a.new_ipset:
-        if not a.type:
-            __fail(parser.format_usage() + "No type specified.")
+        elif a.new_ipset:
+            if not a.type:
+                __fail(parser.format_usage() + "No type specified.")
 
-        settings = FirewallClientIPSetSettings()
-        settings.setType(a.type)
-        if a.option:
-            for opt in a.option:
-                settings.addOption(*__parse_ipset_option(opt))
-        fw.config.new_ipset(a.new_ipset, settings.settings)
+            settings = FirewallClientIPSetSettings()
+            settings.setType(a.type)
+            if a.option:
+                for opt in a.option:
+                    settings.addOption(*__parse_ipset_option(opt))
+            fw.config.new_ipset(a.new_ipset, settings.settings)
 
-    elif a.delete_ipset:
-        ipset = fw.config.get_ipset(a.delete_ipset)
-        fw.config.remove_ipset(ipset)
+        elif a.delete_ipset:
+            ipset = fw.config.get_ipset(a.delete_ipset)
+            fw.config.remove_ipset(ipset)
 
-    elif a.info_ipset:
-        ipset = fw.config.get_ipset(a.info_ipset)
-        settings = FirewallClientIPSetSettings(
+        elif a.info_ipset:
+            ipset = fw.config.get_ipset(a.info_ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            __print_ipset_info(a.info_ipset, settings)
+            sys.exit(0)
+
+        elif a.add_entry:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
             list(fw.config.get_ipset_config(ipset)))
-        __print_ipset_info(a.info_ipset, settings)
-        sys.exit(0)
+            settings.addEntry(a.add_entry)
+            fw.config.set_ipset_config(ipset, settings.settings)
 
-    elif a.add_entry:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        settings.addEntry(a.add_entry)
-        fw.config.set_ipset_config(ipset, settings.settings)
+        elif a.remove_entry:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            settings.removeEntry(a.remove_entry)
+            fw.config.set_ipset_config(ipset, settings.settings)
 
-    elif a.remove_entry:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        settings.removeEntry(a.remove_entry)
-        fw.config.set_ipset_config(ipset, settings.settings)
+        elif a.query_entry:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            r = settings.queryEntry(a.query_entry)
+            __print_query_result(r)
 
-    elif a.query_entry:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        r = settings.queryEntry(a.query_entry)
-        __print_query_result(r)
+        elif a.get_entries:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+            l = settings.getEntries()
+            __print_and_exit("\n".join(l))
 
-    elif a.get_entries:
-        ipset = fw.config.get_ipset(a.ipset)
-        settings = FirewallClientIPSetSettings(
-            list(fw.config.get_ipset_config(ipset)))
-        l = settings.getEntries()
-        __print_and_exit("\n".join(l))
+        elif a.set_description:
+             ipset = fw.config.get_ipset(a.ipset)
+             settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+             settings.setDescription(a.set_description)
+
+             fw.config.set_ipset_config(ipset, settings.settings)
+
+        elif a.get_description:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+
+            __print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+             ipset = fw.config.get_ipset(a.ipset)
+             settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+             settings.setShort(a.set_short)
+
+             fw.config.set_ipset_config(ipset, settings.settings)
+
+        elif a.get_short:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+
+            __print_and_exit(settings.getShort())
+
+        else:
+            __fail(parser.format_usage() + "Unknown option")
 
     # lockdown whitelist
 
@@ -1577,6 +1694,18 @@ try:
                 __print_zone_info(zone, fw_settings)
                 __print("")
             sys.exit(0)
+
+        elif a.set_description:
+            fw_settings.setDescription(a.set_description)
+
+        elif a.get_description:
+            __print_and_exit(fw_settings.getDescription())
+
+        elif a.set_short:
+            fw_settings.setShort(a.set_short)
+
+        elif a.get_short:
+            __print_and_exit(fw_settings.getShort())
 
         fw.config.set_zone_config(fw_zone, fw_settings.settings)
 
