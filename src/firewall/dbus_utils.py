@@ -180,17 +180,22 @@ def dbus_signature(obj):
         raise TypeError("Unhandled %s" % repr(obj))
 
 def dbus_introspection_prepare_properties(obj, interface, access={}):
-    dip = { }
+    if not hasattr(obj, "_fw_dbus_properties"):
+        obj._fw_dbus_properties = { }
+
+    dip = getattr(obj, "_fw_dbus_properties")
     dip[interface] = { }
 
-    for key,value in obj.GetAll(interface).items():
+    try:
+        _dict = obj.GetAll(interface)
+    except Exception:
+        _dict = { }
+    for key,value in _dict.items():
         dip[interface][key] = { "type": dbus_signature(value) }
         if key in access:
             dip[interface][key]["access"] = access[key]
         else:
             dip[interface][key]["access"] = "read"
-
-    obj._fw_dbus_properties = dip
 
 def dbus_introspection_add_properties(obj, data, interface):
     doc = minidom.parseString(data)
@@ -199,12 +204,15 @@ def dbus_introspection_add_properties(obj, data, interface):
         for node in doc.getElementsByTagName("interface"):
             if node.hasAttribute("name") and \
                node.getAttribute("name") == interface:
-                if interface in obj._fw_dbus_properties:
-                    for key,items in obj._fw_dbus_properties[interface].items():
+                dip = { }
+                if getattr(obj, "_fw_dbus_properties"):
+                    dip = getattr(obj, "_fw_dbus_properties")
+                if interface in dip:
+                    for key,value in dip[interface].items():
                         prop = doc.createElement("property")
                         prop.setAttribute("name", key)
-                        prop.setAttribute("type", items["type"])
-                        prop.setAttribute("access", items["access"])
+                        prop.setAttribute("type", value["type"])
+                        prop.setAttribute("access", value["access"])
                         node.appendChild(prop)
     log.debug10(doc.toxml())
     return doc.toxml()
