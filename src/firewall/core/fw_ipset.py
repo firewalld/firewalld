@@ -25,7 +25,7 @@ from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address
 from firewall.errors import *
-from firewall.core.ipset import remove_default_create_options
+from firewall.core.ipset import remove_default_create_options as rm_def_cr_opts
 from firewall.core.io.ipset import IPSet
 
 class FirewallIPSet(object):
@@ -36,30 +36,10 @@ class FirewallIPSet(object):
     def __repr__(self):
         return '%s(%r)' % (self.__class__, self._ipsets)
 
-    def cleanup(self, reload=False):
-        active = { }
-        if reload:
-            active = self._fw._ipset.get_active_terse()
-
-        for name in self.get_ipsets():
-            keep = False
-            try:
-                obj = self._fw.config.get_ipset(name)
-            except FirewallError:
-                # no ipset in config interface with this name
-                pass
-            else:
-                if reload and "timeout" in obj.options:
-                    if name in active and obj.type == active[name][0] and \
-                       remove_default_create_options(obj.options) == \
-                       active[name][1]:
-                        # keep ipset for reload
-                        keep = True
-            self.remove_ipset(name, keep)
-
-        self._ipsets.clear()
-
     # ipsets
+
+    def cleanup(self):
+        self._ipsets.clear()
 
     def check_ipset(self, name):
         if name not in self.get_ipsets():
@@ -102,9 +82,21 @@ class FirewallIPSet(object):
         del self._ipsets[name]
 
     def apply_ipsets(self, individual=False):
+        active = self._fw._ipset.get_active_terse()
+
         for name in self.get_ipsets():
             obj = self._ipsets[name]
             obj.applied = False
+
+            if name in active and \
+               ("timeout" not in obj.options or \
+                obj.type != active[name][0] or \
+                rm_def_cr_opts(obj.options) != active[name][1]):
+                try:
+                    self._fw._ipset.destroy(name)
+                except Exception as msg:
+                    log.error("Failed to destroy ipset '%s'" % name)
+                    log.error(msg)
 
             if individual:
                 try:
