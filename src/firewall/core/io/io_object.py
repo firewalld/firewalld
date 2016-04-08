@@ -24,7 +24,6 @@ import xml.sax.saxutils as saxutils
 import copy
 import sys
 
-from firewall import config
 from firewall.config import _
 from firewall import functions
 from firewall.functions import b2u
@@ -53,14 +52,14 @@ class IO_Object(object):
             ret.append(copy.deepcopy(getattr(self, x[0])))
         return tuple(ret)
 
-    def import_config(self, config):
-        self.check_config(config)
+    def import_config(self, conf):
+        self.check_config(conf)
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
-            if isinstance(config[i], list):
+            if isinstance(conf[i], list):
                 # remove duplicates
-                setattr(self, element, copy.deepcopy(list(set(config[i]))))
+                setattr(self, element, copy.deepcopy(list(set(conf[i]))))
             else:
-                setattr(self, element, copy.deepcopy(config[i]))
+                setattr(self, element, copy.deepcopy(conf[i]))
 
     def check_name(self, name):
         if type(name) != type(""):
@@ -74,42 +73,42 @@ class IO_Object(object):
                 raise FirewallError(errors.INVALID_NAME,
                                  "'%s' is not allowed in '%s'" % ((char, name)))
 
-    def check_config(self, config):
-        if len(config) != len(self.IMPORT_EXPORT_STRUCTURE):
+    def check_config(self, conf):
+        if len(conf) != len(self.IMPORT_EXPORT_STRUCTURE):
             raise FirewallError(errors.INVALID_TYPE,
                                 "structure size mismatch %d != %d" % (\
-                    len(config), len(self.IMPORT_EXPORT_STRUCTURE)))
+                    len(conf), len(self.IMPORT_EXPORT_STRUCTURE)))
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
-            self._check_config_structure(config[i], value)
-            self._check_config(config[i], element)
+            self._check_config_structure(conf[i], value)
+            self._check_config(conf[i], element)
 
-    def _check_config(self, config, item):
+    def _check_config(self, conf, item):
         # to be overloaded by sub classes
         return
 
-    def _check_config_structure(self, config, structure):
-        if not type(config) == type(structure):
+    def _check_config_structure(self, conf, structure):
+        if not type(conf) == type(structure):
             raise FirewallError(errors.INVALID_TYPE,
-                                "'%s' not of type %s, but %s" % (\
-                    config, type(structure), type(config)))
+                                "'%s' not of type %s, but %s" % \
+                                (conf, type(structure), type(conf)))
         if type(structure) == list:
             # same type elements, else struct
             if len(structure) != 1:
                 raise FirewallError(errors.INVALID_TYPE,
                                     "len('%s') != 1" % structure)
-            for x in config:
+            for x in conf:
                 self._check_config_structure(x, structure[0])
         elif type(structure) == tuple:
-            if len(structure) != len(config):
+            if len(structure) != len(conf):
                 raise FirewallError(errors.INVALID_TYPE,
-                                    "len('%s') != %d" % (config,
+                                    "len('%s') != %d" % (conf,
                                                          len(structure)))
             for i,value in enumerate(structure):
-                self._check_config_structure(config[i], value)
+                self._check_config_structure(conf[i], value)
         elif type(structure) == dict:
             # only one key value pair in structure
             (skey, svalue) = list(structure.items())[0]
-            for (key, value) in config.items():
+            for (key, value) in conf.items():
                 if type(key) != type(skey):
                     raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
