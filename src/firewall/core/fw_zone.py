@@ -427,17 +427,17 @@ class FirewallZone(object):
         """
         :return: exported config updated with runtime settings
         """
-        config = list(self.get_zone(zone).export_config())
-        config[5] = self.list_services(zone)
-        config[6] = self.list_ports(zone)
-        config[7] = self.list_icmp_blocks(zone)
-        config[8] = self.query_masquerade(zone)
-        config[9] = self.list_forward_ports(zone)
-        config[10] = self.list_interfaces(zone)
-        config[11] = self.list_sources(zone)
-        config[12] = self.list_rules(zone)
-        config[13] = self.list_protocols(zone)
-        return tuple(config)
+        conf = list(self.get_zone(zone).export_config())
+        conf[5] = self.list_services(zone)
+        conf[6] = self.list_ports(zone)
+        conf[7] = self.list_icmp_blocks(zone)
+        conf[8] = self.query_masquerade(zone)
+        conf[9] = self.list_forward_ports(zone)
+        conf[10] = self.list_interfaces(zone)
+        conf[11] = self.list_sources(zone)
+        conf[12] = self.list_rules(zone)
+        conf[13] = self.list_protocols(zone)
+        return tuple(conf)
 
     # handle chains, modules and rules for a zone
     def handle_cmr(self, zone, chains, modules, rules, enable):

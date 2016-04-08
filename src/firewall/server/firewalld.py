@@ -304,20 +304,20 @@ class FirewallD(slip.dbus.service.Object):
         # services
 
         for name in self.fw.service.get_services():
-            config = self.getServiceSettings(name)
+            conf = self.getServiceSettings(name)
             try:
                 try:
                     conf_obj = self.config.getServiceByName(name)
                 except FirewallError as e:
                     if "INVALID_SERVICE" in e:
                         log.debug1("Creating service '%s'" % name)
-                        self.config.addService(name, config)
+                        self.config.addService(name, conf)
                     else:
                         raise
                 else:
-                    if conf_obj.getSettings() != config:
+                    if conf_obj.getSettings() != conf:
                         log.debug1("Copying service '%s' settings" % name)
-                        conf_obj.update(config)
+                        conf_obj.update(conf)
                     else:
                         log.debug1("Service '%s' is identical" % name)
             except Exception as e:
@@ -327,20 +327,20 @@ class FirewallD(slip.dbus.service.Object):
         # icmptypes
 
         for name in self.fw.icmptype.get_icmptypes():
-            config = self.getIcmpTypeSettings(name)
+            conf = self.getIcmpTypeSettings(name)
             try:
                 try:
                     conf_obj = self.config.getIcmpTypeByName(name)
                 except FirewallError as e:
                     if "INVALID_ICMPTYPE" in e:
                         log.debug1("Creating icmptype '%s'" % name)
-                        self.config.addIcmpType(name, config)
+                        self.config.addIcmpType(name, conf)
                     else:
                         raise
                 else:
-                    if conf_obj.getSettings() != config:
+                    if conf_obj.getSettings() != conf:
                         log.debug1("Copying icmptype '%s' settings" % name)
-                        conf_obj.update(config)
+                        conf_obj.update(conf)
                     else:
                         log.debug1("IcmpType '%s' is identical" % name)
             except Exception as e:
@@ -352,20 +352,20 @@ class FirewallD(slip.dbus.service.Object):
         for name in self.fw.zone.get_zones():
             # zone runtime settings can be modified, but not service and
             # icmptye settings
-            config = self.getZoneSettings(name)
+            conf = self.getZoneSettings(name)
             try:
                 try:
                     conf_obj = self.config.getZoneByName(name)
                 except FirewallError as e:
                     if "INVALID_ZONE" in e:
                         log.debug1("Creating zone '%s'" % name)
-                        self.config.addZone(name, config)
+                        self.config.addZone(name, conf)
                     else:
                         raise
                 else:
-                    if conf_obj.getSettings() != config:
+                    if conf_obj.getSettings() != conf:
                         log.debug1("Copying zone '%s' settings" % name)
-                        conf_obj.update(config)
+                        conf_obj.update(conf)
                     else:
                         log.debug1("Zone '%s' is identical" % name)
             except Exception as e:
@@ -375,13 +375,13 @@ class FirewallD(slip.dbus.service.Object):
         # direct
 
         # rt_config = self.fw.direct.get_config()
-        config = ( self.fw.direct.get_all_chains(),
-                   self.fw.direct.get_all_rules(),
-                   self.fw.direct.get_all_passthroughs() )
+        conf = ( self.fw.direct.get_all_chains(),
+                 self.fw.direct.get_all_rules(),
+                 self.fw.direct.get_all_passthroughs() )
         try:
-            if self.config.getSettings() != config:
+            if self.config.getSettings() != conf:
                 log.debug1("Copying direct configuration")
-                self.config.update(config)
+                self.config.update(conf)
             else:
                 log.debug1("Direct configuration is identical")
         except Exception as e:
@@ -390,11 +390,11 @@ class FirewallD(slip.dbus.service.Object):
 
         # policies
 
-        config = self.fw.policies.lockdown_whitelist.export_config()
+        conf = self.fw.policies.lockdown_whitelist.export_config()
         try:
-            if self.config.getSettings() != config:
+            if self.config.getSettings() != conf:
                 log.debug1("Copying policies configuration")
-                self.config.setLockdownWhitelist(config)
+                self.config.setLockdownWhitelist(conf)
             else:
                 log.debug1("Policies configuration is identical")
         except Exception as e:

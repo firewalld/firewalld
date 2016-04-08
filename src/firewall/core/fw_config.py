@@ -188,10 +188,10 @@ class FirewallConfig(object):
     def get_ipset_config(self, obj):
         return obj.export_config()
 
-    def set_ipset_config(self, obj, config):
+    def set_ipset_config(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
-            x.import_config(config)
+            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_IPSETS
             x.builtin = False
             if obj.path != x.path:
@@ -200,11 +200,11 @@ class FirewallConfig(object):
             ipset_writer(x)
             return x
         else:
-            obj.import_config(config)
+            obj.import_config(conf)
             ipset_writer(obj)
             return obj
 
-    def new_ipset(self, name, config):
+    def new_ipset(self, name, conf):
         try:
             self.get_ipset(name)
         except:
@@ -214,7 +214,7 @@ class FirewallConfig(object):
 
         x = IPSet()
         x.check_name(name)
-        x.import_config(config)
+        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_IPSETS
@@ -358,10 +358,10 @@ class FirewallConfig(object):
     def get_icmptype_config(self, obj):
         return obj.export_config()
 
-    def set_icmptype_config(self, obj, config):
+    def set_icmptype_config(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
-            x.import_config(config)
+            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_ICMPTYPES
             x.builtin = False
             if obj.path != x.path:
@@ -370,11 +370,11 @@ class FirewallConfig(object):
             icmptype_writer(x)
             return x
         else:
-            obj.import_config(config)
+            obj.import_config(conf)
             icmptype_writer(obj)
             return obj
 
-    def new_icmptype(self, name, config):
+    def new_icmptype(self, name, conf):
         try:
             self.get_icmptype(name)
         except:
@@ -384,7 +384,7 @@ class FirewallConfig(object):
 
         x = IcmpType()
         x.check_name(name)
-        x.import_config(config)
+        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ICMPTYPES
@@ -528,10 +528,10 @@ class FirewallConfig(object):
     def get_service_config(self, obj):
         return obj.export_config()
 
-    def set_service_config(self, obj, config):
+    def set_service_config(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
-            x.import_config(config)
+            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_SERVICES
             x.builtin = False
             if obj.path != x.path:
@@ -540,11 +540,11 @@ class FirewallConfig(object):
             service_writer(x)
             return x
         else:
-            obj.import_config(config)
+            obj.import_config(conf)
             service_writer(obj)
             return obj
 
-    def new_service(self, name, config):
+    def new_service(self, name, conf):
         try:
             self.get_service(name)
         except:
@@ -554,7 +554,7 @@ class FirewallConfig(object):
 
         x = Service()
         x.check_name(name)
-        x.import_config(config)
+        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_SERVICES
@@ -704,11 +704,11 @@ class FirewallConfig(object):
     def get_zone_config(self, obj):
         return obj.export_config()
 
-    def set_zone_config(self, obj, config):
+    def set_zone_config(self, obj, conf):
         if obj.builtin:
             x = copy.copy(obj)
             x.fw_config = self
-            x.import_config(config)
+            x.import_config(conf)
             x.path = config.ETC_FIREWALLD_ZONES
             x.builtin = False
             if obj.path != x.path:
@@ -718,11 +718,11 @@ class FirewallConfig(object):
             return x
         else:
             obj.fw_config = self
-            obj.import_config(config)
+            obj.import_config(conf)
             zone_writer(obj)
             return obj
 
-    def new_zone(self, name, config):
+    def new_zone(self, name, conf):
         try:
             self.get_zone(name)
         except:
@@ -733,7 +733,7 @@ class FirewallConfig(object):
         x = Zone()
         x.check_name(name)
         x.fw_config = self
-        x.import_config(config)
+        x.import_config(conf)
         x.name = name
         x.filename = "%s.xml" % name
         x.path = config.ETC_FIREWALLD_ZONES
