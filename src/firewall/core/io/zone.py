@@ -264,7 +264,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         self._limit_ok = None
 
     def startElement(self, name, attrs):
-        IO_Object_ContentHandler.startElement(self, name)
+        IO_Object_ContentHandler.startElement(self, name, attrs)
         if self._rule_error:
             return
 
