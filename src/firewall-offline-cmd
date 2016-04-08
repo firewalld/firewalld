@@ -799,9 +799,9 @@ options_lockdown_whitelist = \
     a.list_lockdown_whitelist_contexts or a.add_lockdown_whitelist_context or \
     a.remove_lockdown_whitelist_context or \
     a.query_lockdown_whitelist_context or \
-    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid != None or \
-    a.remove_lockdown_whitelist_uid != None or \
-    a.query_lockdown_whitelist_uid != None or \
+    a.list_lockdown_whitelist_uids or a.add_lockdown_whitelist_uid is not None or \
+    a.remove_lockdown_whitelist_uid is not None or \
+    a.query_lockdown_whitelist_uid is not None or \
     a.list_lockdown_whitelist_users or a.add_lockdown_whitelist_user or \
     a.remove_lockdown_whitelist_user or \
     a.query_lockdown_whitelist_user
@@ -1370,11 +1370,11 @@ try:
         elif a.list_lockdown_whitelist_uids:
             l = whitelist.get_uids()
             __print_and_exit(" ".join(map(str, l)))
-        elif a.add_lockdown_whitelist_uid != None:
+        elif a.add_lockdown_whitelist_uid is not None:
             whitelist.add_uid(a.add_lockdown_whitelist_uid)
-        elif a.remove_lockdown_whitelist_uid != None:
+        elif a.remove_lockdown_whitelist_uid is not None:
             whitelist.remove_uid(a.remove_lockdown_whitelist_uid)
-        elif a.query_lockdown_whitelist_uid != None:
+        elif a.query_lockdown_whitelist_uid is not None:
             __print_query_result(a.query_lockdown_whitelist_uid in
                                  whitelist.get_uids())
 

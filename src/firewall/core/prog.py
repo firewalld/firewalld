@@ -28,7 +28,7 @@ def runProg(prog, argv=[ ], stdin=None):
     pid = os.fork()
     if pid == 0:
         try:
-            if stdin != None:
+            if stdin is not None:
                 fd = os.open(stdin, os.O_RDONLY)
             else:
                 fd = os.open("/dev/null", os.O_RDONLY)

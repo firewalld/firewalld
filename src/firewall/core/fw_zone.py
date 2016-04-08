@@ -199,7 +199,7 @@ class FirewallZone(object):
         # Create zone base chains if the chain is reserved for a zone
         if ipv in [ "ipv4", "ipv6" ]:
             x = self.zone_from_chain(ipv, table, chain)
-            if x != None:
+            if x is not None:
                 (_zone, _chain) = x
                 self.add_chain(_zone, table, _chain)
 
@@ -647,7 +647,7 @@ class FirewallZone(object):
 
         # For mac source bindings ipv is an empty string, the mac source will
         # be added for ipv4 and ipv6
-        if ipv == "" or ipv == None:
+        if ipv == "" or ipv is None:
             for ipv in [ "ipv4", "ipv6" ]:
                 for table in self.zone_chains:
                     for chain in self.zone_chains[table]:
@@ -923,8 +923,8 @@ class FirewallZone(object):
             ipvs = [ "ipv4", "ipv6" ]
 
         source_ipv = self.__rule_source_ipv(rule.source)
-        if source_ipv != None:
-            if rule.family != None:
+        if source_ipv is not None:
+            if rule.family is not None:
                 # rule family is defined by user, no way to change it
                 if rule.family != source_ipv:
                     raise FirewallError(INVALID_RULE,

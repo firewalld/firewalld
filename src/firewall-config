@@ -3593,7 +3593,7 @@ class FirewallConfig(object):
                        (ipv != "ipv6" and ipv != "all"):
                         continue
                 else:
-                    if ipv == "ipv6" or ipv == None:
+                    if ipv == "ipv6" or ipv is None:
                         continue
             self.ipsetDialogIPSetStore.append([i, ipset_type])
 

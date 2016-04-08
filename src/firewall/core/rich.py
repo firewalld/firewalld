@@ -34,9 +34,9 @@ class Rich_Source(object):
         if self.addr == "":
             self.addr = None
         self.mac = mac
-        if self.mac == "" or self.mac == None:
+        if self.mac == "" or self.mac is None:
             self.mac = None
-        elif self.mac != None:
+        elif self.mac is not None:
             self.mac = self.mac.upper()
         self.ipset = ipset
         if self.ipset == "":

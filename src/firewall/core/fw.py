@@ -510,11 +510,11 @@ class Firewall(object):
                                                                table))
                 continue
 
-            if table != None:
+            if table is not None:
                 _rule = [ "-t", table, append_delete[enable], ]
             else:
                 _rule = [ append_delete[enable], ]
-            if chain != None:
+            if chain is not None:
                 _rule.append(chain)
             _rule += [ "%s" % item for item in rule ]
 
