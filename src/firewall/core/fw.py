@@ -68,7 +68,7 @@ class Firewall(object):
         self.available_tables["ipv6"] = self.ip6tables_backend.available_tables()
         self.available_tables["eb"] = self.ebtables_backend.available_tables()
 
-        self._modules = modules.modules()
+        self.modules_backend = modules.modules()
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
@@ -454,7 +454,7 @@ class Firewall(object):
         if self.cleanup_on_exit:
             self._flush()
             self._set_policy("ACCEPT")
-            self._modules.unload_firewall_modules()
+            self.modules_backend.unload_firewall_modules()
 
         self.cleanup()
 
@@ -571,12 +571,12 @@ class Firewall(object):
     def handle_modules(self, modules, enable):
         for i,module in enumerate(modules):
             if enable:
-                (status, msg) = self._modules.load_module(module)
+                (status, msg) = self.modules_backend.load_module(module)
             else:
                 if self._module_refcount[module] > 1:
                     status = 0 # module referenced more then one, do not unload
                 else:
-                    (status, msg) = self._modules.unload_module(module)
+                    (status, msg) = self.modules_backend.unload_module(module)
             if status != 0:
                 if enable:
                     return (modules[:i], msg) # cleanup modules and error msg
