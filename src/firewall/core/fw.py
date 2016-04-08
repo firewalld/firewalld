@@ -135,7 +135,7 @@ class Firewall(object):
             # ipset is usable, get all supported types
             self.ipset_supported_types = self.ipset_backend.supported_types()
 
-    def _start(self, reload=False):
+    def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = FALLBACK_ZONE
 
@@ -286,6 +286,11 @@ class Firewall(object):
 
         # flush rules
         self._flush()
+
+        # complete reload: unload modules also
+        if reload and complete_reload:
+            log.debug1("Unloading firewall modules")
+            self.modules_backend.unload_firewall_modules()
 
         # apply default rules
         log.debug1("Applying default rule set")
