@@ -53,20 +53,20 @@ class Firewall(object):
     def __init__(self):
         self._firewalld_conf = firewalld_conf(FIREWALLD_CONF)
 
-        self._ip4tables = ipXtables.ip4tables()
+        self.ip4tables_backend = ipXtables.ip4tables()
         self.ip4tables_enabled = True
-        self._ip6tables = ipXtables.ip6tables()
+        self.ip6tables_backend = ipXtables.ip6tables()
         self.ip6tables_enabled = True
-        self._ebtables = ebtables.ebtables()
+        self.ebtables_backend = ebtables.ebtables()
         self.ebtables_enabled = True
-        self._ipset = ipset.ipset()
+        self.ipset_backend = ipset.ipset()
         self.ipset_enabled = True
         self.ipset_supported_types = [ ]
 
         self.available_tables = { }
-        self.available_tables["ipv4"] = self._ip4tables.available_tables()
-        self.available_tables["ipv6"] = self._ip6tables.available_tables()
-        self.available_tables["eb"] = self._ebtables.available_tables()
+        self.available_tables["ipv4"] = self.ip4tables_backend.available_tables()
+        self.available_tables["ipv6"] = self.ip6tables_backend.available_tables()
+        self.available_tables["eb"] = self.ebtables_backend.available_tables()
 
         self._modules = modules.modules()
 
@@ -125,7 +125,7 @@ class Firewall(object):
 
     def _start_check(self):
         try:
-            x = self._ipset.list()
+            x = self.ipset_backend.list()
         except:
             log.error("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
@@ -133,7 +133,7 @@ class Firewall(object):
             self.ipset_supported_types = [ ]
         else:
             # ipset is usable, get all supported types
-            self.ipset_supported_types = self._ipset.supported_types()
+            self.ipset_supported_types = self.ipset_backend.supported_types()
 
     def _start(self, reload=False):
         # initialize firewall
@@ -194,7 +194,7 @@ class Firewall(object):
                     log.debug1("LogDenied is set to '%s'", self._log_denied)
 
             if self.ebtables_enabled and not self._individual_calls and \
-               not self._ebtables.restore_noflush_option:
+               not self.ebtables_backend.restore_noflush_option:
                 log.debug1("ebtables-restore is not supporting the --noflush option, will therefore not be used")
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
@@ -519,7 +519,8 @@ class Firewall(object):
             _rule += [ "%s" % item for item in rule ]
 
             if self._individual_calls or \
-               (ipv == "eb" and not self._ebtables.restore_noflush_option):
+               (ipv == "eb" and not
+                self.ebtables_backend.restore_noflush_option):
                 ## run
                 try:
                     self.rule(ipv, _rule)
@@ -549,7 +550,8 @@ class Firewall(object):
         for i,(ipv, rule) in enumerate(rules):
             _rule = [ new_delete[enable], ] + rule
             if self._individual_calls or \
-               (ipv == "eb" and not self._ebtables.restore_noflush_option):
+               (ipv == "eb" and not
+                self.ebtables_backend.restore_noflush_option):
                 try:
                     self.rule(ipv, _rule)
                 except Exception as msg:
@@ -616,7 +618,8 @@ class Firewall(object):
                 else:
                     _rule = prefix + functions.splitArgs(rule)
                 if self._individual_calls or \
-                   (ipv == "eb" and not self._ebtables.restore_noflush_option):
+                   (ipv == "eb" and not
+                    self.ebtables_backend.restore_noflush_option):
                     self.rule(ipv, _rule)
                 else:
                     rules.setdefault(ipv, []).append(_rule)
@@ -659,19 +662,19 @@ class Firewall(object):
 
         if self.ip4tables_enabled:
             try:
-                self._ip4tables.flush(individual=self._individual_calls)
+                self.ip4tables_backend.flush(individual=self._individual_calls)
             except Exception as e:
                 log.error("Failed to flush ipv4 firewall: %s" % e)
         if self.ip6tables_enabled:
             try:
-                self._ip6tables.flush(individual=self._individual_calls)
+                self.ip6tables_backend.flush(individual=self._individual_calls)
             except Exception as e:
                 log.error("Failed to flush ipv6 firewall: %s" % e)
         if self.ebtables_enabled:
             try:
-                self._ebtables.flush(
+                self.ebtables_backend.flush(
                     individual=self._individual_calls or \
-                    not self._ebtables.restore_noflush_option)
+                    not self.ebtables_backend.restore_noflush_option)
             except Exception as e:
                 log.error("Failed to flush eb firewall: %s" % e)
 
@@ -680,23 +683,23 @@ class Firewall(object):
 
         if self.ip4tables_enabled:
             try:
-                self._ip4tables.set_policy(policy, which,
-                                           individual=self._individual_calls)
+                self.ip4tables_backend.set_policy(
+                    policy, which, individual=self._individual_calls)
             except Exception as e:
                 log.error("Failed to set policy of ipv4 firewall: %s" % e)
 
         if self.ip6tables_enabled:
             try:
-                self._ip6tables.set_policy(policy, which,
-                                           individual=self._individual_calls)
+                self.ip6tables_backend.set_policy(
+                    policy, which, individual=self._individual_calls)
             except Exception as e:
                 log.error("Failed to set policy of ipv6 firewall: %s" % e)
         if self.ebtables_enabled:
             try:
-                self._ebtables.set_policy(
+                self.ebtables_backend.set_policy(
                     policy, which,
                     individual=self._individual_calls or \
-                    not self._ebtables.restore_noflush_option)
+                    not self.ebtables_backend.restore_noflush_option)
             except Exception as e:
                 log.error("Failed to set policy of eb firewall: %s" % e)
 
@@ -756,15 +759,15 @@ class Firewall(object):
         if ipv == "ipv4":
             # do not call if disabled
             if self.ip4tables_enabled:
-                return self._ip4tables.set_rule(rule)
+                return self.ip4tables_backend.set_rule(rule)
         elif ipv == "ipv6":
             # do not call if disabled
             if self.ip6tables_enabled:
-                return self._ip6tables.set_rule(rule)
+                return self.ip6tables_backend.set_rule(rule)
         elif ipv == "eb":
             # do not call if disabled
             if self.ebtables_enabled:
-                return self._ebtables.set_rule(rule)
+                return self.ebtables_backend.set_rule(rule)
         else:
             raise FirewallError(INVALID_IPV,
                                 "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
@@ -823,15 +826,15 @@ class Firewall(object):
         if ipv == "ipv4":
             # do not call if disabled
             if self.ip4tables_enabled:
-                return self._ip4tables.set_rules(_rules)
+                return self.ip4tables_backend.set_rules(_rules)
         elif ipv == "ipv6":
             # do not call if disabled
             if self.ip6tables_enabled:
-                return self._ip6tables.set_rules(_rules)
+                return self.ip6tables_backend.set_rules(_rules)
         elif ipv == "eb":
             # do not call if disabled
             if self.ebtables_enabled:
-                return self._ebtables.set_rules(_rules)
+                return self.ebtables_backend.set_rules(_rules)
         else:
             raise FirewallError(INVALID_IPV,
                                 "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)

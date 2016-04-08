@@ -73,7 +73,7 @@ class FirewallIPSet(object):
         obj = self._ipsets[name]
         if obj.applied and not keep:
             try:
-                self._fw._ipset.destroy(name)
+                self._fw.ipset_backend.destroy(name)
             except Exception as msg:
                 log.error("Failed to destroy ipset '%s'" % name)
                 log.error(msg)
@@ -82,7 +82,7 @@ class FirewallIPSet(object):
         del self._ipsets[name]
 
     def apply_ipsets(self, individual=False):
-        active = self._fw._ipset.get_active_terse()
+        active = self._fw.ipset_backend.get_active_terse()
 
         for name in self.get_ipsets():
             obj = self._ipsets[name]
@@ -93,14 +93,14 @@ class FirewallIPSet(object):
                 obj.type != active[name][0] or \
                 rm_def_cr_opts(obj.options) != active[name][1]):
                 try:
-                    self._fw._ipset.destroy(name)
+                    self._fw.ipset_backend.destroy(name)
                 except Exception as msg:
                     log.error("Failed to destroy ipset '%s'" % name)
                     log.error(msg)
 
             if individual:
                 try:
-                    self._fw._ipset.create(obj.name, obj.type, obj.options)
+                    self._fw.ipset_backend.create(obj.name, obj.type, obj.options)
                 except Exception as msg:
                     log.error("Failed to create ipset '%s'" % obj.name)
                     log.error(msg)
@@ -112,14 +112,14 @@ class FirewallIPSet(object):
 
                 for entry in obj.entries:
                     try:
-                        self._fw._ipset.add(obj.name, entry)
+                        self._fw.ipset_backend.add(obj.name, entry)
                     except Exception as msg:
                         log.error("Failed to add entry '%s' to ipset '%s'" % \
                                   (entry, obj.name))
                         log.error(msg)
             else:
                 try:
-                    self._fw._ipset.restore(obj.name, obj.type, obj.entries,
+                    self._fw.ipset_backend.restore(obj.name, obj.type, obj.entries,
                                             obj.options, None)
                 except Exception as msg:
                     log.error("Failed to create ipset '%s'" % obj.name)
@@ -161,7 +161,7 @@ class FirewallIPSet(object):
                                 "'%s' already is in '%s'" % (entry, name))
 
         try:
-            self._fw._ipset.add(obj.name, entry)
+            self._fw.ipset_backend.add(obj.name, entry)
         except Exception as msg:
             log.error("Failed to add entry '%s' to ipset '%s'" % \
                       (entry, obj.name))
@@ -182,7 +182,7 @@ class FirewallIPSet(object):
             raise FirewallError(NOT_ENABLED,
                                 "'%s' not in '%s'" % (entry, name))
         try:
-            self._fw._ipset.delete(obj.name, entry)
+            self._fw.ipset_backend.delete(obj.name, entry)
         except Exception as msg:
             log.error("Failed to remove entry '%s' from ipset '%s'" % \
                       (entry, obj.name))
@@ -219,7 +219,7 @@ class FirewallIPSet(object):
 
         for entry in obj.entries:
             try:
-                self._fw._ipset.remove(obj.name, entry)
+                self._fw.ipset_backend.remove(obj.name, entry)
             except Exception as msg:
                 log.error("Failed to remove entry '%s' from ipset '%s'" % \
                           (entry, obj.name))
@@ -228,7 +228,7 @@ class FirewallIPSet(object):
 
         for entry in entries:
             try:
-                self._fw._ipset.add(obj.name, entry)
+                self._fw.ipset_backend.add(obj.name, entry)
             except Exception as msg:
                 log.error("Failed to remove entry '%s' from ipset '%s'" % \
                           (entry, obj.name))
