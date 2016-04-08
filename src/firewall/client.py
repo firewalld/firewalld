@@ -29,15 +29,15 @@ import dbus.mainloop.glib
 import slip.dbus
 
 from firewall.config import *
-from firewall.errors import FirewallError, ALREADY_ENABLED, NOT_ENABLED
 from firewall.config.dbus import *
+from firewall.errors import FirewallError, ALREADY_ENABLED, NOT_ENABLED
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.dbus_utils import dbus_to_python
-import dbus
 from decorator import decorator
 from firewall.functions import b2u
 from firewall.core.rich import Rich_Rule
 
+import dbus
 import traceback
 
 exception_handler = None
