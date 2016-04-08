@@ -24,10 +24,12 @@ import xml.sax.saxutils as saxutils
 import copy
 import sys
 
-from firewall.config import *
-from firewall.errors import *
+from firewall import config
+from firewall.config import _
 from firewall import functions
 from firewall.functions import b2u
+from firewall import errors
+from firewall.errors import FirewallError
 
 PY2 = sys.version < '3'
 
@@ -62,19 +64,19 @@ class IO_Object(object):
 
     def check_name(self, name):
         if type(name) != type(""):
-            raise FirewallError(INVALID_TYPE,
+            raise FirewallError(errors.INVALID_TYPE,
                                 "'%s' not of type %s, but %s" % (name, type(""),
                                                                  type(name)))
         if len(name) < 1:
-            raise FirewallError(INVALID_NAME, "name can't be empty")
+            raise FirewallError(errors.INVALID_NAME, "name can't be empty")
         for char in name:
             if not char.isalnum() and char not in self.ADDITIONAL_ALNUM_CHARS:
-                raise FirewallError(INVALID_NAME,
+                raise FirewallError(errors.INVALID_NAME,
                                  "'%s' is not allowed in '%s'" % ((char, name)))
 
     def check_config(self, config):
         if len(config) != len(self.IMPORT_EXPORT_STRUCTURE):
-            raise FirewallError(INVALID_TYPE,
+            raise FirewallError(errors.INVALID_TYPE,
                                 "structure size mismatch %d != %d" % (\
                     len(config), len(self.IMPORT_EXPORT_STRUCTURE)))
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
@@ -87,18 +89,19 @@ class IO_Object(object):
 
     def _check_config_structure(self, config, structure):
         if not type(config) == type(structure):
-            raise FirewallError(INVALID_TYPE,
+            raise FirewallError(errors.INVALID_TYPE,
                                 "'%s' not of type %s, but %s" % (\
                     config, type(structure), type(config)))
         if type(structure) == list:
             # same type elements, else struct
             if len(structure) != 1:
-                raise FirewallError(INVALID_TYPE, "len('%s') != 1" % structure)
+                raise FirewallError(errors.INVALID_TYPE,
+                                    "len('%s') != 1" % structure)
             for x in config:
                 self._check_config_structure(x, structure[0])
         elif type(structure) == tuple:
             if len(structure) != len(config):
-                raise FirewallError(INVALID_TYPE,
+                raise FirewallError(errors.INVALID_TYPE,
                                     "len('%s') != %d" % (config,
                                                          len(structure)))
             for i,value in enumerate(structure):
@@ -108,11 +111,11 @@ class IO_Object(object):
             (skey, svalue) = list(structure.items())[0]
             for (key, value) in config.items():
                 if type(key) != type(skey):
-                    raise FirewallError(INVALID_TYPE,
+                    raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
                             key, type(skey), type(key)))
                 if type(value) != type(svalue):
-                    raise FirewallError(INVALID_TYPE,
+                    raise FirewallError(errors.INVALID_TYPE,
                                         "'%s' not of type %s, but %s" % (\
                             value, type(svalue), type(value)))
 
@@ -129,20 +132,21 @@ class IO_Object(object):
                         _attrs.remove(x)
                     else:
                         raise FirewallError(
-                            PARSE_ERROR, "Missing attribute %s for %s" % 
-                            (x, name))
+                            errors.PARSE_ERROR,
+                            "Missing attribute %s for %s" % (x, name))
         if name in self.PARSER_OPTIONAL_ELEMENT_ATTRS:
             found = True
             for x in self.PARSER_OPTIONAL_ELEMENT_ATTRS[name]:
                 if x in _attrs:
                     _attrs.remove(x)
         if not found:
-            raise FirewallError(PARSE_ERROR, "Unexpected element %s" % name)
+            raise FirewallError(errors.PARSE_ERROR,
+                                "Unexpected element %s" % name)
         # raise attributes[0]
         for x in _attrs:
-            raise FirewallError(PARSE_ERROR, "%s: Unexpected attribute %s" % 
-                                (name, x))
- 
+            raise FirewallError(errors.PARSE_ERROR,
+                                "%s: Unexpected attribute %s" % (name, x))
+
 # PARSER
 
 class UnexpectedElementError(Exception):
@@ -256,27 +260,29 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
 def check_port(port):
     port_range = functions.getPortRange(port)
     if port_range == -2:
-        raise FirewallError(INVALID_PORT,
+        raise FirewallError(errors.INVALID_PORT,
                             "port number in '%s' is too big" % port)
     elif port_range == -1:
-        raise FirewallError(INVALID_PORT, "'%s' is invalid port range" % port)
+        raise FirewallError(errors.INVALID_PORT,
+                            "'%s' is invalid port range" % port)
     elif port_range is None:
-        raise FirewallError(INVALID_PORT,
+        raise FirewallError(errors.INVALID_PORT,
                             "port range '%s' is ambiguous" % port)
     elif len(port_range) == 2 and port_range[0] >= port_range[1]:
-        raise FirewallError(INVALID_PORT, "'%s' is invalid port range" % port)
+        raise FirewallError(errors.INVALID_PORT,
+                            "'%s' is invalid port range" % port)
 
 def check_tcpudp(protocol):
     if protocol not in [ "tcp", "udp" ]:
-        raise FirewallError(INVALID_PROTOCOL,
+        raise FirewallError(errors.INVALID_PROTOCOL,
                             "'%s' not from {'tcp'|'udp'}" % protocol)
 
 def check_protocol(protocol):
     if not functions.checkProtocol(protocol):
-        raise FirewallError(INVALID_PROTOCOL, protocol)
+        raise FirewallError(errors.INVALID_PROTOCOL, protocol)
 
 def check_address(ipv, addr):
     if not functions.check_address(ipv, addr):
-        raise FirewallError(INVALID_ADDR,
+        raise FirewallError(errors.INVALID_ADDR,
                             "'%s' is not valid %s address" % (addr, ipv))
 

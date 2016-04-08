@@ -24,11 +24,13 @@ import os
 import io
 import shutil
 
-from firewall.errors import *
+from firewall import config
 from firewall.core.io.io_object import *
 from firewall.core.logger import log
 from firewall.functions import uniqify, checkUser, checkUid, checkCommand, \
                                checkContext, u2b_if_py2
+from firewall import errors
+from firewall.errors import FirewallError
 
 class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
     def __init__(self, item):
@@ -41,7 +43,8 @@ class lockdown_whitelist_ContentHandler(IO_Object_ContentHandler):
 
         if name == "whitelist":
             if self.whitelist:
-                raise FirewallError(PARSE_ERROR, "More than one whitelist.")
+                raise FirewallError(errors.PARSE_ERROR,
+                                    "More than one whitelist.")
             self.whitelist = True
 
         elif name == "command":
@@ -120,16 +123,16 @@ class LockdownWhitelist(IO_Object):
                 self._check_config(x, item[:-1])
         elif item == "command":
             if not checkCommand(config):
-                raise FirewallError(INVALID_COMMAND, config)
+                raise FirewallError(errors.INVALID_COMMAND, config)
         elif item == "context":
             if not checkContext(config):
-                raise FirewallError(INVALID_CONTEXT, config)
+                raise FirewallError(errors.INVALID_CONTEXT, config)
         elif item == "user":
             if not checkUser(config):
-                raise FirewallError(INVALID_USER, config)
+                raise FirewallError(errors.INVALID_USER, config)
         elif item == "uid":
             if not checkUid(config):
-                raise FirewallError(INVALID_UID, config)
+                raise FirewallError(errors.INVALID_UID, config)
 
     def cleanup(self):
         del self.commands[:]
@@ -151,18 +154,18 @@ class LockdownWhitelist(IO_Object):
 
     def add_command(self, command):
         if not checkCommand(command):
-            raise FirewallError(INVALID_COMMAND, command)
+            raise FirewallError(errors.INVALID_COMMAND, command)
         if command not in self.commands:
             self.commands.append(command)
         else:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 'Command "%s" already in whitelist' % command)
 
     def remove_command(self, command):
         if command in self.commands:
             self.commands.remove(command)
         else:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 'Command "%s" not in whitelist.' % command)
 
     def has_command(self, command):
@@ -185,11 +188,11 @@ class LockdownWhitelist(IO_Object):
 
     def add_uid(self, uid):
         if not checkUid(uid):
-            raise FirewallError(INVALID_UID, str(uid))
+            raise FirewallError(errors.INVALID_UID, str(uid))
         if uid not in self.uids:
             self.uids.append(uid)
         else:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 'Uid "%s" already in whitelist' % uid)
 
 
@@ -197,7 +200,7 @@ class LockdownWhitelist(IO_Object):
         if uid in self.uids:
             self.uids.remove(uid)
         else:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 'Uid "%s" not in whitelist.' % uid)
 
     def has_uid(self, uid):
@@ -213,11 +216,11 @@ class LockdownWhitelist(IO_Object):
 
     def add_user(self, user):
         if not checkUser(user):
-            raise FirewallError(INVALID_USER, user)
+            raise FirewallError(errors.INVALID_USER, user)
         if user not in self.users:
             self.users.append(user)
         else:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 'User "%s" already in whitelist' % user)
 
 
@@ -225,7 +228,7 @@ class LockdownWhitelist(IO_Object):
         if user in self.users:
             self.users.remove(user)
         else:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 'User "%s" not in whitelist.' % user)
 
     def has_user(self, user):
@@ -247,7 +250,7 @@ class LockdownWhitelist(IO_Object):
 #        if gid in self.gids:
 #            self.gids.remove(gid)
 #        else:
-#            raise FirewallError(NOT_ENABLED,
+#            raise FirewallError(errors.NOT_ENABLED,
 #                                'Gid "%s" not in whitelist.' % gid)
 #
 #    def has_gid(self, gid):
@@ -269,7 +272,7 @@ class LockdownWhitelist(IO_Object):
 #        if group in self.groups:
 #            self.groups.remove(group)
 #        else:
-#            raise FirewallError(NOT_ENABLED,
+#            raise FirewallError(errors.NOT_ENABLED,
 #                                'Group "%s" not in whitelist.' % group)
 #
 #    def has_group(self, group):
@@ -285,11 +288,11 @@ class LockdownWhitelist(IO_Object):
 
     def add_context(self, context):
         if not checkContext(context):
-            raise FirewallError(INVALID_CONTEXT, context)
+            raise FirewallError(errors.INVALID_CONTEXT, context)
         if context not in self.contexts:
             self.contexts.append(context)
         else:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 'Context "%s" already in whitelist' % context)
 
 
@@ -297,7 +300,7 @@ class LockdownWhitelist(IO_Object):
         if context in self.contexts:
             self.contexts.remove(context)
         else:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 'Context "%s" not in whitelist.' % context)
 
     def has_context(self, context):
@@ -314,7 +317,7 @@ class LockdownWhitelist(IO_Object):
     def read(self):
         self.cleanup()
         if not self.filename.endswith(".xml"):
-            raise FirewallError(INVALID_NAME,
+            raise FirewallError(errors.INVALID_NAME,
                                 "'%s' is missing .xml suffix" % self.filename)
         handler = lockdown_whitelist_ContentHandler(self)
         parser = sax.make_parser()
@@ -332,8 +335,8 @@ class LockdownWhitelist(IO_Object):
             except Exception as msg:
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
 
-        if not os.path.exists(ETC_FIREWALLD):
-            os.mkdir(ETC_FIREWALLD, 0o750)
+        if not os.path.exists(config.ETC_FIREWALLD):
+            os.mkdir(config.ETC_FIREWALLD, 0o750)
 
         f = io.open(self.filename, mode='wt', encoding='UTF-8')
         handler = IO_Object_XMLGenerator(f)

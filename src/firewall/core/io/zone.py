@@ -27,12 +27,13 @@ import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.errors import *
 from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import *
 from firewall.core.rich import *
 from firewall.core.logger import log
+from firewall import errors
+from firewall.errors import FirewallError
 
 class Zone(IO_Object):
     """ Zone class """
@@ -92,7 +93,7 @@ class Zone(IO_Object):
         for i, (el, val) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
             if el == element:
                 return i
-        raise FirewallError(UNKNOWN_ERROR, "index_of()")
+        raise FirewallError(errors.UNKNOWN_ERROR, "index_of()")
 
     def __init__(self):
         super(Zone, self).__init__()
@@ -155,21 +156,22 @@ class Zone(IO_Object):
             rules_str = [str(rule) for rule in self.rules]
             return rules_str
         else:
-            return object.__getattr__(self, name)
+            return super(Zone, self).__getattr__(name)
 
     def __setattr__(self, name, value):
         if name == "rules_str":
             self.rules = [Rich_Rule(rule_str=s) for s in value]
         else:
-            object.__setattr__(self, name, value)
+            super(Zone, self).__setattr__(name, value)
 
     def _check_config(self, config, item):
         if item == "services" and self.fw_config:
             existing_services = self.fw_config.get_services()
             for service in config:
                 if not service in existing_services:
-                    raise FirewallError(INVALID_SERVICE,
-                                  "'%s' not among existing services" % service)
+                    raise FirewallError(errors.INVALID_SERVICE,
+                                        "'%s' not among existing services" % \
+                                        service)
         elif item == "ports":
             for port in config:
                 check_port(port[0])
@@ -181,33 +183,36 @@ class Zone(IO_Object):
             existing_icmptypes = self.fw_config.get_icmptypes()
             for icmptype in config:
                 if not icmptype in existing_icmptypes:
-                    raise FirewallError(INVALID_ICMPTYPE,
-                               "'%s' not among existing icmp types" % icmptype)
+                    raise FirewallError(errors.INVALID_ICMPTYPE,
+                                        "'%s' not among existing icmp types" % \
+                                        icmptype)
         elif item == "forward_ports":
             for fwd_port in config:
                 check_port(fwd_port[0])
                 check_tcpudp(fwd_port[1])
                 if not fwd_port[2] and not fwd_port[3]:
-                    raise FirewallError(INVALID_FORWARD,
-                             "'%s' is missing to-port AND to-addr " % fwd_port)
+                    raise FirewallError(
+                        errors.INVALID_FORWARD,
+                        "'%s' is missing to-port AND to-addr " % fwd_port)
                 if fwd_port[2]:
                     check_port(fwd_port[2])
                 if fwd_port[3]:
                     if not checkIP(fwd_port[3]):
-                        raise FirewallError(INVALID_ADDR,
-                           "to-addr '%s' is not a valid address" % fwd_port[3])
+                        raise FirewallError(
+                            errors.INVALID_ADDR,
+                            "to-addr '%s' is not a valid address" % fwd_port[3])
         elif item == "target":
             if config not in ZONE_TARGETS:
-                raise FirewallError(INVALID_TARGET, config)
+                raise FirewallError(errors.INVALID_TARGET, config)
         elif item == "interfaces":
             for interface in config:
                 if not checkInterface(interface):
-                    raise FirewallError(INVALID_INTERFACE, interface)
+                    raise FirewallError(errors.INVALID_INTERFACE, interface)
         elif item == "sources":
             for source in config:
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
                    not check_mac(source) and not source.startswith("ipset:"):
-                    raise FirewallError(INVALID_ADDR, source)
+                    raise FirewallError(errors.INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
                 Rich_Rule(rule_str=rule)
@@ -215,14 +220,19 @@ class Zone(IO_Object):
     def check_name(self, name):
         super(Zone, self).check_name(name)
         if name.startswith('/'):
-            raise FirewallError(INVALID_NAME, "'%s' can't start with '/'" % name)
+            raise FirewallError(errors.INVALID_NAME,
+                                "'%s' can't start with '/'" % name)
         elif name.endswith('/'):
-            raise FirewallError(INVALID_NAME, "'%s' can't end with '/'" % name)
+            raise FirewallError(errors.INVALID_NAME,
+                                "'%s' can't end with '/'" % name)
         elif name.count('/') > 1:
-            raise FirewallError(INVALID_NAME, "more than one '/' in '%s'" % name)
+            raise FirewallError(errors.INVALID_NAME,
+                                "more than one '/' in '%s'" % name)
         elif len(name) > max_zone_name_len():
-            raise FirewallError(INVALID_NAME,
-                                "'%s' has %d chars, max is %d" % (name, len(name), max_zone_name_len()))
+            raise FirewallError(
+                errors.INVALID_NAME,
+                "'%s' has %d chars, max is %d" % (name, len(name),
+                                                  max_zone_name_len()))
 
     def combine(self, zone):
         self.combined = True
@@ -285,7 +295,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "target" in attrs:
                 target = attrs["target"]
                 if target not in ZONE_TARGETS:
-                    raise FirewallError(INVALID_TARGET, target)
+                    raise FirewallError(errors.INVALID_TARGET, target)
                 if target != "" and target != DEFAULT_ZONE_TARGET:
                     self.item.target = target
 
@@ -399,7 +409,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 check_port(to_port)
             if to_addr:
                 if not checkIP(to_addr):
-                    raise FirewallError(INVALID_ADDR,
+                    raise FirewallError(errors.INVALID_ADDR,
                                         "to-addr '%s' is not a valid address" \
                                         % to_addr)
             entry = (portStr(attrs["port"], "-"), attrs["protocol"],
@@ -466,7 +476,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 if not checkIPnMask(attrs["address"]) and \
                    not checkIP6nMask(attrs["address"]) and \
                    not check_mac(attrs["address"]):
-                    raise FirewallError(INVALID_ADDR, attrs["address"])
+                    raise FirewallError(errors.INVALID_ADDR, attrs["address"])
             if "ipset" in attrs:
                 entry = "ipset:%s" % attrs["ipset"]
                 if entry not in self.item.sources:
@@ -604,7 +614,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 def zone_reader(filename, path):
     zone = Zone()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME,
+        raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     zone.name = filename[:-4]
     zone.check_name(zone.name)

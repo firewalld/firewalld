@@ -30,6 +30,7 @@ import slip.dbus
 
 from firewall.config import *
 from firewall.config.dbus import *
+from firewall.config.dbus import DBUS_INTERFACE
 from firewall.errors import FirewallError, ALREADY_ENABLED, NOT_ENABLED
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.dbus_utils import dbus_to_python
