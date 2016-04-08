@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2012 Red Hat, Inc.
+# Copyright (C) 2011-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,7 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from firewall.errors import *
+__all__ = [ "FirewallService" ]
+
+from firewall import errors
+from firewall.errors import FirewallError
 
 class FirewallService(object):
     def __init__(self, fw):
@@ -39,7 +42,7 @@ class FirewallService(object):
 
     def check_service(self, service):
         if service not in self._services:
-            raise FirewallError(INVALID_SERVICE, service)
+            raise FirewallError(errors.INVALID_SERVICE, service)
 
     def get_service(self, service):
         self.check_service(service)

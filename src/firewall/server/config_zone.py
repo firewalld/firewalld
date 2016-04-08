@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -28,19 +28,19 @@ import dbus.service
 import slip.dbus
 import slip.dbus.service
 
-from firewall.config import *
+from firewall import config
 from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
-from firewall.config.dbus import *
 from firewall.core.fw import Firewall
 from firewall.core.io.zone import Zone
-from firewall.core.logger import log
-from firewall.server.decorators import *
-from firewall.errors import *
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.rich import Rich_Rule
 from firewall.functions import portStr
+from firewall.core.logger import log
+from firewall.server.decorators import *
+from firewall import errors
+from firewall.errors import FirewallError
 
 ############################################################################
 #
@@ -53,21 +53,21 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     persistent = True
     """ Make FirewallD persistent. """
-    default_polkit_auth_required = PK_ACTION_CONFIG
+    default_polkit_auth_required = config.dbus.PK_ACTION_CONFIG
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, parent, config, zone, id, *args, **kwargs):
+    def __init__(self, parent, conf, zone, id, *args, **kwargs):
         super(FirewallDConfigZone, self).__init__(*args, **kwargs)
         self.parent = parent
-        self.config = config
+        self.config = conf
         self.obj = zone
         self.id = id
         self.busname = args[0]
         self.path = args[1]
         self._log_prefix = "config.zone.%d" % self.id
-        dbus_introspection_prepare_properties(self,
-                                              DBUS_INTERFACE_CONFIG_ZONE)
+        dbus_introspection_prepare_properties(
+            self, config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
 
     @dbus_handle_exceptions
     def __del__(self):
@@ -109,7 +109,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("%s.Get('%s', '%s')", self._log_prefix,
                    interface_name, property_name)
 
-        if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
+        if interface_name != config.dbus.DBUS_INTERFACE_CONFIG_ZONE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -123,7 +123,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("%s.GetAll('%s')", self._log_prefix, interface_name)
 
-        if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
+        if interface_name != config.dbus.DBUS_INTERFACE_CONFIG_ZONE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -133,7 +133,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_CONFIG)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ssv')
     @dbus_handle_exceptions
     def Set(self, interface_name, property_name, new_value, sender=None):
@@ -144,7 +144,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                    interface_name, property_name, new_value)
         self.parent.accessCheck(sender)
 
-        if interface_name != DBUS_INTERFACE_CONFIG_ZONE:
+        if interface_name != config.dbus.DBUS_INTERFACE_CONFIG_ZONE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
                 "FirewallD does not implement %s" % interface_name)
@@ -162,7 +162,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("%s.PropertiesChanged('%s', '%s', '%s')", self._log_prefix,
                    interface_name, changed_properties, invalidated_properties)
 
-    @slip.dbus.polkit.require_auth(PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
     def Introspect(self, sender=None):
@@ -171,12 +171,13 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         data = super(FirewallDConfigZone, self).Introspect(
             self.path, self.busname.get_bus())
 
-        return dbus_introspection_add_properties(self, data,
-                                                 DBUS_INTERFACE_CONFIG_ZONE)
+        return dbus_introspection_add_properties(
+            self, data, config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
 
     # S E T T I N G S
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature=Zone.DBUS_SIGNATURE)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getSettings(self, sender=None):
         """get settings for zone
@@ -203,12 +204,13 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
         for iface in added_ifaces:
             if self.parent.getZoneOfInterface(iface):
-                raise FirewallError(ZONE_CONFLICT, iface)  # or move to new zone ?
+                raise FirewallError(errors.ZONE_CONFLICT, iface)  # or move to new zone ?
         for source in added_sources:
             if self.parent.getZoneOfSource(source):
-                raise FirewallError(ZONE_CONFLICT, source) # or move to new zone ?
+                raise FirewallError(errors.ZONE_CONFLICT, source) # or move to new zone ?
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature=Zone.DBUS_SIGNATURE)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def update(self, settings, sender=None):
         """update settings for zone
@@ -225,7 +227,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.obj = self.config.set_zone_config(self.obj, settings)
         self.Updated(self.obj.name)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def loadDefaults(self, sender=None):
         """load default settings for builtin zone
@@ -235,14 +237,14 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.obj = self.config.load_zone_defaults(self.obj)
         self.Updated(self.obj.name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, signature='s')
     @dbus_handle_exceptions
     def Updated(self, name):
         log.debug1("%s.Updated('%s')" % (self._log_prefix, name))
 
     # R E M O V E
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def remove(self, sender=None):
         """remove zone
@@ -252,14 +254,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.config.remove_zone(self.obj)
         self.parent.removeZone(self.obj)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, signature='s')
     @dbus_handle_exceptions
     def Removed(self, name):
         log.debug1("%s.Removed('%s')" % (self._log_prefix, name))
 
     # R E N A M E
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def rename(self, name, sender=None):
         """rename zone
@@ -270,20 +273,22 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.obj = self.config.rename_zone(self.obj, name)
         self.Renamed(name)
 
-    @dbus.service.signal(DBUS_INTERFACE_CONFIG_ZONE, signature='s')
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG_ZONE, signature='s')
     @dbus_handle_exceptions
     def Renamed(self, name):
         log.debug1("%s.Renamed('%s')" % (self._log_prefix, name))
 
     # version
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='s')
     @dbus_handle_exceptions
     def getVersion(self, sender=None):
         log.debug1("%s.getVersion()", self._log_prefix)
         return self.getSettings()[0]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def setVersion(self, version, sender=None):
         version = dbus_to_python(version, str)
@@ -295,13 +300,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # short
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='s')
     @dbus_handle_exceptions
     def getShort(self, sender=None):
         log.debug1("%s.getShort()", self._log_prefix)
         return self.getSettings()[1]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def setShort(self, short, sender=None):
         short = dbus_to_python(short, str)
@@ -313,13 +320,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # description
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='s')
     @dbus_handle_exceptions
     def getDescription(self, sender=None):
         log.debug1("%s.getDescription()", self._log_prefix)
         return self.getSettings()[2]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def setDescription(self, description, sender=None):
         description = dbus_to_python(description, str)
@@ -334,14 +343,16 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # target
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='s')
     @dbus_handle_exceptions
     def getTarget(self, sender=None):
         log.debug1("%s.getTarget()", self._log_prefix)
         settings = self.getSettings()
         return settings[4] if settings[4] != DEFAULT_ZONE_TARGET else "default"
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def setTarget(self, target, sender=None):
         target = dbus_to_python(target, str)
@@ -353,13 +364,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # service
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='as')
     @dbus_handle_exceptions
     def getServices(self, sender=None):
         log.debug1("%s.getServices()", self._log_prefix)
         return sorted(self.getSettings()[5])
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='as')
     @dbus_handle_exceptions
     def setServices(self, services, sender=None):
         services = dbus_to_python(services, list)
@@ -370,7 +383,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[5] = services
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def addService(self, service, sender=None):
         service = dbus_to_python(service, str)
@@ -378,11 +392,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if service in settings[5]:
-            raise FirewallError(ALREADY_ENABLED, service)
+            raise FirewallError(errors.ALREADY_ENABLED, service)
         settings[5].append(service)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def removeService(self, service, sender=None):
         service = dbus_to_python(service, str)
@@ -390,12 +405,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if service not in settings[5]:
-            raise FirewallError(NOT_ENABLED, service)
+            raise FirewallError(errors.NOT_ENABLED, service)
         settings[5].remove(service)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
-                         out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s', out_signature='b')
     @dbus_handle_exceptions
     def queryService(self, service, sender=None):
         service = dbus_to_python(service, str)
@@ -404,13 +419,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # port
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='a(ss)')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='a(ss)')
     @dbus_handle_exceptions
     def getPorts(self, sender=None):
         log.debug1("%s.getPorts()", self._log_prefix)
         return self.getSettings()[6]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='a(ss)')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='a(ss)')
     @dbus_handle_exceptions
     def setPorts(self, ports, sender=None):
         _ports = [ ]
@@ -428,7 +445,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[6] = ports
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='ss')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='ss')
     @dbus_handle_exceptions
     def addPort(self, port, protocol, sender=None):
         port = dbus_to_python(port, str)
@@ -438,11 +456,13 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if (port,protocol) in settings[6]:
-            raise FirewallError(ALREADY_ENABLED, "%s:%s" % (port, protocol))
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "%s:%s" % (port, protocol))
         settings[6].append((port,protocol))
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='ss')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='ss')
     @dbus_handle_exceptions
     def removePort(self, port, protocol, sender=None):
         port = dbus_to_python(port, str)
@@ -452,12 +472,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if (port,protocol) not in settings[6]:
-            raise FirewallError(NOT_ENABLED, "%s:%s" % (port, protocol))
+            raise FirewallError(errors.NOT_ENABLED, "%s:%s" % (port, protocol))
         settings[6].remove((port,protocol))
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='ss',
-                         out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='ss', out_signature='b')
     @dbus_handle_exceptions
     def queryPort(self, port, protocol, sender=None):
         port = dbus_to_python(port, str)
@@ -468,13 +488,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # protocol
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='as')
     @dbus_handle_exceptions
     def getProtocols(self, sender=None):
         log.debug1("%s.getProtocols()", self._log_prefix)
         return self.getSettings()[13]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='as')
     @dbus_handle_exceptions
     def setProtocols(self, protocols, sender=None):
         protocols = dbus_to_python(protocols, list)
@@ -485,7 +507,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[13] = protocols
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def addProtocol(self, protocol, sender=None):
         protocol = dbus_to_python(protocol, str)
@@ -493,11 +516,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if protocol in settings[13]:
-            raise FirewallError(ALREADY_ENABLED, protocol)
+            raise FirewallError(errors.ALREADY_ENABLED, protocol)
         settings[13].append(protocol)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def removeProtocol(self, protocol, sender=None):
         protocol = dbus_to_python(protocol, str)
@@ -505,12 +529,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if protocol not in settings[13]:
-            raise FirewallError(NOT_ENABLED, protocol)
+            raise FirewallError(errors.NOT_ENABLED, protocol)
         settings[13].remove(protocol)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
-                         out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s', out_signature='b')
     @dbus_handle_exceptions
     def queryProtocol(self, protocol, sender=None):
         protocol = dbus_to_python(protocol, str)
@@ -519,13 +543,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # icmp block
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='as')
     @dbus_handle_exceptions
     def getIcmpBlocks(self, sender=None):
         log.debug1("%s.getIcmpBlocks()", self._log_prefix)
         return sorted(self.getSettings()[7])
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='as')
     @dbus_handle_exceptions
     def setIcmpBlocks(self, icmptypes, sender=None):
         icmptypes = dbus_to_python(icmptypes, list)
@@ -536,7 +562,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[7] = icmptypes
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def addIcmpBlock(self, icmptype, sender=None):
         icmptype = dbus_to_python(icmptype, str)
@@ -544,11 +571,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if icmptype in settings[7]:
-            raise FirewallError(ALREADY_ENABLED, icmptype)
+            raise FirewallError(errors.ALREADY_ENABLED, icmptype)
         settings[7].append(icmptype)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def removeIcmpBlock(self, icmptype, sender=None):
         icmptype = dbus_to_python(icmptype, str)
@@ -556,12 +584,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if icmptype not in settings[7]:
-            raise FirewallError(NOT_ENABLED, icmptype)
+            raise FirewallError(errors.NOT_ENABLED, icmptype)
         settings[7].remove(icmptype)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
-                         out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s', out_signature='b')
     @dbus_handle_exceptions
     def queryIcmpBlock(self, icmptype, sender=None):
         icmptype = dbus_to_python(icmptype, str)
@@ -570,13 +598,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # masquerade
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='b')
     @dbus_handle_exceptions
     def getMasquerade(self, sender=None):
         log.debug1("%s.getMasquerade()", self._log_prefix)
         return self.getSettings()[8]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='b')
     @dbus_handle_exceptions
     def setMasquerade(self, masquerade, sender=None):
         masquerade = dbus_to_python(masquerade, bool)
@@ -586,29 +616,30 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[8] = masquerade
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def addMasquerade(self, sender=None):
         log.debug1("%s.addMasquerade()", self._log_prefix)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if settings[8]:
-            raise FirewallError(ALREADY_ENABLED, "masquerade")
+            raise FirewallError(errors.ALREADY_ENABLED, "masquerade")
         settings[8] = True
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
     @dbus_handle_exceptions
     def removeMasquerade(self, sender=None):
         log.debug1("%s.removeMasquerade()", self._log_prefix)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if not settings[8]:
-            raise FirewallError(NOT_ENABLED, "masquerade")
+            raise FirewallError(errors.NOT_ENABLED, "masquerade")
         settings[8] = False
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='b')
     @dbus_handle_exceptions
     def queryMasquerade(self, sender=None):
         log.debug1("%s.queryMasquerade()", self._log_prefix)
@@ -616,13 +647,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # forward port
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='a(ssss)')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='a(ssss)')
     @dbus_handle_exceptions
     def getForwardPorts(self, sender=None):
         log.debug1("%s.getForwardPorts()", self._log_prefix)
         return self.getSettings()[9]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='a(ssss)')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='a(ssss)')
     @dbus_handle_exceptions
     def setForwardPorts(self, ports, sender=None):
         _ports = [ ]
@@ -641,7 +674,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[9] = ports
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='ssss')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='ssss')
     @dbus_handle_exceptions
     def addForwardPort(self, port, protocol, toport, toaddr, sender=None):
         port = dbus_to_python(port, str)
@@ -655,12 +689,14 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                   str(toaddr))
         settings = list(self.getSettings())
         if fwp_id in settings[9]:
-            raise FirewallError(ALREADY_ENABLED,
-                                "%s:%s:%s:%s" % (port, protocol, toport, toaddr))
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "%s:%s:%s:%s" % (port, protocol, toport,
+                                                 toaddr))
         settings[9].append(fwp_id)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='ssss')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='ssss')
     @dbus_handle_exceptions
     def removeForwardPort(self, port, protocol, toport, toaddr, sender=None):
         port = dbus_to_python(port, str)
@@ -674,12 +710,14 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                   str(toaddr))
         settings = list(self.getSettings())
         if fwp_id not in settings[9]:
-            raise FirewallError(NOT_ENABLED,
-                                "%s:%s:%s:%s" % (port, protocol, toport, toaddr))
+            raise FirewallError(errors.NOT_ENABLED,
+                                "%s:%s:%s:%s" % (port, protocol, toport,
+                                                 toaddr))
         settings[9].remove(fwp_id)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='ssss',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='ssss',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryForwardPort(self, port, protocol, toport, toaddr, sender=None):
@@ -695,13 +733,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # interface
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='as')
     @dbus_handle_exceptions
     def getInterfaces(self, sender=None):
         log.debug1("%s.getInterfaces()", self._log_prefix)
         return sorted(self.getSettings()[10])
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='as')
     @dbus_handle_exceptions
     def setInterfaces(self, interfaces, sender=None):
         interfaces = dbus_to_python(interfaces, list)
@@ -712,7 +752,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[10] = interfaces
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def addInterface(self, interface, sender=None):
         interface = dbus_to_python(interface, str)
@@ -720,11 +761,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if interface in settings[10]:
-            raise FirewallError(ALREADY_ENABLED, interface)
+            raise FirewallError(errors.ALREADY_ENABLED, interface)
         settings[10].append(interface)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def removeInterface(self, interface, sender=None):
         interface = dbus_to_python(interface, str)
@@ -732,11 +774,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if interface not in settings[10]:
-            raise FirewallError(NOT_ENABLED, interface)
+            raise FirewallError(errors.NOT_ENABLED, interface)
         settings[10].remove(interface)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
     def queryInterface(self, interface, sender=None):
@@ -746,13 +789,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # source
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='as')
     @dbus_handle_exceptions
     def getSources(self, sender=None):
         log.debug1("%s.getSources()", self._log_prefix)
         return sorted(self.getSettings()[11])
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='as')
     @dbus_handle_exceptions
     def setSources(self, sources, sender=None):
         sources = dbus_to_python(sources, list)
@@ -763,7 +808,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[11] = sources
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def addSource(self, source, sender=None):
         source = dbus_to_python(source, str)
@@ -771,11 +817,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if source in settings[11]:
-            raise FirewallError(ALREADY_ENABLED, source)
+            raise FirewallError(errors.ALREADY_ENABLED, source)
         settings[11].append(source)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def removeSource(self, source, sender=None):
         source = dbus_to_python(source, str)
@@ -783,12 +830,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
         if source not in settings[11]:
-            raise FirewallError(NOT_ENABLED, source)
+            raise FirewallError(errors.NOT_ENABLED, source)
         settings[11].remove(source)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
-                         out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s', out_signature='b')
     @dbus_handle_exceptions
     def querySource(self, source, sender=None):
         source = dbus_to_python(source, str)
@@ -797,13 +844,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
 
     # rich rule
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, out_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='as')
     @dbus_handle_exceptions
     def getRichRules(self, sender=None):
         log.debug1("%s.getRichRules()", self._log_prefix)
         return self.getSettings()[12]
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='as')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='as')
     @dbus_handle_exceptions
     def setRichRules(self, rules, sender=None):
         rules = dbus_to_python(rules, list)
@@ -815,7 +864,8 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[12] = rules
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def addRichRule(self, rule, sender=None):
         rule = dbus_to_python(rule, str)
@@ -824,11 +874,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings = list(self.getSettings())
         rule_str = str(Rich_Rule(rule_str=rule))
         if rule_str in settings[12]:
-            raise FirewallError(ALREADY_ENABLED, rule)
+            raise FirewallError(errors.ALREADY_ENABLED, rule)
         settings[12].append(rule_str)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s')
     @dbus_handle_exceptions
     def removeRichRule(self, rule, sender=None):
         rule = dbus_to_python(rule, str)
@@ -837,12 +888,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings = list(self.getSettings())
         rule_str = str(Rich_Rule(rule_str=rule))
         if rule_str not in settings[12]:
-            raise FirewallError(NOT_ENABLED, rule)
+            raise FirewallError(errors.NOT_ENABLED, rule)
         settings[12].remove(rule_str)
         self.update(settings)
 
-    @dbus_service_method(DBUS_INTERFACE_CONFIG_ZONE, in_signature='s',
-                         out_signature='b')
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='s', out_signature='b')
     @dbus_handle_exceptions
     def queryRichRule(self, rule, sender=None):
         rule = dbus_to_python(rule, str)

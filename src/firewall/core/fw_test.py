@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,9 +19,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os.path
+__all__ = [ "Firewall_test" ]
+
+import os.path, sys
 import copy
-from firewall.config import *
+from firewall import config
 from firewall import functions
 from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
@@ -37,7 +39,8 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.core.io.ipset import ipset_reader
-from firewall.errors import *
+from firewall import errors
+from firewall.errors import FirewallError
 
 ############################################################################
 #
@@ -47,7 +50,7 @@ from firewall.errors import *
 
 class Firewall_test(object):
     def __init__(self):
-        self._firewalld_conf = firewalld_conf(FIREWALLD_CONF)
+        self._firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
 
         self.ip4tables_enabled = False
         self.ip6tables_enabled = False
@@ -78,21 +81,21 @@ class Firewall_test(object):
         self._default_zone = ""
         self._module_refcount = { }
         self._marks = [ ]
-        self._min_mark = FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
+        self._min_mark = config.FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
         self.cleanup_on_exit = True
         self.ipv6_rpfilter_enabled = True
 
     def start(self):
         # initialize firewall
-        default_zone = FALLBACK_ZONE
+        default_zone = config.FALLBACK_ZONE
 
         # load firewalld config
-        log.debug1("Loading firewalld config file '%s'", FIREWALLD_CONF)
+        log.debug1("Loading firewalld config file '%s'", config.FIREWALLD_CONF)
         try:
             self._firewalld_conf.read()
         except Exception as msg:
             log.error("Failed to open firewalld config file '%s': %s",
-                      FIREWALLD_CONF, msg)
+                      config.FIREWALLD_CONF, msg)
         else:
             if self._firewalld_conf.get("DefaultZone"):
                 default_zone = self._firewalld_conf.get("DefaultZone")
@@ -145,26 +148,26 @@ class Firewall_test(object):
         self.config.set_policies(copy.deepcopy(self.policies))
 
         # load ipset files
-        self._loader(FIREWALLD_IPSETS, "ipset")
-        self._loader(ETC_FIREWALLD_IPSETS, "ipset")
+        self._loader(config.FIREWALLD_IPSETS, "ipset")
+        self._loader(config.ETC_FIREWALLD_IPSETS, "ipset")
 
         # load icmptype files
-        self._loader(FIREWALLD_ICMPTYPES, "icmptype")
-        self._loader(ETC_FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(config.FIREWALLD_ICMPTYPES, "icmptype")
+        self._loader(config.ETC_FIREWALLD_ICMPTYPES, "icmptype")
 
         if len(self.icmptype.get_icmptypes()) == 0:
             log.error("No icmptypes found.")
 
         # load service files
-        self._loader(FIREWALLD_SERVICES, "service")
-        self._loader(ETC_FIREWALLD_SERVICES, "service")
+        self._loader(config.FIREWALLD_SERVICES, "service")
+        self._loader(config.ETC_FIREWALLD_SERVICES, "service")
 
         if len(self.service.get_services()) == 0:
             log.error("No services found.")
 
         # load zone files
-        self._loader(FIREWALLD_ZONES, "zone")
-        self._loader(ETC_FIREWALLD_ZONES, "zone")
+        self._loader(config.FIREWALLD_ZONES, "zone")
+        self._loader(config.ETC_FIREWALLD_ZONES, "zone")
 
         if len(self.zone.get_zones()) == 0:
             log.fatal("No zones found.")
@@ -180,14 +183,15 @@ class Firewall_test(object):
             sys.exit(1)
 
         # load direct rules
-        obj = Direct(FIREWALLD_DIRECT)
-        if os.path.exists(FIREWALLD_DIRECT):
-            log.debug1("Loading direct rules file '%s'" % FIREWALLD_DIRECT)
+        obj = Direct(config.FIREWALLD_DIRECT)
+        if os.path.exists(config.FIREWALLD_DIRECT):
+            log.debug1("Loading direct rules file '%s'" % \
+                       config.FIREWALLD_DIRECT)
             try:
                 obj.read()
             except Exception as msg:
                 log.debug1("Failed to load direct rules file '%s': %s",
-                           FIREWALLD_DIRECT, msg)
+                           config.FIREWALLD_DIRECT, msg)
         self.config.set_direct(copy.deepcopy(obj))
 
         # check if default_zone is a valid zone
@@ -215,7 +219,7 @@ class Firewall_test(object):
             return
 
         if combine:
-            if path.startswith(ETC_FIREWALLD) and reader_type == "zone":
+            if path.startswith(config.ETC_FIREWALLD) and reader_type == "zone":
                 combined_zone = Zone()
                 combined_zone.name = os.path.basename(path)
                 combined_zone.check_name(combined_zone.name)
@@ -226,7 +230,7 @@ class Firewall_test(object):
 
         for filename in sorted(os.listdir(path)):
             if not filename.endswith(".xml"):
-                if path.startswith(ETC_FIREWALLD) and \
+                if path.startswith(config.ETC_FIREWALLD) and \
                         reader_type == "zone" and \
                         os.path.isdir("%s/%s" % (path, filename)):
                     self._loader("%s/%s" % (path, filename), reader_type,
@@ -346,12 +350,12 @@ class Firewall_test(object):
         if not _zone or _zone == "":
             _zone = self.get_default_zone()
         if _zone not in self.zone.get_zones():
-            raise FirewallError(INVALID_ZONE, _zone)
+            raise FirewallError(errors.INVALID_ZONE, _zone)
         return _zone
 
     def check_interface(self, interface):
         if not functions.checkInterface(interface):
-            raise FirewallError(INVALID_INTERFACE, interface)
+            raise FirewallError(errors.INVALID_INTERFACE, interface)
 
     def check_service(self, service):
         self.service.check_service(service)
@@ -369,27 +373,27 @@ class Firewall_test(object):
                 log.debug2("'%s': port is ambiguous" % port)
             elif len(range) == 2 and range[0] >= range[1]:
                 log.debug2("'%s': range start >= end" % port)
-            raise FirewallError(INVALID_PORT, port)
+            raise FirewallError(errors.INVALID_PORT, port)
 
     def check_protocol(self, protocol):
         if not protocol:
-            raise FirewallError(MISSING_PROTOCOL)
+            raise FirewallError(errors.MISSING_PROTOCOL)
         if protocol not in [ "tcp", "udp" ]:
-            raise FirewallError(INVALID_PROTOCOL, protocol)
+            raise FirewallError(errors.INVALID_PROTOCOL, protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):
-            raise FirewallError(INVALID_ADDR, ip)
+            raise FirewallError(errors.INVALID_ADDR, ip)
 
     def check_address(self, ipv, source):
         if ipv == "ipv4":
             if not functions.checkIPnMask(source):
-                raise FirewallError(INVALID_ADDR, source)
+                raise FirewallError(errors.INVALID_ADDR, source)
         elif ipv == "ipv6":
             if not functions.checkIP6nMask(source):
-                raise FirewallError(INVALID_ADDR, source)
+                raise FirewallError(errors.INVALID_ADDR, source)
         else:
-            raise FirewallError(INVALID_IPV)
+            raise FirewallError(errors.INVALID_IPV)
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
@@ -428,7 +432,7 @@ class Firewall_test(object):
             self._firewalld_conf.set("DefaultZone", _zone)
             self._firewalld_conf.write()
         else:
-            raise FirewallError(ZONE_ALREADY_SET, _zone)
+            raise FirewallError(errors.ZONE_ALREADY_SET, _zone)
 
     # lockdown
 

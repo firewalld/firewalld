@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -25,6 +25,8 @@
 #   Thomas Liu  <tliu@redhat.com>
 #   Dan Walsh <dwalsh@redhat.com>
 
+__all__ = [ "run_server" ]
+
 import os, sys
 import signal
 
@@ -37,7 +39,7 @@ import dbus.service
 import dbus.mainloop.glib
 import slip.dbus
 
-from firewall.config.dbus import *
+from firewall import config
 from firewall.core.logger import log
 from firewall.server.firewalld import FirewallD
 
@@ -87,8 +89,8 @@ def run_server(debug_gc=False):
     try:
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         bus = dbus.SystemBus()
-        name = dbus.service.BusName(DBUS_INTERFACE, bus=bus)
-        service = FirewallD(name, DBUS_PATH)
+        name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+        service = FirewallD(name, config.dbus.DBUS_PATH)
 
         mainloop = GLib.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)

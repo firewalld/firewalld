@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2007-2012 Red Hat, Inc.
+# Copyright (C) 2007-2016 Red Hat, Inc.
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 #
@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import absolute_import
+
 # translation
 import locale
 try:
@@ -30,6 +32,9 @@ except locale.Error:
 DOMAIN = 'firewalld'
 import gettext
 gettext.install(domain=DOMAIN)
+_ = lambda x: gettext.ldgettext(DOMAIN, x)
+
+from . import dbus
 
 # configuration
 DAEMON_NAME = 'firewalld'
@@ -37,7 +42,7 @@ CONFIG_NAME = 'firewall-config'
 APPLET_NAME = 'firewall-applet'
 DATADIR = '/usr/share/' + DAEMON_NAME
 CONFIG_GLADE_NAME = CONFIG_NAME + '.glade'
-COPYRIGHT = '(C) 2010-2015 Red Hat, Inc.'
+COPYRIGHT = '(C) 2010-2016 Red Hat, Inc.'
 VERSION = '@PACKAGE_VERSION@'
 AUTHORS = [
     "Thomas Woerner <twoerner@redhat.com>",

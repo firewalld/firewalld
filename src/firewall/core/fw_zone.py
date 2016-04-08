@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2015 Red Hat, Inc.
+# Copyright (C) 2011-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -26,8 +26,9 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac, \
     checkIP, checkIP6
 from firewall.core.rich import *
-from firewall.errors import *
 from firewall.core.ipXtables import OUR_CHAINS
+from firewall import errors
+from firewall.errors import FirewallError
 
 class FirewallZone(object):
     def __init__(self, fw):
@@ -270,7 +271,7 @@ class FirewallZone(object):
                 (cleanup_chains, msg) = ret
                 log.debug2(msg)
                 self._fw.handle_chains(cleanup_chains, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise FirewallError(errors.COMMAND_FAILED, msg)
 
             # handle rules
             ret = self._fw.handle_rules(rules, create, insert=True)
@@ -280,7 +281,7 @@ class FirewallZone(object):
 
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise FirewallError(errors.COMMAND_FAILED, msg)
         else:
             # reverse rule order for cleanup
             rules.reverse()
@@ -289,7 +290,7 @@ class FirewallZone(object):
             if ret:
                 (cleanup_rules, msg) = ret
                 self._fw.handle_rules(cleanup_rules, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise FirewallError(errors.COMMAND_FAILED, msg)
             
             # cleanup chains
             ret = self._fw.handle_chains(chains, create)
@@ -300,7 +301,7 @@ class FirewallZone(object):
 
                 (cleanup_chains, msg) = ret
                 self._fw.handle_chains(cleanup_chains, not create)
-                raise FirewallError(COMMAND_FAILED, msg)
+                raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if create:
             self._chains.setdefault(zone, { }).setdefault(table, [ ]).append(chain)
@@ -530,7 +531,7 @@ class FirewallZone(object):
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
 #        if not enable:
 #            for table in self.zone_chains:
@@ -547,10 +548,10 @@ class FirewallZone(object):
         interface_id = self.__interface_id(interface)
 
         if interface_id in _obj.settings["interfaces"]:
-            raise FirewallError(ZONE_ALREADY_SET,
+            raise FirewallError(errors.ZONE_ALREADY_SET,
                          "'%s' already bound to '%s'" % (interface, zone))
         if self.get_zone_of_interface(interface) is not None:
-            raise FirewallError(ZONE_CONFLICT,
+            raise FirewallError(errors.ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % interface)
 
         log.debug1("Setting zone of interface '%s' to '%s'" % (interface, _zone))
@@ -588,11 +589,11 @@ class FirewallZone(object):
         self._fw.check_panic()
         zoi = self.get_zone_of_interface(interface)
         if zoi is None:
-            raise FirewallError(UNKNOWN_INTERFACE,
+            raise FirewallError(errors.UNKNOWN_INTERFACE,
                                 "'%s' is not in any zone" % interface)
         _zone = zoi if zone == "" else self._fw.check_zone(zone)
         if zoi != _zone:
-            raise FirewallError(ZONE_CONFLICT,
+            raise FirewallError(errors.ZONE_CONFLICT,
                                 "remove_interface(%s, %s): zoi='%s'" % \
                                 (zone, interface, zoi))
 
@@ -632,7 +633,7 @@ class FirewallZone(object):
         elif source.startswith("ipset:"):
             return self.ipset_family(source[6:])
         else:
-            raise FirewallError(INVALID_ADDR, source)
+            raise FirewallError(errors.INVALID_ADDR, source)
 
     def __source_id(self, source):
         ipv = self.check_source(source)
@@ -719,7 +720,7 @@ class FirewallZone(object):
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
             log.debug2(msg)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
     def add_source(self, zone, source, sender=None):
         self._fw.check_panic()
@@ -734,10 +735,10 @@ class FirewallZone(object):
         source_id = self.__source_id(source)
 
         if source_id in _obj.settings["sources"]:
-            raise FirewallError(ZONE_ALREADY_SET,
+            raise FirewallError(errors.ZONE_ALREADY_SET,
                             "'%s' already bound to '%s'" % (source, _zone))
         if self.get_zone_of_source(source) is not None:
-            raise FirewallError(ZONE_CONFLICT,
+            raise FirewallError(errors.ZONE_CONFLICT,
                                 "'%s' already bound to a zone" % source)
 
         self.__source(True, _zone, source_id[0], source_id[1])
@@ -771,11 +772,11 @@ class FirewallZone(object):
             source = source.upper()
         zos = self.get_zone_of_source(source)
         if zos is None:
-            raise FirewallError(UNKNOWN_SOURCE,
+            raise FirewallError(errors.UNKNOWN_SOURCE,
                                 "'%s' is not in any zone" % source)
         _zone = zos if zone == "" else self._fw.check_zone(zone)
         if zos != _zone:
-            raise FirewallError(ZONE_CONFLICT,
+            raise FirewallError(errors.ZONE_CONFLICT,
                                 "remove_source(%s, %s): zos='%s'" % \
                                 (zone, source, zos))
 
@@ -907,7 +908,7 @@ class FirewallZone(object):
             chain = "%s_allow" % target
             _command += [ "-j", "MARK", "--set-xmark", rule.action.set ]
         else:
-            raise FirewallError(INVALID_RULE,
+            raise FirewallError(errors.INVALID_RULE,
                                 "Unknown action %s" % type(rule.action))
         _command += self.__rule_limit(rule.action.limit)
         rules.append((ipv, table, chain, _command))
@@ -927,7 +928,7 @@ class FirewallZone(object):
             if rule.family is not None:
                 # rule family is defined by user, no way to change it
                 if rule.family != source_ipv:
-                    raise FirewallError(INVALID_RULE,
+                    raise FirewallError(errors.INVALID_RULE,
                                         "Source address family '%s' conflicts with rule family '%s'." % (source_ipv, rule.family))
             else:
                 # use the source family as rule family
@@ -942,12 +943,12 @@ class FirewallZone(object):
                 if len(svc.destination) > 0:
                     if ipv not in svc.destination:
                         # destination is set, only use if it contains ipv
-                        raise FirewallError(INVALID_RULE,
+                        raise FirewallError(errors.INVALID_RULE,
                                             "Service %s is not usable with %s" % 
                                             (rule.element.name, ipv))
                     if svc.destination[ipv] != "" and rule.destination:
                         # we can not use two destinations at the same time
-                        raise FirewallError(INVALID_RULE,
+                        raise FirewallError(errors.INVALID_RULE,
                                             "Destination conflict with service.")
 
                 table = "filter"
@@ -1134,10 +1135,10 @@ class FirewallZone(object):
 
                 if rule.action and type(rule.action) == Rich_Accept:
                     # icmp block might have reject or drop action, but not accept
-                    raise FirewallError(INVALID_RULE,
+                    raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
                 if ict.destination and ipv not in ict.destination:
-                    raise FirewallError(INVALID_RULE,
+                    raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock %s not usable with %s" % 
                                         (rule.element.name, ipv))
 
@@ -1200,12 +1201,12 @@ class FirewallZone(object):
 
             # EVERYTHING ELSE
             else:
-                raise FirewallError(INVALID_RULE, "Unknown element %s" % 
+                raise FirewallError(errors.INVALID_RULE, "Unknown element %s" % 
                                     type(rule.element))
 
         msg = self.handle_cmr(zone, chains, modules, rules, enable)
         if msg is not None:
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         return mark_id
 
@@ -1217,7 +1218,7 @@ class FirewallZone(object):
 
         rule_id = self.__rule_id(rule)
         if rule_id in _obj.settings["rules"]:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (rule, _zone))
 
         if _obj.applied:
@@ -1237,7 +1238,7 @@ class FirewallZone(object):
 
         rule_id = self.__rule_id(rule)
         if rule_id not in _obj.settings["rules"]:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (rule, _zone))
 
         if "mark" in _obj.settings["rules"][rule_id]:
@@ -1319,7 +1320,7 @@ class FirewallZone(object):
                 self._fw.handle_rules(cleanup_rules, not enable)
             if cleanup_modules:
                 self._fw.handle_modules(cleanup_modules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1332,7 +1333,7 @@ class FirewallZone(object):
 
         service_id = self.__service_id(service)
         if service_id in _obj.settings["services"]:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (service, _zone))
 
         if _obj.applied:
@@ -1350,7 +1351,7 @@ class FirewallZone(object):
 
         service_id = self.__service_id(service)
         if service_id not in _obj.settings["services"]:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (service, _zone))
 
         if _obj.applied:
@@ -1397,7 +1398,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1410,8 +1411,9 @@ class FirewallZone(object):
 
         port_id = self.__port_id(port, protocol)
         if port_id in _obj.settings["ports"]:
-            raise FirewallError(ALREADY_ENABLED,
-                          "'%s:%s' already in '%s'" % (port, protocol, _zone))
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s' already in '%s'" % (port, protocol,
+                                                             _zone))
 
         if _obj.applied:
             self.__port(True, _zone, port, protocol)
@@ -1428,8 +1430,8 @@ class FirewallZone(object):
 
         port_id = self.__port_id(port, protocol)
         if port_id not in _obj.settings["ports"]:
-            raise FirewallError(NOT_ENABLED,
-                             "'%s:%s' not in '%s'" % (port, protocol, _zone))
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s' not in '%s'" % (port, protocol, _zone))
 
         if _obj.applied:
             self.__port(False, _zone, port, protocol)
@@ -1449,7 +1451,7 @@ class FirewallZone(object):
 
     def check_protocol(self, protocol):
         if not checkProtocol(protocol):
-            raise FirewallError(INVALID_PROTOCOL, protocol)
+            raise FirewallError(errors.INVALID_PROTOCOL, protocol)
 
     def __protocol_id(self, protocol):
         self.check_protocol(protocol)
@@ -1473,7 +1475,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1486,8 +1488,8 @@ class FirewallZone(object):
 
         protocol_id = self.__protocol_id(protocol)
         if protocol_id in _obj.settings["protocols"]:
-            raise FirewallError(ALREADY_ENABLED,
-                          "'%s' already in '%s'" % (protocol, _zone))
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (protocol, _zone))
 
         if _obj.applied:
             self.__protocol(True, _zone, protocol)
@@ -1504,8 +1506,8 @@ class FirewallZone(object):
 
         protocol_id = self.__protocol_id(protocol)
         if protocol_id not in _obj.settings["protocols"]:
-            raise FirewallError(NOT_ENABLED,
-                             "'%s' not in '%s'" % (protocol, _zone))
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s' not in '%s'" % (protocol, _zone))
 
         if _obj.applied:
             self.__protocol(False, _zone, protocol)
@@ -1549,7 +1551,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "nat", "POSTROUTING")
@@ -1563,7 +1565,7 @@ class FirewallZone(object):
 
         masquerade_id = self.__masquerade_id()
         if masquerade_id in _obj.settings["masquerade"]:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 "masquerade already enabled in '%s'" % _zone)
 
         if _obj.applied:
@@ -1581,7 +1583,7 @@ class FirewallZone(object):
 
         masquerade_id = self.__masquerade_id()
         if masquerade_id not in _obj.settings["masquerade"]:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 "masquerade not enabled in '%s'" % _zone)
 
         if _obj.applied:
@@ -1604,10 +1606,11 @@ class FirewallZone(object):
             self._fw.check_port(toport)
         if toaddr:
             if not check_single_address(ipv, toaddr):
-                raise FirewallError(INVALID_ADDR, toaddr)
+                raise FirewallError(errors.INVALID_ADDR, toaddr)
         if not toport and not toaddr:
-            raise FirewallError(INVALID_FORWARD,
-                            "port-forwarding is missing to-port AND to-addr")
+            raise FirewallError(
+                errors.INVALID_FORWARD,
+                "port-forwarding is missing to-port AND to-addr")
 
     def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
         self.check_forward_port("ipv4", port, protocol, toport, toaddr)
@@ -1664,7 +1667,7 @@ class FirewallZone(object):
             self._fw.handle_rules(cleanup_rules, not enable)
             if enable:
                 self._fw.del_mark(mark_id)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "mangle", "PREROUTING")
@@ -1680,7 +1683,7 @@ class FirewallZone(object):
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         if forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s:%s:%s:%s' already in '%s'" % \
                                 (port, protocol, toport, toaddr, _zone))
 
@@ -1702,7 +1705,7 @@ class FirewallZone(object):
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
         if not forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 "'%s:%s:%s:%s' not in '%s'" % \
                                 (port, protocol, toport, toaddr, _zone))
 
@@ -1770,7 +1773,7 @@ class FirewallZone(object):
         if ret:
             (cleanup_rules, msg) = ret
             self._fw.handle_rules(cleanup_rules, not enable)
-            raise FirewallError(COMMAND_FAILED, msg)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
 
         if not enable:
             self.remove_chain(zone, "filter", "INPUT")
@@ -1784,7 +1787,7 @@ class FirewallZone(object):
 
         icmp_id = self.__icmp_block_id(icmp)
         if icmp_id in _obj.settings["icmp_blocks"]:
-            raise FirewallError(ALREADY_ENABLED,
+            raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s' already in '%s'" % (icmp, _zone))
 
         if _obj.applied:
@@ -1802,7 +1805,7 @@ class FirewallZone(object):
 
         icmp_id = self.__icmp_block_id(icmp)
         if icmp_id not in _obj.settings["icmp_blocks"]:
-            raise FirewallError(NOT_ENABLED,
+            raise FirewallError(errors.NOT_ENABLED,
                                 "'%s' not in '%s'" % (icmp, _zone))
 
         if _obj.applied:

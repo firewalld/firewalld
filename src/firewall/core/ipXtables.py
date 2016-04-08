@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -24,7 +24,7 @@ import os.path
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
-from firewall.config import COMMANDS
+from firewall import config
 
 PROC_IPxTABLE_NAMES = {
     "ipv4": "/proc/net/ip_tables_names",
@@ -148,8 +148,8 @@ class ip4tables(object):
     ipv = "ipv4"
 
     def __init__(self):
-        self._command = COMMANDS[self.ipv]
-        self._restore_command = COMMANDS["%s-restore" % self.ipv]
+        self._command = config.COMMANDS[self.ipv]
+        self._restore_command = config.COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
 
     def __run(self, args):
