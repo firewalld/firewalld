@@ -27,16 +27,15 @@ sys.modules['gobject'] = GObject
 
 import dbus.mainloop.glib
 import slip.dbus
+from decorator import decorator
 
-from firewall.config import *
-from firewall.config.dbus import *
-from firewall.config.dbus import DBUS_INTERFACE
-from firewall.errors import FirewallError, ALREADY_ENABLED, NOT_ENABLED
+from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.dbus_utils import dbus_to_python
-from decorator import decorator
 from firewall.functions import b2u
 from firewall.core.rich import Rich_Rule
+from firewall import errors
+from firewall.errors import FirewallError
 
 import dbus
 import traceback
@@ -137,13 +136,13 @@ class FirewallClientZoneSettings(object):
         if service not in self.settings[5]:
             self.settings[5].append(service)
         else:
-            raise FirewallError(ALREADY_ENABLED, service)
+            raise FirewallError(errors.ALREADY_ENABLED, service)
     @handle_exceptions
     def removeService(self, service):
         if service in self.settings[5]:
             self.settings[5].remove(service)
         else:
-            raise FirewallError(NOT_ENABLED, service)
+            raise FirewallError(errors.NOT_ENABLED, service)
     @handle_exceptions
     def queryService(self, service):
         return service in self.settings[5]
@@ -159,13 +158,15 @@ class FirewallClientZoneSettings(object):
         if (port,protocol) not in self.settings[6]:
             self.settings[6].append((port,protocol))
         else:
-            raise FirewallError(ALREADY_ENABLED, "'%s:%s'" % (port, protocol))
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def removePort(self, port, protocol):
         if (port,protocol) in self.settings[6]:
             self.settings[6].remove((port,protocol))
         else:
-            raise FirewallError(NOT_ENABLED, "'%s:%s'" % (port, protocol))
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[6]
@@ -181,13 +182,13 @@ class FirewallClientZoneSettings(object):
         if protocol not in self.settings[13]:
             self.settings[13].append(protocol)
         else:
-            raise FirewallError(ALREADY_ENABLED, protocol)
+            raise FirewallError(errors.ALREADY_ENABLED, protocol)
     @handle_exceptions
     def removeProtocol(self, protocol):
         if protocol in self.settings[13]:
             self.settings[13].remove(protocol)
         else:
-            raise FirewallError(NOT_ENABLED, protocol)
+            raise FirewallError(errors.NOT_ENABLED, protocol)
     @handle_exceptions
     def queryProtocol(self, protocol):
         return protocol in self.settings[13]
@@ -203,13 +204,13 @@ class FirewallClientZoneSettings(object):
         if icmptype not in self.settings[7]:
             self.settings[7].append(icmptype)
         else:
-            raise FirewallError(ALREADY_ENABLED, icmptype)
+            raise FirewallError(errors.ALREADY_ENABLED, icmptype)
     @handle_exceptions
     def removeIcmpBlock(self, icmptype):
         if icmptype in self.settings[7]:
             self.settings[7].remove(icmptype)
         else:
-            raise FirewallError(NOT_ENABLED, icmptype)
+            raise FirewallError(errors.NOT_ENABLED, icmptype)
     @handle_exceptions
     def queryIcmpBlock(self, icmptype):
         return icmptype in self.settings[7]
@@ -236,7 +237,7 @@ class FirewallClientZoneSettings(object):
         if (port,protocol,to_port,to_addr) not in self.settings[9]:
             self.settings[9].append((port,protocol,to_port,to_addr))
         else:
-            raise FirewallError(ALREADY_ENABLED, "'%s:%s:%s:%s'" % \
+            raise FirewallError(errors.ALREADY_ENABLED, "'%s:%s:%s:%s'" % \
                                 (port, protocol, to_port, to_addr))
     @handle_exceptions
     def removeForwardPort(self, port, protocol, to_port, to_addr):
@@ -247,7 +248,7 @@ class FirewallClientZoneSettings(object):
         if (port,protocol,to_port,to_addr) in self.settings[9]:
             self.settings[9].remove((port,protocol,to_port,to_addr))
         else:
-            raise FirewallError(NOT_ENABLED, "'%s:%s:%s:%s'" % \
+            raise FirewallError(errors.NOT_ENABLED, "'%s:%s:%s:%s'" % \
                                 (port, protocol, to_port, to_addr))
     @handle_exceptions
     def queryForwardPort(self, port, protocol, to_port, to_addr):
@@ -268,13 +269,13 @@ class FirewallClientZoneSettings(object):
         if interface not in self.settings[10]:
             self.settings[10].append(interface)
         else:
-            raise FirewallError(ALREADY_ENABLED, interface)
+            raise FirewallError(errors.ALREADY_ENABLED, interface)
     @handle_exceptions
     def removeInterface(self, interface):
         if interface in self.settings[10]:
             self.settings[10].remove(interface)
         else:
-            raise FirewallError(NOT_ENABLED, interface)
+            raise FirewallError(errors.NOT_ENABLED, interface)
     @handle_exceptions
     def queryInterface(self, interface):
         return interface in self.settings[10]
@@ -290,13 +291,13 @@ class FirewallClientZoneSettings(object):
         if source not in self.settings[11]:
             self.settings[11].append(source)
         else:
-            raise FirewallError(ALREADY_ENABLED, source)
+            raise FirewallError(errors.ALREADY_ENABLED, source)
     @handle_exceptions
     def removeSource(self, source):
         if source in self.settings[11]:
             self.settings[11].remove(source)
         else:
-            raise FirewallError(NOT_ENABLED, source)
+            raise FirewallError(errors.NOT_ENABLED, source)
     @handle_exceptions
     def querySource(self, source):
         return source in self.settings[11]
@@ -314,14 +315,14 @@ class FirewallClientZoneSettings(object):
         if rule not in self.settings[12]:
             self.settings[12].append(rule)
         else:
-            raise FirewallError(ALREADY_ENABLED, rule)
+            raise FirewallError(errors.ALREADY_ENABLED, rule)
     @handle_exceptions
     def removeRichRule(self, rule):
         rule = str(Rich_Rule(rule_str=rule))
         if rule in self.settings[12]:
             self.settings[12].remove(rule)
         else:
-            raise FirewallError(NOT_ENABLED, rule)
+            raise FirewallError(errors.NOT_ENABLED, rule)
     @handle_exceptions
     def queryRichRule(self, rule):
         rule = str(Rich_Rule(rule_str=rule))
@@ -334,9 +335,10 @@ class FirewallClientConfigZone(object):
     def __init__(self, bus, path):
         self.bus = bus
         self.path = path
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-        self.fw_zone = dbus.Interface(self.dbus_obj,
-                                      dbus_interface=DBUS_INTERFACE_CONFIG_ZONE)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE, path)
+        self.fw_zone = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         #TODO: check interface version and revision (need to match client 
@@ -345,18 +347,20 @@ class FirewallClientConfigZone(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_ZONE,
-                                                     prop))
+        return dbus_to_python(self.fw_properties.Get(
+            config.dbus.DBUS_INTERFACE_CONFIG_ZONE, prop))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_ZONE))
+        return dbus_to_python(self.fw_properties.GetAll(
+            config.dbus.DBUS_INTERFACE_CONFIG_ZONE))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_ZONE, prop, value)
+        self.fw_properties.Set(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                               prop, value)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -734,13 +738,15 @@ class FirewallClientServiceSettings(object):
         if (port,protocol) not in self.settings[3]:
             self.settings[3].append((port,protocol))
         else:
-            raise FirewallError(ALREADY_ENABLED, "'%s:%s'" % (port, protocol))
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def removePort(self, port, protocol):
         if (port,protocol) in self.settings[3]:
             self.settings[3].remove((port,protocol))
         else:
-            raise FirewallError(NOT_ENABLED, "'%s:%s'" % (port, protocol))
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[3]
@@ -756,13 +762,13 @@ class FirewallClientServiceSettings(object):
         if protocol not in self.settings[6]:
             self.settings[6].append(protocol)
         else:
-            raise FirewallError(ALREADY_ENABLED, protocol)
+            raise FirewallError(errors.ALREADY_ENABLED, protocol)
     @handle_exceptions
     def removeProtocol(self, protocol):
         if protocol in self.settings[6]:
             self.settings[6].remove(protocol)
         else:
-            raise FirewallError(NOT_ENABLED, protocol)
+            raise FirewallError(errors.NOT_ENABLED, protocol)
     @handle_exceptions
     def queryProtocol(self, protocol):
         return protocol in self.settings[6]
@@ -778,13 +784,13 @@ class FirewallClientServiceSettings(object):
         if module not in self.settings[4]:
             self.settings[4].append(module)
         else:
-            raise FirewallError(ALREADY_ENABLED, module)
+            raise FirewallError(errors.ALREADY_ENABLED, module)
     @handle_exceptions
     def removeModule(self, module):
         if module in self.settings[4]:
             self.settings[4].remove(module)
         else:
-            raise FirewallError(NOT_ENABLED, module)
+            raise FirewallError(errors.NOT_ENABLED, module)
     @handle_exceptions
     def queryModule(self, module):
         return module in self.settings[4]
@@ -801,14 +807,14 @@ class FirewallClientServiceSettings(object):
            self.settings[5][dest_type] != address:
             self.settings[5][dest_type] = address
         else:
-            raise FirewallError(ALREADY_ENABLED, "'%s:%s'" % \
+            raise FirewallError(errors.ALREADY_ENABLED, "'%s:%s'" % \
                                 (dest_type, address))
     @handle_exceptions
     def removeDestination(self, dest_type):
         if dest_type in self.settings[5]:
             del self.settings[5][dest_type]
         else:
-            raise FirewallError(NOT_ENABLED, "'%s'" % dest_type)
+            raise FirewallError(errors.NOT_ENABLED, "'%s'" % dest_type)
     @handle_exceptions
     def queryDestination(self, dest_type, address):
         return (dest_type in self.settings[5] and \
@@ -867,14 +873,14 @@ class FirewallClientIPSetSettings(object):
         if key not in self.settings[4] or self.settings[4][key] != value:
             self.settings[4][key] = value
         else:
-            raise FirewallError(ALREADY_ENABLED, "'%s=%s'" % (key,value)
+            raise FirewallError(errors.ALREADY_ENABLED, "'%s=%s'" % (key,value)
                                 if value else key)
     @handle_exceptions
     def removeOption(self, key):
         if key in self.settings[4]:
             del self.settings[4][key]
         else:
-            raise FirewallError(NOT_ENABLED, key)
+            raise FirewallError(errors.NOT_ENABLED, key)
     @handle_exceptions
     def queryOption(self, key, value):
         return key in self.settings[4] and self.settings[4][key] == value
@@ -890,13 +896,13 @@ class FirewallClientIPSetSettings(object):
         if entry not in self.settings[5]:
             self.settings[5].append(entry)
         else:
-            raise FirewallError(ALREADY_ENABLED, entry)
+            raise FirewallError(errors.ALREADY_ENABLED, entry)
     @handle_exceptions
     def removeEntry(self, entry):
         if entry in self.settings[5]:
             self.settings[5].remove(entry)
         else:
-            raise FirewallError(NOT_ENABLED, entry)
+            raise FirewallError(errors.NOT_ENABLED, entry)
     @handle_exceptions
     def queryEntry(self, entry):
         return entry in self.settings[5]
@@ -908,27 +914,30 @@ class FirewallClientConfigIPSet(object):
     def __init__(self, bus, path):
         self.bus = bus
         self.path = path
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-        self.fw_ipset = dbus.Interface(self.dbus_obj,
-                                       dbus_interface=DBUS_INTERFACE_CONFIG_IPSET)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE, path)
+        self.fw_ipset = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_IPSET)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_IPSET,
-                                                     prop))
+        return dbus_to_python(self.fw_properties.Get(
+            config.dbus.DBUS_INTERFACE_CONFIG_IPSET, prop))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_IPSET))
+        return dbus_to_python(self.fw_properties.GetAll(
+            config.dbus.DBUS_INTERFACE_CONFIG_IPSET))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_IPSET, prop, value)
+        self.fw_properties.Set(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
+                               prop, value)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1026,27 +1035,30 @@ class FirewallClientConfigService(object):
     def __init__(self, bus, path):
         self.bus = bus
         self.path = path
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-        self.fw_service = dbus.Interface(self.dbus_obj,
-                                         dbus_interface=DBUS_INTERFACE_CONFIG_SERVICE)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE, path)
+        self.fw_service = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_SERVICE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_SERVICE,
-                                                     prop))
+        return dbus_to_python(self.fw_properties.Get(
+            config.dbus.DBUS_INTERFACE_CONFIG_SERVICE, prop))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_SERVICE))
+        return dbus_to_python(self.fw_properties.GetAll(
+            config.dbus.DBUS_INTERFACE_CONFIG_SERVICE))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_SERVICE, prop, value)
+        self.fw_properties.Set(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                               prop, value)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1292,27 +1304,30 @@ class FirewallClientConfigIcmpType(object):
     def __init__(self, bus, path):
         self.bus = bus
         self.path = path
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, path)
-        self.fw_icmptype = dbus.Interface(self.dbus_obj,
-                                          dbus_interface=DBUS_INTERFACE_CONFIG_ICMPTYPE)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE, path)
+        self.fw_icmptype = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG_ICMPTYPE,
-                                                     prop))
+        return dbus_to_python(self.fw_properties.Get(
+            config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE, prop))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG_ICMPTYPE))
+        return dbus_to_python(self.fw_properties.GetAll(
+            config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG_ICMPTYPE, prop, value)
+        self.fw_properties.Set(config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE,
+                               prop, value)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1496,10 +1511,11 @@ class FirewallClientConfigPolicies(object):
     @handle_exceptions
     def __init__(self, bus):
         self.bus = bus
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE,
-                                            DBUS_PATH_CONFIG)
-        self.fw_policies = dbus.Interface( \
-            self.dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG_POLICIES)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE,
+                                            config.dbus.DBUS_PATH_CONFIG)
+        self.fw_policies = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_POLICIES)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1709,10 +1725,11 @@ class FirewallClientConfigDirect(object):
     @handle_exceptions
     def __init__(self, bus):
         self.bus = bus
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE,
-                                            DBUS_PATH_CONFIG)
-        self.fw_direct = dbus.Interface( \
-            self.dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG_DIRECT)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE,
+                                            config.dbus.DBUS_PATH_CONFIG)
+        self.fw_direct = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG_DIRECT)
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -1817,10 +1834,11 @@ class FirewallClientConfig(object):
     @handle_exceptions
     def __init__(self, bus):
         self.bus = bus
-        self.dbus_obj = self.bus.get_object(DBUS_INTERFACE,
-                                            DBUS_PATH_CONFIG)
-        self.fw_config = dbus.Interface(self.dbus_obj,
-                                        dbus_interface=DBUS_INTERFACE_CONFIG)
+        self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE,
+                                            config.dbus.DBUS_PATH_CONFIG)
+        self.fw_config = dbus.Interface(
+            self.dbus_obj,
+            dbus_interface=config.dbus.DBUS_INTERFACE_CONFIG)
         self.fw_properties = dbus.Interface(
             self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         self._policies = FirewallClientConfigPolicies(self.bus)
@@ -1831,18 +1849,19 @@ class FirewallClientConfig(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE_CONFIG,
-                                                     prop))
+        return dbus_to_python(self.fw_properties.Get(
+            config.dbus.DBUS_INTERFACE_CONFIG, prop))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE_CONFIG))
+        return dbus_to_python(self.fw_properties.GetAll(
+            config.dbus.DBUS_INTERFACE_CONFIG))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE_CONFIG, prop, value)
+        self.fw_properties.Set(config.dbus.DBUS_INTERFACE_CONFIG, prop, value)
 
     # ipset
 
@@ -1980,20 +1999,20 @@ class FirewallClient(object):
             handler_function=self._dbus_connection_changed,
             signal_name="NameOwnerChanged",
             dbus_interface="org.freedesktop.DBus",
-            arg0=DBUS_INTERFACE)
+            arg0=config.dbus.DBUS_INTERFACE)
 
-        for interface in [ DBUS_INTERFACE,
-                           DBUS_INTERFACE_IPSET,
-                           DBUS_INTERFACE_ZONE,
-                           DBUS_INTERFACE_DIRECT,
-                           DBUS_INTERFACE_POLICIES,
-                           DBUS_INTERFACE_CONFIG,
-                           DBUS_INTERFACE_CONFIG_IPSET,
-                           DBUS_INTERFACE_CONFIG_ZONE,
-                           DBUS_INTERFACE_CONFIG_SERVICE,
-                           DBUS_INTERFACE_CONFIG_DIRECT,
-                           DBUS_INTERFACE_CONFIG_ICMPTYPE,
-                           DBUS_INTERFACE_CONFIG_POLICIES ]:
+        for interface in [ config.dbus.DBUS_INTERFACE,
+                           config.dbus.DBUS_INTERFACE_IPSET,
+                           config.dbus.DBUS_INTERFACE_ZONE,
+                           config.dbus.DBUS_INTERFACE_DIRECT,
+                           config.dbus.DBUS_INTERFACE_POLICIES,
+                           config.dbus.DBUS_INTERFACE_CONFIG,
+                           config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
+                           config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                           config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                           config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+                           config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE,
+                           config.dbus.DBUS_INTERFACE_CONFIG_POLICIES ]:
             self.bus.add_signal_receiver(self._signal_receiver,
                                          dbus_interface=interface,
                                          interface_keyword='interface',
@@ -2124,7 +2143,7 @@ class FirewallClient(object):
 
     @handle_exceptions
     def _dbus_connection_changed(self, name, old_owner, new_owner):
-        if name != DBUS_INTERFACE:
+        if name != config.dbus.DBUS_INTERFACE:
             return
 
         if new_owner:
@@ -2137,17 +2156,20 @@ class FirewallClient(object):
     @handle_exceptions
     def _connection_established(self):
         try:
-            self.dbus_obj = self.bus.get_object(DBUS_INTERFACE, DBUS_PATH)
+            self.dbus_obj = self.bus.get_object(config.dbus.DBUS_INTERFACE,
+                                                config.dbus.DBUS_PATH)
             self.fw = dbus.Interface(self.dbus_obj,
-                                     dbus_interface=DBUS_INTERFACE)
-            self.fw_ipset = dbus.Interface(self.dbus_obj,
-                                           dbus_interface=DBUS_INTERFACE_IPSET)
-            self.fw_zone = dbus.Interface(self.dbus_obj,
-                                          dbus_interface=DBUS_INTERFACE_ZONE)
+                                     dbus_interface=config.dbus.DBUS_INTERFACE)
+            self.fw_ipset = dbus.Interface(
+                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_IPSET)
+            self.fw_zone = dbus.Interface(
+                self.dbus_obj,
+                dbus_interface=config.dbus.DBUS_INTERFACE_ZONE)
             self.fw_direct = dbus.Interface(
-                self.dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
+                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_DIRECT)
             self.fw_policies = dbus.Interface(
-                self.dbus_obj, dbus_interface=DBUS_INTERFACE_POLICIES)
+                self.dbus_obj,
+                dbus_interface=config.dbus.DBUS_INTERFACE_POLICIES)
             self.fw_properties = dbus.Interface(
                 self.dbus_obj, dbus_interface='org.freedesktop.DBus.Properties')
         except dbus.exceptions.DBusException as e:
@@ -2162,17 +2184,17 @@ class FirewallClient(object):
         self._config = FirewallClientConfig(self.bus)
         self.connected = True
         self._signal_receiver(member="connection-established",
-                              interface=DBUS_INTERFACE)
+                              interface=config.dbus.DBUS_INTERFACE)
         self._signal_receiver(member="connection-changed",
-                              interface=DBUS_INTERFACE)
+                              interface=config.dbus.DBUS_INTERFACE)
 
     @handle_exceptions
     def _connection_lost(self):
         self._init_vars()
         self._signal_receiver(member="connection-lost",
-                              interface=DBUS_INTERFACE)
+                              interface=config.dbus.DBUS_INTERFACE)
         self._signal_receiver(member="connection-changed",
-                              interface=DBUS_INTERFACE)
+                              interface=config.dbus.DBUS_INTERFACE)
 
     @handle_exceptions
     def _signal_receiver(self, *args, **kwargs):
@@ -2184,19 +2206,19 @@ class FirewallClient(object):
 
         # config signals need special treatment
         # pimp signal name
-        if interface.startswith(DBUS_INTERFACE_CONFIG_ZONE):
+        if interface.startswith(config.dbus.DBUS_INTERFACE_CONFIG_ZONE):
             signal = "config:Zone" + signal
-        elif interface.startswith(DBUS_INTERFACE_CONFIG_IPSET):
+        elif interface.startswith(config.dbus.DBUS_INTERFACE_CONFIG_IPSET):
             signal = "config:IPSet" + signal
-        elif interface.startswith(DBUS_INTERFACE_CONFIG_SERVICE):
+        elif interface.startswith(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE):
             signal = "config:Service" + signal
-        elif interface.startswith(DBUS_INTERFACE_CONFIG_ICMPTYPE):
+        elif interface.startswith(config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE):
             signal = "config:IcmpType" + signal
-        elif interface == DBUS_INTERFACE_CONFIG:
+        elif interface == config.dbus.DBUS_INTERFACE_CONFIG:
             signal = "config:" + signal
-        elif interface == DBUS_INTERFACE_CONFIG_POLICIES:
+        elif interface == config.dbus.DBUS_INTERFACE_CONFIG_POLICIES:
             signal = "config:policies:" + signal
-        elif interface == DBUS_INTERFACE_CONFIG_DIRECT:
+        elif interface == config.dbus.DBUS_INTERFACE_CONFIG_DIRECT:
             signal = "config:direct:" + signal
 
         cb = None
@@ -2241,17 +2263,19 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_property(self, prop):
-        return dbus_to_python(self.fw_properties.Get(DBUS_INTERFACE, prop))
+        return dbus_to_python(self.fw_properties.Get(
+            config.dbus.DBUS_INTERFACE, prop))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def get_properties(self):
-        return dbus_to_python(self.fw_properties.GetAll(DBUS_INTERFACE))
+        return dbus_to_python(self.fw_properties.GetAll(
+            config.dbus.DBUS_INTERFACE))
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def set_property(self, prop, value):
-        self.fw_properties.Set(DBUS_INTERFACE, prop, value)
+        self.fw_properties.Set(config.dbus.DBUS_INTERFACE, prop, value)
 
     # panic mode
 
