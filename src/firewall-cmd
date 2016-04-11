@@ -126,6 +126,10 @@ IPSet Options
                        Return whether ipset has an entry [P]
   --ipset=<ipset> --get-entries
                        List entries of an ipset [P]
+  --ipset=<ipset> --add-entries-from-file=<entry>
+                       Add a new entries to an ipset [P]
+  --ipset=<ipset> --remove-entries-from-file=<entry>
+                       Remove entries from an ipset [P]
 
 IcmpType Options
   --new-icmptype=<icmptype>
@@ -663,6 +667,8 @@ parser_ipset.add_argument("--add-entry", metavar="<entry>")
 parser_ipset.add_argument("--remove-entry", metavar="<entry>")
 parser_ipset.add_argument("--query-entry", metavar="<entry>")
 parser_ipset.add_argument("--get-entries", action="store_true")
+parser_ipset.add_argument("--add-entries-from-file", metavar="<filename>")
+parser_ipset.add_argument("--remove-entries-from-file", metavar="<filename>")
 
 parser.add_argument("--icmptype", metavar="<icmptype>")
 
@@ -812,7 +818,8 @@ options_zone = a.zone or a.timeout != "0" or options_zone_ops or \
                options_desc_xml_file
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
-                a.get_entries or options_desc_xml_file
+                a.get_entries or a.add_entries_from_file or \
+                a.remove_entries_from_file or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
                    a.query_destination or a.get_destinations or \
@@ -1049,6 +1056,54 @@ if a.permanent:
         settings = ipset.getSettings()
         l = settings.getEntries()
         __print_and_exit("\n".join(l))
+
+    elif a.add_entries_from_file:
+        ipset = fw.config().getIPSetByName(a.ipset)
+        settings = ipset.getSettings()
+        try:
+            f = open(a.add_entries_from_file)
+        except Exception as ex:
+            __fail("Failed to read file '%s': %s" % (a.add_entries_from_file,
+                                                     ex))
+        changed = False
+        for line in f:
+            if not line:
+                break
+            line = line.strip()
+            if len(line) < 1 or line[0] in ['#', ';']:
+                continue
+            if not settings.queryEntry(line):
+                settings.addEntry(line)
+                changed = True
+            else:
+                __print("Warning: ALREADY_ENABLED: %s" % (line))
+        f.close()
+        if changed:
+            ipset.update(settings)
+
+    elif a.remove_entries_from_file:
+        ipset = fw.config().getIPSetByName(a.ipset)
+        settings = ipset.getSettings()
+        try:
+            f = open(a.remove_entries_from_file)
+        except Exception as ex:
+            __fail("Failed to read file '%s': %s" % (a.remove_entries_from_file,
+                                                     ex))
+        changed = False
+        for line in f:
+            if not line:
+                break
+            line = line.strip()
+            if len(line) < 1 or line[0] in ['#', ';']:
+                continue
+            if settings.queryEntry(line):
+                settings.removeEntry(line)
+                changed = True
+            else:
+                __print("Warning: NOT_ENABLED: %s" % (line))
+        f.close()
+        if changed:
+            ipset.update(settings)
 
     elif a.new_zone:
         config = fw.config()

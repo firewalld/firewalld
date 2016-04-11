@@ -54,7 +54,7 @@ OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule
                     --list-services --list-ports --list-protocols --list-icmp-blocks \
                     --list-forward-ports --list-rich-rules --list-all"
 
-OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry="
+OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry= --add-entries-from-file= --remove-entries-from-file"
 
 OPTIONS_IPSET_ADAPT_QUERY="--list-entries"
 
@@ -103,6 +103,10 @@ _firewall_cmd()
     firewall-cmd --state 1> /dev/null || return
 
     case $prev in
+    --*-from-file)
+	_filedir
+	return
+        ;;
     --new-ipset*)
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
