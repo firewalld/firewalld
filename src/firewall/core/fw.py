@@ -104,6 +104,9 @@ class Firewall(object):
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
 
+    def individual_calls(self):
+        return self._individual_calls
+
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
         if self.ip4tables_enabled and \
@@ -302,7 +305,7 @@ class Firewall(object):
 
         # apply settings for loaded ipsets
         log.debug1("Applying ipsets")
-        self.ipset.apply_ipsets(self._individual_calls)
+        self.ipset.apply_ipsets()
 
         # apply settings for loaded zones
         log.debug1("Applying used zones")

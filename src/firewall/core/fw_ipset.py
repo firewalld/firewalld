@@ -82,7 +82,7 @@ class FirewallIPSet(object):
             log.debug1("Keeping ipset '%s' because of timeout option", name)
         del self._ipsets[name]
 
-    def apply_ipsets(self, individual=False):
+    def apply_ipsets(self):
         active = self._fw.ipset_backend.get_active_terse()
 
         for name in self.get_ipsets():
@@ -99,7 +99,7 @@ class FirewallIPSet(object):
                     log.error("Failed to destroy ipset '%s'" % name)
                     log.error(msg)
 
-            if individual:
+            if self._fw.individual_calls():
                 try:
                     self._fw.ipset_backend.create(obj.name, obj.type, obj.options)
                 except Exception as msg:
@@ -120,8 +120,9 @@ class FirewallIPSet(object):
                         log.error(msg)
             else:
                 try:
-                    self._fw.ipset_backend.restore(obj.name, obj.type, obj.entries,
-                                            obj.options, None)
+                    self._fw.ipset_backend.restore(obj.name, obj.type,
+                                                   obj.entries, obj.options,
+                                                   None)
                 except Exception as msg:
                     log.error("Failed to create ipset '%s'" % obj.name)
                     log.error(msg)
