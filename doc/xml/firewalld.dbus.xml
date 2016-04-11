@@ -479,6 +479,16 @@
 	      </para>
             </listitem>
           </varlistentry>
+	  <varlistentry id="FirewallD1.ipset.Methods.setEntries">
+            <term><methodname>setEntries</methodname>(as: entries) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set list of entries to <replaceable>entries</replaceable>.
+		For permanent operation see <link linkend="FirewallD1.config.ipset.Methods.setEntries">org.fedoraproject.FirewallD1.config.ipset.Methods.setEntries</link>.
+		See <literal>entry</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
 	</variablelist>
       </refsect3>
 

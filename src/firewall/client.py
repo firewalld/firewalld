@@ -2325,6 +2325,11 @@ class FirewallClient(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
+    def setEntries(self, ipset, entries):
+        return self.fw_ipset.setEntries(ipset, entries)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
     def removeEntry(self, ipset, entry):
         self.fw_ipset.removeEntry(ipset, entry)
 

@@ -210,7 +210,7 @@ class FirewallIPSet(object):
 
         return obj.entries
 
-    def set_entries(self, name, entries, sender=None):
+    def set_entries(self, name, entries):
         obj = self.get_ipset(name)
         if "timeout" in obj.options:
             # no entries visible for ipsets with timeout
@@ -218,22 +218,40 @@ class FirewallIPSet(object):
 
         for entry in entries:
             IPSet.check_entry(entry, obj.options, obj.type)
+        obj.entries = entries
 
-        for entry in obj.entries:
+        if self._fw.individual_calls():
             try:
-                self._fw.ipset_backend.remove(obj.name, entry)
+                self._fw.ipset_backend.flush(obj.name)
             except Exception as msg:
-                log.error("Failed to remove entry '%s' from ipset '%s'" % \
-                          (entry, obj.name))
-                log.error(msg)
-        obj.entries.clear()
-
-        for entry in entries:
-            try:
-                self._fw.ipset_backend.add(obj.name, entry)
-            except Exception as msg:
-                log.error("Failed to remove entry '%s' from ipset '%s'" % \
-                          (entry, obj.name))
+                log.error("Failed to flush ipset '%s'" % obj.name)
                 log.error(msg)
             else:
-                obj.entries.append(entry)
+                obj.applied = True
+
+            for entry in obj.entries:
+                try:
+                    self._fw.ipset_backend.add(obj.name, entry)
+                except Exception as msg:
+                    log.error("Failed to add entry '%s' to ipset '%s'" % \
+                              (entry, obj.name))
+                    log.error(msg)
+        else:
+            try:
+                self._fw.ipset_backend.flush(obj.name)
+            except Exception as msg:
+                log.error("Failed to flush ipset '%s'" % obj.name)
+                log.error(msg)
+            else:
+                obj.applied = True
+
+            try:
+                self._fw.ipset_backend.restore(obj.name, obj.type, obj.entries,
+                                               obj.options, None)
+            except Exception as msg:
+                log.error("Failed to create ipset '%s'" % obj.name)
+                log.error(msg)
+            else:
+                obj.applied = True
+
+        return

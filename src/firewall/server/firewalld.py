@@ -2119,6 +2119,23 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipset.getEntries('%s')" % ipset)
         return self.fw.ipset.get_entries(ipset)
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='sas')
+    @dbus_handle_exceptions
+    def setEntries(self, ipset, entries, sender=None):
+        # returns list of added entries for the ipset
+        ipset = dbus_to_python(ipset)
+        entries = dbus_to_python(entries, list)
+        log.debug1("ipset.setEntries('%s', '[%s]')", ipset, ",".join(entries))
+        old_entries = self.fw.ipset.get_entries(ipset)
+        self.fw.ipset.set_entries(ipset, entries)
+        old_entries_set = set(old_entries)
+        entries_set = set(entries)
+        for entry in entries_set - old_entries_set:
+            self.EntryAdded(ipset, entry)
+        for entry in old_entries_set - entries_set:
+            self.EntryRemoved(ipset, entry)
+
     @dbus.service.signal(config.dbus.DBUS_INTERFACE_IPSET, signature='ss')
     @dbus_handle_exceptions
     def EntryAdded(self, ipset, entry):

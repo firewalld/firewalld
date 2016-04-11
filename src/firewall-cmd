@@ -1802,6 +1802,34 @@ elif a.get_entries:
     l = fw.getEntries(a.ipset)
     __print_and_exit("\n".join(l))
 
+elif a.add_entries_from_file:
+    old_entries = fw.getEntries(a.ipset)
+
+    entries = get_ipset_entries_from_file(a.add_entries_from_file)
+    changed = False
+    for entry in entries:
+        if entry not in old_entries:
+            old_entries.append(entry)
+            changed = True
+        else:
+            __print("Warning: ALREADY_ENABLED: %s" % (entry))
+    if changed:
+        fw.setEntries(a.ipset, old_entries)
+
+elif a.remove_entries_from_file:
+    old_entries = fw.getEntries(a.ipset)
+
+    entries = get_ipset_entries_from_file(a.remove_entries_from_file)
+    changed = False
+    for entry in entries:
+        if entry in old_entries:
+            old_entries.remove(entry)
+            changed = True
+        else:
+            __print("Warning: NOT_ENABLED: %s" % (entry))
+    if changed:
+        fw.setEntries(a.ipset, old_entries)
+
 # lockdown
 elif a.lockdown_on:
     fw.config().set_property("Lockdown", "yes")   # permanent
