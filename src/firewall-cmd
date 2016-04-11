@@ -530,6 +530,24 @@ Make sure polkit agent is running or run the application as superuser."""
         else:
             __print_and_exit("Error: %s" % exception_message, code)
 
+def get_ipset_entries_from_file(filename):
+    entries = [ ]
+    try:
+        f = open(filename)
+    except Exception as ex:
+        __fail("Failed to read file '%s': %s" % (filename, ex))
+    else:
+        for line in f:
+            if not line:
+                break
+            line = line.strip()
+            if len(line) < 1 or line[0] in ['#', ';']:
+                continue
+            if line not in entries:
+                entries.append(line)
+        f.close()
+    return entries
+
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
 
@@ -1060,48 +1078,30 @@ if a.permanent:
     elif a.add_entries_from_file:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
-        try:
-            f = open(a.add_entries_from_file)
-        except Exception as ex:
-            __fail("Failed to read file '%s': %s" % (a.add_entries_from_file,
-                                                     ex))
+
+        entries = get_ipset_entries_from_file(a.add_entries_from_file)
         changed = False
-        for line in f:
-            if not line:
-                break
-            line = line.strip()
-            if len(line) < 1 or line[0] in ['#', ';']:
-                continue
-            if not settings.queryEntry(line):
-                settings.addEntry(line)
+        for entry in entries:
+            if not settings.queryEntry(entry):
+                settings.addEntry(entry)
                 changed = True
             else:
-                __print("Warning: ALREADY_ENABLED: %s" % (line))
-        f.close()
+                __print("Warning: ALREADY_ENABLED: %s" % (entry))
         if changed:
             ipset.update(settings)
 
     elif a.remove_entries_from_file:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
-        try:
-            f = open(a.remove_entries_from_file)
-        except Exception as ex:
-            __fail("Failed to read file '%s': %s" % (a.remove_entries_from_file,
-                                                     ex))
+
+        entries = get_ipset_entries_from_file(a.remove_entries_from_file)
         changed = False
-        for line in f:
-            if not line:
-                break
-            line = line.strip()
-            if len(line) < 1 or line[0] in ['#', ';']:
-                continue
-            if settings.queryEntry(line):
-                settings.removeEntry(line)
+        for entry in entries:
+            if settings.queryEntry(entry):
+                settings.removeEntry(entry)
                 changed = True
             else:
-                __print("Warning: NOT_ENABLED: %s" % (line))
-        f.close()
+                __print("Warning: NOT_ENABLED: %s" % (entry))
         if changed:
             ipset.update(settings)
 
