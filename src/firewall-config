@@ -45,12 +45,13 @@ if os.getenv("FIREWALLD_DEVEL_ENV") is not None:
     sys.path.insert(0, datadir)
 import dbus
 
-from firewall.config import *
-from firewall.config.dbus import *
+from firewall import config
+from firewall.config import _
 from firewall import client
-from firewall.functions import *
+#from firewall.functions import *
+from firewall import functions
 from firewall.dbus_utils import dbus_to_python
-from firewall.core.base import DEFAULT_ZONE_TARGET
+from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES
 from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
@@ -59,7 +60,7 @@ from firewall.core.io.ipset import IPSet
 from firewall.core.rich import *
 
 if not datadir:
-    datadir = DATADIR
+    datadir = config.DATADIR
     sys.path.insert(0, datadir)
 from gtk3_chooserbutton import ChooserButton
 
@@ -82,7 +83,7 @@ class FirewallConfig(object):
     def __init__(self):
         builder = Gtk.Builder()
         builder.set_translation_domain("firewalld")
-        builder.add_from_file("%s/%s" % (datadir, CONFIG_GLADE_NAME))
+        builder.add_from_file("%s/%s" % (datadir, config.CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
         self.connected = _("Connected.")
@@ -105,8 +106,8 @@ class FirewallConfig(object):
         size = min(width, height)
         self.icon_theme = Gtk.IconTheme.get_default()
         try:
-            self.icon = self.icon_theme.load_icon(CONFIG_NAME, size, 0)
-            self.logo = self.icon_theme.load_icon(CONFIG_NAME, 48, 0)
+            self.icon = self.icon_theme.load_icon(config.CONFIG_NAME, size, 0)
+            self.logo = self.icon_theme.load_icon(config.CONFIG_NAME, 48, 0)
         except:
             print(_("Failed to load icons."))
             self.icon = self.logo = None
@@ -357,18 +358,18 @@ class FirewallConfig(object):
         self.optionMenuitem = builder.get_object("optionMenuitem")
 
         self.aboutDialog = builder.get_object("aboutDialog")
-        self.aboutDialog.set_program_name(CONFIG_NAME)
-        self.aboutDialog.set_version(VERSION)
-        self.aboutDialog.set_authors(AUTHORS)
-        self.aboutDialog.set_license(LICENSE)
+        self.aboutDialog.set_program_name(config.CONFIG_NAME)
+        self.aboutDialog.set_version(config.VERSION)
+        self.aboutDialog.set_authors(config.AUTHORS)
+        self.aboutDialog.set_license(config.LICENSE)
         self.aboutDialog.set_wrap_license(True)
-        self.aboutDialog.set_copyright(COPYRIGHT)
+        self.aboutDialog.set_copyright(config.COPYRIGHT)
         self.aboutDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.aboutDialog.set_transient_for(self.mainWindow)
         self.aboutDialog.set_modal(True)
         self.aboutDialog.set_icon(self.icon)
         self.aboutDialog.set_logo(self.logo)
-        self.aboutDialog.set_website(WEBSITE)
+        self.aboutDialog.set_website(config.WEBSITE)
 
         self.currentViewCombobox = builder.get_object("currentViewCombobox")
         self.currentViewCombobox.append_text(_("Runtime"))
@@ -406,7 +407,7 @@ class FirewallConfig(object):
             builder.get_object("logDeniedDialogOkButton")
         self.logDeniedDialogValueCombobox = \
             builder.get_object("logDeniedDialogValueCombobox")
-        for value in LOG_DENIED_VALUES:
+        for value in config.LOG_DENIED_VALUES:
             self.logDeniedDialogValueCombobox.append_text(value)
 
         self.zoneEditBox = builder.get_object("zoneEditBox")
@@ -1473,7 +1474,7 @@ class FirewallConfig(object):
                 self.icmpStore.append([False, obj.get_property("name")])
 
         # zones
-        active_zones = self.fw.getActiveZones().keys()
+        active_zones = self.active_zones.keys()
         for zone in zones:
             if zone in active_zones:
                 self.zoneStore.append([zone, Pango.Weight.BOLD])
@@ -1906,11 +1907,11 @@ class FirewallConfig(object):
             self._error(_("Authorization failed."))
         elif "INVALID_NAME" in exception_message:
             msg = exception_message.replace("INVALID_NAME",
-                                            b2u(_("Invalid name")))
+                                            functions.b2u(_("Invalid name")))
             self._warning(msg)
         elif "NAME_CONFLICT" in exception_message:
-            msg = exception_message.replace("NAME_CONFLICT",
-                                            b2u(_("Name already exists")))
+            msg = exception_message.replace(
+                "NAME_CONFLICT", functions.b2u(_("Name already exists")))
             self._warning(msg)
         elif "NO_DEFAULTS" in exception_message:
             pass
@@ -2403,7 +2404,7 @@ class FirewallConfig(object):
 
     def onZoneBaseDialogChanged(self, *args):
         def check_zone_name(zone):
-            max_len = max_zone_name_len()
+            max_len = functions.max_zone_name_len()
             parts = zone.split('/')
             if len(parts) < 2:
                 return (True, zone)
@@ -2425,7 +2426,7 @@ class FirewallConfig(object):
         self.zoneBaseDialogTargetCombobox.set_sensitive(not val)
 
     def add_edit_zone(self, add):
-        l = max_zone_name_len()
+        l = functions.max_zone_name_len()
         self.zoneBaseDialogNameEntry.set_max_length(l)
         self.zoneBaseDialogNameEntry.set_width_chars(l)
         self.zoneBaseDialogNameEntry.set_max_width_chars(l)
@@ -2854,7 +2855,7 @@ class FirewallConfig(object):
             self.protoDialogProtoCombobox.set_sensitive(True)
             self.protoDialogOtherProtoEntry.set_sensitive(False)
             proto = self.protoDialogProtoCombobox.get_active_text()
-        if checkProtocol(proto):
+        if functions.checkProtocol(proto):
             self.protoDialogOkButton.set_sensitive(True)
         else:
             self.protoDialogOkButton.set_sensitive(False)
@@ -3417,7 +3418,7 @@ class FirewallConfig(object):
 
     def onInterfaceChanged(self, *args):
         text = self.interfaceDialogInterfaceEntry.get_text()
-        if text != "" and checkInterface(text):
+        if text != "" and functions.checkInterface(text):
             self.interfaceDialogOkButton.set_sensitive(True)
         else:
             self.interfaceDialogOkButton.set_sensitive(False)
@@ -3495,10 +3496,10 @@ class FirewallConfig(object):
         mark = self.markDialogMarkEntry.get_text()
         mask = self.markDialogMaskEntry.get_text()
 
-        if not checkUINT32(mark):
+        if not functions.checkUINT32(mark):
             self.markDialogOkButton.set_sensitive(False)
         else:
-            if mask != "" and not checkUINT32(mask):
+            if mask != "" and not functions.checkUINT32(mask):
                 self.markDialogOkButton.set_sensitive(False)
             else:
                 if old_mark != mark or old_mask != mask:
@@ -3538,7 +3539,7 @@ class FirewallConfig(object):
             return
 
         self.macDialogOkButton.set_sensitive(False)
-        if check_mac(text) and text != old_mac:
+        if functions.check_mac(text) and text != old_mac:
             self.macDialogOkButton.set_sensitive(True)
 
     def mac_select_dialog(self, old_mac):
@@ -3636,9 +3637,10 @@ class FirewallConfig(object):
         self.sourceDialogOkButton.set_sensitive(False)
 
         if old_source != _source:
-            if _type == "MAC" and check_mac(_source):
+            if _type == "MAC" and functions.check_mac(_source):
                 self.sourceDialogOkButton.set_sensitive(True)
-            elif _type == "IP" and (checkIP(_source) or checkIP6(_source)):
+            elif _type == "IP" and (functions.checkIP(_source) or \
+                                    functions.checkIP6(_source)):
                 self.sourceDialogOkButton.set_sensitive(True)
             elif _type == "ipset":
                 self.sourceDialogOkButton.set_sensitive(True)
@@ -3668,7 +3670,7 @@ class FirewallConfig(object):
             if old_source.startswith("ipset:"):
                 old_type = "ipset"
                 old_source = old_source[6:]
-            elif check_mac(old_source):
+            elif functions.check_mac(old_source):
                 old_type = "MAC"
             else:
                 old_type = "IP"
@@ -3730,7 +3732,7 @@ class FirewallConfig(object):
         self.changes_applied()
 
     def onPortChanged(self, *args):
-        ports = getPortRange(self.portDialogPortEntry.get_text())
+        ports = functions.getPortRange(self.portDialogPortEntry.get_text())
         if not ports or not (isinstance(ports, list) or \
                              isinstance(ports, tuple)):
             self.portDialogOkButton.set_sensitive(False)
@@ -3790,7 +3792,7 @@ class FirewallConfig(object):
                 self.changes_applied()
 
     def onPortProtoChanged(self, *args):
-        ports = getPortRange(self.portDialogPortEntry.get_text())
+        ports = functions.getPortRange(self.portDialogPortEntry.get_text())
         if not ports or not (isinstance(ports, list) or \
                              isinstance(ports, tuple)):
             self.portDialogOkButton.set_sensitive(False)
@@ -4040,8 +4042,8 @@ class FirewallConfig(object):
         local_check = self.forwardDialogLocalCheck.get_active()
         to_port_check = self.forwardDialogToPortCheck.get_active()
 
-        ports = getPortRange(ports)
-        to_ports = getPortRange(to_ports)
+        ports = functions.getPortRange(ports)
+        to_ports = functions.getPortRange(to_ports)
 
         ports_ok = False
         if ports and (isinstance(ports, list) or \
@@ -4053,12 +4055,14 @@ class FirewallConfig(object):
             to_ports_ok = True
         to_addr_ok = False
         if to_addr != "":
-            if self.forwardDialog.family == "ipv4" and checkIP(to_addr):
+            if self.forwardDialog.family == "ipv4" and \
+               functions.checkIP(to_addr):
                 to_addr_ok = True
-            if self.forwardDialog.family == "ipv6" and checkIP6(to_addr):
+            if self.forwardDialog.family == "ipv6" and \
+               functions.checkIP6(to_addr):
                 to_addr_ok = True
             if self.forwardDialog.family is None and \
-               (checkIP(to_addr) or checkIP6(to_addr)):
+               (functions.checkIP(to_addr) or functions.checkIP6(to_addr)):
                 to_addr_ok = True
         ok = False
         if ports_ok:
@@ -4711,14 +4715,14 @@ class FirewallConfig(object):
 
         self.addressDialogOkButton.set_sensitive(False)
         if addr_type == "ipv4":
-            if checkIPnMask(text) and text != old_address:
+            if functions.checkIPnMask(text) and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
         elif addr_type == "ipv6":
-            if checkIP6nMask(text) and text != old_address:
+            if functions.checkIP6nMask(text) and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
         else:
-            if (checkIPnMask(text) or checkIP6nMask(text)) \
-               and text != old_address:
+            if (functions.checkIPnMask(text) or \
+                functions.checkIP6nMask(text)) and text != old_address:
                 self.addressDialogOkButton.set_sensitive(True)
 
     def address_select_dialog(self, addr_type, old_address):
@@ -4750,7 +4754,7 @@ class FirewallConfig(object):
         address = self.addressDialogAddressEntry.get_text()
         #TODO: addr check according to addr_type
 
-        if check_mac(address):
+        if functions.check_mac(address):
             address = address.upper()
 
         if result != 1 or old_address == address:
@@ -5524,9 +5528,10 @@ class FirewallConfig(object):
         for x in chains:
             self.directChainStore.append(x)
         for (ipv, table, chain, priority, args) in rules:
-            self.directRuleStore.append((ipv, table, chain, priority, joinArgs(args)))
+            self.directRuleStore.append((ipv, table, chain, priority,
+                                         functions.joinArgs(args)))
         for (ipv, args) in passthroughs:
-            self.directPassthroughStore.append((ipv, joinArgs(args)))
+            self.directPassthroughStore.append((ipv, functions.joinArgs(args)))
 
     def load_lockdown_whitelist(self):
         if not self.show_lockdown_whitelist:
@@ -5795,7 +5800,7 @@ class FirewallConfig(object):
 
     def onCommandChanged(self, *args):
         text = self.commandDialogCommandEntry.get_text()
-        if checkCommand(text):
+        if functions.checkCommand(text):
             self.commandDialogOkButton.set_sensitive(True)
         else:
             self.commandDialogOkButton.set_sensitive(False)
@@ -5889,7 +5894,7 @@ class FirewallConfig(object):
 
     def onUserChanged(self, *args):
         text = self.userDialogUserEntry.get_text()
-        if text != "" and checkUser(text):
+        if text != "" and functions.checkUser(text):
             self.userDialogOkButton.set_sensitive(True)
         else:
             self.userDialogOkButton.set_sensitive(False)
@@ -5984,7 +5989,7 @@ class FirewallConfig(object):
 
     def onUidChanged(self, *args):
         text = self.uidDialogUidEntry.get_text()
-        if text != "" and checkUid(text):
+        if text != "" and functions.checkUid(text):
             self.uidDialogOkButton.set_sensitive(True)
         else:
             self.uidDialogOkButton.set_sensitive(False)
@@ -6160,7 +6165,7 @@ class FirewallConfig(object):
         priority = self.directRuleStore.get_value(iter, 3)
         args = self.directRuleStore.get_value(iter, 4)
 
-        split_args = splitArgs(args)
+        split_args = functions.splitArgs(args)
 
         if self.runtime_view:
             self.fw.removeRule(ipv, table, chain, priority, split_args)
@@ -6176,7 +6181,7 @@ class FirewallConfig(object):
             return
         if not self.runtime_view:
             return
-        joined_args = joinArgs(args)
+        joined_args = functions.joinArgs(args)
         iter = self.directRuleStore.get_iter_first()
         while iter:
             if self.directRuleStore.get_value(iter, 0) == ipv and \
@@ -6193,7 +6198,7 @@ class FirewallConfig(object):
             return
         if not self.runtime_view:
             return
-        joined_args = joinArgs(args)
+        joined_args = functions.joinArgs(args)
         iter = self.directRuleStore.get_iter_first()
         while iter:
             if self.directRuleStore.get_value(iter, 0) == ipv and \
@@ -6246,8 +6251,8 @@ class FirewallConfig(object):
         priority = self.directRuleDialogPrioritySpinbutton.get_value_as_int()
         args = self.directRuleDialogArgsEntry.get_text()
 
-        split_args = splitArgs(args)
-        split_old_args = splitArgs(old_args)
+        split_args = functions.splitArgs(args)
+        split_old_args = functions.splitArgs(old_args)
 
         if self.runtime_view:
             if not self.fw.queryRule(ipv, table, chain, priority, split_args):
@@ -6311,7 +6316,7 @@ class FirewallConfig(object):
         ipv = self.directPassthroughStore.get_value(iter, 0)
         args = self.directPassthroughStore.get_value(iter, 1)
 
-        split_args = splitArgs(args)
+        split_args = functions.splitArgs(args)
 
         if self.runtime_view:
             self.fw.removePassthrough(ipv, split_args)
@@ -6325,7 +6330,7 @@ class FirewallConfig(object):
     def direct_passthrough_added_cb(self, ipv, args):
         if not self.show_direct:
             return
-        joined_args = joinArgs(args)
+        joined_args = functions.joinArgs(args)
         iter = self.directPassthroughStore.get_iter_first()
         while iter:
             if self.directPassthroughStore.get_value(iter, 0) == ipv and \
@@ -6337,7 +6342,7 @@ class FirewallConfig(object):
     def direct_passthrough_removed_cb(self, ipv, args):
         if not self.show_direct:
             return
-        joined_args = joinArgs(args)
+        joined_args = functions.joinArgs(args)
         iter = self.directPassthroughStore.get_iter_first()
         while iter:
             if self.directPassthroughStore.get_value(iter, 0) == ipv and \
@@ -6375,8 +6380,8 @@ class FirewallConfig(object):
         ipv = self.directPassthroughDialogIPVCombobox.get_active_text()
         args = self.directPassthroughDialogArgsEntry.get_text()
 
-        split_args = splitArgs(args)
-        split_old_args = splitArgs(old_args)
+        split_args = functions.splitArgs(args)
+        split_old_args = functions.splitArgs(old_args)
 
         if self.runtime_view:
             if not self.fw.queryPassthrough(ipv, split_args):
