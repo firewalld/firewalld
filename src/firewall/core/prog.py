@@ -23,7 +23,10 @@ __all__ = [ "runProg" ]
 
 import os
 
-def runProg(prog, argv=[ ], stdin=None):
+def runProg(prog, argv=None, stdin=None):
+    if argv is None:
+        argv = [ ]
+
     args = [ prog ] + argv
 
     (rfd, wfd) = os.pipe()
@@ -44,7 +47,8 @@ def runProg(prog, argv=[ ], stdin=None):
             e = { "LANG": "C" }
             os.execve(args[0], args, e)
         finally:
-            os._exit(255)
+            # The use of os._exit is needed here, sys.exit is not an option
+            os._exit(255) # pylint: disable=W0212
     os.close(wfd)
 
     cret = b''
@@ -53,7 +57,7 @@ def runProg(prog, argv=[ ], stdin=None):
         cret += cout
         cout = os.read(rfd, 8192)
     os.close(rfd)
-    (cpid, status) = os.waitpid(pid, 0)
+    (dummy, status) = os.waitpid(pid, 0)
 
     cret = cret.rstrip().decode('utf-8', 'replace')
     return (status, cret)
