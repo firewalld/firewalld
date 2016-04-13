@@ -26,13 +26,9 @@ __all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
 
 from firewall import functions
 from firewall.core.ipset import check_ipset_name
+from firewall.core.base import REJECT_TYPES
 from firewall import errors
 from firewall.errors import FirewallError
-
-REJECT_TYPES = {
-    "ipv4": ["icmp-host-prohibited", "host-prohib", "icmp-net-unreachable", "net-unreach", "icmp-host-unreachable", "host-unreach", "icmp-port-unreachable", "port-unreach", "icmp-proto-unreachable", "proto-unreach", "icmp-net-prohibited", "net-prohib", "tcp-reset", "tcp-rst", "icmp-admin-prohibited", "admin-prohib"],
-    "ipv6": ["icmp6-adm-prohibited", "adm-prohibited", "icmp6-no-route", "no-route", "icmp6-addr-unreachable", "addr-unreach", "icmp6-port-unreachable", "port-unreach", "tcp-reset"]
-}
 
 class Rich_Source(object):
     def __init__(self, addr, mac, ipset, invert=False):
