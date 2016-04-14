@@ -1587,6 +1587,11 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-preferences</property>
   </object>
+  <object class="GtkImage" id="image16">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-preferences</property>
+  </object>
   <object class="GtkWindow" id="mainWindow">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1680,7 +1685,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Change LogDenied value.</property>
-                        <property name="image">image15</property>
+                        <property name="image">image16</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="onChangeLogDenied" swapped="no"/>
                       </object>
