@@ -304,8 +304,9 @@ class Firewall(object):
         self._apply_default_rules()
 
         # apply settings for loaded ipsets
-        log.debug1("Applying ipsets")
-        self.ipset.apply_ipsets()
+        if self.ipset_enabled:
+            log.debug1("Applying ipsets")
+            self.ipset.apply_ipsets()
 
         # apply settings for loaded zones
         log.debug1("Applying used zones")
