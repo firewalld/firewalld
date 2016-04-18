@@ -163,8 +163,10 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
             nm_set_zone_for_connection(self.get_zone(), self.connection)
         except Exception as msg:
             text = _("Failed to set zone {zone} for connection {connection}")
-            self.warning(escape(text.format(zone=self.get_zone(),
-                                            connection=self.connection)))
+            QtGui.QMessageBox.warning(None, fromUTF8(escape(self.title)),
+                                      escape(text.format(
+                                          zone=self.get_zone(),
+                                          connection=self.connection)))
         self.hide()
 
 # ZoneSourceEditor ############################################################
