@@ -6377,15 +6377,17 @@ def combobox_select_text(combobox, value, insensitive=False):
     combobox.set_active(0)
     return False
 
-class ZoneConnectionEditor(Gtk.Dialog):
-    def __init__(self, fw, connection, zone):
+class ZoneInterfaceEditor(Gtk.Dialog):
+    def __init__(self, fw, interface, zone):
         self.fw = fw
-        self.connection = connection
-        self.zone = zone
-        self.title = _("Select zone for connection '%s'") % self.connection
+        self.interface = interface
+        self.zone = None
+        self.title = _("Select zone for interface '%s'") % self.interface
 
-        super(ZoneConnectionEditor, self).__init__(self.title)
+        Gtk.Dialog.__init__(self, self.title)
+        self.create_ui(zone)
 
+    def create_ui(self, zone):
         self.set_property("width-request", 100)
         self.resize_to_geometry(100, 50)
         self.set_resizable(True)
@@ -6406,10 +6408,7 @@ class ZoneConnectionEditor(Gtk.Dialog):
         vbox.pack_start(label, True, True, 0)
 
         self.combo = Gtk.ComboBoxText()
-        zones = self.fw.getZones()
-        self.combo.append_text(_("Default Zone"))
-        for zone in zones:
-            self.combo.append_text(zone)
+        self.fill_zone_combo()
         vbox.pack_start(self.combo, True, True, 0)
 
         box = self.get_content_area()
@@ -6417,8 +6416,8 @@ class ZoneConnectionEditor(Gtk.Dialog):
         box.set_homogeneous(False)
         box.pack_start(vbox, False, True, 0)
 
-        combobox_select_text(self.combo, self.zone)
         self.combo.connect("changed", self.combo_changed)
+        self.set_zone(zone)
 
     def combo_changed(self, combo):
         self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
@@ -6437,142 +6436,66 @@ class ZoneConnectionEditor(Gtk.Dialog):
             text = ""
         return text
 
+    def fill_zone_combo(self):
+        self.combo.remove_all()
+        for zone in self.fw.getZones():
+            self.combo.append_text(zone)
+
+    def zones_changed(self):
+        zone = self.get_zone()
+        self.fill_zone_combo()
+        self.set_zone(zone)
+
     def run(self):
-        result = super(ZoneConnectionEditor, self).run()
-        if result != 2:
+        if Gtk.Dialog.run(self) != 2:
             return
 
-        obj = self.fw.bus.get_object(NM_IF, NM_PATH)
-        props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-        active_connections = props.Get(NM_IF, "ActiveConnections")
+        self.fw.changeZoneOfInterface(self.get_zone(), self.interface)
 
-        for active in active_connections:
-            active_obj = self.fw.bus.get_object(NM_IF, active)
-            active_props = dbus.Interface(active_obj, dbus_interface=DBUS_PROPS)
-            connection = active_props.Get(NM_IF_C_A, "Connection")
-
-            # get settings for connection
-            connection_obj = self.fw.bus.get_object(NM_IF, connection)
-            connection_iface = dbus.Interface(connection_obj,
-                                              dbus_interface=NM_IF_S_C)
-            settings = connection_iface.GetSettings()
-
-            if settings["connection"]["id"] == self.connection:
-                settings["connection"]["zone"] = self.get_zone()
-                connection_iface.Update(settings)
-                break
-
-class ZoneInterfaceEditor(Gtk.Dialog):
-    def __init__(self, fw, interface, zone):
+class ZoneConnectionEditor(ZoneInterfaceEditor):
+    def __init__(self, fw, connection, zone):
         self.fw = fw
-        self.interface = interface
-        self.zone = zone
-        self.title = _("Select zone for interface '%s'") % self.interface
+        self.connection = connection
+        self.zone = None
+        self.title = _("Select zone for connection '%s'") % self.connection
 
-        super(ZoneInterfaceEditor, self).__init__(self.title)
+        Gtk.Dialog.__init__(self, self.title)
+        self.create_ui(zone)
 
-        self.set_property("width-request", 100)
-        self.resize_to_geometry(100, 50)
-        self.set_resizable(True)
-
-        self.add_button("gtk-close", 1)
-        self.ok_button = self.add_button("gtk-ok", 2)
-        self.ok_button.set_sensitive(False)
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(12)
-        vbox.set_homogeneous(False)
-
-        label = Gtk.Label()
-        label.set_text(self.title)
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
-
-        self.combo = Gtk.ComboBoxText()
-        zones = self.fw.getZones()
-        for zone in zones:
+    def fill_zone_combo(self):
+        self.combo.remove_all()
+        self.combo.append_text(_("Default Zone"))
+        for zone in self.fw.getZones():
             self.combo.append_text(zone)
-        vbox.pack_start(self.combo, True, True, 0)
 
-        box = self.get_content_area()
-        box.set_border_width(6)
-        box.set_homogeneous(False)
-        box.pack_start(vbox, False, True, 0)
+    def run(self):
+        if Gtk.Dialog.run(self) != 2:
+            return
 
-        combobox_select_text(self.combo, self.zone)
-        self.combo.connect("changed", self.combo_changed)
+        try:
+            nm_set_zone_for_connection(self.get_zone(), self.connection)
+        except Exception as msg:
+            text = _("Failed to set zone {zone} for connection {connection}")
+            QtGui.QMessageBox.warning(None, fromUTF8(escape(self.title)),
+                                      escape(text.format(
+                                          zone=self.get_zone(),
+                                          connection=self.connection)))
 
-    def combo_changed(self, combo):
-        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
-
-    def set_zone(self, zone):
-        old_zone = self.zone
-        self.zone = zone
-        if self.combo.get_active_text() == old_zone:
-            combobox_select_text(self.combo, self.zone)
-        else:
-            self.combo_changed(None)
-
-    def get_zone(self):
-        return self.combo.get_active_text()
-
-class ZoneSourceEditor(Gtk.Dialog):
+class ZoneSourceEditor(ZoneInterfaceEditor):
     def __init__(self, fw, source, zone):
         self.fw = fw
         self.source = source
-        self.zone = zone
+        self.zone = None
         self.title = _("Select zone for source %s") % self.source
 
-        super(ZoneSourceEditor, self).__init__(self.title)
+        Gtk.Dialog.__init__(self, self.title)
+        self.create_ui(zone)
 
-        self.set_property("width-request", 100)
-        self.resize_to_geometry(100, 50)
-        self.set_resizable(True)
+    def run(self):
+        if Gtk.Dialog.run(self) != 2:
+            return
 
-        self.add_button("gtk-close", 1)
-        self.ok_button = self.add_button("gtk-ok", 2)
-        self.ok_button.set_sensitive(False)
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        vbox.set_border_width(12)
-        vbox.set_homogeneous(False)
-
-        label = Gtk.Label()
-        label.set_text(self.title)
-        label.set_line_wrap(True)
-        label.set_justify(Gtk.Justification.LEFT)
-        label.set_alignment(0, 0.5)
-        vbox.pack_start(label, True, True, 0)
-
-        self.combo = Gtk.ComboBoxText()
-        zones = self.fw.getZones()
-        for zone in zones:
-            self.combo.append_text(zone)
-        vbox.pack_start(self.combo, True, True, 0)
-
-        box = self.get_content_area()
-        box.set_border_width(6)
-        box.set_homogeneous(False)
-        box.pack_start(vbox, False, True, 0)
-
-        combobox_select_text(self.combo, self.zone)
-        self.combo.connect("changed", self.combo_changed)
-
-    def combo_changed(self, combo):
-        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
-
-    def set_zone(self, zone):
-        old_zone = self.zone
-        self.zone = zone
-        if self.combo.get_active_text() == old_zone:
-            combobox_select_text(self.combo, self.zone)
-        else:
-            self.combo_changed(None)
-
-    def get_zone(self):
-        return self.combo.get_active_text()
+        self.fw.changeZoneOfSource(self.get_zone(), self.source)
 
 # MAIN
 
