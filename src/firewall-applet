@@ -23,7 +23,9 @@
 import sys
 from PyQt4 import QtGui, QtCore
 
-from gi.repository import Notify, NetworkManager
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify
 
 import os
 from dbus.mainloop.qt import DBusQtMainLoop
@@ -31,6 +33,7 @@ import functools
 
 from firewall.config import *
 from firewall.config.dbus import *
+from firewall.core.fw_nm import *
 from firewall.core.watcher import Watcher
 from firewall.client import FirewallClient
 from firewall.dbus_utils import dbus_to_python
@@ -72,13 +75,6 @@ def fromUTF8(text):
         return QtCore.QString.fromUtf8(text)
     else:
         return text        
-
-NM_IF = NetworkManager.DBUS_INTERFACE
-NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
-NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
-NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
-NM_PATH = NetworkManager.DBUS_PATH
-DBUS_PROPS = 'org.freedesktop.DBus.Properties'
 
 # ZoneInterfaceEditor #########################################################
 
@@ -163,25 +159,12 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
 
     def ok(self):
         # apply changes
-        obj = self.fw.bus.get_object(NM_IF, NM_PATH)
-        props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-        active_connections = props.Get(NM_IF, "ActiveConnections")
-
-        for active in active_connections:
-            active_obj = self.fw.bus.get_object(NM_IF, active)
-            active_props = dbus.Interface(active_obj, dbus_interface=DBUS_PROPS)
-            connection = active_props.Get(NM_IF_C_A, "Connection")
-
-            # get settings for connection
-            connection_obj = self.fw.bus.get_object(NM_IF, connection)
-            connection_iface = dbus.Interface(connection_obj,
-                                              dbus_interface=NM_IF_S_C)
-            settings = connection_iface.GetSettings()
-
-            if settings["connection"]["id"] == self.connection:
-                settings["connection"]["zone"] = self.get_zone()
-                connection_iface.Update(settings)
-                break
+        try:
+            nm_set_zone_for_connection(self.get_zone(), self.connection)
+        except Exception as msg:
+            text = _("Failed to set zone {zone} for connection {connection}")
+            self.warning(escape(text.format(zone=self.get_zone(),
+                                            connection=self.connection)))
         self.hide()
 
 # ZoneSourceEditor ############################################################
@@ -433,6 +416,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self._blink_count = 0
         self.show_inactive = False
         self.connected = False
+        self.tooltip_messages = [ ]
 
         self.active_zones = { }
         self.connections = { }
@@ -557,6 +541,14 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             print("Not using slip", msg)
             self.bus = dbus.SystemBus()
 
+        if nm_is_imported():
+            self.bus.add_signal_receiver(
+                self.nm_signal_receiver,
+                dbus_interface=NetworkManager.DBUS_INTERFACE,
+                signal_name='PropertiesChanged',
+                member_keyword='member')
+        self.nm_signal_receiver()
+
         self.fw = FirewallClient(self.bus, wait=1)
         self.fw.setExceptionHandler(self._exception_handler)
 
@@ -575,13 +567,6 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.fw.connect("source-removed", self.source_removed)
         self.fw.connect("zone-of-source-changed",
                         self.zone_of_source_changed)
-
-        self.bus.add_signal_receiver(
-            self.nm_signal_receiver,
-            dbus_interface=NetworkManager.DBUS_INTERFACE,
-            signal_name='PropertiesChanged',
-            member_keyword='member')
-        self.nm_signal_receiver()
 
         self.shields_editor = ShieldsEditor(self.fw, self.settings, None, None)
 
@@ -758,40 +743,23 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # do not use NMClient could result in python core dump
 
-        try:
-            # get active connections
-            obj = self.bus.get_object(NM_IF, NM_PATH)
-            props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-            connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
+        if nm_is_imported():
+            text = _("Failed to get connections from NetworkManager")
+            try:
+                nm_get_connections(self.connections, self.connections_uuid)
+            except Exception as msg:
+                self.notify(escape(text), urgency=Notify.Urgency.CRITICAL)
+                if text not in self.tooltip_messages:
+                    self.tooltip_messages.append(text)
+            else:
+                if text in self.tooltip_messages:
+                    self.tooltip_messages.remove(text)
 
-            # for all active connections:
-            for active in connections:
-                # get connection and devices from active connection
-                obj = self.bus.get_object(NM_IF, active)
-                props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-                connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
-                devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
-
-                # get name (id) from connection
-                obj = self.bus.get_object(NM_IF, connection)
-                iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
-                settings = dbus_to_python(iface.GetSettings())
-                name = settings["connection"]["id"]
-                uuid = settings["connection"]["uuid"]
-                self.connections_uuid[name] = uuid
-
-                # for all devices:
-                for device in devices:
-                    obj = self.bus.get_object(NM_IF, device)
-                    props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-                    # get interface from device (first try: IpInterface)
-                    iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
-                    if iface == "":
-                        iface = dbus_to_python(props.Get(NM_IF_D, "Interface"))
-                    self.connections[iface] = name
-
-        except Exception as msg:
-            print(msg)
+        else:
+            text = _("No NetworkManager imports available")
+            self.notify(escape(text), urgency=Notify.Urgency.CRITICAL)
+            if text not in self.tooltip_messages:
+                self.tooltip_messages.append(text)
 
         self.update_tooltip()
 
@@ -903,6 +871,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                         messages.append(text.format(zone=zone, source=source))
         else:
             messages.append(_("No Active Zones."))
+        messages.extend(self.tooltip_messages)
 
         tooltip = "<nobr>"+"</nobr><br><nobr>".join(messages)+"</nobr>"
         self.setToolTip(fromUTF8("<font size=\"3\">"+tooltip+"</font>"))
