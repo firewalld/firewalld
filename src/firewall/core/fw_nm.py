@@ -45,14 +45,23 @@ from firewall import errors
 from firewall.errors import FirewallError
 
 def check_nm_imported():
+    """Check function to raise a MISSING_IMPORT error if the import of NetworkManager failed
+    """
     if not _nm_imported:
         raise FirewallError(errors.MISSING_IMPORT,
                             "gi.repository.NetworkManager = 1.0")
 
 def nm_is_imported():
+    """Returns true if NetworkManager has been properly imported
+    @return True if import was successful, False otherwirse
+    """
     return _nm_imported
 
 def nm_get_zone_of_connection(connection):
+    """Get zone of connection from NetworkManager
+    @param connection name
+    @return zone string setting of connection, empty string if not set, None if connection is unknown
+    """
     check_nm_imported()
 
     bus = dbus.SystemBus()
@@ -89,6 +98,11 @@ def nm_get_zone_of_connection(connection):
     return None
 
 def nm_set_zone_for_connection(zone, connection):
+    """Set the zone for a connection
+    @param zone name
+    @param connection name
+    @return True if zone was set, else False
+    """
     check_nm_imported()
 
     bus = dbus.SystemBus()
@@ -124,6 +138,11 @@ def nm_set_zone_for_connection(zone, connection):
     return False
 
 def nm_get_connections(connections, connections_uuid):
+    """Get active connections from NetworkManager
+    @param connections return dict
+    @param connections_uuid return dict
+    """
+
     connections.clear()
     connections_uuid.clear()
 
@@ -176,5 +195,3 @@ def nm_get_connections(connections, connections_uuid):
                     NetworkManager.DBUS_INTERFACE+".Device",
                     "Interface"))
             connections[device_iface] = name
-
-    return True
