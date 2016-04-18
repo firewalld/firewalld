@@ -864,7 +864,7 @@ options_permanent_only = a.new_icmptype or a.delete_icmptype or \
                          (a.icmptype and options_icmptype) or \
                          (a.service and options_service) or \
                          a.path_zone or a.path_icmptype or a.path_service or \
-                         a.path_ipset
+                         a.path_ipset or options_desc_xml_file
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
