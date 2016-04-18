@@ -1966,19 +1966,17 @@ class FirewallConfig(object):
         # add connecitons entry
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
-#        label.set_markup("<b>"+escape(_("Connections"))+"</b>")
         label.set_markup(escape(_("Connections")))
         label.set_alignment(0, 0.5)
         item.add(label)
         item.connect("select", self.no_select)
         self.left_menu.append(item)
 
-        if not self.fw.connected:
-            return
-
-        active_zones = self.fw.getActiveZones()
-        if active_zones:
-            self.active_zones = active_zones
+        if self.fw.connected:
+            active_zones = self.fw.getActiveZones()
+        else:
+            active_zones = { }
+        self.active_zones = active_zones
 
         # get all active connections (NM) and interfaces
         connections = { }
@@ -2016,16 +2014,15 @@ class FirewallConfig(object):
             item.connect("activate", self.change_zone_connection_editor, connection, zone)
             self.left_menu.append(item)
 
-        if len(interfaces) > 0:
-            item = Gtk.MenuItem.new()
-            label = Gtk.Label()
-#            label.set_markup("<b>"+escape(_("Interfaces"))+"</b>")
-            label.set_markup(escape(_("Interfaces")))
-            label.set_alignment(0, 0.5)
-            item.add(label)
-            item.connect("select", self.no_select)
-            self.left_menu.append(item)
+        item = Gtk.MenuItem.new()
+        label = Gtk.Label()
+        label.set_markup(escape(_("Interfaces")))
+        label.set_alignment(0, 0.5)
+        item.add(label)
+        item.connect("select", self.no_select)
+        self.left_menu.append(item)
 
+        if len(interfaces) > 0:
             # add other interfaces
             for interface in sorted(interfaces):
                 zone = interfaces[interface]
@@ -2042,16 +2039,15 @@ class FirewallConfig(object):
                 item.connect("activate", self.change_zone_interface_editor, interface, zone)
                 self.left_menu.append(item)
 
-        if len(sources) > 0:
-            item = Gtk.MenuItem.new()
-            label = Gtk.Label()
-#            label.set_markup("<b>"+escape(_("Sources"))+"</b>")
-            label.set_markup(escape(_("Sources")))
-            label.set_alignment(0, 0.5)
-            item.add(label)
-            item.connect("select", self.no_select)
-            self.left_menu.append(item)
+        item = Gtk.MenuItem.new()
+        label = Gtk.Label()
+        label.set_markup(escape(_("Sources")))
+        label.set_alignment(0, 0.5)
+        item.add(label)
+        item.connect("select", self.no_select)
+        self.left_menu.append(item)
 
+        if len(sources) > 0:
             for source in sorted(sources):
                 zone = sources[source]
 
