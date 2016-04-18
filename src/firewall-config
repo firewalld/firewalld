@@ -33,9 +33,6 @@ except RuntimeError as e:
     print ("This is a graphical application and requires DISPLAY to be set.")
     sys.exit (1)
 
-gi.require_version('NetworkManager', '1.0')
-from gi.repository import NetworkManager
-
 from gi.repository import GObject, GLib
 sys.modules['gobject'] = GObject
 import os
@@ -58,6 +55,7 @@ from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core.rich import *
+from firewall.core.fw_nm import *
 
 if not datadir:
     datadir = config.DATADIR
@@ -71,13 +69,6 @@ def escape(text):
     return text
 
 FIREWALL_CONFIG_SCHEMA = "org.fedoraproject.FirewallConfig"
-
-NM_IF = NetworkManager.DBUS_INTERFACE
-NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
-NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
-NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
-NM_PATH = NetworkManager.DBUS_PATH
-DBUS_PROPS = 'org.freedesktop.DBus.Properties'
 
 class FirewallConfig(object):
     def __init__(self):
@@ -1133,11 +1124,16 @@ class FirewallConfig(object):
 
         self.connections = { }
         self.connections_uuid = { }
-        self.fw.bus.add_signal_receiver(
-            self.nm_signal_receiver,
-            dbus_interface=NetworkManager.DBUS_INTERFACE,
-            signal_name='PropertiesChanged',
-            member_keyword='member')
+
+        if nm_is_imported():
+            self.fw.bus.add_signal_receiver(
+                self.nm_signal_receiver,
+                dbus_interface=NetworkManager.DBUS_INTERFACE,
+                signal_name='PropertiesChanged',
+                member_keyword='member')
+        else:
+            text = _("No NetworkManager imports available")
+            self._warning(text)
         self.nm_signal_receiver()
 
         # start with no connection
@@ -1279,40 +1275,12 @@ class FirewallConfig(object):
 
         # do not use NMClient could result in python core dump
 
-        try:
-            # get active connections
-            obj = self.fw.bus.get_object(NM_IF, NM_PATH)
-            props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-            connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
-
-            # for all active connections:
-            for active in connections:
-                # get connection and devices from active connection
-                obj = self.fw.bus.get_object(NM_IF, active)
-                props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-                connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
-                devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
-
-                # get name (id) from connection
-                obj = self.fw.bus.get_object(NM_IF, connection)
-                iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
-                settings = dbus_to_python(iface.GetSettings())
-                name = settings["connection"]["id"]
-                uuid = settings["connection"]["uuid"]
-                self.connections_uuid[name] = uuid
-
-                # for all devices:
-                for device in devices:
-                    obj = self.fw.bus.get_object(NM_IF, device)
-                    props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-                    # get interface from device (first try: IpInterface)
-                    iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
-                    if iface == "":
-                        iface = dbus_to_python(props.Get(NM_IF_D, "Interface"))
-                    self.connections[iface] = name
-
-        except Exception as msg:
-            print(msg)
+        if nm_is_imported():
+            try:
+                nm_get_connections(self.connections, self.connections_uuid)
+            except Exception as msg:
+                text = _("Failed to get connections from NetworkManager")
+                self._warning(text)
 
         iter = self.interfaceStore.get_iter_first()
         while iter:
