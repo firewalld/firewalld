@@ -531,11 +531,11 @@ def __pk_symlink(product='server'):
         __fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
 
 # system-config-firewall: fw_sysconfig
-CONFIG = '/etc/sysconfig/system-config-firewall'
+CONF = '/etc/sysconfig/system-config-firewall'
 def read_sysconfig_args():
     filename = None
-    if os.path.exists(CONFIG) and os.path.isfile(CONFIG):
-        filename = CONFIG
+    if os.path.exists(CONF) and os.path.isfile(CONF):
+        filename = CONF
     try:
         f = open(filename, 'r')
     except:
@@ -777,7 +777,7 @@ else:
     if args:
         a = parser.parse_args(args)
     else:
-        __fail("Opening of '%s' failed, exiting." % CONFIG)
+        __fail("Opening of '%s' failed, exiting." % CONF)
 
 options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.trust or a.masq or a.custom_rules or \
@@ -940,7 +940,7 @@ fw.start()
 
 try:
     if a.version:
-        __print_and_exit(VERSION)
+        __print_and_exit(config.VERSION)
 
     if a.policy_server:
         __pk_symlink('server')
