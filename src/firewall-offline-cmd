@@ -1271,34 +1271,34 @@ try:
             __fail(parser.format_usage() + "Unknown option")
 
     # ipsets
+    if a.get_ipsets:
+        ipsets = fw.config.get_ipsets()
+        __print_and_exit(" ".join(sorted(ipsets)))
+
+    elif a.new_ipset:
+        if not a.type:
+            __fail(parser.format_usage() + "No type specified.")
+
+        settings = FirewallClientIPSetSettings()
+        settings.setType(a.type)
+        if a.option:
+            for opt in a.option:
+                settings.addOption(*__parse_ipset_option(opt))
+        fw.config.new_ipset(a.new_ipset, settings.settings)
+
+    elif a.delete_ipset:
+        ipset = fw.config.get_ipset(a.delete_ipset)
+        fw.config.remove_ipset(ipset)
+
+    elif a.info_ipset:
+        ipset = fw.config.get_ipset(a.info_ipset)
+        settings = FirewallClientIPSetSettings(
+            list(fw.config.get_ipset_config(ipset)))
+        __print_ipset_info(a.info_ipset, settings)
+        sys.exit(0)
+
     elif a.ipset:
-        if a.get_ipsets:
-            ipsets = fw.config.get_ipsets()
-            __print_and_exit(" ".join(sorted(ipsets)))
-
-        elif a.new_ipset:
-            if not a.type:
-                __fail(parser.format_usage() + "No type specified.")
-
-            settings = FirewallClientIPSetSettings()
-            settings.setType(a.type)
-            if a.option:
-                for opt in a.option:
-                    settings.addOption(*__parse_ipset_option(opt))
-            fw.config.new_ipset(a.new_ipset, settings.settings)
-
-        elif a.delete_ipset:
-            ipset = fw.config.get_ipset(a.delete_ipset)
-            fw.config.remove_ipset(ipset)
-
-        elif a.info_ipset:
-            ipset = fw.config.get_ipset(a.info_ipset)
-            settings = FirewallClientIPSetSettings(
-                list(fw.config.get_ipset_config(ipset)))
-            __print_ipset_info(a.info_ipset, settings)
-            sys.exit(0)
-
-        elif a.add_entry:
+        if a.add_entry:
             ipset = fw.config.get_ipset(a.ipset)
             settings = FirewallClientIPSetSettings(
             list(fw.config.get_ipset_config(ipset)))
