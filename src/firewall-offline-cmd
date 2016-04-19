@@ -973,16 +973,25 @@ try:
         if a.service:
             for s in a.service:
                 __print("Adding service '%s' to default zone." % s)
-                fw_settings.addService(s)
+                if not fw_settings.queryService(s):
+                    fw_settings.addService(s)
+                else:
+                    __print("ALREADY_ENABLED: %s" % s)
         if a.remove_service:
             for s in a.remove_service:
                 __print("Removing service '%s' from default zone." % s)
-                fw_settings.removeService(s)
+                if fw_settings.queryService(s):
+                    fw_settings.removeService(s)
+                else:
+                    __print("NOT_ENABLED: %s" % s)
         if a.port:
             for port_proto in a.port:
                 (port, proto) = __parse_port_lokkit(port_proto)
                 __print("Adding port '%s/%s' to default zone." % (port, proto))
-                fw_settings.addPort(port, proto)
+                if not fw_settings.queryPort(port, proto):
+                    fw_settings.addPort(port, proto)
+                else:
+                    __print("ALREADY_ENABLED: %s" % port_proto)
         if a.trust:
             if default_zone != trusted_zone:
                 fw_trusted = fw.config.get_zone("trusted")
@@ -992,13 +1001,19 @@ try:
                 for i in a.trust:
                     __print("Interface '%s' will be bound to zone '%s'." % \
                             (i, trusted_zone))
-                    fw_trusted_settings.addInterface(i)
+                    if not fw_trusted_settings.queryInterface(i):
+                        fw_trusted_settings.addInterface(i)
+                    else:
+                        __print("ALREADY_ENABLED: %s" % i)
                 fw.config.set_zone_config(fw_trusted, fw_trusted_settings.settings)
             else:
                 for i in a.trust:
                     __print("Interface '%s' will be bound to zone '%s'." % \
                             (i, trusted_zone))
-                    fw_settings.addInterface(i)
+                    if not fw_settings.queryInterface(i):
+                        fw_settings.addInterface(i)
+                    else:
+                        __print("ALREADY_ENABLED: %s" % i)
         if a.masq:
             # Enables masquerading in the default zone, interface argument is ignored
             __print("Enabling masquerade for the default zone.")
@@ -1008,11 +1023,18 @@ try:
                 (port, protocol, toport, toaddr) = __parse_forward_port(fp)
                 __print("Adding forward port %s:%s:%s:%s to default zone." % \
                       (port, protocol, toport, toaddr))
-                fw_settings.addForwardPort(port, protocol, toport, toaddr)
+                if not fw_settings.queryForwardPort(port, protocol, toport,
+                                                    toaddr):
+                    fw_settings.addForwardPort(port, protocol, toport, toaddr)
+                else:
+                    __print("ALREADY_ENABLED: %s" % fp)
         if a.block_icmp:
             for ib in a.block_icmp:
                 __print("Adding icmpblock '%s' to default zone." % ib)
-                fw_settings.addIcmpBlock(ib)
+                if not fw_settings.queryIcmpBlock(ib):
+                    fw_settings.addIcmpBlock(ib)
+                else:
+                    __print("ALREADY_ENABLED: %s" % ib)
 
         fw.config.set_zone_config(fw_zone, fw_settings.settings)
 
