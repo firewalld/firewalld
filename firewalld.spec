@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.1
+Version: 0.4.1.1
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -293,6 +293,9 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Apr 19 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1.1-1
+- Fixed broken frensh translation
+
 * Tue Apr 19 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1-1
 - Enhancements of ipset handling
   - No cleanup of ipsets using timeouts while reloading
