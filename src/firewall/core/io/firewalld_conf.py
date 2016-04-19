@@ -116,47 +116,54 @@ class firewalld_conf(object):
         try:
             int(value)
         except ValueError:
-            log.error("MinimalMark '%s' is not valid, using default "
-                      "value '%d'", value if value else '',
-                      FALLBACK_MINIMAL_MARK)
+            if value is not None:
+                log.warning("MinimalMark '%s' is not valid, using default "
+                            "value '%d'", value if value else '',
+                            FALLBACK_MINIMAL_MARK)
             self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
 
         # check cleanup on exit
         value = self.get("CleanupOnExit")
         if not value or value.lower() not in [ "no", "false", "yes", "true" ]:
-            log.error("CleanupOnExit '%s' is not valid, using default "
-                      "value %s", value if value else '',
-                      FALLBACK_CLEANUP_ON_EXIT)
+            if value is not None:
+                log.warning("CleanupOnExit '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_CLEANUP_ON_EXIT)
             self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
 
         # check lockdown
         value = self.get("Lockdown")
         if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
-            log.error("Lockdown '%s' is not valid, using default "
-                      "value %s", value if value else '', FALLBACK_LOCKDOWN)
+            if value is not None:
+                log.warning("Lockdown '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_LOCKDOWN)
             self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")
         if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
-            log.error("IPv6_rpfilter '%s' is not valid, using default "
-                      "value %s", value if value else '',
-                      FALLBACK_IPV6_RPFILTER)
+            if value is not None:
+                log.warning("IPv6_rpfilter '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_IPV6_RPFILTER)
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
 
         # check individual calls
         value = self.get("IndividualCalls")
         if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
-            log.error("IndividualCalls '%s' is not valid, using default "
-                      "value %s", value if value else '',
-                      FALLBACK_INDIVIDUAL_CALLS)
+            if value is not None:
+                log.warning("IndividualCalls '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_INDIVIDUAL_CALLS)
             self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
 
         # check log denied
         value = self.get("LogDenied")
         if not value or value not in LOG_DENIED_VALUES:
-            log.error("LogDenied '%s' is invalid, using default value '%s'",
-                      value, FALLBACK_LOG_DENIED)
+            if value is not None:
+                log.warning("LogDenied '%s' is invalid, using default value '%s'",
+                            value, FALLBACK_LOG_DENIED)
             self.set("LogDenied", str(FALLBACK_LOG_DENIED))
 
     # save to self.filename if there are key/value changes
