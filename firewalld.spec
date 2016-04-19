@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.0
+Version: 0.4.1
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -293,6 +293,31 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Apr 19 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1-1
+- Enhancements of ipset handling
+  - No cleanup of ipsets using timeouts while reloading
+  - Only destroy conflicting ipsets
+  - Only use ipset types supported by the system
+  - Add and remove several ipset entries in one call using a file
+- Reduce time frame where builtin chains are on policy DROP while reloading
+- Include descriptions in --info-X calls
+- Command line interface support to get and alter descriptions of zones,
+  services, ipsets and icmptypes with permanent option
+- Properly watch changes in combined zones
+- Fix logging in rich rule forward rules
+- Transformed direct.passthrough errors into warnings
+- Rework of import structures
+- Reduced calls to get ids for port and protocol names (RHBZ#1305434)
+- Build and installation fixes by Markos Chandras
+- Provide D-Bus properties in introspection data
+- Fix for flaws found by landscape.io
+- Fix for repeated SUGHUP
+- New NetworkManager module to get and set zones of connections, used in
+  firewall-applet and firewall-config
+- configure: Autodetect backend tools ({ip,ip6,eb}tables{,-restore}, ipset)
+- Code cleanups
+- Bug fixes
+
 * Fri Jan 29 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.0-1
 - Several new services
 - Lots of bug fixes
