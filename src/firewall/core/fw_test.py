@@ -39,6 +39,7 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.core.io.ipset import ipset_reader
+from firewall.core.ipset import IPSET_TYPES
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -56,6 +57,12 @@ class Firewall_test(object):
         self.ip6tables_enabled = False
         self.ebtables_enabled = False
         self.ipset_enabled = False
+        self.ipset_supported_types = IPSET_TYPES
+
+        self.available_tables = { }
+        self.available_tables["ipv4"] = [ ]
+        self.available_tables["ipv6"] = [ ]
+        self.available_tables["eb"] = [ ]
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
@@ -68,12 +75,12 @@ class Firewall_test(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__, self.ip4tables_enabled, self.ip6tables_enabled,
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
              self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
-             self.ipset_enabled)
+             self.ipset_enabled, self._individual_calls, self._log_denied)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -81,11 +88,17 @@ class Firewall_test(object):
         self._default_zone = ""
         self._module_refcount = { }
         self._marks = [ ]
-        self._min_mark = config.FALLBACK_MINIMAL_MARK # will be overloaded by firewalld.conf
-        self.cleanup_on_exit = True
-        self.ipv6_rpfilter_enabled = True
+        # fallback settings will be overloaded by firewalld.conf
+        self._min_mark = config.FALLBACK_MINIMAL_MARK
+        self.cleanup_on_exit = config.FALLBACK_CLEANUP_ON_EXIT
+        self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
+        self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
+        self._log_denied = config.FALLBACK_LOG_DENIED
 
-    def start(self):
+    def individual_calls(self):
+        return self._individual_calls
+
+    def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
 
@@ -94,19 +107,14 @@ class Firewall_test(object):
         try:
             self._firewalld_conf.read()
         except Exception as msg:
-            log.error("Failed to open firewalld config file '%s': %s",
-                      config.FIREWALLD_CONF, msg)
+            log.warning("Using fallback firewalld configuration settings.")
         else:
             if self._firewalld_conf.get("DefaultZone"):
                 default_zone = self._firewalld_conf.get("DefaultZone")
+
             if self._firewalld_conf.get("MinimalMark"):
-                mark = self._firewalld_conf.get("MinimalMark")
-                if mark is not None:
-                    try:
-                        self._min_mark = int(mark)
-                    except Exception as msg:
-                        log.error("MinimalMark %s is not valid, using default "
-                                  "value %d", mark, self._min_mark)
+                self._min_mark = int(self._firewalld_conf.get("MinimalMark"))
+
             if self._firewalld_conf.get("CleanupOnExit"):
                 value = self._firewalld_conf.get("CleanupOnExit")
                 if value is not None and value.lower() in [ "no", "false" ]:
@@ -134,6 +142,20 @@ class Firewall_test(object):
             else:
                 log.debug1("IPV6 rpfilter is disabled")
 
+            if self._firewalld_conf.get("IndividualCalls"):
+                value = self._firewalld_conf.get("IndividualCalls")
+                if value is not None and value.lower() in [ "yes", "true" ]:
+                    log.debug1("IndividualCalls is enabled")
+                    self._individual_calls = True
+
+            if self._firewalld_conf.get("LogDenied"):
+                value = self._firewalld_conf.get("LogDenied")
+                if value is None or value.lower() == "no":
+                    self._log_denied = "off"
+                else:
+                    self._log_denied = value.lower()
+                    log.debug1("LogDenied is set to '%s'", self._log_denied)
+
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
         # load lockdown whitelist
@@ -141,7 +163,11 @@ class Firewall_test(object):
         try:
             self.policies.lockdown_whitelist.read()
         except Exception as msg:
-            log.error("Failed to load lockdown whitelist '%s': %s",
+            if self.policies.query_lockdown():
+                log.error("Failed to load lockdown whitelist '%s': %s",
+                      self.policies.lockdown_whitelist.filename, msg)
+            else:
+                log.debug1("Failed to load lockdown whitelist '%s': %s",
                       self.policies.lockdown_whitelist.filename, msg)
 
         # copy policies to config interface
@@ -182,18 +208,6 @@ class Firewall_test(object):
         if error:
             sys.exit(1)
 
-        # load direct rules
-        obj = Direct(config.FIREWALLD_DIRECT)
-        if os.path.exists(config.FIREWALLD_DIRECT):
-            log.debug1("Loading direct rules file '%s'" % \
-                       config.FIREWALLD_DIRECT)
-            try:
-                obj.read()
-            except Exception as msg:
-                log.debug1("Failed to load direct rules file '%s': %s",
-                           config.FIREWALLD_DIRECT, msg)
-        self.config.set_direct(copy.deepcopy(obj))
-
         # check if default_zone is a valid zone
         if default_zone not in self.zone.get_zones():
             if "public" in self.zone.get_zones():
@@ -209,9 +223,24 @@ class Firewall_test(object):
         else:
             log.debug1("Using default zone '%s'", default_zone)
 
+        # load direct rules
+        obj = Direct(config.FIREWALLD_DIRECT)
+        if os.path.exists(config.FIREWALLD_DIRECT):
+            log.debug1("Loading direct rules file '%s'" % \
+                       config.FIREWALLD_DIRECT)
+            try:
+                obj.read()
+            except Exception as msg:
+                log.debug1("Failed to load direct rules file '%s': %s",
+                           config.FIREWALLD_DIRECT, msg)
+        self.config.set_direct(copy.deepcopy(obj))
+
         self._default_zone = self.check_zone(default_zone)
 
         self._state = "RUNNING"
+
+    def start(self):
+        self._start()
 
     def _loader(self, path, reader_type, combine=False):
         # combine: several zone files are getting combined into one obj
@@ -248,6 +277,8 @@ class Firewall_test(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.icmptype.remove_icmptype(orig_obj.name)
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
+                        obj.default = True
                     self.icmptype.add_icmptype(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_icmptype(copy.deepcopy(obj))
@@ -259,6 +290,8 @@ class Firewall_test(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.service.remove_service(orig_obj.name)
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
+                        obj.default = True
                     self.service.add_service(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_service(copy.deepcopy(obj))
@@ -285,6 +318,9 @@ class Firewall_test(object):
                                        reader_type,
                                        orig_obj.name, orig_obj.path,
                                        orig_obj.filename)
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
+                        obj.default = True
+                        config_obj.default = True
                     self.config.add_zone(config_obj)
                     if combine:
                         log.debug1("  Combining %s '%s' ('%s/%s')",
@@ -301,16 +337,18 @@ class Firewall_test(object):
                                    orig_obj.name, orig_obj.path,
                                    orig_obj.filename)
                         self.ipset.remove_ipset(orig_obj.name)
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
+                        obj.default = True
                     self.ipset.add_ipset(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_ipset(copy.deepcopy(obj))
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:
-                log.warning("Failed to load %s file '%s': %s", reader_type,
+                log.error("Failed to load %s file '%s': %s", reader_type,
                           name, msg)
             except Exception as msg:
-                log.warning("Failed to load %s file '%s':", reader_type, name)
+                log.error("Failed to load %s file '%s':", reader_type, name)
                 log.exception()
 
         if combine and combined_zone.combined:
@@ -326,11 +364,16 @@ class Firewall_test(object):
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
 
+    def get_available_tables(self, ipv):
+        if ipv in [ "ipv4", "ipv6", "eb" ]:
+            return self.available_tables[ipv]
+        return [ ]
+
     def cleanup(self):
         self.icmptype.cleanup()
         self.service.cleanup()
-        # no self.ipset.cleanup(), this would remove active ipsets
         self.zone.cleanup()
+        self.ipset.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
         self.policies.cleanup()
@@ -366,20 +409,21 @@ class Firewall_test(object):
         if range == -2 or range == -1 or range is None or \
                 (len(range) == 2 and range[0] >= range[1]):
             if range == -2:
-                log.debug2("'%s': port > 65535" % port)
+                log.debug1("'%s': port > 65535" % port)
             elif range == -1:
-                log.debug2("'%s': port is invalid" % port)
+                log.debug1("'%s': port is invalid" % port)
             elif range is None:
-                log.debug2("'%s': port is ambiguous" % port)
+                log.debug1("'%s': port is ambiguous" % port)
             elif len(range) == 2 and range[0] >= range[1]:
-                log.debug2("'%s': range start >= end" % port)
+                log.debug1("'%s': range start >= end" % port)
             raise FirewallError(errors.INVALID_PORT, port)
 
-    def check_protocol(self, protocol):
+    def check_tcpudp(self, protocol):
         if not protocol:
             raise FirewallError(errors.MISSING_PROTOCOL)
-        if protocol not in [ "tcp", "udp" ]:
-            raise FirewallError(errors.INVALID_PROTOCOL, protocol)
+        if not protocol in [ "tcp", "udp" ]:
+            raise FirewallError(errors.INVALID_PROTOCOL,
+                                "'%s' not in {'tcp'|'udp'}" % protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):
@@ -393,7 +437,8 @@ class Firewall_test(object):
             if not functions.checkIP6nMask(source):
                 raise FirewallError(errors.INVALID_ADDR, source)
         else:
-            raise FirewallError(errors.INVALID_IPV)
+            raise FirewallError(errors.INVALID_IPV,
+                                "'%s' not in {'ipv4'|'ipv6'}")
 
     def check_icmptype(self, icmp):
         self.icmptype.check_icmptype(icmp)
@@ -418,6 +463,27 @@ class Firewall_test(object):
 
     def query_panic_mode(self):
         return self._panic
+
+    # LOG DENIED
+
+    def get_log_denied(self):
+        return self._log_denied
+
+    def set_log_denied(self, value):
+        if value not in config.LOG_DENIED_VALUES:
+            raise FirewallError(errors.INVALID_VALUE,
+                                "'%s', choose from '%s'" % \
+                                (value, "','".join(config.LOG_DENIED_VALUES)))
+
+        if value != self.get_log_denied():
+            self._log_denied = value
+            self._firewalld_conf.set("LogDenied", value)
+            self._firewalld_conf.write()
+
+            # now reload the firewall
+            self.reload()
+        else:
+            raise FirewallError(errors.ALREADY_SET, value)
 
     # DEFAULT ZONE
 
