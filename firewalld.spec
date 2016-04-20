@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.1.1
+Version: 0.4.1.2
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -293,6 +293,12 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed Apr 20 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1.2-1
+- Install fw_nm module
+- firewalld: Do not fail if log file could not be opened
+- Make ipsets visible per default in firewall-config
+- Fixed translations with python3
+
 * Tue Apr 19 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1.1-1
 - Fixed broken frensh translation
 
