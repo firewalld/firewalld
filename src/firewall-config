@@ -43,7 +43,6 @@ if os.getenv("FIREWALLD_DEVEL_ENV") is not None:
 import dbus
 
 from firewall import config
-from firewall.config import _
 from firewall import client
 #from firewall.functions import *
 from firewall import functions

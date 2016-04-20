@@ -24,7 +24,6 @@ import xml.sax.saxutils as saxutils
 import copy
 import sys
 
-from firewall.config import _
 from firewall import functions
 from firewall.functions import b2u
 from firewall import errors
