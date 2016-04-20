@@ -62,25 +62,32 @@ def parse_cmdline():
 
 def setup_logging(args):
     # Set up logging capabilities
-    log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
     log.setDateFormat("%Y-%m-%d %H:%M:%S")
     log.setFormat("%(date)s %(label)s%(message)s")
-    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR ],
+    log.setInfoLogging("*", log.syslog, [ log.FATAL, log.ERROR, log.WARNING ],
                        fmt="%(label)s%(message)s")
-    log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR ])
-    log.setInfoLogging("*", log_file, [ log.WARNING ])
     log.setDebugLogLevel(log.NO_INFO)
     log.setDebugLogLevel(log.NO_DEBUG)
-    log.setDebugLogging("*", log_file)
 
     if args.debug:
         log.setInfoLogLevel(log.INFO_MAX)
         log.setDebugLogLevel(args.debug)
-        log.addInfoLogging("*", log_file)
-        log.addDebugLogging("*", log_file)
         if args.nofork:
             log.addInfoLogging("*", log.stdout)
             log.addDebugLogging("*", log.stdout)
+
+    log_file = FileLog(config.FIREWALLD_LOGFILE, "a")
+    try:
+        log_file.open()
+    except IOError as e:
+        log.error("Failed to open log file '%s': %s", config.FIREWALLD_LOGFILE,
+                  str(e))
+    else:
+        log.addInfoLogging("*", log_file, [ log.FATAL, log.ERROR, log.WARNING ])
+        log.addDebugLogging("*", log_file)
+        if args.debug:
+            log.addInfoLogging("*", log_file)
+            log.addDebugLogging("*", log_file)
 
 def startup(args):
     try:
