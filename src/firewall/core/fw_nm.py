@@ -20,6 +20,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""Functions for NetworkManager interaction"""
+
 __all__ = [ "NetworkManager", "check_nm_imported", "nm_is_imported",
             "nm_get_zone_of_connection", "nm_set_zone_for_connection",
             "nm_get_connections" ]
@@ -35,11 +37,10 @@ else:
     try:
         from gi.repository import NetworkManager
         _nm_imported = True
-    except ImportError, ValueError:
+    except (ImportError, ValueError):
         NetworkManager = None
         _nm_imported = False
 
-from firewall.core.logger import log
 from firewall.dbus_utils import dbus_to_python
 from firewall import errors
 from firewall.errors import FirewallError
