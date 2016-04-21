@@ -78,7 +78,7 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
         self.assertRaisesRegexp(Exception, 'ALREADY_ENABLED',
                                 self.fw_direct.addRule, "ipv4", "filter", "direct_foo1", -5, [ "-m", "udp", "-p", "udp", "--dport", "331", "-j", "ACCEPT" ])
         ret = self.fw_direct.queryRule("ipv4", "filter", "direct_foo1", -5, [ "-m", "udp", "-p", "udp", "--dport", "331", "-j", "ACCEPT" ])
-        self.assertFalse(dbus_to_python(ret))
+        self.assertTrue(dbus_to_python(ret))
         ret = self.fw_direct.getRules("ipv4", "filter", "direct_foo1")
         self.assertTrue(len(ret) == 6)
         #pprint (dbus_to_python(ret))
