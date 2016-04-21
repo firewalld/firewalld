@@ -115,6 +115,10 @@ class FileLog(LogTarget):
         LogTarget.__init__(self)
         self.filename = filename
         self.mode = mode
+        self.fd = None
+
+    def fld(self):
+        return self.fd.fileno()
 
     def open(self):
         if self.fd:
