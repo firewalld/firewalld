@@ -22,17 +22,17 @@
 
 # To use in git tree: PYTHONPATH=.. python firewalld-test.py
 
-import dbus
+import dbus as python_dbus
 
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.config import *
 from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
 
-bus = dbus.SystemBus()
+bus = python_dbus.SystemBus()
 dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH_CONFIG)
-fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
-fw_config = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG)
+fw = python_dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
+fw_config = python_dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG)
 
 rule = ['rule service name=ftp audit limit value="1/m" accept ',
         'rule protocol value=ah accept ',
