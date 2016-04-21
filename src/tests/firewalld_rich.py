@@ -37,38 +37,47 @@ fw_config = python_dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_CONFIG
 rule = ['rule service name=ftp audit limit value="1/m" accept ',
         'rule protocol value=ah accept ',
         'rule protocol value=esp accept ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone1", settings)
 
 rule = ['rule family=ipv4 source address="192.168.0.0/24" service name=tftp log prefix=tftp level=info limit value=1/m accept']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone2", settings)
 
 rule = ['rule family=ipv4 source not address=192.168.0.0/24 service name=dns log prefix=dns level=info limit value=2/m accept ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone3", settings)
 
 rule = ['rule family=ipv6 source address=1:2:3:4:6:: service name=radius log prefix=dns level=info limit value=3/m reject limit value=20/m ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone4", settings)
 
 rule = ['rule family=ipv6 source address=1:2:3:4:5:: port port=4011 protocol=tcp log prefix="port 4011/tcp" level=info limit value=4/m drop ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone5", settings)
 
 rule = ['rule family=ipv6 source address=1:2:3:4:6:: forward-port port=4011 protocol=tcp to-port=4012 to-addr=1::2:3:4:7 ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone6", settings)
 
 rule = ['rule family=ipv4 source address=192.168.0.0/24 icmp-block name=source-quench log level=info prefix=source-quench limit value=4/m ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone7", settings)
 
 rule = ['rule family=ipv6 source address=1:2:3:4:6:: icmp-block name=redirect log prefix=redirect level=info limit value=4/m ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone8", settings)
 
 rule = ['rule family=ipv4 source address=192.168.1.0/24 masquerade ',
         'rule family=ipv6 masquerade ']
-settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [], [], rule]
+settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [], [], False, [], [],
+            [], rule, []]
 fw_config.addZone("zone9", settings)
