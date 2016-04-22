@@ -55,7 +55,9 @@ nobase_dist_python_DATA = \
 	firewall/server/decorators.py \
 	firewall/server/firewalld.py \
 	firewall/server/__init__.py \
-	firewall/server/server.py
+	firewall/server/server.py \
+	tests/firewall-cmd_test.sh \
+	tests/firewall-offline-cmd_test.sh
 
 EXTRA_DIST = \
 	firewall/config/__init__.py.in
