@@ -68,7 +68,16 @@
   <refsect1 id="options">
     <title>Options</title>
     <para>
-      If no options are given, configuration from <command>/etc/sysconfig/system-config-firewall</command> will be migrated.
+      If no options are given, the following files will be checked (in the listed order)
+      for valid configuration data:
+      <itemizedlist>
+        <listitem>
+            <para>File pointed by the <envar>FW_SYSCONFIG_FILE</envar> environmental variable</para>
+        </listitem>
+        <listitem>
+            <para><command>/etc/sysconfig/system-config-firewall</command></para>
+        </listitem>
+    </itemizedlist>
     </para>
     <para>
       The following options are supported:
