@@ -60,9 +60,19 @@ nobase_dist_python_DATA = \
 	tests/firewall-offline-cmd_test.sh
 
 EXTRA_DIST = \
-	firewall/config/__init__.py.in
+	firewall/config/__init__.py.in \
+	firewall-offline-cmd.in \
+	tests/firewall-offline-cmd_test.sh.in
 
 CLEANFILES = *~ *\# .\#* *.py?
+
+edit = sed \
+	-e 's|@SYSCONFIGDIR[@]|$(SYSCONFIGDIR)|g'
+
+firewall-offline-cmd: firewall-offline-cmd.in
+	$(edit) $< >$@
+tests/firewall-offline-cmd_test.sh: tests/firewall-offline-cmd_test.sh.in
+	$(edit) $< >$@
 
 install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS
 	@echo "Fixing python shebang"

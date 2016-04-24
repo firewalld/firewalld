@@ -44,7 +44,7 @@ def __usage():
     print ("""
 Usage: firewall-offline-cmd [OPTIONS...]
 
-If no options are given, configuration from '/etc/sysconfig/system-config-firewall' will be migrated.
+If no options are given, configuration from '@SYSCONFIGDIR@/system-config-firewall' will be migrated.
 
 General Options
   -h, --help           Prints a short help text and exists
@@ -70,7 +70,7 @@ Lokkit Compatibility Options
   --custom-rules=[<type>:][<table>:]<filename>
                         Ignored option. Was used to add custom rules to the
                         firewall (Example:
-                        ipv4:filter:/etc/sysconfig/ipv4_filter_addon)
+                        ipv4:filter:@SYSCONFIGDIR@/ipv4_filter_addon)
   --forward-port=if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]
                         Forward the port with protocol for the interface to
                         either another local destination port (no destination
@@ -531,7 +531,7 @@ def __pk_symlink(product='server'):
         __fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
 
 # system-config-firewall: fw_sysconfig
-CONF = '/etc/sysconfig/system-config-firewall'
+CONF = '@SYSCONFIGDIR@/system-config-firewall'
 def read_sysconfig_args():
     filename = None
     if os.path.exists(CONF) and os.path.isfile(CONF):
@@ -772,7 +772,7 @@ if len(sys.argv) > 1:
         args.append(joinArgs(aux_args[i+1:])) # add <args> as one arg
     a = parser.parse_args(args)
 else:
-    # migrate configuration from /etc/sysconfig/system-config-firewall
+    # migrate configuration from @SYSCONFIGDIR@/system-config-firewall
     args = read_sysconfig_args()
     if args:
         a = parser.parse_args(args)

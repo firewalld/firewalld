@@ -198,18 +198,19 @@ edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@sbindir[@]|$(sbindir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
-	-e 's|@localstatedir[@]|$(localstatedir)|g'
+	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@SYSCONFIGDIR[@]|$(SYSCONFIGDIR)|g'
 
 firewalld.service: firewalld.service.in
 	$(edit) $< >$@
 
 install-sysconfig:
-	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/sysconfig
-	$(INSTALL_DATA) $(srcdir)/firewalld.sysconfig $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
+	$(MKDIR_P) $(DESTDIR)$(SYSCONFIGDIR)
+	$(INSTALL_DATA) $(srcdir)/firewalld.sysconfig $(DESTDIR)$(SYSCONFIGDIR)/firewalld
 
 uninstall-sysconfig:
-	rm -f $(DESTDIR)$(sysconfdir)/sysconfig/firewalld
-	rmdir $(DESTDIR)$(sysconfdir)/sysconfig || :
+	rm -f $(DESTDIR)$(SYSCONFIGDIR)/firewalld
+	rmdir $(DESTDIR)$(SYSCONFIGDIR) || :
 
 install-rpmmacros:
 	$(MKDIR_P) $(DESTDIR)$(prefix)/lib/rpm/macros.d
