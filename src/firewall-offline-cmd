@@ -44,7 +44,11 @@ def __usage():
     print ("""
 Usage: firewall-offline-cmd [OPTIONS...]
 
-If no options are given, configuration from '/etc/sysconfig/system-config-firewall' will be migrated.
+If no options are given, the following files will be checked (in the listed order)
+for valid configuration data:
+
+  - File pointed by the FW_SYSCONFIG_FILE environmental variable
+  - /etc/sysconfig/system-config-firewall
 
 General Options
   -h, --help           Prints a short help text and exists
@@ -531,7 +535,10 @@ def __pk_symlink(product='server'):
         __fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
 
 # system-config-firewall: fw_sysconfig
-CONF = '/etc/sysconfig/system-config-firewall'
+CONF = os.environ.get('FW_SYSCONFIG_FILE')
+if not CONF:
+    CONF = '/etc/sysconfig/system-config-firewall'
+
 def read_sysconfig_args():
     filename = None
     if os.path.exists(CONF) and os.path.isfile(CONF):
