@@ -77,15 +77,24 @@
     <refsect2 id="help_options">
       <title>Help Options</title>
       <variablelist>
-	<varlistentry>
+        <varlistentry>
           <term><option>-h</option></term>
           <term><option>--help</option></term>
           <listitem>
-	    <para>
-	      Prints a short help text and exists.
-	    </para>
-	  </listitem>
-	</varlistentry>
+            <para>
+              Prints a short help text and exists.
+            </para>
+          </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term><option>-V</option></term>
+          <term><option>--version</option></term>
+          <listitem>
+            <para>
+              Print the version string of firewalld
+            </para>
+          </listitem>
+        </varlistentry>
       </variablelist>
     </refsect2>
 
