@@ -2582,9 +2582,9 @@ class FirewallClient(object):
     @handle_exceptions
     def addForwardPort(self, zone, port, protocol, toport, toaddr,
                        timeout=0):
-        if not toport:
+        if toport is None:
             toport = ""
-        if not toaddr:
+        if toaddr is None:
             toaddr = ""
         return dbus_to_python(self.fw_zone.addForwardPort(zone, port, protocol,
                                                           toport, toaddr,
@@ -2598,9 +2598,9 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def queryForwardPort(self, zone, port, protocol, toport, toaddr):
-        if not toport:
+        if toport is None:
             toport = ""
-        if not toaddr:
+        if toaddr is None:
             toaddr = ""
         return dbus_to_python(self.fw_zone.queryForwardPort(zone,
                                                             port, protocol,
@@ -2609,9 +2609,9 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def removeForwardPort(self, zone, port, protocol, toport, toaddr):
-        if not toport:
+        if toport is None:
             toport = ""
-        if not toaddr:
+        if toaddr is None:
             toaddr = ""
         return dbus_to_python(self.fw_zone.removeForwardPort(zone,
                                                              port, protocol,
