@@ -685,8 +685,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("%s.addForwardPort('%s', '%s', '%s', '%s')",
                    self._log_prefix, port, protocol, toport, toaddr)
         self.parent.accessCheck(sender)
-        fwp_id = (portStr(port, "-"), protocol, portStr(toport, "-"),
-                  str(toaddr))
+        fwp_id = (port, protocol, str(toport), str(toaddr))
         settings = list(self.getSettings())
         if fwp_id in settings[9]:
             raise FirewallError(errors.ALREADY_ENABLED,
@@ -706,8 +705,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         log.debug1("%s.removeForwardPort('%s', '%s', '%s', '%s')",
                    self._log_prefix, port, protocol, toport, toaddr)
         self.parent.accessCheck(sender)
-        fwp_id = (portStr(port, "-"), protocol, portStr(toport, "-"),
-                  str(toaddr))
+        fwp_id = (port, protocol, str(toport), str(toaddr))
         settings = list(self.getSettings())
         if fwp_id not in settings[9]:
             raise FirewallError(errors.NOT_ENABLED,
@@ -727,8 +725,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         toaddr = dbus_to_python(toaddr, str)
         log.debug1("%s.queryForwardPort('%s', '%s', '%s', '%s')",
                    self._log_prefix, port, protocol, toport, toaddr)
-        fwp_id = (portStr(port, "-"), protocol, portStr(toport, "-"),
-                  str(toaddr))
+        fwp_id = (port, protocol, str(toport), str(toaddr))
         return fwp_id in self.getSettings()[9]
 
     # interface
