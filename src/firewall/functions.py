@@ -397,7 +397,7 @@ def checkUser(user):
     return True
 
 def checkUid(uid):
-    if type(uid) == str:
+    if isinstance(uid, str):
         try:
             uid = int(uid)
         except ValueError:
