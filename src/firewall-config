@@ -6440,15 +6440,16 @@ class ZoneInterfaceEditor(Gtk.Dialog):
         self.set_zone(zone)
 
     def combo_changed(self, combo):
-        self.ok_button.set_sensitive(self.combo.get_active_text() != self.zone)
+        self.ok_button.set_sensitive(self.get_zone() != self.zone)
 
     def set_zone(self, zone):
         old_zone = self.zone
-        if zone == "":
-            zone = _("Default Zone")
         self.zone = zone
-        if self.combo.get_active_text() == old_zone:
-            combobox_select_text(self.combo, self.zone)
+        if self.get_zone() == old_zone:
+            if zone == "":
+                combobox_select_text(self.combo, _("Default Zone"))
+            else:
+                combobox_select_text(self.combo, self.zone)
         else:
             self.combo_changed(None)
 

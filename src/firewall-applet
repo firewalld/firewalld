@@ -120,10 +120,12 @@ class ZoneInterfaceEditor(QtGui.QDialog):
         self.ok_button.setDisabled(self.get_zone() == self.zone)
 
     def set_zone(self, zone):
-        if zone == "":
-            zone = escape(_("Default Zone"))
         self.zone = zone
-        self.combo.setCurrentIndex(self.combo.findText(self.zone))
+        if zone == "":
+            self.combo.setCurrentIndex(self.combo.findText(
+                escape(_("Default Zone"))))
+        else:
+            self.combo.setCurrentIndex(self.combo.findText(self.zone))
         self.combo_changed()
 
     def get_zone(self):
