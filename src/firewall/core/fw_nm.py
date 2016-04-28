@@ -22,20 +22,20 @@
 
 """Functions for NetworkManager interaction"""
 
-__all__ = [ "NetworkManager", "check_nm_imported", "nm_is_imported",
-            "nm_get_zone_of_connection", "nm_set_zone_for_connection",
-            "nm_get_connections" ]
+__all__ = [ "NM", "check_nm_imported", "nm_is_imported",
+            "nm_get_zone_of_connection", "nm_set_zone_of_connection",
+            "nm_get_connections", "nm_get_connection_of_interface" ]
 
 import dbus
 
 import gi
 try:
-    gi.require_version('NetworkManager', '1.0')
+    gi.require_version('NM', '1.0')
 except ValueError:
     _nm_imported = False
 else:
     try:
-        from gi.repository import NetworkManager
+        from gi.repository import NM
         _nm_imported = True
     except (ImportError, ValueError):
         NetworkManager = None
@@ -46,59 +46,39 @@ from firewall import errors
 from firewall.errors import FirewallError
 
 def check_nm_imported():
-    """Check function to raise a MISSING_IMPORT error if the import of NetworkManager failed
+    """Check function to raise a MISSING_IMPORT error if the import of NM failed
     """
     if not _nm_imported:
-        raise FirewallError(errors.MISSING_IMPORT,
-                            "gi.repository.NetworkManager = 1.0")
+        raise FirewallError(errors.MISSING_IMPORT, "gi.repository.NM = 1.0")
 
 def nm_is_imported():
-    """Returns true if NetworkManager has been properly imported
+    """Returns true if NM has been properly imported
     @return True if import was successful, False otherwirse
     """
     return _nm_imported
 
 def nm_get_zone_of_connection(connection):
-    """Get zone of connection from NetworkManager
+    """Get zone of connection from NM
     @param connection name
     @return zone string setting of connection, empty string if not set, None if connection is unknown
     """
     check_nm_imported()
 
-    bus = dbus.SystemBus()
+    client = NM.Client.new(None)
+    active_connections = client.get_active_connections()
 
-    nm_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                            NetworkManager.DBUS_PATH)
-    nm_props = dbus.Interface(nm_obj, dbus_interface=dbus.PROPERTIES_IFACE)
-    active_connections = nm_props.Get(NetworkManager.DBUS_INTERFACE,
-                                      "ActiveConnections")
-
-    for active in active_connections:
-        active_obj = bus.get_object(NetworkManager.DBUS_INTERFACE, active)
-        active_props = dbus.Interface(active_obj,
-                                      dbus_interface=dbus.PROPERTIES_IFACE)
-        nm_connection = active_props.Get(
-            NetworkManager.DBUS_INTERFACE+".Connection.Active",
-            "Connection")
-
-        # get settings for connection
-        nm_connection_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                                           nm_connection)
-        nm_connection_iface = dbus.Interface(
-            nm_connection_obj,
-            dbus_interface=NetworkManager.DBUS_INTERFACE+\
-            ".Settings.Connection")
-        settings = nm_connection_iface.GetSettings()
-
-        if settings["connection"]["id"] == connection:
-            zone = settings["connection"]["zone"]
+    for active_con in active_connections:
+        if active_con.get_id() == connection:
+            con = active_con.get_connection()
+            setting_con = con.get_setting_connection()
+            zone = setting_con.get_zone()
             if zone is None:
                 zone = ""
             return zone
 
     return None
 
-def nm_set_zone_for_connection(zone, connection):
+def nm_set_zone_of_connection(zone, connection):
     """Set the zone for a connection
     @param zone name
     @param connection name
@@ -106,40 +86,24 @@ def nm_set_zone_for_connection(zone, connection):
     """
     check_nm_imported()
 
-    bus = dbus.SystemBus()
+    client = NM.Client.new(None)
+    active_connections = client.get_active_connections()
 
-    nm_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                            NetworkManager.DBUS_PATH)
-    nm_props = dbus.Interface(nm_obj, dbus_interface=dbus.PROPERTIES_IFACE)
-    active_connections = nm_props.Get(NetworkManager.DBUS_INTERFACE,
-                                      "ActiveConnections")
+    for active_con in active_connections:
+        con = active_con.get_connection()
 
-    for active in active_connections:
-        active_obj = bus.get_object(NetworkManager.DBUS_INTERFACE, active)
-        active_props = dbus.Interface(active_obj,
-                                      dbus_interface=dbus.PROPERTIES_IFACE)
-        nm_connection = active_props.Get(
-            NetworkManager.DBUS_INTERFACE+".Connection.Active",
-            "Connection")
-
-        # get settings for connection
-        nm_connection_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                                           nm_connection)
-        nm_connection_iface = dbus.Interface(
-            nm_connection_obj,
-            dbus_interface=NetworkManager.DBUS_INTERFACE+\
-            ".Settings.Connection")
-        settings = nm_connection_iface.GetSettings()
-
-        if settings["connection"]["id"] == connection:
-            settings["connection"]["zone"] = zone
-            nm_connection_iface.Update(settings)
+        if active_con.get_id() == connection:
+            setting_con = con.get_setting_connection()
+            if zone == "":
+                zone = None
+            setting_con.set_property("zone", zone)
+            con.commit_changes(True, None)
             return True
 
     return False
 
 def nm_get_connections(connections, connections_uuid):
-    """Get active connections from NetworkManager
+    """Get active connections from NM
     @param connections return dict
     @param connections_uuid return dict
     """
@@ -149,50 +113,44 @@ def nm_get_connections(connections, connections_uuid):
 
     check_nm_imported()
 
-    bus = dbus.SystemBus()
+    client = NM.Client.new(None)
+    active_connections = client.get_active_connections()
 
-    # get active connections
-    nm_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                            NetworkManager.DBUS_PATH)
-    nm_props = dbus.Interface(nm_obj, dbus_interface=dbus.PROPERTIES_IFACE)
-    nm_active_connections = dbus_to_python(nm_props.Get(
-        NetworkManager.DBUS_INTERFACE, "ActiveConnections"))
+    for active_con in active_connections:
+        # ignore vpn devices for now
+        if active_con.get_vpn():
+            continue
 
-    # for all active connections:
-    for active in nm_active_connections:
-        # get connection and devices from active connection
-        active_obj = bus.get_object(NetworkManager.DBUS_INTERFACE, active)
-        active_props = dbus.Interface(active_obj,
-                                      dbus_interface=dbus.PROPERTIES_IFACE)
-        active_connection = dbus_to_python(active_props.Get(
-            NetworkManager.DBUS_INTERFACE+".Connection.Active",
-            "Connection"))
-        active_devices = dbus_to_python(active_props.Get(
-            NetworkManager.DBUS_INTERFACE+".Connection.Active",
-            "Devices"))
+        con = active_con.get_connection()
+        name = active_con.get_id()
+        uuid = active_con.get_uuid()
+        devices = active_con.get_devices()
 
-        # get name (id) from connection
-        settings_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                                      active_connection)
-        settings_iface = dbus.Interface(
-            settings_obj,
-            dbus_interface=NetworkManager.DBUS_INTERFACE+\
-            ".Settings.Connection")
-        settings = dbus_to_python(settings_iface.GetSettings())
-        name = settings["connection"]["id"]
-        connections_uuid[name] = settings["connection"]["uuid"]
+        connections_uuid[name] = uuid
+        for dev in devices:
+            connections[dev.get_iface()] = name
 
-        # for all devices:
-        for device in active_devices:
-            device_obj = bus.get_object(NetworkManager.DBUS_INTERFACE,
-                                        device)
-            device_props = dbus.Interface(
-                device_obj, dbus_interface=dbus.PROPERTIES_IFACE)
-            # get interface from device (first try: IpInterface)
-            device_iface = dbus_to_python(device_props.Get(
-                NetworkManager.DBUS_INTERFACE+".Device", "IpInterface"))
-            if device_iface == "":
-                device_iface = dbus_to_python(device_props.Get(
-                    NetworkManager.DBUS_INTERFACE+".Device",
-                    "Interface"))
-            connections[device_iface] = name
+def nm_get_connection_of_interface(interface):
+    """Get connection from NM that is using the interface
+    @param interface name
+    @returns connection that is using interface or None
+    """
+    check_nm_imported()
+
+    client = NM.Client.new(None)
+    active_connections = client.get_active_connections()
+
+    for active_con in active_connections:
+        # ignore vpn devices for now
+        if active_con.get_vpn():
+            continue
+
+        con = active_con.get_connection()
+        devices = active_con.get_devices()
+
+        for dev in devices:
+            if dev.get_iface() == interface:
+                return active_con.get_id()
+
+
+    return None

@@ -1127,7 +1127,7 @@ class FirewallConfig(object):
         if nm_is_imported():
             self.fw.bus.add_signal_receiver(
                 self.nm_signal_receiver,
-                dbus_interface=NetworkManager.DBUS_INTERFACE,
+                dbus_interface=NM.DBUS_INTERFACE,
                 signal_name='PropertiesChanged',
                 member_keyword='member')
         else:
@@ -6472,7 +6472,7 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
             return
 
         try:
-            nm_set_zone_for_connection(self.get_zone(), self.connection)
+            nm_set_zone_of_connection(self.get_zone(), self.connection)
         except Exception as msg:
             text = _("Failed to set zone {zone} for connection {connection}")
             QtGui.QMessageBox.warning(None, fromUTF8(escape(self.title)),
