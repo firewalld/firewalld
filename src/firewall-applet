@@ -120,6 +120,8 @@ class ZoneInterfaceEditor(QtGui.QDialog):
         self.ok_button.setDisabled(self.get_zone() == self.zone)
 
     def set_zone(self, zone):
+        if zone == "":
+            zone = escape(_("Default Zone"))
         self.zone = zone
         self.combo.setCurrentIndex(self.combo.findText(self.zone))
         self.combo_changed()
@@ -654,26 +656,33 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                 for interface in sorted(self.active_zones[zone]["interfaces"]):
                     if interface not in self.connections:
                         interfaces[interface] = zone
-                    else:
-                        # NM controlled
-                        connection = self.connections[interface]
-                        if connection not in self.connections_uuid:
-                            uuid = None
-                        else:
-                            uuid = self.connections_uuid[connection]
-                        connections[connection] = [ zone, uuid ]
             if "sources" in self.active_zones[zone]:
                 for source in sorted(self.active_zones[zone]["sources"]):
                     sources[source] = zone
+        # NM controlled connections
+        for interface in self.connections:
+            connection = self.connections[interface]
+            if connection not in self.connections_uuid:
+                uuid = None
+            else:
+                uuid = self.connections_uuid[connection]
+            zone = nm_get_zone_of_connection(connection)
+            connections[connection] = [ zone, uuid ]
 
         binding = _("{entry} (Zone: {zone})")
 
         # add NM controlled bindings
         for connection in sorted(connections):
             zone = connections[connection][0]
-            action = QtGui.QAction(
-                fromUTF8(escape(binding.format(zone=zone, entry=connection))),
-                self)
+            if zone == "":
+                _binding = _("{entry} (Default Zone: {default_zone})")
+                action = QtGui.QAction(
+                    fromUTF8(escape(_binding.format(default_zone=self.default_zone,
+                                                    entry=connection))), self)
+            else:
+                action = QtGui.QAction(
+                    fromUTF8(escape(binding.format(zone=zone,
+                                                   entry=connection))), self)
             action.triggered.connect(functools.partial(
                 self.zone_connection_editor, connection, zone))
             self.left_menu.addAction(action)
@@ -851,21 +860,31 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         if self.default_zone:
             messages.append(_("Default Zone: '%s'") % self.default_zone)
 
+        for interface in self.connections:
+            connection = self.connections[interface]
+            zone = nm_get_zone_of_connection(connection)
+            if zone == "":
+                text = _("Default Zone '{default_zone}' active for connection "
+                         "'{connection}' on interface '{interface}'")
+            else:
+                text = _("Zone '{zone}' active for connection "
+                         "'{connection}' on interface '{interface}'")
+            messages.append(text.format(zone=zone,
+                                        default_zone=self.default_zone,
+                                        connection=connection,
+                                        interface=interface))
+
         if len(self.active_zones) > 0:
             for zone in sorted(self.active_zones):
                 if "interfaces" in self.active_zones[zone]:
                     for interface in sorted(self.active_zones[zone]["interfaces"]):
-                        if interface in self.connections:
-                            connection = self.connections[interface]
-                            text = _("Zone '{zone}' active for connection "
-                                     "'{connection}' on interface '{interface}'")
-                        else:
+                        if interface not in self.connections:
                             text = _("Zone '{zone}' active for interface "
                                      "'{interface}'")
                             connection = None
-                        messages.append(text.format(zone=zone,
-                                                    connection=connection,
-                                                    interface=interface))
+                            messages.append(text.format(zone=zone,
+                                                        connection=connection,
+                                                        interface=interface))
                 if "sources" in self.active_zones[zone]:
                     for source in sorted(self.active_zones[zone]["sources"]):
                         text = _("Zone '{zone}' active for source {source}")
@@ -1003,15 +1022,24 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                    0: _("deactivated") }
             if interface in self.connections:
                 connection = self.connections[interface]
-                text = _("Zone '{zone}' {activated_deactivated} for "
-                         "connection '{connection}' on "
-                         "interface '{interface}'")
+                zone = nm_get_zone_of_connection(connection)
+                if zone == "":
+                    text = _("Default zone '{default_zone}' "
+                             "{activated_deactivated} for "
+                             "connection '{connection}' on "
+                             "interface '{interface}'")
+                else:
+                    text = _("Zone '{zone}' {activated_deactivated} for "
+                             "connection '{connection}' on "
+                             "interface '{interface}'")
             else:
                 connection = None
                 text = _("Zone '{zone}' {activated_deactivated} for "
                          "interface '{interface}'")
             self.notify(escape(text.format(
-                zone=zone, activated_deactivated=ed[enable],
+                zone=zone,
+                default_zone=self.default_zone,
+                activated_deactivated=ed[enable],
                 connection=connection, interface=interface)))
 
     def interface_added(self, zone, interface):
