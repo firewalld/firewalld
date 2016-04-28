@@ -81,6 +81,8 @@ class FirewallConfig(object):
         self.waiting = _("Waiting ...")
         self.retrying = _("Retrying ...")
         self.used_by = _("Used by network connection '%s'")
+        self.default_zone_used_by = _("Default zone used by network "
+                                      "connection '%s'")
         self.enabled = _("enabled")
         self.disabled = _("disabled")
 
@@ -90,6 +92,8 @@ class FirewallConfig(object):
         self.zone_connection_editors = { }
         self.zone_interface_editors = { }
         self.zone_source_editors = { }
+
+        self.default_zone = ""
 
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
@@ -1285,8 +1289,11 @@ class FirewallConfig(object):
         while iter:
             interface = self.interfaceStore.get_value(iter, 0)
             if interface in self.connections:
-                comment = ""
-                if interface in self.connections:
+                zone = nm_get_zone_of_connection(self.connections[interface])
+                if zone == "":
+                    comment = self.default_zone_used_by % \
+                              self.connections[interface]
+                else:
                     comment = self.used_by % self.connections[interface]
                 self.interfaceStore.set_value(iter, 1, comment)
             iter = self.interfaceStore.iter_next(iter)
@@ -1746,7 +1753,12 @@ class FirewallConfig(object):
     def _add_interface(self, interface):
         comment = ""
         if interface in self.connections:
-            comment = self.used_by % self.connections[interface]
+            zone = nm_get_zone_of_connection(self.connections[interface])
+            if zone == "":
+                comment = self.default_zone_used_by % \
+                          self.connections[interface]
+            else:
+                comment = self.used_by % self.connections[interface]
         self.interfaceStore.append([interface, comment])
 
     def interface_added_cb(self, zone, interface):
@@ -1986,16 +1998,17 @@ class FirewallConfig(object):
                 for interface in sorted(self.active_zones[zone]["interfaces"]):
                     if interface not in self.connections:
                         interfaces[interface] = zone
-                    else:
-                        # NM controlled
-                        connection = self.connections[interface]
-                        if connection not in connections:
-                            connections[connection] = [ zone, [ interface, ] ]
-                        else:
-                            connections[connection][1].append(interface)
             if "sources" in self.active_zones[zone]:
                 for source in sorted(self.active_zones[zone]["sources"]):
                     sources[source] = zone
+        # NM controlled connections
+        for interface in self.connections:
+            connection = self.connections[interface]
+            if connection not in connections:
+                zone = nm_get_zone_of_connection(connection)
+                connections[connection] = [ zone, [ interface, ] ]
+            else:
+                connections[connection][1].append(interface)
 
         # add NM controlled entries
         for connection in sorted(connections):
@@ -2004,8 +2017,14 @@ class FirewallConfig(object):
             item = Gtk.MenuItem.new()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             label = Gtk.Label()
-            label.set_markup("%s (%s)\n<small>%s: %s</small>" % \
-                             (connection, ",".join(_interfaces), escape(_("Zone")), zone))
+            if zone == "":
+                label.set_markup("%s (%s)\n<small>%s: %s</small>" % \
+                                 (connection, ",".join(_interfaces),
+                                  escape(_("Default Zone")), self.default_zone))
+            else:
+                label.set_markup("%s (%s)\n<small>%s: %s</small>" % \
+                                 (connection, ",".join(_interfaces),
+                                  escape(_("Zone")), zone))
             label.set_alignment(0, 0.5)
             label.set_padding(12, 0)
             hbox.pack_start(label, True, True, 0)
@@ -3293,6 +3312,8 @@ class FirewallConfig(object):
         interface = self.interfaceStore.get_value(iter, 0)
         if interface in self.connections:
             connection = self.connections[interface]
+            if selected_zone == self.default_zone:
+                selected_zone = nm_get_zone_of_connection(connection)
             editor = ZoneConnectionEditor(self.fw, connection, selected_zone)
             editor.set_icon(self.icon)
             editor.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
@@ -6423,6 +6444,8 @@ class ZoneInterfaceEditor(Gtk.Dialog):
 
     def set_zone(self, zone):
         old_zone = self.zone
+        if zone == "":
+            zone = _("Default Zone")
         self.zone = zone
         if self.combo.get_active_text() == old_zone:
             combobox_select_text(self.combo, self.zone)
