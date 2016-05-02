@@ -534,6 +534,33 @@ class FirewallConfig(object):
         self.forwardDialogToAddrEntry = \
             builder.get_object("forwardDialogToAddrEntry")
 
+        # bindings View
+        self.bindingsView = builder.get_object("bindingsView")
+        self.bindingsStore = Gtk.TreeStore(GObject.TYPE_STRING,  # name
+                                           GObject.TYPE_STRING,  # zone text
+                                           GObject.TYPE_STRING)  # real zone
+        self.bindingsView.set_model(self.bindingsStore)
+        self.bindingsView.append_column(
+            Gtk.TreeViewColumn(_("Item"), Gtk.CellRendererText(), text=0))
+        self.bindingsView.append_column(
+            Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=1))
+        #self.bindingsStore.set_sort_column_id(
+        #    0, Gtk.SortType.ASCENDING)
+        self.connectionsIter = self.bindingsStore.append(
+            None, [ _("Connections"), "", "" ])
+        self.interfacesIter = self.bindingsStore.append(
+            None, [ _("Interfaces"), "", "" ])
+        self.sourcesIter = self.bindingsStore.append(
+            None, [ _("Sources"), "", "" ])
+        self.bindingsView.get_selection().connect("changed",
+                                                  self.onChangeBinding)
+        self.bindingsView.set_show_expanders(True)
+
+        self.changeBindingsButton = builder.get_object("changeBindingsButton")
+        self.changeBindingsButton.connect("clicked", self.on_changeBindings_cb)
+        self.editBindingsButton = builder.get_object("editBindingsButton")
+        self.editBindingsButton.connect("clicked", self.on_editBindings_cb)
+
         self.ipsetConfIPSetView = builder.get_object("ipsetConfIPSetView")
         self.ipsetConfIPSetStore = Gtk.ListStore(GObject.TYPE_STRING)  # name
         self.ipsetConfIPSetView.append_column(
@@ -1989,6 +2016,21 @@ class FirewallConfig(object):
             active_zones = { }
         self.active_zones = active_zones
 
+        # clean bindingsView, leave connections, interfaces and sources entries
+        self.bindingsView.get_selection().unselect_all()
+        iter = self.bindingsStore.iter_children(self.connectionsIter)
+        while iter:
+            self.bindingsStore.remove(iter)
+            iter = self.bindingsStore.iter_children(self.connectionsIter)
+        iter = self.bindingsStore.iter_children(self.interfacesIter)
+        while iter:
+            self.bindingsStore.remove(iter)
+            iter = self.bindingsStore.iter_children(self.interfacesIter)
+        iter = self.bindingsStore.iter_children(self.sourcesIter)
+        while iter:
+            self.bindingsStore.remove(iter)
+            iter = self.bindingsStore.iter_children(self.sourcesIter)
+
         # get all active connections (NM) and interfaces
         connections = { }
         interfaces = { }
@@ -2032,6 +2074,15 @@ class FirewallConfig(object):
             item.connect("activate", self.change_zone_connection_editor, connection, zone)
             self.left_menu.append(item)
 
+            if zone == "":
+                self.bindingsStore.append(
+                    self.connectionsIter,
+                    [ connection, _("Default Zone: %s") % self.default_zone,
+                      zone ])
+            else:
+                self.bindingsStore.append(self.connectionsIter, [ connection,
+                                                                  zone, zone ])
+
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Interfaces")))
@@ -2057,6 +2108,9 @@ class FirewallConfig(object):
                 item.connect("activate", self.change_zone_interface_editor, interface, zone)
                 self.left_menu.append(item)
 
+                self.bindingsStore.append(self.interfacesIter, [ interface,
+                                                                 zone, zone ])
+
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Sources")))
@@ -2081,6 +2135,11 @@ class FirewallConfig(object):
                 item.add(hbox)
                 item.connect("activate", self.change_zone_source_editor, source, zone)
                 self.left_menu.append(item)
+
+                self.bindingsStore.append(self.sourcesIter, [ source, zone,
+                                                              zone ])
+
+        self.bindingsView.expand_all()
 
         iter = self.zoneStore.get_iter_first()
         while iter:
@@ -2159,6 +2218,49 @@ class FirewallConfig(object):
         self.default_zone = zone
         self.defaultZoneLabel.set_text(zone)
         self.update_active_zones()
+
+    def onChangeBinding(self, *args):
+        selection = self.bindingsView.get_selection()
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return
+
+        parent_iter = self.bindingsStore.iter_parent(iter)
+        if parent_iter is None:
+            self.changeBindingsButton.set_sensitive(False)
+            self.editBindingsButton.set_sensitive(False)
+            return
+        if self.bindingsStore.get_value(parent_iter, 0) == _("Connections"):
+            self.changeBindingsButton.set_sensitive(True)
+            self.editBindingsButton.set_sensitive(False)
+        elif self.bindingsStore.get_value(parent_iter, 0) == _("Interfaces"):
+            self.changeBindingsButton.set_sensitive(True)
+            self.editBindingsButton.set_sensitive(True)
+        elif self.bindingsStore.get_value(parent_iter, 0) == _("Sources"):
+            self.changeBindingsButton.set_sensitive(True)
+            self.editBindingsButton.set_sensitive(True)
+
+    def on_changeBindings_cb(self, *args):
+        selection = self.bindingsView.get_selection()
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return
+        parent_iter = self.bindingsStore.iter_parent(iter)
+        if parent_iter is None:
+            return
+
+        item = self.bindingsStore.get_value(iter, 0)
+        zone = self.bindingsStore.get_value(iter, 2)
+
+        if self.bindingsStore.get_value(parent_iter, 0) == _("Connections"):
+            self.change_zone_connection_editor(None, item, zone)
+        elif self.bindingsStore.get_value(parent_iter, 0) == _("Interfaces"):
+            self.change_zone_interface_editor(None, item, zone)
+        elif self.bindingsStore.get_value(parent_iter, 0) == _("Sources"):
+            self.change_zone_source_editor(None, item, zone)
+
+    def on_editBindings_cb(self, *args):
+        return
 
     def onChangeZone(self, *args):
         selected_zone = self.get_selected_zone()
