@@ -32,6 +32,7 @@ import os
 from firewall.client import *
 from firewall.errors import *
 from firewall.functions import joinArgs, splitArgs
+from firewall.core.fw_nm import *
 
 def __print(msg=None):
     if msg and not a.quiet:
@@ -547,6 +548,26 @@ def get_ipset_entries_from_file(filename):
                 entries.append(line)
         f.close()
     return entries
+
+def try_set_zone_of_interface(_zone, interface):
+    if nm_is_imported():
+        try:
+            connection = nm_get_connection_of_interface(interface)
+        except Exception:
+            pass
+        else:
+            if connection is not None:
+                if _zone == nm_get_zone_of_connection(connection):
+                    if _zone == "":
+                        __print_and_exit("The interface is under control of NetworkManager and already bound to the default zone")
+                    else:
+                        __print_and_exit("The interface is under control of NetworkManager and already bound to '%s'" % _zone)
+                if _zone == "":
+                    __print("The interface is under control of NetworkManager, setting zone to default.")
+                else:
+                    __print("The interface is under control of NetworkManager, setting zone to '%s'." % _zone)
+                nm_set_zone_of_connection(_zone, connection)
+                __print_and_exit("success")
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
@@ -1469,6 +1490,7 @@ if a.permanent:
             else:
                 __fail("no zone")
         elif a.change_interface:
+            try_set_zone_of_interface(a.zone, a.change_interface)
             old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
             if old_zone_name != zone:
                 if old_zone_name:
@@ -1476,8 +1498,10 @@ if a.permanent:
                     old_zone_obj.removeInterface(a.change_interface)  # remove from old
                 fw_zone.addInterface(a.change_interface)              # add to new
         elif a.add_interface:
+            try_set_zone_of_interface(a.zone, a.add_interface)
             fw_zone.addInterface(a.add_interface)
         elif a.remove_interface:
+            try_set_zone_of_interface("", a.remove_interface)
             fw_zone.removeInterface(a.remove_interface)
         elif a.query_interface:
             __print_query_result(fw_zone.queryInterface(a.query_interface))
@@ -1903,10 +1927,13 @@ elif a.get_zone_of_interface:
     else:
         __fail("no zone")
 elif a.add_interface:
+    try_set_zone_of_interface(zone, a.add_interface)
     fw.addInterface(zone, a.add_interface)
 elif a.change_interface:
+    try_set_zone_of_interface(zone, a.change_interface)
     fw.changeZoneOfInterface(zone, a.change_interface)
 elif a.remove_interface:
+    try_set_zone_of_interface("", a.remove_interface)
     fw.removeInterface(zone, a.remove_interface)
 elif a.query_interface:
     __print_query_result(fw.queryInterface(zone, a.query_interface))
