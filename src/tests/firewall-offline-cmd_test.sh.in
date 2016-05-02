@@ -176,7 +176,7 @@ assert_good     "--query-forward-port ${fw_port2}"
 failures=0
 
 while true; do
-    read -p "This test overwrites your /etc/firewalld/zones/* and /etc/sysconfig/system-config-firewall. Do you want to continue ?" yn
+    read -p "This test overwrites your /etc/firewalld/zones/* and @SYSCONFIGDIR@/system-config-firewall. Do you want to continue ?" yn
     case $yn in
         [Yy]* ) break;;
         [Nn]* ) exit;;
@@ -201,14 +201,14 @@ fw_port2="port=333:proto=udp:toport=444"
 lokkit_opts="--enabled --addmodule=abc --addmodule=efg --removemodule=xyz
  --trust=${trusted_iface1} --trust=${trusted_iface2}
  --masq=tun+ --masq=tap+ --port=7:tcp --port=666:udp
- --custom-rules=ipv4:mangle:/etc/sysconfig/ebtables-config
+ --custom-rules=ipv4:mangle:@SYSCONFIGDIR@/ebtables-config
  --service=${service1} --service=${service2} --remove-service=${service3}
  --block-icmp=${icmp1} --block-icmp=${icmp2}
  --forward-port=if=ippp+:${fw_port1}
  --forward-port=if=ippp+:${fw_port2}"
 test_lokkit_opts
 
-cat << EOF > /etc/sysconfig/system-config-firewall
+cat << EOF > @SYSCONFIGDIR@/system-config-firewall
 --enabled
 --addmodule=abc
 --addmodule=efg
@@ -219,7 +219,7 @@ cat << EOF > /etc/sysconfig/system-config-firewall
 --masq=tap+
 --port=7:tcp
 --port=666:udp
---custom-rules=ipv4:mangle:/etc/sysconfig/ebtables-config
+--custom-rules=ipv4:mangle:@SYSCONFIGDIR@/ebtables-config
 --service=${service1}
 --service=${service2}
 --remove-service=${service3}
@@ -229,7 +229,7 @@ cat << EOF > /etc/sysconfig/system-config-firewall
 --forward-port=if=ippp+:${fw_port2}
 EOF
 
-# running firewall-offline-cmd without options should import /etc/sysconfig/system-config-firewall
+# running firewall-offline-cmd without options should import @SYSCONFIGDIR@/system-config-firewall
 lokkit_opts=""
 test_lokkit_opts
 

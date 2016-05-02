@@ -62,6 +62,11 @@ AC_ARG_WITH([bashcompletiondir],
        [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
 AC_SUBST(BASHCOMPLETIONDIR)
 
+AC_ARG_WITH([sysconfigdir],
+       AS_HELP_STRING([--with-sysconfigdir=DIR], [Sysconfig directory]),
+       [SYSCONFIGDIR=$withval], [SYSCONFIGDIR="${sysconfdir}/sysconfig"])
+AC_SUBST(SYSCONFIGDIR)
+
 # Extend PATH to include /sbin etc in case we are building as non-root
 FW_TOOLS_PATH="$PATH:/usr/local/sbin:/sbin:/usr/sbin"
 

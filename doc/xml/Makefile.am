@@ -2,7 +2,8 @@ XSLTPROC = xsltproc
 
 EXTRA_DIST = $(HTMLS:../html/%.html=%.xml) \
 	authors.xml notes.xml seealso.xml errorcodes.xml \
-	transform-man.xsl.in transform-html.xsl.in
+	transform-man.xsl.in transform-html.xsl.in \
+	firewalld.xml.in firewall-cmd.xml.in firewalld-offline-cmd.xml.in
 
 man_MANS = $(man1_MANS) $(man5_MANS)
 HTMLS = $(man1_MANS:../man/man1/%.1=../html/%.html) $(man5_MANS:../man/man5/%.5=../html/%.html)
@@ -65,9 +66,16 @@ errorcodes.xml: ../../src/firewall/errors.py
 edit = sed \
 	-e 's|\@PREFIX\@|$(prefix)|' \
 	-e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
+	-e 's|\@SYSCONFIGDIR\@|$(SYSCONFIGDIR)|' \
 	-e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|'
 
 transform-man.xsl: transform-man.xsl.in
 	$(edit) $< >$@
 transform-html.xsl: transform-html.xsl.in
+	$(edit) $< >$@
+firewalld.xml: firewalld.xml.in
+	$(edit) $< >$@
+firewall-cmd.xml: firewall-cmd.xml.in
+	$(edit) $< >$@
+firewall-offline-cmd.xml: firewall-offline-cmd.xml.in
 	$(edit) $< >$@
