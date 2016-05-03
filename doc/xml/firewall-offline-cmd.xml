@@ -963,6 +963,31 @@
            </para>
          </listitem>
        </varlistentry>
+
+	<varlistentry>
+         <term><option>--ipset</option>=<replaceable>ipset</replaceable> <option>--add-entries-from-file</option>=<replaceable>filename</replaceable></term>
+         <listitem>
+           <para>
+             Add a new entries to the ipset from the file. For all entries that are listed in the file but already in the ipset, a warning will be printed.
+           </para>
+           <para>
+	     The file should contain an entry per line. Lines starting with an hash or semicolon are ignored. Also empty lines.
+           </para>
+         </listitem>
+       </varlistentry>
+
+	<varlistentry>
+         <term><option>--ipset</option>=<replaceable>ipset</replaceable> <option>--remove-entries-from-file</option>=<replaceable>filename</replaceable></term>
+         <listitem>
+           <para>
+             Remove existing entries from the ipset from the file. For all entries that are listed in the file but not in the ipset, a warning will be printed.
+           </para>
+           <para>
+	     The file should contain an entry per line. Lines starting with an hash or semicolon are ignored. Also empty lines.
+           </para>
+         </listitem>
+       </varlistentry>
+
        <varlistentry>
          <term><option>--ipset</option>=<replaceable>ipset</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
          <listitem>

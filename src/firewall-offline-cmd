@@ -128,6 +128,10 @@ IPSet Options
                        Return whether ipset has an entry
   --ipset=<ipset> --get-entries
                        List entries of an ipset
+  --ipset=<ipset> --add-entries-from-file=<entry>
+                       Add a new entries to an ipset [P]
+  --ipset=<ipset> --remove-entries-from-file=<entry>
+                       Remove entries from an ipset [P]
 
 IcmpType Options
   --new-icmptype=<icmptype>
@@ -551,7 +555,23 @@ def read_sysconfig_args():
     f.close()
     return argv
 
-##############################################################################
+def get_ipset_entries_from_file(filename):
+    entries = [ ]
+    try:
+        f = open(filename)
+    except Exception as ex:
+        __fail("Failed to read file '%s': %s" % (filename, ex))
+    else:
+        for line in f:
+            if not line:
+                break
+            line = line.strip()
+            if len(line) < 1 or line[0] in ['#', ';']:
+                continue
+            if line not in entries:
+                entries.append(line)
+        f.close()
+    return entries
 
 parser = argparse.ArgumentParser(usage="see firewall-offline-cmd man page",
                                  add_help=False)
@@ -684,6 +704,8 @@ parser_ipset.add_argument("--add-entry", metavar="<entry>")
 parser_ipset.add_argument("--remove-entry", metavar="<entry>")
 parser_ipset.add_argument("--query-entry", metavar="<entry>")
 parser_ipset.add_argument("--get-entries", action="store_true")
+parser_ipset.add_argument("--add-entries-from-file", metavar="<filename>")
+parser_ipset.add_argument("--remove-entries-from-file", metavar="<filename>")
 
 parser.add_argument("--icmptype", metavar="<icmptype>")
 
@@ -838,7 +860,8 @@ options_zone_ops = options_zone_interfaces_sources or \
 options_zone = a.zone or options_zone_ops or options_desc_xml_file
 
 options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
-                a.get_entries or options_desc_xml_file
+                a.get_entries or a.add_entries_from_file or \
+                a.remove_entries_from_file or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
                    a.query_destination or a.get_destinations or \
@@ -1325,6 +1348,38 @@ try:
                 list(fw.config.get_ipset_config(ipset)))
             l = settings.getEntries()
             __print_and_exit("\n".join(l))
+
+        elif a.add_entries_from_file:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+
+            entries = get_ipset_entries_from_file(a.add_entries_from_file)
+            changed = False
+            for entry in entries:
+                if not settings.queryEntry(entry):
+                    settings.addEntry(entry)
+                    changed = True
+                else:
+                    __print("Warning: ALREADY_ENABLED: %s" % (entry))
+            if changed:
+                fw.config.set_ipset_config(ipset, settings.settings)
+
+        elif a.remove_entries_from_file:
+            ipset = fw.config.get_ipset(a.ipset)
+            settings = FirewallClientIPSetSettings(
+                list(fw.config.get_ipset_config(ipset)))
+
+            entries = get_ipset_entries_from_file(a.remove_entries_from_file)
+            changed = False
+            for entry in entries:
+                if settings.queryEntry(entry):
+                    settings.removeEntry(entry)
+                    changed = True
+                else:
+                    __print("Warning: NOT_ENABLED: %s" % (entry))
+            if changed:
+                fw.config.set_ipset_config(ipset, settings.settings)
 
         elif a.set_description:
              ipset = fw.config.get_ipset(a.ipset)
