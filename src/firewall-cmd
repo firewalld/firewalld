@@ -178,7 +178,7 @@ Service Options
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service [P only]
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
-                       Remove an entry from service [P only]
+                       Remove a port from service [P only]
   --service=<service> --query-port=<portid>[-<portid>]/<protocol>
                        Return whether the port has been added for service [P only]
   --service=<service> --get-ports
@@ -186,7 +186,7 @@ Service Options
   --service=<service> --add-protocol=<protocol>
                        Add a new protocol to service [P only]
   --service=<service> --remove-protocol=<protocol>
-                       Remove an entry from service [P only]
+                       Remove a protocol from service [P only]
   --service=<service> --query-protocol=<protocol>
                        Return whether the protocol has been added for service [P only]
   --service=<service> --get-protocols
@@ -194,7 +194,7 @@ Service Options
   --service=<service> --add-module=<module>
                        Add a new module to service [P only]
   --service=<service> --remove-module=<module>
-                       Remove an entry from service [P only]
+                       Remove a module from service [P only]
   --service=<service> --query-module=<module>
                        Return whether the module has been added for service [P only]
   --service=<service> --get-modules
