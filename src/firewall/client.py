@@ -89,7 +89,7 @@ class FirewallClientZoneSettings(object):
             self.settings = settings
         else:
             self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
-                             [], False, [], [], [], [], []]
+                             [], False, [], [], [], [], [], []]
 
     @handle_exceptions
     def __repr__(self):
@@ -700,7 +700,7 @@ class FirewallClientServiceSettings(object):
         if settings:
             self.settings = settings
         else:
-            self.settings = ["", "", "", [], [], {}, []]
+            self.settings = ["", "", "", [], [], {}, [], []]
 
     @handle_exceptions
     def __repr__(self):

@@ -78,6 +78,7 @@
   [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;masquerade/&gt; ]
   [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
+  [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
   [
     &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
     [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
@@ -339,6 +340,32 @@
       </refsect3>
     </refsect2>
 
+    <refsect2 id="source-port">
+      <title>source-port</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one source port entry. All attributes of a source port entry are mandatory:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>port="<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>"</term>
+          <listitem>
+	    <para>
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+          <listitem>
+	    <para>
+	      The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
     <refsect2 id="rule">
       <title>rule</title>
       <para>
@@ -357,7 +384,8 @@
     &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
     &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
     &lt;masquerade/&gt; |
-    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
+    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt; |
+    &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
   ]
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]

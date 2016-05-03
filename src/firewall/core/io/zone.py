@@ -53,8 +53,9 @@ class Zone(IO_Object):
         ( "sources", [ "" ] ),                         # as
         ( "rules_str", [ "" ] ),                       # as
         ( "protocols", [ "", ], ),                     # as
+        ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasas)'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasasa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -69,6 +70,7 @@ class Zone(IO_Object):
         "source": None,
         "destination": [ "address" ],
         "protocol": [ "value" ],
+        "source-port": [ "port", "protocol" ],
         "log":  None,
         "audit": None,
         "accept": None,
@@ -108,6 +110,7 @@ class Zone(IO_Object):
         self.icmp_blocks = [ ]
         self.masquerade = False
         self.forward_ports = [ ]
+        self.source_ports = [ ]
         self.interfaces = [ ]
         self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
@@ -127,6 +130,7 @@ class Zone(IO_Object):
         del self.icmp_blocks[:]
         self.masquerade = False
         del self.forward_ports[:]
+        del self.source_ports[:]
         del self.interfaces[:]
         del self.sources[:]
         self.fw_config = None # to be able to check services and a icmp_blocks
@@ -147,6 +151,8 @@ class Zone(IO_Object):
         self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
         self.icmp_blocks = [u2b_if_py2(i) for i in self.icmp_blocks]
         self.forward_ports = [(u2b_if_py2(p1),u2b_if_py2(p2),u2b_if_py2(p3),u2b_if_py2(p4)) for (p1,p2,p3,p4) in self.forward_ports]
+        self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
+                             in self.source_ports]
         self.interfaces = [u2b_if_py2(i) for i in self.interfaces]
         self.sources = [u2b_if_py2(s) for s in self.sources]
         self.rules = [u2b_if_py2(s) for s in self.rules]
@@ -201,6 +207,10 @@ class Zone(IO_Object):
                         raise FirewallError(
                             errors.INVALID_ADDR,
                             "to-addr '%s' is not a valid address" % fwd_port[3])
+        elif item == "source_ports":
+            for port in config:
+                check_port(port[0])
+                check_tcpudp(port[1])
         elif item == "target":
             if config not in ZONE_TARGETS:
                 raise FirewallError(errors.INVALID_TARGET, config)
@@ -264,6 +274,9 @@ class Zone(IO_Object):
         for forward in zone.forward_ports:
             if forward not in self.forward_ports:
                 self.forward_ports.append(forward)
+        for port in zone.source_ports:
+            if port not in self.source_ports:
+                self.source_ports.append(port)
         for rule in zone.rules:
             self.rules.append(rule)
 
@@ -421,6 +434,25 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                             attrs["port"], attrs["protocol"],
                             " >%s" % to_port if to_port else "",
                             " @%s" % to_addr if to_addr else "")
+
+        elif name == "source-port":
+            if self._rule:
+                if self._rule.element:
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
+                    self._rule_error = True
+                    return
+                self._rule.element = Rich_SourcePort(attrs["port"],
+                                                     attrs["protocol"])
+                return
+            check_port(attrs["port"])
+            check_tcpudp(attrs["protocol"])
+            entry = (portStr(attrs["port"], "-"), attrs["protocol"])
+            if entry not in self.item.source_ports:
+                self.item.source_ports.append(entry)
+            else:
+                log.warning("Source port '%s/%s' already set, ignoring.",
+                            attrs["port"], attrs["protocol"])
 
         elif name == "interface":
             if self._rule:
@@ -739,6 +771,13 @@ def zone_writer(zone, path=None):
         handler.simpleElement("forward-port", attrs)
         handler.ignorableWhitespace("\n")
 
+    # source-ports
+    for port in uniqify(zone.source_ports):
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("source-port", { "port": port[0],
+                                               "protocol": port[1] })
+        handler.ignorableWhitespace("\n")
+
     # rules
     for rule in zone.rules:
         attrs = { }
@@ -800,6 +839,10 @@ def zone_writer(zone, path=None):
                     attrs["to-port"] = rule.element.to_port
                 if rule.element.to_address != "":
                     attrs["to-addr"] = rule.element.to_address
+            elif type(rule.element) == Rich_SourcePort:
+                element = "source-port"
+                attrs["port"] = rule.element.port
+                attrs["protocol"] = rule.element.protocol
             else:
                 log.warning("Unknown element '%s'", type(rule.element))
 
