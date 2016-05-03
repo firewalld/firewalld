@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.19.0 -->
+<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.6"/>
   <!-- interface-local-resource-path icons -->
@@ -97,10 +97,10 @@
               <object class="GtkLabel" id="addressDialogLabel">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">Please enter an %s address.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter an %s address.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -112,10 +112,10 @@
               <object class="GtkLabel" id="addressDialogLabel2">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">The ...</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">The ...</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -233,10 +233,10 @@
               <object class="GtkLabel" id="label83">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter the command line.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter the command line.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -354,10 +354,10 @@
               <object class="GtkLabel" id="label82">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter the context.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter the context.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -482,10 +482,10 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="valign">start</property>
-                <property name="label" translatable="yes">Please select default zone from the list below.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select default zone from the list below.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -596,10 +596,10 @@
               <object class="GtkLabel" id="label98">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select ipv and table and enter the chain name.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select ipv and table and enter the chain name.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -619,8 +619,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">ipv:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">ipv:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -668,9 +668,9 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Chain:</property>
                     <property name="ellipsize">middle</property>
-                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -701,8 +701,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Table:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Table:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -795,10 +795,10 @@
               <object class="GtkLabel" id="label108">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select ipv and enter the args.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select ipv and enter the args.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -818,8 +818,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">ipv:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">ipv:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -864,8 +864,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Args:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Args:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -963,10 +963,10 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select the source and destination options according to your needs.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select the source and destination options according to your needs.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -986,8 +986,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Port / Port Range:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Port / Port Range:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -999,8 +999,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">IP address:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">IP address:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1012,8 +1012,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Port / Port Range:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Port / Port Range:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1025,8 +1025,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Protocol:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Protocol:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1038,10 +1038,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Source</property>
-                    <property name="use_markup">True</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
+                    <property name="label" translatable="yes">Source</property>
+                    <property name="use_markup">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -1057,10 +1057,10 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
-                    <property name="label" translatable="yes">Destination</property>
-                    <property name="use_markup">True</property>
                     <property name="xalign">0</property>
                     <property name="yalign">0</property>
+                    <property name="label" translatable="yes">Destination</property>
+                    <property name="use_markup">True</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -1077,11 +1077,11 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">start</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
                     <property name="label" translatable="yes">If you enable local forwarding, you have to specify a port. This port has to be different to the source port.</property>
                     <property name="use_markup">True</property>
                     <property name="wrap">True</property>
-                    <property name="xalign">0</property>
-                    <property name="yalign">0</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1293,10 +1293,10 @@
               <object class="GtkLabel" id="label29">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please configure base ICMP type settings:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please configure base ICMP type settings:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1308,10 +1308,10 @@
               <object class="GtkLabel" id="label40">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1331,8 +1331,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Name:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Name:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -1396,8 +1396,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Version:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Version:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1422,8 +1422,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Short:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Short:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1435,8 +1435,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Description:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Description:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -1530,10 +1530,10 @@
               <object class="GtkLabel" id="label54">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select an ICMP type</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select an ICMP type</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1869,8 +1869,8 @@
                   <object class="GtkLabel" id="label5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Configuration:</property>
                     <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Configuration:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -2021,10 +2021,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">A firewalld zone defines the level of trust for network connections, interfaces and source addresses bound to the zone. The zone combines services, ports, protocols, masquerading, port/packet forwarding, icmp filters and rich rules. The zone can be bound to interfaces and source addresses.</property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">A firewalld zone defines the level of trust for network connections, interfaces and source addresses bound to the zone. The zone combines services, ports, protocols, masquerading, port/packet forwarding, icmp filters and rich rules. The zone can be bound to interfaces and source addresses.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -2048,8 +2048,8 @@
                               <object class="GtkLabel" id="label9">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Zone</property>
                                 <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Zone</property>
                                 <attributes>
                                   <attribute name="weight" value="bold"/>
                                 </attributes>
@@ -2178,11 +2178,11 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
+                                    <property name="xalign">0</property>
+                                    <property name="yalign">0</property>
                                     <property name="label" translatable="yes">Here you can define which services are trusted in the zone. Trusted services are accessible from all hosts and networks that can reach the machine from connections, interfaces and sources bound to this zone.</property>
                                     <property name="use_markup">True</property>
                                     <property name="wrap">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="yalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2246,10 +2246,10 @@
                                   <object class="GtkLabel" id="label10">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add additional ports or port ranges, which need to be accessible for all hosts or networks that can connect to the machine.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add additional ports or port ranges, which need to be accessible for all hosts or networks that can connect to the machine.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2388,10 +2388,10 @@
                                   <object class="GtkLabel" id="label110">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add protocols, which need to be accessible for all hosts or networks.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add protocols, which need to be accessible for all hosts or networks.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2520,6 +2520,148 @@
                               </packing>
                             </child>
                             <child>
+                              <object class="GtkBox" id="sourcePortsVBox">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="border_width">6</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="label135">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add additional source ports or port ranges, which need to be accessible for all hosts or networks that can connect to the machine.</property>
+                                    <property name="wrap">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="hbox22">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkScrolledWindow" id="sourcePortsSW">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="shadow_type">out</property>
+                                        <child>
+                                          <object class="GtkTreeView" id="sourcePortView">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="enable_search">False</property>
+                                            <signal name="button-press-event" handler="onSourcePortClicked" swapped="no"/>
+                                            <child internal-child="selection">
+                                              <object class="GtkTreeSelection" id="treeview-selection36"/>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButtonBox" id="vbuttonbox3">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="spacing">6</property>
+                                    <property name="layout_style">start</property>
+                                    <child>
+                                      <object class="GtkButton" id="addSourcePortButton">
+                                        <property name="label">gtk-add</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_text" translatable="yes">Add Port</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+					<signal name="clicked" handler="onAddSourcePort" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="editSourcePortButton">
+                                        <property name="label">gtk-edit</property>
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Port</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="onEditSourcePort" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="removeSourcePortButton">
+                                        <property name="label">gtk-remove</property>
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Port</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="onRemoveSourcePort" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="position">3</property>
+                              </packing>
+                            </child>
+                            <child type="tab">
+                              <object class="GtkLabel" id="label134">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Source Port</property>
+                              </object>
+                              <packing>
+                                <property name="position">3</property>
+                                <property name="tab_fill">False</property>
+                              </packing>
+                            </child>
+                            <child>
                               <object class="GtkBox" id="masqueradingVBox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -2530,10 +2672,10 @@
                                   <object class="GtkLabel" id="label32">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Masquerading allows you to set up a host or router that connects your local network to the internet. Your local network will not be visible and the hosts appear as a single address on the internet. Masquerading is IPv4 only.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Masquerading allows you to set up a host or router that connects your local network to the internet. Your local network will not be visible and the hosts appear as a single address on the internet. Masquerading is IPv4 only.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2570,10 +2712,10 @@
                                   <object class="GtkLabel" id="label36">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">If you enable masquerading, IP forwarding will be enabled for your IPv4 networks.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">If you enable masquerading, IP forwarding will be enabled for your IPv4 networks.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2583,7 +2725,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">3</property>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -2593,7 +2735,7 @@
                                 <property name="label" translatable="yes">Masquerading</property>
                               </object>
                               <packing>
-                                <property name="position">3</property>
+                                <property name="position">4</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -2608,10 +2750,10 @@
                                   <object class="GtkLabel" id="label34">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add entries to forward ports either from one port to another on the local system or from the local system to another system. Forwarding to another system is only useful if the interface is masqueraded. Port forwarding is IPv4 only.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add entries to forward ports either from one port to another on the local system or from the local system to another system. Forwarding to another system is only useful if the interface is masqueraded. Port forwarding is IPv4 only.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2725,7 +2867,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">4</property>
+                                <property name="position">5</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -2736,7 +2878,7 @@
                                 <signal name="button-press-event" handler="onForwardPortClicked" swapped="no"/>
                               </object>
                               <packing>
-                                <property name="position">4</property>
+                                <property name="position">5</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -2751,10 +2893,10 @@
                                   <object class="GtkLabel" id="label219">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">The Internet Control Message Protocol (ICMP) is mainly used to send error messages between networked computers, but additionally for informational messages like ping requests and replies.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2766,10 +2908,10 @@
                                   <object class="GtkLabel" id="label220">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Mark the ICMP types in the list, which should be rejected. All other ICMP types are allowed to pass the firewall. The default is no limitation.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Mark the ICMP types in the list, which should be rejected. All other ICMP types are allowed to pass the firewall. The default is no limitation.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2812,7 +2954,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">5</property>
+                                <property name="position">6</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -2822,7 +2964,7 @@
                                 <property name="label" translatable="yes">ICMP Filter</property>
                               </object>
                               <packing>
-                                <property name="position">5</property>
+                                <property name="position">6</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -2837,11 +2979,11 @@
                                   <object class="GtkLabel" id="label62">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="yalign">0</property>
                                     <property name="label" translatable="yes">Here you can set rich language rules for the zone.</property>
                                     <property name="use_markup">True</property>
                                     <property name="wrap">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="yalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -2954,7 +3096,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">6</property>
+                                <property name="position">7</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -2964,7 +3106,7 @@
                                 <property name="label" translatable="yes">Rich Rules</property>
                               </object>
                               <packing>
-                                <property name="position">6</property>
+                                <property name="position">7</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -2979,10 +3121,10 @@
                                   <object class="GtkLabel" id="label60">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add entries to bind interfaces to the zone. If the interface will be used by a connection, the zone will be set to the zone specified in the connection.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add entries to bind interfaces to the zone. If the interface will be used by a connection, the zone will be set to the zone specified in the connection.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -3096,7 +3238,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">7</property>
+                                <property name="position">8</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -3106,7 +3248,7 @@
                                 <property name="label" translatable="yes">Interfaces</property>
                               </object>
                               <packing>
-                                <property name="position">7</property>
+                                <property name="position">8</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -3121,10 +3263,10 @@
                                   <object class="GtkLabel" id="label61">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add entries to bind source addresses or areas to the zone. You can also bind to a MAC source address, but with limitations. Port forwarding and masquerading will not work for MAC source bindings.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add entries to bind source addresses or areas to the zone. You can also bind to a MAC source address, but with limitations. Port forwarding and masquerading will not work for MAC source bindings.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -3238,7 +3380,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">8</property>
+                                <property name="position">9</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -3248,7 +3390,7 @@
                                 <property name="label" translatable="yes">Sources</property>
                               </object>
                               <packing>
-                                <property name="position">8</property>
+                                <property name="position">9</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -3293,10 +3435,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">A firewalld service is a combination of ports, protocols, modules and destination addresses.</property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">A firewalld service is a combination of ports, protocols, modules and destination addresses.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -3320,8 +3462,8 @@
                               <object class="GtkLabel" id="label2">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">Service</property>
                                 <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Service</property>
                                 <attributes>
                                   <attribute name="weight" value="bold"/>
                                 </attributes>
@@ -3457,10 +3599,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Add additional ports or port ranges, which need to be accessible for all hosts or networks.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add additional ports or port ranges, which need to be accessible for all hosts or networks.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -3595,10 +3737,10 @@
                                   <object class="GtkLabel" id="label112">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Add protocols, which need to be accessible for all hosts or networks.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add protocols, which need to be accessible for all hosts or networks.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -3727,6 +3869,148 @@
                               </packing>
                             </child>
                             <child>
+                              <object class="GtkBox" id="sourcPortsVBox1">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="border_width">6</property>
+                                <property name="orientation">vertical</property>
+                                <property name="spacing">6</property>
+                                <child>
+                                  <object class="GtkLabel" id="label137">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="halign">start</property>
+                                    <property name="xalign">0</property>
+                                    <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add additional source ports or port ranges, which need to be accessible for all hosts or networks.</property>
+                                    <property name="wrap">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkBox" id="hbox23">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="spacing">6</property>
+                                    <child>
+                                      <object class="GtkScrolledWindow" id="sourcePortsSW1">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="shadow_type">out</property>
+                                        <child>
+                                          <object class="GtkTreeView" id="serviceConfSourcePortView">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="enable_search">False</property>
+                                            <signal name="button-press-event" handler="onServiceConfSourcePortClicked" swapped="no"/>                                            <child internal-child="selection">
+                                              <object class="GtkTreeSelection" id="treeview-selection38"/>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">True</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButtonBox" id="serviceConfSourcePortBox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="spacing">6</property>
+                                    <property name="layout_style">start</property>
+                                    <child>
+                                      <object class="GtkButton" id="serviceConfAddSourcePortButton">
+                                        <property name="label">gtk-add</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_text" translatable="yes">Add Entry</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="onServiceConfAddSourcePort" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="serviceConfEditSourcePortButton">
+                                        <property name="label">gtk-edit</property>
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_text" translatable="yes">Edit Entry</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="onServiceConfEditSourcePort" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkButton" id="serviceConfRemoveSourcePortButton">
+                                        <property name="label">gtk-remove</property>
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="has_tooltip">True</property>
+                                        <property name="tooltip_text" translatable="yes">Remove Entry</property>
+                                        <property name="use_stock">True</property>
+                                        <property name="focus_on_click">False</property>
+                                        <signal name="clicked" handler="onServiceConfRemoveSourcePort" swapped="no"/>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child type="tab">
+                              <object class="GtkLabel" id="label136">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="label" translatable="yes">Source Port</property>
+                              </object>
+                              <packing>
+                                <property name="position">2</property>
+                                <property name="tab_fill">False</property>
+                              </packing>
+                            </child>
+                            <child>
                               <object class="GtkBox" id="portForwardingVBox1">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
@@ -3737,10 +4021,10 @@
                                   <object class="GtkLabel" id="label21">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Netfilter helper modules</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Netfilter helper modules</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -3855,7 +4139,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -3865,7 +4149,7 @@
                                 <property name="label" translatable="yes">Modules</property>
                               </object>
                               <packing>
-                                <property name="position">2</property>
+                                <property name="position">3</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -3880,10 +4164,10 @@
                                   <object class="GtkLabel" id="label47">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">If you specify destination addresses, the service entry will be limited to the destination address and type. If both entries are empty, there is no limitation.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">If you specify destination addresses, the service entry will be limited to the destination address and type. If both entries are empty, there is no limitation.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -4042,7 +4326,7 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="position">3</property>
+                                <property name="position">4</property>
                               </packing>
                             </child>
                             <child type="tab">
@@ -4052,7 +4336,7 @@
                                 <property name="label" translatable="yes">Destination</property>
                               </object>
                               <packing>
-                                <property name="position">3</property>
+                                <property name="position">4</property>
                                 <property name="tab_fill">False</property>
                               </packing>
                             </child>
@@ -4073,9 +4357,9 @@
                       <object class="GtkLabel" id="label78">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Services can only be changed in the permanent configuration view. The runtime configuration of services is fixed.</property>
                         <property name="wrap">True</property>
-                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4111,10 +4395,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">An IPSet can be used to create white or black lists and is able to store for example IP addresses, port numbers or MAC addresses. </property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">An IPSet can be used to create white or black lists and is able to store for example IP addresses, port numbers or MAC addresses. </property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4138,8 +4422,8 @@
                               <object class="GtkLabel" id="label114">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">IPSet</property>
                                 <property name="xalign">0</property>
+                                <property name="label" translatable="yes">IPSet</property>
                                 <attributes>
                                   <attribute name="weight" value="bold"/>
                                 </attributes>
@@ -4275,10 +4559,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Entries of the IPSet. You will only be able to see entries of ipsets that are not using the timeout option, also only the entries, that have been added by firewalld. Entries, that have been directly added with the ipset command wil not be listed here.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Entries of the IPSet. You will only be able to see entries of ipsets that are not using the timeout option, also only the entries, that have been added by firewalld. Entries, that have been directly added with the ipset command wil not be listed here.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -4317,12 +4601,12 @@
                                     <child>
                                       <object class="GtkLabel" id="ipsetConfTimeoutLabel">
                                         <property name="can_focus">False</property>
+                                        <property name="xalign">0</property>
+                                        <property name="yalign">0</property>
                                         <property name="xpad">12</property>
                                         <property name="ypad">12</property>
                                         <property name="label" translatable="yes">This IPSet uses the timeout option, therefore no entries are visible here. The entries should be taken care directly with the ipset command.</property>
                                         <property name="wrap">True</property>
-                                        <property name="xalign">0</property>
-                                        <property name="yalign">0</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -4435,9 +4719,9 @@
                       <object class="GtkLabel" id="label127">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">IPSets can only be created or deleted in the permanent configuration view.</property>
                         <property name="wrap">True</property>
-                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4473,10 +4757,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">A firewalld icmptype provides the information for an Internet Control Message Protocol (ICMP) type for firewalld.</property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">A firewalld icmptype provides the information for an Internet Control Message Protocol (ICMP) type for firewalld.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4500,8 +4784,8 @@
                               <object class="GtkLabel" id="label12">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="label" translatable="yes">ICMP Type</property>
                                 <property name="xalign">0</property>
+                                <property name="label" translatable="yes">ICMP Type</property>
                                 <attributes>
                                   <attribute name="weight" value="bold"/>
                                 </attributes>
@@ -4636,10 +4920,10 @@
                                   <object class="GtkLabel" id="label27">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Specify whether this ICMP Type is available for IPv4 and/or IPv6.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Specify whether this ICMP Type is available for IPv4 and/or IPv6.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -4722,9 +5006,9 @@
                       <object class="GtkLabel" id="label79">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">ICMP Types can only be changed in the permanent configuration view. The runtime configuration of ICMP Types is fixed.</property>
                         <property name="wrap">True</property>
-                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4759,10 +5043,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">The direct configuration gives a more direct access to the firewall. These options require user to know basic iptables concepts, i.e. tables, chains, commands, parameters and targets. Direct configuration should be used only as a last resort when it is not possible to use other firewalld features.</property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">The direct configuration gives a more direct access to the firewall. These options require user to know basic iptables concepts, i.e. tables, chains, commands, parameters and targets. Direct configuration should be used only as a last resort when it is not possible to use other firewalld features.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4775,10 +5059,10 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
-                        <property name="label" translatable="yes">The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it will be for iptables, with ipv6 for ip6tables and with eb for ethernet bridges (ebtables).</property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">The ipv argument of each option has to be ipv4 or ipv6 or eb. With ipv4 it will be for iptables, with ipv6 for ip6tables and with eb for ethernet bridges (ebtables).</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -4808,10 +5092,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Additional chains for use with rules.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Additional chains for use with rules.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -4947,10 +5231,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Add a rule with the arguments args to a chain in a table with a priority.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Add a rule with the arguments args to a chain in a table with a priority.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -4963,10 +5247,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">The priority is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">The priority is used to order rules. Priority 0 means add rule on top of the chain, with a higher priority the rule will be added further down. Rules with the same priority are on the same level and the order of these rules is not fixed and may change. If you want to make sure that a rule will be added after another one, use a low priority for the first and a higher for the following.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -5106,10 +5390,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">The passthrough rules are directly passed through to the firewall and are not placed in special chains. All iptables, ip6tables and ebtables options can be used.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">The passthrough rules are directly passed through to the firewall and are not placed in special chains. All iptables, ip6tables and ebtables options can be used.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -5122,10 +5406,10 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                     <property name="halign">start</property>
-                                    <property name="label" translatable="yes">Please be careful with passthrough rules to not damage the firewall.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">Please be careful with passthrough rules to not damage the firewall.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -5293,10 +5577,10 @@
                       <object class="GtkLabel" id="label46">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">The lockdown feature is a light version of user and application policies for firewalld. It limits changes to the firewall. The lockdown whitelist can contain commands, contexts, users and user ids.</property>
-                        <property name="wrap">True</property>
                         <property name="xalign">0</property>
                         <property name="yalign">0</property>
+                        <property name="label" translatable="yes">The lockdown feature is a light version of user and application policies for firewalld. It limits changes to the firewall. The lockdown whitelist can contain commands, contexts, users and user ids.</property>
+                        <property name="wrap">True</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -5340,11 +5624,11 @@
                                   <object class="GtkLabel" id="label73">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="yalign">0</property>
                                     <property name="label" translatable="yes">The context is the security (SELinux) context of a running application or service. To get the context of a running application use &lt;tt&gt;ps -e --context&lt;/tt&gt;.</property>
                                     <property name="use_markup">True</property>
                                     <property name="wrap">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="yalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -5479,10 +5763,10 @@
                                   <object class="GtkLabel" id="label74">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">If a command entry on the whitelist ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">If a command entry on the whitelist ends with an asterisk '*', then all command lines starting with the command will match. If the '*' is not there the absolute command inclusive arguments must match.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -5621,10 +5905,10 @@
                                   <object class="GtkLabel" id="label75">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">User names.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">User names.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -5763,10 +6047,10 @@
                                   <object class="GtkLabel" id="label68">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">User ids.</property>
-                                    <property name="wrap">True</property>
                                     <property name="xalign">0</property>
                                     <property name="yalign">0</property>
+                                    <property name="label" translatable="yes">User ids.</property>
+                                    <property name="wrap">True</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -6177,10 +6461,10 @@
               <object class="GtkLabel" id="interfaceDialogLabel">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">Please enter an interface name:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter an interface name:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -6296,10 +6580,10 @@
               <object class="GtkLabel" id="label120">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please configure base ipset settings:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please configure base ipset settings:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -6311,10 +6595,10 @@
               <object class="GtkLabel" id="label122">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -6387,8 +6671,8 @@
                   <object class="GtkLabel" id="label125">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Name:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Name:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -6416,8 +6700,8 @@
                   <object class="GtkLabel" id="protoLabel5">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Version:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Version:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -6428,8 +6712,8 @@
                   <object class="GtkLabel" id="protoLabel6">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Short:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Short:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -6440,8 +6724,8 @@
                   <object class="GtkLabel" id="protoLabel11">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Description:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Description:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -6452,8 +6736,8 @@
                   <object class="GtkLabel" id="ipsetBaseDialogTypeLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Type:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Type:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -6497,9 +6781,9 @@
                   <object class="GtkLabel" id="label119">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Timeout:</property>
                     <property name="ellipsize">middle</property>
-                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -6510,9 +6794,9 @@
                   <object class="GtkLabel" id="label121">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Hashsize:</property>
                     <property name="ellipsize">middle</property>
-                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -6523,9 +6807,9 @@
                   <object class="GtkLabel" id="label123">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Maxelem:</property>
                     <property name="ellipsize">middle</property>
-                    <property name="xalign">1</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -6575,9 +6859,9 @@
                   <object class="GtkLabel" id="ipsetBaseDialogFamilyLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xalign">1</property>
                     <property name="label" translatable="yes">Family:</property>
                     <property name="lines">0</property>
-                    <property name="xalign">1</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -6674,10 +6958,10 @@
               <object class="GtkLabel" id="label115">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select an ipset:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select an ipset:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -6786,10 +7070,10 @@
               <object class="GtkLabel" id="ipsetEntryDialogLabel">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">Please enter an ipset entry:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter an ipset entry:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -6911,10 +7195,10 @@
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
                 <property name="valign">start</property>
-                <property name="label" translatable="yes">Please select the log denied value:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select the log denied value:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7029,10 +7313,10 @@
               <object class="GtkLabel" id="macDialogLabel">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a MAC address.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a MAC address.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7150,10 +7434,10 @@
               <object class="GtkLabel" id="label124">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter a mark with an optional mask.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter a mark with an optional mask.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7165,10 +7449,10 @@
               <object class="GtkLabel" id="label129">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">The mark and the mask fields are both 32 bits wide unsigned numbers.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">The mark and the mask fields are both 32 bits wide unsigned numbers.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7188,8 +7472,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Mark:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Mark:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7217,8 +7501,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Mask:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Mask:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7327,10 +7611,10 @@
               <object class="GtkLabel" id="label24">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter the module name.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter the module name.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7448,10 +7732,10 @@
               <object class="GtkLabel" id="label18">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter a port and protocol.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter a port and protocol.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7471,8 +7755,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Port / Port Range:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Port / Port Range:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7517,8 +7801,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Protocol:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Protocol:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7617,10 +7901,10 @@
               <object class="GtkLabel" id="label102">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select ipv and table, chain priority and enter the args.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select ipv and table, chain priority and enter the args.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7639,8 +7923,8 @@
                   <object class="GtkLabel" id="label103">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">ipv:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">ipv:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7734,8 +8018,8 @@
                   <object class="GtkLabel" id="label104">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Table:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Table:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7746,8 +8030,8 @@
                   <object class="GtkLabel" id="label105">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Chain:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Chain:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7758,8 +8042,8 @@
                   <object class="GtkLabel" id="label106">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Priority:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Priority:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7770,8 +8054,8 @@
                   <object class="GtkLabel" id="label107">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Args:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Args:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -7864,10 +8148,10 @@
               <object class="GtkLabel" id="label69">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter a protocol.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter a protocol.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -7887,8 +8171,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Protocol:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Protocol:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -8039,10 +8323,10 @@
               <object class="GtkLabel" id="label37">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter a rich rule.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter a rich rule.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -8054,10 +8338,10 @@
               <object class="GtkLabel" id="label38">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">For host or network white or blacklisting deactivate the element.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">For host or network white or blacklisting deactivate the element.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -8077,8 +8361,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Source:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Source:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -8090,8 +8374,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Destination:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Destination:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -8188,8 +8472,8 @@
                               <object class="GtkLabel" id="label55">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="width_chars">0</property>
                                 <property name="xalign">0</property>
+                                <property name="width_chars">0</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -8277,8 +8561,8 @@
                               <object class="GtkLabel" id="label56">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="width_chars">0</property>
                                 <property name="xalign">0</property>
+                                <property name="width_chars">0</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -8448,8 +8732,8 @@
                                           <object class="GtkLabel" id="label44">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="width_chars">0</property>
                                             <property name="xalign">0</property>
+                                            <property name="width_chars">0</property>
                                           </object>
                                           <packing>
                                             <property name="expand">True</property>
@@ -8617,8 +8901,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">end</property>
-                        <property name="label" translatable="yes">Prefix:</property>
                         <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Prefix:</property>
                       </object>
                       <packing>
                         <property name="left_attach">0</property>
@@ -8630,8 +8914,8 @@
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">end</property>
-                        <property name="label" translatable="yes">Level:</property>
                         <property name="xalign">1</property>
+                        <property name="label" translatable="yes">Level:</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -8903,8 +9187,8 @@
                               <object class="GtkLabel" id="label57">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="width_chars">0</property>
                                 <property name="xalign">0</property>
+                                <property name="width_chars">0</property>
                               </object>
                               <packing>
                                 <property name="expand">True</property>
@@ -8957,8 +9241,8 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">end</property>
-                    <property name="label" translatable="yes">Family:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Family:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -9148,10 +9432,10 @@
               <object class="GtkLabel" id="label26">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please configure base service settings:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please configure base service settings:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9163,10 +9447,10 @@
               <object class="GtkLabel" id="label41">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9187,8 +9471,8 @@
                   <object class="GtkLabel" id="label28">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Name:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Name:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -9252,8 +9536,8 @@
                   <object class="GtkLabel" id="protoLabel16">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Short:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Short:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -9264,8 +9548,8 @@
                   <object class="GtkLabel" id="protoLabel7">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Description:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Description:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -9276,8 +9560,8 @@
                   <object class="GtkLabel" id="protoLabel4">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Version:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Version:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -9384,10 +9668,10 @@
               <object class="GtkLabel" id="label53">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please select a service.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please select a service.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9496,10 +9780,10 @@
               <object class="GtkLabel" id="sourceDialogLabel">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a source.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" comments="%s is either IPv4 or IPv6">Please enter a source.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9546,8 +9830,8 @@
                           <object class="GtkLabel" id="label43">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="width_chars">0</property>
                             <property name="xalign">0</property>
+                            <property name="width_chars">0</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
@@ -9675,10 +9959,10 @@
               <object class="GtkLabel" id="label85">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter the user id.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter the user id.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9796,10 +10080,10 @@
               <object class="GtkLabel" id="label84">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please enter the user name.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please enter the user name.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9916,10 +10200,10 @@
               <object class="GtkLabel" id="label20">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Please configure base zone settings:</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Please configure base zone settings:</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -9931,10 +10215,10 @@
               <object class="GtkLabel" id="label39">
                 <property name="can_focus">False</property>
                 <property name="halign">start</property>
-                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
-                <property name="wrap">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">0</property>
+                <property name="label" translatable="yes">Bold entries are mandatory, all others are optional.</property>
+                <property name="wrap">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -10042,8 +10326,8 @@
                   <object class="GtkLabel" id="label23">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Name:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Name:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -10075,8 +10359,8 @@
                   <object class="GtkLabel" id="protoLabel1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Version:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Version:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -10087,8 +10371,8 @@
                   <object class="GtkLabel" id="protoLabel2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Short:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Short:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -10099,8 +10383,8 @@
                   <object class="GtkLabel" id="protoLabel3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Description:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Description:</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -10111,8 +10395,8 @@
                   <object class="GtkLabel" id="zoneBaseDialogTargetLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Target:</property>
                     <property name="xalign">1</property>
+                    <property name="label" translatable="yes">Target:</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>
@@ -10126,8 +10410,8 @@
                   <object class="GtkLabel" id="zoneBaseDialogTargetLabel1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="ellipsize">middle</property>
                     <property name="xalign">1</property>
+                    <property name="ellipsize">middle</property>
                     <attributes>
                       <attribute name="weight" value="bold"/>
                     </attributes>

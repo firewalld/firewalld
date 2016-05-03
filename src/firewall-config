@@ -235,6 +235,8 @@ class FirewallConfig(object):
             builder.get_object("serviceConfPortBox")
         self.serviceConfProtocolBox = \
             builder.get_object("serviceConfProtocolBox")
+        self.serviceConfSourcePortBox = \
+            builder.get_object("serviceConfSourcePortBox")
         self.serviceConfModuleBox = \
             builder.get_object("serviceConfModuleBox")
         self.serviceConfDestinationGrid = \
@@ -487,6 +489,24 @@ class FirewallConfig(object):
         self.protoDialogOtherProtoEntry = \
             builder.get_object("protoDialogOtherProtoEntry")
 
+        self.sourcePortView = builder.get_object("sourcePortView")
+        self.sourcePortStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                             GObject.TYPE_STRING)
+        self.sourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
+        self.sourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
+        self.sourcePortView.set_model(self.sourcePortStore)
+        self.sourcePortStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.sourcePortView.get_selection().connect(
+            "changed", self.change_source_port_selection_cb)
+
+        self.editSourcePortButton = builder.get_object("editSourcePortButton")
+        self.removeSourcePortButton = \
+            builder.get_object("removeSourcePortButton")
+
+
+
         self.masqueradeCheck = builder.get_object("masqueradeCheck")
         self.masqueradeEventbox = builder.get_object("masqueradeEventbox")
         self.masqueradeEventbox.connect("button-press-event",
@@ -551,16 +571,15 @@ class FirewallConfig(object):
         self.sourcesIter = self.bindingsStore.append(
             None, [ _("Sources"), "", "" ])
         self.bindingsView.get_selection().connect("changed",
-                                                  self.onChangeBinding)
+                                                  self.onSelectBinding)
         self.bindingsView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.bindingsView.set_show_expanders(False)
-        self.bindingsView.set_activate_on_single_click(True)
         self.bindingsView.set_level_indentation(10)
 
         self.changeBindingsButton = builder.get_object("changeBindingsButton")
-        self.changeBindingsButton.connect("clicked", self.on_changeBindings_cb)
+        self.changeBindingsButton.connect("clicked", self.onChangeBinding)
         #self.editBindingsButton = builder.get_object("editBindingsButton")
-        #self.editBindingsButton.connect("clicked", self.on_editBindings_cb)
+        #self.editBindingsButton.connect("clicked", self.onEditBinding)
 
         self.ipsetConfIPSetView = builder.get_object("ipsetConfIPSetView")
         self.ipsetConfIPSetStore = Gtk.ListStore(GObject.TYPE_STRING)  # name
@@ -859,6 +878,25 @@ class FirewallConfig(object):
         self.serviceConfRemoveProtocolButton = \
             builder.get_object("serviceConfRemoveProtocolButton")
 
+        self.serviceConfSourcePortView = \
+            builder.get_object("serviceConfSourcePortView")
+        self.serviceConfSourcePortStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                                        GObject.TYPE_STRING)
+        self.serviceConfSourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
+        self.serviceConfSourcePortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
+        self.serviceConfSourcePortView.set_model(self.serviceConfSourcePortStore)
+        self.serviceConfSourcePortStore.set_sort_column_id(
+            1, Gtk.SortType.ASCENDING)
+        self.serviceConfSourcePortView.get_selection().connect(\
+            "changed", self.change_service_dialog_source_port_selection_cb)
+
+        self.serviceConfEditSourcePortButton = \
+            builder.get_object("serviceConfEditSourcePortButton")
+        self.serviceConfRemoveSourcePortButton = \
+            builder.get_object("serviceConfRemoveSourcePortButton")
+
         self.serviceConfModuleView = \
             builder.get_object("serviceConfModuleView")
         self.serviceConfModuleStore = Gtk.ListStore(GObject.TYPE_STRING)
@@ -1068,6 +1106,8 @@ class FirewallConfig(object):
         self.fw.connect("port-removed", self.port_removed_cb)
         self.fw.connect("protocol-added", self.protocol_added_cb)
         self.fw.connect("protocol-removed", self.protocol_removed_cb)
+        self.fw.connect("source-port-added", self.source_port_added_cb)
+        self.fw.connect("source-port-removed", self.source_port_removed_cb)
         self.fw.connect("masquerade-added", self.masquerade_added_cb)
         self.fw.connect("masquerade-removed", self.masquerade_removed_cb)
         self.fw.connect("forward-port-added", self.forward_port_added_cb)
@@ -1596,6 +1636,15 @@ class FirewallConfig(object):
             self.editPortButton.set_sensitive(False)
             self.removePortButton.set_sensitive(False)
 
+    def change_source_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.editSourcePortButton.set_sensitive(True)
+            self.removeSourcePortButton.set_sensitive(True)
+        else:
+            self.editSourcePortButton.set_sensitive(False)
+            self.removeSourcePortButton.set_sensitive(False)
+
     def change_protocol_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
@@ -1733,6 +1782,9 @@ class FirewallConfig(object):
                 elem = "forward-port" + "\n%s" % self.create_fwp_string(
                     obj.element.port, obj.element.protocol,
                     obj.element.to_port, obj.element.to_address)
+            elif type(obj.element) == Rich_SourcePort:
+                elem = _("source-port") + "\n%s/%s" % (obj.element.port,
+                                                       obj.element.protocol)
             else:
                 elem = str(obj.element)
 
@@ -1975,6 +2027,7 @@ class FirewallConfig(object):
             self.serviceConfServiceEditBox.hide()
             self.serviceConfPortBox.hide()
             self.serviceConfProtocolBox.hide()
+            self.serviceConfSourcePortBox.hide()
             self.serviceConfModuleBox.hide()
             self.icmpDialogIcmpEditBox.hide()
         else:
@@ -1983,6 +2036,7 @@ class FirewallConfig(object):
             self.serviceConfServiceEditBox.show()
             self.serviceConfPortBox.show()
             self.serviceConfProtocolBox.show()
+            self.serviceConfSourcePortBox.show()
             self.serviceConfModuleBox.show()
             self.icmpDialogIcmpEditBox.show()
 
@@ -2221,7 +2275,7 @@ class FirewallConfig(object):
         self.defaultZoneLabel.set_text(zone)
         self.update_active_zones()
 
-    def onChangeBinding(self, *args):
+    def onSelectBinding(self, *args):
         selection = self.bindingsView.get_selection()
         (model, iter) = selection.get_selected()
         if not iter:
@@ -2243,7 +2297,11 @@ class FirewallConfig(object):
             self.changeBindingsButton.set_sensitive(True)
             #self.editBindingsButton.set_sensitive(True)
 
-    def on_changeBindings_cb(self, *args):
+    def onChangeBindingClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.onChangeBinding()
+
+    def onChangeBinding(self, *args):
         selection = self.bindingsView.get_selection()
         (model, iter) = selection.get_selected()
         if not iter:
@@ -2262,7 +2320,11 @@ class FirewallConfig(object):
         elif self.bindingsStore.get_value(parent_iter, 0) == _("Sources"):
             self.change_zone_source_editor(None, item, zone)
 
-    #def on_editBindings_cb(self, *args):
+    #def onEditBindingClicked(self, widget, event):
+    #    if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+    #        self.onEditBinding()
+
+    #def onEditBinding(self, *args):
     #    return
 
     def onChangeZone(self, *args):
@@ -2273,6 +2335,7 @@ class FirewallConfig(object):
         self.portStore.clear()
         self.protocolStore.clear()
         self.forwardStore.clear()
+        self.sourcePortStore.clear()
         self.richRuleStore.clear()
         self.interfaceStore.clear()
         self.sourceStore.clear()
@@ -2281,6 +2344,7 @@ class FirewallConfig(object):
         self.portView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.protocolView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.forwardView.get_selection().set_mode(Gtk.SelectionMode.NONE)
+        self.sourcePortView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.icmpView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.richRuleView.get_selection().set_mode(Gtk.SelectionMode.NONE)
         self.zoneNotebook.set_tooltip_markup("")
@@ -2311,6 +2375,7 @@ class FirewallConfig(object):
         protocols = [ ]
         masquerade = False
         forward_ports = [ ]
+        source_ports = [ ]
         icmpblocks = [ ]
         rules = [ ]
         interfaces = [ ]
@@ -2324,6 +2389,7 @@ class FirewallConfig(object):
             protocols = self.fw.getProtocols(selected_zone)
             masquerade = self.fw.queryMasquerade(selected_zone)
             forward_ports = self.fw.getForwardPorts(selected_zone)
+            source_ports = self.fw.getSourcePorts(selected_zone)
             icmpblocks = self.fw.getIcmpBlocks(selected_zone)
             rules = self.fw.getRichRules(selected_zone)
             interfaces = self.fw.getInterfaces(selected_zone)
@@ -2343,6 +2409,7 @@ class FirewallConfig(object):
             protocols = settings.getProtocols()
             masquerade = settings.getMasquerade()
             forward_ports = settings.getForwardPorts()
+            source_ports = settings.getSourcePorts()
             icmpblocks = settings.getIcmpBlocks()
             rules = settings.getRichRules()
             interfaces = settings.getInterfaces()
@@ -2396,6 +2463,10 @@ class FirewallConfig(object):
         for item in forward_ports:
             self.forwardStore.append(item)
 
+        # set source ports
+        for item in source_ports:
+            self.sourcePortStore.append(item)
+
         # set icmpblocks
         _icmpblocks = icmpblocks[:]
         iter = self.icmpStore.get_iter_first()
@@ -2440,6 +2511,7 @@ class FirewallConfig(object):
         self.portView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.protocolView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.forwardView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+        self.sourcePortView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.icmpView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.richRuleView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
         self.interfaceView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
@@ -2743,7 +2815,11 @@ class FirewallConfig(object):
                 if old_obj.element.to_address != "":
                     s += " @%s" % old_obj.element.to_address
                 self.richRuleDialogElementChooser.set_text(s)
-
+            elif type(old_obj.element) == Rich_SourcePort:
+                combobox_select_text(self.richRuleDialogElementCombobox,
+                                     _("source-port"))
+                self.richRuleDialogElementChooser.set_text( \
+                    "%s/%s" % (old_obj.element.port, old_obj.element.protocol))
             # action
             if old_obj.action:
                 self.richRuleDialogActionCheck.set_active(True)
@@ -2897,6 +2973,15 @@ class FirewallConfig(object):
             value = self.icmptype_select_dialog(old_value)
         elif combolabel == _("forward-port"):
             value = self.forwardport_select_dialog(family, old_value)
+        elif combolabel == _("source-port"):
+            old_port = None
+            old_proto = None
+            if old_value != "":
+                try:
+                    (old_port,old_proto) = old_value.split("/")
+                except:
+                    pass
+            value = self.port_select_dialog(old_port, old_proto)
 
         if value is None:
             return
@@ -2924,7 +3009,7 @@ class FirewallConfig(object):
 
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
-        
+
         if (old_port == port and old_proto == proto):
             # nothing to change
             return None
@@ -3200,6 +3285,16 @@ class FirewallConfig(object):
                 rule.element = Rich_ForwardPort(port, proto, to_port, to_addr)
             elif combolabel == _("masquerade"):
                 rule.element = Rich_Masquerade()
+            elif combolabel == _("source-port"):
+                text = self.richRuleDialogElementChooser.get_text()
+                port = ""
+                proto = ""
+                try:
+                    if '/' in text:
+                        (port, proto) = text.split("/")
+                except:
+                    return None
+                rule.element = Rich_SourcePort(port, proto)
 
         # action
         if self.richRuleDialogActionCheck.is_sensitive() and \
@@ -3927,7 +4022,7 @@ class FirewallConfig(object):
 
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
-        
+
         if (old_port == port and old_proto == proto):
             # nothing to change
             return
@@ -3962,6 +4057,163 @@ class FirewallConfig(object):
                 self.portStore.remove(iter)
                 break
             iter = self.portStore.iter_next(iter)
+
+    def onAddSourcePort(self, *args):
+        self.add_edit_source_port(True)
+
+    def onEditSourcePort(self, *args):
+        self.add_edit_source_port(False)
+
+    def onSourcePortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
+            self.add_edit_source_port(False)
+
+    def onRemoveSourcePort(self, *args):
+        selected_zone = self.get_selected_zone()
+        selection = self.sourcePortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.sourcePortStore.get_value(iter, 0)
+        proto = self.sourcePortStore.get_value(iter, 1)
+
+        if self.runtime_view:
+            self.fw.removeSourcePort(selected_zone, port, proto)
+        else:
+            zone = self.fw.config().getZoneByName(selected_zone)
+            zone.removeSourcePort(port, proto)
+        self.changes_applied()
+
+    def onSourcePortChanged(self, *args):
+        ports = functions.getPortRange(self.portDialogSourcePortEntry.get_text())
+        if not ports or not (isinstance(ports, list) or \
+                             isinstance(ports, tuple)):
+            self.portDialogOkButton.set_sensitive(False)
+        else:
+            self.portDialogOkButton.set_sensitive(True)
+
+    def add_edit_source_port(self, add):
+        selected_zone = self.get_selected_zone()
+
+        old_port = None
+        old_proto = None
+        if not add:
+            selection = self.sourcePortView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_port = self.sourcePortStore.get_value(iter, 0)
+            old_proto = self.sourcePortStore.get_value(iter, 1)
+
+        self.portDialogPortEntry.set_text("")
+        self.portDialogProtoCombobox.set_active(0)
+
+        if old_port:
+            self.portDialogPortEntry.set_text(old_port)
+        if old_proto:
+            combobox_select_text(self.portDialogProtoCombobox, old_proto)
+
+        self.portDialogOkButton.set_sensitive(False)
+
+        self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.portDialog.set_transient_for(self.mainWindow)
+        self.portDialog.show_all()
+        result = self.portDialog.run()
+        self.portDialog.hide()
+
+        if result != 1:
+            return
+
+        port = self.portDialogPortEntry.get_text()
+        proto = self.portDialogProtoCombobox.get_active_text()
+        if (old_port == port and old_proto == proto):
+            # nothing to change
+            return
+
+        if self.runtime_view:
+            if not self.fw.querySourcePort(selected_zone, port, proto):
+                self.fw.addSourcePort(selected_zone, port, proto)
+                if not add:
+                    self.fw.removeSourcePort(selected_zone, old_port, old_proto)
+                self.changes_applied()
+        else:
+            zone = self.fw.config().getZoneByName(selected_zone)
+            if not zone.querySourcePort(port, proto):
+                if not add:
+                    zone.removeSourcePort(old_port, old_proto)
+                zone.addSourcePort(port, proto)
+                self.changes_applied()
+
+    def service_conf_add_edit_source_port(self, add):
+        active_service = self.get_active_service()
+
+        self.portDialogPortEntry.set_text("")
+        self.portDialogProtoCombobox.set_active(0)
+
+        old_port = None
+        old_proto = None
+
+        if not add:
+            selection = self.serviceConfSourcePortView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_port = self.serviceConfSourcePortStore.get_value(iter, 0)
+            old_proto = self.serviceConfSourcePortStore.get_value(iter, 1)
+
+        if old_port:
+            self.portDialogPortEntry.set_text(old_port)
+        if old_proto:
+            combobox_select_text(self.portDialogProtoCombobox, old_proto)
+
+        self.portDialogOkButton.set_sensitive(False)
+
+        self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.portDialog.set_transient_for(self.mainWindow)
+        self.portDialog.show_all()
+        result = self.portDialog.run()
+        self.portDialog.hide()
+
+        if result != 1:
+            return
+
+        port = self.portDialogPortEntry.get_text()
+        proto = self.portDialogProtoCombobox.get_active_text()
+
+        if (old_port == port and old_proto == proto):
+            # nothing to change
+            return
+
+        service = self.fw.config().getServiceByName(active_service)
+        if not service.querySourcePort(port, proto):
+            if not add:
+                service.removeSourcePort(old_port, old_proto)
+            service.addSourcePort(port, proto)
+            self.changes_applied()
+
+    def source_port_added_cb(self, zone, port, protocol, timeout):
+        if not self.runtime_view or zone != self.get_selected_zone():
+            return
+        iter = self.sourcePortStore.get_iter_first()
+        while iter:
+            if self.sourcePortStore.get_value(iter, 0) == port and \
+                    self.sourcePortStore.get_value(iter, 1) == protocol:
+                # already there
+                return
+            iter = self.sourcePortStore.iter_next(iter)
+        # nothing found, so add it
+        self.sourcePortStore.append([port, protocol])
+
+    def source_port_removed_cb(self, zone, port, protocol):
+        if not self.runtime_view or zone != self.get_selected_zone():
+            return
+        iter = self.sourcePortStore.get_iter_first()
+        while iter:
+            if self.sourcePortStore.get_value(iter, 0) == port and \
+                    self.sourcePortStore.get_value(iter, 1) == protocol:
+                self.sourcePortStore.remove(iter)
+                break
+            iter = self.sourcePortStore.iter_next(iter)
 
     def onAddProtocol(self, *args):
         self.add_edit_protocol(True)
@@ -4394,6 +4646,7 @@ class FirewallConfig(object):
 
         self.serviceConfPortStore.clear()
         self.serviceConfProtocolStore.clear()
+        self.serviceConfSourcePortStore.clear()
         self.serviceConfModuleStore.clear()
         self.serviceConfDestIpv4Chooser.set_text("")
         self.serviceConfDestIpv6Chooser.set_text("")
@@ -4401,6 +4654,8 @@ class FirewallConfig(object):
         self.serviceConfPortView.get_selection().set_mode(
             Gtk.SelectionMode.NONE)
         self.serviceConfProtocolView.get_selection().set_mode(
+            Gtk.SelectionMode.NONE)
+        self.serviceConfSourcePortView.get_selection().set_mode(
             Gtk.SelectionMode.NONE)
         self.serviceConfModuleView.get_selection().set_mode(
             Gtk.SelectionMode.NONE)
@@ -4415,6 +4670,7 @@ class FirewallConfig(object):
 
         ports = [ ]
         protocols = [ ]
+        source_ports = [ ]
         modules = [ ]
         destination = { }
 
@@ -4424,6 +4680,7 @@ class FirewallConfig(object):
             settings = self.fw.getServiceSettings(active_service)
             ports = settings.getPorts()
             protocols = settings.getProtocols()
+            source_ports = settings.getSourcePorts()
             modules = settings.getModules()
             destination = settings.getDestinations()
             default = False
@@ -4438,6 +4695,7 @@ class FirewallConfig(object):
             settings = service.getSettings()
             ports = settings.getPorts()
             protocols = settings.getProtocols()
+            source_ports = settings.getSourcePorts()
             modules = settings.getModules()
             destination = settings.getDestinations()
             default = service.get_property("default")
@@ -4454,6 +4712,10 @@ class FirewallConfig(object):
         for item in protocols:
             self.serviceConfProtocolStore.append([item])
 
+        # set ports
+        for item in source_ports:
+            self.serviceConfSourcePortStore.append(item)
+
         # set modules
         for item in modules:
             self.serviceConfModuleStore.append([item])
@@ -4467,6 +4729,8 @@ class FirewallConfig(object):
         self.serviceConfPortView.get_selection().set_mode(
             Gtk.SelectionMode.SINGLE)
         self.serviceConfProtocolView.get_selection().set_mode(
+            Gtk.SelectionMode.SINGLE)
+        self.serviceConfSourcePortView.get_selection().set_mode(
             Gtk.SelectionMode.SINGLE)
         self.serviceConfModuleView.get_selection().set_mode(
             Gtk.SelectionMode.SINGLE)
@@ -4599,6 +4863,39 @@ class FirewallConfig(object):
         else:
             self.serviceConfEditProtocolButton.set_sensitive(False)
             self.serviceConfRemoveProtocolButton.set_sensitive(False)
+
+    def onServiceConfAddSourcePort(self, *args):
+        self.service_conf_add_edit_source_port(True)
+
+    def onServiceConfEditSourcePort(self, *args):
+        self.service_conf_add_edit_source_port(False)
+
+    def onServiceConfSourcePortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS and \
+           not self.runtime_view:
+            self.service_conf_add_edit_source_port(False)
+
+    def onServiceConfRemoveSourcePort(self, *args):
+        active_service = self.get_active_service()
+        selection = self.serviceConfSourcePortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.serviceConfSourcePortStore.get_value(iter, 0)
+        proto = self.serviceConfSourcePortStore.get_value(iter, 1)
+
+        service = self.fw.config().getServiceByName(active_service)
+        service.removeSourcePort(port, proto)
+        self.changes_applied()
+
+    def change_service_dialog_source_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.serviceConfEditSourcePortButton.set_sensitive(True)
+            self.serviceConfRemoveSourcePortButton.set_sensitive(True)
+        else:
+            self.serviceConfEditSourcePortButton.set_sensitive(False)
+            self.serviceConfRemoveSourcePortButton.set_sensitive(False)
 
     def add_edit_service(self, add):
         if add:
