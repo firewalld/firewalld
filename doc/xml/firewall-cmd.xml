@@ -553,6 +553,51 @@
 	  </listitem>
 	</varlistentry>
 
+	<!-- list/add/remove/query source port -->
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-source-ports</option></term>
+	  <listitem>
+	    <para>
+	      List source ports added for <replaceable>zone</replaceable> as a space separated list. A port is of the form <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Add the source port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
+	    </para>
+	    <para>
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	    </para>
+	    <para>
+	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Remove the source port from <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Return whether the source port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
 	<!-- list/add/remove/query icmp-block -->
 
 	<varlistentry>
@@ -1160,6 +1205,39 @@
          <listitem>
            <para>
              List protocols added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new source port to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a source port from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the source port has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-source-ports</option></term>
+         <listitem>
+           <para>
+             List source ports added to the permanent service.
            </para>
          </listitem>
        </varlistentry>
