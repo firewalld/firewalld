@@ -1344,7 +1344,7 @@ class FirewallD(slip.dbus.service.Object):
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         timeout = dbus_to_python(timeout, int)
-        log.debug1("zone.enablePort('%s', '%s', '%s')" % \
+        log.debug1("zone.addPort('%s', '%s', '%s')" % \
                        (zone, port, protocol))
         self.accessCheck(sender)
         _zone = self.fw.zone.add_port(zone, port, protocol, timeout, sender)
