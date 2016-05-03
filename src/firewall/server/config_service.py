@@ -433,6 +433,75 @@ class FirewallDConfigService(slip.dbus.service.Object):
         log.debug1("%s.queryProtocol(%s')", self._log_prefix, protocol)
         return protocol in self.getSettings()[6]
 
+    # source port
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         out_signature='a(ss)')
+    @dbus_handle_exceptions
+    def getSourcePorts(self, sender=None):
+        log.debug1("%s.getSourcePorts()", self._log_prefix)
+        return self.getSettings()[7]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='a(ss)')
+    @dbus_handle_exceptions
+    def setSourcePorts(self, ports, sender=None):
+        _ports = [ ]
+        # convert embedded lists to tuples
+        for port in dbus_to_python(ports, list):
+            if type(port) == list:
+                _ports.append(tuple(port))
+            else:
+                _ports.append(port)
+        ports = _ports
+        log.debug1("%s.setSourcePorts('[%s]')", self._log_prefix,
+                   ",".join("('%s, '%s')" % (port[0], port[1]) for port in ports))
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[7] = ports
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='ss')
+    @dbus_handle_exceptions
+    def addSourcePort(self, port, protocol, sender=None):
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("%s.addSourcePort('%s', '%s')", self._log_prefix, port,
+                   protocol)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if (port,protocol) in settings[7]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "%s:%s" % (port, protocol))
+        settings[7].append((port,protocol))
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='ss')
+    @dbus_handle_exceptions
+    def removeSourcePort(self, port, protocol, sender=None):
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("%s.removeSourcePort('%s', '%s')", self._log_prefix, port,
+                   protocol)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if (port,protocol) not in settings[7]:
+            raise FirewallError(errors.NOT_ENABLED, "%s:%s" % (port, protocol))
+        settings[7].remove((port,protocol))
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
+                         in_signature='ss', out_signature='b')
+    @dbus_handle_exceptions
+    def querySourcePort(self, port, protocol, sender=None):
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("%s.querySourcePort('%s', '%s')", self._log_prefix, port,
+                   protocol)
+        return (port,protocol) in self.getSettings()[7]
+
     # module
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,

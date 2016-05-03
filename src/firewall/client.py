@@ -194,6 +194,30 @@ class FirewallClientZoneSettings(object):
         return protocol in self.settings[13]
 
     @handle_exceptions
+    def getSourcePorts(self):
+        return self.settings[14]
+    @handle_exceptions
+    def setSourcePorts(self, ports):
+        self.settings[14] = ports
+    @handle_exceptions
+    def addSourcePort(self, port, protocol):
+        if (port,protocol) not in self.settings[14]:
+            self.settings[14].append((port,protocol))
+        else:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s'" % (port, protocol))
+    @handle_exceptions
+    def removeSourcePort(self, port, protocol):
+        if (port,protocol) in self.settings[14]:
+            self.settings[14].remove((port,protocol))
+        else:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s'" % (port, protocol))
+    @handle_exceptions
+    def querySourcePort(self, port, protocol):
+        return (port,protocol) in self.settings[14]
+
+    @handle_exceptions
     def getIcmpBlocks(self):
         return sorted(self.settings[7])
     @handle_exceptions
@@ -517,6 +541,33 @@ class FirewallClientConfigZone(object):
     def queryProtocol(self, protocol):
         return self.fw_zone.queryProtocol(protocol)
 
+    # source-port
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSourcePorts(self):
+        return self.fw_zone.getSourcePorts()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setSourcePorts(self, ports):
+        self.fw_zone.setSourcePorts(ports)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addSourcePort(self, port, protocol):
+        self.fw_zone.addSourcePort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeSourcePort(self, port, protocol):
+        self.fw_zone.removeSourcePort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def querySourcePort(self, port, protocol):
+        return self.fw_zone.querySourcePort(port, protocol)
+
     # icmp block
 
     @slip.dbus.polkit.enable_proxy
@@ -772,6 +823,30 @@ class FirewallClientServiceSettings(object):
     @handle_exceptions
     def queryProtocol(self, protocol):
         return protocol in self.settings[6]
+
+    @handle_exceptions
+    def getSourcePorts(self):
+        return self.settings[7]
+    @handle_exceptions
+    def setSourcePorts(self, ports):
+        self.settings[7] = ports
+    @handle_exceptions
+    def addSourcePort(self, port, protocol):
+        if (port,protocol) not in self.settings[7]:
+            self.settings[7].append((port,protocol))
+        else:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s'" % (port, protocol))
+    @handle_exceptions
+    def removeSourcePort(self, port, protocol):
+        if (port,protocol) in self.settings[7]:
+            self.settings[7].remove((port,protocol))
+        else:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s'" % (port, protocol))
+    @handle_exceptions
+    def querySourcePort(self, port, protocol):
+        return (port,protocol) in self.settings[7]
 
     @handle_exceptions
     def getModules(self):
@@ -1175,6 +1250,33 @@ class FirewallClientConfigService(object):
     @handle_exceptions
     def queryProtocol(self, protocol):
         return self.fw_service.queryProtocol(protocol)
+
+    # source-port
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSourcePorts(self):
+        return self.fw_service.getSourcePorts()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setSourcePorts(self, ports):
+        self.fw_service.setSourcePorts(ports)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addSourcePort(self, port, protocol):
+        self.fw_service.addSourcePort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeSourcePort(self, port, protocol):
+        self.fw_service.removeSourcePort(port, protocol)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def querySourcePort(self, port, protocol):
+        return self.fw_service.querySourcePort(port, protocol)
 
     # module
 
@@ -2036,6 +2138,8 @@ class FirewallClient(object):
             "service-removed": "ServiceRemoved",
             "port-added": "PortAdded",
             "port-removed": "PortRemoved",
+            "source-port-added": "SourcePortAdded",
+            "source-port-removed": "SourcePortRemoved",
             "protocol-added": "ProtocolAdded",
             "protocol-removed": "ProtocolRemoved",
             "masquerade-added": "MasqueradeAdded",
@@ -2616,6 +2720,30 @@ class FirewallClient(object):
         return dbus_to_python(self.fw_zone.removeForwardPort(zone,
                                                              port, protocol,
                                                              toport, toaddr))
+
+    # source ports
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addSourcePort(self, zone, port, protocol, timeout=0):
+        return dbus_to_python(self.fw_zone.addSourcePort(zone, port, protocol,
+                                                         timeout))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getSourcePorts(self, zone):
+        return dbus_to_python(self.fw_zone.getSourcePorts(zone))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def querySourcePort(self, zone, port, protocol):
+        return dbus_to_python(self.fw_zone.querySourcePort(zone, port, protocol))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeSourcePort(self, zone, port, protocol):
+        return dbus_to_python(self.fw_zone.removeSourcePort(zone, port,
+                                                            protocol))
 
     # icmpblock
 

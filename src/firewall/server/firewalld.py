@@ -1495,6 +1495,97 @@ class FirewallD(slip.dbus.service.Object):
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    # SOURCE PORTS
+
+    @dbus_handle_exceptions
+    def disableTimedSourcePort(self, zone, port, protocol):
+        log.debug1("zone.disableTimedSourcePort('%s', '%s', '%s')" % \
+                   (zone, port, protocol))
+        del self._timeouts[zone][("sport", port, protocol)]
+        self.fw.zone.remove_source_port(zone, port, protocol)
+        self.SourcePortRemoved(zone, port, protocol)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sssi',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addSourcePort(self, zone, port, protocol, timeout, sender=None):
+        # adds source port <port> <protocol> if not enabled already to zone
+        zone = dbus_to_python(zone, str)
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        timeout = dbus_to_python(timeout, int)
+        log.debug1("zone.addSourcePort('%s', '%s', '%s')" % (zone, port,
+                                                             protocol))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.add_source_port(zone, port, protocol, timeout,
+                                             sender)
+
+        if timeout > 0:
+            tag = GLib.timeout_add_seconds(timeout, self.disableTimedSourcePort,
+                                           _zone, port, protocol)
+            self.addTimeout(_zone, ("sport", port, protocol), tag)
+
+        self.SourcePortAdded(_zone, port, protocol, timeout)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeSourcePort(self, zone, port, protocol, sender=None):
+        # removes source port<port> <protocol> if enabled from zone
+        zone = dbus_to_python(zone, str)
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("zone.removeSourcePort('%s', '%s', '%s')" % (zone, port,
+                                                                protocol))
+        self.accessCheck(sender)
+        _zone= self.fw.zone.remove_source_port(zone, port, protocol)
+
+        self.removeTimeout(_zone, ("sport", port, protocol))
+        self.SourcePortRemoved(_zone, port, protocol)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='sss',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def querySourcePort(self, zone, port, protocol, sender=None):
+        # returns true if a source port is enabled for zone
+        zone = dbus_to_python(zone, str)
+        port = dbus_to_python(port, str)
+        protocol = dbus_to_python(protocol, str)
+        log.debug1("zone.querySourcePort('%s', '%s', '%s')" % (zone, port,
+                                                               protocol))
+        return self.fw.zone.query_source_port(zone, port, protocol)
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='aas')
+    @dbus_handle_exceptions
+    def getSourcePorts(self, zone, sender=None):
+        # returns the list of enabled source ports
+        # TODO: should be renamed to listSourcePorts()
+        # because is called by firewall-cmd --zone --list-source-ports
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.getSourcePorts('%s')" % (zone))
+        return self.fw.zone.list_source_ports(zone)
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sssi')
+    @dbus_handle_exceptions
+    def SourcePortAdded(self, zone, port, protocol, timeout=0):
+        log.debug1("zone.SourcePortAdded('%s', '%s', '%s', %d)" % \
+                   (zone, port, protocol, timeout))
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='sss')
+    @dbus_handle_exceptions
+    def SourcePortRemoved(self, zone, port, protocol):
+        log.debug1("zone.SourcePortRemoved('%s', '%s', '%s')" % (zone, port,
+                                                                 protocol))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
     # MASQUERADE
 
     @dbus_handle_exceptions

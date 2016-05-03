@@ -1332,6 +1332,25 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.addSourcePort">
+            <term><methodname>addSourcePort</methodname>(s: zone, s: port, s: protocol, i: timeout) &rarr; s</term>
+            <listitem>
+              <para>
+		Add source port into <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+		The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+		If <replaceable>timeout</replaceable> is non-zero, the operation will be active only for the amount of seconds.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addSourcePort">org.fedoraproject.FirewallD1.config.zone.Methods.addSourcePort</link>.
+              </para>
+              <para>
+		Returns name of zone to which the port was added.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.changeZone">
             <term><methodname>changeZone</methodname>(s: zone, s: interface) &rarr; s</term>
             <listitem>
@@ -1493,6 +1512,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.getSourcePorts">
+            <term><methodname>getSourcePorts</methodname>(s: zone) &rarr; aas</term>
+            <listitem>
+              <para>
+		Return array of source ports (2-tuple of port and protocol) previously enabled in <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSourcePorts">org.fedoraproject.FirewallD1.config.zone.Methods.getSourcePorts</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getZoneOfInterface">
             <term><methodname>getZoneOfInterface</methodname>(s: interface) &rarr; s</term>
             <listitem>
@@ -1645,6 +1677,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.querySourcePort">
+            <term><methodname>querySourcePort</methodname>(s: zone, s: port, s: protocol) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>port</replaceable>/<replaceable>protocol</replaceable> has been added in <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.querySourcePort">org.fedoraproject.FirewallD1.config.zone.Methods.querySourcePort</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.removeForwardPort">
             <term><methodname>removeForwardPort</methodname>(s: zone, s: port, s: protocol, s: toport, s: toaddr) &rarr; s</term>
             <listitem>
@@ -1786,6 +1831,22 @@
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_ADDR, NOT_ENABLED, INVALID_COMMAND
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.removeSourcePort">
+            <term><methodname>removeSourcePort</methodname>(s: zone, s: port, s: protocol) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove <replaceable>port</replaceable>/<replaceable>protocol</replaceable> from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeSourcePort">org.fedoraproject.FirewallD1.config.zone.Methods.removeSourcePort</link>.
+              </para>
+              <para>
+		Returns name of zone from which the source port was removed.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_PORT, MISSING_PROTOCOL, INVALID_PROTOCOL, NOT_ENABLED, INVALID_COMMAND
 	      </para>
             </listitem>
           </varlistentry>
@@ -3252,6 +3313,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+	  <varlistentry id="FirewallD1.config.zone.Methods.addSourcePort">
+            <term><methodname>addSourcePort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) to list of source ports of zone.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addSourcePort">org.fedoraproject.FirewallD1.zone.Methods.addSourcePort</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.getDescription">
             <term><methodname>getDescription</methodname>() &rarr; s</term>
             <listitem>
@@ -3388,6 +3462,16 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getSourcePorts">
+            <term><methodname>getSourcePorts</methodname>() &rarr; a(ss)</term>
+            <listitem>
+              <para>
+		Get list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) defined in zone.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getSourcePorts">org.fedoraproject.FirewallD1.zone.Methods.getSourcePorts</link>.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.getTarget">
             <term><methodname>getTarget</methodname>() &rarr; s</term>
             <listitem>
@@ -3507,6 +3591,16 @@
 		Return whether <replaceable>source</replaceable> is in list of source addresses bound to zone.
 		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 		For runtime operation see <link linkend="FirewallD1.zone.Methods.querySource">org.fedoraproject.FirewallD1.zone.Methods.querySource</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.querySourcePort">
+            <term><methodname>querySourcePort</methodname>(s: port, s: protocol) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) is in list of source ports of zone.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.querySourcePort">org.fedoraproject.FirewallD1.zone.Methods.querySourcePort</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -3631,6 +3725,19 @@
 		Permanently remove <replaceable>source</replaceable> from list of source addresses bound to zone.
 		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeSource">org.fedoraproject.FirewallD1.zone.Methods.removeSource</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.zone.Methods.removeSourcePort">
+            <term><methodname>removeSourcePort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) from list of source ports of zone.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeSourcePort">org.fedoraproject.FirewallD1.zone.Methods.removeSourcePort</link>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED
@@ -3921,6 +4028,18 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.addSourcePort">
+            <term><methodname>addSourcePort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) to list of source ports in service.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.getDescription">
             <term><methodname>getDescription</methodname>() &rarr; s</term>
             <listitem>
@@ -4010,6 +4129,15 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.getSourcePorts">
+            <term><methodname>getSourcePorts</methodname>() &rarr; a(ss)</term>
+            <listitem>
+              <para>
+		Get list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) defined in service.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.config.service.Methods.getVersion">
             <term><methodname>getVersion</methodname>() &rarr; s</term>
             <listitem>
@@ -4067,6 +4195,15 @@
               </para>
             </listitem>
           </varlistentry>
+	  <varlistentry id="FirewallD1.config.service.Methods.querySourcePort">
+            <term><methodname>querySourcePort</methodname>(s: port, s: protocol) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) is in list of source ports in service.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.remove">
             <term><methodname>remove</methodname>() &rarr; Nothing</term>
             <listitem>
@@ -4120,6 +4257,18 @@
               <para>
 		Permanently remove <replaceable>protocol</replaceable> from list of protocols in service.
 		See <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.service.Methods.removeSourcePort">
+            <term><methodname>removeSourcePort</methodname>(s: port, s: protocol) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) from list of source ports in service.
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED
