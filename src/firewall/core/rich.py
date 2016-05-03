@@ -21,8 +21,9 @@
 
 __all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
             "Rich_Protocol", "Rich_Masquerade", "Rich_IcmpBlock",
-            "Rich_ForwardPort", "Rich_Log", "Rich_Audit", "Rich_Accept",
-            "Rich_Reject", "Rich_Drop", "Rich_Mark", "Rich_Limit", "Rich_Rule" ]
+            "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_Audit",
+            "Rich_Accept", "Rich_Reject", "Rich_Drop", "Rich_Mark",
+            "Rich_Limit", "Rich_Rule" ]
 
 from firewall import functions
 from firewall.core.ipset import check_ipset_name
@@ -77,6 +78,11 @@ class Rich_Port(object):
 
     def __str__(self):
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
+
+class Rich_SourcePort(Rich_Port):
+    def __str__(self):
+        return 'source-port port="%s" protocol="%s"' % (self.port,
+                                                        self.protocol)
 
 class Rich_Protocol(object):
     def __init__(self, value):
@@ -314,14 +320,15 @@ class Rich_Rule(object):
             else:             # element
                 if element in ['rule', 'source', 'destination', 'protocol',
                                'service', 'port', 'icmp-block', 'masquerade',
-                               'forward-port', 'log', 'audit',
+                               'forward-port', 'source-port', 'log', 'audit',
                                'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL']:
                     if element == 'source' and self.source:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'source' element")
                     elif element == 'destination' and self.destination:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'destination' element")
                     elif element in ['protocol', 'service', 'port', 'icmp-block',
-                                     'masquerade', 'forward-port'] and self.element:
+                                     'masquerade', 'forward-port',
+                                     'source-port'] and self.element:
                         raise FirewallError(errors.INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
                     elif element == 'log' and self.log:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'log' element")
@@ -414,6 +421,14 @@ class Rich_Rule(object):
                 else:
                     self.element = Rich_ForwardPort(attrs.get('port'), attrs.get('protocol'), attrs.get('to-port'), attrs.get('to-addr'))
                     in_elements.pop() # forward-port
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'source-port':
+                if attr_name in ['port', 'protocol']:
+                    attrs[attr_name] = attr_value
+                else:
+                    self.element = Rich_SourcePort(attrs.get('port'), attrs.get('protocol'))
+                    in_elements.pop() # source-port
                     attrs.clear()
                     index = index -1 # return token to input
             elif in_element == 'log':
@@ -591,6 +606,13 @@ class Rich_Rule(object):
                 raise FirewallError(errors.INVALID_FAMILY)
             if self.action is not None:
                 raise FirewallError(errors.INVALID_RULE, "forward-port and action")
+
+        # source-port
+        elif type(self.element) == Rich_SourcePort:
+            if not functions.check_port(self.element.port):
+                raise FirewallError(errors.INVALID_PORT, self.element.port)
+            if self.element.protocol not in [ "tcp", "udp" ]:
+                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # other element and not empty?
         elif self.element is not None:
