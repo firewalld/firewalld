@@ -133,6 +133,7 @@ class FirewallZone(object):
         obj.settings = { x : {} for x in [ "interfaces", "sources",
                                            "services", "ports",
                                            "masquerade", "forward_ports",
+                                           "source_ports",
                                            "icmp_blocks", "rules",
                                            "protocols" ] }
 
@@ -161,6 +162,8 @@ class FirewallZone(object):
                 self._error2warning(self.add_port, obj.name, *args)
             for args in obj.protocols:
                 self._error2warning(self.add_protocol, obj.name, args)
+            for args in obj.source_ports:
+                self._error2warning(self.add_source_port, obj.name, *args)
             if obj.masquerade:
                 self._error2warning(self.add_masquerade, obj.name)
             for args in obj.rules:
@@ -358,6 +361,8 @@ class FirewallZone(object):
                         self.add_port(zone, *args)
                     elif key == "protocols":
                         self.add_protocol(zone, *args)
+                    elif key == "source_ports":
+                        self.add_source_port(zone, *args)
                     elif key == "masquerade":
                         self.add_masquerade(zone)
                     elif key == "rules":
@@ -395,6 +400,8 @@ class FirewallZone(object):
                         self.__port(enable, zone, *args)
                     elif key == "protocols":
                         self.__protocol(enable, zone, args)
+                    elif key == "source_ports":
+                        self.__source_port(enable, zone, *args)
                     elif key == "masquerade":
                         self.__masquerade(enable, zone)
                     elif key == "rules":
@@ -437,6 +444,7 @@ class FirewallZone(object):
         conf[11] = self.list_sources(zone)
         conf[12] = self.list_rules(zone)
         conf[13] = self.list_protocols(zone)
+        conf[14] = self.list_source_ports(zone)
         return tuple(conf)
 
     # handle chains, modules and rules for a zone
@@ -996,6 +1004,26 @@ class FirewallZone(object):
                     self.__rule_action(zone, ipv, table, target, rule, command,
                                        chains, rules)
 
+                # create rules
+                for (port,proto) in svc.source_ports:
+                    table = "filter"
+                    command = [ ]
+                    self.__rule_source(rule.source, command)
+                    self.__rule_destination(rule.destination, command)
+
+                    command += [ "-p", proto ]
+                    if port:
+                        command += [ "--sport", "%s" % portStr(port) ]
+                    if ipv in svc.destination and svc.destination[ipv] != "":
+                        command += [ "-d",  svc.destination[ipv] ]
+                    if type(rule.action) != Rich_Mark:
+                        command += [ "-m", "conntrack", "--ctstate", "NEW" ]
+
+                    self.__rule_log(ipv, table, target, rule, command, rules)
+                    self.__rule_audit(ipv, table, target, rule, command, rules)
+                    self.__rule_action(zone, ipv, table, target, rule, command,
+                                       chains, rules)
+
             # PORT
             elif type(rule.element) == Rich_Port:
                 port = rule.element.port
@@ -1128,6 +1156,30 @@ class FirewallZone(object):
                 if not enable:
                     self._fw.del_mark(mark_id)
                     mark_id = None
+
+            # SOURCE PORT
+            elif type(rule.element) == Rich_SourcePort:
+                port = rule.element.port
+                protocol = rule.element.protocol
+                self.check_port(port, protocol)
+
+                table = "filter"
+                chains.append([ table, "INPUT" ])
+                target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                    zone=zone)
+
+                command = [ ]
+                self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
+                command += [ "-m", protocol, "-p", protocol,
+                           "--sport", portStr(port) ]
+                if type(rule.action) != Rich_Mark:
+                    command += [ "-m", "conntrack", "--ctstate", "NEW" ]
+
+                self.__rule_log(ipv, table, target, rule, command, rules)
+                self.__rule_audit(ipv, table, target, rule, command, rules)
+                self.__rule_action(zone, ipv, table, target, rule, command,
+                                   chains, rules)
 
             # ICMP BLOCK
             elif type(rule.element) == Rich_IcmpBlock:
@@ -1300,6 +1352,18 @@ class FirewallZone(object):
                                      "-t", "filter", "-p", protocol,
                                      "-m", "conntrack", "--ctstate", "NEW",
                                      "-j", "ACCEPT" ]))
+
+            for (port,proto) in svc.source_ports:
+                target = DEFAULT_ZONE_TARGET.format(
+                    chain=SHORTCUTS["INPUT"], zone=zone)
+                rule = [ "%s_allow" % (target), "-t", "filter", "-p", proto ]
+                if port:
+                    rule += [ "--sport", "%s" % portStr(port) ]
+                if ipv in svc.destination and svc.destination[ipv] != "":
+                    rule += [ "-d",  svc.destination[ipv] ]
+                rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
+                rule += [ "-j", "ACCEPT" ]
+                rules.append((ipv, rule))
 
         cleanup_rules = None
         cleanup_modules = None
@@ -1522,6 +1586,86 @@ class FirewallZone(object):
 
     def list_protocols(self, zone):
         return list(self.get_settings(zone)["protocols"].keys())
+
+    # SOURCE PORTS
+
+    def check_source_port(self, port, protocol):
+        self._fw.check_port(port)
+        self._fw.check_tcpudp(protocol)
+
+    def __source_port_id(self, port, protocol):
+        self.check_port(port, protocol)
+        return (portStr(port, "-"), protocol)
+
+    def __source_port(self, enable, zone, port, protocol):
+        if enable:
+            self.add_chain(zone, "filter", "INPUT")
+
+        rules = [ ]
+        for ipv in [ "ipv4", "ipv6" ]:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
+                                                     zone=zone)
+            rules.append((ipv, [ "%s_allow" % (target),
+                                 "-t", "filter",
+                                 "-m", protocol, "-p", protocol,
+                                 "--sport", portStr(port),
+                                 "-m", "conntrack", "--ctstate", "NEW",
+                                 "-j", "ACCEPT" ]))
+
+        # handle rules
+        ret = self._fw.handle_rules(rules, enable)
+        if ret:
+            (cleanup_rules, msg) = ret
+            self._fw.handle_rules(cleanup_rules, not enable)
+            raise FirewallError(errors.COMMAND_FAILED, msg)
+
+        if not enable:
+            self.remove_chain(zone, "filter", "INPUT")
+
+    def add_source_port(self, zone, port, protocol, timeout=0, sender=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        port_id = self.__source_port_id(port, protocol)
+        if port_id in _obj.settings["source_ports"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s' already in '%s'" % (port, protocol,
+                                                             _zone))
+
+        if _obj.applied:
+            self.__source_port(True, _zone, port, protocol)
+
+        _obj.settings["source_ports"][port_id] = \
+            self.__gen_settings(timeout, sender)
+
+        return _zone
+
+    def remove_source_port(self, zone, port, protocol):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        port_id = self.__source_port_id(port, protocol)
+        if port_id not in _obj.settings["source_ports"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s' not in '%s'" % (port, protocol, _zone))
+
+        if _obj.applied:
+            self.__source_port(False, _zone, port, protocol)
+
+        if port_id in _obj.settings["source_ports"]:
+            del _obj.settings["source_ports"][port_id]
+
+        return _zone
+
+    def query_source_port(self, zone, port, protocol):
+        return self.__source_port_id(port, protocol) in \
+            self.get_settings(zone)["source_ports"]
+
+    def list_source_ports(self, zone):
+        return list(self.get_settings(zone)["source_ports"].keys())
 
     # MASQUERADE
 
