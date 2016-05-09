@@ -1057,21 +1057,13 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
 
 if a.permanent:
     if a.get_ipsets:
-        ipsets = fw.config().listIPSets()
-        l = [fw.config().getIPSet(i).get_property("name") for i in ipsets]
-        __print_and_exit(" ".join(sorted(l)))
+        __print_and_exit(" ".join(fw.config().getIPSetNames()))
     if a.get_zones:
-        zones = fw.config().listZones()
-        l = [fw.config().getZone(z).get_property("name") for z in zones]
-        __print_and_exit(" ".join(sorted(l)))
+        __print_and_exit(" ".join(fw.config().getZoneNames()))
     elif a.get_services:
-        services = fw.config().listServices()
-        l = [fw.config().getService(s).get_property("name") for s in services]
-        __print_and_exit(" ".join(sorted(l)))
+        __print_and_exit(" ".join(fw.config().getServiceNames()))
     elif a.get_icmptypes:
-        icmptypes = fw.config().listIcmpTypes()
-        l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
-        __print_and_exit(" ".join(sorted(l)))
+        __print_and_exit(" ".join(fw.config().getIcmpTypeNames()))
 
     elif a.new_ipset:
         if not a.type:
@@ -1698,8 +1690,7 @@ if a.permanent:
 
         # list everything
         elif a.list_all_zones:
-            zones = fw.config().listZones()
-            names = [fw.config().getZone(z).get_property("name") for z in zones]
+            names = fw.config().getZoneNames()
             for zone in sorted(names):
                 fw_zone = fw.config().getZoneByName(zone)
                 __print_zone_info(zone, fw_zone.getSettings())

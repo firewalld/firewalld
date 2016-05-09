@@ -1481,9 +1481,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             zones = self.fw.getZones()
         else:
-            zones = [self.fw.config().getZone(z).get_property("name") \
-                     for z in self.fw.config().listZones()]
-            zones.sort()
+            zones = self.fw.config().getZoneNames()
 
         # reset and fill notebook content according to view
 
@@ -1506,14 +1504,10 @@ class FirewallConfig(object):
             for item in self.fw.listIcmpTypes():
                 self.icmpStore.append([False, item])
         else:
-            items = self.fw.config().listServices()
-            for item in items:
-                obj = self.fw.config().getService(item)
-                self.serviceStore.append([False, obj.get_property("name")])
-            items = self.fw.config().listIcmpTypes()
-            for item in items:
-                obj = self.fw.config().getIcmpType(item)
-                self.icmpStore.append([False, obj.get_property("name")])
+            for item in self.fw.config().getServiceNames():
+                self.serviceStore.append([False, item])
+            for item in self.fw.config().getIcmpTypeNames():
+                self.icmpStore.append([False, item])
 
         # zones
         active_zones = self.active_zones.keys()
@@ -1552,9 +1546,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             services = self.fw.listServices()
         else:
-            services = [self.fw.config().getService(s).get_property("name") \
-                        for s in self.fw.config().listServices()]
-            services.sort()
+            services = self.fw.config().getServiceNames()
 
         selection = self.serviceConfServiceView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
@@ -1944,8 +1936,7 @@ class FirewallConfig(object):
         # Get all zones, renamed the one that is missing.
         # If more or less than one is missing, update zone store.
 
-        zones = [ self.fw.config().getZone(z).get_property("name")
-                  for z in self.fw.config().listZones() ]
+        zones = self.fw.config().getZoneNames()
 
         use_iter = None
         iter = self.zoneStore.get_iter_first()
@@ -3077,9 +3068,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             services = self.fw.listServices()
         else:
-            services = [self.fw.config().getService(s).get_property("name") \
-                        for s in self.fw.config().listServices()]
-            services.sort()
+            services = self.fw.config().getServiceNames()
 
         for service in services:
             self.serviceDialogServiceStore.append([service])
@@ -3125,9 +3114,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             icmptypes = self.fw.listIcmpTypes()
         else:
-            icmptypes = [self.fw.config().getIcmpType(i).get_property("name") \
-                         for i in self.fw.config().listIcmpTypes()]
-            icmptypes.sort()
+            icmptypes = self.fw.config().getIcmpTypeNames()
 
         for icmptype in icmptypes:
             self.icmptypeDialogIcmptypeStore.append([icmptype])
@@ -4760,8 +4747,7 @@ class FirewallConfig(object):
         # Get all services, renamed the one that is missing.
         # If more or less than one is missing, update service store.
 
-        services = [ self.fw.config().getService(z).get_property("name")
-                     for z in self.fw.config().listServices() ]
+        services = self.fw.config().getServiceNames()
 
         use_iter = None
         iter = self.serviceConfServiceStore.get_iter_first()
@@ -5162,9 +5148,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             ipsets = self.fw.getIPSets()
         else:
-            ipsets = [self.fw.config().getIPSet(s).get_property("name") \
-                        for s in self.fw.config().listIPSets()]
-            ipsets.sort()
+            ipsets = self.fw.config().getIPSetNames()
 
         selection = self.ipsetConfIPSetView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
@@ -5522,8 +5506,7 @@ class FirewallConfig(object):
         # Get all ipsets, renamed the one that is missing.
         # If more or less than one is missing, update ipset store.
 
-        ipsets = [ self.fw.config().getIPSet(z).get_property("name")
-                  for z in self.fw.config().listIPSets() ]
+        ipsets = self.fw.config().getIPSetNames()
 
         use_iter = None
         iter = self.ipsetConfIPSetStore.get_iter_first()
@@ -5614,9 +5597,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             icmps = self.fw.listIcmpTypes()
         else:
-            icmps = [self.fw.config().getIcmpType(i).get_property("name") \
-                         for i in self.fw.config().listIcmpTypes()]
-            icmps.sort()
+            icmps = self.fw.config().getIcmpTypeNames()
 
         selection = self.icmpDialogIcmpView.get_selection()
         selection.set_mode(Gtk.SelectionMode.NONE)
@@ -5859,8 +5840,7 @@ class FirewallConfig(object):
         # Get all icmps, renamed the one that is missing.
         # If more or less than one is missing, update icmp store.
 
-        icmps = [ self.fw.config().getIcmpType(z).get_property("name")
-                  for z in self.fw.config().listIcmpTypes() ]
+        icmps = self.fw.config().getIcmpTypeNames()
 
         use_iter = None
         iter = self.icmpDialogIcmpStore.get_iter_first()

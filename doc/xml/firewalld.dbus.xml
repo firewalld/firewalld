@@ -2206,6 +2206,14 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getIPSetNames">
+            <term><methodname>getIPSetNames</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of <replaceable>ipset</replaceable> names (permanent configuration).
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getIcmpTypeByName">
             <term><methodname>getIcmpTypeByName</methodname>(s: icmptype) &rarr; o</term>
             <listitem>
@@ -2215,6 +2223,14 @@
 	      <para>
 		Possible errors: INVALID_ICMPTYPE
 	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getIcmpTypeNames">
+            <term><methodname>getIcmpTypeNames</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of <replaceable>icmptype</replaceable> names (permanent configuration).
+              </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getServiceByName">
@@ -2228,6 +2244,14 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getServiceNames">
+            <term><methodname>getServiceNames</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of <replaceable>service</replaceable> names (permanent configuration).
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getZoneByName">
             <term><methodname>getZoneByName</methodname>(s: zone) &rarr; o</term>
             <listitem>
@@ -2237,6 +2261,14 @@
 	      <para>
 		Possible errors: INVALID_ZONE
 	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.Methods.getZoneNames">
+            <term><methodname>getZoneNames</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Return list of <replaceable>zone</replaceable> names (permanent configuration) of.
+              </para>
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.Methods.getZoneOfInterface">

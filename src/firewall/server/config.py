@@ -759,6 +759,17 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.listIPSets()")
         return self.ipsets
 
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='as')
+    @dbus_handle_exceptions
+    def getIPSetNames(self, sender=None):
+        """get ipset names
+        """
+        log.debug1("config.getIPSetNames()")
+        ipsets = [ ]
+        for obj in self.ipsets:
+            ipsets.append(obj.obj.name)
+        return sorted(ipsets)
+
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, in_signature='s',
                          out_signature='o')
     @dbus_handle_exceptions
@@ -803,6 +814,17 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.listIcmpTypes()")
         return self.icmptypes
 
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='as')
+    @dbus_handle_exceptions
+    def getIcmpTypeNames(self, sender=None):
+        """get icmptype names
+        """
+        log.debug1("config.getIcmpTypeNames()")
+        icmptypes = [ ]
+        for obj in self.icmptypes:
+            icmptypes.append(obj.obj.name)
+        return sorted(icmptypes)
+
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, in_signature='s',
                          out_signature='o')
     @dbus_handle_exceptions
@@ -846,6 +868,17 @@ class FirewallDConfig(slip.dbus.service.Object):
         log.debug1("config.listServices()")
         return self.services
 
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='as')
+    @dbus_handle_exceptions
+    def getServiceNames(self, sender=None):
+        """get service names
+        """
+        log.debug1("config.getServiceNames()")
+        services = [ ]
+        for obj in self.services:
+            services.append(obj.obj.name)
+        return sorted(services)
+
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, in_signature='s',
                          out_signature='o')
     @dbus_handle_exceptions
@@ -888,6 +921,17 @@ class FirewallDConfig(slip.dbus.service.Object):
         """
         log.debug1("config.listZones()")
         return self.zones
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='as')
+    @dbus_handle_exceptions
+    def getZoneNames(self, sender=None):
+        """get zone names
+        """
+        log.debug1("config.getZoneNames()")
+        zones = [ ]
+        for obj in self.zones:
+            zones.append(obj.obj.name)
+        return sorted(zones)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, in_signature='s',
                          out_signature='o')

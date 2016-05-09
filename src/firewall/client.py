@@ -1969,6 +1969,11 @@ class FirewallClientConfig(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
+    def getIPSetNames(self):
+        return dbus_to_python(self.fw_config.getIPSetNames())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
     def listIPSets(self):
         return dbus_to_python(self.fw_config.listIPSets())
 
@@ -1990,6 +1995,11 @@ class FirewallClientConfig(object):
         return FirewallClientConfigIPSet(self.bus, path)
 
     # zone
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getZoneNames(self):
+        return dbus_to_python(self.fw_config.getZoneNames())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
@@ -2027,6 +2037,11 @@ class FirewallClientConfig(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
+    def getServiceNames(self):
+        return dbus_to_python(self.fw_config.getServiceNames())
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
     def listServices(self):
         return dbus_to_python(self.fw_config.listServices())
 
@@ -2048,6 +2063,11 @@ class FirewallClientConfig(object):
         return FirewallClientConfigService(self.bus, path)
 
     # icmptype
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIcmpTypeNames(self):
+        return dbus_to_python(self.fw_config.getIcmpTypeNames())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
