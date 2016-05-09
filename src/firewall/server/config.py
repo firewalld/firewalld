@@ -33,7 +33,8 @@ from firewall import config
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.watcher import Watcher
 from firewall.core.logger import log
-from firewall.server.decorators import *
+from firewall.server.decorators import handle_exceptions, \
+    dbus_handle_exceptions, dbus_service_method
 from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
@@ -603,7 +604,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryLockdownWhitelistCommand(self, command, sender=None):
+    def queryLockdownWhitelistCommand(self, command, sender=None): # pylint: disable=W0613
         command = dbus_to_python(command)
         log.debug1("config.policies.queryLockdownWhitelistCommand('%s')",
                    command)
@@ -648,7 +649,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryLockdownWhitelistContext(self, context, sender=None):
+    def queryLockdownWhitelistContext(self, context, sender=None): # pylint: disable=W0613
         context = dbus_to_python(context)
         log.debug1("config.policies.queryLockdownWhitelistContext('%s')",
                    context)
@@ -657,7 +658,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getLockdownWhitelistContexts(self, sender=None):
+    def getLockdownWhitelistContexts(self, sender=None): # pylint: disable=W0613
         log.debug1("config.policies.getLockdownWhitelistContexts()")
         return self.getLockdownWhitelist()[1]
 
@@ -692,7 +693,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryLockdownWhitelistUser(self, user, sender=None):
+    def queryLockdownWhitelistUser(self, user, sender=None): # pylint: disable=W0613
         user = dbus_to_python(user)
         log.debug1("config.policies.queryLockdownWhitelistUser('%s')", user)
         return user in self.getLockdownWhitelist()[2]
@@ -700,7 +701,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getLockdownWhitelistUsers(self, sender=None):
+    def getLockdownWhitelistUsers(self, sender=None): # pylint: disable=W0613
         log.debug1("config.policies.getLockdownWhitelistUsers()")
         return self.getLockdownWhitelist()[2]
 
@@ -735,7 +736,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_POLICIES,
                          in_signature='i', out_signature='b')
     @dbus_handle_exceptions
-    def queryLockdownWhitelistUid(self, uid, sender=None):
+    def queryLockdownWhitelistUid(self, uid, sender=None): # pylint: disable=W0613
         uid = dbus_to_python(uid)
         log.debug1("config.policies.queryLockdownWhitelistUid(%d)", uid)
         return uid in self.getLockdownWhitelist()[3]
@@ -1115,7 +1116,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
                          in_signature='sssias')
     @dbus_handle_exceptions
-    def addRule(self, ipv, table, chain, priority, args, sender=None):
+    def addRule(self, ipv, table, chain, priority, args, sender=None): # pylint: disable=R0913
         ipv = dbus_to_python(ipv)
         table = dbus_to_python(table)
         chain = dbus_to_python(chain)
