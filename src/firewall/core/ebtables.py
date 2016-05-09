@@ -127,7 +127,6 @@ class ebtables(object):
             temp_file.write("*%s\n" % table)
             for rule in table_rules[table]:
                 temp_file.write(" ".join(rule) + "\n")
-            temp_file.write("COMMIT\n")
 
         temp_file.close()
 
