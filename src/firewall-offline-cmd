@@ -49,6 +49,9 @@ If no options are given, configuration from '/etc/sysconfig/system-config-firewa
 General Options
   -h, --help           Prints a short help text and exists
   -V, --version        Print the version string of firewalld
+  -f, --system-config-firewall-file=<file>
+                       Import configuration data from the given configuration
+                       file.
 
 Lokkit Compatibility Options
   --enabled             Enable firewall (default)
@@ -534,12 +537,10 @@ def __pk_symlink(product='server'):
     else:
         __fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
 
-# system-config-firewall: fw_sysconfig
-CONF = '/etc/sysconfig/system-config-firewall'
-def read_sysconfig_args():
+def read_sysconfig_args(sysconfig_file = '/etc/sysconfig/system-config-firewall'):
     filename = None
-    if os.path.exists(CONF) and os.path.isfile(CONF):
-        filename = CONF
+    if os.path.exists(sysconfig_file) and os.path.isfile(sysconfig_file):
+        filename = sysconfig_file
     try:
         f = open(filename, 'r')
     except:
@@ -553,7 +554,11 @@ def read_sysconfig_args():
             continue
         argv.append(line)
     f.close()
-    return argv
+
+    if argv:
+        return parser.parse_args(argv)
+    else:
+        __fail("Opening of '%s' failed, exiting." % sysconfig_file)
 
 def get_ipset_entries_from_file(filename):
     entries = [ ]
@@ -594,6 +599,8 @@ parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
                                      action="store_true")
 parser_group_standalone.add_argument("-V", "--version", action="store_true")
+parser_group_standalone.add_argument("-f", "--system-config-firewall-file",
+                                     metavar="<file>")
 parser_group_standalone.add_argument("--policy-server", action="store_true")
 parser_group_standalone.add_argument("--policy-desktop", action="store_true")
 parser_group_standalone.add_argument("--lockdown-on", action="store_true")
@@ -795,11 +802,10 @@ if len(sys.argv) > 1:
     a = parser.parse_args(args)
 else:
     # migrate configuration from /etc/sysconfig/system-config-firewall
-    args = read_sysconfig_args()
-    if args:
-        a = parser.parse_args(args)
-    else:
-        __fail("Opening of '%s' failed, exiting." % CONF)
+    a = read_sysconfig_args()
+
+if a.system_config_firewall_file:
+    a = read_sysconfig_args(a.system_config_firewall_file)
 
 options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.trust or a.masq or a.custom_rules or \
