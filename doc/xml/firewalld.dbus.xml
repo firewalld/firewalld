@@ -182,7 +182,18 @@
 	      </para>
             </listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.Methods.getServiceSettings">
+          <varlistentry id="FirewallD1.Methods.getLogDenied">
+            <term><methodname>getLogDenied</methodname>() &rarr; s</term>
+            <listitem>
+              <para>
+		Retruns the LogDenied value.
+		If LogDenied is enabled, then logging rules are added right before reject and drop rules in the INPUT, FORWARD and OUTPUT chains for the default rules and also final reject and drop rules in zones.
+		Possible values are: <literal>all</literal>, <literal>unicast</literal>, <literal>broadcast</literal>, <literal>multicast</literal> and <literal>off</literal>.
+		The default value is <literal>off</literal>
+              </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.Methods.getServiceSettings">
             <term><methodname>getServiceSettings</methodname>(s: <parameter>service</parameter>) &rarr; (sssa(ss)asa{ss}asa(ss))</term>
             <listitem>
               <para>
@@ -208,7 +219,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Methods.getZoneSettings">
-            <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasasas)</term>
+            <term><methodname>getZoneSettings</methodname>(s: <parameter>zone</parameter>) &rarr; (sssbsasa(ss)asba(ssss)asasasasa(ss))</term>
             <listitem>
               <para>
                 Return runtime settings of given <replaceable>zone</replaceable>.
@@ -239,6 +250,7 @@
 	      </para>
             </listitem>
           </varlistentry>
+
           <varlistentry id="FirewallD1.Methods.listIcmpTypes">
             <term><methodname>listIcmpTypes</methodname>() &rarr; as</term>
             <listitem>
@@ -300,6 +312,21 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.Methods.setLogDenied">
+            <term><methodname>setLogDenied</methodname>(s: <parameter>value</parameter>) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Set LogDenied value to <replaceable>value</replaceable>.
+		If LogDenied is enabled, then logging rules are added right before reject and drop rules in the INPUT, FORWARD and OUTPUT chains for the default rules and also final reject and drop rules in zones.
+		Possible values are: <literal>all</literal>, <literal>unicast</literal>, <literal>broadcast</literal>, <literal>multicast</literal> and <literal>off</literal>.
+		The default value is <literal>off</literal>
+		This is a runtime and permanent change.
+              </para>
+	      <para>
+		Possible errors: ALREADY_SET, INVALID_VALUE
+	      </para>
+            </listitem>
+          </varlistentry>
         </variablelist>
       </refsect3>
 
@@ -311,6 +338,14 @@
             <listitem>
               <para>
 		Emitted when default zone has been changed to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.Signals.LogDeniedChanged">
+            <term><methodname>LogDeniedChanged</methodname>(s: <parameter>value</parameter>)</term>
+            <listitem>
+              <para>
+		Emitted when LogDenied value has been changed.
               </para>
             </listitem>
           </varlistentry>
@@ -348,11 +383,19 @@
 	    <term><parameter>BRIDGE</parameter> - b - (ro)</term>
             <listitem><para>Indicates whether the firewall has ethernet bridge support.</para></listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.Properties.IPSet">
+            <term><parameter>IPSet</parameter> - b - (ro)</term>
+            <listitem><para>Indicates whether the firewall has IPSet support.</para></listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.Properties.IPSetTypes">
+            <term><parameter>IPSetTypes</parameter> - as - (ro)</term>
+            <listitem><para>The supported IPSet types by ipset and firewalld.</para></listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.Properties.IPv4">
             <term><parameter>IPv4</parameter> - b - (ro)</term>
             <listitem><para>Indicates whether the firewall has IPv4 support.</para></listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.Properties.IPv6">
+	  <varlistentry id="FirewallD1.Properties.IPv6">
             <term><parameter>IPv6</parameter> - b - (ro)</term>
             <listitem><para>Indicates whether the firewall has IPv6 support.</para></listitem>
           </varlistentry>
@@ -1499,19 +1542,6 @@
 	      </para>
             </listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.zone.Methods.getSources">
-            <term><methodname>getSources</methodname>(s: zone) &rarr; as</term>
-            <listitem>
-              <para>
-		Return array of sources (s) previously bound with <replaceable>zone</replaceable>.
-		If <replaceable>zone</replaceable> is empty, use default zone.
-		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSources">org.fedoraproject.FirewallD1.config.zone.Methods.getSources</link>.
-              </para>
-	      <para>
-		Possible errors: INVALID_ZONE
-	      </para>
-            </listitem>
-          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getSourcePorts">
             <term><methodname>getSourcePorts</methodname>(s: zone) &rarr; aas</term>
             <listitem>
@@ -1519,6 +1549,19 @@
 		Return array of source ports (2-tuple of port and protocol) previously enabled in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSourcePorts">org.fedoraproject.FirewallD1.config.zone.Methods.getSourcePorts</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.getSources">
+            <term><methodname>getSources</methodname>(s: zone) &rarr; as</term>
+            <listitem>
+              <para>
+		Return array of sources (s) previously bound with <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getSources">org.fedoraproject.FirewallD1.config.zone.Methods.getSources</link>.
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE
@@ -1992,6 +2035,22 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.SourcePortAdded">
+            <term>SourcePortAdded(s: zone, s: port, s: protocol, i: timeout)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>source-port</replaceable>/<replaceable>protocol</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.SourcePortRemoved">
+            <term>SourcePortRemoved(s: zone, s: port, s: protocol)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>source-port</replaceable>/<replaceable>protocol</replaceable> has been removed from <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Signals.SourceRemoved">
             <term>SourceRemoved(s: zone, s: source)</term>
             <listitem>
@@ -2240,6 +2299,14 @@
       <refsect3 id="FirewallD1.config.Signals">
         <title>Signals</title>
         <variablelist>
+          <varlistentry id="FirewallD1.config.Signals.IPSetAdded">
+            <term>IPSetAdded(s: ipset)</term>
+            <listitem>
+              <para>
+		Emitted when <replaceable>ipset</replaceable> has been added.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.Signals.IcmpTypeAdded">
             <term>IcmpTypeAdded(s: icmptype)</term>
             <listitem>
@@ -2290,11 +2357,25 @@
             <term><parameter>IPv6_rpfilter</parameter> - s - (rw)</term>
             <listitem><para>Indicates whether the reverse path filter test on a packet for IPv6 is enabled. If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.</para></listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.Properties.IndividualCalls">
+            <term><parameter>IndividualCalls</parameter> - s - (ro)</term>
+	    <listitem><para>Indicates whether individual calls combined -restore calls are used. If enabled, this increases the time that is needed to apply changes and to start the daemon, but is good for debugging.
+	    </para></listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.config.Properties.Lockdown">
             <term>Lockdown - s - (rw)</term>
             <listitem>
               <para>
 		If this property is enabled, firewall changes with the D-Bus interface will be limited to applications that are listed in the lockdown whitelist.
+              </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.Properties.LogDenied">
+            <term>LogDenied - s - (ro)</term>
+            <listitem>
+              <para>
+		If LogDenied is enabled, then logging rules are added right before reject and drop rules in the INPUT, FORWARD and OUTPUT chains for the default rules and also final reject and drop rules in zones.
+		Possible values are: <literal>all</literal>, <literal>unicast</literal>, <literal>broadcast</literal>, <literal>multicast</literal> and <literal>off</literal>.
               </para>
             </listitem>
           </varlistentry>
@@ -2867,7 +2948,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.ipset.Methods.addOption">
-            <term><methodname>addEntry</methodname>(s: key, s:value) &rarr; Nothing</term>
+            <term><methodname>addOption</methodname>(s: key, s: value) &rarr; Nothing</term>
             <listitem>
               <para>
 		Permanently add (<replaceable>key</replaceable>, <replaceable>value</replaceable>) to the ipset.
@@ -2901,7 +2982,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.ipset.Methods.getOptions">
-            <term><methodname>getEntries</methodname>() &rarr; a{ss}</term>
+            <term><methodname>getOptions</methodname>() &rarr; a{ss}</term>
             <listitem>
               <para>
 		Get dictionary of <parameter>options</parameter> set for ipset.
@@ -2977,7 +3058,7 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.ipset.Methods.queryOption">
-            <term><methodname>queryOption</methodname>(s: key, s:value) &rarr; b</term>
+            <term><methodname>queryOption</methodname>(s: key, s: value) &rarr; b</term>
             <listitem>
               <para>
 		Return whether (<replaceable>key</replaceable>, <replaceable>value</replaceable>) has been added to options of the <replaceable>ipset</replaceable>.
@@ -3009,10 +3090,10 @@
             </listitem>
           </varlistentry>
 	  <varlistentry id="FirewallD1.config.ipset.Methods.removeOption">
-            <term><methodname>removeOption</methodname>(s: key, s:value) &rarr; Nothing</term>
+            <term><methodname>removeOption</methodname>(s: key) &rarr; Nothing</term>
             <listitem>
               <para>
-		Permanently remove (<replaceable>key</replaceable>, <replaceable>value</replaceable>) from the ipset.
+		Permanently remove <replaceable>key</replaceable> from the ipset.
 		See <literal>option</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
 	      <para>
@@ -3068,10 +3149,10 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.ipset.Methods.setType">
-            <term><methodname>setType</methodname>(s: type) &rarr; Nothing</term>
+            <term><methodname>setType</methodname>(s: ipset_type) &rarr; Nothing</term>
             <listitem>
               <para>
-		Permanently set type of ipset to <replaceable>type</replaceable>.
+		Permanently set type of ipset to <replaceable>ipset_type</replaceable>.
 		See <literal>type</literal> attribute of <literal>ipset</literal> tag in <citerefentry><refentrytitle>firewalld.ipset</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
@@ -3452,16 +3533,6 @@
               </para>
             </listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.config.zone.Methods.getSources">
-            <term><methodname>getSources</methodname>() &rarr; as</term>
-            <listitem>
-              <para>
-		Get list of source addresses bound to zone.
-		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
-		For runtime operation see <link linkend="FirewallD1.zone.Methods.getSources">org.fedoraproject.FirewallD1.zone.Methods.getSources</link>.
-              </para>
-            </listitem>
-          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.getSourcePorts">
             <term><methodname>getSourcePorts</methodname>() &rarr; a(ss)</term>
             <listitem>
@@ -3469,6 +3540,16 @@
 		Get list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>) defined in zone.
 		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 		For runtime operation see <link linkend="FirewallD1.zone.Methods.getSourcePorts">org.fedoraproject.FirewallD1.zone.Methods.getSourcePorts</link>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getSources">
+            <term><methodname>getSources</methodname>() &rarr; as</term>
+            <listitem>
+              <para>
+		Get list of source addresses bound to zone.
+		See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.getSources">org.fedoraproject.FirewallD1.zone.Methods.getSources</link>.
               </para>
             </listitem>
           </varlistentry>
@@ -3845,6 +3926,16 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.setSourcePorts">
+            <term><methodname>setSourcePorts</methodname>(a(ss): ports) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set source-ports of zone to list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>).
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.setSourcePorts">org.fedoraproject.FirewallD1.zone.Methods.setSourcePorts</link>.
+              </para>
+            </listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.config.zone.Methods.setSources">
             <term><methodname>setSources</methodname>(as: sources) &rarr; Nothing</term>
             <listitem>
@@ -3873,11 +3964,11 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.update">
-            <term><methodname>update</methodname>((sssbsasa(ss)asba(ssss)asasasas): settings) &rarr; Nothing</term>
+            <term><methodname>update</methodname>((sssbsasa(ss)asba(ssss)asasasasa(ss)): settings) &rarr; Nothing</term>
             <listitem>
               <para>
 		Update settings of zone to <replaceable>settings</replaceable>.
-		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter> and array of <parameter>protocols</parameter>.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, <parameter>UNUSED</parameter>, <parameter>target</parameter>, array of <parameter>services</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>icmp-blocks</parameter>, <parameter>masquerade</parameter>, array of <parameter>forward-ports</parameter> (port, protocol, to-port, to-addr), array of <parameter>interfaces</parameter>, array of <parameter>sources</parameter>, array of <parameter>rich rules</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
               </para>
               <para>
                 <variablelist>
@@ -3895,6 +3986,7 @@
                   <varlistentry><term><parameter>source addresses (as)</parameter>: array of source addresses. See <literal>source</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                   <varlistentry><term><parameter>rich rules (as)</parameter>: array of rich-language rules. See <literal>rule</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
 		  <varlistentry><term><parameter>protocols (as)</parameter>: array of protocols. See <literal>protocol</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
+		  <varlistentry><term><parameter>source-ports (a(ss))</parameter>: array of port and protocol pairs. See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.</term></varlistentry>
                 </variablelist>
               </para>
 	      <para>
@@ -4354,6 +4446,15 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.service.Methods.setSourcePorts">
+            <term><methodname>setSourcePorts</methodname>(a(ss): ports) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set source-ports of service to list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>).
+		See <literal>source-port</literal> tag in <citerefentry><refentrytitle>firewalld.service</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.config.service.Methods.setVersion">
             <term><methodname>setVersion</methodname>(s: version) &rarr; Nothing</term>
             <listitem>
@@ -4364,11 +4465,11 @@
             </listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.config.service.Methods.update">
-            <term><methodname>update</methodname>((sssa(ss)asa{ss}as): settings) &rarr; Nothing</term>
+            <term><methodname>update</methodname>((sssa(ss)asa{ss}asa(ss)): settings) &rarr; Nothing</term>
             <listitem>
               <para>
 		Update settings of service to <replaceable>settings</replaceable>.
-		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter> and array of <parameter>protocols</parameter>.
+		Settings are in format: <parameter>version</parameter>, <parameter>name</parameter>, <parameter>description</parameter>, array of <parameter>ports</parameter> (port, protocol), array of <parameter>module names</parameter>, dictionary of <parameter>destinations</parameter>, array of <parameter>protocols</parameter> and array of <parameter>source-ports</parameter> (port, protocol).
               </para>
               <para>
                 <variablelist>
