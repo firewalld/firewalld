@@ -32,11 +32,11 @@ from firewall import config
 from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
-from firewall.core.fw import Firewall
 from firewall.core.io.ipset import IPSet
 from firewall.core.ipset import IPSET_TYPES
 from firewall.core.logger import log
-from firewall.server.decorators import *
+from firewall.server.decorators import handle_exceptions, \
+    dbus_handle_exceptions, dbus_service_method
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -55,15 +55,15 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, parent, conf, ipset, id, *args, **kwargs):
+    def __init__(self, parent, conf, ipset, item_id, *args, **kwargs):
         super(FirewallDConfigIPSet, self).__init__(*args, **kwargs)
         self.parent = parent
         self.config = conf
         self.obj = ipset
-        self.id = id
+        self.item_id = item_id
         self.busname = args[0]
         self.path = args[1]
-        self._log_prefix = "config.ipset.%d" % self.id
+        self._log_prefix = "config.ipset.%d" % self.item_id
         dbus_introspection_prepare_properties(
             self, config.dbus.DBUS_INTERFACE_CONFIG_IPSET)
 
@@ -95,12 +95,12 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
                 "Property '%s' isn't exported (or may not exist)" % \
-                    property_name)
+                property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
     @dbus_handle_exceptions
-    def Get(self, interface_name, property_name, sender=None):
+    def Get(self, interface_name, property_name, sender=None): # pylint: disable=W0613
         # get a property
         interface_name = dbus_to_python(interface_name, str)
         property_name = dbus_to_python(property_name, str)
@@ -117,7 +117,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
     @dbus_handle_exceptions
-    def GetAll(self, interface_name, sender=None):
+    def GetAll(self, interface_name, sender=None): # pylint: disable=W0613
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("%s.GetAll('%s')", self._log_prefix, interface_name)
 
@@ -163,7 +163,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
-    def Introspect(self, sender=None):
+    def Introspect(self, sender=None): # pylint: disable=W0613
         log.debug2("%s.Introspect()", self._log_prefix)
 
         data = super(FirewallDConfigIPSet, self).Introspect(
@@ -177,7 +177,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature=IPSet.DBUS_SIGNATURE)
     @dbus_handle_exceptions
-    def getSettings(self, sender=None):
+    def getSettings(self, sender=None): # pylint: disable=W0613
         """get settings for ipset
         """
         log.debug1("%s.getSettings()", self._log_prefix)
@@ -255,7 +255,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getVersion(self, sender=None):
+    def getVersion(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getVersion()", self._log_prefix)
         return self.getSettings()[0]
 
@@ -275,7 +275,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getShort(self, sender=None):
+    def getShort(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getShort()", self._log_prefix)
         return self.getSettings()[1]
 
@@ -295,7 +295,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getDescription(self, sender=None):
+    def getDescription(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getDescription()", self._log_prefix)
         return self.getSettings()[2]
 
@@ -316,7 +316,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getType(self, sender=None):
+    def getType(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getType()", self._log_prefix)
         return self.getSettings()[3]
 
@@ -338,7 +338,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature='a{ss}')
     @dbus_handle_exceptions
-    def getOptions(self, sender=None):
+    def getOptions(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getOptions()", self._log_prefix)
         return self.getSettings()[4]
 
@@ -386,7 +386,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
                          in_signature='ss',
                          out_signature='b')
     @dbus_handle_exceptions
-    def queryOption(self, key, value, sender=None):
+    def queryOption(self, key, value, sender=None): # pylint: disable=W0613
         key = dbus_to_python(key, str)
         value = dbus_to_python(value, str)
         log.debug1("%s.queryOption('%s', '%s')", self._log_prefix, key,
@@ -399,7 +399,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getEntries(self, sender=None):
+    def getEntries(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getEntries()", self._log_prefix)
         return self.getSettings()[5]
 
@@ -444,7 +444,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryEntry(self, entry, sender=None):
+    def queryEntry(self, entry, sender=None): # pylint: disable=W0613
         entry = dbus_to_python(entry, str)
         log.debug1("%s.queryEntry('%s')", self._log_prefix, entry)
         return entry in self.getSettings()[5]
