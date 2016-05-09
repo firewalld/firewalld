@@ -32,13 +32,12 @@ from firewall import config
 from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
-from firewall.core.fw import Firewall
 from firewall.core.io.zone import Zone
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall.core.rich import Rich_Rule
-from firewall.functions import portStr
 from firewall.core.logger import log
-from firewall.server.decorators import *
+from firewall.server.decorators import handle_exceptions, \
+    dbus_handle_exceptions, dbus_service_method
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -57,15 +56,15 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, parent, conf, zone, id, *args, **kwargs):
+    def __init__(self, parent, conf, zone, item_id, *args, **kwargs):
         super(FirewallDConfigZone, self).__init__(*args, **kwargs)
         self.parent = parent
         self.config = conf
         self.obj = zone
-        self.id = id
+        self.item_id = item_id
         self.busname = args[0]
         self.path = args[1]
-        self._log_prefix = "config.zone.%d" % self.id
+        self._log_prefix = "config.zone.%d" % self.item_id
         dbus_introspection_prepare_properties(
             self, config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
 
@@ -97,12 +96,12 @@ class FirewallDConfigZone(slip.dbus.service.Object):
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
                 "Property '%s' isn't exported (or may not exist)" % \
-                    property_name)
+                property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
     @dbus_handle_exceptions
-    def Get(self, interface_name, property_name, sender=None):
+    def Get(self, interface_name, property_name, sender=None): # pylint: disable=W0613
         # get a property
         interface_name = dbus_to_python(interface_name, str)
         property_name = dbus_to_python(property_name, str)
@@ -119,7 +118,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
     @dbus_handle_exceptions
-    def GetAll(self, interface_name, sender=None):
+    def GetAll(self, interface_name, sender=None): # pylint: disable=W0613
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("%s.GetAll('%s')", self._log_prefix, interface_name)
 
@@ -165,7 +164,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
-    def Introspect(self, sender=None):
+    def Introspect(self, sender=None): # pylint: disable=W0613
         log.debug2("%s.Introspect()", self._log_prefix)
 
         data = super(FirewallDConfigZone, self).Introspect(
@@ -179,7 +178,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
-    def getSettings(self, sender=None):
+    def getSettings(self, sender=None): # pylint: disable=W0613
         """get settings for zone
         """
         log.debug1("%s.getSettings()", self._log_prefix)
@@ -283,7 +282,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getVersion(self, sender=None):
+    def getVersion(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getVersion()", self._log_prefix)
         return self.getSettings()[0]
 
@@ -303,7 +302,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getShort(self, sender=None):
+    def getShort(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getShort()", self._log_prefix)
         return self.getSettings()[1]
 
@@ -323,7 +322,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getDescription(self, sender=None):
+    def getDescription(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getDescription()", self._log_prefix)
         return self.getSettings()[2]
 
@@ -346,7 +345,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getTarget(self, sender=None):
+    def getTarget(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getTarget()", self._log_prefix)
         settings = self.getSettings()
         return settings[4] if settings[4] != DEFAULT_ZONE_TARGET else "default"
@@ -367,7 +366,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getServices(self, sender=None):
+    def getServices(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getServices()", self._log_prefix)
         return sorted(self.getSettings()[5])
 
@@ -412,7 +411,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryService(self, service, sender=None):
+    def queryService(self, service, sender=None): # pylint: disable=W0613
         service = dbus_to_python(service, str)
         log.debug1("%s.queryService('%s')", self._log_prefix, service)
         return service in self.getSettings()[5]
@@ -422,7 +421,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='a(ss)')
     @dbus_handle_exceptions
-    def getPorts(self, sender=None):
+    def getPorts(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getPorts()", self._log_prefix)
         return self.getSettings()[6]
 
@@ -433,7 +432,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         _ports = [ ]
         # convert embedded lists to tuples
         for port in dbus_to_python(ports, list):
-            if type(port) == list:
+            if isinstance(port, list):
                 _ports.append(tuple(port))
             else:
                 _ports.append(port)
@@ -479,7 +478,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='ss', out_signature='b')
     @dbus_handle_exceptions
-    def queryPort(self, port, protocol, sender=None):
+    def queryPort(self, port, protocol, sender=None): # pylint: disable=W0613
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
@@ -491,7 +490,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getProtocols(self, sender=None):
+    def getProtocols(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getProtocols()", self._log_prefix)
         return self.getSettings()[13]
 
@@ -536,7 +535,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryProtocol(self, protocol, sender=None):
+    def queryProtocol(self, protocol, sender=None): # pylint: disable=W0613
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryProtocol('%s')", self._log_prefix, protocol)
         return protocol in self.getSettings()[13]
@@ -546,7 +545,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='a(ss)')
     @dbus_handle_exceptions
-    def getSourcePorts(self, sender=None):
+    def getSourcePorts(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getSourcePorts()", self._log_prefix)
         return self.getSettings()[14]
 
@@ -557,7 +556,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         _ports = [ ]
         # convert embedded lists to tuples
         for port in dbus_to_python(ports, list):
-            if type(port) == list:
+            if isinstance(port, list):
                 _ports.append(tuple(port))
             else:
                 _ports.append(port)
@@ -603,7 +602,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='ss', out_signature='b')
     @dbus_handle_exceptions
-    def querySourcePort(self, port, protocol, sender=None):
+    def querySourcePort(self, port, protocol, sender=None): # pylint: disable=W0613
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.querySourcePort('%s', '%s')", self._log_prefix, port,
@@ -615,7 +614,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getIcmpBlocks(self, sender=None):
+    def getIcmpBlocks(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getIcmpBlocks()", self._log_prefix)
         return sorted(self.getSettings()[7])
 
@@ -660,7 +659,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryIcmpBlock(self, icmptype, sender=None):
+    def queryIcmpBlock(self, icmptype, sender=None): # pylint: disable=W0613
         icmptype = dbus_to_python(icmptype, str)
         log.debug1("%s.removeIcmpBlock('%s')", self._log_prefix, icmptype)
         return icmptype in self.getSettings()[7]
@@ -670,7 +669,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='b')
     @dbus_handle_exceptions
-    def getMasquerade(self, sender=None):
+    def getMasquerade(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getMasquerade()", self._log_prefix)
         return self.getSettings()[8]
 
@@ -710,7 +709,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='b')
     @dbus_handle_exceptions
-    def queryMasquerade(self, sender=None):
+    def queryMasquerade(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.queryMasquerade()", self._log_prefix)
         return self.getSettings()[8]
 
@@ -719,7 +718,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='a(ssss)')
     @dbus_handle_exceptions
-    def getForwardPorts(self, sender=None):
+    def getForwardPorts(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getForwardPorts()", self._log_prefix)
         return self.getSettings()[9]
 
@@ -730,7 +729,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         _ports = [ ]
         # convert embedded lists to tuples
         for port in dbus_to_python(ports, list):
-            if type(port) == list:
+            if isinstance(port, list):
                 _ports.append(tuple(port))
             else:
                 _ports.append(port)
@@ -746,7 +745,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='ssss')
     @dbus_handle_exceptions
-    def addForwardPort(self, port, protocol, toport, toaddr, sender=None):
+    def addForwardPort(self, port, protocol, toport, toaddr, sender=None): # pylint: disable=R0913
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         toport = dbus_to_python(toport, str)
@@ -766,7 +765,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='ssss')
     @dbus_handle_exceptions
-    def removeForwardPort(self, port, protocol, toport, toaddr, sender=None):
+    def removeForwardPort(self, port, protocol, toport, toaddr, sender=None): # pylint: disable=R0913
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         toport = dbus_to_python(toport, str)
@@ -787,7 +786,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                          in_signature='ssss',
                          out_signature='b')
     @dbus_handle_exceptions
-    def queryForwardPort(self, port, protocol, toport, toaddr, sender=None):
+    def queryForwardPort(self, port, protocol, toport, toaddr, sender=None): # pylint: disable=W0613, R0913
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         toport = dbus_to_python(toport, str)
@@ -802,7 +801,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getInterfaces(self, sender=None):
+    def getInterfaces(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getInterfaces()", self._log_prefix)
         return sorted(self.getSettings()[10])
 
@@ -848,7 +847,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
                          in_signature='s',
                          out_signature='b')
     @dbus_handle_exceptions
-    def queryInterface(self, interface, sender=None):
+    def queryInterface(self, interface, sender=None): # pylint: disable=W0613
         interface = dbus_to_python(interface, str)
         log.debug1("%s.queryInterface('%s')", self._log_prefix, interface)
         return interface in self.getSettings()[10]
@@ -858,7 +857,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getSources(self, sender=None):
+    def getSources(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getSources()", self._log_prefix)
         return sorted(self.getSettings()[11])
 
@@ -903,7 +902,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def querySource(self, source, sender=None):
+    def querySource(self, source, sender=None): # pylint: disable=W0613
         source = dbus_to_python(source, str)
         log.debug1("%s.querySource('%s')", self._log_prefix, source)
         return source in self.getSettings()[11]
@@ -913,7 +912,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getRichRules(self, sender=None):
+    def getRichRules(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getRichRules()", self._log_prefix)
         return self.getSettings()[12]
 
@@ -961,7 +960,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryRichRule(self, rule, sender=None):
+    def queryRichRule(self, rule, sender=None): # pylint: disable=W0613
         rule = dbus_to_python(rule, str)
         log.debug1("%s.queryRichRule('%s')", self._log_prefix, rule)
         rule_str = str(Rich_Rule(rule_str=rule))
