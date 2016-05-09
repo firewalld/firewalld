@@ -32,10 +32,10 @@ from firewall import config
 from firewall.dbus_utils import dbus_to_python, \
     dbus_introspection_prepare_properties, \
     dbus_introspection_add_properties
-from firewall.core.fw import Firewall
 from firewall.core.io.service import Service
 from firewall.core.logger import log
-from firewall.server.decorators import *
+from firewall.server.decorators import handle_exceptions, \
+    dbus_handle_exceptions, dbus_service_method
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -54,15 +54,15 @@ class FirewallDConfigService(slip.dbus.service.Object):
     """ Use PK_ACTION_INFO as a default """
 
     @handle_exceptions
-    def __init__(self, parent, conf, service, id, *args, **kwargs):
+    def __init__(self, parent, conf, service, item_id, *args, **kwargs):
         super(FirewallDConfigService, self).__init__(*args, **kwargs)
         self.parent = parent
         self.config = conf
         self.obj = service
-        self.id = id
+        self.item_id = item_id
         self.busname = args[0]
         self.path = args[1]
-        self._log_prefix = "config.service.%d" % self.id
+        self._log_prefix = "config.service.%d" % self.item_id
         dbus_introspection_prepare_properties(
             self, config.dbus.DBUS_INTERFACE_CONFIG_SERVICE)
 
@@ -94,12 +94,12 @@ class FirewallDConfigService(slip.dbus.service.Object):
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
                 "Property '%s' isn't exported (or may not exist)" % \
-                    property_name)
+                property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
     @dbus_handle_exceptions
-    def Get(self, interface_name, property_name, sender=None):
+    def Get(self, interface_name, property_name, sender=None): # pylint: disable=W0613
         # get a property
         interface_name = dbus_to_python(interface_name, str)
         property_name = dbus_to_python(property_name, str)
@@ -116,7 +116,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
     @dbus_handle_exceptions
-    def GetAll(self, interface_name, sender=None):
+    def GetAll(self, interface_name, sender=None): # pylint: disable=W0613
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("%s.GetAll('%s')", self._log_prefix, interface_name)
 
@@ -162,7 +162,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(dbus.INTROSPECTABLE_IFACE, out_signature='s')
     @dbus_handle_exceptions
-    def Introspect(self, sender=None):
+    def Introspect(self, sender=None): # pylint: disable=W0613
         log.debug2("%s.Introspect()", self._log_prefix)
 
         data = super(FirewallDConfigService, self).Introspect(
@@ -176,7 +176,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature=Service.DBUS_SIGNATURE)
     @dbus_handle_exceptions
-    def getSettings(self, sender=None):
+    def getSettings(self, sender=None): # pylint: disable=W0613
         """get settings for service
         """
         log.debug1("%s.getSettings()", self._log_prefix)
@@ -253,7 +253,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getVersion(self, sender=None):
+    def getVersion(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getVersion()", self._log_prefix)
         return self.getSettings()[0]
 
@@ -273,7 +273,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getShort(self, sender=None):
+    def getShort(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getShort()", self._log_prefix)
         return self.getSettings()[1]
 
@@ -293,7 +293,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getDescription(self, sender=None):
+    def getDescription(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getDescription()", self._log_prefix)
         return self.getSettings()[2]
 
@@ -314,7 +314,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='a(ss)')
     @dbus_handle_exceptions
-    def getPorts(self, sender=None):
+    def getPorts(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getPorts()", self._log_prefix)
         return self.getSettings()[3]
 
@@ -325,7 +325,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         _ports = [ ]
         # convert embedded lists to tuples
         for port in dbus_to_python(ports, list):
-            if type(port) == list:
+            if isinstance(port, list):
                 _ports.append(tuple(port))
             else:
                 _ports.append(port)
@@ -371,7 +371,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          in_signature='ss', out_signature='b')
     @dbus_handle_exceptions
-    def queryPort(self, port, protocol, sender=None):
+    def queryPort(self, port, protocol, sender=None): # pylint: disable=W0613
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
@@ -383,7 +383,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getProtocols(self, sender=None):
+    def getProtocols(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getProtocols()", self._log_prefix)
         return self.getSettings()[6]
 
@@ -428,7 +428,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryProtocol(self, protocol, sender=None):
+    def queryProtocol(self, protocol, sender=None): # pylint: disable=W0613
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryProtocol(%s')", self._log_prefix, protocol)
         return protocol in self.getSettings()[6]
@@ -438,7 +438,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='a(ss)')
     @dbus_handle_exceptions
-    def getSourcePorts(self, sender=None):
+    def getSourcePorts(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getSourcePorts()", self._log_prefix)
         return self.getSettings()[7]
 
@@ -449,7 +449,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
         _ports = [ ]
         # convert embedded lists to tuples
         for port in dbus_to_python(ports, list):
-            if type(port) == list:
+            if isinstance(port, list):
                 _ports.append(tuple(port))
             else:
                 _ports.append(port)
@@ -495,7 +495,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          in_signature='ss', out_signature='b')
     @dbus_handle_exceptions
-    def querySourcePort(self, port, protocol, sender=None):
+    def querySourcePort(self, port, protocol, sender=None): # pylint: disable=W0613
         port = dbus_to_python(port, str)
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.querySourcePort('%s', '%s')", self._log_prefix, port,
@@ -507,7 +507,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='as')
     @dbus_handle_exceptions
-    def getModules(self, sender=None):
+    def getModules(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getModules()", self._log_prefix)
         return sorted(self.getSettings()[4])
 
@@ -552,7 +552,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          in_signature='s', out_signature='b')
     @dbus_handle_exceptions
-    def queryModule(self, module, sender=None):
+    def queryModule(self, module, sender=None): # pylint: disable=W0613
         module = dbus_to_python(module, str)
         log.debug1("%s.queryModule('%s')", self._log_prefix, module)
         return module in self.getSettings()[4]
@@ -562,7 +562,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          out_signature='a{ss}')
     @dbus_handle_exceptions
-    def getDestinations(self, sender=None):
+    def getDestinations(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getDestinations()", self._log_prefix)
         return self.getSettings()[5]
 
@@ -625,7 +625,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          in_signature='ss', out_signature='b')
     @dbus_handle_exceptions
-    def queryDestination(self, family, address, sender=None):
+    def queryDestination(self, family, address, sender=None): # pylint: disable=W0613
         family = dbus_to_python(family, str)
         address = dbus_to_python(address, str)
         log.debug1("%s.queryDestination('%s', '%s')", self._log_prefix,
