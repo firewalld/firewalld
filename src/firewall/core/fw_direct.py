@@ -58,6 +58,11 @@ class FirewallDirect(object):
     def set_permanent_config(self, obj):
         self._obj = obj
 
+    def has_configuration(self):
+        if len(self._chains) + len(self._rules) + len(self._passthroughs) > 0:
+            return True
+        return False
+
     def apply_direct(self):
         # Apply permanent configuration and save the obj to be able to
         # remove permanent configuration settings within get_runtime_config
