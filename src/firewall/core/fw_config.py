@@ -181,7 +181,7 @@ class FirewallConfig(object):
                                 "self._ipsets[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_ipsets:
             raise FirewallError(errors.NO_DEFAULTS,
-                            "'%s' not in self._builtin_ipsets" % obj.name)
+                            "'%s' not a built-in ipset" % obj.name)
         self._remove_ipset(obj)
         return self._builtin_ipsets[obj.name]
 
@@ -297,8 +297,7 @@ class FirewallConfig(object):
 
     def _remove_ipset(self, obj):
         if obj.name not in self._ipsets:
-            raise FirewallError(errors.INVALID_IPSET,
-                                "'%s' not in self._ipsets" % obj.name)
+            raise FirewallError(errors.INVALID_IPSET, obj.name)
         if obj.path != config.ETC_FIREWALLD_IPSETS:
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' != '%s'" % (obj.path,
@@ -351,7 +350,7 @@ class FirewallConfig(object):
                                 "self._icmptypes[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_icmptypes:
             raise FirewallError(errors.NO_DEFAULTS,
-                            "'%s' not in self._builtin_icmptypes" % obj.name)
+                            "'%s' not a built-in icmptype" % obj.name)
         self._remove_icmptype(obj)
         return self._builtin_icmptypes[obj.name]
 
@@ -467,8 +466,7 @@ class FirewallConfig(object):
 
     def _remove_icmptype(self, obj):
         if obj.name not in self._icmptypes:
-            raise FirewallError(errors.INVALID_ICMPTYPE,
-                                "'%s' not in self._icmptypes" % obj.name)
+            raise FirewallError(errors.INVALID_ICMPTYPE, obj.name)
         if obj.path != config.ETC_FIREWALLD_ICMPTYPES:
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' != '%s'" % \
@@ -521,7 +519,7 @@ class FirewallConfig(object):
                                 "self._services[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_services:
             raise FirewallError(errors.NO_DEFAULTS,
-                            "'%s' not in self._builtin_services" % obj.name)
+                                "'%s' not a built-in service" % obj.name)
         self._remove_service(obj)
         return self._builtin_services[obj.name]
 
@@ -637,8 +635,7 @@ class FirewallConfig(object):
 
     def _remove_service(self, obj):
         if obj.name not in self._services:
-            raise FirewallError(errors.INVALID_SERVICE,
-                                "'%s' not in self._services" % obj.name)
+            raise FirewallError(errors.INVALID_SERVICE, obj.name)
         if obj.path != config.ETC_FIREWALLD_SERVICES:
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' != '%s'" % \
@@ -697,7 +694,7 @@ class FirewallConfig(object):
                                 "self._zones[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_zones:
             raise FirewallError(errors.NO_DEFAULTS,
-                                "'%s' not in self._builtin_zones" % obj.name)
+                                "'%s' not a built-in zone" % obj.name)
         self._remove_zone(obj)
         return self._builtin_zones[obj.name]
 
@@ -824,8 +821,7 @@ class FirewallConfig(object):
 
     def _remove_zone(self, obj):
         if obj.name not in self._zones:
-            raise FirewallError(errors.INVALID_ZONE,
-                                "'%s' not in self._zones" % obj.name)
+            raise FirewallError(errors.INVALID_ZONE, obj.name)
         if not obj.path.startswith(config.ETC_FIREWALLD_ZONES):
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' doesn't start with '%s'" % \
