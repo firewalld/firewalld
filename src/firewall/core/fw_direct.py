@@ -26,6 +26,7 @@ from firewall import functions
 from firewall.fw_types import *
 from firewall.core import ipXtables
 from firewall.core import ebtables
+from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
@@ -54,6 +55,13 @@ class FirewallDirect(object):
 
     def cleanup(self):
         self.__init_vars()
+
+    # transaction
+
+    def new_transaction(self):
+        return FirewallTransaction(self._fw)
+
+    # configuration
 
     def set_permanent_config(self, obj):
         self._obj = obj
@@ -105,14 +113,20 @@ class FirewallDirect(object):
     def get_config(self):
         return (self._chains, self._rules, self._passthroughs)
 
-    def set_config(self, conf):
+    def set_config(self, conf, use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
         (_chains, _rules, _passthroughs) = conf
         for table_id in _chains:
             (ipv, table) = table_id
             for chain in _chains[table_id]:
                 if not self.query_chain(ipv, table, chain):
                     try:
-                        self.add_chain(ipv, table, chain)
+                        self.add_chain(ipv, table, chain,
+                                       use_transaction=transaction)
                     except FirewallError as error:
                         log.warning(str(error))
 
@@ -121,7 +135,8 @@ class FirewallDirect(object):
             for (priority, args) in _rules[chain_id]:
                 if not self.query_rule(ipv, table, chain, priority, args):
                     try:
-                        self.add_rule(ipv, table, chain, priority, args)
+                        self.add_rule(ipv, table, chain, priority, args,
+                                      use_transaction=transaction)
                     except FirewallError as error:
                         log.warning(str(error))
 
@@ -129,9 +144,13 @@ class FirewallDirect(object):
             for args in _passthroughs[ipv]:
                 if not self.query_passthrough(ipv, args):
                     try:
-                        self.add_passthrough(ipv, args)
+                        self.add_passthrough(ipv, args,
+                                             use_transaction=transaction)
                     except FirewallError as error:
                         log.warning(str(error))
+
+        if use_transaction is None:
+            transaction.execute(True)
 
     def _check_ipv(self, ipv):
         ipvs = ['ipv4', 'ipv6', 'eb']
@@ -168,7 +187,7 @@ class FirewallDirect(object):
 
     # DIRECT CHAIN
 
-    def __chain(self, add, ipv, table, chain):
+    def __chain(self, add, ipv, table, chain, transaction):
         self._check_ipv_table(ipv, table)
         self._check_builtin_chain(ipv, table, chain)
         table_id = (ipv, table)
@@ -193,12 +212,10 @@ class FirewallDirect(object):
         if add and ipv == "eb":
             rule += [ "-P", "RETURN" ]
 
-        try:
-            self._fw.rule(ipv, rule)
-        except Exception as msg:
-            log.debug2(msg)
-            raise FirewallError(errors.COMMAND_FAILED, msg)
+        transaction.add_rule(ipv, rule)
+        transaction.add_post(self.__register_chain, table_id, chain, add)
 
+    def __register_chain(self, table_id, chain, add):
         if add:
             self._chains.setdefault(table_id, [ ]).append(chain)
         else:
@@ -206,12 +223,28 @@ class FirewallDirect(object):
             if len(self._chains[table_id]) == 0:
                 del self._chains[table_id]
 
-    def add_chain(self, ipv, table, chain):
-        #TODO: policy="ACCEPT"
-        self.__chain(True, ipv, table, chain)
+    def add_chain(self, ipv, table, chain, use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
 
-    def remove_chain(self, ipv, table, chain):
-        self.__chain(False, ipv, table, chain)
+        #TODO: policy="ACCEPT"
+        self.__chain(True, ipv, table, chain, transaction)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+    def remove_chain(self, ipv, table, chain, use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        self.__chain(False, ipv, table, chain, transaction)
+
+        if use_transaction is None:
+            transaction.execute(True)
 
     def query_chain(self, ipv, table, chain):
         self._check_ipv_table(ipv, table)
@@ -237,10 +270,11 @@ class FirewallDirect(object):
 
     # DIRECT RULE
 
-    def __rule(self, enable, ipv, table, chain, priority, args):
+    def __rule(self, enable, ipv, table, chain, priority, args, transaction):
         self._check_ipv_table(ipv, table)
         if ipv in [ "ipv4", "ipv6" ]:
-            self._fw.zone.create_zone_base_by_chain(ipv, table, chain)
+            self._fw.zone.create_zone_base_by_chain(ipv, table, chain,
+                                                    transaction)
 
         _chain = chain
 
@@ -324,12 +358,11 @@ class FirewallDirect(object):
             rule += [ "-D", _chain ]
         rule += args
 
-        try:
-            self._fw.rule(ipv, rule)
-        except Exception as msg:
-            log.debug2(msg)
-            raise FirewallError(errors.COMMAND_FAILED, msg)
+        transaction.add_rule(ipv, rule)
+        transaction.add_post(self.__register_rule,
+                             rule_id, chain_id, priority, enable)
 
+    def __register_rule(self, rule_id, chain_id, priority, enable):
         if enable:
             if chain_id not in self._rules:
                 self._rules[chain_id] = LastUpdatedOrderedDict()
@@ -347,11 +380,28 @@ class FirewallDirect(object):
                 del self._rules[chain_id]
             self._rule_priority_positions[chain_id][priority] -= 1
 
-    def add_rule(self, ipv, table, chain, priority, args):
-        self.__rule(True, ipv, table, chain, priority, args)
+    def add_rule(self, ipv, table, chain, priority, args, use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
 
-    def remove_rule(self, ipv, table, chain, priority, args):
-        self.__rule(False, ipv, table, chain, priority, args)
+        self.__rule(True, ipv, table, chain, priority, args, transaction)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+    def remove_rule(self, ipv, table, chain, priority, args,
+                    use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        self.__rule(False, ipv, table, chain, priority, args, transaction)
+
+        if use_transaction is None:
+            transaction.execute(True)
 
     def query_rule(self, ipv, table, chain, priority, args):
         self._check_ipv_table(ipv, table)
@@ -385,17 +435,19 @@ class FirewallDirect(object):
 
     # DIRECT PASSTHROUGH (tracked)
 
-    def __passthrough(self, enable, ipv, args):
+    def __passthrough(self, enable, ipv, args, transaction):
         self._check_ipv(ipv)
 
+        tuple_args = tuple(args)
         passthrough_id = (ipv, args)
         if enable:
-            if ipv in self._passthroughs and args in self._passthroughs[ipv]:
+            if ipv in self._passthroughs and \
+               tuple_args in self._passthroughs[ipv]:
                 raise FirewallError(errors.ALREADY_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
         else:
             if ipv not in self._passthroughs or \
-               args not in self._passthroughs[ipv]:
+               tuple_args not in self._passthroughs[ipv]:
                 raise FirewallError(errors.NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
 
@@ -427,13 +479,12 @@ class FirewallDirect(object):
             _args = args
         else:
             _args = self.reverse_passthrough(args)
+        transaction.add_rule(ipv, _args)
 
-        try:
-            self._fw.rule(ipv, _args)
-        except Exception as msg:
-            log.debug2(msg)
-            raise FirewallError(errors.COMMAND_FAILED, msg)
+        transaction.add_post(self.__register_passthrough, ipv, tuple_args,
+                             enable)
 
+    def __register_passthrough(self, ipv, args, enable):
         if enable:
             if ipv not in self._passthroughs:
                 self._passthroughs[ipv] = [ ]
@@ -443,15 +494,31 @@ class FirewallDirect(object):
             if len(self._passthroughs[ipv]) == 0:
                 del self._passthroughs[ipv]
 
-    def add_passthrough(self, ipv, args):
-        self.__passthrough(True, ipv, list(args))
+    def add_passthrough(self, ipv, args, use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
 
-    def remove_passthrough(self, ipv, args):
-        self.__passthrough(False, ipv, list(args))
+        self.__passthrough(True, ipv, list(args), transaction)
+
+        if use_transaction is None:
+            transaction.execute(True)
+
+    def remove_passthrough(self, ipv, args, use_transaction=None):
+        if use_transaction is None:
+            transaction = self.new_transaction()
+        else:
+            transaction = use_transaction
+
+        self.__passthrough(False, ipv, list(args), transaction)
+
+        if use_transaction is None:
+            transaction.execute(True)
 
     def query_passthrough(self, ipv, args):
         return (ipv in self._passthroughs and \
-                list(args) in self._passthroughs[ipv])
+                tuple(args) in self._passthroughs[ipv])
 
     def get_all_passthroughs(self):
         r = [ ]
