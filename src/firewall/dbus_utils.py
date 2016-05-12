@@ -214,5 +214,8 @@ def dbus_introspection_add_properties(obj, data, interface):
                         prop.setAttribute("type", value["type"])
                         prop.setAttribute("access", value["access"])
                         node.appendChild(prop)
+
     log.debug10(doc.toxml())
-    return doc.toxml()
+    new_data = doc.toxml()
+    doc.unlink()
+    return new_data
