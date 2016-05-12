@@ -184,7 +184,7 @@ class ebtables(object):
     def used_tables(self):
         return list(BUILT_IN_CHAINS.keys())
 
-    def flush(self, individual=False):
+    def flush(self, transaction=None):
         tables = self.used_tables()
         rules = [ ]
         for table in tables:
@@ -197,18 +197,16 @@ class ebtables(object):
                 "-Z": "zero counters",
             }
             for flag in [ "-F", "-X", "-Z" ]:
-                if individual:
+                if transaction is not None:
+                    transaction.add_rule(self.ipv, [ "-t", table, flag ])
+                else:
                     try:
                         self.__run([ "-t", table, flag ])
                     except Exception as msg:
                         log.error("Failed to %s %s: %s",
                                   msgs[flag], self.ipv, msg)
-                else:
-                    rules.append([ "-t", table, flag ])
-        if len(rules) > 0:
-            self.set_rules(rules)
 
-    def set_policy(self, policy, which="used", individual=False):
+    def set_policy(self, policy, which="used", transaction=None):
         if which == "used":
             tables = self.used_tables()
         else:
@@ -217,13 +215,12 @@ class ebtables(object):
         rules = [ ]
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
-                if individual:
+                if transaction is not None:
+                    transaction.add_rule(self.ipv,
+                                         [ "-t", table, "-P", chain, policy ])
+                else:
                     try:
                         self.__run([ "-t", table, "-P", chain, policy ])
                     except Exception as msg:
                         log.error("Failed to set policy for %s: %s", self.ipv,
                                   msg)
-                else:
-                    rules.append([ "-t", table, "-P", chain, policy ])
-        if len(rules) > 0:
-            self.set_rules(rules)
