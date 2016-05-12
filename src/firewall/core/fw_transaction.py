@@ -114,6 +114,9 @@ class SimpleFirewallTransaction(object):
 
     def clear(self):
         self.rules.clear()
+        del self.pre_funcs[:]
+        del self.post_funcs[:]
+        del self.fail_funcs[:]
 
     def add_rule(self, ipv, rule):
         if ipv not in self.rules or rule not in self.rules[ipv]:
@@ -290,6 +293,11 @@ class FirewallZoneTransaction(SimpleFirewallTransaction):
         self.zone = zone
         self.chains = [ ] # [ (table, chain),.. ]
         self.modules = [ ] # [ module,.. ]
+
+    def clear(self):
+        super(FirewallZoneTransaction, self).clear()
+        del self.chains[:]
+        del self.modules[:]
 
     def add_chain(self, table, chain):
         table_chain = (table, chain)
