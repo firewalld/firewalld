@@ -268,7 +268,7 @@ class ip4tables(object):
 
         return wait_option
 
-    def flush(self, individual=False):
+    def flush(self, transaction=None):
         tables = self.used_tables()
         rules = [ ]
         for table in tables:
@@ -276,31 +276,26 @@ class ip4tables(object):
             # Delete firewall chains: -X
             # Set counter to zero: -Z
             for flag in [ "-F", "-X", "-Z" ]:
-                if individual:
-                    self.__run([ "-t", table, flag ])
+                if transaction is not None:
+                    transaction.add_rule(self.ipv, [ "-t", table, flag ])
                 else:
-                    rules.append([ "-t", table, flag ])
-        if len(rules) > 0:
-            self.set_rules(rules)
+                    self.__run([ "-t", table, flag ])
 
-    def set_policy(self, policy, which="used", individual=False):
+    def set_policy(self, policy, which="used", transaction=None):
         if which == "used":
             tables = self.used_tables()
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
-        if "nat" in tables:
-            tables.remove("nat") # nat can not set policies in nat table
-
-        rules = [ ]
         for table in tables:
+            if table == "nat":
+                continue
             for chain in BUILT_IN_CHAINS[table]:
-                if individual:
-                    self.__run([ "-t", table, "-P", chain, policy ])
+                if transaction is not None:
+                    transaction.add_rule(self.ipv,
+                                         [ "-t", table, "-P", chain, policy ])
                 else:
-                    rules.append([ "-t", table, "-P", chain, policy ])
-        if len(rules) > 0:
-            self.set_rules(rules)
+                    self.__run([ "-t", table, "-P", chain, policy ])
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
