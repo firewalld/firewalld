@@ -349,6 +349,15 @@
 	</varlistentry>
 
 	<varlistentry>
+          <term><option>--permanent</option> <option>--load-zone-defaults</option>=<replaceable>zone</replaceable></term>
+          <listitem>
+            <para>
+              Load zone default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
          <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
          <listitem>
            <para>
@@ -938,21 +947,29 @@
       <title>IPSet Options</title>
       <variablelist>
 	<varlistentry>
-         <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
-         <listitem>
-           <para>
-             Add a new permanent ipset with specifying the type and optional options.
-           </para>
-         </listitem>
-       </varlistentry>
-       <varlistentry>
-         <term><option>--permanent</option> <option>--delete-ipset</option>=<replaceable>ipset</replaceable></term>
-         <listitem>
-           <para>
-             Delete an existing permanent ipset.
-           </para>
-         </listitem>
-       </varlistentry>
+          <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
+          <listitem>
+            <para>
+              Add a new permanent ipset with specifying the type and optional options.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--delete-ipset</option>=<replaceable>ipset</replaceable></term>
+          <listitem>
+            <para>
+              Delete an existing permanent ipset.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--load-ipset-defaults</option>=<replaceable>ipset</replaceable></term>
+          <listitem>
+            <para>
+              Load ipset default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
 	<varlistentry>
 	  <term><optional><option>--permanent</option></optional> <option>--info-ipset=<replaceable>ipset</replaceable></option></term>
 	  <listitem>
@@ -1111,6 +1128,14 @@
            </para>
          </listitem>
        </varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--load-service-defaults</option>=<replaceable>service</replaceable></term>
+          <listitem>
+            <para>
+              Load service default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
        <varlistentry>
          <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
          <listitem>
@@ -1349,7 +1374,14 @@
            </para>
          </listitem>
        </varlistentry>
-
+       <varlistentry>
+         <term><option>--permanent</option> <option>--load-icmptype-defaults</option>=<replaceable>icmptype</replaceable></term>
+         <listitem>
+           <para>
+             Load icmptype default settings or report NO_DEFAULTS error.
+           </para>
+         </listitem>
+       </varlistentry>
        <varlistentry>
          <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
          <listitem>

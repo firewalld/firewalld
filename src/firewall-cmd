@@ -95,6 +95,8 @@ Zone Options
   --list-all-zones     List everything added for or enabled in all zones [P]
   --new-zone=<zone>    Add a new zone [P only]
   --delete-zone=<zone> Delete an existing zone [P only]
+  --load-zone-defaults=<zone>
+                       Load zone default settings [P only] [Z]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options marked with [Z]
   --get-target         Get the zone target [P only] [Z]
@@ -108,6 +110,8 @@ IPSet Options
                        Add a new ipset [P only]
   --delete-ipset=<ipset>
                        Delete an existing ipset [P only]
+  --load-ipset-defaults=<ipset>
+                       Load ipset default settings [P only]
   --info-ipset=<ipset> Print information about an ipset
   --path-ipset=<ipset> Print file path of an ipset [P only]
   --get-ipsets         Print predefined ipsets
@@ -137,6 +141,8 @@ IcmpType Options
                        Add a new icmptype [P only]
   --delete-icmptype=<icmptype>
                        Delete an existing icmptype [P only]
+  --load-icmptype-defaults=<icmptype>
+                       Load icmptype default settings [P only]
   --info-icmptype=<icmptype>
                        Print information about an icmptype
   --path-icmptype=<icmptype>
@@ -163,6 +169,8 @@ Service Options
                        Add a new service [P only]
   --delete-service=<service>
                        Delete an existing service [P only]
+  --load-service-defaults=<service>
+                       Load icmptype default settings [P only]
   --info-service=<service>
                        Print information about a service
   --path-service=<service>
@@ -632,12 +640,17 @@ parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
 parser_group_config.add_argument("--delete-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--load-icmptype-defaults",
+                                 metavar="<icmptype>")
 parser_group_config.add_argument("--new-service", metavar="<service>")
 parser_group_config.add_argument("--delete-service", metavar="<service>")
+parser_group_config.add_argument("--load-service-defaults", metavar="<service>")
 parser_group_config.add_argument("--new-zone", metavar="<zone>")
 parser_group_config.add_argument("--delete-zone", metavar="<zone>")
+parser_group_config.add_argument("--load-zone-defaults", metavar="<zone>")
 parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
 parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--load-ipset-defaults", metavar="<ipset>")
 parser_group_config.add_argument("--path-zone", metavar="<zone>")
 parser_group_config.add_argument("--path-service", metavar="<service>")
 parser_group_config.add_argument("--path-icmptype", metavar="<icmptype>")
@@ -907,9 +920,13 @@ options_permanent = a.permanent or options_config or \
                     a.ipset or options_ipset
 
 options_permanent_only = a.new_icmptype or a.delete_icmptype or \
+                         a.load_icmptype_defaults or \
                          a.new_service or a.delete_service or \
+                         a.load_service_defaults or \
                          a.new_zone or a.delete_zone or \
+                         a.load_zone_defaults or \
                          a.new_ipset or a.delete_ipset or \
+                         a.load_ipset_defaults or \
                          (a.icmptype and options_icmptype) or \
                          (a.service and options_service) or \
                          a.path_zone or a.path_icmptype or a.path_service or \
@@ -1082,6 +1099,10 @@ if a.permanent:
         ipset = fw.config().getIPSetByName(a.delete_ipset)
         ipset.remove()
 
+    elif a.load_ipset_defaults:
+        ipset = fw.config().getIPSetByName(a.load_ipset_defaults)
+        ipset.loadDefaults()
+
     elif a.info_ipset:
         ipset = fw.config().getIPSetByName(a.info_ipset)
         __print_ipset_info(a.info_ipset, ipset.getSettings())
@@ -1154,6 +1175,10 @@ if a.permanent:
         zone = fw.config().getZoneByName(a.delete_zone)
         zone.remove()
 
+    elif a.load_zone_defaults:
+        zone = fw.config().getZoneByName(a.load_zone_defaults)
+        zone.loadDefaults()
+
     elif a.info_zone:
         zone = fw.config().getZoneByName(a.info_zone)
         __print_zone_info(a.info_zone, zone.getSettings(), True)
@@ -1172,6 +1197,10 @@ if a.permanent:
         service = fw.config().getServiceByName(a.delete_service)
         service.remove()
 
+    elif a.load_service_defaults:
+        service = fw.config().getServiceByName(a.load_service_defaults)
+        service.loadDefaults()
+
     elif a.info_service:
         service = fw.config().getServiceByName(a.info_service)
         __print_service_info(a.info_service, service.getSettings())
@@ -1189,6 +1218,10 @@ if a.permanent:
     elif a.delete_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.delete_icmptype)
         icmptype.remove()
+
+    elif a.load_icmptype_defaults:
+        icmptype = fw.config().getIcmpTypeByName(a.load_icmptype_defaults)
+        icmptype.loadDefaults()
 
     elif a.info_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.info_icmptype)
