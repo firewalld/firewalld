@@ -168,17 +168,19 @@ class ip4tables(object):
     def set_rules(self, rules, flush=False):
         temp_file = tempFile()
 
-        table = "filter"
         table_rules = { }
         for rule in rules:
-            try:
-                i = rule.index("-t")
-            except:
-                pass
-            else:
-                if len(rule) >= i+1:
-                    rule.pop(i)
-                    table = rule.pop(i)
+            table = "filter"
+            # get table form rule
+            for opt in [ "-t", "--table" ]:
+                try:
+                    i = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= i+1:
+                        rule.pop(i)
+                        table = rule.pop(i)
 
             table_rules.setdefault(table, []).append(rule)
 
