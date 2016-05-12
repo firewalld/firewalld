@@ -52,6 +52,9 @@ class FirewallIPSet(object):
     def get_ipsets(self):
         return sorted(self._ipsets.keys())
 
+    def has_ipsets(self):
+        return len(self._ipsets) > 0
+
     def get_ipset(self, name):
         self.check_ipset(name)
         return self._ipsets[name]
