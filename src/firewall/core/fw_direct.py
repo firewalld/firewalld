@@ -46,10 +46,10 @@ class FirewallDirect(object):
                                    self._rule_priority_positions)
 
     def __init_vars(self):
-        self._chains = LastUpdatedOrderedDict()
-        self._rules = LastUpdatedOrderedDict()
+        self._chains = { }
+        self._rules = { }
         self._rule_priority_positions = { }
-        self._passthroughs = LastUpdatedOrderedDict()
+        self._passthroughs = { }
         self._obj = None
 
     def cleanup(self):
@@ -70,9 +70,9 @@ class FirewallDirect(object):
         # Return only runtime changes
         # Remove all chains, rules and passthroughs that are in self._obj
         # (permanent config applied in firewalld _start.
-        chains = LastUpdatedOrderedDict()
-        rules = LastUpdatedOrderedDict()
-        passthroughs = LastUpdatedOrderedDict()
+        chains = { }
+        rules = { }
+        passthroughs = { }
 
         for table_id in self._chains:
             (ipv, table) = table_id
