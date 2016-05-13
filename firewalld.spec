@@ -216,6 +216,9 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
+%dir %{_datadir}/firewalld
+%dir %{_datadir}/firewalld/tests
+%{_datadir}/firewalld/tests
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 #%attr(0755,root,root) %{_initrddir}/firewalld
@@ -227,9 +230,6 @@ fi
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
-%dir %{_datadir}/firewalld
-%dir %{_datadir}/firewalld/tests
-%{_datadir}/firewalld/tests
 
 %files -n python-firewall
 %attr(0755,root,root) %dir %{python2_sitelib}/firewall
