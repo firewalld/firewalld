@@ -289,6 +289,7 @@ fi
 %defattr(0644,root,root)
 %{_datadir}/firewalld/firewall-config.glade
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
+%{_datadir}/firewalld/gtk3_niceexpander.py*
 %{_datadir}/applications/firewall-config.desktop
 %{_datadir}/appdata/firewall-config.appdata.xml
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
