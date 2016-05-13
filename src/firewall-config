@@ -60,6 +60,7 @@ if not datadir:
     datadir = config.DATADIR
     sys.path.insert(0, datadir)
 from gtk3_chooserbutton import ChooserButton
+from gtk3_niceexpander import NiceExpander
 
 def escape(text):
     text = text.replace('&', '&amp;')
@@ -111,6 +112,8 @@ class FirewallConfig(object):
         self.mainWindow = builder.get_object("mainWindow")
         self.mainWindow.set_icon(self.icon)
 
+        self.mainPaned = builder.get_object("mainPaned")
+
         self.statusLabel = builder.get_object("statusLabel")
         self.modifiedLabel = builder.get_object("modifiedLabel")
         self.lockdownLabel = builder.get_object("lockdownLabel")
@@ -134,6 +137,8 @@ class FirewallConfig(object):
         self.lockdownWhitelistBox = builder.get_object("lockdownWhitelistBox")
         self.lockdownWhitelistMenuitem = \
             builder.get_object("lockdownWhitelistMenuitem")
+        self.activeBindingsMenuitem = \
+            builder.get_object("activeBindingsMenuitem")
 
         self.changeZonesConnectionMenuitem = \
             builder.get_object("changeZonesConnectionMenuitem")
@@ -554,16 +559,27 @@ class FirewallConfig(object):
         self.forwardDialogToAddrEntry = \
             builder.get_object("forwardDialogToAddrEntry")
 
+        # bindings Expander
+        self.bindingsBox = builder.get_object("bindingsBox")
+        self.bindingsExpanderButton = \
+            builder.get_object("bindingsExpanderButton")
+        self.bindingsUnexpanderButton = \
+            builder.get_object("bindingsUnexpanderButton")
+
+        self.bindingsExpander = NiceExpander(
+            self.bindingsExpanderButton, self.bindingsUnexpanderButton,
+            self.mainPaned, self.bindingsBox)
+        self.bindingsExpander.connect("notify::expanded",
+                                      self.bindings_expander_changed)
+
         # bindings View
         self.bindingsView = builder.get_object("bindingsView")
-        self.bindingsStore = Gtk.TreeStore(GObject.TYPE_STRING,  # name
-                                           GObject.TYPE_STRING,  # zone text
-                                           GObject.TYPE_STRING)  # real zone
+        self.bindingsStore = Gtk.TreeStore(GObject.TYPE_STRING, # label
+                                           GObject.TYPE_STRING, # connection/interface/source
+                                           GObject.TYPE_STRING) # real zone
         self.bindingsView.set_model(self.bindingsStore)
         self.bindingsView.append_column(
-            Gtk.TreeViewColumn(_("Item"), Gtk.CellRendererText(), text=0))
-        self.bindingsView.append_column(
-            Gtk.TreeViewColumn(_("Zone"), Gtk.CellRendererText(), text=1))
+            Gtk.TreeViewColumn(_("Bindings"), Gtk.CellRendererText(), markup=0))
         self.connectionsIter = self.bindingsStore.append(
             None, [ _("Connections"), "", "" ])
         self.interfacesIter = self.bindingsStore.append(
@@ -1190,6 +1206,10 @@ class FirewallConfig(object):
                               self.settings_show_lockdown_whitelist_changed)
         self.settings_show_lockdown_whitelist_changed(self.settings,
                                                       "show-lockdown-whitelist")
+        self.settings.connect("changed::show-active-bindings",
+                              self.settings_show_active_bindings_changed)
+        self.settings_show_active_bindings_changed(self.settings,
+                                                   "show-active-bindings")
 
         # connect
 
@@ -1336,6 +1356,22 @@ class FirewallConfig(object):
             self.lockdownCommandStore.clear()
             self.lockdownUserStore.clear()
             self.lockdownUidStore.clear()
+
+    def settings_show_active_bindings_changed(self, settings, key):
+        self.show_active_bindings = settings.get_boolean(key)
+        self.activeBindingsMenuitem.set_active(self.show_active_bindings)
+        if self.show_active_bindings != self.bindingsExpander.get_expanded():
+            self.bindingsExpander.set_expanded(self.show_active_bindings)
+
+    def onViewActiveBindings_toggled(self, button):
+        self.settings.set_boolean("show-active-bindings",
+                                  button.get_active())
+
+    def bindings_expander_changed(self, *args):
+        self.show_active_bindings = self.bindingsExpander.get_expanded()
+        self.settings.set_boolean("show-active-bindings",
+                                  self.show_active_bindings)
+        self.activeBindingsMenuitem.set_active(self.show_active_bindings)
 
     def nm_signal_receiver(self, *args, **kwargs):
         #print("nm_signal_receiver", args, kwargs)
@@ -2075,6 +2111,7 @@ class FirewallConfig(object):
         while iter:
             self.bindingsStore.remove(iter)
             iter = self.bindingsStore.iter_children(self.sourcesIter)
+        self.changeBindingsButton.set_sensitive(False)
 
         # get all active connections (NM) and interfaces
         connections = { }
@@ -2122,11 +2159,16 @@ class FirewallConfig(object):
             if zone == "":
                 self.bindingsStore.append(
                     self.connectionsIter,
-                    [ connection, _("Default Zone: %s") % self.default_zone,
-                      zone ])
+                    [ "%s (%s)\n<small>%s</small>" % (
+                        connection, ",".join(_interfaces),
+                        _("Default Zone: %s") % self.default_zone),
+                      connection, zone ])
             else:
-                self.bindingsStore.append(self.connectionsIter, [ connection,
-                                                                  zone, zone ])
+                self.bindingsStore.append(self.connectionsIter,
+                    [ "%s (%s)\n<small>%s</small>" % (
+                        connection, ",".join(_interfaces),
+                        _("Zone: %s") % zone),
+                      connection, zone ])
 
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
@@ -2153,8 +2195,11 @@ class FirewallConfig(object):
                 item.connect("activate", self.change_zone_interface_editor, interface, zone)
                 self.left_menu.append(item)
 
-                self.bindingsStore.append(self.interfacesIter, [ interface,
-                                                                 zone, zone ])
+                self.bindingsStore.append(
+                    self.interfacesIter,
+                    [ "%s\n<small>%s</small>" % (interface,
+                                                 _("Zone: %s") % zone),
+                      interface, zone ])
 
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
@@ -2181,8 +2226,11 @@ class FirewallConfig(object):
                 item.connect("activate", self.change_zone_source_editor, source, zone)
                 self.left_menu.append(item)
 
-                self.bindingsStore.append(self.sourcesIter, [ source, zone,
-                                                              zone ])
+                self.bindingsStore.append(
+                    self.sourcesIter,
+                    [ "%s\n<small>%s</small>" % (source,
+                                                 _("Zone: %s") % zone),
+                      source, zone ])
 
         self.bindingsView.expand_all()
         self.bindingsView.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
@@ -2269,6 +2317,7 @@ class FirewallConfig(object):
         selection = self.bindingsView.get_selection()
         (model, iter) = selection.get_selected()
         if not iter:
+            self.changeBindingsButton.set_sensitive(False)
             return
 
         parent_iter = self.bindingsStore.iter_parent(iter)
@@ -2287,7 +2336,7 @@ class FirewallConfig(object):
             self.changeBindingsButton.set_sensitive(True)
             #self.editBindingsButton.set_sensitive(True)
 
-    def onChangeBindingClicked(self, widget, event):
+    def onBindingClicked(self, widget, event):
         if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS:
             self.onChangeBinding()
 
@@ -2300,7 +2349,7 @@ class FirewallConfig(object):
         if parent_iter is None:
             return
 
-        item = self.bindingsStore.get_value(iter, 0)
+        item = self.bindingsStore.get_value(iter, 1)
         zone = self.bindingsStore.get_value(iter, 2)
 
         if self.bindingsStore.get_value(parent_iter, 0) == _("Connections"):
