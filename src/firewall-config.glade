@@ -1592,6 +1592,11 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-preferences</property>
   </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-preferences</property>
+  </object>
   <object class="GtkImage" id="image8">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -1785,7 +1790,7 @@
                         <signal name="toggled" handler="onViewLockdownWhitelist_toggled" swapped="no"/>
                       </object>
                     </child>
-		    <child>
+                    <child>
                       <object class="GtkCheckMenuItem" id="activeBindingsMenuitem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
@@ -1864,11 +1869,11 @@
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
             <property name="position">200</property>
+            <property name="position_set">True</property>
             <child>
               <object class="GtkTable" id="table5">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="vexpand">True</property>
                 <property name="border_width">6</property>
                 <property name="n_rows">2</property>
                 <property name="n_columns">2</property>
@@ -1890,8 +1895,6 @@
                           <object class="GtkTreeView" id="bindingsView">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="hexpand">True</property>
-                            <property name="vexpand">True</property>
                             <property name="headers_visible">False</property>
                             <property name="headers_clickable">False</property>
                             <signal name="button-press-event" handler="onBindingClicked" swapped="no"/>
@@ -1951,7 +1954,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Hide active runtime bindings of connections, interfaces and sources to zones</property>
-                    <property name="hexpand">True</property>
                     <property name="relief">none</property>
                     <property name="xalign">0</property>
                     <child>
@@ -2042,7 +2044,7 @@
                 </child>
               </object>
               <packing>
-                <property name="resize">True</property>
+                <property name="resize">False</property>
                 <property name="shrink">False</property>
               </packing>
             </child>
@@ -2050,6 +2052,8 @@
               <object class="GtkBox" id="mainVBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
                 <property name="border_width">6</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
@@ -6302,7 +6306,7 @@
                 </child>
               </object>
               <packing>
-                <property name="resize">False</property>
+                <property name="resize">True</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
@@ -6486,11 +6490,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-preferences</property>
   </object>
   <object class="GtkDialog" id="interfaceDialog">
     <property name="can_focus">False</property>
