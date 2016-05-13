@@ -7,7 +7,7 @@ gladedir = $(pkgdatadir)
 dist_glade_DATA = firewall-config.glade
 
 gtkextradir = $(pkgdatadir)
-dist_gtkextra_DATA = gtk3_chooserbutton.py
+dist_gtkextra_DATA = gtk3_chooserbutton.py gtk3_niceexpander.py
 
 testsdir = $(pkgdatadir)/tests
 dist_tests_DATA = \
