@@ -34,6 +34,10 @@ from firewall.core.fw_test import Firewall_test
 from firewall.client import *
 from firewall.errors import *
 from firewall.functions import joinArgs, splitArgs
+from firewall.core.io.zone import zone_reader
+from firewall.core.io.service import service_reader
+from firewall.core.io.ipset import ipset_reader
+from firewall.core.io.icmptype import icmptype_reader
 
 # check for root user
 if os.getuid() != 0:
@@ -93,7 +97,9 @@ Zone Options
   --get-zone-of-source=<source>[/<mask>]
                        Print name of the zone the source[/mask] is bound to
   --list-all-zones     List everything added for or enabled in all zones
-  --new-zone=<zone>    Add a new zone
+  --new-zone=<zone>    Add a new empty zone
+  --new-zone-from-file=<filename> [--name=<zone>]
+                       Add a new zone from file with optional name override [P only]
   --delete-zone=<zone> Delete an existing zone
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options marked with [Z]
@@ -107,7 +113,9 @@ Zone Options
 
 IPSet Options
   --new-ipset=<ipset> --type=<ipset type> [--option=<key>[=<value>]]..
-                       Add a new ipset
+                       Add a new empty ipset
+  --new-ipset-from-file=<filename> [--name=<ipset>]
+                       Add a new ipset from file with optional name override [P only]
   --delete-ipset=<ipset>
                        Delete an existing ipset
   --info-ipset=<ipset> Print information about an ipset
@@ -135,7 +143,9 @@ IPSet Options
 
 IcmpType Options
   --new-icmptype=<icmptype>
-                       Add a new icmptype
+                       Add a new empty icmptype
+  --new-icmptype-from-file=<filename> [--name=<icmptype>]
+                       Add a new icmptype from file with optional name override [P only]
   --delete-icmptype=<icmptype>
                        Delete an existing icmptype
   --info-icmptype=<icmptype>
@@ -159,7 +169,9 @@ IcmpType Options
 
 Service Options
   --new-service=<service>
-                       Add a new service
+                       Add a new empty service
+  --new-service-from-file=<filename> [--name=<service>]
+                       Add a new service from file with optional name override [P only]
   --delete-service=<service>
                        Delete an existing service
   --info-service=<service>
@@ -616,13 +628,19 @@ parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
 
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--new-icmptype-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-icmptype", metavar="<icmptype>")
 parser_group_config.add_argument("--new-service", metavar="<service>")
+parser_group_config.add_argument("--new-service-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-service", metavar="<service>")
 parser_group_config.add_argument("--new-zone", metavar="<zone>")
+parser_group_config.add_argument("--new-zone-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-zone", metavar="<zone>")
 parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--new-ipset-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
+
+parser.add_argument("--name", default="", metavar="<name>")
 
 parser_group_lockdown_whitelist = parser.add_mutually_exclusive_group()
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-commands", action="store_true")
@@ -875,13 +893,17 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
                   a.query_destination or a.get_destinations or \
+                  a.new_service_from_file or \
                   options_desc_xml_file
 
 options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
+                    a.new_icmptype_from_file or \
                     a.new_service or a.delete_service or \
                     a.new_zone or a.delete_zone or \
+                    a.new_zone_from_file or \
                     a.new_ipset or a.delete_ipset or \
+                    a.new_ipset_from_file or \
                     a.ipset or options_ipset or \
                     (a.icmptype and options_icmptype) or \
                     (a.service and options_service)
@@ -948,6 +970,10 @@ if options_direct and options_zone:
 if (a.direct and not options_direct) or (options_direct and not a.direct):
     __fail(parser.format_usage() +
            "Wrong usage of 'direct' options.")
+
+if (a.name and not (a.new_zone_from_file or a.new_service_from_file or \
+                    a.new_ipset_from_file or a.new_icmptype_from_file)):
+    __fail(parser.format_usage() + "Wrong usage of '--name' option.")
 
 if options_config and options_zone:
     __fail(parser.format_usage() +
@@ -1083,6 +1109,22 @@ try:
     elif a.new_zone:
         fw.config.new_zone(a.new_zone, FirewallClientZoneSettings().settings)
 
+    elif a.new_zone_from_file:
+        filename = os.path.basename(a.new_zone_from_file)
+        dirname = os.path.dirname(a.new_zone_from_file)
+        try:
+            obj = zone_reader(filename, dirname)
+        except FirewallError as msg:
+            __fail("Failed to load zone file '%s': %s" % \
+                   (a.new_zone_from_file, msg))
+        except IOError as msg:
+            __fail("Failed to load zone file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        fw.config.new_zone(obj.name, obj.export_config())
+
     elif a.delete_zone:
         obj = fw.config.get_zone(a.delete_zone)
         fw.config.remove_zone(obj)
@@ -1102,6 +1144,22 @@ try:
     elif a.new_service:
         fw.config.new_service(a.new_service,
                               FirewallClientServiceSettings().settings)
+
+    elif a.new_service_from_file:
+        filename = os.path.basename(a.new_service_from_file)
+        dirname = os.path.dirname(a.new_service_from_file)
+        try:
+            obj = service_reader(filename, dirname)
+        except FirewallError as msg:
+            __fail("Failed to load service file '%s': %s" % \
+                   (a.new_service_from_file, msg))
+        except IOError as msg:
+            __fail("Failed to load service file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        fw.config.new_service(obj.name, obj.export_config())
 
     elif a.delete_service:
         obj = fw.config.get_service(a.delete_service)
@@ -1132,6 +1190,22 @@ try:
     elif a.new_icmptype:
         fw.config.new_icmptype(a.new_icmptype,
                                FirewallClientIcmpTypeSettings().settings)
+
+    elif a.new_icmptype_from_file:
+        filename = os.path.basename(a.new_icmptype_from_file)
+        dirname = os.path.dirname(a.new_icmptype_from_file)
+        try:
+            obj = icmptype_reader(filename, dirname)
+        except FirewallError as msg:
+            __fail("Failed to load icmptype file '%s': %s" % \
+                   (a.new_icmptype_from_file, msg))
+        except IOError as msg:
+            __fail("Failed to load icmptype file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        fw.config.new_icmptype(obj.name, obj.export_config())
 
     elif a.delete_icmptype:
         obj = fw.config.get_icmptype(a.delete_icmptype)
@@ -1308,6 +1382,22 @@ try:
             for opt in a.option:
                 settings.addOption(*__parse_ipset_option(opt))
         fw.config.new_ipset(a.new_ipset, settings.settings)
+
+    elif a.new_ipset_from_file:
+        filename = os.path.basename(a.new_ipset_from_file)
+        dirname = os.path.dirname(a.new_ipset_from_file)
+        try:
+            obj = ipset_reader(filename, dirname)
+        except FirewallError as msg:
+            __fail("Failed to load ipset file '%s': %s" % \
+                   (a.new_ipset_from_file, msg))
+        except IOError as msg:
+            __fail("Failed to load ipset file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        fw.config.new_ipset(obj.name, obj.export_config())
 
     elif a.delete_ipset:
         ipset = fw.config.get_ipset(a.delete_ipset)

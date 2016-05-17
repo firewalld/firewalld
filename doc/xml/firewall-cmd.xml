@@ -334,7 +334,16 @@
           <term><option>--permanent</option> <option>--new-zone</option>=<replaceable>zone</replaceable></term>
           <listitem>
             <para>
-              Add a new permanent zone.
+              Add a new permanent and empty zone.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--permanent</option> <option>--new-zone-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>zone</replaceable></optional></term>
+          <listitem>
+            <para>
+              Add a new permanent zone from a prepared zone file with an optional name override.
             </para>
           </listitem>
 	</varlistentry>
@@ -950,7 +959,15 @@
           <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
           <listitem>
             <para>
-              Add a new permanent ipset with specifying the type and optional options.
+              Add a new permanent and empty ipset with specifying the type and optional options.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--new-ipset-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>ipset</replaceable></optional></term>
+          <listitem>
+            <para>
+	      Add a new permanent ipset from a prepared ipset file with an optional name override.
             </para>
           </listitem>
 	</varlistentry>
@@ -1116,7 +1133,15 @@
          <term><option>--permanent</option> <option>--new-service</option>=<replaceable>service</replaceable></term>
          <listitem>
            <para>
-             Add a new permanent service.
+             Add a new permanent and empty service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-service-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>service</replaceable></optional></term>
+         <listitem>
+           <para>
+              Add a new permanent service from a prepared service file with an optional name override.
            </para>
          </listitem>
        </varlistentry>
@@ -1362,10 +1387,21 @@
          <term><option>--permanent</option> <option>--new-icmptype</option>=<replaceable>icmptype</replaceable></term>
          <listitem>
            <para>
-             Add a new permanent icmptype.
+             Add a new permanent and empty icmptype.
            </para>
          </listitem>
        </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-icmptype-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>icmptype</replaceable></optional></term>
+         <listitem>
+           <para>
+	     Add a new permanent icmptype from a prepared icmptype file with an optional name override.
+           </para>
+         </listitem>
+       </varlistentry>
+
+
        <varlistentry>
          <term><option>--permanent</option> <option>--delete-icmptype</option>=<replaceable>icmptype</replaceable></term>
          <listitem>
