@@ -1850,12 +1850,13 @@ class FirewallZone(object):
         for ipv in [ "ipv4", "ipv6" ]:
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                      zone=zone)
-            zone_transaction(ipv, [ add_del, "%s_allow" % (target),
-                                    "-t", "filter",
-                                    "-m", protocol, "-p", protocol,
-                                    "--sport", portStr(port),
-                                    "-m", "conntrack", "--ctstate", "NEW",
-                                    "-j", "ACCEPT" ])
+            zone_transaction.add_rule(ipv,
+                                      [ add_del, "%s_allow" % (target),
+                                        "-t", "filter",
+                                        "-m", protocol, "-p", protocol,
+                                        "--sport", portStr(port),
+                                        "-m", "conntrack", "--ctstate", "NEW",
+                                        "-j", "ACCEPT" ])
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
