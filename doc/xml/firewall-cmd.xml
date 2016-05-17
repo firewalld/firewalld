@@ -296,6 +296,7 @@
   forward-ports:
         <replaceable>forward-port1</replaceable>
         ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   icmp-blocks: <replaceable>icmp-type1</replaceable> ..
   rich rules:
         <replaceable>rich-rule1</replaceable>
@@ -1118,6 +1119,7 @@
 <replaceable>service</replaceable>
   ports: <replaceable>port1</replaceable> ..
   protocols: <replaceable>protocol1</replaceable> ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   modules: <replaceable>module1</replaceable> ..
   destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
               </programlisting>
