@@ -105,7 +105,7 @@ _firewall_cmd()
     firewall-cmd --state 1> /dev/null || return
 
     case $prev in
-    --*-from-file)
+    --*-entries-from-file|--new-*-from-file)
 	_filedir
 	return
         ;;
