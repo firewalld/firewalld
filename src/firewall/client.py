@@ -1991,7 +1991,10 @@ class FirewallClientConfig(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def addIPSet(self, name, settings):
-        path = self.fw_config.addIPSet(name, tuple(settings.settings))
+        if isinstance(settings, FirewallClientIPSetSettings):
+            path = self.fw_config.addIPSet(name, tuple(settings.settings))
+        else:
+            path = self.fw_config.addIPSet(name, tuple(settings))
         return FirewallClientConfigIPSet(self.bus, path)
 
     # zone
@@ -2030,7 +2033,10 @@ class FirewallClientConfig(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def addZone(self, name, settings):
-        path = self.fw_config.addZone(name, tuple(settings.settings))
+        if isinstance(settings, FirewallClientZoneSettings):
+            path = self.fw_config.addZone(name, tuple(settings.settings))
+        else:
+            path = self.fw_config.addZone(name, tuple(settings))
         return FirewallClientConfigZone(self.bus, path)
 
     # service
@@ -2059,7 +2065,10 @@ class FirewallClientConfig(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def addService(self, name, settings):
-        path = self.fw_config.addService(name, tuple(settings.settings))
+        if isinstance(settings, FirewallClientServiceSettings):
+            path = self.fw_config.addService(name, tuple(settings.settings))
+        else:
+            path = self.fw_config.addService(name, tuple(settings))
         return FirewallClientConfigService(self.bus, path)
 
     # icmptype
@@ -2088,7 +2097,10 @@ class FirewallClientConfig(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def addIcmpType(self, name, settings):
-        path = self.fw_config.addIcmpType(name, tuple(settings.settings))
+        if isinstance(settings, FirewallClientIcmpTypeSettings):
+            path = self.fw_config.addIcmpType(name, tuple(settings.settings))
+        else:
+            path = self.fw_config.addIcmpType(name, tuple(settings))
         return FirewallClientConfigIcmpType(self.bus, path)
 
     @slip.dbus.polkit.enable_proxy
