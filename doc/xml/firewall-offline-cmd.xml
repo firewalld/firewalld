@@ -336,6 +336,7 @@
   forward-ports:
         <replaceable>forward-port1</replaceable>
         ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   icmp-blocks: <replaceable>icmp-type1</replaceable> ..
   rich rules:
         <replaceable>rich-rule1</replaceable>
@@ -360,6 +361,7 @@
   forward-ports:
         <replaceable>forward-port1</replaceable>
         ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   icmp-blocks: <replaceable>icmp-type1</replaceable> ..
   rich rules:
         <replaceable>rich-rule1</replaceable>
@@ -681,6 +683,47 @@
 	    </para>
 	    <para>
 	      For <emphasis>IPv6</emphasis> forward ports, please use the rich language.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<!-- list/add/remove/query source port -->
+
+	<varlistentry>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-source-ports</option></term>
+	  <listitem>
+	    <para>
+	      List source ports added for <replaceable>zone</replaceable> as a space separated list. A port is of the form <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Add the source port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	    </para>
+	    <para>
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Remove the source port from <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Return whether the source port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -1052,6 +1095,7 @@
 <replaceable>service</replaceable>
   ports: <replaceable>port1</replaceable> ..
   protocols: <replaceable>protocol1</replaceable> ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   modules: <replaceable>module1</replaceable> ..
   destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
               </programlisting>
@@ -1179,6 +1223,39 @@
          <listitem>
            <para>
              List protocols added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new source port to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a source port from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the source port has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--service</option>=<replaceable>service</replaceable> <option>--get-source-ports</option></term>
+         <listitem>
+           <para>
+             List source ports added to the permanent service.
            </para>
          </listitem>
        </varlistentry>

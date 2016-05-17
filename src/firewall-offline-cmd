@@ -200,6 +200,14 @@ Service Options
                        Return whether the protocol has been added for service
   --service=<service> --get-protocols
                        List protocols of service
+  --service=<service> --add-source-port=<portid>[-<portid>]/<protocol>
+                       Add a new source port to service
+  --service=<service> --remove-source-port=<portid>[-<portid>]/<protocol>
+                       Remove a source port from service
+  --service=<service> --query-source-port=<portid>[-<portid>]/<protocol>
+                       Return whether the source port has been added for service [P only]
+  --service=<service> --get-source-ports
+                       List source ports of service
   --service=<service> --add-module=<module>
                        Add a new module to service
   --service=<service> --remove-module=<module>
@@ -240,6 +248,13 @@ Options to Adapt and Query Zones
                        Remove the protocol from a zone [Z]
   --query-protocol=<protocol>
                        Return whether the protocol has been added for zone [Z]
+  --list-source-ports  List source ports added for a zone [Z]
+  --add-source-port=<portid>[-<portid>]/<protocol>
+                       Add the source port for a zone [Z]
+  --remove-source-port=<portid>[-<portid>]/<protocol>
+                       Remove the source port from a zone [Z]
+  --query-source-port=<portid>[-<portid>]/<protocol>
+                       Return whether the source port has been added for zone [Z]
   --list-icmp-blocks   List Internet ICMP type blocks added for a zone [Z]
   --add-icmp-block=<icmptype>
                        Add an ICMP block for a zone [Z]
@@ -469,6 +484,7 @@ def __print_zone_info(zone, settings, verbose = False):
     protocols = settings.getProtocols()
     masquerade = settings.getMasquerade()
     forward_ports = settings.getForwardPorts()
+    source_ports = settings.getSourcePorts()
     icmp_blocks = settings.getIcmpBlocks()
     rules = settings.getRichRules()
     description = settings.getDescription()
@@ -484,12 +500,14 @@ def __print_zone_info(zone, settings, verbose = False):
     __print("  protocols: " + " ".join(protocols))
     __print("  masquerade: %s" % ("yes" if masquerade else "no"))
     __print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
+    __print("  source-ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in source_ports]))
     __print("  icmp-blocks: " + " ".join(icmp_blocks))
     __print("  rich rules: \n\t" + "\n\t".join(rules))
 
 def __print_service_info(service, settings):
     ports = settings.getPorts()
     protocols = settings.getProtocols()
+    source_ports = settings.getSourcePorts()
     modules = settings.getModules()
     description = settings.getDescription()
     destinations = settings.getDestinations()
@@ -498,6 +516,7 @@ def __print_service_info(service, settings):
     __print("  summary: " + short_description)
     __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
     __print("  protocols: " + " ".join(protocols))
+    __print("  source-ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in source_ports]))
     __print("  modules: " + " ".join(modules))
     __print("  destination: " + " ".join(["%s:%s" % (k,v)
                                           for k,v in destinations.items()]))
@@ -688,6 +707,9 @@ parser_group_zone.add_argument("--query-port", metavar="<port>")
 parser_group_zone.add_argument("--add-protocol", metavar="<protocol>", action='append')
 parser_group_zone.add_argument("--remove-protocol", metavar="<protocol>", action='append')
 parser_group_zone.add_argument("--query-protocol", metavar="<protocol>")
+parser_group_zone.add_argument("--add-source-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--remove-source-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--query-source-port", metavar="<port>")
 parser_group_zone.add_argument("--add-masquerade", action="store_true")
 parser_group_zone.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone.add_argument("--query-masquerade", action="store_true")
@@ -701,6 +723,7 @@ parser_group_zone.add_argument("--list-rich-rules", action="store_true")
 parser_group_zone.add_argument("--list-services", action="store_true")
 parser_group_zone.add_argument("--list-ports", action="store_true")
 parser_group_zone.add_argument("--list-protocols", action="store_true")
+parser_group_zone.add_argument("--list-source-ports", action="store_true")
 parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
 parser_group_zone.add_argument("--list-forward-ports", action="store_true")
 parser_group_zone.add_argument("--list-all", action="store_true")
@@ -737,6 +760,7 @@ parser_icmptype.add_argument("--get-destinations", action="store_true")
 
 parser_service = parser.add_mutually_exclusive_group()
 parser_service.add_argument("--get-ports", action="store_true")
+parser_service.add_argument("--get-source-ports", action="store_true")
 parser_service.add_argument("--get-protocols", action="store_true")
 
 parser_service.add_argument("--add-module", metavar="<module>", action='append')
@@ -856,6 +880,7 @@ options_zone_action_action = \
     a.add_service or a.remove_service_from_zone or a.query_service or \
     a.add_port or a.remove_port or a.query_port or \
     a.add_protocol or a.remove_protocol or a.query_protocol or \
+    a.add_source_port or a.remove_source_port or a.query_source_port or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
     a.add_forward_port or a.remove_forward_port or a.query_forward_port
 
@@ -869,6 +894,7 @@ options_zone_adapt_query = \
     a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
     a.list_services or a.list_ports or a.list_protocols or \
+    a.list_source_ports or \
     a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
     a.list_all or a.get_target or a.set_target
 
@@ -889,6 +915,8 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or \
                   a.add_protocol or a.remove_protocol or a.query_protocol or \
                   a.get_protocols or \
+                  a.add_source_port or a.remove_source_port or \
+                  a.query_source_port or a.get_source_ports or \
                   a.add_module or a.remove_module or a.query_module or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
@@ -1313,6 +1341,26 @@ try:
         elif a.get_protocols:
             l = settings.getProtocols()
             __print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+
+        elif a.add_source_port:
+            for port_proto in a.add_source_port:
+                (port, proto) = __parse_port(port_proto)
+                settings.addSourcePort(port, proto)
+            fw.config.set_service_config(service, settings.settings)
+
+        elif a.remove_source_port:
+            for port_proto in a.remove_source_port:
+                (port, proto) = __parse_port(port_proto)
+                settings.removeSourcePort(port, proto)
+            fw.config.set_service_config(service, settings.settings)
+
+        elif a.query_source_port:
+            (port, proto) = __parse_port(a.query_source_port)
+            __print_query_result(settings.querySourcePort(port, proto))
+
+        elif a.get_source_ports:
+            l = settings.getSourcePorts()
+            __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
 
         elif a.add_module:
             for module in a.add_module:
@@ -1802,6 +1850,22 @@ try:
                 fw_settings.removeProtocol(proto)
         elif a.query_protocol:
             __print_query_result(fw_settings.queryProtocol(a.query_protocol))
+
+        # source port
+        elif a.list_source_ports:
+            l = fw_settings.getSourcePorts()
+            __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+        elif a.add_source_port:
+            for port_proto in a.add_source_port:
+                (port, proto) = __parse_port(port_proto)
+                fw_settings.addSourcePort(port, proto)
+        elif a.remove_source_port:
+            for port_proto in a.remove_source_port:
+                (port, proto) = __parse_port(port_proto)
+                fw_settings.removeSourcePort(port, proto)
+        elif a.query_source_port:
+            (port, proto) = __parse_port(a.query_source_port)
+            __print_query_result(fw_settings.querySourcePort(port, proto))
 
         # masquerade
         elif a.add_masquerade:
