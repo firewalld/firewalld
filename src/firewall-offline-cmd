@@ -53,6 +53,7 @@ If no options are given, configuration from '/etc/sysconfig/system-config-firewa
 General Options
   -h, --help           Prints a short help text and exists
   -V, --version        Print the version string of firewalld
+  -q, --quiet          Do not print status messages
 
 Lokkit Compatibility Options
   --enabled             Enable firewall (default)
@@ -391,7 +392,7 @@ Polkit Options
 """)
 
 def __print(msg=None):
-    if msg:
+    if msg and not a.quiet:
         print(msg)
 
 def __print_and_exit(msg=None, exit_code=0):
@@ -606,6 +607,7 @@ def get_ipset_entries_from_file(filename):
 
 parser = argparse.ArgumentParser(usage="see firewall-offline-cmd man page",
                                  add_help=False)
+parser.add_argument("-q", "--quiet", action="store_true")
 
 parser_group_lokkit = parser.add_argument_group()
 parser_group_lokkit.add_argument("--enabled", action="store_true")
@@ -1006,6 +1008,11 @@ if (a.name and not (a.new_zone_from_file or a.new_service_from_file or \
 if options_config and options_zone:
     __fail(parser.format_usage() +
            "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
+
+if a.quiet and options_list_get:
+    # it makes no sense to use --quiet with these options
+    a.quiet = False
+    __fail("-q/--quiet can't be used with this option(s)")
 
 if a.help:
     __usage()
