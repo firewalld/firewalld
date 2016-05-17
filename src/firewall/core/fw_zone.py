@@ -1916,7 +1916,7 @@ class FirewallZone(object):
                                use_zone_transaction=zone_transaction)
 
         zone_transaction.add_post(self.__unregister_source_port, _obj,
-                                  port_id, timeout, sender)
+                                  port_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
