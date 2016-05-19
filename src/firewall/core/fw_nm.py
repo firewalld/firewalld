@@ -26,8 +26,6 @@ __all__ = [ "NM", "check_nm_imported", "nm_is_imported",
             "nm_get_zone_of_connection", "nm_set_zone_of_connection",
             "nm_get_connections", "nm_get_connection_of_interface" ]
 
-import dbus
-
 import gi
 try:
     gi.require_version('NM', '1.0')
@@ -41,7 +39,6 @@ else:
         NetworkManager = None
         _nm_imported = False
 
-from firewall.dbus_utils import dbus_to_python
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -121,7 +118,6 @@ def nm_get_connections(connections, connections_uuid):
         if active_con.get_vpn():
             continue
 
-        con = active_con.get_connection()
         name = active_con.get_id()
         uuid = active_con.get_uuid()
         devices = active_con.get_devices()
@@ -145,7 +141,6 @@ def nm_get_connection_of_interface(interface):
         if active_con.get_vpn():
             continue
 
-        con = active_con.get_connection()
         devices = active_con.get_devices()
 
         for dev in devices:
