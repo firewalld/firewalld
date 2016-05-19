@@ -53,7 +53,7 @@ class IO_Object(object):
 
     def import_config(self, conf):
         self.check_config(conf)
-        for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+        for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(conf[i], list):
                 # remove duplicates
                 setattr(self, element, copy.deepcopy(list(set(conf[i]))))
@@ -81,7 +81,7 @@ class IO_Object(object):
             self._check_config_structure(conf[i], value)
             self._check_config(conf[i], element)
 
-    def _check_config(self, conf, item):
+    def _check_config(self, dummy1, dummy2):
         # to be overloaded by sub classes
         return
 
@@ -90,21 +90,21 @@ class IO_Object(object):
             raise FirewallError(errors.INVALID_TYPE,
                                 "'%s' not of type %s, but %s" % \
                                 (conf, type(structure), type(conf)))
-        if type(structure) == list:
+        if isinstance(structure, list):
             # same type elements, else struct
             if len(structure) != 1:
                 raise FirewallError(errors.INVALID_TYPE,
                                     "len('%s') != 1" % structure)
             for x in conf:
                 self._check_config_structure(x, structure[0])
-        elif type(structure) == tuple:
+        elif isinstance(structure, tuple):
             if len(structure) != len(conf):
                 raise FirewallError(errors.INVALID_TYPE,
                                     "len('%s') != %d" % (conf,
                                                          len(structure)))
             for i,value in enumerate(structure):
                 self._check_config_structure(conf[i], value)
-        elif type(structure) == dict:
+        elif isinstance(structure, dict):
             # only one key value pair in structure
             (skey, svalue) = list(structure.items())[0]
             for (key, value) in conf.items():
@@ -151,14 +151,14 @@ class UnexpectedElementError(Exception):
     def __init__(self, name):
         self.name = name
     def __str__(self):
-        return _("Unexpected element '%s'") % (self.name)
+        return "Unexpected element '%s'" % (self.name)
 
 class MissingAttributeError(Exception):
     def __init__(self, name, attribute):
         self.name = name
         self.attribute = attribute
     def __str__(self):
-        return _("Element '%s': missing '%s' attribute") % \
+        return "Element '%s': missing '%s' attribute" % \
             (self.name, self.attribute)
 
 class UnexpectedAttributeError(Exception):
@@ -166,7 +166,7 @@ class UnexpectedAttributeError(Exception):
         self.name = name
         self.attribute = attribute
     def __str__(self):
-        return _("Element '%s': unexpected attribute '%s'") % \
+        return "Element '%s': unexpected attribute '%s'" % \
             (self.name, self.attribute)
 
 class IO_Object_ContentHandler(sax.handler.ContentHandler):
