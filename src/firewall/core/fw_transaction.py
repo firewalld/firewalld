@@ -345,7 +345,7 @@ class FirewallZoneTransaction(SimpleFirewallTransaction):
         if module not in self.modules:
             self.modules.append(module)
 
-    def remove_module(self, rule):
+    def remove_module(self, module):
         if module in self.modules:
             self.modules.remove(module)
 
