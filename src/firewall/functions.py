@@ -19,6 +19,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
+            "checkIP", "checkIP6", "checkIPnMask", "checkIP6nMask",
+            "checkProtocol", "checkInterface", "checkUINT32",
+            "firewalld_is_active", "tempFile", "readfile", "writefile",
+            "enable_ip_forwarding", "check_port", "check_address",
+            "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
+            "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
+            "checkContext", "joinArgs", "splitArgs",
+            "b2u", "u2b", "u2b_if_py2" ]
+
 import socket
 import os.path
 import shlex, pipes
@@ -36,22 +46,22 @@ def getPortID(port):
     @param port port string or port id
     @return Port id if valid, -1 if port can not be found and -2 if port is too big
     """
-    
+
     if isinstance(port, int):
-        id = port
+        _id = port
     else:
         if port:
             port = port.strip()
         try:
-            id = int(port)
+            _id = int(port)
         except ValueError:
             try:
-                id = socket.getservbyname(port)
-            except:
+                _id = socket.getservbyname(port)
+            except socket.error:
                 return -1
-    if id > 65535:
+    if _id > 65535:
         return -2
-    return id
+    return _id
 
 def getPortRange(ports):
     """ Get port range for port range string or single port id
@@ -62,10 +72,10 @@ def getPortRange(ports):
 
     # "<port-id>" case
     if isinstance(ports, int) or ports.isdigit():
-        id = getPortID(ports)
-        if id >= 0:
-            return (id,)
-        return id
+        id1 = getPortID(ports)
+        if id1 >= 0:
+            return (id1,)
+        return id1
 
     splits = ports.split("-")
 
@@ -108,8 +118,8 @@ def getPortRange(ports):
     return matched[0]
 
 def portStr(port, delimiter=":"):
-    """ Create port and port range string 
-    
+    """ Create port and port range string
+
     @param port port or port range int or [int, int]
     @param delimiter of the output string for port ranges, default ':'
     @return Port or port range string, empty string if port isn't specified, None if port or port range is not valid
@@ -117,13 +127,13 @@ def portStr(port, delimiter=":"):
     if port == "":
         return ""
 
-    range = getPortRange(port)
-    if isinstance(range, int) and range < 0:
+    _range = getPortRange(port)
+    if isinstance(_range, int) and _range < 0:
         return None
-    elif len(range) == 1:
-        return "%s" % range
+    elif len(_range) == 1:
+        return "%s" % _range
     else:
-        return "%s%s%s" % (range[0], delimiter, range[1])
+        return "%s%s%s" % (_range[0], delimiter, _range[1])
 
 def getServiceName(port, proto):
     """ Check and Get service name from port and proto string combination using socket.getservbyport
@@ -135,7 +145,7 @@ def getServiceName(port, proto):
 
     try:
         name = socket.getservbyport(int(port), proto)
-    except:
+    except socket.error:
         return None
     return name
 
@@ -212,7 +222,7 @@ def checkProtocol(protocol):
         # string
         try:
             socket.getprotobyname(protocol)
-        except:
+        except socket.error:
             return False
     else:
         if i < 0 or i > 255:
@@ -242,7 +252,7 @@ def checkInterface(iface):
 def checkUINT32(val):
     try:
         x = int(val, 0)
-    except:
+    except ValueError:
         return False
     else:
         if x >= 0 and x <= 4294967295:
@@ -261,7 +271,7 @@ def firewalld_is_active():
     try:
         with open(FIREWALLD_PIDFILE, "r") as fd:
             pid = fd.readline()
-    except:
+    except Exception:
         return False
 
     if not os.path.exists("/proc/%s" % pid):
@@ -270,7 +280,7 @@ def firewalld_is_active():
     try:
         with open("/proc/%s/cmdline" % pid, "r") as fd:
             cmdline = fd.readline()
-    except:
+    except Exception:
         return False
 
     if "firewalld" in cmdline:
@@ -291,7 +301,6 @@ def tempFile():
     return None
 
 def readfile(filename):
-    i = 1
     try:
         with open(filename, "r") as f:
             return f.readlines()
@@ -316,16 +325,16 @@ def enable_ip_forwarding(ipv):
     return False
 
 def check_port(port):
-    range = getPortRange(port)
-    if range == -2 or range == -1 or range is None or \
-            (len(range) == 2 and range[0] >= range[1]):
-        if range == -2:
+    _range = getPortRange(port)
+    if _range == -2 or _range == -1 or _range is None or \
+            (len(_range) == 2 and _range[0] >= _range[1]):
+        if _range == -2:
             log.debug2("'%s': port > 65535" % port)
-        elif range == -1:
+        elif _range == -1:
             log.debug2("'%s': port is invalid" % port)
-        elif range is None:
+        elif _range is None:
             log.debug2("'%s': port is ambiguous" % port)
-        elif len(range) == 2 and range[0] >= range[1]:
+        elif len(_range) == 2 and _range[0] >= _range[1]:
             log.debug2("'%s': range start >= end" % port)
         return False
     return True
@@ -358,10 +367,10 @@ def check_mac(mac):
         return True
     return False
 
-def uniqify(input):
+def uniqify(_list):
     # removes duplicates from list, whilst preserving order
     output = []
-    for x in input:
+    for x in _list:
         if x not in output:
             output.append(x)
     return output
@@ -372,7 +381,7 @@ def ppid_of_pid(pid):
         f = os.popen("ps -o ppid -h -p %d 2>/dev/null" % pid)
         pid = int(f.readlines()[0].strip())
         f.close()
-    except:
+    except Exception:
         return None
     return pid
 
@@ -383,7 +392,7 @@ def max_zone_name_len():
     which leaves 28 - 11 = 17 chars for <zone>.
     """
     from firewall.core.base import SHORTCUTS
-    longest_shortcut = max(map (len, SHORTCUTS.values()))
+    longest_shortcut = max(map(len, SHORTCUTS.values()))
     return 28 - (longest_shortcut + len("__allow"))
 
 def checkUser(user):
@@ -440,29 +449,29 @@ def joinArgs(args):
     else:
         return " ".join(pipes.quote(a) for a in args)
 
-def splitArgs(string):
-    if PY2 and isinstance(string, unicode):
+def splitArgs(_string):
+    if PY2 and isinstance(_string, unicode):
         # Python2's shlex doesn't like unicode
-        string = u2b(string)
-        splits = shlex.split(string)
-        return map (b2u, splits)
+        _string = u2b(_string)
+        splits = shlex.split(_string)
+        return map(b2u, splits)
     else:
-        return shlex.split(string)
+        return shlex.split(_string)
 
-def b2u(string):
+def b2u(_string):
     """ bytes to unicode """
-    if isinstance(string, bytes):
-        return string.decode('UTF-8', 'replace')
-    return string
+    if isinstance(_string, bytes):
+        return _string.decode('UTF-8', 'replace')
+    return _string
 
-def u2b(string):
+def u2b(_string):
     """ unicode to bytes """
-    if not isinstance(string, bytes):
-        return string.encode('UTF-8', 'replace')
-    return string
+    if not isinstance(_string, bytes):
+        return _string.encode('UTF-8', 'replace')
+    return _string
 
-def u2b_if_py2(string):
+def u2b_if_py2(_string):
     """ unicode to bytes only if Python 2"""
-    if PY2 and isinstance(string, unicode):
-            return string.encode('UTF-8', 'replace')
-    return string
+    if PY2 and isinstance(_string, unicode):
+        return _string.encode('UTF-8', 'replace')
+    return _string
