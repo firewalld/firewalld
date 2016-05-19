@@ -133,8 +133,8 @@ class Firewall(object):
 
     def _start_check(self):
         try:
-            x = self.ipset_backend.list()
-        except:
+            self.ipset_backend.list()
+        except ValueError:
             log.error("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
             self.ipset_enabled = False
@@ -216,10 +216,10 @@ class Firewall(object):
         except Exception as msg:
             if self.policies.query_lockdown():
                 log.error("Failed to load lockdown whitelist '%s': %s",
-                      self.policies.lockdown_whitelist.filename, msg)
+                          self.policies.lockdown_whitelist.filename, msg)
             else:
                 log.debug1("Failed to load lockdown whitelist '%s': %s",
-                      self.policies.lockdown_whitelist.filename, msg)
+                           self.policies.lockdown_whitelist.filename, msg)
 
         # copy policies to config interface
         self.config.set_policies(copy.deepcopy(self.policies))
@@ -303,7 +303,7 @@ class Firewall(object):
         # flush rules
         self.flush(use_transaction=transaction)
 
-        # If modules need to be unloaded in complete reload or if there are 
+        # If modules need to be unloaded in complete reload or if there are
         # ipsets to get applied, limit the transaction to set_policy and flush.
         #
         # Future optimization for the ipset case in reload: The transaction
@@ -485,7 +485,7 @@ class Firewall(object):
                            orig_obj.filename)
                 try:
                     self.zone.remove_zone(combined_zone.name)
-                except:
+                except Exception:
                     pass
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
@@ -529,8 +529,8 @@ class Firewall(object):
 
     # handle modules
 
-    def handle_modules(self, modules, enable):
-        for i,module in enumerate(modules):
+    def handle_modules(self, _modules, enable):
+        for i,module in enumerate(_modules):
             if enable:
                 (status, msg) = self.modules_backend.load_module(module)
             else:
@@ -540,7 +540,7 @@ class Firewall(object):
                     (status, msg) = self.modules_backend.unload_module(module)
             if status != 0:
                 if enable:
-                    return (modules[:i], msg) # cleanup modules and error msg
+                    return (_modules[:i], msg) # cleanup modules and error msg
                 # else: ignore cleanup
 
             if enable:
@@ -568,7 +568,6 @@ class Firewall(object):
             for table in x.LOG_RULES:
                 default_rules.setdefault(table, []).extend(x.LOG_RULES[table])
 
-        rules = { }
         for table in default_rules:
             if table not in self.get_available_tables(ipv):
                 continue
@@ -680,7 +679,7 @@ class Firewall(object):
         # replace %%REJECT%%
         try:
             i = rule.index("%%REJECT%%")
-        except:
+        except ValueError:
             pass
         else:
             if ipv in [ "ipv4", "ipv6" ]:
@@ -693,7 +692,7 @@ class Firewall(object):
         # replace %%ICMP%%
         try:
             i = rule.index("%%ICMP%%")
-        except:
+        except ValueError:
             pass
         else:
             if ipv in [ "ipv4", "ipv6" ]:
@@ -705,7 +704,7 @@ class Firewall(object):
         # replace %%LOGTYPE%%
         try:
             i = rule.index("%%LOGTYPE%%")
-        except:
+        except ValueError:
             pass
         else:
             if self._log_denied == "off":
@@ -752,7 +751,7 @@ class Firewall(object):
             # replace %%REJECT%%
             try:
                 i = rule.index("%%REJECT%%")
-            except:
+            except ValueError:
                 pass
             else:
                 if ipv in [ "ipv4", "ipv6" ]:
@@ -765,7 +764,7 @@ class Firewall(object):
             # replace %%ICMP%%
             try:
                 i = rule.index("%%ICMP%%")
-            except:
+            except ValueError:
                 pass
             else:
                 if ipv in [ "ipv4", "ipv6" ]:
@@ -777,14 +776,14 @@ class Firewall(object):
             # replace %%LOGTYPE%%
             try:
                 i = rule.index("%%LOGTYPE%%")
-            except:
+            except ValueError:
                 pass
             else:
                 if self._log_denied == "off":
                     continue
                 if ipv not in [ "ipv4", "ipv6" ]:
                     raise FirewallError(errors.INVALID_IPV,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
                 if self._log_denied in [ "unicast", "broadcast",
                                          "multicast" ]:
                     rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
@@ -815,8 +814,7 @@ class Firewall(object):
             return ""
 
         if self._individual_calls or \
-           (ipv == "eb" and \
-            not self.ebtables_backend.restore_noflush_option):
+           (ipv == "eb" and not self.ebtables_backend.restore_noflush_option):
             for i,rule in enumerate(_rules):
                 # remove leading and trailing '"' for use with execve
                 j = 0
@@ -864,24 +862,13 @@ class Firewall(object):
         self.service.check_service(service)
 
     def check_port(self, port):
-        range = functions.getPortRange(port)
-
-        if range == -2 or range == -1 or range is None or \
-                (len(range) == 2 and range[0] >= range[1]):
-            if range == -2:
-                log.debug1("'%s': port > 65535" % port)
-            elif range == -1:
-                log.debug1("'%s': port is invalid" % port)
-            elif range is None:
-                log.debug1("'%s': port is ambiguous" % port)
-            elif len(range) == 2 and range[0] >= range[1]:
-                log.debug1("'%s': range start >= end" % port)
+        if not functions.check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
 
     def check_tcpudp(self, protocol):
         if not protocol:
             raise FirewallError(errors.MISSING_PROTOCOL)
-        if not protocol in [ "tcp", "udp" ]:
+        if protocol not in [ "tcp", "udp" ]:
             raise FirewallError(errors.INVALID_PROTOCOL,
                                 "'%s' not in {'tcp'|'udp'}" % protocol)
 
@@ -929,7 +916,7 @@ class Firewall(object):
         # start
         self._start(reload=True, complete_reload=stop)
 
-        # handle interfaces in the default zone and move them to the new 
+        # handle interfaces in the default zone and move them to the new
         # default zone if it changed
         _new_dz = self.get_default_zone()
         if _new_dz != _old_dz:
@@ -937,12 +924,12 @@ class Firewall(object):
             # https://github.com/t-woerner/firewalld/issues/53
             if _new_dz not in _zone_interfaces:
                 _zone_interfaces[_new_dz] = { }
-            # default zone changed. Move interfaces from old default zone to 
+            # default zone changed. Move interfaces from old default zone to
             # the new one.
             for iface, settings in list(_zone_interfaces[_old_dz].items()):
                 if settings["__default__"]:
                     # move only those that were added to default zone
-                    # (not those that were added to specific zone same as 
+                    # (not those that were added to specific zone same as
                     # default)
                     _zone_interfaces[_new_dz][iface] = \
                         _zone_interfaces[_old_dz][iface]
@@ -965,7 +952,7 @@ class Firewall(object):
         # restore direct config
         self.direct.set_config(_direct_config)
 
-        # enable panic mode again if it has been enabled before or set policy 
+        # enable panic mode again if it has been enabled before or set policy
         # to ACCEPT
         if _panic:
             self.enable_panic_mode()
