@@ -1363,7 +1363,7 @@ class FirewallZone(object):
                     zone_transaction.add_rule(ipv, _rule)
 
             elif rule.element is None:
-                # source action
+                # source/destination action
                 table = "filter"
                 if enable:
                     zone_transaction.add_chain(table, "INPUT")
@@ -1372,6 +1372,7 @@ class FirewallZone(object):
                                                     zone=zone)
                 command = [ ]
                 self.__rule_source(rule.source, command)
+                self.__rule_destination(rule.destination, command)
                 self.__rule_log(enable, ipv, table, target, rule, command,
                                 zone_transaction)
                 self.__rule_audit(enable, ipv, table, target, rule, command,
