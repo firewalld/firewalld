@@ -37,7 +37,7 @@ from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
-from firewall.core.fw_transaction import FirewallTransaction
+from firewall.core.fw_transaction import FirewallTransaction, reverse_rule
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
@@ -599,17 +599,17 @@ class Firewall(object):
            "raw" in self.get_available_tables("ipv6"):
             # here is no check for ebtables.restore_noflush_option needed
             # as ebtables is not used in here
-            rules = [
-                ("ipv6", [ "PREROUTING", 1, "-t", "raw",
-                           "-p", "ipv6-icmp",
-                           "--icmpv6-type=router-advertisement",
-                           "-j", "ACCEPT" ]), # RHBZ#1058505
-                ("ipv6", [ "PREROUTING", 2, "-t", "raw",
-                           "-m", "rpfilter", "--invert", "-j", "DROP" ]),
-            ]
+            transaction.add_rule("ipv6",
+                                 [ "-I", "PREROUTING", "1", "-t", "raw",
+                                   "-p", "ipv6-icmp",
+                                   "--icmpv6-type=router-advertisement",
+                                   "-j", "ACCEPT" ]) # RHBZ#1058505
+            transaction.add_rule("ipv6",
+                                 [ "-I", "PREROUTING", "2", "-t", "raw",
+                                   "-m", "rpfilter", "--invert", "-j", "DROP" ])
             if self._log_denied != "off":
                 transaction.add_rule("ipv6",
-                                     [ "PREROUTING", 2, "-t", "raw",
+                                     [ "-I", "PREROUTING", "2", "-t", "raw",
                                        "-m", "rpfilter", "--invert",
                                        "-j", "LOG",
                                        "--log-prefix", "rpfilter_DROP: " ])
