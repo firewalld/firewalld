@@ -21,6 +21,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 class ChooserButton(object):
@@ -33,11 +35,10 @@ class ChooserButton(object):
         self._icon = None
 
         children = self.button.get_children()
-        if len(children) == 1 and \
-           (type(children[0]) == Gtk.HBox or type(children[0]) == Gtk.Box):
+        if len(children) == 1 and isinstance(children[0], (Gtk.HBox, Gtk.Box)):
             children = children[0].get_children()
             for child in children:
-                if type(child) == Gtk.Label:
+                if isinstance(child, Gtk.Label):
                     self.label = child
                     break
         else:
@@ -65,8 +66,8 @@ class ChooserButton(object):
     def is_sensitive(self):
         return self.button.is_sensitive()
 
-    def connect(self, type, *args):
-        return self.button.connect(type, *args)
+    def connect(self, _type, *args):
+        return self.button.connect(_type, *args)
 
     def disconnect(self, *args):
         self.button.disconnect(*args)
@@ -104,12 +105,12 @@ class ChooserButton(object):
     def _detach_menu(self):
         self._menu = None
 
-    def _show_menu(self, *args):
+    def _show_menu(self, *dummy):
         if not self._menu:
             return
         self._menu.popup(None, None, self._menu_position_func, 0, 0, 0)
 
-    def _menu_position_func(self, menu, icon):
+    def _menu_position_func(self, menu, dummy):
         allocation = self.button.get_allocation()
         req = menu.size_request()
         menu_width = req.width
@@ -117,10 +118,8 @@ class ChooserButton(object):
         if menu_width != allocation.width:
             menu.set_size_request(-1, -1)
             req = menu.size_request()
-            _width = req.width
-            _height = req.height
-            if _width > allocation.width:
-                menu.set_size_request(_width, _height)
+            if req.width > allocation.width:
+                menu.set_size_request(req.width, req.height)
             else:
                 menu.set_size_request(allocation.width, -1)
 
@@ -129,8 +128,7 @@ class ChooserButton(object):
         y += allocation.y + allocation.height
 
         root = self.button.get_root_window()
-        (root_x, root_y, root_width, root_height) = \
-            self.button.get_root_window().get_geometry()
+        (dummy, dummy, dummy, root_height) = root.get_geometry()
 
         if y + menu_height > root_height:
             y -= menu_height + allocation.height
@@ -181,28 +179,3 @@ class ToolChooserButton(object):
 
     def _detach_menu(self):
         self._menu = None
-
-##############################################################################
-
-if __name__ == "__main__":
-    window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
-    window.connect("delete_event", Gtk.main_quit)
-
-    button = Gtk.Button(label="ChooserButton")
-    chooserbutton = ChooserButton(button, "Enabled")
-
-    hbox = Gtk.HBox()
-    hbox.pack_start(button, True, True, 0)
-    window.add(hbox)
-
-    menu = Gtk.Menu()
-    for i in range(10):
-        item = Gtk.CheckMenuItem(label="level %d" % i)
-#        item = Gtk.MenuItem("level %d" % i)
-        menu.add(item)
-    menu.show_all()
-
-    chooserbutton.set_menu(menu)
-
-    window.show_all()
-    Gtk.main()
