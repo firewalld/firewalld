@@ -93,28 +93,3 @@ class NiceExpander(object):
 
     def is_sensitive(self):
         return self.expanded_button.is_sensitive()
-
-##############################################################################
-
-if __name__ == "__main__":
-    window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
-    window.connect("delete_event", Gtk.main_quit)
-
-    button = Gtk.Button(label="ChooserButton")
-    chooserbutton = ChooserButton(button, "Enabled")
-
-    hbox = Gtk.HBox()
-    hbox.pack_start(button, True, True, 0)
-    window.add(hbox)
-
-    menu = Gtk.Menu()
-    for i in range(10):
-        item = Gtk.CheckMenuItem(label="level %d" % i)
-#        item = Gtk.MenuItem("level %d" % i)
-        menu.add(item)
-    menu.show_all()
-
-    chooserbutton.set_menu(menu)
-
-    window.show_all()
-    Gtk.main()
