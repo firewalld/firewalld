@@ -19,6 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "command_of_pid", "pid_of_sender", "uid_of_sender", "user_of_uid",
+            "context_of_sender", "command_of_sender", "user_of_sender",
+            "dbus_to_python", "dbus_signature",
+            "dbus_introspection_prepare_properties",
+            "dbus_introspection_add_properties" ]
+
 import dbus
 import pwd
 import sys
@@ -33,7 +39,7 @@ def command_of_pid(pid):
     try:
         with open("/proc/%d/cmdline" % pid, "r") as f:
             cmd = f.readlines()[0].replace('\0', " ").strip()
-    except:
+    except Exception:
         return None
     return cmd
 
@@ -81,7 +87,7 @@ def context_of_sender(bus, sender):
 
     try:
         context =  dbus_iface.GetConnectionSELinuxSecurityContext(sender)
-    except:
+    except Exception:
         return None
 
     return "".join(map(chr, dbus_to_python(context)))
@@ -179,10 +185,12 @@ def dbus_signature(obj):
     else:
         raise TypeError("Unhandled %s" % repr(obj))
 
-def dbus_introspection_prepare_properties(obj, interface, access={}):
-    if not hasattr(obj, "_fw_dbus_properties"):
-        obj._fw_dbus_properties = { }
+def dbus_introspection_prepare_properties(obj, interface, access=None):
+    if access is None:
+        access = { }
 
+    if not hasattr(obj, "_fw_dbus_properties"):
+        setattr(obj, "_fw_dbus_properties", { })
     dip = getattr(obj, "_fw_dbus_properties")
     dip[interface] = { }
 
