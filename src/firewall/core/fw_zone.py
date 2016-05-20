@@ -392,6 +392,8 @@ class FirewallZone(object):
         obj = self._zones[_zone]
         if (enable and obj.applied) or (not enable and not obj.applied):
             return
+        if enable:
+            obj.applied = True
 
         if use_zone_transaction is None:
             zone_transaction = self.new_zone_transaction(zone)
@@ -442,8 +444,6 @@ class FirewallZone(object):
                                   "unable to apply", zone, key, args)
                 except FirewallError as msg:
                     log.warning(str(msg))
-
-        zone_transaction.add_post(self.set_zone_applied, _zone, applied)
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
@@ -528,9 +528,6 @@ class FirewallZone(object):
         _zone = self._fw.check_zone(zone)
         _obj = self._zones[_zone]
 
-        if not _obj.applied:
-            self.apply_zone_settings(zone)
-
         interface_id = self.__interface_id(interface)
 
         if interface_id in _obj.settings["interfaces"]:
@@ -549,7 +546,6 @@ class FirewallZone(object):
             zone_transaction = use_zone_transaction
 
         if not _obj.applied:
-            _obj.applied = True
             self.apply_zone_settings(zone,
                                      use_zone_transaction=zone_transaction)
             zone_transaction.add_fail(self.set_zone_applied, _zone, False)
@@ -557,8 +553,9 @@ class FirewallZone(object):
         self.__interface(True, _zone, interface,
                          use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_interface, _obj,
-                                  interface_id, zone, sender)
+        self.__register_interface(_obj, interface_id, zone, sender)
+        zone_transaction.add_fail(self.__unregister_interface, _obj,
+                                  interface_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -773,9 +770,6 @@ class FirewallZone(object):
         if check_mac(source):
             source = source.upper()
 
-        if not _obj.applied:
-            self.apply_zone_settings(zone)
-
         source_id = self.__source_id(source)
 
         if source_id in _obj.settings["sources"]:
@@ -791,7 +785,6 @@ class FirewallZone(object):
             zone_transaction = use_zone_transaction
 
         if not _obj.applied:
-            _obj.applied = True
             self.apply_zone_settings(zone,
                                      use_zone_transaction=zone_transaction)
             zone_transaction.add_fail(self.set_zone_applied, _zone, False)
@@ -799,8 +792,9 @@ class FirewallZone(object):
         self.__source(True, _zone, source_id[0], source_id[1],
                       use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_source, _obj,
-                                  source_id, zone, sender)
+        self.__register_source(_obj, source_id, zone, sender)
+        zone_transaction.add_fail(self.__unregister_source, _obj,
+                                  source_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -1398,6 +1392,7 @@ class FirewallZone(object):
                                        zone_transaction)
         except FirewallError as msg:
             log.warning(str(msg))
+            mark = None
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
@@ -1427,8 +1422,8 @@ class FirewallZone(object):
         else:
             mark = None
         
-        zone_transaction.add_post(self.__register_rule, _obj,
-                                  rule_id, mark, timeout, sender)
+        self.__register_rule(_obj, rule_id, mark, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -1568,8 +1563,8 @@ class FirewallZone(object):
             self.__service(True, _zone, service,
                            use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_service, _obj,
-                                  service_id, timeout, sender)
+        self.__register_service(_obj, service_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_service, _obj, service_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -1674,8 +1669,8 @@ class FirewallZone(object):
             self.__port(True, _zone, port, protocol,
                         use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_port, _obj,
-                                  port_id, timeout, sender)
+        self.__register_port(_obj, port_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_port, _obj, port_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -1777,8 +1772,8 @@ class FirewallZone(object):
             self.__protocol(True, _zone, protocol,
                             use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_protocol, _obj,
-                                  protocol_id, timeout, sender)
+        self.__register_protocol(_obj, protocol_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -1884,8 +1879,8 @@ class FirewallZone(object):
             self.__source_port(True, _zone, port, protocol,
                                use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_source_port, _obj,
-                                  port_id, timeout, sender)
+        self.__register_source_port(_obj, port_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_source_port, _obj, port_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -1988,8 +1983,9 @@ class FirewallZone(object):
             self.__masquerade(True, _zone,
                               use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_masquerade, _obj,
-                                  masquerade_id, timeout, sender)
+        self.__register_masquerade(_obj, masquerade_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_masquerade, _obj,
+                                  masquerade_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -2137,9 +2133,9 @@ class FirewallZone(object):
                                 mark_id=mark,
                                 use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_forward_port, _obj,
-                                  forward_id, timeout, sender, mark)
-        zone_transaction.add_fail(self._fw.del_mark, mark)
+        self.__register_forward_port(_obj, forward_id, timeout, sender, mark)
+        zone_transaction.add_fail(self.__unregister_forward_port, _obj,
+                                  forward_id, mark)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
@@ -2264,8 +2260,8 @@ class FirewallZone(object):
             self.__icmp_block(True, _zone, icmp,
                               use_zone_transaction=zone_transaction)
 
-        zone_transaction.add_post(self.__register_icmp_block, _obj,
-                                  icmp_id, zone, sender)
+        self.__register_icmp_block(_obj, icmp_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
