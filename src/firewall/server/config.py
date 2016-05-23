@@ -82,10 +82,12 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(config.FIREWALLD_ZONES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_ZONES)
-        for filename in sorted(os.listdir(config.ETC_FIREWALLD_ZONES)):
-            path = "%s/%s" % (config.ETC_FIREWALLD_ZONES, filename)
-            if os.path.isdir(path):
-                self.watcher.add_watch_dir(path)
+        # Add watches for combined zone directories
+        if os.path.exists(config.ETC_FIREWALLD_ZONES):
+            for filename in sorted(os.listdir(config.ETC_FIREWALLD_ZONES)):
+                path = "%s/%s" % (config.ETC_FIREWALLD_ZONES, filename)
+                if os.path.isdir(path):
+                    self.watcher.add_watch_dir(path)
         self.watcher.add_watch_file(config.LOCKDOWN_WHITELIST)
         self.watcher.add_watch_file(config.FIREWALLD_DIRECT)
         self.watcher.add_watch_file(config.FIREWALLD_CONF)
