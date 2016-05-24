@@ -939,7 +939,7 @@ class Firewall(object):
         for zone in self.zone.get_zones():
             if zone in _zone_interfaces:
                 self.zone.set_settings(zone, { "interfaces":
-                                                   _zone_interfaces[zone] })
+                                               _zone_interfaces[zone] })
                 del _zone_interfaces[zone]
             else:
                 log.info1("New zone '%s'.", zone)
