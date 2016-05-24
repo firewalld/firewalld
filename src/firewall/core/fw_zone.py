@@ -296,17 +296,38 @@ class FirewallZone(object):
                 transaction.add_rule(ipv, [ "-I", _zone, "3", "-t", table,
                                             "-j", "%s_allow" % (_zone) ])
 
+                target = self._zones[zone].target
+                next_idx = 4
+                if table == "filter" and chain in [ "INPUT", "FORWARD_IN" ] \
+                   and target != "DROP":
+                    if self._zones[zone].icmp_block_inversion:
+                        ibi_target = "%%REJECT%%"
+                    else:
+                        ibi_target = "ACCEPT"
+                    if self._fw._log_denied != "off" and ibi_target != "ACCEPT":
+                        transaction.add_rule(ipv,
+                                             [ "-I", _zone, str(next_idx),
+                                               "-t", table, "-p", "%%ICMP%%",
+                                               "%%LOGTYPE%%",
+                                               "-j", "LOG", "--log-prefix",
+                                               "\"%s_ICMP_BLOCK: \"" % _zone ])
+                        next_idx += 1
+                    transaction.add_rule(ipv,
+                                         [ "-I", _zone, str(next_idx),
+                                           "-t", table, "-p", "%%ICMP%%",
+                                           "-j", ibi_target ])
+                    next_idx += 1
+
                 # Handle trust, block and drop zones:
                 # Add an additional rule with the zone target (accept, reject
                 # or drop) to the base _zone only in the filter table.
                 # Otherwise it is not be possible to have a zone with drop
                 # target, that is allowing traffic that is locally initiated
                 # or that adds additional rules. (RHBZ#1055190)
-                target = self._zones[zone].target
                 if table == "filter" and \
                    target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
                    chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    transaction.add_rule(ipv, [ "-I", _zone, "4",
+                    transaction.add_rule(ipv, [ "-I", _zone, str(next_idx),
                                                 "-t", table, "-j", target ])
 
                 if self._fw._log_denied != "off":
@@ -314,13 +335,13 @@ class FirewallZone(object):
                        chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                         if target in [ "REJECT", "%%REJECT%%" ]:
                             transaction.add_rule(
-                                ipv, [ "-I", _zone, "4", "-t", table,
+                                ipv, [ "-I", _zone, str(next_idx), "-t", table,
                                        "%%LOGTYPE%%",
                                        "-j", "LOG", "--log-prefix",
                                        "\"%s_REJECT: \"" % _zone ])
                         if target == "DROP":
                             transaction.add_rule(
-                                ipv, [ "-I", _zone, "4", "-t", table,
+                                ipv, [ "-I", _zone, str(next_idx), "-t", table,
                                        "%%LOGTYPE%%",
                                        "-j", "LOG", "--log-prefix",
                                        "\"%s_DROP: \"" % _zone ])
@@ -483,6 +504,7 @@ class FirewallZone(object):
         conf[12] = self.list_rules(zone)
         conf[13] = self.list_protocols(zone)
         conf[14] = self.list_source_ports(zone)
+        # conf[15] icmp-block-inversion, added by export_config above
         return tuple(conf)
 
     # INTERFACES
@@ -2236,14 +2258,34 @@ class FirewallZone(object):
 
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                 zone=zone)
-            zone_transaction.add_rule(ipv, [ add_del, "%s_deny" % (target),
+            if self._zones[zone].icmp_block_inversion:
+                final_chain = "%s_allow" % target
+                final_target = "ACCEPT"
+            else:
+                final_chain = "%s_deny" % target
+                final_target = "%%REJECT%%"
+            if self._fw._log_denied != "off" and \
+               not self._zones[zone].icmp_block_inversion:
+                zone_transaction.add_rule(
+                    ipv,
+                    [ add_del, final_chain, "-t", "filter" ] + proto + match +
+                    [ "%%LOGTYPE%%", "-j", "LOG",
+                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % _zone ])
+            zone_transaction.add_rule(ipv, [ add_del, final_chain,
                                              "-t", "filter", ] + proto + 
-                                      match + [ "-j", "%%REJECT%%" ])
+                                      match + [ "-j", final_target ])
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_IN"], zone=zone)
-            zone_transaction.add_rule(ipv, [ add_del, "%s_deny" % (target),
+            if self._fw._log_denied != "off" and \
+               not self._zones[zone].icmp_block_inversion:
+                zone_transaction.add_rule(
+                    ipv,
+                    [ add_del, final_chain, "-t", "filter" ] + proto + match +
+                    [ "%%LOGTYPE%%", "-j", "LOG",
+                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % _zone ])
+            zone_transaction.add_rule(ipv, [ add_del, final_chain,
                                              "-t", "filter", ] + proto + \
-                                      match + [ "-j", "%%REJECT%%" ])
+                                      match + [ "-j", final_target ])
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
