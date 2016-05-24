@@ -1871,17 +1871,17 @@
             <property name="position">200</property>
             <property name="position_set">True</property>
             <child>
-              <object class="GtkTable" id="table5">
+              <object class="GtkGrid" id="grid2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="border_width">6</property>
-                <property name="n_rows">2</property>
-                <property name="n_columns">2</property>
                 <property name="row_spacing">6</property>
                 <child>
                   <object class="GtkBox" id="bindingsBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="hexpand">True</property>
+                    <property name="vexpand">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
@@ -1943,9 +1943,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
-                    <property name="bottom_attach">2</property>
                   </packing>
                 </child>
                 <child>
@@ -1991,8 +1989,7 @@
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
-                    <property name="right_attach">2</property>
-                    <property name="y_options">GTK_FILL</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
                 <child>
@@ -2038,8 +2035,9 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="bottom_attach">2</property>
-                    <property name="x_options">GTK_FILL</property>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                    <property name="height">2</property>
                   </packing>
                 </child>
               </object>
