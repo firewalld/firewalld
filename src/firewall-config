@@ -2423,16 +2423,7 @@ class FirewallConfig(object):
         if self.runtime_view:
             # load runtime configuration
 
-            services = self.fw.getServices(selected_zone)
-            ports = self.fw.getPorts(selected_zone)
-            protocols = self.fw.getProtocols(selected_zone)
-            masquerade = self.fw.queryMasquerade(selected_zone)
-            forward_ports = self.fw.getForwardPorts(selected_zone)
-            source_ports = self.fw.getSourcePorts(selected_zone)
-            icmpblocks = self.fw.getIcmpBlocks(selected_zone)
-            rules = self.fw.getRichRules(selected_zone)
-            interfaces = self.fw.getInterfaces(selected_zone)
-            sources = self.fw.getSources(selected_zone)
+            settings = self.fw.getZoneSettings(selected_zone)
             default = False
             builtin = False
         else:
@@ -2443,18 +2434,19 @@ class FirewallConfig(object):
 
             # load permanent configuration
             settings = zone.getSettings()
-            services = settings.getServices()
-            ports = settings.getPorts()
-            protocols = settings.getProtocols()
-            masquerade = settings.getMasquerade()
-            forward_ports = settings.getForwardPorts()
-            source_ports = settings.getSourcePorts()
-            icmpblocks = settings.getIcmpBlocks()
-            rules = settings.getRichRules()
-            interfaces = settings.getInterfaces()
-            sources = settings.getSources()
             default = zone.get_property("default")
             builtin = zone.get_property("builtin")
+
+        services = settings.getServices()
+        ports = settings.getPorts()
+        protocols = settings.getProtocols()
+        masquerade = settings.getMasquerade()
+        forward_ports = settings.getForwardPorts()
+        source_ports = settings.getSourcePorts()
+        icmpblocks = settings.getIcmpBlocks()
+        rules = settings.getRichRules()
+        interfaces = settings.getInterfaces()
+        sources = settings.getSources()
 
         self.zoneNotebook.set_sensitive(True)
         self.zoneEditRemoveButton.set_sensitive(not builtin and default)
