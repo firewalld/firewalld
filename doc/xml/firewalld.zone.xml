@@ -76,6 +76,7 @@
   [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
   [ &lt;protcol value="<replaceable>protocol</replaceable>"/&gt; ]
   [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
+  [ &lt;icmp-block-inversion/&gt; ]
   [ &lt;masquerade/&gt; ]
   [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
   [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
@@ -272,6 +273,13 @@
 	  </listitem>
 	</varlistentry>
       </variablelist>
+    </refsect2>
+
+    <refsect2 id="icmp-block-inversion">
+      <title>icmp-block-inversion</title>
+      <para>
+	Is an optional empty-element tag and can be used only once in a zone configuration. This flag inverts the icmp block handling. Only enabled ICMP types are accepted and all others are rejected in the zone.
+      </para>
     </refsect2>
 
     <refsect2 id="masquerade">

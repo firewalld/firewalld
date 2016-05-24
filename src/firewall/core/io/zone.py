@@ -54,8 +54,9 @@ class Zone(IO_Object):
         ( "rules_str", [ "" ] ),                       # as
         ( "protocols", [ "", ], ),                     # as
         ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
+        ( "icmp_block_inversion", False ),             # b
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasasa(ss))'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasasa(ss)b)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -78,6 +79,7 @@ class Zone(IO_Object):
         "drop": None,
         "mark": [ "set" ],
         "limit": [ "value" ],
+        "icmp-block-inversion": None,
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "zone": [ "name", "immutable", "target", "version" ],
@@ -115,6 +117,7 @@ class Zone(IO_Object):
         self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
         self.rules = [ ]
+        self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
 
@@ -135,6 +138,7 @@ class Zone(IO_Object):
         del self.sources[:]
         self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
+        self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
 
@@ -279,6 +283,8 @@ class Zone(IO_Object):
                 self.source_ports.append(port)
         for rule in zone.rules:
             self.rules.append(rule)
+        if zone.icmp_block_inversion:
+            self.icmp_block_inversion = True
 
 # PARSER
 
@@ -381,9 +387,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                             attrs["name"])
 
         elif name == "masquerade":
-            if "enabled" in attrs:
+            if "enabled" in attrs and \
+               attrs["enabled"].lower() in [ "no", "false" ] :
                 log.warning("Ignoring deprecated attribute enabled='%s'",
                             attrs["enabled"])
+                return
+
             if self._rule:
                 if self._rule.element:
                     log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
@@ -618,6 +627,12 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             value = attrs["value"]
             self._limit_ok.limit = Rich_Limit(value)
 
+        elif name == "icmp-block-inversion":
+            if self.item.icmp_block_inversion:
+                log.warning("Icmp-Block-Inversion already set, ignoring.")
+            else:
+                self.item.icmp_block_inversion = True
+
         else:
             log.warning("Unknown XML element '%s'", name)
             return
@@ -746,6 +761,12 @@ def zone_writer(zone, path=None):
     for protocol in uniqify(zone.protocols):
         handler.ignorableWhitespace("  ")
         handler.simpleElement("protocol", { "value": protocol })
+        handler.ignorableWhitespace("\n")
+
+    # icmp-block-inversion
+    if zone.icmp_block_inversion:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("icmp-block-inversion", { })
         handler.ignorableWhitespace("\n")
 
     # icmp-blocks
