@@ -306,15 +306,24 @@ class FirewallZone(object):
                 if table == "filter" and \
                    target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
                    chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    transaction.add_rule(ipv, [ "-I", _zone, "4", "-t", table, "-j", target ])
+                    transaction.add_rule(ipv, [ "-I", _zone, "4",
+                                                "-t", table, "-j", target ])
 
                 if self._fw._log_denied != "off":
                     if table == "filter" and \
                        chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                         if target in [ "REJECT", "%%REJECT%%" ]:
-                            transaction.add_rule(ipv, [ "-I", _zone, "4", "-t", table, "-j", "LOG", "--log-prefix", "\"%s_REJECT: \"" % _zone ])
+                            transaction.add_rule(
+                                ipv, [ "-I", _zone, "4", "-t", table,
+                                       "%%LOGTYPE%%",
+                                       "-j", "LOG", "--log-prefix",
+                                       "\"%s_REJECT: \"" % _zone ])
                         if target == "DROP":
-                            transaction.add_rule(ipv, [ "-I", _zone, "4", "-t", table, "-j", "LOG", "--log-prefix", "\"%s_DROP: \"" % _zone ])
+                            transaction.add_rule(
+                                ipv, [ "-I", _zone, "4", "-t", table,
+                                       "%%LOGTYPE%%",
+                                       "-j", "LOG", "--log-prefix",
+                                       "\"%s_DROP: \"" % _zone ])
             
             transaction.add_post(self.__register_chains, zone, create, chains)
 
