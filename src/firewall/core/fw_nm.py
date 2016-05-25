@@ -24,7 +24,8 @@
 
 __all__ = [ "NM", "check_nm_imported", "nm_is_imported",
             "nm_get_zone_of_connection", "nm_set_zone_of_connection",
-            "nm_get_connections", "nm_get_connection_of_interface" ]
+            "nm_get_connections", "nm_get_connection_of_interface",
+            "nm_get_bus_name" ]
 
 import gi
 try:
@@ -41,6 +42,8 @@ else:
 
 from firewall import errors
 from firewall.errors import FirewallError
+from firewall.core.logger import log
+import dbus
 
 def check_nm_imported():
     """Check function to raise a MISSING_IMPORT error if the import of NM failed
@@ -148,4 +151,17 @@ def nm_get_connection_of_interface(interface):
                 return active_con.get_id()
 
 
+    return None
+
+def nm_get_bus_name():
+    if not _nm_imported:
+        return None
+    try:
+        bus = dbus.SystemBus()
+        obj = bus.get_object(NM.DBUS_INTERFACE, NM.DBUS_PATH)
+        name = obj.bus_name
+        del obj, bus
+        return name
+    except Exception as msg:
+        log.debug2("Failed to get bus name of NetworkManager")
     return None
