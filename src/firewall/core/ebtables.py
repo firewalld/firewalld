@@ -26,6 +26,7 @@ from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
 from firewall.config import COMMANDS
+import string
 
 PROC_IPxTABLE_NAMES = {
 }
@@ -120,6 +121,15 @@ class ebtables(object):
                 if len(rule) >= i+1:
                     rule.pop(i)
                     table = rule.pop(i)
+
+            # we can not use joinArgs here, because it would use "'" instead
+            # of '"' for the start and end of the string, this breaks
+            # iptables-restore
+            for i in range(len(rule)):
+                for c in string.whitespace:
+                    if c in rule[i] and not (rule[i].startswith('"') and
+                                             rule[i].endswith('"')):
+                        rule[i] = '"%s"' % rule[i]
 
             table_rules.setdefault(table, []).append(rule)
 
