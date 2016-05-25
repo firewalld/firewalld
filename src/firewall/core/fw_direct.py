@@ -21,8 +21,6 @@
 
 __all__ = [ "FirewallDirect" ]
 
-import os.path
-from firewall import functions
 from firewall.fw_types import *
 from firewall.core import ipXtables
 from firewall.core import ebtables
@@ -189,10 +187,10 @@ class FirewallDirect(object):
             our_chains = ebtables.OUR_CHAINS[table]
         if chain in built_in_chains:
             raise FirewallError(errors.BUILTIN_CHAIN,
-                 "chain '%s' is built-in chain" % chain)
+                                "chain '%s' is built-in chain" % chain)
         if chain in our_chains:
             raise FirewallError(errors.BUILTIN_CHAIN,
-                 "chain '%s' is reserved" % chain)
+                                "chain '%s' is reserved" % chain)
         if ipv in [ "ipv4", "ipv6" ]:
             if self._fw.zone.zone_from_chain(chain) != None:
                 raise FirewallError(errors.INVALID_CHAIN,
@@ -209,12 +207,14 @@ class FirewallDirect(object):
             if table_id in self._chains and \
                     chain in self._chains[table_id]:
                 raise FirewallError(errors.ALREADY_ENABLED,
-                     "chain '%s' already is in '%s:%s'" % (chain, ipv, table))
+                                    "chain '%s' already is in '%s:%s'" % \
+                                    (chain, ipv, table))
         else:
             if table_id not in self._chains or \
                     chain not in self._chains[table_id]:
                 raise FirewallError(errors.NOT_ENABLED,
-                    "chain '%s' is not in '%s:%s'" % (chain, ipv, table))
+                                    "chain '%s' is not in '%s:%s'" % \
+                                    (chain, ipv, table))
 
         rule = [ "-t", table ]
         if add:
@@ -266,7 +266,7 @@ class FirewallDirect(object):
         self._check_builtin_chain(ipv, table, chain)
         table_id = (ipv, table)
         return (table_id in self._chains and
-                   chain in self._chains[table_id])
+                chain in self._chains[table_id])
 
     def get_chains(self, ipv, table):
         self._check_ipv_table(ipv, table)
@@ -320,11 +320,11 @@ class FirewallDirect(object):
             # get priority of rule
             priority = self._rules[chain_id][rule_id]
 
-        # If a rule gets added, the initial rule index position within the 
+        # If a rule gets added, the initial rule index position within the
         # ipv, table and chain combination (chain_id) is 1.
         # Tf the chain_id exists in _rule_priority_positions, there are already
         # other rules for this chain_id. The number of rules for a priority
-        # less or equal to the priority of the new rule will increase the 
+        # less or equal to the priority of the new rule will increase the
         # index of the new rule. The index is the ip*tables -I insert rule
         # number.
         #
@@ -341,21 +341,21 @@ class FirewallDirect(object):
         # The new rule
         #   ipv4, filter, INPUT, 2, -i, foo2_2, -j, ACCEPT
         # has the same pritority as the second rule before and will be added
-        # right after it. 
+        # right after it.
         # The initial index is 1 and the chain_id is already in
         # _rule_priority_positions. Therefore the index will increase for
-        # the number of rules in every rule position in 
+        # the number of rules in every rule position in
         # _rule_priority_positions[(ipv4,filter,INPUT)].keys()
         # where position is smaller or equal to the entry in keys.
         # With the example from above:
-        # The priority of the new rule is 2. Therefore for all keys in 
-        # _rule_priority_positions[chain_id] where priority is 1 or 2, the 
+        # The priority of the new rule is 2. Therefore for all keys in
+        # _rule_priority_positions[chain_id] where priority is 1 or 2, the
         # number of the rules will increase the index of the rule.
         # For _rule_priority_positions[chain_id][1]: index += 1
         # _rule_priority_positions[chain_id][2]: index += 2
-        # index will be 4 in the end and the rule in the table chain 
+        # index will be 4 in the end and the rule in the table chain
         # combination will be added at index 4.
-        # If there are no rules in the table chain combination, a new rule 
+        # If there are no rules in the table chain combination, a new rule
         # has index 1.
 
         index = 1
@@ -423,8 +423,8 @@ class FirewallDirect(object):
     def query_rule(self, ipv, table, chain, priority, args):
         self._check_ipv_table(ipv, table)
         chain_id = (ipv, table, chain)
-        return (chain_id in self._rules and \
-                (priority, args) in self._rules[chain_id])
+        return chain_id in self._rules and \
+            (priority, args) in self._rules[chain_id]
 
     def get_rules(self, ipv, table, chain):
         self._check_ipv_table(ipv, table)
@@ -456,7 +456,6 @@ class FirewallDirect(object):
         self._check_ipv(ipv)
 
         tuple_args = tuple(args)
-        passthrough_id = (ipv, args)
         if enable:
             if ipv in self._passthroughs and \
                tuple_args in self._passthroughs[ipv]:
@@ -475,7 +474,7 @@ class FirewallDirect(object):
                 table = "filter"
                 try:
                     i = args.index("-t")
-                except:
+                except ValueError:
                     pass
                 else:
                     if len(args) >= i+1:
@@ -486,7 +485,7 @@ class FirewallDirect(object):
                              "-N", "--new-chain" ]:
                     try:
                         i = args.index(opt)
-                    except:
+                    except ValueError:
                         pass
                     else:
                         if len(args) >= i+1:
@@ -535,8 +534,8 @@ class FirewallDirect(object):
             transaction.execute(True)
 
     def query_passthrough(self, ipv, args):
-        return (ipv in self._passthroughs and \
-                tuple(args) in self._passthroughs[ipv])
+        return ipv in self._passthroughs and \
+            tuple(args) in self._passthroughs[ipv]
 
     def get_all_passthroughs(self):
         r = [ ]
@@ -604,7 +603,7 @@ class FirewallDirect(object):
         for x in replace_args:
             try:
                 idx = ret_args.index(x)
-            except:
+            except ValueError:
                 continue
 
             if x in [ "-I", "--insert" ]:
@@ -613,7 +612,7 @@ class FirewallDirect(object):
                 # position idx+2
                 try:
                     int(ret_args[idx+2])
-                except:
+                except ValueError:
                     pass
                 else:
                     ret_args.pop(idx+2)
