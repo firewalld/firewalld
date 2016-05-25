@@ -35,6 +35,7 @@ from firewall import config
 from firewall.core.fw import Firewall
 from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
+from firewall.client import FirewallClientZoneSettings
 from firewall.server.decorators import *
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
@@ -45,6 +46,7 @@ from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
+from firewall.core.fw_nm import nm_get_bus_name
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -297,80 +299,111 @@ class FirewallD(slip.dbus.service.Object):
         """
         log.debug1("copyRuntimeToPermanent()")
 
+        error = False
+
         # Services or icmptypes can not be modified in runtime, but they can
         # be removed or modified in permanent environment. Therefore copying
         # of services and icmptypes to permanent is also needed.
 
         # services
 
+        config_names = self.config.getServiceNames()
         for name in self.fw.service.get_services():
             conf = self.getServiceSettings(name)
             try:
-                try:
+                if name in config_names:
                     conf_obj = self.config.getServiceByName(name)
-                except FirewallError as e:
-                    if "INVALID_SERVICE" in e:
-                        log.debug1("Creating service '%s'" % name)
-                        self.config.addService(name, conf)
-                    else:
-                        raise
-                else:
                     if conf_obj.getSettings() != conf:
                         log.debug1("Copying service '%s' settings" % name)
                         conf_obj.update(conf)
                     else:
-                        log.debug1("Service '%s' is identical" % name)
+                        log.debug1("Service '%s' is identical, ignoring." % name)
+                else:
+                    log.debug1("Creating service '%s'" % name)
+                    self.config.addService(name, conf)
             except Exception as e:
-                raise FirewallError(errors.RT_TO_PERM_FAILED,
-                                    "service '%s' : %s" % (name, e))
+                log.warning(
+                    "Runtime To Permanent failed on service '%s': %s" % \
+                    (name, e))
+                error = True
 
         # icmptypes
 
+        config_names = self.config.getIcmpTypeNames()
         for name in self.fw.icmptype.get_icmptypes():
             conf = self.getIcmpTypeSettings(name)
             try:
-                try:
+                if name in config_names:
                     conf_obj = self.config.getIcmpTypeByName(name)
-                except FirewallError as e:
-                    if "INVALID_ICMPTYPE" in e:
-                        log.debug1("Creating icmptype '%s'" % name)
-                        self.config.addIcmpType(name, conf)
-                    else:
-                        raise
-                else:
                     if conf_obj.getSettings() != conf:
                         log.debug1("Copying icmptype '%s' settings" % name)
                         conf_obj.update(conf)
                     else:
-                        log.debug1("IcmpType '%s' is identical" % name)
+                        log.debug1("IcmpType '%s' is identical, ignoring." % name)
+                else:
+                    log.debug1("Creating icmptype '%s'" % name)
+                    self.config.addIcmpType(name, conf)
             except Exception as e:
-                raise FirewallError(errors.RT_TO_PERM_FAILED,
-                                "icmptype '%s' : %s" % (name, e))
+                log.warning(
+                    "Runtime To Permanent failed on icmptype '%s': %s" % \
+                    (name, e))
+                error = True
+
+        # ipsets
+
+        config_names = self.config.getIPSetNames()
+        for name in self.fw.ipset.get_ipsets():
+            conf = self.getIPSetSettings(name)
+            try:
+                if name in config_names:
+                    conf_obj = self.config.getIPSetByName(name)
+                    if conf_obj.getSettings() != conf:
+                        log.debug1("Copying ipset '%s' settings" % name)
+                        conf_obj.update(conf)
+                    else:
+                        log.debug1("IPSet '%s' is identical, ignoring." % name)
+                else:
+                    log.debug1("Creating ipset '%s'" % name)
+                    self.config.addIPSet(name, conf)
+            except Exception as e:
+                log.warning(
+                    "Runtime To Permanent failed on ipset '%s': %s" % \
+                    (name, e))
+                error = True
 
         # zones
 
+        config_names = self.config.getZoneNames()
+        nm_bus_name = nm_get_bus_name()
         for name in self.fw.zone.get_zones():
-            # zone runtime settings can be modified, but not service and
-            # icmptye settings
             conf = self.getZoneSettings(name)
+            if nm_bus_name != None:
+                settings = FirewallClientZoneSettings(conf)
+                changed = False
+                for interface in settings.getInterfaces():
+                    if self.fw.zone.interface_get_sender(name, interface) == nm_bus_name:
+                        log.debug1("Zone '%s': interface binding for '%s' has been added by NM, ignoring." % (name, interface))
+                        settings.removeInterface(interface)
+                        changed = True
+                if changed:
+                    del conf
+                    conf = settings.settings
             try:
-                try:
+                if name in config_names:
                     conf_obj = self.config.getZoneByName(name)
-                except FirewallError as e:
-                    if "INVALID_ZONE" in e:
-                        log.debug1("Creating zone '%s'" % name)
-                        self.config.addZone(name, conf)
-                    else:
-                        raise
-                else:
                     if conf_obj.getSettings() != conf:
                         log.debug1("Copying zone '%s' settings" % name)
                         conf_obj.update(conf)
                     else:
-                        log.debug1("Zone '%s' is identical" % name)
+                        log.debug1("Zone '%s' is identical, ignoring." % name)
+                else:                    
+                    log.debug1("Creating zone '%s'" % name)
+                    self.config.addZone(name, conf)
             except Exception as e:
-                raise FirewallError(errors.RT_TO_PERM_FAILED,
-                                    "zone '%s' : %s" % (name, e))
+                log.warning(
+                    "Runtime To Permanent failed on zone '%s': %s" % \
+                    (name, e))
+                error = True
 
         # direct
 
@@ -383,10 +416,11 @@ class FirewallD(slip.dbus.service.Object):
                 log.debug1("Copying direct configuration")
                 self.config.update(conf)
             else:
-                log.debug1("Direct configuration is identical")
+                log.debug1("Direct configuration is identical, ignoring.")
         except Exception as e:
-            raise FirewallError(errors.RT_TO_PERM_FAILED,
-                                "direct configuration: %s" % e)
+            log.warning(
+                "Runtime To Permanent failed on direct configuration: %s" % e)
+            error = True
 
         # policies
 
@@ -396,10 +430,15 @@ class FirewallD(slip.dbus.service.Object):
                 log.debug1("Copying policies configuration")
                 self.config.setLockdownWhitelist(conf)
             else:
-                log.debug1("Policies configuration is identical")
+                log.debug1("Policies configuration is identical, ignoring.")
         except Exception as e:
-            raise FirewallError(errors.RT_TO_PERM_FAILED,
-                                "policies configuration: %s" % e)
+            log.warning(
+                "Runtime To Permanent failed on policies configuration: %s" % \
+                e)
+            error = True
+
+        if error:
+            raise FirewallError(errors.RT_TO_PERM_FAILED)
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # POLICIES
