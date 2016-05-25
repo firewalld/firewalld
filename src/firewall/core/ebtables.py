@@ -77,8 +77,8 @@ class ebtables(object):
         # Do not change any rules, just try to use the --concurrent option
         # with -L
         concurrent_option = ""
-        (status, ret) = runProg(self._command, ["--concurrent", "-L"])
-        if status == 0:
+        ret = runProg(self._command, ["--concurrent", "-L"])
+        if ret[0] == 0:
             concurrent_option = "--concurrent"  # concurrent for ebtables lock
 
         return concurrent_option
@@ -151,13 +151,10 @@ class ebtables(object):
                                 stdin=temp_file.name)
 
         if log.getDebugLogLevel() > 2:
-            try:
-                readfile(temp_file.name)
-            except:
-                pass
-            else:
+            lines = readfile(temp_file.name)
+            if lines is not None:
                 i = 1
-                for line in readfile(temp_file.name):
+                for line in lines:
                     log.debug3("%8d: %s" % (i, line), nofmt=1, nl=0)
                     if not line.endswith("\n"):
                         log.debug3("", nofmt=1)
@@ -196,7 +193,6 @@ class ebtables(object):
 
     def flush(self, transaction=None):
         tables = self.used_tables()
-        rules = [ ]
         for table in tables:
             # Flush firewall rules: -F
             # Delete firewall chains: -X
@@ -222,7 +218,6 @@ class ebtables(object):
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
-        rules = [ ]
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
                 if transaction is not None:
