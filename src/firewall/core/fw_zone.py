@@ -218,8 +218,8 @@ class FirewallZone(object):
 
     # zone from chain
 
-    def zone_from_chain(self, ipv, table, chain):
-        if not "_" in chain:
+    def zone_from_chain(self, chain):
+        if "_" not in chain:
             # no zone chain
             return None
         splits = chain.split("_")
@@ -243,7 +243,7 @@ class FirewallZone(object):
 
         # Create zone base chains if the chain is reserved for a zone
         if ipv in [ "ipv4", "ipv6" ]:
-            x = self.zone_from_chain(ipv, table, chain)
+            x = self.zone_from_chain(chain)
             if x is not None:
                 (_zone, _chain) = x
 
