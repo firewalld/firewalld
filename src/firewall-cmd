@@ -475,6 +475,7 @@ def _check_ipv(value):
 
 def __print_zone_info(zone, settings, verbose = False):
     target = settings.getTarget()
+    icmp_block_inversion = settings.getIcmpBlockInversion()
     interfaces = settings.getInterfaces()
     sources = settings.getSources()
     services = settings.getServices()
@@ -500,6 +501,7 @@ def __print_zone_info(zone, settings, verbose = False):
         __print("  summary: " + short_description)
         __print("  description: " + description)
     __print("  target: " + target)
+    __print("  icmp-block-inversion: %s" % ("yes" if icmp_block_inversion else "no"))
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
     __print("  services: " + " ".join(services))
