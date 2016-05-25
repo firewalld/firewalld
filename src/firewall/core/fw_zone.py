@@ -516,6 +516,18 @@ class FirewallZone(object):
     def check_interface(self, interface):
         self._fw.check_interface(interface)
 
+    def interface_get_sender(self, zone, interface):
+        _zone = self._fw.check_zone(zone)
+        _obj = self._zones[_zone]
+        interface_id = self.__interface_id(interface)
+
+        if interface_id in _obj.settings["interfaces"]:
+            settings = _obj.settings["interfaces"][interface_id]
+            if "sender" in settings and settings["sender"] is not None:
+                return settings["sender"]
+
+        return None
+
     def __interface_id(self, interface):
         self.check_interface(interface)
         return interface
