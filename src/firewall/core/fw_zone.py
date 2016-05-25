@@ -2286,7 +2286,7 @@ class FirewallZone(object):
                     ipv,
                     [ add_del, final_chain, "-t", "filter" ] + proto + match +
                     [ "%%LOGTYPE%%", "-j", "LOG",
-                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % _zone ])
+                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
             zone_transaction.add_rule(ipv, [ add_del, final_chain,
                                              "-t", "filter", ] + proto + 
                                       match + [ "-j", final_target ])
@@ -2298,7 +2298,7 @@ class FirewallZone(object):
                     ipv,
                     [ add_del, final_chain, "-t", "filter" ] + proto + match +
                     [ "%%LOGTYPE%%", "-j", "LOG",
-                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % _zone ])
+                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
             zone_transaction.add_rule(ipv, [ add_del, final_chain,
                                              "-t", "filter", ] + proto + \
                                       match + [ "-j", final_target ])
