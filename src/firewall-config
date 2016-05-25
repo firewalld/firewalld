@@ -2403,7 +2403,9 @@ class FirewallConfig(object):
         self.zoneNotebook.set_tooltip_markup("")
 
         if not selected_zone:
-            self.zoneEditBox.set_sensitive(False)
+            self.zoneEditEditButton.set_sensitive(False)
+            self.zoneEditRemoveButton.set_sensitive(False)
+            self.zoneEditLoadDefaultsButton.set_sensitive(False)
             self.zoneNotebook.set_sensitive(False)
 
             iter = self.serviceStore.get_iter_first()
@@ -2420,7 +2422,7 @@ class FirewallConfig(object):
 
             return
 
-        self.zoneEditBox.set_sensitive(not self.runtime_view)
+        self.zoneEditEditButton.set_sensitive(True)
         self.zoneNotebook.set_sensitive(True)
 
         services = [ ]
@@ -4708,11 +4710,13 @@ class FirewallConfig(object):
             Gtk.SelectionMode.NONE)
 
         if not active_service:
-            self.serviceConfServiceEditBox.set_sensitive(False)
+            self.serviceConfEditServiceButton.set_sensitive(False)
+            self.serviceConfRemoveServiceButton.set_sensitive(False)
+            self.serviceConfLoadDefaultsServiceButton.set_sensitive(False)
             self.serviceConfServiceNotebook.set_sensitive(False)
             return
 
-        self.serviceConfServiceEditBox.set_sensitive(True)
+        self.serviceConfEditServiceButton.set_sensitive(True)
         self.serviceConfServiceNotebook.set_sensitive(True)
 
         ports = [ ]
@@ -5591,11 +5595,13 @@ class FirewallConfig(object):
             Gtk.SelectionMode.NONE)
 
         if not active_ipset:
-            self.ipsetConfIPSetEditBox.set_sensitive(False)
+            self.ipsetConfEditIPSetButton.set_sensitive(False)
+            self.ipsetConfRemoveIPSetButton.set_sensitive(False)
+            self.ipsetConfLoadDefaultsIPSetButton.set_sensitive(False)
             self.ipsetConfEntryBox.set_sensitive(False)
             return
 
-        self.ipsetConfIPSetEditBox.set_sensitive(True)
+        self.ipsetConfEditIPSetButton.set_sensitive(True)
         self.ipsetConfEntryBox.set_sensitive(True)
 
         entries = [ ]
@@ -5691,11 +5697,13 @@ class FirewallConfig(object):
         self.icmpDialogDestIpv6Check.set_active(True)
 
         if not active_icmp:
-            self.icmpDialogIcmpEditBox.set_sensitive(False)
+            self.icmpDialogEditIcmpButton.set_sensitive(False)
+            self.icmpDialogRemoveIcmpButton.set_sensitive(False)
+            self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(False)
             self.icmpDialogIcmpNotebook.set_sensitive(False)
             return
 
-        self.icmpDialogIcmpEditBox.set_sensitive(True)
+        self.icmpDialogEditIcmpButton.set_sensitive(True)
         self.icmpDialogIcmpNotebook.set_sensitive(True)
 
         destination = [ ]
