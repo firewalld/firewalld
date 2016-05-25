@@ -31,6 +31,7 @@ from firewall.core.fw_transaction import FirewallTransaction, \
     FirewallZoneTransaction, reverse_rule
 from firewall import errors
 from firewall.errors import FirewallError
+from firewall.fw_types import LastUpdatedOrderedDict
 
 class FirewallZone(object):
     def __init__(self, fw):
@@ -109,7 +110,7 @@ class FirewallZone(object):
     # zones
 
     def get_zones(self):
-        return sorted(self._zones.keys())
+        return self._zones.keys()
 
     def get_zone_of_interface(self, interface):
         interface_id = self.__interface_id(interface)
@@ -140,12 +141,13 @@ class FirewallZone(object):
             log.warning("%s: %s" % (name, msg))
 
     def add_zone(self, obj):
-        obj.settings = { x : {} for x in [ "interfaces", "sources",
-                                           "services", "ports",
-                                           "masquerade", "forward_ports",
-                                           "source_ports",
-                                           "icmp_blocks", "rules",
-                                           "protocols" ] }
+        obj.settings = { x : LastUpdatedOrderedDict()
+                         for x in [ "interfaces", "sources",
+                                    "services", "ports",
+                                    "masquerade", "forward_ports",
+                                    "source_ports",
+                                    "icmp_blocks", "rules",
+                                    "protocols" ] }
 
         self._zones[obj.name] = obj
 
@@ -675,7 +677,7 @@ class FirewallZone(object):
         return self.__interface_id(interface) in self.get_settings(zone)["interfaces"]
 
     def list_interfaces(self, zone):
-        return sorted(self.get_settings(zone)["interfaces"].keys())
+        return self.get_settings(zone)["interfaces"].keys()
 
     # IPSETS
 
@@ -1642,7 +1644,7 @@ class FirewallZone(object):
         return (self.__service_id(service) in self.get_settings(zone)["services"])
 
     def list_services(self, zone):
-        return sorted(self.get_settings(zone)["services"].keys())
+        return self.get_settings(zone)["services"].keys()
 
     # PORTS
 
@@ -2358,4 +2360,4 @@ class FirewallZone(object):
         return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
 
     def list_icmp_blocks(self, zone):
-        return sorted(self.get_settings(zone)["icmp_blocks"].keys())
+        return self.get_settings(zone)["icmp_blocks"].keys()
