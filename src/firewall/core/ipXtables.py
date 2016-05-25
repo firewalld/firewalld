@@ -211,13 +211,10 @@ class ip4tables(object):
                                 stdin=temp_file.name)
 
         if log.getDebugLogLevel() > 2:
-            try:
-                lines = readfile(temp_file.name)
-            except:
-                pass
-            else:
+            lines = readfile(temp_file.name)
+            if lines is not None:
                 i = 1
-                for line in readfile(temp_file.name):
+                for line in lines:
                     log.debug3("%8d: %s" % (i, line), nofmt=1, nl=0)
                     if not line.endswith("\n"):
                         log.debug3("", nofmt=1)
@@ -266,11 +263,11 @@ class ip4tables(object):
 
     def _detect_wait_option(self):
         wait_option = ""
-        (status, ret) = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
-        if status == 0:
+        ret = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
+        if ret[0] == 0:
             wait_option = "-w"  # wait for xtables lock
-            (status, ret) = runProg(self._command, ["-w2", "-L", "-n"])  # since iptables > 1.4.21
-            if status == 0:
+            ret = runProg(self._command, ["-w2", "-L", "-n"])  # since iptables > 1.4.21
+            if ret[0] == 0:
                 wait_option = "-w2"  # wait max 2 seconds
             log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
 
@@ -278,7 +275,6 @@ class ip4tables(object):
 
     def flush(self, transaction=None):
         tables = self.used_tables()
-        rules = [ ]
         for table in tables:
             # Flush firewall rules: -F
             # Delete firewall chains: -X
