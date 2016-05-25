@@ -685,6 +685,13 @@ class FirewallConfig(object):
         self.icmpView.set_model(self.icmpStore)
         self.icmpStore.set_sort_column_id(1, Gtk.SortType.ASCENDING)
 
+        self.icmpBlockInversionCheck = \
+            builder.get_object("icmpBlockInversionCheck")
+        self.icmpBlockInversionEventbox = \
+            builder.get_object("icmpBlockInversionEventbox")
+        self.icmpBlockInversionEventbox.connect(
+            "button-press-event", self.icmp_block_inversion_check_cb)
+
         self.richRuleView = builder.get_object("richRuleView")
         self.richRuleStore = Gtk.ListStore(GObject.TYPE_PYOBJECT, # the rule obj
                                            GObject.TYPE_STRING, # ipv4/ipv6
@@ -1754,6 +1761,13 @@ class FirewallConfig(object):
                 break
             iter = self.icmpStore.iter_next(iter)
 
+    def icmp_block_inversion_check_cb(self, *args):
+        selected_zone = self.get_selected_zone()
+        if not self.runtime_view:
+            zone = self.fw.config().getZoneByName(selected_zone)
+            zone.setIcmpBlockInversion(not self.icmpBlockInversionCheck.get_active())
+            self.changes_applied()
+
     def _add_rich_rule(self, obj):
 #        family = "ipv4 & ipv6"
         family = "all"
@@ -2419,6 +2433,7 @@ class FirewallConfig(object):
         rules = [ ]
         interfaces = [ ]
         sources = [ ]
+        icmp_block_inversion = False
 
         if self.runtime_view:
             # load runtime configuration
@@ -2447,6 +2462,7 @@ class FirewallConfig(object):
         rules = settings.getRichRules()
         interfaces = settings.getInterfaces()
         sources = settings.getSources()
+        icmp_block_inversion = settings.getIcmpBlockInversion()
 
         self.zoneNotebook.set_sensitive(True)
         self.zoneEditRemoveButton.set_sensitive(not builtin and default)
@@ -2509,6 +2525,10 @@ class FirewallConfig(object):
             else:
                 self.icmpStore.set_value(iter, 0, False)
             iter = self.icmpStore.iter_next(iter)
+
+        # icmp block inversion check box only sensitve in permanent view
+        self.icmpBlockInversionEventbox.set_sensitive(not self.runtime_view)
+        self.icmpBlockInversionCheck.set_active(icmp_block_inversion)
 
         # handle unknown icmpblocks
         for name in _icmpblocks:
