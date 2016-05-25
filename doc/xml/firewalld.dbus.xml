@@ -3458,6 +3458,15 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.getIcmpBlockInversion">
+            <term><methodname>getIcmpBlockInversion</methodname>() &rarr; b</term>
+            <listitem>
+              <para>
+		Get icmp block inversion flag of zone.
+		See <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.getIcmpBlocks">
             <term><methodname>getIcmpBlocks</methodname>() &rarr; as</term>
             <listitem>
@@ -3883,6 +3892,15 @@
               <para>
 		Permanently set forward ports of zone to list of (<replaceable>port</replaceable>, <replaceable>protocol</replaceable>, <replaceable>toport</replaceable>, <replaceable>toaddr</replaceable>).
 		See <literal>forward-port</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+              </para>
+            </listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.config.zone.Methods.setIcmpBlockInversion">
+            <term><methodname>setIcmpBlockInversion</methodname>(b: flag) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently set icmp block inversion flag of zone to <replaceable>flag</replaceable>.
+		See <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
               </para>
             </listitem>
           </varlistentry>

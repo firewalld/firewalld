@@ -661,8 +661,28 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def queryIcmpBlock(self, icmptype, sender=None): # pylint: disable=W0613
         icmptype = dbus_to_python(icmptype, str)
-        log.debug1("%s.removeIcmpBlock('%s')", self._log_prefix, icmptype)
+        log.debug1("%s.queryIcmpBlock('%s')", self._log_prefix, icmptype)
         return icmptype in self.getSettings()[7]
+
+    # icmp block inversion
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def getIcmpBlockInversion(self, sender=None): # pylint: disable=W0613
+        log.debug1("%s.getIcmpBlockInversion()", self._log_prefix)
+        return self.getSettings()[15]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         in_signature='b')
+    @dbus_handle_exceptions
+    def setIcmpBlockInversion(self, flag, sender=None):
+        flag = dbus_to_python(flag, bool)
+        log.debug1("%s.setIcmpBlockInversion('%s')", self._log_prefix, flag)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[15] = flag
+        self.update(settings)
 
     # masquerade
 
