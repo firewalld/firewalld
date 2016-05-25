@@ -496,6 +496,8 @@ class FirewallZone(object):
         :return: exported config updated with runtime settings
         """
         conf = list(self.get_zone(zone).export_config())
+        if conf[4] == DEFAULT_ZONE_TARGET:
+            conf[4] = "default"
         conf[5] = self.list_services(zone)
         conf[6] = self.list_ports(zone)
         conf[7] = self.list_icmp_blocks(zone)
