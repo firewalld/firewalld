@@ -226,7 +226,9 @@ class FirewallDirect(object):
             rule += [ "-P", "RETURN" ]
 
         transaction.add_rule(ipv, rule)
-        transaction.add_post(self.__register_chain, table_id, chain, add)
+
+        self.__register_chain(table_id, chain, add)
+        transaction.add_fail(self.__register_chain, table_id, chain, not add)
 
     def __register_chain(self, table_id, chain, add):
         if add:
@@ -372,8 +374,10 @@ class FirewallDirect(object):
         rule += args
 
         transaction.add_rule(ipv, rule)
-        transaction.add_post(self.__register_rule,
-                             rule_id, chain_id, priority, enable)
+
+        self.__register_rule(rule_id, chain_id, priority, enable)
+        transaction.add_fail(self.__register_rule,
+                             rule_id, chain_id, priority, not enable)
 
     def __register_rule(self, rule_id, chain_id, priority, enable):
         if enable:
@@ -494,8 +498,9 @@ class FirewallDirect(object):
             _args = self.reverse_passthrough(args)
         transaction.add_rule(ipv, _args)
 
-        transaction.add_post(self.__register_passthrough, ipv, tuple_args,
-                             enable)
+        self.__register_passthrough(ipv, tuple_args, enable)
+        transaction.add_fail(self.__register_passthrough, ipv, tuple_args,
+                             not enable)
 
     def __register_passthrough(self, ipv, args, enable):
         if enable:
