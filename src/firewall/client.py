@@ -89,7 +89,7 @@ class FirewallClientZoneSettings(object):
             self.settings = settings
         else:
             self.settings = ["", "", "", False, DEFAULT_ZONE_TARGET, [], [],
-                             [], False, [], [], [], [], [], []]
+                             [], False, [], [], [], [], [], [], False]
 
     @handle_exceptions
     def __repr__(self):
@@ -238,6 +238,13 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def queryIcmpBlock(self, icmptype):
         return icmptype in self.settings[7]
+
+    @handle_exceptions
+    def getIcmpBlockInversion(self):
+        return self.settings[15]
+    @handle_exceptions
+    def setIcmpBlockInversion(self, flag):
+        self.settings[15] = flag
 
     @handle_exceptions
     def getMasquerade(self):
@@ -594,6 +601,18 @@ class FirewallClientConfigZone(object):
     @handle_exceptions
     def queryIcmpBlock(self, icmptype):
         return self.fw_zone.queryIcmpBlock(icmptype)
+
+    # icmp-block-inversion
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getIcmpBlockInversion(self):
+        return self.fw_zone.getIcmpBlockInversion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setIcmpBlockInversion(self, flag):
+        self.fw_zone.setIcmpBlockInversion(flag)
 
     # masquerade
 
