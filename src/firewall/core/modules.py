@@ -75,7 +75,7 @@ class modules(object):
     def get_firewall_modules(self):
         """ get all loaded firewall-related modules """
         mods = [ ]
-        (mods, deps) = self.loaded_modules()
+        (mods2, deps) = self.loaded_modules()
 
         self.get_deps("nf_conntrack", deps, mods)
         # these modules don't have dependants listed in /proc/modules
@@ -85,7 +85,7 @@ class modules(object):
                 mods.remove(bad_bad_module)
                 mods.insert(-1, bad_bad_module)
 
-        for mod in mods:
+        for mod in mods2:
             if mod in [ "ip_tables", "ip6_tables", "ebtables" ] or \
                mod.startswith("iptable_") or mod.startswith("ip6table_") or \
                mod.startswith("nf_") or mod.startswith("xt_") or \
