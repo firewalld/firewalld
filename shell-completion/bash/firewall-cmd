@@ -51,6 +51,8 @@ OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
                        --add-forward-port= --remove-forward-port= --query-forward-port="
 
 OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule= \
+                    --add-icmp-block-inversion --remove-icmp-block-inversion \
+                    --query-icmp-block-inversion \
                     --add-masquerade --remove-masquerade --query-masquerade \
                     --list-services --list-ports --list-protocols \
                     --list-source-ports --list-icmp-blocks \
@@ -143,7 +145,7 @@ _firewall_cmd()
           COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
         fi
         ;;
-    --*-icmp-block|--info-icmptype|--path-icmptype)
+    --*-icmp-block=|--info-icmptype|--path-icmptype)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-icmptypes`' -- "$cur" ) )
         else

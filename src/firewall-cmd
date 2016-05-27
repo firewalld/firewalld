@@ -276,13 +276,18 @@ Options to Adapt and Query Zones
   --query-icmp-block=<icmptype>
                        Return whether an ICMP block has been added for a zone
                        [P] [Z]
+  --add-icmp-block-inversion
+                       Enable inversion of icmp blocks for a zone [P] [Z]
+  --remove-icmp-block-inversion
+                       Disable inversion of icmp blocks for a zone [P] [Z]
+  --query-icmp-block-inversion
+                       Return whether inversion of icmp blocks has been enabled
+                       for a zone [P] [Z]
   --list-forward-ports List IPv4 forward ports added for a zone [P] [Z]
   --add-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Add the IPv4 forward port for a zone [P] [Z] [T]
   --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Remove the IPv4 forward port from a zone [P] [Z]
-
-
   --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Return whether the IPv4 forward port has been added for
                        a zone [P] [Z]
@@ -735,6 +740,9 @@ parser_group_zone.add_argument("--query-masquerade", action="store_true")
 parser_group_zone.add_argument("--add-icmp-block", metavar="<icmptype>", action='append')
 parser_group_zone.add_argument("--remove-icmp-block", metavar="<icmptype>", action='append')
 parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>")
+parser_group_zone.add_argument("--add-icmp-block-inversion", action="store_true")
+parser_group_zone.add_argument("--remove-icmp-block-inversion", action="store_true")
+parser_group_zone.add_argument("--query-icmp-block-inversion", action="store_true")
 parser_group_zone.add_argument("--add-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--query-forward-port", metavar="<port>")
@@ -909,6 +917,8 @@ options_zone_adapt_query = \
     a.list_services or a.list_ports or a.list_protocols or \
     a.list_source_ports or \
     a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
+    a.add_icmp_block_inversion or a.remove_icmp_block_inversion or \
+    a.query_icmp_block_inversion or \
     a.list_all or a.get_target or a.set_target
 
 options_zone_ops = options_zone_interfaces_sources or \
@@ -1807,6 +1817,14 @@ if a.permanent:
         elif a.query_icmp_block:
             __print_query_result(fw_zone.queryIcmpBlock(a.query_icmp_block))
 
+        # icmp block inversion
+        elif a.add_icmp_block_inversion:
+            fw_zone.addIcmpBlockInversion()
+        elif a.remove_icmp_block_inversion:
+            fw_zone.removeIcmpBlockInversion()
+        elif a.query_icmp_block_inversion:
+            __print_query_result(fw_zone.queryIcmpBlockInversion())
+
         # zone target
         elif a.get_target:
             target = fw_zone.getTarget()
@@ -2250,6 +2268,14 @@ elif a.remove_icmp_block:
         fw.removeIcmpBlock(zone, ib)
 elif a.query_icmp_block:
     __print_query_result(fw.queryIcmpBlock(zone, a.query_icmp_block))
+
+# masquerade
+elif a.add_icmp_block_inversion:
+    fw.addIcmpBlockInversion(zone)
+elif a.remove_icmp_block_inversion:
+    fw.removeIcmpBlockInversion(zone)
+elif a.query_icmp_block_inversion:
+    __print_query_result(fw.queryIcmpBlockInversion(zone))
 
 # list all
 elif a.list_all:
