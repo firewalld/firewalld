@@ -277,7 +277,7 @@ class FirewallZone(object):
             ipvs = [ ]
             if table in self._fw.get_available_tables("ipv4"):
                 ipvs.append("ipv4")
-            if table in self._fw.get_available_tables("ipv4"):
+            if table in self._fw.get_available_tables("ipv6"):
                 ipvs.append("ipv6")
 
             for ipv in ipvs:
