@@ -346,7 +346,7 @@ class Logger(object):
         for level in levels:
             self._checkLogLevel(level, min_level=self.FATAL,
                                 max_level=self.INFO_MAX)
-            self._laqbel[level] = label
+            self._label[level] = label
 
     def setDebugLogLabel(self, level, label):
         """ Set log label for level. Level can be a single level or an array
