@@ -226,7 +226,8 @@ class SimpleFirewallTransaction(object):
                 except Exception as msg:
                     log.error("Calling fail func %s(%s) failed: %s" % \
                               (func, args, msg))
-            return
+
+            raise FirewallException(errors.COMMAND_FAILED)
 
         # post
         self.post()
