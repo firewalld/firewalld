@@ -292,7 +292,7 @@ class Logger(object):
         for level in range(self.FATAL, self.DEBUG_MAX+1):
             if level not in self._logging:
                 continue
-            for (_domain, target, _format) in self._logging[level]:
+            for (dummy, target, dummy) in self._logging[level]:
                 target.close()
 
     def getInfoLogLevel(self, domain="*"):
@@ -513,7 +513,7 @@ class Logger(object):
         for level in range(_range[0], _range[1]):
             if level not in _logging:
                 continue
-            for (domain, _target, _format) in _logging[level]:
+            for (domain, dummy, dummy) in _logging[level]:
                 if domain not in _domains:
                     _domains.setdefault(level, [ ]).append(domain)
 
@@ -585,7 +585,7 @@ class Logger(object):
             _logging = self._logging
 
         # do we need to log?
-        for (domain, _target, _format) in _logging[level]:
+        for (domain, dummy, dummy) in _logging[level]:
             if domain == "*" or \
                    point_domain.startswith(domain) or \
                    fnmatch.fnmatchcase(_dict["domain"], domain):
@@ -613,7 +613,7 @@ class Logger(object):
                 return None
 
         # class in module
-        for (_name, obj) in module.__dict__.items():
+        for (dummy, obj) in module.__dict__.items():
             if (PY2 and isinstance(obj, types.ClassType)) or \
                (PY3 and isinstance(obj, type)):
                 if hasattr(obj, code.co_name):
