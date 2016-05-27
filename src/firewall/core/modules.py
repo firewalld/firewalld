@@ -19,6 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""modules backend"""
+
+__all__ = [ "modules" ]
+
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 
@@ -33,7 +37,7 @@ class modules(object):
 
     def loaded_modules(self):
         """ get all loaded kernel modules and their dependencies """
-        modules = [ ]
+        mods = [ ]
         deps = { }
         with open("/proc/modules", "r") as f:
             for line in f:
@@ -41,13 +45,13 @@ class modules(object):
                     break
                 line = line.strip()
                 splits = line.split()
-                modules.append(splits[0])
+                mods.append(splits[0])
                 if splits[3] != "-":
                     deps[splits[0]] = splits[3].split(",")[:-1]
                 else:
                     deps[splits[0]] = [ ]
 
-        return modules, deps # [loaded modules], {module:[dependants]}
+        return mods, deps # [loaded modules], {module:[dependants]}
 
     def load_module(self, module):
         log.debug2("%s: %s %s", self.__class__, self._load_command, module)
@@ -70,24 +74,24 @@ class modules(object):
 
     def get_firewall_modules(self):
         """ get all loaded firewall-related modules """
-        modules = [ ]
+        mods = [ ]
         (mods, deps) = self.loaded_modules()
 
-        self.get_deps("nf_conntrack", deps, modules)
+        self.get_deps("nf_conntrack", deps, mods)
         # these modules don't have dependants listed in /proc/modules
         for bad_bad_module in ["nf_conntrack_ipv4", "nf_conntrack_ipv6"]:
-            if bad_bad_module in modules:
+            if bad_bad_module in mods:
                 # move them to end of list, so we'll remove them later
-                modules.remove(bad_bad_module)
-                modules.insert(-1, bad_bad_module)
+                mods.remove(bad_bad_module)
+                mods.insert(-1, bad_bad_module)
 
         for mod in mods:
             if mod in [ "ip_tables", "ip6_tables", "ebtables" ] or \
                mod.startswith("iptable_") or mod.startswith("ip6table_") or \
                mod.startswith("nf_") or mod.startswith("xt_") or \
                mod.startswith("ipt_") or mod.startswith("ip6t_") :
-                self.get_deps(mod, deps, modules)
-        return modules
+                self.get_deps(mod, deps, mods)
+        return mods
 
     def unload_firewall_modules(self):
         """ unload all firewall-related modules """
@@ -95,26 +99,3 @@ class modules(object):
             (status, ret) = self.unload_module(module)
             if status != 0:
                 log.debug1("Failed to unload module '%s': %s" %(module, ret))
-
-    def unload_modules(self, modules):
-        """ unused """
-        (mods, deps) = self.loaded_modules()
-
-        to_unload = [ ]
-        for module in modules:
-            self.get_deps(module, deps, to_unload)
-
-        for module in to_unload:
-            (status, ret) = self.unload_module(module)
-            if status != 0:
-                raise ValueError("Unable to unload module %s: %s" % (module,
-                                                                     ret))
-
-    def get_module_deps(self, module):
-        """ unused """
-        (mods, deps) = self.loaded_modules()
-
-        dependant = [ ]
-        self.get_deps(module, deps, dependant)
-
-        return dependant
