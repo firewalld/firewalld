@@ -19,19 +19,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""ipset io XML handler, reader, writer"""
+
+__all__ = [ "IPSet", "ipset_reader", "ipset_writer" ]
+
 import xml.sax as sax
 import os
 import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.errors import *
-from firewall.functions import checkProtocol, check_address, checkIP, checkIP6, \
-                               checkIPnMask, checkIP6nMask, u2b_if_py2, \
-                               check_mac
-from firewall.core.io.io_object import *
+from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, \
+    u2b_if_py2, check_mac
+from firewall.core.io.io_object import PY2, IO_Object, \
+    IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.ipset import IPSET_TYPES
 from firewall.core.logger import log
+from firewall import errors
+from firewall.errors import FirewallError
 
 class IPSet(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
@@ -83,8 +88,9 @@ class IPSet(IO_Object):
         self.short = u2b_if_py2(self.short)
         self.description = u2b_if_py2(self.description)
         self.type = u2b_if_py2(self.type)
-        self.options = {u2b_if_py2(k):u2b_if_py2(v) for k,v in self.options.items()}
-        self.entries = [u2b_if_py2(e) for e in self.entries]
+        self.options = { u2b_if_py2(k):u2b_if_py2(v)
+                         for k, v in self.options.items() }
+        self.entries = [ u2b_if_py2(e) for e in self.entries ]
 
     @staticmethod
     def check_entry(entry, options, ipset_type):
@@ -98,45 +104,45 @@ class IPSet(IO_Object):
                 splits = entry.split("-")
                 if len(splits) != 2:
                     raise FirewallError(
-                        INVALID_ENTRY,
+                        errors.INVALID_ENTRY,
                         "entry '%s' does not match ipset type '%s'" % \
                         (entry, ipset_type))
                 for split in splits:
                     if (family == "ipv4" and not checkIP(split)) or \
                        (family == "ipv6" and not checkIP6(split)):
                         raise FirewallError(
-                            INVALID_ENTRY,
+                            errors.INVALID_ENTRY,
                             "entry '%s' does not match ipset type '%s'" % \
                             (entry, ipset_type))
             else:
                 if (family == "ipv4" and not checkIPnMask(entry)) or \
                    (family == "ipv6" and not checkIP6nMask(entry)):
                     raise FirewallError(
-                        INVALID_ENTRY,
+                        errors.INVALID_ENTRY,
                         "entry '%s' does not match ipset type '%s'" % \
                         (entry, ipset_type))
         elif ipset_type == "hash:net":
             if (family == "ipv4" and not checkIPnMask(entry)) or \
                (family == "ipv6" and not checkIP6nMask(entry)):
                 raise FirewallError(
-                    INVALID_ENTRY,
+                    errors.INVALID_ENTRY,
                     "entry '%s' does not match ipset type '%s'" % \
                     (entry, ipset_type))
         elif ipset_type == "hash:mac":
             # ipset does not allow to add 00:00:00:00:00:00
             if not check_mac(entry) or entry == "00:00:00:00:00:00":
                 raise FirewallError(
-                    INVALID_ENTRY,
+                    errors.INVALID_ENTRY,
                     "entry '%s' does not match ipset type '%s'" % \
                     (entry, ipset_type))
         else:
-            raise FirewallError(INVALID_IPSET,
+            raise FirewallError(errors.INVALID_IPSET,
                                 "ipset type '%s' not usable" % ipset_type)
 
     def _check_config(self, config, item):
         if item == "type":
             if config not in IPSET_TYPES:
-                raise FirewallError(INVALID_TYPE,
+                raise FirewallError(errors.INVALID_TYPE,
                                     "'%s' is not valid ipset type" % config)
 
     def import_config(self, config):
@@ -167,24 +173,24 @@ class ipset_ContentHandler(IO_Object_ContentHandler):
             if attrs["name"] not in \
                [ "family", "timeout", "hashsize", "maxelem" ]:
                 raise FirewallError(
-                    INVALID_OPTION,
+                    errors.INVALID_OPTION,
                     "Unknown option '%s'" % attrs["name"])
             if self.item.type == "hash:mac" and attrs["name"] in [ "family" ]:
                 raise FirewallError(
-                    INVALID_OPTION,
+                    errors.INVALID_OPTION,
                     "Unsupported option '%s' for type '%s'" % \
                     (attrs["name"], self.item.type))
             if attrs["name"] in [ "family", "timeout", "hashsize", "maxelem" ] \
                and not value:
                 raise FirewallError(
-                    INVALID_OPTION,
+                    errors.INVALID_OPTION,
                     "Missing mandatory value of option '%s'" % attrs["name"])
             if attrs["name"] in [ "timeout", "hashsize", "maxelem" ]:
                 try:
-                    x = int(value)
-                except Exception as e:
+                    int(value)
+                except ValueError:
                     raise FirewallError(
-                        INVALID_VALUE,
+                        errors.INVALID_VALUE,
                         "Option '%s': Value '%s' is not an integer" % \
                         (attrs["name"], value))
             if attrs["name"] not in self.item.options:
@@ -204,7 +210,7 @@ class ipset_ContentHandler(IO_Object_ContentHandler):
 def ipset_reader(filename, path):
     ipset = IPSet()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME,
+        raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     ipset.name = filename[:-4]
     ipset.check_name(ipset.name)
