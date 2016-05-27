@@ -27,9 +27,11 @@ import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
+from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
-from firewall.core.io.io_object import *
+from firewall.core.io.io_object import PY2, IO_Object, \
+    IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
+    check_tcpudp, check_protocol
 from firewall.core.rich import *
 from firewall.core.logger import log
 from firewall import errors
