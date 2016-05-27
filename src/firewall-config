@@ -1137,6 +1137,10 @@ class FirewallConfig(object):
         self.fw.connect("forward-port-removed", self.forward_port_removed_cb)
         self.fw.connect("icmp-block-added", self.icmp_added_cb)
         self.fw.connect("icmp-block-removed", self.icmp_removed_cb)
+        self.fw.connect("icmp-block-inversion-added",
+                        self.icmp_inversion_added_cb)
+        self.fw.connect("icmp-block-inversion-removed",
+                        self.icmp_inversion_removed_cb)
         self.fw.connect("richrule-added", self.richrule_added_cb)
         self.fw.connect("richrule-removed", self.richrule_removed_cb)
         self.fw.connect("interface-added", self.interface_added_cb)
@@ -1763,10 +1767,29 @@ class FirewallConfig(object):
 
     def icmp_block_inversion_check_cb(self, *args):
         selected_zone = self.get_selected_zone()
-        if not self.runtime_view:
+        if self.runtime_view:
+            if not self.icmpBlockInversionCheck.get_active():
+                if not self.fw.queryIcmpBlockInversion(selected_zone):
+                    self.fw.addIcmpBlockInversion(selected_zone)
+                    self.changes_applied()
+            else:
+                if self.fw.queryIcmpBlockInversion(selected_zone):
+                    self.fw.removeIcmpBlockInversion(selected_zone)
+                    self.changes_applied()
+        else:
             zone = self.fw.config().getZoneByName(selected_zone)
             zone.setIcmpBlockInversion(not self.icmpBlockInversionCheck.get_active())
             self.changes_applied()
+
+    def icmp_inversion_added_cb(self, zone):
+        if not self.runtime_view or zone != self.get_selected_zone():
+            return
+        self.icmpBlockInversionCheck.set_active(True)
+
+    def icmp_inversion_removed_cb(self, zone):
+        if not self.runtime_view or zone != self.get_selected_zone():
+            return
+        self.icmpBlockInversionCheck.set_active(False)
 
     def _add_rich_rule(self, obj):
 #        family = "ipv4 & ipv6"
@@ -2420,36 +2443,29 @@ class FirewallConfig(object):
                 self.icmpStore.set_value(iter, 0, False)
                 iter = self.icmpStore.iter_next(iter)
 
+            self.icmpBlockInversionCheck.set_active(False)
+
             return
 
         self.zoneEditEditButton.set_sensitive(True)
         self.zoneNotebook.set_sensitive(True)
 
-        services = [ ]
-        ports = [ ]
-        protocols = [ ]
-        masquerade = False
-        forward_ports = [ ]
-        source_ports = [ ]
-        icmpblocks = [ ]
-        rules = [ ]
-        interfaces = [ ]
-        sources = [ ]
-        icmp_block_inversion = False
-
         if self.runtime_view:
             # load runtime configuration
+            try:
+                settings = self.fw.getZoneSettings(selected_zone)
+            except:
+                return
 
-            settings = self.fw.getZoneSettings(selected_zone)
             default = False
             builtin = False
         else:
+            # load permanent configuration
             try:
                 zone = self.fw.config().getZoneByName(selected_zone)
             except:
                 return
 
-            # load permanent configuration
             settings = zone.getSettings()
             default = zone.get_property("default")
             builtin = zone.get_property("builtin")
@@ -2528,8 +2544,6 @@ class FirewallConfig(object):
                 self.icmpStore.set_value(iter, 0, False)
             iter = self.icmpStore.iter_next(iter)
 
-        # icmp block inversion check box only sensitve in permanent view
-        self.icmpBlockInversionEventbox.set_sensitive(not self.runtime_view)
         self.icmpBlockInversionCheck.set_active(icmp_block_inversion)
 
         # handle unknown icmpblocks
