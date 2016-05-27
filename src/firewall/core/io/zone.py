@@ -95,8 +95,8 @@ class Zone(IO_Object):
         }
 
     @staticmethod
-    def index_of (element):
-        for i, (el, val) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
+    def index_of(element):
+        for i, (el, dummy) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
             if el == element:
                 return i
         raise FirewallError(errors.UNKNOWN_ERROR, "index_of()")
@@ -475,7 +475,6 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.warning('Invalid interface: Name missing.')
                 self._rule_error = True
                 return
-            attrs["name"]
             if attrs["name"] not in self.item.interfaces:
                 self.item.interfaces.append(attrs["name"])
             else:
