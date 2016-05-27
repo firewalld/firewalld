@@ -24,13 +24,11 @@ __all__ = [ "FirewallConfig" ]
 import copy
 import os, os.path
 from firewall import config
-from firewall.core.base import *
 from firewall.core.logger import log
 from firewall.core.io.icmptype import IcmpType, icmptype_reader, icmptype_writer
 from firewall.core.io.service import Service, service_reader, service_writer
 from firewall.core.io.zone import Zone, zone_reader, zone_writer
 from firewall.core.io.ipset import IPSet, ipset_reader, ipset_writer
-from firewall.functions import portStr
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -40,10 +38,12 @@ class FirewallConfig(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % (self.__class__,
-                   self._ipsets, self._icmptypes, self._services, self._zones,
-                   self._builtin_ipsets, self._builtin_icmptypes, self._builtin_services, self._builtin_zones,
-                   self._firewalld_conf, self._policies, self._direct)
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+            (self.__class__,
+             self._ipsets, self._icmptypes, self._services, self._zones,
+             self._builtin_ipsets, self._builtin_icmptypes,
+             self._builtin_services, self._builtin_zones,
+             self._firewalld_conf, self._policies, self._direct)
 
     def __init_vars(self):
         self._ipsets = { }
@@ -205,12 +205,9 @@ class FirewallConfig(object):
             return obj
 
     def new_ipset(self, name, conf):
-        try:
-            self.get_ipset(name)
-        except:
-            pass
-        else:
-            raise FirewallError(errors.NAME_CONFLICT, "new_ipset(): '%s'" % name)
+        if name in self._ipsets:
+            raise FirewallError(errors.NAME_CONFLICT,
+                                "new_ipset(): '%s'" % name)
 
         x = IPSet()
         x.check_name(name)
@@ -350,7 +347,7 @@ class FirewallConfig(object):
                                 "self._icmptypes[%s] != obj" % obj.name)
         elif obj.name not in self._builtin_icmptypes:
             raise FirewallError(errors.NO_DEFAULTS,
-                            "'%s' not a built-in icmptype" % obj.name)
+                                "'%s' not a built-in icmptype" % obj.name)
         self._remove_icmptype(obj)
         return self._builtin_icmptypes[obj.name]
 
@@ -374,12 +371,9 @@ class FirewallConfig(object):
             return obj
 
     def new_icmptype(self, name, conf):
-        try:
-            self.get_icmptype(name)
-        except:
-            pass
-        else:
-            raise FirewallError(errors.NAME_CONFLICT, "new_icmptype(): '%s'" % name)
+        if name in self._icmptypes:
+            raise FirewallError(errors.NAME_CONFLICT,
+                                "new_icmptype(): '%s'" % name)
 
         x = IcmpType()
         x.check_name(name)
@@ -543,12 +537,9 @@ class FirewallConfig(object):
             return obj
 
     def new_service(self, name, conf):
-        try:
-            self.get_service(name)
-        except:
-            pass
-        else:
-            raise FirewallError(errors.NAME_CONFLICT, "new_service(): '%s'" % name)
+        if name in self._services:
+            raise FirewallError(errors.NAME_CONFLICT,
+                                "new_service(): '%s'" % name)
 
         x = Service()
         x.check_name(name)
@@ -720,11 +711,7 @@ class FirewallConfig(object):
             return obj
 
     def new_zone(self, name, conf):
-        try:
-            self.get_zone(name)
-        except:
-            pass
-        else:
+        if name in self._zones:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
