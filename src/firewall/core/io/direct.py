@@ -27,7 +27,8 @@ import shutil
 from firewall import config
 from firewall.fw_types import *
 from firewall.functions import splitArgs, joinArgs, u2b_if_py2
-from firewall.core.io.io_object import *
+from firewall.core.io.io_object import IO_Object, IO_Object_ContentHandler, \
+    IO_Object_XMLGenerator
 from firewall.core.logger import log
 from firewall.core import ipXtables
 from firewall.core import ebtables
@@ -73,7 +74,7 @@ class direct_ContentHandler(IO_Object_ContentHandler):
             try:
                 priority = int(attrs["priority"])
             except ValueError:
-                log.error("Parse Error: %s is not a valid priority" % 
+                log.error("Parse Error: %s is not a valid priority" %
                           attrs["priority"])
                 return
             self._rule = [ u2b_if_py2(ipv), u2b_if_py2(table),
@@ -96,7 +97,8 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         if name == "rule":
             if self._element:
                 # add arguments
-                self._rule.append([ u2b_if_py2(x) for x in splitArgs(self._element) ])
+                self._rule.append([ u2b_if_py2(x)
+                                    for x in splitArgs(self._element) ])
                 self.item.add_rule(*self._rule)
             else:
                 log.error("Error: rule does not have any arguments, ignoring.")
@@ -104,11 +106,12 @@ class direct_ContentHandler(IO_Object_ContentHandler):
         elif name == "passthrough":
             if self._element:
                 # add arguments
-                self._passthrough.append([ u2b_if_py2(x) for x in splitArgs(self._element) ])
+                self._passthrough.append([ u2b_if_py2(x)
+                                           for x in splitArgs(self._element) ])
                 self.item.add_passthrough(*self._passthrough)
             else:
                 log.error("Error: passthrough does not have any arguments, " +
-                         "ignoring.")
+                          "ignoring.")
             self._passthrough = None
 
 class Direct(IO_Object):
@@ -139,7 +142,7 @@ class Direct(IO_Object):
         self.rules = LastUpdatedOrderedDict()
         self.passthroughs = LastUpdatedOrderedDict()
 
-    def _check_config(self, config, item):
+    def _check_config(self, conf, item):
         pass
         # check arg lists
 
@@ -153,7 +156,8 @@ class Direct(IO_Object):
         x = [ ]
         for key in self.rules:
             for rule in self.rules[key]:
-                x.append(tuple((key[0], key[1], key[2], rule[0], list(rule[1]))))
+                x.append(tuple((key[0], key[1], key[2], rule[0],
+                                list(rule[1]))))
         ret.append(x)
         x = [ ]
         for key in self.passthroughs:
@@ -162,18 +166,18 @@ class Direct(IO_Object):
         ret.append(x)
         return tuple(ret)
 
-    def import_config(self, config):
+    def import_config(self, conf):
         self.cleanup()
-        self.check_config(config)
-        for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
+        self.check_config(conf)
+        for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if element == "chains":
-                for x in config[i]:
+                for x in conf[i]:
                     self.add_chain(*x)
             if element == "rules":
-                for x in config[i]:
+                for x in conf[i]:
                     self.add_rule(*x)
             if element == "passthroughs":
-                for x in config[i]:
+                for x in conf[i]:
                     self.add_passthrough(*x)
 
     def cleanup(self):
@@ -182,19 +186,20 @@ class Direct(IO_Object):
         self.passthroughs.clear()
 
     def output(self):
-        print ("chains")
+        print("chains")
         for key in self.chains:
-            print ("  (%s, %s): %s" % (key[0], key[1], ",".join(self.chains[key])))
-        print ("rules")
+            print("  (%s, %s): %s" % (key[0], key[1],
+                                      ",".join(self.chains[key])))
+        print("rules")
         for key in self.rules:
-            print ("  (%s, %s, %s):" % (key[0], key[1], key[2]))
+            print("  (%s, %s, %s):" % (key[0], key[1], key[2]))
             for (priority,args) in self.rules[key]:
-                print ("    (%d, ('%s'))" % (priority, "','".join(args)))
-        print ("passthroughs")
+                print("    (%d, ('%s'))" % (priority, "','".join(args)))
+        print("passthroughs")
         for key in self.passthroughs:
-            print ("  %s:" % (key))
+            print("  %s:" % (key))
             for args in self.passthroughs[key]:
-                print ("    ('%s')" % ("','".join(args)))
+                print("    ('%s')" % ("','".join(args)))
 
     def _check_ipv(self, ipv):
         ipvs = ['ipv4', 'ipv6', 'eb']
@@ -222,8 +227,7 @@ class Direct(IO_Object):
             self.chains[key].append(chain)
         else:
             log.warning("Chain '%s' for table '%s' with ipv '%s' " % \
-                            (chain, table, ipv)
-                        + "already in list, ignoring")
+                        (chain, table, ipv) + "already in list, ignoring")
 
     def remove_chain(self, ipv, table, chain):
         self._check_ipv_table(ipv, table)
@@ -266,9 +270,9 @@ class Direct(IO_Object):
             self.rules[key][value] = priority
         else:
             log.warning("Rule '%s' for table '%s' and chain '%s' " % \
-                            ("',".join(args), table, chain)
-                        + "with ipv '%s' and priority %d " % (ipv, priority)
-                        + "already in list, ignoring")
+                        ("',".join(args), table, chain) +
+                        "with ipv '%s' and priority %d " % (ipv, priority) +
+                        "already in list, ignoring")
 
     def remove_rule(self, ipv, table, chain, priority, args):
         self._check_ipv_table(ipv, table)
@@ -320,8 +324,7 @@ class Direct(IO_Object):
             self.passthroughs[ipv].append(args)
         else:
             log.warning("Passthrough '%s' for ipv '%s'" % \
-                            ("',".join(args), ipv)
-                        + "already in list, ignoring")
+                        ("',".join(args), ipv) + "already in list, ignoring")
 
     def remove_passthrough(self, ipv, args):
         self._check_ipv(ipv)
@@ -335,7 +338,7 @@ class Direct(IO_Object):
 
     def query_passthrough(self, ipv, args):
         self._check_ipv(ipv)
-        return (ipv in self.passthroughs and args in self.passthroughs[ipv])
+        return ipv in self.passthroughs and args in self.passthroughs[ipv]
 
     def get_passthroughs(self, ipv):
         self._check_ipv(ipv)
@@ -396,8 +399,8 @@ class Direct(IO_Object):
                     continue
                 handler.ignorableWhitespace("  ")
                 handler.startElement("rule", { "ipv": ipv, "table": table,
-                                                 "chain": chain,
-                                                 "priority": "%d" % priority })
+                                               "chain": chain,
+                                               "priority": "%d" % priority })
                 handler.ignorableWhitespace(sax.saxutils.escape(joinArgs(args)))
                 handler.endElement("rule")
                 handler.ignorableWhitespace("\n")
