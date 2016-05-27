@@ -148,7 +148,7 @@ class FirewallZone(object):
                                     "masquerade", "forward_ports",
                                     "source_ports",
                                     "icmp_blocks", "rules",
-                                    "protocols" ] }
+                                    "protocols", "icmp_block_inversion" ] }
 
         self._zones[obj.name] = obj
 
@@ -169,6 +169,11 @@ class FirewallZone(object):
             obj = self._zones[zone]
 
             zone_transaction = transaction.zone_transaction(zone)
+
+            # Do icmp block inversion before setting obj.applied
+            if obj.icmp_block_inversion:
+                self._error2warning(self.add_icmp_block_inversion, obj.name,
+                                    use_zone_transaction=zone_transaction)
 
             if len(obj.interfaces) > 0 or len(obj.sources) > 0:
                 obj.applied = True
@@ -296,39 +301,17 @@ class FirewallZone(object):
                 transaction.add_rule(ipv, [ "-I", _zone, "3", "-t", table,
                                             "-j", "%s_allow" % (_zone) ])
 
-                target = self._zones[zone].target
-                next_idx = 4
-                if table == "filter" and chain in [ "INPUT", "FORWARD_IN" ] \
-                   and target != "DROP":
-                    if self._zones[zone].icmp_block_inversion:
-                        ibi_target = "%%REJECT%%"
-                    else:
-                        ibi_target = "ACCEPT"
-                    if self._fw.get_log_denied() != "off" and \
-                       ibi_target != "ACCEPT":
-                        transaction.add_rule(ipv,
-                                             [ "-I", _zone, str(next_idx),
-                                               "-t", table, "-p", "%%ICMP%%",
-                                               "%%LOGTYPE%%",
-                                               "-j", "LOG", "--log-prefix",
-                                               "\"%s_ICMP_BLOCK: \"" % _zone ])
-                        next_idx += 1
-                    transaction.add_rule(ipv,
-                                         [ "-I", _zone, str(next_idx),
-                                           "-t", table, "-p", "%%ICMP%%",
-                                           "-j", ibi_target ])
-                    next_idx += 1
-
                 # Handle trust, block and drop zones:
                 # Add an additional rule with the zone target (accept, reject
                 # or drop) to the base _zone only in the filter table.
                 # Otherwise it is not be possible to have a zone with drop
                 # target, that is allowing traffic that is locally initiated
                 # or that adds additional rules. (RHBZ#1055190)
+                target = self._zones[zone].target
                 if table == "filter" and \
                    target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
                    chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    transaction.add_rule(ipv, [ "-I", _zone, str(next_idx),
+                    transaction.add_rule(ipv, [ "-I", _zone, "4",
                                                 "-t", table, "-j", target ])
 
                 if self._fw.get_log_denied() != "off":
@@ -336,18 +319,19 @@ class FirewallZone(object):
                        chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                         if target in [ "REJECT", "%%REJECT%%" ]:
                             transaction.add_rule(
-                                ipv, [ "-I", _zone, str(next_idx), "-t", table,
+                                ipv, [ "-I", _zone, "5", "-t", table,
                                        "%%LOGTYPE%%",
                                        "-j", "LOG", "--log-prefix",
                                        "\"%s_REJECT: \"" % _zone ])
                         if target == "DROP":
                             transaction.add_rule(
-                                ipv, [ "-I", _zone, str(next_idx), "-t", table,
+                                ipv, [ "-I", _zone, "5", "-t", table,
                                        "%%LOGTYPE%%",
                                        "-j", "LOG", "--log-prefix",
                                        "\"%s_DROP: \"" % _zone ])
 
-            transaction.add_post(self.__register_chains, zone, create, chains)
+            self.__register_chains(zone, create, chains)
+            transaction.add_fail(self.__register_chains, zone, create, chains)
 
     def __register_chains(self, zone, create, chains):
         # this method is used by FirewallZoneTransaction
@@ -438,6 +422,8 @@ class FirewallZone(object):
                     if key == "icmp_blocks":
                         self.__icmp_block(enable, _zone, args,
                                           use_zone_transaction=zone_transaction)
+                    elif key == "icmp_block_inversion":
+                        continue
                     elif key == "forward_ports":
                         mark = obj.settings["forward_ports"][args]["mark"]
                         self.__forward_port(enable, _zone, *args, mark_id=mark,
@@ -473,6 +459,11 @@ class FirewallZone(object):
                 except FirewallError as msg:
                     log.warning(str(msg))
 
+        if enable:
+            # add icmp rule(s) always
+            self.__icmp_block_inversion(True, obj.name,
+                                        use_zone_transaction=zone_transaction)
+
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
 
@@ -504,7 +495,7 @@ class FirewallZone(object):
         conf[12] = self.list_rules(zone)
         conf[13] = self.list_protocols(zone)
         conf[14] = self.list_source_ports(zone)
-        # conf[15] icmp-block-inversion, added by export_config above
+        conf[15] = self.query_icmp_block_inversion(zone)
         return tuple(conf)
 
     # INTERFACES
@@ -2263,14 +2254,13 @@ class FirewallZone(object):
 
             target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                 zone=zone)
-            if self._zones[zone].icmp_block_inversion:
+            if self.query_icmp_block_inversion(zone):
                 final_chain = "%s_allow" % target
                 final_target = "ACCEPT"
             else:
                 final_chain = "%s_deny" % target
                 final_target = "%%REJECT%%"
-            if self._fw.get_log_denied() != "off" and \
-               not self._zones[zone].icmp_block_inversion:
+            if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
                 zone_transaction.add_rule(
                     ipv,
                     [ add_del, final_chain, "-t", "filter" ] + proto + match +
@@ -2281,8 +2271,7 @@ class FirewallZone(object):
                                       match + [ "-j", final_target ])
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_IN"], zone=zone)
-            if self._fw.get_log_denied() != "off" and \
-               not self._zones[zone].icmp_block_inversion:
+            if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
                 zone_transaction.add_rule(
                     ipv,
                     [ add_del, final_chain, "-t", "filter" ] + proto + match +
@@ -2364,3 +2353,189 @@ class FirewallZone(object):
 
     def list_icmp_blocks(self, zone):
         return self.get_settings(zone)["icmp_blocks"].keys()
+
+    # ICMP BLOCK INVERSION
+
+    def __icmp_block_inversion_id(self):
+        return True
+
+    def __icmp_block_inversion(self, enable, zone, use_zone_transaction=None):
+        target = self._zones[zone].target
+
+        # Do not add general icmp accept rules into a trusted, block or drop
+        # zone.
+        if target in [ "DROP", "%%REJECT%%", "REJECT" ]:
+            return
+        if not self.query_icmp_block_inversion(zone) and target == "ACCEPT":
+            # ibi target and zone target are ACCEPT, no need to add an extra
+            # rule
+            return
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        zone_transaction.add_chain("filter", "INPUT")
+        zone_transaction.add_chain("filter", "FORWARD_IN")
+
+        for ipv in [ "ipv4", "ipv6" ]:
+            rule_idx = 4
+            table = "filter"
+            for chain in [ "INPUT", "FORWARD_IN" ]:
+                _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                                   zone=zone)
+
+                if self.query_icmp_block_inversion(zone):
+                    ibi_target = "%%REJECT%%"
+
+                    if self._fw.get_log_denied() != "off":
+                        if enable:
+                            rule = [ "-I", _zone, str(rule_idx) ]
+                        else:
+                            rule = [ "-D", _zone ]
+
+                        zone_transaction.add_rule(
+                            ipv,
+                            rule + [ "-t", table, "-p", "%%ICMP%%",
+                                     "%%LOGTYPE%%",
+                                     "-j", "LOG", "--log-prefix",
+                                     "\"%s_ICMP_BLOCK: \"" % _zone ])
+                        rule_idx += 1
+                else:
+                    ibi_target = "ACCEPT"
+
+                if enable:
+                    rule = [ "-I", _zone, str(rule_idx) ]
+                else:
+                    rule = [ "-D", _zone ]
+                zone_transaction.add_rule(ipv,
+                                          rule +
+                                          [ "-t", table, "-p", "%%ICMP%%",
+                                            "-j", ibi_target ])
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(enable)
+
+    def add_icmp_block_inversion(self, zone, sender=None,
+                                 use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        icmp_block_inversion_id = self.__icmp_block_inversion_id()
+        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+            raise FirewallError(
+                errors.ALREADY_ENABLED,
+                "icmp-block-inversion already enabled in '%s'" % _zone)
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            # undo icmp blocks
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self.__icmp_block(False, _zone, args,
+                                  use_zone_transaction=zone_transaction)
+
+            self.__icmp_block_inversion(False, _zone,
+                                        use_zone_transaction=zone_transaction)
+
+        self.__register_icmp_block_inversion(_obj, icmp_block_inversion_id,
+                                             sender)
+        zone_transaction.add_fail(self.__undo_icmp_block_inversion, _zone, _obj,
+                                  icmp_block_inversion_id)
+
+        # redo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self.__icmp_block(True, _zone, args,
+                                  use_zone_transaction=zone_transaction)
+
+            self.__icmp_block_inversion(True, _zone,
+                                        use_zone_transaction=zone_transaction)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_icmp_block_inversion(self, _obj, icmp_block_inversion_id,
+                                        sender):
+        _obj.settings["icmp_block_inversion"][icmp_block_inversion_id] = \
+            self.__gen_settings(0, sender)
+
+    def __undo_icmp_block_inversion(self, _zone, _obj, icmp_block_inversion_id):
+        zone_transaction = self.new_zone_transaction(_zone)
+
+        # undo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self.__icmp_block(False, _zone, args,
+                                  use_zone_transaction=zone_transaction)
+
+        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
+
+        # redo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self.__icmp_block(True, _zone, args,
+                                  use_zone_transaction=zone_transaction)
+
+        zone_transaction.execute(True)
+
+    def remove_icmp_block_inversion(self, zone, use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        icmp_block_inversion_id = self.__icmp_block_inversion_id()
+        if icmp_block_inversion_id not in _obj.settings["icmp_block_inversion"]:
+            raise FirewallError(
+                errors.NOT_ENABLED,
+                "icmp-block-inversion not enabled in '%s'" % _zone)
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            # undo icmp blocks
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self.__icmp_block(False, _zone, args,
+                                  use_zone_transaction=zone_transaction)
+
+            self.__icmp_block_inversion(False, _zone,
+                                        use_zone_transaction=zone_transaction)
+
+        self.__unregister_icmp_block_inversion(_obj,
+                                               icmp_block_inversion_id)
+        zone_transaction.add_fail(self.__register_icmp_block_inversion, _obj,
+                                  icmp_block_inversion_id, None) # FIXME: None
+
+        # redo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self.__icmp_block(True, _zone, args,
+                                  use_zone_transaction=zone_transaction)
+
+            self.__icmp_block_inversion(True, _zone,
+                                        use_zone_transaction=zone_transaction)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_icmp_block_inversion(self, _obj, icmp_block_inversion_id):
+        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
+
+    def query_icmp_block_inversion(self, zone):
+        return self.__icmp_block_inversion_id() in \
+            self.get_settings(zone)["icmp_block_inversion"]
+
