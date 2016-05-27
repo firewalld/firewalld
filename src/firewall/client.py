@@ -252,6 +252,24 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def setMasquerade(self, masquerade):
         self.settings[8] = masquerade
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addMasquerade(self):
+        if not self.settings[8]:
+            self.settings[8] = True
+        else:
+            FirewallError(errors.ALREADY_ENABLED, "masquerade")
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeMasquerade(self):
+        if self.settings[8]:
+            self.settings[8] = False
+        else:
+            FirewallError(errors.NOT_ENABLED, "masquerade")
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryMasquerade(self):
+        return self.settings[8]
 
     @handle_exceptions
     def getForwardPorts(self):
