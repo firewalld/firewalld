@@ -1248,6 +1248,22 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.addIcmpBlockInversion">
+            <term><methodname>addIcmpBlockInversion</methodname>(s: zone) &rarr; s</term>
+            <listitem>
+              <para>
+		Add ICMP block inversion to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addIcmpBlockInversion">org.fedoraproject.FirewallD1.config.zone.Methods.addIcmpBlockInversion</link>.
+              </para>
+              <para>
+		Returns name of zone to which the ICMP block inversion was added.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, ALREADY_ENABLED, INVALID_COMMAND
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.addInterface">
             <term><methodname>addInterface</methodname>(s: zone, s: interface) &rarr; s</term>
             <listitem>
@@ -1477,6 +1493,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.getIcmpBlockInversion">
+            <term><methodname>getIcmpBlockInversion</methodname>(s: zone) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether ICMP block inversion was previously added to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For getting permanent settings see <link linkend="FirewallD1.config.zone.Methods.getIcmpBlockInversion">org.fedoraproject.FirewallD1.config.zone.Methods.getIcmpBlockInversion</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.getInterfaces">
             <term><methodname>getInterfaces</methodname>(s: zone) &rarr; as</term>
             <listitem>
@@ -1629,6 +1658,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.queryIcmpBlockInversion">
+            <term><methodname>queryIcmpBlockInversion</methodname>(s: zone) &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether ICMP block inversion has been added to <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryIcmpBlockInversion">org.fedoraproject.FirewallD1.config.zone.Methods.queryIcmpBlockInversion</link>.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, INVALID_ICMPTYPE
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.zone.Methods.queryInterface">
             <term><methodname>queryInterface</methodname>(s: zone, s: interface) &rarr; b</term>
             <listitem>
@@ -1762,6 +1804,22 @@
               </para>
 	      <para>
 		Possible errors: INVALID_ZONE, INVALID_ICMPTYPE, NOT_ENABLED, INVALID_COMMAND
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Methods.removeIcmpBlockInversion">
+            <term><methodname>removeIcmpBlockInversion</methodname>(s: zone) &rarr; s</term>
+            <listitem>
+              <para>
+		Remove ICMP block inversion from <replaceable>zone</replaceable>.
+		If <replaceable>zone</replaceable> is empty, use default zone.
+		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeIcmpBlockInversion">org.fedoraproject.FirewallD1.config.zone.Methods.removeIcmpBlockInversion</link>.
+              </para>
+              <para>
+		Returns name of zone from which the ICMP block inversion was removed.
+              </para>
+	      <para>
+		Possible errors: INVALID_ZONE, NOT_ENABLED, INVALID_COMMAND
 	      </para>
             </listitem>
           </varlistentry>
@@ -1920,6 +1978,22 @@
             <listitem>
               <para>
 		Emitted when ICMP block for <replaceable>icmp</replaceable> has been added to <replaceable>zone</replaceable> with <replaceable>timeout</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.IcmpBlockInversionAdded">
+            <term>IcmpBlockInversionAdded(s: zone)</term>
+            <listitem>
+              <para>
+		Emitted when ICMP block inversion has been added to <replaceable>zone</replaceable>.
+              </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.zone.Signals.IcmpBlockInversionRemoved">
+            <term>IcmpBlockInversionRemoved(s: zone)</term>
+            <listitem>
+              <para>
+		Emitted when ICMP block inversion has been removed from <replaceable>zone</replaceable>.
               </para>
             </listitem>
           </varlistentry>
@@ -3335,6 +3409,19 @@
 	      </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.addIcmpBlockInversion">
+            <term><methodname>addIcmpBlock</methodname>(s: icmptype) &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently add icmp block inversion to zone.
+		See <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.addIcmpBlockInversion">org.fedoraproject.FirewallD1.zone.Methods.addIcmpBlockInversion</link>.
+              </para>
+	      <para>
+		Possible errors: ALREADY_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.addInterface">
             <term><methodname>addInterface</methodname>(s: interface) &rarr; Nothing</term>
             <listitem>
@@ -3643,6 +3730,16 @@
               </para>
             </listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.queryIcmpBlockInversion">
+            <term><methodname>queryIcmpBlockInversion</methodname>() &rarr; b</term>
+            <listitem>
+              <para>
+		Return whether <replaceable>icmp block inversion</replaceable> is in enabled in zone.
+		See <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.queryIcmpBlockInversion">org.fedoraproject.FirewallD1.zone.Methods.queryIcmpBlockInversion</link>.
+              </para>
+            </listitem>
+          </varlistentry>
           <varlistentry id="FirewallD1.config.zone.Methods.queryInterface">
             <term><methodname>queryInterface</methodname>(s: interface) &rarr; b</term>
             <listitem>
@@ -3757,6 +3854,19 @@
 		Permanently remove <replaceable>icmptype</replaceable> from list of icmp types blocked in zone.
 		See <literal>icmp-block</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
 		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeIcmpBlock">org.fedoraproject.FirewallD1.zone.Methods.removeIcmpBlock</link>.
+              </para>
+	      <para>
+		Possible errors: NOT_ENABLED
+	      </para>
+            </listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.config.zone.Methods.removeIcmpBlockInversion">
+            <term><methodname>removeIcmpBlockInversion</methodname>() &rarr; Nothing</term>
+            <listitem>
+              <para>
+		Permanently remove <replaceable>icmp block inversion</replaceable> from the zone.
+		See <literal>icmp-block-inversion</literal> tag in <citerefentry><refentrytitle>firewalld.zone</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+		For runtime operation see <link linkend="FirewallD1.zone.Methods.removeIcmpBlockInversion">org.fedoraproject.FirewallD1.zone.Methods.removeIcmpBlockInversion</link>.
               </para>
 	      <para>
 		Possible errors: NOT_ENABLED

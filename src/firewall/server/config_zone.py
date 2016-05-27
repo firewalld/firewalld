@@ -684,6 +684,35 @@ class FirewallDConfigZone(slip.dbus.service.Object):
         settings[15] = flag
         self.update(settings)
 
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_handle_exceptions
+    def addIcmpBlockInversion(self, sender=None):
+        log.debug1("%s.addIcmpBlockInversion()", self._log_prefix)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if settings[15]:
+            raise FirewallError(errors.ALREADY_ENABLED, "icmp-block-inversion")
+        settings[15] = True
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE)
+    @dbus_handle_exceptions
+    def removeIcmpBlockInversion(self, sender=None):
+        log.debug1("%s.removeIcmpBlockInversion()", self._log_prefix)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if not settings[15]:
+            raise FirewallError(errors.NOT_ENABLED, "icmp-block-inversion")
+        settings[15] = False
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryIcmpBlockInversion(self, sender=None): # pylint: disable=W0613
+        log.debug1("%s.queryIcmpBlockInversion()", self._log_prefix)
+        return self.getSettings()[15]
+
     # masquerade
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,

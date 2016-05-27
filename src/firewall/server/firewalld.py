@@ -1874,6 +1874,58 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("zone.IcmpBlockRemoved('%s', '%s')" % (zone, icmp))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # ICMP BLOCK INVERSION
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def addIcmpBlockInversion(self, zone, sender=None):
+        # adds icmpBlockInversion if not added already
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.addIcmpBlockInversion('%s')" % (zone))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.add_icmp_block_inversion(zone, sender)
+        
+        self.IcmpBlockInversionAdded(_zone)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def removeIcmpBlockInversion(self, zone, sender=None):
+        # removes icmpBlockInversion
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.removeIcmpBlockInversion('%s')" % (zone))
+        self.accessCheck(sender)
+        _zone = self.fw.zone.remove_icmp_block_inversion(zone)
+
+        self.IcmpBlockInversionRemoved(_zone)
+        return _zone
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_ZONE, in_signature='s',
+                         out_signature='b')
+    @dbus_handle_exceptions
+    def queryIcmpBlockInversion(self, zone, sender=None): # pylint: disable=W0613
+        # returns true if a icmpBlockInversion is added
+        zone = dbus_to_python(zone, str)
+        log.debug1("zone.queryIcmpBlockInversion('%s')" % (zone))
+        return self.fw.zone.query_icmp_block_inversion(zone)
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='s')
+    @dbus_handle_exceptions
+    def IcmpBlockInversionAdded(self, zone):
+        log.debug1("zone.IcmpBlockInversionAdded('%s')" % (zone))
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_ZONE, signature='s')
+    @dbus_handle_exceptions
+    def IcmpBlockInversionRemoved(self, zone):
+        log.debug1("zone.IcmpBlockInversionRemoved('%s')" % (zone))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # DIRECT INTERFACE
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
