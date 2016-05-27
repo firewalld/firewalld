@@ -478,6 +478,7 @@ def _check_ipv(value):
     return value
 
 def __print_zone_info(zone, settings, verbose = False):
+    target = settings.getTarget()
     interfaces = settings.getInterfaces()
     sources = settings.getSources()
     services = settings.getServices()
@@ -494,6 +495,7 @@ def __print_zone_info(zone, settings, verbose = False):
     if verbose:
         __print("  summary: " + short_description)
         __print("  description: " + description)
+    __print("  target: " + target)
     __print("  interfaces: " + " ".join(interfaces))
     __print("  sources: " + " ".join(sources))
     __print("  services: " + " ".join(services))
