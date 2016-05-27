@@ -19,6 +19,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "LogTarget", "FileLog", "Logger", "log" ]
+
 import sys
 import types
 import time
@@ -166,7 +168,7 @@ class Logger(object):
     NO_INFO               No info output
     NO_DEBUG              No debug output
     INFO_MAX              Maximum info level
-    DEBUG_MAX             Maximing debug level
+    DEBUG_MAX             Maximum debug level
 
     x and y depend on info_max and debug_max from Logger class
     initialization. See __init__ function.
@@ -290,7 +292,7 @@ class Logger(object):
         for level in range(self.FATAL, self.DEBUG_MAX+1):
             if level not in self._logging:
                 continue
-            for (domain, target, _format) in self._logging[level]:
+            for (_domain, target, _format) in self._logging[level]:
                 target.close()
 
     def getInfoLogLevel(self, domain="*"):
@@ -342,15 +344,17 @@ class Logger(object):
         of levels. """
         levels = self._getLevels(level)
         for level in levels:
-            self._checkLogLevel(level, min=self.FATAL, max=self.INFO_MAX)
-            self._label[level] = label
+            self._checkLogLevel(level, min_level=self.FATAL,
+                                max_level=self.INFO_MAX)
+            self._laqbel[level] = label
 
     def setDebugLogLabel(self, level, label):
         """ Set log label for level. Level can be a single level or an array
         of levels. """
         levels = self._getLevels(level, is_debug=1)
         for level in levels:
-            self._checkLogLevel(level, min=self.INFO1, max=self.DEBUG_MAX)
+            self._checkLogLevel(level, min_level=self.INFO1,
+                                max_level=self.DEBUG_MAX)
             self._debug_label[level] = label
 
     def setInfoLogging(self, domain, target, level=ALL, fmt=None):
@@ -423,7 +427,7 @@ class Logger(object):
         """ Information log using info level [1..info_max].
         There are additional infox functions according to info_max from
         __init__"""
-        self._checkLogLevel(level, min=1, max=self.INFO_MAX)
+        self._checkLogLevel(level, min_level=1, max_level=self.INFO_MAX)
         self._checkKWargs(kwargs)
         kwargs["is_debug"] = 0
         self._log(level+self.NO_INFO, _format, *args, **kwargs)
@@ -432,7 +436,7 @@ class Logger(object):
         """ Debug log using debug level [1..debug_max].
         There are additional debugx functions according to debug_max
         from __init__"""
-        self._checkLogLevel(level, min=1, max=self.DEBUG_MAX)
+        self._checkLogLevel(level, min_level=1, max_level=self.DEBUG_MAX)
         self._checkKWargs(kwargs)
         kwargs["is_debug"] = 1
         self._log(level, _format, *args, **kwargs)
@@ -442,10 +446,10 @@ class Logger(object):
 
     ### internal functions
 
-    def _checkLogLevel(self, level, min, max):
-        if level < min or level > max:
+    def _checkLogLevel(self, level, min_level, max_level):
+        if level < min_level or level > max_level:
             raise ValueError("Level %d out of range, should be [%d..%d]." % \
-                             (level, min, max))
+                             (level, min_level, max_level))
 
     def _checkKWargs(self, kwargs):
         if not kwargs:
@@ -467,10 +471,11 @@ class Logger(object):
                 levels = [ level ]
             for level in levels:
                 if is_debug:
-                    self._checkLogLevel(level, min=1, max=self.DEBUG_MAX)
+                    self._checkLogLevel(level, min_level=1,
+                                        max_level=self.DEBUG_MAX)
                 else:
-                    self._checkLogLevel(level, min=self.FATAL,
-                                        max=self.INFO_MAX)
+                    self._checkLogLevel(level, min_level=self.FATAL,
+                                        max_level=self.INFO_MAX)
         else:
             if is_debug:
                 levels = [ i for i in range(self.DEBUG1, self.DEBUG_MAX) ]
@@ -508,7 +513,7 @@ class Logger(object):
         for level in range(_range[0], _range[1]):
             if level not in _logging:
                 continue
-            for (domain, target, _format) in _logging[level]:
+            for (domain, _target, _format) in _logging[level]:
                 if domain not in _domains:
                     _domains.setdefault(level, [ ]).append(domain)
 
@@ -580,7 +585,7 @@ class Logger(object):
             _logging = self._logging
 
         # do we need to log?
-        for (domain, target, _format) in _logging[level]:
+        for (domain, _target, _format) in _logging[level]:
             if domain == "*" or \
                    point_domain.startswith(domain) or \
                    fnmatch.fnmatchcase(_dict["domain"], domain):
@@ -608,9 +613,9 @@ class Logger(object):
                 return None
 
         # class in module
-        for (name, obj) in module.__dict__.items():
-            if ((PY2 and isinstance(obj, types.ClassType)) or
-                (PY3 and isinstance(obj, type))):
+        for (_name, obj) in module.__dict__.items():
+            if (PY2 and isinstance(obj, types.ClassType)) or \
+               (PY3 and isinstance(obj, type)):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
                     if type(value) == types.FunctionType:
