@@ -19,6 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""Generic io_object handler, io specific check methods."""
+
+__all__ = [ "PY2",
+            "IO_Object", "IO_Object_ContentHandler", "IO_Object_XMLGenerator",
+            "check_port", "check_tcpudp", "check_protocol", "check_address" ]
+
 import xml.sax as sax
 import xml.sax.saxutils as saxutils
 import copy
@@ -44,6 +50,8 @@ class IO_Object(object):
         self.filename = ""
         self.path = ""
         self.name = ""
+        self.default = False
+        self.builtin = False
 
     def export_config(self):
         ret = [ ]
@@ -69,14 +77,16 @@ class IO_Object(object):
             raise FirewallError(errors.INVALID_NAME, "name can't be empty")
         for char in name:
             if not char.isalnum() and char not in self.ADDITIONAL_ALNUM_CHARS:
-                raise FirewallError(errors.INVALID_NAME,
-                                 "'%s' is not allowed in '%s'" % ((char, name)))
+                raise FirewallError(
+                    errors.INVALID_NAME,
+                    "'%s' is not allowed in '%s'" % ((char, name)))
 
     def check_config(self, conf):
         if len(conf) != len(self.IMPORT_EXPORT_STRUCTURE):
-            raise FirewallError(errors.INVALID_TYPE,
-                                "structure size mismatch %d != %d" % (\
-                    len(conf), len(self.IMPORT_EXPORT_STRUCTURE)))
+            raise FirewallError(
+                errors.INVALID_TYPE,
+                "structure size mismatch %d != %d" % \
+                (len(conf), len(self.IMPORT_EXPORT_STRUCTURE)))
         for i,(element,value) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             self._check_config_structure(conf[i], value)
             self._check_config(conf[i], element)
@@ -149,12 +159,14 @@ class IO_Object(object):
 
 class UnexpectedElementError(Exception):
     def __init__(self, name):
+        super(UnexpectedElementError, self).__init__()
         self.name = name
     def __str__(self):
         return "Unexpected element '%s'" % (self.name)
 
 class MissingAttributeError(Exception):
     def __init__(self, name, attribute):
+        super(MissingAttributeError, self).__init__()
         self.name = name
         self.attribute = attribute
     def __str__(self):
@@ -163,6 +175,7 @@ class MissingAttributeError(Exception):
 
 class UnexpectedAttributeError(Exception):
     def __init__(self, name, attribute):
+        super(UnexpectedAttributeError, self).__init__()
         self.name = name
         self.attribute = attribute
     def __str__(self):
@@ -172,6 +185,7 @@ class UnexpectedAttributeError(Exception):
 class IO_Object_ContentHandler(sax.handler.ContentHandler):
     def __init__(self, item):
         self.item = item
+        self._element = ""
 
     def startDocument(self):
         self._element = ""
@@ -223,7 +237,7 @@ class IO_Object_XMLGenerator(saxutils.XMLGenerator):
             self._write(u'<' + b2u(name))
             for (name, value) in attrs.items():
                 self._write(u' %s=%s' % (b2u(name),
-                                        saxutils.quoteattr(b2u(value))))
+                                         saxutils.quoteattr(b2u(value))))
             self._write(u'/>')
         else:
             self._write('<' + name)
