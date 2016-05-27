@@ -245,6 +245,24 @@ class FirewallClientZoneSettings(object):
     @handle_exceptions
     def setIcmpBlockInversion(self, flag):
         self.settings[15] = flag
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addIcmpBlockInversion(self):
+        if not self.settings[15]:
+            self.settings[15] = True
+        else:
+            FirewallError(errors.ALREADY_ENABLED, "icmp-block-inversion")
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeIcmpBlockInversion(self):
+        if self.settings[15]:
+            self.settings[15] = False
+        else:
+            FirewallError(errors.NOT_ENABLED, "icmp-block-inversion")
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryIcmpBlockInversion(self):
+        return self.settings[15]
 
     @handle_exceptions
     def getMasquerade(self):
@@ -629,8 +647,23 @@ class FirewallClientConfigZone(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def setIcmpBlockInversion(self, flag):
-        self.fw_zone.setIcmpBlockInversion(flag)
+    def setIcmpBlockInversion(self, inversion):
+        self.fw_zone.setIcmpBlockInversion(inversion)
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addIcmpBlockInversion(self):
+        self.fw_zone.addIcmpBlockInversion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeIcmpBlockInversion(self):
+        self.fw_zone.removeIcmpBlockInversion()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryIcmpBlockInversion(self):
+        return self.fw_zone.queryIcmpBlockInversion()
 
     # masquerade
 
@@ -2217,6 +2250,8 @@ class FirewallClient(object):
             "forward-port-removed": "ForwardPortRemoved",
             "icmp-block-added": "IcmpBlockAdded",
             "icmp-block-removed": "IcmpBlockRemoved",
+            "icmp-block-inversion-added": "IcmpBlockInversionAdded",
+            "icmp-block-inversion-removed": "IcmpBlockInversionRemoved",
             "richrule-added": "RichRuleAdded",
             "richrule-removed": "RichRuleRemoved",
             "interface-added": "InterfaceAdded",
@@ -2835,6 +2870,23 @@ class FirewallClient(object):
     @handle_exceptions
     def removeIcmpBlock(self, zone, icmp):
         return dbus_to_python(self.fw_zone.removeIcmpBlock(zone, icmp))
+
+    # icmp block inversion
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def addIcmpBlockInversion(self, zone):
+        return dbus_to_python(self.fw_zone.addIcmpBlockInversion(zone))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def queryIcmpBlockInversion(self, zone):
+        return dbus_to_python(self.fw_zone.queryIcmpBlockInversion(zone))
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def removeIcmpBlockInversion(self, zone):
+        return dbus_to_python(self.fw_zone.removeIcmpBlockInversion(zone))
 
     # direct chain
 
