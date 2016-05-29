@@ -44,7 +44,6 @@ import dbus
 
 from firewall import config
 from firewall import client
-#from firewall.functions import *
 from firewall import functions
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES
@@ -4144,14 +4143,6 @@ class FirewallConfig(object):
             zone.removeSourcePort(port, proto)
         self.changes_applied()
 
-    def onSourcePortChanged(self, *args):
-        ports = functions.getPortRange(self.portDialogSourcePortEntry.get_text())
-        if not ports or not (isinstance(ports, list) or \
-                             isinstance(ports, tuple)):
-            self.portDialogOkButton.set_sensitive(False)
-        else:
-            self.portDialogOkButton.set_sensitive(True)
-
     def add_edit_source_port(self, add):
         selected_zone = self.get_selected_zone()
 
@@ -4746,7 +4737,7 @@ class FirewallConfig(object):
             modules = settings.getModules()
             destination = settings.getDestinations()
             default = False
-            builtin = False            
+            builtin = False
         else:
             try:
                 service = self.fw.config().getServiceByName(active_service)
