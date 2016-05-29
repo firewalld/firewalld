@@ -347,7 +347,8 @@ class FirewallConfig(object):
             builder.get_object("directPassthroughDialogArgsEntry")
 
         self.mainVBox = builder.get_object("mainVBox")
-        self.optionMenuitem = builder.get_object("optionMenuitem")
+        self.optionsMenuitem = builder.get_object("optionsMenuitem")
+        self.viewMenuitem = builder.get_object("viewMenuitem")
 
         self.aboutDialog = builder.get_object("aboutDialog")
         self.aboutDialog.set_program_name(config.CONFIG_NAME)
@@ -1473,8 +1474,13 @@ class FirewallConfig(object):
             self.panicLabel.set_text("-")
 
         self.update_active_zones()
-        self.mainVBox.set_sensitive(self.fw.connected)
-        self.optionMenuitem.get_submenu().set_sensitive(self.fw.connected)
+        self.mainPaned.set_sensitive(self.fw.connected)
+        # make all entries in options menu (in)sensitive
+        for child in self.optionsMenuitem.get_submenu().get_children():
+            child.set_sensitive(self.fw.connected)
+        # make all entries in view menu (in)sensitive
+        for child in self.viewMenuitem.get_submenu().get_children():
+            child.set_sensitive(self.fw.connected)
 
     def changes_applied(self):
         self.modifiedLabel.set_text(_("Changes applied."))
