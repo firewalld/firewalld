@@ -40,6 +40,7 @@ from firewall.dbus_utils import dbus_to_python
 from firewall.errors import *
 import slip.dbus
 import dbus
+import signal
 
 PATH = [ ]
 for p in os.getenv("PATH").split(":"):
@@ -1113,6 +1114,9 @@ Options:
   -h, --help     show this help message and exit
 """  % sys.argv[0])
     sys.exit(1)
+
+# reset SIGINT signal to default
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 app = QtGui.QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
