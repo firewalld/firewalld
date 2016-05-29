@@ -1835,34 +1835,6 @@
           </packing>
         </child>
         <child>
-          <object class="GtkToolbar" id="mainToolbar">
-            <property name="can_focus">False</property>
-            <property name="no_show_all">True</property>
-            <property name="margin_top">5</property>
-            <property name="margin_bottom">2</property>
-            <child>
-              <object class="GtkToolButton" id="toolbutton1">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_markup" translatable="yes">Reloads firewall rules. Current permanent configuration will become new runtime configuration. i.e. all runtime only changes done until reload are lost with reload if they have not been also in permanent configuration.</property>
-                <property name="label" translatable="yes">Reload Firewalld</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-refresh</property>
-                <signal name="clicked" handler="onReloadFirewalld" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkPaned" id="mainPaned">
             <property name="visible">True</property>
             <property name="can_focus">True</property>

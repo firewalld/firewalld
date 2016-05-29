@@ -119,14 +119,6 @@ class FirewallConfig(object):
         self.lockdownLabel = builder.get_object("lockdownLabel")
         self.panicLabel = builder.get_object("panicLabel")
 
-        # make the toolbar the primary toolbar - odd that this is needed at all
-        # glade-3 does not support this up to now.
-        self.mainToolbar = builder.get_object("mainToolbar")
-        sty = self.mainToolbar.get_style_context()
-        sty.add_class("primary-toolbar")
-        # hide toolbar for now
-        self.mainToolbar.hide()
-
         self.mainNotebook = builder.get_object("mainNotebook")
         self.ipsetsBox = builder.get_object("ipsetsBox")
         self.ipsetsMenuitem = builder.get_object("ipsetsMenuitem")
@@ -1482,7 +1474,6 @@ class FirewallConfig(object):
             self.panicLabel.set_text("-")
 
         self.update_active_zones()
-        self.mainToolbar.set_sensitive(self.fw.connected)
         self.mainVBox.set_sensitive(self.fw.connected)
         self.optionMenuitem.get_submenu().set_sensitive(self.fw.connected)
 
