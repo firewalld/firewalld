@@ -1450,20 +1450,22 @@ class FirewallConfig(object):
             self.defaultZoneLabel.set_text(self.default_zone)
             self.log_denied = self.fw.getLogDenied()
             self.logDeniedLabel.set_text(self.log_denied)
-            if self.fw.queryLockdown():
+            lockdown = self.fw.queryLockdown()
+            if lockdown:
                 self.lockdownLabel.set_text(self.enabled)
             else:
                 self.lockdownLabel.set_text(self.disabled)
-            if self.fw.queryPanicMode():
+            panic = self.fw.queryPanicMode()
+            if panic:
                 self.panicLabel.set_text(self.enabled)
             else:
                 self.panicLabel.set_text(self.disabled)
             self.modifiedLabel.set_text("")
             self.lockdownMenuitem.handler_block(self.lockdown_check_id)
-            self.lockdownMenuitem.set_active(self.fw.queryLockdown())
+            self.lockdownMenuitem.set_active(lockdown)
             self.lockdownMenuitem.handler_unblock(self.lockdown_check_id)
             self.panicMenuitem.handler_block(self.panic_check_id)
-            self.panicMenuitem.set_active(self.fw.queryPanicMode())
+            self.panicMenuitem.set_active(panic)
             self.panicMenuitem.handler_unblock(self.panic_check_id)
             self.currentViewCombobox.set_active(0)
         else:
@@ -2125,10 +2127,9 @@ class FirewallConfig(object):
         self.left_menu.append(item)
 
         if self.fw.connected:
-            active_zones = self.fw.getActiveZones()
+            self.active_zones = self.fw.getActiveZones()
         else:
-            active_zones = { }
-        self.active_zones = active_zones
+            self.active_zones = { }
 
         # clean bindingsView, leave connections, interfaces and sources entries
         self.bindingsView.get_selection().set_mode(Gtk.SelectionMode.NONE)
@@ -2463,8 +2464,9 @@ class FirewallConfig(object):
                 return
 
             settings = zone.getSettings()
-            default = zone.get_property("default")
-            builtin = zone.get_property("builtin")
+            props = zone.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
 
         services = settings.getServices()
         ports = settings.getPorts()
@@ -2672,8 +2674,9 @@ class FirewallConfig(object):
             selected_zone = self.get_selected_zone()
             zone = self.fw.config().getZoneByName(selected_zone)
             settings = zone.getSettings()
-            default = zone.get_property("default")
-            builtin = zone.get_property("builtin")
+            props = zone.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
     
             old_name = zone.get_property("name")
             old_version = settings.getVersion()
@@ -4757,8 +4760,9 @@ class FirewallConfig(object):
             source_ports = settings.getSourcePorts()
             modules = settings.getModules()
             destination = settings.getDestinations()
-            default = service.get_property("default")
-            builtin = service.get_property("builtin")
+            props = service.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
 
         self.serviceConfRemoveServiceButton.set_sensitive(not builtin and default)
         self.serviceConfLoadDefaultsServiceButton.set_sensitive(not default)
@@ -4973,8 +4977,9 @@ class FirewallConfig(object):
             active_service = self.get_active_service()
             service = self.fw.config().getServiceByName(active_service)
             settings = service.getSettings()
-            default = service.get_property("default")
-            builtin = service.get_property("builtin")
+            props = service.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
     
             old_name = service.get_property("name")
             old_version = settings.getVersion()
@@ -5305,8 +5310,9 @@ class FirewallConfig(object):
             active_ipset = self.get_active_ipset()
             ipset = self.fw.config().getIPSetByName(active_ipset)
             settings = ipset.getSettings()
-            default = ipset.get_property("default")
-            builtin = ipset.get_property("builtin")
+            props = ipset.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
 
             old_name = ipset.get_property("name")
             old_version = settings.getVersion()
@@ -5632,8 +5638,9 @@ class FirewallConfig(object):
             settings = ipset.getSettings()
             entries = settings.getEntries()
             options = settings.getOptions()
-            default = ipset.get_property("default")
-            builtin = ipset.get_property("builtin")
+            props = ipset.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
 
         if "timeout" in options:
             self.ipsetConfEntrySW.hide()
@@ -5732,8 +5739,9 @@ class FirewallConfig(object):
             # load permanent configuration
             settings = icmp.getSettings()
             destination = settings.getDestinations()
-            default = icmp.get_property("default")
-            builtin = icmp.get_property("builtin")
+            props = icmp.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
 
         self.icmpDialogRemoveIcmpButton.set_sensitive(not builtin and default)
         self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(not default)
@@ -5786,8 +5794,9 @@ class FirewallConfig(object):
             active_icmp = self.get_active_icmp()
             icmp = self.fw.config().getIcmpTypeByName(active_icmp)
             settings = icmp.getSettings()
-            default = icmp.get_property("default")
-            builtin = icmp.get_property("builtin")
+            props = icmp.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
     
             old_name = icmp.get_property("name")
             old_version = settings.getVersion()
