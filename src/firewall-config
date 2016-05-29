@@ -76,13 +76,13 @@ class FirewallConfig(object):
         builder.add_from_file("%s/%s" % (datadir, config.CONFIG_GLADE_NAME))
         builder.connect_signals(self)
 
-        self.connected = _("Connected.")
-        self.no_connection = _("No connection.")
-        self.waiting = _("Waiting ...")
-        self.retrying = _("Retrying ...")
-        self.used_by = _("Used by network connection '%s'")
-        self.default_zone_used_by = _("Default zone used by network "
-                                      "connection '%s'")
+        self.connected_label = _("Connection to firewalld established.")
+        self.trying_to_connect_label = \
+            _("Trying to connect to firewalld, waiting...")
+        self.changes_applied_label = _("Changes applied.")
+        self.used_by_label = _("Used by network connection '%s'")
+        self.default_zone_used_by_label = _("Default zone used by network "
+                                            "connection '%s'")
         self.enabled = _("enabled")
         self.disabled = _("disabled")
 
@@ -1398,10 +1398,10 @@ class FirewallConfig(object):
             if interface in self.connections:
                 zone = nm_get_zone_of_connection(self.connections[interface])
                 if zone == "":
-                    comment = self.default_zone_used_by % \
+                    comment = self.default_zone_used_by_label % \
                               self.connections[interface]
                 else:
-                    comment = self.used_by % self.connections[interface]
+                    comment = self.used_by_label % self.connections[interface]
                 self.interfaceStore.set_value(iter, 1, comment)
             iter = self.interfaceStore.iter_next(iter)
         self.change_interface_selection_cb(self.interfaceView.get_selection())
@@ -1445,7 +1445,7 @@ class FirewallConfig(object):
     def connection_changed(self):
         if self.fw.connected:
             self.fw.authorizeAll()
-            self.statusLabel.set_text(self.connected)
+            self.statusLabel.set_text(self.connected_label)
             self.default_zone = self.fw.getDefaultZone()
             self.defaultZoneLabel.set_text(self.default_zone)
             self.log_denied = self.fw.getLogDenied()
@@ -1469,8 +1469,7 @@ class FirewallConfig(object):
             self.panicMenuitem.handler_unblock(self.panic_check_id)
             self.currentViewCombobox.set_active(0)
         else:
-            self.statusLabel.set_text(self.no_connection)
-            self.modifiedLabel.set_text(self.waiting)
+            self.statusLabel.set_text(self.trying_to_connect_label)
             self.defaultZoneLabel.set_text("-")
             self.lockdownLabel.set_text("-")
             self.panicLabel.set_text("-")
@@ -1485,7 +1484,7 @@ class FirewallConfig(object):
             child.set_sensitive(self.fw.connected)
 
     def changes_applied(self):
-        self.modifiedLabel.set_text(_("Changes applied."))
+        self.modifiedLabel.set_text(self.changes_applied_label)
         if self.modified_timer:
             GLib.source_remove(self.modified_timer)
         self.modified_timer = GLib.timeout_add_seconds(
@@ -1897,10 +1896,10 @@ class FirewallConfig(object):
         if interface in self.connections:
             zone = nm_get_zone_of_connection(self.connections[interface])
             if zone == "":
-                comment = self.default_zone_used_by % \
+                comment = self.default_zone_used_by_label % \
                           self.connections[interface]
             else:
-                comment = self.used_by % self.connections[interface]
+                comment = self.used_by_label % self.connections[interface]
         self.interfaceStore.append([interface, comment])
 
     def interface_added_cb(self, zone, interface):
