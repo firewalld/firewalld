@@ -95,6 +95,8 @@ class FirewallConfig(object):
 
         self.default_zone = ""
 
+        self.connection_lost = False
+
         # get icon and logo
         (foo, width, height) = Gtk.icon_size_lookup(Gtk.IconSize.BUTTON)
         size = min(width, height)
@@ -1467,8 +1469,15 @@ class FirewallConfig(object):
             self.panicMenuitem.handler_block(self.panic_check_id)
             self.panicMenuitem.set_active(panic)
             self.panicMenuitem.handler_unblock(self.panic_check_id)
-            self.currentViewCombobox.set_active(0)
+
+            if self.connection_lost:
+                self.onChangeView()
+            else:
+                self.currentViewCombobox.set_active(0)
+
         else:
+            if self.statusLabel.get_text() == self.connected_label:
+                self.connection_lost = True
             self.statusLabel.set_text(self.trying_to_connect_label)
             self.defaultZoneLabel.set_text("-")
             self.lockdownLabel.set_text("-")
@@ -1981,7 +1990,17 @@ class FirewallConfig(object):
     def conf_zone_added_cb(self, zone):
         if self.runtime_view:
             return
-        self.zoneStore.append([zone, Pango.Weight.NORMAL])
+        # check if zone is in store
+        iter = self.zoneStore.get_iter_first()
+        while iter:
+            if self.zoneStore.get_value(iter, 0) == zone:
+                return
+            iter = self.zoneStore.iter_next(iter)
+        # not in list, append
+        if zone in active_zones:
+            self.zoneStore.append([zone, Pango.Weight.BOLD])
+        else:
+            self.zoneStore.append([zone, Pango.Weight.NORMAL])
 
     def conf_zone_updated_cb(self, zone):
         if self.runtime_view or zone != self.get_selected_zone():
@@ -4800,6 +4819,13 @@ class FirewallConfig(object):
     def conf_service_added_cb(self, service):
         if self.runtime_view:
             return
+        # check if service is in store
+        iter = self.serviceConfServiceStore.get_iter_first()
+        while iter:
+            if self.serviceConfServiceStore.get_value(iter, 0) == service:
+                return
+            iter = self.serviceConfServiceStore.iter_next(iter)
+        # not in list, append
         self.serviceConfServiceStore.append([service])
 
     def conf_service_updated_cb(self, service):
@@ -5559,6 +5585,13 @@ class FirewallConfig(object):
     def conf_ipset_added_cb(self, ipset):
         if self.runtime_view:
             return
+        # check if ipset is in store
+        iter = self.ipsetConfIPSetStore.get_iter_first()
+        while iter:
+            if self.ipsetConfIPSetStore.get_value(iter, 0) == ipset:
+                return
+            iter = self.ipsetConfIPSetStore.iter_next(iter)
+        # not in list, append
         self.ipsetConfIPSetStore.append([ipset])
 
     def conf_ipset_updated_cb(self, ipset):
@@ -5896,6 +5929,13 @@ class FirewallConfig(object):
             return
         if not self.show_icmp_types:
             return
+        # check if icmp is in store
+        iter = self.icmpDialogIcmpStore.get_iter_first()
+        while iter:
+            if self.icmpDialogIcmpStore.get_value(iter, 0) == icmp:
+                return
+            iter = self.icmpDialogIcmpStore.iter_next(iter)
+        # not in list, append
         self.icmpDialogIcmpStore.append([icmp])
 
     def conf_icmp_updated_cb(self, zone):
