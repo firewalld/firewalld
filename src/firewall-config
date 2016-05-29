@@ -95,6 +95,8 @@ class FirewallConfig(object):
 
         self.default_zone = ""
 
+        # point to the visible dialogs
+        self.visible_dialogs = [ ]
         self.connection_lost = False
 
         # get icon and logo
@@ -113,12 +115,23 @@ class FirewallConfig(object):
         self.mainWindow = builder.get_object("mainWindow")
         self.mainWindow.set_icon(self.icon)
 
+        self.mainOverlay = builder.get_object("mainOverlay")
+
         self.mainPaned = builder.get_object("mainPaned")
 
         self.statusLabel = builder.get_object("statusLabel")
         self.modifiedLabel = builder.get_object("modifiedLabel")
         self.lockdownLabel = builder.get_object("lockdownLabel")
         self.panicLabel = builder.get_object("panicLabel")
+
+        self.waitingWindow = builder.get_object("waitingWindow")
+        self.waitingWindowLabel = builder.get_object("waitingWindowLabel")
+        self.waitingWindowSpinner = builder.get_object("waitingWindowSpinner")
+        self.waitingWindowQuitButton = \
+            builder.get_object("waitingWindowQuitButton")
+        self.mainOverlay.add_overlay(self.waitingWindow)
+        self.waitingWindow.set_valign(Gtk.Align.CENTER)
+        self.waitingWindow.set_halign(Gtk.Align.CENTER)
 
         self.mainNotebook = builder.get_object("mainNotebook")
         self.ipsetsBox = builder.get_object("ipsetsBox")
@@ -1245,6 +1258,17 @@ class FirewallConfig(object):
         except KeyboardInterrupt:
             self.onQuit()
 
+    def add_visible_dialog(self, dialog):
+        self.visible_dialogs.append(dialog)
+
+    def remove_visible_dialog(self, dialog):
+        self.visible_dialogs.append(dialog)
+
+    def hide_and_remove_visible_dialogs(self):
+        while len(self.visible_dialogs) > 0:
+            dialog = self.visible_dialogs.pop()
+            dialog.hide()
+
     def left_menu_cb(self, widget, menu):
         menu.show_all()
 
@@ -1475,6 +1499,9 @@ class FirewallConfig(object):
             else:
                 self.currentViewCombobox.set_active(0)
 
+            self.waitingWindow.hide()
+            self.waitingWindowSpinner.stop()
+
         else:
             if self.statusLabel.get_text() == self.connected_label:
                 self.connection_lost = True
@@ -1482,6 +1509,11 @@ class FirewallConfig(object):
             self.defaultZoneLabel.set_text("-")
             self.lockdownLabel.set_text("-")
             self.panicLabel.set_text("-")
+
+            self.hide_and_remove_visible_dialogs()
+            self.waitingWindow.show()
+            self.waitingWindowLabel.set_text(self.trying_to_connect_label)
+            self.waitingWindowSpinner.start()
 
         self.update_active_zones()
         self.mainPaned.set_sensitive(self.fw.connected)
@@ -2280,8 +2312,7 @@ class FirewallConfig(object):
 
                 self.bindingsStore.append(
                     self.sourcesIter,
-                    [ "%s\n<small>%s</small>" % (source,
-                                                 _("Zone: %s") % zone),
+                    [ "%s\n<small>%s</small>" % (source, _("Zone: %s") % zone),
                       source, zone ])
 
         self.bindingsView.expand_all()
@@ -2314,8 +2345,10 @@ class FirewallConfig(object):
         self.defaultZoneDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.defaultZoneDialog.set_transient_for(self.mainWindow)
         self.defaultZoneDialog.show_all()
+        self.add_visible_dialog(self.defaultZoneDialog)
         result = self.defaultZoneDialog.run()
         self.defaultZoneDialog.hide()
+        self.remove_visible_dialog(self.defaultZoneDialog)
         if result == 1:
             (model, iter) = selection.get_selected()
             if not iter:
@@ -2337,8 +2370,10 @@ class FirewallConfig(object):
         self.logDeniedDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.logDeniedDialog.set_transient_for(self.mainWindow)
         self.logDeniedDialog.show_all()
+        self.add_visible_dialog(self.logDeniedDialog)
         result = self.logDeniedDialog.run()
         self.logDeniedDialog.hide()
+        self.remove_visible_dialog(self.logDeniedDialog)
         if result == 1:
             value = self.logDeniedDialogValueCombobox.get_active_text()
             if value != self.log_denied:
@@ -2727,8 +2762,10 @@ class FirewallConfig(object):
         self.zoneBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.zoneBaseDialog.set_transient_for(self.mainWindow)
         self.zoneBaseDialog.show_all()
+        self.add_visible_dialog(self.zoneBaseDialog)
         result = self.zoneBaseDialog.run()
         self.zoneBaseDialog.hide()
+        self.remove_visible_dialog(self.zoneBaseDialog)
 
         if result != 1:
             return
@@ -3001,8 +3038,10 @@ class FirewallConfig(object):
         self.richRuleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.richRuleDialog.set_transient_for(self.mainWindow)
         self.richRuleDialog.show_all()
+        self.add_visible_dialog(self.richRuleDialog)
         result = self.richRuleDialog.run()
         self.richRuleDialog.hide()
+        self.remove_visible_dialog(self.richRuleDialog)
 
         if result != 1:
             return
@@ -3085,8 +3124,10 @@ class FirewallConfig(object):
         self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
+        self.add_visible_dialog(self.portDialog)
         result = self.portDialog.run()
         self.portDialog.hide()
+        self.remove_visible_dialog(self.portDialog)
 
         if result != 1:
             return None
@@ -3132,8 +3173,10 @@ class FirewallConfig(object):
         self.protoDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.protoDialog.set_transient_for(self.mainWindow)
         self.protoDialog.show_all()
+        self.add_visible_dialog(self.protoDialog)
         result = self.protoDialog.run()
         self.protoDialog.hide()
+        self.remove_visible_dialog(self.protoDialog)
 
         if result != 1:
             return None
@@ -3180,9 +3223,11 @@ class FirewallConfig(object):
         self.serviceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.serviceDialog.set_transient_for(self.mainWindow)
         self.serviceDialog.show_all()
+        self.add_visible_dialog(self.serviceDialog)
 
         result = self.serviceDialog.run()
         self.serviceDialog.hide()
+        self.remove_visible_dialog(self.serviceDialog)
 
         if result != 1:
             return None
@@ -3226,9 +3271,11 @@ class FirewallConfig(object):
         self.icmptypeDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.icmptypeDialog.set_transient_for(self.mainWindow)
         self.icmptypeDialog.show_all()
+        self.add_visible_dialog(self.icmptypeDialog)
 
         result = self.icmptypeDialog.run()
         self.icmptypeDialog.hide()
+        self.remove_visible_dialog(self.icmptypeDialog)
 
         if result != 1:
             return None
@@ -3661,8 +3708,10 @@ class FirewallConfig(object):
         self.interfaceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.interfaceDialog.set_transient_for(self.mainWindow)
         self.interfaceDialog.show_all()
+        self.add_visible_dialog(self.interfaceDialog)
         result = self.interfaceDialog.run()
         self.interfaceDialog.hide()
+        self.remove_visible_dialog(self.interfaceDialog)
 
         if result != 1:
             return
@@ -3789,8 +3838,10 @@ class FirewallConfig(object):
         self.markDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.markDialog.set_transient_for(self.mainWindow)
         self.markDialog.show_all()
+        self.add_visible_dialog(self.markDialog)
         result = self.markDialog.run()
         self.markDialog.hide()
+        self.remove_visible_dialog(self.markDialog)
 
         self.markDialogMarkEntry.disconnect(handler_id1)
         self.markDialogMaskEntry.disconnect(handler_id2)
@@ -3822,8 +3873,10 @@ class FirewallConfig(object):
         self.macDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.macDialog.set_transient_for(self.mainWindow)
         self.macDialog.show_all()
+        self.add_visible_dialog(self.macDialog)
         result = self.macDialog.run()
         self.macDialog.hide()
+        self.remove_visible_dialog(self.macDialog)
 
         self.macDialogMacEntry.disconnect(handler_id)
 
@@ -3881,9 +3934,11 @@ class FirewallConfig(object):
         self.ipsetDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.ipsetDialog.set_transient_for(self.mainWindow)
         self.ipsetDialog.show_all()
+        self.add_visible_dialog(self.ipsetDialog)
 
         result = self.ipsetDialog.run()
         self.ipsetDialog.hide()
+        self.remove_visible_dialog(self.ipsetDialog)
 
         #self.ipsetDialogIPSetEntry.disconnect(handler_id)
 
@@ -3961,8 +4016,11 @@ class FirewallConfig(object):
         self.sourceDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.sourceDialog.set_transient_for(self.mainWindow)
         self.sourceDialog.show_all()
+        self.add_visible_dialog(self.sourceDialog)
+
         result = self.sourceDialog.run()
         self.sourceDialog.hide()
+        self.remove_visible_dialog(self.sourceDialog)
 
         self.sourceDialogSourceTypeCombobox.disconnect(h_type_id)
         self.sourceDialogSourceChooser.disconnect(h_addr_id)
@@ -4035,8 +4093,10 @@ class FirewallConfig(object):
         self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
+        self.add_visible_dialog(self.portDialog)
         result = self.portDialog.run()
         self.portDialog.hide()
+        self.remove_visible_dialog(self.portDialog)
 
         if result != 1:
             return
@@ -4100,8 +4160,10 @@ class FirewallConfig(object):
         self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
+        self.add_visible_dialog(self.portDialog)
         result = self.portDialog.run()
         self.portDialog.hide()
+        self.remove_visible_dialog(self.portDialog)
 
         if result != 1:
             return
@@ -4196,8 +4258,10 @@ class FirewallConfig(object):
         self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
+        self.add_visible_dialog(self.portDialog)
         result = self.portDialog.run()
         self.portDialog.hide()
+        self.remove_visible_dialog(self.portDialog)
 
         if result != 1:
             return
@@ -4249,8 +4313,10 @@ class FirewallConfig(object):
         self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.portDialog.set_transient_for(self.mainWindow)
         self.portDialog.show_all()
+        self.add_visible_dialog(self.portDialog)
         result = self.portDialog.run()
         self.portDialog.hide()
+        self.remove_visible_dialog(self.portDialog)
 
         if result != 1:
             return
@@ -4340,8 +4406,10 @@ class FirewallConfig(object):
         self.protoDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.protoDialog.set_transient_for(self.mainWindow)
         self.protoDialog.show_all()
+        self.add_visible_dialog(self.protoDialog)
         result = self.protoDialog.run()
         self.protoDialog.hide()
+        self.remove_visible_dialog(self.protoDialog)
 
         if result != 1:
             return
@@ -4391,8 +4459,10 @@ class FirewallConfig(object):
         self.protoDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.protoDialog.set_transient_for(self.mainWindow)
         self.protoDialog.show_all()
+        self.add_visible_dialog(self.protoDialog)
         result = self.protoDialog.run()
         self.protoDialog.hide()
+        self.remove_visible_dialog(self.protoDialog)
 
         if result != 1:
             return
@@ -4545,8 +4615,10 @@ class FirewallConfig(object):
         self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.forwardDialog.set_transient_for(self.mainWindow)
         self.forwardDialog.show_all()
+        self.add_visible_dialog(self.forwardDialog)
         result = self.forwardDialog.run()
         self.forwardDialog.hide()
+        self.remove_visible_dialog(self.forwardDialog)
 
         if result != 1:
             return None
@@ -4609,8 +4681,10 @@ class FirewallConfig(object):
         self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.forwardDialog.set_transient_for(self.mainWindow)
         self.forwardDialog.show_all()
+        self.add_visible_dialog(self.forwardDialog)
         result = self.forwardDialog.run()
         self.forwardDialog.hide()
+        self.remove_visible_dialog(self.forwardDialog)
 
         if result != 1:
             return
@@ -5027,8 +5101,10 @@ class FirewallConfig(object):
         self.serviceBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.serviceBaseDialog.set_transient_for(self.mainWindow)
         self.serviceBaseDialog.show_all()
+        self.add_visible_dialog(self.serviceBaseDialog)
         result = self.serviceBaseDialog.run()
         self.serviceBaseDialog.hide()
+        self.remove_visible_dialog(self.serviceBaseDialog)
 
         if result != 1:
             return
@@ -5134,8 +5210,10 @@ class FirewallConfig(object):
         self.moduleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.moduleDialog.set_transient_for(self.mainWindow)
         self.moduleDialog.show_all()
+        self.add_visible_dialog(self.moduleDialog)
         result = self.moduleDialog.run()
         self.moduleDialog.hide()
+        self.remove_visible_dialog(self.moduleDialog)
 
         if result != 1:
             return
@@ -5220,8 +5298,10 @@ class FirewallConfig(object):
         self.addressDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.addressDialog.set_transient_for(self.mainWindow)
         self.addressDialog.show_all()
+        self.add_visible_dialog(self.addressDialog)
         result = self.addressDialog.run()
         self.addressDialog.hide()
+        self.remove_visible_dialog(self.addressDialog)
 
         self.addressDialogAddressEntry.disconnect(handler_id)
 
@@ -5385,8 +5465,10 @@ class FirewallConfig(object):
         self.ipsetBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.ipsetBaseDialog.set_transient_for(self.mainWindow)
         self.ipsetBaseDialog.show_all()
+        self.add_visible_dialog(self.ipsetBaseDialog)
         result = self.ipsetBaseDialog.run()
         self.ipsetBaseDialog.hide()
+        self.remove_visible_dialog(self.ipsetBaseDialog)
 
         if result != 1:
             return
@@ -5533,9 +5615,11 @@ class FirewallConfig(object):
         self.ipsetEntryDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.ipsetEntryDialog.set_transient_for(self.mainWindow)
         self.ipsetEntryDialog.show_all()
+        self.add_visible_dialog(self.ipsetEntryDialog)
         result = self.ipsetEntryDialog.run()
         self.ipsetEntryDialog.hide()
         self.active_ipset_settings = None
+        self.remove_visible_dialog(self.ipsetEntryDialog)
 
         if result != 1:
             return
@@ -5851,8 +5935,10 @@ class FirewallConfig(object):
         self.icmpBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.icmpBaseDialog.set_transient_for(self.mainWindow)
         self.icmpBaseDialog.show_all()
+        self.add_visible_dialog(self.icmpBaseDialog)
         result = self.icmpBaseDialog.run()
         self.icmpBaseDialog.hide()
+        self.remove_visible_dialog(self.icmpBaseDialog)
 
         if result != 1:
             return
@@ -6165,8 +6251,10 @@ class FirewallConfig(object):
         self.contextDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.contextDialog.set_transient_for(self.mainWindow)
         self.contextDialog.show_all()
+        self.add_visible_dialog(self.contextDialog)
         result = self.contextDialog.run()
         self.contextDialog.hide()
+        self.remove_visible_dialog(self.contextDialog)
 
         if result != 1:
             return
@@ -6262,8 +6350,10 @@ class FirewallConfig(object):
         self.commandDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.commandDialog.set_transient_for(self.mainWindow)
         self.commandDialog.show_all()
+        self.add_visible_dialog(self.commandDialog)
         result = self.commandDialog.run()
         self.commandDialog.hide()
+        self.remove_visible_dialog(self.commandDialog)
 
         if result != 1:
             return
@@ -6356,8 +6446,10 @@ class FirewallConfig(object):
         self.userDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.userDialog.set_transient_for(self.mainWindow)
         self.userDialog.show_all()
+        self.add_visible_dialog(self.userDialog)
         result = self.userDialog.run()
         self.userDialog.hide()
+        self.remove_visible_dialog(self.userDialog)
 
         if result != 1:
             return
@@ -6451,8 +6543,10 @@ class FirewallConfig(object):
         self.uidDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.uidDialog.set_transient_for(self.mainWindow)
         self.uidDialog.show_all()
+        self.add_visible_dialog(self.uidDialog)
         result = self.uidDialog.run()
         self.uidDialog.hide()
+        self.remove_visible_dialog(self.uidDialog)
 
         if result != 1:
             return
@@ -6582,8 +6676,10 @@ class FirewallConfig(object):
         self.directChainDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.directChainDialog.set_transient_for(self.mainWindow)
         self.directChainDialog.show_all()
+        self.add_visible_dialog(self.directChainDialog)
         result = self.directChainDialog.run()
         self.directChainDialog.hide()
+        self.remove_visible_dialog(self.directChainDialog)
 
         if result != 1:
             return
@@ -6729,8 +6825,10 @@ class FirewallConfig(object):
         self.directRuleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.directRuleDialog.set_transient_for(self.mainWindow)
         self.directRuleDialog.show_all()
+        self.add_visible_dialog(self.directRuleDialog)
         result = self.directRuleDialog.run()
         self.directRuleDialog.hide()
+        self.remove_visible_dialog(self.directRuleDialog)
 
         if result != 1:
             return
@@ -6861,8 +6959,10 @@ class FirewallConfig(object):
         self.directPassthroughDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.directPassthroughDialog.set_transient_for(self.mainWindow)
         self.directPassthroughDialog.show_all()
+        self.add_visible_dialog(self.directPassthroughDialog)
         result = self.directPassthroughDialog.run()
         self.directPassthroughDialog.hide()
+        self.remove_visible_dialog(self.directPassthroughDialog)
 
         if result != 1:
             return
