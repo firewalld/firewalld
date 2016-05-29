@@ -391,14 +391,32 @@ assert_bad  "--permanent  --query-masquerade"
 assert_bad  "--zone=external    --add-icmp-block=dummyblock" # invalid icmp type
 assert_good "--zone=external    --add-icmp-block=redirect"
 assert_good "--zone=external  --query-icmp-block=redirect"
+
+assert_good "   --add-icmp-block-inversion --zone=${default_zone}"
+assert_good " --query-icmp-block-inversion "
+assert_good "--remove-icmp-block-inversion"
+assert_bad  " --query-icmp-block-inversion"
+
 assert_good "--zone=external --remove-icmp-block redirect"
 assert_bad  "--zone=external  --query-icmp-block=redirect"
+
+assert_good "   --add-icmp-block-inversion --zone=block"
+assert_good "--remove-icmp-block-inversion --zone=block"
+assert_good "   --add-icmp-block-inversion --zone=drop"
+assert_good "--remove-icmp-block-inversion --zone=drop"
+assert_good "   --add-icmp-block-inversion --zone=trusted"
+assert_good "--remove-icmp-block-inversion --zone=trusted"
 
 assert_bad  "--permanent --zone=external    --add-icmp-block=dummyblock" # invalid icmp type
 assert_good "--permanent --zone=external    --add-icmp-block=redirect"
 assert_good "--permanent --zone=external  --query-icmp-block=redirect"
 assert_good "--permanent --zone=external --remove-icmp-block redirect"
 assert_bad  "--permanent --zone=external  --query-icmp-block=redirect"
+
+assert_good "--permanent    --add-icmp-block-inversion"
+assert_good "--permanent  --query-icmp-block-inversion --zone=${default_zone}"
+assert_good "--permanent --remove-icmp-block-inversion --zone=${default_zone}"
+assert_bad  "--permanent  --query-icmp-block-inversion"
 
 assert_good "--zone=external    --add-icmp-block=echo-reply --add-icmp-block=router-solicitation"
 assert_good "--zone=external  --query-icmp-block=echo-reply"
