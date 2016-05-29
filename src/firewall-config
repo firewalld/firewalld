@@ -3573,7 +3573,13 @@ class FirewallConfig(object):
             editor.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
             editor.set_transient_for(self.mainWindow)
             editor.show_all()
-            result = editor.run()
+            try:
+                result = editor.run()
+            except Exception:
+                text = _("Failed to set zone {zone} "
+                         "for connection {connection}")
+                self._warning(text.format(zone=editor.get_zone(),
+                                          connection=editor.connection))
             editor.hide()
         else:
             self.add_edit_interface(False)
@@ -6950,14 +6956,7 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
         if Gtk.Dialog.run(self) != 2:
             return
 
-        try:
-            nm_set_zone_of_connection(self.get_zone(), self.connection)
-        except Exception as msg:
-            text = _("Failed to set zone {zone} for connection {connection}")
-            QtGui.QMessageBox.warning(None, fromUTF8(escape(self.title)),
-                                      escape(text.format(
-                                          zone=self.get_zone(),
-                                          connection=self.connection)))
+        nm_set_zone_of_connection(self.get_zone(), self.connection)
 
 class ZoneSourceEditor(ZoneInterfaceEditor):
     def __init__(self, fw, source, zone):
