@@ -422,7 +422,6 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self._blink = False
         self._blink_count = 0
         self.show_inactive = False
-        self.connected = False
         self.tooltip_messages = [ ]
 
         self.active_zones = { }
@@ -488,7 +487,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.panicAction.setCheckable(True)
         self.panicAction.setChecked(False)
         self.panicAction.triggered.connect(self.panic_mode_cb)
-        
+
         self.aboutAction = QtGui.QAction(fromUTF8(escape(_("About"))), self)
         self.aboutAction.triggered.connect(self.about_dialog.exec_)
 
@@ -625,7 +624,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         #print("blink-count=%s" % self.blink_count)
         #print("show-inactive=%s" % self.show_inactive)
 
-        if not self.connected:
+        if not self.fw.connected:
             self.setVisible(self.show_inactive)
         else:
             self.setVisible(True)
@@ -639,11 +638,11 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # remove all entries for the left menu
         self.left_menu.clear()
-        
+
         # add connections entry
         self.left_menu.addAction(self.connectionsAction)
 
-        if not self.connected:
+        if not self.fw.connected:
             return
 
         active_zones = self.fw.getActiveZones()
@@ -680,8 +679,9 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             if zone == "":
                 _binding = _("{entry} (Default Zone: {default_zone})")
                 action = QtGui.QAction(
-                    fromUTF8(escape(_binding.format(default_zone=self.default_zone,
-                                                    entry=connection))), self)
+                    fromUTF8(escape(
+                        _binding.format(default_zone=self.default_zone,
+                                        entry=connection))), self)
             else:
                 action = QtGui.QAction(
                     fromUTF8(escape(binding.format(zone=zone,
@@ -779,8 +779,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
     def notify(self, msg, urgency="noicon", timeout=5):
         #self.showMessage(fromUTF8(escape(self.name)), msg, self.urgencies[urgency], timeout*1000)
-        n = Notify.Notification.new(escape(self.name), msg,
-                                    self.icon_name)
+        n = Notify.Notification.new(escape(self.name), msg, self.icon_name)
         n.set_urgency(Notify.Urgency.NORMAL)
         try:
             n.show()
@@ -793,7 +792,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         else:
             zone = str(self.shields_down)
 
-        if self.fw.connected and self.fw.getDefaultZone() != zone:
+        if self.fw.connected and self.default_zone != zone:
             try:
                 self.fw.setDefaultZone(zone)
             except dbus.exceptions.DBusException as e:
@@ -905,7 +904,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         pass
 
     def panic_mode_cb(self):
-        if not self.fw or not self.connected:
+        if not self.fw or not self.fw.connected:
             return
         if self.panicAction.isChecked():
             self.fw.enablePanicMode()
@@ -942,14 +941,11 @@ class TrayApplet(QtGui.QSystemTrayIcon):
     # firewallClient signal receivers
 
     def connection_established(self, first=False):
-        self.setVisible(True)
-        self.set_mode("normal")
         self.default_zone = self.fw.getDefaultZone()
-        self.connected = True
+        self.panicAction.setChecked(self.fw.queryPanicMode())
         self.update_active_zones()
         self.shields_editor.zones_changed()
 
-        self.panicAction.setChecked(self.fw.queryPanicMode())
         if self.shields_up:
             self.shieldsupAction.setChecked(
                 self.default_zone == self.shields_up)
@@ -957,9 +953,10 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.update_tooltip()
         if self.notificationsAction.isChecked():
             self.notify(escape(_("Connection to FirewallD established.")))
+        self.setVisible(True)
+        self.set_mode("normal")
 
     def connection_lost(self):
-        self.connected = False
         self.default_zone = None
         self.set_mode("error")
         self.update_active_zones()
