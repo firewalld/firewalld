@@ -216,12 +216,10 @@ msgid "Default Zone: '%s'"
 msgstr "முன்னிருப்பு மண்டலம்: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"இடைமுகம் '{interface}' இல் உள்ள இணைப்பு '{connection}' க்கு மண்டலம் '{zone}' செயலில் "
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -271,13 +269,10 @@ msgid "deactivated"
 msgstr "முடக்கப்பட்டது"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"இடைமுகம் '{interface}' இல் உள்ள இணைப்பு '{connection}' க்கான மண்டலம் "
-"'{zone}' {activated_deactivated}"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -306,14 +301,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "மூலம் '%s' க்கு மண்டலம் '%s' செயல்படுத்தப்பட்டுள்ளது"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD க்கான இணைப்பு நிறுவப்பட்டது."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "ஃபயர்வால் டீமனுடன் இணைப்பு எதுவும் இல்லை"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -325,9 +318,9 @@ msgid "Used by network connection '%s'"
 msgstr "பிணைய இணைப்பு '%s' ஆல் பயன்படுத்தப்படுவது"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "பிணைய இணைப்பு '%s' ஆல் பயன்படுத்தப்படுவது"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -473,9 +466,8 @@ msgstr "போ"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "முன்னனுப்பல் துறை"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -491,15 +483,15 @@ msgid "Zone"
 msgstr "மண்டலம்"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "முன்னிருப்பு மண்டலம்: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "மண்டலங்கள்"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -910,9 +902,8 @@ msgid "_Help"
 msgstr "உதவி (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "இணைப்புகளின் மண்டலங்களை மாற்று..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1027,18 +1018,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"கணினியுடன் இணைக்க முடிகின்ற அனைத்து வழங்கிகள் அல்லது பிணையங்களுக்கும் அணுகக்கூடியதாக "
-"இருக்க வேண்டிய கூடுதல் முனையங்கள் அல்லது முனைய வரம்புகளைச் சேர்க்கவும்."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "மூலம்"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1114,9 +1101,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP வடிப்பி"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1228,13 +1214,10 @@ msgid "Remove Entry"
 msgstr "உள்ளீட்டை நீக்கு"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"கணினியுடன் இணைக்க முடிகின்ற அனைத்து வழங்கிகள் அல்லது பிணையங்களுக்கும் அணுகக்கூடியதாக "
-"இருக்க வேண்டிய கூடுதல் முனையங்கள் அல்லது முனைய வரம்புகளைச் சேர்க்கவும்."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1821,24 +1804,3 @@ msgstr "முன்னிருப்பு இலக்கு"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "இலக்கு:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "எதிர்பாராத கூறு '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "கூறு '%s': '%s' பண்புக்கூறு விடுபட்டுள்ளது"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "கூறு '%s': எதிர்பாராத பண்புக்கூறு '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "இணைக்கப்பட்டது."
-
-#~ msgid "No connection."
-#~ msgstr "இணைப்பு இல்லை."
-
-#~ msgid "Waiting ..."
-#~ msgstr "காத்திருக்கிறது..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "மறுமுயற்சிக்கிறது..."

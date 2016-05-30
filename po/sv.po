@@ -187,9 +187,8 @@ msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (Zon: {zone})"
 
 #: ../src/firewall-applet:680
-#, fuzzy
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (Zon: {zone})"
+msgstr ""
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1418
 msgid "Failed to get connections from NetworkManager"
@@ -213,13 +212,10 @@ msgid "Default Zone: '%s'"
 msgstr "Standardzon: ”%s”"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Zonen ”{zone}” aktiv för anslutningen ”{connection}” på gränssnittet "
-"”{interface}”"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -270,13 +266,10 @@ msgid "deactivated"
 msgstr "inaktiverad"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Zonen ”{zone}” {activated_deactivated} för anslutningen ”{connection}” på "
-"gränssnittet ”{interface}”"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -305,14 +298,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "Zonen ”%s” aktiverad för källa ”%s”"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "Anslutning till FirewallD etablerad."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Ingen anslutning till brandväggsdemonen"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -324,9 +315,9 @@ msgid "Used by network connection '%s'"
 msgstr "Används av nätverksanslutningen ”%s”"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "Används av nätverksanslutningen ”%s”"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -472,9 +463,8 @@ msgstr "maskera"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "vidarebefordransport"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -490,15 +480,15 @@ msgid "Zone"
 msgstr "Zon"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Standardzon: ”%s”"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Zoner"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -910,9 +900,8 @@ msgid "_Help"
 msgstr "_Hjälp"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Ändra zoner för anslutningar…"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1028,18 +1017,14 @@ msgid "Protocols"
 msgstr "Protokoll"
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"Lägg till ytterligare portar eller portintervall, vilka behöver vara "
-"åtkomliga för alla värdar eller nätverk som kan ansluta till maskinen."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Källa"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1117,9 +1102,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP-filter"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1238,13 +1222,10 @@ msgid "Remove Entry"
 msgstr "Radera post"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"Lägg till ytterligare portar eller portintervall, som behöver vara åtkomliga "
-"för alla värdar och nätverk."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1843,24 +1824,3 @@ msgstr "Standardmål"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Mål:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Oväntat element ”%s”"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Element ”%s”: attribut ”%s” saknas"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Element ”%s”: oväntat attribut ”%s”"
-
-#~ msgid "Connected."
-#~ msgstr "Ansluten."
-
-#~ msgid "No connection."
-#~ msgstr "Ingen anslutning"
-
-#~ msgid "Waiting ..."
-#~ msgstr "Väntar …"
-
-#~ msgid "Retrying ..."
-#~ msgstr "Försöker igen …"

@@ -206,11 +206,10 @@ msgid "Default Zone: '%s'"
 msgstr "സ്വതവേയുള്ള മേഘല: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "'{interface}' ഇന്റര്‍ഫെയിസില്‍  '{connection}' കണക്ഷനു് സജീവമായ '{zone}' മേഘല"
+msgstr ""
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -259,13 +258,10 @@ msgid "deactivated"
 msgstr "നിര്‍ജ്ജീവമാക്കിയിരിയ്ക്കുന്നു"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"'{interface}' ഇന്റര്‍ഫെയിസില്‍  '{connection}' കണക്ഷനു് സജീവമായ "
-"'{zone}'{activated_deactivated} മേഘല"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -295,14 +291,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "'%s' മേഘല '%s' ശ്രോതസ്സിനു് സജീവമാക്കിയിരിയ്ക്കുന്നു"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD-യ്ക്കുള്ള കണക്ഷന്‍ സ്ഥാപിച്ചിരിയ്ക്കുന്നു."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "ഫയര്‍വോള്‍ ഡെമണിലേക്കു് കണക്ഷന്‍ ലഭ്യമല്ല"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -314,9 +308,9 @@ msgid "Used by network connection '%s'"
 msgstr "നെറ്റ്‌വര്‍ക്ക് കണക്ഷന്‍ '%s' ഉപയോഗിയ്ക്കുന്നു"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "നെറ്റ്‌വര്‍ക്ക് കണക്ഷന്‍ '%s' ഉപയോഗിയ്ക്കുന്നു"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -462,9 +456,8 @@ msgstr "മാസ്ക്യുറേഡിംങ്"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -480,15 +473,15 @@ msgid "Zone"
 msgstr "മേഘല"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "സ്വതവേയുള്ള മേഘല: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "മേഘലകള്‍"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -897,9 +890,8 @@ msgid "_Help"
 msgstr "സഹായം (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "കണക്ഷനുകള്‍ക്കുള്ള മേഘലകള്‍ മാറ്റുക..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1013,18 +1005,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"അധികമായ പോര്‍ട്ടുകള്‍ അല്ലെങ്കില്‍ പോര്‍ട്ട് പരിധികളും ചേര്‍ക്കുക, സിസ്റ്റത്തിലേക്കു് കണക്ട് ചെയ്യുവാന്‍ "
-"സാധ്യമായ നെറ്റ്‌വര്‍ക്കുകള്‍ അല്ലെങ്കില്‍ എല്ലാം ഹോസ്റ്റുകളിലേക്കുള്ള ഇവയ്ക്കു് പ്രവേശിയ്ക്കേണ്ടതുണ്ടു്."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "ശ്രോതസ്സ്"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1102,9 +1090,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP ഫില്‍‌റ്റര്‍"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1216,13 +1203,10 @@ msgid "Remove Entry"
 msgstr "എന്‍ട്രി നീക്കം ചെയ്യുക"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"അധികമായ പോര്‍ട്ടുകള്‍ അല്ലെങ്കില്‍ പോര്‍ട്ട് പരിധികളും ചേര്‍ക്കുക, സിസ്റ്റത്തിലേക്കു് കണക്ട് ചെയ്യുവാന്‍ "
-"സാധ്യമായ നെറ്റ്‌വര്‍ക്കുകള്‍ അല്ലെങ്കില്‍ എല്ലാം ഹോസ്റ്റുകളിലേക്കുള്ള ഇവയ്ക്കു് പ്രവേശിയ്ക്കേണ്ടതുണ്ടു്."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1804,24 +1788,3 @@ msgstr "സ്വതവേയുള്ള ലക്ഷ്യസ്ഥാനം"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "ലക്ഷ്യസ്ഥാനം:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "അപ്രതീക്ഷിതമായ എലമെന്റ് '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "എലമെന്റ് '%s': '%s' വിശേഷത ലഭ്യമല്ല"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "എലമെന്റ് '%s': അപ്രതീക്ഷിതമായ വിശേഷത '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "കണക്ട് ചെയ്തിരിയ്ക്കുന്നു."
-
-#~ msgid "No connection."
-#~ msgstr "കണക്ഷന്‍ ലഭ്യമല്ല."
-
-#~ msgid "Waiting ..."
-#~ msgstr "കാത്തിരിയ്ക്കുന്നു..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "വീണ്ടും ശ്രമിയ്ക്കുന്നു..."

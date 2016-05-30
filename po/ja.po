@@ -192,9 +192,8 @@ msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (ゾーン: {zone})"
 
 #: ../src/firewall-applet:680
-#, fuzzy
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (ゾーン: {zone})"
+msgstr ""
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1418
 msgid "Failed to get connections from NetworkManager"
@@ -218,13 +217,10 @@ msgid "Default Zone: '%s'"
 msgstr "標準ゾーン: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対し"
-"て有効化"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -275,13 +271,10 @@ msgid "deactivated"
 msgstr "無効化"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"ゾーン '{zone}' がインターフェース '{interface}' の接続 '{connection}' に対し"
-"て {activated_deactivated}"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -313,14 +306,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "ゾーン '%s' を送信元 '%s' に対して有効化しました"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD への接続が確立されました。"
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "ファイアーウォール・デーモンへの接続がありません。"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -332,9 +323,9 @@ msgid "Used by network connection '%s'"
 msgstr "ネットワーク接続 '%s' により使用中"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "ネットワーク接続 '%s' により使用中"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -480,9 +471,8 @@ msgstr "マスカレード"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -498,15 +488,15 @@ msgid "Zone"
 msgstr "ゾーン"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "標準ゾーン: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "ゾーン"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -918,9 +908,8 @@ msgid "_Help"
 msgstr "ヘルプ(_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "接続のゾーンの変更..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1036,18 +1025,14 @@ msgid "Protocols"
 msgstr "プロトコル"
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"このマシンに接続できるホストやネットワークがアクセスできなければならないポー"
-"トまたはポート範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "送信元"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1126,9 +1111,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP フィルター"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1246,13 +1230,10 @@ msgid "Remove Entry"
 msgstr "エントリーの削除"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"すべてのホストやネットワークからアクセスできることが必要な追加のポートか、"
-"ポートの範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1852,24 +1833,3 @@ msgstr "標準ターゲット"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "ターゲット:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "予期しない要素 '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "'%s' 要素: '%s' 属性がありません"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "'%s' 要素: 予期しない属性 '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "接続しました。"
-
-#~ msgid "No connection."
-#~ msgstr "接続されていません。"
-
-#~ msgid "Waiting ..."
-#~ msgstr "待機中 ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "再試行中 ..."

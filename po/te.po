@@ -214,13 +214,10 @@ msgid "Default Zone: '%s'"
 msgstr "అప్రమేయ జోన్: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"ఇంటర్ఫేస్ '{interface}' పైన అనుసంధానం '{connection}'  కొరకు జోన్  '{zone}' "
-"క్రియాశీలపరచబడెను"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -271,13 +268,10 @@ msgid "deactivated"
 msgstr "క్రియాహీనం"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"జోన్ '{zone}' {activated_deactivated} అనుసంధానం '{connection}' కొరకు ఇంటర్ఫేస్ "
-"'{interface}' పైన"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -306,14 +300,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "జోన్ '%s' మూలం '%s' కొరకు క్రియాశీలమైంది"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD కనెక్షన్ స్థాపించబడింది."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "ఫైర్వాల్ డెమోన్ కోసం కనెక్షన్ లేదు"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -325,9 +317,9 @@ msgid "Used by network connection '%s'"
 msgstr "నెట్వర్కు అనుసంధానం '%s' చేత వుపయోగించబడింది"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "నెట్వర్కు అనుసంధానం '%s' చేత వుపయోగించబడింది"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -473,9 +465,8 @@ msgstr "మాస్క్వరేడ్"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "ఫార్వార్డ్-పోర్ట్"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -491,15 +482,15 @@ msgid "Zone"
 msgstr "జోన్"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "అప్రమేయ జోన్: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "జోన్స్"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -906,9 +897,8 @@ msgid "_Help"
 msgstr "సహాయం (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "అనుసంధానాల జోన్ మార్చు..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1021,18 +1011,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"మిషన్‌కు అనుసంధానం కాగల అన్ని అతిధేయలు లేదా నెట్వర్కుల నుండి ఏక్సెస్ కావలసిన, పోర్టులు లేదా పోర్టుల "
-"విస్తృతిని జతచేయి."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "మూలం"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1106,9 +1092,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP వడపోత"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1218,13 +1203,10 @@ msgid "Remove Entry"
 msgstr "ప్రవేశమును తీసివేయి"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"మిషన్‌కు అనుసంధానం కాగల అన్ని అతిధేయలు లేదా నెట్వర్కుల నుండి ఏక్సెస్ కావలసిన, పోర్టులు లేదా పోర్టుల "
-"విస్తృతిని జతచేయి."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1800,24 +1782,3 @@ msgstr "అప్రమేయ లక్ష్యం"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "లక్ష్యం:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "ఊహించని మూలకం '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "మూలకం '%s': తప్పిపోయిన '%s' లక్షణం"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "మూలకం '%s': ఊహించని లక్షణం '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "అనుసంధానమైంది."
-
-#~ msgid "No connection."
-#~ msgstr "అనుసంధానంలేదు."
-
-#~ msgid "Waiting ..."
-#~ msgstr "వేచివుంది ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "తిరిగిప్రయత్నిస్తోంది ..."

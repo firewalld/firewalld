@@ -212,11 +212,10 @@ msgid "Default Zone: '%s'"
 msgstr "મૂળભૂત વિસ્તાર: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "ઇન્ટરફેસ '{interface}' પર જોડાણ '{connection}' માટે વિસ્તાર '{zone}' સક્રિય"
+msgstr ""
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -265,13 +264,10 @@ msgid "deactivated"
 msgstr "નિષ્ક્રિય"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"ઇન્ટરફેસ '{interface}' પર જોડાણ '{connection}' માટે વિસ્તાર "
-"'{zone}' {activated_deactivated}"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -300,14 +296,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "સ્ત્રોત '%s' માટે સક્રિય થયેલ વિસ્તાર '%s'"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD માં જોડાણને સ્થાપિત કરેલ છે."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "ફાયરવોલ ડિમન માટે જોડાણ નથી"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -319,9 +313,9 @@ msgid "Used by network connection '%s'"
 msgstr "નેટવર્ક જોડાણ '%s' દ્દારા વાપરેલ છે"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "નેટવર્ક જોડાણ '%s' દ્દારા વાપરેલ છે"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -467,9 +461,8 @@ msgstr "માસ્કરેડ"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -485,15 +478,15 @@ msgid "Zone"
 msgstr "વિસ્તાર"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "મૂળભૂત વિસ્તાર: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "વિસ્તારો"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -899,9 +892,8 @@ msgid "_Help"
 msgstr "મદદ (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "જોડાણોનાં વિસ્તારોને બદલો..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1014,18 +1006,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"વધારાનાં પોર્ટ અને પોર્ટ સીમાઓને ઉમેરો, કે જે બધા યજમાનો અથવા નેટવર્કો માટે વાપરવાની "
-"જરૂર છે કે જે મશીન માટે જોડાઇ શકે છે."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "સ્ત્રોત"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1100,9 +1088,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP ગાળક"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1212,13 +1199,10 @@ msgid "Remove Entry"
 msgstr "નોંધણી દૂર કરો"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"વધારાનાં પોર્ટ અને પોર્ટ સીમાઓને ઉમેરો, કે જે બધા યજમાનો અથવા નેટવર્કો માટે વાપરવાની "
-"જરૂર છે કે જે મશીન માટે જોડાઇ શકે છે."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1795,24 +1779,3 @@ msgstr "મૂળભૂત લક્ષ્ય"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "લક્ષ્ય:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "અનિચ્છીનીય ઘટક '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "ઘટક '%s': ગેરહાજર '%s' ગુણધર્મ"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "ઘટક '%s': અનિચ્છનીય ગુણધર્મ '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "જોડાયેલ."
-
-#~ msgid "No connection."
-#~ msgstr "જોડાણ નથી."
-
-#~ msgid "Waiting ..."
-#~ msgstr "રાહ જોઇ રહ્યા છે ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "પુનઃપ્રયાસ કરી રહ્યા છીએ ..."

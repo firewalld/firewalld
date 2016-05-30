@@ -195,9 +195,8 @@ msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (Zóna: {zone})"
 
 #: ../src/firewall-applet:680
-#, fuzzy
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (Zóna: {zone})"
+msgstr ""
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1418
 msgid "Failed to get connections from NetworkManager"
@@ -221,12 +220,10 @@ msgid "Default Zone: '%s'"
 msgstr "Základní zóna: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Zóna '{zone}' aktivní pro spojení '{connection}' přes rozhraní '{interface}'"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -276,13 +273,10 @@ msgid "deactivated"
 msgstr "deaktivováno"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Zóna '{zone}' {activated_deactivated} pro spojení '{connection}' na rozhraní "
-"'{interface}'"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -311,14 +305,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "Zóna '%s' aktivována pro zdroj '%s'"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "Komunikace s FirewallD aktivní."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Žádné spojení s démonem firewallu"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -330,9 +322,9 @@ msgid "Used by network connection '%s'"
 msgstr "Použito síťovým připojením '%s'"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "Použito síťovým připojením '%s'"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -478,9 +470,8 @@ msgstr "IP maškaráda"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "přesměrování-portu"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -496,15 +487,15 @@ msgid "Zone"
 msgstr "Zóna"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Základní zóna: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Zony"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -917,9 +908,8 @@ msgid "_Help"
 msgstr "_Nápověda"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Nastavení zón připojení..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1033,18 +1023,14 @@ msgid "Protocols"
 msgstr "Protokoly"
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"Přidat další porty nebo rozsahy portů, které je nutné ponechat přístupné pro "
-"všechny počítače a počítačové sítě, které se mohou připojit ke stroji."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Zdroj"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1122,9 +1108,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP filtr"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1240,13 +1225,10 @@ msgid "Remove Entry"
 msgstr "Odstranit položku"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"Přidat další porty nebo intervaly portů, které musí být přístupné pro "
-"všechny počítače a sítě."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1842,24 +1824,3 @@ msgstr "Základní cíl:"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Cíl:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Neočekávaný element '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Element '%s': chybějící '%s' atribut"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Element '%s': neočekávaný atribut '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "Připojeno."
-
-#~ msgid "No connection."
-#~ msgstr "Nepřipojeno."
-
-#~ msgid "Waiting ..."
-#~ msgstr "Čekání..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "Opakování..."

@@ -209,12 +209,10 @@ msgid "Default Zone: '%s'"
 msgstr "तयशुदा क्षेत्र: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"क्षेत्र '{zone}' सक्रिय है '{connection}' कनेक्शन के लिए '{interface}' अंतरफलक पर"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -264,13 +262,10 @@ msgid "deactivated"
 msgstr "निष्क्रियकृत"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"क्षेत्र '{zone}' {activated_deactivated} है '{connection}' कनेक्शन के लिए "
-"'{interface}' अंतरफलक पर"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -299,14 +294,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "क्षेत्र '%s' सक्रिय है स्रोत '%s' के लिए"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD में कनेक्शन स्थापित हो गया."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "फ़ायरवॉल डेमॉन में कोई कनेक्शन नहीं"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -318,9 +311,9 @@ msgid "Used by network connection '%s'"
 msgstr "संजाल कनेक्शन '%s' द्वारा प्रयुक्त"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "संजाल कनेक्शन '%s' द्वारा प्रयुक्त"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -466,9 +459,8 @@ msgstr "मुखौटा"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -484,15 +476,15 @@ msgid "Zone"
 msgstr "क्षेत्र"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "तयशुदा क्षेत्र: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "क्षेत्र"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -899,9 +891,8 @@ msgid "_Help"
 msgstr "मदद (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "कनेक्शन के क्षेत्र बदलें..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1013,18 +1004,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"अतिरिक्त पोर्ट व पोर्ट परिसर को जोड़ें, जो सभी मेजबान या संजाल के लिए अभिगम योग्य होना "
-"चाहिए दो मशीन से कनेक्ट कर सकता है."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "स्रोत"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1098,9 +1085,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP फिल्टर"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1210,13 +1196,10 @@ msgid "Remove Entry"
 msgstr "प्रविष्टि हटाएँ"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"अतिरिक्त पोर्ट व पोर्ट परिसर को जोड़ें, जो सभी मेजबान या संजाल के लिए अभिगम योग्य होना "
-"चाहिए दो मशीन से कनेक्ट कर सकता है."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1796,24 +1779,3 @@ msgstr "तयशुदा लक्ष्य"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "लक्ष्यः"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "अप्रत्याशित तत्व '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "तत्व '%s': अनुपस्थित '%s' विशेषता"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "तत्व '%s': अप्रत्याशित विशेषता '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "कनेक्टेड."
-
-#~ msgid "No connection."
-#~ msgstr "कोई कनेक्शन नहीं."
-
-#~ msgid "Waiting ..."
-#~ msgstr "प्रतीक्षारत..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "फिर कोशिश कर रहा है..."

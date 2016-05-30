@@ -190,9 +190,8 @@ msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (界域：{zone})"
 
 #: ../src/firewall-applet:680
-#, fuzzy
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (界域：{zone})"
+msgstr ""
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1418
 msgid "Failed to get connections from NetworkManager"
@@ -216,11 +215,10 @@ msgid "Default Zone: '%s'"
 msgstr "預設界域：「%s」"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "界域「{zone}」使用中：連線「{connection}」，介面「{interface}」"
+msgstr ""
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -269,13 +267,10 @@ msgid "deactivated"
 msgstr "已停止"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"界域「{zone}」{activated_deactivated}：連線「{connection}」，介面"
-"「{interface}」"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -304,14 +299,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "界域「%s」已啟動：來源「%s」"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "與 FirewallD 的連線已建立。"
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "未有連接防火牆幕後程式的連線"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -323,9 +316,9 @@ msgid "Used by network connection '%s'"
 msgstr "由「%s」網路連線使用"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "由「%s」網路連線使用"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -471,9 +464,8 @@ msgstr "偽裝"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -489,15 +481,15 @@ msgid "Zone"
 msgstr "界域"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "預設界域：「%s」"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "界域"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -905,9 +897,8 @@ msgid "_Help"
 msgstr "求助(_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "變更連線的界域..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1016,16 +1007,14 @@ msgid "Protocols"
 msgstr "協定"
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
-msgstr "請添加其他連接埠或連接埠範圍，讓所有可連接至本機的主機或網路存取。"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "來源"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1097,9 +1086,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP 過濾器"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1211,11 +1199,10 @@ msgid "Remove Entry"
 msgstr "移除條目"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
-msgstr "新增額外的通訊埠或通訊埠範圍，並且必須能被所有主機或網路存取。"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1794,24 +1781,3 @@ msgstr "預設目標"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "目標："
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "未預期的元素「%s」"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "元素「%s」：遺失「%s」特性"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "元素「%s」：未預期的特性「%s」"
-
-#~ msgid "Connected."
-#~ msgstr "已連接。"
-
-#~ msgid "No connection."
-#~ msgstr "無連線。"
-
-#~ msgid "Waiting ..."
-#~ msgstr "等候中..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "重試中..."

@@ -192,9 +192,8 @@ msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (Zona: {zone})"
 
 #: ../src/firewall-applet:680
-#, fuzzy
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (Zona: {zone})"
+msgstr ""
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1418
 msgid "Failed to get connections from NetworkManager"
@@ -218,13 +217,10 @@ msgid "Default Zone: '%s'"
 msgstr "Zona per defecte: «%s»"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"La zona '{zone}' es troba activa per a la connexió '{connection}' en la "
-"interfície '{interface}'"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -275,13 +271,10 @@ msgid "deactivated"
 msgstr "inhabilitat"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Zona '{zone}' {activated_deactivated} per a la connexió '{connection}' en la "
-"interfície '{interface}'"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -311,14 +304,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "La zona «%s» es va activar per a l'origen «%s»"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "S'ha establert la connexió amb FirewallD."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Sense connexió al dimoni del tallafoc"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -330,9 +321,9 @@ msgid "Used by network connection '%s'"
 msgstr "És utilitzat en la connexió de xarxa «%s»"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "És utilitzat en la connexió de xarxa «%s»"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -478,9 +469,8 @@ msgstr "emmascarament"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "reenviament-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -496,15 +486,15 @@ msgid "Zone"
 msgstr "Zona"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Zona per defecte: «%s»"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Zones"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -922,9 +912,8 @@ msgid "_Help"
 msgstr "A_juda"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Canvia les zones de les connexions..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1044,19 +1033,14 @@ msgid "Protocols"
 msgstr "Protocols"
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"Afegiu els ports o els intervals de ports addicionals que hagin de ser "
-"accessibles per a tots els amfitrions o xarxes perquè es puguin connectar "
-"amb la màquina."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Origen"
+msgstr ""
 
 # translation auto-copied from project firewalld, version RHEL-7, document po/firewalld, author Robert Antoni Buj Gelonch
 #: ../src/firewall-config.glade.h:87
@@ -1136,9 +1120,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "Filtre ICMP"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1258,13 +1241,10 @@ msgid "Remove Entry"
 msgstr "Suprimeix l'entrada"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"Afegiu els ports o els intervals de ports addicionals que hagin de ser "
-"accessibles per a tots els amfitrions o xarxes."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1869,24 +1849,3 @@ msgstr "Destinació per defecte"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Destinació:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Element inesperat «%s»"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Element «%s»: falta l'atribut «%s»"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Element «%s»: atribut inesperat «%s»"
-
-#~ msgid "Connected."
-#~ msgstr "Connectat."
-
-#~ msgid "No connection."
-#~ msgstr "Sense connexió."
-
-#~ msgid "Waiting ..."
-#~ msgstr "A l'espera..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "S'està tornant a intentar..."

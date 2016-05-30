@@ -215,13 +215,10 @@ msgid "Default Zone: '%s'"
 msgstr "기본 영역: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"영역 '{zone}'은 인터페이스 '{interface}' 상의 연결 '{connection}'에 대해 활성"
-"화"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -272,13 +269,10 @@ msgid "deactivated"
 msgstr "비활성화됨 "
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"영역 '{zone}'이 인터페이스 '{interface}' 상의 연결에 대해 "
-"{activated_deactivated}"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -308,14 +302,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "영역 '%s'이 소스 '%s'에 대해 활성화되었습니다 "
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD에 연결되었습니다."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "방화벽 데몬으로의 연결이 없습니다 "
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -327,9 +319,9 @@ msgid "Used by network connection '%s'"
 msgstr "네트워크 연결 '%s'에 의해 사용됨 "
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "네트워크 연결 '%s'에 의해 사용됨 "
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -475,9 +467,8 @@ msgstr "마스커레이딩 "
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "포워드-포트 "
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -493,15 +484,15 @@ msgid "Zone"
 msgstr "영역 "
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "기본 영역: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "영역 "
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -910,9 +901,8 @@ msgid "_Help"
 msgstr "도움말(_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "연결 영역 변경..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1025,18 +1015,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
-"추가 포트 또는 포트 범위를 추가합니다. "
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "소스 "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1113,9 +1099,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP 필터 "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1225,13 +1210,10 @@ msgid "Remove Entry"
 msgstr "항목 삭제    "
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"이 컴퓨터에 연결 가능한 모든 호스트 또는 네트워크에 액세스할 수 있어야 하는 "
-"추가 포트 또는 포트 범위를 추가합니다. "
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1814,24 +1796,3 @@ msgstr "기본 대상 "
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "대상: "
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "예상치 못한 요소 '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "요소 '%s': '%s' 속성이 누락되어 있음 "
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "요소 '%s': 예상치 못한 속성 '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "연결되었습니다."
-
-#~ msgid "No connection."
-#~ msgstr "연결되어 있지 않습니다. "
-
-#~ msgid "Waiting ..."
-#~ msgstr "대기 중 ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "다시 시도중 ..."

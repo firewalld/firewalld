@@ -213,11 +213,10 @@ msgid "Default Zone: '%s'"
 msgstr "पूर्वनिर्धारित क्षेत्र: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
-msgstr "संवाद '{interface}' वरील जोडणी '{connection}' करिता क्षेत्र '{zone}' सक्रीय"
+msgstr ""
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -266,13 +265,10 @@ msgid "deactivated"
 msgstr "निष्क्रीय केले"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"संवाद '{interface}' वरील जोडणी '{connection}' करिता क्षेत्र "
-"'{zone}' {activated_deactivated}"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -301,14 +297,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "सोअर्स '%s' करिता क्षेत्र '%s' सक्रीय केले"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD करिता जोडणी स्थापीत केले."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "firewall डिमनकरिता जोडणी नाही"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -320,9 +314,9 @@ msgid "Used by network connection '%s'"
 msgstr "नेटवर्क जोडणी '%s' तर्फे वापरले जाते"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "नेटवर्क जोडणी '%s' तर्फे वापरले जाते"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -468,9 +462,8 @@ msgstr "मास्क्युरेड"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -486,15 +479,15 @@ msgid "Zone"
 msgstr "क्षेत्र"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "पूर्वनिर्धारित क्षेत्र: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "झोन्स"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -900,9 +893,8 @@ msgid "_Help"
 msgstr "मदत (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "जोडणींचे क्षेत्रांमध्ये बदल करा..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1015,18 +1007,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"अगाऊ पोर्टस् किंवा पोर्ट व्याप्ति समाविष्ट करा, जे सर्व यजमान किंवा मशनसह जोडणीजोगी "
-"नेटवर्ककरिता प्रवेशजोगी असायला हवे."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "सोअर्स"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1100,9 +1088,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP फिल्टर"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1212,13 +1199,10 @@ msgid "Remove Entry"
 msgstr "नोंदणी हटवा"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"अगाऊ पोर्टस् किंवा पोर्ट व्याप्ति समाविष्ट करा, जे सर्व यजमान किंवा मशनसह जोडणीजोगी "
-"नेटवर्ककरिता प्रवेशजोगी असायला हवे."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1799,24 +1783,3 @@ msgstr "पूर्वनिर्धारित लक्ष्य"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "लक्ष्य:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "अनपेक्षित घटक '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "घटक '%s': '%s' गुणधर्म आढळले नाही"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "घटक '%s': अनपेक्षीत गुणधर्म '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "जोडणी केले."
-
-#~ msgid "No connection."
-#~ msgstr "जोडणी नाही."
-
-#~ msgid "Waiting ..."
-#~ msgstr "प्रतिक्षा करत आहे ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "पुन्हा प्रयत्न करत आहे ..."

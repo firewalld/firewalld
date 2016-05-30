@@ -214,12 +214,10 @@ msgid "Default Zone: '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Alanı '{zone}' etkin bağlantısı '{connection}' arayüzünde '{interface}'"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -269,13 +267,10 @@ msgid "deactivated"
 msgstr "Etkisizleştirildi."
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Alanı '{zone}' {activated_deactivated} bağlantısı için '{connection}' "
-"arayüzde  '{interface}'"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -304,14 +299,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD ile bağlantı sağlandı."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Ateş Duvarı artalan sürecine bağlantı yok"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -323,9 +316,9 @@ msgid "Used by network connection '%s'"
 msgstr "'%s' bağlantısı tarafından kullanılıyor"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "'%s' bağlantısı tarafından kullanılıyor"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -488,15 +481,15 @@ msgid "Zone"
 msgstr "Alan"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Varsayılan Alan"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Alan"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -1010,9 +1003,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Kaynak"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1091,9 +1083,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP Filter"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1757,24 +1748,3 @@ msgstr "Varsayılan Hedef:"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Hedef:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Beklenmedik öğe '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "'%s': kayıp '%s' özellik öğesi"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Element '%s': unexpected attribute '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "Bağlandı"
-
-#~ msgid "No connection."
-#~ msgstr "Bağlantı yok"
-
-#~ msgid "Waiting ..."
-#~ msgstr "Bekliyor ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "Tekrar deniyor ..."

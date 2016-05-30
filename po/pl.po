@@ -191,9 +191,8 @@ msgid "{entry} (Zone: {zone})"
 msgstr "{entry} (Strefa: {zone})"
 
 #: ../src/firewall-applet:680
-#, fuzzy
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr "{entry} (Strefa: {zone})"
+msgstr ""
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1418
 msgid "Failed to get connections from NetworkManager"
@@ -217,13 +216,10 @@ msgid "Default Zone: '%s'"
 msgstr "Domyślna strefa: „%s”"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Strefa „{zone}” jest aktywna dla połączenia „{connection}” na interfejsie "
-"„{interface}”"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -274,13 +270,10 @@ msgid "deactivated"
 msgstr "dezaktywowana"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Strefa „{zone}” została {activated_deactivated} dla połączenia "
-"„{connection}”  na interfejsie „{interface}”"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -310,14 +303,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "Strefa „%s” została aktywowana dla źródła „%s”"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "Nawiązano połączenie z usługą firewalld."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Brak połączenia z usługą zapory sieciowej"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -329,9 +320,9 @@ msgid "Used by network connection '%s'"
 msgstr "Używane przez połączenie sieciowe „%s”"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "Używane przez połączenie sieciowe „%s”"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -477,9 +468,8 @@ msgstr "maskarada"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "przekierowywanie-portu"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -495,15 +485,15 @@ msgid "Zone"
 msgstr "Strefa"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Domyślna strefa: „%s”"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Strefy"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -917,9 +907,8 @@ msgid "_Help"
 msgstr "Pomo_c"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Zmień strefy połączeń…"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1036,18 +1025,14 @@ msgid "Protocols"
 msgstr "Protokoły"
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"Dodanie dodatkowych portów lub zakresów portów, które mają być dostępne dla "
-"wszystkich komputerów i sieci, które mogą łączyć się z tym komputerem."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Źródło"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1126,9 +1111,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "Filtr ICMP"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1246,13 +1230,10 @@ msgid "Remove Entry"
 msgstr "Usuń wpis"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"Można dodać dodatkowe porty lub zakresy portów, które mają być dostępne dla "
-"wszystkich komputerów i sieci."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1852,24 +1833,3 @@ msgstr "Domyślny cel"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Cel:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Nieoczekiwany element „%s”"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Element „%s”: brak atrybutu „%s”"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Element „%s”: nieoczekiwany atrybut „%s”"
-
-#~ msgid "Connected."
-#~ msgstr "Połączono."
-
-#~ msgid "No connection."
-#~ msgstr "Brak połączenia."
-
-#~ msgid "Waiting ..."
-#~ msgstr "Oczekiwanie…"
-
-#~ msgid "Retrying ..."
-#~ msgstr "Próbowanie ponownie…"

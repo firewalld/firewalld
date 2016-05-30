@@ -220,13 +220,10 @@ msgid "Default Zone: '%s'"
 msgstr "Alapértelmezett Zóna: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"A '{zone}' zóna aktiv az '{interface}' csatlakozón a '{connection}' "
-"kapcsolatnál"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -277,13 +274,10 @@ msgid "deactivated"
 msgstr "deaktívált"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"A '{zone}' zóna {activated_deactivated} az '{interface}' csatlakozón a "
-"'{connection}' kapcsolatnál"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -312,14 +306,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "'%s' zóna aktiválásra került '%s' forrás számára"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD kapcsolat helyreállt."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Tűzfal alkalmazás kiszolgálóval nincs kapcsolat"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -331,9 +323,9 @@ msgid "Used by network connection '%s'"
 msgstr "'%s' hálózati kapcsolat által használt"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "'%s' hálózati kapcsolat által használt"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -479,9 +471,8 @@ msgstr "maszkolás"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "port-továbbítás"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -497,15 +488,15 @@ msgid "Zone"
 msgstr "Zóna"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Alapértelmezett Zóna: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Zónák"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -918,9 +909,8 @@ msgid "_Help"
 msgstr "Súgó"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Zónák kapcsolatainak megváltoztatása..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1036,18 +1026,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"Adjon meg további portokat vagy port tartományokat, melyeknek minden "
-"kiszolgáló vagy hálózat számára tudniuk kell csatlakozni a géphez."
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Forrás"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1126,9 +1112,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP szűrő"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1239,13 +1224,10 @@ msgid "Remove Entry"
 msgstr "Bejegyzés eltávolítása"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"Adjon meg további portokat vagy port tartományokat, melyeknek minden "
-"kiszolgáló vagy hálózat számára tudniuk kell csatlakozni a géphez."
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1804,24 +1786,3 @@ msgstr "Alapértelmezett Cél"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Cél:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Váratlan elem '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Elem '%s': hiányzó '%s' attributum"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Elem '%s': váratlan attributum '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "Csatlakozva."
-
-#~ msgid "No connection."
-#~ msgstr "Nincs kapcsolat"
-
-#~ msgid "Waiting ..."
-#~ msgstr "Várakozás..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "Újrapróbálkozás..."

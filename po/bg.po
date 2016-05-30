@@ -207,12 +207,10 @@ msgid "Default Zone: '%s'"
 msgstr "Зона по подразбиране: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"Зона '{zone}' е активна за връзка '{connection}' на интерфейс '{interface}'"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -262,13 +260,10 @@ msgid "deactivated"
 msgstr "деактивиран"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"Зона '{zone}' е {activated_deactivated} за връзка '{connection}' през "
-"интерфейс '{interface}'"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -297,14 +292,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "Зона '%s' е активирана за източник '%s'"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "Връзката с FirewallD е осъществена."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Няма връзка с демона на защитната стена"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -316,9 +309,9 @@ msgid "Used by network connection '%s'"
 msgstr ""
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "Подразбиращата се зона е сменена на '%s'."
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -481,15 +474,15 @@ msgid "Zone"
 msgstr "Зона"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Зона по подразбиране: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Зони"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -890,9 +883,8 @@ msgid "_Help"
 msgstr "_Помощ"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Промяна зоните на връзките..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1003,9 +995,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Източник"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1083,9 +1074,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP филтър"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1748,24 +1738,3 @@ msgstr "Цел по подразбиране"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Цел:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Неочакван елемент '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Елемент '%s': липсващ атрибут '%s'"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Елемент '%s': неочакван атрибут '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "Свързан."
-
-#~ msgid "No connection."
-#~ msgstr "Няма връзка."
-
-#~ msgid "Waiting ..."
-#~ msgstr "Чакам ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "Пробвам отново ..."

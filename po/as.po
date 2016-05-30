@@ -212,12 +212,10 @@ msgid "Default Zone: '%s'"
 msgstr "অবিকল্পিত অঞ্চল: '%s'"
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"আন্তঃপৃষ্ঠ '{interface}' ত সংযোগ '{connection}' ৰ বাবে সক্ৰিয় অঞ্চল '{zone}'"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -267,13 +265,10 @@ msgid "deactivated"
 msgstr "নিষ্ক্ৰিয়"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"আন্তঃপৃষ্ঠ '{interface}' ত সংযোগ '{connection}' ৰ বাবে অঞ্চল "
-"'{zone}' {activated_deactivated}"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -302,14 +297,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr "উৎস '%s' ৰ বাবে অঞ্চল '%s' সক্ৰিয়"
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "FirewallD লৈ সংযোগ স্থাপিত।"
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "ফায়াৰৱাল ডিমনলৈ কোনো সংযোগ নাই"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -321,9 +314,9 @@ msgid "Used by network connection '%s'"
 msgstr "নেটৱাৰ্ক সংযোগ '%s' দ্বাৰা ব্যৱহৃত"
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "নেটৱাৰ্ক সংযোগ '%s' দ্বাৰা ব্যৱহৃত"
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -469,9 +462,8 @@ msgstr "ছদ্মবেশ"
 #: ../src/firewall-config:1888 ../src/firewall-config:2941
 #: ../src/firewall-config:3099 ../src/firewall-config:3415
 #: ../src/firewall-config.glade.h:256
-#, fuzzy
 msgid "source-port"
-msgstr "forward-port"
+msgstr ""
 
 #: ../src/firewall-config:1897
 msgid "level"
@@ -487,15 +479,15 @@ msgid "Zone"
 msgstr "অঞ্চল"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "অবিকল্পিত অঞ্চল: '%s'"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "অঞ্চলবোৰ"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -904,9 +896,8 @@ msgid "_Help"
 msgstr "সহায়তা (_H)"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "সংযোগসমূহৰ অঞ্চলবোৰ পৰিবৰ্তন কৰক..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1019,18 +1010,14 @@ msgid "Protocols"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:85
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
-"অতিৰিক্ত পৰ্ট অথবা পৰ্ট বিস্তাৰসমূহ যোগ কৰক, যি মেচিনৰ সৈতে সংযোগ কৰিব পৰা সকলো "
-"হস্ট অথবা নেটৱাৰ্কৰ বাবে অভিগম্য হব লাগে।"
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "উৎস"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1106,9 +1093,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "ICMP ফিল্টাৰ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1220,13 +1206,10 @@ msgid "Remove Entry"
 msgstr "নিবেশ আঁতৰাওক"
 
 #: ../src/firewall-config.glade.h:126
-#, fuzzy
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
-"অতিৰিক্ত পৰ্ট অথবা পৰ্ট বিস্তাৰসমূহ যোগ কৰক, যি মেচিনৰ সৈতে সংযোগ কৰিব পৰা সকলো "
-"হস্ট অথবা নেটৱাৰ্কৰ বাবে অভিগম্য হব লাগে।"
 
 #: ../src/firewall-config.glade.h:127
 msgid "Netfilter helper modules"
@@ -1808,24 +1791,3 @@ msgstr "অবিকল্পিত লক্ষ্য"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "লক্ষ্য:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "অপ্ৰত্যাশিত উপাদান '%s'"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "উপাদান '%s': '%s' বৈশিষ্ট্য নাই"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "উপাদান '%s': অপ্ৰত্যাশিত বৈশিষ্ট্য '%s'"
-
-#~ msgid "Connected."
-#~ msgstr "সংযুক্ত।"
-
-#~ msgid "No connection."
-#~ msgstr "কোনো সংযোগ নাই।"
-
-#~ msgid "Waiting ..."
-#~ msgstr "অপেক্ষা কৰা হৈছে ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "পুনৰ চেষ্টা কৰা হৈছে ..."

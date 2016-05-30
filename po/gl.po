@@ -208,13 +208,10 @@ msgid "Default Zone: '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:869
-#, fuzzy
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
-"A zona «{zone}» está activa para a conexión «{connection}» na interface "
-"«{interface}»"
 
 #: ../src/firewall-applet:872
 msgid ""
@@ -265,13 +262,10 @@ msgid "deactivated"
 msgstr "desactivado"
 
 #: ../src/firewall-applet:1027
-#, fuzzy
 msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
-"A zona «{zone}» está {activated_deactivated} para a conexión «{connection}» "
-"na interface «{interface}»"
 
 #: ../src/firewall-applet:1032
 msgid ""
@@ -301,14 +295,12 @@ msgid "Zone '%s' activated for source '%s'"
 msgstr ""
 
 #: ../src/firewall-config:79
-#, fuzzy
 msgid "Connection to firewalld established."
-msgstr "Estabeleceuse unha conexión a FirewallD."
+msgstr ""
 
 #: ../src/firewall-config:81
-#, fuzzy
 msgid "Trying to connect to firewalld, waiting..."
-msgstr "Non hai ningunha conexión co daemon da devasa"
+msgstr ""
 
 #: ../src/firewall-config:82
 msgid "Changes applied."
@@ -320,9 +312,9 @@ msgid "Used by network connection '%s'"
 msgstr ""
 
 #: ../src/firewall-config:84
-#, fuzzy, c-format
+#, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr "A zona por omisión cambiou a «%s»."
+msgstr ""
 
 #: ../src/firewall-config:86
 msgid "enabled"
@@ -485,15 +477,15 @@ msgid "Zone"
 msgstr "Zona"
 
 #: ../src/firewall-config:2248
-#, fuzzy, c-format
+#, c-format
 msgid "Default Zone: %s"
-msgstr "Zona por omisión"
+msgstr ""
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2285
 #: ../src/firewall-config:2315
-#, fuzzy, c-format
+#, c-format
 msgid "Zone: %s"
-msgstr "Zona"
+msgstr ""
 
 #: ../src/firewall-config:2554
 #, c-format
@@ -894,9 +886,8 @@ msgid "_Help"
 msgstr "A_xuda"
 
 #: ../src/firewall-config.glade.h:62
-#, fuzzy
 msgid "Change zone of binding"
-msgstr "Cambiar as zonas das conexións..."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid ""
@@ -1007,9 +998,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:86
-#, fuzzy
 msgid "Source Port"
-msgstr "Orixe"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:87
 msgid ""
@@ -1079,9 +1069,8 @@ msgid ""
 msgstr ""
 
 #: ../src/firewall-config.glade.h:98
-#, fuzzy
 msgid "Invert Filter"
-msgstr "Filtro de ICMP"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:99
 msgid "ICMP Filter"
@@ -1745,24 +1734,3 @@ msgstr "Destino por omisión"
 #: ../src/firewall-config.glade.h:271
 msgid "Target:"
 msgstr "Destino:"
-
-#~ msgid "Unexpected element '%s'"
-#~ msgstr "Elemento inesperado «%s»"
-
-#~ msgid "Element '%s': missing '%s' attribute"
-#~ msgstr "Elemento «%s»: falta o atributo «%s»"
-
-#~ msgid "Element '%s': unexpected attribute '%s'"
-#~ msgstr "Elemento «%s»: atributo inesperado «%s»"
-
-#~ msgid "Connected."
-#~ msgstr "Conectado."
-
-#~ msgid "No connection."
-#~ msgstr "Sen conexión."
-
-#~ msgid "Waiting ..."
-#~ msgstr "A agardar ..."
-
-#~ msgid "Retrying ..."
-#~ msgstr "A tentar de novo..."
