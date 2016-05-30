@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.1.2
+Version: 0.4.2
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -297,6 +297,45 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon May 30 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.2-1
+- New module to search for and change ifcfg files for interfaces not under
+  control of NM
+- firewall_config: Enhanced messages in status bar
+- firewall-config: New message window as overlay if not connected
+- firewall-config: Fix sentivity of option, view menus and main paned if not
+  connected
+- firewall-applet: Quit on SIGINT (Ctrl-C), reduced D-Bus calls, some cleanup
+- firewall-[offline]cmd: Show target in zone information
+- D-Bus: Completed masquerade methods in FirewallClientZoneSettings
+- Fixed log-denied rules for icmp-blocks
+- Keep sorting of interfaces, services, icmp-blocks and other settings in zones
+- Fixed runtime-to-permanent not to save interfaces under control of NM
+- New icmp-block-inversion flag in the zones
+- ICMP type filtering in the zones
+- New services: sip, sips, managesieve
+- rich rules: Allow destination action (RHBZ#1163428)
+- firewall-offline-cmd: New option -q/--quiet
+- firewall-[offline-]cmd: New --add-[zone,service,ipset,icmptype]-from-file
+- firewall-[offline-]cmd: Fix option for setting the destination address
+- firewall-config: Fixed resizing behaviour
+- New transaction model for speed ups in start, restart, stop and other actions
+- firewall-cmd: New options --load{zone,service,ipset,icmptype}-defaults
+- Fixed memory leak in dbus_introspection_add_properties
+- Landscape.io fixes, pylint calm downs
+- New D-Bus getXnames methods to speed up firewall-config and firewall-cmd
+- ebtables-restore: No support for COMMIT command
+- Source port support in services, zones and rich rules
+- firewall-offline-cmd: Added --{add,remove}-entries-from-file for ipsets
+- firewall-config: New active bindings side bar for simple binding changes
+- Reworked NetworkManager module
+- Proper default zone handling for NM connections
+- Try to set zone binding with NM if interface is under control of NM
+- Code cleanup and bug fixes
+- Include test suite in the release and install in /usr/share/firewalld/tests
+- New Travis-CI configuration file
+- Fixed more broken frensh translations
+- Translation updates
+
 * Wed Apr 20 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1.2-1
 - Install fw_nm module
 - firewalld: Do not fail if log file could not be opened
