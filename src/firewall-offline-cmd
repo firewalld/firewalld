@@ -29,7 +29,7 @@ import argparse
 import dbus
 import os
 
-#from firewall.config import *
+from firewall import config
 from firewall.core.fw_test import Firewall_test
 from firewall.client import *
 from firewall.errors import *
@@ -44,11 +44,13 @@ if os.getuid() != 0:
     print(_("You need to be root to run %s.") % sys.argv[0])
     sys.exit(-1)
 
+SYSTEM_CONFIG_FIREWALL = config.SYSCONFIGDIR + '/system-config-firewall'
+
 def __usage():
     print ("""
 Usage: firewall-offline-cmd [OPTIONS...]
 
-If no options are given, configuration from '/etc/sysconfig/system-config-firewall' will be migrated.
+If no options are given, configuration from '%s' will be migrated.
 
 General Options
   -h, --help           Prints a short help text and exists
@@ -75,7 +77,7 @@ Lokkit Compatibility Options
   --custom-rules=[<type>:][<table>:]<filename>
                         Ignored option. Was used to add custom rules to the
                         firewall (Example:
-                        ipv4:filter:/etc/sysconfig/ipv4_filter_addon)
+                        ipv4:filter:%s/ipv4_filter_addon)
   --forward-port=if=<interface>:port=<port>:proto=<protocol>[:toport=<destination port>][:toaddr=<destination address>]
                         Forward the port with protocol for the interface to
                         either another local destination port (no destination
@@ -396,7 +398,7 @@ Polkit Options
   --policy-server      Change Polkit actions to 'server'  (more restricted)
   --policy-desktop     Change Polkit actions to 'desktop' (less restricted)
 
-""")
+    """ % (SYSTEM_CONFIG_FIREWALL, config.SYSCONFIGDIR))
 
 def __print(msg=None):
     if msg and not a.quiet:
@@ -577,12 +579,12 @@ def __pk_symlink(product='server'):
     else:
         __fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
 
-# system-config-firewall: fw_sysconfig
-CONF = '/etc/sysconfig/system-config-firewall'
+# system-config-firewall
 def read_sysconfig_args():
     filename = None
-    if os.path.exists(CONF) and os.path.isfile(CONF):
-        filename = CONF
+    if os.path.exists(SYSTEM_CONFIG_FIREWALL) and \
+       os.path.isfile(SYSTEM_CONFIG_FIREWALL):
+        filename = SYSTEM_CONFIG_FIREWALL
     try:
         f = open(filename, 'r')
     except:
@@ -852,12 +854,12 @@ if len(sys.argv) > 1:
         args.append(joinArgs(aux_args[i+1:])) # add <args> as one arg
     a = parser.parse_args(args)
 else:
-    # migrate configuration from /etc/sysconfig/system-config-firewall
+    # migrate configuration from SYSTEM_CONFIG_FIREWALL
     args = read_sysconfig_args()
     if args:
         a = parser.parse_args(args)
     else:
-        __fail("Opening of '%s' failed, exiting." % CONF)
+        __fail("Opening of '%s' failed, exiting." % SYSTEM_CONFIG_FIREWALL)
 
 options_lokkit = a.enabled or a.disabled or a.addmodule or a.removemodule or \
                  a.trust or a.masq or a.custom_rules or \
