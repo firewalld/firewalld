@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
@@ -16,17 +16,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/firewalld/"
 "language/ar/)\n"
 "Language: ar\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -219,7 +219,8 @@ msgstr ""
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 
 #: ../src/firewall-applet:863
@@ -568,8 +569,7 @@ msgstr ""
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -949,9 +949,9 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة العالميّة. "
-"ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. التقنيع لـIPv4 "
-"فقط."
+"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة "
+"العالميّة. ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. "
+"التقنيع لـIPv4 فقط."
 
 #: ../src/firewall-config.glade.h:82
 msgid "Masquerade zone"
@@ -1003,8 +1003,8 @@ msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها بالمرور "
-"عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
+"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها "
+"بالمرور عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
 
 #: ../src/firewall-config.glade.h:91
 msgid "ICMP Filter"
@@ -1580,8 +1580,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:225

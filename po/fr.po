@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # <>, 2006
 # Alain PORTAL <aportal@univ-montp2.fr>, 2007
@@ -22,21 +22,23 @@
 # Thomas Canniot <mrtom@fedoraproject.org>, 2006,2008-2010
 # Jibec <jean-baptiste@holcroft.fr>, 2015. #zanata
 # Julie Carbone <jcarbone@redhat.com>, 2016. #zanata
+# Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
+# corina roe <croe@redhat.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
-"PO-Revision-Date: 2016-02-24 06:41-0500\n"
-"Last-Translator: Julie Carbone <jcarbone@redhat.com>\n"
-"Language-Team: French (http://www.transifex.com/projects/p/firewalld/"
-"language/fr/)\n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-05-30 09:05-0400\n"
+"Last-Translator: Sam Friedmann <sam.friedmann@redhat.com>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/firewalld/"
+"language/fr/)\n"
+"Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -102,7 +104,7 @@ msgstr "Sélectionner la zone pour la connexion « %s »"
 
 #: ../src/firewall-applet:165 ../src/firewall-config:6478
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "N'a pas pu définir la zône {zone} pour la connexion {connection}"
 
 #: ../src/firewall-applet:179
 #, c-format
@@ -115,7 +117,8 @@ msgstr "Configurer des zones à protection active/inactive"
 
 #: ../src/firewall-applet:209
 msgid "Here you can select the zones used for Shields Up and Shields Down."
-msgstr "Vous pouvez choisir ici les zones avec protections active ou inactive."
+msgstr ""
+"Vous pouvez choisir ici les zones avec protections active ou inactive."
 
 #: ../src/firewall-applet:215
 msgid ""
@@ -132,7 +135,7 @@ msgstr "Zone à protection active :"
 
 #: ../src/firewall-applet:233 ../src/firewall-applet:246
 msgid "Reset To Default"
-msgstr "Réinitialiser aux paramètres par défaut"
+msgstr "Réinitialiser aux paramètres par défaut\n"
 
 #: ../src/firewall-applet:237
 msgid "Shields Down Zone:"
@@ -185,6 +188,7 @@ msgstr "Connexions"
 
 #: ../src/firewall-applet:499 ../src/firewall-config:2019
 #: ../src/firewall-config.glade.h:101
+#, fuzzy
 msgid "Interfaces"
 msgstr "<interface>"
 
@@ -198,6 +202,7 @@ msgid "Authorization failed."
 msgstr "Échec de l'autorisation"
 
 #: ../src/firewall-applet:581 ../src/firewall-config:1878
+#, fuzzy
 msgid "Invalid name"
 msgstr "Argument %s invalide"
 
@@ -211,11 +216,11 @@ msgstr "{entry} (Zone: {zone})"
 
 #: ../src/firewall-applet:749 ../src/firewall-config:1282
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "N'a pas pu obtenir les connexions du NetworkManager"
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1135
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "Aucune importation du NetworkManager n'est disponible"
 
 #: ../src/firewall-applet:840
 msgid "No connection to firewall daemon"
@@ -232,9 +237,10 @@ msgstr "Zone par défaut : « %s »"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
-"Zone « {zone} » active pour la connexion  « {connexion} » sur l'interface "
+"Zone « {zone} » active pour la connexion  « {connection} » sur l'interface "
 "« {interface} »"
 
 #: ../src/firewall-applet:863
@@ -434,7 +440,7 @@ msgstr "drop"
 #: ../src/firewall-config:1669 ../src/firewall-config:3100
 #: ../src/firewall-config:3241
 msgid "mark"
-msgstr ""
+msgstr "marque"
 
 #: ../src/firewall-config:1672 ../src/firewall-config:1711
 #: ../src/firewall-config:1716
@@ -586,8 +592,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Rediriger vers un autre système est utile seulement si l'interface est "
@@ -600,7 +605,8 @@ msgstr "Service intégré, le renommage n'est pas pris en charge."
 
 #: ../src/firewall-config:4694
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr "Veuillez saisir une adresse ipv4 avec l'adresse du formulaire [/mask]."
+msgstr ""
+"Veuillez saisir une adresse ipv4 avec l'adresse du formulaire [/mask]."
 
 #: ../src/firewall-config:4695
 msgid "The mask can be a network mask or a number."
@@ -608,7 +614,8 @@ msgstr "Le masque peut être un masque de réseau ou un numéro"
 
 #: ../src/firewall-config:4697
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr "Veuillez saisir une adresse ipv6 avec l'adresse du formulaire [/mask]."
+msgstr ""
+"Veuillez saisir une adresse ipv6 avec l'adresse du formulaire [/mask]."
 
 #: ../src/firewall-config:4698
 msgid "The mask is a number."
@@ -828,13 +835,12 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Modifier la zone par défaut pour les connexions ou interfaces."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Modifier la zone par défaut"
+msgstr "Changer DéniDeLog"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Changer la valeur du DéniDeLog"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1551,7 +1557,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "DéniDeLog :"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Lockdown:"
@@ -1607,33 +1613,33 @@ msgstr "Veuillez sélectionner un IPSet"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Log Denied"
-msgstr ""
+msgstr "DéniDeLog"
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Veuillez saisir le nom du module"
+msgstr "Veuillez sélectionner la valeur du DéniDeLog :"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
-msgstr ""
+msgstr "Marque"
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Veuillez saisir un port et un protocole."
+msgstr "Veuillez saisir une marque avec un masque en option."
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"Les champs marque et masque sont tous les deux des nombres non signés de 32 "
+"octets de largeur."
 
 #: ../src/firewall-config.glade.h:204
 msgid "Mark:"
-msgstr ""
+msgstr "Marque :"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Mask:"
-msgstr ""
+msgstr "Masque :"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Please enter the module name."
@@ -1708,8 +1714,8 @@ msgstr "inversé"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Pour activer ceci, Action doit être paramétré sur « reject » et Famille soit "
 "sur « Ipv4 » ou « Ipv6 » (pas les deux)."

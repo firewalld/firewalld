@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Angels Sala <m_angels15@yahoo.es>, 2004
 # Josep Puigdemont <josep.puigdemont@gmail.com>, 2004-2006
@@ -17,16 +17,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
-"PO-Revision-Date: 2016-03-03 04:34-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-05-04 04:02-0400\n"
 "Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
 "language/ca/)\n"
 "Language: ca\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -92,7 +92,7 @@ msgstr "Selecciona la zona per a la connexió «%s»"
 
 #: ../src/firewall-applet:165 ../src/firewall-config:6478
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "No s'ha pogut establir la zona {zone} per a la connexió {connection}"
 
 #: ../src/firewall-applet:179
 #, c-format
@@ -203,11 +203,11 @@ msgstr "{entry} (Zona: {zone})"
 
 #: ../src/firewall-applet:749 ../src/firewall-config:1282
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "No s'ha pogut obtenir les connexions de NetworkManager"
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1135
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "Sense importacions disponibles de NetworkManager"
 
 #: ../src/firewall-applet:840
 msgid "No connection to firewall daemon"
@@ -224,7 +224,8 @@ msgstr "Zona per defecte: «%s»"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "La zona '{zone}' es troba activa per a la connexió '{connection}' en la "
 "interfície '{interface}'"
@@ -426,7 +427,7 @@ msgstr "descarta"
 #: ../src/firewall-config:1669 ../src/firewall-config:3100
 #: ../src/firewall-config:3241
 msgid "mark"
-msgstr ""
+msgstr "marca"
 
 #: ../src/firewall-config:1672 ../src/firewall-config:1711
 #: ../src/firewall-config:1716
@@ -578,8 +579,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "El reenviament a un altre sistema tan sols és útil si la interfície de xarxa "
@@ -819,13 +819,12 @@ msgstr ""
 "Canvia la zona per defecte per a les connexions o per a les interfícies."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Canvia la zona per defecte"
+msgstr "Canvia la denegació de l'enregistrament"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Canvia el valor de la denegació de l'enregistrament."
 
 #: ../src/firewall-config.glade.h:49
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1208,8 +1207,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"Els serveis es poden canviar únicament en la vista de configuració "
-"permanent. La configuració en temps d'execució dels serveis és fixa."
+"Els serveis es poden canviar únicament en la vista de configuració permanent."
+" La configuració en temps d'execució dels serveis és fixa."
 
 #: ../src/firewall-config.glade.h:124
 msgid ""
@@ -1250,6 +1249,7 @@ msgstr ""
 "no estiguin utilitzant l'opció de temps d'expiració, i també únicament "
 "aquelles entrades que hagin estat afegides amb firewalld. Aquí no es "
 "llistaran aquelles entrades que s'hagin afegit directament amb l'ordre ipset."
+""
 
 #: ../src/firewall-config.glade.h:131
 msgid ""
@@ -1296,7 +1296,8 @@ msgstr "Carrega els valor per defecte d'ICMP"
 
 #: ../src/firewall-config.glade.h:139
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "Especifiqueu si aquest tipus d'ICMP està disponible per IPv4 i/o IPv6."
+msgstr ""
+"Especifiqueu si aquest tipus d'ICMP està disponible per IPv4 i/o IPv6."
 
 #: ../src/firewall-config.glade.h:140
 msgid "IPv4"
@@ -1541,7 +1542,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Denegació de l'enregistrament:"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Lockdown:"
@@ -1597,33 +1598,33 @@ msgstr "Seleccioneu un ipset:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Log Denied"
-msgstr ""
+msgstr "Denegació de l'enregistrament"
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Introduïu el nom del mòdul."
+msgstr "Seleccioneu el valor de la denegació de l'enregistrament:"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
-msgstr ""
+msgstr "Marca"
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Introduïu el port i el protocol."
+msgstr "Introduïu una marca amb una màscara opcional."
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"Els camp de la marca i el camp de la màscara són nombres sense signe de 32 "
+"bits d'amplada."
 
 #: ../src/firewall-config.glade.h:204
 msgid "Mark:"
-msgstr ""
+msgstr "Marca:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Mask:"
-msgstr ""
+msgstr "Màscara:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Please enter the module name."
@@ -1699,11 +1700,11 @@ msgstr "inverteix"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Per habilitar-ho l'acció ha de ser «rebutja» i la família «ipv4» o "
-"«ipv6» (no ambdós)."
+"Per habilitar-ho l'acció ha de ser «rebutja» i la família «ipv4» o «ipv6» "
+"(no ambdós)."
 
 #: ../src/firewall-config.glade.h:225
 msgid "with Type:"

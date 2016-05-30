@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Igor Miletic <grejigl-gnomeprevod@yahoo.ca>, 2008
 # Miloš Komarčević <kmilos@gmail.com>, 2005
@@ -13,17 +13,17 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-01-04 12:42-0500\n"
 "Last-Translator: Momcilo Medic <medicmomcilo@gmail.com>\n"
 "Language-Team: Serbian (http://www.transifex.com/projects/p/firewalld/"
 "language/sr/)\n"
 "Language: sr\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.8.3\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -220,7 +220,8 @@ msgstr "Подразумевана зона: '%s'"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Зона '{zone}' је активна за везу '{connection}' на интерфејсу '{interface}'"
 
@@ -572,8 +573,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Преусмеравање на други систем је корисно само ако је интерфејс маскиран.\n"
@@ -807,9 +807,8 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Промени подразумевану зону за везе или интерфејсе."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Промени подразумевану зону"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
@@ -1027,6 +1026,7 @@ msgstr ""
 "Протокол за контролисање интернет порука (ICMP — Internet Control Message "
 "Protocol) се углавном користи за слање порука о грешкама између умрежених "
 "рачунара, али и додатно за информативне поруке попут пинг захтева и одговора."
+""
 
 #: ../src/firewall-config.glade.h:90
 msgid ""
@@ -1551,18 +1551,16 @@ msgid "Log Denied"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Молим унесите име модула."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Молим унесите порт и протокол."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
@@ -1646,11 +1644,11 @@ msgstr "обрнуто"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Да омогућите ово Акција мора бити 'одбиј' и Породица или 'ipv4' или "
-"'ipv6' (не оба)."
+"Да омогућите ово Акција мора бити 'одбиј' и Породица или 'ipv4' или 'ipv6' "
+"(не оба)."
 
 #: ../src/firewall-config.glade.h:225
 msgid "with Type:"

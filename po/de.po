@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -35,16 +35,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
-"PO-Revision-Date: 2016-02-24 12:25-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-05-25 12:05-0400\n"
 "Last-Translator: Lisa Stemmler <lstemmle@redhat.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
 "language/de/)\n"
 "Language: de\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -110,7 +110,7 @@ msgstr " Zone für Verbindung »%s« auswählen"
 
 #: ../src/firewall-applet:165 ../src/firewall-config:6478
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "Fehler bei Angabe der Zone {zone} für Verbindung {connection}"
 
 #: ../src/firewall-applet:179
 #, c-format
@@ -221,11 +221,11 @@ msgstr "{entry} (Zone: {zone})"
 
 #: ../src/firewall-applet:749 ../src/firewall-config:1282
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "Abrufen dre Verbindungn von NetworkManager fehlgeschlagen"
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1135
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "Keine NetworkManager Importe verfügbar"
 
 #: ../src/firewall-applet:840
 msgid "No connection to firewall daemon"
@@ -242,7 +242,8 @@ msgstr "Standardzone: »%s«"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
@@ -443,7 +444,7 @@ msgstr "abwählen"
 #: ../src/firewall-config:1669 ../src/firewall-config:3100
 #: ../src/firewall-config:3241
 msgid "mark"
-msgstr ""
+msgstr "markieren"
 
 #: ../src/firewall-config:1672 ../src/firewall-config:1711
 #: ../src/firewall-config:1716
@@ -595,8 +596,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, wenn die "
@@ -771,7 +771,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:30
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Bold entries are mandatory, all others are optional."
@@ -838,13 +839,12 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Standardzone für Verbindungen oder Schnittstellen ändern."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Standardzone ändern"
+msgstr "Log Verweigert ändern"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Wert für LogVerweigert ändern."
 
 #: ../src/firewall-config.glade.h:49
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1454,9 +1454,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:163
 msgid ""
@@ -1564,7 +1564,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Log Verweigert:"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Lockdown:"
@@ -1620,33 +1620,32 @@ msgstr "Bitte wählen Sie ein IPSet:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Log Denied"
-msgstr ""
+msgstr "Log Verweigert"
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Bitte Modul-Namen eingeben."
+msgstr "Bitte wählen Sie einen Wert für Log Verweigert:"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
-msgstr ""
+msgstr "Markieren"
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Bitte einen Port und ein Protokoll eingeben."
+msgstr "Bitte geben Sie eine Markierung mit optionaler Maske ein"
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"Beide Felder für Markierung und Maske sind unsignierte Zahlen von 32bits "
 
 #: ../src/firewall-config.glade.h:204
 msgid "Mark:"
-msgstr ""
+msgstr "Markieren:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Mask:"
-msgstr ""
+msgstr "Maskieren:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Please enter the module name."
@@ -1720,8 +1719,8 @@ msgstr "invertiert"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Zum Aktivieren muss diese Aktion 'reject' sein und die Familie muss entweder "
 "'ipv4' oder 'ipv6' sein (nicht beides)."

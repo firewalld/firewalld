@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2007-2010
 # zdenek <chmelarz@gmail.com>, 2013
@@ -23,16 +23,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-03-08 01:42-0500\n"
 "Last-Translator: Zdenek <chmelarz@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/firewalld/language/"
 "cs/)\n"
 "Language: cs\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -227,7 +227,8 @@ msgstr "Základní zóna: '%s'"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zóna '{zone}' aktivní pro spojení '{connection}' přes rozhraní '{interface}'"
 
@@ -579,12 +580,11 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
-"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní "
-"maškarádované.\n"
+"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní maškarádované."
+"\n"
 "Přejete si zamaškarádovat tuto zónu?"
 
 #: ../src/firewall-config:4512
@@ -817,9 +817,8 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Změnit základní zónu pro připojení nebo rozhraní."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Změnit základní zónu"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
@@ -1014,8 +1013,8 @@ msgid ""
 msgstr ""
 "Přidat záznamy pro přeposílání portů buď z jednoho portu na druhý na "
 "lokálním systému nebo z lokálního portu do portu na jiném systému. "
-"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní "
-"maškarádované. Přeposílání portů funguje pouze na IPv4."
+"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní maškarádované."
+" Přeposílání portů funguje pouze na IPv4."
 
 #: ../src/firewall-config.glade.h:86
 msgid "Add Forward Port"
@@ -1579,18 +1578,16 @@ msgid "Log Denied"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Prosím vložte jméno modulu."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Prosím vložte port a protokol."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
@@ -1676,8 +1673,8 @@ msgstr "obrácený"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "K povolení tohoto musí být Akce nastavena na 'odmítnout' a Rodina buď 'IPv4' "
 "nebo 'IPv6' (ne obojí)."

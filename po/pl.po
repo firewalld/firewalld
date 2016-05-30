@@ -1,31 +1,31 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andrzej Olszewski <andrzej.olszewski@ifj.edu.pl>, 2004
 # Piotr Drąg <piotrdrag@gmail.com>, 2007,2013-2014
 # Tomasz Chrzczonowicz <tch@fedoraproject.org>, 2009
 # Tom Berner <tom@lodz.pl>, 2005
 # Tom Berner <tom@man.lodz.pl>, 2004
-# Piotr Drąg <piotrdrag@gmail.com>, 2015. #zanata
-# Piotr Drąg <piotrdrag@gmail.com>, 2016. #zanata
+# Piotr Drąg <pdrag@aviary.pl>, 2015. #zanata
+# Piotr Drąg <pdrag@aviary.pl>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
-"PO-Revision-Date: 2016-01-14 06:25-0500\n"
-"Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
-"Language-Team: Polish (http://www.transifex.com/projects/p/firewalld/"
-"language/pl/)\n"
-"Language: pl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-04-19 03:54-0400\n"
+"Last-Translator: Piotr Drąg <pdrag@aviary.pl>\n"
+"Language-Team: Polish (http://www.transifex.com/projects/p/firewalld/"
+"language/pl/)\n"
+"Language: pl\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -43,8 +43,7 @@ msgstr "Konfiguracja zapory sieciowej"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
-"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;"
-"zabezpieczenia;security;iptables;netfilter;"
+"zapora;sieciowa;ogniowa;firewall;sieć;sieci;network;bezpieczeństwo;zabezpieczenia;security;iptables;netfilter;"
 
 #: ../src/firewall/core/io/io_object.py:155
 #, python-format
@@ -93,7 +92,7 @@ msgstr "Wybór strefy dla połączenia „%s”"
 
 #: ../src/firewall-applet:165 ../src/firewall-config:6478
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "Ustawienie strefy {zone} dla połączenia {connection} się nie powiodło"
 
 #: ../src/firewall-applet:179
 #, c-format
@@ -202,11 +201,11 @@ msgstr "{entry} (Strefa: {zone})"
 
 #: ../src/firewall-applet:749 ../src/firewall-config:1282
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "Uzyskanie połączeń z usługi NetworkManager się nie powiodło"
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1135
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "Brak dostępnych importów usługi NetworkManager"
 
 #: ../src/firewall-applet:840
 msgid "No connection to firewall daemon"
@@ -223,7 +222,8 @@ msgstr "Domyślna strefa: „%s”"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Strefa „{zone}” jest aktywna dla połączenia „{connection}” na interfejsie "
 "„{interface}”"
@@ -425,7 +425,7 @@ msgstr "odrzuć"
 #: ../src/firewall-config:1669 ../src/firewall-config:3100
 #: ../src/firewall-config:3241
 msgid "mark"
-msgstr ""
+msgstr "ślad"
 
 #: ../src/firewall-config:1672 ../src/firewall-config:1711
 #: ../src/firewall-config:1716
@@ -577,8 +577,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Przekierowywanie do innego systemu jest przydatne tylko, jeśli interfejs "
@@ -815,13 +814,12 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Zmiana domyślnej strefy dla połączeń lub interfejsów."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Zmień domyślną strefę"
+msgstr "Zmień dziennik odmów"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Zmień wartość dziennika odmów."
 
 #: ../src/firewall-config.glade.h:49
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1529,7 +1527,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Dziennik odmów:"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Lockdown:"
@@ -1585,33 +1583,31 @@ msgstr "Proszę wybrać zestaw adresów IP:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Log Denied"
-msgstr ""
+msgstr "Dziennik odmów"
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Proszę podać nazwę modułu."
+msgstr "Proszę wybrać wartości dziennika odmów:"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
-msgstr ""
+msgstr "Ślad"
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Proszę podać port i protokół."
+msgstr "Proszę podać ślad z opcjonalną maską."
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
-msgstr ""
+msgstr "Pola śladu i maski są 32-bitowymi szerokimi liczbami bez znaku."
 
 #: ../src/firewall-config.glade.h:204
 msgid "Mark:"
-msgstr ""
+msgstr "Ślad:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Mask:"
-msgstr ""
+msgstr "Maska:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Please enter the module name."
@@ -1685,11 +1681,11 @@ msgstr "odwrócone"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Aby to włączyć, działanie musi wynosić „reject”, a rodzina „ipv4” lub "
-"„ipv6” (nie oba)."
+"Aby to włączyć, działanie musi wynosić „reject”, a rodzina „ipv4” lub „ipv6” "
+"(nie oba)."
 
 #: ../src/firewall-config.glade.h:225
 msgid "with Type:"

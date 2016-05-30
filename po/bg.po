@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Valentin Laskov <laskov@festa.bg>, 2012-2014
 msgid ""
@@ -9,16 +9,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Bulgarian (http://www.transifex.com/projects/p/firewalld/"
 "language/bg/)\n"
 "Language: bg\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -214,7 +214,8 @@ msgstr "Зона по подразбиране: '%s'"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Зона '{zone}' е активна за връзка '{connection}' на интерфейс '{interface}'"
 
@@ -566,8 +567,7 @@ msgstr ""
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -795,9 +795,8 @@ msgid "Change default zone for connections or interfaces."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Смяна на подразбиращата се зона."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
@@ -1497,18 +1496,16 @@ msgid "Log Denied"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Моля, въведете името на модула."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Моля, въведете порт и протокол."
+msgstr ""
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
@@ -1592,8 +1589,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:225

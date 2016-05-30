@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # ataliba <ataliba@ataliba.eti.br>, 2013
 # ataliba <ataliba@ataliba.eti.br>, 2013
@@ -25,8 +25,8 @@
 # Rodrigo Padula de Oliveira <rodrigopadula@gmail.com>, 2005-2006
 # Taylon Silmer <taylonsilva@gmail.com>, 2010
 # Valnir Ferreira Jr. <vferreir@redhat.com>, 2006-2007
-# Marco Aurélio Krause <ouesten@me.com>, 2015. #zanata
 # Andrea <adallape@redhat.com>, 2016. #zanata
+# Daniel Lara <danniel@fedoraproject.org>, 2016. #zanata
 # Maria Andrada <msuppesd@redhat.com>, 2016. #zanata
 # Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
 msgid ""
@@ -34,16 +34,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
-"PO-Revision-Date: 2016-03-31 12:32-0400\n"
-"Last-Translator: Maria Andrada <msuppesd@redhat.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
-"firewalld/language/pt_BR/)\n"
-"Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-05-17 08:06-0400\n"
+"Last-Translator: Andrea <adallape@redhat.com>\n"
+"Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
+"firewalld/language/pt_BR/)\n"
+"Language: pt-BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -109,7 +109,7 @@ msgstr "Selecione zona para conexão '%s'"
 
 #: ../src/firewall-applet:165 ../src/firewall-config:6478
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "Falha ao definir o fuso {zone} para conexão{connection}"
 
 #: ../src/firewall-applet:179
 #, c-format
@@ -219,11 +219,11 @@ msgstr "{entry} (Zona: {zone})"
 
 #: ../src/firewall-applet:749 ../src/firewall-config:1282
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "Falha ao obter conexões de NetworkManager"
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1135
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr " NetworkManager sem importações disponíveis"
 
 #: ../src/firewall-applet:840
 msgid "No connection to firewall daemon"
@@ -240,7 +240,8 @@ msgstr "Zona Padrão: '%s'"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zona '{zone}' ativada para conexão '{connection}' na interface '{interface}'"
 
@@ -441,7 +442,7 @@ msgstr "descer"
 #: ../src/firewall-config:1669 ../src/firewall-config:3100
 #: ../src/firewall-config:3241
 msgid "mark"
-msgstr ""
+msgstr "marcação "
 
 #: ../src/firewall-config:1672 ../src/firewall-config:1711
 #: ../src/firewall-config:1716
@@ -593,8 +594,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "O encaminhamento para outro sistema só é útil se a interface estiver "
@@ -837,13 +837,12 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Altera a zona padrão para conexão ou interface."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Mudar Zona Padrão"
+msgstr "Modificação do log negada"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Modificação do valor do log negada"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1040,8 +1039,8 @@ msgid ""
 msgstr ""
 "Adicione entradas para o encaminhamento de portas tanto de uma porta para "
 "outra no sistema local, quanto do sistema local para outro sistema. O "
-"encaminhamento para outro sistema só é útil se a interface estiver "
-"mascarada. O encaminhamento de portas é somente para IPv4."
+"encaminhamento para outro sistema só é útil se a interface estiver mascarada."
+" O encaminhamento de portas é somente para IPv4."
 
 #: ../src/firewall-config.glade.h:86
 msgid "Add Forward Port"
@@ -1072,6 +1071,7 @@ msgid ""
 msgstr ""
 "Marque na lista os tipos de ICMP que devem ser rejeitados. Todos os outros "
 "tipos serão permitidos passar pelo firewall. O padrão é não haver limitações."
+""
 
 #: ../src/firewall-config.glade.h:91
 msgid "ICMP Filter"
@@ -1258,7 +1258,7 @@ msgid ""
 "command wil not be listed here."
 msgstr ""
 "Entradas de IPSets. Você só será capaz de ver as entradas de ipsets que não "
-"estão utilizando a opção de tempo limite, também  só as entradas que foram "
+"estão utilizando a opção de tempo limite, além das entradas que foram "
 "adicionadas pelo firewalld. Entradas que foram diretamente adicionadas com o "
 "comando ipset não estarão listadas aqui. "
 
@@ -1268,8 +1268,8 @@ msgid ""
 "The entries should be taken care directly with the ipset command."
 msgstr ""
 "Este IPSet utiliza a opção de limite de tempo, portanto nenhuma entrada é "
-"visível aqui. As entradas devem ser atendidas diretamente pelo comando "
-"ipset. "
+"visível aqui. As entradas devem ser atendidas diretamente pelo comando ipset."
+" "
 
 #: ../src/firewall-config.glade.h:132
 msgid "Entries"
@@ -1555,7 +1555,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Log negado:"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Lockdown:"
@@ -1571,11 +1571,11 @@ msgstr "Configurações base de IPSet"
 
 #: ../src/firewall-config.glade.h:189
 msgid "Please configure base ipset settings:"
-msgstr "Por favor configure ipset base:"
+msgstr "Por favor, configure ipset base:"
 
 #: ../src/firewall-config.glade.h:190
 msgid "Type:"
-msgstr "Tipo"
+msgstr "Tipo:"
 
 #: ../src/firewall-config.glade.h:191
 msgid "Timeout:"
@@ -1607,37 +1607,37 @@ msgstr "Família"
 
 #: ../src/firewall-config.glade.h:198
 msgid "Please select an ipset:"
-msgstr "Por favor selecione um ipset:"
+msgstr "Por favor, selecione um ipset:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Log Denied"
-msgstr ""
+msgstr "Log negado"
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Por favor insira o nome do módulo"
+msgstr "Por favor, escolha o valor de log negado: "
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
-msgstr ""
+msgstr "Marcação "
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Por favor entre com uma porta e protocolo."
+msgstr "Por favor, insira uma marcação com uma máscara opcional. "
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"A marcação e os campos de máscara são ambos números de 32 bits de largura "
+"sem sinais.  "
 
 #: ../src/firewall-config.glade.h:204
 msgid "Mark:"
-msgstr ""
+msgstr "Marcação:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Mask:"
-msgstr ""
+msgstr "Máscara:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Please enter the module name."
@@ -1712,8 +1712,8 @@ msgstr "inverso"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Para habilitar isto, o Action precisa estar definido como 'reject' e Family "
 "como 'ipv4' ou 'ipv6' (não como ambos)"

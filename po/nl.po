@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Bart Couvreur <couf@fedoraproject.org>, 2007
 # Geert Warrink <geert.warrink@onsnet.nu>, 2009-2014
@@ -15,16 +15,16 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-04-19 11:13+0200\n"
-"PO-Revision-Date: 2016-01-20 09:49-0500\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2016-04-25 07:22-0400\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/firewalld/language/"
 "nl/)\n"
 "Language: nl\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.8.3\n"
+"X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:405
 msgid "Firewall Applet"
@@ -90,7 +90,7 @@ msgstr "Selecteer zone voor verbinding '%s'"
 
 #: ../src/firewall-applet:165 ../src/firewall-config:6478
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "Instellen van zone {zone} voor verbinding {connection} misluktr"
 
 #: ../src/firewall-applet:179
 #, c-format
@@ -199,11 +199,11 @@ msgstr "{entry} (Zone: {zone})"
 
 #: ../src/firewall-applet:749 ../src/firewall-config:1282
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "Verbinding van NetworkManager krijgen mislukte"
 
 #: ../src/firewall-applet:761 ../src/firewall-config:1135
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "Er is geen NetworkManager import beschikbaar"
 
 #: ../src/firewall-applet:840
 msgid "No connection to firewall daemon"
@@ -220,7 +220,8 @@ msgstr "Standaard zone: '%s'"
 
 #: ../src/firewall-applet:860
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zone '{zone}' actief voor verbinding '{connection}' op interface "
 "'{interface}'"
@@ -421,7 +422,7 @@ msgstr "laten vallen"
 #: ../src/firewall-config:1669 ../src/firewall-config:3100
 #: ../src/firewall-config:3241
 msgid "mark"
-msgstr ""
+msgstr "markeer"
 
 #: ../src/firewall-config:1672 ../src/firewall-config:1711
 #: ../src/firewall-config:1716
@@ -573,8 +574,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4204
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Het doorsturen naar een ander systeem is alleen nuttig als de interface "
@@ -811,13 +811,12 @@ msgid "Change default zone for connections or interfaces."
 msgstr "Verander standaard zone voor verbindingen of interfaces."
 
 #: ../src/firewall-config.glade.h:47
-#, fuzzy
 msgid "Change Log Denied"
-msgstr "Verander standaard zone"
+msgstr "Verander log-geweigerd"
 
 #: ../src/firewall-config.glade.h:48
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "Verander log-geweigerd waarde"
 
 #: ../src/firewall-config.glade.h:49
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1298,8 +1297,8 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"ICMP types kunnen alleen in de permanente configuratie view veranderd "
-"worden. De runtime configuratie van ICMP types is gefixeerd."
+"ICMP types kunnen alleen in de permanente configuratie view veranderd worden."
+" De runtime configuratie van ICMP types is gefixeerd."
 
 #: ../src/firewall-config.glade.h:143
 msgid ""
@@ -1532,7 +1531,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "Log-geweigerd"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Lockdown:"
@@ -1588,33 +1587,33 @@ msgstr "Selecteer een ipset:"
 
 #: ../src/firewall-config.glade.h:199
 msgid "Log Denied"
-msgstr ""
+msgstr "Log-geweigerd"
 
 #: ../src/firewall-config.glade.h:200
-#, fuzzy
 msgid "Please select the log denied value:"
-msgstr "Vul de module naam in."
+msgstr "Selecteer de log-geweigerd waarde"
 
 #: ../src/firewall-config.glade.h:201
 msgid "Mark"
-msgstr ""
+msgstr "Markeer"
 
 #: ../src/firewall-config.glade.h:202
-#, fuzzy
 msgid "Please enter a mark with an optional mask."
-msgstr "Vul een poort en protocol in."
+msgstr "Vul een markeerteken in met een optioneel masker"
 
 #: ../src/firewall-config.glade.h:203
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
 msgstr ""
+"De martkeer en masker velden  zijn beid 32 bits brede gehele getaalen zonder "
+"teken"
 
 #: ../src/firewall-config.glade.h:204
 msgid "Mark:"
-msgstr ""
+msgstr "Markering:"
 
 #: ../src/firewall-config.glade.h:205
 msgid "Mask:"
-msgstr ""
+msgstr "Masker:"
 
 #: ../src/firewall-config.glade.h:206
 msgid "Please enter the module name."
@@ -1688,11 +1687,11 @@ msgstr "geïnverteerd"
 
 #: ../src/firewall-config.glade.h:224
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Om dit aan te zetten moet Actie 'afwijzen' zijn en Familie 'ipv4' of "
-"'ipv6' (niet beide)."
+"Om dit aan te zetten moet Actie 'afwijzen' zijn en Familie 'ipv4' of 'ipv6' "
+"(niet beide)."
 
 #: ../src/firewall-config.glade.h:225
 msgid "with Type:"
