@@ -60,8 +60,12 @@ def ifcfg_set_zone_of_interface(zone, interface):
     """Set zone (ZONE=<zone>) in the ifcfg file that uses the interface
     (DEVICE=<interface>)"""
 
+    if zone == None:
+        zone = ""
+
     ifcfg_file = search_ifcfg_of_interface(interface)
-    if ifcfg_file is not None and ifcfg_file.get("ZONE") != zone:
+    if ifcfg_file is not None and ifcfg_file.get("ZONE") != zone and not \
+       (ifcfg_file.get("ZONE") is None and zone == ""):
         log.debug1("Setting ZONE=%s in '%s'" % (zone, ifcfg_file.filename))
         ifcfg_file.set("ZONE", zone)
         ifcfg_file.write()
