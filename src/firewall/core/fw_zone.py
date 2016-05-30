@@ -30,6 +30,7 @@ from firewall.core.rich import Rich_Rule, Rich_Accept, Rich_Reject, \
 from firewall.core.ipXtables import OUR_CHAINS
 from firewall.core.fw_transaction import FirewallTransaction, \
     FirewallZoneTransaction
+from firewall.core.fw_ifcfg import ifcfg_set_zone_of_interface
 from firewall import errors
 from firewall.errors import FirewallError
 from firewall.fw_types import LastUpdatedOrderedDict
@@ -590,6 +591,8 @@ class FirewallZone(object):
         zone_transaction.add_fail(self.__unregister_interface, _obj,
                                   interface_id)
 
+        zone_transaction.add_post(ifcfg_set_zone_of_interface, zone, interface)
+
         if use_zone_transaction is None:
             zone_transaction.execute(True)
 
@@ -662,6 +665,8 @@ class FirewallZone(object):
 
         zone_transaction.add_post(self.__unregister_interface, _obj,
                                   interface_id)
+
+        zone_transaction.add_post(ifcfg_set_zone_of_interface, "", interface)
 
         if use_zone_transaction is None:
             zone_transaction.execute(True)
