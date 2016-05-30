@@ -613,7 +613,7 @@ class FirewallZone(object):
         if _old_zone is not None:
             self.remove_interface(_old_zone, interface)
 
-        _zone = self.add_interface(_new_zone, interface, sender)
+        _zone = self.add_interface(zone, interface, sender)
 
         return _zone
 
