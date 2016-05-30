@@ -378,6 +378,38 @@ assert_good "--permanent --remove-protocol ddp --remove-protocol=gre"
 assert_bad  "--permanent  --query-protocol=ddp"
 assert_bad  "--permanent  --query-protocol=gre"
 
+assert_bad  "   --add-source-port=666" # no protocol
+assert_bad  "   --add-source-port=666/dummy" # bad protocol
+assert_good "   --add-source-port=666/tcp --zone=${default_zone} --timeout=30m"
+assert_good "--remove-source-port=666/tcp"
+assert_good "   --add-source-port=111-222/udp"
+assert_good " --query-source-port=111-222/udp --zone=${default_zone}"
+assert_good "--remove-source-port 111-222/udp"
+assert_bad  " --query-source-port=111-222/udp"
+
+assert_bad  "--permanent    --add-source-port=666" # no protocol
+assert_bad  "--permanent    --add-source-port=666/dummy" # bad protocol
+assert_good "--permanent    --add-source-port=666/tcp"
+assert_good "--permanent --remove-source-port=666/tcp     --zone=${default_zone}"
+assert_good "--permanent    --add-source-port=111-222/udp --zone=${default_zone}"
+assert_good "--permanent  --query-source-port=111-222/udp"
+assert_good "--permanent --remove-source-port 111-222/udp"
+assert_bad  "--permanent  --query-source-port=111-222/udp"
+
+assert_good "   --add-source-port=80/tcp --add-source-port 443-444/udp"
+assert_good " --query-source-port=80/tcp --zone=${default_zone}"
+assert_good " --query-source-port=443-444/udp"
+assert_good "--remove-source-port 80/tcp --remove-source-port=443-444/udp"
+assert_bad  " --query-source-port=80/tcp"
+assert_bad  " --query-source-port=443-444/udp"
+
+assert_good "--permanent    --add-source-port=80/tcp --add-source-port 443-444/udp"
+assert_good "--permanent  --query-source-port=80/tcp --zone=${default_zone}"
+assert_good "--permanent  --query-source-port=443-444/udp"
+assert_good "--permanent --remove-source-port 80/tcp --remove-source-port=443-444/udp"
+assert_bad  "--permanent  --query-source-port=80/tcp"
+assert_bad  "--permanent  --query-source-port=443-444/udp"
+
 assert_good "   --add-masquerade --zone=${default_zone}"
 assert_good " --query-masquerade "
 assert_good "--remove-masquerade"
