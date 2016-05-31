@@ -32,6 +32,10 @@ from firewall.core.io.ifcfg import ifcfg
 def search_ifcfg_of_interface(interface):
     """search ifcfg file for the interface in config.IFCFGDIR"""
 
+    # Return quickly if config.IFCFGDIR does not exist
+    if not os.path.exists(config.IFCFGDIR):
+        return None
+
     filename = "%s/ifcfg-%s" % (config.IFCFGDIR, interface)
     if os.path.exists(filename):
         ifcfg_file = ifcfg(filename)
