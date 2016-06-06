@@ -21,6 +21,7 @@ BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 BuildRequires: docbook-style-xsl
 BuildRequires:  python2-devel
+BuildRequires: iptables, ebtables, ipset
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
