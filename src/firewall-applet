@@ -950,11 +950,11 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             self.shieldsupAction.setChecked(
                 self.default_zone == self.shields_up)
 
-        self.update_tooltip()
         if self.notificationsAction.isChecked():
             self.notify(escape(_("Connection to FirewallD established.")))
         self.setVisible(True)
         self.set_mode("normal")
+        self.update_tooltip()
 
     def connection_lost(self):
         self.default_zone = None
