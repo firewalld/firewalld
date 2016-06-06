@@ -2033,6 +2033,9 @@ class FirewallConfig(object):
             self.zoneStore.append([zone, Pango.Weight.BOLD])
         else:
             self.zoneStore.append([zone, Pango.Weight.NORMAL])
+        selection = self.zoneView.get_selection()
+        if selection.count_selected_rows() == 0:
+            selection.select_path(0)
 
     def conf_zone_updated_cb(self, zone):
         if self.runtime_view or zone != self.get_selected_zone():
@@ -5677,6 +5680,9 @@ class FirewallConfig(object):
             iter = self.ipsetConfIPSetStore.iter_next(iter)
         # not in list, append
         self.ipsetConfIPSetStore.append([ipset])
+        selection = self.ipsetConfIPSetView.get_selection()
+        if selection.count_selected_rows() == 0:
+            selection.select_path(0)
 
     def conf_ipset_updated_cb(self, ipset):
         if self.runtime_view or ipset != self.get_active_ipset():
@@ -6023,6 +6029,9 @@ class FirewallConfig(object):
             iter = self.icmpDialogIcmpStore.iter_next(iter)
         # not in list, append
         self.icmpDialogIcmpStore.append([icmp])
+        selection = self.icmpDialogIcmpView.get_selection()
+        if selection.count_selected_rows() == 0:
+            selection.select_path(0)
 
     def conf_icmp_updated_cb(self, zone):
         if self.runtime_view:
