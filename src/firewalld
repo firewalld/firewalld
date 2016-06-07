@@ -89,7 +89,9 @@ def setup_logging(args):
             log.addInfoLogging("*", log_file)
             log.addDebugLogging("*", log_file)
 
-def startup(args):
+    return log_file.fld()
+
+def startup(args, log_fd):
     try:
         if not args.nofork:
             # do the UNIX double-fork magic, see Stevens' "Advanced
@@ -111,6 +113,9 @@ def startup(args):
 
             # Iterate through and close all file descriptors.
             for fd in range(0, maxfd):
+                # Do not close the logger descriptor
+                if fd == log_fd:
+                    continue
                 try:
                     os.close(fd)
                 except OSError:      # ERROR, fd wasn't open to begin with (ignored)
@@ -171,14 +176,14 @@ def main():
     # Process the command-line arguments
     args = parse_cmdline()
 
-    setup_logging(args)
+    log_fd = setup_logging(args)
 
     # Don't attempt to run two copies of firewalld simultaneously
     if not args.nopid and firewalld_is_active():
         log.fatal(_("Not starting FirewallD, already running."))
         sys.exit(1)
 
-    startup(args)
+    startup(args, log_fd)
 
     sys.exit(0)
 
