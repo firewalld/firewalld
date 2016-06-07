@@ -638,10 +638,23 @@ class FirewallConfig(object):
         self.ipsetConfLoadDefaultsIPSetButton = \
             builder.get_object("ipsetConfLoadDefaultsIPSetButton")
 
+        self.ipsetConfAddEntryBox = \
+            builder.get_object("ipsetConfAddEntryBox")
+        self.ipsetConfAddEntryMenu = \
+            builder.get_object("ipsetConfAddEntryMenu")
+        self.ipsetConfAddEntryMenubutton = \
+            builder.get_object("ipsetConfAddEntryMenubutton")
         self.ipsetConfEditEntryButton = \
             builder.get_object("ipsetConfEditEntryButton")
-        self.ipsetConfRemoveEntryButton = \
-            builder.get_object("ipsetConfRemoveEntryButton")
+        self.ipsetConfRemoveEntryBox = \
+            builder.get_object("ipsetConfRemoveEntryBox")
+        self.ipsetConfRemoveEntryMenu = \
+            builder.get_object("ipsetConfRemoveEntryMenu")
+        self.ipsetConfRemoveEntryMenubutton = \
+            builder.get_object("ipsetConfRemoveEntryMenubutton")
+        self.ipsetConfRemoveEntryMenuitem = \
+            builder.get_object("ipsetConfRemoveEntryMenuitem")
+        self.ipsetConfRemoveEntryMenuitem.set_sensitive(False)
 
         self.ipsetEntryDialog = \
             builder.get_object("ipsetEntryDialog")
@@ -5358,6 +5371,9 @@ class FirewallConfig(object):
             iter = self.ipsetConfIPSetStore.iter_next(iter)
         selection.select_path(0)
 
+        self.ipsetConfRemoveEntryMenubutton.set_sensitive(
+            len(self.ipsetConfEntryStore) > 0)
+
     def onIPSetConfAddIPSet(self, *args):
         self.add_edit_ipset(True)
 
@@ -5546,6 +5562,60 @@ class FirewallConfig(object):
     def onIPSetConfAddEntry(self, *args):
         self.add_edit_ipset_entry(True)
 
+    def onIPSetConfAddEntriesFromFile(self, *args):
+        dialog = Gtk.FileChooserDialog(
+            _("Please select a file"), None, Gtk.FileChooserAction.OPEN,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+
+        filefilter = Gtk.FileFilter()
+        filefilter.set_name(_("Text Files"))
+        filefilter.add_mime_type("text/plain")
+        dialog.add_filter(filefilter)
+
+        filefilter = Gtk.FileFilter()
+        filefilter.set_name(_("All Files"))
+        filefilter.add_pattern("*")
+        dialog.add_filter(filefilter)
+
+        result = dialog.run()
+        dialog.hide()
+
+        if result == Gtk.ResponseType.OK:
+            filename = dialog.get_filename()
+        else:
+            return
+
+        dialog.destroy()
+
+        entries = self.get_ipset_entries_from_file(filename)
+
+        active_ipset = self.get_active_ipset()
+
+        if self.runtime_view:
+            old_entries = self.fw.getEntries(active_ipset)
+
+            changed = False
+            for entry in entries:
+                if entry not in old_entries:
+                    old_entries.append(entry)
+                    changed = True
+            if changed:
+                self.fw.setEntries(active_ipset, old_entries)
+        else:
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            settings = ipset.getSettings()
+
+            changed = False
+            for entry in entries:
+                if not settings.queryEntry(entry):
+                    settings.addEntry(entry)
+                    changed = True
+            if changed:
+                ipset.update(settings)
+
     def onIPSetConfEditEntry(self, *args):
         self.add_edit_ipset_entry(False)
 
@@ -5571,6 +5641,76 @@ class FirewallConfig(object):
             ipset.removeEntry(entry)
             self.changes_applied()
 
+        self.ipsetConfRemoveEntryMenubutton.set_sensitive(
+            len(self.ipsetConfEntryStore) > 0)
+
+    def onIPSetConfRemoveEntriesFromFile(self, *args):
+        dialog = Gtk.FileChooserDialog(
+            _("Please select a file"), None, Gtk.FileChooserAction.OPEN,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+        dialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        dialog.set_transient_for(self.mainWindow)
+
+        filefilter = Gtk.FileFilter()
+        filefilter.set_name(_("Text Files"))
+        filefilter.add_mime_type("text/plain")
+        dialog.add_filter(filefilter)
+
+        filefilter = Gtk.FileFilter()
+        filefilter.set_name(_("All Files"))
+        filefilter.add_pattern("*")
+        dialog.add_filter(filefilter)
+
+        result = dialog.run()
+        dialog.hide()
+
+        if result == Gtk.ResponseType.OK:
+            filename = dialog.get_filename()
+        else:
+            return
+
+        dialog.destroy()
+
+        entries = self.get_ipset_entries_from_file(filename)
+
+        active_ipset = self.get_active_ipset()
+
+        if self.runtime_view:
+            old_entries = self.fw.getEntries(active_ipset)
+
+            changed = False
+            for entry in entries:
+                if entry in old_entries:
+                    old_entries.remove(entry)
+                    changed = True
+            if changed:
+                self.fw.setEntries(active_ipset, old_entries)
+        else:
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            settings = ipset.getSettings()
+
+            changed = False
+            for entry in entries:
+                if settings.queryEntry(entry):
+                    settings.removeEntry(entry)
+                    changed = True
+            if changed:
+                ipset.update(settings)
+
+    def onIPSetConfRemoveAllEntries(self, *args):
+        active_ipset = self.get_active_ipset()
+        if self.runtime_view:
+            self.fw.setEntries(active_ipset, [ ])
+            self.changes_applied()
+        else:
+            ipset = self.fw.config().getIPSetByName(active_ipset)
+            ipset.setEntries([ ])
+            self.changes_applied()
+
+        self.ipsetConfRemoveEntryMenubutton.set_sensitive(
+            len(self.ipsetConfEntryStore) > 0)
+
     def onIPSetEntryChanged(self, *args):
         settings = self.active_ipset_settings
         entry = self.ipsetEntryDialogEntryEntry.get_text()
@@ -5586,10 +5726,10 @@ class FirewallConfig(object):
         (model, iter) = selection.get_selected()
         if iter:
             self.ipsetConfEditEntryButton.set_sensitive(True)
-            self.ipsetConfRemoveEntryButton.set_sensitive(True)
+            self.ipsetConfRemoveEntryMenuitem.set_sensitive(True)
         else:
             self.ipsetConfEditEntryButton.set_sensitive(False)
-            self.ipsetConfRemoveEntryButton.set_sensitive(False)
+            self.ipsetConfRemoveEntryMenuitem.set_sensitive(False)
 
     def add_edit_ipset_entry(self, add):
         active_ipset = self.get_active_ipset()
@@ -5659,6 +5799,9 @@ class FirewallConfig(object):
         # nothing found, so add it
         self.ipsetConfEntryStore.append([entry])
 
+        self.ipsetConfRemoveEntryMenubutton.set_sensitive(
+            len(self.ipsetConfEntryStore) > 0)
+
     def ipset_entry_removed_cb(self, ipset, entry):
         if not self.runtime_view or ipset != self.get_active_ipset():
             return
@@ -5668,6 +5811,9 @@ class FirewallConfig(object):
                 self.ipsetConfEntryStore.remove(iter)
                 break
             iter = self.ipsetConfEntryStore.iter_next(iter)
+
+        self.ipsetConfRemoveEntryMenubutton.set_sensitive(
+            len(self.ipsetConfEntryStore) > 0)
 
     def conf_ipset_added_cb(self, ipset):
         if self.runtime_view:
@@ -5784,6 +5930,9 @@ class FirewallConfig(object):
 
         self.ipsetConfRemoveIPSetButton.set_sensitive(not builtin and default)
         self.ipsetConfLoadDefaultsIPSetButton.set_sensitive(not default)
+
+        self.ipsetConfRemoveEntryMenubutton.set_sensitive(
+            len(self.ipsetConfEntryStore) > 0)
 
     def get_active_icmp(self):
         selection = self.icmpDialogIcmpView.get_selection()
@@ -6998,6 +7147,25 @@ class FirewallConfig(object):
 
     def onDirectPassthroughDialogChanged(self, *args):
         self.directPassthroughDialogOkButton.set_sensitive(True)
+
+    def get_ipset_entries_from_file(self, filename):
+        entries = [ ]
+        try:
+            f = open(filename)
+        except Exception as ex:
+            self._error(_("Failed to read file '%s': %s") % (filename, ex))
+        else:
+            for line in f:
+                if not line:
+                    break
+                line = line.strip()
+                if len(line) < 1 or line[0] in ['#', ';']:
+                    continue
+                if line not in entries:
+                    entries.append(line)
+            f.close()
+        return entries
+
 
 def combobox_select_text(combobox, value, insensitive=False):
     model = combobox.get_model()
