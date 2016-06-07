@@ -88,7 +88,7 @@ Requires: PyQt4
 Requires: pygobject3-base
 %endif
 Requires: libnotify
-Requires: NetworkManager-glib
+Requires: NetworkManager-libnm
 Requires: dbus-x11
 
 %description -n firewall-applet
@@ -105,7 +105,7 @@ Requires: python3-gobject
 %else
 Requires: pygobject3-base
 %endif
-Requires: NetworkManager-glib
+Requires: NetworkManager-libnm
 Requires: dbus-x11
 
 %description -n firewall-config
