@@ -550,7 +550,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         if nm_is_imported():
             self.bus.add_signal_receiver(
                 self.nm_signal_receiver,
-                dbus_interface=NM.DBUS_INTERFACE,
+                dbus_interface=nm_get_dbus_interface(),
                 signal_name='PropertiesChanged',
                 member_keyword='member')
         self.nm_signal_receiver()

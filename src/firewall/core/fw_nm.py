@@ -21,10 +21,10 @@
 
 """Functions for NetworkManager interaction"""
 
-__all__ = [ "NM", "check_nm_imported", "nm_is_imported",
+__all__ = [ "check_nm_imported", "nm_is_imported",
             "nm_get_zone_of_connection", "nm_set_zone_of_connection",
             "nm_get_connections", "nm_get_connection_of_interface",
-            "nm_get_bus_name" ]
+            "nm_get_bus_name", "nm_get_dbus_interface" ]
 
 import gi
 try:
@@ -164,3 +164,8 @@ def nm_get_bus_name():
     except Exception as msg:
         log.debug2("Failed to get bus name of NetworkManager")
     return None
+
+def nm_get_dbus_interface():
+    if not _nm_imported:
+        return ""
+    return NM.DBUS_INTERFACE
