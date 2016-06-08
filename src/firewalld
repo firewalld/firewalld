@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2015 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
 #
@@ -104,26 +104,18 @@ def startup(args):
             os.setsid()
             os.umask(os.umask(0o077) | 0o022)
 
-            import resource          # Resource usage information.
-            maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
-            if (maxfd == resource.RLIM_INFINITY):
-                maxfd = 1024
-
-            # Iterate through and close all file descriptors.
-            for fd in range(0, maxfd):
-                try:
-                    os.close(fd)
-                except OSError:      # ERROR, fd wasn't open to begin with (ignored)
-                    pass
+            # Do not close the file descriptors here anymore
+            # File descriptors are now closed in runProg before execve
 
             # Redirect the standard I/O file descriptors to /dev/null
-            if (hasattr(os, "devnull")):
+            if hasattr(os, "devnull"):
                 REDIRECT_TO = os.devnull
             else:
                 REDIRECT_TO = "/dev/null"
-            os.open(REDIRECT_TO, os.O_RDWR) # standard input (0)
-            os.dup2(0, 1)                   # standard output (1)
-            os.dup2(0, 2)                   # standard error (2)
+            fd = os.open(REDIRECT_TO, os.O_RDWR)
+            os.dup2(fd, 0)  # standard input (0)
+            os.dup2(fd, 1)  # standard output (1)
+            os.dup2(fd, 2)  # standard error (2)
 
         if not args.nopid:
             # write the pid file
