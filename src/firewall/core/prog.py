@@ -22,6 +22,11 @@
 __all__ = [ "runProg" ]
 
 import os
+import resource # Resource usage information.
+
+maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
+if maxfd == resource.RLIM_INFINITY:
+    maxfd = 1024
 
 def runProg(prog, argv=None, stdin=None):
     if argv is None:
@@ -32,6 +37,17 @@ def runProg(prog, argv=None, stdin=None):
     (rfd, wfd) = os.pipe()
     pid = os.fork()
     if pid == 0:
+
+        # Iterate through and close all file descriptors.
+        for fd in range(0, maxfd):
+            if fd == wfd: # Do not close write end of pipe
+                continue
+            try:
+                os.close(fd)
+            except OSError:
+                # ERROR, fd wasn't open to begin with (ignored)
+                pass
+
         try:
             if stdin is not None:
                 fd = os.open(stdin, os.O_RDONLY)
