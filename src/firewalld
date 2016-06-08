@@ -27,12 +27,10 @@
 import os
 import sys
 import dbus
-import syslog
 import traceback
 import argparse
 
 from firewall import config
-from firewall.errors import *
 from firewall.functions import firewalld_is_active
 from firewall.core.logger import log, FileLog
 
@@ -134,7 +132,7 @@ def startup(args):
             os.remove(config.FIREWALLD_PIDFILE)
 
     except OSError as e:
-        log.fatal(_("Fork #1 failed: %d (%s)") % (e.errno, e.strerror))
+        log.fatal("Fork #1 failed: %d (%s)" % (e.errno, e.strerror))
         log.error(traceback.format_exc())
         if not args.nopid and os.path.exists(config.FIREWALLD_PIDFILE):
             os.remove(config.FIREWALLD_PIDFILE)
@@ -157,7 +155,7 @@ def startup(args):
 def main():
     # firewalld should only be run as the root user
     if os.getuid() != 0:
-        print(_("You need to be root to run %s.") % sys.argv[0])
+        print("You need to be root to run %s." % sys.argv[0])
         sys.exit(-1)
 
     # Process the command-line arguments
@@ -167,7 +165,7 @@ def main():
 
     # Don't attempt to run two copies of firewalld simultaneously
     if not args.nopid and firewalld_is_active():
-        log.fatal(_("Not starting FirewallD, already running."))
+        log.fatal("Not starting FirewallD, already running.")
         sys.exit(1)
 
     startup(args)
