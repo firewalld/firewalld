@@ -342,7 +342,7 @@ assert_bad  " --query-protocol=gre"
 
 assert_bad  "   --add-source-port=666" # no protocol
 assert_bad  "   --add-source-port=666/dummy" # bad protocol
-assert_good "   --add-source-port=666/tcp --zone=${default_zone} --timeout=30m"
+assert_good "   --add-source-port=666/tcp --zone=${default_zone}"
 assert_good "--remove-source-port=666/tcp"
 assert_good "   --add-source-port=111-222/udp"
 assert_good " --query-source-port=111-222/udp --zone=${default_zone}"
