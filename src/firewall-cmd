@@ -26,13 +26,17 @@ import sys
 sys.modules['gobject'] = GObject
 
 import argparse
-import dbus
 import os
 
-from firewall.client import *
-from firewall.errors import *
+from firewall.client import FirewallClient, FirewallClientIPSetSettings, \
+    FirewallClientZoneSettings, FirewallClientServiceSettings, \
+    FirewallClientIcmpTypeSettings
+from firewall.errors import FirewallError
+from firewall import errors
 from firewall.functions import joinArgs, splitArgs
-from firewall.core.fw_nm import *
+from firewall.core.fw_nm import nm_is_imported, \
+    nm_get_connection_of_interface, nm_get_zone_of_connection, \
+    nm_set_zone_of_connection
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
@@ -814,9 +818,9 @@ if options_standalone and (options_zone or options_permanent or \
                            options_direct or options_permanent_only or\
                            options_ipset):
     cmd.fail(parser.format_usage() +
-           "Can't use stand-alone options with other options.")
+             "Can't use stand-alone options with other options.")
 
-if (options_ipset and not options_desc_xml_file and not a.ipset):
+if options_ipset and not options_desc_xml_file and not a.ipset:
     cmd.fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
@@ -830,32 +834,32 @@ if (options_direct or options_permanent_only) and \
 
 if (a.direct and not options_direct) or (options_direct and not a.direct):
     cmd.fail(parser.format_usage() +
-           "Wrong usage of 'direct' options.")
+             "Wrong usage of 'direct' options.")
 
-if (a.name and not (a.new_zone_from_file or a.new_service_from_file or \
-                    a.new_ipset_from_file or a.new_icmptype_from_file)):
+if a.name and not (a.new_zone_from_file or a.new_service_from_file or \
+                   a.new_ipset_from_file or a.new_icmptype_from_file):
     cmd.fail(parser.format_usage() + "Wrong usage of '--name' option.")
 
 if options_require_permanent and not a.permanent:
     cmd.fail(parser.format_usage() +
-           "Option can be used only with --permanent.")
+             "Option can be used only with --permanent.")
 
 if options_config and options_zone:
     cmd.fail(parser.format_usage() +
-           "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
+             "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
 
 if a.timeout != "0":
     value = 0
     unit = 's'
     if len(a.timeout) < 1:
         cmd.fail(parser.format_usage() +
-               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+                 "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
     elif len(a.timeout) == 1:
         if a.timeout.isdigit():
             value = int (a.timeout[0])
         else:
             cmd.fail(parser.format_usage() +
-               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+                     "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
     elif len(a.timeout) > 1:
         if a.timeout.isdigit():
             value = int(a.timeout)
@@ -865,7 +869,7 @@ if a.timeout != "0":
                 value = int (a.timeout[:-1])
             else:
                 cmd.fail(parser.format_usage() +
-                   "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+                         "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
             unit = a.timeout[-1:].lower()
     if unit == 's':
         a.timeout = value
@@ -875,7 +879,7 @@ if a.timeout != "0":
         a.timeout = value * 60 * 60
     else:
         cmd.fail(parser.format_usage() +
-               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+                 "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
 else:
     a.timeout = 0
 
@@ -887,7 +891,7 @@ if a.timeout and not (a.add_service or a.add_port or a.add_protocol or \
 if a.permanent:
     if a.timeout:
         cmd.fail(parser.format_usage() +
-               "Can't specify timeout for permanent action.")
+                 "Can't specify timeout for permanent action.")
     if options_config and not a.zone:
         pass
     elif options_permanent:
@@ -910,9 +914,9 @@ fw = FirewallClient()
 fw.setExceptionHandler(cmd.exception_handler)
 if fw.connected == False:
     if a.state:
-        cmd.print_and_exit ("not running", NOT_RUNNING)
+        cmd.print_and_exit ("not running", errors.NOT_RUNNING)
     else:
-        cmd.print_and_exit ("FirewallD is not running", NOT_RUNNING)
+        cmd.print_and_exit ("FirewallD is not running", errors.NOT_RUNNING)
 
 if options_zone_ops and not zone and not (a.service and options_service):
     default = fw.getDefaultZone()
@@ -979,7 +983,7 @@ if a.permanent:
     elif a.path_ipset:
         ipset = fw.config().getIPSetByName(a.path_ipset)
         cmd.print_and_exit("%s/%s" % (ipset.get_property("path"),
-                                    ipset.get_property("filename")))
+                                      ipset.get_property("filename")))
 
     elif a.add_entry:
         ipset = fw.config().getIPSetByName(a.ipset)
@@ -1092,7 +1096,7 @@ if a.permanent:
     elif a.path_zone:
         zone = fw.config().getZoneByName(a.path_zone)
         cmd.print_and_exit("%s/%s" % (zone.get_property("path"),
-                                    zone.get_property("filename")))
+                                      zone.get_property("filename")))
 
     elif a.new_service:
         config = fw.config()
@@ -1105,7 +1109,7 @@ if a.permanent:
             obj = service_reader(filename, dirname)
         except FirewallError as msg:
             cmd.fail("Failed to load service file '%s': %s" % \
-                   (a.new_service_from_file, msg))
+                     (a.new_service_from_file, msg))
         except IOError as msg:
             cmd.fail("Failed to load service file: %s" % msg)
 
@@ -1131,7 +1135,7 @@ if a.permanent:
     elif a.path_service:
         service = fw.config().getServiceByName(a.path_service)
         cmd.print_and_exit("%s/%s" % (service.get_property("path"),
-                                    service.get_property("filename")))
+                                      service.get_property("filename")))
 
     elif a.new_icmptype:
         config = fw.config()
@@ -1144,7 +1148,7 @@ if a.permanent:
             obj = icmptype_reader(filename, dirname)
         except FirewallError as msg:
             cmd.fail("Failed to load icmptype file '%s': %s" % \
-                   (a.new_icmptype_from_file, msg))
+                     (a.new_icmptype_from_file, msg))
         except IOError as msg:
             cmd.fail("Failed to load icmptype file: %s" % msg)
 
@@ -1170,26 +1174,27 @@ if a.permanent:
     elif a.path_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.path_icmptype)
         cmd.print_and_exit("%s/%s" % (icmptype.get_property("path"),
-                                    icmptype.get_property("filename")))
+                                      icmptype.get_property("filename")))
 
     elif a.icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.icmptype)
         settings = icmptype.getSettings()
 
         if a.add_destination:
-            cmd.add_sequence(a.add_destination, fw_zone.addDestination,
-                             fw_zone.queryDestination,
+            cmd.add_sequence(a.add_destination, settings.addDestination,
+                             settings.queryDestination,
                              cmd.check_destination_ipv, "'%s'")
             icmptype.update(settings)
 
         elif a.remove_destination:
-            cmd.remove_sequence(a.remove_destination, fw_zone.removeDestination,
-                                fw_zone.queryDestination,
+            cmd.remove_sequence(a.remove_destination,
+                                settings.removeDestination,
+                                settings.queryDestination,
                                 cmd.check_destination_ipv, "'%s'")
             icmptype.update(settings)
 
         elif a.query_destination:
-            cmd.query_sequence(a.query_destination, fw_zone.queryDestination,
+            cmd.query_sequence(a.query_destination, settings.queryDestination,
                                cmd.check_destination_ipv , "'%s'")
 
         elif a.get_destinations:
@@ -1248,8 +1253,8 @@ if a.permanent:
             service.update(settings)
 
         elif a.query_protocol:
-             cmd.query_sequence(a.query_protocol, settings.queryProtocol,
-                                None, "'%s'")
+            cmd.query_sequence(a.query_protocol, settings.queryProtocol,
+                               None, "'%s'")
 
         elif a.get_protocols:
             l = settings.getProtocols()
@@ -1275,17 +1280,17 @@ if a.permanent:
             cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
 
         elif a.add_module:
-            cmd.add_sequence(a.add_module, fw_zone.addModule,
-                             fw_zone.queryModule, None, "'%s'")
+            cmd.add_sequence(a.add_module, settings.addModule,
+                             settings.queryModule, None, "'%s'")
             service.update(settings)
 
         elif a.remove_module:
-            cmd.remove_sequence(a.remove_module, fw_zone.removeModule,
-                                fw_zone.queryModule, None, "'%s'")
+            cmd.remove_sequence(a.remove_module, settings.removeModule,
+                                settings.queryModule, None, "'%s'")
             service.update(settings)
 
         elif a.query_module:
-            cmd.query_sequence(a.query_module, fw_zone.queryModule,
+            cmd.query_sequence(a.query_module, settings.queryModule,
                                None, "'%s'")
 
         elif a.get_modules:
@@ -1410,24 +1415,24 @@ if a.permanent:
         direct = fw.config().direct()
 
         if a.passthrough:
-            if len (a.passthrough) < 2:
+            if len(a.passthrough) < 2:
                 cmd.fail("usage: --permanent --direct --passthrough { ipv4 | ipv6 | eb } <args>")
             cmd.print_msg(direct.addPassthrough(cmd.check_ipv(a.passthrough[0]),
                                                 splitArgs(a.passthrough[1])))
 
         if a.add_passthrough:
-            if len (a.add_passthrough) < 2:
+            if len(a.add_passthrough) < 2:
                 cmd.fail("usage: --permanent --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
             cmd.print_msg(direct.addPassthrough(cmd.check_ipv(a.add_passthrough[0]),
                                                 splitArgs(a.add_passthrough[1])))
 
         elif a.remove_passthrough:
-            if len (a.remove_passthrough) < 2:
+            if len(a.remove_passthrough) < 2:
                 cmd.fail("usage: --permanent --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
             direct.removePassthrough(cmd.check_ipv(a.remove_passthrough[0]),
                                      splitArgs(a.remove_passthrough[1]))
         elif a.query_passthrough:
-            if len (a.query_passthrough) < 2:
+            if len(a.query_passthrough) < 2:
                 cmd.fail("usage: --permanent --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
             cmd.print_query_result(
                 direct.queryPassthrough(cmd.check_ipv(a.query_passthrough[0]),
@@ -1456,8 +1461,8 @@ if a.permanent:
             sys.exit(0)
         elif a.get_chains:
             cmd.print_and_exit(
-                    " ".join(direct.getChains(cmd.check_ipv(a.get_chains[0]),
-                                                         a.get_chains[1])))
+                " ".join(direct.getChains(cmd.check_ipv(a.get_chains[0]),
+                                          a.get_chains[1])))
             sys.exit(0)
         elif a.get_all_chains:
             chains = direct.getAllChains()
@@ -1495,9 +1500,9 @@ if a.permanent:
             except ValueError:
                 cmd.fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             cmd.print_query_result(
-                    direct.queryRule(cmd.check_ipv(a.query_rule[0]),
-                                     a.query_rule[1], a.query_rule[2],
-                                     priority, splitArgs(a.query_rule[4])))
+                direct.queryRule(cmd.check_ipv(a.query_rule[0]),
+                                 a.query_rule[1], a.query_rule[2],
+                                 priority, splitArgs(a.query_rule[4])))
             sys.exit(0)
         elif a.get_rules:
             rules = direct.getRules(cmd.check_ipv(a.get_rules[0]),
@@ -1765,7 +1770,7 @@ elif a.state:
     if state == "RUNNING":
         cmd.print_and_exit ("running")
     else:
-        cmd.print_and_exit ("not running", NOT_RUNNING)
+        cmd.print_and_exit ("not running", errors.NOT_RUNNING)
 elif a.get_log_denied:
     cmd.print_and_exit(fw.getLogDenied())
 elif a.set_log_denied:
@@ -1781,24 +1786,24 @@ elif a.runtime_to_permanent:
     fw.runtimeToPermanent()
 elif a.direct:
     if a.passthrough:
-        if len (a.passthrough) < 2:
+        if len(a.passthrough) < 2:
             cmd.fail("usage: --direct --passthrough { ipv4 | ipv6 | eb } <args>")
         msg = fw.passthrough(cmd.check_ipv(a.passthrough[0]), splitArgs(a.passthrough[1]))
         if msg:
             print(msg)
 
     elif a.add_passthrough:
-        if len (a.add_passthrough) < 2:
+        if len(a.add_passthrough) < 2:
             cmd.fail("usage: --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
         fw.addPassthrough(cmd.check_ipv(a.add_passthrough[0]),
                           splitArgs(a.add_passthrough[1]))
     elif a.remove_passthrough:
-        if len (a.remove_passthrough) < 2:
+        if len(a.remove_passthrough) < 2:
             cmd.fail("usage: --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
         fw.removePassthrough(cmd.check_ipv(a.remove_passthrough[0]),
                              splitArgs(a.remove_passthrough[1]))
     elif a.query_passthrough:
-        if len (a.query_passthrough) < 2:
+        if len(a.query_passthrough) < 2:
             cmd.fail("usage: --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
         cmd.print_query_result(
             fw.queryPassthrough(cmd.check_ipv(a.query_passthrough[0]),
@@ -1809,7 +1814,7 @@ elif a.direct:
             cmd.print_msg(joinArgs(rule))
         sys.exit(0)
     elif a.get_all_passthroughs:
-        for (ipv,rule) in fw.getAllPassthroughs():
+        for (ipv, rule) in fw.getAllPassthroughs():
             cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
         sys.exit(0)
     elif a.add_chain:
@@ -1819,17 +1824,18 @@ elif a.direct:
                        a.remove_chain[1], a.remove_chain[2])
     elif a.query_chain:
         cmd.print_query_result(fw.queryChain(cmd.check_ipv(a.query_chain[0]),
-                                           a.query_chain[1], a.query_chain[2]))
+                                             a.query_chain[1],
+                                             a.query_chain[2]))
     elif a.get_chains:
         cmd.print_and_exit(" ".join(fw.getChains(cmd.check_ipv(a.get_chains[0]),
-                                  a.get_chains[1])))
+                                                 a.get_chains[1])))
     elif a.get_all_chains:
         chains = fw.getAllChains()
         for (ipv, table, chain) in chains:
             cmd.print_msg("%s %s %s" % (ipv, table, chain))
         sys.exit(0)
     elif a.add_rule:
-        if len (a.add_rule) < 5:
+        if len(a.add_rule) < 5:
             cmd.fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         try:
             priority = int(a.add_rule[3])
@@ -1838,7 +1844,7 @@ elif a.direct:
         fw.addRule(cmd.check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
                    priority, splitArgs(a.add_rule[4]))
     elif a.remove_rule:
-        if len (a.remove_rule) < 5:
+        if len(a.remove_rule) < 5:
             cmd.fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         try:
             priority = int(a.remove_rule[3])
@@ -1847,19 +1853,21 @@ elif a.direct:
         fw.removeRule(cmd.check_ipv(a.remove_rule[0]),
                       a.remove_rule[1], a.remove_rule[2], priority, splitArgs(a.remove_rule[4]))
     elif a.remove_rules:
-        if len (a.remove_rules) < 3:
+        if len(a.remove_rules) < 3:
             cmd.fail("usage: --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
         fw.removeRules(cmd.check_ipv(a.remove_rules[0]),
                        a.remove_rules[1], a.remove_rules[2])
     elif a.query_rule:
-        if len (a.query_rule) < 5:
+        if len(a.query_rule) < 5:
             cmd.fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         try:
             priority = int(a.query_rule[3])
         except ValueError:
             cmd.fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-        cmd.print_query_result(fw.queryRule(cmd.check_ipv(a.query_rule[0]),
-                                          a.query_rule[1], a.query_rule[2], priority, splitArgs(a.query_rule[4])))
+            cmd.print_query_result(
+                fw.queryRule(cmd.check_ipv(a.query_rule[0]),
+                             a.query_rule[1], a.query_rule[2],
+                             priority, splitArgs(a.query_rule[4])))
     elif a.get_rules:
         rules = fw.getRules(cmd.check_ipv(a.get_rules[0]),
                             a.get_rules[1], a.get_rules[2])
