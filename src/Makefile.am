@@ -16,6 +16,7 @@ dist_tests_DATA = \
 
 nobase_dist_python_DATA = \
 	firewall/client.py \
+	firewall/command.py \
 	firewall/dbus_utils.py \
 	firewall/errors.py \
 	firewall/functions.py \

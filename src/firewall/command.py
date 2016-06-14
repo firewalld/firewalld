@@ -1,0 +1,402 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2011-2016 Red Hat, Inc.
+#
+# Authors:
+# Thomas Woerner <twoerner@redhat.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+"""FirewallCommand class for command line client simplification"""
+
+__all__ = [ "FirewallCommand" ]
+
+import sys
+
+from firewall import errors
+from firewall.errors import FirewallError
+from dbus.exceptions import DBusException
+
+class FirewallCommand(object):
+    def __init__(self, fw, quiet=False, verbose=False):
+        self.fw = fw
+        self.quiet = quiet
+        self.verbose = verbose
+
+    def set_quiet(self, flag):
+        self.quiet = flag
+
+    def get_quiet(self):
+        return self.quiet
+
+    def set_verbose(self, flag):
+        self.verbose = flag
+
+    def get_verbose(self):
+        return self.verbose
+
+    def print_msg(self, msg=None):
+        if msg and not self.quiet:
+            print(msg)
+
+    def print_warning(self, msg=None):
+        FAIL = '\033[91m'
+        END = '\033[00m'
+        self.print_msg(FAIL + msg + END)
+
+    def print_and_exit(self, msg=None, exit_code=0):
+        #OK = '\033[92m'
+        FAIL = '\033[91m'
+        END = '\033[00m'
+        if exit_code > 1:
+            self.print_msg(FAIL + msg + END)
+        else:
+            self.print_msg(msg)
+            #self.print_msg(OK + msg + END)
+        sys.exit(exit_code)
+
+    def fail(self, msg=None):
+        self.print_and_exit(msg, 2)
+
+    def print_if_verbose(self, msg=None):
+        if msg and self.verbose:
+            print(msg)
+
+    def __cmd_sequence(self, cmd_type, option, action_method, query_method,
+                       parse_method, message, start_args=[], end_args=None):
+        warn_type = {
+            "add": "ALREADY_ENABLED",
+            "remove": "NOT_ENABLED",
+        }
+        items = [ ]
+        _errors = 0
+        for item in option:
+            if parse_method != None:
+                item = parse_method(item)
+
+            call_item = start_args[:]
+            if not isinstance(item, list) and not isinstance(item, tuple):
+                call_item.append(item)
+            else:
+                call_item += item
+            try:
+                if cmd_type == "add" and not query_method(*call_item):
+                    items.append(item)
+                elif cmd_type == "remove" and query_method(*call_item):
+                    items.append(item)
+                else:
+                    if len(option) > 1:
+                        self.print_warning("Warning: %s: %s" % \
+                                           (warn_type[cmd_type],
+                                            message % item))
+                    else:
+                        code = FirewallError.get_code(warn_type[cmd_type])
+                        self.print_and_exit("Error: %s: %s" % \
+                                            (warn_type[cmd_type],
+                                             message % item), code)
+                    _errors += 1
+            except DBusException as msg:
+                code = FirewallError.get_code(msg)
+                if len(option) > 1:
+                    self.print_warning("Warning: %s" % msg.get_dbus_message())
+                else:
+                    self.print_and_exit("Error: %s" % msg.get_dbus_message(),
+                                        code)
+                _errors += 1
+
+        for item in items:
+            call_item = start_args[:]
+            if not isinstance(item, list) and not isinstance(item, tuple):
+                call_item.append(item)
+            else:
+                call_item += item
+            if end_args is not None:
+                call_item += end_args
+            try:
+                action_method(*call_item)
+            except DBusException as msg:
+                code = FirewallError.get_code(msg)
+                if len(option) > 1:
+                    self.print_warning("Warning: %s" % msg.get_dbus_message())
+                else:
+                    self.print_and_exit("Error: %s" % msg.get_dbus_message(),
+                                        code)
+                _errors += 1
+
+        if _errors == len(option):
+            sys.exit(0)
+
+    def add_sequence(self, option, action_method, query_method, parse_method,
+                     message):
+        self.__cmd_sequence("add", option, action_method, query_method,
+                            parse_method, message, start_args=[])
+
+    def x_add_sequence(self, x, option, action_method, query_method,
+                       parse_method, message):
+        self.__cmd_sequence("add", option, action_method, query_method,
+                            parse_method, message, start_args=[x])
+
+    def zone_add_timeout_sequence(self, zone, option, action_method,
+                                  query_method, parse_method, message,
+                                  timeout):
+        self.__cmd_sequence("add", option, action_method, query_method,
+                            parse_method, message, start_args=[zone],
+                            end_args=[timeout])
+
+    def remove_sequence(self, option, action_method, query_method,
+                        parse_method, message):
+        self.__cmd_sequence("remove", option, action_method, query_method,
+                            parse_method, message, start_args=[])
+
+
+    def x_remove_sequence(self, x, option, action_method, query_method,
+                          parse_method, message):
+        self.__cmd_sequence("remove", option, action_method, query_method,
+                            parse_method, message, start_args=[x])
+
+
+    def __query_sequence(self, option, query_method, parse_method, message,
+                         start_args=[]):
+        items = [ ]
+        for item in option:
+            if parse_method != None:
+                items.append(parse_method(item))
+            else:
+                items.append(item)
+        for item in items:
+            call_item = start_args[:]
+            if not isinstance(item, list) and not isinstance(item, tuple):
+                call_item.append(item)
+            else:
+                call_item += item
+            try:
+                res = query_method(*call_item)
+            except DBusException as msg:
+                code = FirewallError.get_code(msg)
+                if len(option) > 1:
+                    self.print_warning("Warning: %s" % msg.get_dbus_message())
+                else:
+                    self.print_and_exit("Error: %s" % msg.get_dbus_message(),
+                                        code)
+                continue
+            if len(option) > 1:
+                self.print_msg("%s: %s" % (message % item, ("no", "yes")[res]))
+            else:
+                self.print_query_result(res)
+        sys.exit(0)
+
+    def query_sequence(self, option, query_method, parse_method, message):
+        self.__query_sequence(option, query_method, parse_method,
+                              message, start_args=[])
+
+    def x_query_sequence(self, x, option, query_method, parse_method,
+                         message):
+        self.__query_sequence(option, query_method, parse_method,
+                              message, start_args=[x])
+
+
+    def parse_port(self, value, separator="/"):
+        try:
+            (port, proto) = value.split("/")
+        except ValueError:
+            self.fail("bad port (most likely missing protocol), correct syntax "
+                      "is portid[-portid]%sprotocol" % separator)
+        return (port, proto)
+
+    def parse_forward_port(self, value):
+        port = None
+        protocol = None
+        toport = None
+        toaddr = None
+        args = value.split(":")
+        for arg in args:
+            try:
+                (opt,val) = arg.split("=")
+                if opt == "port":
+                    port = val
+                elif opt == "proto":
+                    protocol = val
+                elif opt == "toport":
+                    toport = val
+                elif opt == "toaddr":
+                    toaddr = val
+            except ValueError:
+                self.fail("invalid forward port arg '%s'" % (arg))
+        if not port:
+            self.fail("missing port")
+        if not protocol:
+            self.fail("missing protocol")
+        if not (toport or toaddr):
+            self.fail("missing destination")
+        return (port, protocol, toport, toaddr)
+
+    def parse_ipset_option(self, value):
+        args = value.split("=")
+        if len(args) == 1:
+            return (args[0], "")
+        elif len(args) == 2:
+            return args
+        else:
+            self.fail("invalid ipset option '%s'" % (value))
+
+    def check_destination_ipv(self, value):
+        ipvs = [ "ipv4", "ipv6", ]
+        if value not in ipvs:
+            self.fail("invalid argument: %s (choose from '%s')" % \
+                      (value, "', '".join(ipvs)))
+        return value
+
+    def parse_service_destination(self, value):
+        try:
+            (ipv, destination) = value.split(":", 1)
+        except ValueError:
+            self.fail("bad destination, correct syntax is ipv:address[/mask]")
+        return (self.check_destination_ipv(ipv), destination)
+
+    def check_ipv(self, value):
+        ipvs = [ "ipv4", "ipv6", "eb" ]
+        if value not in ipvs:
+            self.fail("invalid argument: %s (choose from '%s')" % \
+                      (value, "', '".join(ipvs)))
+        return value
+
+    def print_zone_info(self, zone, settings, default_zone=None):
+        target = settings.getTarget()
+        icmp_block_inversion = settings.getIcmpBlockInversion()
+        interfaces = settings.getInterfaces()
+        sources = settings.getSources()
+        services = settings.getServices()
+        ports = settings.getPorts()
+        protocols = settings.getProtocols()
+        masquerade = settings.getMasquerade()
+        forward_ports = settings.getForwardPorts()
+        source_ports = settings.getSourcePorts()
+        icmp_blocks = settings.getIcmpBlocks()
+        rules = settings.getRichRules()
+        description = settings.getDescription()
+        short_description = settings.getShort()
+
+        attributes = []
+        if default_zone is not None:
+            if zone == default_zone:
+                attributes.append("default")
+        if interfaces or sources:
+            attributes.append("active")
+        if attributes:
+            zone = zone + " (%s)" % ", ".join(attributes)
+        self.print_msg(zone)
+        if self.verbose:
+            self.print_msg("  summary: " + short_description)
+            self.print_msg("  description: " + description)
+        self.print_msg("  target: " + target)
+        self.print_msg("  icmp-block-inversion: %s" % \
+                       ("yes" if icmp_block_inversion else "no"))
+        self.print_msg("  interfaces: " + " ".join(interfaces))
+        self.print_msg("  sources: " + " ".join(sources))
+        self.print_msg("  services: " + " ".join(services))
+        self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
+                                               for port in ports]))
+        self.print_msg("  protocols: " + " ".join(protocols))
+        self.print_msg("  masquerade: %s" % ("yes" if masquerade else "no"))
+        self.print_msg("  forward-ports: " +
+                       "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % \
+                                    (port, proto, toport, toaddr)
+                                    for (port, proto, toport, toaddr) in \
+                                    forward_ports]))
+        self.print_msg("  sourceports: " +
+                       " ".join(["%s/%s" % (port[0], port[1])
+                                 for port in source_ports]))
+        self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
+        self.print_msg("  rich rules: \n\t" + "\n\t".join(rules))
+
+    def print_service_info(self, service, settings):
+        ports = settings.getPorts()
+        protocols = settings.getProtocols()
+        source_ports = settings.getSourcePorts()
+        modules = settings.getModules()
+        description = settings.getDescription()
+        destinations = settings.getDestinations()
+        short_description = settings.getShort()
+        self.print_msg(service)
+        self.print_msg("  summary: " + short_description)
+        self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
+                                               for port in ports]))
+        self.print_msg("  protocols: " + " ".join(protocols))
+        self.print_msg("  source-ports: " +
+                       " ".join(["%s/%s" % (port[0], port[1])
+                                 for port in source_ports]))
+        self.print_msg("  modules: " + " ".join(modules))
+        self.print_msg("  destination: " +
+                       " ".join(["%s:%s" % (k,v)
+                                 for k, v in destinations.items()]))
+        self.print_msg("  description: " + description)
+
+    def print_icmptype_info(self, icmptype, settings):
+        destinations = settings.getDestinations()
+        description = settings.getDescription()
+        short_description = settings.getShort()
+        if len(destinations) == 0:
+            destinations = [ "ipv4", "ipv6" ]
+        self.print_msg(icmptype)
+        self.print_msg("  summary: " + short_description)
+        self.print_msg("  destination: " + " ".join(destinations))
+        self.print_msg("  description: " + description)
+
+    def print_ipset_info(self, ipset, settings):
+        ipset_type = settings.getType()
+        options = settings.getOptions()
+        entries = settings.getEntries()
+        description = settings.getDescription()
+        short_description = settings.getShort()
+        self.print_msg(ipset)
+        self.print_msg("  summary: " + short_description)
+        self.print_msg("  type: " + ipset_type)
+        self.print_msg("  options: " + " ".join(["%s=%s" % (k,v) if v else k
+                                                 for k, v in options.items()]))
+        self.print_msg("  entries: " + " ".join(entries))
+        self.print_msg("  description: " + description)
+
+    def print_query_result(self, value):
+        if value:
+            self.print_and_exit("yes")
+        else:
+            self.print_and_exit("no", 1)
+
+    def exception_handler(self, exception_message):
+        if "NotAuthorizedException" in exception_message:
+            msg = """Authorization failed.
+    Make sure polkit agent is running or run the application as superuser."""
+            self.print_and_exit(msg, errors.NOT_AUTHORIZED)
+        else:
+            code = FirewallError.get_code(exception_message)
+            if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                         errors.ZONE_ALREADY_SET ]:
+                self.print_warning("Warning: %s" % exception_message)
+            else:
+                self.print_and_exit("Error: %s" % exception_message, code)
+
+    def get_ipset_entries_from_file(self, filename):
+        entries = [ ]
+        f = open(filename)
+        for line in f:
+            if not line:
+                break
+            line = line.strip()
+            if len(line) < 1 or line[0] in ['#', ';']:
+                continue
+            if line not in entries:
+                entries.append(line)
+        f.close()
+        return entries
