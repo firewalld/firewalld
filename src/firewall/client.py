@@ -955,8 +955,11 @@ class FirewallClientServiceSettings(object):
             raise FirewallError(errors.ALREADY_ENABLED, "'%s:%s'" % \
                                 (dest_type, address))
     @handle_exceptions
-    def removeDestination(self, dest_type):
+    def removeDestination(self, dest_type, address=None):
         if dest_type in self.settings[5]:
+            if address is not None and self.settings[5][dest_type] != address:
+                raise FirewallError(errors.NOT_ENABLED, "'%s:%s'" % \
+                                    (dest_type, address))
             del self.settings[5][dest_type]
         else:
             raise FirewallError(errors.NOT_ENABLED, "'%s'" % dest_type)
