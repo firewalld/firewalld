@@ -603,7 +603,7 @@ parser_service.add_argument("--remove-module", metavar="<module>", action='appen
 parser_service.add_argument("--query-module", metavar="<module>", action='append')
 parser_service.add_argument("--get-modules", action="store_true")
 
-parser_service.add_argument("--set-destination", metavar="<destination>")
+parser_service.add_argument("--set-destination", metavar="<destination>", action='append')
 parser_service.add_argument("--get-destination", action="store_true")
 
 parser_service.add_argument("--set-description", metavar="<description>")
@@ -1298,19 +1298,29 @@ if a.permanent:
             cmd.print_and_exit(" ".join(["%s" % module for module in l]))
 
         elif a.set_destination:
-            (ipv, dest) = cmd.parse_service_destination(a.set_destination)
-            settings.setDestination(ipv, dest)
+            cmd.add_sequence(a.set_destination, settings.setDestination,
+                             settings.queryDestination,
+                             cmd.parse_service_destination, "%s:%s")
             service.update(settings)
 
         elif a.remove_destination:
-            for dest in a.remove_destination:
-                settings.removeDestination(
-                    cmd.check_destination_ipv(dest))
+            # special case for removeDestination: Only ipv, no address
+            for ipv in a.remove_destination:
+                cmd.check_destination_ipv(ipv)
+                if ipv not in settings.getDestinations():
+                    if len(a.remove_destination) > 1:
+                        cmd.print_warning("Warning: NOT_ENABLED: '%s'" % ipv)
+                    else:
+                        code = FirewallError.get_code("NOT_ENABLED")
+                        cmd.print_and_exit("Error: NOT_ENABLED: '%s'" % ipv,
+                                           code)
+                else:
+                    settings.removeDestination(ipv)
             service.update(settings)
 
         elif a.query_destination:
-            (ipv, dest) = cmd.parse_service_destination(a.query_destination)
-            cmd.print_query_result(settings.queryDestination(ipv, dest))
+            cmd.query_sequence(a.query_destination, settings.queryDestination,
+                               cmd.parse_service_destination, "'%s'")
 
         elif a.get_destinations:
             l = settings.getDestinations()
