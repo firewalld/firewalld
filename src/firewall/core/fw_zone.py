@@ -1858,10 +1858,6 @@ class FirewallZone(object):
 
     # SOURCE PORTS
 
-    def check_source_port(self, port, protocol):
-        self._fw.check_port(port)
-        self._fw.check_tcpudp(protocol)
-
     def __source_port_id(self, port, protocol):
         self.check_port(port, protocol)
         return (portStr(port, "-"), protocol)
