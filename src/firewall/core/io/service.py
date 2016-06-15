@@ -107,7 +107,7 @@ class Service(IO_Object):
             for proto in config:
                 check_protocol(proto)
 
-        elif item == "source-ports":
+        elif item == "source_ports":
             for port in config:
                 check_port(port[0])
                 check_tcpudp(port[1])
