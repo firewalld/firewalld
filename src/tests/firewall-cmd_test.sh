@@ -530,11 +530,66 @@ assert_good "--permanent --new-service=${myservice}"
 assert_good_contains "--permanent --get-services" "${myservice}"
 assert_good "--permanent --new-icmptype=${myicmp}"
 assert_good_contains "--permanent --get-icmptypes" "${myicmp}"
+
+# test service options
+assert_bad  "--permanent --service=${myservice} --add-port=666" # no protocol
+assert_bad  "--permanent --service=${myservice} --add-port=666/dummy" # bad protocol
+assert_good "--permanent --service=${myservice} --add-port=666/tcp"
+assert_good "--permanent --service=${myservice} --remove-port=666/tcp"
+assert_good "--permanent --service=${myservice} --add-port=111-222/udp"
+assert_good "--permanent --service=${myservice} --query-port=111-222/udp"
+assert_good "--permanent --service=${myservice} --remove-port 111-222/udp"
+assert_bad  "--permanent --service=${myservice} --query-port=111-222/udp"
+
+assert_good "--permanent --service=${myservice} --add-protocol=ddp --add-protocol gre"
+assert_good "--permanent --service=${myservice} --query-protocol=ddp"
+assert_good "--permanent --service=${myservice} --query-protocol=gre"
+assert_good "--permanent --service=${myservice} --remove-protocol ddp"
+assert_good "--permanent --service=${myservice} --remove-protocol gre"
+assert_bad  "--permanent --service=${myservice} --query-protocol=ddp"
+assert_bad  "--permanent --service=${myservice} --query-protocol=gre"
+
+assert_bad  "--permanent --service=${myservice} --add-source-port=666" # no protocol
+assert_bad  "--permanent --service=${myservice} --add-source-port=666/dummy" # bad protocol
+assert_good "--permanent --service=${myservice} --add-source-port=666/tcp"
+assert_good "--permanent --service=${myservice} --remove-source-port=666/tcp"
+assert_good "--permanent --service=${myservice} --add-source-port=111-222/udp"
+assert_good "--permanent --service=${myservice} --query-source-port=111-222/udp"
+assert_good "--permanent --service=${myservice} --remove-source-port 111-222/udp"
+assert_bad  "--permanent --service=${myservice} --query-source-port=111-222/udp"
+
+assert_bad  "--permanent --service=${myservice} --add-module=foo" # no valid helper
+assert_good "--permanent --service=${myservice} --add-module=nf_conntrack_sip"
+assert_good "--permanent --service=${myservice} --remove-module=nf_conntrack_sip"
+assert_good "--permanent --service=${myservice} --add-module=nf_conntrack_ftp"
+assert_good "--permanent --service=${myservice} --query-module=nf_conntrack_ftp"
+assert_good "--permanent --service=${myservice} --remove-module=nf_conntrack_ftp"
+assert_bad "--permanent --service=${myservice} --query-module=nf_conntrack_ftp"
+
+assert_bad  "--permanent --service=${myservice} --set-destination=ipv4" # no address
+assert_bad  "--permanent --service=${myservice} --set-destination=ipv4:foo" # bad address
+assert_good "--permanent --service=${myservice} --set-destination=ipv4:1.2.3.4"
+assert_good "--permanent --service=${myservice} --remove-destination=ipv4"
+assert_good "--permanent --service=${myservice} --set-destination=ipv6:fd00:dead:beef:ff0::/64"
+assert_good "--permanent --service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::/64"
+assert_good "--permanent --service=${myservice} --remove-destination=ipv6"
+assert_bad "--permanent --service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::/64"
+
+# test icmptype options, ipv4 and ipv6 destinations are default
+assert_bad  "--permanent --icmptype=${myicmp} --add-destination=ipv5"
+assert_bad "--permanent --icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--permanent --icmptype=${myicmp} --remove-destination=ipv4"
+assert_good "--permanent --icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--permanent --icmptype=${myicmp} --query-destination=ipv4"
+assert_good "--permanent --icmptype=${myicmp} --remove-destination=ipv4"
+assert_bad "--permanent --icmptype=${myicmp} --query-destination=ipv4"
+
 # add them to zone
 assert_good "--permanent --zone=${myzone} --add-service=${myservice}"
 assert_good "--permanent --zone=${myzone} --add-icmp-block=${myicmp}"
 assert_good_contains "--permanent --zone=${myzone} --list-services" "${myservice}"
 assert_good_contains "--permanent --zone=${myzone} --list-icmp-blocks" "${myicmp}"
+
 # delete the service and icmptype
 assert_good "--permanent --delete-service=${myservice}"
 assert_good "--permanent --delete-icmptype=${myicmp}"
