@@ -930,12 +930,6 @@ You most likely need to use --zone=%s option.\n""" % (default, ",".join(active),
 if a.permanent:
     if a.get_ipsets:
         cmd.print_and_exit(" ".join(fw.config().getIPSetNames()))
-    if a.get_zones:
-        cmd.print_and_exit(" ".join(fw.config().getZoneNames()))
-    elif a.get_services:
-        cmd.print_and_exit(" ".join(fw.config().getServiceNames()))
-    elif a.get_icmptypes:
-        cmd.print_and_exit(" ".join(fw.config().getIcmpTypeNames()))
 
     elif a.new_ipset:
         if not a.type:
@@ -1059,6 +1053,9 @@ if a.permanent:
         if changed:
             ipset.update(settings)
 
+    elif a.get_zones:
+        cmd.print_and_exit(" ".join(fw.config().getZoneNames()))
+
     elif a.new_zone:
         config = fw.config()
         config.addZone(a.new_zone, FirewallClientZoneSettings())
@@ -1098,6 +1095,9 @@ if a.permanent:
         cmd.print_and_exit("%s/%s" % (zone.get_property("path"),
                                       zone.get_property("filename")))
 
+    elif a.get_services:
+        cmd.print_and_exit(" ".join(fw.config().getServiceNames()))
+
     elif a.new_service:
         config = fw.config()
         config.addService(a.new_service, FirewallClientServiceSettings())
@@ -1136,6 +1136,9 @@ if a.permanent:
         service = fw.config().getServiceByName(a.path_service)
         cmd.print_and_exit("%s/%s" % (service.get_property("path"),
                                       service.get_property("filename")))
+
+    elif a.get_icmptypes:
+        cmd.print_and_exit(" ".join(fw.config().getIcmpTypeNames()))
 
     elif a.new_icmptype:
         config = fw.config()
