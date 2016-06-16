@@ -427,6 +427,60 @@ assert_good "--new-service=${myservice}"
 assert_good_contains "--get-services" "${myservice}"
 assert_good "--new-icmptype=${myicmp}"
 assert_good_contains "--get-icmptypes" "${myicmp}"
+
+# test service options
+assert_bad  "--service=${myservice} --add-port=666" # no protocol
+assert_bad  "--service=${myservice} --add-port=666/dummy" # bad protocol
+assert_good "--service=${myservice} --add-port=666/tcp"
+assert_good "--service=${myservice} --remove-port=666/tcp"
+assert_good "--service=${myservice} --add-port=111-222/udp"
+assert_good "--service=${myservice} --query-port=111-222/udp"
+assert_good "--service=${myservice} --remove-port 111-222/udp"
+assert_bad  "--service=${myservice} --query-port=111-222/udp"
+
+assert_good "--service=${myservice} --add-protocol=ddp --add-protocol gre"
+assert_good "--service=${myservice} --query-protocol=ddp"
+assert_good "--service=${myservice} --query-protocol=gre"
+assert_good "--service=${myservice} --remove-protocol ddp"
+assert_good "--service=${myservice} --remove-protocol gre"
+assert_bad  "--service=${myservice} --query-protocol=ddp"
+assert_bad  "--service=${myservice} --query-protocol=gre"
+
+assert_bad  "--service=${myservice} --add-source-port=666" # no protocol
+assert_bad  "--service=${myservice} --add-source-port=666/dummy" # bad protocol
+assert_good "--service=${myservice} --add-source-port=666/tcp"
+assert_good "--service=${myservice} --remove-source-port=666/tcp"
+assert_good "--service=${myservice} --add-source-port=111-222/udp"
+assert_good "--service=${myservice} --query-source-port=111-222/udp"
+assert_good "--service=${myservice} --remove-source-port 111-222/udp"
+assert_bad  "--service=${myservice} --query-source-port=111-222/udp"
+
+assert_bad  "--service=${myservice} --add-module=foo" # no valid helper
+assert_good "--service=${myservice} --add-module=nf_conntrack_sip"
+assert_good "--service=${myservice} --remove-module=nf_conntrack_sip"
+assert_good "--service=${myservice} --add-module=nf_conntrack_ftp"
+assert_good "--service=${myservice} --query-module=nf_conntrack_ftp"
+assert_good "--service=${myservice} --remove-module=nf_conntrack_ftp"
+assert_bad "--service=${myservice} --query-module=nf_conntrack_ftp"
+
+assert_bad  "--service=${myservice} --set-destination=ipv4" # no address
+assert_bad  "--service=${myservice} --set-destination=ipv4:foo" # bad address
+assert_good "--service=${myservice} --set-destination=ipv4:1.2.3.4"
+assert_good "--service=${myservice} --remove-destination=ipv4"
+assert_good "--service=${myservice} --set-destination=ipv6:fd00:dead:beef:ff0::/64"
+assert_good "--service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::/64"
+assert_good "--service=${myservice} --remove-destination=ipv6"
+assert_bad "--service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::/64"
+
+# test icmptype options, ipv4 and ipv6 destinations are default
+assert_bad  "--icmptype=${myicmp} --add-destination=ipv5"
+assert_bad "--icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--icmptype=${myicmp} --remove-destination=ipv4"
+assert_good "--icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--icmptype=${myicmp} --query-destination=ipv4"
+assert_good "--icmptype=${myicmp} --remove-destination=ipv4"
+assert_bad "--icmptype=${myicmp} --query-destination=ipv4"
+
 # add them to zone
 assert_good "--zone=${myzone} --add-service=${myservice}"
 assert_good "--zone=${myzone} --add-icmp-block=${myicmp}"
