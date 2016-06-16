@@ -30,8 +30,7 @@ from firewall.errors import FirewallError
 from dbus.exceptions import DBusException
 
 class FirewallCommand(object):
-    def __init__(self, fw, quiet=False, verbose=False):
-        self.fw = fw
+    def __init__(self, quiet=False, verbose=False):
         self.quiet = quiet
         self.verbose = verbose
 
