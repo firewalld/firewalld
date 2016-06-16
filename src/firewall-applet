@@ -57,6 +57,8 @@ def search_app(app):
 NM_CONNECTION_EDITOR = ""
 for binary in [ "/usr/bin/nm-connection-editor",
                     "/bin/nm-connection-editor",
+                "/usr/bin/kde5-nm-connection-editor",
+                    "/bin/kde5-nm-connection-editor",
                 "/usr/bin/kde-nm-connection-editor",
                     "/bin/kde-nm-connection-editor" ]:
     if os.path.exists(binary):
