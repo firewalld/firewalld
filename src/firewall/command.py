@@ -35,7 +35,7 @@ class FirewallCommand(object):
     def __init__(self, quiet=False, verbose=False):
         self.quiet = quiet
         self.verbose = verbose
-        self.__use_exception_handler=True
+        self.__use_exception_handler = True
 
     def set_quiet(self, flag):
         self.quiet = flag
@@ -77,7 +77,7 @@ class FirewallCommand(object):
             print(msg)
 
     def __cmd_sequence(self, cmd_type, option, action_method, query_method,
-                       parse_method, message, start_args=[], end_args=None):
+                       parse_method, message, start_args=None, end_args=None):
         warn_type = {
             "add": "ALREADY_ENABLED",
             "remove": "NOT_ENABLED",
@@ -85,7 +85,7 @@ class FirewallCommand(object):
         items = [ ]
         _errors = 0
         for item in option:
-            if parse_method != None:
+            if parse_method is not None:
                 try:
                     item = parse_method(item)
                 except Exception as msg:
@@ -96,7 +96,9 @@ class FirewallCommand(object):
                         code = FirewallError.get_code(msg)
                         self.print_and_exit("Error: %s" % msg, code)
 
-            call_item = start_args[:]
+            call_item = [ ]
+            if start_args is not None:
+                call_item += start_args
             if not isinstance(item, list) and not isinstance(item, tuple):
                 call_item.append(item)
             else:
@@ -130,7 +132,9 @@ class FirewallCommand(object):
             self.activate_exception_handler()
 
         for item in items:
-            call_item = start_args[:]
+            call_item = [ ]
+            if start_args is not None:
+                call_item += start_args
             if not isinstance(item, list) and not isinstance(item, tuple):
                 call_item.append(item)
             else:
@@ -154,7 +158,7 @@ class FirewallCommand(object):
     def add_sequence(self, option, action_method, query_method, parse_method,
                      message):
         self.__cmd_sequence("add", option, action_method, query_method,
-                            parse_method, message, start_args=[])
+                            parse_method, message)
 
     def x_add_sequence(self, x, option, action_method, query_method,
                        parse_method, message):
@@ -171,7 +175,7 @@ class FirewallCommand(object):
     def remove_sequence(self, option, action_method, query_method,
                         parse_method, message):
         self.__cmd_sequence("remove", option, action_method, query_method,
-                            parse_method, message, start_args=[])
+                            parse_method, message)
 
 
     def x_remove_sequence(self, x, option, action_method, query_method,
@@ -181,10 +185,10 @@ class FirewallCommand(object):
 
 
     def __query_sequence(self, option, query_method, parse_method, message,
-                         start_args=[]):
+                         start_args=None):
         items = [ ]
         for item in option:
-            if parse_method != None:
+            if parse_method is not None:
                 try:
                     item = parse_method(item)
                 except Exception as msg:
@@ -197,7 +201,9 @@ class FirewallCommand(object):
             items.append(item)
 
         for item in items:
-            call_item = start_args[:]
+            call_item = [ ]
+            if start_args is not None:
+                call_item += start_args
             if not isinstance(item, list) and not isinstance(item, tuple):
                 call_item.append(item)
             else:
@@ -222,7 +228,7 @@ class FirewallCommand(object):
 
     def query_sequence(self, option, query_method, parse_method, message):
         self.__query_sequence(option, query_method, parse_method,
-                              message, start_args=[])
+                              message)
 
     def x_query_sequence(self, x, option, query_method, parse_method,
                          message):
@@ -242,7 +248,9 @@ class FirewallCommand(object):
         try:
             (port, proto) = value.split(separator)
         except ValueError:
-            raise FirewallError(errors.INVALID_PORT, "bad port (most likely missing protocol), correct syntax is portid[-portid]%sprotocol" % separator)
+            raise FirewallError(errors.INVALID_PORT, "bad port (most likely "
+                                "missing protocol), correct syntax is "
+                                "portid[-portid]%sprotocol" % separator)
         if not check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
         if proto not in [ "tcp", "udp" ]:
@@ -258,7 +266,7 @@ class FirewallCommand(object):
         args = value.split(":")
         for arg in args:
             try:
-                (opt,val) = arg.split("=")
+                (opt, val) = arg.split("=")
                 if opt == "port":
                     port = val
                 elif opt == "proto":
@@ -390,7 +398,7 @@ class FirewallCommand(object):
                                  for port in source_ports]))
         self.print_msg("  modules: " + " ".join(modules))
         self.print_msg("  destination: " +
-                       " ".join(["%s:%s" % (k,v)
+                       " ".join(["%s:%s" % (k, v)
                                  for k, v in destinations.items()]))
         self.print_msg("  description: " + description)
 
@@ -414,7 +422,7 @@ class FirewallCommand(object):
         self.print_msg(ipset)
         self.print_msg("  summary: " + short_description)
         self.print_msg("  type: " + ipset_type)
-        self.print_msg("  options: " + " ".join(["%s=%s" % (k,v) if v else k
+        self.print_msg("  options: " + " ".join(["%s=%s" % (k, v) if v else k
                                                  for k, v in options.items()]))
         self.print_msg("  entries: " + " ".join(entries))
         self.print_msg("  description: " + description)
@@ -441,10 +449,10 @@ class FirewallCommand(object):
                 self.print_and_exit("Error: %s" % exception_message, code)
 
     def deactivate_exception_handler(self):
-        self.__use_exception_handler=False
+        self.__use_exception_handler = False
 
     def activate_exception_handler(self):
-        self.__use_exception_handler=True
+        self.__use_exception_handler = True
 
     def get_ipset_entries_from_file(self, filename):
         entries = [ ]
