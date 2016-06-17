@@ -33,6 +33,7 @@ class FirewallCommand(object):
     def __init__(self, quiet=False, verbose=False):
         self.quiet = quiet
         self.verbose = verbose
+        self.__use_exception_handler=True
 
     def set_quiet(self, flag):
         self.quiet = flag
@@ -83,13 +84,22 @@ class FirewallCommand(object):
         _errors = 0
         for item in option:
             if parse_method != None:
-                item = parse_method(item)
+                try:
+                    item = parse_method(item)
+                except Exception as msg:
+                    if len(option) > 1:
+                        self.print_warning("Warning: %s" % msg)
+                        continue
+                    else:
+                        code = FirewallError.get_code(msg)
+                        self.print_and_exit("Error: %s" % msg, code)
 
             call_item = start_args[:]
             if not isinstance(item, list) and not isinstance(item, tuple):
                 call_item.append(item)
             else:
                 call_item += item
+            self.deactivate_exception_handler()
             try:
                 if cmd_type == "add" and not query_method(*call_item):
                     items.append(item)
@@ -110,10 +120,12 @@ class FirewallCommand(object):
                 code = FirewallError.get_code(msg)
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
+                    continue
                 else:
                     self.print_and_exit("Error: %s" % msg.get_dbus_message(),
                                         code)
                 _errors += 1
+            self.activate_exception_handler()
 
         for item in items:
             call_item = start_args[:]
@@ -171,25 +183,35 @@ class FirewallCommand(object):
         items = [ ]
         for item in option:
             if parse_method != None:
-                items.append(parse_method(item))
-            else:
-                items.append(item)
+                try:
+                    item = parse_method(item)
+                except Exception as msg:
+                    if len(option) > 1:
+                        self.print_warning("Warning: %s" % msg)
+                        continue
+                    else:
+                        code = FirewallError.get_code(msg)
+                        self.print_and_exit("Error: %s" % msg, code)
+            items.append(item)
+
         for item in items:
             call_item = start_args[:]
             if not isinstance(item, list) and not isinstance(item, tuple):
                 call_item.append(item)
             else:
                 call_item += item
+            self.deactivate_exception_handler()
             try:
                 res = query_method(*call_item)
             except DBusException as msg:
                 code = FirewallError.get_code(msg)
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
+                    continue
                 else:
                     self.print_and_exit("Error: %s" % msg.get_dbus_message(),
                                         code)
-                continue
+            self.activate_exception_handler()
             if len(option) > 1:
                 self.print_msg("%s: %s" % (message % item, ("no", "yes")[res]))
             else:
@@ -210,8 +232,7 @@ class FirewallCommand(object):
         try:
             (port, proto) = value.split("/")
         except ValueError:
-            self.fail("bad port (most likely missing protocol), correct syntax "
-                      "is portid[-portid]%sprotocol" % separator)
+            raise FirewallError(errors.INVALID_PORT, "bad port (most likely missing protocol), correct syntax is portid[-portid]%sprotocol" % separator)
         return (port, proto)
 
     def parse_forward_port(self, value):
@@ -232,13 +253,14 @@ class FirewallCommand(object):
                 elif opt == "toaddr":
                     toaddr = val
             except ValueError:
-                self.fail("invalid forward port arg '%s'" % (arg))
+                raise FirewallError(errors.INVALID_FORWARD,
+                                    "invalid forward port arg '%s'" % (arg))
         if not port:
-            self.fail("missing port")
+            raise FirewallError(errors.INVALID_FORWARD, "missing port")
         if not protocol:
-            self.fail("missing protocol")
+            raise FirewallError(errors.INVALID_FORWARD, "missing protocol")
         if not (toport or toaddr):
-            self.fail("missing destination")
+            raise FirewallError(errors.INVALID_FORWARD, "missing destination")
         return (port, protocol, toport, toaddr)
 
     def parse_ipset_option(self, value):
@@ -248,27 +270,31 @@ class FirewallCommand(object):
         elif len(args) == 2:
             return args
         else:
-            self.fail("invalid ipset option '%s'" % (value))
+            raise FirewallError(errors.INVALID_OPTION,
+                                "invalid ipset option '%s'" % (value))
 
     def check_destination_ipv(self, value):
         ipvs = [ "ipv4", "ipv6", ]
         if value not in ipvs:
-            self.fail("invalid argument: %s (choose from '%s')" % \
-                      (value, "', '".join(ipvs)))
+            raise FirewallError(errors.INVALID_IPV,
+                                "invalid argument: %s (choose from '%s')" % \
+                                (value, "', '".join(ipvs)))
         return value
 
     def parse_service_destination(self, value):
         try:
             (ipv, destination) = value.split(":", 1)
         except ValueError:
-            self.fail("bad destination, correct syntax is ipv:address[/mask]")
+            raise FirewallError(errors.INVALID_DESTINATION,
+                                "destination syntax is ipv:address[/mask]")
         return (self.check_destination_ipv(ipv), destination)
 
     def check_ipv(self, value):
         ipvs = [ "ipv4", "ipv6", "eb" ]
         if value not in ipvs:
-            self.fail("invalid argument: %s (choose from '%s')" % \
-                      (value, "', '".join(ipvs)))
+            raise FirewallError(errors.INVALID_IPV,
+                                "invalid argument: %s (choose from '%s')" % \
+                                (value, "', '".join(ipvs)))
         return value
 
     def print_zone_info(self, zone, settings, default_zone=None):
@@ -374,6 +400,8 @@ class FirewallCommand(object):
             self.print_and_exit("no", 1)
 
     def exception_handler(self, exception_message):
+        if not self.__use_exception_handler:
+            raise
         if "NotAuthorizedException" in exception_message:
             msg = """Authorization failed.
     Make sure polkit agent is running or run the application as superuser."""
@@ -385,6 +413,12 @@ class FirewallCommand(object):
                 self.print_warning("Warning: %s" % exception_message)
             else:
                 self.print_and_exit("Error: %s" % exception_message, code)
+
+    def deactivate_exception_handler(self):
+        self.__use_exception_handler=False
+
+    def activate_exception_handler(self):
+        self.__use_exception_handler=True
 
     def get_ipset_entries_from_file(self, filename):
         entries = [ ]
