@@ -171,7 +171,7 @@
   <object class="GtkDialog" id="commandDialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Port and Protocol</property>
+    <property name="title" translatable="yes">Command line</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
@@ -254,12 +254,10 @@
                   <object class="GtkEntry" id="commandDialogCommandEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="halign">start</property>
                     <property name="max_length">1024</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
-                    <property name="max_width_chars">1024</property>
                     <signal name="changed" handler="onCommandChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -292,7 +290,7 @@
   <object class="GtkDialog" id="contextDialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Port and Protocol</property>
+    <property name="title" translatable="yes">Context</property>
     <property name="modal">True</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
@@ -375,12 +373,10 @@
                   <object class="GtkEntry" id="contextDialogContextEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="halign">start</property>
                     <property name="max_length">1024</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
-                    <property name="max_width_chars">1024</property>
                     <signal name="changed" handler="onContextChanged" swapped="no"/>
                   </object>
                   <packing>
@@ -10392,12 +10388,11 @@
                   <object class="GtkEntry" id="userDialogUserEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="halign">start</property>
+                    <property name="hexpand">True</property>
                     <property name="max_length">256</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">20</property>
-                    <property name="max_width_chars">256</property>
                     <signal name="changed" handler="onUserChanged" swapped="no"/>
                   </object>
                   <packing>
