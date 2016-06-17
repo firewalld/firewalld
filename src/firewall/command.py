@@ -28,6 +28,8 @@ import sys
 from firewall import errors
 from firewall.errors import FirewallError
 from dbus.exceptions import DBusException
+from firewall.functions import checkIPnMask, checkIP6nMask, check_mac, \
+    check_port, check_single_address
 
 class FirewallCommand(object):
     def __init__(self, quiet=False, verbose=False):
@@ -228,11 +230,24 @@ class FirewallCommand(object):
                               message, start_args=[x])
 
 
+    def parse_source(self, value):
+        if not checkIPnMask(value) and not checkIP6nMask(value) \
+           and not check_mac(value) and not \
+           (value.startswith("ipset:") and len(value) > 6):
+            raise FirewallError(errors.INVALID_ADDR,
+                                "'%s' is no valid IPv4, IPv6 or MAC address, nor an ipset" % value)
+        return value
+
     def parse_port(self, value, separator="/"):
         try:
             (port, proto) = value.split(separator)
         except ValueError:
             raise FirewallError(errors.INVALID_PORT, "bad port (most likely missing protocol), correct syntax is portid[-portid]%sprotocol" % separator)
+        if not check_port(port):
+            raise FirewallError(errors.INVALID_PORT, port)
+        if proto not in [ "tcp", "udp" ]:
+            raise FirewallError(errors.INVALID_PROTOCOL,
+                                "'%s' not in {'tcp'|'udp'}" % proto)
         return (port, proto)
 
     def parse_forward_port(self, value):
@@ -261,6 +276,17 @@ class FirewallCommand(object):
             raise FirewallError(errors.INVALID_FORWARD, "missing protocol")
         if not (toport or toaddr):
             raise FirewallError(errors.INVALID_FORWARD, "missing destination")
+
+        if not check_port(port):
+            raise FirewallError(errors.INVALID_PORT, port)
+        if protocol not in [ "tcp", "udp" ]:
+            raise FirewallError(errors.INVALID_PROTOCOL,
+                                "'%s' not in {'tcp'|'udp'}" % protocol)
+        if toport and not check_port(toport):
+            raise FirewallError(errors.INVALID_PORT, toport)
+        if toaddr and not check_single_address("ipv4", toaddr):
+            raise FirewallError(errors.INVALID_ADDR, toaddr)
+
         return (port, protocol, toport, toaddr)
 
     def parse_ipset_option(self, value):
