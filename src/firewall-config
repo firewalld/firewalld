@@ -23,15 +23,17 @@
 import sys
 import string
 import gi
+import gettext
+_ = gettext.gettext
 
 try:
     gi.require_version('Gtk', '3.0')
     from gi.repository import Gtk, Gdk, Pango, Gio
-    Gtk.init (sys.argv)
+    Gtk.init(sys.argv)
 except RuntimeError as e:
-    print ("firewall-config: %s" % e)
-    print ("This is a graphical application and requires DISPLAY to be set.")
-    sys.exit (1)
+    print("firewall-config: %s" % e)
+    print("This is a graphical application and requires DISPLAY to be set.")
+    sys.exit(1)
 
 from gi.repository import GObject, GLib
 sys.modules['gobject'] = GObject
@@ -52,7 +54,7 @@ from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
-from firewall.core.rich import *
+from firewall.core import rich
 from firewall.core.fw_nm import *
 
 if not datadir:
@@ -291,10 +293,10 @@ class FirewallConfig(object):
         self.directRuleView = builder.get_object("directRuleView")
 
         self.directRuleStore = Gtk.ListStore(GObject.TYPE_STRING, # ipv
-                                              GObject.TYPE_STRING, # table
-                                              GObject.TYPE_STRING, # chain
-                                              GObject.TYPE_INT, # priority
-                                              GObject.TYPE_STRING) # args
+                                             GObject.TYPE_STRING, # table
+                                             GObject.TYPE_STRING, # chain
+                                             GObject.TYPE_INT, # priority
+                                             GObject.TYPE_STRING) # args
         self.directRuleView.append_column(
             Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
         self.directRuleView.append_column(
@@ -335,8 +337,9 @@ class FirewallConfig(object):
 
         self.directPassthroughView = builder.get_object("directPassthroughView")
 
-        self.directPassthroughStore = Gtk.ListStore(GObject.TYPE_STRING, # ipv
-                                              GObject.TYPE_STRING) # passthrough
+        self.directPassthroughStore = Gtk.ListStore(
+            GObject.TYPE_STRING, # ipv
+            GObject.TYPE_STRING) # passthrough
         self.directPassthroughView.append_column(
             Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
         self.directPassthroughView.append_column(
@@ -483,8 +486,8 @@ class FirewallConfig(object):
             Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=0))
         self.protocolView.set_model(self.protocolStore)
         self.protocolStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        self.protocolView.get_selection().connect("changed",
-                                              self.change_protocol_selection_cb)
+        self.protocolView.get_selection().connect(
+            "changed", self.change_protocol_selection_cb)
 
         self.editProtocolButton = builder.get_object("editProtocolButton")
         self.removeProtocolButton = builder.get_object("removeProtocolButton")
@@ -1220,7 +1223,7 @@ class FirewallConfig(object):
                         self.lockdown_whitelist_updated_cb)
 
         # settings
-        
+
         self.settings.connect("changed::show-ipsets",
                               self.settings_show_ipsets_changed)
         self.settings_show_ipsets_changed(self.settings, "show-ipsets")
@@ -1477,7 +1480,7 @@ class FirewallConfig(object):
 
     def _error(self, msg):
         if self._dialog("<b>"+_("Error")+"</b>",
-                        message_type=Gtk.MessageType.ERROR, msg=msg, 
+                        message_type=Gtk.MessageType.ERROR, msg=msg,
                         buttons=(("gtk-ok", 0),("gtk-quit", 1))) == 1:
             self.onQuit()
 
@@ -1855,15 +1858,15 @@ class FirewallConfig(object):
         if obj.family:
             family = obj.family
         if obj.action:
-            if type(obj.action) == Rich_Accept:
+            if type(obj.action) == rich.Rich_Accept:
                 action = _("accept")
-            elif type(obj.action) == Rich_Reject:
+            elif type(obj.action) == rich.Rich_Reject:
                 action = _("reject")
                 if obj.action.type is not None:
                     action += "\n" + obj.action.type
-            elif type(obj.action) == Rich_Drop:
+            elif type(obj.action) == rich.Rich_Drop:
                 action = _("drop")
-            elif type(obj.action) == Rich_Mark:
+            elif type(obj.action) == rich.Rich_Mark:
                 action = _("mark")
                 action += "\nset " + obj.action.set
             if obj.action.limit:
@@ -1882,22 +1885,22 @@ class FirewallConfig(object):
             if obj.destination.invert:
                 dest = "! %s" % dest
         if obj.element:
-            if type(obj.element) == Rich_Service:
+            if type(obj.element) == rich.Rich_Service:
                 elem = _("service") + "\n" + obj.element.name
-            elif type(obj.element) == Rich_Port:
+            elif type(obj.element) == rich.Rich_Port:
                 elem = _("port") + "\n%s/%s" % (obj.element.port,
                                                 obj.element.protocol)
-            elif type(obj.element) == Rich_Protocol:
+            elif type(obj.element) == rich.Rich_Protocol:
                 elem = _("protocol") + "\n" + obj.element.value
-            elif type(obj.element) == Rich_Masquerade:
+            elif type(obj.element) == rich.Rich_Masquerade:
                 elem = _("masquerade")
-            elif type(obj.element) == Rich_IcmpBlock:
+            elif type(obj.element) == rich.Rich_IcmpBlock:
                 elem = "icmp-block" + "\n%s" % obj.element.name
-            elif type(obj.element) == Rich_ForwardPort:
+            elif type(obj.element) == rich.Rich_ForwardPort:
                 elem = "forward-port" + "\n%s" % self.create_fwp_string(
                     obj.element.port, obj.element.protocol,
                     obj.element.to_port, obj.element.to_address)
-            elif type(obj.element) == Rich_SourcePort:
+            elif type(obj.element) == rich.Rich_SourcePort:
                 elem = _("source-port") + "\n%s/%s" % (obj.element.port,
                                                        obj.element.protocol)
             else:
@@ -1924,7 +1927,7 @@ class FirewallConfig(object):
     def richrule_added_cb(self, zone, rule, timeout):
         if not self.runtime_view or zone != self.get_selected_zone():
             return
-        obj = Rich_Rule(rule_str=rule)
+        obj = rich.Rich_Rule(rule_str=rule)
         iter = self.richRuleStore.get_iter_first()
         while iter:
             if str(self.richRuleStore.get_value(iter, 0)) == str(obj):
@@ -1937,7 +1940,7 @@ class FirewallConfig(object):
     def richrule_removed_cb(self, zone, rule):
         if not self.runtime_view or zone != self.get_selected_zone():
             return
-        obj = Rich_Rule(rule_str=rule)
+        obj = rich.Rich_Rule(rule_str=rule)
         iter = self.richRuleStore.get_iter_first()
         while iter:
             if str(self.richRuleStore.get_value(iter, 0)) == str(obj):
@@ -2126,7 +2129,7 @@ class FirewallConfig(object):
         self.fw.reload()
 
     def onChangeView(self, *args):
-        # Fix interaction problem of changed event of gtk combobox with 
+        # Fix interaction problem of changed event of gtk combobox with
         # polkit-kde by processing all remaining events.
         #
         # The changed callback is signaled before the popup window has been
@@ -2264,7 +2267,8 @@ class FirewallConfig(object):
                         _("Default Zone: %s") % self.default_zone),
                       connection, zone ])
             else:
-                self.bindingsStore.append(self.connectionsIter,
+                self.bindingsStore.append(
+                    self.connectionsIter,
                     [ "%s (%s)\n<small>%s</small>" % (
                         connection, ",".join(_interfaces),
                         _("Zone: %s") % zone),
@@ -2571,7 +2575,7 @@ class FirewallConfig(object):
                 (selected_zone, name)
             result = self._dialog(text, message_type=Gtk.MessageType.WARNING,
                                   title=_("Warning"),
-                                  buttons=((_("Remove"), 1),(_("Ignore"), 2)))
+                                  buttons=((_("Remove"), 1), (_("Ignore"), 2)))
             if result == 1:
                 if self.runtime_view:
                     self.fw.removeService(selected_zone, name)
@@ -2630,7 +2634,7 @@ class FirewallConfig(object):
 
         # set rich rules
         for item in rules:
-            rule = Rich_Rule(rule_str=item)
+            rule = rich.Rich_Rule(rule_str=item)
             self._add_rich_rule(rule)
 
         # set interfaces
@@ -2689,7 +2693,7 @@ class FirewallConfig(object):
                 newtext = newtext.replace(char, "")
         OK = len(newtext) > 0
         if modify:
-            OK,newtext = modify(newtext)
+            OK, newtext = modify(newtext)
 
         if newtext != origtext:
             entry.set_text(newtext)
@@ -2746,7 +2750,7 @@ class FirewallConfig(object):
             props = zone.get_properties()
             default = props["default"]
             builtin = props["builtin"]
-    
+
             old_name = zone.get_property("name")
             old_version = settings.getVersion()
             old_short = settings.getShort()
@@ -2919,31 +2923,31 @@ class FirewallConfig(object):
                 self.richRuleDialogElementCheck.set_active(True)
 
             # element
-            if type(old_obj.element) == Rich_Service:
+            if type(old_obj.element) == rich.Rich_Service:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("service"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.name)
 
-            elif type(old_obj.element) == Rich_Port:
+            elif type(old_obj.element) == rich.Rich_Port:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("port"))
                 self.richRuleDialogElementChooser.set_text( \
                     "%s/%s" % (old_obj.element.port, old_obj.element.protocol))
-            elif type(old_obj.element) == Rich_Protocol:
+            elif type(old_obj.element) == rich.Rich_Protocol:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("protocol"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.value)
-            elif type(old_obj.element) == Rich_Masquerade:
+            elif type(old_obj.element) == rich.Rich_Masquerade:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("masquerade"))
-            elif type(old_obj.element) == Rich_IcmpBlock:
+            elif type(old_obj.element) == rich.Rich_IcmpBlock:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("icmp-block"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.name)
-            elif type(old_obj.element) == Rich_ForwardPort:
+            elif type(old_obj.element) == rich.Rich_ForwardPort:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("forward-port"))
                 s = "%s/%s" % (old_obj.element.port, old_obj.element.protocol)
@@ -2952,7 +2956,7 @@ class FirewallConfig(object):
                 if old_obj.element.to_address != "":
                     s += " @%s" % old_obj.element.to_address
                 self.richRuleDialogElementChooser.set_text(s)
-            elif type(old_obj.element) == Rich_SourcePort:
+            elif type(old_obj.element) == rich.Rich_SourcePort:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("source-port"))
                 self.richRuleDialogElementChooser.set_text( \
@@ -2961,9 +2965,9 @@ class FirewallConfig(object):
             if old_obj.action:
                 self.richRuleDialogActionCheck.set_active(True)
                 action = None
-                if type(old_obj.action) == Rich_Accept:
+                if type(old_obj.action) == rich.Rich_Accept:
                     action = "accept"
-                elif type(old_obj.action) == Rich_Reject:
+                elif type(old_obj.action) == rich.Rich_Reject:
                     action = "reject"
                     self.richRuleDialogActionRejectTypeCombobox.remove_all()
                     if old_obj.family is not None:
@@ -2978,9 +2982,9 @@ class FirewallConfig(object):
                         else:
                             self.richRuleDialogActionRejectTypeCombobox. \
                                 set_active_id(REJECT_TYPES[old_obj.family][0])
-                elif type(old_obj.action) == Rich_Drop:
+                elif type(old_obj.action) == rich.Rich_Drop:
                     action = "drop"
-                elif type(old_obj.action) == Rich_Mark:
+                elif type(old_obj.action) == rich.Rich_Mark:
                     action = "mark"
                     self.richRuleDialogActionMarkChooser.set_text(old_obj.action.set)
 
@@ -3094,7 +3098,7 @@ class FirewallConfig(object):
             family = "ipv6"
         else:
             family = None
-        
+
         if combolabel == _("service"):
             value = self.service_select_dialog(old_value)
         elif combolabel == _("port"):
@@ -3151,7 +3155,7 @@ class FirewallConfig(object):
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
 
-        if (old_port == port and old_proto == proto):
+        if old_port == port and old_proto == proto:
             # nothing to change
             return None
 
@@ -3201,8 +3205,8 @@ class FirewallConfig(object):
             proto = self.protoDialogOtherProtoEntry.get_text()
         else:
             proto = self.protoDialogProtoCombobox.get_active_text()
-        
-        if (old_proto == proto):
+
+        if old_proto == proto:
             # nothing to change
             return None
 
@@ -3390,17 +3394,17 @@ class FirewallConfig(object):
         # family
         combolabel = self.richRuleDialogFamilyCombobox.get_active_text()
         if combolabel == _("ipv4"):
-            rule = Rich_Rule("ipv4") # ipv4 rule
+            rule = rich.Rich_Rule("ipv4") # ipv4 rule
         elif combolabel == _("ipv6"):
-            rule = Rich_Rule("ipv6") # ipv6 rule
+            rule = rich.Rich_Rule("ipv6") # ipv6 rule
         else:
-            rule = Rich_Rule() # ipv4+ipv6 rule
+            rule = rich.Rich_Rule() # ipv4+ipv6 rule
 
         # element
         if self.richRuleDialogElementCheck.get_active():
             combolabel = self.richRuleDialogElementCombobox.get_active_text()
             if combolabel == _("service"):
-                rule.element = Rich_Service(
+                rule.element = rich.Rich_Service(
                     self.richRuleDialogElementChooser.get_text())
             elif combolabel == _("port"):
                 text = self.richRuleDialogElementChooser.get_text()
@@ -3411,12 +3415,12 @@ class FirewallConfig(object):
                         (port, proto) = text.split("/")
                 except:
                     return None
-                rule.element = Rich_Port(port, proto)
+                rule.element = rich.Rich_Port(port, proto)
             elif combolabel == _("protocol"):
-                rule.element = Rich_Protocol(
+                rule.element = rich.Rich_Protocol(
                     self.richRuleDialogElementChooser.get_text())
             elif combolabel == _("icmp-block"):
-                rule.element = Rich_IcmpBlock(
+                rule.element = rich.Rich_IcmpBlock(
                     self.richRuleDialogElementChooser.get_text())
             elif combolabel == _("forward-port"):
                 text = self.richRuleDialogElementChooser.get_text()
@@ -3425,9 +3429,9 @@ class FirewallConfig(object):
                         self.split_fwp_string(text)
                 except:
                     return None
-                rule.element = Rich_ForwardPort(port, proto, to_port, to_addr)
+                rule.element = rich.Rich_ForwardPort(port, proto, to_port, to_addr)
             elif combolabel == _("masquerade"):
-                rule.element = Rich_Masquerade()
+                rule.element = rich.Rich_Masquerade()
             elif combolabel == _("source-port"):
                 text = self.richRuleDialogElementChooser.get_text()
                 port = ""
@@ -3437,7 +3441,7 @@ class FirewallConfig(object):
                         (port, proto) = text.split("/")
                 except:
                     return None
-                rule.element = Rich_SourcePort(port, proto)
+                rule.element = rich.Rich_SourcePort(port, proto)
 
         # action
         if self.richRuleDialogActionCheck.is_sensitive() and \
@@ -3447,20 +3451,20 @@ class FirewallConfig(object):
                 value = self.richRuleDialogActionLimitRateEntry.get_text()
                 value += "/"
                 value += smhd[self.richRuleDialogActionLimitDurationCombobox.get_active_text()]
-                limit = Rich_Limit(value)
+                limit = rich.Rich_Limit(value)
             combolabel = self.richRuleDialogActionCombobox.get_active_text()
             if combolabel == _("accept"):
-                rule.action = Rich_Accept(limit)
+                rule.action = rich.Rich_Accept(limit)
             elif combolabel == _("reject"):
                 _type = None
                 if self.richRuleDialogActionRejectTypeCheck.get_active():
                     _type = self.richRuleDialogActionRejectTypeCombobox.get_active_text()
-                rule.action = Rich_Reject(_type, limit)
+                rule.action = rich.Rich_Reject(_type, limit)
             elif combolabel == _("drop"):
-                rule.action = Rich_Drop(limit)
+                rule.action = rich.Rich_Drop(limit)
             elif combolabel == _("mark"):
                 _set = self.richRuleDialogActionMarkChooser.get_text()
-                rule.action = Rich_Mark(_set, limit)
+                rule.action = rich.Rich_Mark(_set, limit)
 
         # source
         if self.richRuleDialogSourceChooser.is_sensitive() and \
@@ -3474,7 +3478,7 @@ class FirewallConfig(object):
                 mac = self.richRuleDialogSourceChooser.get_text()
             if txt == "ipset":
                 ipset = self.richRuleDialogSourceChooser.get_text()
-            rule.source = Rich_Source(
+            rule.source = rich.Rich_Source(
                 addr, mac, ipset,
                 self.richRuleDialogSourceInvertCheck.get_active())
 
@@ -3482,7 +3486,7 @@ class FirewallConfig(object):
         if self.richRuleDialogDestinationBox.is_sensitive() and \
            (self.richRuleDialogDestinationChooser.get_text() != "" \
             or self.richRuleDialogDestinationInvertCheck.get_active()):
-            rule.destination = Rich_Destination(
+            rule.destination = rich.Rich_Destination(
                 self.richRuleDialogDestinationChooser.get_text(),
                 self.richRuleDialogDestinationInvertCheck.get_active())
 
@@ -3494,11 +3498,12 @@ class FirewallConfig(object):
                 value = self.richRuleDialogLogLimitRateEntry.get_text()
                 value += "/"
                 value += smhd[self.richRuleDialogLogLimitDurationCombobox.get_active_text()]
-                limit = Rich_Limit(value)
+                limit = rich.Rich_Limit(value)
 
             level = self.richRuleDialogLogLevelCombobox.get_active_text()
-            rule.log = Rich_Log(self.richRuleDialogLogPrefixEntry.get_text(),
-                                loglevel[level], limit)
+            rule.log = rich.Rich_Log(
+                self.richRuleDialogLogPrefixEntry.get_text(),
+                loglevel[level], limit)
 
         # audit
         if self.richRuleDialogAuditCheck.is_sensitive() and \
@@ -3508,8 +3513,8 @@ class FirewallConfig(object):
                 value = self.richRuleDialogAuditLimitRateEntry.get_text()
                 value += "/"
                 value += smhd[self.richRuleDialogAuditLimitDurationCombobox.get_active_text()]
-                limit = Rich_Limit(value)
-            rule.audit = Rich_Audit(limit)
+                limit = rich.Rich_Limit(value)
+            rule.audit = rich.Rich_Audit(limit)
 
         return rule
 
@@ -3708,7 +3713,7 @@ class FirewallConfig(object):
     def add_edit_interface(self, add):
         selected_zone = self.get_selected_zone()
         old_interface = None
-            
+
         if add:
             self.interfaceDialogInterfaceEntry.set_text("")
         else:
@@ -4119,7 +4124,7 @@ class FirewallConfig(object):
 
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
-        if (old_port == port and old_proto == proto):
+        if old_port == port and old_proto == proto:
             # nothing to change
             return
 
@@ -4187,7 +4192,7 @@ class FirewallConfig(object):
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
 
-        if (old_port == port and old_proto == proto):
+        if old_port == port and old_proto == proto:
             # nothing to change
             return
 
@@ -4284,7 +4289,7 @@ class FirewallConfig(object):
 
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
-        if (old_port == port and old_proto == proto):
+        if old_port == port and old_proto == proto:
             # nothing to change
             return
 
@@ -4340,7 +4345,7 @@ class FirewallConfig(object):
         port = self.portDialogPortEntry.get_text()
         proto = self.portDialogProtoCombobox.get_active_text()
 
-        if (old_port == port and old_proto == proto):
+        if old_port == port and old_proto == proto:
             # nothing to change
             return
 
@@ -4435,7 +4440,7 @@ class FirewallConfig(object):
         else:
             proto = self.protoDialogProtoCombobox.get_active_text()
 
-        if (old_proto == proto):
+        if old_proto == proto:
             # nothing to change
             return
 
@@ -4488,7 +4493,7 @@ class FirewallConfig(object):
         else:
             proto = self.protoDialogProtoCombobox.get_active_text()
 
-        if (old_proto == proto):
+        if old_proto == proto:
             # nothing to change
             return
 
@@ -4589,7 +4594,7 @@ class FirewallConfig(object):
                 ok = True
         else:
             ok = self._check_forward()
-        
+
         self.forwardDialogOkButton.set_sensitive(ok)
 
     def onAddForwardPort(self, *args):
@@ -4693,7 +4698,7 @@ class FirewallConfig(object):
             else:
                 self.forwardDialogLocalCheck.set_active(True)
             self.forwardDialogToAddrEntry.set_text(old_to_addr)
-            
+
         self.forwardDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
         self.forwardDialog.set_transient_for(self.mainWindow)
         self.forwardDialog.show_all()
@@ -4777,7 +4782,7 @@ class FirewallConfig(object):
         self.forwardStore.append([port, protocol, to_port, to_address])
 
     def _forward_port_removed_cb(self, zone, port, protocol, to_port,
-                                to_address):
+                                 to_address):
         iter = self.forwardStore.get_iter_first()
         while iter:
             if self.forwardStore.get_value(iter, 0) == port and \
@@ -5095,7 +5100,7 @@ class FirewallConfig(object):
             props = service.get_properties()
             default = props["default"]
             builtin = props["builtin"]
-    
+
             old_name = service.get_property("name")
             old_version = settings.getVersion()
             old_short = settings.getShort()
@@ -5235,8 +5240,8 @@ class FirewallConfig(object):
             return
 
         module = self.moduleDialogModuleEntry.get_text()
-        
-        if (old_module == module):
+
+        if old_module == module:
             # nothing to change
             return
 
@@ -5322,7 +5327,6 @@ class FirewallConfig(object):
         self.addressDialogAddressEntry.disconnect(handler_id)
 
         address = self.addressDialogAddressEntry.get_text()
-        #TODO: addr check according to addr_type
 
         if functions.check_mac(address):
             address = address.upper()
@@ -5769,7 +5773,7 @@ class FirewallConfig(object):
 
         entry = self.ipsetEntryDialogEntryEntry.get_text()
 
-        if (old_entry == entry):
+        if old_entry == entry:
             # nothing to change
             return
 
@@ -6068,7 +6072,7 @@ class FirewallConfig(object):
             props = icmp.get_properties()
             default = props["default"]
             builtin = props["builtin"]
-    
+
             old_name = icmp.get_property("name")
             old_version = settings.getVersion()
             old_short = settings.getShort()
@@ -6418,7 +6422,7 @@ class FirewallConfig(object):
             return
 
         context = self.contextDialogContextEntry.get_text()
-        if (old_context == context):
+        if old_context == context:
             # nothing to change
             return
 
@@ -6439,9 +6443,7 @@ class FirewallConfig(object):
 
     def onContextChanged(self, *args):
         text = self.contextDialogContextEntry.get_text()
-#TODO: checkContext
-#        if text != "" and checkContext(text):
-        if text != "":
+        if text != "" and functions.checkContext(text):
             self.contextDialogOkButton.set_sensitive(True)
         else:
             self.contextDialogOkButton.set_sensitive(False)
@@ -6517,7 +6519,7 @@ class FirewallConfig(object):
             return
 
         command = self.commandDialogCommandEntry.get_text()
-        if (old_command == command):
+        if old_command == command:
             # nothing to change
             return
 
@@ -6613,7 +6615,7 @@ class FirewallConfig(object):
             return
 
         user = self.userDialogUserEntry.get_text()
-        if (old_user == user):
+        if old_user == user:
             # nothing to change
             return
 
@@ -6710,7 +6712,7 @@ class FirewallConfig(object):
             return
 
         uid = int(self.uidDialogUidEntry.get_text())
-        if (old_uid == uid):
+        if old_uid == uid:
             # nothing to change
             return
 
