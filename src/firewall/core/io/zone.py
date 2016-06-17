@@ -503,7 +503,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                                      invert=invert)
                 return
             # zone bound to source
-            if "address" not in attrs and not "ipset" in attrs:
+            if "address" not in attrs and "ipset" not in attrs:
                 log.warning('Invalid source: No address no ipset.')
                 return
             if "address" in attrs and "ipset" in attrs:
