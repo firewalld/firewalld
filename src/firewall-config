@@ -2042,7 +2042,7 @@ class FirewallConfig(object):
                 return
             iter = self.zoneStore.iter_next(iter)
         # not in list, append
-        if zone in active_zones:
+        if zone in self.active_zones:
             self.zoneStore.append([zone, Pango.Weight.BOLD])
         else:
             self.zoneStore.append([zone, Pango.Weight.NORMAL])
