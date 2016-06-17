@@ -1044,7 +1044,7 @@ class FirewallZone(object):
 
         add_del = { True: "-A", False: "-D" }[enable]
         source_ipv = self.__rule_source_ipv(rule.source)
-        if source_ipv is not None:
+        if source_ipv is not None and source_ipv != "":
             if rule.family is not None:
                 # rule family is defined by user, no way to change it
                 if rule.family != source_ipv:
