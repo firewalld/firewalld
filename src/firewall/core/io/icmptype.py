@@ -19,16 +19,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "IcmpType", "icmptype_reader", "icmptype_writer" ]
+
 import xml.sax as sax
 import os
 import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.errors import *
 from firewall.functions import u2b_if_py2
-from firewall.core.io.io_object import *
+from firewall.core.io.io_object import PY2, IO_Object, \
+    IO_Object_ContentHandler, IO_Object_XMLGenerator
 from firewall.core.logger import log
+from firewall import errors
+from firewall.errors import FirewallError
 
 class IcmpType(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
@@ -75,8 +79,9 @@ class IcmpType(IO_Object):
         if item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(INVALID_DESTINATION,
-                                 "'%s' not from {'ipv4'|'ipv6'}" % destination)
+                    raise FirewallError(errors.INVALID_DESTINATION,
+                                        "'%s' not from {'ipv4'|'ipv6'}" % \
+                                        destination)
 
 # PARSER
 
@@ -87,7 +92,7 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 
         if name == "icmptype":
             if "name" in attrs:
-                log.warning("Ignoring deprecated attribute name='%s'" % 
+                log.warning("Ignoring deprecated attribute name='%s'" %
                             attrs["name"])
             if "version" in attrs:
                 self.item.version = attrs["version"]
@@ -104,7 +109,7 @@ class icmptype_ContentHandler(IO_Object_ContentHandler):
 def icmptype_reader(filename, path):
     icmptype = IcmpType()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME,
+        raise FirewallError(errors.INVALID_NAME,
                             "%s is missing .xml suffix" % filename)
     icmptype.name = filename[:-4]
     icmptype.check_name(icmptype.name)
