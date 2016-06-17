@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "Zone" ]
+__all__ = [ "Zone", "zone_reader", "zone_writer" ]
 
 import xml.sax as sax
 import os
@@ -32,7 +32,7 @@ from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import PY2, IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
     check_tcpudp, check_protocol
-from firewall.core.rich import *
+from firewall.core import rich
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
@@ -172,7 +172,7 @@ class Zone(IO_Object):
 
     def __setattr__(self, name, value):
         if name == "rules_str":
-            self.rules = [Rich_Rule(rule_str=s) for s in value]
+            self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
         else:
             super(Zone, self).__setattr__(name, value)
 
@@ -180,7 +180,7 @@ class Zone(IO_Object):
         if item == "services" and self.fw_config:
             existing_services = self.fw_config.get_services()
             for service in config:
-                if not service in existing_services:
+                if service not in existing_services:
                     raise FirewallError(errors.INVALID_SERVICE,
                                         "'%s' not among existing services" % \
                                         service)
@@ -194,7 +194,7 @@ class Zone(IO_Object):
         elif item == "icmp_blocks" and self.fw_config:
             existing_icmptypes = self.fw_config.get_icmptypes()
             for icmptype in config:
-                if not icmptype in existing_icmptypes:
+                if icmptype not in existing_icmptypes:
                     raise FirewallError(errors.INVALID_ICMPTYPE,
                                         "'%s' not among existing icmp types" % \
                                         icmptype)
@@ -231,7 +231,7 @@ class Zone(IO_Object):
                     raise FirewallError(errors.INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
-                Rich_Rule(rule_str=rule)
+                rich.Rich_Rule(rule_str=rule)
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
@@ -331,7 +331,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Service(attrs["name"])
+                self._rule.element = rich.Rich_Service(attrs["name"])
                 return
             if attrs["name"] not in self.item.services:
                 self.item.services.append(attrs["name"])
@@ -346,8 +346,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Port(attrs["port"],
-                                               attrs["protocol"])
+                self._rule.element = rich.Rich_Port(attrs["port"],
+                                                    attrs["protocol"])
                 return
             check_port(attrs["port"])
             check_tcpudp(attrs["protocol"])
@@ -365,7 +365,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Protocol(attrs["value"])
+                self._rule.element = rich.Rich_Protocol(attrs["value"])
             else:
                 check_protocol(attrs["value"])
                 if attrs["value"] not in self.item.protocols:
@@ -380,7 +380,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_IcmpBlock(attrs["name"])
+                self._rule.element = rich.Rich_IcmpBlock(attrs["name"])
                 return
             if attrs["name"] not in self.item.icmp_blocks:
                 self.item.icmp_blocks.append(attrs["name"])
@@ -401,7 +401,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Masquerade()
+                self._rule.element = rich.Rich_Masquerade()
             else:
                 if self.item.masquerade:
                     log.warning("Masquerade already set, ignoring.")
@@ -422,9 +422,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_ForwardPort(attrs["port"],
-                                                      attrs["protocol"],
-                                                      to_port, to_addr)
+                self._rule.element = rich.Rich_ForwardPort(attrs["port"],
+                                                           attrs["protocol"],
+                                                           to_port, to_addr)
                 return
 
             check_port(attrs["port"])
@@ -453,8 +453,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_SourcePort(attrs["port"],
-                                                     attrs["protocol"])
+                self._rule.element = rich.Rich_SourcePort(attrs["port"],
+                                                          attrs["protocol"])
                 return
             check_port(attrs["port"])
             check_tcpudp(attrs["protocol"])
@@ -499,7 +499,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     mac = attrs["mac"]
                 if "ipset" in attrs:
                     ipset = attrs["ipset"]
-                self._rule.source = Rich_Source(addr, mac, ipset, invert=invert)
+                self._rule.source = rich.Rich_Source(addr, mac, ipset,
+                                                     invert=invert)
                 return
             # zone bound to source
             if "address" not in attrs and not "ipset" in attrs:
@@ -547,8 +548,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs and \
                     attrs["invert"].lower() in [ "yes", "true" ]:
                 invert = True
-            self._rule.destination = Rich_Destination(attrs["address"],
-                                                      invert)
+            self._rule.destination = rich.Rich_Destination(attrs["address"],
+                                                           invert)
 
         elif name in [ "accept", "reject", "drop", "mark" ]:
             if not self._rule:
@@ -560,17 +561,17 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule_error = True
                 return
             if name == "accept":
-                self._rule.action = Rich_Accept()
+                self._rule.action = rich.Rich_Accept()
             elif name == "reject":
                 _type = None
                 if "type" in attrs:
                     _type = attrs["type"]
-                self._rule.action = Rich_Reject(_type)
+                self._rule.action = rich.Rich_Reject(_type)
             elif name == "drop":
-                self._rule.action = Rich_Drop()
+                self._rule.action = rich.Rich_Drop()
             elif name == "mark":
                 _set = attrs["set"]
-                self._rule.action = Rich_Mark(_set)
+                self._rule.action = rich.Rich_Mark(_set)
             self._limit_ok = self._rule.action
 
         elif name == "log":
@@ -589,7 +590,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     self._rule_error = True
                     return
             prefix = attrs["prefix"] if "prefix" in attrs else None
-            self._rule.log = Rich_Log(prefix, level)
+            self._rule.log = rich.Rich_Log(prefix, level)
             self._limit_ok = self._rule.log
 
         elif name == "audit":
@@ -600,8 +601,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.warning("Invalid rule: More than one audit in rule '%s', ignoring.",
                             str(self._rule))
                 self._rule_error = True
-                return            
-            self._rule.audit = Rich_Audit()
+                return
+            self._rule.audit = rich.Rich_Audit()
             self._limit_ok = self._rule.audit
 
         elif name == "rule":
@@ -613,7 +614,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 attrs["family"])
                     self._rule_error = True
                     return
-            self._rule = Rich_Rule(family)
+            self._rule = rich.Rich_Rule(family)
 
         elif name == "limit":
             if not self._limit_ok:
@@ -626,7 +627,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule_error = True
                 return
             value = attrs["value"]
-            self._limit_ok.limit = Rich_Limit(value)
+            self._limit_ok.limit = rich.Rich_Limit(value)
 
         elif name == "icmp-block-inversion":
             if self.item.icmp_block_inversion:
@@ -838,22 +839,22 @@ def zone_writer(zone, path=None):
             element = ""
             attrs = { }
 
-            if type(rule.element) == Rich_Service:
+            if type(rule.element) == rich.Rich_Service:
                 element = "service"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == Rich_Port:
+            elif type(rule.element) == rich.Rich_Port:
                 element = "port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
-            elif type(rule.element) == Rich_Protocol:
+            elif type(rule.element) == rich.Rich_Protocol:
                 element = "protocol"
                 attrs["value"] = rule.element.value
-            elif type(rule.element) == Rich_Masquerade:
+            elif type(rule.element) == rich.Rich_Masquerade:
                 element = "masquerade"
-            elif type(rule.element) == Rich_IcmpBlock:
+            elif type(rule.element) == rich.Rich_IcmpBlock:
                 element = "icmp-block"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == Rich_ForwardPort:
+            elif type(rule.element) == rich.Rich_ForwardPort:
                 element = "forward-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
@@ -861,7 +862,7 @@ def zone_writer(zone, path=None):
                     attrs["to-port"] = rule.element.to_port
                 if rule.element.to_address != "":
                     attrs["to-addr"] = rule.element.to_address
-            elif type(rule.element) == Rich_SourcePort:
+            elif type(rule.element) == rich.Rich_SourcePort:
                 element = "source-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
@@ -914,15 +915,15 @@ def zone_writer(zone, path=None):
         if rule.action:
             action = ""
             attrs = { }
-            if type(rule.action) == Rich_Accept:
+            if type(rule.action) == rich.Rich_Accept:
                 action = "accept"
-            elif type(rule.action) == Rich_Reject:
+            elif type(rule.action) == rich.Rich_Reject:
                 action = "reject"
                 if rule.action.type:
                     attrs["type"] = rule.action.type
-            elif type(rule.action) == Rich_Drop:
+            elif type(rule.action) == rich.Rich_Drop:
                 action = "drop"
-            elif type(rule.action) == Rich_Mark:
+            elif type(rule.action) == rich.Rich_Mark:
                 action = "mark"
                 attrs["set"] = rule.action.set
             else:
