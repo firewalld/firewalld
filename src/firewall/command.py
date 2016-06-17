@@ -230,7 +230,7 @@ class FirewallCommand(object):
 
     def parse_port(self, value, separator="/"):
         try:
-            (port, proto) = value.split("/")
+            (port, proto) = value.split(separator)
         except ValueError:
             raise FirewallError(errors.INVALID_PORT, "bad port (most likely missing protocol), correct syntax is portid[-portid]%sprotocol" % separator)
         return (port, proto)
