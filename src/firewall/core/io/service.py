@@ -19,17 +19,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "Service", "service_reader", "service_writer" ]
+
 import xml.sax as sax
 import os
 import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.errors import *
-from firewall.functions import checkProtocol, \
-                               checkIPnMask, checkIP6nMask, u2b_if_py2
-from firewall.core.io.io_object import *
+from firewall.functions import u2b_if_py2
+from firewall.core.io.io_object import PY2, IO_Object, \
+    IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
+    check_tcpudp, check_protocol, check_address
 from firewall.core.logger import log
+from firewall import errors
+from firewall.errors import FirewallError
 
 class Service(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
@@ -115,7 +119,7 @@ class Service(IO_Object):
         elif item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(INVALID_DESTINATION,
+                    raise FirewallError(errors.INVALID_DESTINATION,
                                         "'%s' not in {'ipv4'|'ipv6'}" % \
                                         destination)
                 check_address(destination, config[destination])
@@ -123,9 +127,9 @@ class Service(IO_Object):
         elif item == "modules":
             for module in config:
                 if not module.startswith("nf_conntrack_"):
-                    raise FirewallError(INVALID_MODULE, module)
+                    raise FirewallError(errors.INVALID_MODULE, module)
                 elif len(module.replace("nf_conntrack_", "")) < 1:
-                    raise FirewallError(INVALID_MODULE, module)
+                    raise FirewallError(errors.INVALID_MODULE, module)
 
 # PARSER
 
@@ -200,7 +204,7 @@ class service_ContentHandler(IO_Object_ContentHandler):
 def service_reader(filename, path):
     service = Service()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME,
+        raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     service.name = filename[:-4]
     service.check_name(service.name)
