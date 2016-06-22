@@ -389,7 +389,9 @@ class FirewallCommand(object):
         destinations = settings.getDestinations()
         short_description = settings.getShort()
         self.print_msg(service)
-        self.print_msg("  summary: " + short_description)
+        if self.verbose:
+            self.print_msg("  summary: " + short_description)
+            self.print_msg("  description: " + description)
         self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
                                                for port in ports]))
         self.print_msg("  protocols: " + " ".join(protocols))
@@ -400,7 +402,6 @@ class FirewallCommand(object):
         self.print_msg("  destination: " +
                        " ".join(["%s:%s" % (k, v)
                                  for k, v in destinations.items()]))
-        self.print_msg("  description: " + description)
 
     def print_icmptype_info(self, icmptype, settings):
         destinations = settings.getDestinations()
@@ -409,9 +410,10 @@ class FirewallCommand(object):
         if len(destinations) == 0:
             destinations = [ "ipv4", "ipv6" ]
         self.print_msg(icmptype)
-        self.print_msg("  summary: " + short_description)
+        if self.verbose:
+            self.print_msg("  summary: " + short_description)
+            self.print_msg("  description: " + description)
         self.print_msg("  destination: " + " ".join(destinations))
-        self.print_msg("  description: " + description)
 
     def print_ipset_info(self, ipset, settings):
         ipset_type = settings.getType()
@@ -420,12 +422,13 @@ class FirewallCommand(object):
         description = settings.getDescription()
         short_description = settings.getShort()
         self.print_msg(ipset)
-        self.print_msg("  summary: " + short_description)
+        if self.verbose:
+            self.print_msg("  summary: " + short_description)
+            self.print_msg("  description: " + description)
         self.print_msg("  type: " + ipset_type)
         self.print_msg("  options: " + " ".join(["%s=%s" % (k, v) if v else k
                                                  for k, v in options.items()]))
         self.print_msg("  entries: " + " ".join(entries))
-        self.print_msg("  description: " + description)
 
     def print_query_result(self, value):
         if value:
