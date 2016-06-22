@@ -941,7 +941,6 @@ if a.permanent:
             for opt in a.option:
                 settings.addOption(*cmd.parse_ipset_option(opt))
         config = fw.config()
-        settings.setType(a.type)
         config.addIPSet(a.new_ipset, settings)
 
     elif a.new_ipset_from_file:
