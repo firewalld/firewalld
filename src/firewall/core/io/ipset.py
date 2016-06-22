@@ -257,7 +257,7 @@ def ipset_writer(ipset, path=None):
         try:
             shutil.copy2(name, "%s.old" % name)
         except Exception as msg:
-            raise IOError("Backup of '%s' failed: %s" % (name, msg))
+            log.error("Backup of file '%s' failed: %s", name, msg)
 
     dirpath = os.path.dirname(name)
     if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
