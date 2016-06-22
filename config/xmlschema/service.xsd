@@ -4,13 +4,13 @@ elementFormDefault="qualified">
 
 <xs:element name="service">
   <xs:complexType>
-    <xs:choice maxOccurs="unbounded">
+    <xs:sequence>
       <xs:element name="short" type="xs:string" minOccurs="0"/>
       <xs:element name="description" type="xs:string" minOccurs="0"/>
       <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="module" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="destination" type="desttype" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:choice>
+      <xs:element name="destination" type="desttype" minOccurs="0"/>
+    </xs:sequence>
     <xs:attribute name="version" type="xs:string"/>
   </xs:complexType>
 </xs:element>
