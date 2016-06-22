@@ -11,7 +11,9 @@ elementFormDefault="qualified">
       <xs:element name="source" type="sourceaddresstype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="service" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="source-port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="icmp-block" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="icmp-block-inversion" type="emptytype" minOccurs="0"/>
       <xs:element name="masquerade" type="emptytype" minOccurs="0"/>
       <xs:element name="forward-port" type="fwporttype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="rule" type="ruletype" minOccurs="0" maxOccurs="unbounded"/>
@@ -26,7 +28,8 @@ elementFormDefault="qualified">
 </xs:complexType>
 
 <xs:complexType name="sourceaddresstype">
-  <xs:attribute name="address" type="ipaddrtype" use="required"/>
+  <xs:attribute name="ipset" type="xs:string"/>
+  <xs:attribute name="address" type="ipaddrtype"/>
 </xs:complexType>
 
 <xs:simpleType name="familyrestrict">
@@ -72,12 +75,14 @@ elementFormDefault="qualified">
 <xs:complexType name="ruletype">
   <xs:choice maxOccurs="unbounded">
     <xs:element name="source" type="sourcetype" minOccurs="0"/>
-    <xs:element name="destination" type="sourcetype" minOccurs="0"/>
+    <xs:element name="destination" type="destinationtype" minOccurs="0"/>
     <xs:choice>
       <xs:element name="protocol" type="protocoltype"/>
       <xs:element name="service" type="nametype"/>
       <xs:element name="port" type="porttype"/>
+      <xs:element name="source-port" type="porttype"/>
       <xs:element name="icmp-block" type="nametype"/>
+      <xs:element name="icmp-block-inversion" type="emptytype"/>
       <xs:element name="masquerade" type="emptytype"/>
       <xs:element name="forward-port" type="fwporttype"/>
     </xs:choice>
@@ -94,6 +99,12 @@ elementFormDefault="qualified">
 </xs:complexType>
 
 <xs:complexType name="sourcetype">
+  <xs:attribute name="ipset" type="xs:string"/>
+  <xs:attribute name="address" type="ipaddrtype"/>
+  <xs:attribute name="invert" type="booltype"/>
+</xs:complexType>
+
+<xs:complexType name="destinationtype">
   <xs:attribute name="address" type="ipaddrtype" use="required"/>
   <xs:attribute name="invert" type="booltype"/>
 </xs:complexType>

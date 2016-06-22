@@ -8,6 +8,8 @@ elementFormDefault="qualified">
       <xs:element name="short" type="xs:string" minOccurs="0"/>
       <xs:element name="description" type="xs:string" minOccurs="0"/>
       <xs:element name="port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="source-port" type="porttype" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="protocol" type="prototype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="module" type="nametype" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="destination" type="desttype" minOccurs="0"/>
     </xs:sequence>
@@ -16,6 +18,10 @@ elementFormDefault="qualified">
 </xs:element>
 
 <xs:complexType name="nametype">
+  <xs:attribute name="name" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="prototype">
   <xs:attribute name="name" type="xs:string" use="required"/>
 </xs:complexType>
 
