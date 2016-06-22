@@ -203,6 +203,7 @@ fi
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
+%{_bindir}/firewallctl
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
 %{_prefix}/lib/firewalld/icmptypes/*.xml
