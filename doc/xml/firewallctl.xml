@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+<!ENTITY errorcodes SYSTEM "errorcodes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2016 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewallctl">
+
+  <refentryinfo>
+    <title>firewallctl</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewallctl</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewallctl</refname>
+    <refpurpose>firewalld command line client</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>firewallctl</command> <arg choice="opt" rep="repeat">OPTIONS</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      firewallctl is an alternate command line client of the firewalld daemon. It provides interface to manage runtime and permanent configuration.
+    </para>
+
+    <para>
+      The runtime configuration in firewalld is separated from the permanent configuration. This means that things can get changed in the runtime or permanent configuration.
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      The following options are supported:
+    </para>
+
+    <refsect2 id="general_options">
+      <title>General Options</title>
+      <variablelist>
+	<varlistentry>
+          <term><option>-h</option></term>
+          <term><option>--help</option></term>
+          <listitem>
+	    <para>
+	      Prints a short help text and exits.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>-v</option></term>
+          <term><option>--verbose</option></term>
+          <listitem>
+	    <para>
+	      Be more verbose while printing.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>-q</option></term>
+          <term><option>--quiet</option></term>
+          <listitem>
+	    <para>
+	      Do not print status messages.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="version_options">
+      <title>Version Option</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>version</option></term>
+	  <listitem>
+	    <para>
+	      Print the version string of firewalld. This option is not combinable with other options.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="state_options">
+      <title>State Option</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>state</option></term>
+	  <listitem>
+	    <para>
+	      Check whether the firewalld daemon is active (i.e. running). Returns an exit code 0 if it is active, <replaceable>NOT_RUNNING</replaceable> otherwise (see <xref linkend="exit_codes"/>). This will also print the state to <replaceable>STDOUT</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="reload_options">
+      <title>Reload Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>reload</option> <optional><option>-c</option>|<option>--complete</option></optional></term>
+	  <listitem>
+	    <para>
+	      Reload firewall rules and keep state information.
+	      Current permanent configuration will become new runtime configuration,
+	      i.e. all runtime only changes done until reload are lost with reload
+	      if they have not been also in permanent configuration.
+	    </para>
+	    <para>
+	      With the <option>-c</option>|<option>--complete</option> option, reload firewall completely, even netfilter kernel modules. This will most likely terminate active connections, because state information is lost. This option should only be used in case of severe firewall problems. For example if there are state information problems that no connection can be established with correct firewall rules.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="list_options">
+      <title>List Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>list</option> <option>zones</option> <optional><option>-a</option>|<option>--active</option> | <option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print predefined zones as a space separated list.
+	    </para>
+	    <para>
+	      With the <option>-a</option>|<option>--active</option> option, only zones are listed, that are active. That means that the zones have interface or source bindings.
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, zones in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>list</option> <option>services</option> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print predefined services as a space separated list.
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, services in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>list</option> <option>ipsets</option> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print predefined ipsets as a space separated list.
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, ipsets in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>list</option> <option>icmptypes</option> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print predefined icmptypes as a space separated list.
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, icmptypes in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="info_options">
+      <title>Info Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>info</option> <option>zone</option> <replaceable>zone</replaceable> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the zone <replaceable>zone</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>zone</replaceable>
+  interfaces: <replaceable>interface1</replaceable> ..
+  sources: <replaceable>source1</replaceable> ..
+  services: <replaceable>service1</replaceable> ..
+  ports: <replaceable>port1</replaceable> ..
+  protocols: <replaceable>protocol1</replaceable> ..
+  forward-ports:
+        <replaceable>forward-port1</replaceable>
+        ..
+  source-ports: <replaceable>source-port1</replaceable> ..
+  icmp-blocks: <replaceable>icmp-type1</replaceable> ..
+  rich rules:
+        <replaceable>rich-rule1</replaceable>
+        ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, zones in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>zones</option> <optional><option>-a</option>|<option>--active</option> | <option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the zones. The output format is:
+	      <programlisting>
+<replaceable>zone</replaceable>
+  interfaces: <replaceable>interface1</replaceable> ..
+  sources: <replaceable>source1</replaceable> ..
+  services: <replaceable>service1</replaceable> ..
+  ports: <replaceable>port1</replaceable> ..
+  protocols: <replaceable>protocol1</replaceable> ..
+  forward-ports:
+        <replaceable>forward-port1</replaceable>
+        ..
+  source-ports: <replaceable>source-port1</replaceable> ..
+  icmp-blocks: <replaceable>icmp-type1</replaceable> ..
+  rich rules:
+        <replaceable>rich-rule1</replaceable>
+        ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-a</option>|<option>--active</option> option, only zones are listed, that are active. That means that the zones have interface or source bindings.
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, zones in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>service</option> <replaceable>service</replaceable> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the service <replaceable>service</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>service</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+  protocols: <replaceable>protocol1</replaceable> ..
+  source-ports: <replaceable>source-port1</replaceable> ..
+  modules: <replaceable>module1</replaceable> ..
+  destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, services in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>services</option> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the services. The output format is:
+	      <programlisting>
+<replaceable>service</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+  protocols: <replaceable>protocol1</replaceable> ..
+  source-ports: <replaceable>source-port1</replaceable> ..
+  modules: <replaceable>module1</replaceable> ..
+  destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, services in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>ipset</option> <replaceable>ipset</replaceable> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the ipset <replaceable>ipset</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>ipset</replaceable>
+  type: <replaceable>type</replaceable>
+  options: <replaceable>option1[=value1]</replaceable> ..
+  entries: <replaceable>entry1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, ipsets in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>ipsets</option> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the ipsets. The output format is:
+	      <programlisting>
+<replaceable>ipset</replaceable>
+  type: <replaceable>type</replaceable>
+  options: <replaceable>option1[=value1]</replaceable> ..
+  entries: <replaceable>entry1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, ipsets in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>icmptype</option> <replaceable>icmptype</replaceable> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the icmptype <replaceable>icmptype</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>icmptype</replaceable>
+  destination: <replaceable>ipv1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, icmptypes in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>icmptypes</option> <optional><option>-p</option>|<option>--permanent</option></optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the icmptypes. The output format is:
+	      <programlisting>
+<replaceable>icmptype</replaceable>
+  destination: <replaceable>ipv1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option>|<option>--permanent</option> option, icmptypes in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+  </refsect1>
+
+  <refsect1 id="exit_codes">
+    <title>Exit Codes</title>
+    <para>
+      On success 0 is returned.
+      On failure the output is red colored and exit code is either 2 in case of wrong command-line option usage or one of the following error codes in other cases:
+
+      <informaltable frame="all">
+	<tgroup cols="2" colsep="1" rowsep="1">
+	  <colspec align="left"/>
+	  <colspec align="right"/>
+	  <thead>
+	    <row>
+	      <entry>String</entry>
+	      <entry>Code</entry>
+	    </row>
+	  </thead>
+	  <tbody>
+	    &errorcodes;
+	  </tbody>
+	</tgroup>
+      </informaltable>
+    </para>
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>
