@@ -1031,6 +1031,8 @@ try:
     elif a.new_zone_from_file:
         filename = os.path.basename(a.new_zone_from_file)
         dirname = os.path.dirname(a.new_zone_from_file)
+        if dirname == "":
+            dirname = "./"
         try:
             obj = zone_reader(filename, dirname)
         except FirewallError as msg:
@@ -1075,6 +1077,8 @@ try:
     elif a.new_service_from_file:
         filename = os.path.basename(a.new_service_from_file)
         dirname = os.path.dirname(a.new_service_from_file)
+        if dirname == "":
+            dirname = "./"
         try:
             obj = service_reader(filename, dirname)
         except FirewallError as msg:
@@ -1129,6 +1133,8 @@ try:
     elif a.new_icmptype_from_file:
         filename = os.path.basename(a.new_icmptype_from_file)
         dirname = os.path.dirname(a.new_icmptype_from_file)
+        if dirname == "":
+            dirname = "./"
         try:
             obj = icmptype_reader(filename, dirname)
         except FirewallError as msg:
@@ -1364,6 +1370,8 @@ try:
     elif a.new_ipset_from_file:
         filename = os.path.basename(a.new_ipset_from_file)
         dirname = os.path.dirname(a.new_ipset_from_file)
+        if dirname == "":
+            dirname = "./"
         try:
             obj = ipset_reader(filename, dirname)
         except FirewallError as msg:
