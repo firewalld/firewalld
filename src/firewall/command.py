@@ -77,7 +77,8 @@ class FirewallCommand(object):
             print(msg)
 
     def __cmd_sequence(self, cmd_type, option, action_method, query_method,
-                       parse_method, message, start_args=None, end_args=None):
+                       parse_method, message, start_args=None, end_args=None,
+                       no_exit=False):
         warn_type = {
             "add": "ALREADY_ENABLED",
             "remove": "NOT_ENABLED",
@@ -152,40 +153,41 @@ class FirewallCommand(object):
                                         code)
                 _errors += 1
 
-        if _errors == len(option):
+        if _errors == len(option) and not no_exit:
             sys.exit(0)
 
     def add_sequence(self, option, action_method, query_method, parse_method,
-                     message):
+                     message, no_exit=False):
         self.__cmd_sequence("add", option, action_method, query_method,
-                            parse_method, message)
+                            parse_method, message, no_exit=no_exit)
 
     def x_add_sequence(self, x, option, action_method, query_method,
-                       parse_method, message):
+                       parse_method, message, no_exit=False):
         self.__cmd_sequence("add", option, action_method, query_method,
-                            parse_method, message, start_args=[x])
+                            parse_method, message, start_args=[x],
+                            no_exit=no_exit)
 
     def zone_add_timeout_sequence(self, zone, option, action_method,
                                   query_method, parse_method, message,
-                                  timeout):
+                                  timeout, no_exit=False):
         self.__cmd_sequence("add", option, action_method, query_method,
                             parse_method, message, start_args=[zone],
-                            end_args=[timeout])
+                            end_args=[timeout], no_exit=no_exit)
 
     def remove_sequence(self, option, action_method, query_method,
-                        parse_method, message):
+                        parse_method, message, no_exit=False):
         self.__cmd_sequence("remove", option, action_method, query_method,
-                            parse_method, message)
-
+                            parse_method, message, no_exit=no_exit)
 
     def x_remove_sequence(self, x, option, action_method, query_method,
-                          parse_method, message):
+                          parse_method, message, no_exit=False):
         self.__cmd_sequence("remove", option, action_method, query_method,
-                            parse_method, message, start_args=[x])
+                            parse_method, message, start_args=[x],
+                            no_exit=no_exit)
 
 
     def __query_sequence(self, option, query_method, parse_method, message,
-                         start_args=None):
+                         start_args=None, no_exit=False):
         items = [ ]
         for item in option:
             if parse_method is not None:
@@ -224,16 +226,18 @@ class FirewallCommand(object):
                 self.print_msg("%s: %s" % (message % item, ("no", "yes")[res]))
             else:
                 self.print_query_result(res)
-        sys.exit(0)
+        if not no_exit:
+            sys.exit(0)
 
-    def query_sequence(self, option, query_method, parse_method, message):
+    def query_sequence(self, option, query_method, parse_method, message,
+                       no_exit=False):
         self.__query_sequence(option, query_method, parse_method,
-                              message)
+                              message, no_exit=no_exit)
 
     def x_query_sequence(self, x, option, query_method, parse_method,
-                         message):
+                         message, no_exit=False):
         self.__query_sequence(option, query_method, parse_method,
-                              message, start_args=[x])
+                              message, start_args=[x], no_exit=no_exit)
 
 
     def parse_source(self, value):
