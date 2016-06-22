@@ -23,6 +23,7 @@ __all__ = [ "FirewallConfig" ]
 
 import copy
 import os, os.path
+import shutil
 from firewall import config
 from firewall.core.logger import log
 from firewall.core.io.icmptype import IcmpType, icmptype_reader, icmptype_writer
@@ -299,7 +300,14 @@ class FirewallConfig(object):
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' != '%s'" % (obj.path,
                                                   config.ETC_FIREWALLD_IPSETS))
-        os.remove("%s/%s.xml" % (obj.path, obj.name))
+
+        name = "%s/%s.xml" % (obj.path, obj.name)
+        try:
+            shutil.move(name, "%s.old" % name)
+        except Exception as msg:
+            log.error("Backup of file '%s' failed: %s", name, msg)
+            os.remove(name)
+
         del self._ipsets[obj.name]
 
     def check_builtin_ipset(self, obj):
@@ -465,7 +473,14 @@ class FirewallConfig(object):
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' != '%s'" % \
                                 (obj.path, config.ETC_FIREWALLD_ICMPTYPES))
-        os.remove("%s/%s.xml" % (obj.path, obj.name))
+
+        name = "%s/%s.xml" % (obj.path, obj.name)
+        try:
+            shutil.move(name, "%s.old" % name)
+        except Exception as msg:
+            log.error("Backup of file '%s' failed: %s", name, msg)
+            os.remove(name)
+
         del self._icmptypes[obj.name]
 
     def check_builtin_icmptype(self, obj):
@@ -631,7 +646,14 @@ class FirewallConfig(object):
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' != '%s'" % \
                                 (obj.path, config.ETC_FIREWALLD_SERVICES))
-        os.remove("%s/%s.xml" % (obj.path, obj.name))
+
+        name = "%s/%s.xml" % (obj.path, obj.name)
+        try:
+            shutil.move(name, "%s.old" % name)
+        except Exception as msg:
+            log.error("Backup of file '%s' failed: %s", name, msg)
+            os.remove(name)
+
         del self._services[obj.name]
 
     def check_builtin_service(self, obj):
@@ -813,7 +835,14 @@ class FirewallConfig(object):
             raise FirewallError(errors.INVALID_DIRECTORY,
                                 "'%s' doesn't start with '%s'" % \
                                 (obj.path, config.ETC_FIREWALLD_ZONES))
-        os.remove("%s/%s.xml" % (config.ETC_FIREWALLD_ZONES, obj.name))
+
+        name = "%s/%s.xml" % (obj.path, obj.name)
+        try:
+            shutil.move(name, "%s.old" % name)
+        except Exception as msg:
+            log.error("Backup of file '%s' failed: %s", name, msg)
+            os.remove(name)
+
         del self._zones[obj.name]
 
     def check_builtin_zone(self, obj):
