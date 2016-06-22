@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
 "PO-Revision-Date: 2014-10-16 02:11-0400\n"
 "Last-Translator: Ani Peter <apeter@redhat.com>\n"
 "Language-Team: Malayalam (http://www.transifex.com/projects/p/firewalld/"
@@ -37,19 +37,19 @@ msgstr "ഫയര്‍വോള്‍ ക്രമീകരണം"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "firewall;network;security;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "'%s' ഇന്റര്‍ഫെയിസിനു് മേഘല തെരഞ്ഞെടുക്കുക"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "സ്വതവേയുളഅള മേഖല"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "'%s' കണക്ഷനു് മേഖല തെരഞ്ഞെടുക്കുക"
@@ -636,12 +636,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "ബിള്‍ട്ടിന്‍ icmp, rename പിന്തുണയ്ക്കുന്നില്ല."
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "'%s' ശ്രോതസ്സിനു് മേഘല തെരഞ്ഞെടുക്കുക"
@@ -651,18 +651,16 @@ msgid "Address"
 msgstr "വിലാസം"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "കമാന്‍ഡ് ലൈനുകള്‍"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "ദയവായി കമാന്‍ഡ് ലൈന്‍ നല്‍കുക."
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
-msgstr "സന്ദര്‍ഭങ്ങള്‍"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -1822,6 +1820,3 @@ msgstr "സ്വതവേയുള്ള ലക്ഷ്യസ്ഥാനം"
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "ലക്ഷ്യസ്ഥാനം:"
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "%s നടപ്പിലാക്കുന്നതിനു് നിങ്ങള്‍ റൂട്ട് ആകേണ്ടതുണ്ടു്."

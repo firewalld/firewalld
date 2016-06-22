@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
-"PO-Revision-Date: 2016-06-05 07:55-0400\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
+"PO-Revision-Date: 2016-06-21 03:10-0400\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/firewalld/language/"
 "nl/)\n"
@@ -43,19 +43,19 @@ msgstr "Firewall configuratie"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "firewall;netwerk;beveiliging;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Selecteer zone voor interface '%s'"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "Standaard zone"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Selecteer zone voor verbinding '%s'"
@@ -636,26 +636,26 @@ msgstr "Ingebouwde ipset, hernoemen wordt niet ondersteund."
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "Selecteer een bestand"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "Tekstbestanden"
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "Alle bestanden"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
 msgstr "Ingebouwde icmp, hernoemen niet ondersteund"
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Het lezen van bestand '%s' mislukte: %s"
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Selecteer zone voor bron %s"
@@ -665,16 +665,14 @@ msgid "Address"
 msgstr "Adres"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "Commandoregels"
+msgstr "Opdrachtregel"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "Voer de commandoregel in."
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
 msgstr "Context"
 
@@ -821,19 +819,19 @@ msgstr "Ingang toevoegen"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Voeg ingangen uit het bestand"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Verwijder geselecteerde ingang"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Verwijder alle ingangen"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Verwijder ingangen uit het bestand"
 
 #: ../src/firewall-config.glade.h:45
 msgid "_File"
@@ -1358,7 +1356,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Entries"
@@ -1887,6 +1885,3 @@ msgstr "Standaard doel"
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "Doel:"
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "Je moet root zijn om %s uit te voeren."

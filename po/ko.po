@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
 "PO-Revision-Date: 2016-06-15 01:46-0400\n"
 "Last-Translator: Eun-Ju Kim <eukim@redhat.com>\n"
 "Language-Team: Korean (http://www.transifex.com/projects/p/firewalld/"
@@ -46,19 +46,19 @@ msgstr "방화벽 설정"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "방화벽;네트워크;보안;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "인터페이스 '%s'의 영역을 선택 "
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "기본 영역 "
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "연결 '%s'의 영역을 선택 "
@@ -653,12 +653,12 @@ msgstr "모든 파일  "
 msgid "Built-in icmp, rename not supported."
 msgstr "내장된 icmp, 이름을 바꿀 수 없습니다."
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "'%s' 파일 읽기 실패: %s"
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "소스 '%s'의 영역을 선택 "
@@ -668,18 +668,16 @@ msgid "Address"
 msgstr "주소"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "명령행 "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "명령행을 입력하십시오."
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
-msgstr "컨텍스트 "
+msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -1856,6 +1854,3 @@ msgstr "기본 대상 "
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "대상: "
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "root로 %s를 실행해야 합니다."

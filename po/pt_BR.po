@@ -33,7 +33,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
 "PO-Revision-Date: 2016-05-17 08:06-0400\n"
 "Last-Translator: Andrea <adallape@redhat.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
@@ -62,19 +62,19 @@ msgstr "Configuração do Firewall"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "firewall;network;security;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Selecionar zona para interface '%s'"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "Zona Padrão"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Selecione zona para conexão '%s'"
@@ -670,12 +670,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "icmp embutido, renomeação não é suportada."
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Selecione zona de fonte '%s"
@@ -685,18 +685,16 @@ msgid "Address"
 msgstr "Endereço"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "Linhas de comando"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "Por favor insira a linha de comando."
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
-msgstr "Contextos"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -1896,6 +1894,3 @@ msgstr "Alvo Padrão"
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "Alvo:"
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "Você precisa ser o root para executar %s."

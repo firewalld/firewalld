@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
 "PO-Revision-Date: 2014-10-20 02:40-0400\n"
 "Last-Translator: sweta <swkothar@redhat.com>\n"
 "Language-Team: Gujarati (http://www.transifex.com/projects/p/firewalld/"
@@ -43,19 +43,19 @@ msgstr "ફાયરવોલ રૂપરેખાંકન"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "ફાયરવોસ;નેટવર્ક;સુરક્ષા;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "ઇન્ટરફેસ '%s' માટે વિસ્તારને પસંદ કરો"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "મૂળભૂત વિસ્તાર"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "જોડાણ '%s' માટે વિસ્તારને પસંદ કરો"
@@ -638,12 +638,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "બિલ્ટ-ઇન icmp, નામ બદલવાનું આધારભૂત નથી."
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "સ્ત્રોત %s માટે વિસ્તારને પસંદ કરો"
@@ -653,18 +653,16 @@ msgid "Address"
 msgstr "સરનામું"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "આદેશ વાક્યો"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "મહેરબાની કરીને આદેશ વાક્યને દાખલ કરો."
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
-msgstr "સંદર્ભ"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -1813,6 +1811,3 @@ msgstr "મૂળભૂત લક્ષ્ય"
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "લક્ષ્ય:"
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "તમારે %s ને ચલાવવા માટે રુટની જરૂરી છે."

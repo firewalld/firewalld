@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
 "PO-Revision-Date: 2014-10-17 02:01-0400\n"
 "Last-Translator: shanky <prasad.mvs@gmail.com>\n"
 "Language-Team: Kannada (http://www.transifex.com/projects/p/firewalld/"
@@ -42,19 +42,19 @@ msgstr "ಫೈರ್ವಾಲ್ ಸ್ವರೂಪಣೆ"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "ಫೈರ್ವಾಲ್;ಜಾಲಬಂಧ;ಸುರಕ್ಷತೆ;iptables;ನೆಟ್‌ಫಿಲ್ಟರ್‌;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "'%s' ಸಂಪರ್ಕಸಾಧನಕ್ಕಾಗಿ ವಲಯವನ್ನು ಆರಿಸಿ."
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "ಪೂರ್ವನಿಯೋಜಿತ ವಲಯ"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "'%s' ಸಂಪರ್ಕಕ್ಕಾಗಿ ವಲಯವನ್ನು ಆರಿಸಿ"
@@ -642,12 +642,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "ಒಳ-ನಿರ್ಮಿತ icmp, ಮರುಹೆಸರಿಸುವಿಕೆಗೆ ಬೆಂಬಲವಿಲ್ಲ."
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "'%s' ಆಕರಕ್ಕಾಗಿ ವಲಯವನ್ನು ಆರಿಸಿ."
@@ -657,18 +657,16 @@ msgid "Address"
 msgstr "ವಿಳಾಸ"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "ಆದೇಶ ಸಾಲುಗಳು"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "ದಯವಿಟ್ಟು ಒಂದು ಆದೇಶಸಾಲನ್ನು ನಮೂದಿಸಿ."
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
-msgstr "ಸನ್ನಿವೇಶಗಳು"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -1835,6 +1833,3 @@ msgstr "ಪೂರ್ವನಿಯೋಜಿತ ಗುರಿ"
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "ಗುರಿ:"
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "%s ಚಲಾಯಿಸಲು ನೀವು ನಿರ್ವಾಹಕರಾಗಿರಬೇಕು."

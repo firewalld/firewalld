@@ -12,14 +12,14 @@
 # Waika Liu <wliu@redhat.com>, 2005
 # Walter Cheuk <wwycheuk@netvigator.com>, 2005
 # Cheng-Chia Tseng <pswo10680@gmail.com>, 2016. #zanata
-# Chester Cheng <ccheng@redhat.com>, 2016. #zanata
+# Chester Cheng <snowlet.cheng@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"POT-Creation-Date: 2016-06-22 14:35+0200\n"
 "PO-Revision-Date: 2016-05-18 03:46-0400\n"
-"Last-Translator: Chester Cheng <ccheng@redhat.com>\n"
+"Last-Translator: Chester Cheng <snowlet.cheng@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/"
 "firewalld/language/zh_TW/)\n"
 "Language: zh-TW\n"
@@ -46,19 +46,19 @@ msgstr "防火牆組態"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "防火牆;網路;安全性;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7190
+#: ../src/firewall-applet:89 ../src/firewall-config:7194
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "選取「%s」介面的界域"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7235 ../src/firewall-config:7243
-#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7239 ../src/firewall-config:7247
+#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "預設界域"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7268
+#: ../src/firewall-applet:162 ../src/firewall-config:7272
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "選取「%s」連線的界域"
@@ -645,12 +645,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "內建 icmp，不支援重新命名。"
 
-#: ../src/firewall-config:7158
+#: ../src/firewall-config:7162
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7290
+#: ../src/firewall-config:7294
 #, c-format
 msgid "Select zone for source %s"
 msgstr "選取 %s 來源的界域"
@@ -660,18 +660,16 @@ msgid "Address"
 msgstr "位址"
 
 #: ../src/firewall-config.glade.h:2
-#, fuzzy
 msgid "Command line"
-msgstr "指令列"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
 msgstr "請輸入指令列。"
 
 #: ../src/firewall-config.glade.h:4
-#, fuzzy
 msgid "Context"
-msgstr "情境"
+msgstr ""
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -1815,6 +1813,3 @@ msgstr "預設目標"
 #: ../src/firewall-config.glade.h:279
 msgid "Target:"
 msgstr "目標："
-
-#~ msgid "You need to be root to run %s."
-#~ msgstr "您需要是 root 身份才能執行 %s。"
