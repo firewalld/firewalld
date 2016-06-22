@@ -7078,6 +7078,8 @@ class FirewallConfig(object):
     def direct_passthrough_added_cb(self, ipv, args):
         if not self.show_direct:
             return
+        if not self.runtime_view:
+            return
         joined_args = functions.joinArgs(args)
         iter = self.directPassthroughStore.get_iter_first()
         while iter:
@@ -7089,6 +7091,8 @@ class FirewallConfig(object):
 
     def direct_passthrough_removed_cb(self, ipv, args):
         if not self.show_direct:
+            return
+        if not self.runtime_view:
             return
         joined_args = functions.joinArgs(args)
         iter = self.directPassthroughStore.get_iter_first()
