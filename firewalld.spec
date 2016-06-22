@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.2
+Version: 0.4.3
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -299,6 +299,67 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Wed Jun 22 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3-1
+- New firewallctl utility (RHBZ#1147959)
+- doc.xml.seealso: Show firewalld.dbus in See Also sections
+- firewall.core.fw_config: Create backup on zone, service, ipset and icmptype
+  removal (RHBZ#1339251)
+- {zone,service,ipset,icmptype}_writer: Do not fail on failed backup
+- firewall-[offline-]cmd: Fix --new-X-from-file options for files in cwd
+- firewall-cmd: Dropped duplicate setType call in --new-ipset
+- radius service: Support also tcp ports (RBZ#1219717)
+- xmlschemas: Support source-port, protocol, icmp-block-inversion and ipset
+  sources
+- config.xmlschema.service.xsd: Fix service destination conflicts
+  (RHBZ#1296573)
+- firewall-cmd, firewalld man: Information about new NetworkManager and ifcfg
+- firewall.command: Only print summary and description in print_X_info with
+  verbose
+- firewall.command: print_msg should be able to print empty lines
+- firewall-config: No processing of runtime passthroughs signals in permanent
+- Landspace.io fixes and pylint calm downs
+- firewall.core.io.zone: Add zone_reader and zone_writer to __all__, pylint
+  fixes
+- firewall-config: Fixed titles of command and context dialogs, also entry
+  lenths
+- firewall-config: pylint calm downs
+- firewall.core.fw_zone: Fix use of MAC source in rich rules without ipv limit
+- firewall-config: Use self.active_zoens in conf_zone_added_cb
+- firewall.command: New parse_port, extended parse methods with more checks
+- firewall.command: Fixed parse_port to use the separator in the split call
+- firewall.command: New [de]activate_exception_handler, raise error in parse_X
+- services ha: Allow corosync-qnetd port
+- firewall-applet: Support for kde5-nm-connection-editor
+- tests/firewall-offline-cmd_test.sh: New tests for service and icmptype
+  modifications
+- firewall-offline-cmd: Use FirewallCommand for simplification and sequence
+  options
+- tests/firewall-cmd_test.sh: New tests for service and icmptype modifications
+- firewall-cmd: Fixed set, remove and query destination options for services
+- firewall.core.io.service: Source ports have not been checked in _check_config
+- firewall.core.fw_zone: Method check_source_port is not used, removed
+- firewall.core.base: Added default to ZONE_TARGETS
+- firewall.client: Allow to remove ipv:address pair for service destinations
+- tests/firewall-offline-cmd_test.sh: There is no timeout option in permanent
+- firewall-cmd: Landscape.io fixes, pylint calm downs
+- firewall-cmd: Use FirewallCommand for simplification and sequence options
+- firewall.command: New FirewallCommand for command line client simplification
+- New services: kshell, rsh, ganglia-master, ganglia-client
+- firewalld: Cleanup of unused imports, do not translate some deamon messages
+- firewalld: With fd close interation in runProg, it is not needed here anymore
+- firewall.core.prog: Add fd close iteration to runProg
+- firewall.core.fw_nm: Hide NM typelib import, new nm_get_dbus_interface
+  function
+- firewalld.spec: Require NetworkManager-libnm instead of NetworkManager-glib
+- firewall-config: New add/remove ipset entries from file, remove all entries
+- firewall-applet: Fix tooltip after applet start with connection to firewalld
+- firewall-config: Select new zone, service or icmptype if the view was empty
+- firewalld.spec: Added build requires for iptables, ebtables and ipset
+- Adding nf_conntrack_sip module to the service SIP
+- firewall: core: fw_ifcfg: Quickly return if ifcfg directory does not exist
+- Drop unneeded python shebangs
+- Translation updates
+
 * Mon May 30 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.2-1
 - New module to search for and change ifcfg files for interfaces not under
   control of NM
