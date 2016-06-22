@@ -1402,7 +1402,10 @@ class FirewallClientConfigService(object):
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
-    def removeDestination(self, destination):
+    def removeDestination(self, destination, address=None):
+        if address is not None and self.getDestination(destination) != address:
+            raise FirewallError(errors.NOT_ENABLED, "'%s:%s'" % \
+                                (destination, address))
         self.fw_service.removeDestination(destination)
 
     @slip.dbus.polkit.enable_proxy
