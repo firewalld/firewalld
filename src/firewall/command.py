@@ -50,7 +50,7 @@ class FirewallCommand(object):
         return self.verbose
 
     def print_msg(self, msg=None):
-        if msg and not self.quiet:
+        if msg is not None and not self.quiet:
             print(msg)
 
     def print_warning(self, msg=None):
