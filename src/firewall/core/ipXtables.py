@@ -165,7 +165,7 @@ class ip4tables(object):
         return ret
 
     def split_value(self, rules, opts=None):
-        """Split values combined with commas for optins in opts"""
+        """Split values combined with commas for options in opts"""
 
         if opts is None:
             return rules
@@ -180,6 +180,9 @@ class ip4tables(object):
                     pass
                 else:
                     if len(rule) > i and "," in rule[i+1]:
+                        # For all items in the comma separated list in index
+                        # i of the rule, a new rule is created with a single
+                        # item from this list
                         processed = True
                         items = rule[i+1].split(",")
                         for item in items:
