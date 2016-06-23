@@ -149,7 +149,12 @@ class FirewallDConfig(slip.dbus.service.Object):
             old_props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG)
             log.debug1("config: Reloading firewalld config file '%s'",
                        config.FIREWALLD_CONF)
-            self.config.update_firewalld_conf()
+            try:
+                self.config.update_firewalld_conf()
+            except Exception as msg:
+                log.error("Failed to load firewalld.conf file '%s': %s" % \
+                          (name, msg))
+                return
             props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG)
             for key in props.keys():
                 if key in old_props and \
@@ -163,7 +168,11 @@ class FirewallDConfig(slip.dbus.service.Object):
         if (name.startswith(config.FIREWALLD_ICMPTYPES) or \
             name.startswith(config.ETC_FIREWALLD_ICMPTYPES)) and \
            name.endswith(".xml"):
-            (what, obj) = self.config.update_icmptype_from_path(name)
+            try:
+                (what, obj) = self.config.update_icmptype_from_path(name)
+            except Exception as msg:
+                log.error("Failed to load icmptype file '%s': %s" % (name, msg))
+                return
             if what == "new":
                 self._addIcmpType(obj)
             elif what == "remove":
@@ -174,7 +183,11 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif (name.startswith(config.FIREWALLD_SERVICES) or \
               name.startswith(config.ETC_FIREWALLD_SERVICES)) and \
              name.endswith(".xml"):
-            (what, obj) = self.config.update_service_from_path(name)
+            try:
+                (what, obj) = self.config.update_service_from_path(name)
+            except Exception as msg:
+                log.error("Failed to load service file '%s': %s" % (name, msg))
+                return
             if what == "new":
                 self._addService(obj)
             elif what == "remove":
@@ -185,7 +198,11 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif name.startswith(config.FIREWALLD_ZONES) or \
              name.startswith(config.ETC_FIREWALLD_ZONES):
             if name.endswith(".xml"):
-                (what, obj) = self.config.update_zone_from_path(name)
+                try:
+                    (what, obj) = self.config.update_zone_from_path(name)
+                except Exception as msg:
+                    log.error("Failed to load zone file '%s': %s" % (name, msg))
+                    return
                 if what == "new":
                     self._addZone(obj)
                 elif what == "remove":
@@ -208,7 +225,13 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif (name.startswith(config.FIREWALLD_IPSETS) or \
               name.startswith(config.ETC_FIREWALLD_IPSETS)) and \
              name.endswith(".xml"):
-            (what, obj) = self.config.update_ipset_from_path(name)
+            try:
+                (what, obj) = self.config.update_ipset_from_path(name)
+            except Exception as msg:
+                    log.error("Failed to load ipset file '%s': %s" % (name,
+                                                                      msg))
+
+                return
             if what == "new":
                 self._addIPSet(obj)
             elif what == "remove":
@@ -217,11 +240,21 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self._updateIPSet(obj)
 
         elif name == config.LOCKDOWN_WHITELIST:
-            self.config.update_lockdown_whitelist()
+            try:
+                self.config.update_lockdown_whitelist()
+            except Exception as msg:
+                log.error("Failed to load lockdown whitelist file '%s': %s" % \
+                          (name, msg))
+                return
             self.LockdownWhitelistUpdated()
 
         elif name == config.FIREWALLD_DIRECT:
-            self.config.update_direct()
+            try:
+                self.config.update_direct()
+            except Exception as msg:
+                log.error("Failed to load direct rules file '%s': %s" % (name,
+                                                                         msg))
+                return
             self.Updated()
 
 
