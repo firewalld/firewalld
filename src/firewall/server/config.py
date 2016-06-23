@@ -228,8 +228,8 @@ class FirewallDConfig(slip.dbus.service.Object):
             try:
                 (what, obj) = self.config.update_ipset_from_path(name)
             except Exception as msg:
-                    log.error("Failed to load ipset file '%s': %s" % (name,
-                                                                      msg))
+                log.error("Failed to load ipset file '%s': %s" % (name,
+                                                                  msg))
 
                 return
             if what == "new":
