@@ -448,7 +448,7 @@ def read_sysconfig_args():
         filename = SYSTEM_CONFIG_FIREWALL
     try:
         f = open(filename, 'r')
-    except IOError:
+    except Exception:
         return None
     argv = [ ]
     for line in f:
@@ -686,6 +686,8 @@ parser_direct.add_argument("--get-all-rules", action="store_true")
 
 ##############################################################################
 
+cmd = FirewallCommand()
+
 if len(sys.argv) > 1:
     i = -1
     args = sys.argv[1:]
@@ -837,7 +839,8 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 
 # Set quiet and verbose
 
-cmd = FirewallCommand(a.quiet, a.verbose)
+cmd.set_quiet(a.quiet)
+cmd.set_verbose(a.verbose)
 
 # Check various impossible combinations of options
 
