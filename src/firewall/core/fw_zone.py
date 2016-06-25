@@ -171,7 +171,7 @@ class FirewallZone(object):
 
             zone_transaction = transaction.zone_transaction(zone)
 
-            # Do icmp block inversion before setting obj.applied
+            # register icmp block inversion setting but don't apply
             if obj.icmp_block_inversion:
                 self._error2warning(self.add_icmp_block_inversion, obj.name,
                                     use_zone_transaction=zone_transaction)
@@ -211,6 +211,11 @@ class FirewallZone(object):
                                     use_zone_transaction=zone_transaction)
             for args in obj.sources:
                 self._error2warning(self.add_source, obj.name, args,
+                                    use_zone_transaction=zone_transaction)
+            # apply icmp accept/reject rule always
+            if obj.applied:
+                self._error2warning(self.__icmp_block_inversion, True,
+                                    obj.name,
                                     use_zone_transaction=zone_transaction)
 
         if use_transaction is None:
