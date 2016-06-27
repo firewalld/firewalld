@@ -97,7 +97,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                                               { "CleanupOnExit": "readwrite",
                                                 "IPv6_rpfilter": "readwrite",
                                                 "Lockdown": "readwrite",
-                                                "MinimalMark": "readwrite" })
+                                                "MinimalMark": "readwrite",
+                                                "IndividualCalls": "readwrite"})
 
     @handle_exceptions
     def _init_vars(self):
@@ -532,7 +533,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "FirewallD does not implement %s" % interface_name)
 
         if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
-                              "IPv6_rpfilter" ]:
+                              "IPv6_rpfilter", "IndividualCalls" ]:
             if property_name == "MinimalMark":
                 try:
                     int(new_value)
@@ -544,7 +545,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
             if property_name in [ "CleanupOnExit", "Lockdown",
-                                  "IPv6_rpfilter" ]:
+                                  "IPv6_rpfilter", "IndividualCalls" ]:
                 if new_value.lower() not in [ "yes", "no", "true", "false" ]:
                     raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
