@@ -1750,6 +1750,10 @@ elif args.parser == "runtime-to-permanent":
 
 elif args.parser == "list":
 
+    if not hasattr(args, "list"):
+        grp_list.print_help()
+        sys.exit(0)
+
     if args.list == "zones":
         if args.active:
             items = fw.getActiveZones()
@@ -2425,6 +2429,7 @@ elif args.parser == "zone":
 # service
 
 elif args.parser == "service":
+
     if not hasattr(args, "action"):
         grp_service.print_help()
         sys.exit(0)
