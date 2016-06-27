@@ -101,6 +101,12 @@ grp_reload = subparsers.add_parser("reload", help="Reload firewalld")
 grp_reload.set_defaults(parser="reload")
 grp_reload.add_argument("-c", "--complete", action="store_true")
 
+# runtime_to_permanent
+
+grp_runtime_to_permanent = subparsers.add_parser(
+    "runtime-to-permanent", help="Save run-time as permanent configuration")
+grp_runtime_to_permanent.set_defaults(parser="runtime-to-permanent")
+
 #############################################################################
 
 # list
@@ -444,6 +450,21 @@ grp_zone_query.set_defaults(action="query")
 
 zone_query_subparsers = grp_zone_query.add_subparsers()
 
+# zone.query.interface
+
+grp_zone_query_interface = zone_query_subparsers.add_parser(
+    "interface", help="Query interface")
+grp_zone_query_interface.set_defaults(item="interface")
+grp_zone_query_interface.add_argument("interface", metavar="<interface>",
+                                      nargs="+")
+
+# zone.query.source
+
+grp_zone_query_source = zone_query_subparsers.add_parser("source",
+                                                         help="Query source")
+grp_zone_query_source.set_defaults(item="source")
+grp_zone_query_source.add_argument("source", metavar="<source>", nargs="+")
+
 # zone.query.service
 
 grp_zone_query_service = zone_query_subparsers.add_parser("service",
@@ -517,6 +538,18 @@ grp_zone_list = zone_subparsers.add_parser("list", help="List commands")
 grp_zone_list.set_defaults(action="list")
 
 zone_list_subparsers = grp_zone_list.add_subparsers()
+
+# zone.list.interfaces
+
+grp_zone_list_interfaces = zone_list_subparsers.add_parser(
+    "interfaces", help="List interfaces")
+grp_zone_list_interfaces.set_defaults(item="interfaces")
+
+# zone.list.sources
+
+grp_zone_list_sources = zone_list_subparsers.add_parser("sources",
+                                                        help="List sources")
+grp_zone_list_sources.set_defaults(item="sources")
 
 # zone.list.services
 
@@ -1707,6 +1740,10 @@ elif args.parser == "reload":
     else:
         fw.reload()
 
+# runtime_to_permanent
+elif args.parser == "runtime-to-permanent":
+    fw.runtimeToPermanent()
+
 #############################################################################
 
 # list
@@ -2299,7 +2336,19 @@ elif args.parser == "zone":
             else:
                 fw_zone = fw.config().getZoneByName(args.zone)
 
-        if args.item == "services":
+        if args.item == "interfaces":
+            if args.permanent:
+                cmd.print_and_exit(" ".join(fw_zone.getInterfaces()))
+            else:
+                cmd.print_and_exit(" ".join(fw.getInterfaces(args.zone)))
+
+        elif args.item == "sources":
+            if args.permanent:
+                cmd.print_and_exit(" ".join(fw_zone.getSources()))
+            else:
+                cmd.print_and_exit(" ".join(fw.getSources(args.zone)))
+
+        elif args.item == "services":
             if args.permanent:
                 cmd.print_and_exit(" ".join(fw_zone.getServices()))
             else:
@@ -2968,6 +3017,9 @@ elif args.parser == "new":
         grp_new.print_help()
         sys.exit(0)
 
+    if not args.permanent:
+        cmd.fail("Not possible to use new in runtime environment")
+
     if args.action == "zone":
 
         if args.name is None and args.filename is None:
@@ -3100,6 +3152,9 @@ elif args.parser == "delete":
     if not hasattr(args, "action"):
         grp_delete.print_help()
         sys.exit(0)
+
+    if not args.permanent:
+        cmd.fail("Not possible to use delete in runtime environment")
 
     if args.action == "zone":
 
@@ -3627,14 +3682,6 @@ elif args.parser == "config":
 
 # settings
 elif args.parser == "settings":
-    #props = fw.get_properties()
-    #for x in sorted(props):
-    #    if isinstance(props[x], list):
-    #        cmd.print_msg("%s: %s" % (x, " ".join(props[x])))
-    #    else:
-    #        cmd.print_msg("%s: %s" % (x, props[x]))
-    #sys.exit(0)
-
     if not hasattr(args, "action"):
         grp_settings.print_help()
         sys.exit(0)
@@ -3666,6 +3713,9 @@ elif args.parser == "settings":
         elif args.item == "IPv6_rpfilter":
             cmd.print_and_exit(("no", "yes")[fw.get_property(args.item)])
 
+        elif args.item == "IndividualCalls":
+            cmd.print_and_exit(fw.config().get_property(args.item))
+
         elif args.item == "MinimalMark":
             cmd.print_and_exit(fw.config().get_property(args.item))
 
@@ -3674,11 +3724,11 @@ elif args.parser == "settings":
 
     elif args.action == "list":
 
-        props = [ "BRIDGE", "IPSet", "IPSetTypes", "IPv4", "IPv6",
-                  "IPv6_rpfilter", "CleanupOnExit", "MinimalMark" ]
+        props = [ "BRIDGE", "IndividualCalls","IPSet", "IPSetTypes", "IPv4",
+                  "IPv6", "IPv6_rpfilter", "CleanupOnExit", "MinimalMark" ]
         l = len(max(props, key=len))
         for x in sorted(props):
-            if x in [ "CleanupOnExit", "MinimalMark" ]:
+            if x in [ "CleanupOnExit", "MinimalMark", "IndividualCalls" ]:
                 prop = fw.config().get_property(x)
             else:
                 prop = fw.get_property(x)
