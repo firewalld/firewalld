@@ -86,6 +86,6 @@ install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS install-dis
 	@echo "Fixing path for test suite scripts"
 	@list='$(dist_tests_DATA)'; \
 	for p in $$list; do \
-	  echo sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
-	  sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
+	  echo sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)/\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
+	  sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)/\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
 	done
