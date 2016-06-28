@@ -122,7 +122,7 @@ class FirewallCommand(object):
                                              message % item), code)
                     _errors += 1
             except DBusException as msg:
-                code = FirewallError.get_code(msg)
+                code = FirewallError.get_code(str(msg))
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
                     continue
@@ -145,7 +145,7 @@ class FirewallCommand(object):
             try:
                 action_method(*call_item)
             except DBusException as msg:
-                code = FirewallError.get_code(msg)
+                code = FirewallError.get_code(str(msg))
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
                 else:
@@ -214,7 +214,7 @@ class FirewallCommand(object):
             try:
                 res = query_method(*call_item)
             except DBusException as msg:
-                code = FirewallError.get_code(msg)
+                code = FirewallError.get_code(str(msg))
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
                     continue
