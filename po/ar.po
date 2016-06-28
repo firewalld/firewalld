@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
 # Abdalrahim Fakhouri <abdilra7eem@yahoo.com>, 2010
@@ -15,15 +15,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-22 14:35+0200\n"
+"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2014-10-15 10:24-0400\n"
 "Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Arabic (http://www.transifex.com/projects/p/firewalld/"
 "language/ar/)\n"
 "Language: ar\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Generator: Zanata 3.8.4\n"
@@ -45,19 +45,19 @@ msgstr "إعدادات الجدار النّاري"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7194
+#: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr ""
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7239 ../src/firewall-config:7247
-#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7235 ../src/firewall-config:7243
+#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr ""
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7272
+#: ../src/firewall-applet:162 ../src/firewall-config:7268
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr ""
@@ -205,7 +205,8 @@ msgstr ""
 
 #: ../src/firewall-applet:874
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 
 #: ../src/firewall-applet:886
@@ -581,8 +582,7 @@ msgstr ""
 
 #: ../src/firewall-config:4754
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 
@@ -636,12 +636,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr ""
 
-#: ../src/firewall-config:7162
+#: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7294
+#: ../src/firewall-config:7290
 #, c-format
 msgid "Select zone for source %s"
 msgstr ""
@@ -1031,9 +1031,9 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة العالميّة. "
-"ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. التقنيع لـIPv4 "
-"فقط."
+"يسمح لك التقنيع أن تعدّ مضيفاً أو موجّهاً ليوصل شبكتك المحلّية بالشبكة "
+"العالميّة. ستظهر جميع الأجهزة على هذه الشبكة كعنوان واحد على الإنترنت. "
+"التقنيع لـIPv4 فقط."
 
 #: ../src/firewall-config.glade.h:94
 msgid "Masquerade zone"
@@ -1085,8 +1085,8 @@ msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها بالمرور "
-"عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
+"علّم أنواع ICMP التي سترفض في القائمة. كلّ أنواع ICMP الأخرى سيسمح لها "
+"بالمرور عبر الجدار الناريّ. المبدئيّ هو عدم وجود قيود."
 
 #: ../src/firewall-config.glade.h:103
 msgid ""
@@ -1682,8 +1682,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:241
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 
 #: ../src/firewall-config.glade.h:242

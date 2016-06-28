@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Rajesh Ranjan <rajesh672@gmail.com>, 2009
 # Rajesh Ranjan <rranjan@redhat.com>, 2004-2010,2014
@@ -10,15 +10,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-22 14:35+0200\n"
+"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2014-10-20 02:30-0400\n"
 "Last-Translator: Rajesh Ranjan <rranjan@redhat.com>\n"
 "Language-Team: Hindi (http://www.transifex.com/projects/p/firewalld/language/"
 "hi/)\n"
 "Language: hi\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.8.4\n"
 
@@ -39,19 +39,19 @@ msgstr "फायरवाल विन्यास "
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "firewall;network;security;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7194
+#: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "अंतरफलक '%s' के लिए क्षेत्र चुनें."
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7239 ../src/firewall-config:7247
-#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7235 ../src/firewall-config:7243
+#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "तयशुदा क्षेत्र"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7272
+#: ../src/firewall-applet:162 ../src/firewall-config:7268
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "'%s' कनेक्शन के लिए क्षेत्र चुनें"
@@ -78,8 +78,9 @@ msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"यह फीचर उन लोगों के लिए उपयोगी है जो तयशुदा क्षेत्र अधिकतर उपयोग करते हैं. उपयोक्ताओं के "
-"लिए, वह कनेक्शन का बदलता क्षेत्र है, यह सीमित उपयोग का हो सकता है."
+"यह फीचर उन लोगों के लिए उपयोगी है जो तयशुदा क्षेत्र अधिकतर उपयोग करते हैं. "
+"उपयोक्ताओं के लिए, वह कनेक्शन का बदलता क्षेत्र है, यह सीमित उपयोग का हो सकता "
+"है."
 
 #: ../src/firewall-applet:231
 msgid "Shields Up Zone:"
@@ -202,9 +203,11 @@ msgstr ""
 
 #: ../src/firewall-applet:874
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
-"क्षेत्र '{zone}' सक्रिय है '{connection}' कनेक्शन के लिए '{interface}' अंतरफलक पर"
+"क्षेत्र '{zone}' सक्रिय है '{connection}' कनेक्शन के लिए '{interface}' "
+"अंतरफलक पर"
 
 #: ../src/firewall-applet:886
 msgid "Zone '{zone}' active for interface '{interface}'"
@@ -263,7 +266,8 @@ msgstr ""
 
 #: ../src/firewall-applet:1039
 msgid "Zone '{zone}' {activated_deactivated} for interface '{interface}'"
-msgstr "क्षेत्र '{zone}' {activated_deactivated} है '{interface}' अंतरफलक के लिए"
+msgstr ""
+"क्षेत्र '{zone}' {activated_deactivated} है '{interface}' अंतरफलक के लिए"
 
 #: ../src/firewall-applet:1062
 #, c-format
@@ -581,8 +585,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4754
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "किसी दूसरे तंत्र में अग्रसारण तभी उपयोगी है जब अंतरफलक छद्म होता है.\n"
@@ -638,12 +641,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "बिल्ट इन icmp, नाम बदलना समर्थित नहीं."
 
-#: ../src/firewall-config:7162
+#: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7294
+#: ../src/firewall-config:7290
 #, c-format
 msgid "Select zone for source %s"
 msgstr "स्रोत '%s' के लिए क्षेत्र चुनें."
@@ -754,8 +757,8 @@ msgid ""
 "If you enable local forwarding, you have to specify a port. This port has to "
 "be different to the source port."
 msgstr ""
-"यदि आप स्थानीय अग्रसारण सक्रिय करते हैं, आपको एक पोर्ट को निर्दिष्ट करना है. इस पोर्ट "
-"को स्रोत पोर्ट से भिन्न होना है."
+"यदि आप स्थानीय अग्रसारण सक्रिय करते हैं, आपको एक पोर्ट को निर्दिष्ट करना है. "
+"इस पोर्ट को स्रोत पोर्ट से भिन्न होना है."
 
 #: ../src/firewall-config.glade.h:28
 msgid "Local forwarding"
@@ -840,7 +843,8 @@ msgid ""
 "lost with reload if they have not been also in permanent configuration."
 msgstr ""
 "फायरवॉल नियम फिर लोड करता है. मौजूदा स्थायी विन्यास एक नया रनटाइम विन्यास बन "
-"जाएगा. यानी सभी रनटाइम केवल तभी लोड होता है जब वे स्थायी विन्यास में होते हैं."
+"जाएगा. यानी सभी रनटाइम केवल तभी लोड होता है जब वे स्थायी विन्यास में होते "
+"हैं."
 
 #: ../src/firewall-config.glade.h:49
 msgid "Change which zone a network connection belongs to."
@@ -864,7 +868,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:55
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
-msgstr "पैनिक अवस्था का अर्थ है कि सभी इनकमिंग और आउटगोइंग पैकेट छोड़े जाते हैं."
+msgstr ""
+"पैनिक अवस्था का अर्थ है कि सभी इनकमिंग और आउटगोइंग पैकेट छोड़े जाते हैं."
 
 #: ../src/firewall-config.glade.h:56
 msgid "Panic Mode"
@@ -875,8 +880,8 @@ msgid ""
 "Lockdown locks firewall configuration so that only applications on lockdown "
 "whitelist are able to change it."
 msgstr ""
-"लॉकडाउन फ़ायरवॉल विन्यास लॉक करता है ताकि लॉकडाउन ह्वाइटलिस्ट पर केवल अनुप्रयोग इसे "
-"बदल सकें."
+"लॉकडाउन फ़ायरवॉल विन्यास लॉक करता है ताकि लॉकडाउन ह्वाइटलिस्ट पर केवल "
+"अनुप्रयोग इसे बदल सकें."
 
 #: ../src/firewall-config.glade.h:58
 msgid "Lockdown"
@@ -942,8 +947,8 @@ msgid ""
 "configuration. Permanent configuration will be active after service or "
 "system reload or restart."
 msgstr ""
-"मौजूदा दृश्य विन्यास. रनटाइम विन्यास एक वास्तविक विन्यास है. स्थायी विन्यास सेवा या तंत्र "
-"रिलोड या फिर आरंभ करने के बाद सक्रिय होगा."
+"मौजूदा दृश्य विन्यास. रनटाइम विन्यास एक वास्तविक विन्यास है. स्थायी विन्यास "
+"सेवा या तंत्र रिलोड या फिर आरंभ करने के बाद सक्रिय होगा."
 
 #: ../src/firewall-config.glade.h:73
 msgid ""
@@ -953,9 +958,10 @@ msgid ""
 "filters and rich rules. The zone can be bound to interfaces and source "
 "addresses."
 msgstr ""
-"firewalld क्षेत्र संजाल कनेक्शन, अंतरफलक, और क्षेत्र से जुड़ा स्रोत पता के लिए भरोसे का स्तर "
-"परिभाषित करता है. यह क्षेत्र सेवा, पोर्ट, प्रोटोकॉल, प्रच्छन्न, पोर्ट/पैकेट अग्रसारण, icmp "
-"फिल्टर और रिच नियम को एकीकृत करता है. यह क्षेत्र अंतरफलक और स्रोत पता से बंधा रहता है."
+"firewalld क्षेत्र संजाल कनेक्शन, अंतरफलक, और क्षेत्र से जुड़ा स्रोत पता के "
+"लिए भरोसे का स्तर परिभाषित करता है. यह क्षेत्र सेवा, पोर्ट, प्रोटोकॉल, "
+"प्रच्छन्न, पोर्ट/पैकेट अग्रसारण, icmp फिल्टर और रिच नियम को एकीकृत करता है. "
+"यह क्षेत्र अंतरफलक और स्रोत पता से बंधा रहता है."
 
 #: ../src/firewall-config.glade.h:75
 msgid "Add Zone"
@@ -979,9 +985,9 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"यहां आप परिभाषित कर सकते हैं कि कौन सी सेवाएँ इस क्षेत्र के लिए विश्वसनीय हैं. विश्वसनीय "
-"सेवाओं को सभी मेजबान या संजाल से अभिगम योग्य होता है जो मशीन तक इस क्षेत्र में कनेक्शन, "
-"अंतरफलक और स्रोत बाउंड से पहुँच सकता है."
+"यहां आप परिभाषित कर सकते हैं कि कौन सी सेवाएँ इस क्षेत्र के लिए विश्वसनीय "
+"हैं. विश्वसनीय सेवाओं को सभी मेजबान या संजाल से अभिगम योग्य होता है जो मशीन "
+"तक इस क्षेत्र में कनेक्शन, अंतरफलक और स्रोत बाउंड से पहुँच सकता है."
 
 #: ../src/firewall-config.glade.h:80
 msgid "Services"
@@ -992,8 +998,8 @@ msgid ""
 "Add additional ports or port ranges, which need to be accessible for all "
 "hosts or networks that can connect to the machine."
 msgstr ""
-"अतिरिक्त पोर्ट व पोर्ट परिसर को जोड़ें, जो सभी मेजबान या संजाल के लिए अभिगम योग्य होना "
-"चाहिए दो मशीन से कनेक्ट कर सकता है."
+"अतिरिक्त पोर्ट व पोर्ट परिसर को जोड़ें, जो सभी मेजबान या संजाल के लिए अभिगम "
+"योग्य होना चाहिए दो मशीन से कनेक्ट कर सकता है."
 
 #: ../src/firewall-config.glade.h:82
 msgid "Add Port"
@@ -1047,9 +1053,9 @@ msgid ""
 "network to the internet. Your local network will not be visible and the "
 "hosts appear as a single address on the internet. Masquerading is IPv4 only."
 msgstr ""
-"मुखौटा आपको एक मेजबान या रॉटर सेटअप करने की स्वीकृति देता है जो इंटरनेट से अपने स्थानीय "
-"संजाल को कनेक्ट करता है. आपका स्थानीय संजाल दृश्य नहीं होगा और इंटरनेट के लिए एक मेजबान के "
-"रूप में प्रकट होगा. मुखौटा सिर्फ IPv4 है."
+"मुखौटा आपको एक मेजबान या रॉटर सेटअप करने की स्वीकृति देता है जो इंटरनेट से "
+"अपने स्थानीय संजाल को कनेक्ट करता है. आपका स्थानीय संजाल दृश्य नहीं होगा और "
+"इंटरनेट के लिए एक मेजबान के रूप में प्रकट होगा. मुखौटा सिर्फ IPv4 है."
 
 #: ../src/firewall-config.glade.h:94
 msgid "Masquerade zone"
@@ -1059,7 +1065,9 @@ msgstr "प्रच्छन्न क्षेत्र"
 msgid ""
 "If you enable masquerading, IP forwarding will be enabled for your IPv4 "
 "networks."
-msgstr "यदि आप प्रच्छन्न सक्रिय कर रहे हैं, IP को आपको IPv4 के लिए सक्रिय किया जाएगा."
+msgstr ""
+"यदि आप प्रच्छन्न सक्रिय कर रहे हैं, IP को आपको IPv4 के लिए सक्रिय किया जाएगा."
+""
 
 #: ../src/firewall-config.glade.h:96
 msgid "Masquerading"
@@ -1072,9 +1080,10 @@ msgid ""
 "system is only useful if the interface is masqueraded. Port forwarding is "
 "IPv4 only."
 msgstr ""
-"एक पोर्ट से दूसरे से पोर्ट को अग्रसारित करने के लिए प्रविष्टि जोड़ें स्थानीय सिस्टम पर या "
-"स्थानीय सिस्टम से दूसरे सिस्टम में. दूसरे सिस्टम में अग्रसारण सिर्फ तभी उपयोगी है यदि अंतरफलक "
-"को मुखौटा दिया जाता है. पोर्ट अग्रसारण सिर्फ IPv4 है."
+"एक पोर्ट से दूसरे से पोर्ट को अग्रसारित करने के लिए प्रविष्टि जोड़ें स्थानीय "
+"सिस्टम पर या स्थानीय सिस्टम से दूसरे सिस्टम में. दूसरे सिस्टम में अग्रसारण "
+"सिर्फ तभी उपयोगी है यदि अंतरफलक को मुखौटा दिया जाता है. पोर्ट अग्रसारण सिर्फ "
+"IPv4 है."
 
 #: ../src/firewall-config.glade.h:98
 msgid "Add Forward Port"
@@ -1094,17 +1103,17 @@ msgid ""
 "messages between networked computers, but additionally for informational "
 "messages like ping requests and replies."
 msgstr ""
-"इंटरनेट कंट्रोल मेसेज प्रोटोकॉल (ICMP) को त्रुटि संदेश भेजने के लिए प्रयुक्त किया जाता है "
-"संजालित कंप्यूटर के बीच, लेकिन सूचनात्मक संदेश के लिए अतिरिक्त रूप से जैसे कि पिंग आग्रह और "
-"जवाब के लिए."
+"इंटरनेट कंट्रोल मेसेज प्रोटोकॉल (ICMP) को त्रुटि संदेश भेजने के लिए प्रयुक्त "
+"किया जाता है संजालित कंप्यूटर के बीच, लेकिन सूचनात्मक संदेश के लिए अतिरिक्त "
+"रूप से जैसे कि पिंग आग्रह और जवाब के लिए."
 
 #: ../src/firewall-config.glade.h:102
 msgid ""
 "Mark the ICMP types in the list, which should be rejected. All other ICMP "
 "types are allowed to pass the firewall. The default is no limitation."
 msgstr ""
-"सूची में ICMP प्रकार चिह्नित करें, जो अस्वीकृत किया जाना चाहिए. सभी दूसरे ICMP प्रकार को "
-"फायरवाल भेज देने की स्वीकृति है. तयशुदा में कोई सीमा नहीं है."
+"सूची में ICMP प्रकार चिह्नित करें, जो अस्वीकृत किया जाना चाहिए. सभी दूसरे "
+"ICMP प्रकार को फायरवाल भेज देने की स्वीकृति है. तयशुदा में कोई सीमा नहीं है."
 
 #: ../src/firewall-config.glade.h:103
 msgid ""
@@ -1145,8 +1154,9 @@ msgid ""
 "Add entries to bind interfaces to the zone. If the interface will be used by "
 "a connection, the zone will be set to the zone specified in the connection."
 msgstr ""
-"क्षेत्र में अंतरफलक बाइंड करने के लिए प्रविष्टि बाइंड करें. यदि अंतरफलक किसी कनेक्शन के द्वारा "
-"प्रयोग किया जाता है, तो इस क्षेत्र को निर्दिष्ट क्षेत्र में कनेक्शन में सेट किया जाएगा."
+"क्षेत्र में अंतरफलक बाइंड करने के लिए प्रविष्टि बाइंड करें. यदि अंतरफलक किसी "
+"कनेक्शन के द्वारा प्रयोग किया जाता है, तो इस क्षेत्र को निर्दिष्ट क्षेत्र "
+"में कनेक्शन में सेट किया जाएगा."
 
 #: ../src/firewall-config.glade.h:112
 msgid "Add Interface"
@@ -1239,8 +1249,8 @@ msgid ""
 "the destination address and type. If both entries are empty, there is no "
 "limitation."
 msgstr ""
-"यदि आप गंतव्य पता को निर्दिष्ट करते हैं, तो सेवा प्रविष्ट गंतव्य पता और प्रकार में सीमित "
-"होगी. यदि दोनों प्रविष्टि रिक्त है, तो कोई सीमा नहीं है."
+"यदि आप गंतव्य पता को निर्दिष्ट करते हैं, तो सेवा प्रविष्ट गंतव्य पता और "
+"प्रकार में सीमित होगी. यदि दोनों प्रविष्टि रिक्त है, तो कोई सीमा नहीं है."
 
 #: ../src/firewall-config.glade.h:135
 msgid "IPv4:"
@@ -1255,7 +1265,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"सेवा को स्थायी विन्यास दृश्य में केवल बदला जा सकता है. सेवा का रनटाइम विन्यास फिक्स्ड है."
+"सेवा को स्थायी विन्यास दृश्य में केवल बदला जा सकता है. सेवा का रनटाइम "
+"विन्यास फिक्स्ड है."
 
 #: ../src/firewall-config.glade.h:138
 msgid ""
@@ -1315,8 +1326,8 @@ msgid ""
 "A firewalld icmptype provides the information for an Internet Control "
 "Message Protocol (ICMP) type for firewalld."
 msgstr ""
-"firewalld icmptype इंटरनेट कंट्रोल मैसेज प्रोटोकॉल (ICMP) प्रकार के लिए firewalld के "
-"लिए सूचना प्रदान करता है."
+"firewalld icmptype इंटरनेट कंट्रोल मैसेज प्रोटोकॉल (ICMP) प्रकार के लिए "
+"firewalld के लिए सूचना प्रदान करता है."
 
 #: ../src/firewall-config.glade.h:151
 msgid "Add ICMP Type"
@@ -1351,8 +1362,8 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"ICMP प्रकार को स्थायी विन्यास दृश्य में केवल बदला जा सकता है. ICMP प्रकार का रनटाइम "
-"विन्यास फिक्स्ड है."
+"ICMP प्रकार को स्थायी विन्यास दृश्य में केवल बदला जा सकता है. ICMP प्रकार का "
+"रनटाइम विन्यास फिक्स्ड है."
 
 #: ../src/firewall-config.glade.h:159
 msgid ""
@@ -1361,10 +1372,10 @@ msgid ""
 "commands, parameters and targets. Direct configuration should be used only "
 "as a last resort when it is not possible to use other firewalld features."
 msgstr ""
-"सीधा विन्यास फायरवॉल में सीधा पहुँच देता है. ये विकल्प मौलिक iptables संबोध, यानी "
-"सारणी, शृंखला, कमांड, पैरामीटर और लक्ष्य को उपयोक्ता जाने इसकी जरूरत बताता है. सीधा "
-"विन्यास केवल अंतिम हल के रूप में प्रयोग किया जा सकता है जबकि दूसरे फ़ायरवॉल किए फीचर संभव "
-"नहीं हैं."
+"सीधा विन्यास फायरवॉल में सीधा पहुँच देता है. ये विकल्प मौलिक iptables संबोध, "
+"यानी सारणी, शृंखला, कमांड, पैरामीटर और लक्ष्य को उपयोक्ता जाने इसकी जरूरत "
+"बताता है. सीधा विन्यास केवल अंतिम हल के रूप में प्रयोग किया जा सकता है जबकि "
+"दूसरे फ़ायरवॉल किए फीचर संभव नहीं हैं."
 
 #: ../src/firewall-config.glade.h:160
 msgid ""
@@ -1399,7 +1410,9 @@ msgstr "शृंखला"
 #: ../src/firewall-config.glade.h:166
 msgid ""
 "Add a rule with the arguments args to a chain in a table with a priority."
-msgstr "args वितर्क के साथ कोई नियम शृंखला में जोड़ें प्राथमिकता के साथ एक सारणी में."
+msgstr ""
+"args वितर्क के साथ कोई नियम शृंखला में जोड़ें प्राथमिकता के साथ एक सारणी में."
+""
 
 #: ../src/firewall-config.glade.h:167
 msgid ""
@@ -1410,12 +1423,13 @@ msgid ""
 "after another one, use a low priority for the first and a higher for the "
 "following."
 msgstr ""
-"प्राथमिकता नियम को आदेश देने के लिए प्रयोग किया जा सकता है. प्राथमिकता 0 का अर्थ है "
-"शृंखला के शीर्ष पर नियम को जोड़ना, उच्चतर प्राथमिकता के साथ नियम फिर और जोड़े जाएँगे. "
-"समान प्राथमिकता के साथ नियम समान स्तर पर हैं और इन नियमों का क्रम स्थिर नहीं है और बदल "
-"सकता है. यदि आप पक्का करना चाहते हैं कि कोई नियम किसी के बाद जोड़े जाएँगे, पहले कम "
-"प्राथमिकता का जोड़ें कि एक नियम एक के बाद एक जोड़े जाएँगे, पहले से कम प्राथमिकता का "
-"उपयोग करें और निम्नलिखित के लिए उच्चतर जोड़े जाएँगे."
+"प्राथमिकता नियम को आदेश देने के लिए प्रयोग किया जा सकता है. प्राथमिकता 0 का "
+"अर्थ है शृंखला के शीर्ष पर नियम को जोड़ना, उच्चतर प्राथमिकता के साथ नियम फिर "
+"और जोड़े जाएँगे. समान प्राथमिकता के साथ नियम समान स्तर पर हैं और इन नियमों "
+"का क्रम स्थिर नहीं है और बदल सकता है. यदि आप पक्का करना चाहते हैं कि कोई "
+"नियम किसी के बाद जोड़े जाएँगे, पहले कम प्राथमिकता का जोड़ें कि एक नियम एक के "
+"बाद एक जोड़े जाएँगे, पहले से कम प्राथमिकता का उपयोग करें और निम्नलिखित के "
+"लिए उच्चतर जोड़े जाएँगे."
 
 #: ../src/firewall-config.glade.h:168
 msgid "Add Rule"
@@ -1439,8 +1453,9 @@ msgid ""
 "not placed in special chains. All iptables, ip6tables and ebtables options "
 "can be used."
 msgstr ""
-"पासथ्रू नियम सीधे फायरवॉल के द्वारा भेजा जा सकता है और विशेष शृंखला में स्थापित नहीं है. "
-"सभी iptables, ip6tables और ebtables विकल्प का उपयोग किया जा सकता है."
+"पासथ्रू नियम सीधे फायरवॉल के द्वारा भेजा जा सकता है और विशेष शृंखला में "
+"स्थापित नहीं है. सभी iptables, ip6tables और ebtables विकल्प का उपयोग किया जा "
+"सकता है."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Please be careful with passthrough rules to not damage the firewall."
@@ -1468,9 +1483,9 @@ msgid ""
 "firewalld. It limits changes to the firewall. The lockdown whitelist can "
 "contain commands, contexts, users and user ids."
 msgstr ""
-"lockdown विशेषता उपयोक्ता और अनुप्रयोग नीति के हल्के संस्करण के लिए firewalld है. यह "
-"फ़ायरवॉल में परिवर्तन परिसीमित करता है. लॉकडाउन ह्वाइटलिस्च में कमांड, संदर्भ, उपयोक्ता "
-"और उपयोक्ता आईडी समाहित है."
+"lockdown विशेषता उपयोक्ता और अनुप्रयोग नीति के हल्के संस्करण के लिए "
+"firewalld है. यह फ़ायरवॉल में परिवर्तन परिसीमित करता है. लॉकडाउन ह्वाइटलिस्च "
+"में कमांड, संदर्भ, उपयोक्ता और उपयोक्ता आईडी समाहित है."
 
 #: ../src/firewall-config.glade.h:179
 msgid ""
@@ -1501,9 +1516,9 @@ msgid ""
 "command lines starting with the command will match. If the '*' is not there "
 "the absolute command inclusive arguments must match."
 msgstr ""
-"यदि ह्वाइटलिस्ट पर किसी कमांड प्रविष्ट का अंत तारांकन '*' से होता है, तो सभी कमांड "
-"लाइन जो कमांड से आरंभ होता है मेल खाएगा. यदि '*' वहाँ नहीं है, तो निरपेक्ष कमांड "
-"अंतर्निवेशित तर्क को जरूर मेल खाना चाहिए."
+"यदि ह्वाइटलिस्ट पर किसी कमांड प्रविष्ट का अंत तारांकन '*' से होता है, तो सभी "
+"कमांड लाइन जो कमांड से आरंभ होता है मेल खाएगा. यदि '*' वहाँ नहीं है, तो "
+"निरपेक्ष कमांड अंतर्निवेशित तर्क को जरूर मेल खाना चाहिए."
 
 #: ../src/firewall-config.glade.h:185
 msgid "Add Command Line"
@@ -1730,11 +1745,11 @@ msgstr "उल्टा"
 
 #: ../src/firewall-config.glade.h:241
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"इसे सक्रिय करने के लिए क्रिया को 'अस्वीकार' करने की जरूरत है और फैमिली को 'ipv4' या "
-"'ipv6' (दोनों नहीं) होना चाहिए."
+"इसे सक्रिय करने के लिए क्रिया को 'अस्वीकार' करने की जरूरत है और फैमिली को "
+"'ipv4' या 'ipv6' (दोनों नहीं) होना चाहिए."
 
 #: ../src/firewall-config.glade.h:242
 msgid "with Type:"

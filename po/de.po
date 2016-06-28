@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -35,15 +35,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-22 14:35+0200\n"
+"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-06-07 07:20-0400\n"
 "Last-Translator: Lisa Stemmler <lstemmle@redhat.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
 "language/de/)\n"
 "Language: de\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.8.4\n"
 
@@ -64,19 +64,19 @@ msgstr "Firewall-Konfiguration"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "Firewall;Netzwerk;Sicherheit;Iptables;Netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7194
+#: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Wählen Sie die Zone für die Schnittstelle '%s'"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7239 ../src/firewall-config:7247
-#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7235 ../src/firewall-config:7243
+#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "Standardzone"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7272
+#: ../src/firewall-applet:162 ../src/firewall-config:7268
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr " Zone für Verbindung »%s« auswählen"
@@ -231,7 +231,8 @@ msgstr ""
 
 #: ../src/firewall-applet:874
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
@@ -613,8 +614,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4754
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, wenn die "
@@ -673,12 +673,12 @@ msgstr ""
 msgid "Built-in icmp, rename not supported."
 msgstr "Integriertes Icmp, das Umbenennen wird nicht unterstützt."
 
-#: ../src/firewall-config:7162
+#: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr ""
 
-#: ../src/firewall-config:7294
+#: ../src/firewall-config:7290
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Zone für Quelle %s auswählen"
@@ -810,7 +810,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:31
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Bold entries are mandatory, all others are optional."
@@ -1030,9 +1031,9 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig "
-"sind. Vertrauenswürdige Dienste sind zugänglich von allen Hosts und "
-"Netzwerken, die den Rechner über mit dieser Zone verbundenen Verbindungen, "
+"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig sind."
+" Vertrauenswürdige Dienste sind zugänglich von allen Hosts und Netzwerken, "
+"die den Rechner über mit dieser Zone verbundenen Verbindungen, "
 "Schnittstellen und Quellen erreichen können."
 
 #: ../src/firewall-config.glade.h:80
@@ -1568,9 +1569,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:179
 msgid ""
@@ -1837,8 +1838,8 @@ msgstr "invertiert"
 
 #: ../src/firewall-config.glade.h:241
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Zum Aktivieren muss diese Aktion 'reject' sein und die Familie muss entweder "
 "'ipv4' oder 'ipv6' sein (nicht beides)."

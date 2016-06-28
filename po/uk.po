@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Maxim Dubovoy <max@mylinux.com.ua>, 2003
 # Yuri Chornoivan <yurchor@ukr.net>, 2010-2014
@@ -12,17 +12,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-22 14:35+0200\n"
+"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-06-19 02:13-0400\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/firewalld/"
 "language/uk/)\n"
 "Language: uk\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Zanata 3.8.4\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
@@ -41,22 +41,21 @@ msgstr "Налаштовування мережного екрану"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
-"firewall;network;security;iptables;netfilter;брандмауер;файрвол;екран;мережа;"
-"безпека;захист;айпітейблс;нетфільтр;"
+"firewall;network;security;iptables;netfilter;брандмауер;файрвол;екран;мережа;безпека;захист;айпітейблс;нетфільтр;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7194
+#: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Виберіть зону для інтерфейсу «%s»"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7239 ../src/firewall-config:7247
-#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7235 ../src/firewall-config:7243
+#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "Типова зона"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7272
+#: ../src/firewall-applet:162 ../src/firewall-config:7268
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Виберіть зону для з’єднання «%s»"
@@ -209,7 +208,8 @@ msgstr ""
 
 #: ../src/firewall-applet:874
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Зона «{zone}» використовується для з’єднання «{connection}» на інтерфейсі "
 "«{interface}»"
@@ -591,8 +591,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4754
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Переспрямовування до іншої системи працюватиме, лише якщо інтерфейс "
@@ -651,12 +650,12 @@ msgstr "усі файли"
 msgid "Built-in icmp, rename not supported."
 msgstr "Вбудований ICMP, підтримки перейменування не передбачено."
 
-#: ../src/firewall-config:7162
+#: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "Не вдалося прочитати файл «%s»: %s"
 
-#: ../src/firewall-config:7294
+#: ../src/firewall-config:7290
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Виберіть зону для джерела %s"
@@ -693,6 +692,7 @@ msgstr "Безпосередній ланцюжок"
 msgid "Please select ipv and table and enter the chain name."
 msgstr ""
 "Будь ласка виберіть версію протоколу IP та таблицю та введіть назву ланцюжка."
+""
 
 #: ../src/firewall-config.glade.h:10
 msgid "ipv:"
@@ -884,6 +884,7 @@ msgstr "Змінити значення LogDenied."
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
 "Режим супербезпеки означає, що усіх вхідні та вихідні пакети відкидатимуться."
+""
 
 #: ../src/firewall-config.glade.h:56
 msgid "Panic Mode"
@@ -945,7 +946,8 @@ msgstr "Змінити зону прив’язки"
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
-"Приховати активні динамічні прив’язки з’єднань, інтерфейсів або джерел до зон"
+"Приховати активні динамічні прив’язки з’єднань, інтерфейсів або джерел до "
+"зон"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
@@ -1310,8 +1312,8 @@ msgid ""
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
 "IPSet може бути використано для створення «білих» або «чорних» списків, у "
-"ньому можуть зберігатися, наприклад, IP-адреси, номери портів або MAC-"
-"адреси.  "
+"ньому можуть зберігатися, наприклад, IP-адреси, номери портів або MAC-адреси."
+"  "
 
 #: ../src/firewall-config.glade.h:139
 msgid "IPSet"
@@ -1572,9 +1574,9 @@ msgid ""
 "the absolute command inclusive arguments must match."
 msgstr ""
 "Якщо запис команди у «білому» списку завершується зірочкою, «*», його буде "
-"використано для обробки усіх рядків команд, що починаються відповідним "
-"чином. Якщо у записі немає «*», обробка виконуватиметься лише для вказано "
-"разом з аргументами команди."
+"використано для обробки усіх рядків команд, що починаються відповідним чином."
+" Якщо у записі немає «*», обробка виконуватиметься лише для вказано разом з "
+"аргументами команди."
 
 #: ../src/firewall-config.glade.h:185
 msgid "Add Command Line"
@@ -1807,8 +1809,8 @@ msgstr "інвертування"
 
 #: ../src/firewall-config.glade.h:241
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Щоб можна було скористатися цим, значення «Дія» має бути «відмова», а "
 "«Сімейством» має бути «ipv4» або «ipv6» (не обидва)."

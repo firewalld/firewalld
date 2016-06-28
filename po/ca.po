@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Angels Sala <m_angels15@yahoo.es>, 2004
 # Josep Puigdemont <josep.puigdemont@gmail.com>, 2004-2006
@@ -16,15 +16,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-22 14:35+0200\n"
+"POT-Creation-Date: 2016-06-17 16:19+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2016-06-16 07:56-0400\n"
 "Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
 "language/ca/)\n"
 "Language: ca\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.8.4\n"
 
@@ -45,19 +45,19 @@ msgstr "Configuració del tallafoc"
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr "tallafoc;xarxa;seguretat;iptables;netfilter;"
 
-#: ../src/firewall-applet:89 ../src/firewall-config:7194
+#: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
 msgid "Select zone for interface '%s'"
 msgstr "Selecciona la zona per a la interfície «%s»"
 
 #: ../src/firewall-applet:129 ../src/firewall-applet:136
 #: ../src/firewall-applet:142 ../src/firewall-config:2250
-#: ../src/firewall-config:7239 ../src/firewall-config:7247
-#: ../src/firewall-config:7279 ../src/firewall-config.glade.h:6
+#: ../src/firewall-config:7235 ../src/firewall-config:7243
+#: ../src/firewall-config:7275 ../src/firewall-config.glade.h:6
 msgid "Default Zone"
 msgstr "Zona predeterminada"
 
-#: ../src/firewall-applet:162 ../src/firewall-config:7272
+#: ../src/firewall-applet:162 ../src/firewall-config:7268
 #, c-format
 msgid "Select zone for connection '%s'"
 msgstr "Selecciona la zona per a la connexió «%s»"
@@ -212,7 +212,8 @@ msgstr ""
 
 #: ../src/firewall-applet:874
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "La zona '{zone}' es troba activa per a la connexió '{connection}' en la "
 "interfície '{interface}'"
@@ -595,8 +596,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:4754
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "El reenviament a un altre sistema tan sols és útil si la interfície de xarxa "
@@ -656,12 +656,12 @@ msgstr "Tots els fitxers"
 msgid "Built-in icmp, rename not supported."
 msgstr "ICMP integrat, no es permet el canvi de nom."
 
-#: ../src/firewall-config:7162
+#: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
 msgstr "No s'ha pogut llegir el fitxer «%s»: %s"
 
-#: ../src/firewall-config:7294
+#: ../src/firewall-config:7290
 #, c-format
 msgid "Select zone for source %s"
 msgstr "Selecciona la zona per a l'origen %s"
@@ -1316,8 +1316,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"Els serveis es poden canviar únicament en la vista de configuració "
-"permanent. La configuració en temps d'execució dels serveis és fixa."
+"Els serveis es poden canviar únicament en la vista de configuració permanent."
+" La configuració en temps d'execució dels serveis és fixa."
 
 #: ../src/firewall-config.glade.h:138
 msgid ""
@@ -1358,6 +1358,7 @@ msgstr ""
 "no estiguin utilitzant l'opció de temps d'expiració, i també únicament "
 "aquelles entrades que hagin estat afegides amb firewalld. Aquí no es "
 "llistaran aquelles entrades que s'hagin afegit directament amb l'ordre ipset."
+""
 
 #: ../src/firewall-config.glade.h:145
 msgid ""
@@ -1408,7 +1409,8 @@ msgstr "Carrega els valor predeterminats d'ICMP"
 
 #: ../src/firewall-config.glade.h:155
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "Especifiqueu si aquest tipus d'ICMP està disponible per IPv4 i/o IPv6."
+msgstr ""
+"Especifiqueu si aquest tipus d'ICMP està disponible per IPv4 i/o IPv6."
 
 #: ../src/firewall-config.glade.h:156
 msgid "IPv4"
@@ -1815,11 +1817,11 @@ msgstr "inverteix"
 
 #: ../src/firewall-config.glade.h:241
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Per habilitar-ho l'acció ha de ser «rebutja» i la família «ipv4» o "
-"«ipv6» (no ambdós)."
+"Per habilitar-ho l'acció ha de ser «rebutja» i la família «ipv4» o «ipv6» "
+"(no ambdós)."
 
 #: ../src/firewall-config.glade.h:242
 msgid "with Type:"
