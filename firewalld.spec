@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.3
+Version: 0.4.3.1
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -300,6 +300,23 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Jun 28 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.1-1
+- firewall.command: Fix python3 DBusException message not interable error
+- src/Makefile.am: Fix path in firewall-[offline-]cmd_test.sh while installing
+- firewallctl: Do not trace back on list command without further arguments
+- firewallctl (man1): Added remaining sections zone, service, ..
+- firewallctl: Added runtime-to-permanent, interface and source parser,
+  IndividualCalls setting
+- firewall.server.config: Allow to set IndividualCalls property in config
+  interface
+- Fix missing icmp rules for some zones
+- runProg: Fix issue with running programs
+- firewall-offline-cmd: Fix issues with missing system-config-firewall
+- firewall.core.ipXtables: Split up source and dest addresses for transaction
+- firewall.server.config: Log error in case of loading malformed files in
+  watcher
+- Install and package the firewallctl man page
+
 * Wed Jun 22 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3-1
 - New firewallctl utility (RHBZ#1147959)
 - doc.xml.seealso: Show firewalld.dbus in See Also sections
