@@ -143,6 +143,41 @@ class Firewall(object):
             # ipset is usable, get all supported types
             self.ipset_supported_types = self.ipset_backend.supported_types()
 
+        self.ip4tables_backend.fill_exists()
+        if not self.ip4tables_backend.restore_command_exists:
+            if self.ip4tables_backend.command_exists:
+                log.warning("iptables-restore is missing, using "
+                            "individual calls for IPv4 firewall.")
+            else:
+                log.warning("iptables-restore and iptables are missing, "
+                            "disabling IPv4 firewall.")
+                self.ip4tables_enabled = False
+
+        self.ip6tables_backend.fill_exists()
+        if not self.ip6tables_backend.restore_command_exists:
+            if self.ip6tables_backend.command_exists:
+                log.warning("ip6tables-restore is missing, using "
+                            "individual calls for IPv6 firewall.")
+            else:
+                log.warning("ip6tables-restore and ip6tables are missing, "
+                            "disabling IPv6 firewall.")
+                self.ip6tables_enabled = False
+
+        self.ebtables_backend.fill_exists()
+        if not self.ebtables_backend.restore_command_exists:
+            if self.ebtables_backend.command_exists:
+                log.warning("ebtables-restore is missing, using "
+                            "individual calls for bridge firewall.")
+            else:
+                log.warning("ebtables-restore and ebtables are missing, "
+                            "disabling bridge firewall.")
+                self.ebtables_enabled = False
+
+        if self.ebtables_enabled and not self._individual_calls and \
+           not self.ebtables_backend.restore_noflush_option:
+            log.debug1("ebtables-restore is not supporting the --noflush "
+                       "option, will therefore not be used")
+
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
@@ -200,10 +235,6 @@ class Firewall(object):
                 else:
                     self._log_denied = value.lower()
                     log.debug1("LogDenied is set to '%s'", self._log_denied)
-
-            if self.ebtables_enabled and not self._individual_calls and \
-               not self.ebtables_backend.restore_noflush_option:
-                log.debug1("ebtables-restore is not supporting the --noflush option, will therefore not be used")
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
@@ -814,6 +845,7 @@ class Firewall(object):
             return ""
 
         if self._individual_calls or \
+           not backend.restore_command_exists or \
            (ipv == "eb" and not self.ebtables_backend.restore_noflush_option):
             for i,rule in enumerate(_rules):
                 # remove leading and trailing '"' for use with execve
