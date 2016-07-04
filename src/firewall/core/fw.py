@@ -123,7 +123,7 @@ class Firewall(object):
 
         if self.ebtables_enabled and \
            "filter" not in self.get_available_tables("eb"):
-            log.error("ebtables not usable, disabling ethernet bridge firewall.")
+            log.warning("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
         # is there at least support for ipv4 or ipv6
@@ -135,7 +135,7 @@ class Firewall(object):
         try:
             self.ipset_backend.list()
         except ValueError:
-            log.error("ipset not usable, disabling ipset usage in firewall.")
+            log.warning("ipset not usable, disabling ipset usage in firewall.")
             # ipset is not usable, no supported types
             self.ipset_enabled = False
             self.ipset_supported_types = [ ]
