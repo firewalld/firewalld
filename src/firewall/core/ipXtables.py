@@ -150,6 +150,11 @@ class ip4tables(object):
         self._command = config.COMMANDS[self.ipv]
         self._restore_command = config.COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
+        self.fill_exists()
+
+    def fill_exists(self):
+        self.command_exists = os.path.exists(self._command)
+        self.restore_command_exists = os.path.exists(self._restore_command)
 
     def __run(self, args):
         # convert to string list

@@ -59,6 +59,11 @@ class ebtables(object):
         self.restore_noflush_option = self._detect_restore_noflush_option()
         self.concurrent_option = self._detect_concurrent_option()
         self.__remove_dangling_lock()
+        self.fill_exists()
+
+    def fill_exists(self):
+        self.command_exists = os.path.exists(self._command)
+        self.restore_command_exists = os.path.exists(self._restore_command)
 
     def __remove_dangling_lock(self):
         if os.path.exists(self.ebtables_lock):
