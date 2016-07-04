@@ -917,6 +917,7 @@ if fw.connected == False:
         cmd.print_and_exit ("not running", errors.NOT_RUNNING)
     else:
         cmd.print_and_exit ("FirewallD is not running", errors.NOT_RUNNING)
+cmd.set_fw(fw)
 
 if options_zone_ops and not zone and not (a.service and options_service):
     default = fw.getDefaultZone()

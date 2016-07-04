@@ -36,6 +36,10 @@ class FirewallCommand(object):
         self.quiet = quiet
         self.verbose = verbose
         self.__use_exception_handler = True
+        self.fw = None
+
+    def set_fw(self, fw):
+        self.fw = fw
 
     def set_quiet(self, flag):
         self.quiet = flag
@@ -83,6 +87,7 @@ class FirewallCommand(object):
             "add": "ALREADY_ENABLED",
             "remove": "NOT_ENABLED",
         }
+        self.fw.authorizeAll()
         items = [ ]
         _errors = 0
         for item in option:

@@ -1720,6 +1720,7 @@ if fw.connected == False:
         cmd.print_and_exit("not running", errors.NOT_RUNNING)
     else:
         cmd.print_and_exit("FirewallD is not running", errors.NOT_RUNNING)
+cmd.set_fw(fw)
 
 # version
 if args.parser == "version":
