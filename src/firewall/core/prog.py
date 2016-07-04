@@ -37,9 +37,13 @@ def runProg(prog, argv=None, stdin=None):
             input_string = handle.read().encode()
 
     env = {'LANG': 'C'}
-    process = subprocess.Popen(args, stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE, close_fds=True,
-                               env=env)
+    try:
+        process = subprocess.Popen(args, stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE, close_fds=True,
+                                   env=env)
+    except OSError:
+        return (255, '')
+
     (output, _) = process.communicate(input_string)
     if output is not None:
         output = output.decode('utf-8', 'replace')
