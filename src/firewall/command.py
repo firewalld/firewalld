@@ -87,7 +87,8 @@ class FirewallCommand(object):
             "add": "ALREADY_ENABLED",
             "remove": "NOT_ENABLED",
         }
-        self.fw.authorizeAll()
+        if self.fw is not None:
+            self.fw.authorizeAll()
         items = [ ]
         _errors = 0
         for item in option:
