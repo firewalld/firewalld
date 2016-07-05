@@ -130,6 +130,7 @@ EXTRA_DIST = \
 	services/ptp.xml \
 	services/pulseaudio.xml \
 	services/puppetmaster.xml \
+	services/RH-Satellite-6.xml \
 	services/radius.xml \
 	services/rpc-bind.xml \
 	services/rsyncd.xml \
