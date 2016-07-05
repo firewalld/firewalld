@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.3.1
+Version: 0.4.3.2
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -300,6 +300,13 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Jul  4 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.2-1
+- Fix regression with unavailable optional commands
+- All missing backend messages should be warnings
+- Individual calls for missing restore commands
+- Only one authenticate call for add and remove options and also sequences
+- New service RH-Satellite-6
+
 * Tue Jun 28 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.1-1
 - firewall.command: Fix python3 DBusException message not interable error
 - src/Makefile.am: Fix path in firewall-[offline-]cmd_test.sh while installing
