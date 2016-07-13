@@ -84,32 +84,37 @@ EXTRA_DIST = \
 	services/bacula.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
-	services/dhcp.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
+	services/dhcp.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/dropbox-lansync.xml \
-	services/freeipa-ldap.xml \
 	services/freeipa-ldaps.xml \
+	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
 	services/ftp.xml \
+	services/ganglia-client.xml \
+	services/ganglia-master.xml \
 	services/high-availability.xml \
-	services/http.xml \
 	services/https.xml \
-	services/imap.xml \
+	services/http.xml \
 	services/imaps.xml \
+	services/imap.xml \
 	services/ipp-client.xml \
 	services/ipp.xml \
 	services/ipsec.xml \
 	services/iscsi-target.xml \
 	services/kadmin.xml \
 	services/kerberos.xml \
+	services/klogin.xml \
 	services/kpasswd.xml \
-	services/ldap.xml \
+	services/kshell.xml \
 	services/ldaps.xml \
+	services/ldap.xml \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
+	services/managesieve.xml \
 	services/mdns.xml \
 	services/mosh.xml \
 	services/mountd.xml \
@@ -120,27 +125,30 @@ EXTRA_DIST = \
 	services/openvpn.xml \
 	services/pmcd.xml \
 	services/pmproxy.xml \
-	services/pmwebapi.xml \
 	services/pmwebapis.xml \
-	services/pop3.xml \
+	services/pmwebapi.xml \
 	services/pop3s.xml \
+	services/pop3.xml \
 	services/postgresql.xml \
 	services/privoxy.xml \
 	services/proxy-dhcp.xml \
 	services/ptp.xml \
 	services/pulseaudio.xml \
 	services/puppetmaster.xml \
-	services/RH-Satellite-6.xml \
 	services/radius.xml \
+	services/RH-Satellite-6.xml \
 	services/rpc-bind.xml \
+	services/rsh.xml \
 	services/rsyncd.xml \
 	services/samba-client.xml \
 	services/samba.xml \
 	services/sane.xml \
-	services/smtp.xml \
+	services/sips.xml \
+	services/sip.xml \
 	services/smtps.xml \
-	services/snmp.xml \
+	services/smtp.xml \
 	services/snmptrap.xml \
+	services/snmp.xml \
 	services/squid.xml \
 	services/ssh.xml \
 	services/synergy.xml \
