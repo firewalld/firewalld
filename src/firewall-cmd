@@ -650,9 +650,10 @@ parser_direct.add_argument("--get-all-rules", action="store_true")
 
 ##############################################################################
 
+args = sys.argv[1:]
+
 if len(sys.argv) > 1:
     i = -1
-    args = sys.argv[1:]
     if '--passthrough' in args:
         i = args.index('--passthrough') + 1
     elif '--add-passthrough' in args:
