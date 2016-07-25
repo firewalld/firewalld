@@ -1716,7 +1716,7 @@ cmd = FirewallCommand(args.quiet, args.verbose)
 fw = FirewallClient()
 fw.setExceptionHandler(cmd.exception_handler)
 if fw.connected == False:
-    if args.state:
+    if args.parser == "state":
         cmd.print_and_exit("not running", errors.NOT_RUNNING)
     else:
         cmd.print_and_exit("FirewallD is not running", errors.NOT_RUNNING)
