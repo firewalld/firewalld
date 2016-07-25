@@ -100,7 +100,7 @@ class FirewallCommand(object):
                         self.print_warning("Warning: %s" % msg)
                         continue
                     else:
-                        code = FirewallError.get_code(msg)
+                        code = FirewallError.get_code(str(msg))
                         self.print_and_exit("Error: %s" % msg, code)
 
             call_item = [ ]
@@ -204,7 +204,7 @@ class FirewallCommand(object):
                         self.print_warning("Warning: %s" % msg)
                         continue
                     else:
-                        code = FirewallError.get_code(msg)
+                        code = FirewallError.get_code(str(msg))
                         self.print_and_exit("Error: %s" % msg, code)
             items.append(item)
 
@@ -454,7 +454,7 @@ class FirewallCommand(object):
     Make sure polkit agent is running or run the application as superuser."""
             self.print_and_exit(msg, errors.NOT_AUTHORIZED)
         else:
-            code = FirewallError.get_code(exception_message)
+            code = FirewallError.get_code(str(exception_message))
             if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
                          errors.ZONE_ALREADY_SET ]:
                 self.print_warning("Warning: %s" % exception_message)
