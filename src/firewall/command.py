@@ -55,19 +55,23 @@ class FirewallCommand(object):
 
     def print_msg(self, msg=None):
         if msg is not None and not self.quiet:
-            print(msg)
+            sys.stdout.write(msg + "\n")
+
+    def print_error_msg(self, msg=None):
+        if msg is not None and not self.quiet:
+            sys.stderr.write(msg + "\n")
 
     def print_warning(self, msg=None):
         FAIL = '\033[91m'
         END = '\033[00m'
-        self.print_msg(FAIL + msg + END)
+        self.print_error_msg(FAIL + msg + END)
 
     def print_and_exit(self, msg=None, exit_code=0):
         #OK = '\033[92m'
         FAIL = '\033[91m'
         END = '\033[00m'
         if exit_code > 1:
-            self.print_msg(FAIL + msg + END)
+            self.print_error_msg(FAIL + msg + END)
         else:
             self.print_msg(msg)
             #self.print_msg(OK + msg + END)
@@ -77,8 +81,8 @@ class FirewallCommand(object):
         self.print_and_exit(msg, 2)
 
     def print_if_verbose(self, msg=None):
-        if msg and self.verbose:
-            print(msg)
+        if msg is not None and self.verbose:
+            sys.stdout.write(msg + "\n")
 
     def __cmd_sequence(self, cmd_type, option, action_method, query_method,
                        parse_method, message, start_args=None, end_args=None,

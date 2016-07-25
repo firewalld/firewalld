@@ -43,13 +43,13 @@ from firewall.command import FirewallCommand
 
 # check for root user
 if os.getuid() != 0:
-    print("You need to be root to run %s." % sys.argv[0])
+    sys.stderr.write("You need to be root to run %s.\n" % sys.argv[0])
     sys.exit(-1)
 
 SYSTEM_CONFIG_FIREWALL = config.SYSCONFIGDIR + '/system-config-firewall'
 
 def __usage():
-    print ("""
+    sys.stdout.write("""
 Usage: firewall-offline-cmd [OPTIONS...]
 
 If no options are given, configuration from '%s' will be migrated.
@@ -419,7 +419,7 @@ Polkit Options
   --policy-server      Change Polkit actions to 'server'  (more restricted)
   --policy-desktop     Change Polkit actions to 'desktop' (less restricted)
 
-    """ % (SYSTEM_CONFIG_FIREWALL, config.SYSCONFIGDIR))
+""" % (SYSTEM_CONFIG_FIREWALL, config.SYSCONFIGDIR))
 
 def parse_port_lokkit(value):
     try:

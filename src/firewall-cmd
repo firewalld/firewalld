@@ -44,7 +44,7 @@ from firewall.core.io.icmptype import icmptype_reader
 from firewall.command import FirewallCommand
 
 def __usage():
-    print ("""
+    sys.stdout.write("""
 Usage: firewall-cmd [OPTIONS...]
 
 General Options
@@ -402,6 +402,7 @@ Panic Options
   --panic-on           Enable panic mode
   --panic-off          Disable panic mode
   --query-panic        Query whether panic mode is enabled
+
 """)
 
 def try_set_zone_of_interface(_zone, interface):
@@ -1812,7 +1813,7 @@ elif a.direct:
             cmd.fail("usage: --direct --passthrough { ipv4 | ipv6 | eb } <args>")
         msg = fw.passthrough(cmd.check_ipv(a.passthrough[0]), splitArgs(a.passthrough[1]))
         if msg:
-            print(msg)
+            sys.stdout.write(msg + "\n")
 
     elif a.add_passthrough:
         if len(a.add_passthrough) < 2:

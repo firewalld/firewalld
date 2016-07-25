@@ -3365,7 +3365,7 @@ elif args.parser == "direct":
         msg = fw.passthrough(cmd.check_ipv(args.passthrough[0]),
                              splitArgs(args.passthrough[1]))
         if msg:
-            print(msg)
+            sys.stdout.write(msg + "\n")
 
     elif args.action == "get":
 
