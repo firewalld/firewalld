@@ -3099,6 +3099,7 @@ class FirewallConfig(object):
         else:
             family = None
 
+        value = None
         if combolabel == _("service"):
             value = self.service_select_dialog(old_value)
         elif combolabel == _("port"):
