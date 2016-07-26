@@ -558,11 +558,11 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 
 	<varlistentry>
 	  <term>
-	    <option>source</option> { <replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional> | ipset:<replaceable>ipset</replaceable> }
+	    <option>source</option> { <replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional> | MAC | ipset:<replaceable>ipset</replaceable> }
 	  </term>
 	  <listitem>
 	    <para>
-	      A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address (no mask) or also an ipset. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	      A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address or also an ipset. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
 	    </para>
 	  </listitem>
 	</varlistentry>

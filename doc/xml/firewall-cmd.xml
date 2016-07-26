@@ -273,10 +273,10 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <option>--get-zone-of-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <option>--get-zone-of-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Print the name of the zone the <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to or <emphasis>no zone</emphasis>.
+	      Print the name of the zone the source is bound to or <emphasis>no zone</emphasis>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -906,7 +906,7 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	Binding a source to a zone means that this zone settings will be used to restrict traffic from this source.
       </para>
       <para>
-	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address (no mask). For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address or an ipset with the ipset: prefix. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
       </para>
       <para>
 	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
@@ -925,19 +925,19 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Bind source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	      Bind the source to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Change zone the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to to zone <replaceable>zone</replaceable>.
+	      Change zone the source is bound to to zone <replaceable>zone</replaceable>.
 	      It's basically <option>--remove-source</option> followed by <option>--add-source</option>.
 	      If the source has not been bound to a zone before, it behaves like <option>--add-source</option>.
 	      If zone is omitted, default zone will be used.
@@ -946,19 +946,19 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Query whether the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to the zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
+	      Query whether the source is bound to the zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Remove binding of source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> from zone it was previously added to.
+	      Remove binding of the source from zone it was previously added to.
 	    </para>
 	  </listitem>
 	</varlistentry>

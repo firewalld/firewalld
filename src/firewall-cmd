@@ -79,8 +79,8 @@ Zone Options
   --get-icmptypes      Print predefined icmptypes [P]
   --get-zone-of-interface=<interface>
                        Print name of the zone the interface is bound to [P]
-  --get-zone-of-source=<source>[/<mask>]
-                       Print name of the zone the source[/mask] is bound to [P]
+  --get-zone-of-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Print name of the zone the source is bound to [P]
   --list-all-zones     List everything added for or enabled in all zones [P]
   --new-zone=<zone>    Add a new zone [P only]
   --new-zone-from-file=<filename> [--name=<zone>]
@@ -310,15 +310,14 @@ Options to Handle Bindings of Interfaces
 
 Options to Handle Bindings of Sources
   --list-sources       List sources that are bound to a zone [P] [Z]
-  --add-source=<source>[/<mask>]
-                       Bind <source>[/<mask>] to a zone [P] [Z]
-  --change-source=<source>[/<mask>]
-                       Change zone the <source>[/<mask>] is bound to [Z]
-  --query-source=<source>[/<mask>]
-                       Query whether <source>[/<mask>] is bound to a zone
-                       [P] [Z]
-  --remove-source=<source>[/<mask>]
-                       Remove binding of <source>[/<mask>] from a zone [P] [Z]
+  --add-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Bind the source to a zone [P] [Z]
+  --change-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Change zone the source is bound to [Z]
+  --query-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Query whether the source is bound to a zone [P] [Z]
+  --remove-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Remove binding of the source from a zone [P] [Z]
 
 Direct Options
   --direct             First option for all direct options
