@@ -87,10 +87,6 @@ class FirewallCommand(object):
     def __cmd_sequence(self, cmd_type, option, action_method, query_method,
                        parse_method, message, start_args=None, end_args=None,
                        no_exit=False):
-        warn_type = {
-            "add": "ALREADY_ENABLED",
-            "remove": "NOT_ENABLED",
-        }
         if self.fw is not None:
             self.fw.authorizeAll()
         items = [ ]
@@ -132,12 +128,19 @@ class FirewallCommand(object):
                     self.print_and_exit("Error: %s" % msg.get_dbus_message(),
                                         code)
                 _errors += 1
+            except Exception as msg:
+                if len(option) > 1:
+                    self.print_warning("Warning: %s" % msg)
+                    _errors += 1
+                    continue
+                else:
+                    code = FirewallError.get_code(str(msg))
+                    self.print_and_exit("Error: %s" % msg, code)
+                    _errors += 1
             self.activate_exception_handler()
 
         if _errors == len(option) and not no_exit:
             sys.exit(errors.UNKNOWN_ERROR)
-        elif not no_exit:
-            sys.exit(0)
 
     def add_sequence(self, option, action_method, query_method, parse_method,
                      message, no_exit=False):
