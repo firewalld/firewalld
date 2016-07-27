@@ -102,45 +102,14 @@ class FirewallCommand(object):
                 except Exception as msg:
                     if len(option) > 1:
                         self.print_warning("Warning: %s" % msg)
+                        _errors += 1
                         continue
                     else:
                         code = FirewallError.get_code(str(msg))
                         self.print_and_exit("Error: %s" % msg, code)
+                        _errors += 1
 
-            call_item = [ ]
-            if start_args is not None:
-                call_item += start_args
-            if not isinstance(item, list) and not isinstance(item, tuple):
-                call_item.append(item)
-            else:
-                call_item += item
-            self.deactivate_exception_handler()
-            try:
-                if cmd_type == "add" and not query_method(*call_item):
-                    items.append(item)
-                elif cmd_type == "remove" and query_method(*call_item):
-                    items.append(item)
-                else:
-                    if len(option) > 1:
-                        self.print_warning("Warning: %s: %s" % \
-                                           (warn_type[cmd_type],
-                                            message % item))
-                    else:
-                        code = FirewallError.get_code(warn_type[cmd_type])
-                        self.print_and_exit("Error: %s: %s" % \
-                                            (warn_type[cmd_type],
-                                             message % item), code)
-                    _errors += 1
-            except DBusException as msg:
-                code = FirewallError.get_code(msg.get_dbus_message())
-                if len(option) > 1:
-                    self.print_warning("Warning: %s" % msg.get_dbus_message())
-                    continue
-                else:
-                    self.print_and_exit("Error: %s" % msg.get_dbus_message(),
-                                        code)
-                _errors += 1
-            self.activate_exception_handler()
+            items.append(item)
 
         for item in items:
             call_item = [ ]
@@ -152,6 +121,7 @@ class FirewallCommand(object):
                 call_item += item
             if end_args is not None:
                 call_item += end_args
+            self.deactivate_exception_handler()
             try:
                 action_method(*call_item)
             except DBusException as msg:
@@ -162,8 +132,11 @@ class FirewallCommand(object):
                     self.print_and_exit("Error: %s" % msg.get_dbus_message(),
                                         code)
                 _errors += 1
+            self.activate_exception_handler()
 
         if _errors == len(option) and not no_exit:
+            sys.exit(errors.UNKNOWN_ERROR)
+        elif not no_exit:
             sys.exit(0)
 
     def add_sequence(self, option, action_method, query_method, parse_method,
