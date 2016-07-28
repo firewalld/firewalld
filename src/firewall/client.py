@@ -1458,7 +1458,10 @@ class FirewallClientIcmpTypeSettings(object):
         self.settings[3] = destinations
     @handle_exceptions
     def addDestination(self, destination):
-        if destination not in self.settings[3]:
+        # empty means all
+        if not self.settings[3]:
+            raise FirewallError(errors.ALREADY_ENABLED, destination)
+        elif destination not in self.settings[3]:
             self.settings[3].append(destination)
         else:
             raise FirewallError(errors.ALREADY_ENABLED, destination)
