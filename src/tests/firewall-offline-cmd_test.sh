@@ -22,7 +22,7 @@ assert_cmd_good() {
 assert_good() {
   local args="${1}"
 
-  ${path}firewall-offline-cmd ${args} > /dev/null
+  ${path}firewall-offline-cmd ${args} > /dev/null 2>&1
   if [[ "$?" -eq 0 ]]; then
     echo "${args} ... OK"
   else
@@ -35,7 +35,7 @@ assert_good_notempty() {
   local args="${1}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( -n "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -48,7 +48,7 @@ assert_good_empty() {
   local args="${1}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( -z "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -62,7 +62,7 @@ assert_good_equals() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( "${ret}" = "${value}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -76,7 +76,7 @@ assert_good_contains() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( "${ret}" = *${value}* ) ]]; then
     echo "${args} ... OK"
   else
@@ -88,7 +88,7 @@ assert_good_contains() {
 assert_bad() {
   local args="${1}"
 
-  ${path}firewall-offline-cmd ${args} 1> /dev/null 2>&1
+  ${path}firewall-offline-cmd ${args} 1> /dev/null 2>&1 2>&1
   if [[ "$?" -ne 0 ]]; then
     echo "${args} ... OK"
   else
@@ -102,7 +102,7 @@ assert_bad_contains() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -ne 0 ) || ( "${ret}" = *${value}* ) ]]; then
     ((failures++))
     echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' does contain '${value}')${RESTORE}"
@@ -125,7 +125,7 @@ assert_rich_good() {
     command="--query-rich-rule"
   fi
 
-  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null
+  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null 2>&1
   if [[ "$?" -eq 0 ]]; then
     echo ${command} "${args} ... OK"
   else
@@ -147,7 +147,7 @@ assert_rich_bad() {
     command="--query-rich-rule"
   fi
 
-  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null
+  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null 2>&1
   if [[ "$?" -ne 0 ]]; then
     echo ${command} "${args} ... OK"
   else
