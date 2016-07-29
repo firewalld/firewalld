@@ -23,8 +23,6 @@
 import sys
 import string
 import gi
-import gettext
-_ = gettext.gettext
 
 try:
     gi.require_version('Gtk', '3.0')
@@ -56,6 +54,10 @@ from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
 from firewall.core import rich
 from firewall.core.fw_nm import *
+
+import gettext
+gettext.textdomain(config.DOMAIN)
+_ = gettext.gettext
 
 if not datadir:
     datadir = config.DATADIR
