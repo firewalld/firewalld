@@ -80,17 +80,14 @@ class ifcfg(object):
             # get key/value pair
             pair = [ x.strip() for x in line.split("=", 1) ]
             if len(pair) != 2:
-                log.error("Invalid option definition: '%s'", line.strip())
+                log.warning("%: Invalid option definition: '%s'", self.filename, line.strip())
                 continue
             elif pair[1] == '':
                 continue
             elif self._config.get(pair[0]) is not None:
-                log.error("Duplicate option definition: '%s'", line.strip())
+                log.warning("%s: Duplicate option definition: '%s'", self.filename, line.strip())
                 continue
-            if pair[1][0] == '"' and pair[1][-1] == '"':
-                self._config[pair[0]] = pair[1][1:-1]
-            else:
-                self._config[pair[0]] = pair[1]
+            self._config[pair[0]] = pair[1]
         f.close()
 
     def write(self):
@@ -139,7 +136,7 @@ class ifcfg(object):
                     temp_file.write(line)
                     temp_file.write(u"\n")
                 else:
-                    p = line.split("=")
+                    p = line.split("=", 1)
                     if len(p) != 2:
                         empty = False
                         temp_file.write(line+u"\n")
