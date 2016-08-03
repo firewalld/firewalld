@@ -619,8 +619,8 @@ parser_ipset.add_argument("--add-entry", metavar="<entry>", action='append')
 parser_ipset.add_argument("--remove-entry", metavar="<entry>", action='append')
 parser_ipset.add_argument("--query-entry", metavar="<entry>", action='append')
 parser_ipset.add_argument("--get-entries", action="store_true")
-parser_ipset.add_argument("--add-entries-from-file", metavar="<filename>")
-parser_ipset.add_argument("--remove-entries-from-file", metavar="<filename>")
+parser_ipset.add_argument("--add-entries-from-file", metavar="<filename>", action='append')
+parser_ipset.add_argument("--remove-entries-from-file", metavar="<filename>", action='append')
 
 parser.add_argument("--icmptype", metavar="<icmptype>")
 
@@ -1467,6 +1467,7 @@ try:
             ipset = fw.config.get_ipset(a.ipset)
             settings = FirewallClientIPSetSettings(
                 list(fw.config.get_ipset_config(ipset)))
+            changed = False
 
             for filename in a.remove_entries_from_file:
                 try:
