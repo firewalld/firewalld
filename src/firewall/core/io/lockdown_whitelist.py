@@ -322,7 +322,12 @@ class LockdownWhitelist(IO_Object):
         handler = lockdown_whitelist_ContentHandler(self)
         parser = sax.make_parser()
         parser.setContentHandler(handler)
-        parser.parse(self.filename)
+        try:
+            parser.parse(self.filename)
+        except sax.SAXParseException as msg:
+            raise FirewallError(errors.INVALID_TYPE,
+                                "Not a valid file: %s" % \
+                                msg.getException())
         del handler
         del parser
         if PY2:

@@ -122,7 +122,12 @@ def icmptype_reader(filename, path):
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
     with open(name, "r") as f:
-        parser.parse(f)
+        try:
+            parser.parse(f)
+        except sax.SAXParseException as msg:
+            raise FirewallError(errors.INVALID_ICMPTYPE,
+                                "not a valid icmptype file: %s" % \
+                                msg.getException())
     del handler
     del parser
     if PY2:

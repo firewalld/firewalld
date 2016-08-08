@@ -361,8 +361,12 @@ class Direct(IO_Object):
         parser = sax.make_parser()
         parser.setContentHandler(handler)
         with open(self.filename, "r") as f:
-            parser.parse(f)
-
+            try:
+                parser.parse(f)
+            except sax.SAXParseException as msg:
+                raise FirewallError(errors.INVALID_TYPE,
+                                    "Not a valid file: %s" % \
+                                    msg.getException())
 
     def write(self):
         if os.path.exists(self.filename):
