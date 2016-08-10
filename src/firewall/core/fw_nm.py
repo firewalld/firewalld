@@ -31,13 +31,16 @@ try:
     gi.require_version('NM', '1.0')
 except ValueError:
     _nm_imported = False
+    _nm_client = None
 else:
     try:
         from gi.repository import NM
         _nm_imported = True
+        _nm_client = NM.Client.new(None)
     except (ImportError, ValueError):
         NetworkManager = None
         _nm_imported = False
+        _nm_client = None
 
 from firewall import errors
 from firewall.errors import FirewallError
@@ -56,6 +59,12 @@ def nm_is_imported():
     """
     return _nm_imported
 
+def nm_get_client():
+    """Returns the NM client object or None if the import of NM failed
+    @return NM.Client instance if import was successful, None otherwise
+    """
+    return _nm_client
+
 def nm_get_zone_of_connection(connection):
     """Get zone of connection from NM
     @param connection name
@@ -63,8 +72,7 @@ def nm_get_zone_of_connection(connection):
     """
     check_nm_imported()
 
-    client = NM.Client.new(None)
-    active_connections = client.get_active_connections()
+    active_connections = nm_get_client().get_active_connections()
 
     for active_con in active_connections:
         if active_con.get_id() == connection:
@@ -85,8 +93,7 @@ def nm_set_zone_of_connection(zone, connection):
     """
     check_nm_imported()
 
-    client = NM.Client.new(None)
-    active_connections = client.get_active_connections()
+    active_connections = nm_get_client().get_active_connections()
 
     for active_con in active_connections:
         con = active_con.get_connection()
@@ -112,8 +119,7 @@ def nm_get_connections(connections, connections_uuid):
 
     check_nm_imported()
 
-    client = NM.Client.new(None)
-    active_connections = client.get_active_connections()
+    active_connections = nm_get_client().get_active_connections()
 
     for active_con in active_connections:
         # ignore vpn devices for now
@@ -135,8 +141,7 @@ def nm_get_connection_of_interface(interface):
     """
     check_nm_imported()
 
-    client = NM.Client.new(None)
-    active_connections = client.get_active_connections()
+    active_connections = nm_get_client().get_active_connections()
 
     for active_con in active_connections:
         # ignore vpn devices for now
