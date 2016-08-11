@@ -31,9 +31,28 @@
     </xsl:choose>
   </xsl:template>
 
-  <xsl:template match="refsect1/para|refsect1/variablelist|refsect1/refsect2|refsect1/simplelist|*/para|refsect2/para|refsect2/variablelist">
+  <xsl:template match="refsect1/para|refsect1/variablelist|refsect1/simplelist|refsect1/para|refsect2/para|refsect2/variablelist|refsect3/para|refsect3/variablelist|varlistentry/listitem">
     <blockquote>
       <xsl:apply-templates/>
+    </blockquote>
+  </xsl:template>
+
+  <xsl:template match="refsect2|refsect3">
+    <blockquote>
+      <div>
+	<xsl:call-template name="common.html.attributes">
+	  <xsl:with-param name="inherit" select="1"/>
+	</xsl:call-template>
+	<xsl:call-template name="id.attribute">
+	  <xsl:with-param name="conditional" select="0"/>
+	</xsl:call-template>
+	<xsl:call-template name="anchor">
+	  <xsl:with-param name="conditional" select="0"/>
+	</xsl:call-template>
+	<!-- pick up info title -->
+	<xsl:apply-templates select="(title|info/title)[1]"/>
+	<xsl:apply-templates select="node()[not(self::title) and not(self::info)]"/>
+      </div>
     </blockquote>
   </xsl:template>
 
@@ -41,6 +60,17 @@
     <h2>
       <xsl:call-template name="gentext">
         <xsl:with-param name="key" select="'RefName'"/>
+      </xsl:call-template>
+    </h2>
+    <blockquote>
+      <xsl:apply-templates/>
+    </blockquote>
+  </xsl:template>
+
+  <xsl:template match="refsynopsisdiv">
+    <h2>
+      <xsl:call-template name="gentext">
+        <xsl:with-param name="key" select="'RefSynopsisDiv'"/>
       </xsl:call-template>
     </h2>
     <blockquote>
