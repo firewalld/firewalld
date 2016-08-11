@@ -399,7 +399,8 @@
       <para>
 	The general rule structure:
       </para>
-      <programlisting>
+      <para>
+	<programlisting>
 &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
   [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
@@ -422,11 +423,13 @@
   ]
 
 &lt;/rule&gt;
-      </programlisting>
+	</programlisting>
+      </para>
       <para>
 	Rule structure for source black or white listing:
       </para>
-      <programlisting>
+      <para>
+	<programlisting>
 &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt;
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
@@ -435,7 +438,8 @@
   &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
   &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
 &lt;/rule&gt;
-      </programlisting>
+	</programlisting>
+      </para>
 
       <para>
 	For a full description on rich language rules, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.

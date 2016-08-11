@@ -51,7 +51,8 @@
     <para>
       This is the basic firewalld object path structure. The used interfaces are explained below in <xref linkend="interfaces"/>.
     </para>
-    <programlisting>
+    <para>
+      <programlisting>
 /org/fedoraproject/FirewallD1
   Interfaces
     <link linkend="FirewallD1">org.fedoraproject.FirewallD1</link>
@@ -93,7 +94,8 @@
     <link linkend="FirewallD1.config.icmptype">org.fedoraproject.FirewallD1.config.icmptype</link>
     org.freedesktop.DBus.Introspectable
     org.freedesktop.DBus.Properties
-    </programlisting>
+      </programlisting>
+    </para>
   </refsect1>
 
   <refsect1 id="interfaces">
