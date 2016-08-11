@@ -31,4 +31,53 @@
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template match="refsect1/para|refsect1/variablelist|refsect1/refsect2|refsect1/simplelist|*/para|refsect2/para|refsect2/variablelist">
+    <blockquote>
+      <xsl:apply-templates/>
+    </blockquote>
+  </xsl:template>
+
+  <xsl:template match="refnamediv">
+    <h2>
+      <xsl:call-template name="gentext">
+        <xsl:with-param name="key" select="'RefName'"/>
+      </xsl:call-template>
+    </h2>
+    <blockquote>
+      <xsl:apply-templates/>
+    </blockquote>
+  </xsl:template>
+
+  <xsl:template match="simplelist/member">
+    <xsl:apply-templates/>
+    <xsl:choose>
+      <xsl:when test="position() = last()"></xsl:when>
+      <xsl:otherwise>
+	<xsl:text>, </xsl:text>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+
+  <xsl:output method="html" encoding="UTF-8" indent="no"/>
+
+  <!-- From Bob Stayton, Sagehill Enterprises, bobs@sagehill.net -->
+  <!-- selects the programlisting's first node, if it is a text node, and if it has a following sibling (which means it is not the only node) -->
+  <xsl:template match="programlisting/node()[1][self::text()][following-sibling::node()]">
+    <xsl:call-template name="trim-left">
+      <xsl:with-param name="contents" select="."/>
+    </xsl:call-template>
+  </xsl:template>
+  <!-- selects the programlisting's last node, if it is a text node, and if it has a preceding sibling (which means it is not the only node) -->
+  <xsl:template match="programlisting/node()[position() = last()][self::text()][preceding-sibling::node()]">
+    <xsl:call-template name="trim-right">
+      <xsl:with-param name="contents" select="."/>
+    </xsl:call-template>
+  </xsl:template>
+  <!-- selects the programlistings first node that is also the last node, if it is a text node -->
+  <xsl:template match="programlisting/node()[position() = 1 and position() = last()][self::text()]" priority="1">
+    <xsl:call-template name="trim.text">
+      <xsl:with-param name="contents" select="."/>
+    </xsl:call-template>
+  </xsl:template>
+
 </xsl:stylesheet>
