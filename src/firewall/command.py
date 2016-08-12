@@ -121,12 +121,18 @@ class FirewallCommand(object):
             try:
                 action_method(*call_item)
             except DBusException as msg:
-                code = FirewallError.get_code(msg.get_dbus_message())
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
                 else:
-                    self.print_and_exit("Error: %s" % msg.get_dbus_message(),
-                                        code)
+                    code = FirewallError.get_code(msg.get_dbus_message())
+                    if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                                 errors.ZONE_ALREADY_SET ]:
+                        self.print_warning("Warning: %s" % \
+                                           msg.get_dbus_message())
+                        sys.exit(0)
+                    else:
+                        self.print_and_exit("Error: %s" % \
+                                            msg.get_dbus_message(), code)
                 _errors += 1
             except Exception as msg:
                 if len(option) > 1:
@@ -135,7 +141,12 @@ class FirewallCommand(object):
                     continue
                 else:
                     code = FirewallError.get_code(str(msg))
-                    self.print_and_exit("Error: %s" % msg, code)
+                    if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                                 errors.ZONE_ALREADY_SET ]:
+                        self.print_warning("Warning: %s" % msg)
+                        sys.exit(0)
+                    else:
+                        self.print_and_exit("Error: %s" % msg, code)
                     _errors += 1
             self.activate_exception_handler()
 
