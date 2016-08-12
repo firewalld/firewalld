@@ -474,7 +474,7 @@ assert_bad "--service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::
 
 # test icmptype options, ipv4 and ipv6 destinations are default
 assert_bad  "--icmptype=${myicmp} --add-destination=ipv5"
-assert_bad "--icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--icmptype=${myicmp} --add-destination=ipv4"
 assert_good "--icmptype=${myicmp} --remove-destination=ipv4"
 assert_good "--icmptype=${myicmp} --add-destination=ipv4"
 assert_good "--icmptype=${myicmp} --query-destination=ipv4"
