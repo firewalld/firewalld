@@ -1713,7 +1713,12 @@ cmd = FirewallCommand(args.quiet, args.verbose)
 
 # use firewalld
 
-fw = FirewallClient()
+try:
+    fw = FirewallClient()
+except FirewallError as msg:
+    code = FirewallError.get_code(str(msg))
+    cmd.print_and_exit("Error: %s" % msg, code)
+
 fw.setExceptionHandler(cmd.exception_handler)
 if fw.connected == False:
     if args.parser == "state":

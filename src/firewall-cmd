@@ -911,7 +911,13 @@ if a.help:
     sys.exit(0)
 
 zone = a.zone
-fw = FirewallClient()
+
+try:
+    fw = FirewallClient()
+except FirewallError as msg:
+    code = FirewallError.get_code(str(msg))
+    cmd.print_and_exit("Error: %s" % msg, code)
+
 fw.setExceptionHandler(cmd.exception_handler)
 if fw.connected == False:
     if a.state:
