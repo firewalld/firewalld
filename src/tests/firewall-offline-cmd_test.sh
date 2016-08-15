@@ -236,7 +236,7 @@ test_lokkit_opts
 # disable dns again for later tests
 assert_good --remove-service=${service1}
 
-default_zone=$(${path}firewall-offline-cmd --get-default-zone)
+default_zone=$(${path}firewall-offline-cmd --get-default-zone 2>/dev/null)
 zone="home"
 assert_good_notempty "--get-default-zone"
 assert_good          "--set-default-zone=${zone}"

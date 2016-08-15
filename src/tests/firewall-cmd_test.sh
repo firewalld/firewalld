@@ -170,7 +170,7 @@ assert_bad  "--query-panic"
 #assert_good "--lockdown-off"
 #assert_bad  "--query-lockdown"
 
-default_zone=$(${path}firewall-cmd --get-default-zone)
+default_zone=$(${path}firewall-cmd --get-default-zone 2>/dev/null)
 zone="home"
 assert_good_notempty "--get-default-zone"
 assert_good          "--set-default-zone=${zone}"
