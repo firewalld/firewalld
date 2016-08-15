@@ -27,6 +27,7 @@ __all__ = [ "check_nm_imported", "nm_is_imported",
             "nm_get_bus_name", "nm_get_dbus_interface" ]
 
 import gi
+from gi.repository import GLib
 try:
     gi.require_version('NM', '1.0')
 except ValueError:
@@ -37,8 +38,7 @@ else:
         from gi.repository import NM
         _nm_imported = True
         _nm_client = NM.Client.new(None)
-    except (ImportError, ValueError):
-        NetworkManager = None
+    except (ImportError, ValueError, GLib.Error):
         _nm_imported = False
         _nm_client = None
 
