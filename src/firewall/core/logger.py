@@ -281,9 +281,10 @@ class Logger(object):
         self.setDebugLogLevel(self.NO_DEBUG)
         self.setFormat("%(label)s%(message)s")
         self.setDateFormat("%d %b %Y %H:%M:%S")
-        self.setInfoLogging("*", self.stderr, [ self.FATAL, self.ERROR ])
+        self.setInfoLogging("*", self.stderr, [ self.FATAL, self.ERROR,
+                                                self.WARNING ])
         self.setInfoLogging("*", self.stdout,
-                        [ i for i in range(self.WARNING, self.INFO_MAX+1) ])
+                            [ i for i in range(self.INFO1, self.INFO_MAX+1) ])
         self.setDebugLogging("*", self.stdout,
                              [ i for i in range(1, self.DEBUG_MAX+1) ])
 
