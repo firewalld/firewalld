@@ -2207,8 +2207,13 @@ class FirewallClient(object):
                 self.bus = slip.dbus.SystemBus()
                 self.bus.default_timeout = None
             except Exception:
-                print("Not using slip")
-                self.bus = dbus.SystemBus()
+                try:
+                    self.bus = dbus.SystemBus()
+                except dbus.exceptions.DBusException as e:
+                    raise FirewallError(errors.DBUS_ERROR,
+                                        e.get_dbus_message())
+                else:
+                    print("Not using slip.dbus")
         else:
             self.bus = bus
 
