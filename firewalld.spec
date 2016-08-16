@@ -127,6 +127,9 @@ sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
 
 %build
 %configure --enable-sysconfig --enable-rpmmacros
+# Enable the make line if there are patches affecting man pages to
+# regenerate them
+# make %{?_smp_mflags}
 
 %if 0%{?with_python3}
 pushd %{py3dir}
