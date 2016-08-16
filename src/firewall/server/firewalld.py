@@ -61,8 +61,8 @@ class FirewallD(slip.dbus.service.Object):
 
     persistent = True
     """ Make FirewallD persistent. """
-    default_polkit_auth_required = config.dbus.PK_ACTION_INFO
-    """ Use config.dbus.PK_ACTION_INFO as a default """
+    default_polkit_auth_required = config.dbus.PK_ACTION_CONFIG
+    """ Use config.dbus.PK_ACTION_CONFIG as a default """
 
     @handle_exceptions
     def __init__(self, *args, **kwargs):
@@ -2128,6 +2128,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # DIRECT PASSTHROUGH (tracked)
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2141,6 +2142,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.direct.add_passthrough(ipv, args)
         self.PassthroughAdded(ipv, args)
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_DIRECT)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_DIRECT, in_signature='sas',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2256,6 +2258,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # set entries # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='ss',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2268,6 +2271,7 @@ class FirewallD(slip.dbus.service.Object):
         self.fw.ipset.add_entry(ipset, entry)
         self.EntryAdded(ipset, entry)
 
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='ss',
                          out_signature='')
     @dbus_handle_exceptions
@@ -2301,7 +2305,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipset.getEntries('%s')" % ipset)
         return self.fw.ipset.get_entries(ipset)
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='sas')
     @dbus_handle_exceptions
     def setEntries(self, ipset, entries, sender=None): # pylint: disable=W0613
