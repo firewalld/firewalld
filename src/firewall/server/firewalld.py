@@ -793,7 +793,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # list functions
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=Zone.DBUS_SIGNATURE)
     @dbus_handle_exceptions
@@ -814,7 +814,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("listServices()")
         return self.fw.service.get_services()
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=Service.DBUS_SIGNATURE)
     @dbus_handle_exceptions
@@ -835,7 +835,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("listIcmpTypes()")
         return self.fw.icmptype.get_icmptypes()
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=IcmpType.DBUS_SIGNATURE)
     @dbus_handle_exceptions
@@ -849,7 +849,7 @@ class FirewallD(slip.dbus.service.Object):
 
     # LOG DENIED
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
                          out_signature='s')
     @dbus_handle_exceptions
@@ -2246,7 +2246,7 @@ class FirewallD(slip.dbus.service.Object):
         log.debug1("ipsets.getIPSets()")
         return self.fw.ipset.get_ipsets()
 
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_IPSET, in_signature='s',
                          out_signature=IPSet.DBUS_SIGNATURE)
     @dbus_handle_exceptions
