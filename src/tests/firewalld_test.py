@@ -23,7 +23,7 @@
 
 # To use in git tree: PYTHONPATH=.. python firewalld-test.py
 
-import dbus
+import dbus as python_dbus
 import sys
 import time
 import unittest
@@ -41,11 +41,11 @@ class TestFirewallD(unittest.TestCase):
     """
     def setUp(self):
         unittest.TestCase.setUp(self)
-        bus = dbus.SystemBus()
+        bus = python_dbus.SystemBus()
         dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH)
-        self.fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
-        self.fw_zone = dbus.Interface(dbus_obj,
-                                     dbus_interface=DBUS_INTERFACE_ZONE)
+        self.fw = python_dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
+        self.fw_zone = python_dbus.Interface(dbus_obj,
+                                             dbus_interface=DBUS_INTERFACE_ZONE)
 
     def test_get_setDefaultZone(self):
         old_zone = dbus_to_python(self.fw.getDefaultZone())

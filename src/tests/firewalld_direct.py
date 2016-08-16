@@ -23,7 +23,7 @@
 
 # To use in git tree: PYTHONPATH=.. python firewalld-test.py
 
-import dbus
+import dbus as python_dbus
 import sys
 import time
 import unittest
@@ -36,10 +36,10 @@ from pprint import pprint
 class TestFirewallDInterfaceDirect(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
-        bus = dbus.SystemBus()
+        bus = python_dbus.SystemBus()
         dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH)
-        self.fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
-        self.fw_direct = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
+        self.fw = python_dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
+        self.fw_direct = python_dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
         # always have "direct_foo1" available
         self.fw_direct.addChain("ipv4", "filter", "direct_foo1")
 
