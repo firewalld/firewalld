@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.3.2
+Version: 0.4.3.3
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -304,6 +304,63 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Aug 16 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.3-1
+- Fix CVE-2016-5410: Firewall configuration can be modified by any logged in
+  user
+- firewall/server/firewalld: Make getXSettings and getLogDenied CONFIG_INFO
+- Update AppData configuration file.
+- tests/firewalld_rich.py: Use new import structure and FirewallClient classes
+- tests/firewalld_direct.py: Use new import structure
+- tests: firewalld_direct: Fix assert to check for True instead of False
+- tests: firewalld_config: Fix expected value when querying the zone target
+- tests: firewalld_config: Use real nf_conntrack modules
+- firewalld.spec: Added comment about make call for %build
+- firewall-config: Use also width_request and height_request with default size
+- Updated firewall-config screenshot
+- firewall-cmd: Fixed typo in help output (RHBZ#1367171)
+- test-suite: Ignore stderr to get default zone also for missing firewalld.conf
+- firewall.core.logger: Warnings should be printed to stderr per default
+- firewall.core.fw_nm: Ignore NetworkManager if NM.Client connect fails
+- firewall-cmd, firewallctl: Gracefully fail if SystemBus can not be aquired
+- firewall.client: Generate new DBUS_ERROR if SystemBus can not be aquired
+- test-suite: Do not fail on ALREADY_ENABLED --add-destination tests
+- firewall.command: ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET are warnings
+- doc/xml/firewalld.dbus.xml: Removed undefined reference
+- doc/xml/transform-html.xsl.in: Fixed references in the document
+- doc/xml/firewalld.{dbus,zone}.xml: Embed programlisting in para
+- doc/xml/transform-html.xsl.in: Enhanced html formatting closer to the man page
+- firewall: core: fw_nm: Instantiate the NM client only once
+- firewall/core/io/*.py: Do not traceback on a general sax parsing issue
+- firewall-offline-cmd: Fix --{add,remove}-entries-from-file
+- firewall-cmd: Add missing action to fix --{add,remove}-entries-from-file
+- firewall.core.prog: Do not output stderr, but return it in the error case
+- firewall.core.io.ifcfg.py: Fix ifcfg file reader and writer (RHBZ#1362171)
+- config/firewall.service.in: use KillMode=mixed
+- config/firewalld.service.in: use network-pre.target
+- firewall-config: Add missing gettext.textdomain call to fix translations
+- Add UDP to transmission-client.xml service
+- tests/firewall-[offline-]cmd_test.sh: Hide errors and warnings
+- firewall.client: Fix ALREADY_ENABLED errors in icmptype destination calls
+- firewall.client: Fix NOT_ENABLED errors in icmptype destination calls
+- firewall.client: Use {ALREADY,NOT}_ENABLED errors in icmptype destination
+  calls
+- firewall.command: Add the removed FirewallError handling to the action
+  (a17ce50)
+- firewall.command: Do not use query methods for sequences and also single
+  options
+- Add missing information about MAC and ipset sources to man pages and help
+  output
+- firewalld.spec: Add BuildRequires for libxslt to enable rebuild of man pages
+- firewall[-offline]-cmd, firewallctl, firewall.command: Use sys.{stdout,stderr}
+- firewallctl: Fix traceback if not connected to firewalld
+- firewall-config: Initialize value in on_richRuleDialogElementChooser_clicked
+- firewall.command: Convert errors to string for Python3
+- firewall.command: Get proper firewall error code from D-BusExceptions
+- firewall-cmd: Fixed traceback without args
+- Add missing service files to Makefile.am
+- shell-completion: Add shell completion support for
+  --{get,set}--{description,short}
+
 * Mon Jul  4 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.2-1
 - Fix regression with unavailable optional commands
 - All missing backend messages should be warnings
