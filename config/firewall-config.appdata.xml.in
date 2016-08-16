@@ -1,26 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Copyright 2014 Jiri Popelka <jpopelka@redhat.com> -->
-<application>
- <id type="desktop">firewall-config.desktop</id>
- <metadata_license>CC0-1.0</metadata_license>
- <project_license>GPL-2.0+</project_license>
- <description>
-  <p>
+<component type="desktop">
+  <id>firewall-config.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <description>
+    <p>
    Firewall Configuration provides a graphical tool for administering firewall.
   </p>
-  <p>Allows to inspect and set:</p>
-  <ul>
-   <li>Runtime and permanent firewall configuration</li>
-   <li>Predefined zones (levels of trust for network connections)</li>
-   <li>Predefined services (port/protocol, netfilter helper module) </li>
-   <li>Port forwarding, masquerading, ICMP blocking</li>
-   <li>Complex firewall rules a.k.a. Rich Language</li>
-   <li>Iptables rules a.k.a. Direct Interface</li>
-  </ul>
- </description>
- <screenshots>
-  <screenshot type="default" width="1008" height="567">https://git.fedorahosted.org/cgit/firewalld.git/plain/doc/firewall-config.png</screenshot>
- </screenshots>
- <url type="homepage">http://www.firewalld.org</url>
- <updatecontact>jpopelka_at_redhat.com</updatecontact>
-</application>
+    <p>Allows to inspect and set:</p>
+    <ul>
+      <li>Runtime and permanent firewall configuration</li>
+      <li>Predefined zones (levels of trust for network connections)</li>
+      <li>Predefined services (port/protocol, netfilter helper module) </li>
+      <li>Port forwarding, masquerading, ICMP blocking</li>
+      <li>Complex firewall rules a.k.a. Rich Language</li>
+      <li>Iptables rules a.k.a. Direct Interface</li>
+    </ul>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/t-woerner/firewalld/master/doc/firewall-config.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">http://www.firewalld.org</url>
+  <url type="bugtracker">https://github.com/t-woerner/firewalld/issues</url>
+  <url type="translate">https://fedora.zanata.org/project/view/firewalld</url>
+  <update_contact>twoerner_at_redhat.com</update_contact>
+</component>
