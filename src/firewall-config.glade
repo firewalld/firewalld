@@ -1694,6 +1694,8 @@
     <property name="title" translatable="yes">Firewall Configuration</property>
     <property name="default_width">870</property>
     <property name="default_height">600</property>
+    <property name="width_request">870</property>
+    <property name="height_request">600</property>
     <signal name="delete-event" handler="onQuit" swapped="no"/>
     <signal name="destroy-event" handler="onQuit" swapped="no"/>
     <child>
