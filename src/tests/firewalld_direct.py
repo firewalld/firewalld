@@ -28,7 +28,7 @@ import sys
 import time
 import unittest
 
-from firewall.config import *
+from firewall import config
 from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
 from pprint import pprint
@@ -37,9 +37,12 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
     def setUp(self):
         unittest.TestCase.setUp(self)
         bus = dbus.SystemBus()
-        dbus_obj = bus.get_object(DBUS_INTERFACE, DBUS_PATH)
-        self.fw = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE)
-        self.fw_direct = dbus.Interface(dbus_obj, dbus_interface=DBUS_INTERFACE_DIRECT)
+        dbus_obj = bus.get_object(config.dbus.DBUS_INTERFACE,
+                                  config.dbus.DBUS_PATH)
+        self.fw = dbus.Interface(dbus_obj,
+                                 dbus_interface=config.dbus.DBUS_INTERFACE)
+        self.fw_direct = dbus.Interface(
+            dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_DIRECT)
         # always have "direct_foo1" available
         self.fw_direct.addChain("ipv4", "filter", "direct_foo1")
 
