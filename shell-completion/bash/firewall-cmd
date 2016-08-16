@@ -58,13 +58,17 @@ OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule
                     --list-source-ports --list-icmp-blocks \
                     --list-forward-ports --list-rich-rules --list-all"
 
+OPTIONS_ZONE_PERMANENT_ONLY="--get-description --get-short \
+                             --set-description= --set-short="
+
 OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry= --add-entries-from-file= --remove-entries-from-file"
 
 OPTIONS_IPSET_ADAPT_QUERY="--list-entries"
 
 # can be used with/without preceding --zone=<zone>
 OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
-              ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}"
+              ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}
+              ${OPTIONS_ZONE_PERMANENT_ONLY}"
 
 OPTIONS_IPSET="${OPTIONS_IPSETACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
 
@@ -160,7 +164,8 @@ _firewall_cmd()
     --list-forward-ports|--add-forward-port=*|--remove-forward-port=*|--query-forward-port=*|\
     --list-interfaces|--add-interface=*|--remove-interface=*|--query-interface=*|\
     --list-sources|--add-source=*|--remove-source=*|--query-source=*|\
-    --add-masquerade|--remove-masquerade|--query-masquerade|--list-all)
+    --add-masquerade|--remove-masquerade|--query-masquerade|--list-all|\
+    --get-description|--get-short|--set-description=*|--set-short=*)
         opts=""
         # --add and --remove can be used multiple times
         if [[ ( ${prev} == --add-* ) || ( ${prev} == --remove-* ) ]]; then
