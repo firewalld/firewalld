@@ -91,19 +91,21 @@ class FirewallCommand(object):
             self.fw.authorizeAll()
         items = [ ]
         _errors = 0
+        _error_codes = [ ]
         for item in option:
             if parse_method is not None:
                 try:
                     item = parse_method(item)
                 except Exception as msg:
+                    code = FirewallError.get_code(str(msg))
                     if len(option) > 1:
                         self.print_warning("Warning: %s" % msg)
-                        _errors += 1
-                        continue
                     else:
-                        code = FirewallError.get_code(str(msg))
                         self.print_and_exit("Error: %s" % msg, code)
-                        _errors += 1
+                    if code not in _error_codes:
+                        _error_codes.append(code)
+                    _errors += 1
+                    continue
 
             items.append(item)
 
@@ -120,37 +122,32 @@ class FirewallCommand(object):
             self.deactivate_exception_handler()
             try:
                 action_method(*call_item)
-            except DBusException as msg:
-                if len(option) > 1:
-                    self.print_warning("Warning: %s" % msg.get_dbus_message())
+            except (DBusException, Exception) as msg:
+                if isinstance(msg, DBusException):
+                    msg = msg.get_dbus_message()
                 else:
-                    code = FirewallError.get_code(msg.get_dbus_message())
-                    if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                                 errors.ZONE_ALREADY_SET ]:
-                        self.print_warning("Warning: %s" % \
-                                           msg.get_dbus_message())
-                        sys.exit(0)
-                    else:
-                        self.print_and_exit("Error: %s" % \
-                                            msg.get_dbus_message(), code)
-                _errors += 1
-            except Exception as msg:
+                    msg = str(msg)
+                code = FirewallError.get_code(msg)
+                if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                             errors.ZONE_ALREADY_SET ]:
+                    code = 0
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg)
-                    _errors += 1
-                    continue
+                elif code == 0:
+                    self.print_warning("Warning: %s" % msg)
+                    sys.exit(0)
                 else:
-                    code = FirewallError.get_code(str(msg))
-                    if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                                 errors.ZONE_ALREADY_SET ]:
-                        self.print_warning("Warning: %s" % msg)
-                        sys.exit(0)
-                    else:
-                        self.print_and_exit("Error: %s" % msg, code)
-                    _errors += 1
+                    self.print_and_exit("Error: %s" % msg, code)
+                if code not in _error_codes:
+                    _error_codes.append(code)
+                _errors += 1
             self.activate_exception_handler()
 
         if _errors == len(option) and not no_exit:
+            if len(_error_codes) == 1:
+                sys.exit(_error_codes[0])
+            elif len(_error_codes) == 2 and 0 in _error_codes:
+                sys.exit(list(set(_error_codes) - set([0]))[0])
             sys.exit(errors.UNKNOWN_ERROR)
 
     def add_sequence(self, option, action_method, query_method, parse_method,

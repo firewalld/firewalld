@@ -148,6 +148,20 @@ assert_rich_bad() {
   fi
 }
 
+assert_exit_code() {
+  local args="${1}"
+  local ret="${2}"
+
+  ${path}firewall-cmd ${args} > /dev/null 2>&1
+  got=$?
+  if [[ "$got" -eq "$ret" ]]; then
+    echo "${args} ... OK"
+  else
+    ((failures++))
+    echo -e "${args} ... ${RED}${failures}. FAILED (bad exit status ${got} != ${ret})${RESTORE}"
+  fi
+}
+
 if ! ${path}firewall-cmd --state --quiet; then
   echo "FirewallD is not running"
   exit 1
@@ -619,6 +633,14 @@ assert_good "--zone=${zone} --remove-source=${source}"
 
 assert_good "--permanent --delete-ipset=${ipset}"
 assert_good "--reload"
+
+# exit return value tests
+assert_exit_code "--add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udp --add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udp --add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udp --add-port 122/udpp --add-port 8745897/foo" 254
+assert_exit_code "--add-port 122/udp --add-port 122/udpp --add-port 8745897/foo --add-port bar" 254
+assert_exit_code "--add-port 122/udp --add-port 122/udp" 0
 
 # ... --direct ...
 modprobe dummy
