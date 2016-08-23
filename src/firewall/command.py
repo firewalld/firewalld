@@ -124,6 +124,7 @@ class FirewallCommand(object):
                 action_method(*call_item)
             except (DBusException, Exception) as msg:
                 if isinstance(msg, DBusException):
+                    self.fail_if_not_authorized(msg.get_dbus_name())
                     msg = msg.get_dbus_message()
                 else:
                     msg = str(msg)
@@ -216,6 +217,7 @@ class FirewallCommand(object):
             try:
                 res = query_method(*call_item)
             except DBusException as msg:
+                self.fail_if_not_authorized(msg.get_dbus_name())
                 code = FirewallError.get_code(msg.get_dbus_message())
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg.get_dbus_message())
@@ -445,17 +447,19 @@ class FirewallCommand(object):
     def exception_handler(self, exception_message):
         if not self.__use_exception_handler:
             raise
+        self.fail_if_not_authorized(exception_message)
+        code = FirewallError.get_code(str(exception_message))
+        if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                     errors.ZONE_ALREADY_SET ]:
+            self.print_warning("Warning: %s" % exception_message)
+        else:
+            self.print_and_exit("Error: %s" % exception_message, code)
+
+    def fail_if_not_authorized(self, exception_message):
         if "NotAuthorizedException" in exception_message:
             msg = """Authorization failed.
     Make sure polkit agent is running or run the application as superuser."""
             self.print_and_exit(msg, errors.NOT_AUTHORIZED)
-        else:
-            code = FirewallError.get_code(str(exception_message))
-            if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                         errors.ZONE_ALREADY_SET ]:
-                self.print_warning("Warning: %s" % exception_message)
-            else:
-                self.print_and_exit("Error: %s" % exception_message, code)
 
     def deactivate_exception_handler(self):
         self.__use_exception_handler = False
