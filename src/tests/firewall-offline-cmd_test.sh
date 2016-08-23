@@ -156,6 +156,20 @@ assert_rich_bad() {
   fi
 }
 
+assert_exit_code() {
+  local args="${1}"
+  local ret="${2}"
+
+  ${path}firewall-cmd ${args} > /dev/null 2>&1
+  got=$?
+  if [[ "$got" -eq "$ret" ]]; then
+    echo "${args} ... OK"
+  else
+    ((failures++))
+    echo -e "${args} ... ${RED}${failures}. FAILED (bad exit status ${got} != ${ret})${RESTORE}"
+  fi
+}
+
 test_lokkit_opts() {
 rm -f /etc/firewalld/zones/*
 assert_good "${lokkit_opts}"
@@ -514,6 +528,20 @@ assert_good "--zone=${zone} --query-source=${source}"
 assert_good "--zone=${zone} --remove-source=${source}"
 
 assert_good "--delete-ipset=${ipset}"
+
+# exit return value tests
+assert_exit_code "--remove-port 122/udp" 0
+assert_exit_code "--add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udp --add-port 122/udpp" 0
+assert_exit_code "--add-port 122/udp --add-port 122/udpp" 0
+assert_exit_code "--add-port 122/udp --add-port 122/udpp --add-port 8745897/foo" 0
+assert_exit_code "--add-port 122/udp --add-port 122/udpp --add-port 8745897/foo --add-port bar" 0
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp --add-port 8745897/foo" 254
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp --add-port 8745897/foo --add-port bar" 254
+assert_exit_code "--add-port 122/udp --add-port 122/udp" 0
+assert_exit_code "--remove-port 122/udp" 0
 
 # ... --direct ...
 assert_bad           "--direct --add-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv

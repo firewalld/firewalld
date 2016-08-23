@@ -135,7 +135,7 @@ class FirewallCommand(object):
                     self.print_warning("Warning: %s" % msg)
                 elif code == 0:
                     self.print_warning("Warning: %s" % msg)
-                    sys.exit(0)
+                    return
                 else:
                     self.print_and_exit("Error: %s" % msg, code)
                 if code not in _error_codes:
@@ -143,12 +143,20 @@ class FirewallCommand(object):
                 _errors += 1
             self.activate_exception_handler()
 
-        if _errors == len(option) and not no_exit:
-            if len(_error_codes) == 1:
+        if not no_exit:
+            if len(option) > _errors or 0 in _error_codes:
+                # There have been more options than errors or there
+                # was at least one error code 0, return.
+                return
+            elif len(_error_codes) == 1:
+                # Exactly one error code, use it.
                 sys.exit(_error_codes[0])
-            elif len(_error_codes) == 2 and 0 in _error_codes:
-                sys.exit(list(set(_error_codes) - set([0]))[0])
-            sys.exit(errors.UNKNOWN_ERROR)
+            elif len(_error_codes) > 1:
+                # There is more than error, exit using
+                # UNKNOWN_ERROR. This could happen within sequences
+                # where parsing failed with different errors like
+                # INVALID_PORT and INVALID_PROTOCOL.
+                sys.exit(errors.UNKNOWN_ERROR)
 
     def add_sequence(self, option, action_method, query_method, parse_method,
                      message, no_exit=False):
