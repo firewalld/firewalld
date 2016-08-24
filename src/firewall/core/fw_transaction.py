@@ -321,6 +321,18 @@ class FirewallZoneTransaction(SimpleFirewallTransaction):
         del self.chains[:]
         del self.modules[:]
 
+    def prepare(self, enable, rules=None, modules=None):
+        log.debug4("%s.prepare(%s, %s)" % (type(self), enable, "..."))
+
+        rules, modules = super(FirewallZoneTransaction, self).prepare(
+            enable, rules, modules)
+
+        for module in self.modules:
+            if module not in modules:
+                modules.append(module)
+
+        return rules, modules
+
     def add_chain(self, table, chain):
         table_chain = (table, chain)
         if table_chain not in self.chains:
