@@ -63,8 +63,12 @@ class IO_Object(object):
         self.check_config(conf)
         for i,(element,dummy) in enumerate(self.IMPORT_EXPORT_STRUCTURE):
             if isinstance(conf[i], list):
-                # remove duplicates
-                setattr(self, element, copy.deepcopy(list(set(conf[i]))))
+                # remove duplicates without changing the order
+                _conf = [ ]
+                for x in conf[i]:
+                    if x not in _conf:
+                        _conf.append(x)
+                setattr(self, element, copy.deepcopy(_conf))
             else:
                 setattr(self, element, copy.deepcopy(conf[i]))
 
