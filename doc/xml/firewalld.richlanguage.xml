@@ -296,7 +296,7 @@ mark set="mark[/mask]" [limit value="rate/duration"]
 	For valid reject types see <option>--reject-with type</option> in <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page.
 	Because reject types are different for IPv4 and IPv6 you have to specify rule family when using reject type.
 	With <option>drop</option> all packets will be dropped immediately, there is no information sent to the source.
-	With <option>mark</option> all packets will be marked in the <option>PREROUTING</option> chain in the <option>mange</option> table with the mark and mask combination.
+	With <option>mark</option> all packets will be marked in the <option>PREROUTING</option> chain in the <option>mangle</option> table with the mark and mask combination.
 	See Limit section for description of <option>limit</option> tag.
       </para>
     </refsect2>
