@@ -509,7 +509,7 @@ class FirewallDConfigService(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getModules(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getModules()", self._log_prefix)
-        return sorted(self.getSettings()[4])
+        return self.getSettings()[4]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_SERVICE,
                          in_signature='as')

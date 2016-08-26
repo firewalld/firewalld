@@ -368,7 +368,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getServices(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getServices()", self._log_prefix)
-        return sorted(self.getSettings()[5])
+        return self.getSettings()[5]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='as')
@@ -616,7 +616,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getIcmpBlocks(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getIcmpBlocks()", self._log_prefix)
-        return sorted(self.getSettings()[7])
+        return self.getSettings()[7]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='as')
@@ -852,7 +852,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getInterfaces(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getInterfaces()", self._log_prefix)
-        return sorted(self.getSettings()[10])
+        return self.getSettings()[10]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='as')
@@ -908,7 +908,7 @@ class FirewallDConfigZone(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getSources(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getSources()", self._log_prefix)
-        return sorted(self.getSettings()[11])
+        return self.getSettings()[11]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_ZONE,
                          in_signature='as')

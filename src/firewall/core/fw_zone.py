@@ -112,7 +112,7 @@ class FirewallZone(object):
     # zones
 
     def get_zones(self):
-        return self._zones.keys()
+        return sorted(self._zones.keys())
 
     def get_zone_of_interface(self, interface):
         interface_id = self.__interface_id(interface)
