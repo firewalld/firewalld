@@ -70,6 +70,13 @@
     <para>
       If no options are given, configuration from <command>/etc/sysconfig/system-config-firewall</command> will be migrated.
     </para>
+
+    <para>
+      For sequence options, this are the options that can be specified multiple times, the exit code is 0 if there is at least one item that succeded. The <literal>ALREADY_ENABLED</literal> (11), <literal>NOT_ENABLED</literal> (12) and also <literal>ZONE_ALREADY_SET</literal> (16) errors are treated as succeeded.
+      If there are issues while parsing the items, then these are treated as warnings and will not change the result as long as there is a succeeded one.
+      Without any succeeded item, the exit code will depend on the error codes. If there is exactly one error code, then this is used. If there are more than one then <literal>UNKNOWN_ERROR</literal> (254) will be used.
+    </para>
+
     <para>
       The following options are supported:
     </para>
