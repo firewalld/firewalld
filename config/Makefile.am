@@ -79,6 +79,8 @@ CONFIG_FILES = \
 	services/bacula.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
+	services/cfengine.xml \
+	services/condor-collector.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
@@ -140,6 +142,7 @@ CONFIG_FILES = \
 	services/sane.xml \
 	services/sips.xml \
 	services/sip.xml \
+	services/smtp-submission.xml \
 	services/smtps.xml \
 	services/smtp.xml \
 	services/snmptrap.xml \
