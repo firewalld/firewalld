@@ -60,12 +60,7 @@ DISTCLEANFILES = \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS)
 
-EXTRA_DIST = \
-	$(desktop_FILES) \
-	$(appdata_FILES) \
-	$(applet_desktop_FILES) \
-	$(polkit1_action_FILES) \
-	$(gsettings_in_file) \
+CONFIG_FILES = \
 	icmptypes/destination-unreachable.xml \
 	icmptypes/echo-reply.xml \
 	icmptypes/echo-request.xml \
@@ -175,7 +170,15 @@ EXTRA_DIST = \
 	zones/internal.xml \
 	zones/public.xml \
 	zones/trusted.xml \
-	zones/work.xml \
+	zones/work.xml
+
+EXTRA_DIST = \
+	$(desktop_FILES) \
+	$(appdata_FILES) \
+	$(applet_desktop_FILES) \
+	$(polkit1_action_FILES) \
+	$(gsettings_in_file) \
+	$(CONFIG_FILES) \
 	$(dist_xmlschema_DATA) \
 	firewalld.init \
 	firewalld.service.in \
