@@ -17,11 +17,6 @@ dist_tests_DATA = \
 nobase_dist_python_DATA = \
 	firewall/client.py \
 	firewall/command.py \
-	firewall/dbus_utils.py \
-	firewall/errors.py \
-	firewall/functions.py \
-	firewall/fw_types.py \
-	firewall/__init__.py \
 	firewall/config/dbus.py \
 	firewall/config/__init__.py \
 	firewall/core/base.py \
@@ -43,9 +38,9 @@ nobase_dist_python_DATA = \
 	firewall/core/io/firewalld_conf.py \
 	firewall/core/io/icmptype.py \
 	firewall/core/io/ifcfg.py \
-	firewall/core/io/ipset.py \
 	firewall/core/io/__init__.py \
 	firewall/core/io/io_object.py \
+	firewall/core/io/ipset.py \
 	firewall/core/io/lockdown_whitelist.py \
 	firewall/core/io/service.py \
 	firewall/core/io/zone.py \
@@ -56,6 +51,11 @@ nobase_dist_python_DATA = \
 	firewall/core/prog.py \
 	firewall/core/rich.py \
 	firewall/core/watcher.py \
+	firewall/dbus_utils.py \
+	firewall/errors.py \
+	firewall/functions.py \
+	firewall/fw_types.py \
+	firewall/__init__.py \
 	firewall/server/config_icmptype.py \
 	firewall/server/config_ipset.py \
 	firewall/server/config.py \
