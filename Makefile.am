@@ -45,6 +45,39 @@ tag:
 
 dist: clean-docs update-docs
 
+dist-check:
+	@rm -f _dist_check_failed
+	@(cat config/Makefile.am | sed -n '/^CONFIG_FILES/,/^$$/p' | head -n-1 | tail -n+2) > _config
+	@(cd config; git ls-files icmptypes ipsets services zones | sort | sed -e 's/^/\t/' | sed ':a;N;$$!ba;s/\n/ \\\n/g') > _provided_config
+	@diff -u1B _config _provided_config > _missing_config; \
+	if [ $$? -ne 0 ]; then \
+		echo; \
+		echo "============================================================================="; \
+		echo "    Fix config/Makefile.am:"; \
+		echo "============================================================================="; \
+		touch _dist_check_failed; \
+		cat _missing_config | tail -n +3; \
+		echo; \
+	fi
+	@rm -f _config _provided_config _missing_config
+	@(cat src/Makefile.am | sed -n '/^nobase_dist_python_DATA/,/^$$/p' | head -n-1 | tail -n+2) > _config
+	@(cd src; git ls-files firewall | sort | sed -e 's/^/\t/' -e "s/.py.in/.py/" | sed ':a;N;$$!ba;s/\n/ \\\n/g') > _provided_config
+	@diff -u1B _config _provided_config > _missing_config; \
+	if [ $$? -ne 0 ]; then \
+		echo; \
+		echo "============================================================================="; \
+		echo "    Fix src/Makefile.am:"; \
+		echo "============================================================================="; \
+		touch _dist_check_failed; \
+		cat _missing_config | tail -n +3; \
+		echo; \
+	fi
+	@rm -f _config _provided_config _missing_config
+	@if [ -f "_dist_check_failed" ]; then \
+		rm -f _dist_check_failed; \
+		exit 1; \
+	fi
+
 update-docs:
 	$(MAKE) -C doc/xml
 
@@ -59,7 +92,7 @@ push-translations:
 
 update-translations: pull-translations update-po push-translations 
 
-archive: $(desktop_DATA) tag dist
+archive: dist-check $(desktop_DATA) tag dist
 	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
 	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
 	@echo "Also have a look at https://fedorahosted.org/released/${PACKAGE_NAME}/"
