@@ -627,6 +627,12 @@ class Firewall(object):
 
         if self.ipv6_rpfilter_enabled and \
            "raw" in self.get_available_tables("ipv6"):
+
+            # Execute existing transaction
+            transaction.execute(True)
+            # Start new transaction
+            transaction.clear()
+
             # here is no check for ebtables.restore_noflush_option needed
             # as ebtables is not used in here
             transaction.add_rule("ipv6",
@@ -644,8 +650,17 @@ class Firewall(object):
                                        "-j", "LOG",
                                        "--log-prefix", "rpfilter_DROP: " ])
 
-        if use_transaction is None:
-            transaction.execute(True)
+            # Execute ipv6_rpfilter transaction, it might fail
+            try:
+                transaction.execute(True)
+            except FirewallError as msg:
+                log.warning("Applying rules for ipv6_rpfilter failed: %s", msg)
+            # Start new transaction
+            transaction.clear()
+
+        else:
+            if use_transaction is None:
+                transaction.execute(True)
 
     # flush and policy
 
