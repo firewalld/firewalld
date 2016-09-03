@@ -83,6 +83,12 @@ class _StderrLog(_StdoutLog):
 class _SyslogLog(_StdoutLog):
     fd = None
 
+    # Work around Python issue 27875, "Syslogs /usr/sbin/foo as /foo instead of as foo"
+    # (but using openlog explicitly might be better anyway)
+    #
+    # Set ident to basename, log PID as well, and log to facility "daemon".
+    syslog.openlog(sys.argv[0].split('/')[-1], syslog.LOG_PID, syslog.LOG_DAEMON)
+
     def write(self, data, level, logger, is_debug=0):
         priority = None
         if is_debug:
