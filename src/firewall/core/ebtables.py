@@ -117,15 +117,18 @@ class ebtables(object):
 
         table = "filter"
         table_rules = { }
-        for rule in rules:
-            try:
-                i = rule.index("-t")
-            except Exception:
-                pass
-            else:
-                if len(rule) >= i+1:
-                    rule.pop(i)
-                    table = rule.pop(i)
+        for _rule in rules:
+            rule = _rule[:]
+            # get table form rule
+            for opt in [ "-t", "--table" ]:
+                try:
+                    i = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= i+1:
+                        rule.pop(i)
+                        table = rule.pop(i)
 
             # we can not use joinArgs here, because it would use "'" instead
             # of '"' for the start and end of the string, this breaks

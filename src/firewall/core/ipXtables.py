@@ -203,7 +203,8 @@ class ip4tables(object):
         temp_file = tempFile()
 
         table_rules = { }
-        for rule in rules:
+        for _rule in rules:
+            rule = _rule[:]
             table = "filter"
             # get table form rule
             for opt in [ "-t", "--table" ]:
