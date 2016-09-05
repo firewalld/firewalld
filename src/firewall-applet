@@ -23,7 +23,9 @@
 import sys
 from PyQt4 import QtGui, QtCore
 
-from gi.repository import Notify, NetworkManager
+import gi
+gi.require_version('Notify', '0.7')
+from gi.repository import Notify
 
 import os
 from dbus.mainloop.qt import DBusQtMainLoop
@@ -31,12 +33,14 @@ import functools
 
 from firewall.config import *
 from firewall.config.dbus import *
+from firewall.core.fw_nm import *
 from firewall.core.watcher import Watcher
 from firewall.client import FirewallClient
 from firewall.dbus_utils import dbus_to_python
 from firewall.errors import *
 import slip.dbus
 import dbus
+import signal
 
 PATH = [ ]
 for p in os.getenv("PATH").split(":"):
@@ -53,6 +57,8 @@ def search_app(app):
 NM_CONNECTION_EDITOR = ""
 for binary in [ "/usr/bin/nm-connection-editor",
                     "/bin/nm-connection-editor",
+                "/usr/bin/kde5-nm-connection-editor",
+                    "/bin/kde5-nm-connection-editor",
                 "/usr/bin/kde-nm-connection-editor",
                     "/bin/kde-nm-connection-editor" ]:
     if os.path.exists(binary):
@@ -72,13 +78,6 @@ def fromUTF8(text):
         return QtCore.QString.fromUtf8(text)
     else:
         return text        
-
-NM_IF = NetworkManager.DBUS_INTERFACE
-NM_IF_D = NetworkManager.DBUS_INTERFACE+".Device"
-NM_IF_C_A = NetworkManager.DBUS_INTERFACE+".Connection.Active"
-NM_IF_S_C = NetworkManager.DBUS_INTERFACE+".Settings.Connection"
-NM_PATH = NetworkManager.DBUS_PATH
-DBUS_PROPS = 'org.freedesktop.DBus.Properties'
 
 # ZoneInterfaceEditor #########################################################
 
@@ -125,7 +124,11 @@ class ZoneInterfaceEditor(QtGui.QDialog):
 
     def set_zone(self, zone):
         self.zone = zone
-        self.combo.setCurrentIndex(self.combo.findText(self.zone))
+        if zone == "":
+            self.combo.setCurrentIndex(self.combo.findText(
+                escape(_("Default Zone"))))
+        else:
+            self.combo.setCurrentIndex(self.combo.findText(self.zone))
         self.combo_changed()
 
     def get_zone(self):
@@ -163,25 +166,14 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
 
     def ok(self):
         # apply changes
-        obj = self.fw.bus.get_object(NM_IF, NM_PATH)
-        props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-        active_connections = props.Get(NM_IF, "ActiveConnections")
-
-        for active in active_connections:
-            active_obj = self.fw.bus.get_object(NM_IF, active)
-            active_props = dbus.Interface(active_obj, dbus_interface=DBUS_PROPS)
-            connection = active_props.Get(NM_IF_C_A, "Connection")
-
-            # get settings for connection
-            connection_obj = self.fw.bus.get_object(NM_IF, connection)
-            connection_iface = dbus.Interface(connection_obj,
-                                              dbus_interface=NM_IF_S_C)
-            settings = connection_iface.GetSettings()
-
-            if settings["connection"]["id"] == self.connection:
-                settings["connection"]["zone"] = self.get_zone()
-                connection_iface.Update(settings)
-                break
+        try:
+            nm_set_zone_of_connection(self.get_zone(), self.connection)
+        except Exception as msg:
+            text = _("Failed to set zone {zone} for connection {connection}")
+            QtGui.QMessageBox.warning(None, fromUTF8(escape(self.title)),
+                                      escape(text.format(
+                                          zone=self.get_zone(),
+                                          connection=self.connection)))
         self.hide()
 
 # ZoneSourceEditor ############################################################
@@ -432,7 +424,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self._blink = False
         self._blink_count = 0
         self.show_inactive = False
-        self.connected = False
+        self.tooltip_messages = [ ]
 
         self.active_zones = { }
         self.connections = { }
@@ -497,7 +489,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.panicAction.setCheckable(True)
         self.panicAction.setChecked(False)
         self.panicAction.triggered.connect(self.panic_mode_cb)
-        
+
         self.aboutAction = QtGui.QAction(fromUTF8(escape(_("About"))), self)
         self.aboutAction.triggered.connect(self.about_dialog.exec_)
 
@@ -557,6 +549,14 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             print("Not using slip", msg)
             self.bus = dbus.SystemBus()
 
+        if nm_is_imported():
+            self.bus.add_signal_receiver(
+                self.nm_signal_receiver,
+                dbus_interface=nm_get_dbus_interface(),
+                signal_name='PropertiesChanged',
+                member_keyword='member')
+        self.nm_signal_receiver()
+
         self.fw = FirewallClient(self.bus, wait=1)
         self.fw.setExceptionHandler(self._exception_handler)
 
@@ -575,13 +575,6 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         self.fw.connect("source-removed", self.source_removed)
         self.fw.connect("zone-of-source-changed",
                         self.zone_of_source_changed)
-
-        self.bus.add_signal_receiver(
-            self.nm_signal_receiver,
-            dbus_interface=NetworkManager.DBUS_INTERFACE,
-            signal_name='PropertiesChanged',
-            member_keyword='member')
-        self.nm_signal_receiver()
 
         self.shields_editor = ShieldsEditor(self.fw, self.settings, None, None)
 
@@ -633,7 +626,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         #print("blink-count=%s" % self.blink_count)
         #print("show-inactive=%s" % self.show_inactive)
 
-        if not self.connected:
+        if not self.fw.connected:
             self.setVisible(self.show_inactive)
         else:
             self.setVisible(True)
@@ -647,11 +640,11 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # remove all entries for the left menu
         self.left_menu.clear()
-        
+
         # add connections entry
         self.left_menu.addAction(self.connectionsAction)
 
-        if not self.connected:
+        if not self.fw.connected:
             return
 
         active_zones = self.fw.getActiveZones()
@@ -667,26 +660,34 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                 for interface in sorted(self.active_zones[zone]["interfaces"]):
                     if interface not in self.connections:
                         interfaces[interface] = zone
-                    else:
-                        # NM controlled
-                        connection = self.connections[interface]
-                        if connection not in self.connections_uuid:
-                            uuid = None
-                        else:
-                            uuid = self.connections_uuid[connection]
-                        connections[connection] = [ zone, uuid ]
             if "sources" in self.active_zones[zone]:
                 for source in sorted(self.active_zones[zone]["sources"]):
                     sources[source] = zone
+        # NM controlled connections
+        for interface in self.connections:
+            connection = self.connections[interface]
+            if connection not in self.connections_uuid:
+                uuid = None
+            else:
+                uuid = self.connections_uuid[connection]
+            zone = nm_get_zone_of_connection(connection)
+            connections[connection] = [ zone, uuid ]
 
         binding = _("{entry} (Zone: {zone})")
 
         # add NM controlled bindings
         for connection in sorted(connections):
             zone = connections[connection][0]
-            action = QtGui.QAction(
-                fromUTF8(escape(binding.format(zone=zone, entry=connection))),
-                self)
+            if zone == "":
+                _binding = _("{entry} (Default Zone: {default_zone})")
+                action = QtGui.QAction(
+                    fromUTF8(escape(
+                        _binding.format(default_zone=self.default_zone,
+                                        entry=connection))), self)
+            else:
+                action = QtGui.QAction(
+                    fromUTF8(escape(binding.format(zone=zone,
+                                                   entry=connection))), self)
             action.triggered.connect(functools.partial(
                 self.zone_connection_editor, connection, zone))
             self.left_menu.addAction(action)
@@ -758,47 +759,29 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # do not use NMClient could result in python core dump
 
-        try:
-            # get active connections
-            obj = self.bus.get_object(NM_IF, NM_PATH)
-            props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-            connections = dbus_to_python(props.Get(NM_IF, "ActiveConnections"))
+        if nm_is_imported():
+            text = _("Failed to get connections from NetworkManager")
+            try:
+                nm_get_connections(self.connections, self.connections_uuid)
+            except Exception as msg:
+                self.notify(escape(text), urgency=Notify.Urgency.CRITICAL)
+                if text not in self.tooltip_messages:
+                    self.tooltip_messages.append(text)
+            else:
+                if text in self.tooltip_messages:
+                    self.tooltip_messages.remove(text)
 
-            # for all active connections:
-            for active in connections:
-                # get connection and devices from active connection
-                obj = self.bus.get_object(NM_IF, active)
-                props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-                connection = dbus_to_python(props.Get(NM_IF_C_A, "Connection"))
-                devices = dbus_to_python(props.Get(NM_IF_C_A, "Devices"))
-
-                # get name (id) from connection
-                obj = self.bus.get_object(NM_IF, connection)
-                iface = dbus.Interface(obj, dbus_interface=NM_IF_S_C)
-                settings = dbus_to_python(iface.GetSettings())
-                name = settings["connection"]["id"]
-                uuid = settings["connection"]["uuid"]
-                self.connections_uuid[name] = uuid
-
-                # for all devices:
-                for device in devices:
-                    obj = self.bus.get_object(NM_IF, device)
-                    props = dbus.Interface(obj, dbus_interface=DBUS_PROPS)
-                    # get interface from device (first try: IpInterface)
-                    iface = dbus_to_python(props.Get(NM_IF_D, "IpInterface"))
-                    if iface == "":
-                        iface = dbus_to_python(props.Get(NM_IF_D, "Interface"))
-                    self.connections[iface] = name
-
-        except Exception as msg:
-            print(msg)
+        else:
+            text = _("No NetworkManager imports available")
+            self.notify(escape(text), urgency=Notify.Urgency.CRITICAL)
+            if text not in self.tooltip_messages:
+                self.tooltip_messages.append(text)
 
         self.update_tooltip()
 
     def notify(self, msg, urgency="noicon", timeout=5):
         #self.showMessage(fromUTF8(escape(self.name)), msg, self.urgencies[urgency], timeout*1000)
-        n = Notify.Notification.new(escape(self.name), msg,
-                                    self.icon_name)
+        n = Notify.Notification.new(escape(self.name), msg, self.icon_name)
         n.set_urgency(Notify.Urgency.NORMAL)
         try:
             n.show()
@@ -811,7 +794,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         else:
             zone = str(self.shields_down)
 
-        if self.fw.connected and self.fw.getDefaultZone() != zone:
+        if self.fw.connected and self.default_zone != zone:
             try:
                 self.fw.setDefaultZone(zone)
             except dbus.exceptions.DBusException as e:
@@ -881,21 +864,31 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         if self.default_zone:
             messages.append(_("Default Zone: '%s'") % self.default_zone)
 
+        for interface in self.connections:
+            connection = self.connections[interface]
+            zone = nm_get_zone_of_connection(connection)
+            if zone == "":
+                text = _("Default Zone '{default_zone}' active for connection "
+                         "'{connection}' on interface '{interface}'")
+            else:
+                text = _("Zone '{zone}' active for connection "
+                         "'{connection}' on interface '{interface}'")
+            messages.append(text.format(zone=zone,
+                                        default_zone=self.default_zone,
+                                        connection=connection,
+                                        interface=interface))
+
         if len(self.active_zones) > 0:
             for zone in sorted(self.active_zones):
                 if "interfaces" in self.active_zones[zone]:
                     for interface in sorted(self.active_zones[zone]["interfaces"]):
-                        if interface in self.connections:
-                            connection = self.connections[interface]
-                            text = _("Zone '{zone}' active for connection "
-                                     "'{connection}' on interface '{interface}'")
-                        else:
+                        if interface not in self.connections:
                             text = _("Zone '{zone}' active for interface "
                                      "'{interface}'")
                             connection = None
-                        messages.append(text.format(zone=zone,
-                                                    connection=connection,
-                                                    interface=interface))
+                            messages.append(text.format(zone=zone,
+                                                        connection=connection,
+                                                        interface=interface))
                 if "sources" in self.active_zones[zone]:
                     for source in sorted(self.active_zones[zone]["sources"]):
                         text = _("Zone '{zone}' active for source {source}")
@@ -903,6 +896,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                         messages.append(text.format(zone=zone, source=source))
         else:
             messages.append(_("No Active Zones."))
+        messages.extend(self.tooltip_messages)
 
         tooltip = "<nobr>"+"</nobr><br><nobr>".join(messages)+"</nobr>"
         self.setToolTip(fromUTF8("<font size=\"3\">"+tooltip+"</font>"))
@@ -912,7 +906,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         pass
 
     def panic_mode_cb(self):
-        if not self.fw or not self.connected:
+        if not self.fw or not self.fw.connected:
             return
         if self.panicAction.isChecked():
             self.fw.enablePanicMode()
@@ -949,24 +943,22 @@ class TrayApplet(QtGui.QSystemTrayIcon):
     # firewallClient signal receivers
 
     def connection_established(self, first=False):
-        self.setVisible(True)
-        self.set_mode("normal")
         self.default_zone = self.fw.getDefaultZone()
-        self.connected = True
+        self.panicAction.setChecked(self.fw.queryPanicMode())
         self.update_active_zones()
         self.shields_editor.zones_changed()
 
-        self.panicAction.setChecked(self.fw.queryPanicMode())
         if self.shields_up:
             self.shieldsupAction.setChecked(
                 self.default_zone == self.shields_up)
 
-        self.update_tooltip()
         if self.notificationsAction.isChecked():
             self.notify(escape(_("Connection to FirewallD established.")))
+        self.setVisible(True)
+        self.set_mode("normal")
+        self.update_tooltip()
 
     def connection_lost(self):
-        self.connected = False
         self.default_zone = None
         self.set_mode("error")
         self.update_active_zones()
@@ -1032,15 +1024,24 @@ class TrayApplet(QtGui.QSystemTrayIcon):
                    0: _("deactivated") }
             if interface in self.connections:
                 connection = self.connections[interface]
-                text = _("Zone '{zone}' {activated_deactivated} for "
-                         "connection '{connection}' on "
-                         "interface '{interface}'")
+                zone = nm_get_zone_of_connection(connection)
+                if zone == "":
+                    text = _("Default zone '{default_zone}' "
+                             "{activated_deactivated} for "
+                             "connection '{connection}' on "
+                             "interface '{interface}'")
+                else:
+                    text = _("Zone '{zone}' {activated_deactivated} for "
+                             "connection '{connection}' on "
+                             "interface '{interface}'")
             else:
                 connection = None
                 text = _("Zone '{zone}' {activated_deactivated} for "
                          "interface '{interface}'")
             self.notify(escape(text.format(
-                zone=zone, activated_deactivated=ed[enable],
+                zone=zone,
+                default_zone=self.default_zone,
+                activated_deactivated=ed[enable],
                 connection=connection, interface=interface)))
 
     def interface_added(self, zone, interface):
@@ -1112,6 +1113,9 @@ Options:
   -h, --help     show this help message and exit
 """  % sys.argv[0])
     sys.exit(1)
+
+# reset SIGINT signal to default
+signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 app = QtGui.QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)

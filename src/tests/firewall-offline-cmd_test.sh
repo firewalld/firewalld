@@ -22,7 +22,7 @@ assert_cmd_good() {
 assert_good() {
   local args="${1}"
 
-  ${path}firewall-offline-cmd ${args} > /dev/null
+  ${path}firewall-offline-cmd ${args} > /dev/null 2>&1
   if [[ "$?" -eq 0 ]]; then
     echo "${args} ... OK"
   else
@@ -35,7 +35,7 @@ assert_good_notempty() {
   local args="${1}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( -n "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -48,7 +48,7 @@ assert_good_empty() {
   local args="${1}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( -z "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -62,7 +62,7 @@ assert_good_equals() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( "${ret}" = "${value}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -76,7 +76,7 @@ assert_good_contains() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( "${ret}" = *${value}* ) ]]; then
     echo "${args} ... OK"
   else
@@ -88,7 +88,7 @@ assert_good_contains() {
 assert_bad() {
   local args="${1}"
 
-  ${path}firewall-offline-cmd ${args} 1> /dev/null 2>&1
+  ${path}firewall-offline-cmd ${args} 1> /dev/null 2>&1 2>&1
   if [[ "$?" -ne 0 ]]; then
     echo "${args} ... OK"
   else
@@ -102,7 +102,7 @@ assert_bad_contains() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null
+  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
   if [[ ( "$?" -ne 0 ) || ( "${ret}" = *${value}* ) ]]; then
     ((failures++))
     echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' does contain '${value}')${RESTORE}"
@@ -125,7 +125,7 @@ assert_rich_good() {
     command="--query-rich-rule"
   fi
 
-  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null
+  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null 2>&1
   if [[ "$?" -eq 0 ]]; then
     echo ${command} "${args} ... OK"
   else
@@ -147,12 +147,26 @@ assert_rich_bad() {
     command="--query-rich-rule"
   fi
 
-  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null
+  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null 2>&1
   if [[ "$?" -ne 0 ]]; then
     echo ${command} "${args} ... OK"
   else
     ((failures++))
     echo -e ${command} "${args} ... ${RED}${failures}. FAILED (zero exit status)${RESTORE}"
+  fi
+}
+
+assert_exit_code() {
+  local args="${1}"
+  local ret="${2}"
+
+  ${path}firewall-cmd ${args} > /dev/null 2>&1
+  got=$?
+  if [[ "$got" -eq "$ret" ]]; then
+    echo "${args} ... OK"
+  else
+    ((failures++))
+    echo -e "${args} ... ${RED}${failures}. FAILED (bad exit status ${got} != ${ret})${RESTORE}"
   fi
 }
 
@@ -236,7 +250,7 @@ test_lokkit_opts
 # disable dns again for later tests
 assert_good --remove-service=${service1}
 
-default_zone=$(${path}firewall-offline-cmd --get-default-zone)
+default_zone=$(${path}firewall-offline-cmd --get-default-zone 2>/dev/null)
 zone="home"
 assert_good_notempty "--get-default-zone"
 assert_good          "--set-default-zone=${zone}"
@@ -340,6 +354,15 @@ assert_good "--remove-protocol ddp --remove-protocol=gre"
 assert_bad  " --query-protocol=ddp"
 assert_bad  " --query-protocol=gre"
 
+assert_bad  "   --add-source-port=666" # no protocol
+assert_bad  "   --add-source-port=666/dummy" # bad protocol
+assert_good "   --add-source-port=666/tcp --zone=${default_zone}"
+assert_good "--remove-source-port=666/tcp"
+assert_good "   --add-source-port=111-222/udp"
+assert_good " --query-source-port=111-222/udp --zone=${default_zone}"
+assert_good "--remove-source-port 111-222/udp"
+assert_bad  " --query-source-port=111-222/udp"
+
 assert_good "   --add-masquerade --zone=${default_zone}"
 assert_good " --query-masquerade "
 assert_good "--remove-masquerade"
@@ -348,8 +371,21 @@ assert_bad  " --query-masquerade"
 assert_bad  "--zone=external    --add-icmp-block=dummyblock" # invalid icmp type
 assert_good "--zone=external    --add-icmp-block=redirect"
 assert_good "--zone=external  --query-icmp-block=redirect"
+
+assert_good "   --add-icmp-block-inversion --zone=${default_zone}"
+assert_good " --query-icmp-block-inversion "
+assert_good "--remove-icmp-block-inversion"
+assert_bad  " --query-icmp-block-inversion"
+
 assert_good "--zone=external --remove-icmp-block redirect"
 assert_bad  "--zone=external  --query-icmp-block=redirect"
+
+assert_good "   --add-icmp-block-inversion --zone=block"
+assert_good "--remove-icmp-block-inversion --zone=block"
+assert_good "   --add-icmp-block-inversion --zone=drop"
+assert_good "--remove-icmp-block-inversion --zone=drop"
+assert_good "   --add-icmp-block-inversion --zone=trusted"
+assert_good "--remove-icmp-block-inversion --zone=trusted"
 
 assert_good "--zone=external    --add-icmp-block=echo-reply --add-icmp-block=router-solicitation"
 assert_good "--zone=external  --query-icmp-block=echo-reply"
@@ -357,6 +393,11 @@ assert_good "--zone=external  --query-icmp-block=router-solicitation"
 assert_good "--zone=external --remove-icmp-block echo-reply --remove-icmp-block=router-solicitation"
 assert_bad  "--zone=external  --query-icmp-block=echo-reply"
 assert_bad  "--zone=external  --query-icmp-block=router-solicitation"
+
+assert_good "    --add-icmp-block-inversion"
+assert_good "  --query-icmp-block-inversion --zone=${default_zone}"
+assert_good " --remove-icmp-block-inversion --zone=${default_zone}"
+assert_bad  "  --query-icmp-block-inversion"
 
 assert_bad  "   --add-forward-port=666" # no protocol
 assert_good "   --add-forward-port=port=11:proto=tcp:toport=22"
@@ -400,6 +441,60 @@ assert_good "--new-service=${myservice}"
 assert_good_contains "--get-services" "${myservice}"
 assert_good "--new-icmptype=${myicmp}"
 assert_good_contains "--get-icmptypes" "${myicmp}"
+
+# test service options
+assert_bad  "--service=${myservice} --add-port=666" # no protocol
+assert_bad  "--service=${myservice} --add-port=666/dummy" # bad protocol
+assert_good "--service=${myservice} --add-port=666/tcp"
+assert_good "--service=${myservice} --remove-port=666/tcp"
+assert_good "--service=${myservice} --add-port=111-222/udp"
+assert_good "--service=${myservice} --query-port=111-222/udp"
+assert_good "--service=${myservice} --remove-port 111-222/udp"
+assert_bad  "--service=${myservice} --query-port=111-222/udp"
+
+assert_good "--service=${myservice} --add-protocol=ddp --add-protocol gre"
+assert_good "--service=${myservice} --query-protocol=ddp"
+assert_good "--service=${myservice} --query-protocol=gre"
+assert_good "--service=${myservice} --remove-protocol ddp"
+assert_good "--service=${myservice} --remove-protocol gre"
+assert_bad  "--service=${myservice} --query-protocol=ddp"
+assert_bad  "--service=${myservice} --query-protocol=gre"
+
+assert_bad  "--service=${myservice} --add-source-port=666" # no protocol
+assert_bad  "--service=${myservice} --add-source-port=666/dummy" # bad protocol
+assert_good "--service=${myservice} --add-source-port=666/tcp"
+assert_good "--service=${myservice} --remove-source-port=666/tcp"
+assert_good "--service=${myservice} --add-source-port=111-222/udp"
+assert_good "--service=${myservice} --query-source-port=111-222/udp"
+assert_good "--service=${myservice} --remove-source-port 111-222/udp"
+assert_bad  "--service=${myservice} --query-source-port=111-222/udp"
+
+assert_bad  "--service=${myservice} --add-module=foo" # no valid helper
+assert_good "--service=${myservice} --add-module=nf_conntrack_sip"
+assert_good "--service=${myservice} --remove-module=nf_conntrack_sip"
+assert_good "--service=${myservice} --add-module=nf_conntrack_ftp"
+assert_good "--service=${myservice} --query-module=nf_conntrack_ftp"
+assert_good "--service=${myservice} --remove-module=nf_conntrack_ftp"
+assert_bad "--service=${myservice} --query-module=nf_conntrack_ftp"
+
+assert_bad  "--service=${myservice} --set-destination=ipv4" # no address
+assert_bad  "--service=${myservice} --set-destination=ipv4:foo" # bad address
+assert_good "--service=${myservice} --set-destination=ipv4:1.2.3.4"
+assert_good "--service=${myservice} --remove-destination=ipv4"
+assert_good "--service=${myservice} --set-destination=ipv6:fd00:dead:beef:ff0::/64"
+assert_good "--service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::/64"
+assert_good "--service=${myservice} --remove-destination=ipv6"
+assert_bad "--service=${myservice} --query-destination=ipv6:fd00:dead:beef:ff0::/64"
+
+# test icmptype options, ipv4 and ipv6 destinations are default
+assert_bad  "--icmptype=${myicmp} --add-destination=ipv5"
+assert_good "--icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--icmptype=${myicmp} --remove-destination=ipv4"
+assert_good "--icmptype=${myicmp} --add-destination=ipv4"
+assert_good "--icmptype=${myicmp} --query-destination=ipv4"
+assert_good "--icmptype=${myicmp} --remove-destination=ipv4"
+assert_bad "--icmptype=${myicmp} --query-destination=ipv4"
+
 # add them to zone
 assert_good "--zone=${myzone} --add-service=${myservice}"
 assert_good "--zone=${myzone} --add-icmp-block=${myicmp}"
@@ -433,6 +528,20 @@ assert_good "--zone=${zone} --query-source=${source}"
 assert_good "--zone=${zone} --remove-source=${source}"
 
 assert_good "--delete-ipset=${ipset}"
+
+# exit return value tests
+assert_exit_code "--remove-port 122/udp" 0
+assert_exit_code "--add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udp --add-port 122/udpp" 0
+assert_exit_code "--add-port 122/udp --add-port 122/udpp" 0
+assert_exit_code "--add-port 122/udp --add-port 122/udpp --add-port 8745897/foo" 0
+assert_exit_code "--add-port 122/udp --add-port 122/udpp --add-port 8745897/foo --add-port bar" 0
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp" 103
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp --add-port 8745897/foo" 254
+assert_exit_code "--add-port 122/udpa --add-port 122/udpp --add-port 8745897/foo --add-port bar" 254
+assert_exit_code "--add-port 122/udp --add-port 122/udp" 0
+assert_exit_code "--remove-port 122/udp" 0
 
 # ... --direct ...
 assert_bad           "--direct --add-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT" # bad ipv

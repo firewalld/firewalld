@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2012 Red Hat, Inc.
+# Copyright (C) 2011-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,29 +19,34 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "Service", "service_reader", "service_writer" ]
+
 import xml.sax as sax
 import os
 import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.errors import *
-from firewall.functions import checkProtocol, \
-                               checkIPnMask, checkIP6nMask, u2b_if_py2
-from firewall.core.io.io_object import *
+from firewall.functions import u2b_if_py2
+from firewall.core.io.io_object import PY2, IO_Object, \
+    IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
+    check_tcpudp, check_protocol, check_address
 from firewall.core.logger import log
+from firewall import errors
+from firewall.errors import FirewallError
 
 class Service(IO_Object):
     IMPORT_EXPORT_STRUCTURE = (
-        ( "version",  "" ),              # s
-        ( "short", "" ),                 # s
-        ( "description", "" ),           # s
-        ( "ports", [ ( "", "" ), ], ),   # a(ss)
-        ( "modules", [ "", ], ),         # as
-        ( "destination", { "": "", }, ), # a{ss}
-        ( "protocols", [ "", ], ),       # as
+        ( "version",  "" ),                   # s
+        ( "short", "" ),                      # s
+        ( "description", "" ),                # s
+        ( "ports", [ ( "", "" ), ], ),        # a(ss)
+        ( "modules", [ "", ], ),              # as
+        ( "destination", { "": "", }, ),      # a{ss}
+        ( "protocols", [ "", ], ),            # as
+        ( "source_ports", [ ( "", "" ), ], ), # a(ss)
         )
-    DBUS_SIGNATURE = '(sssa(ss)asa{ss}as)'
+    DBUS_SIGNATURE = '(sssa(ss)asa{ss}asa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -54,6 +59,7 @@ class Service(IO_Object):
         "protocol": [ "value" ],
         "module": [ "name" ],
         "destination": [ "ipv4", "ipv6" ],
+        "source-port": [ "port", "protocol" ],
         }
 
     def __init__(self):
@@ -65,6 +71,7 @@ class Service(IO_Object):
         self.protocols = [ ]
         self.modules = [ ]
         self.destination = { }
+        self.source_ports = [ ]
 
     def cleanup(self):
         self.version = ""
@@ -74,6 +81,7 @@ class Service(IO_Object):
         del self.protocols[:]
         del self.modules[:]
         self.destination.clear()
+        del self.source_ports[:]
 
     def encode_strings(self):
         """ HACK. I haven't been able to make sax parser return
@@ -86,6 +94,8 @@ class Service(IO_Object):
         self.modules = [u2b_if_py2(m) for m in self.modules]
         self.destination = {u2b_if_py2(k):u2b_if_py2(v) for k,v in self.destination.items()}
         self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
+        self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
+                             in self.source_ports]
 
     def _check_config(self, config, item):
         if item == "ports":
@@ -97,14 +107,19 @@ class Service(IO_Object):
                     # only protocol
                     check_protocol(port[1])
 
-        if item == "protocols":
+        elif item == "protocols":
             for proto in config:
                 check_protocol(proto)
+
+        elif item == "source_ports":
+            for port in config:
+                check_port(port[0])
+                check_tcpudp(port[1])
 
         elif item == "destination":
             for destination in config:
                 if destination not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(INVALID_DESTINATION,
+                    raise FirewallError(errors.INVALID_DESTINATION,
                                         "'%s' not in {'ipv4'|'ipv6'}" % \
                                         destination)
                 check_address(destination, config[destination])
@@ -112,15 +127,15 @@ class Service(IO_Object):
         elif item == "modules":
             for module in config:
                 if not module.startswith("nf_conntrack_"):
-                    raise FirewallError(INVALID_MODULE, module)
+                    raise FirewallError(errors.INVALID_MODULE, module)
                 elif len(module.replace("nf_conntrack_", "")) < 1:
-                    raise FirewallError(INVALID_MODULE, module)
+                    raise FirewallError(errors.INVALID_MODULE, module)
 
 # PARSER
 
 class service_ContentHandler(IO_Object_ContentHandler):
     def startElement(self, name, attrs):
-        IO_Object_ContentHandler.startElement(self, name)
+        IO_Object_ContentHandler.startElement(self, name, attrs)
         self.item.parser_check_element_attrs(name, attrs)
         if name == "service":
             if "name" in attrs:
@@ -156,6 +171,15 @@ class service_ContentHandler(IO_Object_ContentHandler):
             else:
                 log.warning("Protocol '%s' already set, ignoring.",
                             attrs["value"])
+        elif name == "source-port":
+            check_port(attrs["port"])
+            check_tcpudp(attrs["protocol"])
+            entry = (attrs["port"], attrs["protocol"])
+            if entry not in self.item.source_ports:
+                self.item.source_ports.append(entry)
+            else:
+                log.warning("SourcePort '%s/%s' already set, ignoring.",
+                            attrs["port"], attrs["protocol"])
         elif name == "destination":
             for x in [ "ipv4", "ipv6" ]:
                 if x in attrs:
@@ -180,7 +204,7 @@ class service_ContentHandler(IO_Object_ContentHandler):
 def service_reader(filename, path):
     service = Service()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME,
+        raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     service.name = filename[:-4]
     service.check_name(service.name)
@@ -193,7 +217,12 @@ def service_reader(filename, path):
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
     with open(name, "r") as f:
-        parser.parse(f)
+        try:
+            parser.parse(f)
+        except sax.SAXParseException as msg:
+            raise FirewallError(errors.INVALID_SERVICE,
+                                "not a valid service file: %s" % \
+                                msg.getException())
     del handler
     del parser
     if PY2:
@@ -212,7 +241,7 @@ def service_writer(service, path=None):
         try:
             shutil.copy2(name, "%s.old" % name)
         except Exception as msg:
-            raise IOError("Backup of '%s' failed: %s" % (name, msg))
+            log.error("Backup of file '%s' failed: %s", name, msg)
 
     dirpath = os.path.dirname(name)
     if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
@@ -257,6 +286,13 @@ def service_writer(service, path=None):
     for protocol in service.protocols:
         handler.ignorableWhitespace("  ")
         handler.simpleElement("protocol", { "value": protocol })
+        handler.ignorableWhitespace("\n")
+
+    # source ports
+    for port in service.source_ports:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("source-port", { "port": port[0],
+                                               "protocol": port[1] })
         handler.ignorableWhitespace("\n")
 
     # modules

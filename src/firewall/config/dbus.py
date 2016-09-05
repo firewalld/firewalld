@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011,2012 Red Hat, Inc.
+# Copyright (C) 2011,2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -20,7 +20,7 @@
 #
 
 DBUS_INTERFACE_VERSION = 1
-DBUS_INTERFACE_REVISION = 10
+DBUS_INTERFACE_REVISION = 11
 
 DBUS_INTERFACE = "org.fedoraproject.FirewallD%d" % DBUS_INTERFACE_VERSION
 DBUS_INTERFACE_ZONE = DBUS_INTERFACE+".zone"

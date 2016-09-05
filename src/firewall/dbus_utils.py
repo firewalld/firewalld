@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011,2012 Red Hat, Inc.
+# Copyright (C) 2011-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,9 +19,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "command_of_pid", "pid_of_sender", "uid_of_sender", "user_of_uid",
+            "context_of_sender", "command_of_sender", "user_of_sender",
+            "dbus_to_python", "dbus_signature",
+            "dbus_introspection_prepare_properties",
+            "dbus_introspection_add_properties" ]
+
 import dbus
 import pwd
 import sys
+from xml.dom import minidom
+
+from firewall.core.logger import log
 
 PY2 = sys.version < '3'
 
@@ -30,7 +39,7 @@ def command_of_pid(pid):
     try:
         with open("/proc/%d/cmdline" % pid, "r") as f:
             cmd = f.readlines()[0].replace('\0', " ").strip()
-    except:
+    except Exception:
         return None
     return cmd
 
@@ -78,7 +87,7 @@ def context_of_sender(bus, sender):
 
     try:
         context =  dbus_iface.GetConnectionSELinuxSecurityContext(sender)
-    except:
+    except Exception:
         return None
 
     return "".join(map(chr, dbus_to_python(context)))
@@ -138,3 +147,83 @@ def dbus_to_python(obj, expected_type=None):
             raise TypeError("%s is %s, expected %s" % (python_obj, type(python_obj), expected_type))
 
     return python_obj
+
+def dbus_signature(obj):
+    if isinstance(obj, dbus.Boolean):
+        return 'b'
+    elif isinstance(obj, dbus.String):
+        return 's'
+    elif isinstance(obj, dbus.ObjectPath):
+        return 'o'
+    elif isinstance(obj, dbus.Byte):
+        return 'y'
+    elif isinstance(obj, dbus.Int16):
+        return 'n'
+    elif isinstance(obj, dbus.Int32):
+        return 'i'
+    elif isinstance(obj, dbus.Int64):
+        return 'x'
+    elif isinstance(obj, dbus.UInt16):
+        return 'q'
+    elif isinstance(obj, dbus.UInt32):
+        return 'u'
+    elif isinstance(obj, dbus.UInt64):
+        return 't'
+    elif isinstance(obj, dbus.Double):
+        return 'd'
+    elif isinstance(obj, dbus.Array):
+        if len(obj.signature) > 1:
+            return 'a(%s)' % obj.signature
+        else:
+            return 'a%s' % obj.signature
+    elif isinstance(obj, dbus.Struct):
+        return '(%s)' % obj.signature
+    elif isinstance(obj, dbus.Dictionary):
+        return 'a{%s}' % obj.signature
+    elif PY2 and isinstance(obj, dbus.UTF8String):
+        return 's'
+    else:
+        raise TypeError("Unhandled %s" % repr(obj))
+
+def dbus_introspection_prepare_properties(obj, interface, access=None):
+    if access is None:
+        access = { }
+
+    if not hasattr(obj, "_fw_dbus_properties"):
+        setattr(obj, "_fw_dbus_properties", { })
+    dip = getattr(obj, "_fw_dbus_properties")
+    dip[interface] = { }
+
+    try:
+        _dict = obj.GetAll(interface)
+    except Exception:
+        _dict = { }
+    for key,value in _dict.items():
+        dip[interface][key] = { "type": dbus_signature(value) }
+        if key in access:
+            dip[interface][key]["access"] = access[key]
+        else:
+            dip[interface][key]["access"] = "read"
+
+def dbus_introspection_add_properties(obj, data, interface):
+    doc = minidom.parseString(data)
+
+    if hasattr(obj, "_fw_dbus_properties"):
+        for node in doc.getElementsByTagName("interface"):
+            if node.hasAttribute("name") and \
+               node.getAttribute("name") == interface:
+                dip = { }
+                if getattr(obj, "_fw_dbus_properties"):
+                    dip = getattr(obj, "_fw_dbus_properties")
+                if interface in dip:
+                    for key,value in dip[interface].items():
+                        prop = doc.createElement("property")
+                        prop.setAttribute("name", key)
+                        prop.setAttribute("type", value["type"])
+                        prop.setAttribute("access", value["access"])
+                        node.appendChild(prop)
+
+    log.debug10(doc.toxml())
+    new_data = doc.toxml()
+    doc.unlink()
+    return new_data

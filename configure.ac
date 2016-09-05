@@ -62,39 +62,77 @@ AC_ARG_WITH([bashcompletiondir],
        [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
 AC_SUBST(BASHCOMPLETIONDIR)
 
+# Extend PATH to include /sbin etc in case we are building as non-root
+FW_TOOLS_PATH="$PATH:/usr/local/sbin:/sbin:/usr/sbin"
+
 AC_ARG_WITH([iptables],
        AS_HELP_STRING([--with-iptables], [Path to iptables executable]),
-       [IPTABLES=$withval], [IPTABLES="/usr/sbin/iptables"])
+       [IPTABLES=$withval
+       AC_MSG_NOTICE([Using for iptables: $IPTABLES])],
+       [AC_PATH_PROG([IPTABLES], [iptables], [], [$FW_TOOLS_PATH])])
+if test "x$IPTABLES" = "x"; then
+    AC_MSG_ERROR([iptables was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(IPTABLES)
 
 AC_ARG_WITH([iptables-restore],
        AS_HELP_STRING([--with-iptables-restore], [Path to iptables-restore executable]),
-       [IPTABLES_RESTORE=$withval], [IPTABLES_RESTORE="/usr/sbin/iptables-restore"])
+       [IPTABLES_RESTORE=$withval
+       AC_MSG_NOTICE([Using for iptables-restore: $IPTABLES_RESTORE])],
+       [AC_PATH_PROG([IPTABLES_RESTORE], [iptables-restore], [], [$FW_TOOLS_PATH])])
+if test "x$IPTABLES_RESTORE" = "x"; then
+    AC_MSG_ERROR([iptables-restore was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(IPTABLES_RESTORE)
 
 AC_ARG_WITH([ip6tables],
        AS_HELP_STRING([--with-ip6tables], [Path to ip6tables executable]),
-       [IP6TABLES=$withval], [IP6TABLES="/usr/sbin/ip6tables"])
+       [IP6TABLES=$withval
+       AC_MSG_NOTICE([Using for ip6tables: $IP6TABLES])],
+       [AC_PATH_PROG([IP6TABLES], [ip6tables], [], [$FW_TOOLS_PATH])])
+if test "x$IP6TABLES" = "x"; then
+    AC_MSG_ERROR([ip6tables was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(IP6TABLES)
 
 AC_ARG_WITH([ip6tables-restore],
        AS_HELP_STRING([--with-ip6tables-restore], [Path to ip6tables-restore executable]),
-       [IP6TABLES_RESTORE=$withval], [IP6TABLES_RESTORE="/usr/sbin/ip6tables-restore"])
+       [IP6TABLES_RESTORE=$withval
+       AC_MSG_NOTICE([Using for ip6tables-restore: $IP6TABLES_RESTORE])],
+       [AC_PATH_PROG([IP6TABLES_RESTORE], [ip6tables-restore], [], [$FW_TOOLS_PATH])])
+if test "x$IP6TABLES_RESTORE" = "x"; then
+    AC_MSG_ERROR([ip6tables-restore was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(IP6TABLES_RESTORE)
 
 AC_ARG_WITH([ebtables],
        AS_HELP_STRING([--with-ebtables], [Path to ebtables executable]),
-       [EBTABLES=$withval], [EBTABLES="/usr/sbin/ebtables"])
+       [EBTABLES=$withval
+       AC_MSG_NOTICE([Using for ebtables: $EBTABLES])],
+       [AC_PATH_PROG([EBTABLES], [ebtables], [], [$FW_TOOLS_PATH])])
+if test "x$EBTABLES" = "x"; then
+    AC_MSG_ERROR([ebtables was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(EBTABLES)
 
 AC_ARG_WITH([ebtables-restore],
        AS_HELP_STRING([--with-ebtables-restore], [Path to ebtables-restore executable]),
-       [EBTABLES_RESTORE=$withval], [EBTABLES_RESTORE="/usr/sbin/ebtables-restore"])
+       [EBTABLES_RESTORE=$withval
+       AC_MSG_NOTICE([Using for ebtables-restore: $EBTABLES_RESTORE])],
+       [AC_PATH_PROG([EBTABLES_RESTORE], [ebtables-restore], [], [$FW_TOOLS_PATH])])
+if test "x$EBTABLES_RESTORE" = "x"; then
+    AC_MSG_ERROR([ebtables-restore was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(EBTABLES_RESTORE)
 
 AC_ARG_WITH([ipset],
        AS_HELP_STRING([--with-ipset], [Path to ipset executable]),
-       [IPSET=$withval], [IPSET="/usr/sbin/ipset"])
+       [IPSET=$withval
+       AC_MSG_NOTICE([Using for ipset: $IPSET])],
+       [AC_PATH_PROG([IPSET], [ipset], [], [$FW_TOOLS_PATH])])
+if test "x$IPSET" = "x"; then
+    AC_MSG_ERROR([ipset was not found in $FW_TOOLS_PATH])
+fi
 AC_SUBST(IPSET)
 
 #############################################################

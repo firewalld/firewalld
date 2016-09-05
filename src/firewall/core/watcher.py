@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012 Red Hat, Inc.
+# Copyright (C) 2012-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+__all__ = [ "Watcher" ]
 
 from gi.repository import Gio, GLib
 
@@ -40,6 +42,15 @@ class Watcher(object):
         self._monitors[filename] = gfile.monitor_file(\
             Gio.FileMonitorFlags.NONE, None)
         self._monitors[filename].connect("changed", self._file_changed_cb)
+
+    def get_watches(self):
+        return self._monitors.keys()
+        
+    def has_watch(self, filename):
+        return filename in self._monitors
+
+    def remove_watch(self, filename):
+        del self._monitors[filename]
 
     def block_source(self, filename):
         if filename not in self._blocked:

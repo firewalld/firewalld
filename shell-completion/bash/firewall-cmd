@@ -45,22 +45,30 @@ OPTIONS_ZONE_INTERFACES_SOURCES="\
 
 OPTIONS_ZONE_ACTION_ACTION="--add-service= --remove-service= --query-service= \
                        --add-port= --remove-port= --query-port= \
+                       --add-source-port= --remove-source-port= --query-source-port= \
                        --add-protocol= --remove-protocol= --query-protocol= \
                        --add-icmp-block= --remove-icmp-block= --query-icmp-block= \
                        --add-forward-port= --remove-forward-port= --query-forward-port="
 
 OPTIONS_ZONE_ADAPT_QUERY="--add-rich-rule= --remove-rich-rule= --query-rich-rule= \
+                    --add-icmp-block-inversion --remove-icmp-block-inversion \
+                    --query-icmp-block-inversion \
                     --add-masquerade --remove-masquerade --query-masquerade \
-                    --list-services --list-ports --list-protocols --list-icmp-blocks \
+                    --list-services --list-ports --list-protocols \
+                    --list-source-ports --list-icmp-blocks \
                     --list-forward-ports --list-rich-rules --list-all"
 
-OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry="
+OPTIONS_ZONE_PERMANENT_ONLY="--get-description --get-short \
+                             --set-description= --set-short="
+
+OPTIONS_IPSET_ACTION_ACTION="--add-entry= --remove-entry= --query-entry= --add-entries-from-file= --remove-entries-from-file"
 
 OPTIONS_IPSET_ADAPT_QUERY="--list-entries"
 
 # can be used with/without preceding --zone=<zone>
 OPTIONS_ZONE="${OPTIONS_ZONE_INTERFACES_SOURCES} \
-              ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}"
+              ${OPTIONS_ZONE_ACTION_ACTION} ${OPTIONS_ZONE_ADAPT_QUERY}
+              ${OPTIONS_ZONE_PERMANENT_ONLY}"
 
 OPTIONS_IPSET="${OPTIONS_IPSETACTION_ACTION} ${OPTIONS_IPSET_ADAPT_QUERY}"
 
@@ -88,7 +96,7 @@ OPTIONS_DIRECT="--passthrough \
 OPTIONS_GENERAL="--help --version \
                  --state --reload --complete-reload \
                  --panic-on --panic-off --query-panic \
-                 --get-log-denied --set-log-denied= \
+                 --get-log-denied --set-log-denied= --get-ipset-types \
                  --lockdown-on --lockdown-off --query-lockdown \
                  --get-default-zone --set-default-zone= --get-active-zones \
                  --get-zone-of-interface= --get-zone-of-interface= \
@@ -103,6 +111,10 @@ _firewall_cmd()
     firewall-cmd --state 1> /dev/null || return
 
     case $prev in
+    --*-entries-from-file|--new-*-from-file)
+	_filedir
+	return
+        ;;
     --new-ipset*)
         if [[ "$cur" == -* ]]; then
             COMPREPLY=( $( compgen -W "${OPTIONS_NEW_IPSET}" -- "$cur") )
@@ -137,7 +149,7 @@ _firewall_cmd()
           COMPREPLY=( $( compgen -W '`firewall-cmd --get-services`' -- "$cur" ) )
         fi
         ;;
-    --*-icmp-block|--info-icmptype|--path-icmptype)
+    --*-icmp-block=|--info-icmptype|--path-icmptype)
         if [[ ${words[@]} == *--permanent* ]]; then
           COMPREPLY=( $( compgen -W '`firewall-cmd --permanent --get-icmptypes`' -- "$cur" ) )
         else
@@ -146,12 +158,14 @@ _firewall_cmd()
         ;;
     --list-services|--add-service=*|--remove-service=*|--query-service=*|\
     --list-ports|--add-port=*|--remove-port=*|--query-port=*|\
+    --list-source-ports|--add-source-port=*|--remove-source-port=*|--query-source-port=*|\
     --list-protocols|--add-protocol=*|--remove-protocol=*|--query-protocol=*|\
     --list-icmp-blocks|--add-icmp-block=*|--remove-icmp-block=*|--query-icmp-block=*|\
     --list-forward-ports|--add-forward-port=*|--remove-forward-port=*|--query-forward-port=*|\
     --list-interfaces|--add-interface=*|--remove-interface=*|--query-interface=*|\
     --list-sources|--add-source=*|--remove-source=*|--query-source=*|\
-    --add-masquerade|--remove-masquerade|--query-masquerade|--list-all)
+    --add-masquerade|--remove-masquerade|--query-masquerade|--list-all|\
+    --get-description|--get-short|--set-description=*|--set-short=*)
         opts=""
         # --add and --remove can be used multiple times
         if [[ ( ${prev} == --add-* ) || ( ${prev} == --remove-* ) ]]; then

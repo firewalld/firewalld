@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2015 Red Hat, Inc.
+# Copyright (C) 2015-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,8 +19,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+"""The ipset command wrapper"""
+
+__all__ = [ "ipset", "check_ipset_name", "remove_default_create_options" ]
+
 import os.path
 
+from firewall import errors
+from firewall.errors import FirewallError
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
@@ -53,15 +59,23 @@ IPSET_CREATE_OPTIONS = {
     "hashsize": "value",
     "maxelem": "value",
     "timeout": "value in secs",
-#    "counters": None,
-#    "comment": None,
+    #"counters": None,
+    #"comment": None,
+}
+IPSET_DEFAULT_CREATE_OPTIONS = {
+    "family": "inet",
+    "hashsize": "1024",
+    "maxelem": "65536",
 }
 
-class ipset:
+class ipset(object):
+    """ipset command wrapper class"""
+
     def __init__(self):
         self._command = COMMANDS["ipset"]
 
     def __run(self, args):
+        """Call ipset with args"""
         # convert to string list
         _args = ["%s" % item for item in args]
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
@@ -72,17 +86,19 @@ class ipset:
         return ret
 
     def check_name(self, name):
+        """Check ipset name"""
         if len(name) > IPSET_MAXNAMELEN:
-            raise FirewallError(INVALID_NAME,
+            raise FirewallError(errors.INVALID_NAME,
                                 "ipset name '%s' is not valid" % name)
 
     def supported_types(self):
-        ret = { }
+        """Return types that are supported by the ipset command and kernel"""
+        ret = [ ]
         output = ""
         try:
             output = self.__run(["--help"])
-        except ValueError as e:
-            log.debug1("ipset error: %s" % e)
+        except ValueError as ex:
+            log.debug1("ipset error: %s" % ex)
         lines = output.splitlines()
 
         in_types = False
@@ -90,26 +106,29 @@ class ipset:
             #print(line)
             if in_types:
                 splits = line.strip().split(None, 2)
-                ret[splits[0]] = splits[2]
+                if splits[0] not in ret and splits[0] in IPSET_TYPES:
+                    ret.append(splits[0])
             if line.startswith("Supported set types:"):
                 in_types = True
         return ret
 
     def check_type(self, type_name):
+        """Check ipset type"""
         if len(type_name) > IPSET_MAXNAMELEN or type_name not in IPSET_TYPES:
-            raise FirewallError(INVALID_TYPE,
+            raise FirewallError(errors.INVALID_TYPE,
                                 "ipset type name '%s' is not valid" % type_name)
 
     def create(self, set_name, type_name, options=None):
+        """Create an ipset with name, type and options"""
         self.check_name(set_name)
         self.check_type(type_name)
 
         args = [ "create", set_name, type_name ]
-        if options:
-            for k,v in options.items():
-                args.append(k)
-                if v != "":
-                    args.append(v)
+        if isinstance(options, dict):
+            for key, val in options.items():
+                args.append(key)
+                if val != "":
+                    args.append(val)
         return self.__run(args)
 
     def destroy(self, set_name):
@@ -134,11 +153,51 @@ class ipset:
             args.append("%s" % " ".join(options))
         return self.__run(args)
 
-    def list(self, set_name=None):
+    def list(self, set_name=None, options=None):
         args = [ "list" ]
         if set_name:
             args.append(set_name)
-        return self.__run(args).split()
+        if options:
+            args.extend(options)
+        return self.__run(args).split("\n")
+
+    def get_active_terse(self):
+        """ Get active ipsets (only headers) """
+        lines = self.list(options=["-terse"])
+
+        ret = { }
+        _name = _type = None
+        _options = { }
+        for line in lines:
+            if len(line) < 1:
+                continue
+            pair = [ x.strip() for x in line.split(":", 1) ]
+            if len(pair) != 2:
+                continue
+            elif pair[0] == "Name":
+                _name = pair[1]
+            elif pair[0] == "Type":
+                _type = pair[1]
+            elif pair[0] == "Header":
+                splits = pair[1].split()
+                i = 0
+                while i < len(splits):
+                    opt = splits[i]
+                    if opt in [ "family", "hashsize", "maxelem", "timeout" ]:
+                        if len(splits) > i:
+                            i += 1
+                            _options[opt] = splits[i]
+                        else:
+                            log.error("Malformed ipset list -terse output: %s",
+                                      line)
+                            return { }
+                    i += 1
+                if _name and _type:
+                    ret[_name] = (_type,
+                                  remove_default_create_options(_options))
+                _name = _type = None
+                _options.clear()
+        return ret
 
     def save(self, set_name=None):
         args = [ "save" ]
@@ -157,10 +216,10 @@ class ipset:
             set_name = "'%s'" % set_name
         args = [ "create", set_name, type_name, "-exist" ]
         if create_options:
-            for k,v in create_options.items():
-                args.append(k)
-                if v != "":
-                    args.append(v)
+            for key, val in create_options.items():
+                args.append(key)
+                if val != "":
+                    args.append(val)
         temp_file.write("%s\n" % " ".join(args))
 
         for entry in entries:
@@ -183,8 +242,8 @@ class ipset:
 
         if log.getDebugLogLevel() > 2:
             try:
-                lines = readfile(temp_file.name)
-            except:
+                readfile(temp_file.name)
+            except Exception:
                 pass
             else:
                 i = 1
@@ -217,7 +276,17 @@ class ipset:
         return self.__run([ "version" ])
 
 
-def check_ipset_name(ipset):
-    if len(ipset) > IPSET_MAXNAMELEN:
+def check_ipset_name(name):
+    """Return true if ipset name is valid"""
+    if len(name) > IPSET_MAXNAMELEN:
         return False
     return True
+
+def remove_default_create_options(options):
+    """ Return only non default create options """
+    _options = options.copy()
+    for opt in IPSET_DEFAULT_CREATE_OPTIONS:
+        if opt in _options and \
+           IPSET_DEFAULT_CREATE_OPTIONS[opt] == _options[opt]:
+            del _options[opt]
+    return _options

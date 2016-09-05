@@ -1,11 +1,11 @@
 [Unit]
 Description=firewalld - dynamic firewall daemon
-Before=network.target
-Before=libvirtd.service
-Before=NetworkManager.service
+Before=network-pre.target
+Wants=network-pre.target
 After=dbus.service
 After=polkit.service
 Conflicts=iptables.service ip6tables.service ebtables.service ipset.service
+Documentation=man:firewalld(1)
 
 [Service]
 EnvironmentFile=-/etc/sysconfig/firewalld
@@ -16,7 +16,8 @@ StandardOutput=null
 StandardError=null
 Type=dbus
 BusName=org.fedoraproject.FirewallD1
+KillMode=mixed
 
 [Install]
-WantedBy=basic.target
+WantedBy=multi-user.target
 Alias=dbus-org.fedoraproject.FirewallD1.service

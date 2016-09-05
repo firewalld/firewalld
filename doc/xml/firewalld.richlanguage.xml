@@ -53,7 +53,7 @@
     </para>
 
     <para>
-      The rich language extends the current zone elements (service, port, icmp-block, masquerade and forward-port) with additional source and destination addresses, logging, actions and limits for logs and actions. 
+      The rich language extends the current zone elements (service, port, icmp-block, masquerade, forward-port and source-port) with additional source and destination addresses, logging, actions and limits for logs and actions.
     </para>
 
     <para>
@@ -70,7 +70,7 @@
 rule
   [source]
   [destination]
-  service|port|protocol|icmp-block|masquerade|forward-port
+  service|port|protocol|icmp-block|masquerade|forward-port|source-port
   [log]
   [audit]
   [accept|reject|drop|mark]
@@ -221,6 +221,18 @@ forward-port port="port value" protocol="tcp|udp" to-port="port value" to-addr="
     </refsect2>
 
     <refsect2>
+      <title>Source-Port</title>
+      <para>
+	<programlisting>
+source-port port="port value" protocol="tcp|udp"
+	</programlisting>
+      </para>
+      <para>
+	The source-port <replaceable>port value</replaceable> can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+      </para>
+    </refsect2>
+
+    <refsect2>
       <title>Log</title>
       <para>
 	<programlisting>
@@ -284,7 +296,7 @@ mark set="mark[/mask]" [limit value="rate/duration"]
 	For valid reject types see <option>--reject-with type</option> in <citerefentry><refentrytitle>iptables-extensions</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page.
 	Because reject types are different for IPv4 and IPv6 you have to specify rule family when using reject type.
 	With <option>drop</option> all packets will be dropped immediately, there is no information sent to the source.
-	With <option>mark</option> all packets will be marked in the <option>PREROUTING</option> chain in the <option>mange</option> table with the mark and mask combination.
+	With <option>mark</option> all packets will be marked in the <option>PREROUTING</option> chain in the <option>mangle</option> table with the mark and mask combination.
 	See Limit section for description of <option>limit</option> tag.
       </para>
     </refsect2>

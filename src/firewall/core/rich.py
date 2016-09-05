@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2013 Red Hat, Inc.
+# Copyright (C) 2013-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,14 +19,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from firewall import functions
-from firewall.errors import *
-from firewall.core.ipset import check_ipset_name
+__all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
+            "Rich_Protocol", "Rich_Masquerade", "Rich_IcmpBlock",
+            "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_Audit",
+            "Rich_Accept", "Rich_Reject", "Rich_Drop", "Rich_Mark",
+            "Rich_Limit", "Rich_Rule" ]
 
-REJECT_TYPES = {
-    "ipv4": ["icmp-host-prohibited", "host-prohib", "icmp-net-unreachable", "net-unreach", "icmp-host-unreachable", "host-unreach", "icmp-port-unreachable", "port-unreach", "icmp-proto-unreachable", "proto-unreach", "icmp-net-prohibited", "net-prohib", "tcp-reset", "tcp-rst", "icmp-admin-prohibited", "admin-prohib"],
-    "ipv6": ["icmp6-adm-prohibited", "adm-prohibited", "icmp6-no-route", "no-route", "icmp6-addr-unreachable", "addr-unreach", "icmp6-port-unreachable", "port-unreach", "tcp-reset"]
-}
+from firewall import functions
+from firewall.core.ipset import check_ipset_name
+from firewall.core.base import REJECT_TYPES
+from firewall import errors
+from firewall.errors import FirewallError
 
 class Rich_Source(object):
     def __init__(self, addr, mac, ipset, invert=False):
@@ -34,9 +37,9 @@ class Rich_Source(object):
         if self.addr == "":
             self.addr = None
         self.mac = mac
-        if self.mac == "" or self.mac == None:
+        if self.mac == "" or self.mac is None:
             self.mac = None
-        elif self.mac != None:
+        elif self.mac is not None:
             self.mac = self.mac.upper()
         self.ipset = ipset
         if self.ipset == "":
@@ -75,6 +78,11 @@ class Rich_Port(object):
 
     def __str__(self):
         return 'port port="%s" protocol="%s"' % (self.port, self.protocol)
+
+class Rich_SourcePort(Rich_Port):
+    def __str__(self):
+        return 'source-port port="%s" protocol="%s"' % (self.port,
+                                                        self.protocol)
 
 class Rich_Protocol(object):
     def __init__(self, value):
@@ -155,11 +163,11 @@ class Rich_Reject(object):
     def check(self, family):
         if self.type:
             if not family:
-                raise FirewallError(INVALID_RULE, "When using reject type you must specify also rule family.")
+                raise FirewallError(errors.INVALID_RULE, "When using reject type you must specify also rule family.")
             if family in ['ipv4', 'ipv6'] and \
                self.type not in REJECT_TYPES[family]:
                 valid_types = ", ".join(REJECT_TYPES[family])
-                raise FirewallError(INVALID_RULE, "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types))
+                raise FirewallError(errors.INVALID_RULE, "Wrong reject type %s.\nUse one of: %s." % (self.type, valid_types))
 
 class Rich_Drop(Rich_Accept):
     def __str__(self):
@@ -179,20 +187,20 @@ class Rich_Mark(object):
         if self.set is not None:
             x = self.set
         else:
-            raise FirewallError(INVALID_MARK, "no value set")
+            raise FirewallError(errors.INVALID_MARK, "no value set")
 
         if "/" in x:
             splits = x.split("/")
             if len(splits) != 2:
-                raise FirewallError(INVALID_MARK, x)
+                raise FirewallError(errors.INVALID_MARK, x)
             if not functions.checkUINT32(splits[0]) or \
                not functions.checkUINT32(splits[1]):
                 # value and mask are uint32
-                raise FirewallError(INVALID_MARK, x)
+                raise FirewallError(errors.INVALID_MARK, x)
         else:
             if not functions.checkUINT32(x):
                 # value is uint32
-                raise FirewallError(INVALID_MARK, x)
+                raise FirewallError(errors.INVALID_MARK, x)
 
 class Rich_Limit(object):
     def __init__(self, value):
@@ -208,15 +216,15 @@ class Rich_Limit(object):
         if "/" in self.value:
             splits = self.value.split("/")
         if not splits or len(splits) != 2:
-            raise FirewallError(INVALID_LIMIT, self.value)
+            raise FirewallError(errors.INVALID_LIMIT, self.value)
         (rate, duration) = splits
         try:
             rate = int(rate)
         except:
-            raise FirewallError(INVALID_LIMIT, self.value)
+            raise FirewallError(errors.INVALID_LIMIT, self.value)
 
         if rate < 1 or duration not in [ "s", "m", "h", "d" ]:
-            raise FirewallError(INVALID_LIMIT, self.value)
+            raise FirewallError(errors.INVALID_LIMIT, self.value)
 
         mult = 1
         if duration == "s":
@@ -229,11 +237,13 @@ class Rich_Limit(object):
             mult = 24*60*60
 
         if 10000 * mult / rate == 0:
-            raise FirewallError(INVALID_LIMIT, "%s too fast" % self.value)
+            raise FirewallError(errors.INVALID_LIMIT,
+                                "%s too fast" % self.value)
 
         if rate == 1 and duration == "d":
             # iptables (v1.4.21) doesn't accept 1/d
-            raise FirewallError(INVALID_LIMIT, "%s too slow" % self.value)
+            raise FirewallError(errors.INVALID_LIMIT,
+                                "%s too slow" % self.value)
 
     def __str__(self):
         return 'limit value="%s"' % (self.value)
@@ -266,7 +276,8 @@ class Rich_Rule(object):
             if "=" in r:
                 attr = r.split('=')
                 if len(attr) != 2 or not attr[0] or not attr[1]:
-                    raise FirewallError(INVALID_RULE, 'internal error in _lexer(): %s' % r)
+                    raise FirewallError(errors.INVALID_RULE,
+                                        'internal error in _lexer(): %s' % r)
                 tokens.append({'attr_name':attr[0], 'attr_value':attr[1]})
             else:
                 tokens.append({'element':r})
@@ -276,7 +287,7 @@ class Rich_Rule(object):
 
     def _import_from_string(self, rule_str):
         if not rule_str:
-            raise FirewallError(INVALID_RULE, 'empty rule')
+            raise FirewallError(errors.INVALID_RULE, 'empty rule')
 
         self.family = None
         self.source = None
@@ -288,7 +299,7 @@ class Rich_Rule(object):
 
         tokens = self._lexer(rule_str)
         if tokens and tokens[0].get('element')  == 'EOL':
-            raise FirewallError(INVALID_RULE, 'empty rule')
+            raise FirewallError(errors.INVALID_RULE, 'empty rule')
 
         attrs = {}       # attributes of elements
         in_elements = [] # stack with elements we are in
@@ -305,51 +316,52 @@ class Rich_Rule(object):
                                      'port', 'protocol', 'to-port', 'to-addr',
                                      'name', 'prefix', 'level', 'type',
                                      'set']:
-                    raise FirewallError(INVALID_RULE, "bad attribute '%s'" % attr_name)
+                    raise FirewallError(errors.INVALID_RULE, "bad attribute '%s'" % attr_name)
             else:             # element
                 if element in ['rule', 'source', 'destination', 'protocol',
                                'service', 'port', 'icmp-block', 'masquerade',
-                               'forward-port', 'log', 'audit',
+                               'forward-port', 'source-port', 'log', 'audit',
                                'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL']:
                     if element == 'source' and self.source:
-                        raise FirewallError(INVALID_RULE, "more than one 'source' element")
+                        raise FirewallError(errors.INVALID_RULE, "more than one 'source' element")
                     elif element == 'destination' and self.destination:
-                        raise FirewallError(INVALID_RULE, "more than one 'destination' element")
+                        raise FirewallError(errors.INVALID_RULE, "more than one 'destination' element")
                     elif element in ['protocol', 'service', 'port', 'icmp-block',
-                                     'masquerade', 'forward-port'] and self.element:
-                        raise FirewallError(INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
+                                     'masquerade', 'forward-port',
+                                     'source-port'] and self.element:
+                        raise FirewallError(errors.INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
                     elif element == 'log' and self.log:
-                        raise FirewallError(INVALID_RULE, "more than one 'log' element")
+                        raise FirewallError(errors.INVALID_RULE, "more than one 'log' element")
                     elif element == 'audit' and self.audit:
-                        raise FirewallError(INVALID_RULE, "more than one 'audit' element")
+                        raise FirewallError(errors.INVALID_RULE, "more than one 'audit' element")
                     elif element in ['accept', 'drop', 'reject', 'mark'] and self.action:
-                        raise FirewallError(INVALID_RULE, "more than one 'action' element. There cannot be both '%s' and '%s' in one rule." % (element, self.action))
+                        raise FirewallError(errors.INVALID_RULE, "more than one 'action' element. There cannot be both '%s' and '%s' in one rule." % (element, self.action))
                 else:
-                    raise FirewallError(INVALID_RULE, "unknown element %s" % element)
+                    raise FirewallError(errors.INVALID_RULE, "unknown element %s" % element)
 
             in_element = in_elements[len(in_elements)-1] if len(in_elements) > 0 else ''
 
             if in_element == '':
                 if not element and attr_name:
                     if attr_name == 'family':
-                        raise FirewallError(INVALID_RULE, "'family' outside of rule. Use 'rule family=...'.")
+                        raise FirewallError(errors.INVALID_RULE, "'family' outside of rule. Use 'rule family=...'.")
                     else:
-                        raise FirewallError(INVALID_RULE, "'%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name))
+                        raise FirewallError(errors.INVALID_RULE, "'%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name))
                 elif 'rule' not in element:
-                    raise FirewallError(INVALID_RULE, "'%s' outside of rule. Use 'rule ... %s ...'." % (element, element))
+                    raise FirewallError(errors.INVALID_RULE, "'%s' outside of rule. Use 'rule ... %s ...'." % (element, element))
                 else:
                     in_elements.append('rule') # push into stack
             elif in_element == 'rule':
                 if attr_name == 'family':
                     if attr_value not in ['ipv4', 'ipv6']:
-                        raise FirewallError(INVALID_RULE, "'family' attribute cannot have '%s' value. Use 'ipv4' or 'ipv6' instead." % attr_value)
+                        raise FirewallError(errors.INVALID_RULE, "'family' attribute cannot have '%s' value. Use 'ipv4' or 'ipv6' instead." % attr_value)
                     self.family = attr_value
                 elif attr_name:
                     if attr_name == 'protocol':
                         err_msg = "wrong 'protocol' usage. Use either 'rule protocol value=...' or  'rule [forward-]port protocol=...'."
                     else:
                         err_msg = "attribute '%s' outside of any element. Use 'rule <element> %s= ...'." % (attr_name, attr_name)
-                    raise FirewallError(INVALID_RULE, err_msg)
+                    raise FirewallError(errors.INVALID_RULE, err_msg)
                 else:
                     in_elements.append(element) # push into stack
             elif in_element == 'source':
@@ -377,13 +389,13 @@ class Rich_Rule(object):
                     self.element = Rich_Protocol(attr_value)
                     in_elements.pop() # protocol
                 else:
-                    raise FirewallError(INVALID_RULE, "invalid 'protocol' element")
+                    raise FirewallError(errors.INVALID_RULE, "invalid 'protocol' element")
             elif in_element == 'service':
                 if attr_name == 'name':
                     self.element = Rich_Service(attr_value)
                     in_elements.pop() # service
                 else:
-                    raise FirewallError(INVALID_RULE, "invalid 'service' element")
+                    raise FirewallError(errors.INVALID_RULE, "invalid 'service' element")
             elif in_element == 'port':
                 if attr_name in ['port', 'protocol']:
                     attrs[attr_name] = attr_value
@@ -397,7 +409,7 @@ class Rich_Rule(object):
                     self.element = Rich_IcmpBlock(attr_value)
                     in_elements.pop() # icmp-block
                 else:
-                    raise FirewallError(INVALID_RULE, "invalid 'icmp-block' element")
+                    raise FirewallError(errors.INVALID_RULE, "invalid 'icmp-block' element")
             elif in_element == 'masquerade':
                 self.element = Rich_Masquerade()
                 in_elements.pop()
@@ -409,6 +421,14 @@ class Rich_Rule(object):
                 else:
                     self.element = Rich_ForwardPort(attrs.get('port'), attrs.get('protocol'), attrs.get('to-port'), attrs.get('to-addr'))
                     in_elements.pop() # forward-port
+                    attrs.clear()
+                    index = index -1 # return token to input
+            elif in_element == 'source-port':
+                if attr_name in ['port', 'protocol']:
+                    attrs[attr_name] = attr_value
+                else:
+                    self.element = Rich_SourcePort(attrs.get('port'), attrs.get('protocol'))
+                    in_elements.pop() # source-port
                     attrs.clear()
                     index = index -1 # return token to input
             elif in_element == 'log':
@@ -471,7 +491,7 @@ class Rich_Rule(object):
                     attrs['limit'] = Rich_Limit(attr_value)
                     in_elements.pop() # limit
                 else:
-                    raise FirewallError(INVALID_RULE, "invalid 'limit' element")
+                    raise FirewallError(errors.INVALID_RULE, "invalid 'limit' element")
 
             index = index + 1
 
@@ -479,117 +499,122 @@ class Rich_Rule(object):
 
     def check(self):
         if self.family is not None and self.family not in [ "ipv4", "ipv6" ]:
-            raise FirewallError(INVALID_FAMILY, self.family)
+            raise FirewallError(errors.INVALID_FAMILY, self.family)
         if self.family is None:
             if (self.source is not None and self.source.addr is not None) or \
                self.destination is not None:
-                raise FirewallError(MISSING_FAMILY)
+                raise FirewallError(errors.MISSING_FAMILY)
             if type(self.element) == Rich_ForwardPort:
-                raise FirewallError(MISSING_FAMILY)
+                raise FirewallError(errors.MISSING_FAMILY)
 
         if self.element is None:
             if self.action is None:
-                raise FirewallError(INVALID_RULE, "no element, no action")
-            if self.source is None:
-                raise FirewallError(INVALID_RULE, "no element, no source")
-            if self.destination is not None:
-                raise FirewallError(INVALID_RULE, "destination action")
+                raise FirewallError(errors.INVALID_RULE, "no element, no action")
+            if self.source is None and self.destination is None:
+                raise FirewallError(errors.INVALID_RULE, "no element, no source, no destination")
 
         if type(self.element) not in [ Rich_IcmpBlock,
                                        Rich_ForwardPort,
                                        Rich_Masquerade ]:
             if self.log is None and self.audit is None and \
                     self.action is None:
-                raise FirewallError(INVALID_RULE, "no action, no log, no audit")
+                raise FirewallError(errors.INVALID_RULE, "no action, no log, no audit")
 
         # source
         if self.source is not None:
             if self.source.addr is not None:
                 if self.family is None:
-                    raise FirewallError(INVALID_FAMILY)
+                    raise FirewallError(errors.INVALID_FAMILY)
                 if self.source.mac is not None:
-                    raise FirewallError(INVALID_RULE, "address and mac")
+                    raise FirewallError(errors.INVALID_RULE, "address and mac")
                 if not functions.check_address(self.family, self.source.addr):
-                    raise FirewallError(INVALID_ADDR, str(self.source.addr))
+                    raise FirewallError(errors.INVALID_ADDR, str(self.source.addr))
 
             elif self.source.mac is not None:
                 if not functions.check_mac(self.source.mac):
-                    raise FirewallError(INVALID_MAC, str(self.source.mac))
+                    raise FirewallError(errors.INVALID_MAC, str(self.source.mac))
 
             elif self.source.ipset is not None:
                 if not check_ipset_name(self.source.ipset):
-                    raise FirewallError(INVALID_IPSET, str(self.source.ipset))
+                    raise FirewallError(errors.INVALID_IPSET, str(self.source.ipset))
 
             else:
-                raise FirewallError(INVALID_RULE, "invalid source")
+                raise FirewallError(errors.INVALID_RULE, "invalid source")
 
         # destination
         if self.destination is not None:
             if self.family is None:
-                raise FirewallError(INVALID_FAMILY)
+                raise FirewallError(errors.INVALID_FAMILY)
             if self.destination.addr is None or \
                     not functions.check_address(self.family,
                                                 self.destination.addr):
-                raise FirewallError(INVALID_ADDR, str(self.destination.addr))
+                raise FirewallError(errors.INVALID_ADDR, str(self.destination.addr))
 
         # service
         if type(self.element) == Rich_Service:
             # service availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
-                raise FirewallError(INVALID_SERVICE, str(self.element.name))
+                raise FirewallError(errors.INVALID_SERVICE, str(self.element.name))
 
         # port
         elif type(self.element) == Rich_Port:
             if not functions.check_port(self.element.port):
-                raise FirewallError(INVALID_PORT, self.element.port)
+                raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in [ "tcp", "udp" ]:
-                raise FirewallError(INVALID_PROTOCOL, self.element.protocol)
+                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # protocol
         elif type(self.element) == Rich_Protocol:
             if not functions.checkProtocol(self.element.value):
-                raise FirewallError(INVALID_PROTOCOL, self.element.value)
+                raise FirewallError(errors.INVALID_PROTOCOL, self.element.value)
 
         # masquerade
         elif type(self.element) == Rich_Masquerade:
             if self.action is not None:
-                raise FirewallError(INVALID_RULE, "masquerade and action")
+                raise FirewallError(errors.INVALID_RULE, "masquerade and action")
             if self.source is not None and self.source.mac is not None:
-                raise FirewallError(INVALID_RULE, "masquerade and mac source")
+                raise FirewallError(errors.INVALID_RULE, "masquerade and mac source")
 
         # icmp-block
         elif type(self.element) == Rich_IcmpBlock:
             # icmp type availability needs to be checked in Firewall, here is no
             # knowledge about this, therefore only simple check
             if self.element.name is None or len(self.element.name) < 1:
-                raise FirewallError(INVALID_ICMPTYPE, str(self.element.name))
+                raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
             if self.action:
-                raise FirewallError(INVALID_RULE, "icmp-block and action")
+                raise FirewallError(errors.INVALID_RULE, "icmp-block and action")
 
         # forward-port
         elif type(self.element) == Rich_ForwardPort:
             if not functions.check_port(self.element.port):
-                raise FirewallError(INVALID_PORT, self.element.port)
+                raise FirewallError(errors.INVALID_PORT, self.element.port)
             if self.element.protocol not in [ "tcp", "udp" ]:
-                raise FirewallError(INVALID_PROTOCOL, self.element.protocol)
+                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
             if self.element.to_port == "" and self.element.to_address == "":
-                raise FirewallError(INVALID_PORT, self.element.to_port)
+                raise FirewallError(errors.INVALID_PORT, self.element.to_port)
             if self.element.to_port != "" and \
                     not functions.check_port(self.element.to_port):
-                raise FirewallError(INVALID_PORT, self.element.to_port)
+                raise FirewallError(errors.INVALID_PORT, self.element.to_port)
             if self.element.to_address != "" and \
                     not functions.check_single_address(self.family,
                                                        self.element.to_address):
-                raise FirewallError(INVALID_ADDR, self.element.to_address)
+                raise FirewallError(errors.INVALID_ADDR, self.element.to_address)
             if self.family is None:
-                raise FirewallError(INVALID_FAMILY)
+                raise FirewallError(errors.INVALID_FAMILY)
             if self.action is not None:
-                raise FirewallError(INVALID_RULE, "forward-port and action")
+                raise FirewallError(errors.INVALID_RULE, "forward-port and action")
+
+        # source-port
+        elif type(self.element) == Rich_SourcePort:
+            if not functions.check_port(self.element.port):
+                raise FirewallError(errors.INVALID_PORT, self.element.port)
+            if self.element.protocol not in [ "tcp", "udp" ]:
+                raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # other element and not empty?
         elif self.element is not None:
-            raise FirewallError(INVALID_RULE, "Unknown element %s" % 
+            raise FirewallError(errors.INVALID_RULE, "Unknown element %s" % 
                                 type(self.element))
 
         # log
@@ -597,7 +622,7 @@ class Rich_Rule(object):
             if self.log.level and \
                self.log.level not in [ "emerg", "alert", "crit", "error",
                                        "warning", "notice", "info", "debug" ]:
-                raise FirewallError(INVALID_LOG_LEVEL, self.log.level)
+                raise FirewallError(errors.INVALID_LOG_LEVEL, self.log.level)
 
             if self.log.limit is not None:
                 self.log.limit.check()
@@ -605,7 +630,7 @@ class Rich_Rule(object):
         # audit
         if self.audit is not None:
             if type(self.action) not in [ Rich_Accept, Rich_Reject, Rich_Drop ]:
-                raise FirewallError(INVALID_AUDIT_TYPE, type(self.action))
+                raise FirewallError(errors.INVALID_AUDIT_TYPE, type(self.action))
 
             if self.audit.limit is not None:
                 self.audit.limit.check()

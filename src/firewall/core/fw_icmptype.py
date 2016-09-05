@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2012 Red Hat, Inc.
+# Copyright (C) 2011-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,7 +19,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from firewall.errors import *
+__all__ = [ "FirewallIcmpType" ]
+
+from firewall import errors
+from firewall.errors import FirewallError
 
 class FirewallIcmpType(object):
     def __init__(self, fw):
@@ -39,7 +42,7 @@ class FirewallIcmpType(object):
 
     def check_icmptype(self, icmptype):
         if icmptype not in self._icmptypes:
-            raise FirewallError(INVALID_ICMPTYPE, icmptype)
+            raise FirewallError(errors.INVALID_ICMPTYPE, icmptype)
 
     def get_icmptype(self, icmptype):
         self.check_icmptype(icmptype)

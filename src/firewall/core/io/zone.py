@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2011-2013 Red Hat, Inc.
+# Copyright (C) 2011-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -18,18 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+__all__ = [ "Zone", "zone_reader", "zone_writer" ]
+
 import xml.sax as sax
 import os
 import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.errors import *
-from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
+from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
-from firewall.core.io.io_object import *
-from firewall.core.rich import *
+from firewall.core.io.io_object import PY2, IO_Object, \
+    IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
+    check_tcpudp, check_protocol
+from firewall.core import rich
 from firewall.core.logger import log
+from firewall import errors
+from firewall.errors import FirewallError
 
 class Zone(IO_Object):
     """ Zone class """
@@ -49,8 +55,10 @@ class Zone(IO_Object):
         ( "sources", [ "" ] ),                         # as
         ( "rules_str", [ "" ] ),                       # as
         ( "protocols", [ "", ], ),                     # as
+        ( "source_ports", [ ( "", "" ), ], ),          # a(ss)
+        ( "icmp_block_inversion", False ),             # b
         )
-    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasas)'
+    DBUS_SIGNATURE = '(sssbsasa(ss)asba(ssss)asasasasa(ss)b)'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-", "/" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -65,6 +73,7 @@ class Zone(IO_Object):
         "source": None,
         "destination": [ "address" ],
         "protocol": [ "value" ],
+        "source-port": [ "port", "protocol" ],
         "log":  None,
         "audit": None,
         "accept": None,
@@ -72,6 +81,7 @@ class Zone(IO_Object):
         "drop": None,
         "mark": [ "set" ],
         "limit": [ "value" ],
+        "icmp-block-inversion": None,
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "zone": [ "name", "immutable", "target", "version" ],
@@ -85,11 +95,11 @@ class Zone(IO_Object):
         }
 
     @staticmethod
-    def index_of (element):
-        for i, (el, val) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
+    def index_of(element):
+        for i, (el, dummy) in enumerate(Zone.IMPORT_EXPORT_STRUCTURE):
             if el == element:
                 return i
-        raise FirewallError(UNKNOWN_ERROR, "index_of()")
+        raise FirewallError(errors.UNKNOWN_ERROR, "index_of()")
 
     def __init__(self):
         super(Zone, self).__init__()
@@ -104,10 +114,12 @@ class Zone(IO_Object):
         self.icmp_blocks = [ ]
         self.masquerade = False
         self.forward_ports = [ ]
+        self.source_ports = [ ]
         self.interfaces = [ ]
         self.sources = [ ]
         self.fw_config = None # to be able to check services and a icmp_blocks
         self.rules = [ ]
+        self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
 
@@ -123,10 +135,12 @@ class Zone(IO_Object):
         del self.icmp_blocks[:]
         self.masquerade = False
         del self.forward_ports[:]
+        del self.source_ports[:]
         del self.interfaces[:]
         del self.sources[:]
         self.fw_config = None # to be able to check services and a icmp_blocks
         del self.rules[:]
+        self.icmp_block_inversion = False
         self.combined = False
         self.applied = False
 
@@ -143,6 +157,8 @@ class Zone(IO_Object):
         self.protocols = [u2b_if_py2(pr) for pr in self.protocols]
         self.icmp_blocks = [u2b_if_py2(i) for i in self.icmp_blocks]
         self.forward_ports = [(u2b_if_py2(p1),u2b_if_py2(p2),u2b_if_py2(p3),u2b_if_py2(p4)) for (p1,p2,p3,p4) in self.forward_ports]
+        self.source_ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr)
+                             in self.source_ports]
         self.interfaces = [u2b_if_py2(i) for i in self.interfaces]
         self.sources = [u2b_if_py2(s) for s in self.sources]
         self.rules = [u2b_if_py2(s) for s in self.rules]
@@ -152,21 +168,22 @@ class Zone(IO_Object):
             rules_str = [str(rule) for rule in self.rules]
             return rules_str
         else:
-            return object.__getattr__(self, name)
+            return super(Zone, self).__getattr__(name)
 
     def __setattr__(self, name, value):
         if name == "rules_str":
-            self.rules = [Rich_Rule(rule_str=s) for s in value]
+            self.rules = [rich.Rich_Rule(rule_str=s) for s in value]
         else:
-            object.__setattr__(self, name, value)
+            super(Zone, self).__setattr__(name, value)
 
     def _check_config(self, config, item):
         if item == "services" and self.fw_config:
             existing_services = self.fw_config.get_services()
             for service in config:
-                if not service in existing_services:
-                    raise FirewallError(INVALID_SERVICE,
-                                  "'%s' not among existing services" % service)
+                if service not in existing_services:
+                    raise FirewallError(errors.INVALID_SERVICE,
+                                        "'%s' not among existing services" % \
+                                        service)
         elif item == "ports":
             for port in config:
                 check_port(port[0])
@@ -177,49 +194,61 @@ class Zone(IO_Object):
         elif item == "icmp_blocks" and self.fw_config:
             existing_icmptypes = self.fw_config.get_icmptypes()
             for icmptype in config:
-                if not icmptype in existing_icmptypes:
-                    raise FirewallError(INVALID_ICMPTYPE,
-                               "'%s' not among existing icmp types" % icmptype)
+                if icmptype not in existing_icmptypes:
+                    raise FirewallError(errors.INVALID_ICMPTYPE,
+                                        "'%s' not among existing icmp types" % \
+                                        icmptype)
         elif item == "forward_ports":
             for fwd_port in config:
                 check_port(fwd_port[0])
                 check_tcpudp(fwd_port[1])
                 if not fwd_port[2] and not fwd_port[3]:
-                    raise FirewallError(INVALID_FORWARD,
-                             "'%s' is missing to-port AND to-addr " % fwd_port)
+                    raise FirewallError(
+                        errors.INVALID_FORWARD,
+                        "'%s' is missing to-port AND to-addr " % fwd_port)
                 if fwd_port[2]:
                     check_port(fwd_port[2])
                 if fwd_port[3]:
                     if not checkIP(fwd_port[3]):
-                        raise FirewallError(INVALID_ADDR,
-                           "to-addr '%s' is not a valid address" % fwd_port[3])
+                        raise FirewallError(
+                            errors.INVALID_ADDR,
+                            "to-addr '%s' is not a valid address" % fwd_port[3])
+        elif item == "source_ports":
+            for port in config:
+                check_port(port[0])
+                check_tcpudp(port[1])
         elif item == "target":
             if config not in ZONE_TARGETS:
-                raise FirewallError(INVALID_TARGET, config)
+                raise FirewallError(errors.INVALID_TARGET, config)
         elif item == "interfaces":
             for interface in config:
                 if not checkInterface(interface):
-                    raise FirewallError(INVALID_INTERFACE, interface)
+                    raise FirewallError(errors.INVALID_INTERFACE, interface)
         elif item == "sources":
             for source in config:
                 if not checkIPnMask(source) and not checkIP6nMask(source) and \
                    not check_mac(source) and not source.startswith("ipset:"):
-                    raise FirewallError(INVALID_ADDR, source)
+                    raise FirewallError(errors.INVALID_ADDR, source)
         elif item == "rules_str":
             for rule in config:
-                Rich_Rule(rule_str=rule)
+                rich.Rich_Rule(rule_str=rule)
 
     def check_name(self, name):
         super(Zone, self).check_name(name)
         if name.startswith('/'):
-            raise FirewallError(INVALID_NAME, "'%s' can't start with '/'" % name)
+            raise FirewallError(errors.INVALID_NAME,
+                                "'%s' can't start with '/'" % name)
         elif name.endswith('/'):
-            raise FirewallError(INVALID_NAME, "'%s' can't end with '/'" % name)
+            raise FirewallError(errors.INVALID_NAME,
+                                "'%s' can't end with '/'" % name)
         elif name.count('/') > 1:
-            raise FirewallError(INVALID_NAME, "more than one '/' in '%s'" % name)
-        elif len(name[name.find('/')]) > max_zone_name_len():
-            raise FirewallError(INVALID_NAME,
-                                "'%s' has %d chars, max is %d" % (name, len(name), max_zone_name_len()))
+            raise FirewallError(errors.INVALID_NAME,
+                                "more than one '/' in '%s'" % name)
+        elif len(name) > max_zone_name_len():
+            raise FirewallError(
+                errors.INVALID_NAME,
+                "'%s' has %d chars, max is %d" % (name, len(name),
+                                                  max_zone_name_len()))
 
     def combine(self, zone):
         self.combined = True
@@ -242,7 +271,7 @@ class Zone(IO_Object):
                 self.ports.append(port)
         for proto in zone.protocols:
             if proto not in self.protocols:
-                self.protocols.append(protocol)
+                self.protocols.append(proto)
         for icmp in zone.icmp_blocks:
             if icmp not in self.icmp_blocks:
                 self.icmp_blocks.append(icmp)
@@ -251,8 +280,13 @@ class Zone(IO_Object):
         for forward in zone.forward_ports:
             if forward not in self.forward_ports:
                 self.forward_ports.append(forward)
+        for port in zone.source_ports:
+            if port not in self.source_ports:
+                self.source_ports.append(port)
         for rule in zone.rules:
             self.rules.append(rule)
+        if zone.icmp_block_inversion:
+            self.icmp_block_inversion = True
 
 # PARSER
 
@@ -264,7 +298,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         self._limit_ok = None
 
     def startElement(self, name, attrs):
-        IO_Object_ContentHandler.startElement(self, name)
+        IO_Object_ContentHandler.startElement(self, name, attrs)
         if self._rule_error:
             return
 
@@ -282,7 +316,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "target" in attrs:
                 target = attrs["target"]
                 if target not in ZONE_TARGETS:
-                    raise FirewallError(INVALID_TARGET, target)
+                    raise FirewallError(errors.INVALID_TARGET, target)
                 if target != "" and target != DEFAULT_ZONE_TARGET:
                     self.item.target = target
 
@@ -297,7 +331,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Service(attrs["name"])
+                self._rule.element = rich.Rich_Service(attrs["name"])
                 return
             if attrs["name"] not in self.item.services:
                 self.item.services.append(attrs["name"])
@@ -312,8 +346,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Port(attrs["port"],
-                                               attrs["protocol"])
+                self._rule.element = rich.Rich_Port(attrs["port"],
+                                                    attrs["protocol"])
                 return
             check_port(attrs["port"])
             check_tcpudp(attrs["protocol"])
@@ -331,7 +365,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Protocol(attrs["value"])
+                self._rule.element = rich.Rich_Protocol(attrs["value"])
             else:
                 check_protocol(attrs["value"])
                 if attrs["value"] not in self.item.protocols:
@@ -346,7 +380,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_IcmpBlock(attrs["name"])
+                self._rule.element = rich.Rich_IcmpBlock(attrs["name"])
                 return
             if attrs["name"] not in self.item.icmp_blocks:
                 self.item.icmp_blocks.append(attrs["name"])
@@ -355,16 +389,19 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                             attrs["name"])
 
         elif name == "masquerade":
-            if "enabled" in attrs:
+            if "enabled" in attrs and \
+               attrs["enabled"].lower() in [ "no", "false" ] :
                 log.warning("Ignoring deprecated attribute enabled='%s'",
                             attrs["enabled"])
+                return
+
             if self._rule:
                 if self._rule.element:
                     log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_Masquerade()
+                self._rule.element = rich.Rich_Masquerade()
             else:
                 if self.item.masquerade:
                     log.warning("Masquerade already set, ignoring.")
@@ -385,9 +422,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 str(self._rule))
                     self._rule_error = True
                     return
-                self._rule.element = Rich_ForwardPort(attrs["port"],
-                                                      attrs["protocol"],
-                                                      to_port, to_addr)
+                self._rule.element = rich.Rich_ForwardPort(attrs["port"],
+                                                           attrs["protocol"],
+                                                           to_port, to_addr)
                 return
 
             check_port(attrs["port"])
@@ -396,7 +433,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 check_port(to_port)
             if to_addr:
                 if not checkIP(to_addr):
-                    raise FirewallError(INVALID_ADDR,
+                    raise FirewallError(errors.INVALID_ADDR,
                                         "to-addr '%s' is not a valid address" \
                                         % to_addr)
             entry = (portStr(attrs["port"], "-"), attrs["protocol"],
@@ -409,6 +446,25 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                             " >%s" % to_port if to_port else "",
                             " @%s" % to_addr if to_addr else "")
 
+        elif name == "source-port":
+            if self._rule:
+                if self._rule.element:
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
+                    self._rule_error = True
+                    return
+                self._rule.element = rich.Rich_SourcePort(attrs["port"],
+                                                          attrs["protocol"])
+                return
+            check_port(attrs["port"])
+            check_tcpudp(attrs["protocol"])
+            entry = (portStr(attrs["port"], "-"), attrs["protocol"])
+            if entry not in self.item.source_ports:
+                self.item.source_ports.append(entry)
+            else:
+                log.warning("Source port '%s/%s' already set, ignoring.",
+                            attrs["port"], attrs["protocol"])
+
         elif name == "interface":
             if self._rule:
                 log.warning('Invalid rule: interface use in rule.')
@@ -419,7 +475,6 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.warning('Invalid interface: Name missing.')
                 self._rule_error = True
                 return
-            attrs["name"]
             if attrs["name"] not in self.item.interfaces:
                 self.item.interfaces.append(attrs["name"])
             else:
@@ -444,10 +499,11 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     mac = attrs["mac"]
                 if "ipset" in attrs:
                     ipset = attrs["ipset"]
-                self._rule.source = Rich_Source(addr, mac, ipset, invert=invert)
+                self._rule.source = rich.Rich_Source(addr, mac, ipset,
+                                                     invert=invert)
                 return
             # zone bound to source
-            if "address" not in attrs and not "ipset" in attrs:
+            if "address" not in attrs and "ipset" not in attrs:
                 log.warning('Invalid source: No address no ipset.')
                 return
             if "address" in attrs and "ipset" in attrs:
@@ -463,7 +519,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 if not checkIPnMask(attrs["address"]) and \
                    not checkIP6nMask(attrs["address"]) and \
                    not check_mac(attrs["address"]):
-                    raise FirewallError(INVALID_ADDR, source)
+                    raise FirewallError(errors.INVALID_ADDR, attrs["address"])
             if "ipset" in attrs:
                 entry = "ipset:%s" % attrs["ipset"]
                 if entry not in self.item.sources:
@@ -492,8 +548,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if "invert" in attrs and \
                     attrs["invert"].lower() in [ "yes", "true" ]:
                 invert = True
-            self._rule.destination = Rich_Destination(attrs["address"],
-                                                      invert)
+            self._rule.destination = rich.Rich_Destination(attrs["address"],
+                                                           invert)
 
         elif name in [ "accept", "reject", "drop", "mark" ]:
             if not self._rule:
@@ -505,17 +561,17 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule_error = True
                 return
             if name == "accept":
-                self._rule.action = Rich_Accept()
+                self._rule.action = rich.Rich_Accept()
             elif name == "reject":
                 _type = None
                 if "type" in attrs:
                     _type = attrs["type"]
-                self._rule.action = Rich_Reject(_type)
+                self._rule.action = rich.Rich_Reject(_type)
             elif name == "drop":
-                self._rule.action = Rich_Drop()
+                self._rule.action = rich.Rich_Drop()
             elif name == "mark":
                 _set = attrs["set"]
-                self._rule.action = Rich_Mark(_set)
+                self._rule.action = rich.Rich_Mark(_set)
             self._limit_ok = self._rule.action
 
         elif name == "log":
@@ -534,7 +590,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                     self._rule_error = True
                     return
             prefix = attrs["prefix"] if "prefix" in attrs else None
-            self._rule.log = Rich_Log(prefix, level)
+            self._rule.log = rich.Rich_Log(prefix, level)
             self._limit_ok = self._rule.log
 
         elif name == "audit":
@@ -545,8 +601,8 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 log.warning("Invalid rule: More than one audit in rule '%s', ignoring.",
                             str(self._rule))
                 self._rule_error = True
-                return            
-            self._rule.audit = Rich_Audit()
+                return
+            self._rule.audit = rich.Rich_Audit()
             self._limit_ok = self._rule.audit
 
         elif name == "rule":
@@ -558,7 +614,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                                 attrs["family"])
                     self._rule_error = True
                     return
-            self._rule = Rich_Rule(family)
+            self._rule = rich.Rich_Rule(family)
 
         elif name == "limit":
             if not self._limit_ok:
@@ -571,7 +627,13 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self._rule_error = True
                 return
             value = attrs["value"]
-            self._limit_ok.limit = Rich_Limit(value)
+            self._limit_ok.limit = rich.Rich_Limit(value)
+
+        elif name == "icmp-block-inversion":
+            if self.item.icmp_block_inversion:
+                log.warning("Icmp-Block-Inversion already set, ignoring.")
+            else:
+                self.item.icmp_block_inversion = True
 
         else:
             log.warning("Unknown XML element '%s'", name)
@@ -601,12 +663,9 @@ class zone_ContentHandler(IO_Object_ContentHandler):
 def zone_reader(filename, path):
     zone = Zone()
     if not filename.endswith(".xml"):
-        raise FirewallError(INVALID_NAME,
+        raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     zone.name = filename[:-4]
-    if len(zone.name) > max_zone_name_len():
-        raise FirewallError(INVALID_NAME,
-                            "'%s' has %d chars, max is %d" % (zone.name, len(zone.name), max_zone_name_len()))
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
@@ -617,7 +676,12 @@ def zone_reader(filename, path):
     parser.setContentHandler(handler)
     name = "%s/%s" % (path, filename)
     with open(name, "r") as f:
-        parser.parse(f)
+        try:
+            parser.parse(f)
+        except sax.SAXParseException as msg:
+            raise FirewallError(errors.INVALID_ZONE,
+                                "not a valid zone file: %s" % \
+                                msg.getException())
     del handler
     del parser
     if PY2:
@@ -636,7 +700,7 @@ def zone_writer(zone, path=None):
         try:
             shutil.copy2(name, "%s.old" % name)
         except Exception as msg:
-            raise IOError("Backup of '%s' failed: %s" % (name, msg))
+            log.error("Backup of file '%s' failed: %s", name, msg)
 
     dirpath = os.path.dirname(name)
     if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
@@ -706,6 +770,12 @@ def zone_writer(zone, path=None):
         handler.simpleElement("protocol", { "value": protocol })
         handler.ignorableWhitespace("\n")
 
+    # icmp-block-inversion
+    if zone.icmp_block_inversion:
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("icmp-block-inversion", { })
+        handler.ignorableWhitespace("\n")
+
     # icmp-blocks
     for icmp in uniqify(zone.icmp_blocks):
         handler.ignorableWhitespace("  ")
@@ -727,6 +797,13 @@ def zone_writer(zone, path=None):
         if forward[3] and forward[3] != "" :
             attrs["to-addr"] = forward[3]
         handler.simpleElement("forward-port", attrs)
+        handler.ignorableWhitespace("\n")
+
+    # source-ports
+    for port in uniqify(zone.source_ports):
+        handler.ignorableWhitespace("  ")
+        handler.simpleElement("source-port", { "port": port[0],
+                                               "protocol": port[1] })
         handler.ignorableWhitespace("\n")
 
     # rules
@@ -767,22 +844,22 @@ def zone_writer(zone, path=None):
             element = ""
             attrs = { }
 
-            if type(rule.element) == Rich_Service:
+            if type(rule.element) == rich.Rich_Service:
                 element = "service"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == Rich_Port:
+            elif type(rule.element) == rich.Rich_Port:
                 element = "port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
-            elif type(rule.element) == Rich_Protocol:
+            elif type(rule.element) == rich.Rich_Protocol:
                 element = "protocol"
                 attrs["value"] = rule.element.value
-            elif type(rule.element) == Rich_Masquerade:
+            elif type(rule.element) == rich.Rich_Masquerade:
                 element = "masquerade"
-            elif type(rule.element) == Rich_IcmpBlock:
+            elif type(rule.element) == rich.Rich_IcmpBlock:
                 element = "icmp-block"
                 attrs["name"] = rule.element.name
-            elif type(rule.element) == Rich_ForwardPort:
+            elif type(rule.element) == rich.Rich_ForwardPort:
                 element = "forward-port"
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
@@ -790,6 +867,10 @@ def zone_writer(zone, path=None):
                     attrs["to-port"] = rule.element.to_port
                 if rule.element.to_address != "":
                     attrs["to-addr"] = rule.element.to_address
+            elif type(rule.element) == rich.Rich_SourcePort:
+                element = "source-port"
+                attrs["port"] = rule.element.port
+                attrs["protocol"] = rule.element.protocol
             else:
                 log.warning("Unknown element '%s'", type(rule.element))
 
@@ -839,15 +920,15 @@ def zone_writer(zone, path=None):
         if rule.action:
             action = ""
             attrs = { }
-            if type(rule.action) == Rich_Accept:
+            if type(rule.action) == rich.Rich_Accept:
                 action = "accept"
-            elif type(rule.action) == Rich_Reject:
+            elif type(rule.action) == rich.Rich_Reject:
                 action = "reject"
                 if rule.action.type:
                     attrs["type"] = rule.action.type
-            elif type(rule.action) == Rich_Drop:
+            elif type(rule.action) == rich.Rich_Drop:
                 action = "drop"
-            elif type(rule.action) == Rich_Mark:
+            elif type(rule.action) == rich.Rich_Mark:
                 action = "mark"
                 attrs["set"] = rule.action.set
             else:

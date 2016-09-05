@@ -11,6 +11,7 @@ man1_MANS = \
 	../man/man1/firewall-applet.1 \
 	../man/man1/firewall-cmd.1 \
 	../man/man1/firewall-config.1 \
+	../man/man1/firewallctl.1 \
 	../man/man1/firewalld.1 \
 	../man/man1/firewall-offline-cmd.1
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,11 +19,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+__all__ = [ "ebtables" ]
+
 import os.path, errno
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
 from firewall.config import COMMANDS
+import string
 
 PROC_IPxTABLE_NAMES = {
 }
@@ -54,13 +57,19 @@ class ebtables(object):
         self._restore_command = COMMANDS["%s-restore" % self.ipv]
         self.ebtables_lock = "/var/lib/ebtables/lock"
         self.restore_noflush_option = self._detect_restore_noflush_option()
+        self.concurrent_option = self._detect_concurrent_option()
         self.__remove_dangling_lock()
+        self.fill_exists()
+
+    def fill_exists(self):
+        self.command_exists = os.path.exists(self._command)
+        self.restore_command_exists = os.path.exists(self._restore_command)
 
     def __remove_dangling_lock(self):
         if os.path.exists(self.ebtables_lock):
-            (status, ret) = runProg("pidof", [ "-s", "ebtables" ])
-            (status2, ret2) = runProg("pidof", [ "-s", "ebtables-restore" ])
-            if ret == "" and ret2 == "":
+            ret = runProg("pidof", [ "-s", "ebtables" ])
+            ret2 = runProg("pidof", [ "-s", "ebtables-restore" ])
+            if ret[1] == "" and ret2[1] == "":
                 log.warning("Removing dangling ebtables lock file: '%s'" %
                             self.ebtables_lock)
                 try:
@@ -69,19 +78,32 @@ class ebtables(object):
                     if e.errno != errno.ENOENT:
                         raise
 
+    def _detect_concurrent_option(self):
+        # Do not change any rules, just try to use the --concurrent option
+        # with -L
+        concurrent_option = ""
+        ret = runProg(self._command, ["--concurrent", "-L"])
+        if ret[0] == 0:
+            concurrent_option = "--concurrent"  # concurrent for ebtables lock
+
+        return concurrent_option
+
     def _detect_restore_noflush_option(self):
         # Do not change any rules, just try to use the restore command
         # with --noflush
         rules = [ ]
         try:
             self.set_rules(rules, flush=False)
-        except ValueError as e:
+        except ValueError:
             return False
         return True
 
     def __run(self, args):
         # convert to string list
-        _args = ["--concurrent"] + ["%s" % item for item in args]
+        _args = [ ]
+        if self.concurrent_option and self.concurrent_option not in args:
+            _args.append(self.concurrent_option)
+        _args += ["%s" % item for item in args]
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
         self.__remove_dangling_lock()
         (status, ret) = runProg(self._command, _args)
@@ -95,15 +117,27 @@ class ebtables(object):
 
         table = "filter"
         table_rules = { }
-        for rule in rules:
-            try:
-                i = rule.index("-t")
-            except:
-                pass
-            else:
-                if len(rule) >= i+1:
-                    rule.pop(i)
-                    table = rule.pop(i)
+        for _rule in rules:
+            rule = _rule[:]
+            # get table form rule
+            for opt in [ "-t", "--table" ]:
+                try:
+                    i = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= i+1:
+                        rule.pop(i)
+                        table = rule.pop(i)
+
+            # we can not use joinArgs here, because it would use "'" instead
+            # of '"' for the start and end of the string, this breaks
+            # iptables-restore
+            for i in range(len(rule)):
+                for c in string.whitespace:
+                    if c in rule[i] and not (rule[i].startswith('"') and
+                                             rule[i].endswith('"')):
+                        rule[i] = '"%s"' % rule[i]
 
             table_rules.setdefault(table, []).append(rule)
 
@@ -111,7 +145,6 @@ class ebtables(object):
             temp_file.write("*%s\n" % table)
             for rule in table_rules[table]:
                 temp_file.write(" ".join(rule) + "\n")
-            temp_file.write("COMMIT\n")
 
         temp_file.close()
 
@@ -126,13 +159,10 @@ class ebtables(object):
                                 stdin=temp_file.name)
 
         if log.getDebugLogLevel() > 2:
-            try:
-                lines = readfile(temp_file.name)
-            except:
-                pass
-            else:
+            lines = readfile(temp_file.name)
+            if lines is not None:
                 i = 1
-                for line in readfile(temp_file.name):
+                for line in lines:
                     log.debug3("%8d: %s" % (i, line), nofmt=1, nl=0)
                     if not line.endswith("\n"):
                         log.debug3("", nofmt=1)
@@ -169,9 +199,8 @@ class ebtables(object):
     def used_tables(self):
         return list(BUILT_IN_CHAINS.keys())
 
-    def flush(self, individual=False):
+    def flush(self, transaction=None):
         tables = self.used_tables()
-        rules = [ ]
         for table in tables:
             # Flush firewall rules: -F
             # Delete firewall chains: -X
@@ -182,34 +211,29 @@ class ebtables(object):
                 "-Z": "zero counters",
             }
             for flag in [ "-F", "-X", "-Z" ]:
-                if individual:
+                if transaction is not None:
+                    transaction.add_rule(self.ipv, [ "-t", table, flag ])
+                else:
                     try:
                         self.__run([ "-t", table, flag ])
                     except Exception as msg:
                         log.error("Failed to %s %s: %s",
                                   msgs[flag], self.ipv, msg)
-                else:
-                    rules.append([ "-t", table, flag ])
-        if len(rules) > 0:
-            self.set_rules(rules)
 
-    def set_policy(self, policy, which="used", individual=False):
+    def set_policy(self, policy, which="used", transaction=None):
         if which == "used":
             tables = self.used_tables()
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
-        rules = [ ]
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
-                if individual:
+                if transaction is not None:
+                    transaction.add_rule(self.ipv,
+                                         [ "-t", table, "-P", chain, policy ])
+                else:
                     try:
                         self.__run([ "-t", table, "-P", chain, policy ])
                     except Exception as msg:
-                        log.error("Failed to set policy for %s: %s", ipv, msg)
-                else:
-                    rules.append([ "-t", table, "-P", chain, policy ])
-        if len(rules) > 0:
-            self.set_rules(rules)
-
-ebtables_available_tables = ebtables().available_tables()
+                        log.error("Failed to set policy for %s: %s", self.ipv,
+                                  msg)
