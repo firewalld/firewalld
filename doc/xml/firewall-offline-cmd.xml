@@ -396,7 +396,14 @@
             </para>
           </listitem>
 	</varlistentry>
-
+	<varlistentry>
+	  <term><option>--path-zone=<replaceable>zone</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the zone configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
 	<varlistentry>
           <term><option>--delete-zone</option>=<replaceable>zone</replaceable></term>
           <listitem>
@@ -1087,6 +1094,14 @@
            </para>
          </listitem>
        </varlistentry>
+	<varlistentry>
+	  <term><option>--path-ipset=<replaceable>ipset</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the ipset configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 
@@ -1136,7 +1151,15 @@
            </para>
          </listitem>
        </varlistentry>
-       <varlistentry>
+	<varlistentry>
+	  <term><option>--path-service=<replaceable>service</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the service configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
          <term><option>--service</option>=<replaceable>service</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
          <listitem>
            <para>
@@ -1440,6 +1463,14 @@
            </para>
          </listitem>
        </varlistentry>
+	<varlistentry>
+	  <term><option>--path-icmptype=<replaceable>icmptype</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the icmptype configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 
