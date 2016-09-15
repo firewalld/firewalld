@@ -382,7 +382,7 @@ class FirewallCommand(object):
                                     (port, proto, toport, toaddr)
                                     for (port, proto, toport, toaddr) in \
                                     forward_ports]))
-        self.print_msg("  sourceports: " +
+        self.print_msg("  source-ports: " +
                        " ".join(["%s/%s" % (port[0], port[1])
                                  for port in source_ports]))
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
