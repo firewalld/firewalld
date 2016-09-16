@@ -325,13 +325,13 @@ class FirewallZone(object):
                        chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
                         if target in [ "REJECT", "%%REJECT%%" ]:
                             transaction.add_rule(
-                                ipv, [ "-I", _zone, "5", "-t", table,
+                                ipv, [ "-I", _zone, "4", "-t", table,
                                        "%%LOGTYPE%%",
                                        "-j", "LOG", "--log-prefix",
                                        "\"%s_REJECT: \"" % _zone ])
                         if target == "DROP":
                             transaction.add_rule(
-                                ipv, [ "-I", _zone, "5", "-t", table,
+                                ipv, [ "-I", _zone, "4", "-t", table,
                                        "%%LOGTYPE%%",
                                        "-j", "LOG", "--log-prefix",
                                        "\"%s_DROP: \"" % _zone ])
