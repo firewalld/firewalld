@@ -156,7 +156,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                 log.error("Failed to load firewalld.conf file '%s': %s" % \
                           (name, msg))
                 return
-            props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG)
+            props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG).copy()
             for key in props.keys():
                 if key in old_props and \
                    old_props[key] == props[key]:
