@@ -2400,6 +2400,7 @@ class FirewallConfig(object):
             value = self.logDeniedDialogValueCombobox.get_active_text()
             if value != self.log_denied:
                 self.fw.setLogDenied(value)
+                self.log_denied = value
                 self.changes_applied()
 
     def log_denied_changed_cb(self, value):
