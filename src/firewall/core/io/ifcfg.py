@@ -179,7 +179,7 @@ class ifcfg(object):
         # make backup
         if os.path.exists(self.filename):
             try:
-                shutil.copy2(self.filename, "%s.old" % self.filename)
+                shutil.copy2(self.filename, "%s.bak" % self.filename)
             except Exception as msg:
                 os.remove(temp_file.name)
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))
