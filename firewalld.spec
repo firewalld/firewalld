@@ -214,6 +214,7 @@ fi
 %{_prefix}/lib/firewalld/ipsets/README
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
+%{_prefix}/lib/firewalld/helpers/*.xml
 %{_prefix}/lib/firewalld/xmlschema/check.sh
 %{_prefix}/lib/firewalld/xmlschema/*.xsd
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
@@ -222,6 +223,8 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %dir %{_datadir}/firewalld
 %dir %{_datadir}/firewalld/tests
 %{_datadir}/firewalld/tests
