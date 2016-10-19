@@ -1092,13 +1092,13 @@ class FirewallZone(object):
                     # only load modules for accept action
                     modules = [ ]
                     for module in svc.modules:
+                        try:
+                            helper = self._fw.helper.get_helper(module)
+                        except Exception as msg:
+                            log.warning("Invalid helper '%s', skipping.",
+                                        module)
+                            continue
                         if self._fw.nf_conntrack_helper == 0:
-                            try:
-                                helper = self._fw.helper.get_helper(module)
-                            except Exception as msg:
-                                log.warning("Invalid helper '%s', skipping.",
-                                            module)
-                                continue
                             if helper.family != "" and helper.family != ipv:
                                 # no support for family ipv, continue
                                 continue
@@ -1116,7 +1116,8 @@ class FirewallZone(object):
                                 self.__rule_source(rule.source, _rule)
                                 zone_transaction.add_rule(ipv, _rule)
 
-                        modules.append("nf_conntrack_"+module)
+                        if helper.module not in modules:
+                            modules.append(helper.module)
                     zone_transaction.add_modules(modules)
 
                 target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
@@ -1573,7 +1574,12 @@ class FirewallZone(object):
             zone_transaction.add_chain("filter", "INPUT")
             modules = [ ]
             for module in svc.modules:
-                modules.append("nf_conntrack_"+module)
+                try:
+                    helper = self._fw.helper.get_helper(module)
+                except Exception as msg:
+                    log.warning("Invalid helper '%s', skipping.", module)
+                    continue
+                modules.append(helper.module)
             zone_transaction.add_modules(modules)
 
         add_del = { True: "-A", False: "-D" }[enable]
@@ -1587,7 +1593,7 @@ class FirewallZone(object):
                     try:
                         helper = self._fw.helper.get_helper(module)
                     except Exception as msg:
-                        log.warning("Invalid helper '%s', skipping.", module)
+                        # already logged above
                         continue
                     if helper.family != "" and helper.family != ipv:
                         # no support for family ipv, continue
