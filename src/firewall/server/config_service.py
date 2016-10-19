@@ -520,8 +520,8 @@ class FirewallDConfigService(slip.dbus.service.Object):
         for module in modules:
             if module.startswith("nf_conntrack_"):
                 module = module.replace("nf_conntrack_", "")
-            if "_" in module:
-                module = module.replace("_", "-")
+                if "_" in module:
+                    module = module.replace("_", "-")
             _modules.append(module)
         modules = _modules
         log.debug1("%s.setModules('[%s]')", self._log_prefix,
@@ -538,8 +538,8 @@ class FirewallDConfigService(slip.dbus.service.Object):
         module = dbus_to_python(module, str)
         if module.startswith("nf_conntrack_"):
             module = module.replace("nf_conntrack_", "")
-        if "_" in module:
-            module = module.replace("_", "-")
+            if "_" in module:
+                module = module.replace("_", "-")
         log.debug1("%s.addModule('%s')", self._log_prefix, module)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -555,8 +555,8 @@ class FirewallDConfigService(slip.dbus.service.Object):
         module = dbus_to_python(module, str)
         if module.startswith("nf_conntrack_"):
             module = module.replace("nf_conntrack_", "")
-        if "_" in module:
-            module = module.replace("_", "-")
+            if "_" in module:
+                module = module.replace("_", "-")
         log.debug1("%s.removeModule('%s')", self._log_prefix, module)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
@@ -572,8 +572,8 @@ class FirewallDConfigService(slip.dbus.service.Object):
         module = dbus_to_python(module, str)
         if module.startswith("nf_conntrack_"):
             module = module.replace("nf_conntrack_", "")
-        if "_" in module:
-            module = module.replace("_", "-")
+            if "_" in module:
+                module = module.replace("_", "-")
         log.debug1("%s.queryModule('%s')", self._log_prefix, module)
         return module in self.getSettings()[4]
 

@@ -128,8 +128,8 @@ class Service(IO_Object):
             for module in config:
                 if module.startswith("nf_conntrack_"):
                     module = module.replace("nf_conntrack_", "")
-                if "_" in module:
-                    module = module.replace("_", "-")
+                    if "_" in module:
+                        module = module.replace("_", "-")
                 if len(module) < 2:
                     raise FirewallError(errors.INVALID_MODULE, module)
 
@@ -195,8 +195,8 @@ class service_ContentHandler(IO_Object_ContentHandler):
             module = attrs["name"]
             if module.startswith("nf_conntrack_"):
                 module = module.replace("nf_conntrack_", "")
-            if "_" in module:
-                module = module.replace("_", "-")
+                if "_" in module:
+                    module = module.replace("_", "-")
             if module not in self.item.modules:
                 self.item.modules.append(module)
             else:
