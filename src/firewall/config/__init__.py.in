@@ -68,12 +68,14 @@ ETC_FIREWALLD_ZONES = ETC_FIREWALLD + '/zones'
 ETC_FIREWALLD_SERVICES = ETC_FIREWALLD + '/services'
 ETC_FIREWALLD_ICMPTYPES = ETC_FIREWALLD + '/icmptypes'
 ETC_FIREWALLD_IPSETS = ETC_FIREWALLD + '/ipsets'
+ETC_FIREWALLD_HELPERS = ETC_FIREWALLD + '/helpers'
 
 USR_LIB_FIREWALLD = '/usr/lib/firewalld'
 FIREWALLD_ZONES = USR_LIB_FIREWALLD + '/zones'
 FIREWALLD_SERVICES = USR_LIB_FIREWALLD + '/services'
 FIREWALLD_ICMPTYPES = USR_LIB_FIREWALLD + '/icmptypes'
 FIREWALLD_IPSETS = USR_LIB_FIREWALLD + '/ipsets'
+FIREWALLD_HELPERS = USR_LIB_FIREWALLD + '/helpers'
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
@@ -102,6 +104,7 @@ COMMANDS = {
 }
 
 LOG_DENIED_VALUES = [ "all", "unicast", "broadcast", "multicast", "off" ]
+AUTOMATIC_HELPERS_VALUES = [ "yes", "no", "system" ]
 
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"
@@ -111,3 +114,4 @@ FALLBACK_LOCKDOWN = False
 FALLBACK_IPV6_RPFILTER = True
 FALLBACK_INDIVIDUAL_CALLS = False
 FALLBACK_LOG_DENIED = "off"
+FALLBACK_AUTOMATIC_HELPERS = "system"
