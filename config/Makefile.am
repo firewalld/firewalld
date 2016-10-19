@@ -72,6 +72,15 @@ CONFIG_FILES = \
 	icmptypes/time-exceeded.xml \
 	icmptypes/timestamp-reply.xml \
 	icmptypes/timestamp-request.xml \
+	helpers/amanda.xml \
+	helpers/ftp.xml \
+	helpers/irc.xml \
+	helpers/netbios-ns.xml \
+	helpers/pptp.xml \
+	helpers/sane.xml \
+	helpers/sip.xml \
+	helpers/snmp.xml \
+	helpers/tftp.xml \
 	ipsets/README \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
