@@ -1078,15 +1078,43 @@ class FirewallZone(object):
                 table = "filter"
                 if enable:
                     zone_transaction.add_chain(table, "INPUT")
+
                 if type(rule.action) == Rich_Accept:
                     # only load modules for accept action
-                    zone_transaction.add_modules(svc.modules)
+                    modules = [ ]
+                    for module in svc.modules:
+                        if self._fw.nf_conntrack_helper == 0:
+                            try:
+                                helper = self._fw.helper.get_helper(module)
+                            except Exception as msg:
+                                log.warning("Invalid helper '%s', skipping.",
+                                            module)
+                                continue
+                            if helper.family != "" and helper.family != ipv:
+                                # no support for family ipv, continue
+                                continue
+                            for (port,proto) in helper.ports:
+                                target = DEFAULT_ZONE_TARGET.format(
+                                    chain=SHORTCUTS["PREROUTING"], zone=zone)
+                                _rule = [ add_del, "%s_allow" % (target),
+                                          "-t", "raw", "-p", proto ]
+                                if port:
+                                    _rule += [ "--dport", "%s" % portStr(port) ]
+                                if ipv in svc.destination and \
+                                   svc.destination[ipv] != "":
+                                    _rule += [ "-d",  svc.destination[ipv] ]
+                                _rule += [ "-j", "CT", "--helper", module ]
+                                self.__rule_source(rule.source, _rule)
+                                zone_transaction.add_rule(ipv, _rule)
+
+                        modules.append("nf_conntrack_"+module)
+                    zone_transaction.add_modules(modules)
+
                 target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
                                                     zone=zone)
 
                 # create rules
                 for (port,proto) in svc.ports:
-                    table = "filter"
                     command = [ ]
                     self.__rule_source(rule.source, command)
                     self.__rule_destination(rule.destination, command)
@@ -1107,7 +1135,6 @@ class FirewallZone(object):
                                        command, zone_transaction)
 
                 for proto in svc.protocols:
-                    table = "filter"
                     command = [ ]
                     self.__rule_source(rule.source, command)
                     self.__rule_destination(rule.destination, command)
@@ -1127,7 +1154,6 @@ class FirewallZone(object):
 
                 # create rules
                 for (port,proto) in svc.source_ports:
-                    table = "filter"
                     command = [ ]
                     self.__rule_source(rule.source, command)
                     self.__rule_destination(rule.destination, command)
@@ -1533,14 +1559,42 @@ class FirewallZone(object):
         svc = self._fw.service.get_service(service)
 
         if enable:
+            if self._fw.nf_conntrack_helper == 0:
+                zone_transaction.add_chain("raw", "PREROUTING")
             zone_transaction.add_chain("filter", "INPUT")
-            zone_transaction.add_modules(svc.modules)
+            modules = [ ]
+            for module in svc.modules:
+                modules.append("nf_conntrack_"+module)
+            zone_transaction.add_modules(modules)
 
         add_del = { True: "-A", False: "-D" }[enable]
         for ipv in [ "ipv4", "ipv6" ]:
             if len(svc.destination) > 0 and ipv not in svc.destination:
                 # destination is set, only use if it contains ipv
                 continue
+
+            if self._fw.nf_conntrack_helper == 0:
+                for module in svc.modules:
+                    try:
+                        helper = self._fw.helper.get_helper(module)
+                    except Exception as msg:
+                        log.warning("Invalid helper '%s', skipping.", module)
+                        continue
+                    if helper.family != "" and helper.family != ipv:
+                        # no support for family ipv, continue
+                        continue
+                    for (port,proto) in helper.ports:
+                        target = DEFAULT_ZONE_TARGET.format(
+                            chain=SHORTCUTS["PREROUTING"], zone=zone)
+                        rule = [ add_del, "%s_allow" % (target), "-t", "raw",
+                                 "-p", proto ]
+                        if port:
+                            rule += [ "--dport", "%s" % portStr(port) ]
+                        if ipv in svc.destination and \
+                           svc.destination[ipv] != "":
+                            rule += [ "-d",  svc.destination[ipv] ]
+                        rule += [ "-j", "CT", "--helper", module ]
+                        zone_transaction.add_rule(ipv, rule)
 
             # handle rules
             for (port,proto) in svc.ports:
