@@ -48,10 +48,12 @@ from firewall import functions
 from firewall.dbus_utils import dbus_to_python
 from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES
 from firewall.core.ipset import IPSET_MAXNAMELEN
+from firewall.core.helper import HELPER_MAXNAMELEN
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
+from firewall.core.io.helper import Helper
 from firewall.core import rich
 from firewall.core.fw_nm import *
 
@@ -142,6 +144,8 @@ class FirewallConfig(object):
         self.ipsetsMenuitem = builder.get_object("ipsetsMenuitem")
         self.icmpTypesBox = builder.get_object("icmpTypesBox")
         self.icmpTypesMenuitem = builder.get_object("icmpTypesMenuitem")
+        self.helpersBox = builder.get_object("helpersBox")
+        self.helpersMenuitem = builder.get_object("helpersMenuitem")
         self.directBox = builder.get_object("directBox")
         self.directMenuitem = builder.get_object("directMenuitem")
         self.lockdownWhitelistBox = builder.get_object("lockdownWhitelistBox")
@@ -423,6 +427,15 @@ class FirewallConfig(object):
         for value in config.LOG_DENIED_VALUES:
             self.logDeniedDialogValueCombobox.append_text(value)
 
+        self.automaticHelpersLabel = builder.get_object("automaticHelpersLabel")
+        self.automaticHelpersDialog = builder.get_object("automaticHelpersDialog")
+        self.automaticHelpersDialogOkButton = \
+            builder.get_object("automaticHelpersDialogOkButton")
+        self.automaticHelpersDialogValueCombobox = \
+            builder.get_object("automaticHelpersDialogValueCombobox")
+        for value in config.AUTOMATIC_HELPERS_VALUES:
+            self.automaticHelpersDialogValueCombobox.append_text(value)
+
         self.zoneEditBox = builder.get_object("zoneEditBox")
         self.zoneEditBox.hide()
         self.zoneEditLoadDefaultsButton = \
@@ -699,6 +712,45 @@ class FirewallConfig(object):
         self.ipsetBaseDialogMaxelemEntry = \
             builder.get_object("ipsetBaseDialogMaxelemEntry")
 
+        self.helperConfHelperNotebook = \
+            builder.get_object("helperConfHelperNotebook")
+
+        self.helperConfHelperEditBox = \
+            builder.get_object("helperConfHelperEditBox")
+        self.helperConfPortBox = \
+            builder.get_object("helperConfPortBox")
+
+        self.helperConfEditHelperButton = \
+            builder.get_object("helperConfEditHelperButton")
+        self.helperConfRemoveHelperButton = \
+            builder.get_object("helperConfRemoveHelperButton")
+        self.helperConfLoadDefaultsHelperButton = \
+            builder.get_object("helperConfLoadDefaultsHelperButton")
+
+        self.helperConfAddPortButton = \
+            builder.get_object("helperConfAddPortButton")
+        self.helperConfEditPortButton = \
+            builder.get_object("helperConfEditPortButton")
+        self.helperConfRemovePortButton = \
+            builder.get_object("helperConfRemovePortButton")
+
+        self.helperBaseDialog = builder.get_object("helperBaseDialog")
+        self.helperBaseDialogOkButton = \
+            builder.get_object("helperBaseDialogOkButton")
+
+        self.helperBaseDialogNameEntry = \
+            builder.get_object("helperBaseDialogNameEntry")
+        self.helperBaseDialogVersionEntry = \
+            builder.get_object("helperBaseDialogVersionEntry")
+        self.helperBaseDialogShortEntry = \
+            builder.get_object("helperBaseDialogShortEntry")
+        self.helperBaseDialogDescText = \
+            builder.get_object("helperBaseDialogDescText")
+        self.helperBaseDialogDescText.get_buffer().connect(\
+            "changed", self.onHelperBaseDialogChanged)
+        self.helperBaseDialogFamilyCombobox = \
+            builder.get_object("helperBaseDialogFamilyCombobox")
+
         self.icmpView = builder.get_object("icmpView")
         self.icmpStore = Gtk.ListStore(GObject.TYPE_BOOLEAN, # checked
                                        GObject.TYPE_STRING)  # name
@@ -716,6 +768,28 @@ class FirewallConfig(object):
             builder.get_object("icmpBlockInversionEventbox")
         self.icmpBlockInversionEventbox.connect(
             "button-press-event", self.icmp_block_inversion_check_cb)
+
+        self.helperConfHelperView = builder.get_object("helperConfHelperView")
+        self.helperConfHelperStore = Gtk.ListStore(GObject.TYPE_STRING)  # name
+        self.helperConfHelperView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.helperConfHelperView.set_model(self.helperConfHelperStore)
+        self.helperConfHelperStore.set_sort_column_id(
+            0, Gtk.SortType.ASCENDING)
+        self.helperConfHelperView.get_selection().connect("changed",
+                                                          self.onChangeHelper)
+
+        self.helperConfPortView = builder.get_object("helperConfPortView")
+        self.helperConfPortStore = Gtk.ListStore(GObject.TYPE_STRING,
+                                                 GObject.TYPE_STRING)
+        self.helperConfPortView.append_column(
+            Gtk.TreeViewColumn(_("Port"), Gtk.CellRendererText(), text=0))
+        self.helperConfPortView.append_column(
+            Gtk.TreeViewColumn(_("Protocol"), Gtk.CellRendererText(), text=1))
+        self.helperConfPortView.set_model(self.helperConfPortStore)
+        self.helperConfPortStore.set_sort_column_id(0, Gtk.SortType.ASCENDING)
+        self.helperConfPortView.get_selection().connect(\
+            "changed", self.change_helper_conf_port_selection_cb)
 
         self.richRuleView = builder.get_object("richRuleView")
         self.richRuleStore = Gtk.ListStore(GObject.TYPE_PYOBJECT, # the rule obj
@@ -949,7 +1023,7 @@ class FirewallConfig(object):
             builder.get_object("serviceConfModuleView")
         self.serviceConfModuleStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.serviceConfModuleView.append_column(
-            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn("Module", Gtk.CellRendererText(), text=0))
         self.serviceConfModuleView.set_model(self.serviceConfModuleStore)
         self.serviceConfModuleStore.set_sort_column_id(
             0, Gtk.SortType.ASCENDING)
@@ -965,14 +1039,6 @@ class FirewallConfig(object):
             builder.get_object("serviceConfDestIpv4Chooser"), "")
         self.serviceConfDestIpv6Chooser = ChooserButton(
             builder.get_object("serviceConfDestIpv6Chooser"), "")
-
-        self.moduleDialog = builder.get_object("moduleDialog")
-        self.moduleDialogOkButton = \
-            builder.get_object("moduleDialogOkButton")
-        self.moduleDialogCancelButton = \
-            builder.get_object("moduleDialogCancelButton")
-        self.moduleDialogModuleEntry = \
-            builder.get_object("moduleDialogModuleEntry")
 
         self.addressDialog = builder.get_object("addressDialog")
         self.addressDialogLabel = builder.get_object("addressDialogLabel")
@@ -1009,6 +1075,21 @@ class FirewallConfig(object):
         self.ipsetDialogIPSetView.set_model(self.ipsetDialogIPSetStore)
         self.ipsetDialogIPSetView.get_selection().connect( \
             "changed", self.change_ipset_selection_cb)
+
+        self.helperDialog = builder.get_object("helperDialog")
+        self.helperDialogOkButton = \
+            builder.get_object("helperDialogOkButton")
+        self.helperDialogCancelButton = \
+            builder.get_object("helperDialogCancelButton")
+        self.helperDialogHelperView = \
+            builder.get_object("helperDialogHelperView")
+
+        self.helperDialogHelperStore = Gtk.ListStore(GObject.TYPE_STRING)
+        self.helperDialogHelperView.append_column(
+            Gtk.TreeViewColumn("", Gtk.CellRendererText(), text=0))
+        self.helperDialogHelperView.set_model(self.helperDialogHelperStore)
+        self.helperDialogHelperView.get_selection().connect( \
+            "changed", self.change_helper_selection_cb)
 
         self.sourceDialog = builder.get_object("sourceDialog")
         self.sourceDialogOkButton = \
@@ -1221,6 +1302,10 @@ class FirewallConfig(object):
         self.fw.connect("config:icmptype-updated", self.conf_icmp_updated_cb)
         self.fw.connect("config:icmptype-removed", self.conf_icmp_removed_cb)
         self.fw.connect("config:icmptype-renamed", self.conf_icmp_renamed_cb)
+        self.fw.connect("config:helper-added", self.conf_helper_added_cb)
+        self.fw.connect("config:helper-updated", self.conf_helper_updated_cb)
+        self.fw.connect("config:helper-removed", self.conf_helper_removed_cb)
+        self.fw.connect("config:helper-renamed", self.conf_helper_renamed_cb)
         self.fw.connect("config:policies:lockdown-whitelist-updated",
                         self.lockdown_whitelist_updated_cb)
 
@@ -1237,6 +1322,10 @@ class FirewallConfig(object):
         self.settings.connect("changed::show-direct",
                               self.settings_show_direct_changed)
         self.settings_show_direct_changed(self.settings, "show-direct")
+
+        self.settings.connect("changed::show-helpers",
+                              self.settings_show_helpers_changed)
+        self.settings_show_helpers_changed(self.settings, "show-helpers")
 
         self.settings.connect("changed::show-lockdown-whitelist",
                               self.settings_show_lockdown_whitelist_changed)
@@ -1370,6 +1459,20 @@ class FirewallConfig(object):
         else:
             self.icmpDialogIcmpStore.clear()
 
+    def onViewHelpers_toggled(self, button):
+        self.settings.set_boolean("show-helpers", button.get_active())
+
+    def settings_show_helpers_changed(self, settings, key):
+        self.show_helpers = settings.get_boolean(key)
+        self.helpersBox.set_visible(self.show_helpers)
+        self.helpersMenuitem.set_active(self.show_helpers)
+
+        if self.show_helpers:
+            if self.fw.connected:
+                self.load_helpers()
+        else:
+            self.helperConfHelperStore.clear()
+
     def onViewDirect_toggled(self, button):
         self.settings.set_boolean("show-direct", button.get_active())
 
@@ -1494,6 +1597,8 @@ class FirewallConfig(object):
             self.defaultZoneLabel.set_text(self.default_zone)
             self.log_denied = self.fw.getLogDenied()
             self.logDeniedLabel.set_text(self.log_denied)
+            self.automatic_helpers = self.fw.getAutomaticHelpers()
+            self.set_automaticHelpersLabel(self.automatic_helpers)
             lockdown = self.fw.queryLockdown()
             if lockdown:
                 self.lockdownLabel.set_text(self.enabled)
@@ -1570,10 +1675,13 @@ class FirewallConfig(object):
         self.defaultZoneLabel.set_text(self.default_zone)
         self.log_denied = self.fw.getLogDenied()
         self.logDeniedLabel.set_text(self.log_denied)
+        self.automatic_helpers = self.fw.getAutomaticHelpers()
+        self.set_automaticHelpersLabel(self.automatic_helpers)
         self.load_ipsets()
         self.load_zones()
         self.load_services()
         self.load_icmps()
+        self.load_helpers()
         self.load_direct()
         self.load_lockdown_whitelist()
 
@@ -2162,6 +2270,8 @@ class FirewallConfig(object):
             self.serviceConfSourcePortBox.hide()
             self.serviceConfModuleBox.hide()
             self.icmpDialogIcmpEditBox.hide()
+            self.helperConfHelperEditBox.hide()
+            self.helperConfPortBox.hide()
         else:
             self.zoneEditBox.show()
             self.ipsetConfIPSetEditBox.show()
@@ -2171,11 +2281,14 @@ class FirewallConfig(object):
             self.serviceConfSourcePortBox.show()
             self.serviceConfModuleBox.show()
             self.icmpDialogIcmpEditBox.show()
+            self.helperConfHelperEditBox.show()
+            self.helperConfPortBox.show()
 
         self.load_ipsets()
         self.load_zones()
         self.load_services()
         self.load_icmps()
+        self.load_helpers()
         self.load_direct()
         self.load_lockdown_whitelist()
 
@@ -2406,6 +2519,41 @@ class FirewallConfig(object):
     def log_denied_changed_cb(self, value):
         self.logDeniedLabel.set_text(value)
         combobox_select_text(self.logDeniedDialogValueCombobox, value)
+
+    def set_automaticHelpersLabel(self, value):
+        if value == "system":
+            self.automaticHelpersLabel.set_text(
+                "%s (%s)" % (value,
+                             { 0:"off", 1:"on" }[
+                                 self.fw.get_property("nf_conntrack_helper")]))
+        else:
+            self.automaticHelpersLabel.set_text(value)
+
+    def on_automaticHelpersDialogValueCombobox_changed(self, combo):
+        self.automaticHelpersDialogOkButton.set_sensitive(
+            combo.get_active_text() != self.automatic_helpers)
+
+    def onChangeAutomaticHelpers(self, *args):
+        combobox_select_text(self.automaticHelpersDialogValueCombobox,
+                             self.fw.getAutomaticHelpers())
+        self.automaticHelpersDialogOkButton.set_sensitive(False)
+        self.automaticHelpersDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.automaticHelpersDialog.set_transient_for(self.mainWindow)
+        self.automaticHelpersDialog.show_all()
+        self.add_visible_dialog(self.automaticHelpersDialog)
+        result = self.automaticHelpersDialog.run()
+        self.automaticHelpersDialog.hide()
+        self.remove_visible_dialog(self.automaticHelpersDialog)
+        if result == 1:
+            value = self.automaticHelpersDialogValueCombobox.get_active_text()
+            if value != self.automatic_helpers:
+                self.fw.setAutomaticHelpers(value)
+                self.automatic_helpers = value
+                self.changes_applied()
+
+    def automatic_helpers_changed_cb(self, value):
+        self.set_automaticHelpersLabel(value)
+        combobox_select_text(self.automaticHelpersDialogValueCombobox, value)
 
     def onRuntimeToPermanent(self, *args):
         self.fw.runtimeToPermanent()
@@ -3980,6 +4128,75 @@ class FirewallConfig(object):
             return None
         return ipset
 
+    def change_helper_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.helperDialogOkButton.set_sensitive(True)
+        else:
+            self.helperDialogOkButton.set_sensitive(False)
+
+    def helper_select_dialog(self, old_helper="", ipv=None):
+        self.helperDialogHelperStore.clear()
+
+        helpers = { }
+        if self.runtime_view:
+            for x in self.fw.getHelpers():
+                settings = self.fw.getHelperSettings(x)
+                helpers[x] = settings
+        else:
+            for i in self.fw.config().listHelpers():
+                obj = self.fw.config().getHelper(i)
+                helpers[obj.get_property("name")] = obj.getSettings()
+
+        for i in sorted(helpers.keys()):
+            # for all hash:ip and hash:net types, ipv has to match the family
+            # of the set
+            helper_type = helpers[i].getType()
+            if helper_type in [ "hash:ip", "hash:net" ]:
+                opts = helpers[i].getOptions()
+                if "family" in opts:
+                    if opts["family"] == "inet6" and \
+                       (ipv != "ipv6" and ipv != "all"):
+                        continue
+                else:
+                    if ipv == "ipv6" or ipv is None:
+                        continue
+            self.helperDialogHelperStore.append([i, helper_type])
+
+        selection = self.helperDialogHelperView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+        #selection.select_path(0)
+        iter = self.helperDialogHelperStore.get_iter_first()
+        while iter:
+            if self.helperDialogHelperStore.get_value(iter, 0) == old_helper:
+                selection.select_iter(iter)
+            iter = self.helperDialogHelperStore.iter_next(iter)
+
+        self.helperDialogOkButton.set_sensitive(False)
+        self.helperDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.helperDialog.set_transient_for(self.mainWindow)
+        self.helperDialog.show_all()
+        self.add_visible_dialog(self.helperDialog)
+
+        result = self.helperDialog.run()
+        self.helperDialog.hide()
+        self.remove_visible_dialog(self.helperDialog)
+
+        #self.helperDialogHelperEntry.disconnect(handler_id)
+
+        #helper = self.helperDialogHelperEntry.get_text()
+
+        if result != 1:
+            return None
+
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return None
+        helper = self.helperDialogHelperStore.get_value(iter, 0)
+        if old_helper == helper:
+            return None
+        return helper
+
     def on_sourceDialog_changed(self, arg, old_type, old_source):
         _type = self.sourceDialogSourceTypeCombobox.get_active_text()
         _source = self.sourceDialogSourceChooser.get_text()
@@ -5201,9 +5418,6 @@ class FirewallConfig(object):
         service.removeModule(module)
         self.changes_applied()
 
-    def onModuleChanged(self, *args):
-        self.moduleDialogOkButton.set_sensitive(True)
-
     def change_service_dialog_module_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
         if iter:
@@ -5213,47 +5427,73 @@ class FirewallConfig(object):
             self.serviceConfEditModuleButton.set_sensitive(False)
             self.serviceConfRemoveModuleButton.set_sensitive(False)
 
+    def helper_select_dialog(self, old_helper=""):
+        self.helperDialogHelperStore.clear()
+
+        helpers = [ ]
+        if self.runtime_view:
+            helpers = self.fw.getHelpers()
+        else:
+            helpers = self.fw.config().getHelperNames()
+
+        for helper in sorted(helpers):
+            self.helperDialogHelperStore.append([helper])
+
+        selection = self.helperDialogHelperView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
+        iter = self.helperDialogHelperStore.get_iter_first()
+        while iter:
+            if self.helperDialogHelperStore.get_value(iter, 0) == old_helper:
+                selection.select_iter(iter)
+            iter = self.helperDialogHelperStore.iter_next(iter)
+
+        self.helperDialogOkButton.set_sensitive(False)
+        self.helperDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.helperDialog.set_transient_for(self.mainWindow)
+        self.helperDialog.show_all()
+        self.add_visible_dialog(self.helperDialog)
+
+        result = self.helperDialog.run()
+        self.helperDialog.hide()
+        self.remove_visible_dialog(self.helperDialog)
+
+        if result != 1:
+            return None
+
+        (model, iter) = selection.get_selected()
+        if not iter:
+            return None
+        helper = self.helperDialogHelperStore.get_value(iter, 0)
+        if old_helper == helper:
+            return None
+        return helper
+
     def add_edit_module(self, add):
         active_service = self.get_active_service()
 
-        self.moduleDialogModuleEntry.set_text("")
-
-        old_module = None
+        old_helper = None
 
         if not add:
             selection = self.serviceConfModuleView.get_selection()
             (model, iter) = selection.get_selected()
             if iter is None:
                 return
-            old_module = self.serviceConfModuleStore.get_value(iter, 0)
+            old_helper = self.serviceConfModuleStore.get_value(iter, 0)
 
-        if old_module:
-            self.moduleDialogModuleEntry.set_text(old_module)
-
-        self.moduleDialogOkButton.set_sensitive(False)
-
-        self.moduleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        self.moduleDialog.set_transient_for(self.mainWindow)
-        self.moduleDialog.show_all()
-        self.add_visible_dialog(self.moduleDialog)
-        result = self.moduleDialog.run()
-        self.moduleDialog.hide()
-        self.remove_visible_dialog(self.moduleDialog)
-
-        if result != 1:
+        helper = self.helper_select_dialog(old_helper)
+        if helper is None:
             return
 
-        module = self.moduleDialogModuleEntry.get_text()
-
-        if old_module == module:
+        if old_helper == helper:
             # nothing to change
             return
 
         service = self.fw.config().getServiceByName(active_service)
-        if not service.queryModule(module):
+        if not service.queryModule(helper):
             if not add:
-                service.removeModule(old_module)
-            service.addModule(module)
+                service.removeModule(old_helper)
+            service.addModule(helper)
             self.changes_applied()
 
     def onChangeServiceConfDestIpv4(self, *args):
@@ -5941,6 +6181,401 @@ class FirewallConfig(object):
 
         self.ipsetConfRemoveEntryMenubutton.set_sensitive(
             len(self.ipsetConfEntryStore) > 0)
+
+    def get_active_helper(self):
+        selection = self.helperConfHelperView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter:
+            return self.helperConfHelperStore.get_value(iter, 0)
+        return None
+
+    def load_helpers(self):
+        if not self.show_helpers:
+            return
+        active_helper = self.get_active_helper()
+
+        if self.runtime_view:
+            helpers = self.fw.getHelpers()
+        else:
+            helpers = self.fw.config().getHelperNames()
+
+        selection = self.helperConfHelperView.get_selection()
+        selection.set_mode(Gtk.SelectionMode.NONE)
+
+        # reset and fill notebook content according to view
+
+        self.helperConfHelperStore.clear()
+
+        # helpers
+
+        for helper in helpers:
+            self.helperConfHelperStore.append([helper])
+
+        selection.set_mode(Gtk.SelectionMode.SINGLE)
+
+        iter = self.helperConfHelperStore.get_iter_first()
+        while iter:
+            if self.helperConfHelperStore.get_value(iter, 0) == \
+                    active_helper:
+                selection.select_iter(iter)
+                return
+            iter = self.helperConfHelperStore.iter_next(iter)
+        selection.select_path(0)
+
+    def onHelperConfAddHelper(self, *args):
+        self.add_edit_helper(True)
+
+    def onHelperConfRemoveHelper(self, *args):
+        active_helper = self.get_active_helper()
+        helper = self.fw.config().getHelperByName(active_helper)
+        helper.remove()
+        self.changes_applied()
+        self.load_helpers()
+        self.onChangeHelper()
+
+    def onHelperConfEditHelper(self, *args):
+        self.add_edit_helper(False)
+
+    def onHelperConfLoadDefaultsHelper(self, *args):
+        active_helper = self.get_active_helper()
+        helper = self.fw.config().getHelperByName(active_helper)
+        helper.loadDefaults()
+        self.changes_applied()
+        self.onChangeHelper()
+
+    def onHelperBaseDialogChanged(self, *args):
+        def check_helper_name(helper):
+            return (len(helper) <= HELPER_MAXNAMELEN, helper)
+
+        OK=True
+        if args and (args[0] == self.helperBaseDialogNameEntry):
+            additional_chars = "".join(Helper.ADDITIONAL_ALNUM_CHARS)
+            allowed_chars = string.ascii_letters+string.digits+additional_chars
+            OK = self.entry_changed(args[0], allowed_chars, check_helper_name)
+        self.helperBaseDialogOkButton.set_sensitive(OK)
+
+    def add_edit_helper(self, add):
+        if add:
+            default = True
+            builtin = False
+            old_name = None
+            old_version = None
+            old_short = None
+            old_desc = None
+            old_family = None
+
+            self.helperBaseDialogNameEntry.set_text("")
+            self.helperBaseDialogVersionEntry.set_text("")
+            self.helperBaseDialogShortEntry.set_text("")
+            self.helperBaseDialogDescText.get_buffer().set_text("")
+            self.helperBaseDialogFamilyCombobox.set_active(0)
+
+        else:
+            active_helper = self.get_active_helper()
+            helper = self.fw.config().getHelperByName(active_helper)
+            settings = helper.getSettings()
+            props = helper.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
+
+            old_name = helper.get_property("name")
+            old_version = settings.getVersion()
+            old_short = settings.getShort()
+            old_desc = settings.getDescription()
+            old_family = settings.getFamily()
+
+            self.helperBaseDialogNameEntry.set_text(old_name)
+            self.helperBaseDialogVersionEntry.set_text(old_version)
+            self.helperBaseDialogShortEntry.set_text(old_short)
+            self.helperBaseDialogDescText.get_buffer().set_text(old_desc)
+            self.helperBaseDialogFamilyCombobox.set_active(0)
+            combobox_select_text(self.helperBaseDialogFamilyCombobox,
+                                 { "": _("All") , "ipv4": _("IPv4"),
+                                   "ipv6" : _("IPv6") }[old_family])
+
+        self.helperBaseDialogOkButton.set_sensitive(False)
+        if builtin:
+            self.helperBaseDialogNameEntry.set_tooltip_markup(\
+                _("Built-in helper, rename not supported."))
+        else:
+            self.helperBaseDialogNameEntry.set_tooltip_markup("")
+        self.helperBaseDialogNameEntry.set_sensitive(not builtin and default)
+
+        self.helperBaseDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.helperBaseDialog.set_transient_for(self.mainWindow)
+        self.helperBaseDialog.show_all()
+        self.add_visible_dialog(self.helperBaseDialog)
+        result = self.helperBaseDialog.run()
+        self.helperBaseDialog.hide()
+        self.remove_visible_dialog(self.helperBaseDialog)
+
+        if result != 1:
+            return
+
+        name = self.helperBaseDialogNameEntry.get_text()
+        version = self.helperBaseDialogVersionEntry.get_text()
+        short = self.helperBaseDialogShortEntry.get_text()
+        buffer = self.helperBaseDialogDescText.get_buffer()
+        desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
+                               False)
+        family = { _("All") : "", _("IPv4") : "ipv4", _("IPv6") : "ipv6" } \
+                 [self.helperBaseDialogFamilyCombobox.get_active_text()]
+        if old_name == name and \
+                old_version == version and old_short == short and \
+                old_desc == desc and old_family == family:
+            # no changes
+            return
+
+        if not add:
+            active_helper = self.get_active_helper()
+            helper = self.fw.config().getHelperByName(active_helper)
+            settings = helper.getSettings()
+        else:
+            settings = client.FirewallClientHelperSettings()
+
+        if old_version != version or old_short != short or \
+           old_desc != desc or old_family != family:
+            # settings
+            settings.setVersion(version)
+            settings.setShort(short)
+            settings.setDescription(desc)
+            settings.setFamily(family)
+            if not add:
+                helper.update(settings)
+
+        if not add:
+            if old_name == name:
+                return
+            helper.rename(name)
+        else:
+            self.fw.config().addHelper(name, settings)
+        self.changes_applied()
+
+    def onHelperChanged(self, *args):
+        self.helperBaseDialogOkButton.set_sensitive(True)
+
+    def onHelperConfAddPort(self, *args):
+        self.add_edit_helper_port(True)
+
+    def onHelperConfEditPort(self, *args):
+        self.add_edit_helper_port(False)
+
+    def onHelperConfPortClicked(self, widget, event):
+        if event.type == Gdk.EventType.DOUBLE_BUTTON_PRESS and \
+           not self.runtime_view:
+            self.add_edit_helper_port(False)
+
+    def onHelperConfRemovePort(self, *args):
+        active_helper = self.get_active_helper()
+        selection = self.helperConfPortView.get_selection()
+        (model, iter) = selection.get_selected()
+        if iter is None:
+            return
+        port = self.helperConfPortStore.get_value(iter, 0)
+        proto = self.helperConfPortStore.get_value(iter, 1)
+
+        if self.runtime_view:
+            if self.fw.queryPort(active_helper, port, proto):
+                self.fw.removePort(active_helper, port, proto)
+                self.changes_applied()
+        else:
+            helper = self.fw.config().getHelperByName(active_helper)
+            helper.removePort(port, proto)
+            self.changes_applied()
+
+    def onHelperPortChanged(self, *args):
+        settings = self.active_helper_settings
+        port = self.helperEntryDialogEntryEntry.get_text()
+
+        try:
+            Helper.check_entry(entry, settings.getOptions(), settings.getType())
+        except Exception as e:
+            self.helperEntryDialogOkButton.set_sensitive(False)
+        else:
+            self.helperEntryDialogOkButton.set_sensitive(True)
+
+    def change_helper_conf_port_selection_cb(self, selection):
+        (model, iter) = selection.get_selected()
+        if iter:
+            self.helperConfEditPortButton.set_sensitive(True)
+            self.helperConfRemovePortButton.set_sensitive(True)
+        else:
+            self.helperConfEditPortButton.set_sensitive(False)
+            self.helperConfRemovePortButton.set_sensitive(False)
+
+    def add_edit_helper_port(self, add):
+        active_helper = self.get_active_helper()
+
+        self.portDialogPortEntry.set_text("")
+        self.portDialogProtoCombobox.set_active(0)
+
+        old_port = None
+        old_proto = None
+
+        if not add:
+            selection = self.helperConfPortView.get_selection()
+            (model, iter) = selection.get_selected()
+            if iter is None:
+                return
+            old_port = self.helperConfPortStore.get_value(iter, 0)
+            old_proto = self.helperConfPortStore.get_value(iter, 1)
+
+        if old_port:
+            self.portDialogPortEntry.set_text(old_port)
+        if old_proto:
+            combobox_select_text(self.portDialogProtoCombobox, old_proto)
+
+        self.portDialogOkButton.set_sensitive(False)
+
+        self.portDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.portDialog.set_transient_for(self.mainWindow)
+        self.portDialog.show_all()
+        self.add_visible_dialog(self.portDialog)
+        result = self.portDialog.run()
+        self.portDialog.hide()
+        self.remove_visible_dialog(self.portDialog)
+
+        if result != 1:
+            return
+
+        port = self.portDialogPortEntry.get_text()
+        proto = self.portDialogProtoCombobox.get_active_text()
+
+        if old_port == port and old_proto == proto:
+            # nothing to change
+            return
+
+        helper = self.fw.config().getHelperByName(active_helper)
+        if not helper.queryPort(port, proto):
+            if not add:
+                helper.removePort(old_port, old_proto)
+            helper.addPort(port, proto)
+            self.changes_applied()
+
+    def helper_port_added_cb(self, helper, entry):
+        if not self.runtime_view or helper != self.get_active_helper():
+            return
+        iter = self.helperConfPortStore.get_iter_first()
+        while iter:
+            if self.helperConfPortStore.get_value(iter, 0) == entry:
+                # already there
+                return
+            iter = self.helperConfPortStore.iter_next(iter)
+        # nothing found, so add it
+        self.helperConfPortStore.append([entry])
+
+    def helper_port_removed_cb(self, helper, entry):
+        if not self.runtime_view or helper != self.get_active_helper():
+            return
+        iter = self.helperConfPortStore.get_iter_first()
+        while iter:
+            if self.helperConfPortStore.get_value(iter, 0) == entry:
+                self.helperConfPortStore.remove(iter)
+                break
+            iter = self.helperConfPortStore.iter_next(iter)
+
+    def conf_helper_added_cb(self, helper):
+        if self.runtime_view:
+            return
+        # check if helper is in store
+        iter = self.helperConfHelperStore.get_iter_first()
+        while iter:
+            if self.helperConfHelperStore.get_value(iter, 0) == helper:
+                return
+            iter = self.helperConfHelperStore.iter_next(iter)
+        # not in list, append
+        self.helperConfHelperStore.append([helper])
+        selection = self.helperConfHelperView.get_selection()
+        if selection.count_selected_rows() == 0:
+            selection.select_path(0)
+
+    def conf_helper_updated_cb(self, helper):
+        if self.runtime_view or helper != self.get_active_helper():
+            return
+        self.onChangeHelper()
+
+    def conf_helper_removed_cb(self, helper):
+        if self.runtime_view:
+            return
+        iter = self.helperConfHelperStore.get_iter_first()
+        while iter:
+            if self.helperConfHelperStore.get_value(iter, 0) == helper:
+                self.helperConfHelperStore.remove(iter)
+                break
+            iter = self.helperConfHelperStore.iter_next(iter)
+
+    def conf_helper_renamed_cb(self, helper):
+        if self.runtime_view:
+            return
+
+        # Get all helpers, renamed the one that is missing.
+        # If more or less than one is missing, update helper store.
+
+        helpers = self.fw.config().getHelperNames()
+
+        use_iter = None
+        iter = self.helperConfHelperStore.get_iter_first()
+        while iter:
+            if self.helperConfHelperStore.get_value(iter, 0) not in helpers:
+                if use_iter is not None:
+                    return self.load_helpers()
+                use_iter = iter
+            iter = self.helperConfHelperStore.iter_next(iter)
+
+        if use_iter is None:
+            return self.load_helpers()
+
+        self.helperConfHelperStore.set_value(use_iter, 0, helper)
+
+    def onChangeHelper(self, *args):
+        active_helper = self.get_active_helper()
+
+        self.helperConfPortStore.clear()
+
+        self.helperConfPortView.get_selection().set_mode(
+            Gtk.SelectionMode.NONE)
+
+        if not active_helper:
+            self.helperConfEditHelperButton.set_sensitive(False)
+            self.helperConfRemoveHelperButton.set_sensitive(False)
+            self.helperConfLoadDefaultsHelperButton.set_sensitive(False)
+            self.helperConfHelperNotebook.set_sensitive(False)
+            return
+
+        self.helperConfEditHelperButton.set_sensitive(True)
+        self.helperConfHelperNotebook.set_sensitive(True)
+
+        ports = [ ]
+
+        if self.runtime_view:
+            # load runtime configuration
+
+            settings = self.fw.getHelperSettings(active_helper)
+            ports = settings.getPorts()
+            default = False
+            builtin = False
+        else:
+            try:
+                helper = self.fw.config().getHelperByName(active_helper)
+            except:
+                return
+
+            # load permanent configuration
+            settings = helper.getSettings()
+            ports = settings.getPorts()
+            props = helper.get_properties()
+            default = props["default"]
+            builtin = props["builtin"]
+
+        # set entries
+        for item in ports:
+            self.helperConfPortStore.append(item)
+
+        self.helperConfPortView.get_selection().set_mode(
+            Gtk.SelectionMode.SINGLE)
+
+        self.helperConfRemoveHelperButton.set_sensitive(not builtin and default)
+        self.helperConfLoadDefaultsHelperButton.set_sensitive(not default)
 
     def get_active_icmp(self):
         selection = self.icmpDialogIcmpView.get_selection()
