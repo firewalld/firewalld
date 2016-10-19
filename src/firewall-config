@@ -748,6 +748,8 @@ class FirewallConfig(object):
             builder.get_object("helperBaseDialogDescText")
         self.helperBaseDialogDescText.get_buffer().connect(\
             "changed", self.onHelperBaseDialogChanged)
+        self.helperBaseDialogModuleEntry = \
+            builder.get_object("helperBaseDialogModuleEntry")
         self.helperBaseDialogFamilyCombobox = \
             builder.get_object("helperBaseDialogFamilyCombobox")
 
@@ -6252,6 +6254,10 @@ class FirewallConfig(object):
             additional_chars = "".join(Helper.ADDITIONAL_ALNUM_CHARS)
             allowed_chars = string.ascii_letters+string.digits+additional_chars
             OK = self.entry_changed(args[0], allowed_chars, check_helper_name)
+        module = self.helperBaseDialogModuleEntry.get_text()
+        if not module.startswith("nf_conntrack_") or \
+           len(module.replace("nf_conntrack_", "")) < 1:
+            OK = False
         self.helperBaseDialogOkButton.set_sensitive(OK)
 
     def add_edit_helper(self, add):
@@ -6262,12 +6268,14 @@ class FirewallConfig(object):
             old_version = None
             old_short = None
             old_desc = None
+            old_module = None
             old_family = None
 
             self.helperBaseDialogNameEntry.set_text("")
             self.helperBaseDialogVersionEntry.set_text("")
             self.helperBaseDialogShortEntry.set_text("")
             self.helperBaseDialogDescText.get_buffer().set_text("")
+            self.helperBaseDialogModuleEntry.set_text("")
             self.helperBaseDialogFamilyCombobox.set_active(0)
 
         else:
@@ -6282,12 +6290,14 @@ class FirewallConfig(object):
             old_version = settings.getVersion()
             old_short = settings.getShort()
             old_desc = settings.getDescription()
+            old_module = settings.getModule()
             old_family = settings.getFamily()
 
             self.helperBaseDialogNameEntry.set_text(old_name)
             self.helperBaseDialogVersionEntry.set_text(old_version)
             self.helperBaseDialogShortEntry.set_text(old_short)
             self.helperBaseDialogDescText.get_buffer().set_text(old_desc)
+            self.helperBaseDialogModuleEntry.set_text(old_module)
             self.helperBaseDialogFamilyCombobox.set_active(0)
             combobox_select_text(self.helperBaseDialogFamilyCombobox,
                                  { "": _("All") , "ipv4": _("IPv4"),
@@ -6318,11 +6328,13 @@ class FirewallConfig(object):
         buffer = self.helperBaseDialogDescText.get_buffer()
         desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
                                False)
+        module = self.helperBaseDialogModuleEntry.get_text()
         family = { _("All") : "", _("IPv4") : "ipv4", _("IPv6") : "ipv6" } \
                  [self.helperBaseDialogFamilyCombobox.get_active_text()]
         if old_name == name and \
                 old_version == version and old_short == short and \
-                old_desc == desc and old_family == family:
+                old_desc == desc and old_module == module and \
+                old_family == family:
             # no changes
             return
 
@@ -6339,6 +6351,7 @@ class FirewallConfig(object):
             settings.setVersion(version)
             settings.setShort(short)
             settings.setDescription(desc)
+            settings.setModule(module)
             settings.setFamily(family)
             if not add:
                 helper.update(settings)
