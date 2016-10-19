@@ -23,7 +23,8 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "checkIP", "checkIP6", "checkIPnMask", "checkIP6nMask",
             "checkProtocol", "checkInterface", "checkUINT32",
             "firewalld_is_active", "tempFile", "readfile", "writefile",
-            "enable_ip_forwarding", "check_port", "check_address",
+            "enable_ip_forwarding", "get_nf_conntrack_helper",
+            "set_nf_conntrack_helper", "check_port", "check_address",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
@@ -323,6 +324,17 @@ def enable_ip_forwarding(ipv):
     elif ipv == "ipv6":
         return writefile("/proc/sys/net/ipv6/conf/all/forwarding", "1\n")
     return False
+
+def get_nf_conntrack_helper():
+    try:
+        return int(readfile("/proc/sys/net/netfilter/nf_conntrack_helper")[0])
+    except Exception:
+        log.warning("Failed to get and parse nf_conntrack_helper setting")
+        return 0
+
+def set_nf_conntrack_helper(flag):
+    return writefile("/proc/sys/net/netfilter/nf_conntrack_helper",
+                     "1\n" if flag else "0\n")
 
 def check_port(port):
     _range = getPortRange(port)
