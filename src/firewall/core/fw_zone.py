@@ -50,6 +50,12 @@ class FirewallZone(object):
         if "mangle" in ip6tables_tables:
             mangle.append("ipv6")
 
+        raw = []
+        if "raw" in ip4tables_tables:
+            raw.append("ipv4")
+        if "raw" in ip6tables_tables:
+            raw.append("ipv6")
+
         nat = []
         if "nat" in ip4tables_tables:
             nat.append("ipv4")
@@ -75,6 +81,9 @@ class FirewallZone(object):
             },
             "mangle": {
                 "PREROUTING": mangle,
+            },
+            "raw": {
+                "PREROUTING": raw,
             },
         }
 
