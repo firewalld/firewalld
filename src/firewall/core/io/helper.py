@@ -41,14 +41,15 @@ class Helper(IO_Object):
         ( "short", "" ),                      # s
         ( "description", "" ),                # s
         ( "family", "", ),                    # s
+        ( "module", "", ),                    # s
         ( "ports", [ ( "", "" ), ], ),        # a(ss)
         )
-    DBUS_SIGNATURE = '(ssssa(ss))'
+    DBUS_SIGNATURE = '(sssssa(ss))'
     ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
-        "helper": None,
+        "helper": [ "module" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
         "helper": [ "name", "version", "family" ],
@@ -60,6 +61,7 @@ class Helper(IO_Object):
         self.version = ""
         self.short = ""
         self.description = ""
+        self.module = ""
         self.family = ""
         self.ports = [ ]
 
@@ -67,6 +69,7 @@ class Helper(IO_Object):
         self.version = ""
         self.short = ""
         self.description = ""
+        self.module = ""
         self.family = ""
         del self.ports[:]
 
@@ -77,6 +80,7 @@ class Helper(IO_Object):
         self.version = u2b_if_py2(self.version)
         self.short = u2b_if_py2(self.short)
         self.description = u2b_if_py2(self.description)
+        self.module = u2b_if_py2(self.module)
         self.family = u2b_if_py2(self.family)
         self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
 
@@ -91,6 +95,14 @@ class Helper(IO_Object):
             for port in config:
                 check_port(port[0])
                 check_tcpudp(port[1])
+        elif item == "module":
+            if not config.startswith("nf_conntrack_"):
+                raise FirewallError(
+                    errors.INVALID_MODULE,
+                    "'%s' does not start with 'nf_conntrack_'" % config)
+            if len(config.replace("nf_conntrack_", "")) < 1:
+                raise FirewallError(errors.INVALID_MODULE,
+                                    "Module name '%s' too short" % config)
 
 # PARSER
 
@@ -104,6 +116,16 @@ class helper_ContentHandler(IO_Object_ContentHandler):
             if "family" in attrs:
                 self.item._check_ipv(attrs["family"])
                 self.item.family = attrs["family"]
+            if "module" in attrs:
+                if not attrs["module"].startswith("nf_conntrack_"):
+                    raise FirewallError(
+                        errors.INVALID_MODULE,
+                        "'%s' does not start with 'nf_conntrack_'" % module)
+                if len(attrs["module"].replace("nf_conntrack_", "")) < 1:
+                    raise FirewallError(
+                        errors.INVALID_MODULE,
+                        "Module name '%s' too short" % module)
+                self.item.module = attrs["module"]
         elif name == "short":
             pass
         elif name == "description":
@@ -172,6 +194,7 @@ def helper_writer(helper, path=None):
 
     # start helper element
     attrs = {}
+    attrs["module"] = helper.module
     if helper.version and helper.version != "":
         attrs["version"] = helper.version
     if helper.family and helper.family != "":
