@@ -342,6 +342,39 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
         settings = self.getSettings()
         return (settings[3] == ipv)
 
+    # module
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getModule(self, sender=None):
+        log.debug1("%s.getModule()", self._log_prefix)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        return settings[4]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
+                         in_signature='s')
+    @dbus_handle_exceptions
+    def setModule(self, module, sender=None):
+        module = dbus_to_python(module, str)
+        log.debug1("%s.setModule('%s')", self._log_prefix, module)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        if settings[4] == module:
+            raise FirewallError(errors.ALREADY_ENABLED, "'%s'" % module)
+        settings[4] = module
+        self.update(settings)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
+                         in_signature='s', out_signature='b')
+    @dbus_handle_exceptions
+    def queryModule(self, module, sender=None): # pylint: disable=W0613
+        module = dbus_to_python(module, str)
+        log.debug1("%s.queryModule('%s')", self._log_prefix, module)
+        settings = self.getSettings()
+        return (settings[4] == module)
+
     # port
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
@@ -349,7 +382,7 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getPorts(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getPorts()", self._log_prefix)
-        return self.getSettings()[4]
+        return self.getSettings()[5]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
                          in_signature='a(ss)')
@@ -367,7 +400,7 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
                    ",".join("('%s, '%s')" % (port[0], port[1]) for port in ports))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        settings[4] = ports
+        settings[5] = ports
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
@@ -380,10 +413,10 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if (port,protocol) in settings[4]:
+        if (port,protocol) in settings[5]:
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "%s:%s" % (port, protocol))
-        settings[4].append((port,protocol))
+        settings[5].append((port,protocol))
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
@@ -396,9 +429,9 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
                    protocol)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        if (port,protocol) not in settings[4]:
+        if (port,protocol) not in settings[5]:
             raise FirewallError(errors.NOT_ENABLED, "%s:%s" % (port, protocol))
-        settings[4].remove((port,protocol))
+        settings[5].remove((port,protocol))
         self.update(settings)
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
@@ -409,4 +442,4 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
         protocol = dbus_to_python(protocol, str)
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
                    protocol)
-        return (port,protocol) in self.getSettings()[4]
+        return (port,protocol) in self.getSettings()[5]
