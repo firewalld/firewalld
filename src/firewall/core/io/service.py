@@ -126,9 +126,11 @@ class Service(IO_Object):
 
         elif item == "modules":
             for module in config:
-                if not module.startswith("nf_conntrack_"):
-                    raise FirewallError(errors.INVALID_MODULE, module)
-                elif len(module.replace("nf_conntrack_", "")) < 1:
+                if module.startswith("nf_conntrack_"):
+                    module = module.replace("nf_conntrack_", "")
+                if "_" in module:
+                    module = module.replace("_", "-")
+                if len(module) < 2:
                     raise FirewallError(errors.INVALID_MODULE, module)
 
 # PARSER
@@ -190,15 +192,16 @@ class service_ContentHandler(IO_Object_ContentHandler):
                     else:
                         self.item.destination[x] = attrs[x]
         elif name == "module":
-            if attrs["name"].startswith("nf_conntrack_") and \
-               len(attrs["name"].replace("nf_conntrack_", "")) > 0:
-                if attrs["name"] not in self.item.modules:
-                    self.item.modules.append(attrs["name"])
-                else:
-                    log.warning("Module '%s' already set, ignoring.",
-                                attrs["name"])
+            module = attrs["name"]
+            if module.startswith("nf_conntrack_"):
+                module = module.replace("nf_conntrack_", "")
+            if "_" in module:
+                module = module.replace("_", "-")
+            if module not in self.item.modules:
+                self.item.modules.append(module)
             else:
-                log.warning("Invalid module '%s'", attrs["name"])
+                log.warning("Module '%s' already set, ignoring.",
+                            module)
 
 
 def service_reader(filename, path):
