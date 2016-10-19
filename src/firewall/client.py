@@ -1219,28 +1219,35 @@ class FirewallClientHelperSettings(object):
         self.settings[3] = ipv
 
     @handle_exceptions
-    def getPorts(self):
+    def getModule(self):
         return self.settings[4]
     @handle_exceptions
+    def setModule(self, module):
+        self.settings[4] = module
+
+    @handle_exceptions
+    def getPorts(self):
+        return self.settings[5]
+    @handle_exceptions
     def setPorts(self, ports):
-        self.settings[4] = ports
+        self.settings[5] = ports
     @handle_exceptions
     def addPort(self, port, protocol):
-        if (port,protocol) not in self.settings[4]:
-            self.settings[4].append((port,protocol))
+        if (port,protocol) not in self.settings[5]:
+            self.settings[5].append((port,protocol))
         else:
             raise FirewallError(errors.ALREADY_ENABLED,
                                 "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def removePort(self, port, protocol):
-        if (port,protocol) in self.settings[4]:
-            self.settings[4].remove((port,protocol))
+        if (port,protocol) in self.settings[5]:
+            self.settings[5].remove((port,protocol))
         else:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s:%s'" % (port, protocol))
     @handle_exceptions
     def queryPort(self, port, protocol):
-        return (port,protocol) in self.settings[4]
+        return (port,protocol) in self.settings[5]
 
 # helper config
 
@@ -1374,6 +1381,18 @@ class FirewallClientConfigHelper(object):
     @handle_exceptions
     def setFamily(self, ipv):
         self.fw_helper.setFamily(ipv)
+
+    # module
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getModule(self):
+        return self.fw_helper.getModule()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setModule(self, module):
+        self.fw_helper.setModule(module)
 
 # service config
 
