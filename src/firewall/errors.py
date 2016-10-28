@@ -45,6 +45,7 @@ BUILTIN_IPSET       =   33
 ALREADY_SET         =   34
 MISSING_IMPORT      =   35
 DBUS_ERROR          =   36
+BUILTIN_HELPER      =   37
 
 INVALID_ACTION      =  100
 INVALID_SERVICE     =  101
