@@ -30,7 +30,7 @@ import os
 
 from firewall.client import FirewallClientIPSetSettings, \
     FirewallClientZoneSettings, FirewallClientServiceSettings, \
-    FirewallClientIcmpTypeSettings
+    FirewallClientIcmpTypeSettings, FirewallClientHelperSettings
 from firewall.errors import FirewallError
 from firewall import config
 from firewall.core.fw_test import Firewall_test
@@ -39,6 +39,7 @@ from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
 from firewall.core.io.icmptype import icmptype_reader
+from firewall.core.io.helper import helper_reader
 from firewall.command import FirewallCommand
 
 # check for root user
@@ -94,6 +95,12 @@ Log Denied Options
   --get-log-denied     Print the log denied value
   --set-log-denied=<value>
                        Set log denied value
+
+Automatic Helpers Options
+  --get-automatic-helpers
+                       Print the automatic helpers value
+  --set-automatic-helpers=<value>
+                       Set automatic helpers value
 
 Zone Options
   --get-default-zone   Print default zone for connections and interfaces
@@ -339,6 +346,43 @@ Options to Handle Bindings of Sources
   --remove-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
                        Remove binding of the source from a zone [Z]
 
+Helper Options
+  --new-helper=<helper> --module=<module> [--family=<family>]
+                       Add a new helper
+  --new-helper-from-file=<filename> [--name=<helper>]
+                       Add a new helper from file with optional name
+  --delete-helper=<helper>
+                       Delete an existing helper
+  --load-helper-defaults=<helper>
+                       Load helper default settings
+  --info-helper=<helper> Print information about an helper
+  --path-helper=<helper> Print file path of an helper
+  --get-helpers         Print predefined helpers
+  --helper=<helper> --set-description=<description>
+                       Set new description to helper
+  --helper=<helper> --get-description
+                       Print description for helper
+  --helper=<helper> --set-short=<description>
+                       Set new short description to helper
+  --helper=<helper> --get-short
+                       Print short description for helper
+  --helper=<helper> --add-port=<portid>[-<portid>]/<protocol>
+                       Add a new port to helper
+  --helper=<helper> --remove-port=<portid>[-<portid>]/<protocol>
+                       Remove a port from helper
+  --helper=<helper> --query-port=<portid>[-<portid>]/<protocol>
+                       Return whether the port has been added for helper
+  --helper=<helper> --get-ports
+                       List ports of helper
+  --helper=<helper> --set-module=<module>
+                       Set module to helper
+  --helper=<helper> --get-module
+                       Get module from helper
+  --helper=<helper> --set-family={ipv4|ipv6|}
+                       Set family for helper
+  --helper=<helper> --get-family
+                       Get module from helper
+
 Direct Options
   --direct             First option for all direct options
   --get-all-chains
@@ -487,6 +531,8 @@ parser_group_standalone.add_argument("-h", "--help",
 parser_group_standalone.add_argument("-V", "--version", action="store_true")
 parser_group_standalone.add_argument("--get-log-denied", action="store_true")
 parser_group_standalone.add_argument("--set-log-denied", metavar="<value>")
+parser_group_standalone.add_argument("--get-automatic-helpers", action="store_true")
+parser_group_standalone.add_argument("--set-automatic-helpers", metavar="<value>")
 parser_group_standalone.add_argument("--policy-server", action="store_true")
 parser_group_standalone.add_argument("--policy-desktop", action="store_true")
 parser_group_standalone.add_argument("--lockdown-on", action="store_true")
@@ -506,6 +552,7 @@ parser_group_standalone.add_argument("--info-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--info-service", metavar="<service>")
 parser_group_standalone.add_argument("--info-icmptype", metavar="<icmptype>")
 parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
+parser_group_standalone.add_argument("--info-helper", metavar="<helper>")
 
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
@@ -525,10 +572,16 @@ parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
 parser_group_config.add_argument("--new-ipset-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
 parser_group_config.add_argument("--load-ipset-defaults", metavar="<ipset>")
+parser_group_config.add_argument("--new-helper", metavar="<helper>")
+parser_group_config.add_argument("--new-helper-from-file", metavar="<filename>")
+parser_group_config.add_argument("--delete-helper", metavar="<helper>")
+parser_group_config.add_argument("--load-helper-defaults", metavar="<helper>")
+
 parser_group_config.add_argument("--path-zone", metavar="<zone>")
 parser_group_config.add_argument("--path-service", metavar="<service>")
 parser_group_config.add_argument("--path-icmptype", metavar="<icmptype>")
 parser_group_config.add_argument("--path-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--path-helper", metavar="<helper>")
 
 parser.add_argument("--name", default="", metavar="<name>")
 
@@ -649,6 +702,19 @@ parser_service.add_argument("--get-description", action="store_true")
 parser_service.add_argument("--set-short", metavar="<description>")
 parser_service.add_argument("--get-short", action="store_true")
 
+parser.add_argument("--helper", metavar="<helper>")
+parser.add_argument("--family", metavar="<family>")
+parser.add_argument("--module", metavar="<module>")
+
+parser_helper = parser.add_mutually_exclusive_group()
+#parser_helper.add_argument("--get-ports", action="store_true")
+parser_helper.add_argument("--get-helpers", action="store_true")
+parser_helper.add_argument("--set-module", metavar="<module>")
+parser_helper.add_argument("--get-module", action="store_true")
+#parser_helper.add_argument("--query-module", metavar="<module>")
+parser_helper.add_argument("--set-family", metavar="<family>|''", nargs="*")
+parser_helper.add_argument("--get-family", action="store_true")
+
 parser.add_argument("--direct", action="store_true")
 
 # not possible to have sequences of options here
@@ -730,7 +796,8 @@ options_standalone = a.help or a.version or \
     a.policy_server or a.policy_desktop or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
-    a.get_log_denied or a.set_log_denied
+    a.get_log_denied or a.set_log_denied or \
+    a.get_automatic_helpers or a.set_automatic_helpers
 
 options_desc_xml_file = a.set_description or a.get_description or \
                         a.set_short or a.get_short
@@ -753,7 +820,8 @@ options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  options_lockdown_whitelist or a.list_all_zones or \
                  a.get_zone_of_interface or a.get_zone_of_source or \
                  a.info_zone or a.info_icmptype or a.info_service or \
-                 a.info_ipset or a.get_ipsets
+                 a.info_ipset or a.get_ipsets or a.info_helper or \
+                 a.get_helpers
 
 options_zone_action_action = \
     a.add_service or a.remove_service_from_zone or a.query_service or \
@@ -804,20 +872,33 @@ options_service = a.add_port or a.remove_port or a.query_port or \
                   a.query_destination or a.get_destinations or \
                   options_desc_xml_file
 
+options_helper = a.add_port or a.remove_port or a.query_port or \
+                  a.get_ports or a.set_module or a.get_module or \
+                  a.set_family or a.get_family or \
+                  options_desc_xml_file
+
 options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
                     a.new_icmptype_from_file or \
+                    a.load_icmptype_defaults or \
                     a.new_service or a.delete_service or \
                     a.new_service_from_file or \
+                    a.load_service_defaults or \
                     a.new_zone or a.delete_zone or \
                     a.new_zone_from_file or \
+                    a.load_zone_defaults or \
+                    a.new_helper or a.delete_helper or \
+                    a.new_helper_from_file or \
+                    a.load_helper_defaults or \
                     a.new_ipset or a.delete_ipset or \
                     a.new_ipset_from_file or \
+                    a.load_ipset_defaults or \
                     a.ipset or options_ipset or \
                     (a.icmptype and options_icmptype) or \
                     (a.service and options_service) or \
+                    (a.helper and options_helper) or \
                     a.path_zone or a.path_icmptype or a.path_service or \
-                    a.path_ipset
+                    a.path_ipset or a.path_helper
 
 options_direct = \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -838,6 +919,7 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_services or a.get_icmptypes or a.get_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
+ a.info_helper or a.get_helpers or \
  a.get_destinations or a.get_description
 
 # Set quiet and verbose
@@ -849,7 +931,7 @@ cmd.set_verbose(a.verbose)
 
 if not (options_standalone or options_ipset or \
         options_lokkit or \
-        options_icmptype or options_service or \
+        options_icmptype or options_service or options_helper or \
         options_permanent or options_direct or options_desc_xml_file):
     cmd.fail(parser.format_usage() + "No option specified.")
 
@@ -877,6 +959,11 @@ if options_service and a.service and len(a.service) > 0:
     # use the first entry in the array only
     a.service = a.service[0]
 
+if (options_helper and not a.helper) and \
+   not (options_service and a.service) and \
+   not options_zone and not options_desc_xml_file:
+    cmd.fail(parser.format_usage() + "No helper specified.")
+
 if options_direct and options_zone:
     cmd.fail(parser.format_usage() +
              "Can't use 'direct' options with other options.")
@@ -886,7 +973,8 @@ if (a.direct and not options_direct) or (options_direct and not a.direct):
              "Wrong usage of 'direct' options.")
 
 if a.name and not (a.new_zone_from_file or a.new_service_from_file or \
-                   a.new_ipset_from_file or a.new_icmptype_from_file):
+                   a.new_ipset_from_file or a.new_icmptype_from_file or \
+                   a.new_helper_from_file):
     cmd.fail(parser.format_usage() + "Wrong usage of '--name' option.")
 
 if options_config and options_zone:
@@ -1006,6 +1094,11 @@ try:
         cmd.print_and_exit(fw.get_log_denied())
     elif a.set_log_denied:
         fw.set_log_denied(a.set_log_denied)
+
+    elif a.get_automatic_helpers:
+        cmd.print_and_exit(fw.get_automatic_helpers())
+    elif a.set_automatic_helpers:
+        fw.set_automatic_helpers(a.set_automatic_helpers)
 
     elif a.policy_server:
         pk_symlink('server')
@@ -1527,6 +1620,98 @@ try:
             cmd.fail(parser.format_usage() + "Unknown option")
 
         cmd.print_and_exit("success")
+
+    # helper
+
+    elif a.get_helpers:
+        cmd.print_and_exit(" ".join(sorted(fw.config.get_helpers())))
+
+    elif a.new_helper:
+        if not a.module:
+            cmd.fail(parser.format_usage() + "No module specified.")
+
+        settings = FirewallClientHelperSettings()
+        settings.setModule(a.module)
+        if a.family:
+            settings.setFamily(a.family)
+        fw.config.new_helper(a.new_helper, settings.settings)
+
+    elif a.new_helper_from_file:
+        filename = os.path.basename(a.new_helper_from_file)
+        dirname = os.path.dirname(a.new_helper_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = helper_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load helper file '%s': %s" % \
+                     (a.new_helper_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load helper file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        fw.config.new_helper(obj.name, obj.export_config())
+
+    elif a.delete_helper:
+        obj = fw.config.get_helper(a.delete_helper)
+        fw.config.remove_helper(obj)
+
+    elif a.load_helper_defaults:
+        obj = fw.config.get_helper(a.load_helper_defaults)
+        fw.config.load_helper_defaults(obj)
+
+    elif a.info_helper:
+        obj = fw.config.get_helper(a.info_helper)
+        settings = FirewallClientHelperSettings(
+            list(fw.config.get_helper_config(obj)))
+        cmd.print_helper_info(a.info_helper, settings)
+        sys.exit(0)
+
+    elif a.path_helper:
+        obj = fw.config.get_helper(a.path_helper)
+        cmd.print_and_exit("%s/%s" % (obj.path, obj.filename))
+
+    elif a.helper:
+        obj = fw.config.get_helper(a.helper)
+        settings = FirewallClientHelperSettings(
+            list(fw.config.get_helper_config(obj)))
+
+        if a.add_port:
+            cmd.add_sequence(a.add_port, settings.addPort,
+                             settings.queryPort, cmd.parse_port, "%s/%s")
+            fw.config.set_helper_config(obj, settings.settings)
+
+        elif a.remove_port:
+            cmd.remove_sequence(a.remove_port, settings.removePort,
+                                settings.queryPort, cmd.parse_port, "%s/%s")
+            fw.config.set_helper_config(obj, settings.settings)
+
+        elif a.query_port:
+            cmd.query_sequence(a.query_port, settings.queryPort,
+                               cmd.parse_port, "%s/%s")
+
+        elif a.get_ports:
+            l = settings.getPorts()
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+
+        elif a.get_module:
+            cmd.print_and_exit(settings.getModule())
+
+        elif a.set_module:
+            settings.setModule(cmd.check_module(a.set_module))
+            fw.config.set_helper_config(obj, settings.settings)
+
+        elif a.get_family:
+            cmd.print_and_exit(settings.getFamily())
+
+        elif a.set_family:
+            settings.setFamily(cmd.check_helper_family(a.set_family[0]))
+            fw.config.set_helper_config(obj, settings.settings)
+
+        else:
+            cmd.fail(parser.format_usage() + "Unknown option")
 
     # lockdown whitelist
 
