@@ -110,7 +110,8 @@ class Firewall(object):
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
-        self.nf_conntrack_helper = 0
+        self.nf_conntrack_helper_setting = 0
+        self.nf_conntrack_helpers = { }
 
     def individual_calls(self):
         return self._individual_calls
@@ -183,6 +184,14 @@ class Firewall(object):
            not self.ebtables_backend.restore_noflush_option:
             log.debug1("ebtables-restore is not supporting the --noflush "
                        "option, will therefore not be used")
+
+        self.nf_conntrack_helpers = functions.get_nf_conntrack_helpers()
+        if len(self.nf_conntrack_helpers) > 0:
+            log.debug1("Conntrack helpers supported by the kernel:")
+            for key,values in self.nf_conntrack_helpers.items():
+                log.debug1("  %s: %s", key, ", ".join(values))
+        else:
+            log.debug1("No conntrack helpers supported by the kernel.")
 
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
@@ -343,8 +352,9 @@ class Firewall(object):
 
         # automatic helpers
         if self._automatic_helpers != "system":
-            functions.set_nf_conntrack_helper(self._automatic_helpers == "yes")
-        self.nf_conntrack_helper = functions.get_nf_conntrack_helper()
+            functions.set_nf_conntrack_helper_setting(self._automatic_helpers == "yes")
+        self.nf_conntrack_helper_setting = \
+            functions.get_nf_conntrack_helper_setting()
 
         # check if needed tables are there
         self._check_tables()

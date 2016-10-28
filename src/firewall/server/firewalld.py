@@ -170,8 +170,11 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "IPSetTypes":
             return dbus.Array(self.fw.ipset_supported_types, "s")
 
-        elif prop == "nf_conntrack_helper":
-            return dbus.Boolean(self.fw.nf_conntrack_helper == 1)
+        elif prop == "nf_conntrack_helper_setting":
+            return dbus.Boolean(self.fw.nf_conntrack_helper_setting == 1)
+
+        elif prop == "nf_conntrack_helpers":
+            return dbus.Dictionary(self.fw.nf_conntrack_helpers, "sas")
 
         else:
             raise dbus.exceptions.DBusException(
@@ -209,7 +212,8 @@ class FirewallD(slip.dbus.service.Object):
         ret = { }
         for x in [ "version", "interface_version", "state",
                    "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
-                   "IPSet", "IPSetTypes", "nf_conntrack_helper" ]:
+                   "IPSet", "IPSetTypes", "nf_conntrack_helper_setting",
+                   "nf_conntrack_helpers" ]:
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 

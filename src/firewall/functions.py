@@ -23,20 +23,22 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "checkIP", "checkIP6", "checkIPnMask", "checkIP6nMask",
             "checkProtocol", "checkInterface", "checkUINT32",
             "firewalld_is_active", "tempFile", "readfile", "writefile",
-            "enable_ip_forwarding", "get_nf_conntrack_helper",
-            "set_nf_conntrack_helper", "check_port", "check_address",
+            "enable_ip_forwarding", "get_nf_conntrack_helper_setting",
+            "set_nf_conntrack_helper_setting", "get_nf_conntrack_helpers",
+            "check_port", "check_address",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
             "b2u", "u2b", "u2b_if_py2" ]
 
 import socket
-import os.path
+import os, os.path
 import shlex, pipes
 import string
 import sys
 import tempfile
 from firewall.core.logger import log
+from firewall.core.prog import runProg
 from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
 
 PY2 = sys.version < '3'
@@ -325,14 +327,34 @@ def enable_ip_forwarding(ipv):
         return writefile("/proc/sys/net/ipv6/conf/all/forwarding", "1\n")
     return False
 
-def get_nf_conntrack_helper():
+def get_nf_conntrack_helpers():
+    kver = os.uname()[2]
+    path = "/lib/modules/%s/kernel/net/netfilter/" % kver
+    helpers = { }
+    if os.path.isdir(path):
+        for filename in sorted(os.listdir(path)):
+            if not filename.startswith("nf_conntrack_"):
+                continue
+            module = filename.split(".")[0]
+            (status, ret) = runProg("/usr/sbin/modinfo", [ module, ])
+            if status != 0:
+                continue
+            for line in ret.split("\n"):
+                if line.startswith("alias:") and "-helper-" in line:
+                    helper = line.split(":")[1].strip()
+                    helper = helper.replace("nfct-helper-", "")
+                    helper = helper.replace("_", "-")
+                    helpers.setdefault(module, [ ]).append(helper)
+    return helpers
+
+def get_nf_conntrack_helper_setting():
     try:
         return int(readfile("/proc/sys/net/netfilter/nf_conntrack_helper")[0])
     except Exception:
         log.warning("Failed to get and parse nf_conntrack_helper setting")
         return 0
 
-def set_nf_conntrack_helper(flag):
+def set_nf_conntrack_helper_setting(flag):
     return writefile("/proc/sys/net/netfilter/nf_conntrack_helper",
                      "1\n" if flag else "0\n")
 
