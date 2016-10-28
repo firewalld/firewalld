@@ -217,7 +217,7 @@ class FirewallConfig(object):
             return obj
 
     def new_ipset(self, name, conf):
-        if name in self._ipsets:
+        if name in self._ipsets or name in self._builtin_ipsets:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_ipset(): '%s'" % name)
 
@@ -563,7 +563,7 @@ class FirewallConfig(object):
             return obj
 
     def new_service(self, name, conf):
-        if name in self._services:
+        if name in self._services or name in self._builtin_services:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_service(): '%s'" % name)
 
@@ -744,7 +744,7 @@ class FirewallConfig(object):
             return obj
 
     def new_zone(self, name, conf):
-        if name in self._zones:
+        if name in self._zones or name in self._builtin_zones:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
@@ -925,7 +925,7 @@ class FirewallConfig(object):
             return obj
 
     def new_helper(self, name, conf):
-        if name in self._helpers:
+        if name in self._helpers or name in self._builtin_helpers:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_helper(): '%s'" % name)
 
