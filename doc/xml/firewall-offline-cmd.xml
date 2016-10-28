@@ -262,6 +262,60 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id="log_denied_options">
+      <title>Log Denied Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--get-log-denied</option></term>
+	  <listitem>
+	    <para>
+	      Print the log denied setting.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--set-log-denied</option>=<replaceable>value</replaceable></term>
+	  <listitem>
+	    <para>
+	      Add logging rules right before reject and drop rules in the INPUT, FORWARD and OUTPUT chains for the default rules and also final reject and drop rules in zones for the configured link-layer packet type. The possible values are: <replaceable>all</replaceable>, <replaceable>unicast</replaceable>, <replaceable>broadcast</replaceable>, <replaceable>multicast</replaceable> and <replaceable>off</replaceable>. The default setting is <replaceable>off</replaceable>, which disables the logging.
+	    </para>
+	    <para>
+	      This is a runtime and permanent change and will also reload the firewall to be able to add the logging rules.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="automatic_helpers_options">
+      <title>Automatic Helpers Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--get-automatic-helpers</option></term>
+	  <listitem>
+	    <para>
+	      Print the automatic helpers setting.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--set-automatic-helpers</option>=<replaceable>value</replaceable></term>
+	  <listitem>
+	    <para>
+	      For the secure use of iptables and connection tracking helpers it is recommended to turn AutomaticHelpers off. But this might have side effects on other services using the netfilter helpers as the sysctl setting in <filename>/proc/sys/net/netfilter/nf_conntrack_helper</filename> will be changed.
+	      With the system setting, the default value set in the kernel or with sysctl will be used.
+	      Possible values are: <literal>yes</literal>, <literal>no</literal> and <literal>system</literal>. The default value is <literal>system</literal>.
+	    </para>
+	    <para>
+	      This is a runtime and permanent change and will also reload the firewall to be able to make the helpers usable.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
     <refsect2 id="zone_options">
       <title>Zone Options</title>
       <variablelist>
@@ -1352,6 +1406,183 @@
          <listitem>
            <para>
              List destinations added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+     </variablelist>
+    </refsect2>
+
+    <refsect2 id="helper_options">
+      <title>Helper Options</title>
+      <para>
+	Options in this section affect only one particular helper.
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--info-helper=<replaceable>helper</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print information about the helper <replaceable>helper</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>helper</replaceable>
+  family: <replaceable>family</replaceable>
+  module: <replaceable>module</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+              </programlisting>
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      <para>
+	The following options are only usable in the permanent configuration.
+      </para>
+      <variablelist>
+       <varlistentry>
+         <term><option>--new-helper</option>=<replaceable>helper</replaceable> <option>--module</option>=<replaceable>nf_conntrack_module</replaceable> <optional><option>--family</option>=<literal>ipv4</literal>|<literal>ipv6</literal></optional></term>
+         <listitem>
+           <para>
+             Add a new permanent helper with module and optionally family defined.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--new-helper-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>helper</replaceable></optional></term>
+         <listitem>
+           <para>
+              Add a new permanent helper from a prepared helper file with an optional name override.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--delete-helper</option>=<replaceable>helper</replaceable></term>
+         <listitem>
+           <para>
+             Delete an existing permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+	<varlistentry>
+          <term><option>--load-helper-defaults</option>=<replaceable>helper</replaceable></term>
+          <listitem>
+            <para>
+              Load helper default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>--path-helper=<replaceable>helper</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the helper configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--get-helpers</option></term>
+	  <listitem>
+	    <para>
+	      Print predefined helpers as a space separated list.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new port to the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--remove-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a port from the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--query-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the port has been added to the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--get-ports</option></term>
+         <listitem>
+           <para>
+             List ports added to the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--set-module</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set module description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--get-module</option></term>
+         <listitem>
+           <para>
+             Print module description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--set-family</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set family description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--helper</option>=<replaceable>helper</replaceable> <option>--get-family</option></term>
+         <listitem>
+           <para>
+             Print family description of helper
            </para>
          </listitem>
        </varlistentry>
