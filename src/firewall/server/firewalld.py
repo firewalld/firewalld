@@ -2397,7 +2397,7 @@ class FirewallD(slip.dbus.service.Object):
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_HELPER, in_signature='',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
     def getHelpers(self, sender=None): # pylint: disable=W0613
@@ -2406,7 +2406,7 @@ class FirewallD(slip.dbus.service.Object):
         return self.fw.helper.get_helpers()
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_HELPER, in_signature='s',
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
                          out_signature=Helper.DBUS_SIGNATURE)
     @dbus_handle_exceptions
     def getHelperSettings(self, helper, sender=None): # pylint: disable=W0613

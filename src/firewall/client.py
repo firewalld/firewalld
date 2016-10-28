@@ -2480,7 +2480,6 @@ class FirewallClient(object):
         for interface in [ config.dbus.DBUS_INTERFACE,
                            config.dbus.DBUS_INTERFACE_IPSET,
                            config.dbus.DBUS_INTERFACE_ZONE,
-                           config.dbus.DBUS_INTERFACE_HELPER,
                            config.dbus.DBUS_INTERFACE_DIRECT,
                            config.dbus.DBUS_INTERFACE_POLICIES,
                            config.dbus.DBUS_INTERFACE_CONFIG,
@@ -2652,8 +2651,6 @@ class FirewallClient(object):
             self.fw_zone = dbus.Interface(
                 self.dbus_obj,
                 dbus_interface=config.dbus.DBUS_INTERFACE_ZONE)
-            self.fw_helper = dbus.Interface(
-                self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_HELPER)
             self.fw_direct = dbus.Interface(
                 self.dbus_obj, dbus_interface=config.dbus.DBUS_INTERFACE_DIRECT)
             self.fw_policies = dbus.Interface(
@@ -2854,13 +2851,13 @@ class FirewallClient(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getHelpers(self):
-        return dbus_to_python(self.fw_helper.getHelpers())
+        return dbus_to_python(self.fw.getHelpers())
 
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def getHelperSettings(self, helper):
         return FirewallClientHelperSettings(list(dbus_to_python(\
-                    self.fw_helper.getHelperSettings(helper))))
+                    self.fw.getHelperSettings(helper))))
 
     # automatic helper setting
 
