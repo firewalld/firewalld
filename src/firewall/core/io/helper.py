@@ -45,7 +45,7 @@ class Helper(IO_Object):
         ( "ports", [ ( "", "" ), ], ),        # a(ss)
         )
     DBUS_SIGNATURE = '(sssssa(ss))'
-    ADDITIONAL_ALNUM_CHARS = [ "_", "-" ]
+    ADDITIONAL_ALNUM_CHARS = [ "-", "." ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
         "description": None,
