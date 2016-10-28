@@ -469,13 +469,12 @@ assert_good "--service=${myservice} --query-source-port=111-222/udp"
 assert_good "--service=${myservice} --remove-source-port 111-222/udp"
 assert_bad  "--service=${myservice} --query-source-port=111-222/udp"
 
-assert_bad  "--service=${myservice} --add-module=foo" # no valid helper
-assert_good "--service=${myservice} --add-module=nf_conntrack_sip"
-assert_good "--service=${myservice} --remove-module=nf_conntrack_sip"
-assert_good "--service=${myservice} --add-module=nf_conntrack_ftp"
-assert_good "--service=${myservice} --query-module=nf_conntrack_ftp"
-assert_good "--service=${myservice} --remove-module=nf_conntrack_ftp"
-assert_bad "--service=${myservice} --query-module=nf_conntrack_ftp"
+assert_good "--service=${myservice} --add-module=sip"
+assert_good "--service=${myservice} --remove-module=sip"
+assert_good "--service=${myservice} --add-module=ftp"
+assert_good "--service=${myservice} --query-module=ftp"
+assert_good "--service=${myservice} --remove-module=ftp"
+assert_bad "--service=${myservice} --query-module=ftp"
 
 assert_bad  "--service=${myservice} --set-destination=ipv4" # no address
 assert_bad  "--service=${myservice} --set-destination=ipv4:foo" # bad address
@@ -528,6 +527,27 @@ assert_good "--zone=${zone} --query-source=${source}"
 assert_good "--zone=${zone} --remove-source=${source}"
 
 assert_good "--delete-ipset=${ipset}"
+
+# helper tests
+myhelper="myhelper"
+assert_bad "--new-helper=${myhelper} --module=foo"
+assert_good "--new-helper=${myhelper} --module=nf_conntrack_foo"
+assert_good_contains "--get-helpers" "${myhelper}"
+assert_good_empty "--helper=${myhelper} --get-family"
+assert_bad "--helper=${myhelper} --set-family=ipv5"
+assert_good "--helper=${myhelper} --set-family=ipv4"
+assert_good_equals "--helper=${myhelper} --get-family" "ipv4"
+assert_good "--helper=${myhelper} --set-family="
+assert_good_empty "--helper=${myhelper} --get-family"
+assert_good_empty "--helper=${myhelper} --get-ports"
+assert_good "--helper=${myhelper} --add-port=44/tcp"
+assert_good_notempty "--helper=${myhelper} --get-ports"
+assert_good "--helper=${myhelper} --query-port=44/tcp"
+assert_good "--helper=${myhelper} --remove-port=44/tcp"
+assert_bad "--helper=${myhelper} --query-port=44/tcp"
+assert_good_empty "--helper=${myhelper} --get-ports"
+assert_good "--delete-helper=${myhelper}"
+assert_bad_contains "--get-helpers" "${myhelper}"
 
 # exit return value tests
 assert_exit_code "--remove-port 122/udp" 0

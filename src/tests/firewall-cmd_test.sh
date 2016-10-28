@@ -572,13 +572,12 @@ assert_good "--permanent --service=${myservice} --query-source-port=111-222/udp"
 assert_good "--permanent --service=${myservice} --remove-source-port 111-222/udp"
 assert_bad  "--permanent --service=${myservice} --query-source-port=111-222/udp"
 
-assert_bad  "--permanent --service=${myservice} --add-module=foo" # no valid helper
-assert_good "--permanent --service=${myservice} --add-module=nf_conntrack_sip"
-assert_good "--permanent --service=${myservice} --remove-module=nf_conntrack_sip"
-assert_good "--permanent --service=${myservice} --add-module=nf_conntrack_ftp"
-assert_good "--permanent --service=${myservice} --query-module=nf_conntrack_ftp"
-assert_good "--permanent --service=${myservice} --remove-module=nf_conntrack_ftp"
-assert_bad "--permanent --service=${myservice} --query-module=nf_conntrack_ftp"
+assert_good "--permanent --service=${myservice} --add-module=sip"
+assert_good "--permanent --service=${myservice} --remove-module=sip"
+assert_good "--permanent --service=${myservice} --add-module=ftp"
+assert_good "--permanent --service=${myservice} --query-module=ftp"
+assert_good "--permanent --service=${myservice} --remove-module=ftp"
+assert_bad "--permanent --service=${myservice} --query-module=ftp"
 
 assert_bad  "--permanent --service=${myservice} --set-destination=ipv4" # no address
 assert_bad  "--permanent --service=${myservice} --set-destination=ipv4:foo" # bad address
@@ -633,6 +632,27 @@ assert_good "--zone=${zone} --remove-source=${source}"
 
 assert_good "--permanent --delete-ipset=${ipset}"
 assert_good "--reload"
+
+# helper tests
+myhelper="myhelper"
+assert_bad "--permanent --new-helper=${myhelper} --module=foo"
+assert_good "--permanent --new-helper=${myhelper} --module=nf_conntrack_foo"
+assert_good_contains "--permanent --get-helpers" "${myhelper}"
+assert_good_empty "--permanent --helper=${myhelper} --get-family"
+assert_bad "--permanent --helper=${myhelper} --set-family=ipv5"
+assert_good "--permanent --helper=${myhelper} --set-family=ipv4"
+assert_good_equals "--permanent --helper=${myhelper} --get-family" "ipv4"
+assert_good "--permanent --helper=${myhelper} --set-family="
+assert_good_empty "--permanent --helper=${myhelper} --get-family"
+assert_good_empty "--permanent --helper=${myhelper} --get-ports"
+assert_good "--permanent --helper=${myhelper} --add-port=44/tcp"
+assert_good_notempty "--permanent --helper=${myhelper} --get-ports"
+assert_good "--permanent --helper=${myhelper} --query-port=44/tcp"
+assert_good "--permanent --helper=${myhelper} --remove-port=44/tcp"
+assert_bad "--permanent --helper=${myhelper} --query-port=44/tcp"
+assert_good_empty "--permanent --helper=${myhelper} --get-ports"
+assert_good "--permanent --delete-helper=${myhelper}"
+assert_bad_contains "--permanent --get-helpers" "${myhelper}"
 
 # exit return value tests
 assert_exit_code "--remove-port 122/udp" 0
