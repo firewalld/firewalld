@@ -1459,19 +1459,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="helperBaseDialogNameEntry">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="activates_default">True</property>
-                    <signal name="changed" handler="onHelperBaseDialogChanged" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="left_attach">1</property>
-                    <property name="top_attach">0</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkEntry" id="helperBaseDialogShortEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -1609,17 +1596,75 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="helperBaseDialogModuleEntry">
+                  <object class="GtkButton" id="helperBaseDialogModuleChooser">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="invisible_char">•</property>
-                    <property name="activates_default">True</property>
-                    <property name="placeholder_text">nf_conntrack_...</property>
-                    <signal name="changed" handler="onHelperBaseDialogChanged" swapped="no"/>
+                    <property name="focus_on_click">False</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="onHelperBaseDialogChanged" swapped="no"/>
+                    <signal name="clicked" handler="onHelperBaseDialogModuleChooserClicked" swapped="no"/>
+                    <child>
+                      <object class="GtkBox" id="hbox6">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="spacing">4</property>
+                        <child>
+                          <object class="GtkLabel" id="label151">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="width_chars">0</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSeparator" id="separator13">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkImage" id="image12">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="icon_name">gtk-network</property>
+                            <property name="icon_size">1</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="top_attach">4</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="helperBaseDialogNameEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="invisible_char">•</property>
+                    <property name="activates_default">True</property>
+                    <signal name="changed" handler="onHelperBaseDialogChanged" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
                   </packing>
                 </child>
               </object>
@@ -5882,7 +5927,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="halign">start</property>
-                                <property name="label" translatable="yes">A netfilter helper ..</property>
+                                <property name="label" translatable="yes">A connection tracking helper is assisting to make protocols work that are using different flows for signaling and data transfers. The data transfers are using ports that are unrelated to the signaling connection and are therefore blocked by the firewall without the helper.</property>
                                 <property name="wrap">True</property>
                                 <property name="xalign">0</property>
                                 <property name="yalign">0</property>
@@ -6046,7 +6091,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
                                             <property name="halign">start</property>
-                                            <property name="label" translatable="yes">Define ports or port ranges, which need to be supplied to the helper.</property>
+                                            <property name="label" translatable="yes">Define ports or port ranges, which are monitored by the helper.</property>
                                             <property name="wrap">True</property>
                                             <property name="xalign">0</property>
                                             <property name="yalign">0</property>
@@ -8754,6 +8799,173 @@
     <action-widgets>
       <action-widget response="-1">markDialogCancelButton</action-widget>
       <action-widget response="1">markDialogOkButton</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkDialog" id="moduleDialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Helper</property>
+    <property name="modal">True</property>
+    <property name="type_hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="moduleDialogCancelButton">
+                <property name="label">gtk-cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="moduleDialogOkButton">
+                <property name="label">gtk-ok</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="vbox34">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="border_width">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label150">
+                <property name="can_focus">False</property>
+                <property name="halign">start</property>
+                <property name="label" translatable="yes">Please select a netfilter conntrack helper:</property>
+                <property name="wrap">True</property>
+                <property name="xalign">0</property>
+                <property name="yalign">0</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkGrid" id="table5">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="border_width">6</property>
+                <property name="row_spacing">6</property>
+                <property name="column_spacing">6</property>
+                <child>
+                  <object class="GtkLabel" id="moduleDialogModuleLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="label" translatable="yes">Module:</property>
+                    <property name="xalign">1</property>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="moduleDialogModuleCombobox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">True</property>
+                    <items>
+                      <item translatable="yes">- Select -</item>
+                    </items>
+                    <signal name="changed" handler="onModuleChanged" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="moduleDialogOtherModuleEntry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="valign">start</property>
+                    <property name="hexpand">True</property>
+                    <property name="max_length">50</property>
+                    <property name="invisible_char">●</property>
+                    <property name="width_chars">25</property>
+                    <property name="max_width_chars">50</property>
+                    <signal name="changed" handler="onModuleChanged" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">1</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkCheckButton" id="moduleDialogOtherModuleCheck">
+                    <property name="label" translatable="yes">Other Module:</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">False</property>
+                    <property name="halign">end</property>
+                    <property name="xalign">0</property>
+                    <property name="image_position">right</property>
+                    <property name="draw_indicator">True</property>
+                    <signal name="toggled" handler="onModuleChanged" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="left_attach">0</property>
+                    <property name="top_attach">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="-1">moduleDialogCancelButton</action-widget>
+      <action-widget response="1">moduleDialogOkButton</action-widget>
     </action-widgets>
   </object>
   <object class="GtkDialog" id="portDialog">

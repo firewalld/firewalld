@@ -100,6 +100,7 @@ class FirewallConfig(object):
         self.zone_source_editors = { }
 
         self.default_zone = ""
+        self.nf_conntrack_helpers = { }
 
         # point to the visible dialogs
         self.visible_dialogs = [ ]
@@ -748,8 +749,8 @@ class FirewallConfig(object):
             builder.get_object("helperBaseDialogDescText")
         self.helperBaseDialogDescText.get_buffer().connect(\
             "changed", self.onHelperBaseDialogChanged)
-        self.helperBaseDialogModuleEntry = \
-            builder.get_object("helperBaseDialogModuleEntry")
+        self.helperBaseDialogModuleChooser = \
+            ChooserButton(builder.get_object("helperBaseDialogModuleChooser"))
         self.helperBaseDialogFamilyCombobox = \
             builder.get_object("helperBaseDialogFamilyCombobox")
 
@@ -1092,6 +1093,18 @@ class FirewallConfig(object):
         self.helperDialogHelperView.set_model(self.helperDialogHelperStore)
         self.helperDialogHelperView.get_selection().connect( \
             "changed", self.change_helper_selection_cb)
+
+        self.moduleDialog = builder.get_object("moduleDialog")
+        self.moduleDialogOkButton = builder.get_object("moduleDialogOkButton")
+        self.moduleDialogCancelButton = \
+            builder.get_object("moduleDialogCancelButton")
+        self.moduleDialogModuleLabel = builder.get_object("moduleDialogModuleLabel")
+        self.moduleDialogModuleCombobox = \
+            builder.get_object("moduleDialogModuleCombobox")
+        self.moduleDialogOtherModuleCheck = \
+            builder.get_object("moduleDialogOtherModuleCheck")
+        self.moduleDialogOtherModuleEntry = \
+            builder.get_object("moduleDialogOtherModuleEntry")
 
         self.sourceDialog = builder.get_object("sourceDialog")
         self.sourceDialogOkButton = \
@@ -1619,6 +1632,11 @@ class FirewallConfig(object):
             self.panicMenuitem.set_active(panic)
             self.panicMenuitem.handler_unblock(self.panic_check_id)
 
+            self.nf_conntrack_helpers = \
+                self.fw.get_property("nf_conntrack_helpers")
+            for x in self.nf_conntrack_helpers.keys():
+                self.moduleDialogModuleCombobox.append_text(x)
+
             if self.connection_lost:
                 self.onChangeView()
             else:
@@ -1634,6 +1652,9 @@ class FirewallConfig(object):
             self.defaultZoneLabel.set_text("-")
             self.lockdownLabel.set_text("-")
             self.panicLabel.set_text("-")
+
+            self.moduleDialogModuleCombobox.remove_all()
+            self.nf_conntrack_helpers.clear()
 
             self.hide_and_remove_visible_dialogs()
             self.waitingWindow.show()
@@ -2527,7 +2548,7 @@ class FirewallConfig(object):
             self.automaticHelpersLabel.set_text(
                 "%s (%s)" % (value,
                              { 0:"off", 1:"on" }[
-                                 self.fw.get_property("nf_conntrack_helper")]))
+                                 self.fw.get_property("nf_conntrack_helper_setting")]))
         else:
             self.automaticHelpersLabel.set_text(value)
 
@@ -6245,6 +6266,13 @@ class FirewallConfig(object):
         self.changes_applied()
         self.onChangeHelper()
 
+    def onHelperBaseDialogModuleChooserClicked(self, *args):
+        old_module = self.helperBaseDialogModuleChooser.get_text()
+
+        module = self.module_select_dialog(old_module)
+        if module is not None:
+            self.helperBaseDialogModuleChooser.set_text(module)
+
     def onHelperBaseDialogChanged(self, *args):
         def check_helper_name(helper):
             return (len(helper) <= HELPER_MAXNAMELEN, helper)
@@ -6254,8 +6282,8 @@ class FirewallConfig(object):
             additional_chars = "".join(Helper.ADDITIONAL_ALNUM_CHARS)
             allowed_chars = string.ascii_letters+string.digits+additional_chars
             OK = self.entry_changed(args[0], allowed_chars, check_helper_name)
-        module = self.helperBaseDialogModuleEntry.get_text()
-        if not module.startswith("nf_conntrack_") or \
+        module = self.helperBaseDialogModuleChooser.get_text()
+        if module is None or not module.startswith("nf_conntrack_") or \
            len(module.replace("nf_conntrack_", "")) < 1:
             OK = False
         self.helperBaseDialogOkButton.set_sensitive(OK)
@@ -6275,7 +6303,7 @@ class FirewallConfig(object):
             self.helperBaseDialogVersionEntry.set_text("")
             self.helperBaseDialogShortEntry.set_text("")
             self.helperBaseDialogDescText.get_buffer().set_text("")
-            self.helperBaseDialogModuleEntry.set_text("")
+            self.helperBaseDialogModuleChooser.set_text("")
             self.helperBaseDialogFamilyCombobox.set_active(0)
 
         else:
@@ -6297,7 +6325,7 @@ class FirewallConfig(object):
             self.helperBaseDialogVersionEntry.set_text(old_version)
             self.helperBaseDialogShortEntry.set_text(old_short)
             self.helperBaseDialogDescText.get_buffer().set_text(old_desc)
-            self.helperBaseDialogModuleEntry.set_text(old_module)
+            self.helperBaseDialogModuleChooser.set_text(old_module)
             self.helperBaseDialogFamilyCombobox.set_active(0)
             combobox_select_text(self.helperBaseDialogFamilyCombobox,
                                  { "": _("All") , "ipv4": _("IPv4"),
@@ -6328,7 +6356,7 @@ class FirewallConfig(object):
         buffer = self.helperBaseDialogDescText.get_buffer()
         desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
                                False)
-        module = self.helperBaseDialogModuleEntry.get_text()
+        module = self.helperBaseDialogModuleChooser.get_text()
         family = { _("All") : "", _("IPv4") : "ipv4", _("IPv6") : "ipv6" } \
                  [self.helperBaseDialogFamilyCombobox.get_active_text()]
         if old_name == name and \
@@ -6589,6 +6617,58 @@ class FirewallConfig(object):
 
         self.helperConfRemoveHelperButton.set_sensitive(not builtin and default)
         self.helperConfLoadDefaultsHelperButton.set_sensitive(not default)
+
+    def onModuleChanged(self, *args):
+        if self.moduleDialogOtherModuleCheck.get_active():
+            self.moduleDialogModuleLabel.set_sensitive(False)
+            self.moduleDialogModuleCombobox.set_sensitive(False)
+            self.moduleDialogOtherModuleEntry.set_sensitive(True)
+            module = self.moduleDialogOtherModuleEntry.get_text()
+        else:
+            self.moduleDialogModuleLabel.set_sensitive(True)
+            self.moduleDialogModuleCombobox.set_sensitive(True)
+            self.moduleDialogOtherModuleEntry.set_sensitive(False)
+            module = self.moduleDialogModuleCombobox.get_active_text()
+        if module is not None and module.startswith("nf_conntrack_") and \
+           len(module.replace("nf_conntrack_", "")) > 1:
+            self.moduleDialogOkButton.set_sensitive(True)
+        else:
+            self.moduleDialogOkButton.set_sensitive(False)
+
+    def module_select_dialog(self, old_module):
+        self.moduleDialogModuleCombobox.set_active(0)
+        self.moduleDialogOtherModuleCheck.set_active(False)
+        self.moduleDialogOtherModuleEntry.set_text("")
+
+        if old_module:
+            if not combobox_select_text(self.moduleDialogModuleCombobox,
+                                        old_module):
+                self.moduleDialogOtherModuleCheck.set_active(True)
+                self.moduleDialogOtherModuleEntry.set_text(old_module)
+
+        self.moduleDialogOkButton.set_sensitive(False)
+
+        self.moduleDialog.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
+        self.moduleDialog.set_transient_for(self.mainWindow)
+        self.moduleDialog.show_all()
+        self.add_visible_dialog(self.moduleDialog)
+        result = self.moduleDialog.run()
+        self.moduleDialog.hide()
+        self.remove_visible_dialog(self.moduleDialog)
+
+        if result != 1:
+            return None
+
+        if self.moduleDialogOtherModuleCheck.get_active():
+            module = self.moduleDialogOtherModuleEntry.get_text()
+        else:
+            module = self.moduleDialogModuleCombobox.get_active_text()
+
+        if old_module == module:
+            # nothing to change
+            return None
+
+        return module
 
     def get_active_icmp(self):
         selection = self.icmpDialogIcmpView.get_selection()
