@@ -687,6 +687,10 @@ parser_direct.add_argument("--get-all-rules", action="store_true")
 
 cmd = FirewallCommand()
 
+def myexcepthook(exctype, value, traceback):
+    cmd.exception_handler(str(value))
+sys.excepthook = myexcepthook
+
 if len(sys.argv) > 1:
     i = -1
     args = sys.argv[1:]

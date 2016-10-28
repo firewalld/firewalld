@@ -807,6 +807,10 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
 
 cmd = FirewallCommand(a.quiet, a.verbose)
 
+def myexcepthook(exctype, value, traceback):
+    cmd.exception_handler(str(value))
+sys.excepthook = myexcepthook
+
 # Check various impossible combinations of options
 
 if not (options_standalone or options_ipset or \
