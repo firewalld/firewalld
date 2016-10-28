@@ -48,7 +48,7 @@ dist: clean-docs update-docs
 dist-check:
 	@rm -f _dist_check_failed
 	@(cat config/Makefile.am | sed -n '/^CONFIG_FILES/,/^$$/p' | head -n-1 | tail -n+2) > _config
-	@(cd config; git ls-files icmptypes ipsets services zones | sort | sed -e 's/^/\t/' | sed ':a;N;$$!ba;s/\n/ \\\n/g') > _provided_config
+	@(cd config; git ls-files icmptypes helpers ipsets services zones | sort | sed -e 's/^/\t/' | sed ':a;N;$$!ba;s/\n/ \\\n/g') > _provided_config
 	@diff -u1B _config _provided_config > _missing_config; \
 	if [ $$? -ne 0 ]; then \
 		echo; \

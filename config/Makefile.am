@@ -61,17 +61,6 @@ DISTCLEANFILES = \
 	$(gsettings_SCHEMAS)
 
 CONFIG_FILES = \
-	icmptypes/destination-unreachable.xml \
-	icmptypes/echo-reply.xml \
-	icmptypes/echo-request.xml \
-	icmptypes/parameter-problem.xml \
-	icmptypes/redirect.xml \
-	icmptypes/router-advertisement.xml \
-	icmptypes/router-solicitation.xml \
-	icmptypes/source-quench.xml \
-	icmptypes/time-exceeded.xml \
-	icmptypes/timestamp-reply.xml \
-	icmptypes/timestamp-request.xml \
 	helpers/amanda.xml \
 	helpers/ftp.xml \
 	helpers/irc.xml \
@@ -83,6 +72,17 @@ CONFIG_FILES = \
 	helpers/sip.xml \
 	helpers/snmp.xml \
 	helpers/tftp.xml \
+	icmptypes/destination-unreachable.xml \
+	icmptypes/echo-reply.xml \
+	icmptypes/echo-request.xml \
+	icmptypes/parameter-problem.xml \
+	icmptypes/redirect.xml \
+	icmptypes/router-advertisement.xml \
+	icmptypes/router-solicitation.xml \
+	icmptypes/source-quench.xml \
+	icmptypes/time-exceeded.xml \
+	icmptypes/timestamp-reply.xml \
+	icmptypes/timestamp-request.xml \
 	ipsets/README \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
