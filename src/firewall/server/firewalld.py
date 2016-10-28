@@ -2397,16 +2397,6 @@ class FirewallD(slip.dbus.service.Object):
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
-    @dbus_service_method(config.dbus.DBUS_INTERFACE_HELPER, in_signature='s',
-                         out_signature='b')
-    @dbus_handle_exceptions
-    def queryHelper(self, helper, sender=None): # pylint: disable=W0613
-        # returns true if a set with the name exists
-        helper = dbus_to_python(helper)
-        log.debug1("helper.queryHelper('%s')" % (helper))
-        return self.fw.helper.query_helper(helper)
-
-    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
     @dbus_service_method(config.dbus.DBUS_INTERFACE_HELPER, in_signature='',
                          out_signature='as')
     @dbus_handle_exceptions
