@@ -21,14 +21,14 @@
 #
 
 import sys
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 
 import gi
 gi.require_version('Notify', '0.7')
 from gi.repository import Notify
 
 import os
-from dbus.mainloop.qt import DBusQtMainLoop
+from dbus.mainloop.pyqt5 import DBusQtMainLoop
 import functools
 
 from firewall.config import *
@@ -81,14 +81,14 @@ def fromUTF8(text):
 
 # ZoneInterfaceEditor #########################################################
 
-class ZoneInterfaceEditor(QtGui.QDialog):
+class ZoneInterfaceEditor(QtWidgets.QDialog):
     def __init__(self, fw, interface, zone):
         self.fw = fw
         self.interface = interface
         self.zone = None
         self.title = _("Select zone for interface '%s'") % self.interface
 
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.create_ui(zone)
 
     def create_ui(self, zone):
@@ -97,19 +97,19 @@ class ZoneInterfaceEditor(QtGui.QDialog):
 
         self.resize(100, 50)
 
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.setSpacing(6)
 
-        label = QtGui.QLabel(fromUTF8(escape(self.title)))
+        label = QtWidgets.QLabel(fromUTF8(escape(self.title)))
         vbox.addWidget(label)
 
-        self.combo = QtGui.QComboBox()
+        self.combo = QtWidgets.QComboBox()
         self.fill_zone_combo()
         vbox.addWidget(self.combo)
 
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok
-                                           | QtGui.QDialogButtonBox.Cancel)
-        self.ok_button = buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
+                                           | QtWidgets.QDialogButtonBox.Cancel)
+        self.ok_button = buttonBox.button(QtWidgets.QDialogButtonBox.Ok)
         buttonBox.accepted.connect(self.ok)
         buttonBox.rejected.connect(self.hide)
         vbox.addWidget(buttonBox)
@@ -161,7 +161,7 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
         self.zone = None
         self.title = _("Select zone for connection '%s'") % self.connection
 
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.create_ui(zone)
 
     def ok(self):
@@ -170,7 +170,7 @@ class ZoneConnectionEditor(ZoneInterfaceEditor):
             nm_set_zone_of_connection(self.get_zone(), self.connection)
         except Exception as msg:
             text = _("Failed to set zone {zone} for connection {connection}")
-            QtGui.QMessageBox.warning(None, fromUTF8(escape(self.title)),
+            QtWidgets.QMessageBox.warning(None, fromUTF8(escape(self.title)),
                                       escape(text.format(
                                           zone=self.get_zone(),
                                           connection=self.connection)))
@@ -185,7 +185,7 @@ class ZoneSourceEditor(ZoneInterfaceEditor):
         self.zone = None
         self.title = _("Select zone for source '%s'") % self.source
 
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.create_ui(zone)
 
     def ok(self):
@@ -194,7 +194,7 @@ class ZoneSourceEditor(ZoneInterfaceEditor):
 
 # ShieldsEditor #########################################################
 
-class ShieldsEditor(QtGui.QDialog):
+class ShieldsEditor(QtWidgets.QDialog):
     def __init__(self, fw, settings, shields_up, shields_down):
         self.fw = fw
         self.settings = settings
@@ -202,63 +202,63 @@ class ShieldsEditor(QtGui.QDialog):
         self.shields_down = shields_down
         self.title = _("Configure Shields Up/Down Zones")
 
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.create_ui()
 
     def create_ui(self):
         self.setWindowTitle(fromUTF8(escape(self.title)))
         self.rejected.connect(self.hide)
 
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.setSpacing(6)
 
-        label = QtGui.QLabel(fromUTF8(escape(
+        label = QtWidgets.QLabel(fromUTF8(escape(
             _("Here you can select the zones used for Shields Up and "
               "Shields Down."))))
         label.setWordWrap(True)
         vbox.addWidget(label)
 
-        label = QtGui.QLabel(fromUTF8(escape(
+        label = QtWidgets.QLabel(fromUTF8(escape(
             _("This feature is useful for people using the default zones "
               "mostly. For users, that are changing zones of connections, it "
               "might be of limited use."))))
         label.setWordWrap(True)
         vbox.addWidget(label)
 
-        grid = QtGui.QGridLayout()
+        grid = QtWidgets.QGridLayout()
         grid.setSpacing(6)
 
-        label = QtGui.QLabel(fromUTF8(escape(_("Shields Up Zone:"))))
+        label = QtWidgets.QLabel(fromUTF8(escape(_("Shields Up Zone:"))))
         label.setWordWrap(True)
         grid.addWidget(label, 0, 0, 1, 1)
 
-        self.shields_up_combo = QtGui.QComboBox()
+        self.shields_up_combo = QtWidgets.QComboBox()
         #self.fill_combo(self.shields_up_combo)
         #self.set_shields_up(self.shields_up)
         grid.addWidget(self.shields_up_combo, 0, 1, 1, 1)
 
-        button = QtGui.QPushButton(_("Reset To Default"))
+        button = QtWidgets.QPushButton(_("Reset To Default"))
         button.clicked.connect(self.reset_shields_up)
         grid.addWidget(button, 0, 2, 1, 1)
 
-        label = QtGui.QLabel(fromUTF8(escape(_("Shields Down Zone:"))))
+        label = QtWidgets.QLabel(fromUTF8(escape(_("Shields Down Zone:"))))
         label.setWordWrap(True)
         grid.addWidget(label, 1, 0, 1, 1)
 
-        self.shields_down_combo = QtGui.QComboBox()
+        self.shields_down_combo = QtWidgets.QComboBox()
         #self.fill_combo(self.shields_down_combo)
         #self.set_shields_down(self.shields_down)
         grid.addWidget(self.shields_down_combo, 1, 1, 1, 1)
 
-        button = QtGui.QPushButton(_("Reset To Default"))
+        button = QtWidgets.QPushButton(_("Reset To Default"))
         button.clicked.connect(self.reset_shields_down)
         grid.addWidget(button, 1, 2, 1, 1)
 
         vbox.addLayout(grid)
 
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Ok
-                                           | QtGui.QDialogButtonBox.Cancel)
-        self.ok_button = buttonBox.button(QtGui.QDialogButtonBox.Ok)
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok
+                                           | QtWidgets.QDialogButtonBox.Cancel)
+        self.ok_button = buttonBox.button(QtWidgets.QDialogButtonBox.Ok)
         buttonBox.accepted.connect(self.ok)
         buttonBox.rejected.connect(self.hide)
         vbox.addWidget(buttonBox)
@@ -329,56 +329,56 @@ class ShieldsEditor(QtGui.QDialog):
 
 # AboutDialog #################################################################
 
-class AboutDialog(QtGui.QDialog):
+class AboutDialog(QtWidgets.QDialog):
     def __init__(self, name, icon, version, url, copyright, authors, license):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.setWindowIcon(icon)
         self.setWindowTitle(fromUTF8(escape(_("About %s" % name))))
         self.resize(500, 250)
 
-        vbox = QtGui.QVBoxLayout()
+        vbox = QtWidgets.QVBoxLayout()
         vbox.setSpacing(6)
 
-        hbox = QtGui.QHBoxLayout()
+        hbox = QtWidgets.QHBoxLayout()
         hbox.setSpacing(24)
 
-        label = QtGui.QLabel()
+        label = QtWidgets.QLabel()
         label.setPixmap(icon.pixmap(96))
         label.setMinimumSize(96, 96)
         label.setMaximumSize(96, 96)
         hbox.addWidget(label)
 
-        vbox2 = QtGui.QVBoxLayout()
+        vbox2 = QtWidgets.QVBoxLayout()
         vbox2.setSpacing(3)
 
-        label = QtGui.QLabel(name)
+        label = QtWidgets.QLabel(name)
         font = label.font()
         font.setPointSize(font.pointSize()*2)
         font.setBold(True)
         label.setFont(font)
         vbox2.addWidget(label)
 
-        vbox2.addWidget(QtGui.QLabel(version))
+        vbox2.addWidget(QtWidgets.QLabel(version))
 
-        label = QtGui.QLabel("<a href=\"%s\">%s</a>" % (url, url))
+        label = QtWidgets.QLabel("<a href=\"%s\">%s</a>" % (url, url))
         label.setTextFormat(QtCore.Qt.RichText)
         label.setTextInteractionFlags(QtCore.Qt.TextBrowserInteraction)
         label.setOpenExternalLinks(True)
 
         vbox2.addWidget(label)
 
-        vbox2.addWidget(QtGui.QLabel(copyright))
+        vbox2.addWidget(QtWidgets.QLabel(copyright))
 
         hbox.addLayout(vbox2)
 
         vbox.addLayout(hbox)
 
-        tabs = QtGui.QTabWidget()
+        tabs = QtWidgets.QTabWidget()
         tabs.setStyleSheet("QTabWidget::tab { padding: 1px 1px 1px 1px; }")
 
-        tab = QtGui.QWidget()
-        vbox3 = QtGui.QVBoxLayout()
-        textedit = QtGui.QPlainTextEdit()
+        tab = QtWidgets.QWidget()
+        vbox3 = QtWidgets.QVBoxLayout()
+        textedit = QtWidgets.QPlainTextEdit()
         #textedit.setStyleSheet("QPlainTextEdit { border: 0; padding: 0; }")
         textedit.setReadOnly(True)
         textedit.setPlainText(fromUTF8("\n".join(authors)))
@@ -386,9 +386,9 @@ class AboutDialog(QtGui.QDialog):
         tab.setLayout(vbox3)
         tabs.addTab(tab, fromUTF8(escape(_("Authors"))))
 
-        tab = QtGui.QWidget()
-        vbox3 = QtGui.QVBoxLayout()
-        textedit = QtGui.QPlainTextEdit()
+        tab = QtWidgets.QWidget()
+        vbox3 = QtWidgets.QVBoxLayout()
+        textedit = QtWidgets.QPlainTextEdit()
         #textedit.setStyleSheet("QPlainTextEdit { border: 0; padding: 0; }")
         textedit.setReadOnly(True)
         textedit.setPlainText(license)
@@ -398,7 +398,7 @@ class AboutDialog(QtGui.QDialog):
 
         vbox.addWidget(tabs)
 
-        buttonBox = QtGui.QDialogButtonBox(QtGui.QDialogButtonBox.Close)
+        buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Close)
         buttonBox.rejected.connect(self.hide)
         vbox.addWidget(buttonBox)
 
@@ -406,7 +406,7 @@ class AboutDialog(QtGui.QDialog):
 
 # TrayApplet ##################################################################
 
-class TrayApplet(QtGui.QSystemTrayIcon):
+class TrayApplet(QtWidgets.QSystemTrayIcon):
     def __init__(self):
         super(TrayApplet, self).__init__()
         self.name = _("Firewall Applet")
@@ -453,67 +453,67 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         # urgencies
 
-        self.urgencies = { "noicon": QtGui.QSystemTrayIcon.NoIcon,
-                           "information": QtGui.QSystemTrayIcon.Information,
-                           "warning": QtGui.QSystemTrayIcon.Warning,
-                           "critical": QtGui.QSystemTrayIcon.Critical }
+        self.urgencies = { "noicon": QtWidgets.QSystemTrayIcon.NoIcon,
+                           "information": QtWidgets.QSystemTrayIcon.Information,
+                           "warning": QtWidgets.QSystemTrayIcon.Warning,
+                           "critical": QtWidgets.QSystemTrayIcon.Critical }
 
         # actions
 
-        self.shieldsupAction = QtGui.QAction(fromUTF8(escape(_("Shields Up"))),
+        self.shieldsupAction = QtWidgets.QAction(fromUTF8(escape(_("Shields Up"))),
                                              self)
         self.shieldsupAction.setCheckable(True)
         self.shieldsupAction.setChecked(False)
         self.shieldsupAction.triggered.connect(self.shieldsup_changed_cb)
 
-        self.notificationsAction = QtGui.QAction(
+        self.notificationsAction = QtWidgets.QAction(
             fromUTF8(escape(_("Enable Notifications"))), self)
         self.notificationsAction.setCheckable(True)
         self.notificationsAction.setChecked(False)
         self.notificationsAction.triggered.connect(self.notification_changed_cb)
 
-        self.settingsAction = QtGui.QAction(
+        self.settingsAction = QtWidgets.QAction(
             fromUTF8(escape(_("Edit Firewall Settings..."))), self)
         self.settingsAction.triggered.connect(self.configure_cb)
 
-        self.changeZonesAction = QtGui.QAction(
+        self.changeZonesAction = QtWidgets.QAction(
             fromUTF8(escape(_("Change Zones of Connections..."))), self)
         self.changeZonesAction.triggered.connect(self.nm_connection_editor)
 
-        self.shieldsAction = QtGui.QAction(
+        self.shieldsAction = QtWidgets.QAction(
             fromUTF8(escape(_("Configure Shields UP/Down Zones..."))), self)
         self.shieldsAction.triggered.connect(self.configure_shields)
 
-        self.panicAction = QtGui.QAction(
+        self.panicAction = QtWidgets.QAction(
             fromUTF8(escape(_("Block all network traffic"))), self)
         self.panicAction.setCheckable(True)
         self.panicAction.setChecked(False)
         self.panicAction.triggered.connect(self.panic_mode_cb)
 
-        self.aboutAction = QtGui.QAction(fromUTF8(escape(_("About"))), self)
+        self.aboutAction = QtWidgets.QAction(fromUTF8(escape(_("About"))), self)
         self.aboutAction.triggered.connect(self.about_dialog.exec_)
 
-        #self.quitAction = QtGui.QAction(fromUTF8(escape(_("Quit"))), self,
+        #self.quitAction = QtWidgets.QAction(fromUTF8(escape(_("Quit"))), self,
         #                                triggered=self.quit)
 
-        self.connectionsAction = QtGui.QWidgetAction(self)
-        self.connectionsAction.setDefaultWidget(QtGui.QLabel(
+        self.connectionsAction = QtWidgets.QWidgetAction(self)
+        self.connectionsAction.setDefaultWidget(QtWidgets.QLabel(
             fromUTF8("<b>"+escape(_("Connections"))+"</b> ")))
 
-        self.interfacesAction = QtGui.QWidgetAction(self)
-        self.interfacesAction.setDefaultWidget(QtGui.QLabel(
+        self.interfacesAction = QtWidgets.QWidgetAction(self)
+        self.interfacesAction.setDefaultWidget(QtWidgets.QLabel(
             fromUTF8("<b>"+escape(_("Interfaces"))+"</b> ")))
 
-        self.sourcesAction = QtGui.QWidgetAction(self)
-        self.sourcesAction.setDefaultWidget(QtGui.QLabel(
+        self.sourcesAction = QtWidgets.QWidgetAction(self)
+        self.sourcesAction.setDefaultWidget(QtWidgets.QLabel(
             fromUTF8("<b>"+escape(_("Sources"))+"</b> ")))
 
         # init
 
-        self.left_menu = QtGui.QMenu()
+        self.left_menu = QtWidgets.QMenu()
         self.left_menu.setStyleSheet('QMenu { margin: 5px; }')
 
-        self.right_menu = QtGui.QMenu()
+        self.right_menu = QtWidgets.QMenu()
         self.right_menu.addAction(self.shieldsupAction)
         self.right_menu.addAction(self.notificationsAction)
         self.right_menu.addSeparator()
@@ -632,7 +632,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             self.setVisible(True)
 
     def activated_cb(self, reason):
-        if reason == QtGui.QSystemTrayIcon.Trigger:
+        if reason == QtWidgets.QSystemTrayIcon.Trigger:
             self.left_menu.popup(QtGui.QCursor.pos())
 
     def update_active_zones(self):
@@ -680,12 +680,12 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             zone = connections[connection][0]
             if zone == "":
                 _binding = _("{entry} (Default Zone: {default_zone})")
-                action = QtGui.QAction(
+                action = QtWidgets.QAction(
                     fromUTF8(escape(
                         _binding.format(default_zone=self.default_zone,
                                         entry=connection))), self)
             else:
-                action = QtGui.QAction(
+                action = QtWidgets.QAction(
                     fromUTF8(escape(binding.format(zone=zone,
                                                    entry=connection))), self)
             action.triggered.connect(functools.partial(
@@ -698,7 +698,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
         # add other interfaces
         for interface in sorted(interfaces):
             zone = interfaces[interface]
-            action = QtGui.QAction(
+            action = QtWidgets.QAction(
                 fromUTF8(escape(binding.format(zone=zone, entry=interface))),
                 self)
             action.triggered.connect(functools.partial(
@@ -710,7 +710,7 @@ class TrayApplet(QtGui.QSystemTrayIcon):
 
         for source in sorted(sources):
             zone = sources[source]
-            action = QtGui.QAction(
+            action = QtWidgets.QAction(
                 fromUTF8(escape(binding.format(zone=zone, entry=source))),
                 self)
             action.triggered.connect(functools.partial(
@@ -932,10 +932,10 @@ class TrayApplet(QtGui.QSystemTrayIcon):
             os.system("%s &" % NM_CONNECTION_EDITOR)
 
     def warning(self, text):
-        QtGui.QMessageBox.warning(None, fromUTF8(escape(self.name)), text)
+        QtWidgets.QMessageBox.warning(None, fromUTF8(escape(self.name)), text)
 
     def error(self, text):
-        QtGui.QMessageBox.critical(None, fromUTF8(escape(self.name)), text)
+        QtWidgets.QMessageBox.critical(None, fromUTF8(escape(self.name)), text)
 
     def configure_cb(self, widget):
         os.system("firewall-config &")
@@ -1117,7 +1117,7 @@ Options:
 # reset SIGINT signal to default
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-app = QtGui.QApplication(sys.argv)
+app = QtWidgets.QApplication(sys.argv)
 app.setQuitOnLastWindowClosed(False)
 
 applet = TrayApplet()
