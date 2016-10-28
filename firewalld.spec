@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.3.3
+Version: 0.4.4
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -307,6 +307,110 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Fri Oct 28 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4-1
+- Fix dist-check
+- src/Makefile.am: Install new helper files
+- config/Makefile.am: Install helpers
+- Merged translations
+- Updated translations from zanata
+- firewalld.spec: Adapt requires for PyQt5
+- firewall-applet: Fix fromUTF8 for python2 PyQt5 usage
+- firewall-applet: Use PyQt5
+- firewall-config: New nf_conntrack_select dialog, use nf_conntrack_helpers D-Bus property
+- shell-completion/bash/firewall-cmd: Updates for helpers and also some fixes
+- src/tests/firewall-[offline-]cmd_test.sh: New helper tests, adapted module tests for services
+- doc/xml/seealso.xml: Add firewalld.helper(5) man page
+- doc/xml/seealso.xml: Add firewalld.ipset(5) man page
+- Fixed typo in firewalld.ipset(5) man page
+- Updated firewalld.dbus(5) man page
+- New firewalld.helper(5) man page
+- doc/xml/firewall-offline-cmd.xml: Updated firewall-offline-cmd man page
+- doc/xml/firewall-cmd.xml: Updated firewall-cmd man page
+- firewall-offline-cmd: New support for helpers
+- firewall-cmd: New support for helpers
+- firewall.command: New check_helper_family, check_module and print_helper_info methods
+- firewall.core.fw_test: Add helpers also to offline backend
+- firewall.server.config: New AutomaticHelpers property (rw)
+- firewall.server.config: Fix an dict size changed error for firewall.conf file changes
+- firewall.server.config: Make LogDenied property readwrite to be consistent
+- Some renames of nf_conntrack_helper* functions and structures, helpers is a dict
+- firewall.core.fw: Properly check helper setting in set_automatic_helpers
+- firewall.errors: Add missing BUILTIN_HELPER error code
+- No extra interface for helpers needed in runtime, dropped DBUS_INTERFACE_HELPER
+- firewall.server.firewalld: Drop unused queryHelper D-Bus method
+- New helpers Q.931 and RAS from nf_conntrack_h323
+- firewall.core.io.helper: Allow dots in helper names, remove underscore
+- firewall.core.io.firewalld_conf: Fixed typo in FALLBACK_AUTOMATIC_HELPERS
+- firewall-[offline-]cmd: Use sys.excepthook to force exception_handler usage always
+- firewall.core.fw_config: new_X methods should also check builtins
+- firewall.client: Set helper family to "" if None
+- firewall.client: Add missing module string to FirewallClientHelperSettings.settings
+- config/firewalld.conf: Add possible values description for AutomaticHelpers
+- helpers/amanda.xml: Fix typo in helper module
+- firewall-config: Added support for helper module setting
+- firewall.client: Added support for helper module setting
+- firewall.server.config_helper: Added support for helper module setting
+- firewall.core.io.service, firewall.server.config_service: Only replace underscore by dash if module start with nf_conntrack_
+- firewall.core.fw_zone: Use helper module instead of a generated name from helper name
+- helpers: Added kernel module
+- firewall.core.io.helper: Add module to helper
+- firewall-cmd: Removed duplicate --get-ipset-types from help output
+- firewall.core.fw_zone: Add zone bingings for PREROUTING in the raw table
+- firewall.core.ipXtables: Add PREROUTING default rules for zones in raw table
+- firewall-config: New support to handle helpers, new dialogs, new helper tab, ..
+- config/org.fedoraproject.FirewallConfig.gschema.xml.in: New show-helpers setting
+- firewall.client: New helper management for runtime and permanent configuration
+- firewall.server.firewalld: New runtime helper management, new nf_conntrack_helper property
+- firewall.server.config_service: Fix module name handling (no nf_conntrack_ prefix needed)
+- firewall.server.config: New permanent D-Bus helper management
+- New firewall.server.config_helper to provide the permanent D-Bus interface for helpers
+- firewall.core.fw_zone: Use helpers fw.nf_conntrack_helper for services using helpers
+- firewall.core.fw: New helper management, new _automatic_helpers and nf_conntrack_helper settings
+- firewall.core.fw_config: Add support for permanent helper handling
+- firewall.core.io.service: The module does not need to start with nf_conntrack_ anymore
+- firewall.functions: New functions to get and set nf_conntrack_helper kernel setting
+- firewall.core.io.firewalld_conf: New support for AutomaticHelpers setting
+- firewall.config.dbus: New D-Bus definitions for helpers, new DBUS_INTERFACE_REVISION 12
+- New firewall.core.fw_helper providing FirewallHelper backend
+- New firewall.core.helper with HELPER_MAXNAMELEN definition
+- config/firewalld.conf: New AutomaticHelpers setting with description
+- firewall.config.__init__.py.in: New helpers variables
+- firewalld.spec: Add new helpers directory
+- config/Makefile.am: Install new helpers
+- New helper configuration files for amanda, ftp, irc, netbios-ns, pptp, sane, sip, snmp and tftp
+- firewall.core.io.helper: New IO handler for netfilter helpers
+- firewall.errors: New INVALID_HELPER error code
+- firewall.core.io.ifcfg: Use .bak for save files
+- firewall-config: Set internal log_denied setting after changing
+- firewall.server.config: Copy props before removing items
+- doc/xml/firewalld.ipset: Replaced icmptype name remains with ipset
+- firewall.core.fw_zone: Fix LOG rule placement for LogDenied
+- firewall.command: Use "source-ports" in print_zone_info
+- firewall.core.logger: Use syslog.openlog() and syslog.closelog()
+- firewall-[offline-]cmd man pages: Document --path-{zone,icmptype,ipset,service}
+- firewall-cmd: Enable --path-{zone,icmptype,service} options again
+- firewall.core.{ipXtables,ebtables}: Copy rule before extracting items in set_rules
+- firewall.core.fw: Do not abort transaction on failed ipv6_rpfilter rules
+- config/Makefile.am: Added cfengine, condor-collector and smtp-submission services
+- Makefile.am: New dist-check used in the archive target
+- src/Makefile.am: Reordered nobase_dist_python_DATA to be sorted
+- config/Makefile.am: New CONFIG_FILES variable to contain the config files
+- Merge pull request #150 from hspaans/master
+- Merge pull request #146 from canvon/bugfix/spelling
+- Merge pull request #145 from jcpunk/condor
+- Command line tools man pages: New section about sequence options and exit codes
+- Creating service file for SMTP-Submission.
+- Creating service file for CFEngine.
+- Fix typo in documentation: iptables mangle table
+- Only use sort on lists of main items, but not for item properties
+- firewall.core.io.io_object: import_config should not change ordering of lists
+- firewall.core.fw_transaction: Load helper modules in FirewallZoneTransaction
+- firewall.command: Fail with NOT_AUTHORIZED if authorization fails (RHBZ#1368549)
+- firewall.command: Fix sequence exit code with at least one succeeded item
+- Add condor collector service
+- firewall-cmd: Fixed --{get,set}-{description,short} for permanent zones
+- firewall.command: Do not use error code 254 for {ALREADY,NOT}_ENABLED sequences
+
 * Tue Aug 16 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.3-1
 - Fix CVE-2016-5410: Firewall configuration can be modified by any logged in
   user
