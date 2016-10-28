@@ -176,7 +176,7 @@ class firewalld_conf(object):
             if value is not None:
                 log.warning("AutomaticHelpers '%s' is not valid, using default "
                             "value %s", value if value else '',
-                            FALLBACK_AUTOMATC_HELPERS)
+                            FALLBACK_AUTOMATIC_HELPERS)
             self.set("AutomaticHelpers", str(FALLBACK_AUTOMATIC_HELPERS))
 
     # save to self.filename if there are key/value changes
