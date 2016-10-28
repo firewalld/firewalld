@@ -7,7 +7,7 @@
 # Lauri Nurmi <lanurmi@iki.fi>, 2004
 # Lauri Nurmi <lanurmi@iki.fi>, 2004
 # Mikko Ikola <ikola@iki.fi>, 2004
-# Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
+# Juhani Numminen <juhaninumminen0@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -16,13 +16,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2014-10-15 10:24-0400\n"
-"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
+"PO-Revision-Date: 2016-07-06 07:57-0400\n"
+"Last-Translator: Juhani Numminen <juhaninumminen0@gmail.com>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/firewalld/"
 "language/fi/)\n"
 "Language: fi\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.8.4\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
@@ -40,6 +40,7 @@ msgstr "Palomuuriasetukset"
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
 msgstr ""
+"palomuuri;verkko;tietoturva;suojaus;turva;firewall;network;security;iptables;netfilter;"
 
 #: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
@@ -87,7 +88,7 @@ msgstr ""
 
 #: ../src/firewall-applet:240 ../src/firewall-applet:253
 msgid "Reset To Default"
-msgstr ""
+msgstr "Palauta oletukset"
 
 #: ../src/firewall-applet:244
 msgid "Shields Down Zone:"
@@ -96,15 +97,15 @@ msgstr ""
 #: ../src/firewall-applet:336
 #, c-format
 msgid "About %s"
-msgstr ""
+msgstr "Tietoja – %s"
 
 #: ../src/firewall-applet:387
 msgid "Authors"
-msgstr ""
+msgstr "Tekijät"
 
 #: ../src/firewall-applet:397
 msgid "License"
-msgstr ""
+msgstr "Lisenssi"
 
 #: ../src/firewall-applet:463
 msgid "Shields Up"
@@ -116,7 +117,7 @@ msgstr "Ota huomautukset käyttöön"
 
 #: ../src/firewall-applet:476
 msgid "Edit Firewall Settings..."
-msgstr "Muokkaa palomuurin asetuksia..."
+msgstr "Muokkaa palomuurin asetuksia…"
 
 #: ../src/firewall-applet:480 ../src/firewall-config.glade.h:50
 msgid "Change Zones of Connections..."
@@ -132,26 +133,25 @@ msgstr "Estä kaikki verkkoliikenne"
 
 #: ../src/firewall-applet:493
 msgid "About"
-msgstr ""
+msgstr "Tietoja"
 
 #: ../src/firewall-applet:501 ../src/firewall-config:594
 #: ../src/firewall-config:2192 ../src/firewall-config:2436
 #: ../src/firewall-config:2462
-#, fuzzy
 msgid "Connections"
-msgstr "Ei yhteyttä."
+msgstr "Yhteydet"
 
 #: ../src/firewall-applet:505 ../src/firewall-config:596
 #: ../src/firewall-config:2279 ../src/firewall-config:2439
 #: ../src/firewall-config:2464 ../src/firewall-config.glade.h:115
 msgid "Interfaces"
-msgstr "<verkkoliitäntä>"
+msgstr "Verkkoliitännät"
 
 #: ../src/firewall-applet:509 ../src/firewall-config:598
 #: ../src/firewall-config:2310 ../src/firewall-config:2442
 #: ../src/firewall-config:2466 ../src/firewall-config.glade.h:120
 msgid "Sources"
-msgstr ""
+msgstr "Lähteet"
 
 #: ../src/firewall-applet:585 ../src/firewall-config:2096
 msgid "Authorization failed."
@@ -159,11 +159,11 @@ msgstr "Tunnistautuminen epäonnistui."
 
 #: ../src/firewall-applet:587 ../src/firewall-config:2099
 msgid "Invalid name"
-msgstr "Virheellinen argumentti %s"
+msgstr "Virheellinen nimi"
 
 #: ../src/firewall-applet:591 ../src/firewall-config:2103
 msgid "Name already exists"
-msgstr ""
+msgstr "Nimi on jo olemassa"
 
 #: ../src/firewall-applet:676
 msgid "{entry} (Zone: {zone})"
@@ -175,7 +175,7 @@ msgstr ""
 
 #: ../src/firewall-applet:763 ../src/firewall-config:1434
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "Yhteyksien haku NetworkManagerilta epäonnistui"
 
 #: ../src/firewall-applet:775 ../src/firewall-config:1260
 msgid "No NetworkManager imports available"
@@ -228,7 +228,7 @@ msgstr "Yhteys FirewallD:hen kadotettu."
 
 #: ../src/firewall-applet:973
 msgid "FirewallD has been reloaded."
-msgstr ""
+msgstr "FirewallD on ladattu uudelleen."
 
 #: ../src/firewall-applet:978
 #, c-format
@@ -237,7 +237,7 @@ msgstr ""
 
 #: ../src/firewall-applet:997
 msgid "Network traffic is not blocked anymore."
-msgstr ""
+msgstr "Verkkoliikennettä ei enää estetä."
 
 #: ../src/firewall-applet:1023 ../src/firewall-applet:1077
 msgid "activated"
@@ -279,20 +279,20 @@ msgstr ""
 
 #: ../src/firewall-config:81
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "Yhteys firewalld:hen muodostettu."
 
 #: ../src/firewall-config:83
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "Yritetään muodostaa yhteys firewalld:hen, odotetaan…"
 
 #: ../src/firewall-config:84
 msgid "Changes applied."
-msgstr ""
+msgstr "Muutokset otettu käyttöön."
 
 #: ../src/firewall-config:85
 #, c-format
 msgid "Used by network connection '%s'"
-msgstr ""
+msgstr "Yhteyden ”%s” käytössä"
 
 #: ../src/firewall-config:86
 #, c-format
@@ -301,11 +301,11 @@ msgstr ""
 
 #: ../src/firewall-config:88
 msgid "enabled"
-msgstr ""
+msgstr "käytössä"
 
 #: ../src/firewall-config:89
 msgid "disabled"
-msgstr ""
+msgstr "poissa käytöstä"
 
 #: ../src/firewall-config:112
 msgid "Failed to load icons."
@@ -362,7 +362,7 @@ msgstr ""
 
 #: ../src/firewall-config:731
 msgid "Action"
-msgstr ""
+msgstr "Toiminto"
 
 #: ../src/firewall-config:733
 msgid "Element"
@@ -370,15 +370,15 @@ msgstr ""
 
 #: ../src/firewall-config:735
 msgid "Src"
-msgstr ""
+msgstr "Lähde"
 
 #: ../src/firewall-config:737
 msgid "Dest"
-msgstr ""
+msgstr "Kohde"
 
 #: ../src/firewall-config:739
 msgid "log"
-msgstr ""
+msgstr "kirjaa"
 
 #: ../src/firewall-config:741
 msgid "Audit"
@@ -395,44 +395,44 @@ msgstr "Virhe"
 
 #: ../src/firewall-config:1862 ../src/firewall-config:3456
 msgid "accept"
-msgstr ""
+msgstr "hyväksy"
 
 #: ../src/firewall-config:1864 ../src/firewall-config:3458
 #: ../src/firewall-config:3606
 msgid "reject"
-msgstr ""
+msgstr "hylkää"
 
 #: ../src/firewall-config:1868 ../src/firewall-config:3463
 msgid "drop"
-msgstr ""
+msgstr "pudota"
 
 #: ../src/firewall-config:1870 ../src/firewall-config:3465
 #: ../src/firewall-config:3607
 msgid "mark"
-msgstr ""
+msgstr "merkitse"
 
 #: ../src/firewall-config:1873 ../src/firewall-config:1915
 #: ../src/firewall-config:1920
 msgid "limit"
-msgstr ""
+msgstr "rajoita"
 
 #: ../src/firewall-config:1889 ../src/firewall-config:2928
 #: ../src/firewall-config:3102 ../src/firewall-config:3406
 #: ../src/firewall-config.glade.h:259
 msgid "service"
-msgstr ""
+msgstr "palvelu"
 
 #: ../src/firewall-config:1891 ../src/firewall-config:2934
 #: ../src/firewall-config:3104 ../src/firewall-config:3409
 #: ../src/firewall-config.glade.h:260
 msgid "port"
-msgstr ""
+msgstr "portti"
 
 #: ../src/firewall-config:1894 ../src/firewall-config:2939
 #: ../src/firewall-config:3113 ../src/firewall-config:3419
 #: ../src/firewall-config.glade.h:261
 msgid "protocol"
-msgstr ""
+msgstr "protokolla"
 
 #: ../src/firewall-config:1896 ../src/firewall-config:2944
 #: ../src/firewall-config:3433 ../src/firewall-config:3619
@@ -444,15 +444,15 @@ msgstr ""
 #: ../src/firewall-config:3119 ../src/firewall-config:3435
 #: ../src/firewall-config.glade.h:264
 msgid "source-port"
-msgstr ""
+msgstr "lähdeportti"
 
 #: ../src/firewall-config:1913
 msgid "level"
-msgstr ""
+msgstr "taso"
 
 #: ../src/firewall-config:1917 ../src/firewall-config:1922
 msgid "yes"
-msgstr ""
+msgstr "kyllä"
 
 #: ../src/firewall-config:2254 ../src/firewall-config:2294
 #: ../src/firewall-config:2324 ../src/firewall-config.glade.h:74
@@ -478,7 +478,7 @@ msgstr ""
 #: ../src/firewall-config:2578 ../src/firewall-config:2626
 #: ../src/firewall-config.glade.h:147
 msgid "Remove"
-msgstr ""
+msgstr "Poista"
 
 #: ../src/firewall-config:2578 ../src/firewall-config:2626
 msgid "Ignore"
@@ -496,68 +496,68 @@ msgstr ""
 #: ../src/firewall-config:2891 ../src/firewall-config:3381
 #: ../src/firewall-config.glade.h:245
 msgid "second"
-msgstr ""
+msgstr "sekunti"
 
 #: ../src/firewall-config:2892 ../src/firewall-config:3382
 #: ../src/firewall-config.glade.h:246
 msgid "minute"
-msgstr ""
+msgstr "minuutti"
 
 #: ../src/firewall-config:2893 ../src/firewall-config:3383
 #: ../src/firewall-config.glade.h:247
 msgid "hour"
-msgstr ""
+msgstr "tunti"
 
 #: ../src/firewall-config:2894 ../src/firewall-config:3384
 #: ../src/firewall-config.glade.h:248
 msgid "day"
-msgstr ""
+msgstr "vuorokausi"
 
 #: ../src/firewall-config:2895 ../src/firewall-config:3385
 #: ../src/firewall-config.glade.h:251
 msgid "emergency"
-msgstr ""
+msgstr "hätätila"
 
 #: ../src/firewall-config:2896 ../src/firewall-config:3386
 #: ../src/firewall-config.glade.h:252
 msgid "alert"
-msgstr ""
+msgstr "hälytys"
 
 #: ../src/firewall-config:2897 ../src/firewall-config:3387
 #: ../src/firewall-config.glade.h:253
 msgid "critical"
-msgstr ""
+msgstr "kriittinen"
 
 #: ../src/firewall-config:2898 ../src/firewall-config:3388
 #: ../src/firewall-config.glade.h:254
 msgid "error"
-msgstr ""
+msgstr "virhe"
 
 #: ../src/firewall-config:2899 ../src/firewall-config:3389
 #: ../src/firewall-config.glade.h:255
 msgid "warning"
-msgstr ""
+msgstr "varoitus"
 
 #: ../src/firewall-config:2900 ../src/firewall-config:3390
 #: ../src/firewall-config.glade.h:256
 msgid "notice"
-msgstr ""
+msgstr "huomautus"
 
 #: ../src/firewall-config:2901 ../src/firewall-config:3391
 #: ../src/firewall-config.glade.h:257
 msgid "info"
-msgstr ""
+msgstr "tiedoksi"
 
 #: ../src/firewall-config:2902 ../src/firewall-config:3392
 #: ../src/firewall-config.glade.h:258
 msgid "debug"
-msgstr ""
+msgstr "virheenjäljitys"
 
 #: ../src/firewall-config:2947 ../src/firewall-config:3115
 #: ../src/firewall-config:3422 ../src/firewall-config:3634
 #: ../src/firewall-config.glade.h:262
 msgid "icmp-block"
-msgstr ""
+msgstr "icmp-esto"
 
 #: ../src/firewall-config:2952 ../src/firewall-config:3117
 #: ../src/firewall-config:3425 ../src/firewall-config:3627
@@ -569,13 +569,13 @@ msgstr ""
 #: ../src/firewall-config:3341 ../src/firewall-config:3396
 #: ../src/firewall-config:3523 ../src/firewall-config:3570
 msgid "ipv4"
-msgstr ""
+msgstr "ipv4"
 
 #: ../src/firewall-config:3097 ../src/firewall-config:3319
 #: ../src/firewall-config:3343 ../src/firewall-config:3398
 #: ../src/firewall-config:3525 ../src/firewall-config:3572
 msgid "ipv6"
-msgstr ""
+msgstr "ipv6"
 
 #: ../src/firewall-config:4754
 msgid ""
@@ -585,33 +585,34 @@ msgstr ""
 
 #: ../src/firewall-config:5117
 msgid "Built-in service, rename not supported."
-msgstr ""
+msgstr "Sisäänrakennettu palvelu, ei voi uudelleennimetä."
 
 #: ../src/firewall-config:5303
 msgid "Please enter an ipv4 address with the form address[/mask]."
-msgstr ""
+msgstr "Syötä ipv4-osoite muodossa osoite[/maski]."
 
 #: ../src/firewall-config:5304
 msgid "The mask can be a network mask or a number."
-msgstr ""
+msgstr "Maski voi olla verkkomaski tai numero."
 
 #: ../src/firewall-config:5306
 msgid "Please enter an ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Syötä ipv6-osoite muodossa osoite[/maski]."
 
 #: ../src/firewall-config:5307
 msgid "The mask is a number."
-msgstr ""
+msgstr "Maski on numero."
 
 #: ../src/firewall-config:5309
 msgid "Please enter an ipv4 or ipv6 address with the form address[/mask]."
-msgstr ""
+msgstr "Syötä ipv4- tai ipv6-osoite muodossa osoite[/maski]."
 
 #: ../src/firewall-config:5310
 msgid ""
 "The mask can be a network mask or a number for ipv4.\n"
 "The mask is a number for ipv6."
-msgstr ""
+msgstr "Ipv4:n maski voi olla verkkomaski tai numero.\n"
+"Ipv6:n maski on numero."
 
 #: ../src/firewall-config:5483
 msgid "Built-in ipset, rename not supported."
@@ -619,15 +620,15 @@ msgstr ""
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "Valitse tiedosto"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "Tekstitiedostot"
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "Kaikki tiedostot"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
@@ -636,7 +637,7 @@ msgstr ""
 #: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Tiedoston ”%s” lukeminen epäonnistui: %s"
 
 #: ../src/firewall-config:7290
 #, c-format
@@ -649,11 +650,11 @@ msgstr "Osoite"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Command line"
-msgstr ""
+msgstr "Komentorivi"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr ""
+msgstr "Syötä komento."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Context"
@@ -677,11 +678,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:10
 msgid "ipv:"
-msgstr ""
+msgstr "ipv:"
 
 #: ../src/firewall-config.glade.h:11
 msgid "eb"
-msgstr ""
+msgstr "eb"
 
 #: ../src/firewall-config.glade.h:12
 msgid "Chain:"
@@ -689,19 +690,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:13
 msgid "nat"
-msgstr ""
+msgstr "nat"
 
 #: ../src/firewall-config.glade.h:14
 msgid "raw"
-msgstr ""
+msgstr "raakamuoto"
 
 #: ../src/firewall-config.glade.h:15
 msgid "security"
-msgstr ""
+msgstr "turvallisuus"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Table:"
-msgstr ""
+msgstr "Taulu:"
 
 #: ../src/firewall-config.glade.h:17
 msgid "Direct Passthrough Rule"
@@ -726,7 +727,7 @@ msgstr "Valitse lähde- ja kohdeasetukset tarpeen mukaan."
 
 #: ../src/firewall-config.glade.h:22
 msgid "Port / Port Range:"
-msgstr "Portti/porttialue:"
+msgstr "Portti tai porttialue:"
 
 #: ../src/firewall-config.glade.h:23
 msgid "IP address:"
@@ -794,7 +795,7 @@ msgstr "ICMP-tyyppi"
 
 #: ../src/firewall-config.glade.h:38
 msgid "Please select an ICMP type"
-msgstr ""
+msgstr "Valitse ICMP-tyyppi"
 
 #: ../src/firewall-config.glade.h:39
 msgid "Add Entry"
@@ -826,7 +827,7 @@ msgstr "_Valinnat"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Reload Firewalld"
-msgstr ""
+msgstr "Lataa Firewalld uudelleen"
 
 #: ../src/firewall-config.glade.h:48
 msgid ""
@@ -858,10 +859,11 @@ msgstr ""
 #: ../src/firewall-config.glade.h:55
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
 msgstr ""
+"Paniikkitilassa kaikki sisään tulevat ja ulos menevät paketit pudotetaan."
 
 #: ../src/firewall-config.glade.h:56
 msgid "Panic Mode"
-msgstr ""
+msgstr "Paniikkitila"
 
 #: ../src/firewall-config.glade.h:57
 msgid ""
@@ -883,7 +885,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:61
 msgid "_View"
-msgstr ""
+msgstr "_Näytä"
 
 #: ../src/firewall-config.glade.h:62
 msgid "IPSets"
@@ -891,7 +893,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:63
 msgid "ICMP Types"
-msgstr ""
+msgstr "ICMP-tyypit"
 
 #: ../src/firewall-config.glade.h:64
 msgid "Direct Configuration"

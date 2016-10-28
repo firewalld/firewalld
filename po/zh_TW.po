@@ -13,6 +13,7 @@
 # Walter Cheuk <wwycheuk@netvigator.com>, 2005
 # Cheng-Chia Tseng <pswo10680@gmail.com>, 2016. #zanata
 # Chester Cheng <snowlet.cheng@gmail.com>, 2016. #zanata
+# Terry Chuang <tchuang@redhat.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -21,13 +22,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-05-18 03:46-0400\n"
-"Last-Translator: Chester Cheng <snowlet.cheng@gmail.com>\n"
+"PO-Revision-Date: 2016-09-01 05:51-0400\n"
+"Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/"
 "firewalld/language/zh_TW/)\n"
 "Language: zh-TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.8.4\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
@@ -175,7 +176,7 @@ msgstr "{entry} (界域：{zone})"
 
 #: ../src/firewall-applet:682
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr ""
+msgstr "{entry} (預設界域：{default_zone})"
 
 #: ../src/firewall-applet:763 ../src/firewall-config:1434
 msgid "Failed to get connections from NetworkManager"
@@ -202,7 +203,7 @@ msgstr "預設界域：「%s」"
 msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
-msgstr ""
+msgstr "預設界域「{default_zone}」使用中：連線「{connection}」，介面「{interface}」"
 
 #: ../src/firewall-applet:874
 msgid ""
@@ -256,6 +257,7 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"預設界域「{default_zone}」{activated_deactivated}：連線「{connection}」，介面「{interface}」"
 
 #: ../src/firewall-applet:1034
 msgid ""
@@ -283,11 +285,11 @@ msgstr "界域「%s」已啟動：來源「%s」"
 
 #: ../src/firewall-config:81
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "連至 firewalld 的連線已建立。"
 
 #: ../src/firewall-config:83
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "正在嘗試連上 firewalld，等待中..."
 
 #: ../src/firewall-config:84
 msgid "Changes applied."
@@ -301,7 +303,7 @@ msgstr "由「%s」網路連線使用"
 #: ../src/firewall-config:86
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "網路連線 '%s' 所使用的預設界域"
 
 #: ../src/firewall-config:88
 msgid "enabled"
@@ -350,7 +352,7 @@ msgstr "至位址"
 
 #: ../src/firewall-config:592
 msgid "Bindings"
-msgstr ""
+msgstr "綁定"
 
 #: ../src/firewall-config:626
 msgid "Entry"
@@ -448,7 +450,7 @@ msgstr "偽裝"
 #: ../src/firewall-config:3119 ../src/firewall-config:3435
 #: ../src/firewall-config.glade.h:264
 msgid "source-port"
-msgstr ""
+msgstr "source-port"
 
 #: ../src/firewall-config:1913
 msgid "level"
@@ -466,13 +468,13 @@ msgstr "界域"
 #: ../src/firewall-config:2267
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "預設界域：%s"
 
 #: ../src/firewall-config:2274 ../src/firewall-config:2305
 #: ../src/firewall-config:2335
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "界域：%s"
 
 #: ../src/firewall-config:2574
 #, c-format
@@ -625,15 +627,15 @@ msgstr "內建 ipset，不支援重新命名。"
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "請選擇一個檔案"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "文字檔案"
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "所有檔案"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
@@ -642,7 +644,7 @@ msgstr "內建 icmp，不支援重新命名。"
 #: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "讀取檔案 '%s' 失敗：%s"
 
 #: ../src/firewall-config:7290
 #, c-format
@@ -655,7 +657,7 @@ msgstr "位址"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Command line"
-msgstr ""
+msgstr "指令列"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
@@ -663,7 +665,7 @@ msgstr "請輸入指令列。"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Context"
-msgstr ""
+msgstr "情境"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -699,11 +701,11 @@ msgstr "nat"
 
 #: ../src/firewall-config.glade.h:14
 msgid "raw"
-msgstr "raw"
+msgstr "原始"
 
 #: ../src/firewall-config.glade.h:15
 msgid "security"
-msgstr "security"
+msgstr "安全性"
 
 #: ../src/firewall-config.glade.h:16
 msgid "Table:"
@@ -806,19 +808,19 @@ msgstr "加入條目"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Add Entries From File"
-msgstr ""
+msgstr "從檔案新增項目"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "移除選擇的項目"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Remove All Entries"
-msgstr ""
+msgstr "移除所有項目"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "從檔案中移除項目"
 
 #: ../src/firewall-config.glade.h:45
 msgid "_File"
@@ -892,7 +894,7 @@ msgstr "檢視(_V)"
 
 #: ../src/firewall-config.glade.h:62
 msgid "IPSets"
-msgstr "IPSets"
+msgstr "IPSet"
 
 #: ../src/firewall-config.glade.h:63
 msgid "ICMP Types"
@@ -908,7 +910,7 @@ msgstr "封鎖管制白名單"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Active Bindings"
-msgstr ""
+msgstr "使用中的綁定"
 
 #: ../src/firewall-config.glade.h:67
 msgid "_Help"
@@ -916,17 +918,17 @@ msgstr "求助(_H)"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Change zone of binding"
-msgstr ""
+msgstr "變更綁定的界域"
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
-msgstr ""
+msgstr "在界域中隱藏連線、介面及來源的使用中執行時期綁定"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
-msgstr ""
+msgstr "在界域中顯示連線、介面及來源的使用中執行時期綁定"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Configuration:"
@@ -1023,11 +1025,11 @@ msgstr "協定"
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
-msgstr ""
+msgstr "加入其他來源連接埠或連接埠範圍，讓所有可連接至本機的主機或網路存取。"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Source Port"
-msgstr ""
+msgstr "來源連接埠"
 
 #: ../src/firewall-config.glade.h:93
 msgid ""
@@ -1093,11 +1095,11 @@ msgstr "將清單中應被拒絕的 ICMP 類型標記起來。其他所有 ICMP 
 msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
-msgstr ""
+msgstr "如果啟用了反轉篩選器，系統會接受已標示的 ICMP 項目，但拒絕其他項目。在目標為 DROP 的界域中，它們會被丟棄。"
 
 #: ../src/firewall-config.glade.h:104
 msgid "Invert Filter"
-msgstr ""
+msgstr "反轉篩選器"
 
 #: ../src/firewall-config.glade.h:105
 msgid "ICMP Filter"
@@ -1206,7 +1208,7 @@ msgstr "移除條目"
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
-msgstr ""
+msgstr "加入其他來源連訊埠或連接埠範圍，讓所有主機或網路均可存取。"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Netfilter helper modules"
@@ -1281,7 +1283,7 @@ msgstr "這 IPSet 使用逾時值，因此此處看不到任何條目。這些�
 
 #: ../src/firewall-config.glade.h:146
 msgid "Add"
-msgstr ""
+msgstr "加入"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Entries"
@@ -1760,7 +1762,7 @@ msgstr "請輸入使用者名稱。"
 
 #: ../src/firewall-config.glade.h:275
 msgid "label"
-msgstr ""
+msgstr "標籤"
 
 #: ../src/firewall-config.glade.h:276
 msgid "Base Zone Settings"

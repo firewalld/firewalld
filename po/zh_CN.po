@@ -14,6 +14,7 @@
 # Zamir SUN <zamirs@163.com>, 2013
 # Zamir SUN <sztsian@gmail.com>, 2015. #zanata
 # Leah Liu <lliu@redhat.com>, 2016. #zanata
+# Zamir SUN <sztsian@gmail.com>, 2016. #zanata
 # xhuang <xhuang@redhat.com>, 2016. #zanata
 msgid ""
 msgstr ""
@@ -23,17 +24,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-06-09 01:11-0400\n"
-"Last-Translator: xhuang <xhuang@redhat.com>\n"
+"PO-Revision-Date: 2016-08-18 02:05-0400\n"
+"Last-Translator: Leah Liu <lliu@redhat.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/projects/p/"
 "firewalld/language/zh_CN/)\n"
 "Language: zh-CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.8.4\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
-msgstr "防火墙小应用"
+msgstr "防火墙小程序"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -630,15 +631,15 @@ msgstr "内置 ipset，不支持重命名。"
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "请选择一个文件"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "文本文件"
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "所有文件"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
@@ -647,7 +648,7 @@ msgstr "预置 ICMP，不支持重命名。"
 #: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "读取文件 %s 失败：%s"
 
 #: ../src/firewall-config:7290
 #, c-format
@@ -660,7 +661,7 @@ msgstr "地址"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Command line"
-msgstr ""
+msgstr "命令行"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
@@ -668,7 +669,7 @@ msgstr "请输入命令行。"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Context"
-msgstr ""
+msgstr "上下文"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -811,19 +812,19 @@ msgstr "添加条目"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Add Entries From File"
-msgstr ""
+msgstr "以文件添加条目"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "移除所选条目"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Remove All Entries"
-msgstr ""
+msgstr "移除全部项"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "从文件中移除条目"
 
 #: ../src/firewall-config.glade.h:45
 msgid "_File"
@@ -1283,7 +1284,7 @@ msgstr "这个 IPSet 使用 timeout 选项，因此在这个看不到。应直�
 
 #: ../src/firewall-config.glade.h:146
 msgid "Add"
-msgstr ""
+msgstr "新增"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Entries"

@@ -11,8 +11,10 @@
 # noriko <noriko@fedoraproject.org>, 2014
 # Tomoyuki KATO <tomo@dream.daynight.jp>, 2012-2013
 # Hajime Taira <htaira@fedoraproject.org>, 2015. #zanata
+# Aiko Sasaki <asasaki@redhat.com>, 2016. #zanata
 # Hajime Taira <htaira@fedoraproject.org>, 2016. #zanata
 # Noriko Mizumoto <noriko@redhat.com>, 2016. #zanata
+# Takuro Nagamoto <tnagamot@redhat.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
@@ -21,17 +23,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-03-31 03:06-0400\n"
-"Last-Translator: Noriko Mizumoto <noriko@redhat.com>\n"
+"PO-Revision-Date: 2016-08-22 12:11-0400\n"
+"Last-Translator: Kenzo Moriguchi <kmoriguc@redhat.com>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/firewalld/"
 "language/ja/)\n"
 "Language: ja\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Zanata 3.8.4\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
-msgstr "ファイアウォール・アプレット"
+msgstr "ファイアウォールアプレット"
 
 #: ../config/firewall-config.desktop.in.h:1
 msgid "Firewall"
@@ -44,7 +46,7 @@ msgstr "ファイアウォールの設定"
 #. Translators: These are searchable keywords for the firewall configuration tool
 #: ../config/firewall-config.desktop.in.h:4
 msgid "firewall;network;security;iptables;netfilter;"
-msgstr "ファイアウォール;ネットワーク;セキュリティ;iptables;netfilter;"
+msgstr "ファイアウォール;ネットワーク;セキュリティー;iptables;netfilter;"
 
 #: ../src/firewall-applet:89 ../src/firewall-config:7190
 #, c-format
@@ -65,7 +67,7 @@ msgstr "接続 '%s' のゾーンを選択する"
 
 #: ../src/firewall-applet:172 ../src/firewall-config:3673
 msgid "Failed to set zone {zone} for connection {connection}"
-msgstr ""
+msgstr "接続  {connection} のゾーン  {zone} の設定に失敗しました"
 
 #: ../src/firewall-applet:186
 #, c-format
@@ -175,15 +177,15 @@ msgstr "{entry} (ゾーン: {zone})"
 
 #: ../src/firewall-applet:682
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr ""
+msgstr "{entry} (デフォルトゾーン: {default_zone})"
 
 #: ../src/firewall-applet:763 ../src/firewall-config:1434
 msgid "Failed to get connections from NetworkManager"
-msgstr ""
+msgstr "NetworkManager からの接続の取得に失敗しました"
 
 #: ../src/firewall-applet:775 ../src/firewall-config:1260
 msgid "No NetworkManager imports available"
-msgstr ""
+msgstr "利用可能な NetworkManager インポートがありません"
 
 #: ../src/firewall-applet:853
 msgid "No connection to firewall daemon"
@@ -203,6 +205,7 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"デフォルトゾーン '{default_zone}' がインターフェース '{interface}' の接続 '{connection}' に対して有効化"
 
 #: ../src/firewall-applet:874
 msgid ""
@@ -256,6 +259,8 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"デフォルトゾーン '{default_zone}' がインターフェース '{interface}' の接続  '{connection}' に対して  "
+"{activated_deactivated} "
 
 #: ../src/firewall-applet:1034
 msgid ""
@@ -286,11 +291,11 @@ msgstr "ゾーン '%s' を送信元 '%s' に対して有効化しました"
 
 #: ../src/firewall-config:81
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr " firewalld への接続が確立されました。"
 
 #: ../src/firewall-config:83
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "firewalld への接続を試行しています。お待ちください..."
 
 #: ../src/firewall-config:84
 msgid "Changes applied."
@@ -304,7 +309,7 @@ msgstr "ネットワーク接続 '%s' により使用中"
 #: ../src/firewall-config:86
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "ネットワーク接続 '%s' で使用されるデフォルトゾーン"
 
 #: ../src/firewall-config:88
 msgid "enabled"
@@ -353,7 +358,7 @@ msgstr "送信先アドレス"
 
 #: ../src/firewall-config:592
 msgid "Bindings"
-msgstr ""
+msgstr "バインディング"
 
 #: ../src/firewall-config:626
 msgid "Entry"
@@ -416,7 +421,7 @@ msgstr "廃棄"
 #: ../src/firewall-config:1870 ../src/firewall-config:3465
 #: ../src/firewall-config:3607
 msgid "mark"
-msgstr ""
+msgstr "マーク"
 
 #: ../src/firewall-config:1873 ../src/firewall-config:1915
 #: ../src/firewall-config:1920
@@ -451,7 +456,7 @@ msgstr "マスカレード"
 #: ../src/firewall-config:3119 ../src/firewall-config:3435
 #: ../src/firewall-config.glade.h:264
 msgid "source-port"
-msgstr ""
+msgstr "source-port"
 
 #: ../src/firewall-config:1913
 msgid "level"
@@ -469,13 +474,13 @@ msgstr "ゾーン"
 #: ../src/firewall-config:2267
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "デフォルトゾーン: %s"
 
 #: ../src/firewall-config:2274 ../src/firewall-config:2305
 #: ../src/firewall-config:2335
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "ゾーン: %s"
 
 #: ../src/firewall-config:2574
 #, c-format
@@ -627,15 +632,15 @@ msgstr "組み込みの IPSet です。名前の変更はできません。"
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "ファイルを選択してください"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "テキストファイル"
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "全ファイル"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
@@ -644,7 +649,7 @@ msgstr "組み込みの ICMP です。名前の変更はできません。"
 #: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "ファイル '%s' の読み込みに失敗しました: %s"
 
 #: ../src/firewall-config:7290
 #, c-format
@@ -657,7 +662,7 @@ msgstr "アドレス"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Command line"
-msgstr ""
+msgstr "コマンドライン"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
@@ -665,7 +670,7 @@ msgstr "コマンドラインを入力してください。"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Context"
-msgstr ""
+msgstr "コンテキスト"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -808,19 +813,19 @@ msgstr "エントリーの追加"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Add Entries From File"
-msgstr ""
+msgstr "ファイルからエントリーを追加"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "選択したエントリーの削除"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Remove All Entries"
-msgstr ""
+msgstr "すべてのエントリーの削除"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "ファイルからエントリーを削除"
 
 #: ../src/firewall-config.glade.h:45
 msgid "_File"
@@ -856,11 +861,11 @@ msgstr "接続やインターフェースに適用される標準のゾーンを
 
 #: ../src/firewall-config.glade.h:53
 msgid "Change Log Denied"
-msgstr ""
+msgstr "拒否されたログの変更"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Change LogDenied value."
-msgstr ""
+msgstr "LogDenied 値を変更します。"
 
 #: ../src/firewall-config.glade.h:55
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -910,7 +915,7 @@ msgstr "ロックダウン・ホワイトリスト"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Active Bindings"
-msgstr ""
+msgstr "アクティブバインディング"
 
 #: ../src/firewall-config.glade.h:67
 msgid "_Help"
@@ -918,17 +923,17 @@ msgstr "ヘルプ(_H)"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Change zone of binding"
-msgstr ""
+msgstr "バインディングのゾーンを変更"
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
-msgstr ""
+msgstr "接続のアクティブなランタイムバインディング、インターフェースおよびソースをゾーンに対して非表示にします"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
-msgstr ""
+msgstr "接続のアクティブなランタイムバインディング、インターフェースおよびソースをゾーンに対して表示します"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Configuration:"
@@ -1028,11 +1033,11 @@ msgstr "プロトコル"
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
-msgstr ""
+msgstr "このマシンに接続できるすべてのホストやネットワークがアクセスできなければならないソースポートまたはポート範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Source Port"
-msgstr ""
+msgstr "ソースポート"
 
 #: ../src/firewall-config.glade.h:93
 msgid ""
@@ -1101,10 +1106,12 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"反転フィルターが有効にされている場合、マークされた ICMP  エントリーは受け入れられ、それ以外は拒否されます。ターゲットが DROP "
+"のゾーンでは、それらは破棄されます。"
 
 #: ../src/firewall-config.glade.h:104
 msgid "Invert Filter"
-msgstr ""
+msgstr "反転フィルター"
 
 #: ../src/firewall-config.glade.h:105
 msgid "ICMP Filter"
@@ -1215,7 +1222,7 @@ msgstr "エントリーの削除"
 msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
-msgstr ""
+msgstr "すべてのホストやネットワークがアクセスできなければならないソースポートまたはポート範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Netfilter helper modules"
@@ -1292,7 +1299,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Add"
-msgstr ""
+msgstr "追加"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Entries"
@@ -1463,7 +1470,7 @@ msgid ""
 "service. To get the context of a running application use <tt>ps -e --"
 "context</tt>."
 msgstr ""
-"コンテキストは実行中のアプリケーションやサービスの セキュリティコンテキスト(SELinux "
+"コンテキストは実行中のアプリケーションやサービスのセキュリティーコンテキスト(SELinux "
 "コンテキスト)です。実行中のアプリケーションのコンテキストを確認するには、<tt>ps -e --context</tt>コマンドを使用します。"
 
 #: ../src/firewall-config.glade.h:180
@@ -1560,7 +1567,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr ""
+msgstr "拒否されたログ:"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Lockdown:"
@@ -1616,31 +1623,31 @@ msgstr "IPSet を選択してください:"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Log Denied"
-msgstr ""
+msgstr "拒否されたログ"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Please select the log denied value:"
-msgstr ""
+msgstr "拒否されたログの値を選択してください:"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Mark"
-msgstr ""
+msgstr "マーク"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Please enter a mark with an optional mask."
-msgstr ""
+msgstr "オプションのマスクと共にマークを入力してください。"
 
 #: ../src/firewall-config.glade.h:219
 msgid "The mark and the mask fields are both 32 bits wide unsigned numbers."
-msgstr ""
+msgstr "マークとマスクフィールドはどちらも 32 ビットの符号なし数値になります。"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Mark:"
-msgstr ""
+msgstr "マーク:"
 
 #: ../src/firewall-config.glade.h:221
 msgid "Mask:"
-msgstr ""
+msgstr "マスク:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Port and Protocol"
@@ -1780,7 +1787,7 @@ msgstr "ユーザー名を入力してください。"
 
 #: ../src/firewall-config.glade.h:275
 msgid "label"
-msgstr ""
+msgstr "ラベル"
 
 #: ../src/firewall-config.glade.h:276
 msgid "Base Zone Settings"

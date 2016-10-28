@@ -28,6 +28,7 @@
 # Thomas Woerner <twoerner@redhat.com>, 2012
 # Verena <vfuehrer@redhat.com>, 2004
 # Roman Spirgi <rspirgi@gmail.com>, 2015. #zanata
+# Hedda Peters <hpeters@redhat.com>, 2016. #zanata
 # Lisa Stemmler <lstemmle@redhat.com>, 2016. #zanata
 # Roman Spirgi <rspirgi@gmail.com>, 2016. #zanata
 # Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
@@ -39,13 +40,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-06-07 07:20-0400\n"
-"Last-Translator: Lisa Stemmler <lstemmle@redhat.com>\n"
+"PO-Revision-Date: 2016-08-24 06:47-0400\n"
+"Last-Translator: Hedda Peters <hpeters@redhat.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
 "language/de/)\n"
 "Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Zanata 3.8.4\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
@@ -659,15 +660,15 @@ msgstr "Integriertes Ipset, Umbenennen wird nicht unterstützt."
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "Bitte wählen Sie eine Datei"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "Textdateien"
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "Alle Dateien"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
@@ -676,7 +677,7 @@ msgstr "Integriertes Icmp, das Umbenennen wird nicht unterstützt."
 #: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Lesen der Datei »%s« fehlgeschlagen: %s"
 
 #: ../src/firewall-config:7290
 #, c-format
@@ -689,15 +690,15 @@ msgstr "Adresse"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Command line"
-msgstr ""
+msgstr "Befehlszeile"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
-msgstr "Bitte die Kommandozeile eingeben."
+msgstr "Bitte die Befehlszeile eingeben."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Context"
-msgstr ""
+msgstr "Kontext"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -847,19 +848,19 @@ msgstr "Eintrag hinzufügen"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Einträge von Datei hinzufügen"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Ausgewählten Eintrag entfernen"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Alle Einträge entfernen"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Einträge aus Datei entfernen"
 
 #: ../src/firewall-config.glade.h:45
 msgid "_File"
@@ -899,11 +900,11 @@ msgstr "Standardzone für Verbindungen oder Schnittstellen ändern."
 
 #: ../src/firewall-config.glade.h:53
 msgid "Change Log Denied"
-msgstr "Log Verweigert ändern"
+msgstr "LogDenied ändern"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Change LogDenied value."
-msgstr "Wert für LogVerweigert ändern."
+msgstr "Wert für LogDenied ändern."
 
 #: ../src/firewall-config.glade.h:55
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1051,7 +1052,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:82
 msgid "Add Port"
-msgstr "Zu Port"
+msgstr "Port hinzufügen"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Edit Port"
@@ -1178,7 +1179,7 @@ msgid ""
 msgstr ""
 "Falls Filter invertieren aktiviert ist, werden markierte ICMP-Einträge "
 "akzeptiert und andere zurückgewiesen. In einer Zone mit dem Ziel DROP, "
-"werden diese abgelegt."
+"werden diese verworfen."
 
 #: ../src/firewall-config.glade.h:104
 msgid "Invert Filter"
@@ -1343,9 +1344,8 @@ msgid ""
 "An IPSet can be used to create white or black lists and is able to store for "
 "example IP addresses, port numbers or MAC addresses. "
 msgstr ""
-"Ein IPSet kann verwendet werden, um weiße oder schwarze Listen zu erstellen, "
-"und es kann zum Beispiel IP-Adressen, Portnummern oder MAC-Adressen "
-"speichern. "
+"Ein IPSet kann verwendet werden, um White- oder Blacklists zu erstellen, und "
+"es kann zum Beispiel IP-Adressen, Portnummern oder MAC-Adressen speichern. "
 
 #: ../src/firewall-config.glade.h:139
 msgid "IPSet"
@@ -1390,7 +1390,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Add"
-msgstr ""
+msgstr "Hinzufügen"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Entries"
@@ -1679,7 +1679,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Log Denied:"
-msgstr "Log Verweigert:"
+msgstr "Log Denied:"
 
 #: ../src/firewall-config.glade.h:202
 msgid "Lockdown:"
@@ -1735,11 +1735,11 @@ msgstr "Bitte wählen Sie ein IPSet:"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Log Denied"
-msgstr "Log Verweigert"
+msgstr "Log Denied"
 
 #: ../src/firewall-config.glade.h:216
 msgid "Please select the log denied value:"
-msgstr "Bitte wählen Sie einen Wert für Log Verweigert:"
+msgstr "Bitte wählen Sie einen Wert für LogDenied:"
 
 #: ../src/firewall-config.glade.h:217
 msgid "Mark"

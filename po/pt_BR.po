@@ -34,13 +34,13 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2016-06-23 03:20-0400\n"
-"Last-Translator: Daniel Lara <danniel@fedoraproject.org>\n"
+"PO-Revision-Date: 2016-09-06 09:02-0400\n"
+"Last-Translator: Jiří Popelka <jpopelka@redhat.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "firewalld/language/pt_BR/)\n"
 "Language: pt-BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Zanata 3.8.4\n"
+"X-Generator: Zanata 3.9.6\n"
 
 #: ../config/firewall-applet.desktop.in.h:1 ../src/firewall-applet:412
 msgid "Firewall Applet"
@@ -192,7 +192,7 @@ msgstr "{entry} (Zona: {zone})"
 
 #: ../src/firewall-applet:682
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr ""
+msgstr "{entry} (Zona Padrão: {default_zone})"
 
 #: ../src/firewall-applet:763 ../src/firewall-config:1434
 msgid "Failed to get connections from NetworkManager"
@@ -220,6 +220,8 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Zona padrão '{default_zone}' ativo para conexão '{connection}' na interface "
+"'{interface}'"
 
 #: ../src/firewall-applet:874
 msgid ""
@@ -274,6 +276,8 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Zona padrão '{default_zone}' {activated_deactivated} para a conexão "
+"'{connection}' na interface '{interface}'"
 
 #: ../src/firewall-applet:1034
 msgid ""
@@ -304,11 +308,11 @@ msgstr "Zona '%s' ativada para a fonte '%s'"
 
 #: ../src/firewall-config:81
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "Conexão estabelecida com o firewalld."
 
 #: ../src/firewall-config:83
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "Tentando conectar ao firewalld, aguardando..."
 
 #: ../src/firewall-config:84
 msgid "Changes applied."
@@ -322,7 +326,7 @@ msgstr "Usado por conexão de rede '%s' "
 #: ../src/firewall-config:86
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "Zona padrão utilizada pela conexão de rede '%s'"
 
 #: ../src/firewall-config:88
 msgid "enabled"
@@ -371,7 +375,7 @@ msgstr "Para o endereço"
 
 #: ../src/firewall-config:592
 msgid "Bindings"
-msgstr ""
+msgstr "Vinculações"
 
 #: ../src/firewall-config:626
 msgid "Entry"
@@ -469,7 +473,7 @@ msgstr "Mascaramento"
 #: ../src/firewall-config:3119 ../src/firewall-config:3435
 #: ../src/firewall-config.glade.h:264
 msgid "source-port"
-msgstr ""
+msgstr "porta-origem"
 
 #: ../src/firewall-config:1913
 msgid "level"
@@ -487,13 +491,13 @@ msgstr "Zona"
 #: ../src/firewall-config:2267
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "Zona Padrão: %s"
 
 #: ../src/firewall-config:2274 ../src/firewall-config:2305
 #: ../src/firewall-config:2335
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "Zona: %s"
 
 #: ../src/firewall-config:2574
 #, c-format
@@ -653,15 +657,15 @@ msgstr "Ipset embutido, renomeação não é suportada. "
 
 #: ../src/firewall-config:5571 ../src/firewall-config:5653
 msgid "Please select a file"
-msgstr ""
+msgstr "Por favor selecione um arquivo"
 
 #: ../src/firewall-config:5578 ../src/firewall-config:5660
 msgid "Text Files"
-msgstr ""
+msgstr "Arquivo Texto "
 
 #: ../src/firewall-config:5583 ../src/firewall-config:5665
 msgid "All Files"
-msgstr ""
+msgstr "Todos os arquivos"
 
 #: ../src/firewall-config:6089
 msgid "Built-in icmp, rename not supported."
@@ -670,7 +674,7 @@ msgstr "icmp embutido, renomeação não é suportada."
 #: ../src/firewall-config:7158
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Falha ao ler o arquivo '%s': %s"
 
 #: ../src/firewall-config:7290
 #, c-format
@@ -683,7 +687,7 @@ msgstr "Endereço"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Command line"
-msgstr ""
+msgstr "Linha de comando"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please enter the command line."
@@ -691,7 +695,7 @@ msgstr "Por favor insira a linha de comando."
 
 #: ../src/firewall-config.glade.h:4
 msgid "Context"
-msgstr ""
+msgstr "Contexto"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the context."
@@ -838,19 +842,19 @@ msgstr "Adicionar entrada"
 
 #: ../src/firewall-config.glade.h:40
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Adicionar Entradas do Arquivo"
 
 #: ../src/firewall-config.glade.h:41
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Remover Entrada Selecionada"
 
 #: ../src/firewall-config.glade.h:42
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Remover Todas as Entradas"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Remover Entradas do Arquivo"
 
 #: ../src/firewall-config.glade.h:45
 msgid "_File"
@@ -947,7 +951,7 @@ msgstr "Bloquear Lista de Permissões"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Active Bindings"
-msgstr ""
+msgstr "Vinculações Ativas"
 
 #: ../src/firewall-config.glade.h:67
 msgid "_Help"
@@ -955,17 +959,21 @@ msgstr "_Ajuda"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Mudar zona de vinculação"
 
 #: ../src/firewall-config.glade.h:69
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Ocultar vinculações ativas de conexões em tempo de execução, interfaces e "
+"origens para zonas"
 
 #: ../src/firewall-config.glade.h:70
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Exibir vinculações ativas de conexões em tempo de execução, interfaces e "
+"origens para zonas"
 
 #: ../src/firewall-config.glade.h:71
 msgid "Configuration:"
@@ -1077,10 +1085,12 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
+"Incluir portas de origem adicionais ou intervalos de portas que precisam "
+"estar acessíveis a todos os hosts ou redes que podem conectar-se à máquina."
 
 #: ../src/firewall-config.glade.h:92
 msgid "Source Port"
-msgstr ""
+msgstr "Porta de Origem"
 
 #: ../src/firewall-config.glade.h:93
 msgid ""
@@ -1157,10 +1167,13 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"Se o Filtro Inverter está habilitado, entradas marcadas ICPM são aceitas e "
+"as outras são rejeitadas. Em uma zona com o alvo DROP, elas serão rejeitadas."
+""
 
 #: ../src/firewall-config.glade.h:104
 msgid "Invert Filter"
-msgstr ""
+msgstr "Inverter Filtro"
 
 #: ../src/firewall-config.glade.h:105
 msgid "ICMP Filter"
@@ -1278,6 +1291,8 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
+"Incluir portas de origem adicionais ou intervalos de portas que precisam "
+"estar acessíveis a todos os hosts ou redes."
 
 #: ../src/firewall-config.glade.h:132
 msgid "Netfilter helper modules"
@@ -1364,7 +1379,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Add"
-msgstr ""
+msgstr "Adicionar"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Entries"
