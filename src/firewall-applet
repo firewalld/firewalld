@@ -74,10 +74,9 @@ def escape(text):
     return text
 
 def fromUTF8(text):
-    if PY2:
+    if PY2 and QtCore.QT_VERSION < 0x050000:
         return QtCore.QString.fromUtf8(text)
-    else:
-        return text        
+    return text
 
 # ZoneInterfaceEditor #########################################################
 
