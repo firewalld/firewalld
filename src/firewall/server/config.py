@@ -171,9 +171,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                           (name, msg))
                 return
             props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG).copy()
-            for key in props.keys():
-                if key in old_props and \
-                   old_props[key] == props[key]:
+            for key in list(props.keys()):
+                if key in old_props and old_props[key] == props[key]:
                     del props[key]
             if len(props) > 0:
                 self.PropertiesChanged(config.dbus.DBUS_INTERFACE_CONFIG,
