@@ -1216,6 +1216,8 @@ class FirewallClientHelperSettings(object):
         return self.settings[3]
     @handle_exceptions
     def setFamily(self, ipv):
+        if ipv is None:
+            self.settings[3] = ""
         self.settings[3] = ipv
 
     @handle_exceptions
@@ -1380,6 +1382,8 @@ class FirewallClientConfigHelper(object):
     @slip.dbus.polkit.enable_proxy
     @handle_exceptions
     def setFamily(self, ipv):
+        if ipv is None:
+            self.fw_helper.setFamily("")
         self.fw_helper.setFamily(ipv)
 
     # module
