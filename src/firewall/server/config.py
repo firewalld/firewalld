@@ -80,12 +80,12 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_IPSETS)
         self.watcher.add_watch_dir(config.FIREWALLD_ICMPTYPES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_ICMPTYPES)
+        self.watcher.add_watch_dir(config.FIREWALLD_HELPERS)
+        self.watcher.add_watch_dir(config.ETC_FIREWALLD_HELPERS)
         self.watcher.add_watch_dir(config.FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(config.FIREWALLD_ZONES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_ZONES)
-        self.watcher.add_watch_dir(config.FIREWALLD_HELPERS)
-        self.watcher.add_watch_dir(config.ETC_FIREWALLD_HELPERS)
         # Add watches for combined zone directories
         if os.path.exists(config.ETC_FIREWALLD_ZONES):
             for filename in sorted(os.listdir(config.ETC_FIREWALLD_ZONES)):
@@ -104,6 +104,7 @@ class FirewallDConfig(slip.dbus.service.Object):
                                                 "MinimalMark": "readwrite",
                                                 "IndividualCalls": "readwrite",
                                                 "LogDenied": "readwrite",
+                                                "AutomaticHelpers": "readwrite",
                                               })
 
     @handle_exceptions
@@ -483,7 +484,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _get_property(self, prop):
         if prop not in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
                          "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                         "LogDenied" ]:
+                         "LogDenied", "AutomaticHelpers" ]:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
                 "Property '%s' isn't exported (or may not exist)" % prop)
@@ -520,6 +521,10 @@ class FirewallDConfig(slip.dbus.service.Object):
             if value is None:
                 value = config.FALLBACK_LOG_DENIED
             return dbus.String(value)
+        elif prop == "AutomaticHelpers":
+            if value is None:
+                value = config.FALLBACK_LOG_DENIED
+            return dbus.String(value)
 
     @dbus_handle_exceptions
     def _get_dbus_property(self, prop):
@@ -536,6 +541,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "IndividualCalls":
             return dbus.String(self._get_property(prop))
         elif prop == "LogDenied":
+            return dbus.String(self._get_property(prop))
+        elif prop == "AutomaticHelpers":
             return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
@@ -572,7 +579,8 @@ class FirewallDConfig(slip.dbus.service.Object):
 
         ret = { }
         for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
-                   "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]:
+                   "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+                   "AutomaticHelpers" ]:
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
@@ -593,7 +601,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "FirewallD does not implement %s" % interface_name)
 
         if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
-                              "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]:
+                              "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+                              "AutomaticHelpers" ]:
             if property_name == "MinimalMark":
                 try:
                     int(new_value)
@@ -611,6 +620,10 @@ class FirewallDConfig(slip.dbus.service.Object):
                                             (new_value, property_name))
             if property_name == "LogDenied":
                 if new_value not in config.LOG_DENIED_VALUES:
+                    raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
+                                            (new_value, property_name))
+            if property_name == "AutomaticHelpers":
+                if new_value not in config.AUTOMATIC_HELPERS_VALUES:
                     raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
             self.config.get_firewalld_conf().set(property_name, new_value)
