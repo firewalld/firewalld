@@ -1109,8 +1109,10 @@ class Firewall(object):
         return self._automatic_helpers
 
     def set_automatic_helpers(self, value):
-        if not isinstance(value, str):
-            raise FirewallError(errors.INVALID_VALUE, "not string")
+        if value not in config.AUTOMATIC_HELPERS_VALUES:
+            raise FirewallError(errors.INVALID_VALUE,
+                                "'%s', choose from '%s'" % \
+                                (value, "','".join(config.AUTOMATIC_HELPERS_VALUES)))
 
         if value != self.get_automatic_helpers():
             self._automatic_helpers = value
