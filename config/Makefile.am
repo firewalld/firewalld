@@ -77,6 +77,8 @@ CONFIG_FILES = \
 	helpers/irc.xml \
 	helpers/netbios-ns.xml \
 	helpers/pptp.xml \
+	helpers/Q.931.xml \
+	helpers/RAS.xml \
 	helpers/sane.xml \
 	helpers/sip.xml \
 	helpers/snmp.xml \
