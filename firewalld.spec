@@ -82,10 +82,10 @@ Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 %if 0%{?use_python3}
-Requires: python3-PyQt4
+Requires: python3-qt5
 Requires: python3-gobject
 %else
-Requires: PyQt4
+Requires: python-qt5
 Requires: pygobject3-base
 %endif
 Requires: libnotify
