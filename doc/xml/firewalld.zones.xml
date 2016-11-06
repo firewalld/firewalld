@@ -110,7 +110,7 @@
       <title>Which zones are available?</title>
 
       <para>
-	Here are the zones provided by firewalld sorted according to the default trust level of the zones from untrusted to trusted:
+	Below are the zones provided by firewalld sorted according to the default trust level of the zones from untrusted to trusted. The built-in zones are not magically aware of your network layout and will need to be configured by either assigning them network interfaces or source IP address/mask sets.
       </para>
 
 	<variablelist>
