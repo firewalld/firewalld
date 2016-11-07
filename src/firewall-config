@@ -4229,8 +4229,8 @@ class FirewallConfig(object):
         if old_source != _source:
             if _type == "MAC" and functions.check_mac(_source):
                 self.sourceDialogOkButton.set_sensitive(True)
-            elif _type == "IP" and (functions.checkIP(_source) or \
-                                    functions.checkIP6(_source)):
+            elif _type == "IP" and (functions.checkIPnMask(_source) or \
+                                    functions.checkIP6nMask(_source)):
                 self.sourceDialogOkButton.set_sensitive(True)
             elif _type == "ipset":
                 self.sourceDialogOkButton.set_sensitive(True)
