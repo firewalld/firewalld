@@ -1711,6 +1711,10 @@ if not hasattr(args, "parser"):
 
 cmd = FirewallCommand(args.quiet, args.verbose)
 
+def myexcepthook(exctype, value, traceback):
+    cmd.exception_handler(str(value))
+sys.excepthook = myexcepthook
+
 # use firewalld
 
 try:
