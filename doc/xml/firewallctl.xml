@@ -219,6 +219,18 @@
 	</varlistentry>
 
 	<varlistentry>
+	  <term><option>list</option> <option>helpers</option> <optional> <option>-p</option> | <option>--permanent</option> </optional></term>
+	  <listitem>
+	    <para>
+	      Print predefined helpers as a space separated list.
+	    </para>
+	    <para>
+	      With the <option>-p</option> | <option>--permanent</option> option, helpers in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
 	  <term><option>list</option> <option>icmptypes</option> <optional> <option>-p</option> | <option>--permanent</option> </optional></term>
 	  <listitem>
 	    <para>
@@ -366,6 +378,42 @@
 	    </para>
 	    <para>
 	      With the <option>-p</option> | <option>--permanent</option> option, ipsets in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>helper</option> <replaceable>helper</replaceable> <optional> <option>-p</option> | <option>--permanent</option> </optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the helper <replaceable>helper</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>helper</replaceable>
+  family: <replaceable>family</replaceable>
+  module: <replaceable>module</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option> | <option>--permanent</option> option, helpers in the permanent environment are listed.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>info</option> <option>helpers</option> <optional> <option>-p</option> | <option>--permanent</option> </optional></term>
+	  <listitem>
+	    <para>
+	      Print information about the helpers. The output format is:
+	      <programlisting>
+<replaceable>helper</replaceable>
+  family: <replaceable>family</replaceable>
+  module: <replaceable>module</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+              </programlisting>
+	    </para>
+	    <para>
+	      With the <option>-p</option> | <option>--permanent</option> option, helpers in the permanent environment are listed.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -1013,6 +1061,116 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	    </para>
 	  </listitem>
 	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="helper_options">
+      <title>Helper Options</title>
+      <variablelist>
+        <varlistentry>
+          <term><option>helper</option> <replaceable>helper</replaceable> <option>-p</option> | <option>--permanent</option> { <option>add</option> | <option>remove</option> } <replaceable>port</replaceable> <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Add the port to the helper or remove the port from the helper. A port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	    </para>
+	    <para>
+	      With the <option>-p</option> or <option>--permanent</option> option, elements are added in the permanent environment.
+	    </para>
+	  </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>helper</option> <replaceable>helper</replaceable> <optional> <option>-p</option> | <option>--permanent</option> </optional> <option>query</option> <replaceable>port</replaceable> <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+              Return whether the port is set in the helper.
+	    </para>
+	    <para>
+	      With the <option>-p</option> or <option>--permanent</option> option, elements are added in the permanent environment.
+	    </para>
+	  </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>helper</option> <replaceable>helper</replaceable> <optional> <option>-p</option> | <option>--permanent</option> </optional> <option>get</option> { <option>short</option> | <option>description</option> }</term>
+	  <listitem>
+	    <para>
+	      Return short or long description from helper.
+	    </para>
+	    <para>
+	      With the <option>-p</option> or <option>--permanent</option> option, elements are added in the permanent environment.
+	    </para>
+	  </listitem>
+        </varlistentry>
+	<varlistentry>
+	  <term><option>helper</option> <replaceable>helper</replaceable> <optional> <option>-p</option> | <option>--permanent</option> </optional> <option>get</option> <option>family</option></term>
+	  <listitem>
+	    <para>
+	      Get the family from helper where it is usable.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>helper</option> <replaceable>helper</replaceable> <optional> <option>-p</option> | <option>--permanent</option> </optional> <option>get</option> <option>module</option></term>
+	  <listitem>
+	    <para>
+	      Get the netfilter helper module from helper.
+	    </para>
+	  </listitem>
+	</varlistentry>
+        <varlistentry>
+          <term>
+	    <option>helper</option> <replaceable>helper</replaceable> <option>-p</option> | <option>--permanent</option> <option>set</option>
+	    { <option>short</option> | <option>description</option> }
+	    <replaceable>text</replaceable>
+	  </term>
+	  <listitem>
+	    <para>
+	      Set short or long description for a helper to <replaceable>text</replaceable>.
+	    </para>
+	    <para>
+	      With the <option>-p</option> or <option>--permanent</option> option, elements are added in the permanent environment.
+	    </para>
+	  </listitem>
+        </varlistentry>
+	<varlistentry>
+	  <term><option>helper</option> <replaceable>helper</replaceable> <option>-p</option> | <option>--permanent</option> <option>set</option> <option>family</option></term>
+	  <listitem>
+	    <para>
+	      Set the family for the helper where it is usable.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>helper</option> <replaceable>helper</replaceable> <option>-p</option> | <option>--permanent</option> <option>set</option> <option>module</option></term>
+	  <listitem>
+	    <para>
+	      Set the netfilter helper module for the helper.
+	    </para>
+	  </listitem>
+	</varlistentry>
+        <varlistentry>
+          <term>
+	    <option>helper</option> <replaceable>helper</replaceable> <optional> <option>-p</option> | <option>--permanent</option> </optional> <option>list</option> <option>ports</option></term>
+	  <listitem>
+	    <para>
+	      Return list of ports added for <replaceable>helper</replaceable>.
+	    </para>
+	    <para>
+	      With the <option>-p</option> or <option>--permanent</option> option, elements are added in the permanent environment.
+	    </para>
+	  </listitem>
+        </varlistentry>
+        <varlistentry>
+          <term>
+	    <option>helper</option> <replaceable>helper</replaceable> { <option>-p</option> | <option>--permanent</option> } <option>load-defaults</option>
+	  </term>
+	  <listitem>
+	    <para>
+	      Load helper default settings or report NO_DEFAULTS error.
+	    </para>
+	  </listitem>
+        </varlistentry>
       </variablelist>
     </refsect2>
 
