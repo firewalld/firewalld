@@ -28,9 +28,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-28 23:39+0200\n"
-"PO-Revision-Date: 2016-09-08 07:14-0400\n"
-"Last-Translator: William  Moreno Reyes <williamjmorenor@gmail.com>\n"
+"POT-Creation-Date: 2016-11-09 16:27+0100\n"
+"PO-Revision-Date: 2016-10-29 06:10-0400\n"
+"Last-Translator: Máximo Castañeda Riloba <mcrcctm@gmail.com>\n"
 "Language-Team: Spanish (http://www.transifex.com/projects/p/firewalld/"
 "language/es/)\n"
 "Language: es\n"
@@ -666,7 +666,7 @@ msgstr "Todos los archivos"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Todas"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -679,9 +679,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "IPset incorporado, no se puede renombrar"
+msgstr "Agente incorporado, no se puede renombrar."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -703,12 +702,11 @@ msgstr "Dirección"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Agentes automáticos"
 
 #: ../src/firewall-config.glade.h:3
-#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr "Elija un valor para el registro de rechazos:"
+msgstr "Elija el valor para los agentes automáticos"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -824,14 +822,12 @@ msgid "Forward to another port"
 msgstr "Reenviar a otro puerto"
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Base Helper Settings"
-msgstr "Configuración de zona base"
+msgstr "Ajustes básicos de los agentes"
 
 #: ../src/firewall-config.glade.h:33
-#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr "Configure los ajustes básicos de ipset:"
+msgstr "Configure los ajustes básicos de agentes:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -858,19 +854,16 @@ msgid "Family:"
 msgstr "Familia:"
 
 #: ../src/firewall-config.glade.h:43
-#, fuzzy
 msgid "Module:"
-msgstr "Módulos"
+msgstr "Módulo:"
 
 #: ../src/firewall-config.glade.h:44
-#, fuzzy
 msgid "Helper"
-msgstr "Ay_uda"
+msgstr "Agente"
 
 #: ../src/firewall-config.glade.h:45
-#, fuzzy
 msgid "Please select a helper:"
-msgstr "Elija un archivo"
+msgstr "Elija un agente:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -955,11 +948,11 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Configurar la asignación automática de agentes"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Configuración de la asignación automática de agentes."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1004,9 +997,8 @@ msgid "ICMP Types"
 msgstr "Tipos ICMP"
 
 #: ../src/firewall-config.glade.h:77
-#, fuzzy
 msgid "Helpers"
-msgstr "Ay_uda"
+msgstr "Agentes"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1155,9 +1147,8 @@ msgstr ""
 "todos los equipos o redes que puedan conectarse al sistema."
 
 #: ../src/firewall-config.glade.h:106
-#, fuzzy
 msgid "Source Ports"
-msgstr "Puerto de origen"
+msgstr "Puertos de origen"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1363,9 +1354,8 @@ msgid "Source Port"
 msgstr "Puerto de origen"
 
 #: ../src/firewall-config.glade.h:147
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Módulos de ayuda de Netfilter"
+msgstr "Algunos servicios necesitan módulos de agentes de netfilter"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1504,10 +1494,15 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Hay un agente de seguimiento de conexiones ayudando con los protocolos que "
+"usan diferentes flujos para la señalización y para la transferencia de "
+"datos. Los datos se envían por puertos que no están relacionados con la "
+"conexión de control y el cortafuegos los bloquearía sin la ayuda del agente "
+"de seguimiento."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Defina los puertos o rangos que monitorizará el agente."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1742,7 +1737,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Agentes automáticos:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1821,18 +1816,16 @@ msgid "Mask:"
 msgstr "Máscara:"
 
 #: ../src/firewall-config.glade.h:237
-#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr "Elija un archivo"
+msgstr "Elija un agente netfilter de seguimiento de conexiones"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Elija -"
 
 #: ../src/firewall-config.glade.h:239
-#, fuzzy
 msgid "Other Module:"
-msgstr "Otro protocolo:"
+msgstr "Otro módulo:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -1981,6 +1974,3 @@ msgstr "Objetivo por defecto:"
 #: ../src/firewall-config.glade.h:295
 msgid "Target:"
 msgstr "Objetivo:"
-
-#~ msgid "Please enter the module name."
-#~ msgstr "Introduzca el nombre del módulo."

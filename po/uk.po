@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-28 23:39+0200\n"
-"PO-Revision-Date: 2016-06-19 02:13-0400\n"
+"POT-Creation-Date: 2016-11-09 16:27+0100\n"
+"PO-Revision-Date: 2016-10-30 02:44-0400\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/firewalld/"
 "language/uk/)\n"
@@ -651,7 +651,7 @@ msgstr "усі файли"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Усе"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -664,9 +664,9 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "Вбудований ipset, підтримки перейменування не передбачено."
+msgstr ""
+"Вбудований допоміжний засіб, підтримки перейменовування не передбачено."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -688,12 +688,11 @@ msgstr "Адреса"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Автоматичні допоміжні засоби"
 
 #: ../src/firewall-config.glade.h:3
-#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr "Будь ласка, виберіть значення заборони журналювання:"
+msgstr "Будь ласка, вибреіть значення для автоматичних допоміжних засобів:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -810,14 +809,12 @@ msgid "Forward to another port"
 msgstr "Направити іншому порту"
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Base Helper Settings"
-msgstr "Параметри основної зони"
+msgstr "Параметри базового допоміжного засобу"
 
 #: ../src/firewall-config.glade.h:33
-#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr "Будь ласка, вкажіть параметри основного ipset:"
+msgstr "Будь ласка, налаштуйте параметри базового допоміжного засобу:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -846,19 +843,16 @@ msgid "Family:"
 msgstr "Сімейство:"
 
 #: ../src/firewall-config.glade.h:43
-#, fuzzy
 msgid "Module:"
-msgstr "Модулі"
+msgstr "Модуль:"
 
 #: ../src/firewall-config.glade.h:44
-#, fuzzy
 msgid "Helper"
-msgstr "_Довідка"
+msgstr "Допоміжний засіб"
 
 #: ../src/firewall-config.glade.h:45
-#, fuzzy
 msgid "Please select a helper:"
-msgstr "Будь ласка, виберіть файл"
+msgstr "Будь ласка, виберіть допоміжний засіб:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -941,11 +935,11 @@ msgstr "Змінити значення LogDenied."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Налаштовування автоматичного призначення допоміжних засобів"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Налаштовування параметра автоматичного призначення допоміжних засобів."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -989,9 +983,8 @@ msgid "ICMP Types"
 msgstr "Типи ICMP"
 
 #: ../src/firewall-config.glade.h:77
-#, fuzzy
 msgid "Helpers"
-msgstr "_Довідка"
+msgstr "Допоміжні засоби"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1139,9 +1132,8 @@ msgstr ""
 "комп’ютером."
 
 #: ../src/firewall-config.glade.h:106
-#, fuzzy
 msgid "Source Ports"
-msgstr "Порт джерела"
+msgstr "Порти походження"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1348,9 +1340,8 @@ msgid "Source Port"
 msgstr "Порт джерела"
 
 #: ../src/firewall-config.glade.h:147
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Допоміжні модулі фільтрування"
+msgstr "Модулі допоміжних засобів фільтрування мережі потребують певних служб."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1490,10 +1481,17 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Допоміжний засіб стеження за з’єднанням призначено для забезпечення "
+"працездатності протоколів, у яких використовуються різні потоки для "
+"передавання сигналів та даних. Для передавання даних використовуються порти, "
+"які не пов’язано із з’єднанням для передавання сигналів, тому без "
+"допоміжного засобу передавання даних такими портами блокуватиметься "
+"брандмауером."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"Визначення портів або діапазонів портів, за якими стежитиме допоміжний засіб."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1734,7 +1732,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Автоматичні допоміжні засоби:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1815,18 +1813,17 @@ msgid "Mask:"
 msgstr "Маска:"
 
 #: ../src/firewall-config.glade.h:237
-#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr "Будь ласка, виберіть файл"
+msgstr ""
+"Будь ласка, виберіть допоміжний засіб стеження за з’єднанням фільтра мережі:"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Вибір -"
 
 #: ../src/firewall-config.glade.h:239
-#, fuzzy
 msgid "Other Module:"
-msgstr "Інший протокол:"
+msgstr "Інший модуль:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -1979,6 +1976,3 @@ msgstr "Типове призначення"
 #: ../src/firewall-config.glade.h:295
 msgid "Target:"
 msgstr "Призначення:"
-
-#~ msgid "Please enter the module name."
-#~ msgstr "Будь ласка, вкажіть назву модуля."

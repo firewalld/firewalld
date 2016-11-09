@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-28 23:39+0200\n"
-"PO-Revision-Date: 2016-10-10 03:31-0400\n"
+"POT-Creation-Date: 2016-11-09 16:27+0100\n"
+"PO-Revision-Date: 2016-10-29 03:17-0400\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/firewalld/"
 "language/sv/)\n"
@@ -649,7 +649,7 @@ msgstr "Alla filer"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Alla"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -662,9 +662,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "Inbyggd ipset, byte av namn stödjs inte."
+msgstr "Inbyggd hjälpare, namnbyte stödjs inte."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -686,12 +685,11 @@ msgstr "Adress"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Automatiska hjälpare"
 
 #: ../src/firewall-config.glade.h:3
-#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr "Välj värdet på nekningsloggen:"
+msgstr "Välj den automatiska väljaren värde:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -807,14 +805,12 @@ msgid "Forward to another port"
 msgstr "Vidarebefordra till en annan port"
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Base Helper Settings"
-msgstr "Inställningar för baszon"
+msgstr "Inställningar för bashjälpare"
 
 #: ../src/firewall-config.glade.h:33
-#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr "Konfigurera bas-ipmängd-inställningar:"
+msgstr "Konfigurera inställningar för bashjälpare"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -841,19 +837,16 @@ msgid "Family:"
 msgstr "Familj:"
 
 #: ../src/firewall-config.glade.h:43
-#, fuzzy
 msgid "Module:"
-msgstr "Moduler"
+msgstr "Modul:"
 
 #: ../src/firewall-config.glade.h:44
-#, fuzzy
 msgid "Helper"
-msgstr "_Hjälp"
+msgstr "Hjälpare"
 
 #: ../src/firewall-config.glade.h:45
-#, fuzzy
 msgid "Please select a helper:"
-msgstr "Välj en fil"
+msgstr "Välj en hjälpare:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -936,11 +929,11 @@ msgstr "Ändra nekningsloggvärde."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Konfigurera tilldelning av automatiska hjälpare"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Konfigurera inställningar för tilldelning av automatiska hjälpare"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -983,9 +976,8 @@ msgid "ICMP Types"
 msgstr "ICMP-typer"
 
 #: ../src/firewall-config.glade.h:77
-#, fuzzy
 msgid "Helpers"
-msgstr "_Hjälp"
+msgstr "Hjälpare"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1133,9 +1125,8 @@ msgstr ""
 "åtkomliga för alla värdar eller nätverk som kan ansluta till maskinen."
 
 #: ../src/firewall-config.glade.h:106
-#, fuzzy
 msgid "Source Ports"
-msgstr "Källport"
+msgstr "Källportar"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1344,9 +1335,8 @@ msgid "Source Port"
 msgstr "Källport"
 
 #: ../src/firewall-config.glade.h:147
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Hjälpmoduler till netfilter"
+msgstr "Netfilter-hjälpmoduler behövs för vissa tjänster."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1483,10 +1473,14 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"En hjälpare som följer förbindelser assisterar för att få protokoll som "
+"använder olika flöden för signalering och dataöverföringar fungera.  "
+"Dataöverföringarna använder portar som är orelaterade till "
+"signaleringsförbindelsen och blockeras därför av brandväggen utan hjälparen."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Definiera portar eller portintervall som övervakas av hjälparen."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1722,7 +1716,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Automatiska hjälpare:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1801,18 +1795,16 @@ msgid "Mask:"
 msgstr "Mask:"
 
 #: ../src/firewall-config.glade.h:237
-#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr "Välj en fil"
+msgstr "Välj en netfilter conntrack-hjälpare:"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Välj -"
 
 #: ../src/firewall-config.glade.h:239
-#, fuzzy
 msgid "Other Module:"
-msgstr "Andra protokoll:"
+msgstr "Annan modul:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -1962,6 +1954,3 @@ msgstr "Standardmål"
 #: ../src/firewall-config.glade.h:295
 msgid "Target:"
 msgstr "Mål:"
-
-#~ msgid "Please enter the module name."
-#~ msgstr "Ange modulnamnet."

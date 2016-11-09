@@ -19,9 +19,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-28 23:39+0200\n"
-"PO-Revision-Date: 2016-08-22 12:11-0400\n"
-"Last-Translator: Kenzo Moriguchi <kmoriguc@redhat.com>\n"
+"POT-Creation-Date: 2016-11-09 16:27+0100\n"
+"PO-Revision-Date: 2016-11-06 08:07-0500\n"
+"Last-Translator: Hajime Taira <htaira@fedoraproject.org>\n"
 "Language-Team: Japanese (http://www.transifex.com/projects/p/firewalld/"
 "language/ja/)\n"
 "Language: ja\n"
@@ -660,7 +660,7 @@ msgstr "全ファイル"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "すべて"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -673,9 +673,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "組み込みの IPSet です。名前の変更はできません。"
+msgstr "ビルトインヘルパーです。名前の変更はサポートされていません。"
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -697,12 +696,11 @@ msgstr "アドレス"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "オートマチックヘルパー"
 
 #: ../src/firewall-config.glade.h:3
-#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr "拒否されたログの値を選択してください:"
+msgstr "オートマチックヘルパーの値を選択してください:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -818,14 +816,12 @@ msgid "Forward to another port"
 msgstr "他のポートへの転送"
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Base Helper Settings"
-msgstr "基本ゾーン設定"
+msgstr "ベースヘルパーの設定"
 
 #: ../src/firewall-config.glade.h:33
-#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr "基本IPSet設定を設定してください:"
+msgstr "ベースヘルパーの値の設定を行ってください:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -852,19 +848,16 @@ msgid "Family:"
 msgstr "ファミリー:"
 
 #: ../src/firewall-config.glade.h:43
-#, fuzzy
 msgid "Module:"
-msgstr "モジュール"
+msgstr "モジュール:"
 
 #: ../src/firewall-config.glade.h:44
-#, fuzzy
 msgid "Helper"
-msgstr "ヘルプ(_H)"
+msgstr "ヘルパー"
 
 #: ../src/firewall-config.glade.h:45
-#, fuzzy
 msgid "Please select a helper:"
-msgstr "ファイルを選択してください"
+msgstr "ヘルパーを選択してください:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -946,11 +939,11 @@ msgstr "LogDenied 値を変更します。"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "オートマチックヘルパーの割り当てを設定する"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "オートマチックヘルパーの割り当て値を設定する"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -993,9 +986,8 @@ msgid "ICMP Types"
 msgstr "ICMP タイプ"
 
 #: ../src/firewall-config.glade.h:77
-#, fuzzy
 msgid "Helpers"
-msgstr "ヘルプ(_H)"
+msgstr "ヘルパー"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1143,9 +1135,8 @@ msgstr ""
 "ないソースポートまたはポート範囲を追加します。"
 
 #: ../src/firewall-config.glade.h:106
-#, fuzzy
 msgid "Source Ports"
-msgstr "ソースポート"
+msgstr "送信元ポート"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1354,9 +1345,8 @@ msgid "Source Port"
 msgstr "ソースポート"
 
 #: ../src/firewall-config.glade.h:147
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Netfilter ヘルパーモジュール"
+msgstr "Netfiler ヘルパーモジュールは、いくつかのサービスを必要としています"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1495,6 +1485,8 @@ msgstr ""
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"ポートもしくはポートの範囲を定義し、それをヘルパーによってモニタリングされま"
+"す。"
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1732,7 +1724,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "オートマチックヘルパー:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1811,18 +1803,16 @@ msgid "Mask:"
 msgstr "マスク:"
 
 #: ../src/firewall-config.glade.h:237
-#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr "ファイルを選択してください"
+msgstr "netfilter conntrack ヘルパーを選択してください:"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- 選択 -"
 
 #: ../src/firewall-config.glade.h:239
-#, fuzzy
 msgid "Other Module:"
-msgstr "他のプロトコル:"
+msgstr "その他のモジュール:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -1973,6 +1963,3 @@ msgstr "標準ターゲット"
 #: ../src/firewall-config.glade.h:295
 msgid "Target:"
 msgstr "ターゲット:"
-
-#~ msgid "Please enter the module name."
-#~ msgstr "モジュール名を入力してください。"

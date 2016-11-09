@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-28 23:39+0200\n"
-"PO-Revision-Date: 2016-10-11 05:43-0400\n"
+"POT-Creation-Date: 2016-11-09 16:27+0100\n"
+"PO-Revision-Date: 2016-11-02 08:35-0400\n"
 "Last-Translator: feonsu <feonsu@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/firewalld/"
 "language/sk/)\n"
@@ -646,7 +646,7 @@ msgstr "Všetky súbory"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Všetko"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -659,9 +659,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "Integrované ipset, premenovanie nie je podporované."
+msgstr "Integrovaný pomocník, premenovanie nie je podporované."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -683,12 +682,11 @@ msgstr "Adresa"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Automatický pomocníci"
 
 #: ../src/firewall-config.glade.h:3
-#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr "Prosím vyberte hodnotu pre záznam zamietnutí."
+msgstr "Prosím vyberte hodnotu automatického pomocníka:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -804,14 +802,12 @@ msgid "Forward to another port"
 msgstr "Preposlať na iný port"
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Base Helper Settings"
-msgstr "Nastavenia základnej zóny"
+msgstr "Základné nastavenia pomocníka"
 
 #: ../src/firewall-config.glade.h:33
-#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr "Prosím, nakonfigurujte základné nastavenia ipset:"
+msgstr "Prosím, nakonfigurujte základné nastavenia pomocníka:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -839,23 +835,20 @@ msgid "Family:"
 msgstr "Rodina:"
 
 #: ../src/firewall-config.glade.h:43
-#, fuzzy
 msgid "Module:"
-msgstr "Moduly"
+msgstr "Modul:"
 
 #: ../src/firewall-config.glade.h:44
-#, fuzzy
 msgid "Helper"
-msgstr "_Pomocník"
+msgstr "Pomocník"
 
 #: ../src/firewall-config.glade.h:45
-#, fuzzy
 msgid "Please select a helper:"
-msgstr "Vyberte súbor"
+msgstr "Vyberte pomocníka:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
-msgstr "Nastavenia typu základného ICMP"
+msgstr "Základné nastavenia typu ICMP"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Please configure base ICMP type settings:"
@@ -934,11 +927,11 @@ msgstr "Zmení hodnotu záznamu zamietnutí."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Nastaviť automatické priradenie pomocníka"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Nastaví automatické priradenie pomocníka."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -983,9 +976,8 @@ msgid "ICMP Types"
 msgstr "Typy ICMP"
 
 #: ../src/firewall-config.glade.h:77
-#, fuzzy
 msgid "Helpers"
-msgstr "_Pomocník"
+msgstr "Pomocníci"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1130,9 +1122,8 @@ msgstr ""
 "prístupné pre všetky počítače alebo siete, ktoré sa môžu pripojiť k stroju."
 
 #: ../src/firewall-config.glade.h:106
-#, fuzzy
 msgid "Source Ports"
-msgstr "Zdrojový port"
+msgstr "Zdrojové porty"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1338,9 +1329,8 @@ msgid "Source Port"
 msgstr "Zdrojový port"
 
 #: ../src/firewall-config.glade.h:147
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Pomocné moduly Netfilter"
+msgstr "Pomocné moduly Netfilter sú potrebné pre niektoré služby."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1476,10 +1466,14 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Pomocník sledovania pripojení pomáha funkčnosti protokolov, ktoré používajú "
+"rôzne toky pre signalizáciu a prenos údajov. Prenosy údajov používajú porty, "
+"ktoré nesúvisia so signalizačnými spojeniami a bez pomocníka ich firewall "
+"preto zablokuje. "
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Zadajte porty a rozsahy portov monitorované pomocou pomocníka."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1712,7 +1706,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Automatický pomocníci:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1724,7 +1718,7 @@ msgstr "Núdzový režim:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Base IPSet Settings"
-msgstr "Nastavenia základného IPSet"
+msgstr "Základné nastavenia IPSet"
 
 #: ../src/firewall-config.glade.h:221
 msgid "Please configure base ipset settings:"
@@ -1791,18 +1785,16 @@ msgid "Mask:"
 msgstr "Maska:"
 
 #: ../src/firewall-config.glade.h:237
-#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr "Vyberte súbor"
+msgstr "Prosím vyberte pomocníka netfilter conntrack:"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Vyberte -"
 
 #: ../src/firewall-config.glade.h:239
-#, fuzzy
 msgid "Other Module:"
-msgstr "Iný protokol:"
+msgstr "Ďalšie moduly:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -1908,7 +1900,7 @@ msgstr "Akcia:"
 
 #: ../src/firewall-config.glade.h:284
 msgid "Base Service Settings"
-msgstr "Nastavenia základnej služby"
+msgstr "Základné nastavenia služby"
 
 #: ../src/firewall-config.glade.h:285
 msgid "Please configure base service settings:"
@@ -1940,7 +1932,7 @@ msgstr "menovka"
 
 #: ../src/firewall-config.glade.h:292
 msgid "Base Zone Settings"
-msgstr "Nastavenia základnej zóny"
+msgstr "Základné nastavenia zóny"
 
 #: ../src/firewall-config.glade.h:293
 msgid "Please configure base zone settings:"
@@ -1953,6 +1945,3 @@ msgstr "Predvolený cieľ"
 #: ../src/firewall-config.glade.h:295
 msgid "Target:"
 msgstr "Cieľ:"
-
-#~ msgid "Please enter the module name."
-#~ msgstr "Prosím, zadajte názov modulu."

@@ -29,9 +29,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-10-28 23:39+0200\n"
-"PO-Revision-Date: 2016-08-22 12:52-0400\n"
-"Last-Translator: corina roe <croe@redhat.com>\n"
+"POT-Creation-Date: 2016-11-09 16:27+0100\n"
+"PO-Revision-Date: 2016-11-08 08:30-0500\n"
+"Last-Translator: Thomas Woerner <twoerner@redhat.com>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/firewalld/"
 "language/fr/)\n"
 "Language: fr\n"
@@ -668,7 +668,7 @@ msgstr "Tous les fichiers"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Tout"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -681,9 +681,8 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
-#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr "Ipset intégré, le renommage n'est pas pris en charge."
+msgstr "Assistant intégré, le renommage n'est pas pris en charge."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -705,12 +704,11 @@ msgstr "Adresse"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Assistants automatiques"
 
 #: ../src/firewall-config.glade.h:3
-#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr "Veuillez sélectionner la valeur du DéniDeLog :"
+msgstr "Veuillez sélectionner la valeur des assistants automatiques :"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -828,14 +826,12 @@ msgid "Forward to another port"
 msgstr "Ré-acheminer vers un autre port"
 
 #: ../src/firewall-config.glade.h:32
-#, fuzzy
 msgid "Base Helper Settings"
-msgstr "Paramètres de la zone de base"
+msgstr "Paramètres de l'assistant de base"
 
 #: ../src/firewall-config.glade.h:33
-#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr "Veuillez configurer les paramètres de l'IPSet de base :"
+msgstr "Veuillez configurer les paramètres de l'assistant de base :"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -862,19 +858,16 @@ msgid "Family:"
 msgstr "Famille :"
 
 #: ../src/firewall-config.glade.h:43
-#, fuzzy
 msgid "Module:"
-msgstr "Modules"
+msgstr "Module :"
 
 #: ../src/firewall-config.glade.h:44
-#, fuzzy
 msgid "Helper"
-msgstr "_Aide"
+msgstr "Assistant"
 
 #: ../src/firewall-config.glade.h:45
-#, fuzzy
 msgid "Please select a helper:"
-msgstr "Sélectionner un fichier"
+msgstr "Veuillez sélectionner un assistant :"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -957,11 +950,11 @@ msgstr "Changer la valeur du DéniDeLog"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Configurer les assignations de l'assistant automatique"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Configurer les paramètres d'assignations de l'assistant automatique."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1006,9 +999,8 @@ msgid "ICMP Types"
 msgstr "Types ICMP"
 
 #: ../src/firewall-config.glade.h:77
-#, fuzzy
 msgid "Helpers"
-msgstr "_Aide"
+msgstr "Assistants"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1160,9 +1152,8 @@ msgstr ""
 "machine."
 
 #: ../src/firewall-config.glade.h:106
-#, fuzzy
 msgid "Source Ports"
-msgstr "Port source"
+msgstr "Ports sources"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1373,9 +1364,9 @@ msgid "Source Port"
 msgstr "Port source"
 
 #: ../src/firewall-config.glade.h:147
-#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr "Modules d'assistance pour Netfilter"
+msgstr ""
+"Les modules d'assistance Netfilter sont nécessaires pour certains services."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1517,7 +1508,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Définir les ports ou plages de port, surveillés par l'assistant."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1756,7 +1747,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Assistants automatiques :"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1837,18 +1828,16 @@ msgid "Mask:"
 msgstr "Masque :"
 
 #: ../src/firewall-config.glade.h:237
-#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr "Sélectionner un fichier"
+msgstr "Veuillez sélectionner un assistant conntrack netfilter :"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Sélectionner -"
 
 #: ../src/firewall-config.glade.h:239
-#, fuzzy
 msgid "Other Module:"
-msgstr "Autres protocoles :"
+msgstr "Autre module :"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -2000,6 +1989,3 @@ msgstr "Cible par défaut"
 #: ../src/firewall-config.glade.h:295
 msgid "Target:"
 msgstr "Cible :"
-
-#~ msgid "Please enter the module name."
-#~ msgstr "Veuillez saisir le nom du module"
