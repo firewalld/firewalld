@@ -220,11 +220,11 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
-%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
-%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %dir %{_datadir}/firewalld
 %dir %{_datadir}/firewalld/tests
 %{_datadir}/firewalld/tests
@@ -279,7 +279,9 @@ fi
 
 %files -n firewalld-filesystem
 %dir %{_prefix}/lib/firewalld
+%dir %{_prefix}/lib/firewalld/helpers
 %dir %{_prefix}/lib/firewalld/icmptypes
+%dir %{_prefix}/lib/firewalld/ipsets
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
 %dir %{_prefix}/lib/firewalld/xmlschema
