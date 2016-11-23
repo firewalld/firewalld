@@ -32,15 +32,13 @@ try:
     gi.require_version('NM', '1.0')
 except ValueError:
     _nm_imported = False
-    _nm_client = None
 else:
     try:
         from gi.repository import NM
         _nm_imported = True
-        _nm_client = NM.Client.new(None)
     except (ImportError, ValueError, GLib.Error):
         _nm_imported = False
-        _nm_client = None
+_nm_client = None
 
 from firewall import errors
 from firewall.errors import FirewallError
@@ -63,6 +61,9 @@ def nm_get_client():
     """Returns the NM client object or None if the import of NM failed
     @return NM.Client instance if import was successful, None otherwise
     """
+    global _nm_client
+    if not _nm_client:
+        _nm_client = NM.Client.new(None)
     return _nm_client
 
 def nm_get_zone_of_connection(connection):
