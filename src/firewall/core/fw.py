@@ -185,13 +185,17 @@ class Firewall(object):
             log.debug1("ebtables-restore is not supporting the --noflush "
                        "option, will therefore not be used")
 
-        self.nf_conntrack_helpers = functions.get_nf_conntrack_helpers()
-        if len(self.nf_conntrack_helpers) > 0:
-            log.debug1("Conntrack helpers supported by the kernel:")
-            for key,values in self.nf_conntrack_helpers.items():
-                log.debug1("  %s: %s", key, ", ".join(values))
+        if os.path.exists(config.COMMANDS["modinfo"]):
+            self.nf_conntrack_helpers = functions.get_nf_conntrack_helpers()
+            if len(self.nf_conntrack_helpers) > 0:
+                log.debug1("Conntrack helpers supported by the kernel:")
+                for key,values in self.nf_conntrack_helpers.items():
+                    log.debug1("  %s: %s", key, ", ".join(values))
+            else:
+                log.debug1("No conntrack helpers supported by the kernel.")
         else:
-            log.debug1("No conntrack helpers supported by the kernel.")
+            self.nf_conntrack_helpers = { }
+            log.warning("modinfo command is missing, not able to detect conntrack helpers.")
 
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall

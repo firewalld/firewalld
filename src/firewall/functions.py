@@ -39,7 +39,7 @@ import sys
 import tempfile
 from firewall.core.logger import log
 from firewall.core.prog import runProg
-from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE
+from firewall.config import FIREWALLD_TEMPDIR, FIREWALLD_PIDFILE, COMMANDS
 
 PY2 = sys.version < '3'
 
@@ -336,7 +336,7 @@ def get_nf_conntrack_helpers():
             if not filename.startswith("nf_conntrack_"):
                 continue
             module = filename.split(".")[0]
-            (status, ret) = runProg("/usr/sbin/modinfo", [ module, ])
+            (status, ret) = runProg(COMMANDS["modinfo"], [ module, ])
             if status != 0:
                 continue
             for line in ret.split("\n"):
