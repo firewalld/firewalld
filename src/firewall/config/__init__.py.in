@@ -102,6 +102,8 @@ COMMANDS = {
     "eb-restore":   "@EBTABLES_RESTORE@",
     "ipset":        "@IPSET@",
     "modinfo":      "@MODINFO@",
+    "modprobe":     "@MODPROBE@",
+    "rmmod":        "@RMMOD@",
 }
 
 LOG_DENIED_VALUES = [ "all", "unicast", "broadcast", "multicast", "off" ]

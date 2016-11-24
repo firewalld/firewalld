@@ -25,12 +25,13 @@ __all__ = [ "modules" ]
 
 from firewall.core.prog import runProg
 from firewall.core.logger import log
+from firewall.config import COMMANDS
 
 class modules(object):
     def __init__(self):
-        self._load_command = "/sbin/modprobe"
+        self._load_command = COMMANDS["modprobe"]
         # Use rmmod instead of modprobe -r (RHBZ#1031102)
-        self._unload_command = "/sbin/rmmod"
+        self._unload_command = COMMANDS["rmmod"]
 
     def __repr__(self):
         return '%s' % (self.__class__)
