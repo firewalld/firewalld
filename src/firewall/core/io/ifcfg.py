@@ -80,7 +80,6 @@ class ifcfg(object):
             # get key/value pair
             pair = [ x.strip() for x in line.split("=", 1) ]
             if len(pair) != 2:
-                log.warning("%s: Invalid option definition: '%s'", self.filename, line.strip())
                 continue
             elif pair[1] == '':
                 continue
