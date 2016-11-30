@@ -79,8 +79,8 @@ class ifcfg(object):
                 continue
             # get key/value pair
             pair = [ x.strip() for x in line.split("=", 1) ]
+            print(line)
             if len(pair) != 2:
-                log.warning("%: Invalid option definition: '%s'", self.filename, line.strip())
                 continue
             elif pair[1] == '':
                 continue
