@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.1
+Version: 0.4.4.2
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -309,6 +309,17 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Dec  1 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4.2-1
+- firewalld.spec: Added helpers and ipsets paths to firewalld-filesystem
+- firewall.core.fw_nm: create NMClient lazily
+- Do not use hard-coded path for modinfo, use autofoo to detect it
+- firewall.core.io.ifcfg: Dropped invalid option warning with bad format
+  string
+- firewall.core.io.ifcfg: Properly handle quoted ifcfg values
+- firewall.core.fw_zone: Do not reset ZONE with ifdown
+- Updated translations from zanata
+- firewall-config: Extra grid at bottom to visualize firewalld settings
+
 * Wed Nov  9 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4.1-1
 - firewall-config: Use proper source check in sourceDialog (fixes issue#162)
 - firewallctl: New support for helpers
