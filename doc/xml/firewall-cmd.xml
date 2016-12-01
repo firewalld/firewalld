@@ -938,7 +938,12 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	  <listitem>
 	    <para>
 	      If the interface is under control of NetworkManager, it is at first connected to change the zone for the connection that is using the interface. If this fails, the zone binding is created in firewalld and the limitations below apply.
-For interfaces that are not under control of NetworkManager, firewalld tries to change the ZONE setting in the ifcfg file, if the file exists.
+	    </para>
+	    <para>
+	      For the addion or change of interfaces that are not under control of NetworkManager: firewalld tries to change the ZONE setting in the ifcfg file, if an ifcfg file exists that is using the interface.
+	    </para>
+	    <para>
+	      Only for the removal of interfaces that are not under control of NetworkManager: firewalld is not trying to change the ZONE setting in the ifcfg file. This is needed to make sure that an ifdown of the interface will not result in a reset of the zone setting to the default zone. Only the zone binding is then removed in firewalld then.
 	    </para>
 	    <para>
 	      Remove binding of interface <replaceable>interface</replaceable> from zone it was previously added to.

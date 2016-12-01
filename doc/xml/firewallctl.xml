@@ -598,7 +598,6 @@
 	    </para>
 	    <para>
 	      If the interface is under control of NetworkManager, it is at first connected to change the zone for the connection that is using the interface for new or changed interface bindings. If the setting in NetworkManager fails, the zone binding is created or changed in firewalld and the limitations below apply.
-For interfaces that are not under control of NetworkManager, firewalld tries to change the ZONE setting in the ifcfg file, if the file exists.
 	    </para>
 	    <para>
 	      As a end user you don't need to create or change zone bindings of interfaces in most cases, because NetworkManager (or legacy network service) adds interfaces into zones automatically (according to <option>ZONE=</option> option from ifcfg-<replaceable>interface</replaceable> file) if <replaceable>NM_CONTROLLED=no</replaceable> is not set.
@@ -606,6 +605,12 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
 	      If there is such file and you add interface to zone with this <option>--add-interface</option> option, make sure the zone is the same in both cases, otherwise the behaviour would be undefined.
 	      Please also have a look at the <citerefentry><refentrytitle>firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry> man page in the <replaceable>Concepts</replaceable> section.
 	      For permanent association of interface with a zone, see also 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
+	    </para>
+	    <para>
+	      For the addion or change of interfaces that are not under control of NetworkManager: firewalld tries to change the ZONE setting in the ifcfg file, if an ifcfg file exists that is using the interface.
+	    </para>
+	    <para>
+	      Only for the removal of interfaces that are not under control of NetworkManager: firewalld is not trying to change the ZONE setting in the ifcfg file. This is needed to make sure that an ifdown of the interface will not result in a reset of the zone setting to the default zone. Only the zone binding is then removed in firewalld then.
 	    </para>
 	  </listitem>
 	</varlistentry>
