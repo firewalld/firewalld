@@ -17,14 +17,15 @@
 # zdenek <chmelarz@gmail.com>, 2013
 # zdenek <chmelarz@gmail.com>, 2013
 # zdenek <chmelarz@gmail.com>, 2013
+# Josef Hruška <hrusjos@gmail.com>, 2016. #zanata
 # Zdenek <chmelarz@gmail.com>, 2016. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-09 16:27+0100\n"
-"PO-Revision-Date: 2016-09-03 08:40-0400\n"
-"Last-Translator: Zdenek <chmelarz@gmail.com>\n"
+"POT-Creation-Date: 2016-12-01 12:20+0100\n"
+"PO-Revision-Date: 2016-11-09 02:29-0500\n"
+"Last-Translator: Josef Hruška <hrusjos@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/firewalld/language/"
 "cs/)\n"
 "Language: cs\n"
@@ -656,7 +657,7 @@ msgstr "Všechny soubory"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Vše"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -670,7 +671,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config:6337
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Vestavěný pomocník, přejmenování nepodporováno."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -692,11 +693,11 @@ msgstr "Adresa"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Automatičtí pomocníci"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Vyberte prosím hodnotu automatických pomocníků:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -813,11 +814,11 @@ msgstr "Přeposlat na jiný port"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Nastavení základního pomocníka"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Proveďte prosím nastavení základního pomocníka:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -845,15 +846,15 @@ msgstr "Rodina:"
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
-msgstr ""
+msgstr "Modul:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
-msgstr ""
+msgstr "Pomocník"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Vyberte prosím pomocníka:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -935,11 +936,11 @@ msgstr "Změní hodnotu záznamu zamítnutí."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Nastavit přiřazení automatického pomocníka"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Provést nastavení přiřazení automatického pomocníka."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -984,7 +985,7 @@ msgstr "Typy ICMP"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
-msgstr ""
+msgstr "Pomocníci"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1128,7 +1129,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:106
 msgid "Source Ports"
-msgstr ""
+msgstr "Zdrojové porty"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1334,7 +1335,7 @@ msgstr "Zdrojový port"
 
 #: ../src/firewall-config.glade.h:147
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Pomocné moduly netfilteru jsou nutné pro některé služby."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1470,10 +1471,14 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Pomocník sledování spojení napomáhá ve fungování protokolů, které používají "
+"různé toky pro signalizaci a přenosy dat. Přenosy dat využívají porty, které "
+"nesouvisí se signalizací spojení, a proto jsou bez pomocníka firewallem "
+"blokovány. "
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
-msgstr ""
+msgstr "Určit porty nebo rozsah portů, které jsou sledovány pomocníkem."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1706,7 +1711,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Automatičtí pomocníci:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1786,7 +1791,7 @@ msgstr "Maska:"
 
 #: ../src/firewall-config.glade.h:237
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Vyberte prosím pomocníka netfilter conntrack:"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
@@ -1794,7 +1799,7 @@ msgstr "- Vybrat -"
 
 #: ../src/firewall-config.glade.h:239
 msgid "Other Module:"
-msgstr ""
+msgstr "Jiný modul:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
