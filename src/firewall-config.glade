@@ -7448,33 +7448,35 @@
           </packing>
         </child>
         <child>
-          <object class="GtkSeparator" id="hseparator1">
+          <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkBox" id="statusHBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="valign">start</property>
             <property name="margin_left">6</property>
             <property name="margin_right">6</property>
+            <property name="margin_top">3</property>
+            <property name="margin_bottom">3</property>
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="statusLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_markup">True</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -7483,29 +7485,31 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="hexpand">True</property>
-                <property name="justify">fill</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label130">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Default Zone:</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
+                <property name="xalign">0</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">6</property>
+            <property name="margin_right">6</property>
+            <property name="margin_top">3</property>
+            <property name="margin_bottom">3</property>
+            <property name="row_spacing">3</property>
+            <property name="column_spacing">3</property>
             <child>
               <object class="GtkLabel" id="defaultZoneLabel">
                 <property name="visible">True</property>
@@ -7514,26 +7518,28 @@
                 <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
                 <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
                 <property name="label">label</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
                 <property name="label" translatable="yes" context="Meaning: Log of denied packets. But this is too long. LogDenied is also the parameter used in firewalld.conf.">Log Denied:</property>
+                <property name="justify">right</property>
+                <property name="xalign">1</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">4</property>
+                <property name="left_attach">2</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
@@ -7544,86 +7550,28 @@
                 <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
                 <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
                 <property name="label">label</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label148">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes" context="Meaning: Log of denied packets. But this is too long. LogDenied is also the parameter used in firewalld.conf.">Automatic Helpers:</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">6</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="automaticHelpersLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
-                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
-                <property name="label">label</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">7</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label17">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Lockdown:</property>
-                <attributes>
-                  <attribute name="weight" value="bold"/>
-                </attributes>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">8</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="lockdownLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="has_tooltip">True</property>
-                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
-                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
-                <property name="label">label</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">9</property>
+                <property name="left_attach">3</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
               <object class="GtkLabel" id="label19">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
                 <property name="label" translatable="yes">Panic Mode:</property>
+                <property name="justify">right</property>
+                <property name="xalign">1</property>
                 <attributes>
                   <attribute name="weight" value="bold"/>
                 </attributes>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">10</property>
+                <property name="left_attach">4</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
             <child>
@@ -7634,11 +7582,91 @@
                 <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
                 <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
                 <property name="label">label</property>
+                <property name="xalign">0</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">11</property>
+                <property name="left_attach">5</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label148">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
+                <property name="label" translatable="yes" context="Meaning: Log of denied packets. But this is too long. LogDenied is also the parameter used in firewalld.conf.">Automatic Helpers:</property>
+                <property name="justify">right</property>
+                <property name="xalign">1</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">6</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="automaticHelpersLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
+                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
+                <property name="label">label</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left_attach">7</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label17">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
+                <property name="label" translatable="yes">Lockdown:</property>
+                <property name="justify">right</property>
+                <property name="xalign">1</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">8</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="lockdownLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="has_tooltip">True</property>
+                <property name="tooltip_markup" translatable="yes">Current default zone of the system.</property>
+                <property name="tooltip_text" translatable="yes">Current default zone of the system.</property>
+                <property name="label">label</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left_attach">9</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label130">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Default Zone:</property>
+                <property name="justify">right</property>
+                <property name="xalign">1</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
               </packing>
             </child>
           </object>
@@ -7646,6 +7674,17 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="hseparator1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
           </packing>
         </child>
       </object>
