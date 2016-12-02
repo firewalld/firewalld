@@ -89,7 +89,7 @@
 
       <variablelist>
 	<varlistentry>
-          <term>modul="<replaceable>string</replaceable>"</term>
+          <term>module="<replaceable>string</replaceable>"</term>
           <listitem>
             <para>
               The mandatory module of the helper. This is one of the netfilter conntrack helper modules. The name starts with <literal>nf_conntrack_</literal>.
@@ -100,7 +100,7 @@
           <term>family="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
           <listitem>
             <para>
-              The optional family of the helper. This can be one of these ipv tapes: <replaceable>ipv4</replaceable> or <replaceable>ipv6</replaceable>. If the family is not specified, then the helper is usable for <replaceable>IPv4</replaceable> and <replaceable>IPv6</replaceable>.
+              The optional family of the helper. This can be one of these ipv types: <replaceable>ipv4</replaceable> or <replaceable>ipv6</replaceable>. If the family is not specified, then the helper is usable for <replaceable>IPv4</replaceable> and <replaceable>IPv6</replaceable>.
             </para>
           </listitem>
         </varlistentry>
