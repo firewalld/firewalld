@@ -244,7 +244,7 @@ class Zone(IO_Object):
         elif name.count('/') > 1:
             raise FirewallError(errors.INVALID_NAME,
                                 "more than one '/' in '%s'" % name)
-        elif len(name[name.find('/')]) > max_zone_name_len():
+        elif len(name[:name.find('/')] if "/" in name else name) > max_zone_name_len():
             raise FirewallError(
                 errors.INVALID_NAME,
                 "'%s' has %d chars, max is %d" % (name, len(name),
