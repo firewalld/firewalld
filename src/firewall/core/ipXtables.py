@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -24,7 +24,8 @@ import os.path
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile
-from firewall.config import COMMANDS
+from firewall import config
+import string
 
 PROC_IPxTABLE_NAMES = {
     "ipv4": "/proc/net/ip_tables_names",
@@ -67,6 +68,13 @@ for chain in BUILT_IN_CHAINS["raw"]:
     DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
     OUR_CHAINS["raw"].add("%s_direct" % chain)
 
+    if chain == "PREROUTING":
+        DEFAULT_RULES["raw"].append("-N %s_ZONES_SOURCE" % chain)
+        DEFAULT_RULES["raw"].append("-N %s_ZONES" % chain)
+        DEFAULT_RULES["raw"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
+        DEFAULT_RULES["raw"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
+        OUR_CHAINS["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
 DEFAULT_RULES["mangle"] = [ ]
 OUR_CHAINS["mangle"] = set()
 for chain in BUILT_IN_CHAINS["mangle"]:
@@ -105,9 +113,8 @@ DEFAULT_RULES["filter"] = [
     "-I INPUT 3 -j INPUT_direct",
     "-I INPUT 4 -j INPUT_ZONES_SOURCE",
     "-I INPUT 5 -j INPUT_ZONES",
-    "-I INPUT 6 -p %%ICMP%% -j ACCEPT",
-    "-I INPUT 7 -m conntrack --ctstate INVALID -j DROP",
-    "-I INPUT 8 -j %%REJECT%%",
+    "-I INPUT 6 -m conntrack --ctstate INVALID -j DROP",
+    "-I INPUT 7 -j %%REJECT%%",
 
     "-N FORWARD_direct",
     "-N FORWARD_IN_ZONES_SOURCE",
@@ -122,9 +129,8 @@ DEFAULT_RULES["filter"] = [
     "-I FORWARD 5 -j FORWARD_IN_ZONES",
     "-I FORWARD 6 -j FORWARD_OUT_ZONES_SOURCE",
     "-I FORWARD 7 -j FORWARD_OUT_ZONES",
-    "-I FORWARD 8 -p %%ICMP%% -j ACCEPT",
-    "-I FORWARD 9 -m conntrack --ctstate INVALID -j DROP",
-    "-I FORWARD 10 -j %%REJECT%%",
+    "-I FORWARD 8 -m conntrack --ctstate INVALID -j DROP",
+    "-I FORWARD 9 -j %%REJECT%%",
 
     "-N OUTPUT_direct",
 
@@ -132,11 +138,11 @@ DEFAULT_RULES["filter"] = [
 ]
 
 LOG_RULES["filter"] = [
-    "-I INPUT 7 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
-    "-I INPUT 9 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
+    "-I INPUT 6 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
+    "-I INPUT 8 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
 
-    "-I FORWARD 9 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
-    "-I FORWARD 11 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
+    "-I FORWARD 8 -m conntrack --ctstate INVALID %%LOGTYPE%% -j LOG --log-prefix 'STATE_INVALID_DROP: '",
+    "-I FORWARD 10 %%LOGTYPE%% -j LOG --log-prefix 'FINAL_REJECT: '",
 ]
 
 OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
@@ -148,9 +154,14 @@ class ip4tables(object):
     ipv = "ipv4"
 
     def __init__(self):
-        self._command = COMMANDS[self.ipv]
-        self._restore_command = COMMANDS["%s-restore" % self.ipv]
+        self._command = config.COMMANDS[self.ipv]
+        self._restore_command = config.COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
+        self.fill_exists()
+
+    def fill_exists(self):
+        self.command_exists = os.path.exists(self._command)
+        self.restore_command_exists = os.path.exists(self._restore_command)
 
     def __run(self, args):
         # convert to string list
@@ -165,26 +176,72 @@ class ip4tables(object):
                                                      " ".join(_args), ret))
         return ret
 
+    def split_value(self, rules, opts=None):
+        """Split values combined with commas for options in opts"""
+
+        if opts is None:
+            return rules
+
+        out_rules = [ ]
+        for rule in rules:
+            processed = False
+            for opt in opts:
+                try:
+                    i = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) > i and "," in rule[i+1]:
+                        # For all items in the comma separated list in index
+                        # i of the rule, a new rule is created with a single
+                        # item from this list
+                        processed = True
+                        items = rule[i+1].split(",")
+                        for item in items:
+                            _rule = rule[:]
+                            _rule[i+1] = item
+                            out_rules.append(_rule)
+            if not processed:
+                out_rules.append(rule)
+
+        return out_rules
+
     def set_rules(self, rules, flush=False):
         temp_file = tempFile()
 
-        table = "filter"
         table_rules = { }
-        for rule in rules:
-            try:
-                i = rule.index("-t")
-            except:
-                pass
-            else:
-                if len(rule) >= i+1:
-                    rule.pop(i)
-                    table = rule.pop(i)
+        for _rule in rules:
+            rule = _rule[:]
+            table = "filter"
+            # get table form rule
+            for opt in [ "-t", "--table" ]:
+                try:
+                    i = rule.index(opt)
+                except ValueError:
+                    pass
+                else:
+                    if len(rule) >= i+1:
+                        rule.pop(i)
+                        table = rule.pop(i)
+
+            # we can not use joinArgs here, because it would use "'" instead
+            # of '"' for the start and end of the string, this breaks
+            # iptables-restore
+            for i in range(len(rule)):
+                for c in string.whitespace:
+                    if c in rule[i] and not (rule[i].startswith('"') and
+                                             rule[i].endswith('"')):
+                        rule[i] = '"%s"' % rule[i]
 
             table_rules.setdefault(table, []).append(rule)
 
         for table in table_rules:
+            rules = table_rules[table]
+            rules = self.split_value(rules, [ "-s", "--source" ])
+            rules = self.split_value(rules, [ "-d", "--destination" ])
+
             temp_file.write("*%s\n" % table)
-            for rule in table_rules[table]:
+            for rule in rules:
                 temp_file.write(" ".join(rule) + "\n")
             temp_file.write("COMMIT\n")
 
@@ -201,13 +258,10 @@ class ip4tables(object):
                                 stdin=temp_file.name)
 
         if log.getDebugLogLevel() > 2:
-            try:
-                lines = readfile(temp_file.name)
-            except:
-                pass
-            else:
+            lines = readfile(temp_file.name)
+            if lines is not None:
                 i = 1
-                for line in readfile(temp_file.name):
+                for line in lines:
                     log.debug3("%8d: %s" % (i, line), nofmt=1, nl=0)
                     if not line.endswith("\n"):
                         log.debug3("", nofmt=1)
@@ -256,52 +310,43 @@ class ip4tables(object):
 
     def _detect_wait_option(self):
         wait_option = ""
-        (status, ret) = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
-        if status == 0:
+        ret = runProg(self._command, ["-w", "-L", "-n"])  # since iptables-1.4.20
+        if ret[0] == 0:
             wait_option = "-w"  # wait for xtables lock
-            (status, ret) = runProg(self._command, ["-w2", "-L", "-n"])  # since iptables > 1.4.21
-            if status == 0:
+            ret = runProg(self._command, ["-w2", "-L", "-n"])  # since iptables > 1.4.21
+            if ret[0] == 0:
                 wait_option = "-w2"  # wait max 2 seconds
             log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
 
         return wait_option
 
-    def flush(self, individual=False):
+    def flush(self, transaction=None):
         tables = self.used_tables()
-        rules = [ ]
         for table in tables:
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
             for flag in [ "-F", "-X", "-Z" ]:
-                if individual:
-                    self.__run([ "-t", table, flag ])
+                if transaction is not None:
+                    transaction.add_rule(self.ipv, [ "-t", table, flag ])
                 else:
-                    rules.append([ "-t", table, flag ])
-        if len(rules) > 0:
-            self.set_rules(rules)
+                    self.__run([ "-t", table, flag ])
 
-    def set_policy(self, policy, which="used", individual=False):
+    def set_policy(self, policy, which="used", transaction=None):
         if which == "used":
             tables = self.used_tables()
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
-        if "nat" in tables:
-            tables.remove("nat") # nat can not set policies in nat table
-
-        rules = [ ]
         for table in tables:
+            if table == "nat":
+                continue
             for chain in BUILT_IN_CHAINS[table]:
-                if individual:
-                    self.__run([ "-t", table, "-P", chain, policy ])
+                if transaction is not None:
+                    transaction.add_rule(self.ipv,
+                                         [ "-t", table, "-P", chain, policy ])
                 else:
-                    rules.append([ "-t", table, "-P", chain, policy ])
-        if len(rules) > 0:
-            self.set_rules(rules)
+                    self.__run([ "-t", table, "-P", chain, policy ])
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
-
-ip4tables_available_tables = ip4tables().available_tables()
-ip6tables_available_tables = ip6tables().available_tables()

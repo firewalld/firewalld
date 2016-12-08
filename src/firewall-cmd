@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2009-2015 Red Hat, Inc.
+# Copyright (C) 2009-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -26,37 +26,26 @@ import sys
 sys.modules['gobject'] = GObject
 
 import argparse
-import dbus
 import os
 
-from firewall.client import *
-from firewall.errors import *
+from firewall.client import FirewallClient, FirewallClientIPSetSettings, \
+    FirewallClientZoneSettings, FirewallClientServiceSettings, \
+    FirewallClientIcmpTypeSettings, FirewallClientHelperSettings
+from firewall.errors import FirewallError
+from firewall import errors
 from firewall.functions import joinArgs, splitArgs
-
-def __print(msg=None):
-    if msg and not a.quiet:
-        print(msg)
-
-def __print_and_exit(msg=None, exit_code=0):
-    FAIL = '\033[91m'
-    OK =   '\033[92m'
-    END =  '\033[00m'
-    if exit_code > 1:
-        __print(FAIL + msg + END)
-    else:
-        __print(msg)
-        #__print(OK + msg + END)
-    sys.exit(exit_code)
-
-def __fail(msg=None):
-    __print_and_exit(msg, 2)
-
-def __print_if_verbose(msg=None):
-    if msg and a.verbose:
-        print(msg)
+from firewall.core.fw_nm import nm_is_imported, \
+    nm_get_connection_of_interface, nm_get_zone_of_connection, \
+    nm_set_zone_of_connection
+from firewall.core.io.zone import zone_reader
+from firewall.core.io.service import service_reader
+from firewall.core.io.ipset import ipset_reader
+from firewall.core.io.icmptype import icmptype_reader
+from firewall.core.io.helper import helper_reader
+from firewall.command import FirewallCommand
 
 def __usage():
-    print ("""
+    sys.stdout.write("""
 Usage: firewall-cmd [OPTIONS...]
 
 General Options
@@ -67,12 +56,20 @@ General Options
 Status Options
   --state              Return and print firewalld state
   --reload             Reload firewall and keep state information
-  --complete-reload    Reload firewall and loose state information
+  --complete-reload    Reload firewall and lose state information
   --runtime-to-permanent
                        Create permanent from runtime configuration
+
+Log Denied Options
   --get-log-denied     Print the log denied value
   --set-log-denied=<value>
                        Set log denied value
+
+Automatic Helpers Options
+  --get-automatic-helpers
+                       Print the automatic helpers value
+  --set-automatic-helpers=<value>
+                       Set automatic helpers value
 
 Permanent Options
   --permanent          Set an option permanently
@@ -88,11 +85,15 @@ Zone Options
   --get-icmptypes      Print predefined icmptypes [P]
   --get-zone-of-interface=<interface>
                        Print name of the zone the interface is bound to [P]
-  --get-zone-of-source=<source>[/<mask>]
-                       Print name of the zone the source[/mask] is bound to [P]
+  --get-zone-of-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Print name of the zone the source is bound to [P]
   --list-all-zones     List everything added for or enabled in all zones [P]
   --new-zone=<zone>    Add a new zone [P only]
+  --new-zone-from-file=<filename> [--name=<zone>]
+                       Add a new zone from file with optional name [P only]
   --delete-zone=<zone> Delete an existing zone [P only]
+  --load-zone-defaults=<zone>
+                       Load zone default settings [P only] [Z]
   --zone=<zone>        Use this zone to set or query options, else default zone
                        Usable for options marked with [Z]
   --get-target         Get the zone target [P only] [Z]
@@ -102,13 +103,26 @@ Zone Options
   --path-zone=<zone>   Print file path of a zone [P only]
 
 IPSet Options
+  --get-ipset-types    Print the supported ipset types
   --new-ipset=<ipset> --type=<ipset type> [--option=<key>[=<value>]]..
                        Add a new ipset [P only]
+  --new-ipset-from-file=<filename> [--name=<ipset>]
+                       Add a new ipset from file with optional name [P only]
   --delete-ipset=<ipset>
                        Delete an existing ipset [P only]
+  --load-ipset-defaults=<ipset>
+                       Load ipset default settings [P only]
   --info-ipset=<ipset> Print information about an ipset
   --path-ipset=<ipset> Print file path of an ipset [P only]
   --get-ipsets         Print predefined ipsets
+  --ipset=<ipset> --set-description=<description>
+                       Set new description to ipset [P only]
+  --ipset=<ipset> --get-description
+                       Print description for ipset [P only]
+  --ipset=<ipset> --set-short=<description>
+                       Set new short description to ipset [P only]
+  --ipset=<ipset> --get-short
+                       Print short description for ipset [P only]
   --ipset=<ipset> --add-entry=<entry>
                        Add a new entry to an ipset [P]
   --ipset=<ipset> --remove-entry=<entry>
@@ -117,16 +131,32 @@ IPSet Options
                        Return whether ipset has an entry [P]
   --ipset=<ipset> --get-entries
                        List entries of an ipset [P]
+  --ipset=<ipset> --add-entries-from-file=<entry>
+                       Add a new entries to an ipset [P]
+  --ipset=<ipset> --remove-entries-from-file=<entry>
+                       Remove entries from an ipset [P]
 
 IcmpType Options
   --new-icmptype=<icmptype>
                        Add a new icmptype [P only]
+  --new-icmptype-from-file=<filename> [--name=<icmptype>]
+                       Add a new icmptype from file with optional name [P only]
   --delete-icmptype=<icmptype>
                        Delete an existing icmptype [P only]
+  --load-icmptype-defaults=<icmptype>
+                       Load icmptype default settings [P only]
   --info-icmptype=<icmptype>
                        Print information about an icmptype
   --path-icmptype=<icmptype>
                        Print file path of an icmptype [P only]
+  --icmptype=<icmptype> --set-description=<description>
+                       Set new description to icmptype [P only]
+  --icmptype=<icmptype> --get-description
+                       Print description for icmptype [P only]
+  --icmptype=<icmptype> --set-short=<description>
+                       Set new short description to icmptype [P only]
+  --icmptype=<icmptype> --get-short
+                       Print short description for icmptype [P only]
   --icmptype=<icmptype> --add-destination=<ipv>
                        Enable destination for ipv in icmptype [P only]
   --icmptype=<icmptype> --remove-destination=<ipv>
@@ -139,16 +169,28 @@ IcmpType Options
 Service Options
   --new-service=<service>
                        Add a new service [P only]
+  --new-service-from-file=<filename> [--name=<service>]
+                       Add a new service from file with optional name [P only]
   --delete-service=<service>
                        Delete an existing service [P only]
+  --load-service-defaults=<service>
+                       Load icmptype default settings [P only]
   --info-service=<service>
                        Print information about a service
   --path-service=<service>
                        Print file path of a service [P only]
+  --service=<service> --set-description=<description>
+                       Set new description to service [P only]
+  --service=<service> --get-description
+                       Print description for service [P only]
+  --service=<service> --set-short=<description>
+                       Set new short description to service [P only]
+  --service=<service> --get-short
+                       Print short description for service [P only]
   --service=<service> --add-port=<portid>[-<portid>]/<protocol>
                        Add a new port to service [P only]
   --service=<service> --remove-port=<portid>[-<portid>]/<protocol>
-                       Remove an entry from service [P only]
+                       Remove a port from service [P only]
   --service=<service> --query-port=<portid>[-<portid>]/<protocol>
                        Return whether the port has been added for service [P only]
   --service=<service> --get-ports
@@ -156,20 +198,28 @@ Service Options
   --service=<service> --add-protocol=<protocol>
                        Add a new protocol to service [P only]
   --service=<service> --remove-protocol=<protocol>
-                       Remove an entry from service [P only]
+                       Remove a protocol from service [P only]
   --service=<service> --query-protocol=<protocol>
                        Return whether the protocol has been added for service [P only]
   --service=<service> --get-protocols
                        List protocols of service [P only]
+  --service=<service> --add-source-port=<portid>[-<portid>]/<protocol>
+                       Add a new source port to service [P only]
+  --service=<service> --remove-source-port=<portid>[-<portid>]/<protocol>
+                       Remove a source port from service [P only]
+  --service=<service> --query-source-port=<portid>[-<portid>]/<protocol>
+                       Return whether the source port has been added for service [P only]
+  --service=<service> --get-source-ports
+                       List source ports of service [P only]
   --service=<service> --add-module=<module>
                        Add a new module to service [P only]
   --service=<service> --remove-module=<module>
-                       Remove an entry from service [P only]
+                       Remove a module from service [P only]
   --service=<service> --query-module=<module>
                        Return whether the module has been added for service [P only]
   --service=<service> --get-modules
                        List modules of service [P only]
-  --service=<service> --add-destination=<ipv>:<address>[/<mask>]
+  --service=<service> --set-destination=<ipv>:<address>[/<mask>]
                        Set destination for ipv to address in service [P only]
   --service=<service> --remove-destination=<ipv>
                        Disable destination for ipv i service [P only]
@@ -184,6 +234,12 @@ Options to Adapt and Query Zones
   --timeout=<timeval>  Enable an option for timeval time, where timeval is
                        a number followed by one of letters 's' or 'm' or 'h'
                        Usable for options marked with [T]
+  --set-description=<description>
+                       Set new description to zone [P only] [Z]
+  --get-description    Print description for zone [P only] [Z]
+  --set-short=<description>
+                       Set new short description to zone [P only] [Z]
+  --get-short          Print short description for zone [P only] [Z]
   --add-service=<service>
                        Add a service for a zone [P] [Z] [T]
   --remove-service=<service>
@@ -204,6 +260,13 @@ Options to Adapt and Query Zones
                        Remove the protocol from a zone [P] [Z]
   --query-protocol=<protocol>
                        Return whether the protocol has been added for zone [P] [Z]
+  --list-source-ports  List source ports added for a zone [P] [Z]
+  --add-source-port=<portid>[-<portid>]/<protocol>
+                       Add the source port for a zone [P] [Z] [T]
+  --remove-source-port=<portid>[-<portid>]/<protocol>
+                       Remove the source port from a zone [P] [Z]
+  --query-source-port=<portid>[-<portid>]/<protocol>
+                       Return whether the source port has been added for zone [P] [Z]
   --list-icmp-blocks   List Internet ICMP type blocks added for a zone [P] [Z]
   --add-icmp-block=<icmptype>
                        Add an ICMP block for a zone [P] [Z] [T]
@@ -212,13 +275,18 @@ Options to Adapt and Query Zones
   --query-icmp-block=<icmptype>
                        Return whether an ICMP block has been added for a zone
                        [P] [Z]
+  --add-icmp-block-inversion
+                       Enable inversion of icmp blocks for a zone [P] [Z]
+  --remove-icmp-block-inversion
+                       Disable inversion of icmp blocks for a zone [P] [Z]
+  --query-icmp-block-inversion
+                       Return whether inversion of icmp blocks has been enabled
+                       for a zone [P] [Z]
   --list-forward-ports List IPv4 forward ports added for a zone [P] [Z]
   --add-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Add the IPv4 forward port for a zone [P] [Z] [T]
   --remove-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Remove the IPv4 forward port from a zone [P] [Z]
-
-
   --query-forward-port=port=<portid>[-<portid>]:proto=<protocol>[:toport=<portid>[-<portid>]][:toaddr=<address>[/<mask>]]
                        Return whether the IPv4 forward port has been added for
                        a zone [P] [Z]
@@ -248,15 +316,51 @@ Options to Handle Bindings of Interfaces
 
 Options to Handle Bindings of Sources
   --list-sources       List sources that are bound to a zone [P] [Z]
-  --add-source=<source>[/<mask>]
-                       Bind <source>[/<mask>] to a zone [P] [Z]
-  --change-source=<source>[/<mask>]
-                       Change zone the <source>[/<mask>] is bound to [Z]
-  --query-source=<source>[/<mask>]
-                       Query whether <source>[/<mask>] is bound to a zone
-                       [P] [Z]
-  --remove-source=<source>[/<mask>]
-                       Remove binding of <source>[/<mask>] from a zone [P] [Z]
+  --add-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Bind the source to a zone [P] [Z]
+  --change-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Change zone the source is bound to [Z]
+  --query-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Query whether the source is bound to a zone [P] [Z]
+  --remove-source=<source>[/<mask>]|<MAC>|ipset:<ipset>
+                       Remove binding of the source from a zone [P] [Z]
+
+Helper Options
+  --new-helper=<helper> --module=<module> [--family=<family>]
+                       Add a new helper [P only]
+  --new-helper-from-file=<filename> [--name=<helper>]
+                       Add a new helper from file with optional name [P only]
+  --delete-helper=<helper>
+                       Delete an existing helper [P only]
+  --load-helper-defaults=<helper>
+                       Load helper default settings [P only]
+  --info-helper=<helper> Print information about an helper
+  --path-helper=<helper> Print file path of an helper [P only]
+  --get-helpers         Print predefined helpers
+  --helper=<helper> --set-description=<description>
+                       Set new description to helper [P only]
+  --helper=<helper> --get-description
+                       Print description for helper [P only]
+  --helper=<helper> --set-short=<description>
+                       Set new short description to helper [P only]
+  --helper=<helper> --get-short
+                       Print short description for helper [P only]
+  --helper=<helper> --add-port=<portid>[-<portid>]/<protocol>
+                       Add a new port to helper [P only]
+  --helper=<helper> --remove-port=<portid>[-<portid>]/<protocol>
+                       Remove a port from helper [P only]
+  --helper=<helper> --query-port=<portid>[-<portid>]/<protocol>
+                       Return whether the port has been added for helper [P only]
+  --helper=<helper> --get-ports
+                       List ports of helper [P only]
+  --helper=<helper> --set-module=<module>
+                       Set module to helper [P only]
+  --helper=<helper> --get-module
+                       Get module from helper [P only]
+  --helper=<helper> --set-family={ipv4|ipv6|}
+                       Set family for helper [P only]
+  --helper=<helper> --get-family
+                       Get module from helper [P only]
 
 Direct Options
   --direct             First option for all direct options
@@ -340,143 +444,29 @@ Panic Options
   --panic-on           Enable panic mode
   --panic-off          Disable panic mode
   --query-panic        Query whether panic mode is enabled
+
 """)
 
-def __parse_port(value):
-    try:
-        (port, proto) = value.split("/")
-    except Exception as e:
-        __fail("bad port (most likely missing protocol), correct syntax is portid[-portid]/protocol")
-    return (port, proto)
-
-def __parse_forward_port(value):
-    port = None
-    protocol = None
-    toport = None
-    toaddr = None
-    args = value.split(":")
-    for arg in args:
+def try_set_zone_of_interface(_zone, interface):
+    if nm_is_imported():
         try:
-            (opt,val) = arg.split("=")
-            if opt == "port":
-                port = val
-            elif opt == "proto":
-                protocol = val
-            elif opt == "toport":
-                toport = val
-            elif opt == "toaddr":
-                toaddr = val
-        except:
-            __fail("invalid forward port arg '%s'" % (arg))
-    if not port:
-        __fail("missing port")
-    if not protocol:
-        __fail("missing protocol")
-    if not (toport or toaddr):
-        __fail("missing destination")
-    return (port, protocol, toport, toaddr)
-
-def __parse_ipset_option(value):
-    args = value.split("=")
-    if len(args) == 1:
-        return (args[0], "")
-    elif len(args) == 2:
-        return args
-    else:
-        __fail("invalid ipset option '%s'" % (value))
-
-def _check_destination_ipv(value):
-    if value not in [ "ipv4", "ipv6" ]:
-        __fail("invalid argument: %s (choose from 'ipv4', 'ipv6')" % value)
-    return value
-
-def __parse_service_destination(value):
-    try:
-        (ipv, destination) = value.split(":", 1)
-    except Exception as e:
-        __fail("bad destination, correct syntax is ipv:address[/mask]")
-    return (_check_destination_ipv(ipv), destination)
-
-def _check_ipv(value):
-    if value != "ipv4" and value != "ipv6" and value != "eb":
-        __fail("invalid argument: %s (choose from 'ipv4', 'ipv6', 'eb')" % value)
-    return value
-
-def __print_zone_info(zone, settings):
-    interfaces = settings.getInterfaces()
-    sources = settings.getSources()
-    services = settings.getServices()
-    ports = settings.getPorts()
-    protocols = settings.getProtocols()
-    masquerade = settings.getMasquerade()
-    forward_ports = settings.getForwardPorts()
-    icmp_blocks = settings.getIcmpBlocks()
-    rules = settings.getRichRules()
-
-    attributes = []
-    if zone == fw.getDefaultZone():
-        attributes.append("default")
-    if interfaces or sources:
-        attributes.append("active")
-    if attributes:
-        zone = zone + " (%s)" % ", ".join(attributes)
-    __print(zone)
-    __print("  interfaces: " + " ".join(interfaces))
-    __print("  sources: " + " ".join(sources))
-    __print("  services: " + " ".join(services))
-    __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
-    __print("  protocols: " + " ".join(protocols))
-    __print("  masquerade: %s" % ("yes" if masquerade else "no"))
-    __print("  forward-ports: " + "\n\t".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in forward_ports]))
-    __print("  icmp-blocks: " + " ".join(icmp_blocks))
-    __print("  rich rules: \n\t" + "\n\t".join(rules))
-
-def __print_service_info(service, settings):
-    ports = settings.getPorts()
-    protocols = settings.getProtocols()
-    modules = settings.getModules()
-    destinations = settings.getDestinations()
-    __print(service)
-    __print("  ports: " + " ".join(["%s/%s" % (port[0], port[1]) for port in ports]))
-    __print("  protocols: " + " ".join(protocols))
-    __print("  modules: " + " ".join(modules))
-    __print("  destination: " + " ".join(["%s:%s" % (k,v)
-                                          for k,v in destinations.items()]))
-
-def __print_icmptype_info(icmptype, settings):
-    destinations = settings.getDestinations()
-    if len(destinations) == 0:
-        destinations = [ "ipv4", "ipv6" ]
-    __print(icmptype)
-    __print("  destination: " + " ".join(destinations))
-
-def __print_ipset_info(ipset, settings):
-    ipset_type = settings.getType()
-    options = settings.getOptions()
-    entries = settings.getEntries()
-    __print(ipset)
-    __print("  type: " + ipset_type)
-    __print("  options: " + " ".join(["%s=%s" % (k,v) if v else k
-                                      for k,v in options.items()]))
-    __print("  entries: " + " ".join(entries))
-
-def __print_query_result(value):
-    if value:
-        __print_and_exit("yes")
-    else:
-        __print_and_exit("no", 1)
-
-def __exception_handler(exception_message):
-    if "NotAuthorizedException" in exception_message:
-        msg = """Authorization failed.
-Make sure polkit agent is running or run the application as superuser."""
-        __print_and_exit(msg, NOT_AUTHORIZED)
-    else:
-        code = FirewallError.get_code(exception_message)
-        if code in [ ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET ]:
-            __print_and_exit("Warning: %s" % exception_message)
+            connection = nm_get_connection_of_interface(interface)
+        except Exception:
+            pass
         else:
-            __print_and_exit("Error: %s" % exception_message, code)
+            if connection is not None:
+                if _zone == nm_get_zone_of_connection(connection):
+                    if _zone == "":
+                        cmd.print_warning("The interface is under control of NetworkManager and already bound to the default zone")
+                    else:
+                        cmd.print_warning("The interface is under control of NetworkManager and already bound to '%s'" % _zone)
+                if _zone == "":
+                    cmd.print_msg("The interface is under control of NetworkManager, setting zone to default.")
+                else:
+                    cmd.print_msg("The interface is under control of NetworkManager, setting zone to '%s'." % _zone)
+                nm_set_zone_of_connection(_zone, connection)
+                return True
+        return False
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
@@ -494,8 +484,11 @@ parser_group_standalone.add_argument("--reload", action="store_true")
 parser_group_standalone.add_argument("--complete-reload", action="store_true")
 parser_group_standalone.add_argument("--runtime-to-permanent",
                                      action="store_true")
+parser_group_standalone.add_argument("--get-ipset-types", action="store_true")
 parser_group_standalone.add_argument("--get-log-denied", action="store_true")
 parser_group_standalone.add_argument("--set-log-denied", metavar="<value>")
+parser_group_standalone.add_argument("--get-automatic-helpers", action="store_true")
+parser_group_standalone.add_argument("--set-automatic-helpers", metavar="<value>")
 parser_group_standalone.add_argument("--panic-on", action="store_true")
 parser_group_standalone.add_argument("--panic-off", action="store_true")
 parser_group_standalone.add_argument("--query-panic", action="store_true")
@@ -509,92 +502,117 @@ parser_group_standalone.add_argument("--get-zones", action="store_true")
 parser_group_standalone.add_argument("--get-services", action="store_true")
 parser_group_standalone.add_argument("--get-icmptypes", action="store_true")
 parser_group_standalone.add_argument("--get-active-zones", action="store_true")
-parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>")
-parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>")
+parser_group_standalone.add_argument("--get-zone-of-interface", metavar="<iface>", action='append')
+parser_group_standalone.add_argument("--get-zone-of-source", metavar="<source>", action='append')
 parser_group_standalone.add_argument("--list-all-zones", action="store_true")
 
 parser_group_standalone.add_argument("--info-zone", metavar="<zone>")
 parser_group_standalone.add_argument("--info-service", metavar="<service>")
 parser_group_standalone.add_argument("--info-icmptype", metavar="<icmptype>")
 parser_group_standalone.add_argument("--info-ipset", metavar="<ipset>")
+parser_group_standalone.add_argument("--info-helper", metavar="<helper>")
 
 parser_group_config = parser.add_mutually_exclusive_group()
 parser_group_config.add_argument("--new-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--new-icmptype-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-icmptype", metavar="<icmptype>")
+parser_group_config.add_argument("--load-icmptype-defaults",
+                                 metavar="<icmptype>")
 parser_group_config.add_argument("--new-service", metavar="<service>")
+parser_group_config.add_argument("--new-service-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-service", metavar="<service>")
+parser_group_config.add_argument("--load-service-defaults", metavar="<service>")
 parser_group_config.add_argument("--new-zone", metavar="<zone>")
+parser_group_config.add_argument("--new-zone-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-zone", metavar="<zone>")
+parser_group_config.add_argument("--load-zone-defaults", metavar="<zone>")
 parser_group_config.add_argument("--new-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--new-ipset-from-file", metavar="<filename>")
 parser_group_config.add_argument("--delete-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--load-ipset-defaults", metavar="<ipset>")
+parser_group_config.add_argument("--new-helper", metavar="<helper>")
+parser_group_config.add_argument("--new-helper-from-file", metavar="<filename>")
+parser_group_config.add_argument("--delete-helper", metavar="<helper>")
+parser_group_config.add_argument("--load-helper-defaults", metavar="<helper>")
+
 parser_group_config.add_argument("--path-zone", metavar="<zone>")
 parser_group_config.add_argument("--path-service", metavar="<service>")
 parser_group_config.add_argument("--path-icmptype", metavar="<icmptype>")
 parser_group_config.add_argument("--path-ipset", metavar="<ipset>")
+parser_group_config.add_argument("--path-helper", metavar="<helper>")
+
+parser.add_argument("--name", default="", metavar="<name>")
 
 parser_group_lockdown_whitelist = parser.add_mutually_exclusive_group()
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-commands", action="store_true")
-parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-command", metavar="<command>")
-parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-command", metavar="<command>")
-parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-command", metavar="<command>")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-command", metavar="<command>", action='append')
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-command", metavar="<command>", action='append')
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-command", metavar="<command>", action='append')
 
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-contexts", action="store_true")
-parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-context", metavar="<context>")
-parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-context", metavar="<context>")
-parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-context", metavar="<context>")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-context", metavar="<context>", action='append')
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-context", metavar="<context>", action='append')
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-context", metavar="<context>", action='append')
 
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-uids", action="store_true")
-parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>", type=int)
-parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>", type=int)
-parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>", type=int)
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-uid", metavar="<uid>", type=int, action='append')
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-uid", metavar="<uid>", type=int, action='append')
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-uid", metavar="<uid>", type=int, action='append')
 
 parser_group_lockdown_whitelist.add_argument("--list-lockdown-whitelist-users", action="store_true")
-parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-user", metavar="<user>")
-parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-user", metavar="<user>")
-parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-user", metavar="<user>")
+parser_group_lockdown_whitelist.add_argument("--add-lockdown-whitelist-user", metavar="<user>", action='append')
+parser_group_lockdown_whitelist.add_argument("--remove-lockdown-whitelist-user", metavar="<user>", action='append')
+parser_group_lockdown_whitelist.add_argument("--query-lockdown-whitelist-user", metavar="<user>", action='append')
 
 parser.add_argument("--permanent", action="store_true")
 parser.add_argument("--zone", default="", metavar="<zone>")
 parser.add_argument("--timeout", default="0", metavar="<seconds>")
 
 parser_group_zone = parser.add_mutually_exclusive_group()
-parser_group_zone.add_argument("--add-interface", metavar="<iface>")
-parser_group_zone.add_argument("--remove-interface", metavar="<iface>")
-parser_group_zone.add_argument("--query-interface", metavar="<iface>")
-parser_group_zone.add_argument("--change-interface", "--change-zone", metavar="<iface>")
+parser_group_zone.add_argument("--add-interface", metavar="<iface>", action='append')
+parser_group_zone.add_argument("--remove-interface", metavar="<iface>", action='append')
+parser_group_zone.add_argument("--query-interface", metavar="<iface>", action='append')
+parser_group_zone.add_argument("--change-interface", "--change-zone", metavar="<iface>", action='append')
 parser_group_zone.add_argument("--list-interfaces", action="store_true")
-parser_group_zone.add_argument("--add-source", metavar="<source>")
-parser_group_zone.add_argument("--remove-source", metavar="<source>")
-parser_group_zone.add_argument("--query-source", metavar="<source>")
-parser_group_zone.add_argument("--change-source", metavar="<source>")
+parser_group_zone.add_argument("--add-source", metavar="<source>", action='append')
+parser_group_zone.add_argument("--remove-source", metavar="<source>", action='append')
+parser_group_zone.add_argument("--query-source", metavar="<source>", action='append')
+parser_group_zone.add_argument("--change-source", metavar="<source>", action='append')
 parser_group_zone.add_argument("--list-sources", action="store_true")
 parser_group_zone.add_argument("--add-rich-rule", metavar="<rule>", action='append')
 parser_group_zone.add_argument("--remove-rich-rule", metavar="<rule>", action='append')
-parser_group_zone.add_argument("--query-rich-rule", metavar="<rule>")
+parser_group_zone.add_argument("--query-rich-rule", metavar="<rule>", action='append')
 parser_group_zone.add_argument("--add-service", metavar="<service>", action='append')
 parser_group_zone.add_argument("--remove-service", metavar="<zone>", action='append')
-parser_group_zone.add_argument("--query-service", metavar="<zone>")
+parser_group_zone.add_argument("--query-service", metavar="<zone>", action='append')
 parser_group_zone.add_argument("--add-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--query-port", metavar="<port>")
+parser_group_zone.add_argument("--query-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--add-protocol", metavar="<protocol>", action='append')
 parser_group_zone.add_argument("--remove-protocol", metavar="<protocol>", action='append')
-parser_group_zone.add_argument("--query-protocol", metavar="<protocol>")
+parser_group_zone.add_argument("--query-protocol", metavar="<protocol>", action='append')
+parser_group_zone.add_argument("--add-source-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--remove-source-port", metavar="<port>", action='append')
+parser_group_zone.add_argument("--query-source-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--add-masquerade", action="store_true")
 parser_group_zone.add_argument("--remove-masquerade", action="store_true")
 parser_group_zone.add_argument("--query-masquerade", action="store_true")
 parser_group_zone.add_argument("--add-icmp-block", metavar="<icmptype>", action='append')
 parser_group_zone.add_argument("--remove-icmp-block", metavar="<icmptype>", action='append')
-parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>")
+parser_group_zone.add_argument("--query-icmp-block", metavar="<icmptype>", action='append')
+parser_group_zone.add_argument("--add-icmp-block-inversion", action="store_true")
+parser_group_zone.add_argument("--remove-icmp-block-inversion", action="store_true")
+parser_group_zone.add_argument("--query-icmp-block-inversion", action="store_true")
 parser_group_zone.add_argument("--add-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--remove-forward-port", metavar="<port>", action='append')
-parser_group_zone.add_argument("--query-forward-port", metavar="<port>")
+parser_group_zone.add_argument("--query-forward-port", metavar="<port>", action='append')
 parser_group_zone.add_argument("--list-rich-rules", action="store_true")
 parser_group_zone.add_argument("--list-services", action="store_true")
 parser_group_zone.add_argument("--list-ports", action="store_true")
 parser_group_zone.add_argument("--list-protocols", action="store_true")
 parser_group_zone.add_argument("--list-icmp-blocks", action="store_true")
 parser_group_zone.add_argument("--list-forward-ports", action="store_true")
+parser_group_zone.add_argument("--list-source-ports", action="store_true")
 parser_group_zone.add_argument("--list-all", action="store_true")
 parser_group_zone.add_argument("--get-target", action="store_true")
 parser_group_zone.add_argument("--set-target", metavar="<target>")
@@ -610,101 +628,132 @@ parser_ipset = parser.add_mutually_exclusive_group()
 #parser_ipset.add_argument("--get-options", action="store_true")
 
 parser_ipset.add_argument("--get-ipsets", action="store_true")
-parser_ipset.add_argument("--add-entry", metavar="<entry>")
-parser_ipset.add_argument("--remove-entry", metavar="<entry>")
-parser_ipset.add_argument("--query-entry", metavar="<entry>")
+parser_ipset.add_argument("--add-entry", metavar="<entry>", action='append')
+parser_ipset.add_argument("--remove-entry", metavar="<entry>", action='append')
+parser_ipset.add_argument("--query-entry", metavar="<entry>", action='append')
 parser_ipset.add_argument("--get-entries", action="store_true")
+parser_ipset.add_argument("--add-entries-from-file", metavar="<filename>", action='append')
+parser_ipset.add_argument("--remove-entries-from-file", metavar="<filename>", action='append')
 
 parser.add_argument("--icmptype", metavar="<icmptype>")
 
 parser_icmptype = parser.add_mutually_exclusive_group()
 parser_icmptype.add_argument("--add-destination", metavar="<ipv>", action='append')
 parser_icmptype.add_argument("--remove-destination", metavar="<ipv>", action='append')
-parser_icmptype.add_argument("--query-destination", metavar="<ipv>")
+parser_icmptype.add_argument("--query-destination", metavar="<ipv>", action='append')
 parser_icmptype.add_argument("--get-destinations", action="store_true")
 
 parser.add_argument("--service", metavar="<service>")
 
 parser_service = parser.add_mutually_exclusive_group()
 parser_service.add_argument("--get-ports", action="store_true")
+parser_service.add_argument("--get-source-ports", action="store_true")
 parser_service.add_argument("--get-protocols", action="store_true")
 
 parser_service.add_argument("--add-module", metavar="<module>", action='append')
 parser_service.add_argument("--remove-module", metavar="<module>", action='append')
-parser_service.add_argument("--query-module", metavar="<module>")
+parser_service.add_argument("--query-module", metavar="<module>", action='append')
 parser_service.add_argument("--get-modules", action="store_true")
 
-parser_service.add_argument("--set-destination", metavar="<destination>")
+parser_service.add_argument("--set-destination", metavar="<destination>", action='append')
 parser_service.add_argument("--get-destination", action="store_true")
+
+parser_service.add_argument("--set-description", metavar="<description>")
+parser_service.add_argument("--get-description", action="store_true")
+
+parser_service.add_argument("--set-short", metavar="<description>")
+parser_service.add_argument("--get-short", action="store_true")
+
+parser.add_argument("--helper", metavar="<helper>")
+parser.add_argument("--family", metavar="<family>")
+parser.add_argument("--module", metavar="<module>")
+
+parser_helper = parser.add_mutually_exclusive_group()
+#parser_helper.add_argument("--get-ports", action="store_true")
+parser_helper.add_argument("--get-helpers", action="store_true")
+parser_helper.add_argument("--set-module", metavar="<module>")
+parser_helper.add_argument("--get-module", action="store_true")
+#parser_helper.add_argument("--query-module", metavar="<module>")
+parser_helper.add_argument("--set-family", metavar="<family>|''", nargs="*")
+parser_helper.add_argument("--get-family", action="store_true")
 
 parser.add_argument("--direct", action="store_true")
 
+# not possible to have sequences of options here
 parser_direct = parser.add_mutually_exclusive_group()
 parser_direct.add_argument("--passthrough", nargs=argparse.REMAINDER,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--add-passthrough", nargs=argparse.REMAINDER,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--remove-passthrough", nargs=argparse.REMAINDER,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--query-passthrough", nargs=argparse.REMAINDER,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<args>"))
 parser_direct.add_argument("--get-passthroughs", nargs=1,
-                    metavar=("{ ipv4 | ipv6 | eb }"))
+                           metavar=("{ ipv4 | ipv6 | eb }"))
 parser_direct.add_argument("--get-all-passthroughs", action="store_true")
 parser_direct.add_argument("--add-chain", nargs=3,
-                    metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--remove-chain", nargs=3,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--query-chain", nargs=3,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--get-all-chains", action="store_true")
 parser_direct.add_argument("--get-chains", nargs=2,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table>"))
 parser_direct.add_argument("--add-rule", nargs=argparse.REMAINDER,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--remove-rule", nargs=argparse.REMAINDER,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--remove-rules", nargs=3,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain>"))
 parser_direct.add_argument("--query-rule", nargs=argparse.REMAINDER,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table> <chain> <priority> <args>"))
 parser_direct.add_argument("--get-rules", nargs=3,
-                        metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
+                           metavar=("{ ipv4 | ipv6 | eb }", "<table>", "<chain>"))
 parser_direct.add_argument("--get-all-rules", action="store_true")
 
-i = -1
+##############################################################################
+
 args = sys.argv[1:]
-if '--passthrough' in args:
-  i = args.index('--passthrough') + 1
-elif '--add-passthrough' in args:
-  i = args.index('--add-passthrough') + 1
-elif '--remove-passthrough' in args:
-  i = args.index('--remove-passthrough') + 1
-elif '--query-passthrough' in args:
-  i = args.index('--query-passthrough') + 1
-elif '--add-rule' in args:
-  i = args.index('--add-rule') + 4
-elif '--remove-rule' in args:
-  i = args.index('--remove-rule') + 4
-elif '--query-rule' in args:
-  i = args.index('--query-rule') + 4
-# join <args> into one argument to prevent parser from parsing each iptables
-# option, because they can conflict with firewall-cmd options
-# # e.g. --delete (iptables) and --delete-* (firewall-cmd)
-if (i > -1) and (i < len(args) - 1):
-    aux_args = args[:]
-    args = aux_args[:i+1] # all but not <args>
-    args.append(joinArgs(aux_args[i+1:])) # add <args> as one arg
+
+if len(sys.argv) > 1:
+    i = -1
+    if '--passthrough' in args:
+        i = args.index('--passthrough') + 1
+    elif '--add-passthrough' in args:
+        i = args.index('--add-passthrough') + 1
+    elif '--remove-passthrough' in args:
+        i = args.index('--remove-passthrough') + 1
+    elif '--query-passthrough' in args:
+        i = args.index('--query-passthrough') + 1
+    elif '--add-rule' in args:
+        i = args.index('--add-rule') + 4
+    elif '--remove-rule' in args:
+        i = args.index('--remove-rule') + 4
+    elif '--query-rule' in args:
+        i = args.index('--query-rule') + 4
+    # join <args> into one argument to prevent parser from parsing each iptables
+    # option, because they can conflict with firewall-cmd options
+    # # e.g. --delete (iptables) and --delete-* (firewall-cmd)
+    if (i > -1) and (i < len(args) - 1):
+        aux_args = args[:]
+        args = aux_args[:i+1] # all but not <args>
+        args.append(joinArgs(aux_args[i+1:])) # add <args> as one arg
 
 a = parser.parse_args(args)
-
 
 options_standalone = a.help or a.version or \
     a.state or a.reload or a.complete_reload or a.runtime_to_permanent or \
     a.panic_on or a.panic_off or a.query_panic or \
     a.lockdown_on or a.lockdown_off or a.query_lockdown or \
     a.get_default_zone or a.set_default_zone or \
-    a.get_active_zones or a.get_log_denied or a.set_log_denied
+    a.get_active_zones or a.get_ipset_types or \
+    a.get_log_denied or a.set_log_denied or \
+    a.get_automatic_helpers or a.set_automatic_helpers
+
+options_desc_xml_file = a.set_description or a.get_description or \
+                        a.set_short or a.get_short
 
 options_lockdown_whitelist = \
     a.list_lockdown_whitelist_commands or a.add_lockdown_whitelist_command or \
@@ -724,12 +773,14 @@ options_config = a.get_zones or a.get_services or a.get_icmptypes or \
                  options_lockdown_whitelist or a.list_all_zones or \
                  a.get_zone_of_interface or a.get_zone_of_source or \
                  a.info_zone or a.info_icmptype or a.info_service or \
-                 a.info_ipset or a.get_ipsets
+                 a.info_ipset or a.get_ipsets or a.info_helper or \
+                 a.get_helpers
 
 options_zone_action_action = \
     a.add_service or a.remove_service or a.query_service or \
     a.add_port or a.remove_port or a.query_port or \
     a.add_protocol or a.remove_protocol or a.query_protocol or \
+    a.add_source_port or a.remove_source_port or a.query_source_port or \
     a.add_icmp_block or a.remove_icmp_block or a.query_icmp_block or \
     a.add_forward_port or a.remove_forward_port or a.query_forward_port
 
@@ -743,40 +794,68 @@ options_zone_adapt_query = \
     a.add_rich_rule or a.remove_rich_rule or a.query_rich_rule or \
     a.add_masquerade or a.remove_masquerade or a.query_masquerade or \
     a.list_services or a.list_ports or a.list_protocols or \
+    a.list_source_ports or \
     a.list_icmp_blocks or a.list_forward_ports or a.list_rich_rules or \
+    a.add_icmp_block_inversion or a.remove_icmp_block_inversion or \
+    a.query_icmp_block_inversion or \
     a.list_all or a.get_target or a.set_target
 
 options_zone_ops = options_zone_interfaces_sources or \
-               options_zone_action_action or options_zone_adapt_query
+                   options_zone_action_action or options_zone_adapt_query
 
-options_zone = a.zone or a.timeout != "0" or options_zone_ops
+options_zone = a.zone or a.timeout != "0" or options_zone_ops or \
+               options_desc_xml_file
 
-options_ipset = a.add_entry or a.remove_entry or a.query_entry or a.get_entries
+options_ipset = a.add_entry or a.remove_entry or a.query_entry or \
+                a.get_entries or a.add_entries_from_file or \
+                a.remove_entries_from_file or options_desc_xml_file
 
 options_icmptype = a.add_destination or a.remove_destination or \
-                   a.query_destination or a.get_destinations
+                   a.query_destination or a.get_destinations or \
+                   options_desc_xml_file
 
 options_service = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or \
                   a.add_protocol or a.remove_protocol or a.query_protocol or \
                   a.get_protocols or \
+                  a.add_source_port or a.remove_source_port or \
+                  a.query_source_port or a.get_source_ports or \
                   a.add_module or a.remove_module or a.query_module or \
                   a.get_modules or \
                   a.set_destination or a.remove_destination or \
-                  a.query_destination or a.get_destinations
+                  a.query_destination or a.get_destinations or \
+                  options_desc_xml_file
+
+options_helper = a.add_port or a.remove_port or a.query_port or \
+                 a.get_ports or a.set_module or a.get_module or \
+                 a.set_family or a.get_family or \
+                 options_desc_xml_file
 
 options_permanent = a.permanent or options_config or \
                     a.zone or options_zone_ops or \
-                    a.ipset or options_ipset
+                    a.ipset or options_ipset or \
+                    a.helper or options_helper
 
 options_permanent_only = a.new_icmptype or a.delete_icmptype or \
+                         a.new_icmptype_from_file or \
+                         a.load_icmptype_defaults or \
                          a.new_service or a.delete_service or \
+                         a.new_service_from_file or \
+                         a.load_service_defaults or \
                          a.new_zone or a.delete_zone or \
+                         a.new_zone_from_file or \
+                         a.load_zone_defaults or \
                          a.new_ipset or a.delete_ipset or \
+                         a.new_ipset_from_file or \
+                         a.load_ipset_defaults or \
+                         a.new_helper or a.delete_helper or \
+                         a.new_helper_from_file or \
+                         a.load_helper_defaults or \
                          (a.icmptype and options_icmptype) or \
                          (a.service and options_service) or \
+                         (a.helper and options_helper) or \
                          a.path_zone or a.path_icmptype or a.path_service or \
-                         a.path_ipset
+                         a.path_ipset or a.path_helper or options_desc_xml_file
 
 options_direct = a.passthrough or \
            a.add_chain or a.remove_chain or a.query_chain or \
@@ -800,58 +879,77 @@ options_list_get = a.help or a.version or a.list_all or a.list_all_zones or \
  a.get_services or a.get_icmptypes or a.get_target or \
  a.info_zone or a.info_icmptype or a.info_service or \
  a.info_ipset or a.get_ipsets or a.get_entries or \
- a.get_destinations
+ a.info_helper or a.get_helpers or \
+ a.get_destinations or a.get_description
+
+# Set quiet and verbose
+
+cmd = FirewallCommand(a.quiet, a.verbose)
+
+def myexcepthook(exctype, value, traceback):
+    cmd.exception_handler(str(value))
+sys.excepthook = myexcepthook
 
 # Check various impossible combinations of options
 
 if not (options_standalone or options_ipset or \
-        options_icmptype or options_service or \
+        options_icmptype or options_service or options_helper or \
         options_config or options_zone_ops or \
         options_direct or options_permanent_only):
-    __fail(parser.format_usage() + "No option specified.")
+    cmd.fail(parser.format_usage() + "No option specified.")
 
 if options_standalone and (options_zone or options_permanent or \
                            options_direct or options_permanent_only or\
                            options_ipset):
-    __fail(parser.format_usage() +
-           "Can't use stand-alone options with other options.")
+    cmd.fail(parser.format_usage() +
+             "Can't use stand-alone options with other options.")
 
-if (options_ipset and not a.ipset):
-    __fail(parser.format_usage() + "No ipset specified.")
+if options_ipset and not options_desc_xml_file and not a.ipset:
+    cmd.fail(parser.format_usage() + "No ipset specified.")
 
 if (options_icmptype and not a.icmptype) and \
-   not (options_service and a.service):
-    __fail(parser.format_usage() + "No icmptype specified.")
+   not (options_service and a.service) and not options_desc_xml_file:
+    cmd.fail(parser.format_usage() + "No icmptype specified.")
+
+if (options_helper and not a.helper) and \
+   not (options_service and a.service) and \
+   not options_zone and not options_desc_xml_file:
+    cmd.fail(parser.format_usage() + "No helper specified.")
 
 if (options_direct or options_permanent_only) and \
    (options_zone and not a.zone) and (options_service and not a.service) and \
-   (options_icmptype and a.icmptype):
-    __fail(parser.format_usage() + "Can't be used with --zone.")
+   (options_icmptype and a.icmptype) and not options_desc_xml_file:
+    cmd.fail(parser.format_usage() + "Can't be used with --zone.")
 
 if (a.direct and not options_direct) or (options_direct and not a.direct):
-    __fail(parser.format_usage() +
-           "Wrong usage of 'direct' options.")
+    cmd.fail(parser.format_usage() +
+             "Wrong usage of 'direct' options.")
+
+if a.name and not (a.new_zone_from_file or a.new_service_from_file or \
+                   a.new_ipset_from_file or a.new_icmptype_from_file or \
+                   a.new_helper_from_file):
+    cmd.fail(parser.format_usage() + "Wrong usage of '--name' option.")
 
 if options_require_permanent and not a.permanent:
-    __fail(parser.format_usage() +
-           "Option can be used only with --permanent.")
+    cmd.fail(parser.format_usage() +
+             "Option can be used only with --permanent.")
 
 if options_config and options_zone:
-    __fail(parser.format_usage() +
-           "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
+    cmd.fail(parser.format_usage() +
+             "Wrong usage of --get-zones | --get-services | --get-icmptypes.")
 
 if a.timeout != "0":
     value = 0
     unit = 's'
     if len(a.timeout) < 1:
-        __fail(parser.format_usage() +
-               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+        cmd.fail(parser.format_usage() +
+                 "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
     elif len(a.timeout) == 1:
         if a.timeout.isdigit():
             value = int (a.timeout[0])
         else:
-            __fail(parser.format_usage() +
-               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+            cmd.fail(parser.format_usage() +
+                     "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
     elif len(a.timeout) > 1:
         if a.timeout.isdigit():
             value = int(a.timeout)
@@ -860,8 +958,8 @@ if a.timeout != "0":
             if a.timeout[:-1].isdigit():
                 value = int (a.timeout[:-1])
             else:
-                __fail(parser.format_usage() +
-                   "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+                cmd.fail(parser.format_usage() +
+                         "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
             unit = a.timeout[-1:].lower()
     if unit == 's':
         a.timeout = value
@@ -870,283 +968,578 @@ if a.timeout != "0":
     elif unit == 'h':
         a.timeout = value * 60 * 60
     else:
-        __fail(parser.format_usage() +
-               "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
+        cmd.fail(parser.format_usage() +
+                 "'%s' is wrong timeout value. Use for example '2m' or '1h'" % a.timeout)
 else:
     a.timeout = 0
 
 if a.timeout and not (a.add_service or a.add_port or a.add_protocol or \
                       a.add_icmp_block or a.add_forward_port or \
-                      a.add_masquerade or a.add_rich_rule):
-    __fail(parser.format_usage() + "Wrong --timeout usage")
+                      a.add_source_port or a.add_masquerade or a.add_rich_rule):
+    cmd.fail(parser.format_usage() + "Wrong --timeout usage")
 
 if a.permanent:
     if a.timeout:
-        __fail(parser.format_usage() +
-               "Can't specify timeout for permanent action.")
+        cmd.fail(parser.format_usage() +
+                 "Can't specify timeout for permanent action.")
     if options_config and not a.zone:
         pass
     elif options_permanent:
         pass
     else:
-        __fail(parser.format_usage() + "Wrong --permanent usage.")
+        cmd.fail(parser.format_usage() + "Wrong --permanent usage.")
 
 if a.quiet and options_list_get:
     # it makes no sense to use --quiet with these options
     a.quiet = False
-    __fail("-q/--quiet can't be used with this option(s)")
+    cmd.set_quiet(a.quiet)
+    cmd.fail("-q/--quiet can't be used with this option(s)")
 
 if a.help:
     __usage()
     sys.exit(0)
 
 zone = a.zone
-fw = FirewallClient()
-fw.setExceptionHandler(__exception_handler)
+
+try:
+    fw = FirewallClient()
+except FirewallError as msg:
+    code = FirewallError.get_code(str(msg))
+    cmd.print_and_exit("Error: %s" % msg, code)
+
+fw.setExceptionHandler(cmd.exception_handler)
 if fw.connected == False:
     if a.state:
-        __print_and_exit ("not running", NOT_RUNNING)
+        cmd.print_and_exit ("not running", errors.NOT_RUNNING)
     else:
-        __print_and_exit ("FirewallD is not running", NOT_RUNNING)
+        cmd.print_and_exit ("FirewallD is not running", errors.NOT_RUNNING)
+cmd.set_fw(fw)
 
-if options_zone_ops and not zone and not (a.service and options_service):
+if options_zone_ops and not zone and not \
+   (a.service and options_service) and not \
+   (a.helper and options_helper):
     default = fw.getDefaultZone()
-    __print_if_verbose("No zone specified, using default zone, i.e. '%s'" % default)
+    cmd.print_if_verbose("No zone specified, using default zone, i.e. '%s'" % default)
     active = list(fw.getActiveZones().keys())
     if active and default not in active:
-        __print ("""You're performing an operation over default zone ('%s'),
+        cmd.print_msg("""You're performing an operation over default zone ('%s'),
 but your connections/interfaces are in zone '%s' (see --get-active-zones)
 You most likely need to use --zone=%s option.\n""" % (default, ",".join(active), active[0]))
 
 if a.permanent:
     if a.get_ipsets:
-        ipsets = fw.config().listIPSets()
-        l = [fw.config().getIPSet(i).get_property("name") for i in ipsets]
-        __print_and_exit(" ".join(sorted(l)))
-    if a.get_zones:
-        zones = fw.config().listZones()
-        l = [fw.config().getZone(z).get_property("name") for z in zones]
-        __print_and_exit(" ".join(sorted(l)))
-    elif a.get_services:
-        services = fw.config().listServices()
-        l = [fw.config().getService(s).get_property("name") for s in services]
-        __print_and_exit(" ".join(sorted(l)))
-    elif a.get_icmptypes:
-        icmptypes = fw.config().listIcmpTypes()
-        l = [fw.config().getIcmpType(i).get_property("name") for i in icmptypes]
-        __print_and_exit(" ".join(sorted(l)))
+        cmd.print_and_exit(" ".join(fw.config().getIPSetNames()))
 
     elif a.new_ipset:
         if not a.type:
-            __fail(parser.format_usage() + "No type specified.")
+            cmd.fail(parser.format_usage() + "No type specified.")
 
         settings = FirewallClientIPSetSettings()
         settings.setType(a.type)
         if a.option:
             for opt in a.option:
-                settings.addOption(*__parse_ipset_option(opt))
+                settings.addOption(*cmd.parse_ipset_option(opt))
         config = fw.config()
-        settings.setType(a.type)
         config.addIPSet(a.new_ipset, settings)
+
+    elif a.new_ipset_from_file:
+        filename = os.path.basename(a.new_ipset_from_file)
+        dirname = os.path.dirname(a.new_ipset_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = ipset_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load ipset file '%s': %s" % \
+                   (a.new_ipset_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load ipset file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        config = fw.config()
+        config.addIPSet(obj.name, obj.export_config())
 
     elif a.delete_ipset:
         ipset = fw.config().getIPSetByName(a.delete_ipset)
         ipset.remove()
 
+    elif a.load_ipset_defaults:
+        ipset = fw.config().getIPSetByName(a.load_ipset_defaults)
+        ipset.loadDefaults()
+
     elif a.info_ipset:
         ipset = fw.config().getIPSetByName(a.info_ipset)
-        __print_ipset_info(a.info_ipset, ipset.getSettings())
+        cmd.print_ipset_info(a.info_ipset, ipset.getSettings())
         sys.exit(0)
 
     elif a.path_ipset:
         ipset = fw.config().getIPSetByName(a.path_ipset)
-        __print_and_exit("%s/%s" % (ipset.get_property("path"),
-                                    ipset.get_property("filename")))
+        cmd.print_and_exit("%s/%s" % (ipset.get_property("path"),
+                                      ipset.get_property("filename")))
 
     elif a.add_entry:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
-        settings.addEntry(a.add_entry)
+        cmd.add_sequence(a.add_entry, settings.addEntry, settings.queryEntry,
+                         None, "'%s'")
         ipset.update(settings)
 
     elif a.remove_entry:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
-        settings.removeEntry(a.remove_entry)
+        cmd.remove_sequence(a.remove_entry, settings.removeEntry,
+                            settings.queryEntry, None, "'%s'")
         ipset.update(settings)
 
     elif a.query_entry:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
-        r = settings.queryEntry(a.query_entry)
-        __print_query_result(r)
+        cmd.query_sequence(a.query_entry, settings.queryEntry, None, "'%s'")
 
     elif a.get_entries:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
         l = settings.getEntries()
-        __print_and_exit("\n".join(l))
+        cmd.print_and_exit("\n".join(l))
+
+    elif a.add_entries_from_file:
+        ipset = fw.config().getIPSetByName(a.ipset)
+        settings = ipset.getSettings()
+        changed = False
+
+        for filename in a.add_entries_from_file:
+            try:
+                entries = cmd.get_ipset_entries_from_file(filename)
+            except IOError as msg:
+                message = "Failed to read file '%s': %s" % (filename, msg)
+                if len(a.add_entries_from_file) > 1:
+                    cmd.print_warning(message)
+                else:
+                    cmd.print_and_exit(message)
+            else:
+                for entry in entries:
+                    if not settings.queryEntry(entry):
+                        settings.addEntry(entry)
+                        changed = True
+                    else:
+                        cmd.print_if_verbose("Warning: ALREADY_ENABLED: %s" % \
+                                             entry)
+        if changed:
+            ipset.update(settings)
+
+    elif a.remove_entries_from_file:
+        ipset = fw.config().getIPSetByName(a.ipset)
+        settings = ipset.getSettings()
+        changed = False
+
+        for filename in a.remove_entries_from_file:
+            try:
+                entries = cmd.get_ipset_entries_from_file(filename)
+            except IOError as msg:
+                message = "Failed to read file '%s': %s" % (filename, msg)
+                if len(a.remove_entries_from_file) > 1:
+                    cmd.print_warning(message)
+                else:
+                    cmd.print_and_exit(message)
+            else:
+                for entry in entries:
+                    if settings.queryEntry(entry):
+                        settings.removeEntry(entry)
+                        changed = True
+                    else:
+                        cmd.print_if_verbose("Warning: NOT_ENABLED: %s" % entry)
+        if changed:
+            ipset.update(settings)
+
+    elif a.get_zones:
+        cmd.print_and_exit(" ".join(fw.config().getZoneNames()))
 
     elif a.new_zone:
         config = fw.config()
         config.addZone(a.new_zone, FirewallClientZoneSettings())
 
+    elif a.new_zone_from_file:
+        filename = os.path.basename(a.new_zone_from_file)
+        dirname = os.path.dirname(a.new_zone_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = zone_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load zone file '%s': %s" % \
+                   (a.new_zone_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load zone file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        config = fw.config()
+        config.addZone(obj.name, obj.export_config())
+
     elif a.delete_zone:
         zone = fw.config().getZoneByName(a.delete_zone)
         zone.remove()
 
+    elif a.load_zone_defaults:
+        zone = fw.config().getZoneByName(a.load_zone_defaults)
+        zone.loadDefaults()
+
     elif a.info_zone:
         zone = fw.config().getZoneByName(a.info_zone)
-        __print_zone_info(a.info_zone, zone.getSettings())
+        cmd.print_zone_info(a.info_zone, zone.getSettings(), True)
         sys.exit(0)
 
     elif a.path_zone:
         zone = fw.config().getZoneByName(a.path_zone)
-        __print_and_exit("%s/%s" % (zone.get_property("path"),
-                                    zone.get_property("filename")))
+        cmd.print_and_exit("%s/%s" % (zone.get_property("path"),
+                                      zone.get_property("filename")))
+
+    elif a.get_services:
+        cmd.print_and_exit(" ".join(fw.config().getServiceNames()))
 
     elif a.new_service:
         config = fw.config()
         config.addService(a.new_service, FirewallClientServiceSettings())
 
+    elif a.new_service_from_file:
+        filename = os.path.basename(a.new_service_from_file)
+        dirname = os.path.dirname(a.new_service_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = service_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load service file '%s': %s" % \
+                     (a.new_service_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load service file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        config = fw.config()
+        config.addService(obj.name, obj.export_config())
+
     elif a.delete_service:
         service = fw.config().getServiceByName(a.delete_service)
         service.remove()
 
+    elif a.load_service_defaults:
+        service = fw.config().getServiceByName(a.load_service_defaults)
+        service.loadDefaults()
+
     elif a.info_service:
         service = fw.config().getServiceByName(a.info_service)
-        __print_service_info(a.info_service, service.getSettings())
+        cmd.print_service_info(a.info_service, service.getSettings())
         sys.exit(0)
 
     elif a.path_service:
         service = fw.config().getServiceByName(a.path_service)
-        __print_and_exit("%s/%s" % (service.get_property("path"),
-                                    service.get_property("filename")))
+        cmd.print_and_exit("%s/%s" % (service.get_property("path"),
+                                      service.get_property("filename")))
+
+    elif a.get_helpers:
+        cmd.print_and_exit(" ".join(fw.config().getHelperNames()))
+
+    elif a.new_helper:
+        if not a.module:
+            cmd.fail(parser.format_usage() + "No module specified.")
+        settings = FirewallClientHelperSettings()
+        settings.setModule(a.module)
+        if a.family:
+            settings.setFamily(a.family)
+        config = fw.config()
+        config.addHelper(a.new_helper, settings)
+
+    elif a.new_helper_from_file:
+        filename = os.path.basename(a.new_helper_from_file)
+        dirname = os.path.dirname(a.new_helper_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = helper_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load helper file '%s': %s" % \
+                     (a.new_helper_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load helper file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        config = fw.config()
+        config.addHelper(obj.name, obj.export_config())
+
+    elif a.delete_helper:
+        helper = fw.config().getHelperByName(a.delete_helper)
+        helper.remove()
+
+    elif a.load_helper_defaults:
+        helper = fw.config().getHelperByName(a.load_helper_defaults)
+        helper.loadDefaults()
+
+    elif a.info_helper:
+        helper = fw.config().getHelperByName(a.info_helper)
+        cmd.print_helper_info(a.info_helper, helper.getSettings())
+        sys.exit(0)
+
+    elif a.path_helper:
+        helper = fw.config().getHelperByName(a.path_helper)
+        cmd.print_and_exit("%s/%s" % (helper.get_property("path"),
+                                      helper.get_property("filename")))
+
+    elif a.helper:
+        helper = fw.config().getHelperByName(a.helper)
+        settings = helper.getSettings()
+
+        if a.add_port:
+            cmd.add_sequence(a.add_port, settings.addPort,
+                             settings.queryPort, cmd.parse_port, "%s/%s")
+            helper.update(settings)
+
+        elif a.remove_port:
+            cmd.remove_sequence(a.remove_port, settings.removePort,
+                                settings.queryPort, cmd.parse_port, "%s/%s")
+            helper.update(settings)
+
+        elif a.query_port:
+            cmd.query_sequence(a.query_port, settings.queryPort,
+                               cmd.parse_port, "%s/%s")
+
+        elif a.get_ports:
+            l = helper.getPorts()
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+
+        elif a.get_module:
+            cmd.print_and_exit(settings.getModule())
+
+        elif a.set_module:
+            settings.setModule(cmd.check_module(a.set_module))
+            helper.update(settings)
+
+        elif a.get_family:
+            cmd.print_and_exit(settings.getFamily())
+
+        elif a.set_family:
+            settings.setFamily(cmd.check_helper_family(a.set_family[0]))
+            helper.update(settings)
+
+        else:
+            cmd.fail(parser.format_usage() + "Unknown option")
+
+    elif a.get_icmptypes:
+        cmd.print_and_exit(" ".join(fw.config().getIcmpTypeNames()))
 
     elif a.new_icmptype:
         config = fw.config()
         config.addIcmpType(a.new_icmptype, FirewallClientIcmpTypeSettings())
 
+    elif a.new_icmptype_from_file:
+        filename = os.path.basename(a.new_icmptype_from_file)
+        dirname = os.path.dirname(a.new_icmptype_from_file)
+        if dirname == "":
+            dirname = "./"
+        try:
+            obj = icmptype_reader(filename, dirname)
+        except FirewallError as msg:
+            cmd.fail("Failed to load icmptype file '%s': %s" % \
+                     (a.new_icmptype_from_file, msg))
+        except IOError as msg:
+            cmd.fail("Failed to load icmptype file: %s" % msg)
+
+        if a.name:
+            obj.name = a.name
+
+        config = fw.config()
+        config.addIcmpType(obj.name, obj.export_config())
+
     elif a.delete_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.delete_icmptype)
         icmptype.remove()
 
+    elif a.load_icmptype_defaults:
+        icmptype = fw.config().getIcmpTypeByName(a.load_icmptype_defaults)
+        icmptype.loadDefaults()
+
     elif a.info_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.info_icmptype)
-        __print_icmptype_info(a.info_icmptype, icmptype.getSettings())
+        cmd.print_icmptype_info(a.info_icmptype, icmptype.getSettings())
         sys.exit(0)
 
     elif a.path_icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.path_icmptype)
-        __print_and_exit("%s/%s" % (icmptype.get_property("path"),
-                                    icmptype.get_property("filename")))
+        cmd.print_and_exit("%s/%s" % (icmptype.get_property("path"),
+                                      icmptype.get_property("filename")))
 
     elif a.icmptype:
         icmptype = fw.config().getIcmpTypeByName(a.icmptype)
         settings = icmptype.getSettings()
 
         if a.add_destination:
-            for ipv in a.add_destination:
-                settings.addDestination(_check_destination_ipv(ipv))
+            cmd.add_sequence(a.add_destination, settings.addDestination,
+                             settings.queryDestination,
+                             cmd.check_destination_ipv, "'%s'")
             icmptype.update(settings)
 
         elif a.remove_destination:
-            for ipv in a.remove_destination:
-                settings.removeDestination(_check_destination_ipv(ipv))
+            cmd.remove_sequence(a.remove_destination,
+                                settings.removeDestination,
+                                settings.queryDestination,
+                                cmd.check_destination_ipv, "'%s'")
             icmptype.update(settings)
 
         elif a.query_destination:
-            r = a.query_destination in settings.getDestinations()
-            __print_query_result(r)
+            cmd.query_sequence(a.query_destination, settings.queryDestination,
+                               cmd.check_destination_ipv , "'%s'")
 
         elif a.get_destinations:
             l = settings.getDestinations()
             if len(l) == 0:
                 l = [ "ipv4", "ipv6" ]
-            __print_and_exit("\n".join(l))
+            cmd.print_and_exit("\n".join(l))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            icmptype.update(settings)
+
+        elif a.get_description:
+            cmd.print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            icmptype.update(settings)
+
+        elif a.get_short:
+            cmd.print_and_exit(settings.getShort())
 
         else:
-            __fail(parser.format_usage() + "Unknown option")
+            cmd.fail(parser.format_usage() + "Unknown option")
 
     elif a.service:
         service = fw.config().getServiceByName(a.service)
         settings = service.getSettings()
 
         if a.add_port:
-            for port_proto in a.add_port:
-                (port, proto) = __parse_port(port_proto)
-                settings.addPort(port, proto)
+            cmd.add_sequence(a.add_port, settings.addPort,
+                             settings.queryPort, cmd.parse_port, "%s/%s")
             service.update(settings)
 
         elif a.remove_port:
-            for port_proto in a.remove_port:
-                (port, proto) = __parse_port(port_proto)
-                settings.removePort(port, proto)
+            cmd.remove_sequence(a.remove_port, settings.removePort,
+                                settings.queryPort, cmd.parse_port, "%s/%s")
             service.update(settings)
 
         elif a.query_port:
-            (port, proto) = __parse_port(a.query_port)
-            __print_query_result(settings.queryPort(port, proto))
+            cmd.query_sequence(a.query_port, settings.queryPort,
+                               cmd.parse_port, "%s/%s")
 
         elif a.get_ports:
             l = settings.getPorts()
-            __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
 
         elif a.add_protocol:
-            for protocol in a.add_protocol:
-                settings.addProtocol(protocol)
+            cmd.add_sequence(a.add_protocol, settings.addProtocol,
+                             settings.queryProtocol, None, "'%s'")
             service.update(settings)
 
         elif a.remove_protocol:
-            for protocol in a.remove_protocol:
-                settings.removeProtocol(protocol)
+            cmd.remove_sequence(a.remove_protocol, settings.removeProtocol,
+                                settings.queryProtocol, None, "'%s'")
             service.update(settings)
 
         elif a.query_protocol:
-            __print_query_result(settings.queryProtocol(a.query_protocol))
+            cmd.query_sequence(a.query_protocol, settings.queryProtocol,
+                               None, "'%s'")
 
         elif a.get_protocols:
             l = settings.getProtocols()
-            __print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+            cmd.print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+
+        elif a.add_source_port:
+            cmd.add_sequence(a.add_source_port, settings.addSourcePort,
+                             settings.querySourcePort, cmd.parse_port, "%s/%s")
+            service.update(settings)
+
+        elif a.remove_source_port:
+            cmd.remove_sequence(a.remove_source_port, settings.removeSourcePort,
+                                settings.querySourcePort, cmd.parse_port,
+                                "%s/%s")
+            service.update(settings)
+
+        elif a.query_source_port:
+            cmd.query_sequence(a.query_source_port, settings.querySourcePort,
+                               cmd.parse_port, "%s/%s")
+
+        elif a.get_source_ports:
+            l = settings.getSourcePorts()
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
 
         elif a.add_module:
-            for module in a.add_module:
-                settings.addModule(module)
+            cmd.add_sequence(a.add_module, settings.addModule,
+                             settings.queryModule, None, "'%s'")
             service.update(settings)
 
         elif a.remove_module:
-            for module in a.remove_module:
-                settings.removeModule(module)
+            cmd.remove_sequence(a.remove_module, settings.removeModule,
+                                settings.queryModule, None, "'%s'")
             service.update(settings)
 
         elif a.query_module:
-            __print_query_result(settings.queryModule(a.query_module))
+            cmd.query_sequence(a.query_module, settings.queryModule,
+                               None, "'%s'")
 
         elif a.get_modules:
             l = settings.getModules()
-            __print_and_exit(" ".join(["%s" % module for module in l]))
+            cmd.print_and_exit(" ".join(["%s" % module for module in l]))
 
         elif a.set_destination:
-            (ipv, dest) = __parse_service_destination(a.set_destination)
-            settings.setDestination(ipv, dest)
+            cmd.add_sequence(a.set_destination, settings.setDestination,
+                             settings.queryDestination,
+                             cmd.parse_service_destination, "%s:%s")
             service.update(settings)
 
         elif a.remove_destination:
-            for dest in a.remove_destination:
-                settings.removeDestination(
-                    _check_destination_ipv(dest))
+            # special case for removeDestination: Only ipv, no address
+            for ipv in a.remove_destination:
+                cmd.check_destination_ipv(ipv)
+                if ipv not in settings.getDestinations():
+                    if len(a.remove_destination) > 1:
+                        cmd.print_warning("Warning: NOT_ENABLED: '%s'" % ipv)
+                    else:
+                        code = FirewallError.get_code("NOT_ENABLED")
+                        cmd.print_and_exit("Error: NOT_ENABLED: '%s'" % ipv,
+                                           code)
+                else:
+                    settings.removeDestination(ipv)
             service.update(settings)
 
         elif a.query_destination:
-            (ipv, dest) = __parse_service_destination(a.query_destination)
-            __print_query_result(settings.queryDestination(ipv, dest))
+            cmd.query_sequence(a.query_destination, settings.queryDestination,
+                               cmd.parse_service_destination, "'%s'")
 
         elif a.get_destinations:
             l = settings.getDestinations()
-            __print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+            cmd.print_and_exit(" ".join(["%s:%s" % (dest[0], dest[1]) for dest in l.items()]))
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            service.update(settings)
+
+        elif a.get_description:
+            cmd.print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            service.update(settings)
+
+        elif a.get_short:
+            cmd.print_and_exit(settings.getShort())
 
         else:
-            __fail(parser.format_usage() + "Unknown option")
+            cmd.fail(parser.format_usage() + "Unknown option")
 
     # lockdown whitelist
 
@@ -1156,168 +1549,181 @@ if a.permanent:
         # commands
         if a.list_lockdown_whitelist_commands:
             l = policies.getLockdownWhitelistCommands()
-            __print_and_exit("\n".join(l))
+            cmd.print_and_exit("\n".join(l))
         elif a.add_lockdown_whitelist_command:
-            policies.addLockdownWhitelistCommand(a.add_lockdown_whitelist_command)
+            cmd.add_sequence(a.add_lockdown_whitelist_command,
+                             policies.addLockdownWhitelistCommand,
+                             policies.queryLockdownWhitelistCommand,
+                             None, "'%s'")
         elif a.remove_lockdown_whitelist_command:
-            policies.removeLockdownWhitelistCommand(a.remove_lockdown_whitelist_command)
+            cmd.remove_sequence(a.remove_lockdown_whitelist_command,
+                                policies.removeLockdownWhitelistCommand,
+                                policies.queryLockdownWhitelistCommand,
+                                None, "'%s'")
         elif a.query_lockdown_whitelist_command:
-            r = policies.queryLockdownWhitelistCommand(a.query_lockdown_whitelist_command)
-            __print_query_result(r)
+            cmd.query_sequence(a.query_lockdown_whitelist_command,
+                               policies.queryLockdownWhitelistCommand,
+                               None, "'%s'")
 
         # contexts
         elif a.list_lockdown_whitelist_contexts:
             l = policies.getLockdownWhitelistContexts()
-            __print_and_exit("\n".join(l))
+            cmd.print_and_exit("\n".join(l))
         elif a.add_lockdown_whitelist_context:
-            policies.addLockdownWhitelistContext(a.add_lockdown_whitelist_context)
+            cmd.add_sequence(a.add_lockdown_whitelist_context,
+                             policies.addLockdownWhitelistContext,
+                             policies.queryLockdownWhitelistContext,
+                             None, "'%s'")
         elif a.remove_lockdown_whitelist_context:
-            policies.removeLockdownWhitelistContext(a.remove_lockdown_whitelist_context)
+            cmd.remove_sequence(a.remove_lockdown_whitelist_context,
+                                policies.removeLockdownWhitelistContext,
+                                policies.queryLockdownWhitelistContext,
+                                None, "'%s'")
         elif a.query_lockdown_whitelist_context:
-            r = policies.queryLockdownWhitelistContext(a.query_lockdown_whitelist_context)
-            __print_query_result(r)
+            cmd.query_sequence(a.query_lockdown_whitelist_context,
+                               policies.queryLockdownWhitelistContext,
+                               None, "'%s'")
 
         # uids
         elif a.list_lockdown_whitelist_uids:
             l = policies.getLockdownWhitelistUids()
-            __print_and_exit(" ".join(map(str, l)))
+            cmd.print_and_exit(" ".join(map(str, l)))
         elif a.add_lockdown_whitelist_uid is not None:
-            policies.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
+            cmd.add_sequence(a.add_lockdown_whitelist_uid,
+                             policies.addLockdownWhitelistUid,
+                             policies.queryLockdownWhitelistUid, None, "%s")
         elif a.remove_lockdown_whitelist_uid is not None:
-            policies.removeLockdownWhitelistUid(a.remove_lockdown_whitelist_uid)
+            cmd.remove_sequence(a.remove_lockdown_whitelist_uid,
+                                policies.removeLockdownWhitelistUid,
+                                policies.queryLockdownWhitelistUid, None, "%s")
         elif a.query_lockdown_whitelist_uid is not None:
-            r = policies.queryLockdownWhitelistUid(a.query_lockdown_whitelist_uid)
-            __print_query_result(r)
+            cmd.query_sequence(a.query_lockdown_whitelist_uid,
+                               policies.queryLockdownWhitelistUid, None, "%s")
 
         # users
         elif a.list_lockdown_whitelist_users:
             l = policies.getLockdownWhitelistUsers()
-            __print_and_exit("\n".join(l))
+            cmd.print_and_exit("\n".join(l))
         elif a.add_lockdown_whitelist_user:
-            policies.addLockdownWhitelistUser(a.add_lockdown_whitelist_user)
+            cmd.add_sequence(a.add_lockdown_whitelist_user,
+                             policies.addLockdownWhitelistUser,
+                             policies.queryLockdownWhitelistUser,
+                             None, "%s")
         elif a.remove_lockdown_whitelist_user:
-            policies.removeLockdownWhitelistUser(a.remove_lockdown_whitelist_user)
+            cmd.remove_sequence(a.remove_lockdown_whitelist_user,
+                                policies.removeLockdownWhitelistUser,
+                                policies.queryLockdownWhitelistUser,
+                                None, "%s")
         elif a.query_lockdown_whitelist_user:
-            r = policies.queryLockdownWhitelistUser(a.query_lockdown_whitelist_user)
-            __print_query_result(r)
+            cmd.query_sequence(a.query_lockdown_whitelist_user,
+                               policies.queryLockdownWhitelistUser,
+                               None, "'%s'")
 
     elif options_direct:
         direct = fw.config().direct()
 
         if a.passthrough:
-            if len (a.passthrough) < 2:
-                __fail("usage: --permanent --direct --passthrough { ipv4 | ipv6 | eb } <args>")
-            __print(direct.addPassthrough(_check_ipv(a.passthrough[0]),
-                                                     splitArgs(a.passthrough[1])))
+            if len(a.passthrough) < 2:
+                cmd.fail("usage: --permanent --direct --passthrough { ipv4 | ipv6 | eb } <args>")
+            cmd.print_msg(direct.addPassthrough(cmd.check_ipv(a.passthrough[0]),
+                                                splitArgs(a.passthrough[1])))
 
         if a.add_passthrough:
-            if len (a.add_passthrough) < 2:
-                __fail("usage: --permanent --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
-            __print(direct.addPassthrough(_check_ipv(a.add_passthrough[0]),
-                                          splitArgs(a.add_passthrough[1])))
+            if len(a.add_passthrough) < 2:
+                cmd.fail("usage: --permanent --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
+            cmd.print_msg(direct.addPassthrough(cmd.check_ipv(a.add_passthrough[0]),
+                                                splitArgs(a.add_passthrough[1])))
 
         elif a.remove_passthrough:
-            if len (a.remove_passthrough) < 2:
-                __fail("usage: --permanent --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
-            direct.removePassthrough(_check_ipv(a.remove_passthrough[0]),
+            if len(a.remove_passthrough) < 2:
+                cmd.fail("usage: --permanent --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
+            direct.removePassthrough(cmd.check_ipv(a.remove_passthrough[0]),
                                      splitArgs(a.remove_passthrough[1]))
         elif a.query_passthrough:
-            if len (a.query_passthrough) < 2:
-                __fail("usage: --permanent --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
-            __print_query_result(
-                direct.queryPassthrough(_check_ipv(a.query_passthrough[0]),
+            if len(a.query_passthrough) < 2:
+                cmd.fail("usage: --permanent --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
+            cmd.print_query_result(
+                direct.queryPassthrough(cmd.check_ipv(a.query_passthrough[0]),
                                         splitArgs(a.query_passthrough[1])))
             sys.exit(0)
         elif a.get_passthroughs:
-            rules = direct.getPassthroughs(_check_ipv(a.get_passthroughs[0]))
+            rules = direct.getPassthroughs(cmd.check_ipv(a.get_passthroughs[0]))
             for rule in rules:
-                __print(joinArgs(rule))
+                cmd.print_msg(joinArgs(rule))
             sys.exit(0)
         elif a.get_all_passthroughs:
             for (ipv, rule) in direct.getAllPassthroughs():
-                __print("%s %s" % (ipv, joinArgs(rule)))
+                cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
             sys.exit(0)
 
         elif a.add_chain:
-            direct.addChain(_check_ipv(a.add_chain[0]),
+            direct.addChain(cmd.check_ipv(a.add_chain[0]),
                             a.add_chain[1], a.add_chain[2])
         elif a.remove_chain:
-            direct.removeChain(_check_ipv(a.remove_chain[0]),
+            direct.removeChain(cmd.check_ipv(a.remove_chain[0]),
                                a.remove_chain[1], a.remove_chain[2])
         elif a.query_chain:
-            __print_query_result(
-                direct.queryChain(_check_ipv(a.query_chain[0]),
+            cmd.print_query_result(
+                direct.queryChain(cmd.check_ipv(a.query_chain[0]),
                                   a.query_chain[1], a.query_chain[2]))
             sys.exit(0)
         elif a.get_chains:
-            __print_and_exit(
-                    " ".join(direct.getChains(_check_ipv(a.get_chains[0]),
-                                                         a.get_chains[1])))
+            cmd.print_and_exit(
+                " ".join(direct.getChains(cmd.check_ipv(a.get_chains[0]),
+                                          a.get_chains[1])))
             sys.exit(0)
         elif a.get_all_chains:
             chains = direct.getAllChains()
             for (ipv, table, chain) in chains:
-                __print("%s %s %s" % (ipv, table, chain))
+                cmd.print_msg("%s %s %s" % (ipv, table, chain))
             sys.exit(0)
         elif a.add_rule:
             if len(a.add_rule) < 5:
-                __fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                cmd.fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             try:
                 priority = int(a.add_rule[3])
             except ValueError:
-                __fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            direct.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1],
+                cmd.fail("usage: --permanent --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            direct.addRule(cmd.check_ipv(a.add_rule[0]), a.add_rule[1],
                            a.add_rule[2], priority, splitArgs(a.add_rule[4]))
         elif a.remove_rule:
             if len(a.remove_rule) < 5:
-                __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                cmd.fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             try:
                 priority = int(a.remove_rule[3])
             except ValueError:
-                __fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            direct.removeRule(_check_ipv(a.remove_rule[0]), a.remove_rule[1],
+                cmd.fail("usage: --permanent --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            direct.removeRule(cmd.check_ipv(a.remove_rule[0]), a.remove_rule[1],
                               a.remove_rule[2], priority, splitArgs(a.remove_rule[4]))
         elif a.remove_rules:
             if len(a.remove_rules) < 3:
-                __fail("usage: --permanent --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
-            direct.removeRules(_check_ipv(a.remove_rules[0]),
+                cmd.fail("usage: --permanent --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
+            direct.removeRules(cmd.check_ipv(a.remove_rules[0]),
                                a.remove_rules[1], a.remove_rules[2])
         elif a.query_rule:
             if len(a.query_rule) < 5:
-                __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+                cmd.fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
             try:
                 priority = int(a.query_rule[3])
             except ValueError:
-                __fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-            __print_query_result(
-                    direct.queryRule(_check_ipv(a.query_rule[0]),
-                                     a.query_rule[1], a.query_rule[2],
-                                     priority, splitArgs(a.query_rule[4])))
+                cmd.fail("usage: --permanent --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+            cmd.print_query_result(
+                direct.queryRule(cmd.check_ipv(a.query_rule[0]),
+                                 a.query_rule[1], a.query_rule[2],
+                                 priority, splitArgs(a.query_rule[4])))
             sys.exit(0)
         elif a.get_rules:
-            rules = direct.getRules(_check_ipv(a.get_rules[0]),
+            rules = direct.getRules(cmd.check_ipv(a.get_rules[0]),
                                     a.get_rules[1], a.get_rules[2])
             for (priority, rule) in rules:
-                __print("%d %s" % (priority, joinArgs(rule)))
+                cmd.print_msg("%d %s" % (priority, joinArgs(rule)))
             sys.exit(0)
         elif a.get_all_rules:
             rules = direct.getAllRules()
             for (ipv, table, chain, priority, rule) in rules:
-                __print("%s %s %s %d %s" % (ipv, table, chain, priority,
-                                            joinArgs(rule)))
+                cmd.print_msg("%s %s %s %d %s" % (ipv, table, chain, priority,
+                                                  joinArgs(rule)))
             sys.exit(0)
-    elif options_ipset:
-        if not a.ipset:
-            __fail("usage: --ipset<ipset> ...")
-        fw_ipset = fw.config().getIPSetByName(a.ipset)
-
-        if a.add_entry:
-            fw_ipset.addInterface(a.add_entry)
-        elif a.remove_entry:
-            fw_ipset.removeInterface(a.remove_interface)
-        elif a.query_entry:
-            __print_query_result(fw_zone.queryInterface(a.query_interface))
-
 
     else:
         if zone == "":
@@ -1327,103 +1733,155 @@ if a.permanent:
         # interface
         if a.list_interfaces:
             l = fw_zone.getInterfaces()
-            __print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(l))
         elif a.get_zone_of_interface:
-            zone = fw.config().getZoneOfInterface(a.get_zone_of_interface)
-            if zone:
-                __print_and_exit(zone)
-            else:
-                __fail("no zone")
+            for interface in a.get_zone_of_interface:
+                zone = fw.config().getZoneOfInterface(interface)
+                if zone:
+                    if len(a.get_zone_of_interface) > 1:
+                        cmd.print_warning("%s: %s" % (interface, zone))
+                    else:
+                        cmd.print_and_exit(zone)
+                else:
+                    if len(a.get_zone_of_interface) > 1:
+                        cmd.print_warning("%s: no zone" % interface)
+                    else:
+                        cmd.fail("no zone")
         elif a.change_interface:
-            old_zone_name = fw.config().getZoneOfInterface(a.change_interface)
-            if old_zone_name != zone:
-                if old_zone_name:
-                    old_zone_obj = fw.config().getZoneByName(old_zone_name)
-                    old_zone_obj.removeInterface(a.change_interface)  # remove from old
-                fw_zone.addInterface(a.change_interface)              # add to new
+            interfaces = [ ]
+            for interface in a.change_interface:
+                if not try_set_zone_of_interface(zone, interface):
+                    interfaces.append(interface)
+            for interface in interfaces:
+                old_zone_name = fw.config().getZoneOfInterface(interface)
+                if old_zone_name != zone:
+                    if old_zone_name:
+                        old_zone_obj = fw.config().getZoneByName(old_zone_name)
+                        old_zone_obj.removeInterface(interface)# remove from old
+                    fw_zone.addInterface(interface)            # add to new
         elif a.add_interface:
-            fw_zone.addInterface(a.add_interface)
+            interfaces = [ ]
+            for interface in a.add_interface:
+                if not try_set_zone_of_interface(a.zone, interface):
+                    interfaces.append(interface)
+            cmd.add_sequence(interfaces, fw_zone.addInterface,
+                             fw_zone.queryInterface, None, "'%s'")
         elif a.remove_interface:
-            fw_zone.removeInterface(a.remove_interface)
+            interfaces = [ ]
+            for interface in a.remove_interface:
+                if not try_set_zone_of_interface("", interface):
+                    interfaces.append(interface)
+            cmd.remove_sequence(interfaces, fw_zone.removeInterface,
+                                fw_zone.queryInterface, None, "'%s'")
         elif a.query_interface:
-            __print_query_result(fw_zone.queryInterface(a.query_interface))
+            cmd.query_sequence(a.query_interface, fw_zone.queryInterface,
+                               None, "'%s'")
 
         # source
         if a.list_sources:
             sources = fw_zone.getSources()
-            __print_and_exit(" ".join(sources))
+            cmd.print_and_exit(" ".join(sources))
         elif a.get_zone_of_source:
-            zone = fw.config().getZoneOfSource(a.get_zone_of_source)
-            if zone:
-                __print_and_exit(zone)
-            else:
-                __fail("no zone")
+            for source in a.get_zone_of_source:
+                zone = fw.config().getZoneOfSource(source)
+                if zone:
+                    if len(a.get_zone_of_source) > 1:
+                        cmd.print_warning("%s: %s" % (source, zone))
+                    else:
+                        cmd.print_and_exit(zone)
+                else:
+                    if len(a.get_zone_of_source) > 1:
+                        cmd.print_warning("%s: no zone" % source)
+                    else:
+                        cmd.fail("no zone")
         elif a.change_source:
-            old_zone_name = fw.config().getZoneOfSource(a.change_source)
-            old_zone_obj = fw.config().getZoneByName(old_zone_name)
-            old_zone_obj.removeSource(a.change_source)  # remove from old
-            fw_zone.addSource(a.change_source)          # add to new
+            for source in a.change_source:
+                old_zone_name = fw.config().getZoneOfSource(source)
+                if old_zone_name != zone:
+                    if old_zone_name:
+                        old_zone_obj = fw.config().getZoneByName(old_zone_name)
+                        old_zone_obj.removeSource(source) # remove from old
+                    fw_zone.addSource(source)             # add to new
         elif a.add_source:
-            fw_zone.addSource(a.add_source)
+            cmd.add_sequence(a.add_source, fw_zone.addSource,
+                             fw_zone.querySource, None, "'%s'")
         elif a.remove_source:
-            fw_zone.removeSource(a.remove_source)
+            cmd.remove_sequence(a.remove_source, fw_zone.removeSource,
+                                fw_zone.querySource, None, "'%s'")
         elif a.query_source:
-            __print_query_result(fw_zone.querySource(a.query_source))
+            cmd.query_sequence(a.query_source, fw_zone.querySource,
+                               None, "'%s'")
 
         # rich rules
         if a.list_rich_rules:
             l = fw_zone.getRichRules()
-            __print_and_exit("\n".join(l))
+            cmd.print_and_exit("\n".join(l))
         elif a.add_rich_rule:
-            for s in a.add_rich_rule:
-                fw_zone.addRichRule(s)
+            cmd.add_sequence(a.add_rich_rule, fw_zone.addRichRule,
+                             fw_zone.queryRichRule, None, "'%s'")
         elif a.remove_rich_rule:
-            for s in a.remove_rich_rule:
-                fw_zone.removeRichRule(s)
+            cmd.remove_sequence(a.remove_rich_rule, fw_zone.removeRichRule,
+                                fw_zone.queryRichRule, None, "'%s'")
         elif a.query_rich_rule:
-            __print_query_result(fw_zone.queryRichRule(a.query_rich_rule))
+            cmd.query_sequence(a.query_rich_rule, fw_zone.queryRichRule,
+                               None, "'%s'")
 
         # service
         if a.list_services:
             l = fw_zone.getServices()
-            __print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(l))
         elif a.add_service:
-            for s in a.add_service:
-                fw_zone.addService(s)
+            cmd.add_sequence(a.add_service, fw_zone.addService,
+                             fw_zone.queryService, None, "'%s'")
         elif a.remove_service:
-            for s in a.remove_service:
-                fw_zone.removeService(s)
+            cmd.remove_sequence(a.remove_service, fw_zone.removeService,
+                                fw_zone.queryService, None, "'%s'")
         elif a.query_service:
-            __print_query_result(fw_zone.queryService(a.query_service))
+            cmd.query_sequence(a.query_service, fw_zone.queryService,
+                               None, "'%s'")
 
         # port
         elif a.list_ports:
             l = fw_zone.getPorts()
-            __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
         elif a.add_port:
-            for port_proto in a.add_port:
-                (port, proto) = __parse_port(port_proto)
-                fw_zone.addPort(port, proto)
+            cmd.add_sequence(a.add_port, fw_zone.addPort,
+                             fw_zone.queryPort, cmd.parse_port, "%s/%s")
         elif a.remove_port:
-            for port_proto in a.remove_port:
-                (port, proto) = __parse_port(port_proto)
-                fw_zone.removePort(port, proto)
+            cmd.remove_sequence(a.remove_port, fw_zone.removePort,
+                                fw_zone.queryPort, cmd.parse_port, "%s/%s")
         elif a.query_port:
-            (port, proto) = __parse_port(a.query_port)
-            __print_query_result(fw_zone.queryPort(port, proto))
+            cmd.query_sequence(a.query_port, fw_zone.queryPort,
+                               cmd.parse_port, "%s/%s")
 
         # protocol
         elif a.list_protocols:
             l = fw_zone.getProtocols()
-            __print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+            cmd.print_and_exit(" ".join(["%s" % protocol for protocol in l]))
         elif a.add_protocol:
-            for protocol in a.add_protocol:
-                fw_zone.addProtocol(protocol)
+            cmd.add_sequence(a.add_protocol, fw_zone.addProtocol,
+                             fw_zone.queryProtocol, None, "'%s'")
         elif a.remove_protocol:
-            for protocol in a.remove_protocol:
-                fw_zone.removeProtocol(protocol)
+            cmd.remove_sequence(a.remove_protocol, fw_zone.removeProtocol,
+                                fw_zone.queryProtocol, None, "'%s'")
         elif a.query_protocol:
-            __print_query_result(fw_zone.queryProtocol(a.query_protocol))
+            cmd.query_sequence(a.query_protocol, fw_zone.queryProtocol,
+                               None, "'%s'")
+
+        # source port
+        elif a.list_source_ports:
+            l = fw_zone.getSourcePorts()
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+        elif a.add_source_port:
+            cmd.add_sequence(a.add_source_port, fw_zone.addSourcePort,
+                             fw_zone.querySourcePort, cmd.parse_port, "%s/%s")
+        elif a.remove_source_port:
+            cmd.remove_sequence(a.remove_source_port, fw_zone.removeSourcePort,
+                                fw_zone.querySourcePort, cmd.parse_port,
+                                "%s/%s")
+        elif a.query_source_port:
+            cmd.query_sequence(a.query_source_port, fw_zone.querySourcePort,
+                               cmd.parse_port, "%s/%s")
 
         # masquerade
         elif a.add_masquerade:
@@ -1431,71 +1889,111 @@ if a.permanent:
         elif a.remove_masquerade:
             fw_zone.removeMasquerade()
         elif a.query_masquerade:
-            __print_query_result(fw_zone.queryMasquerade())
+            cmd.print_query_result(fw_zone.queryMasquerade())
 
         # forward port
         elif a.list_forward_ports:
             l = fw_zone.getForwardPorts()
-            __print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+            cmd.print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
         elif a.add_forward_port:
-            for fp in a.add_forward_port:
-                (port, protocol, toport, toaddr) = __parse_forward_port(fp)
-                fw_zone.addForwardPort(port, protocol, toport, toaddr)
+            cmd.add_sequence(a.add_forward_port, fw_zone.addForwardPort,
+                             fw_zone.queryForwardPort, cmd.parse_forward_port,
+                             "port=%s:proto=%s:toport=%s:toaddr=%s")
         elif a.remove_forward_port:
-            for fp in a.remove_forward_port:
-                (port, protocol, toport, toaddr) = __parse_forward_port(fp)
-                fw_zone.removeForwardPort(port, protocol, toport, toaddr)
+            cmd.remove_sequence(a.remove_forward_port,
+                                fw_zone.removeForwardPort,
+                                fw_zone.queryForwardPort,
+                                cmd.parse_forward_port,
+                                "port=%s:proto=%s:toport=%s:toaddr=%s")
         elif a.query_forward_port:
-            (port, protocol, toport, toaddr) = __parse_forward_port(a.query_forward_port)
-            __print_query_result(fw_zone.queryForwardPort(port, protocol, toport, toaddr))
+            cmd.query_sequence(a.query_forward_port, fw_zone.queryForwardPort,
+                               cmd.parse_forward_port,
+                               "port=%s:proto=%s:toport=%s:toaddr=%s")
 
         # block icmp
         elif a.list_icmp_blocks:
             l = fw_zone.getIcmpBlocks()
-            __print_and_exit(" ".join(l))
+            cmd.print_and_exit(" ".join(l))
         elif a.add_icmp_block:
-            for ib in a.add_icmp_block:
-                fw_zone.addIcmpBlock(ib)
+            cmd.add_sequence(a.add_icmp_block, fw_zone.addIcmpBlock,
+                             fw_zone.queryIcmpBlock, None, "'%s'")
         elif a.remove_icmp_block:
-            for ib in a.remove_icmp_block:
-                fw_zone.removeIcmpBlock(ib)
+            cmd.remove_sequence(a.remove_icmp_block, fw_zone.removeIcmpBlock,
+                                fw_zone.queryIcmpBlock, None, "'%s'")
         elif a.query_icmp_block:
-            __print_query_result(fw_zone.queryIcmpBlock(a.query_icmp_block))
+            cmd.query_sequence(a.query_icmp_block, fw_zone.queryIcmpBlock,
+                               None, "'%s'")
+
+        # icmp block inversion
+        elif a.add_icmp_block_inversion:
+            fw_zone.addIcmpBlockInversion()
+        elif a.remove_icmp_block_inversion:
+            fw_zone.removeIcmpBlockInversion()
+        elif a.query_icmp_block_inversion:
+            cmd.print_query_result(fw_zone.queryIcmpBlockInversion())
 
         # zone target
         elif a.get_target:
             target = fw_zone.getTarget()
-            __print_and_exit(target if target != "%%REJECT%%" else "REJECT")
+            cmd.print_and_exit(target if target != "%%REJECT%%" else "REJECT")
         elif a.set_target:
             fw_zone.setTarget(a.set_target if a.set_target != "REJECT" else "%%REJECT%%")
 
         # list all zone settings
         elif a.list_all:
-            __print_zone_info(zone, fw_zone.getSettings())
+            cmd.print_zone_info(zone, fw_zone.getSettings())
             sys.exit(0)
 
         # list everything
         elif a.list_all_zones:
-            zones = fw.config().listZones()
-            names = [fw.config().getZone(z).get_property("name") for z in zones]
+            names = fw.config().getZoneNames()
             for zone in sorted(names):
-                fw_zone = fw.config().getZoneByName(zone)
-                __print_zone_info(zone, fw_zone.getSettings())
-                __print("")
+                settings = fw.config().getZoneByName(zone)
+                cmd.print_zone_info(zone, settings.getSettings())
+                cmd.print_msg("")
             sys.exit(0)
 
+        # set zone description
+        elif a.set_description:
+            settings = fw.config().getZoneByName(zone)
+            settings.setDescription(a.set_description)
+            fw_zone.update(settings)
+
+        # get zone description
+        elif a.get_description:
+            settings = fw.config().getZoneByName(zone)
+            cmd.print_and_exit(settings.getDescription())
+
+        # set zone short description
+        elif a.set_short:
+            settings = fw.config().getZoneByName(zone)
+            settings.setShort(a.set_short)
+            fw_zone.update(settings)
+
+        # get zone short description
+        elif a.get_short:
+            settings = fw.config().getZoneByName(zone)
+            cmd.print_and_exit(settings.getShort())
+
 elif a.version:
-    __print_and_exit(fw.get_property("version"))
+    cmd.print_and_exit(fw.get_property("version"))
 elif a.state:
     state = fw.get_property("state")
     if state == "RUNNING":
-        __print_and_exit ("running")
+        cmd.print_and_exit ("running")
     else:
-        __print_and_exit ("not running", NOT_RUNNING)
+        cmd.print_and_exit ("not running", errors.NOT_RUNNING)
 elif a.get_log_denied:
-    __print_and_exit(fw.getLogDenied())
+    cmd.print_and_exit(fw.getLogDenied())
 elif a.set_log_denied:
     fw.setLogDenied(a.set_log_denied)
+elif a.get_automatic_helpers:
+    cmd.print_and_exit(fw.getAutomaticHelpers())
+elif a.set_automatic_helpers:
+    fw.setAutomaticHelpers(a.set_automatic_helpers)
+elif a.get_ipset_types:
+    types = fw.get_property("IPSetTypes")
+    cmd.print_and_exit(" ".join(types))
 elif a.reload:
     fw.reload()
 elif a.complete_reload:
@@ -1504,118 +2002,121 @@ elif a.runtime_to_permanent:
     fw.runtimeToPermanent()
 elif a.direct:
     if a.passthrough:
-        if len (a.passthrough) < 2:
-            __fail("usage: --direct --passthrough { ipv4 | ipv6 | eb } <args>")
-        msg = fw.passthrough(_check_ipv(a.passthrough[0]), splitArgs(a.passthrough[1]))
+        if len(a.passthrough) < 2:
+            cmd.fail("usage: --direct --passthrough { ipv4 | ipv6 | eb } <args>")
+        msg = fw.passthrough(cmd.check_ipv(a.passthrough[0]), splitArgs(a.passthrough[1]))
         if msg:
-            print(msg)
+            sys.stdout.write(msg + "\n")
 
     elif a.add_passthrough:
-        if len (a.add_passthrough) < 2:
-            __fail("usage: --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
-        fw.addPassthrough(_check_ipv(a.add_passthrough[0]),
+        if len(a.add_passthrough) < 2:
+            cmd.fail("usage: --direct --add-passthrough { ipv4 | ipv6 | eb } <args>")
+        fw.addPassthrough(cmd.check_ipv(a.add_passthrough[0]),
                           splitArgs(a.add_passthrough[1]))
     elif a.remove_passthrough:
-        if len (a.remove_passthrough) < 2:
-            __fail("usage: --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
-        fw.removePassthrough(_check_ipv(a.remove_passthrough[0]),
+        if len(a.remove_passthrough) < 2:
+            cmd.fail("usage: --direct --remove-passthrough { ipv4 | ipv6 | eb } <args>")
+        fw.removePassthrough(cmd.check_ipv(a.remove_passthrough[0]),
                              splitArgs(a.remove_passthrough[1]))
     elif a.query_passthrough:
-        if len (a.query_passthrough) < 2:
-            __fail("usage: --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
-        __print_query_result(
-            fw.queryPassthrough(_check_ipv(a.query_passthrough[0]),
+        if len(a.query_passthrough) < 2:
+            cmd.fail("usage: --direct --query-passthrough { ipv4 | ipv6 | eb } <args>")
+        cmd.print_query_result(
+            fw.queryPassthrough(cmd.check_ipv(a.query_passthrough[0]),
                                 splitArgs(a.query_passthrough[1])))
     elif a.get_passthroughs:
-        rules = fw.getPassthroughs(_check_ipv(a.get_passthroughs[0]))
+        rules = fw.getPassthroughs(cmd.check_ipv(a.get_passthroughs[0]))
         for rule in rules:
-            __print(joinArgs(rule))
+            cmd.print_msg(joinArgs(rule))
         sys.exit(0)
     elif a.get_all_passthroughs:
-        for (ipv,rule) in fw.getAllPassthroughs():
-            __print("%s %s" % (ipv, joinArgs(rule)))
+        for (ipv, rule) in fw.getAllPassthroughs():
+            cmd.print_msg("%s %s" % (ipv, joinArgs(rule)))
         sys.exit(0)
     elif a.add_chain:
-        fw.addChain(_check_ipv(a.add_chain[0]), a.add_chain[1], a.add_chain[2])
+        fw.addChain(cmd.check_ipv(a.add_chain[0]), a.add_chain[1], a.add_chain[2])
     elif a.remove_chain:
-        fw.removeChain(_check_ipv(a.remove_chain[0]),
+        fw.removeChain(cmd.check_ipv(a.remove_chain[0]),
                        a.remove_chain[1], a.remove_chain[2])
     elif a.query_chain:
-        __print_query_result(fw.queryChain(_check_ipv(a.query_chain[0]),
-                                           a.query_chain[1], a.query_chain[2]))
+        cmd.print_query_result(fw.queryChain(cmd.check_ipv(a.query_chain[0]),
+                                             a.query_chain[1],
+                                             a.query_chain[2]))
     elif a.get_chains:
-        __print_and_exit(" ".join(fw.getChains(_check_ipv(a.get_chains[0]),
-                                  a.get_chains[1])))
+        cmd.print_and_exit(" ".join(fw.getChains(cmd.check_ipv(a.get_chains[0]),
+                                                 a.get_chains[1])))
     elif a.get_all_chains:
         chains = fw.getAllChains()
         for (ipv, table, chain) in chains:
-            __print("%s %s %s" % (ipv, table, chain))
+            cmd.print_msg("%s %s %s" % (ipv, table, chain))
         sys.exit(0)
     elif a.add_rule:
-        if len (a.add_rule) < 5:
-            __fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+        if len(a.add_rule) < 5:
+            cmd.fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         try:
             priority = int(a.add_rule[3])
         except ValueError:
-            __fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-        fw.addRule(_check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
+            cmd.fail("usage: --direct --add-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+        fw.addRule(cmd.check_ipv(a.add_rule[0]), a.add_rule[1], a.add_rule[2],
                    priority, splitArgs(a.add_rule[4]))
     elif a.remove_rule:
-        if len (a.remove_rule) < 5:
-            __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+        if len(a.remove_rule) < 5:
+            cmd.fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         try:
             priority = int(a.remove_rule[3])
         except ValueError:
-            __fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-        fw.removeRule(_check_ipv(a.remove_rule[0]),
+            cmd.fail("usage: --direct --remove-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+        fw.removeRule(cmd.check_ipv(a.remove_rule[0]),
                       a.remove_rule[1], a.remove_rule[2], priority, splitArgs(a.remove_rule[4]))
     elif a.remove_rules:
-        if len (a.remove_rules) < 3:
-            __fail("usage: --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
-        fw.removeRules(_check_ipv(a.remove_rules[0]),
+        if len(a.remove_rules) < 3:
+            cmd.fail("usage: --direct --remove-rules { ipv4 | ipv6 | eb } <table> <chain>")
+        fw.removeRules(cmd.check_ipv(a.remove_rules[0]),
                        a.remove_rules[1], a.remove_rules[2])
     elif a.query_rule:
-        if len (a.query_rule) < 5:
-            __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+        if len(a.query_rule) < 5:
+            cmd.fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
         try:
             priority = int(a.query_rule[3])
         except ValueError:
-            __fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
-        __print_query_result(fw.queryRule(_check_ipv(a.query_rule[0]),
-                                          a.query_rule[1], a.query_rule[2], priority, splitArgs(a.query_rule[4])))
+            cmd.fail("usage: --direct --query-rule { ipv4 | ipv6 | eb } <table> <chain> <priority> <args>")
+        cmd.print_query_result(
+            fw.queryRule(cmd.check_ipv(a.query_rule[0]),
+                         a.query_rule[1], a.query_rule[2],
+                         priority, splitArgs(a.query_rule[4])))
     elif a.get_rules:
-        rules = fw.getRules(_check_ipv(a.get_rules[0]),
+        rules = fw.getRules(cmd.check_ipv(a.get_rules[0]),
                             a.get_rules[1], a.get_rules[2])
         for (priority, rule) in rules:
-            __print("%d %s" % (priority, joinArgs(rule)))
+            cmd.print_msg("%d %s" % (priority, joinArgs(rule)))
         sys.exit(0)
     elif a.get_all_rules:
         rules = fw.getAllRules()
         for (ipv, table, chain, priority, rule) in rules:
-            __print("%s %s %s %d %s" % (ipv, table, chain, priority,
-                                        joinArgs(rule)))
+            cmd.print_msg("%s %s %s %d %s" % (ipv, table, chain, priority,
+                                              joinArgs(rule)))
         sys.exit(0)
 
 elif a.get_default_zone:
-    __print_and_exit(fw.getDefaultZone())
+    cmd.print_and_exit(fw.getDefaultZone())
 elif a.set_default_zone:
     fw.setDefaultZone(a.set_default_zone)
 elif a.get_zones:
-    __print_and_exit(" ".join(fw.getZones()))
+    cmd.print_and_exit(" ".join(fw.getZones()))
 elif a.get_active_zones:
     zones = fw.getActiveZones()
     for zone in zones:
-        __print("%s" % zone)
+        cmd.print_msg("%s" % zone)
         for x in [ "interfaces", "sources" ]:
             if x in zones[zone]:
-                __print("  %s: %s" % (x, " ".join(zones[zone][x])))
+                cmd.print_msg("  %s: %s" % (x, " ".join(zones[zone][x])))
     sys.exit(0)
 elif a.get_services:
     l = fw.listServices()
-    __print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(l))
 elif a.get_icmptypes:
     l = fw.listIcmpTypes()
-    __print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(l))
 
 # panic
 elif a.panic_on:
@@ -1623,30 +2124,86 @@ elif a.panic_on:
 elif a.panic_off:
     fw.disablePanicMode()
 elif a.query_panic:
-    __print_query_result(fw.queryPanicMode())
+    cmd.print_query_result(fw.queryPanicMode())
 
 # ipset
 elif a.get_ipsets:
     ipsets = fw.getIPSets()
-    __print_and_exit(" ".join(sorted(ipsets)))
+    cmd.print_and_exit(" ".join(sorted(ipsets)))
 
 elif a.info_ipset:
-    __print_ipset_info(a.info_ipset, fw.getIPSetSettings(a.info_ipset))
+    cmd.print_ipset_info(a.info_ipset, fw.getIPSetSettings(a.info_ipset))
     sys.exit(0)
 
 elif a.add_entry:
-    fw.addEntry(a.ipset, a.add_entry)
+    cmd.x_add_sequence(a.ipset, a.add_entry, fw.addEntry, fw.queryEntry,
+                       None, "'%s'")
 
 elif a.remove_entry:
-    fw.removeEntry(a.ipset, a.remove_entry)
+    cmd.x_remove_sequence(a.ipset, a.remove_entry, fw.removeEntry,
+                          fw.queryEntry, None, "'%s'")
 
 elif a.query_entry:
-    r = fw.queryEntry(a.ipset, a.query_entry)
-    __print_query_result(r)
+    cmd.x_query_sequence(a.ipset, a.query_entry, fw.queryEntry, None, "'%s'")
 
 elif a.get_entries:
     l = fw.getEntries(a.ipset)
-    __print_and_exit("\n".join(l))
+    cmd.print_and_exit("\n".join(l))
+
+elif a.add_entries_from_file:
+    old_entries = fw.getEntries(a.ipset)
+    changed = False
+
+    for filename in a.add_entries_from_file:
+        try:
+            entries = cmd.get_ipset_entries_from_file(filename)
+        except IOError as msg:
+            message = "Failed to read file '%s': %s" % (filename, msg)
+            if len(a.add_entries_from_file) > 1:
+                cmd.print_warning(message)
+            else:
+                cmd.print_and_exit(message)
+        else:
+            for entry in entries:
+                if entry not in old_entries:
+                    old_entries.append(entry)
+                    changed = True
+                else:
+                    cmd.print_if_verbose("Warning: ALREADY_ENABLED: %s" % entry)
+    if changed:
+        fw.setEntries(a.ipset, old_entries)
+
+elif a.remove_entries_from_file:
+    old_entries = fw.getEntries(a.ipset)
+    changed = False
+
+    for filename in a.remove_entries_from_file:
+        try:
+            entries = cmd.get_ipset_entries_from_file(filename)
+        except IOError as msg:
+            message = "Failed to read file '%s': %s" % (filename, msg)
+            if len(a.remove_entries_from_file) > 1:
+                cmd.print_warning(message)
+            else:
+                cmd.print_and_exit(message)
+        else:
+            for entry in entries:
+                if entry in old_entries:
+                    old_entries.remove(entry)
+                    changed = True
+                else:
+                    cmd.print_if_verbose("Warning: NOT_ENABLED: %s" % entry)
+    if changed:
+        fw.setEntries(a.ipset, old_entries)
+
+# helper
+elif a.get_helpers:
+    helpers = fw.getHelpers()
+    cmd.print_and_exit(" ".join(sorted(helpers)))
+
+elif a.info_helper:
+    cmd.print_helper_info(a.info_helper, fw.getHelperSettings(a.info_helper))
+    sys.exit(0)
 
 # lockdown
 elif a.lockdown_on:
@@ -1656,152 +2213,218 @@ elif a.lockdown_off:
     fw.config().set_property("Lockdown", "no")    # permanent
     fw.disableLockdown()                          # runtime
 elif a.query_lockdown:
-    __print_query_result(fw.queryLockdown())      # runtime
+    cmd.print_query_result(fw.queryLockdown())      # runtime
     #lockdown = fw.config().get_property("Lockdown")
-    #__print_query_result(lockdown.lower() in [ "yes", "true" ])
+    #cmd.print_query_result(lockdown.lower() in [ "yes", "true" ])
 
 # lockdown whitelist
 
 # commands
 elif a.list_lockdown_whitelist_commands:
     l = fw.getLockdownWhitelistCommands()
-    __print_and_exit("\n".join(l))
+    cmd.print_and_exit("\n".join(l))
 elif a.add_lockdown_whitelist_command:
-    fw.addLockdownWhitelistCommand(a.add_lockdown_whitelist_command)
+    cmd.add_sequence(a.add_lockdown_whitelist_command,
+                     fw.addLockdownWhitelistCommand,
+                     fw.queryLockdownWhitelistCommand, None, "'%s'")
 elif a.remove_lockdown_whitelist_command:
-    fw.removeLockdownWhitelistCommand(a.remove_lockdown_whitelist_command)
+    cmd.remove_sequence(a.remove_lockdown_whitelist_command,
+                        fw.removeLockdownWhitelistCommand,
+                        fw.queryLockdownWhitelistCommand, None, "'%s'")
 elif a.query_lockdown_whitelist_command:
-    __print_query_result(fw.queryLockdownWhitelistCommand(
-                         a.query_lockdown_whitelist_command))
+    cmd.query_sequence(a.query_lockdown_whitelist_command,
+                       fw.queryLockdownWhitelistCommand, None, "'%s'")
 
 # contexts
 elif a.list_lockdown_whitelist_contexts:
     l = fw.getLockdownWhitelistContexts()
-    __print_and_exit("\n".join(l))
+    cmd.print_and_exit("\n".join(l))
 elif a.add_lockdown_whitelist_context:
-    fw.addLockdownWhitelistContext(a.add_lockdown_whitelist_context)
+    cmd.add_sequence(a.add_lockdown_whitelist_context,
+                     fw.addLockdownWhitelistContext,
+                     fw.queryLockdownWhitelistContext, None, "'%s'")
 elif a.remove_lockdown_whitelist_context:
-    fw.removeLockdownWhitelistContext(a.remove_lockdown_whitelist_context)
+    cmd.remove_sequence(a.remove_lockdown_whitelist_context,
+                        fw.removeLockdownWhitelistContext,
+                        fw.queryLockdownWhitelistContext, None, "'%s'")
 elif a.query_lockdown_whitelist_context:
-    __print_query_result(fw.queryLockdownWhitelistContext(
-                         a.query_lockdown_whitelist_context))
+    cmd.query_sequence(a.query_lockdown_whitelist_context,
+                       fw.queryLockdownWhitelistContext, None, "'%s'")
 
 # uids
 elif a.list_lockdown_whitelist_uids:
     l = fw.getLockdownWhitelistUids()
-    __print_and_exit(" ".join(map(str, l)))
+    cmd.print_and_exit(" ".join(map(str, l)))
 elif a.add_lockdown_whitelist_uid is not None:
-    fw.addLockdownWhitelistUid(a.add_lockdown_whitelist_uid)
+    cmd.add_sequence(a.add_lockdown_whitelist_uid,
+                     fw.addLockdownWhitelistUid,
+                     fw.queryLockdownWhitelistUid, None, "'%s'")
 elif a.remove_lockdown_whitelist_uid is not None:
-    fw.removeLockdownWhitelistUid(a.remove_lockdown_whitelist_uid)
+    cmd.remove_sequence(a.remove_lockdown_whitelist_uid,
+                        fw.removeLockdownWhitelistUid,
+                        fw.queryLockdownWhitelistUid, None, "'%s'")
 elif a.query_lockdown_whitelist_uid is not None:
-    __print_query_result(fw.queryLockdownWhitelistUid(
-                         a.query_lockdown_whitelist_uid))
+    cmd.query_sequence(a.query_lockdown_whitelist_uid,
+                       fw.queryLockdownWhitelistUid, None, "'%s'")
 
 # users
 elif a.list_lockdown_whitelist_users:
     l = fw.getLockdownWhitelistUsers()
-    __print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(l))
 elif a.add_lockdown_whitelist_user:
-    fw.addLockdownWhitelistUser(a.add_lockdown_whitelist_user)
+    cmd.add_sequence(a.add_lockdown_whitelist_user,
+                     fw.addLockdownWhitelistUser,
+                     fw.queryLockdownWhitelistUser, None, "'%s'")
 elif a.remove_lockdown_whitelist_user:
-    fw.removeLockdownWhitelistUser(a.remove_lockdown_whitelist_user)
+    cmd.remove_sequence(a.remove_lockdown_whitelist_user,
+                        fw.removeLockdownWhitelistUser,
+                        fw.queryLockdownWhitelistUser, None, "'%s'")
 elif a.query_lockdown_whitelist_user:
-    __print_query_result(fw.queryLockdownWhitelistUser(
-                         a.query_lockdown_whitelist_user))
+    cmd.query_sequence(a.query_lockdown_whitelist_user,
+                       fw.queryLockdownWhitelistUser, None, "'%s'")
 
 # interface
 elif a.list_interfaces:
     l = fw.getInterfaces(zone)
-    __print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(l))
 elif a.get_zone_of_interface:
-    zone = fw.getZoneOfInterface(a.get_zone_of_interface)
-    if zone:
-        __print_and_exit(zone)
-    else:
-        __fail("no zone")
+    for interface in a.get_zone_of_interface:
+        zone = fw.getZoneOfInterface(interface)
+        if zone:
+            if len(a.get_zone_of_interface) > 1:
+                cmd.print_warning("%s: %s" % (interface, zone))
+            else:
+                cmd.print_and_exit(zone)
+        else:
+            if len(a.get_zone_of_interface) > 1:
+                cmd.print_warning("%s: no zone" % interface)
+            else:
+                cmd.fail("no zone")
 elif a.add_interface:
-    fw.addInterface(zone, a.add_interface)
+    interfaces = [ ]
+    for interface in a.add_interface:
+        if not try_set_zone_of_interface(zone, interface):
+            interfaces.append(interface)
+    cmd.x_add_sequence(zone, interfaces, fw.addInterface,
+                       fw.queryInterface, None, "'%s'")
 elif a.change_interface:
-    fw.changeZoneOfInterface(zone, a.change_interface)
+    interfaces = [ ]
+    for interface in a.change_interface:
+        if not try_set_zone_of_interface(zone, interface):
+            interfaces.append(interface)
+    cmd.x_add_sequence(zone, interfaces, fw.changeZoneOfInterface,
+                       fw.queryInterface, None, "'%s'")
 elif a.remove_interface:
-    fw.removeInterface(zone, a.remove_interface)
+    interfaces = [ ]
+    for interface in a.remove_interface:
+        if not try_set_zone_of_interface("", interface):
+            interfaces.append(interface)
+    cmd.x_remove_sequence(zone, interfaces, fw.removeInterface,
+                          fw.queryInterface, None, "'%s'")
 elif a.query_interface:
-    __print_query_result(fw.queryInterface(zone, a.query_interface))
+    cmd.x_query_sequence(zone, a.query_interface, fw.queryInterface, None,
+                         "'%s'")
 
 # source
 elif a.list_sources:
     sources = fw.getSources(zone)
-    __print_and_exit(" ".join(sources))
+    cmd.print_and_exit(" ".join(sources))
 elif a.get_zone_of_source:
-    zone = fw.getZoneOfSource(a.get_zone_of_source)
-    if zone:
-        __print_and_exit(zone)
-    else:
-        __fail("no zone")
+    for source in a.get_zone_of_source:
+        zone = fw.getZoneOfSource(source)
+        if zone:
+            if len(a.get_zone_of_source) > 1:
+                cmd.print_warning("%s: %s" % (source, zone))
+            else:
+                cmd.print_and_exit(zone)
+        else:
+            if len(a.get_zone_of_source) > 1:
+                cmd.print_warning("%s: no zone" % source)
+            else:
+                cmd.fail("no zone")
+        sys.exit(0)
 elif a.add_source:
-    fw.addSource(zone, a.add_source)
+    cmd.x_add_sequence(zone, a.add_source, fw.addSource,
+                       fw.querySource, None, "'%s'")
 elif a.change_source:
-    fw.changeZoneOfSource(zone, a.change_source)
+    cmd.x_add_sequence(zone, a.change_source, fw.changeZoneOfSource,
+                       fw.querySource, None, "'%s'")
 elif a.remove_source:
-    fw.removeSource(zone, a.remove_source)
+    cmd.x_remove_sequence(zone, a.remove_source, fw.removeSource,
+                          fw.querySource, None, "'%s'")
 elif a.query_source:
-    __print_query_result(fw.querySource(zone, a.query_source))
+    cmd.x_query_sequence(zone, a.query_source, fw.querySource, None, "'%s'")
 
 # rich rules
 elif a.list_rich_rules:
     l = fw.getRichRules(zone)
-    __print_and_exit("\n".join(l))
+    cmd.print_and_exit("\n".join(l))
 elif a.add_rich_rule:
-    for s in a.add_rich_rule:
-        fw.addRichRule(zone, s, a.timeout)
+    cmd.zone_add_timeout_sequence(zone, a.add_rich_rule, fw.addRichRule,
+                                  fw.queryRichRule, None, "'%s'",
+                                  a.timeout)
 elif a.remove_rich_rule:
-    for s in a.remove_rich_rule:
-        fw.removeRichRule(zone, s)
+    cmd.x_remove_sequence(zone, a.remove_rich_rule, fw.removeRichRule,
+                          fw.queryRichRule, None, "'%s'")
 elif a.query_rich_rule:
-    __print_query_result(fw.queryRichRule(zone, a.query_rich_rule))
+    cmd.x_query_sequence(zone, a.query_rich_rule, fw.queryRichRule, None,
+                         "'%s'")
 
 # service
 elif a.list_services:
     l = fw.getServices(zone)
-    __print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(l))
 elif a.add_service:
-    for s in a.add_service:
-        fw.addService(zone, s, a.timeout)
+    cmd.zone_add_timeout_sequence(zone, a.add_service, fw.addService,
+                                  fw.queryService, None, "'%s'",
+                                  a.timeout)
 elif a.remove_service:
-    for s in a.remove_service:
-        fw.removeService(zone, s)
+    cmd.x_remove_sequence(zone, a.remove_service, fw.removeService,
+                          fw.queryService, None, "'%s'")
 elif a.query_service:
-    __print_query_result(fw.queryService(zone, a.query_service))
+    cmd.x_query_sequence(zone, a.query_service, fw.queryService, None, "'%s'")
 
 # port
 elif a.list_ports:
     l = fw.getPorts(zone)
-    __print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+    cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
 elif a.add_port:
-    for port_proto in a.add_port:
-        (port, proto) = __parse_port(port_proto)
-        fw.addPort(zone, port, proto, a.timeout)
+    cmd.zone_add_timeout_sequence(zone, a.add_port, fw.addPort, fw.queryPort,
+                                  cmd.parse_port, "'%s/%s'", a.timeout)
 elif a.remove_port:
-    for port_proto in a.remove_port:
-        (port, proto) = __parse_port(port_proto)
-        fw.removePort(zone, port, proto)
+    cmd.x_remove_sequence(zone, a.remove_port, fw.removePort, fw.queryPort,
+                          cmd.parse_port, "'%s/%s'")
 elif a.query_port:
-    (port, proto) = __parse_port(a.query_port)
-    __print_query_result(fw.queryPort(zone, port, proto))
+    cmd.x_query_sequence(zone, a.query_port, fw.queryPort, cmd.parse_port,
+                         "'%s/%s'")
 
 # protocol
 elif a.list_protocols:
     l = fw.getProtocols(zone)
-    __print_and_exit(" ".join(["%s" % protocol for protocol in l]))
+    cmd.print_and_exit(" ".join(["%s" % protocol for protocol in l]))
 elif a.add_protocol:
-    for protocol in a.add_protocol:
-        fw.addProtocol(zone, protocol, a.timeout)
+    cmd.zone_add_timeout_sequence(zone, a.add_protocol, fw.addProtocol,
+                                  fw.queryProtocol, None, "'%s'", a.timeout)
 elif a.remove_protocol:
-    for protocol in a.remove_protocol:
-        fw.removeProtocol(zone, protocol)
+    cmd.x_remove_sequence(zone, a.remove_protocol, fw.removeProtocol,
+                          fw.queryProtocol, None, "'%s'")
 elif a.query_protocol:
-    __print_query_result(fw.queryProtocol(zone, a.query_protocol))
+    cmd.x_query_sequence(zone, a.query_protocol, fw.queryProtocol, None, "'%s'")
+
+# source port
+elif a.list_source_ports:
+    l = fw.getSourcePorts(zone)
+    cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1]) for port in l]))
+elif a.add_source_port:
+    cmd.zone_add_timeout_sequence(zone, a.add_source_port, fw.addSourcePort,
+                                  fw.querySourcePort, cmd.parse_port,
+                                  "'%s/%s'", a.timeout)
+elif a.remove_source_port:
+    cmd.x_remove_sequence(zone, a.remove_source_port, fw.removeSourcePort,
+                          fw.querySourcePort, cmd.parse_port, "'%s/%s'")
+elif a.query_source_port:
+    cmd.x_query_sequence(zone, a.query_source_port, fw.querySourcePort,
+                         cmd.parse_port, "'%s/%s'")
 
 # masquerade
 elif a.add_masquerade:
@@ -1809,60 +2432,72 @@ elif a.add_masquerade:
 elif a.remove_masquerade:
     fw.removeMasquerade(zone)
 elif a.query_masquerade:
-    __print_query_result(fw.queryMasquerade(zone))
+    cmd.print_query_result(fw.queryMasquerade(zone))
 
 # forward port
 elif a.list_forward_ports:
     l = fw.getForwardPorts(zone)
-    __print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
+    cmd.print_and_exit("\n".join(["port=%s:proto=%s:toport=%s:toaddr=%s" % (port, protocol, toport, toaddr) for (port, protocol, toport, toaddr) in l]))
 elif a.add_forward_port:
-    for fp in a.add_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(fp)
-        fw.addForwardPort(zone, port, protocol, toport, toaddr, a.timeout)
+    cmd.zone_add_timeout_sequence(zone, a.add_forward_port, fw.addForwardPort,
+                                  fw.queryForwardPort, cmd.parse_forward_port,
+                                  "'port=%s:proto=%s:toport=%s:toaddr=%s'",
+                                  a.timeout)
 elif a.remove_forward_port:
-    for fp in a.remove_forward_port:
-        (port, protocol, toport, toaddr) = __parse_forward_port(fp)
-        fw.removeForwardPort(zone, port, protocol, toport, toaddr)
+    cmd.x_remove_sequence(zone, a.remove_forward_port,
+                          fw.removeForwardPort, fw.queryForwardPort,
+                          cmd.parse_forward_port,
+                          "'port=%s:proto=%s:toport=%s:toaddr=%s'")
 elif a.query_forward_port:
-    (port, protocol, toport, toaddr) = __parse_forward_port(a.query_forward_port)
-    __print_query_result(fw.queryForwardPort(zone, port, protocol, toport, toaddr))
+    cmd.x_query_sequence(zone, a.query_forward_port, fw.queryForwardPort,
+                         cmd.parse_forward_port,
+                         "'port=%s:proto=%s:toport=%s:toaddr=%s'")
 
 # block icmp
 elif a.list_icmp_blocks:
     l = fw.getIcmpBlocks(zone)
-    __print_and_exit(" ".join(l))
+    cmd.print_and_exit(" ".join(l))
 elif a.add_icmp_block:
-    for ib in a.add_icmp_block:
-        fw.addIcmpBlock(zone, ib, a.timeout)
+    cmd.zone_add_timeout_sequence(zone, a.add_icmp_block, fw.addIcmpBlock,
+                                  fw.queryIcmpBlock, None, "'%s'", a.timeout)
 elif a.remove_icmp_block:
-    for ib in a.remove_icmp_block:
-        fw.removeIcmpBlock(zone, ib)
+    cmd.x_remove_sequence(zone, a.remove_icmp_block, fw.removeIcmpBlock,
+                          fw.queryIcmpBlock, None, "'%s'")
 elif a.query_icmp_block:
-    __print_query_result(fw.queryIcmpBlock(zone, a.query_icmp_block))
+    cmd.x_query_sequence(zone, a.query_icmp_block, fw.queryIcmpBlock, None,
+                         "'%s'")
+
+# icmp block inversion
+elif a.add_icmp_block_inversion:
+    fw.addIcmpBlockInversion(zone)
+elif a.remove_icmp_block_inversion:
+    fw.removeIcmpBlockInversion(zone)
+elif a.query_icmp_block_inversion:
+    cmd.print_query_result(fw.queryIcmpBlockInversion(zone))
 
 # list all
 elif a.list_all:
     z = zone if zone else fw.getDefaultZone()
-    __print_zone_info(z, fw.getZoneSettings(z))
+    cmd.print_zone_info(z, fw.getZoneSettings(z))
     sys.exit(0)
 
 # list everything
 elif a.list_all_zones:
     for zone in fw.getZones():
-        __print_zone_info(zone, fw.getZoneSettings(zone))
-        __print("")
+        cmd.print_zone_info(zone, fw.getZoneSettings(zone))
+        cmd.print_msg("")
     sys.exit(0)
 
 elif a.info_zone:
-    __print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone))
+    cmd.print_zone_info(a.info_zone, fw.getZoneSettings(a.info_zone), True)
     sys.exit(0)
 
 elif a.info_service:
-    __print_service_info(a.info_service, fw.getServiceSettings(a.info_service))
+    cmd.print_service_info(a.info_service, fw.getServiceSettings(a.info_service))
     sys.exit(0)
 
 elif a.info_icmptype:
-    __print_icmptype_info(a.info_icmptype, fw.getIcmpTypeSettings(a.info_icmptype))
+    cmd.print_icmptype_info(a.info_icmptype, fw.getIcmpTypeSettings(a.info_icmptype))
     sys.exit(0)
 
-__print_and_exit("success")
+cmd.print_and_exit("success")

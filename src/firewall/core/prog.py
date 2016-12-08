@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -19,39 +19,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
+import subprocess
 
-def runProg(prog, argv=[ ], stdin=None):
-    args = [ prog ] + argv
 
-    (rfd, wfd) = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        try:
-            if stdin != None:
-                fd = os.open(stdin, os.O_RDONLY)
-            else:
-                fd = os.open("/dev/null", os.O_RDONLY)
-            if fd != 0:
-                os.dup2(fd, 0)
-                os.close(fd)
-            if wfd != 1:
-                os.dup2(wfd, 1)
-                os.close(wfd)
-            os.dup2(1, 2)
-            e = { "LANG": "C" }
-            os.execve(args[0], args, e)
-        finally:
-            os._exit(255)
-    os.close(wfd)
+__all__ = ["runProg"]
 
-    cret = b''
-    cout = os.read(rfd, 8192)
-    while cout:
-        cret += cout
-        cout = os.read(rfd, 8192)
-    os.close(rfd)
-    (cpid, status) = os.waitpid(pid, 0)
 
-    cret = cret.rstrip().decode('utf-8', 'replace')
-    return (status, cret)
+def runProg(prog, argv=None, stdin=None):
+    if argv is None:
+        argv = []
+
+    args = [prog] + argv
+
+    input_string = None
+    if stdin:
+        with open(stdin, 'r') as handle:
+            input_string = handle.read().encode()
+
+    env = {'LANG': 'C'}
+    try:
+        process = subprocess.Popen(args, stdin=subprocess.PIPE,
+                                   stderr=subprocess.PIPE,
+                                   stdout=subprocess.PIPE,
+                                   close_fds=True, env=env)
+    except OSError:
+        return (255, '')
+
+    (output, err_output) = process.communicate(input_string)
+    if output is not None:
+        output = output.decode('utf-8', 'replace')
+    elif err_output is not None:
+        output = err_output.decode('utf-8', 'replace')
+
+    return (process.returncode, output)

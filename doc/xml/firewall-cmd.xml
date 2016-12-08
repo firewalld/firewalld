@@ -67,6 +67,12 @@
   <refsect1 id="options">
     <title>Options</title>
     <para>
+      For sequence options, this are the options that can be specified multiple times, the exit code is 0 if there is at least one item that succeded. The <literal>ALREADY_ENABLED</literal> (11), <literal>NOT_ENABLED</literal> (12) and also <literal>ZONE_ALREADY_SET</literal> (16) errors are treated as succeeded.
+      If there are issues while parsing the items, then these are treated as warnings and will not change the result as long as there is a succeeded one.
+      Without any succeeded item, the exit code will depend on the error codes. If there is exactly one error code, then this is used. If there are more than one then <literal>UNKNOWN_ERROR</literal> (254) will be used.
+    </para>
+
+    <para>
       The following options are supported:
     </para>
 
@@ -149,7 +155,12 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+      </variablelist>
+    </refsect2>
 
+    <refsect2 id="log_denied_options">
+      <title>Log Denied Options</title>
+      <variablelist>
 	<varlistentry>
 	  <term><option>--get-log-denied</option></term>
 	  <listitem>
@@ -167,6 +178,34 @@
 	    </para>
 	    <para>
 	      This is a runtime and permanent change and will also reload the firewall to be able to add the logging rules.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="automatic_helpers_options">
+      <title>Automatic Helpers Options</title>
+      <variablelist>
+	<varlistentry>
+	  <term><option>--get-automatic-helpers</option></term>
+	  <listitem>
+	    <para>
+	      Print the automatic helpers setting.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--set-automatic-helpers</option>=<replaceable>value</replaceable></term>
+	  <listitem>
+	    <para>
+	      For the secure use of iptables and connection tracking helpers it is recommended to turn AutomaticHelpers off. But this might have side effects on other services using the netfilter helpers as the sysctl setting in <filename>/proc/sys/net/netfilter/nf_conntrack_helper</filename> will be changed.
+	      With the system setting, the default value set in the kernel or with sysctl will be used.
+	      Possible values are: <literal>yes</literal>, <literal>no</literal> and <literal>system</literal>. The default value is <literal>system</literal>.
+	    </para>
+	    <para>
+	      This is a runtime and permanent change and will also reload the firewall to be able to make the helpers usable.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -273,10 +312,10 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <option>--get-zone-of-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <option>--get-zone-of-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Print the name of the zone the <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to or <emphasis>no zone</emphasis>.
+	      Print the name of the zone the source is bound to or <emphasis>no zone</emphasis>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -296,6 +335,7 @@
   forward-ports:
         <replaceable>forward-port1</replaceable>
         ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   icmp-blocks: <replaceable>icmp-type1</replaceable> ..
   rich rules:
         <replaceable>rich-rule1</replaceable>
@@ -334,7 +374,16 @@
           <term><option>--permanent</option> <option>--new-zone</option>=<replaceable>zone</replaceable></term>
           <listitem>
             <para>
-              Add a new permanent zone.
+              Add a new permanent and empty zone.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
+          <term><option>--permanent</option> <option>--new-zone-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>zone</replaceable></optional></term>
+          <listitem>
+            <para>
+              Add a new permanent zone from a prepared zone file with an optional name override.
             </para>
           </listitem>
 	</varlistentry>
@@ -348,6 +397,56 @@
           </listitem>
 	</varlistentry>
 
+	<varlistentry>
+          <term><option>--permanent</option> <option>--load-zone-defaults</option>=<replaceable>zone</replaceable></term>
+          <listitem>
+            <para>
+              Load zone default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--path-zone=<replaceable>zone</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the zone configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to zone
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--zone</option>=<replaceable>zone</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for zone
+           </para>
+         </listitem>
+	</varlistentry>
 	<varlistentry>
           <term><option>--permanent</option> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--get-target</option></term>
           <listitem>
@@ -517,6 +616,51 @@
 	  <listitem>
 	    <para>
 	      Return whether the protocol has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<!-- list/add/remove/query source port -->
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--list-source-ports</option></term>
+	  <listitem>
+	    <para>
+	      List source ports added for <replaceable>zone</replaceable> as a space separated list. A port is of the form <replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable>. If zone is omitted, default zone will be used.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable> <optional><option>--timeout</option>=<replaceable>timeval</replaceable></optional></term>
+	  <listitem>
+	    <para>
+	      Add the source port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
+	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
+	    </para>
+	    <para>
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	    </para>
+	    <para>
+	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Remove the source port from <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+	  <listitem>
+	    <para>
+	      Return whether the source port has been added for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -751,6 +895,10 @@
 	      Bind interface <replaceable>interface</replaceable> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
 	    </para>
 	    <para>
+	      If the interface is under control of NetworkManager, it is at first connected to change the zone for the connection that is using the interface. If this fails, the zone binding is created in firewalld and the limitations below apply.
+For interfaces that are not under control of NetworkManager, firewalld tries to change the ZONE setting in the ifcfg file, if the file exists.
+	    </para>
+	    <para>
 	      As a end user you don't need this in most cases, because NetworkManager (or legacy network service) adds interfaces into zones automatically (according to <option>ZONE=</option> option from ifcfg-<replaceable>interface</replaceable> file) if <replaceable>NM_CONTROLLED=no</replaceable> is not set.
 	      You should do it only if there's no /etc/sysconfig/network-scripts/ifcfg-<replaceable>interface</replaceable> file.
 	      If there is such file and you add interface to zone with this <option>--add-interface</option> option, make sure the zone is the same in both cases, otherwise the behaviour would be undefined.
@@ -763,6 +911,10 @@
 	<varlistentry>
 	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-interface</option>=<replaceable>interface</replaceable></term>
 	  <listitem>
+	    <para>
+	      If the interface is under control of NetworkManager, it is at first connected to change the zone for the connection that is using the interface. If this fails, the zone binding is created in firewalld and the limitations below apply.
+For interfaces that are not under control of NetworkManager, firewalld tries to change the ZONE setting in the ifcfg file, if the file exists.
+	    </para>
 	    <para>
 	      Change zone the interface <replaceable>interface</replaceable> is bound to to zone <replaceable>zone</replaceable>.
 	      It's basically <option>--remove-interface</option> followed by <option>--add-interface</option>.
@@ -785,6 +937,15 @@
 	  <term><optional><option>--permanent</option></optional> <option>--remove-interface</option>=<replaceable>interface</replaceable></term>
 	  <listitem>
 	    <para>
+	      If the interface is under control of NetworkManager, it is at first connected to change the zone for the connection that is using the interface. If this fails, the zone binding is created in firewalld and the limitations below apply.
+	    </para>
+	    <para>
+	      For the addion or change of interfaces that are not under control of NetworkManager: firewalld tries to change the ZONE setting in the ifcfg file, if an ifcfg file exists that is using the interface.
+	    </para>
+	    <para>
+	      Only for the removal of interfaces that are not under control of NetworkManager: firewalld is not trying to change the ZONE setting in the ifcfg file. This is needed to make sure that an ifdown of the interface will not result in a reset of the zone setting to the default zone. Only the zone binding is then removed in firewalld then.
+	    </para>
+	    <para>
 	      Remove binding of interface <replaceable>interface</replaceable> from zone it was previously added to.
 	    </para>
 	  </listitem>
@@ -798,7 +959,7 @@
 	Binding a source to a zone means that this zone settings will be used to restrict traffic from this source.
       </para>
       <para>
-	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address (no mask). For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	A source address or address range is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address or an ipset with the ipset: prefix. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
       </para>
       <para>
 	Options in this section affect only one particular zone. If used with <option>--zone</option>=<replaceable>zone</replaceable> option, they affect the zone <replaceable>zone</replaceable>. If the option is omitted, they affect default zone (see <option>--get-default-zone</option>).
@@ -817,19 +978,19 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--add-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Bind source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
+	      Bind the source to zone <replaceable>zone</replaceable>. If zone is omitted, default zone will be used.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--change-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Change zone the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to to zone <replaceable>zone</replaceable>.
+	      Change zone the source is bound to to zone <replaceable>zone</replaceable>.
 	      It's basically <option>--remove-source</option> followed by <option>--add-source</option>.
 	      If the source has not been bound to a zone before, it behaves like <option>--add-source</option>.
 	      If zone is omitted, default zone will be used.
@@ -838,19 +999,19 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--query-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Query whether the source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> is bound to the zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
+	      Query whether the source is bound to the zone <replaceable>zone</replaceable>. Returns 0 if true, 1 otherwise.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
 	<varlistentry>
-	  <term><optional><option>--permanent</option></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+	  <term><optional><option>--permanent</option></optional> <option>--remove-source</option>=<replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional>|<replaceable>MAC</replaceable>|ipset:<replaceable>ipset</replaceable></term>
 	  <listitem>
 	    <para>
-	      Remove binding of source <replaceable>source</replaceable><optional>/<replaceable>mask</replaceable></optional> from zone it was previously added to.
+	      Remove binding of the source from zone it was previously added to.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -861,21 +1022,37 @@
       <title>IPSet Options</title>
       <variablelist>
 	<varlistentry>
-         <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
-         <listitem>
-           <para>
-             Add a new permanent ipset with specifying the type and optional options.
-           </para>
-         </listitem>
-       </varlistentry>
-       <varlistentry>
-         <term><option>--permanent</option> <option>--delete-ipset</option>=<replaceable>ipset</replaceable></term>
-         <listitem>
-           <para>
-             Delete an existing permanent ipset.
-           </para>
-         </listitem>
-       </varlistentry>
+          <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
+          <listitem>
+            <para>
+              Add a new permanent and empty ipset with specifying the type and optional options.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--new-ipset-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>ipset</replaceable></optional></term>
+          <listitem>
+            <para>
+	      Add a new permanent ipset from a prepared ipset file with an optional name override.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--delete-ipset</option>=<replaceable>ipset</replaceable></term>
+          <listitem>
+            <para>
+              Delete an existing permanent ipset.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--load-ipset-defaults</option>=<replaceable>ipset</replaceable></term>
+          <listitem>
+            <para>
+              Load ipset default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
 	<varlistentry>
 	  <term><optional><option>--permanent</option></optional> <option>--info-ipset=<replaceable>ipset</replaceable></option></term>
 	  <listitem>
@@ -890,6 +1067,7 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
+
 	<varlistentry>
 	  <term><optional><option>--permanent</option></optional> <option>--get-ipsets</option></term>
 	  <listitem>
@@ -897,6 +1075,38 @@
 	      Print predefined ipsets as a space separated list.
 	    </para>
 	  </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to ipset
+           </para>
+         </listitem>
+	</varlistentry>
+	<varlistentry>
+         <term><option>--permanent</option> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for ipset
+           </para>
+         </listitem>
 	</varlistentry>
 	<varlistentry>
          <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--add-entry</option>=<replaceable>entry</replaceable></term>
@@ -933,7 +1143,39 @@
            </para>
          </listitem>
        </varlistentry>
-      </variablelist>
+
+	<varlistentry>
+         <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--add-entries-from-file</option>=<replaceable>filename</replaceable></term>
+         <listitem>
+           <para>
+             Add a new entries to the ipset from the file. For all entries that are listed in the file but already in the ipset, a warning will be printed.
+           </para>
+           <para>
+	     The file should contain an entry per line. Lines starting with an hash or semicolon are ignored. Also empty lines.
+           </para>
+         </listitem>
+       </varlistentry>
+
+	<varlistentry>
+         <term><optional><option>--permanent</option></optional> <option>--ipset</option>=<replaceable>ipset</replaceable> <option>--remove-entries-from-file</option>=<replaceable>filename</replaceable></term>
+         <listitem>
+           <para>
+             Remove existing entries from the ipset from the file. For all entries that are listed in the file but not in the ipset, a warning will be printed.
+           </para>
+           <para>
+	     The file should contain an entry per line. Lines starting with an hash or semicolon are ignored. Also empty lines.
+           </para>
+         </listitem>
+       </varlistentry>
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--path-ipset=<replaceable>ipset</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the ipset configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+     </variablelist>
     </refsect2>
 
     <refsect2 id="service_options">
@@ -951,6 +1193,7 @@
 <replaceable>service</replaceable>
   ports: <replaceable>port1</replaceable> ..
   protocols: <replaceable>protocol1</replaceable> ..
+  source-ports: <replaceable>source-port1</replaceable> ..
   modules: <replaceable>module1</replaceable> ..
   destination: <replaceable>ipv1</replaceable>:<replaceable>address1</replaceable> ..
               </programlisting>
@@ -966,7 +1209,15 @@
          <term><option>--permanent</option> <option>--new-service</option>=<replaceable>service</replaceable></term>
          <listitem>
            <para>
-             Add a new permanent service.
+             Add a new permanent and empty service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-service-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>service</replaceable></optional></term>
+         <listitem>
+           <para>
+              Add a new permanent service from a prepared service file with an optional name override.
            </para>
          </listitem>
        </varlistentry>
@@ -975,6 +1226,54 @@
          <listitem>
            <para>
              Delete an existing permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--load-service-defaults</option>=<replaceable>service</replaceable></term>
+          <listitem>
+            <para>
+              Load service default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--path-service=<replaceable>service</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the service configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to service
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for service
            </para>
          </listitem>
        </varlistentry>
@@ -1045,6 +1344,39 @@
        </varlistentry>
 
        <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new source port to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--remove-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a source port from the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--query-source-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the source port has been added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--get-source-ports</option></term>
+         <listitem>
+           <para>
+             List source ports added to the permanent service.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
          <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-module</option>=<replaceable>module</replaceable></term>
          <listitem>
            <para>
@@ -1078,7 +1410,7 @@
        </varlistentry>
 
        <varlistentry>
-         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--add-destination</option>=<replaceable>ipv</replaceable>:<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
+         <term><option>--permanent</option> <option>--service</option>=<replaceable>service</replaceable> <option>--set-destination</option>=<replaceable>ipv</replaceable>:<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional></term>
          <listitem>
            <para>
              Set destination for ipv to address[/mask] in the permanent service.
@@ -1112,6 +1444,183 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id="helper_options">
+      <title>Helper Options</title>
+      <para>
+	Options in this section affect only one particular helper.
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--info-helper=<replaceable>helper</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print information about the helper <replaceable>helper</replaceable>. The output format is:
+	      <programlisting>
+<replaceable>helper</replaceable>
+  family: <replaceable>family</replaceable>
+  module: <replaceable>module</replaceable>
+  ports: <replaceable>port1</replaceable> ..
+              </programlisting>
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+      <para>
+	The following options are only usable in the permanent configuration.
+      </para>
+      <variablelist>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-helper</option>=<replaceable>helper</replaceable> <option>--module</option>=<replaceable>nf_conntrack_module</replaceable> <optional><option>--family</option>=<literal>ipv4</literal>|<literal>ipv6</literal></optional></term>
+         <listitem>
+           <para>
+             Add a new permanent helper with module and optionally family defined.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-helper-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>helper</replaceable></optional></term>
+         <listitem>
+           <para>
+              Add a new permanent helper from a prepared helper file with an optional name override.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--delete-helper</option>=<replaceable>helper</replaceable></term>
+         <listitem>
+           <para>
+             Delete an existing permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+	<varlistentry>
+          <term><option>--permanent</option> <option>--load-helper-defaults</option>=<replaceable>helper</replaceable></term>
+          <listitem>
+            <para>
+              Load helper default settings or report NO_DEFAULTS error.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--path-helper=<replaceable>helper</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the helper configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term><optional><option>--permanent</option></optional> <option>--get-helpers</option></term>
+	  <listitem>
+	    <para>
+	      Print predefined helpers as a space separated list.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--add-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Add a new port to the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--remove-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Remove a port from the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--query-port</option>=<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>/<replaceable>protocol</replaceable></term>
+         <listitem>
+           <para>
+             Return wether the port has been added to the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--get-ports</option></term>
+         <listitem>
+           <para>
+             List ports added to the permanent helper.
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--set-module</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set module description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--get-module</option></term>
+         <listitem>
+           <para>
+             Print module description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--set-family</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set family description for helper
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--helper</option>=<replaceable>helper</replaceable> <option>--get-family</option></term>
+         <listitem>
+           <para>
+             Print family description of helper
+           </para>
+         </listitem>
+       </varlistentry>
+     </variablelist>
+    </refsect2>
+
     <refsect2 id="icmptype_options">
       <title>Internet Control Message Protocol (ICMP) type Options</title>
       <para>
@@ -1139,15 +1648,66 @@
          <term><option>--permanent</option> <option>--new-icmptype</option>=<replaceable>icmptype</replaceable></term>
          <listitem>
            <para>
-             Add a new permanent icmptype.
+             Add a new permanent and empty icmptype.
            </para>
          </listitem>
        </varlistentry>
+
+       <varlistentry>
+         <term><option>--permanent</option> <option>--new-icmptype-from-file</option>=<replaceable>filename</replaceable> <optional><option>--name</option>=<replaceable>icmptype</replaceable></optional></term>
+         <listitem>
+           <para>
+	     Add a new permanent icmptype from a prepared icmptype file with an optional name override.
+           </para>
+         </listitem>
+       </varlistentry>
+
+
        <varlistentry>
          <term><option>--permanent</option> <option>--delete-icmptype</option>=<replaceable>icmptype</replaceable></term>
          <listitem>
            <para>
              Delete an existing permanent icmptype.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--load-icmptype-defaults</option>=<replaceable>icmptype</replaceable></term>
+         <listitem>
+           <para>
+             Load icmptype default settings or report NO_DEFAULTS error.
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-description</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set new description to icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-description</option></term>
+         <listitem>
+           <para>
+             Print description for icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--set-short</option>=<replaceable>description</replaceable></term>
+         <listitem>
+           <para>
+             Set short description to icmptype
+           </para>
+         </listitem>
+       </varlistentry>
+       <varlistentry>
+         <term><option>--permanent</option> <option>--icmptype</option>=<replaceable>icmptype</replaceable> <option>--get-short</option></term>
+         <listitem>
+           <para>
+             Print short description for icmptype
            </para>
          </listitem>
        </varlistentry>
@@ -1184,6 +1744,14 @@
            </para>
          </listitem>
        </varlistentry>
+	<varlistentry>
+	  <term><option>--permanent</option> <option>--path-icmptype=<replaceable>icmptype</replaceable></option></term>
+	  <listitem>
+	    <para>
+	      Print path of the icmptype configuration file.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 

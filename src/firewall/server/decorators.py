@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2012 Red Hat, Inc.
+# Copyright (C) 2012-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -18,13 +18,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""This module contains decorators for use with and without D-Bus"""
+
+__all__ = ["FirewallDBusException", "handle_exceptions",
+           "dbus_handle_exceptions", "dbus_service_method"]
+
+import dbus
 import dbus.service
 from dbus.exceptions import DBusException
 from decorator import decorator
 
+from firewall import config
+from firewall.errors import FirewallError
 from firewall.core.logger import log
-from firewall.config.dbus import DBUS_INTERFACE
-from firewall.errors import *
 
 ############################################################################
 #
@@ -33,18 +39,19 @@ from firewall.errors import *
 ############################################################################
 
 class FirewallDBusException(dbus.DBusException):
-    _dbus_error_name = "%s.Exception" % DBUS_INTERFACE
+    """FirewallDBusException"""
+    _dbus_error_name = "%s.Exception" % config.dbus.DBUS_INTERFACE
 
 @decorator
 def handle_exceptions(func, *args, **kwargs):
-    """Decorator to handle exceptions and log them. Used if not conneced 
+    """Decorator to handle exceptions and log them. Used if not conneced
     to D-Bus.
     """
     try:
         return func(*args, **kwargs)
     except FirewallError as error:
         log.error(error)
-    except Exception:
+    except Exception:  # pylint: disable=W0703
         log.exception()
 
 @decorator
@@ -58,13 +65,14 @@ def dbus_handle_exceptions(func, *args, **kwargs):
     except FirewallError as error:
         log.error(str(error))
         raise FirewallDBusException(str(error))
-    except DBusException as e:
+    except DBusException as ex:
         # only log DBusExceptions once
-        raise e
-    except Exception as e:
+        raise ex
+    except Exception as ex:
         log.exception()
-        raise FirewallDBusException(str(e))
+        raise FirewallDBusException(str(ex))
 
 def dbus_service_method(*args, **kwargs):
+    """Add sender argument for D-Bus"""
     kwargs.setdefault("sender_keyword", "sender")
     return dbus.service.method(*args, **kwargs)

@@ -27,12 +27,14 @@ import shutil
 from firewall.config import ETC_FIREWALLD, \
     FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
     FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER, \
-    FALLBACK_INDIVIDUAL_CALLS, FALLBACK_LOG_DENIED, LOG_DENIED_VALUES
+    FALLBACK_INDIVIDUAL_CALLS, FALLBACK_LOG_DENIED, LOG_DENIED_VALUES, \
+    FALLBACK_AUTOMATIC_HELPERS, AUTOMATIC_HELPERS_VALUES
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
-               "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]
+               "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+               "AutomaticHelpers" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -78,8 +80,9 @@ class firewalld_conf(object):
             self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
             self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
-            self.set("IndividualCalls", FALLBACK_INDIVIDUAL_CALLS)
+            self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
             self.set("LogDenied", FALLBACK_LOG_DENIED)
+            self.set("AutomaticHelpers", FALLBACK_AUTOMATIC_HELPERS)
             raise
 
         for line in f:
@@ -116,46 +119,65 @@ class firewalld_conf(object):
         try:
             int(value)
         except ValueError:
-            log.error("MinimalMark '%s' is not valid, using default "
-                      "value '%d'", value if value else '',
-                      FALLBACK_MINIMAL_MARK)
+            if value is not None:
+                log.warning("MinimalMark '%s' is not valid, using default "
+                            "value '%d'", value if value else '',
+                            FALLBACK_MINIMAL_MARK)
             self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
 
         # check cleanup on exit
         value = self.get("CleanupOnExit")
         if not value or value.lower() not in [ "no", "false", "yes", "true" ]:
-            log.error("CleanupOnExit '%s' is not valid, using default "
-                      "value %s", value if value else '',
-                      FALLBACK_CLEANUP_ON_EXIT)
+            if value is not None:
+                log.warning("CleanupOnExit '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_CLEANUP_ON_EXIT)
             self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
 
         # check lockdown
         value = self.get("Lockdown")
         if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
-            log.error("Lockdown '%s' is not valid, using default "
-                      "value %s", value if value else '', FALLBACK_LOCKDOWN)
+            if value is not None:
+                log.warning("Lockdown '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_LOCKDOWN)
             self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")
         if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
-            log.error("IPv6_rpfilter '%s' is not valid, using default "
-                      "value %s", value if value else '',
-                      FALLBACK_IPV6_RPFILTER)
+            if value is not None:
+                log.warning("IPv6_rpfilter '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_IPV6_RPFILTER)
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
 
         # check individual calls
-        if not self.get("IndividualCalls"):
-            log.error("IndividualCalls is not set, using default value '%s'",
-                      FALLBACK_INDIVIDUAL_CALLS)
-            self.set("IndividualCalls", str(FALLBACK_INDIVIDUAL_CALLS))
+        value = self.get("IndividualCalls")
+        if not value or value.lower() not in [ "yes", "true", "no", "false" ]:
+            if value is not None:
+                log.warning("IndividualCalls '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_INDIVIDUAL_CALLS)
+            self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
 
         # check log denied
         value = self.get("LogDenied")
         if not value or value not in LOG_DENIED_VALUES:
-            log.error("LogDenied '%s' is invalid, using default value '%s'",
-                      value, FALLBACK_LOG_DENIED)
+            if value is not None:
+                log.warning("LogDenied '%s' is invalid, using default value '%s'",
+                            value, FALLBACK_LOG_DENIED)
             self.set("LogDenied", str(FALLBACK_LOG_DENIED))
+
+        # check automatic helpers
+        value = self.get("AutomaticHelpers")
+        if not value or value.lower() not in [ "system",
+                                               "yes", "true", "no", "false" ]:
+            if value is not None:
+                log.warning("AutomaticHelpers '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_AUTOMATIC_HELPERS)
+            self.set("AutomaticHelpers", str(FALLBACK_AUTOMATIC_HELPERS))
 
     # save to self.filename if there are key/value changes
     def write(self):

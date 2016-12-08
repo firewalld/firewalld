@@ -2,7 +2,7 @@
 <schemalist>
   <schema path="/org/fedoraproject/FirewallConfig/" id="org.fedoraproject.FirewallConfig">
     <key type="b" name="show-ipsets">
-      <default>false</default>
+      <default>true</default>
       <summary>Shows IPSets tab if true</summary>
     </key>
     <key type="b" name="show-icmp-types">
@@ -16,6 +16,14 @@
     <key type="b" name="show-lockdown-whitelist">
       <default>false</default>
       <summary>Shows lockdown whitelist tab if true</summary>
+    </key>
+    <key type="b" name="show-helpers">
+      <default>false</default>
+      <summary>Shows Helpers tab if true</summary>
+    </key>
+    <key type="b" name="show-active-bindings">
+      <default>true</default>
+      <summary>Shows active zone bindings if true</summary>
     </key>
   </schema>
 </schemalist>

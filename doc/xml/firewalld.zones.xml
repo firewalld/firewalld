@@ -97,7 +97,7 @@
       <refsect3>
 	<title>Rich language rules</title>
 	<para>
-	  The rich language extends the elements (service, port, icmp-block, masquerade and forward-port) with additional source and destination addresses, logging, actions and limits for logs and actions. It can also be used for host or network white and black listing (for more information, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>).
+	  The rich language extends the elements (service, port, icmp-block, masquerade, forward-port and source-port) with additional source and destination addresses, logging, actions and limits for logs and actions. It can also be used for host or network white and black listing (for more information, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>).
 	</para>
       </refsect3>
 
@@ -222,6 +222,12 @@
       </para>
       <para>
        If the connection is controlled by NetworkManager, you can also use <command>nm-connection-editor</command> to change the zone.
+      </para>
+      <para>
+	For the addion or change of interfaces that are not under control of NetworkManager: firewalld tries to change the ZONE setting in the ifcfg file, if an ifcfg file exists that is using the interface.
+      </para>
+      <para>
+	Only for the removal of interfaces that are not under control of NetworkManager: firewalld is not trying to change the ZONE setting in the ifcfg file. This is needed to make sure that an ifdown of the interface will not result in a reset of the zone setting to the default zone. Only the zone binding is then removed in firewalld then.
       </para>
     </refsect2>
 

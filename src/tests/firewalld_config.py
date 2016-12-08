@@ -96,7 +96,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(zone_settings.getVersion(), zone_version)
         self.assertEquals(zone_settings.getShort(), zone_short)
         self.assertEquals(zone_settings.getDescription(), zone_description)
-        self.assertEquals(zone_settings.getTarget(), zone_target)
+        self.assertEquals(zone_settings.getTarget(), "default")
         self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
         self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
         self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
@@ -134,7 +134,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertEquals(zone_settings.getVersion(), zone_version)
         self.assertEquals(zone_settings.getShort(), zone_short)
         self.assertEquals(zone_settings.getDescription(), zone_description)
-        self.assertEquals(zone_settings.getTarget(), zone_target)
+        self.assertEquals(zone_settings.getTarget(), "default")
         self.assertEquals(zone_settings.getServices().sort(), zone_services.sort())
         self.assertEquals(zone_settings.getPorts().sort(), zone_ports.sort())
         self.assertEquals(zone_settings.getIcmpBlocks().sort(), zone_icmpblocks.sort())
@@ -170,7 +170,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         service_short = "Testing"
         service_description = "this is just a testing service"
         service_ports = [("123", "tcp"), ("666-667", "udp")]
-        service_modules = ["nf_test_first", "nf_test_second"]
+        service_modules = ["nf_conntrack_tftp"]
         service_destinations = {'ipv4': '1.2.3.4', 'ipv6': 'dead::beef'}
         settings = FirewallClientServiceSettings() # ["", "", "", [], [], {}]
         settings.setVersion(service_version)
@@ -195,7 +195,7 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
         self.assertIsInstance(service_settings, firewall.client.FirewallClientServiceSettings)
 
         print ("Updating settings")
-        service_modules.append("nf_test_third")
+        service_modules.append("nf_conntrack_sip")
         service_destinations["ipv6"] = "3ffe:501:ffff::"
         service_settings.setModules(service_modules)
         service_settings.setDestinations(service_destinations)

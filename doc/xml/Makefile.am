@@ -11,6 +11,7 @@ man1_MANS = \
 	../man/man1/firewall-applet.1 \
 	../man/man1/firewall-cmd.1 \
 	../man/man1/firewall-config.1 \
+	../man/man1/firewallctl.1 \
 	../man/man1/firewalld.1 \
 	../man/man1/firewall-offline-cmd.1
 
@@ -18,6 +19,7 @@ man5_MANS = \
 	../man/man5/firewalld.conf.5 \
 	../man/man5/firewalld.dbus.5 \
 	../man/man5/firewalld.direct.5 \
+	../man/man5/firewalld.helper.5 \
 	../man/man5/firewalld.icmptype.5 \
 	../man/man5/firewalld.ipset.5 \
 	../man/man5/firewalld.lockdown-whitelist.5 \

@@ -71,16 +71,18 @@
   [ &lt;short&gt;<replaceable>short description</replaceable>&lt;/short&gt; ]
   [ &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt; ]
   [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
-  [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
+  [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
   [ &lt;service name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
   [ &lt;protcol value="<replaceable>protocol</replaceable>"/&gt; ]
   [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
+  [ &lt;icmp-block-inversion/&gt; ]
   [ &lt;masquerade/&gt; ]
   [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
+  [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
   [
     &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
-    [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
+    [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
     [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
     [
       &lt;service name="<replaceable>string</replaceable>"/&gt; |
@@ -180,18 +182,35 @@
     <refsect2 id="source">
       <title>source</title>
       <para>
-	Is an optional empty-element tag and can be used several times. It can be used to bind a source address or source address range to a zone. This can also be a MAC address. A source entry has exactly one attribute:
+	Is an optional empty-element tag and can be used several times. It can be used to bind a source address, address range, a MAC address or an ipset to a zone. A source entry has exactly one of these attributes:
       </para>
       <variablelist>
 	<varlistentry>
 	  <term>address="<replaceable>address</replaceable><optional>/<replaceable>mask</replaceable></optional>"</term>
           <listitem>
 	    <para>
-	      The source to be bound to the zone. The source is either an IP address or a network IP address with a mask for IPv4 or IPv6 or a MAC address (no mask). The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
+	      The source is either an IP address or a network IP address with a mask for IPv4 or IPv6. The network family (IPv4/IPv6) will be automatically discovered. For IPv4, the mask can be a network mask or a plain number. For IPv6 the mask is a plain number. The use of host names is not supported.
 	    </para>
 	  </listitem>
 	</varlistentry>
 
+	<varlistentry>
+	  <term>mac="<replaceable>MAC</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The source is a MAC address. It must be of the form XX:XX:XX:XX:XX:XX.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>ipset="<replaceable>ipset</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The source is an ipset.
+	    </para>
+	  </listitem>
+	</varlistentry>
       </variablelist>
     </refsect2>
 
@@ -273,6 +292,13 @@
       </variablelist>
     </refsect2>
 
+    <refsect2 id="icmp-block-inversion">
+      <title>icmp-block-inversion</title>
+      <para>
+	Is an optional empty-element tag and can be used only once in a zone configuration. This flag inverts the icmp block handling. Only enabled ICMP types are accepted and all others are rejected in the zone.
+      </para>
+    </refsect2>
+
     <refsect2 id="masquerade">
       <title>masquerade</title>
       <para>
@@ -339,6 +365,32 @@
       </refsect3>
     </refsect2>
 
+    <refsect2 id="source-port">
+      <title>source-port</title>
+      <para>
+	Is an optional empty-element tag and can be used several times to have more than one source port entry. All attributes of a source port entry are mandatory:
+      </para>
+      <variablelist>
+	<varlistentry>
+	  <term>port="<replaceable>portid</replaceable><optional>-<replaceable>portid</replaceable></optional>"</term>
+          <listitem>
+	    <para>
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+          <listitem>
+	    <para>
+	      The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
     <refsect2 id="rule">
       <title>rule</title>
       <para>
@@ -347,7 +399,8 @@
       <para>
 	The general rule structure:
       </para>
-      <programlisting>
+      <para>
+	<programlisting>
 &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
   [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
@@ -357,7 +410,8 @@
     &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
     &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
     &lt;masquerade/&gt; |
-    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
+    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt; |
+    &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
   ]
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
@@ -369,11 +423,13 @@
   ]
 
 &lt;/rule&gt;
-      </programlisting>
+	</programlisting>
+      </para>
       <para>
 	Rule structure for source black or white listing:
       </para>
-      <programlisting>
+      <para>
+	<programlisting>
 &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt;
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
@@ -382,7 +438,8 @@
   &lt;reject [type="<replaceable>rejecttype</replaceable>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/reject&gt; |
   &lt;drop&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/drop&gt;
 &lt;/rule&gt;
-      </programlisting>
+	</programlisting>
+      </para>
 
       <para>
 	For a full description on rich language rules, please have a look at <citerefentry><refentrytitle>firewalld.richlanguage</refentrytitle><manvolnum>5</manvolnum></citerefentry>.

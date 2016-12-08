@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (C) 2010-2012 Red Hat, Inc.
+# Copyright (C) 2010-2016 Red Hat, Inc.
 #
 # Authors:
 # Thomas Woerner <twoerner@redhat.com>
@@ -25,7 +25,9 @@
 #   Thomas Liu  <tliu@redhat.com>
 #   Dan Walsh <dwalsh@redhat.com>
 
-import os, sys
+__all__ = [ "run_server" ]
+
+import sys
 import signal
 
 # force use of pygobject3 in python-slip
@@ -37,7 +39,7 @@ import dbus.service
 import dbus.mainloop.glib
 import slip.dbus
 
-from firewall.config.dbus import *
+from firewall import config
 from firewall.core.logger import log
 from firewall.server.firewalld import FirewallD
 
@@ -47,8 +49,9 @@ from firewall.server.firewalld import FirewallD
 #
 ############################################################################
 
-def sighup(data):
-    os.system("firewall-cmd --reload &")
+def sighup(service):
+    service.reload()
+    return True
 
 def sigterm(mainloop):
     mainloop.quit()
@@ -77,22 +80,22 @@ def run_server(debug_gc=False):
                       ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
                 print("GARBAGE OBJECTS (%d):\n" % len(gc.garbage))
                 for x in gc.garbage:
-                    print(type(x),"\n  ",)
+                    print(type(x), "\n  ",)
                     print(pformat(x))
                 print("\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
                       "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
-            id = GLib.timeout_add_seconds(gc_timeout, gc_collect)
+            GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
     try:
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         bus = dbus.SystemBus()
-        name = dbus.service.BusName(DBUS_INTERFACE, bus=bus)
-        service = FirewallD(name, DBUS_PATH)
+        name = dbus.service.BusName(config.dbus.DBUS_INTERFACE, bus=bus)
+        service = FirewallD(name, config.dbus.DBUS_PATH)
 
         mainloop = GLib.MainLoop()
         slip.dbus.service.set_mainloop(mainloop)
         if debug_gc:
-            id = GLib.timeout_add_seconds(gc_timeout, gc_collect)
+            GLib.timeout_add_seconds(gc_timeout, gc_collect)
 
         # use unix_signal_add if available, else unix_signal_add_full
         if hasattr(GLib, 'unix_signal_add'):
@@ -101,14 +104,14 @@ def run_server(debug_gc=False):
             unix_signal_add = GLib.unix_signal_add_full
 
         unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGHUP,
-                        sighup, None)
+                        sighup, service)
         unix_signal_add(GLib.PRIORITY_HIGH, signal.SIGTERM,
                         sigterm, mainloop)
 
         mainloop.run()
 
     except KeyboardInterrupt as e:
-        log.info1("Stopping..")
+        log.debug1("Stopping..")
 
     except SystemExit as e:
         log.error("Raising SystemExit in run_server")

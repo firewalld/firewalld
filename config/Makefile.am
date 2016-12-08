@@ -60,12 +60,18 @@ DISTCLEANFILES = \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS)
 
-EXTRA_DIST = \
-	$(desktop_FILES) \
-	$(appdata_FILES) \
-	$(applet_desktop_FILES) \
-	$(polkit1_action_FILES) \
-	$(gsettings_in_file) \
+CONFIG_FILES = \
+	helpers/amanda.xml \
+	helpers/ftp.xml \
+	helpers/irc.xml \
+	helpers/netbios-ns.xml \
+	helpers/pptp.xml \
+	helpers/Q.931.xml \
+	helpers/RAS.xml \
+	helpers/sane.xml \
+	helpers/sip.xml \
+	helpers/snmp.xml \
+	helpers/tftp.xml \
 	icmptypes/destination-unreachable.xml \
 	icmptypes/echo-reply.xml \
 	icmptypes/echo-request.xml \
@@ -84,32 +90,39 @@ EXTRA_DIST = \
 	services/bacula.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
-	services/dhcp.xml \
+	services/cfengine.xml \
+	services/condor-collector.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
+	services/dhcp.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/dropbox-lansync.xml \
-	services/freeipa-ldap.xml \
 	services/freeipa-ldaps.xml \
+	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
 	services/ftp.xml \
+	services/ganglia-client.xml \
+	services/ganglia-master.xml \
 	services/high-availability.xml \
-	services/http.xml \
 	services/https.xml \
-	services/imap.xml \
+	services/http.xml \
 	services/imaps.xml \
+	services/imap.xml \
 	services/ipp-client.xml \
 	services/ipp.xml \
 	services/ipsec.xml \
 	services/iscsi-target.xml \
 	services/kadmin.xml \
 	services/kerberos.xml \
+	services/klogin.xml \
 	services/kpasswd.xml \
-	services/ldap.xml \
+	services/kshell.xml \
 	services/ldaps.xml \
+	services/ldap.xml \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
+	services/managesieve.xml \
 	services/mdns.xml \
 	services/mosh.xml \
 	services/mountd.xml \
@@ -120,10 +133,10 @@ EXTRA_DIST = \
 	services/openvpn.xml \
 	services/pmcd.xml \
 	services/pmproxy.xml \
-	services/pmwebapi.xml \
 	services/pmwebapis.xml \
-	services/pop3.xml \
+	services/pmwebapi.xml \
 	services/pop3s.xml \
+	services/pop3.xml \
 	services/postgresql.xml \
 	services/privoxy.xml \
 	services/proxy-dhcp.xml \
@@ -131,15 +144,20 @@ EXTRA_DIST = \
 	services/pulseaudio.xml \
 	services/puppetmaster.xml \
 	services/radius.xml \
+	services/RH-Satellite-6.xml \
 	services/rpc-bind.xml \
+	services/rsh.xml \
 	services/rsyncd.xml \
 	services/samba-client.xml \
 	services/samba.xml \
 	services/sane.xml \
-	services/smtp.xml \
+	services/sips.xml \
+	services/sip.xml \
+	services/smtp-submission.xml \
 	services/smtps.xml \
-	services/snmp.xml \
+	services/smtp.xml \
 	services/snmptrap.xml \
+	services/snmp.xml \
 	services/squid.xml \
 	services/ssh.xml \
 	services/synergy.xml \
@@ -166,7 +184,15 @@ EXTRA_DIST = \
 	zones/internal.xml \
 	zones/public.xml \
 	zones/trusted.xml \
-	zones/work.xml \
+	zones/work.xml
+
+EXTRA_DIST = \
+	$(desktop_FILES) \
+	$(appdata_FILES) \
+	$(applet_desktop_FILES) \
+	$(polkit1_action_FILES) \
+	$(gsettings_in_file) \
+	$(CONFIG_FILES) \
 	$(dist_xmlschema_DATA) \
 	firewalld.init \
 	firewalld.service.in \
@@ -241,11 +267,13 @@ install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/ipsets
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/services
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/helpers
 	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
 	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
 	cp -r ipsets $(DESTDIR)$(prefixlibdir)
 	cp -r services $(DESTDIR)$(prefixlibdir)
 	cp -r zones $(DESTDIR)$(prefixlibdir)
+	cp -r helpers $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
@@ -260,6 +288,8 @@ uninstall-config:
 	rmdir $(DESTDIR)$(prefixlibdir)/services
 	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
 	rmdir $(DESTDIR)$(prefixlibdir)/zones
+	rm -f $(DESTDIR)$(prefixlibdir)/helpers/*
+	rmdir $(DESTDIR)$(prefixlibdir)/helpers
 
 install-data-local: $(INSTALL_TARGETS)
 
@@ -267,4 +297,5 @@ uninstall-local: $(UNINSTALL_TARGETS)
 
 install-data-hook:
 	cd $(DESTDIR)$(polkit1_actiondir) && \
-	  $(LN_S) org.fedoraproject.FirewallD1.server.policy org.fedoraproject.FirewallD1.policy
+		rm -f org.fedoraproject.FirewallD1.policy && \
+		$(LN_S) org.fedoraproject.FirewallD1.server.policy org.fedoraproject.FirewallD1.policy

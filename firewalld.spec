@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.0
+Version: 0.4.4.2
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -20,7 +20,9 @@ BuildRequires: intltool
 BuildRequires: glib2, glib2-devel
 BuildRequires: systemd-units
 BuildRequires: docbook-style-xsl
+BuildRequires: libxslt
 BuildRequires:  python2-devel
+BuildRequires: iptables, ebtables, ipset
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 %endif #0%{?with_python3}
@@ -80,14 +82,14 @@ Requires: %{name} = %{version}-%{release}
 Requires: firewall-config = %{version}-%{release}
 Requires: hicolor-icon-theme
 %if 0%{?use_python3}
-Requires: python3-PyQt4
+Requires: python3-qt5
 Requires: python3-gobject
 %else
-Requires: PyQt4
+Requires: python-qt5
 Requires: pygobject3-base
 %endif
 Requires: libnotify
-Requires: NetworkManager-glib
+Requires: NetworkManager-libnm
 Requires: dbus-x11
 
 %description -n firewall-applet
@@ -104,7 +106,7 @@ Requires: python3-gobject
 %else
 Requires: pygobject3-base
 %endif
-Requires: NetworkManager-glib
+Requires: NetworkManager-libnm
 Requires: dbus-x11
 
 %description -n firewall-config
@@ -125,6 +127,9 @@ sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
 
 %build
 %configure --enable-sysconfig --enable-rpmmacros
+# Enable the make line if there are patches affecting man pages to
+# regenerate them
+# make %{?_smp_mflags}
 
 %if 0%{?with_python3}
 pushd %{py3dir}
@@ -202,20 +207,27 @@ fi
 %{_sbindir}/firewalld
 %{_bindir}/firewall-cmd
 %{_bindir}/firewall-offline-cmd
+%{_bindir}/firewallctl
 %dir %{_datadir}/bash-completion/completions
 %{_datadir}/bash-completion/completions/firewall-cmd
 %{_prefix}/lib/firewalld/icmptypes/*.xml
 %{_prefix}/lib/firewalld/ipsets/README
 %{_prefix}/lib/firewalld/services/*.xml
 %{_prefix}/lib/firewalld/zones/*.xml
+%{_prefix}/lib/firewalld/helpers/*.xml
 %{_prefix}/lib/firewalld/xmlschema/check.sh
 %{_prefix}/lib/firewalld/xmlschema/*.xsd
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld
 %config(noreplace) %{_sysconfdir}/firewalld/firewalld.conf
 %config(noreplace) %{_sysconfdir}/firewalld/lockdown-whitelist.xml
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/helpers
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/icmptypes
+%attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
+%dir %{_datadir}/firewalld
+%dir %{_datadir}/firewalld/tests
+%{_datadir}/firewalld/tests
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 #%attr(0755,root,root) %{_initrddir}/firewalld
@@ -225,6 +237,7 @@ fi
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
 %{_mandir}/man1/firewall*cmd*.1*
+%{_mandir}/man1/firewallctl*.1*
 %{_mandir}/man1/firewalld*.1*
 %{_mandir}/man5/firewall*.5*
 
@@ -266,7 +279,9 @@ fi
 
 %files -n firewalld-filesystem
 %dir %{_prefix}/lib/firewalld
+%dir %{_prefix}/lib/firewalld/helpers
 %dir %{_prefix}/lib/firewalld/icmptypes
+%dir %{_prefix}/lib/firewalld/ipsets
 %dir %{_prefix}/lib/firewalld/services
 %dir %{_prefix}/lib/firewalld/zones
 %dir %{_prefix}/lib/firewalld/xmlschema
@@ -286,6 +301,7 @@ fi
 %defattr(0644,root,root)
 %{_datadir}/firewalld/firewall-config.glade
 %{_datadir}/firewalld/gtk3_chooserbutton.py*
+%{_datadir}/firewalld/gtk3_niceexpander.py*
 %{_datadir}/applications/firewall-config.desktop
 %{_datadir}/appdata/firewall-config.appdata.xml
 %{_datadir}/icons/hicolor/*/apps/firewall-config*.*
@@ -293,6 +309,341 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Dec  1 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4.2-1
+- firewalld.spec: Added helpers and ipsets paths to firewalld-filesystem
+- firewall.core.fw_nm: create NMClient lazily
+- Do not use hard-coded path for modinfo, use autofoo to detect it
+- firewall.core.io.ifcfg: Dropped invalid option warning with bad format
+  string
+- firewall.core.io.ifcfg: Properly handle quoted ifcfg values
+- firewall.core.fw_zone: Do not reset ZONE with ifdown
+- Updated translations from zanata
+- firewall-config: Extra grid at bottom to visualize firewalld settings
+
+* Wed Nov  9 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4.1-1
+- firewall-config: Use proper source check in sourceDialog (fixes issue#162)
+- firewallctl: New support for helpers
+- Translation updates
+
+* Fri Oct 28 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4-1
+- Fix dist-check
+- src/Makefile.am: Install new helper files
+- config/Makefile.am: Install helpers
+- Merged translations
+- Updated translations from zanata
+- firewalld.spec: Adapt requires for PyQt5
+- firewall-applet: Fix fromUTF8 for python2 PyQt5 usage
+- firewall-applet: Use PyQt5
+- firewall-config: New nf_conntrack_select dialog, use nf_conntrack_helpers D-Bus property
+- shell-completion/bash/firewall-cmd: Updates for helpers and also some fixes
+- src/tests/firewall-[offline-]cmd_test.sh: New helper tests, adapted module tests for services
+- doc/xml/seealso.xml: Add firewalld.helper(5) man page
+- doc/xml/seealso.xml: Add firewalld.ipset(5) man page
+- Fixed typo in firewalld.ipset(5) man page
+- Updated firewalld.dbus(5) man page
+- New firewalld.helper(5) man page
+- doc/xml/firewall-offline-cmd.xml: Updated firewall-offline-cmd man page
+- doc/xml/firewall-cmd.xml: Updated firewall-cmd man page
+- firewall-offline-cmd: New support for helpers
+- firewall-cmd: New support for helpers
+- firewall.command: New check_helper_family, check_module and print_helper_info methods
+- firewall.core.fw_test: Add helpers also to offline backend
+- firewall.server.config: New AutomaticHelpers property (rw)
+- firewall.server.config: Fix an dict size changed error for firewall.conf file changes
+- firewall.server.config: Make LogDenied property readwrite to be consistent
+- Some renames of nf_conntrack_helper* functions and structures, helpers is a dict
+- firewall.core.fw: Properly check helper setting in set_automatic_helpers
+- firewall.errors: Add missing BUILTIN_HELPER error code
+- No extra interface for helpers needed in runtime, dropped DBUS_INTERFACE_HELPER
+- firewall.server.firewalld: Drop unused queryHelper D-Bus method
+- New helpers Q.931 and RAS from nf_conntrack_h323
+- firewall.core.io.helper: Allow dots in helper names, remove underscore
+- firewall.core.io.firewalld_conf: Fixed typo in FALLBACK_AUTOMATIC_HELPERS
+- firewall-[offline-]cmd: Use sys.excepthook to force exception_handler usage always
+- firewall.core.fw_config: new_X methods should also check builtins
+- firewall.client: Set helper family to "" if None
+- firewall.client: Add missing module string to FirewallClientHelperSettings.settings
+- config/firewalld.conf: Add possible values description for AutomaticHelpers
+- helpers/amanda.xml: Fix typo in helper module
+- firewall-config: Added support for helper module setting
+- firewall.client: Added support for helper module setting
+- firewall.server.config_helper: Added support for helper module setting
+- firewall.core.io.service, firewall.server.config_service: Only replace underscore by dash if module start with nf_conntrack_
+- firewall.core.fw_zone: Use helper module instead of a generated name from helper name
+- helpers: Added kernel module
+- firewall.core.io.helper: Add module to helper
+- firewall-cmd: Removed duplicate --get-ipset-types from help output
+- firewall.core.fw_zone: Add zone bingings for PREROUTING in the raw table
+- firewall.core.ipXtables: Add PREROUTING default rules for zones in raw table
+- firewall-config: New support to handle helpers, new dialogs, new helper tab, ..
+- config/org.fedoraproject.FirewallConfig.gschema.xml.in: New show-helpers setting
+- firewall.client: New helper management for runtime and permanent configuration
+- firewall.server.firewalld: New runtime helper management, new nf_conntrack_helper property
+- firewall.server.config_service: Fix module name handling (no nf_conntrack_ prefix needed)
+- firewall.server.config: New permanent D-Bus helper management
+- New firewall.server.config_helper to provide the permanent D-Bus interface for helpers
+- firewall.core.fw_zone: Use helpers fw.nf_conntrack_helper for services using helpers
+- firewall.core.fw: New helper management, new _automatic_helpers and nf_conntrack_helper settings
+- firewall.core.fw_config: Add support for permanent helper handling
+- firewall.core.io.service: The module does not need to start with nf_conntrack_ anymore
+- firewall.functions: New functions to get and set nf_conntrack_helper kernel setting
+- firewall.core.io.firewalld_conf: New support for AutomaticHelpers setting
+- firewall.config.dbus: New D-Bus definitions for helpers, new DBUS_INTERFACE_REVISION 12
+- New firewall.core.fw_helper providing FirewallHelper backend
+- New firewall.core.helper with HELPER_MAXNAMELEN definition
+- config/firewalld.conf: New AutomaticHelpers setting with description
+- firewall.config.__init__.py.in: New helpers variables
+- firewalld.spec: Add new helpers directory
+- config/Makefile.am: Install new helpers
+- New helper configuration files for amanda, ftp, irc, netbios-ns, pptp, sane, sip, snmp and tftp
+- firewall.core.io.helper: New IO handler for netfilter helpers
+- firewall.errors: New INVALID_HELPER error code
+- firewall.core.io.ifcfg: Use .bak for save files
+- firewall-config: Set internal log_denied setting after changing
+- firewall.server.config: Copy props before removing items
+- doc/xml/firewalld.ipset: Replaced icmptype name remains with ipset
+- firewall.core.fw_zone: Fix LOG rule placement for LogDenied
+- firewall.command: Use "source-ports" in print_zone_info
+- firewall.core.logger: Use syslog.openlog() and syslog.closelog()
+- firewall-[offline-]cmd man pages: Document --path-{zone,icmptype,ipset,service}
+- firewall-cmd: Enable --path-{zone,icmptype,service} options again
+- firewall.core.{ipXtables,ebtables}: Copy rule before extracting items in set_rules
+- firewall.core.fw: Do not abort transaction on failed ipv6_rpfilter rules
+- config/Makefile.am: Added cfengine, condor-collector and smtp-submission services
+- Makefile.am: New dist-check used in the archive target
+- src/Makefile.am: Reordered nobase_dist_python_DATA to be sorted
+- config/Makefile.am: New CONFIG_FILES variable to contain the config files
+- Merge pull request #150 from hspaans/master
+- Merge pull request #146 from canvon/bugfix/spelling
+- Merge pull request #145 from jcpunk/condor
+- Command line tools man pages: New section about sequence options and exit codes
+- Creating service file for SMTP-Submission.
+- Creating service file for CFEngine.
+- Fix typo in documentation: iptables mangle table
+- Only use sort on lists of main items, but not for item properties
+- firewall.core.io.io_object: import_config should not change ordering of lists
+- firewall.core.fw_transaction: Load helper modules in FirewallZoneTransaction
+- firewall.command: Fail with NOT_AUTHORIZED if authorization fails (RHBZ#1368549)
+- firewall.command: Fix sequence exit code with at least one succeeded item
+- Add condor collector service
+- firewall-cmd: Fixed --{get,set}-{description,short} for permanent zones
+- firewall.command: Do not use error code 254 for {ALREADY,NOT}_ENABLED sequences
+
+* Tue Aug 16 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.3-1
+- Fix CVE-2016-5410: Firewall configuration can be modified by any logged in
+  user
+- firewall/server/firewalld: Make getXSettings and getLogDenied CONFIG_INFO
+- Update AppData configuration file.
+- tests/firewalld_rich.py: Use new import structure and FirewallClient classes
+- tests/firewalld_direct.py: Use new import structure
+- tests: firewalld_direct: Fix assert to check for True instead of False
+- tests: firewalld_config: Fix expected value when querying the zone target
+- tests: firewalld_config: Use real nf_conntrack modules
+- firewalld.spec: Added comment about make call for %build
+- firewall-config: Use also width_request and height_request with default size
+- Updated firewall-config screenshot
+- firewall-cmd: Fixed typo in help output (RHBZ#1367171)
+- test-suite: Ignore stderr to get default zone also for missing firewalld.conf
+- firewall.core.logger: Warnings should be printed to stderr per default
+- firewall.core.fw_nm: Ignore NetworkManager if NM.Client connect fails
+- firewall-cmd, firewallctl: Gracefully fail if SystemBus can not be aquired
+- firewall.client: Generate new DBUS_ERROR if SystemBus can not be aquired
+- test-suite: Do not fail on ALREADY_ENABLED --add-destination tests
+- firewall.command: ALREADY_ENABLED, NOT_ENABLED, ZONE_ALREADY_SET are warnings
+- doc/xml/firewalld.dbus.xml: Removed undefined reference
+- doc/xml/transform-html.xsl.in: Fixed references in the document
+- doc/xml/firewalld.{dbus,zone}.xml: Embed programlisting in para
+- doc/xml/transform-html.xsl.in: Enhanced html formatting closer to the man page
+- firewall: core: fw_nm: Instantiate the NM client only once
+- firewall/core/io/*.py: Do not traceback on a general sax parsing issue
+- firewall-offline-cmd: Fix --{add,remove}-entries-from-file
+- firewall-cmd: Add missing action to fix --{add,remove}-entries-from-file
+- firewall.core.prog: Do not output stderr, but return it in the error case
+- firewall.core.io.ifcfg.py: Fix ifcfg file reader and writer (RHBZ#1362171)
+- config/firewall.service.in: use KillMode=mixed
+- config/firewalld.service.in: use network-pre.target
+- firewall-config: Add missing gettext.textdomain call to fix translations
+- Add UDP to transmission-client.xml service
+- tests/firewall-[offline-]cmd_test.sh: Hide errors and warnings
+- firewall.client: Fix ALREADY_ENABLED errors in icmptype destination calls
+- firewall.client: Fix NOT_ENABLED errors in icmptype destination calls
+- firewall.client: Use {ALREADY,NOT}_ENABLED errors in icmptype destination
+  calls
+- firewall.command: Add the removed FirewallError handling to the action
+  (a17ce50)
+- firewall.command: Do not use query methods for sequences and also single
+  options
+- Add missing information about MAC and ipset sources to man pages and help
+  output
+- firewalld.spec: Add BuildRequires for libxslt to enable rebuild of man pages
+- firewall[-offline]-cmd, firewallctl, firewall.command: Use sys.{stdout,stderr}
+- firewallctl: Fix traceback if not connected to firewalld
+- firewall-config: Initialize value in on_richRuleDialogElementChooser_clicked
+- firewall.command: Convert errors to string for Python3
+- firewall.command: Get proper firewall error code from D-BusExceptions
+- firewall-cmd: Fixed traceback without args
+- Add missing service files to Makefile.am
+- shell-completion: Add shell completion support for
+  --{get,set}--{description,short}
+
+* Mon Jul  4 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.2-1
+- Fix regression with unavailable optional commands
+- All missing backend messages should be warnings
+- Individual calls for missing restore commands
+- Only one authenticate call for add and remove options and also sequences
+- New service RH-Satellite-6
+
+* Tue Jun 28 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3.1-1
+- firewall.command: Fix python3 DBusException message not interable error
+- src/Makefile.am: Fix path in firewall-[offline-]cmd_test.sh while installing
+- firewallctl: Do not trace back on list command without further arguments
+- firewallctl (man1): Added remaining sections zone, service, ..
+- firewallctl: Added runtime-to-permanent, interface and source parser,
+  IndividualCalls setting
+- firewall.server.config: Allow to set IndividualCalls property in config
+  interface
+- Fix missing icmp rules for some zones
+- runProg: Fix issue with running programs
+- firewall-offline-cmd: Fix issues with missing system-config-firewall
+- firewall.core.ipXtables: Split up source and dest addresses for transaction
+- firewall.server.config: Log error in case of loading malformed files in
+  watcher
+- Install and package the firewallctl man page
+
+* Wed Jun 22 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.3-1
+- New firewallctl utility (RHBZ#1147959)
+- doc.xml.seealso: Show firewalld.dbus in See Also sections
+- firewall.core.fw_config: Create backup on zone, service, ipset and icmptype
+  removal (RHBZ#1339251)
+- {zone,service,ipset,icmptype}_writer: Do not fail on failed backup
+- firewall-[offline-]cmd: Fix --new-X-from-file options for files in cwd
+- firewall-cmd: Dropped duplicate setType call in --new-ipset
+- radius service: Support also tcp ports (RBZ#1219717)
+- xmlschemas: Support source-port, protocol, icmp-block-inversion and ipset
+  sources
+- config.xmlschema.service.xsd: Fix service destination conflicts
+  (RHBZ#1296573)
+- firewall-cmd, firewalld man: Information about new NetworkManager and ifcfg
+- firewall.command: Only print summary and description in print_X_info with
+  verbose
+- firewall.command: print_msg should be able to print empty lines
+- firewall-config: No processing of runtime passthroughs signals in permanent
+- Landspace.io fixes and pylint calm downs
+- firewall.core.io.zone: Add zone_reader and zone_writer to __all__, pylint
+  fixes
+- firewall-config: Fixed titles of command and context dialogs, also entry
+  lenths
+- firewall-config: pylint calm downs
+- firewall.core.fw_zone: Fix use of MAC source in rich rules without ipv limit
+- firewall-config: Use self.active_zoens in conf_zone_added_cb
+- firewall.command: New parse_port, extended parse methods with more checks
+- firewall.command: Fixed parse_port to use the separator in the split call
+- firewall.command: New [de]activate_exception_handler, raise error in parse_X
+- services ha: Allow corosync-qnetd port
+- firewall-applet: Support for kde5-nm-connection-editor
+- tests/firewall-offline-cmd_test.sh: New tests for service and icmptype
+  modifications
+- firewall-offline-cmd: Use FirewallCommand for simplification and sequence
+  options
+- tests/firewall-cmd_test.sh: New tests for service and icmptype modifications
+- firewall-cmd: Fixed set, remove and query destination options for services
+- firewall.core.io.service: Source ports have not been checked in _check_config
+- firewall.core.fw_zone: Method check_source_port is not used, removed
+- firewall.core.base: Added default to ZONE_TARGETS
+- firewall.client: Allow to remove ipv:address pair for service destinations
+- tests/firewall-offline-cmd_test.sh: There is no timeout option in permanent
+- firewall-cmd: Landscape.io fixes, pylint calm downs
+- firewall-cmd: Use FirewallCommand for simplification and sequence options
+- firewall.command: New FirewallCommand for command line client simplification
+- New services: kshell, rsh, ganglia-master, ganglia-client
+- firewalld: Cleanup of unused imports, do not translate some deamon messages
+- firewalld: With fd close interation in runProg, it is not needed here anymore
+- firewall.core.prog: Add fd close iteration to runProg
+- firewall.core.fw_nm: Hide NM typelib import, new nm_get_dbus_interface
+  function
+- firewalld.spec: Require NetworkManager-libnm instead of NetworkManager-glib
+- firewall-config: New add/remove ipset entries from file, remove all entries
+- firewall-applet: Fix tooltip after applet start with connection to firewalld
+- firewall-config: Select new zone, service or icmptype if the view was empty
+- firewalld.spec: Added build requires for iptables, ebtables and ipset
+- Adding nf_conntrack_sip module to the service SIP
+- firewall: core: fw_ifcfg: Quickly return if ifcfg directory does not exist
+- Drop unneeded python shebangs
+- Translation updates
+
+* Mon May 30 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.2-1
+- New module to search for and change ifcfg files for interfaces not under
+  control of NM
+- firewall_config: Enhanced messages in status bar
+- firewall-config: New message window as overlay if not connected
+- firewall-config: Fix sentivity of option, view menus and main paned if not
+  connected
+- firewall-applet: Quit on SIGINT (Ctrl-C), reduced D-Bus calls, some cleanup
+- firewall-[offline]cmd: Show target in zone information
+- D-Bus: Completed masquerade methods in FirewallClientZoneSettings
+- Fixed log-denied rules for icmp-blocks
+- Keep sorting of interfaces, services, icmp-blocks and other settings in zones
+- Fixed runtime-to-permanent not to save interfaces under control of NM
+- New icmp-block-inversion flag in the zones
+- ICMP type filtering in the zones
+- New services: sip, sips, managesieve
+- rich rules: Allow destination action (RHBZ#1163428)
+- firewall-offline-cmd: New option -q/--quiet
+- firewall-[offline-]cmd: New --add-[zone,service,ipset,icmptype]-from-file
+- firewall-[offline-]cmd: Fix option for setting the destination address
+- firewall-config: Fixed resizing behaviour
+- New transaction model for speed ups in start, restart, stop and other actions
+- firewall-cmd: New options --load{zone,service,ipset,icmptype}-defaults
+- Fixed memory leak in dbus_introspection_add_properties
+- Landscape.io fixes, pylint calm downs
+- New D-Bus getXnames methods to speed up firewall-config and firewall-cmd
+- ebtables-restore: No support for COMMIT command
+- Source port support in services, zones and rich rules
+- firewall-offline-cmd: Added --{add,remove}-entries-from-file for ipsets
+- firewall-config: New active bindings side bar for simple binding changes
+- Reworked NetworkManager module
+- Proper default zone handling for NM connections
+- Try to set zone binding with NM if interface is under control of NM
+- Code cleanup and bug fixes
+- Include test suite in the release and install in /usr/share/firewalld/tests
+- New Travis-CI configuration file
+- Fixed more broken frensh translations
+- Translation updates
+
+* Wed Apr 20 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1.2-1
+- Install fw_nm module
+- firewalld: Do not fail if log file could not be opened
+- Make ipsets visible per default in firewall-config
+- Fixed translations with python3
+
+* Tue Apr 19 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1.1-1
+- Fixed broken frensh translation
+
+* Tue Apr 19 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.1-1
+- Enhancements of ipset handling
+  - No cleanup of ipsets using timeouts while reloading
+  - Only destroy conflicting ipsets
+  - Only use ipset types supported by the system
+  - Add and remove several ipset entries in one call using a file
+- Reduce time frame where builtin chains are on policy DROP while reloading
+- Include descriptions in --info-X calls
+- Command line interface support to get and alter descriptions of zones,
+  services, ipsets and icmptypes with permanent option
+- Properly watch changes in combined zones
+- Fix logging in rich rule forward rules
+- Transformed direct.passthrough errors into warnings
+- Rework of import structures
+- Reduced calls to get ids for port and protocol names (RHBZ#1305434)
+- Build and installation fixes by Markos Chandras
+- Provide D-Bus properties in introspection data
+- Fix for flaws found by landscape.io
+- Fix for repeated SUGHUP
+- New NetworkManager module to get and set zones of connections, used in
+  firewall-applet and firewall-config
+- configure: Autodetect backend tools ({ip,ip6,eb}tables{,-restore}, ipset)
+- Code cleanups
+- Bug fixes
+
 * Fri Jan 29 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.0-1
 - Several new services
 - Lots of bug fixes
