@@ -518,7 +518,7 @@ class Firewall(object):
                     # add a deep copy to the configuration interface
                     self.config.add_service(copy.deepcopy(obj))
                 elif reader_type == "zone":
-                    obj = zone_reader(filename, path)
+                    obj = zone_reader(filename, path, no_check_name=combine)
                     if combine:
                         # Change name for permanent configuration
                         obj.name = "%s/%s" % (
