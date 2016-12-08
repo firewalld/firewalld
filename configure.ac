@@ -30,6 +30,10 @@ AM_PATH_PYTHON
 AC_PATH_PROG([XSLTPROC], [xsltproc])
 AC_PATH_PROG([KILL], [kill], [/usr/bin/kill])
 
+AC_PATH_PROG([MODINFO], [modinfo], [/sbin/modinfo])
+AC_PATH_PROG([MODPROBE], [modprobe], [/sbin/modprobe])
+AC_PATH_PROG([RMMOD], [rmmod], [/sbin/rmmod])
+
 GLIB_GSETTINGS
 
 #############################################################

@@ -223,6 +223,12 @@
       <para>
        If the connection is controlled by NetworkManager, you can also use <command>nm-connection-editor</command> to change the zone.
       </para>
+      <para>
+	For the addion or change of interfaces that are not under control of NetworkManager: firewalld tries to change the ZONE setting in the ifcfg file, if an ifcfg file exists that is using the interface.
+      </para>
+      <para>
+	Only for the removal of interfaces that are not under control of NetworkManager: firewalld is not trying to change the ZONE setting in the ifcfg file. This is needed to make sure that an ifdown of the interface will not result in a reset of the zone setting to the default zone. Only the zone binding is then removed in firewalld then.
+      </para>
     </refsect2>
 
   </refsect1>

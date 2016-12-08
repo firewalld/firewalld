@@ -30,6 +30,7 @@ from firewall.core.io.icmptype import IcmpType, icmptype_reader, icmptype_writer
 from firewall.core.io.service import Service, service_reader, service_writer
 from firewall.core.io.zone import Zone, zone_reader, zone_writer
 from firewall.core.io.ipset import IPSet, ipset_reader, ipset_writer
+from firewall.core.io.helper import Helper, helper_reader, helper_writer
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -39,11 +40,12 @@ class FirewallConfig(object):
         self.__init_vars()
 
     def __repr__(self):
-        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
+        return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__,
              self._ipsets, self._icmptypes, self._services, self._zones,
+             self.helpers,
              self._builtin_ipsets, self._builtin_icmptypes,
-             self._builtin_services, self._builtin_zones,
+             self._builtin_services, self._builtin_zones, self._builtin_helpers,
              self._firewalld_conf, self._policies, self._direct)
 
     def __init_vars(self):
@@ -51,10 +53,12 @@ class FirewallConfig(object):
         self._icmptypes = { }
         self._services = { }
         self._zones = { }
+        self._helpers = { }
         self._builtin_ipsets = { }
         self._builtin_icmptypes = { }
         self._builtin_services = { }
         self._builtin_zones = { }
+        self._builtin_helpers = { }
         self._firewalld_conf = None
         self._policies = None
         self._direct = None
@@ -87,6 +91,13 @@ class FirewallConfig(object):
         for x in list(self._zones.keys()):
             self._zones[x].cleanup()
             del self._zones[x]
+
+        for x in list(self._builtin_helpers.keys()):
+            self._builtin_helpers[x].cleanup()
+            del self._builtin_helpers[x]
+        for x in list(self._helpers.keys()):
+            self._helpers[x].cleanup()
+            del self._helpers[x]
 
         if self._firewalld_conf:
             self._firewalld_conf.cleanup()
@@ -206,7 +217,7 @@ class FirewallConfig(object):
             return obj
 
     def new_ipset(self, name, conf):
-        if name in self._ipsets:
+        if name in self._ipsets or name in self._builtin_ipsets:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_ipset(): '%s'" % name)
 
@@ -552,7 +563,7 @@ class FirewallConfig(object):
             return obj
 
     def new_service(self, name, conf):
-        if name in self._services:
+        if name in self._services or name in self._builtin_services:
             raise FirewallError(errors.NAME_CONFLICT,
                                 "new_service(): '%s'" % name)
 
@@ -733,7 +744,7 @@ class FirewallConfig(object):
             return obj
 
     def new_zone(self, name, conf):
-        if name in self._zones:
+        if name in self._zones or name in self._builtin_zones:
             raise FirewallError(errors.NAME_CONFLICT, "new_zone(): '%s'" % name)
 
         x = Zone()
@@ -862,3 +873,176 @@ class FirewallConfig(object):
 
     def _copy_zone(self, obj, name):
         return self.new_zone(name, obj.export_config())
+
+    # helper
+
+    def get_helpers(self):
+        return sorted(set(list(self._helpers.keys()) + \
+                          list(self._builtin_helpers.keys())))
+
+    def add_helper(self, obj):
+        if obj.builtin:
+            self._builtin_helpers[obj.name] = obj
+        else:
+            self._helpers[obj.name] = obj
+
+    def get_helper(self, name):
+        if name in self._helpers:
+            return self._helpers[name]
+        elif name in self._builtin_helpers:
+            return self._builtin_helpers[name]
+        raise FirewallError(errors.INVALID_HELPER, name)
+
+    def load_helper_defaults(self, obj):
+        if obj.name not in self._helpers:
+            raise FirewallError(errors.NO_DEFAULTS, obj.name)
+        elif self._helpers[obj.name] != obj:
+            raise FirewallError(errors.NO_DEFAULTS,
+                                "self._helpers[%s] != obj" % obj.name)
+        elif obj.name not in self._builtin_helpers:
+            raise FirewallError(errors.NO_DEFAULTS,
+                            "'%s' not a built-in helper" % obj.name)
+        self._remove_helper(obj)
+        return self._builtin_helpers[obj.name]
+
+    def get_helper_config(self, obj):
+        return obj.export_config()
+
+    def set_helper_config(self, obj, conf):
+        if obj.builtin:
+            x = copy.copy(obj)
+            x.import_config(conf)
+            x.path = config.ETC_FIREWALLD_HELPERS
+            x.builtin = False
+            if obj.path != x.path:
+                x.default = False
+            self.add_helper(x)
+            helper_writer(x)
+            return x
+        else:
+            obj.import_config(conf)
+            helper_writer(obj)
+            return obj
+
+    def new_helper(self, name, conf):
+        if name in self._helpers or name in self._builtin_helpers:
+            raise FirewallError(errors.NAME_CONFLICT,
+                                "new_helper(): '%s'" % name)
+
+        x = Helper()
+        x.check_name(name)
+        x.import_config(conf)
+        x.name = name
+        x.filename = "%s.xml" % name
+        x.path = config.ETC_FIREWALLD_HELPERS
+        # It is not possible to add a new one with a name of a buitin
+        x.builtin = False
+        x.default = True
+
+        helper_writer(x)
+        self.add_helper(x)
+        return x
+
+    def update_helper_from_path(self, name):
+        filename = os.path.basename(name)
+        path = os.path.dirname(name)
+
+        if not os.path.exists(name):
+            # removed file
+
+            if path == config.ETC_FIREWALLD_HELPERS:
+                # removed custom helper
+                for x in self._helpers.keys():
+                    obj = self._helpers[x]
+                    if obj.filename == filename:
+                        del self._helpers[x]
+                        if obj.name in self._builtin_helpers:
+                            return ("update", self._builtin_helpers[obj.name])
+                        return ("remove", obj)
+            else:
+                # removed builtin helper
+                for x in self._builtin_helpers.keys():
+                    obj = self._builtin_helpers[x]
+                    if obj.filename == filename:
+                        del self._builtin_helpers[x]
+                        if obj.name not in self._helpers:
+                            # update dbus helper
+                            return ("remove", obj)
+                        else:
+                            # builtin hidden, no update needed
+                            return (None, None)
+
+            # helper not known to firewalld, yet (timeout, ..)
+            return (None, None)
+
+        # new or updated file
+
+        log.debug1("Loading helper file '%s'", name)
+        try:
+            obj = helper_reader(filename, path)
+        except Exception as msg:
+            log.error("Failed to load helper file '%s': %s", filename, msg)
+            return (None, None)
+
+        # new helper
+        if obj.name not in self._builtin_helpers and obj.name not in self._helpers:
+            self.add_helper(obj)
+            return ("new", obj)
+
+        # updated helper
+        if path == config.ETC_FIREWALLD_HELPERS:
+            # custom helper update
+            if obj.name in self._helpers:
+                obj.default = self._helpers[obj.name].default
+                self._helpers[obj.name] = obj
+            return ("update", obj)
+        else:
+            if obj.name in self._builtin_helpers:
+                # builtin helper update
+                del self._builtin_helpers[obj.name]
+                self._builtin_helpers[obj.name] = obj
+
+                if obj.name not in self._helpers:
+                    # update dbus helper
+                    return ("update", obj)
+                else:
+                    # builtin hidden, no update needed
+                    return (None, None)
+
+        # helper not known to firewalld, yet (timeout, ..)
+        return (None, None)
+
+    def _remove_helper(self, obj):
+        if obj.name not in self._helpers:
+            raise FirewallError(errors.INVALID_HELPER, obj.name)
+        if obj.path != config.ETC_FIREWALLD_HELPERS:
+            raise FirewallError(errors.INVALID_DIRECTORY,
+                                "'%s' != '%s'" % (obj.path,
+                                                  config.ETC_FIREWALLD_HELPERS))
+
+        name = "%s/%s.xml" % (obj.path, obj.name)
+        try:
+            shutil.move(name, "%s.old" % name)
+        except Exception as msg:
+            log.error("Backup of file '%s' failed: %s", name, msg)
+            os.remove(name)
+
+        del self._helpers[obj.name]
+
+    def check_builtin_helper(self, obj):
+        if obj.builtin or not obj.default:
+            raise FirewallError(errors.BUILTIN_HELPER,
+                                "'%s' is built-in helper" % obj.name)
+
+    def remove_helper(self, obj):
+        self.check_builtin_helper(obj)
+        self._remove_helper(obj)
+
+    def rename_helper(self, obj, name):
+        self.check_builtin_helper(obj)
+        new_helper = self._copy_helper(obj, name)
+        self._remove_helper(obj)
+        return new_helper
+
+    def _copy_helper(self, obj, name):
+        return self.new_helper(name, obj.export_config())

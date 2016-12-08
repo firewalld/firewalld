@@ -46,6 +46,7 @@ from firewall.core.io.zone import Zone
 from firewall.core.io.ipset import IPSet
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
+from firewall.core.io.helper import Helper
 from firewall.core.fw_nm import nm_get_bus_name
 from firewall import errors
 from firewall.errors import FirewallError
@@ -169,6 +170,12 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "IPSetTypes":
             return dbus.Array(self.fw.ipset_supported_types, "s")
 
+        elif prop == "nf_conntrack_helper_setting":
+            return dbus.Boolean(self.fw.nf_conntrack_helper_setting == 1)
+
+        elif prop == "nf_conntrack_helpers":
+            return dbus.Dictionary(self.fw.nf_conntrack_helpers, "sas")
+
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
@@ -205,7 +212,8 @@ class FirewallD(slip.dbus.service.Object):
         ret = { }
         for x in [ "version", "interface_version", "state",
                    "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
-                   "IPSet", "IPSetTypes" ]:
+                   "IPSet", "IPSetTypes", "nf_conntrack_helper_setting",
+                   "nf_conntrack_helpers" ]:
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
@@ -402,6 +410,28 @@ class FirewallD(slip.dbus.service.Object):
             except Exception as e:
                 log.warning(
                     "Runtime To Permanent failed on zone '%s': %s" % \
+                    (name, e))
+                error = True
+
+        # helpers
+
+        config_names = self.config.getHelperNames()
+        for name in self.fw.helper.get_helpers():
+            conf = self.getHelperSettings(name)
+            try:
+                if name in config_names:
+                    conf_obj = self.config.getHelperByName(name)
+                    if conf_obj.getSettings() != conf:
+                        log.debug1("Copying helper '%s' settings" % name)
+                        conf_obj.update(conf)
+                    else:
+                        log.debug1("Helper '%s' is identical, ignoring." % name)
+                else:
+                    log.debug1("Creating helper '%s'" % name)
+                    self.config.addHelper(name, conf)
+            except Exception as e:
+                log.warning(
+                    "Runtime To Permanent failed on helper '%s': %s" % \
                     (name, e))
                 error = True
 
@@ -874,6 +904,36 @@ class FirewallD(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def LogDeniedChanged(self, value):
         log.debug1("LogDeniedChanged('%s')" % (value))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # AUTOMATIC HELPER ASSIGNMENT
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getAutomaticHelpers(self, sender=None): # pylint: disable=W0613
+        # returns the automatic helpers value
+        log.debug1("getAutomaticHelpers()")
+        return self.fw.get_automatic_helpers()
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
+                         out_signature='')
+    @dbus_handle_exceptions
+    def setAutomaticHelpers(self, value, sender=None):
+        # set the automatic helpers value
+        value = dbus_to_python(value, str)
+        log.debug1("setAutomaticHelpers('%s')" % value)
+        self.accessCheck(sender)
+        self.fw.set_automatic_helpers(value)
+        self.AutomaticHelpersChanged(value)
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
+    @dbus_handle_exceptions
+    def AutomaticHelpersChanged(self, value):
+        log.debug1("AutomaticHelpersChanged('%s')" % (value))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -2335,3 +2395,27 @@ class FirewallD(slip.dbus.service.Object):
         ipset = dbus_to_python(ipset)
         entry = dbus_to_python(entry)
         log.debug1("ipset.EntryRemoved('%s', '%s')" % (ipset, entry))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    # HELPERS
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='',
+                         out_signature='as')
+    @dbus_handle_exceptions
+    def getHelpers(self, sender=None): # pylint: disable=W0613
+        # returns list of added sets
+        log.debug1("helpers.getHelpers()")
+        return self.fw.helper.get_helpers()
+
+    @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG_INFO)
+    @dbus_service_method(config.dbus.DBUS_INTERFACE, in_signature='s',
+                         out_signature=Helper.DBUS_SIGNATURE)
+    @dbus_handle_exceptions
+    def getHelperSettings(self, helper, sender=None): # pylint: disable=W0613
+        # returns helper settings for helper
+        helper = dbus_to_python(helper, str)
+        log.debug1("getHelperSettings(%s)", helper)
+        return self.fw.helper.get_helper(helper).export_config()
+

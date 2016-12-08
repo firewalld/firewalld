@@ -27,12 +27,14 @@ import shutil
 from firewall.config import ETC_FIREWALLD, \
     FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
     FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER, \
-    FALLBACK_INDIVIDUAL_CALLS, FALLBACK_LOG_DENIED, LOG_DENIED_VALUES
+    FALLBACK_INDIVIDUAL_CALLS, FALLBACK_LOG_DENIED, LOG_DENIED_VALUES, \
+    FALLBACK_AUTOMATIC_HELPERS, AUTOMATIC_HELPERS_VALUES
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
-               "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]
+               "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+               "AutomaticHelpers" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -80,6 +82,7 @@ class firewalld_conf(object):
             self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
             self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
             self.set("LogDenied", FALLBACK_LOG_DENIED)
+            self.set("AutomaticHelpers", FALLBACK_AUTOMATIC_HELPERS)
             raise
 
         for line in f:
@@ -165,6 +168,16 @@ class firewalld_conf(object):
                 log.warning("LogDenied '%s' is invalid, using default value '%s'",
                             value, FALLBACK_LOG_DENIED)
             self.set("LogDenied", str(FALLBACK_LOG_DENIED))
+
+        # check automatic helpers
+        value = self.get("AutomaticHelpers")
+        if not value or value.lower() not in [ "system",
+                                               "yes", "true", "no", "false" ]:
+            if value is not None:
+                log.warning("AutomaticHelpers '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            FALLBACK_AUTOMATIC_HELPERS)
+            self.set("AutomaticHelpers", str(FALLBACK_AUTOMATIC_HELPERS))
 
     # save to self.filename if there are key/value changes
     def write(self):

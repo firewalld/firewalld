@@ -29,6 +29,7 @@ import fnmatch
 import syslog
 import traceback
 import fcntl
+import os.path
 
 PY2 = sys.version < '3'
 PY3 = sys.version >= '3'
@@ -80,8 +81,20 @@ class _StderrLog(_StdoutLog):
 # ---------------------------------------------------------------------------
 
 # private class for syslog
-class _SyslogLog(_StdoutLog):
-    fd = None
+class _SyslogLog(LogTarget):
+    def __init__(self):
+        # Only initialize LogTarget here as fs should be None
+        LogTarget.__init__(self)
+        #
+        # Derived from: https://github.com/canvon/firewalld/commit/af0edfee1cc1891b7b13f302ca5911b24e9b0f13
+        #
+        # Work around Python issue 27875, "Syslogs /usr/sbin/foo as /foo
+        # instead of as foo"
+        # (but using openlog explicitly might be better anyway)
+        #
+        # Set ident to basename, log PID as well, and log to facility "daemon".
+        syslog.openlog(os.path.basename(sys.argv[0]),
+                       syslog.LOG_PID, syslog.LOG_DAEMON)
 
     def write(self, data, level, logger, is_debug=0):
         priority = None
@@ -104,6 +117,9 @@ class _SyslogLog(_StdoutLog):
                 syslog.syslog(data)
             else:
                 syslog.syslog(priority, data)
+
+    def close(self):
+        syslog.closelog()
 
     def flush(self):
         pass

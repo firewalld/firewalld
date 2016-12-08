@@ -38,6 +38,7 @@ from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
 from firewall.core.fw_transaction import FirewallTransaction, reverse_rule
+from firewall.core.fw_helper import FirewallHelper
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
 from firewall.core.io.direct import Direct
@@ -45,6 +46,7 @@ from firewall.core.io.service import service_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.core.io.zone import zone_reader, Zone
 from firewall.core.io.ipset import ipset_reader
+from firewall.core.io.helper import helper_reader
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -82,6 +84,7 @@ class Firewall(object):
         self.config = FirewallConfig(self)
         self.policies = FirewallPolicies()
         self.ipset = FirewallIPSet(self)
+        self.helper = FirewallHelper(self)
 
         self.__init_vars()
 
@@ -91,7 +94,8 @@ class Firewall(object):
              self.ebtables_enabled, self._state, self._panic,
              self._default_zone, self._module_refcount, self._marks,
              self._min_mark, self.cleanup_on_exit, self.ipv6_rpfilter_enabled,
-             self.ipset_enabled, self._individual_calls, self._log_denied)
+             self.ipset_enabled, self._individual_calls, self._log_denied,
+             self._automatic_helpers)
 
     def __init_vars(self):
         self._state = "INIT"
@@ -105,6 +109,9 @@ class Firewall(object):
         self.ipv6_rpfilter_enabled = config.FALLBACK_IPV6_RPFILTER
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
+        self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
+        self.nf_conntrack_helper_setting = 0
+        self.nf_conntrack_helpers = { }
 
     def individual_calls(self):
         return self._individual_calls
@@ -178,6 +185,18 @@ class Firewall(object):
             log.debug1("ebtables-restore is not supporting the --noflush "
                        "option, will therefore not be used")
 
+        if os.path.exists(config.COMMANDS["modinfo"]):
+            self.nf_conntrack_helpers = functions.get_nf_conntrack_helpers()
+            if len(self.nf_conntrack_helpers) > 0:
+                log.debug1("Conntrack helpers supported by the kernel:")
+                for key,values in self.nf_conntrack_helpers.items():
+                    log.debug1("  %s: %s", key, ", ".join(values))
+            else:
+                log.debug1("No conntrack helpers supported by the kernel.")
+        else:
+            self.nf_conntrack_helpers = { }
+            log.warning("modinfo command is missing, not able to detect conntrack helpers.")
+
     def _start(self, reload=False, complete_reload=False):
         # initialize firewall
         default_zone = config.FALLBACK_ZONE
@@ -187,6 +206,7 @@ class Firewall(object):
         try:
             self._firewalld_conf.read()
         except Exception as msg:
+            log.warning(msg)
             log.warning("Using fallback firewalld configuration settings.")
         else:
             if self._firewalld_conf.get("DefaultZone"):
@@ -236,6 +256,18 @@ class Firewall(object):
                     self._log_denied = value.lower()
                     log.debug1("LogDenied is set to '%s'", self._log_denied)
 
+            if self._firewalld_conf.get("AutomaticHelpers"):
+                value = self._firewalld_conf.get("AutomaticHelpers")
+                if value is None:
+                    if value.lower() in [ "no", "false" ]:
+                        self._automatic_helpers = "no"
+                    if value.lower() in [ "yes", "true" ]:
+                        self._automatic_helpers = "yes"
+                else:
+                    self._automatic_helpers = value.lower()
+                log.debug1("AutomaticHelpers is set to '%s'",
+                           self._automatic_helpers)
+
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
         self._start_check()
@@ -265,6 +297,10 @@ class Firewall(object):
 
         if len(self.icmptype.get_icmptypes()) == 0:
             log.error("No icmptypes found.")
+
+        # load helper files
+        self._loader(config.FIREWALLD_HELPERS, "helper")
+        self._loader(config.ETC_FIREWALLD_HELPERS, "helper")
 
         # load service files
         self._loader(config.FIREWALLD_SERVICES, "service")
@@ -317,6 +353,12 @@ class Firewall(object):
                            config.FIREWALLD_DIRECT, msg)
         self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
+
+        # automatic helpers
+        if self._automatic_helpers != "system":
+            functions.set_nf_conntrack_helper_setting(self._automatic_helpers == "yes")
+        self.nf_conntrack_helper_setting = \
+            functions.get_nf_conntrack_helper_setting()
 
         # check if needed tables are there
         self._check_tables()
@@ -499,6 +541,19 @@ class Firewall(object):
                     self.ipset.add_ipset(obj)
                     # add a deep copy to the configuration interface
                     self.config.add_ipset(copy.deepcopy(obj))
+                elif reader_type == "helper":
+                    obj = helper_reader(filename, path)
+                    if obj.name in self.helper.get_helpers():
+                        orig_obj = self.helper.get_helper(obj.name)
+                        log.debug1("  Overloads %s '%s' ('%s/%s')", reader_type,
+                                   orig_obj.name, orig_obj.path,
+                                   orig_obj.filename)
+                        self.helper.remove_helper(orig_obj.name)
+                    elif obj.path.startswith(config.ETC_FIREWALLD):
+                        obj.default = True
+                    self.helper.add_helper(obj)
+                    # add a deep copy to the configuration interface
+                    self.config.add_helper(copy.deepcopy(obj))
                 else:
                     log.fatal("Unknown reader type %s", reader_type)
             except FirewallError as msg:
@@ -531,6 +586,7 @@ class Firewall(object):
         self.service.cleanup()
         self.zone.cleanup()
         self.ipset.cleanup()
+        self.helper.cleanup()
         self.config.cleanup()
         self.direct.cleanup()
         self.policies.cleanup()
@@ -1054,6 +1110,27 @@ class Firewall(object):
         if value != self.get_log_denied():
             self._log_denied = value
             self._firewalld_conf.set("LogDenied", value)
+            self._firewalld_conf.write()
+
+            # now reload the firewall
+            self.reload()
+        else:
+            raise FirewallError(errors.ALREADY_SET, value)
+
+    # AUTOMATIC HELPERS
+
+    def get_automatic_helpers(self):
+        return self._automatic_helpers
+
+    def set_automatic_helpers(self, value):
+        if value not in config.AUTOMATIC_HELPERS_VALUES:
+            raise FirewallError(errors.INVALID_VALUE,
+                                "'%s', choose from '%s'" % \
+                                (value, "','".join(config.AUTOMATIC_HELPERS_VALUES)))
+
+        if value != self.get_automatic_helpers():
+            self._automatic_helpers = value
+            self._firewalld_conf.set("AutomaticHelpers", value)
             self._firewalld_conf.write()
 
             # now reload the firewall

@@ -30,7 +30,7 @@ import os
 
 from firewall.client import FirewallClient, FirewallClientIPSetSettings, \
     FirewallClientZoneSettings, FirewallClientServiceSettings, \
-    FirewallClientIcmpTypeSettings
+    FirewallClientHelperSettings, FirewallClientIcmpTypeSettings
 from firewall.errors import FirewallError
 from firewall import errors
 from firewall.functions import joinArgs, splitArgs
@@ -40,6 +40,7 @@ from firewall.core.fw_nm import nm_is_imported, \
 from firewall.core.io.zone import zone_reader
 from firewall.core.io.service import service_reader
 from firewall.core.io.ipset import ipset_reader
+from firewall.core.io.helper import helper_reader
 from firewall.core.io.icmptype import icmptype_reader
 from firewall.command import FirewallCommand
 
@@ -112,7 +113,7 @@ grp_runtime_to_permanent.set_defaults(parser="runtime-to-permanent")
 # list
 
 grp_list = subparsers.add_parser(
-    "list", help="List zones, services ipsets or icmptypes")
+    "list", help="List zones, services ipsets, helpers or icmptypes")
 grp_list.set_defaults(parser="list")
 
 grp_list_subparsers = grp_list.add_subparsers(help="Commands")
@@ -132,6 +133,11 @@ grp_list_ipsets = grp_list_subparsers.add_parser("ipsets", help="List ipsets")
 grp_list_ipsets.set_defaults(list="ipsets")
 grp_list_ipsets.add_argument("-p", "--permanent", action="store_true")
 
+grp_list_helpers = grp_list_subparsers.add_parser(
+    "helpers", help="List helpers")
+grp_list_helpers.set_defaults(list="helpers")
+grp_list_helpers.add_argument("-p", "--permanent", action="store_true")
+
 grp_list_icmptypes = grp_list_subparsers.add_parser(
     "icmptypes", help="List icmptypes")
 grp_list_icmptypes.set_defaults(list="icmptypes")
@@ -142,7 +148,7 @@ grp_list_icmptypes.add_argument("-p", "--permanent", action="store_true")
 # info
 
 grp_info = subparsers.add_parser(
-    "info", help="Info about a zone, service, ipset or icmptype")
+    "info", help="Info about a zone, service, ipset, helper or icmptype")
 grp_info.set_defaults(parser="info")
 grp_info_subparsers = grp_info.add_subparsers(help="Commands")
 
@@ -179,6 +185,17 @@ grp_info_ipsets = grp_info_subparsers.add_parser(
     "ipsets", help="Info about all ipsets")
 grp_info_ipsets.set_defaults(info="ipsets")
 grp_info_ipsets.add_argument("-p", "--permanent", action="store_true")
+
+grp_info_helper = grp_info_subparsers.add_parser(
+    "helper", help="Info about a helper")
+grp_info_helper.set_defaults(info="helper")
+grp_info_helper.add_argument("helper", action="store", metavar="<helper>")
+grp_info_helper.add_argument("-p", "--permanent", action="store_true")
+
+grp_info_helpers = grp_info_subparsers.add_parser(
+    "helpers", help="Info about all helpers")
+grp_info_helpers.set_defaults(info="helpers")
+grp_info_helpers.add_argument("-p", "--permanent", action="store_true")
 
 grp_info_icmptype = grp_info_subparsers.add_parser(
     "icmptype", help="Info about a icmptype")
@@ -1151,6 +1168,202 @@ grp_new_icmptype.add_argument("-f", "--filename", metavar="<filename>")
 
 #############################################################################
 
+# helper
+
+grp_helper = subparsers.add_parser("helper", help="Helper commands")
+grp_helper.set_defaults(parser="helper")
+grp_helper.add_argument("helper", type=str, action="store",
+                          metavar="<helper>")
+grp_helper.add_argument("-p", "--permanent", action="store_true")
+
+helper_subparsers = grp_helper.add_subparsers(help="Helper Commands")
+
+
+# helper.load_defaults
+
+grp_helper_load_defaults = helper_subparsers.add_parser(
+    "load-defaults", help="Load defaults")
+grp_helper_load_defaults.set_defaults(action="load-defaults")
+
+# helper.add
+
+grp_helper_add = helper_subparsers.add_parser("add", help="Add commands")
+grp_helper_add.set_defaults(action="add")
+
+helper_add_subparsers = grp_helper_add.add_subparsers()
+
+# helper.add.port
+
+grp_helper_add_port = helper_add_subparsers.add_parser("port",
+                                                       help="Add port")
+grp_helper_add_port.set_defaults(item="port")
+grp_helper_add_port.add_argument("port", metavar="<port>", nargs="+")
+
+# helper.remove
+
+grp_helper_remove = helper_subparsers.add_parser("remove",
+                                                     help="Remove commands")
+grp_helper_remove.set_defaults(action="remove")
+
+helper_remove_subparsers = grp_helper_remove.add_subparsers()
+
+# helper.remove.port
+
+grp_helper_remove_port = helper_remove_subparsers.add_parser(
+    "port", help="Remove port")
+grp_helper_remove_port.set_defaults(item="port")
+grp_helper_remove_port.add_argument("port", metavar="<port>", nargs="+")
+
+
+# helper.get
+
+grp_helper_get = helper_subparsers.add_parser("get", help="Get commands")
+grp_helper_get.set_defaults(action="get")
+
+helper_get_subparsers = grp_helper_get.add_subparsers()
+
+# helper.get.description
+
+grp_helper_get_description = helper_get_subparsers.add_parser(
+    "description", help="Get description")
+grp_helper_get_description.set_defaults(item="description")
+
+# helper.get.family
+
+grp_helper_get_family = helper_get_subparsers.add_parser(
+    "family", help="Get family")
+grp_helper_get_family.set_defaults(item="family")
+
+# helper.get.module
+
+grp_helper_get_module = helper_get_subparsers.add_parser(
+    "module", help="Get module")
+grp_helper_get_module.set_defaults(item="module")
+
+# helper.get.short
+
+grp_helper_get_short = helper_get_subparsers.add_parser(
+    "short", help="Get short")
+grp_helper_get_short.set_defaults(item="short")
+
+
+# helper.set
+
+grp_helper_set = helper_subparsers.add_parser("set", help="Set commands")
+grp_helper_set.set_defaults(action="set")
+
+helper_set_subparsers = grp_helper_set.add_subparsers()
+
+# helper.set.description
+
+grp_helper_set_description = helper_set_subparsers.add_parser(
+    "description", help="Set description")
+grp_helper_set_description.set_defaults(item="description")
+grp_helper_set_description.add_argument("description", metavar="<description>")
+
+# helper.set.family
+
+grp_helper_set_family = helper_set_subparsers.add_parser(
+    "family", help="Set family")
+grp_helper_set_family.set_defaults(item="family")
+grp_helper_set_family.add_argument("family", metavar="<family>")
+
+# helper.set.module
+
+grp_helper_set_module = helper_set_subparsers.add_parser(
+    "module", help="Set module")
+grp_helper_set_module.set_defaults(item="module")
+grp_helper_set_module.add_argument("module", metavar="<module>")
+
+# helper.set.short
+
+grp_helper_set_short = helper_set_subparsers.add_parser(
+    "short", help="Set short")
+grp_helper_set_short.set_defaults(item="short")
+grp_helper_set_short.add_argument("short", metavar="<short>")
+
+
+# helper.query
+
+grp_helper_query = helper_subparsers.add_parser("query",
+                                                help="Query commands")
+grp_helper_query.set_defaults(action="query")
+
+helper_query_subparsers = grp_helper_query.add_subparsers()
+
+# helper.query.port
+
+grp_helper_query_port = helper_query_subparsers.add_parser("port",
+                                                           help="Query port")
+grp_helper_query_port.set_defaults(item="port")
+grp_helper_query_port.add_argument("port", metavar="<port>", nargs="+")
+
+
+# helper.list
+
+grp_helper_list = helper_subparsers.add_parser("list", help="List commands")
+grp_helper_list.set_defaults(action="list")
+
+helper_list_subparsers = grp_helper_list.add_subparsers()
+
+# helper.list.ports
+
+grp_helper_list_ports = helper_list_subparsers.add_parser("ports",
+                                                          help="List ports")
+grp_helper_list_ports.set_defaults(item="ports")
+
+#############################################################################
+
+# new
+
+grp_new = subparsers.add_parser("new", help="New commands")
+grp_new.set_defaults(parser="new")
+grp_new.add_argument("-p", "--permanent", action="store_true")
+
+new_subparsers = grp_new.add_subparsers(help="New Commands")
+
+# new.zone
+
+grp_new_zone = new_subparsers.add_parser("zone", help="New zone")
+grp_new_zone.set_defaults(action="zone")
+grp_new_zone.add_argument("-n", "--name", metavar="<name>")
+grp_new_zone.add_argument("-f", "--filename", metavar="<filename>")
+
+# new.service
+
+grp_new_service = new_subparsers.add_parser("service", help="New service")
+grp_new_service.set_defaults(action="service")
+grp_new_service.add_argument("-n", "--name", metavar="<name>")
+grp_new_service.add_argument("-f", "--filename", metavar="<filename>")
+
+# new.ipset
+
+grp_new_ipset = new_subparsers.add_parser("ipset", help="New ipset")
+grp_new_ipset.set_defaults(action="ipset")
+grp_new_ipset.add_argument("-n", "--name", metavar="<name>")
+grp_new_ipset.add_argument("-f", "--filename", metavar="<filename>")
+grp_new_ipset.add_argument("-t", "--type", metavar="<ipsettype>")
+grp_new_ipset.add_argument("-o", "--option", metavar="<key>[=<value>]",
+                           nargs="*")
+
+#--type=<ipset type> [--option=<key>[=<value>]]..
+
+# new.helper
+
+grp_new_helper = new_subparsers.add_parser("helper", help="New helper")
+grp_new_helper.set_defaults(action="helper")
+grp_new_helper.add_argument("-n", "--name", metavar="<name>")
+grp_new_helper.add_argument("-f", "--filename", metavar="<filename>")
+
+# new.icmptype
+
+grp_new_icmptype = new_subparsers.add_parser("icmptype", help="New icmptype")
+grp_new_icmptype.set_defaults(action="icmptype")
+grp_new_icmptype.add_argument("-n", "--name", metavar="<name>")
+grp_new_icmptype.add_argument("-f", "--filename", metavar="<filename>")
+
+#############################################################################
+
 # delete
 
 grp_delete = subparsers.add_parser("delete", help="Delete commands")
@@ -1178,6 +1391,13 @@ grp_delete_ipset = delete_subparsers.add_parser("ipset", help="Delete ipset")
 grp_delete_ipset.set_defaults(action="ipset")
 grp_delete_ipset.add_argument("ipset", metavar="<ipset>")
 
+
+# delete.helper
+
+grp_delete_helper = delete_subparsers.add_parser("helper",
+                                                   help="Delete helper")
+grp_delete_helper.set_defaults(action="helper")
+grp_delete_helper.add_argument("helper", metavar="<helper>")
 
 # delete.icmptype
 
@@ -1711,6 +1931,10 @@ if not hasattr(args, "parser"):
 
 cmd = FirewallCommand(args.quiet, args.verbose)
 
+def myexcepthook(exctype, value, traceback):
+    cmd.exception_handler(str(value))
+sys.excepthook = myexcepthook
+
 # use firewalld
 
 try:
@@ -1776,18 +2000,25 @@ elif args.parser == "list":
             items = fw.listServices()
         cmd.print_and_exit(" ".join(sorted(items)))
 
-    elif args.list == "icmptypes":
-        if args.permanent:
-            items = fw.config().getIcmpTypeNames()
-        else:
-            items = fw.listIcmpTypes()
-        cmd.print_and_exit(" ".join(sorted(items)))
-
     elif args.list == "ipsets":
         if args.permanent:
             items = fw.config().getIPSetNames()
         else:
             items = fw.getIPSets()
+        cmd.print_and_exit(" ".join(sorted(items)))
+
+    elif args.list == "helpers":
+        if args.permanent:
+            items = fw.config().getHelperNames()
+        else:
+            items = fw.getHelpers()
+        cmd.print_and_exit(" ".join(sorted(items)))
+
+    elif args.list == "icmptypes":
+        if args.permanent:
+            items = fw.config().getIcmpTypeNames()
+        else:
+            items = fw.listIcmpTypes()
         cmd.print_and_exit(" ".join(sorted(items)))
 
     else:
@@ -1872,6 +2103,29 @@ elif args.parser == "info":
         else:
             for ipset in fw.getIPSets():
                 cmd.print_ipset_info(ipset, fw.getIPSetSettings(ipset))
+                cmd.print_msg("")
+        sys.exit(0)
+
+    elif args.info == "helper":
+        if args.permanent:
+            settings = fw.config().getHelperByName(
+                args.helper).getSettings()
+        else:
+            settings = fw.getHelperSettings(args.helper)
+        cmd.print_helper_info(args.helper, settings)
+        sys.exit(0)
+
+    elif args.info == "helpers":
+        if args.permanent:
+            names = fw.config().getHelperNames()
+            for helper in sorted(names):
+                settings = fw.config().getHelperByName(helper)
+                cmd.print_helper_info(helper, settings.getSettings())
+                cmd.print_msg("")
+        else:
+            for helper in fw.getHelpers():
+                cmd.print_helper_info(helper,
+                                      fw.getHelperSettings(helper))
                 cmd.print_msg("")
         sys.exit(0)
 
@@ -2880,6 +3134,156 @@ elif args.parser == "ipset":
 
 #############################################################################
 
+# helper
+
+elif args.parser == "helper":
+
+    if not hasattr(args, "action"):
+        grp_helper.print_help()
+        sys.exit(0)
+
+    if args.action == "add":
+
+        if not hasattr(args, "item"):
+            grp_helper_add.print_help()
+            sys.exit(0)
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+        else:
+            cmd.fail("Not possible to alter runtime helper settings")
+
+        if args.item == "port":
+            cmd.add_sequence(args.port,
+                             fw_helper.addPort, fw_helper.queryPort,
+                             cmd.parse_port, "'%s/%s'")
+
+        else:
+            cmd.fail("Uncaught argument")
+
+    elif args.action == "remove":
+
+        if not hasattr(args, "item"):
+            grp_helper_remove.print_help()
+            sys.exit(0)
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+        else:
+            cmd.fail("Not possible to alter runtime helper settings")
+
+        if args.item == "port":
+            cmd.remove_sequence(args.port,
+                                fw_helper.removePort,
+                                fw_helper.queryPort,
+                                cmd.parse_port, "'%s/%s'")
+
+        else:
+            cmd.fail("Uncaught argument")
+
+    elif args.action == "get":
+
+        if not hasattr(args, "item"):
+            grp_helper_get.print_help()
+            sys.exit(0)
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+        else:
+            fw_helper = fw.getHelperSettings(args.helper)
+
+        if args.item == "description":
+            cmd.print_and_exit(fw_helper.getDescription())
+
+        elif args.item == "family":
+            cmd.print_and_exit(fw_helper.getFamily())
+
+        elif args.item == "module":
+            cmd.print_and_exit(fw_helper.getModule())
+
+        elif args.item == "short":
+            cmd.print_and_exit(fw_helper.getShort())
+
+        else:
+            cmd.fail("Uncaught argument")
+
+    elif args.action == "set":
+
+        if not hasattr(args, "item"):
+            grp_helper_set.print_help()
+            sys.exit(0)
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+        else:
+            cmd.fail("Not possible to alter runtime helper settings")
+
+        if args.item == "description":
+            fw_helper.setDescription(args.description)
+
+        elif args.item == "family":
+            fw_helper.setFamily(cmd.check_helper_family(args.family))
+
+        elif args.item == "module":
+            fw_helper.setModule(cmd.check_module(args.module))
+
+        elif args.item == "short":
+            fw_helper.setShort(args.short)
+
+        else:
+            cmd.fail("Uncaught argument")
+
+    elif args.action == "query":
+
+        if not hasattr(args, "item"):
+            grp_helper_query.print_help()
+            sys.exit(0)
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+        else:
+            fw_helper = fw.getHelperSettings(args.helper)
+
+        if args.item == "port":
+            cmd.query_sequence(args.port,
+                               fw_helper.queryPort,
+                               cmd.parse_port, "'%s/%s'")
+
+        else:
+            cmd.fail("Uncaught argument")
+
+    elif args.action == "list":
+
+        if not hasattr(args, "item"):
+            grp_helper_list.print_help()
+            sys.exit(0)
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+        else:
+            fw_helper = fw.getHelperSettings(args.helper)
+
+        if args.item == "ports":
+            cmd.print_and_exit(" ".join(["%s/%s" % (port[0], port[1])
+                                         for port in
+                                         fw_helper.getPorts()]))
+
+        else:
+            cmd.fail("Uncaught argument")
+
+    elif args.action == "load-defaults":
+
+        if args.permanent:
+            fw_helper = fw.config().getHelperByName(args.helper)
+            fw_helper.loadDefaults()
+        else:
+            cmd.fail("Not possible to load defaults in runtime")
+
+    else:
+        cmd.fail("Uncaught argument")
+
+#############################################################################
+
 # icmptype
 
 elif args.parser == "icmptype":
@@ -3123,6 +3527,34 @@ elif args.parser == "new":
             config = fw.config()
             config.addIPSet(args.name, settings)
 
+    elif args.action == "helper":
+
+        if args.name is None and args.filename is None:
+            cmd.fail("Missing option: -n <name> | -f <filename> [-n <name>]")
+
+        elif args.filename is not None:
+            filename = os.path.basename(args.filename)
+            dirname = os.path.dirname(args.filename)
+            if dirname == "":
+                dirname = "./"
+            try:
+                obj = helper_reader(filename, dirname)
+            except FirewallError as msg:
+                cmd.fail("Failed to load helper file '%s': %s" % \
+                       (args.filename, msg))
+            except IOError as msg:
+                cmd.fail("Failed to load helper file: %s" % msg)
+
+            if args.name:
+                obj.name = args.name
+
+            config = fw.config()
+            config.addHelper(obj.name, obj.export_config())
+
+        else:
+            config = fw.config()
+            config.addHelper(args.name, FirewallClientHelperSettings())
+
     elif args.action == "icmptype":
 
         if args.name is None and args.filename is None:
@@ -3181,6 +3613,11 @@ elif args.parser == "delete":
 
         ipset = fw.config().getIPSetByName(args.ipset)
         ipset.remove()
+
+    elif args.action == "helper":
+
+        helper = fw.config().getHelperByName(args.helper)
+        helper.remove()
 
     elif args.action == "icmptype":
 

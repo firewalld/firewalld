@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN" "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd"
+[
+<!ENTITY authors SYSTEM "authors.xml">
+<!ENTITY seealso SYSTEM "seealso.xml">
+<!ENTITY notes SYSTEM "notes.xml">
+]>
+
+<!--
+  This file is part of firewalld.
+
+  Copyright (C) 2010-2013 Red Hat, Inc.
+  Authors:
+  Thomas Woerner <twoerner@redhat.com>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<refentry id="firewalld.helper">
+
+  <refentryinfo>
+    <title>firewalld.helper</title>
+    <productname>firewalld</productname>
+    &authors;
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>firewalld.helper</refentrytitle>
+    <manvolnum>5</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>firewalld.helper</refname>
+    <refpurpose>firewalld helper configuration files</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <para>
+      <programlisting>
+<filename><config.sysconfdir/>/firewalld/helpers/helper.xml</filename>
+<filename><config.prefix/>/lib/firewalld/helpers/helper.xml</filename>
+      </programlisting>
+    </para>
+  </refsynopsisdiv>
+
+  <refsect1 id="description">
+    <title>Description</title>
+
+    <para>
+      A firewalld helper configuration file provides the information of a helper entry for firewalld. The most important configuration options are ports, family and module.
+    </para>
+ 
+    <para>
+      This example configuration file shows the structure of a helper configuration file:
+
+      <programlisting>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;helper module="<replaceable>nf_conntrack_module</replaceable>" [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
+  &lt;short&gt;<replaceable>short</replaceable>&lt;/short&gt;
+  &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
+  &lt;port <replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt;
+&lt;/helper&gt;
+      </programlisting>
+    </para>
+  </refsect1>
+
+  <refsect1 id="options">
+    <title>Options</title>
+    <para>
+      The config can contain these tags and attributes. Some of them are mandatory, others optional.
+    </para>
+
+    <refsect2 id="options_helper">
+      <title>helper</title>
+      <para>
+	The mandatory helper start and end tag defines the helper. This tag can only be used once in a helper configuration file. There is one mandatory and also optional attributes for helper:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+          <term>module="<replaceable>string</replaceable>"</term>
+          <listitem>
+            <para>
+              The mandatory module of the helper. This is one of the netfilter conntrack helper modules. The name starts with <literal>nf_conntrack_</literal>.
+            </para>
+          </listitem>
+        </varlistentry>
+	<varlistentry>
+          <term>family="<literal>ipv4</literal>|<literal>ipv6</literal>"</term>
+          <listitem>
+            <para>
+              The optional family of the helper. This can be one of these ipv types: <replaceable>ipv4</replaceable> or <replaceable>ipv6</replaceable>. If the family is not specified, then the helper is usable for <replaceable>IPv4</replaceable> and <replaceable>IPv6</replaceable>.
+            </para>
+          </listitem>
+        </varlistentry>
+	<varlistentry>
+	  <term>version="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              To give the helper a version.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+    <refsect2 id="options_short">
+      <title>short</title>
+      <para>
+	Is an optional start and end tag and is used to give an icmptype a more	readable name.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_description">
+      <title>description</title>
+      <para>
+	Is an optional start and end tag to have a description for a icmptype.
+      </para>
+    </refsect2>
+
+    <refsect2 id="options_port">
+      <title>port</title>
+      <para>
+	Is an mandatory empty-element tag and can be used several times to have more than one port entry. All attributes of a port entry are mandatory:
+      </para>
+
+      <variablelist>
+	<varlistentry>
+	  <term>port="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+	      The port <replaceable>string</replaceable> can be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable> or also empty to match a protocol only.
+	    </para>
+	  </listitem>
+	</varlistentry>
+
+	<varlistentry>
+	  <term>protocol="<replaceable>string</replaceable>"</term>
+          <listitem>
+	    <para>
+              The protocol value can either be <option>tcp</option> or <option>udp</option>.
+	    </para>
+	  </listitem>
+	</varlistentry>
+      </variablelist>
+    </refsect2>
+
+  </refsect1>
+
+  &seealso;
+
+  &notes;
+
+</refentry>

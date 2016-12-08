@@ -80,9 +80,11 @@ class ifcfg(object):
             # get key/value pair
             pair = [ x.strip() for x in line.split("=", 1) ]
             if len(pair) != 2:
-                log.warning("%: Invalid option definition: '%s'", self.filename, line.strip())
                 continue
-            elif pair[1] == '':
+            if len(pair[1]) >= 2 and \
+               pair[1].startswith('"') and pair[1].endswith('"'):
+                pair[1] = pair[1][1:-1]
+            if pair[1] == '':
                 continue
             elif self._config.get(pair[0]) is not None:
                 log.warning("%s: Duplicate option definition: '%s'", self.filename, line.strip())
@@ -143,6 +145,9 @@ class ifcfg(object):
                         continue
                     key = p[0].strip()
                     value = p[1].strip()
+                    if len(value) >= 2 and \
+                       value.startswith('"') and value.endswith('"'):
+                        value = value[1:-1]
                     # check for modified key/value pairs
                     if key not in done:
                         if key in self._config and self._config[key] != value:
@@ -179,7 +184,7 @@ class ifcfg(object):
         # make backup
         if os.path.exists(self.filename):
             try:
-                shutil.copy2(self.filename, "%s.old" % self.filename)
+                shutil.copy2(self.filename, "%s.bak" % self.filename)
             except Exception as msg:
                 os.remove(temp_file.name)
                 raise IOError("Backup of '%s' failed: %s" % (self.filename, msg))

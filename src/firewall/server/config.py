@@ -39,10 +39,12 @@ from firewall.server.config_icmptype import FirewallDConfigIcmpType
 from firewall.server.config_service import FirewallDConfigService
 from firewall.server.config_zone import FirewallDConfigZone
 from firewall.server.config_ipset import FirewallDConfigIPSet
+from firewall.server.config_helper import FirewallDConfigHelper
 from firewall.core.io.zone import Zone
 from firewall.core.io.service import Service
 from firewall.core.io.icmptype import IcmpType
 from firewall.core.io.ipset import IPSet
+from firewall.core.io.helper import Helper
 from firewall.core.io.lockdown_whitelist import LockdownWhitelist
 from firewall.core.io.direct import Direct
 from firewall.dbus_utils import dbus_to_python, \
@@ -78,6 +80,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_IPSETS)
         self.watcher.add_watch_dir(config.FIREWALLD_ICMPTYPES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_ICMPTYPES)
+        self.watcher.add_watch_dir(config.FIREWALLD_HELPERS)
+        self.watcher.add_watch_dir(config.ETC_FIREWALLD_HELPERS)
         self.watcher.add_watch_dir(config.FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(config.ETC_FIREWALLD_SERVICES)
         self.watcher.add_watch_dir(config.FIREWALLD_ZONES)
@@ -98,7 +102,10 @@ class FirewallDConfig(slip.dbus.service.Object):
                                                 "IPv6_rpfilter": "readwrite",
                                                 "Lockdown": "readwrite",
                                                 "MinimalMark": "readwrite",
-                                                "IndividualCalls": "readwrite"})
+                                                "IndividualCalls": "readwrite",
+                                                "LogDenied": "readwrite",
+                                                "AutomaticHelpers": "readwrite",
+                                              })
 
     @handle_exceptions
     def _init_vars(self):
@@ -110,6 +117,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         self.service_idx = 0
         self.zones = [ ]
         self.zone_idx = 0
+        self.helpers = [ ]
+        self.helper_idx = 0
 
         for ipset in self.config.get_ipsets():
             self._addIPSet(self.config.get_ipset(ipset))
@@ -119,6 +128,8 @@ class FirewallDConfig(slip.dbus.service.Object):
             self._addService(self.config.get_service(service))
         for zone in self.config.get_zones():
             self._addZone(self.config.get_zone(zone))
+        for helper in self.config.get_helpers():
+            self._addHelper(self.config.get_helper(helper))
 
     @handle_exceptions
     def __del__(self):
@@ -142,6 +153,10 @@ class FirewallDConfig(slip.dbus.service.Object):
             item = self.zones.pop()
             item.unregister()
             del item
+        while len(self.helpers) > 0:
+            item = self.helpers.pop()
+            item.unregister()
+            del item
         self._init_vars()
 
     @handle_exceptions
@@ -156,10 +171,9 @@ class FirewallDConfig(slip.dbus.service.Object):
                 log.error("Failed to load firewalld.conf file '%s': %s" % \
                           (name, msg))
                 return
-            props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG)
-            for key in props.keys():
-                if key in old_props and \
-                   old_props[key] == props[key]:
+            props = self.GetAll(config.dbus.DBUS_INTERFACE_CONFIG).copy()
+            for key in list(props.keys()):
+                if key in old_props and old_props[key] == props[key]:
                     del props[key]
             if len(props) > 0:
                 self.PropertiesChanged(config.dbus.DBUS_INTERFACE_CONFIG,
@@ -239,6 +253,23 @@ class FirewallDConfig(slip.dbus.service.Object):
                 self.removeIPSet(obj)
             elif what == "update":
                 self._updateIPSet(obj)
+
+        elif (name.startswith(config.FIREWALLD_HELPERS) or \
+              name.startswith(config.ETC_FIREWALLD_HELPERS)) and \
+             name.endswith(".xml"):
+            try:
+                (what, obj) = self.config.update_helper_from_path(name)
+            except Exception as msg:
+                log.error("Failed to load helper file '%s': %s" % (name,
+                                                                  msg))
+
+                return
+            if what == "new":
+                self._addHelper(obj)
+            elif what == "remove":
+                self.removeHelper(obj)
+            elif what == "update":
+                self._updateHelper(obj)
 
         elif name == config.LOCKDOWN_WHITELIST:
             try:
@@ -394,6 +425,36 @@ class FirewallDConfig(slip.dbus.service.Object):
 
     # access check
 
+    @handle_exceptions
+    def _addHelper(self, obj):
+        # TODO: check for idx overflow
+        config_helper = FirewallDConfigHelper(
+            self, self.config, obj, self.helper_idx, self.busname,
+            "%s/%d" % (config.dbus.DBUS_PATH_CONFIG_HELPER, self.helper_idx))
+        self.helpers.append(config_helper)
+        self.helper_idx += 1
+        self.HelperAdded(obj.name)
+        return config_helper
+
+    @handle_exceptions
+    def _updateHelper(self, obj):
+        for helper in self.helpers:
+            if helper.obj.name == obj.name and helper.obj.path == obj.path and \
+                    helper.obj.filename == obj.filename:
+                helper.obj = obj
+                helper.Updated(obj.name)
+
+    @handle_exceptions
+    def removeHelper(self, obj):
+        for helper in self.helpers:
+            if helper.obj == obj:
+                helper.Removed(obj.name)
+                helper.unregister()
+                self.helpers.remove(helper)
+                del helper
+
+    # access check
+
     @dbus_handle_exceptions
     def accessCheck(self, sender):
         if self.config.lockdown_enabled():
@@ -423,7 +484,7 @@ class FirewallDConfig(slip.dbus.service.Object):
     def _get_property(self, prop):
         if prop not in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
                          "Lockdown", "IPv6_rpfilter", "IndividualCalls",
-                         "LogDenied" ]:
+                         "LogDenied", "AutomaticHelpers" ]:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.AccessDenied: "
                 "Property '%s' isn't exported (or may not exist)" % prop)
@@ -460,6 +521,10 @@ class FirewallDConfig(slip.dbus.service.Object):
             if value is None:
                 value = config.FALLBACK_LOG_DENIED
             return dbus.String(value)
+        elif prop == "AutomaticHelpers":
+            if value is None:
+                value = config.FALLBACK_LOG_DENIED
+            return dbus.String(value)
 
     @dbus_handle_exceptions
     def _get_dbus_property(self, prop):
@@ -476,6 +541,8 @@ class FirewallDConfig(slip.dbus.service.Object):
         elif prop == "IndividualCalls":
             return dbus.String(self._get_property(prop))
         elif prop == "LogDenied":
+            return dbus.String(self._get_property(prop))
+        elif prop == "AutomaticHelpers":
             return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
@@ -512,7 +579,8 @@ class FirewallDConfig(slip.dbus.service.Object):
 
         ret = { }
         for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
-                   "IPv6_rpfilter", "IndividualCalls", "LogDenied" ]:
+                   "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+                   "AutomaticHelpers" ]:
             ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
@@ -533,7 +601,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                 "FirewallD does not implement %s" % interface_name)
 
         if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
-                              "IPv6_rpfilter", "IndividualCalls" ]:
+                              "IPv6_rpfilter", "IndividualCalls", "LogDenied",
+                              "AutomaticHelpers" ]:
             if property_name == "MinimalMark":
                 try:
                     int(new_value)
@@ -547,6 +616,14 @@ class FirewallDConfig(slip.dbus.service.Object):
             if property_name in [ "CleanupOnExit", "Lockdown",
                                   "IPv6_rpfilter", "IndividualCalls" ]:
                 if new_value.lower() not in [ "yes", "no", "true", "false" ]:
+                    raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
+                                            (new_value, property_name))
+            if property_name == "LogDenied":
+                if new_value not in config.LOG_DENIED_VALUES:
+                    raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
+                                            (new_value, property_name))
+            if property_name == "AutomaticHelpers":
+                if new_value not in config.AUTOMATIC_HELPERS_VALUES:
                     raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
                                             (new_value, property_name))
             self.config.get_firewalld_conf().set(property_name, new_value)
@@ -1047,6 +1124,63 @@ class FirewallDConfig(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def ZoneAdded(self, zone):
         log.debug1("config.ZoneAdded('%s')" % (zone))
+
+    # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+    # H E L P E R S
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='ao')
+    @dbus_handle_exceptions
+    def listHelpers(self, sender=None): # pylint: disable=W0613
+        """list helpers objects paths
+        """
+        log.debug1("config.listHelpers()")
+        return self.helpers
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, out_signature='as')
+    @dbus_handle_exceptions
+    def getHelperNames(self, sender=None): # pylint: disable=W0613
+        """get helper names
+        """
+        log.debug1("config.getHelperNames()")
+        helpers = [ ]
+        for obj in self.helpers:
+            helpers.append(obj.obj.name)
+        return sorted(helpers)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG, in_signature='s',
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def getHelperByName(self, helper, sender=None): # pylint: disable=W0613
+        """object path of helper with given name
+        """
+        helper = dbus_to_python(helper, str)
+        log.debug1("config.getHelperByName('%s')", helper)
+        for obj in self.helpers:
+            if obj.obj.name == helper:
+                return obj
+        raise FirewallError(errors.INVALID_HELPER, helper)
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG,
+                         in_signature='s'+Helper.DBUS_SIGNATURE,
+                         out_signature='o')
+    @dbus_handle_exceptions
+    def addHelper(self, helper, settings, sender=None):
+        """add helper with given name and settings
+        """
+        helper = dbus_to_python(helper, str)
+        settings = dbus_to_python(settings)
+        log.debug1("config.addHelper('%s')", helper)
+        self.accessCheck(sender)
+        obj = self.config.new_helper(helper, settings)
+        config_helper = self._addHelper(obj)
+        return config_helper
+
+    @dbus.service.signal(config.dbus.DBUS_INTERFACE_CONFIG, signature='s')
+    @dbus_handle_exceptions
+    def HelperAdded(self, helper):
+        helper = dbus_to_python(helper, str)
+        log.debug1("config.HelperAdded('%s')" % (helper))
 
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # DIRECT

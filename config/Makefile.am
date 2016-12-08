@@ -61,6 +61,17 @@ DISTCLEANFILES = \
 	$(gsettings_SCHEMAS)
 
 CONFIG_FILES = \
+	helpers/amanda.xml \
+	helpers/ftp.xml \
+	helpers/irc.xml \
+	helpers/netbios-ns.xml \
+	helpers/pptp.xml \
+	helpers/Q.931.xml \
+	helpers/RAS.xml \
+	helpers/sane.xml \
+	helpers/sip.xml \
+	helpers/snmp.xml \
+	helpers/tftp.xml \
 	icmptypes/destination-unreachable.xml \
 	icmptypes/echo-reply.xml \
 	icmptypes/echo-request.xml \
@@ -256,11 +267,13 @@ install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/ipsets
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/services
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)/zones
+	$(MKDIR_P) $(DESTDIR)$(sconfdir)/helpers
 	$(MKDIR_P) $(DESTDIR)$(prefixlibdir)
 	cp -r icmptypes $(DESTDIR)$(prefixlibdir)
 	cp -r ipsets $(DESTDIR)$(prefixlibdir)
 	cp -r services $(DESTDIR)$(prefixlibdir)
 	cp -r zones $(DESTDIR)$(prefixlibdir)
+	cp -r helpers $(DESTDIR)$(prefixlibdir)
 
 uninstall-config:
 	rmdir $(DESTDIR)$(sconfdir)/icmptypes
@@ -275,6 +288,8 @@ uninstall-config:
 	rmdir $(DESTDIR)$(prefixlibdir)/services
 	rm -f $(DESTDIR)$(prefixlibdir)/zones/*
 	rmdir $(DESTDIR)$(prefixlibdir)/zones
+	rm -f $(DESTDIR)$(prefixlibdir)/helpers/*
+	rmdir $(DESTDIR)$(prefixlibdir)/helpers
 
 install-data-local: $(INSTALL_TARGETS)
 

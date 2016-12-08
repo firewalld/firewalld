@@ -339,6 +339,24 @@ class FirewallCommand(object):
                                 (value, "', '".join(ipvs)))
         return value
 
+    def check_helper_family(self, value):
+        ipvs = [ "", "ipv4", "ipv6" ]
+        if value not in ipvs:
+            raise FirewallError(errors.INVALID_IPV,
+                                "invalid argument: %s (choose from '%s')" % \
+                                (value, "', '".join(ipvs)))
+        return value
+
+    def check_module(self, value):
+        if not value.startswith("nf_conntrack_"):
+            raise FirewallError(
+                errors.INVALID_MODULE,
+                "'%s' does not start with 'nf_conntrack_'" % value)
+        if len(value.replace("nf_conntrack_", "")) < 1:
+            raise FirewallError(errors.INVALID_MODULE,
+                                "Module name '%s' too short" % value)
+        return value
+
     def print_zone_info(self, zone, settings, default_zone=None):
         target = settings.getTarget()
         icmp_block_inversion = settings.getIcmpBlockInversion()
@@ -382,7 +400,7 @@ class FirewallCommand(object):
                                     (port, proto, toport, toaddr)
                                     for (port, proto, toport, toaddr) in \
                                     forward_ports]))
-        self.print_msg("  sourceports: " +
+        self.print_msg("  source-ports: " +
                        " ".join(["%s/%s" % (port[0], port[1])
                                  for port in source_ports]))
         self.print_msg("  icmp-blocks: " + " ".join(icmp_blocks))
@@ -437,6 +455,21 @@ class FirewallCommand(object):
         self.print_msg("  options: " + " ".join(["%s=%s" % (k, v) if v else k
                                                  for k, v in options.items()]))
         self.print_msg("  entries: " + " ".join(entries))
+
+    def print_helper_info(self, helper, settings):
+        ports = settings.getPorts()
+        module = settings.getModule()
+        family = settings.getFamily()
+        description = settings.getDescription()
+        short_description = settings.getShort()
+        self.print_msg(helper)
+        if self.verbose:
+            self.print_msg("  summary: " + short_description)
+            self.print_msg("  description: " + description)
+        self.print_msg("  family: " + family)
+        self.print_msg("  module: " + module)
+        self.print_msg("  ports: " + " ".join(["%s/%s" % (port[0], port[1])
+                                               for port in ports]))
 
     def print_query_result(self, value):
         if value:

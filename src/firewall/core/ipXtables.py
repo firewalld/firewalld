@@ -68,6 +68,13 @@ for chain in BUILT_IN_CHAINS["raw"]:
     DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
     OUR_CHAINS["raw"].add("%s_direct" % chain)
 
+    if chain == "PREROUTING":
+        DEFAULT_RULES["raw"].append("-N %s_ZONES_SOURCE" % chain)
+        DEFAULT_RULES["raw"].append("-N %s_ZONES" % chain)
+        DEFAULT_RULES["raw"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
+        DEFAULT_RULES["raw"].append("-I %s 3 -j %s_ZONES" % (chain, chain))
+        OUR_CHAINS["raw"].update(set(["%s_ZONES_SOURCE" % chain, "%s_ZONES" % chain]))
+
 DEFAULT_RULES["mangle"] = [ ]
 OUR_CHAINS["mangle"] = set()
 for chain in BUILT_IN_CHAINS["mangle"]:
