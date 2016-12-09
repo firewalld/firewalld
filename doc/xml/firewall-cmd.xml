@@ -1022,10 +1022,10 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
       <title>IPSet Options</title>
       <variablelist>
 	<varlistentry>
-          <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>ipset type</replaceable> <optional><option>--option</option>=<replaceable>ipset option</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
+          <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>type</replaceable> <optional><option>--family</option>=<literal>inet</literal>|<literal>inet6</literal></optional> <optional><option>--option</option>=<replaceable>key</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
           <listitem>
             <para>
-              Add a new permanent and empty ipset with specifying the type and optional options.
+              Add a new permanent and empty ipset with specifying the type and optional the family and options like <literal>timeout</literal>, <literal>hashsize</literal> and <literal>maxelem</literal>. For more information please have a look at <citerefentry><refentrytitle>ipset</refentrytitle><manvolnum>8</manvolnum></citerefentry> man page.
             </para>
           </listitem>
 	</varlistentry>

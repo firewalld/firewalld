@@ -1039,6 +1039,8 @@ if a.permanent:
         if a.option:
             for opt in a.option:
                 settings.addOption(*cmd.parse_ipset_option(opt))
+        if a.family:
+            settings.addOption("family", a.family)
         config = fw.config()
         config.addIPSet(a.new_ipset, settings)
 
