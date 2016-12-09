@@ -244,11 +244,19 @@ class Zone(IO_Object):
         elif name.count('/') > 1:
             raise FirewallError(errors.INVALID_NAME,
                                 "more than one '/' in '%s'" % name)
-        elif len(name[name.find('/')]) > max_zone_name_len():
-            raise FirewallError(
-                errors.INVALID_NAME,
-                "'%s' has %d chars, max is %d" % (name, len(name),
-                                                  max_zone_name_len()))
+        else:
+            if "/" in name:
+                checked_name = name[:name.find('/')]
+            else:
+                checked_name = name
+            if len(checked_name) > max_zone_name_len():
+                raise FirewallError(
+                    errors.INVALID_NAME,
+                    "Zone of '%s' has %d chars, max is %d %s" % (
+                        name,
+                        len(checked_name),
+                        max_zone_name_len(),
+                        self.combined))
 
     def combine(self, zone):
         self.combined = True
@@ -660,13 +668,14 @@ class zone_ContentHandler(IO_Object_ContentHandler):
         elif name in [ "accept", "reject", "drop", "mark", "log", "audit" ]:
             self._limit_ok = None
 
-def zone_reader(filename, path):
+def zone_reader(filename, path, no_check_name):
     zone = Zone()
     if not filename.endswith(".xml"):
         raise FirewallError(errors.INVALID_NAME,
                             "'%s' is missing .xml suffix" % filename)
     zone.name = filename[:-4]
-    zone.check_name(zone.name)
+    if not no_check_name:
+        zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
     zone.builtin = False if path.startswith(ETC_FIREWALLD) else True
