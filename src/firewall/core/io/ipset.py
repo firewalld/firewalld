@@ -146,6 +146,9 @@ class IPSet(IO_Object):
                                     "'%s' is not valid ipset type" % config)
 
     def import_config(self, config):
+        if "timeout" in config[4] and config[4]["timeout"] != "0":
+            if len(config[5]) != 0:
+                raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         for entry in config[5]:
             IPSet.check_entry(entry, config[4], config[3])
         super(IPSet, self).import_config(config)
@@ -231,7 +234,8 @@ def ipset_reader(filename, path):
                                 msg.getException())
     del handler
     del parser
-    if "timeout" in ipset.options and len(ipset.entries) > 0:
+    if "timeout" in ipset.options and ipset.options["timeout"] != "0" and \
+       len(ipset.entries) > 0:
         # no entries visible for ipsets with timeout
         log.warning("ipset '%s': timeout option is set, entries are ignored",
                     ipset.name)
