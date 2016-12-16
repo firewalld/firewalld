@@ -209,10 +209,6 @@ class FirewallIPSet(object):
 
     def get_entries(self, name):
         obj = self.get_ipset(name)
-        if "timeout" in obj.options and obj.options["timeout"] != "0":
-            # no entries visible for ipsets with timeout
-            raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
-
         return obj.entries
 
     def set_entries(self, name, entries):

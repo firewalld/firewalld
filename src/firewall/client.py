@@ -1035,9 +1035,6 @@ class FirewallClientIPSetSettings(object):
 
     @handle_exceptions
     def getEntries(self):
-        if "timeout" in self.settings[4] and \
-           self.settings[4]["timeout"] != "0":
-            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         return self.settings[5]
     @handle_exceptions
     def setEntries(self, entries):

@@ -401,10 +401,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     @dbus_handle_exceptions
     def getEntries(self, sender=None): # pylint: disable=W0613
         log.debug1("%s.getEntries()", self._log_prefix)
-        settings = list(self.getSettings())
-        if "timeout" in settings[4] and settings[4]["timeout"] != "0":
-            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
-        return settings[5]
+        return self.getSettings()[5]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_IPSET,
                          in_signature='as')
