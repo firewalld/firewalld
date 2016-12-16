@@ -225,6 +225,12 @@ class FirewallCommand(object):
                 else:
                     self.print_and_exit("Error: %s" % msg.get_dbus_message(),
                                         code)
+            except Exception as msg:
+                code = FirewallError.get_code(str(msg))
+                if len(option) > 1:
+                    self.print_warning("Warning: %s" % msg)
+                else:
+                    self.print_and_exit("Error: %s" % msg, code)
             self.activate_exception_handler()
             if len(option) > 1:
                 self.print_msg("%s: %s" % (message % item, ("no", "yes")[res]))
