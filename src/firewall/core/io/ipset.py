@@ -33,7 +33,7 @@ from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, \
     u2b_if_py2, check_mac
 from firewall.core.io.io_object import PY2, IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator
-from firewall.core.ipset import IPSET_TYPES
+from firewall.core.ipset import IPSET_TYPES, IPSET_CREATE_OPTIONS
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
@@ -144,6 +144,27 @@ class IPSet(IO_Object):
             if config not in IPSET_TYPES:
                 raise FirewallError(errors.INVALID_TYPE,
                                     "'%s' is not valid ipset type" % config)
+        if item == "options":
+            for key in config.keys():
+                if key not in IPSET_CREATE_OPTIONS:
+                    raise FirewallError(errors.INVALID_IPSET,
+                                        "ipset invalid option '%s'" % key)
+                if key in [ "timeout", "hashsize", "maxelem" ]:
+                    try:
+                        int_value = int(config[key])
+                    except ValueError:
+                        raise FirewallError(
+                            errors.INVALID_VALUE,
+                            "Option '%s': Value '%s' is not an integer" % \
+                            (key, config[key]))
+                    if int_value < 0:
+                        raise FirewallError(
+                            errors.INVALID_VALUE,
+                            "Option '%s': Value '%s' is negative" % \
+                            (key, config[key]))
+                elif key == "family" and \
+                     config[key] not in [ "inet", "inet6" ]:
+                    raise FirewallError(errors.INVALID_FAMILY, config[key])
 
     def import_config(self, config):
         if "timeout" in config[4] and config[4]["timeout"] != "0":
@@ -190,12 +211,19 @@ class ipset_ContentHandler(IO_Object_ContentHandler):
                     "Missing mandatory value of option '%s'" % attrs["name"])
             if attrs["name"] in [ "timeout", "hashsize", "maxelem" ]:
                 try:
-                    int(value)
+                    int_value = int(value)
                 except ValueError:
                     raise FirewallError(
                         errors.INVALID_VALUE,
                         "Option '%s': Value '%s' is not an integer" % \
                         (attrs["name"], value))
+                if int_value < 0:
+                    raise FirewallError(
+                        errors.INVALID_VALUE,
+                        "Option '%s': Value '%s' is negative" % \
+                        (attrs["name"], value))
+            if attrs["name"] == "family" and value not in [ "inet", "inet6" ]:
+                raise FirewallError(errors.INVALID_FAMILY, value)
             if attrs["name"] not in self.item.options:
                 self.item.options[attrs["name"]] = value
             else:
