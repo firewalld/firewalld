@@ -63,6 +63,6 @@ class FirewallHelper(object):
 
     def remove_helper(self, name):
         if name not in self._helpers:
-            raise FirewallError(errors.INVALID_HELPER, helper)
+            raise FirewallError(errors.INVALID_HELPER, name)
         obj = self._helpers[name]
         del self._helpers[name]
