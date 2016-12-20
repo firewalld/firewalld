@@ -88,6 +88,10 @@ CONFIG_FILES = \
 	services/amanda-k5-client.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
+	services/bitcoin-rpc.xml \
+	services/bitcoin-testnet-rpc.xml \
+	services/bitcoin-testnet.xml \
+	services/bitcoin.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
@@ -98,6 +102,7 @@ CONFIG_FILES = \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/dropbox-lansync.xml \
+	services/elasticsearch.xml \
 	services/freeipa-ldaps.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
@@ -115,6 +120,7 @@ CONFIG_FILES = \
 	services/iscsi-target.xml \
 	services/kadmin.xml \
 	services/kerberos.xml \
+	services/kibana.xml \
 	services/klogin.xml \
 	services/kpasswd.xml \
 	services/kshell.xml \
@@ -126,8 +132,8 @@ CONFIG_FILES = \
 	services/mdns.xml \
 	services/mosh.xml \
 	services/mountd.xml \
-	services/ms-wbt.xml \
 	services/mssql.xml \
+	services/ms-wbt.xml \
 	services/mysql.xml \
 	services/nfs.xml \
 	services/ntp.xml \
@@ -144,6 +150,7 @@ CONFIG_FILES = \
 	services/ptp.xml \
 	services/pulseaudio.xml \
 	services/puppetmaster.xml \
+	services/quassel.xml \
 	services/radius.xml \
 	services/RH-Satellite-6.xml \
 	services/rpc-bind.xml \
@@ -159,6 +166,7 @@ CONFIG_FILES = \
 	services/smtp.xml \
 	services/snmptrap.xml \
 	services/snmp.xml \
+	services/spideroak-lansync.xml \
 	services/squid.xml \
 	services/ssh.xml \
 	services/synergy.xml \
