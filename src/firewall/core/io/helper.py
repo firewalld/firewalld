@@ -120,11 +120,12 @@ class helper_ContentHandler(IO_Object_ContentHandler):
                 if not attrs["module"].startswith("nf_conntrack_"):
                     raise FirewallError(
                         errors.INVALID_MODULE,
-                        "'%s' does not start with 'nf_conntrack_'" % module)
+                        "'%s' does not start with 'nf_conntrack_'" % \
+                        attrs["module"])
                 if len(attrs["module"].replace("nf_conntrack_", "")) < 1:
                     raise FirewallError(
                         errors.INVALID_MODULE,
-                        "Module name '%s' too short" % module)
+                        "Module name '%s' too short" % attrs["module"])
                 self.item.module = attrs["module"]
         elif name == "short":
             pass
