@@ -23,7 +23,8 @@
 
 DEFAULT_ZONE_TARGET = "{chain}_{zone}"
 
-ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET, "default" ]
+ZONE_TARGETS = [ "ACCEPT", "%%REJECT%%", "DROP", DEFAULT_ZONE_TARGET,
+                 "default" ]
 
 SHORTCUTS = {
     "PREROUTING": "PRE",
@@ -35,6 +36,12 @@ SHORTCUTS = {
 }
 
 REJECT_TYPES = {
-    "ipv4": ["icmp-host-prohibited", "host-prohib", "icmp-net-unreachable", "net-unreach", "icmp-host-unreachable", "host-unreach", "icmp-port-unreachable", "port-unreach", "icmp-proto-unreachable", "proto-unreach", "icmp-net-prohibited", "net-prohib", "tcp-reset", "tcp-rst", "icmp-admin-prohibited", "admin-prohib"],
-    "ipv6": ["icmp6-adm-prohibited", "adm-prohibited", "icmp6-no-route", "no-route", "icmp6-addr-unreachable", "addr-unreach", "icmp6-port-unreachable", "port-unreach", "tcp-reset"]
+    "ipv4": [ "icmp-host-prohibited", "host-prohib", "icmp-net-unreachable",
+              "net-unreach", "icmp-host-unreachable", "host-unreach",
+              "icmp-port-unreachable", "port-unreach", "icmp-proto-unreachable",
+              "proto-unreach", "icmp-net-prohibited", "net-prohib", "tcp-reset",
+              "tcp-rst", "icmp-admin-prohibited", "admin-prohib" ],
+    "ipv6": [ "icmp6-adm-prohibited", "adm-prohibited", "icmp6-no-route",
+              "no-route", "icmp6-addr-unreachable", "addr-unreach",
+              "icmp6-port-unreachable", "port-unreach", "tcp-reset" ]
 }
