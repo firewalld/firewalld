@@ -167,7 +167,7 @@ def nm_get_bus_name():
         name = obj.bus_name
         del obj, bus
         return name
-    except Exception as msg:
+    except Exception:
         log.debug2("Failed to get bus name of NetworkManager")
     return None
 
