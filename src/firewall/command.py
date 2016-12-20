@@ -84,8 +84,8 @@ class FirewallCommand(object):
         if msg is not None and self.verbose:
             sys.stdout.write(msg + "\n")
 
-    def __cmd_sequence(self, cmd_type, option, action_method, query_method,
-                       parse_method, message, start_args=None, end_args=None,
+    def __cmd_sequence(self, cmd_type, option, action_method, query_method, # pylint: disable=W0613, R0913, R0914
+                       parse_method, message, start_args=None, end_args=None, # pylint: disable=W0613
                        no_exit=False):
         if self.fw is not None:
             self.fw.authorizeAll()
@@ -159,37 +159,37 @@ class FirewallCommand(object):
                 # INVALID_PORT and INVALID_PROTOCOL.
                 sys.exit(errors.UNKNOWN_ERROR)
 
-    def add_sequence(self, option, action_method, query_method, parse_method,
+    def add_sequence(self, option, action_method, query_method, parse_method, # pylint: disable=R0913
                      message, no_exit=False):
         self.__cmd_sequence("add", option, action_method, query_method,
                             parse_method, message, no_exit=no_exit)
 
-    def x_add_sequence(self, x, option, action_method, query_method,
+    def x_add_sequence(self, x, option, action_method, query_method, # pylint: disable=R0913
                        parse_method, message, no_exit=False):
         self.__cmd_sequence("add", option, action_method, query_method,
                             parse_method, message, start_args=[x],
                             no_exit=no_exit)
 
-    def zone_add_timeout_sequence(self, zone, option, action_method,
+    def zone_add_timeout_sequence(self, zone, option, action_method, # pylint: disable=R0913
                                   query_method, parse_method, message,
                                   timeout, no_exit=False):
         self.__cmd_sequence("add", option, action_method, query_method,
                             parse_method, message, start_args=[zone],
                             end_args=[timeout], no_exit=no_exit)
 
-    def remove_sequence(self, option, action_method, query_method,
+    def remove_sequence(self, option, action_method, query_method, # pylint: disable=R0913
                         parse_method, message, no_exit=False):
         self.__cmd_sequence("remove", option, action_method, query_method,
                             parse_method, message, no_exit=no_exit)
 
-    def x_remove_sequence(self, x, option, action_method, query_method,
+    def x_remove_sequence(self, x, option, action_method, query_method, # pylint: disable=R0913
                           parse_method, message, no_exit=False):
         self.__cmd_sequence("remove", option, action_method, query_method,
                             parse_method, message, start_args=[x],
                             no_exit=no_exit)
 
 
-    def __query_sequence(self, option, query_method, parse_method, message,
+    def __query_sequence(self, option, query_method, parse_method, message, # pylint: disable=R0913
                          start_args=None, no_exit=False):
         items = [ ]
         for item in option:
@@ -239,12 +239,12 @@ class FirewallCommand(object):
         if not no_exit:
             sys.exit(0)
 
-    def query_sequence(self, option, query_method, parse_method, message,
+    def query_sequence(self, option, query_method, parse_method, message, # pylint: disable=R0913
                        no_exit=False):
         self.__query_sequence(option, query_method, parse_method,
                               message, no_exit=no_exit)
 
-    def x_query_sequence(self, x, option, query_method, parse_method,
+    def x_query_sequence(self, x, option, query_method, parse_method, # pylint: disable=R0913
                          message, no_exit=False):
         self.__query_sequence(option, query_method, parse_method,
                               message, start_args=[x], no_exit=no_exit)
@@ -363,7 +363,7 @@ class FirewallCommand(object):
                                 "Module name '%s' too short" % value)
         return value
 
-    def print_zone_info(self, zone, settings, default_zone=None):
+    def print_zone_info(self, zone, settings, default_zone=None): # pylint: disable=R0914
         target = settings.getTarget()
         icmp_block_inversion = settings.getIcmpBlockInversion()
         interfaces = settings.getInterfaces()
