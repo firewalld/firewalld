@@ -30,7 +30,7 @@ from firewall.config import ETC_FIREWALLD
 from firewall.functions import u2b_if_py2
 from firewall.core.io.io_object import PY2, IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
-    check_tcpudp, check_protocol, check_address
+    check_tcpudp
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
@@ -84,7 +84,7 @@ class Helper(IO_Object):
         self.family = u2b_if_py2(self.family)
         self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
 
-    def _check_ipv(self, ipv):
+    def check_ipv(self, ipv):
         ipvs = [ 'ipv4', 'ipv6' ]
         if ipv not in ipvs:
             raise FirewallError(errors.INVALID_IPV,
@@ -114,7 +114,7 @@ class helper_ContentHandler(IO_Object_ContentHandler):
             if "version" in attrs:
                 self.item.version = attrs["version"]
             if "family" in attrs:
-                self.item._check_ipv(attrs["family"])
+                self.item.check_ipv(attrs["family"])
                 self.item.family = attrs["family"]
             if "module" in attrs:
                 if not attrs["module"].startswith("nf_conntrack_"):
