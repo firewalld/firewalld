@@ -127,6 +127,7 @@ CONFIG_FILES = \
 	services/mosh.xml \
 	services/mountd.xml \
 	services/ms-wbt.xml \
+	services/mssql.xml \
 	services/mysql.xml \
 	services/nfs.xml \
 	services/ntp.xml \
