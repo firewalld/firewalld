@@ -20,7 +20,7 @@
 #
 
 import time
-from firewall.core.base import *
+from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac
@@ -1098,7 +1098,7 @@ class FirewallZone(object):
                     for module in svc.modules:
                         try:
                             helper = self._fw.helper.get_helper(module)
-                        except Exception as msg:
+                        except FirewallError:
                             raise FirewallError(errors.INVALID_HELPER, module)
                         if helper.module not in self._fw.nf_conntrack_helpers:
                             raise FirewallError(
@@ -1587,7 +1587,7 @@ class FirewallZone(object):
                 for module in svc.modules:
                     try:
                         helper = self._fw.helper.get_helper(module)
-                    except Exception as msg:
+                    except FirewallError:
                         raise FirewallError(errors.INVALID_HELPER, module)
                     if helper.module not in self._fw.nf_conntrack_helpers:
                         raise FirewallError(
@@ -1607,7 +1607,7 @@ class FirewallZone(object):
                 for module in svc.modules:
                     try:
                         helper = self._fw.helper.get_helper(module)
-                    except Exception as msg:
+                    except FirewallError:
                         raise FirewallError(errors.INVALID_HELPER, module)
                     if helper.module not in self._fw.nf_conntrack_helpers:
                         raise FirewallError(
@@ -2613,7 +2613,7 @@ class FirewallZone(object):
         self.__unregister_icmp_block_inversion(_obj,
                                                icmp_block_inversion_id)
         zone_transaction.add_fail(self.__register_icmp_block_inversion, _obj,
-                                  icmp_block_inversion_id, None) # FIXME: None
+                                  icmp_block_inversion_id, None)
 
         # redo icmp blocks
         if _obj.applied:
