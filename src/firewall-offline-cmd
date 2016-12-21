@@ -61,6 +61,9 @@ General Options
   -q, --quiet          Do not print status messages
 
 Lokkit Compatibility Options
+  --migrate-system-config-firewall=<file>
+                        Import configuration data from the given configuration
+                        file.
   --enabled             Enable firewall (default)
   --disabled            Disable firewall
   --addmodule=<module>  Ignored option, was used to enable an iptables module
@@ -484,11 +487,10 @@ def pk_symlink(product='server'):
         cmd.fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
 
 # system-config-firewall
-def read_sysconfig_args():
+def read_sysconfig_args(config_file=SYSTEM_CONFIG_FIREWALL):
     filename = None
-    if os.path.exists(SYSTEM_CONFIG_FIREWALL) and \
-       os.path.isfile(SYSTEM_CONFIG_FIREWALL):
-        filename = SYSTEM_CONFIG_FIREWALL
+    if os.path.exists(config_file) and os.path.isfile(config_file):
+        filename = config_file
     try:
         f = open(filename, 'r')
     except Exception:
@@ -757,7 +759,34 @@ def myexcepthook(exctype, value, traceback):
     cmd.exception_handler(str(value))
 sys.excepthook = myexcepthook
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and \
+   any('--migrate-system-config-firewall' in arg for arg in sys.argv):
+    args = sys.argv[1:]
+    migration_parser = argparse.ArgumentParser(
+        usage="see firewall-offline-cmd man page", add_help=False)
+    migration_parser.add_argument("-h", "--help", action="store_true")
+    migration_parser.add_argument("-v", "--verbose", action="store_true")
+    migration_parser.add_argument("-q", "--quiet", action="store_true")
+    migration_parser.add_argument("--migrate-system-config-firewall",
+                                  metavar="<file>", action='store')
+    a,unknown = migration_parser.parse_known_args(args)
+    cmd.set_quiet(a.quiet)
+    cmd.set_verbose(a.verbose)
+    if a.help:
+        __usage()
+        sys.exit(0)
+    if a.quiet:
+        # it makes no sense to use --quiet with these options
+        a.quiet = False
+        cmd.set_quiet(a.quiet)
+        cmd.fail("-q/--quiet can't be used with this option(s)")
+    if a.migrate_system_config_firewall:
+        args = read_sysconfig_args(a.migrate_system_config_firewall)
+        if not args:
+            cmd.fail("Opening of '%s' failed, exiting." % \
+                     a.migrate_system_config_firewall)
+        args += unknown
+elif len(sys.argv) > 1:
     i = -1
     args = sys.argv[1:]
     if '--add-passthrough' in args:
