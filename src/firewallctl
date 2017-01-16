@@ -72,7 +72,7 @@ def try_set_zone_of_interface(_zone, interface):
                                   "to '%s'." % _zone)
                 nm_set_zone_of_connection(_zone, connection)
                 return True
-        return False
+    return False
 
 #
 

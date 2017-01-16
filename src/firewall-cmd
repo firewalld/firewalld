@@ -466,7 +466,7 @@ def try_set_zone_of_interface(_zone, interface):
                     cmd.print_msg("The interface is under control of NetworkManager, setting zone to '%s'." % _zone)
                 nm_set_zone_of_connection(_zone, connection)
                 return True
-        return False
+    return False
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
