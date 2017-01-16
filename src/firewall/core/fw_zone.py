@@ -2084,7 +2084,10 @@ class FirewallZone(object):
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
             zone_transaction.add_rule(ipv, [ add_del, "%s_allow" % (target),
-                                             "-t", "filter", "-j", "ACCEPT" ])
+                                             "-t", "filter",
+                                             "-m", "conntrack",
+                                             "--ctstate", "NEW",
+                                             "-j", "ACCEPT" ])
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
