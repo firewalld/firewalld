@@ -1707,6 +1707,7 @@ class FirewallConfig(object):
         self.load_helpers()
         self.load_direct()
         self.load_lockdown_whitelist()
+        self.update_active_zones()
 
     def load_zones(self):
         selected_zone = self.get_selected_zone()
