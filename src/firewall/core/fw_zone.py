@@ -1091,6 +1091,8 @@ class FirewallZone(object):
                 table = "filter"
                 if enable:
                     zone_transaction.add_chain(table, "INPUT")
+                    if self._fw.nf_conntrack_helper_setting == 0:
+                        zone_transaction.add_chain("raw", "PREROUTING")
 
                 if type(rule.action) == Rich_Accept:
                     # only load modules for accept action
