@@ -26,7 +26,8 @@ from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac
 from firewall.core.rich import Rich_Rule, Rich_Accept, Rich_Reject, \
     Rich_Drop, Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
-    Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock
+    Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
+    Rich_IcmpType
 from firewall.core.ipXtables import OUR_CHAINS
 from firewall.core.fw_transaction import FirewallTransaction, \
     FirewallZoneTransaction
@@ -1380,18 +1381,23 @@ class FirewallZone(object):
                 self.__rule_action(enable, zone, ipv, table, target, rule,
                                    command, zone_transaction)
 
-            # ICMP BLOCK
-            elif type(rule.element) == Rich_IcmpBlock:
+            # ICMP BLOCK and ICMP TYPE
+            elif type(rule.element) == Rich_IcmpBlock or \
+                 type(rule.element) == Rich_IcmpType:
                 ict = self._fw.icmptype.get_icmptype(rule.element.name)
 
-                if rule.action and type(rule.action) == Rich_Accept:
+                if type(rule.element) == Rich_IcmpBlock and \
+                   rule.action and type(rule.action) == Rich_Accept:
                     # icmp block might have reject or drop action, but not accept
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
                 if ict.destination and ipv not in ict.destination:
-                    raise FirewallError(errors.INVALID_RULE,
-                                        "IcmpBlock %s not usable with %s" % \
-                                        (rule.element.name, ipv))
+                    raise FirewallError(
+                        errors.INVALID_RULE,
+                                        "Icmp%s %s not usable with %s" % \
+                                        ("Block" if type(rule.element) == \
+                                         Rich_IcmpBlock else "Type",
+                                         rule.element.name, ipv))
 
                 table = "filter"
                 if enable:
