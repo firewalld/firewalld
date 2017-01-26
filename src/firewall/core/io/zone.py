@@ -67,6 +67,7 @@ class Zone(IO_Object):
         "service": [ "name" ],
         "port": [ "port", "protocol" ],
         "icmp-block": [ "name" ],
+        "icmp-type": [ "name" ],
         "forward-port": [ "port", "protocol" ],
         "interface": [ "name" ],
         "rule": None,
@@ -386,6 +387,19 @@ class zone_ContentHandler(IO_Object_ContentHandler):
                 self.item.icmp_blocks.append(attrs["name"])
             else:
                 log.warning("icmp-block '%s' already set, ignoring.",
+                            attrs["name"])
+
+        elif name == "icmp-type":
+            if self._rule:
+                if self._rule.element:
+                    log.warning("Invalid rule: More than one element in rule '%s', ignoring.",
+                                str(self._rule))
+                    self._rule_error = True
+                    return
+                self._rule.element = rich.Rich_IcmpType(attrs["name"])
+                return
+            else:
+                log.warning("Invalid rule: icmp-block '%s' outside of rule",
                             attrs["name"])
 
         elif name == "masquerade":
