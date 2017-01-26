@@ -1739,6 +1739,22 @@ try:
             settings.setFamily(cmd.check_helper_family(a.set_family[0]))
             fw.config.set_helper_config(obj, settings.settings)
 
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+
+            fw.config.set_helper_config(obj, settings.settings)
+
+        elif a.get_description:
+            cmd.print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+
+            fw.config.set_helper_config(obj, settings.settings)
+
+        elif a.get_short:
+            cmd.print_and_exit(settings.getShort())
+
         else:
             cmd.fail(parser.format_usage() + "Unknown option")
 
