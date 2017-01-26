@@ -2030,6 +2030,8 @@ class FirewallConfig(object):
                 elem = _("masquerade")
             elif type(obj.element) == rich.Rich_IcmpBlock:
                 elem = "icmp-block" + "\n%s" % obj.element.name
+            elif type(obj.element) == rich.Rich_IcmpType:
+                elem = "icmp-type" + "\n%s" % obj.element.name
             elif type(obj.element) == rich.Rich_ForwardPort:
                 elem = "forward-port" + "\n%s" % self.create_fwp_string(
                     obj.element.port, obj.element.protocol,
@@ -3122,6 +3124,11 @@ class FirewallConfig(object):
                                      _("icmp-block"))
                 self.richRuleDialogElementChooser.set_text( \
                     old_obj.element.name)
+            elif type(old_obj.element) == rich.Rich_IcmpType:
+                combobox_select_text(self.richRuleDialogElementCombobox,
+                                     _("icmp-type"))
+                self.richRuleDialogElementChooser.set_text( \
+                    old_obj.element.name)
             elif type(old_obj.element) == rich.Rich_ForwardPort:
                 combobox_select_text(self.richRuleDialogElementCombobox,
                                      _("forward-port"))
@@ -3289,6 +3296,8 @@ class FirewallConfig(object):
         elif combolabel == _("protocol"):
             value = self.protocol_select_dialog(old_value)
         elif combolabel == _("icmp-block"):
+            value = self.icmptype_select_dialog(old_value)
+        elif combolabel == _("icmp-type"):
             value = self.icmptype_select_dialog(old_value)
         elif combolabel == _("forward-port"):
             value = self.forwardport_select_dialog(family, old_value)
@@ -3597,6 +3606,9 @@ class FirewallConfig(object):
                     self.richRuleDialogElementChooser.get_text())
             elif combolabel == _("icmp-block"):
                 rule.element = rich.Rich_IcmpBlock(
+                    self.richRuleDialogElementChooser.get_text())
+            elif combolabel == _("icmp-type"):
+                rule.element = rich.Rich_IcmpType(
                     self.richRuleDialogElementChooser.get_text())
             elif combolabel == _("forward-port"):
                 text = self.richRuleDialogElementChooser.get_text()
