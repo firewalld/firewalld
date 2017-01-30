@@ -4119,7 +4119,8 @@ class FirewallConfig(object):
             # for all hash:ip and hash:net types, ipv has to match the family
             # of the set
             ipset_type = ipsets[i].getType()
-            if ipset_type in [ "hash:ip", "hash:net" ]:
+            if ipset_type.startswith("hash:ip") or \
+               ipset_type.startswith("hash:net"):
                 opts = ipsets[i].getOptions()
                 if "family" in opts:
                     if opts["family"] == "inet6" and \
