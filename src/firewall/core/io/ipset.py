@@ -228,15 +228,12 @@ class ipset_ContentHandler(IO_Object_ContentHandler):
                 self.item.options[attrs["name"]] = value
             else:
                 log.warning("Option %s already set, ignoring.", attrs["name"])
-        elif name == "entry":
-            pass
+        # nothing to do for entry and entries here
+
     def endElement(self, name):
         IO_Object_ContentHandler.endElement(self, name)
         if name == "entry":
-            if self._element not in self.item.entries:
-                self.item.entries.append(self._element)
-            else:
-                log.warning("Entry %s already set, ignoring.", self._element)
+            self.item.entries.append(self._element)
 
 def ipset_reader(filename, path):
     ipset = IPSet()
@@ -269,14 +266,21 @@ def ipset_reader(filename, path):
                     ipset.name)
         del ipset.entries[:]
     i = 0
+    entries_set = set()
     while i < len(ipset.entries):
-        try:
-            ipset.check_entry(ipset.entries[i], ipset.options, ipset.type)
-        except FirewallError as e:
-            log.warning("%s, ignoring.", e)
+        if ipset.entries[i] in entries_set:
+            log.warning("Entry %s already set, ignoring.", ipset.entries[i])
             ipset.entries.pop(i)
         else:
-            i += 1
+            try:
+                ipset.check_entry(ipset.entries[i], ipset.options, ipset.type)
+            except FirewallError as e:
+                log.warning("%s, ignoring.", e)
+                ipset.entries.pop(i)
+            else:
+                entries_set.add(ipset.entries[i])
+                i += 1
+    del entries_set
     if PY2:
         ipset.encode_strings()
 
