@@ -65,9 +65,12 @@ class IO_Object(object):
             if isinstance(conf[i], list):
                 # remove duplicates without changing the order
                 _conf = [ ]
+                _set = set()
                 for x in conf[i]:
-                    if x not in _conf:
+                    if x not in _set:
                         _conf.append(x)
+                        _set.add(x)
+                del _set
                 setattr(self, element, copy.deepcopy(_conf))
             else:
                 setattr(self, element, copy.deepcopy(conf[i]))
