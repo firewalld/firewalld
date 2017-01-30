@@ -1579,13 +1579,20 @@ try:
                     else:
                         cmd.print_and_exit(message)
                 else:
+                    old_entries = settings.getEntries()
+                    entries_set = set()
+                    for entry in old_entries:
+                        entries_set.add(entry)
                     for entry in entries:
-                        if not settings.queryEntry(entry):
-                            settings.addEntry(entry)
+                        if entry not in entries_set:
+                            old_entries.append(entry)
+                            entries_set.add(entry)
                             changed = True
                         else:
                             cmd.print_if_verbose(
                                 "Warning: ALREADY_ENABLED: %s" % entry)
+                    if changed:
+                        settings.setEntries(old_entries)
             if changed:
                 fw.config.set_ipset_config(ipset, settings.settings)
 
@@ -1605,13 +1612,20 @@ try:
                     else:
                         cmd.print_and_exit(message)
                 else:
+                    old_entries = settings.getEntries()
+                    entries_set = set()
+                    for entry in old_entries:
+                        entries_set.add(entry)
                     for entry in entries:
-                        if settings.queryEntry(entry):
-                            settings.removeEntry(entry)
+                        if entry in entries_set:
+                            old_entries.remove(entry)
+                            entries_set.discard(entry)
                             changed = True
                         else:
                             cmd.print_if_verbose("Warning: NOT_ENABLED: %s" % \
                                                  entry)
+                    if changed:
+                        settings.setEntries(old_entries)
             if changed:
                 fw.config.set_ipset_config(ipset, settings.settings)
 
