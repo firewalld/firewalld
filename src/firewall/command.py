@@ -508,6 +508,7 @@ class FirewallCommand(object):
 
     def get_ipset_entries_from_file(self, filename):
         entries = [ ]
+        entries_set = set()
         f = open(filename)
         for line in f:
             if not line:
@@ -515,7 +516,8 @@ class FirewallCommand(object):
             line = line.strip()
             if len(line) < 1 or line[0] in ['#', ';']:
                 continue
-            if line not in entries:
+            if line not in entries_set:
                 entries.append(line)
+                entries_set.add(line)
         f.close()
         return entries
