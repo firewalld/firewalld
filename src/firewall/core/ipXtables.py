@@ -133,8 +133,10 @@ DEFAULT_RULES["filter"] = [
     "-I FORWARD 9 -j %%REJECT%%",
 
     "-N OUTPUT_direct",
+    "-N OUTPUT_ZONES",
 
     "-I OUTPUT 1 -j OUTPUT_direct",
+    "-I OUTPUT 2 -j OUTPUT_ZONES",
 ]
 
 LOG_RULES["filter"] = [
@@ -148,7 +150,8 @@ LOG_RULES["filter"] = [
 OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
                             "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
                             "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
-                            "FORWARD_OUT_ZONES", "OUTPUT_direct"])
+                            "FORWARD_OUT_ZONES", "OUTPUT_direct",
+                            "OUTPUT_ZONES"])
 
 class ip4tables(object):
     ipv = "ipv4"
