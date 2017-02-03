@@ -78,7 +78,11 @@ def nm_get_zone_of_connection(connection):
     for active_con in active_connections:
         if active_con.get_id() == connection:
             con = active_con.get_connection()
+            if con is None:
+                continue
             setting_con = con.get_setting_connection()
+            if setting_con is None:
+                continue
             zone = setting_con.get_zone()
             if zone is None:
                 zone = ""
@@ -98,9 +102,13 @@ def nm_set_zone_of_connection(zone, connection):
 
     for active_con in active_connections:
         con = active_con.get_connection()
+        if con is None:
+            continue
 
         if active_con.get_id() == connection:
             setting_con = con.get_setting_connection()
+            if setting_con is None:
+                continue
             if zone == "":
                 zone = None
             setting_con.set_property("zone", zone)
