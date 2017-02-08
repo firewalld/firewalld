@@ -1424,10 +1424,10 @@ class FirewallZone(object):
                 if ict.destination and ipv not in ict.destination:
                     raise FirewallError(
                         errors.INVALID_RULE,
-                                        "Icmp%s %s not usable with %s" % \
-                                        ("Block" if type(rule.element) == \
-                                         Rich_IcmpBlock else "Type",
-                                         rule.element.name, ipv))
+                        "Icmp%s %s not usable with %s" % \
+                        ("Block" if type(rule.element) == \
+                         Rich_IcmpBlock else "Type",
+                         rule.element.name, ipv))
 
                 table = "filter"
                 if enable:
