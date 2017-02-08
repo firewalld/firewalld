@@ -4158,7 +4158,7 @@ elif args.parser == "settings":
             cmd.print_and_exit(("no", "yes")[fw.get_property(args.item)])
 
         elif args.item == "IPSetTypes":
-            cmd.print_and_exit(" ".join(fw.get_property(args.item)))
+            cmd.print_and_exit(" ".join(sorted(fw.get_property(args.item))))
 
         elif args.item == "IPv4":
             cmd.print_and_exit(("no", "yes")[fw.get_property(args.item)])
