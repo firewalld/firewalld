@@ -131,7 +131,7 @@ class IPSet(IO_Object):
                         raise FirewallError(
                             errors.INVALID_ENTRY,
                             "invalid address range '%s' in '%s' for %s (%s)" % \
-                            (split, entry, ipset_type, family))
+                            (item, entry, ipset_type, family))
                     for _split in splits:
                         if (family == "ipv4" and not checkIP(_split)) or \
                            (family == "ipv6" and not checkIP6(_split)):
