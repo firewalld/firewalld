@@ -49,6 +49,8 @@ def runProg(prog, argv=None, stdin=None):
     if output is not None and output != "":
         output = output.decode('utf-8', 'replace')
     elif err_output is not None and err_output != "":
+        if output is None:
+            output = ""
         output += err_output.decode('utf-8', 'replace')
 
     return (process.returncode, output)
