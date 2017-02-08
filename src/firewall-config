@@ -684,6 +684,8 @@ class FirewallConfig(object):
             builder.get_object("ipsetEntryDialogOkButton")
         self.ipsetEntryDialogEntryEntry = \
             builder.get_object("ipsetEntryDialogEntryEntry")
+        self.ipsetEntryDialogTypeLabel = \
+            builder.get_object("ipsetEntryDialogTypeLabel")
 
         self.ipsetBaseDialog = builder.get_object("ipsetBaseDialog")
         self.ipsetBaseDialogOkButton = \
@@ -6024,6 +6026,7 @@ class FirewallConfig(object):
             settings = self.fw.config().getIPSetByName(active_ipset).getSettings()
         self.active_ipset_settings = settings
 
+        self.ipsetEntryDialogTypeLabel.set_text(settings.getType())
         self.ipsetEntryDialogEntryEntry.set_text("")
 
         old_entry = None
