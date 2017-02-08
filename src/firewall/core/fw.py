@@ -258,15 +258,15 @@ class Firewall(object):
 
             if self._firewalld_conf.get("AutomaticHelpers"):
                 value = self._firewalld_conf.get("AutomaticHelpers")
-                if value is None:
+                if value is not None:
                     if value.lower() in [ "no", "false" ]:
                         self._automatic_helpers = "no"
-                    if value.lower() in [ "yes", "true" ]:
+                    elif value.lower() in [ "yes", "true" ]:
                         self._automatic_helpers = "yes"
-                else:
-                    self._automatic_helpers = value.lower()
-                log.debug1("AutomaticHelpers is set to '%s'",
-                           self._automatic_helpers)
+                    else:
+                        self._automatic_helpers = value.lower()
+                    log.debug1("AutomaticHelpers is set to '%s'",
+                               self._automatic_helpers)
 
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
 
