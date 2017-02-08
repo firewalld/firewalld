@@ -361,8 +361,8 @@ class FirewallD(slip.dbus.service.Object):
 
         config_names = self.config.getIPSetNames()
         for name in self.fw.ipset.get_ipsets():
-            conf = self.getIPSetSettings(name)
             try:
+                conf = self.getIPSetSettings(name)
                 if name in config_names:
                     conf_obj = self.config.getIPSetByName(name)
                     if conf_obj.getSettings() != conf:
