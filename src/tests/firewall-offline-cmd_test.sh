@@ -160,7 +160,7 @@ assert_exit_code() {
   local args="${1}"
   local ret="${2}"
 
-  ${path}firewall-cmd ${args} > /dev/null 2>&1
+  ${path}firewall-offline-cmd ${args} > /dev/null 2>&1
   got=$?
   if [[ "$got" -eq "$ret" ]]; then
     echo "${args} ... OK"
