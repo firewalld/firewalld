@@ -489,7 +489,7 @@ class FirewallCommand(object):
         self.fail_if_not_authorized(exception_message)
         code = FirewallError.get_code(str(exception_message))
         if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                     errors.ZONE_ALREADY_SET ]:
+                     errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
             self.print_warning("Warning: %s" % exception_message)
         else:
             self.print_and_exit("Error: %s" % exception_message, code)
