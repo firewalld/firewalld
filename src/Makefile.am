@@ -47,6 +47,7 @@ nobase_dist_python_DATA = \
 	firewall/core/io/lockdown_whitelist.py \
 	firewall/core/io/service.py \
 	firewall/core/io/zone.py \
+	firewall/core/icmp.py \
 	firewall/core/ipset.py \
 	firewall/core/ipXtables.py \
 	firewall/core/logger.py \
