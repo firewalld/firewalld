@@ -2032,7 +2032,7 @@ elif a.set_automatic_helpers:
     fw.setAutomaticHelpers(a.set_automatic_helpers)
 elif a.get_ipset_types:
     types = fw.get_property("IPSetTypes")
-    cmd.print_and_exit(" ".join(types))
+    cmd.print_and_exit(" ".join(sorted(types)))
 elif a.reload:
     fw.reload()
 elif a.complete_reload:
