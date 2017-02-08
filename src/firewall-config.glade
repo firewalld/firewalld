@@ -8186,6 +8186,7 @@
     </action-widgets>
   </object>
   <object class="GtkDialog" id="ipsetDialog">
+    <property name="width_request">300</property>
     <property name="height_request">300</property>
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
@@ -8378,14 +8379,16 @@
               <object class="GtkBox" id="box23">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">start</property>
                 <property name="border_width">6</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkEntry" id="ipsetEntryDialogEntryEntry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="halign">start</property>
-                    <property name="max_length">60</property>
+                    <property name="valign">start</property>
+                    <property name="max_length">1024</property>
                     <property name="invisible_char">•</property>
                     <property name="activates_default">True</property>
                     <property name="width_chars">50</property>
@@ -8394,7 +8397,7 @@
                     <signal name="changed" handler="onIPSetEntryChanged" swapped="no"/>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>

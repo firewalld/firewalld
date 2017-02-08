@@ -41,12 +41,14 @@ if os.getenv("FIREWALLD_DEVEL_ENV") is not None:
     datadir = os.getenv("FIREWALLD_DEVEL_ENV")
     sys.path.insert(0, datadir)
 import dbus
+from dbus.exceptions import DBusException
 
 from firewall import config
 from firewall import client
 from firewall import functions
 from firewall.dbus_utils import dbus_to_python
-from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES
+from firewall.core.base import DEFAULT_ZONE_TARGET, REJECT_TYPES, \
+    ZONE_SOURCE_IPSET_TYPES
 from firewall.core.ipset import IPSET_MAXNAMELEN
 from firewall.core.helper import HELPER_MAXNAMELEN
 from firewall.core.io.zone import Zone
@@ -56,6 +58,8 @@ from firewall.core.io.ipset import IPSet
 from firewall.core.io.helper import Helper
 from firewall.core import rich
 from firewall.core.fw_nm import *
+from firewall import errors
+from firewall.errors import FirewallError
 
 import gettext
 gettext.textdomain(config.DOMAIN)
@@ -633,6 +637,7 @@ class FirewallConfig(object):
         self.ipsetConfIPSetView.get_selection().connect("changed",
                                                         self.onChangeIPSet)
 
+        self.ipsetConfNotebook = builder.get_object("ipsetConfNotebook")
         self.ipsetConfEntryLabel = builder.get_object("ipsetConfEntryLabel")
         self.ipsetConfTimeoutLabel = builder.get_object("ipsetConfTimeoutLabel")
         self.ipsetConfEntrySW = builder.get_object("ipsetConfEntrySW")
@@ -1231,6 +1236,7 @@ class FirewallConfig(object):
         # firewall client
 
         self.fw = client.FirewallClient(wait=1)
+        self.__use_exception_handler = True
         self.fw.setExceptionHandler(self._exception_handler)
         self.fw.setNotAuthorizedLoop(True)
 
@@ -2229,7 +2235,15 @@ class FirewallConfig(object):
 
         self.zoneStore.set_value(use_iter, 0, zone)
 
+    def deactivate_exception_handler(self):
+        self.__use_exception_handler = False
+
+    def activate_exception_handler(self):
+        self.__use_exception_handler = True
+
     def _exception_handler(self, exception_message):
+        if not self.__use_exception_handler:
+            raise
         if "NotAuthorizedException" in exception_message:
             self._error(_("Authorization failed."))
         elif "INVALID_NAME" in exception_message:
@@ -4110,7 +4124,22 @@ class FirewallConfig(object):
         ipsets = { }
         if self.runtime_view:
             for x in self.fw.getIPSets():
-                settings = self.fw.getIPSetSettings(x)
+                self.deactivate_exception_handler()
+                try:
+                    settings = self.fw.getIPSetSettings(x)
+                except (DBusException, Exception) as msg:
+                    self.activate_exception_handler()
+                    if isinstance(msg, DBusException):
+                        msg = msg.get_dbus_message()
+                    else:
+                        msg = str(msg)
+                    code = FirewallError.get_code(msg)
+                    if code == errors.NOT_APPLIED:
+                        continue
+                    raise
+                self.activate_exception_handler()
+                if settings.getType() not in ZONE_SOURCE_IPSET_TYPES:
+                    continue
                 ipsets[x] = settings
         else:
             for i in self.fw.config().listIPSets():
@@ -6178,8 +6207,23 @@ class FirewallConfig(object):
 
         if self.runtime_view:
             # load runtime configuration
-
-            settings = self.fw.getIPSetSettings(active_ipset)
+            self.deactivate_exception_handler()
+            try:
+                settings = self.fw.getIPSetSettings(active_ipset)
+            except (DBusException, Exception) as msg:
+                self.activate_exception_handler()
+                if isinstance(msg, DBusException):
+                    msg = msg.get_dbus_message()
+                else:
+                    msg = str(msg)
+                code = FirewallError.get_code(msg)
+                if code == errors.NOT_APPLIED:
+                    self.ipsetConfNotebook.set_sensitive(False)
+                    return
+                raise
+            else:
+                self.ipsetConfNotebook.set_sensitive(True)
+            self.activate_exception_handler()
             entries = settings.getEntries()
             options = settings.getOptions()
             default = False
