@@ -1022,6 +1022,14 @@ For interfaces that are not under control of NetworkManager, firewalld tries to 
       <title>IPSet Options</title>
       <variablelist>
 	<varlistentry>
+	  <term><option>--get-ipset-types</option></term>
+          <listitem>
+            <para>
+	      Print the supported ipset types.
+            </para>
+          </listitem>
+	</varlistentry>
+	<varlistentry>
           <term><option>--permanent</option> <option>--new-ipset</option>=<replaceable>ipset</replaceable> <option>--type</option>=<replaceable>type</replaceable> <optional><option>--family</option>=<literal>inet</literal>|<literal>inet6</literal></optional> <optional><option>--option</option>=<replaceable>key</replaceable><optional>=<replaceable>value</replaceable></optional></optional></term>
           <listitem>
             <para>
