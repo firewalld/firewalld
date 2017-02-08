@@ -20,7 +20,8 @@
 #
 
 import time
-from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
+from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, \
+    ZONE_SOURCE_IPSET_TYPES
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac
@@ -710,6 +711,26 @@ class FirewallZone(object):
             return None
         return self._fw.ipset.get_family(name)
 
+    def ipset_type(self, name):
+        return self._fw.ipset.get_type(name)
+
+    def ipset_dimension(self, name):
+        return self._fw.ipset.get_dimension(name)
+
+    def ipset_match_flags(self, name, flag):
+        return ",".join([flag] * self._fw.ipset.get_dimension(name))
+
+    def check_ipset_applied(self, name):
+        return self._fw.ipset.check_applied(name)
+
+    def check_ipset_type_for_source(self, name):
+        _type = self.ipset_type(name)
+        if _type not in ZONE_SOURCE_IPSET_TYPES:
+            raise FirewallError(
+                errors.INVALID_IPSET,
+                "ipset '%s' with type '%s' not usable as source" % \
+                (name, _type))
+
     # SOURCES
 
     def check_source(self, source):
@@ -720,6 +741,8 @@ class FirewallZone(object):
         elif check_mac(source):
             return ""
         elif source.startswith("ipset:"):
+            self.check_ipset_type_for_source(source[6:])
+            self.check_ipset_applied(source[6:])
             return self.ipset_family(source[6:])
         else:
             raise FirewallError(errors.INVALID_ADDR, source)
@@ -761,14 +784,16 @@ class FirewallZone(object):
                         opt = self.source_zone_opts[chain]
 
                         if source.startswith("ipset:"):
+                            _name = source[6:]
                             if opt == "-d":
                                 opt = "dst"
                             else:
                                 opt = "src"
+                            flags = self.ipset_match_flags(_name, opt)
                             rule = [ add_del,
                                      "%s_ZONES_SOURCE" % chain, "-t", table,
-                                     "-m", "set", "--match-set", source[6:],
-                                     opt, action, target ]
+                                     "-m", "set", "--match-set", _name,
+                                     flags, action, target ]
                         else:
                             # outgoing can not be set
                             if opt == "-d":
@@ -800,13 +825,15 @@ class FirewallZone(object):
 
                     rule = [ add_del, "%s_ZONES_SOURCE" % chain, "-t", table ]
                     if source.startswith("ipset:"):
+                        _name = source[6:]
                         if opt == "-d":
                             opt = "dst"
                         else:
                             opt = "src"
+                        flags = self.ipset_match_flags(_name, opt)
                         rule = [ add_del,
                                  "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 "-m", "set", "--match-set", source[6:], opt,
+                                 "-m", "set", "--match-set", _name, flags,
                                  action, target ]
                     else:
                         rule = [ add_del,
@@ -947,6 +974,8 @@ class FirewallZone(object):
         elif hasattr(source, "mac") and source.mac:
             return ""
         elif hasattr(source, "ipset") and source.ipset:
+            self.check_ipset_type_for_source(source.ipset)
+            self.check_ipset_applied(source.ipset)
             return self.ipset_family(source.ipset)
 
         return None
@@ -968,7 +997,8 @@ class FirewallZone(object):
                 command += [ "-m", "set" ]
                 if source.invert:
                     command.append("!")
-                command += [ "--match-set", source.ipset, "src" ]
+                flags = self.ipset_match_flags(source.ipset, "src")
+                command += [ "--match-set", source.ipset, flags ]
 
     def __rule_destination(self, destination, command):
         if destination:
