@@ -92,6 +92,8 @@ class FirewallIPSet(object):
             obj = self._ipsets[name]
             obj.applied = False
 
+            log.debug1("Applying ipset '%s'" % name)
+
             if name in active and ("timeout" not in obj.options or \
                                    obj.options["timeout"] == "0" or \
                                    obj.type != active[name][0] or \
