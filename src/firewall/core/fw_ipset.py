@@ -57,7 +57,9 @@ class FirewallIPSet(object):
 
     def get_ipset(self, name):
         self.check_ipset(name)
-        return self._ipsets[name]
+        obj = self._ipsets[name]
+        self.check_applied_obj(obj)
+        return obj
 
     def _error2warning(self, f, name, *args):
         # transform errors into warnings
@@ -140,6 +142,24 @@ class FirewallIPSet(object):
 
     def get_type(self, name):
         return self.get_ipset(name).type
+
+    # DIMENSION
+    def get_dimension(self, name):
+        return len(self.get_ipset(name).type.split(","))
+
+    # APPLIED
+
+    def is_applied(self, name):
+        return self.get_ipset(name).applied == True
+
+    def check_applied(self, name):
+        obj = self.get_ipset(name)
+        self.check_applied_obj(obj)
+
+    def check_applied_obj(self, obj):
+        if not obj.applied:
+            raise FirewallError(
+                errors.NOT_APPLIED, obj.name)
 
     # OPTIONS
 
