@@ -94,7 +94,7 @@
 	  <term>type="<replaceable>string</replaceable>"</term>
           <listitem>
 	    <para>
-              The mandatory type of the ipset. This can be one of these types: <replaceable>hash:ip</replaceable>, <replaceable>hash:net</replaceable>, <replaceable>hash:mac</replaceable>.
+              The mandatory type of the ipset. To get the list of supported types, use <command>firewall-cmd --get-ipset-types</command>.
 	    </para>
 	  </listitem>
 	</varlistentry>
