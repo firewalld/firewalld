@@ -45,3 +45,12 @@ REJECT_TYPES = {
               "no-route", "icmp6-addr-unreachable", "addr-unreach",
               "icmp6-port-unreachable", "port-unreach", "tcp-reset" ]
 }
+
+# ipset types that can be used as a source in zones
+# The match-set option will be src or src,src according to the
+# dimension of the ipset.
+ZONE_SOURCE_IPSET_TYPES = [
+    "hash:ip", "hash:ip,port", "hash:ip,mark",
+    "hash:net", "hash:net,port", "hash:net,iface",
+    "hash:mac"
+]
