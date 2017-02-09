@@ -73,17 +73,51 @@ CONFIG_FILES = \
 	helpers/sip.xml \
 	helpers/snmp.xml \
 	helpers/tftp.xml \
+	icmptypes/address-unreachable.xml \
+	icmptypes/bad-header.xml \
+	icmptypes/beyond-scope.xml \
+	icmptypes/communication-prohibited.xml \
 	icmptypes/destination-unreachable.xml \
 	icmptypes/echo-reply.xml \
 	icmptypes/echo-request.xml \
+	icmptypes/failed-policy.xml \
+	icmptypes/fragmentation-needed.xml \
+	icmptypes/host-precedence-violation.xml \
+	icmptypes/host-prohibited.xml \
+	icmptypes/host-redirect.xml \
+	icmptypes/host-unknown.xml \
+	icmptypes/host-unreachable.xml \
+	icmptypes/ip-header-bad.xml \
+	icmptypes/neighbour-advertisement.xml \
+	icmptypes/neighbour-solicitation.xml \
+	icmptypes/network-prohibited.xml \
+	icmptypes/network-redirect.xml \
+	icmptypes/network-unknown.xml \
+	icmptypes/network-unreachable.xml \
+	icmptypes/no-route.xml \
+	icmptypes/packet-too-big.xml \
 	icmptypes/parameter-problem.xml \
+	icmptypes/port-unreachable.xml \
+	icmptypes/precedence-cutoff.xml \
+	icmptypes/protocol-unreachable.xml \
 	icmptypes/redirect.xml \
+	icmptypes/reject-route.xml \
+	icmptypes/required-option-missing.xml \
 	icmptypes/router-advertisement.xml \
 	icmptypes/router-solicitation.xml \
 	icmptypes/source-quench.xml \
+	icmptypes/source-route-failed.xml \
 	icmptypes/time-exceeded.xml \
 	icmptypes/timestamp-reply.xml \
 	icmptypes/timestamp-request.xml \
+	icmptypes/tos-host-redirect.xml \
+	icmptypes/tos-host-unreachable.xml \
+	icmptypes/tos-network-redirect.xml \
+	icmptypes/tos-network-unreachable.xml \
+	icmptypes/ttl-zero-during-reassembly.xml \
+	icmptypes/ttl-zero-during-transit.xml \
+	icmptypes/unknown-header-type.xml \
+	icmptypes/unknown-option.xml \
 	ipsets/README \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
