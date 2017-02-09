@@ -130,7 +130,7 @@ class FirewallCommand(object):
                     msg = str(msg)
                 code = FirewallError.get_code(msg)
                 if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
-                             errors.ZONE_ALREADY_SET ]:
+                             errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
                     code = 0
                 if len(option) > 1:
                     self.print_warning("Warning: %s" % msg)
