@@ -141,6 +141,7 @@ CONFIG_FILES = \
 	services/freeipa-ldaps.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
+	services/freeipa-trust.xml \
 	services/ftp.xml \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
