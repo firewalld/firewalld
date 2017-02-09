@@ -27,13 +27,14 @@
 # Valnir Ferreira Jr. <vferreir@redhat.com>, 2006-2007
 # Daniel Lara <danniel@fedoraproject.org>, 2016. #zanata
 # Marco Aurélio Krause <ouesten@me.com>, 2016. #zanata
+# Tulio Macedo <teseu@fedoraproject.org>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-01 12:20+0100\n"
-"PO-Revision-Date: 2016-11-25 05:55-0500\n"
-"Last-Translator: Marco Aurélio Krause <ouesten@me.com>\n"
+"PO-Revision-Date: 2017-01-02 04:25-0500\n"
+"Last-Translator: Tulio Macedo <teseu@fedoraproject.org>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/"
 "firewalld/language/pt_BR/)\n"
 "Language: pt-BR\n"
@@ -686,7 +687,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config:6337
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Ajuda embutida, renomeação não é suportada"
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -954,11 +955,11 @@ msgstr "Modificação do valor do log negada"
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Configurar atribuição automática de ajuda"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Configurar a definição de atribuição automática de ajuda"
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1155,7 +1156,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:106
 msgid "Source Ports"
-msgstr ""
+msgstr "Portas de origem"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1363,7 +1364,7 @@ msgstr "Porta de Origem"
 
 #: ../src/firewall-config.glade.h:147
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Módulos de ajuda do Netfilter são necessários para alguns serviços."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1502,10 +1503,16 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Um assistente de acompanhamento de conexão está auxiliando a fazer com que "
+"os protocolos que estão usando diferentes fluxos para sinalização e "
+"transferência de dados funcionem. As transferências de dados estão usando "
+"portas que não estão relacionadas à conexão de sinalização e, portanto, são "
+"bloqueadas pelo firewall sem o assistente."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"Definir portas ou intervalo de portas; que serão monitoradas pelo assistente."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""

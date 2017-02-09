@@ -8,13 +8,14 @@
 # Lauri Nurmi <lanurmi@iki.fi>, 2004
 # Mikko Ikola <ikola@iki.fi>, 2004
 # Juhani Numminen <juhaninumminen0@gmail.com>, 2016. #zanata
+# Jiri Grönroos <jiri.gronroos@iki.fi>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-01 12:20+0100\n"
-"PO-Revision-Date: 2016-07-06 07:57-0400\n"
-"Last-Translator: Juhani Numminen <juhaninumminen0@gmail.com>\n"
+"PO-Revision-Date: 2017-02-09 02:40-0500\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
 "Language-Team: Finnish (http://www.transifex.com/projects/p/firewalld/"
 "language/fi/)\n"
 "Language: fi\n"
@@ -46,19 +47,19 @@ msgstr ""
 #: ../src/firewall-applet:88 ../src/firewall-config:7926
 #, c-format
 msgid "Select zone for interface '%s'"
-msgstr ""
+msgstr "Valitse alue liitännälle '%s'"
 
 #: ../src/firewall-applet:128 ../src/firewall-applet:135
 #: ../src/firewall-applet:141 ../src/firewall-config:2388
 #: ../src/firewall-config:7971 ../src/firewall-config:7979
 #: ../src/firewall-config:8011 ../src/firewall-config.glade.h:8
 msgid "Default Zone"
-msgstr ""
+msgstr "Oletusalue"
 
 #: ../src/firewall-applet:161 ../src/firewall-config:8004
 #, c-format
 msgid "Select zone for connection '%s'"
-msgstr ""
+msgstr "Valitse alue yhteydelle '%s'"
 
 #: ../src/firewall-applet:171 ../src/firewall-config:3848
 msgid "Failed to set zone {zone} for connection {connection}"
@@ -114,7 +115,7 @@ msgstr ""
 
 #: ../src/firewall-applet:469
 msgid "Enable Notifications"
-msgstr "Ota huomautukset käyttöön"
+msgstr "Ota ilmoitukset käyttöön"
 
 #: ../src/firewall-applet:475
 msgid "Edit Firewall Settings..."
@@ -193,7 +194,7 @@ msgstr "Kaikki verkkoliikenne estetty."
 #: ../src/firewall-applet:864
 #, c-format
 msgid "Default Zone: '%s'"
-msgstr ""
+msgstr "Oletusalue: '%s'"
 
 #: ../src/firewall-applet:870
 msgid ""
@@ -305,7 +306,7 @@ msgstr "käytössä"
 
 #: ../src/firewall-config:93
 msgid "disabled"
-msgstr "poissa käytöstä"
+msgstr "pois käytöstä"
 
 #: ../src/firewall-config:117
 msgid "Failed to load icons."
@@ -317,7 +318,7 @@ msgstr ""
 
 #: ../src/firewall-config:394
 msgid "Permanent"
-msgstr ""
+msgstr "Pysyvä"
 
 #: ../src/firewall-config:473 ../src/firewall-config.glade.h:137
 msgid "Service"
@@ -458,23 +459,23 @@ msgstr "kyllä"
 #: ../src/firewall-config:2392 ../src/firewall-config:2432
 #: ../src/firewall-config:2462 ../src/firewall-config.glade.h:88
 msgid "Zone"
-msgstr ""
+msgstr "Alue"
 
 #: ../src/firewall-config:2405
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "Oletusalue: %s"
 
 #: ../src/firewall-config:2412 ../src/firewall-config:2443
 #: ../src/firewall-config:2473
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "Alue: %s"
 
 #: ../src/firewall-config:2748
 #, c-format
 msgid "Zone '%s': Service '%s' is not available."
-msgstr ""
+msgstr "Alue '%s': Palvelu '%s' ei ole käytettävissä."
 
 #: ../src/firewall-config:2752 ../src/firewall-config:2800
 #: ../src/firewall-config.glade.h:162
@@ -636,7 +637,7 @@ msgstr "Kaikki tiedostot"
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
 msgid "All"
-msgstr ""
+msgstr "Kaikki"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:41
@@ -688,7 +689,7 @@ msgstr "Syötä komento."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Context"
-msgstr ""
+msgstr "Konteksti"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please enter the context."
@@ -825,7 +826,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:43
 msgid "Module:"
-msgstr ""
+msgstr "Moduuli:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
@@ -896,7 +897,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:62
 msgid "Change Default Zone"
-msgstr ""
+msgstr "Muuta oletusaluetta"
 
 #: ../src/firewall-config.glade.h:63
 msgid "Change default zone for connections or interfaces."
@@ -1013,15 +1014,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:89
 msgid "Add Zone"
-msgstr ""
+msgstr "Lisää alue"
 
 #: ../src/firewall-config.glade.h:90
 msgid "Edit Zone"
-msgstr ""
+msgstr "Muokkaa aluetta"
 
 #: ../src/firewall-config.glade.h:91
 msgid "Remove Zone"
-msgstr ""
+msgstr "Poista alue"
 
 #: ../src/firewall-config.glade.h:92
 msgid "Load Zone Defaults"
@@ -1050,11 +1051,11 @@ msgstr "Porttiin"
 
 #: ../src/firewall-config.glade.h:97
 msgid "Edit Port"
-msgstr ""
+msgstr "Muokkaa porttia"
 
 #: ../src/firewall-config.glade.h:98
 msgid "Remove Port"
-msgstr ""
+msgstr "Poista portti"
 
 #: ../src/firewall-config.glade.h:99
 msgid "Ports"
@@ -1066,19 +1067,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:101
 msgid "Add Protocol"
-msgstr ""
+msgstr "Lisää protokolla"
 
 #: ../src/firewall-config.glade.h:102
 msgid "Edit Protocol"
-msgstr ""
+msgstr "Muokkaa protokollaa"
 
 #: ../src/firewall-config.glade.h:103
 msgid "Remove Protocol"
-msgstr ""
+msgstr "Poista protokolla"
 
 #: ../src/firewall-config.glade.h:104
 msgid "Protocols"
-msgstr ""
+msgstr "Protokollat"
 
 #: ../src/firewall-config.glade.h:105
 msgid ""
@@ -1088,7 +1089,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:106
 msgid "Source Ports"
-msgstr ""
+msgstr "Lähdeportit"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1199,15 +1200,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:126
 msgid "Add Interface"
-msgstr ""
+msgstr "Lisää liitäntä"
 
 #: ../src/firewall-config.glade.h:127
 msgid "Edit Interface"
-msgstr ""
+msgstr "Muokkaa liitäntää"
 
 #: ../src/firewall-config.glade.h:128
 msgid "Remove Interface"
-msgstr ""
+msgstr "Poista liitäntä"
 
 #: ../src/firewall-config.glade.h:130
 msgid ""
@@ -1218,19 +1219,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:131
 msgid "Add Source"
-msgstr ""
+msgstr "Lisää lähde"
 
 #: ../src/firewall-config.glade.h:132
 msgid "Edit Source"
-msgstr ""
+msgstr "Muokkaa lähdettä"
 
 #: ../src/firewall-config.glade.h:133
 msgid "Remove Source"
-msgstr ""
+msgstr "Poista lähde"
 
 #: ../src/firewall-config.glade.h:135
 msgid "Zones"
-msgstr ""
+msgstr "Alueet"
 
 #: ../src/firewall-config.glade.h:136
 msgid ""
@@ -1276,7 +1277,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:146
 msgid "Source Port"
-msgstr ""
+msgstr "Lähdeportti"
 
 #: ../src/firewall-config.glade.h:147
 msgid "Netfilter helper modules are needed for some services."
@@ -1349,7 +1350,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:161
 msgid "Add"
-msgstr ""
+msgstr "Lisää"
 
 #: ../src/firewall-config.glade.h:163
 msgid "Entries"
@@ -1456,19 +1457,19 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:183
 msgid "Add Rule"
-msgstr ""
+msgstr "Lisää sääntö"
 
 #: ../src/firewall-config.glade.h:184
 msgid "Edit Rule"
-msgstr ""
+msgstr "Muokkaa sääntöä"
 
 #: ../src/firewall-config.glade.h:185
 msgid "Remove Rule"
-msgstr ""
+msgstr "Poista sääntö"
 
 #: ../src/firewall-config.glade.h:186
 msgid "Rules"
-msgstr ""
+msgstr "Säännöt"
 
 #: ../src/firewall-config.glade.h:187
 msgid ""
@@ -1592,7 +1593,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:214
 msgid "Default Zone:"
-msgstr ""
+msgstr "Oletusalue:"
 
 #: ../src/firewall-config.glade.h:215
 msgid "Current default zone of the system."
@@ -1618,7 +1619,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:219
 msgid "Panic Mode:"
-msgstr ""
+msgstr "Paniikkitila:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Base IPSet Settings"
@@ -1630,7 +1631,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:222
 msgid "Type:"
-msgstr ""
+msgstr "Tyyppi:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Timeout:"
@@ -1646,7 +1647,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:226
 msgid "Timeout value in seconds"
-msgstr ""
+msgstr "Aikakatkaisun arvo sekunneissa"
 
 #: ../src/firewall-config.glade.h:227
 msgid "Initial hash size, default 1024"
@@ -1718,7 +1719,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:244
 msgid "Priority:"
-msgstr ""
+msgstr "Prioriteetti:"
 
 #: ../src/firewall-config.glade.h:246
 msgid "Please enter a protocol."
@@ -1726,7 +1727,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:247
 msgid "Other Protocol:"
-msgstr ""
+msgstr "Muu protokolla:"
 
 #: ../src/firewall-config.glade.h:248
 msgid "Rich Rule"
@@ -1742,15 +1743,15 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:251
 msgid "Source:"
-msgstr ""
+msgstr "Lähde:"
 
 #: ../src/firewall-config.glade.h:252
 msgid "Destination:"
-msgstr ""
+msgstr "Kohde:"
 
 #: ../src/firewall-config.glade.h:253
 msgid "Log:"
-msgstr ""
+msgstr "Loki:"
 
 #: ../src/firewall-config.glade.h:254
 msgid "Audit:"
@@ -1758,7 +1759,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:255
 msgid "ipv4 and ipv6"
-msgstr ""
+msgstr "ipv4 ja ipv6"
 
 #: ../src/firewall-config.glade.h:256
 msgid "inverted"
@@ -1808,7 +1809,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:286
 msgid "Please select a service."
-msgstr ""
+msgstr "Valitse palvelu."
 
 #: ../src/firewall-config.glade.h:287
 msgid "User ID"
