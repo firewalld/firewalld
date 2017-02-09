@@ -26,12 +26,13 @@
 # tavanofabio <tavano.fabio@gmail.com>, 2013
 # Gregorio <devim@outlook.it>, 2016. #zanata
 # Terry Chuang <tchuang@redhat.com>, 2016. #zanata
+# Thomas Woerner <twoerner@redhat.com>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-01 12:20+0100\n"
-"PO-Revision-Date: 2016-06-16 10:35-0400\n"
+"PO-Revision-Date: 2017-02-09 05:28-0500\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/firewalld/"
 "language/it/)\n"
@@ -166,7 +167,7 @@ msgstr "Connessioni"
 #: ../src/firewall-config:2417 ../src/firewall-config:2613
 #: ../src/firewall-config:2638 ../src/firewall-config.glade.h:129
 msgid "Interfaces"
-msgstr "<interfaccia>"
+msgstr "Interfaccia"
 
 #: ../src/firewall-applet:508 ../src/firewall-config:614
 #: ../src/firewall-config:2448 ../src/firewall-config:2616
@@ -683,8 +684,9 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
+#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Ipset integrato, ridenominazione non supportata."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -709,12 +711,13 @@ msgid "Automatic Helpers"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:3
+#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Selezionare il valore del log negato:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
-msgstr ""
+msgstr "Linea di comando"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the command line."
@@ -722,7 +725,7 @@ msgstr "Inserire il comando."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Context"
-msgstr ""
+msgstr "Contesto"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please enter the context."
@@ -828,12 +831,14 @@ msgid "Forward to another port"
 msgstr "Forward verso un'altra porta"
 
 #: ../src/firewall-config.glade.h:32
+#, fuzzy
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Impostazioni Base Zone"
 
 #: ../src/firewall-config.glade.h:33
+#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Configurare le impostazioni di base ipset:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -860,16 +865,19 @@ msgid "Family:"
 msgstr "Famiglia:"
 
 #: ../src/firewall-config.glade.h:43
+#, fuzzy
 msgid "Module:"
-msgstr ""
+msgstr "Moduli"
 
 #: ../src/firewall-config.glade.h:44
+#, fuzzy
 msgid "Helper"
-msgstr ""
+msgstr "Aiu_to"
 
 #: ../src/firewall-config.glade.h:45
+#, fuzzy
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Per favore seleziona un file"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -1001,8 +1009,9 @@ msgid "ICMP Types"
 msgstr "Tipi ICMP"
 
 #: ../src/firewall-config.glade.h:77
+#, fuzzy
 msgid "Helpers"
-msgstr ""
+msgstr "Aiu_to"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1010,7 +1019,7 @@ msgstr "Configurazione Esperta"
 
 #: ../src/firewall-config.glade.h:79
 msgid "Lockdown Whitelist"
-msgstr "Lockdown Whitelist"
+msgstr "Whitelist lockdown"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Active Bindings"
@@ -1152,8 +1161,9 @@ msgstr ""
 "accessibili da tutti gli host o reti che possono connettersi alla macchina."
 
 #: ../src/firewall-config.glade.h:106
+#, fuzzy
 msgid "Source Ports"
-msgstr ""
+msgstr "Porta sorgente"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1363,8 +1373,9 @@ msgid "Source Port"
 msgstr "Porta sorgente"
 
 #: ../src/firewall-config.glade.h:147
+#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Moduli di aiuto di Netfilter"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1825,16 +1836,18 @@ msgid "Mask:"
 msgstr "Maschera:"
 
 #: ../src/firewall-config.glade.h:237
+#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Per favore seleziona un file"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Seleziona -"
 
 #: ../src/firewall-config.glade.h:239
+#, fuzzy
 msgid "Other Module:"
-msgstr ""
+msgstr "Altro Protocollo:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
