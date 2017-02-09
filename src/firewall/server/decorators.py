@@ -30,6 +30,7 @@ from decorator import decorator
 
 from firewall import config
 from firewall.errors import FirewallError
+from firewall import errors
 from firewall.core.logger import log
 
 ############################################################################
@@ -63,7 +64,12 @@ def dbus_handle_exceptions(func, *args, **kwargs):
     try:
         return func(*args, **kwargs)
     except FirewallError as error:
-        log.error(str(error))
+        code = FirewallError.get_code(str(error))
+        if code in [ errors.ALREADY_ENABLED, errors.NOT_ENABLED,
+                     errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
+            log.warning(str(error))
+        else:
+            log.error(str(error))
         raise FirewallDBusException(str(error))
     except DBusException as ex:
         # only log DBusExceptions once
