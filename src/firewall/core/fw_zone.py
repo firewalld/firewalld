@@ -1127,19 +1127,15 @@ class FirewallZone(object):
 
                 if type(rule.action) == Rich_Accept:
                     # only load modules for accept action
+                    helpers = self.get_helpers_for_service_modules(svc.modules,
+                                                                   enable)
+
                     modules = [ ]
-                    for module in svc.modules:
-                        try:
-                            helper = self._fw.helper.get_helper(module)
-                        except FirewallError:
-                            raise FirewallError(errors.INVALID_HELPER, module)
-                        if helper.module not in self._fw.nf_conntrack_helpers:
-                            raise FirewallError(
-                                errors.INVALID_HELPER,
-                                "'%s' not available in kernel" % helper.module)
+                    for helper in helpers:
+                        module = helper.module
                         if self._fw.nf_conntrack_helper_setting == 0:
-                            if module not in \
-                               self._fw.nf_conntrack_helpers[helper.module]:
+                            if helper.name not in \
+                               self._fw.nf_conntrack_helpers[module]:
                                 raise FirewallError(
                                     errors.INVALID_HELPER,
                                     "'%s' not available in kernel" % module)
@@ -1156,7 +1152,7 @@ class FirewallZone(object):
                                 if ipv in svc.destination and \
                                    svc.destination[ipv] != "":
                                     _rule += [ "-d",  svc.destination[ipv] ]
-                                _rule += [ "-j", "CT", "--helper", module ]
+                                _rule += [ "-j", "CT", "--helper", helper.name ]
                                 self.__rule_source(rule.source, _rule)
                                 zone_transaction.add_rule(ipv, _rule)
                         else:
@@ -1616,21 +1612,14 @@ class FirewallZone(object):
             zone_transaction = use_zone_transaction
 
         svc = self._fw.service.get_service(service)
+        helpers = self.get_helpers_for_service_modules(svc.modules, enable)
 
         if enable:
             if self._fw.nf_conntrack_helper_setting == 0:
                 zone_transaction.add_chain("raw", "PREROUTING")
             else:
                 modules = [ ]
-                for module in svc.modules:
-                    try:
-                        helper = self._fw.helper.get_helper(module)
-                    except FirewallError:
-                        raise FirewallError(errors.INVALID_HELPER, module)
-                    if helper.module not in self._fw.nf_conntrack_helpers:
-                        raise FirewallError(
-                            errors.INVALID_HELPER,
-                            "'%s' not available in kernel" % helper.module)
+                for helper in helpers:
                     modules.append(helper.module)
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
@@ -1642,20 +1631,13 @@ class FirewallZone(object):
                 continue
 
             if self._fw.nf_conntrack_helper_setting == 0:
-                for module in svc.modules:
-                    try:
-                        helper = self._fw.helper.get_helper(module)
-                    except FirewallError:
-                        raise FirewallError(errors.INVALID_HELPER, module)
-                    if helper.module not in self._fw.nf_conntrack_helpers:
+                for helper in helpers:
+                    module = helper.module
+                    if helper.name not in \
+                       self._fw.nf_conntrack_helpers[module]:
                         raise FirewallError(
                             errors.INVALID_HELPER,
-                            "'%s' not available in kernel" % helper.module)
-                    if module not in \
-                       self._fw.nf_conntrack_helpers[helper.module]:
-                        raise FirewallError(
-                            errors.INVALID_HELPER,
-                            "'%s' not available in kernel" % module)
+                            "'%s' is not available in kernel" % module)
                     if helper.family != "" and helper.family != ipv:
                         # no support for family ipv, continue
                         continue
@@ -1669,7 +1651,7 @@ class FirewallZone(object):
                         if ipv in svc.destination and \
                            svc.destination[ipv] != "":
                             rule += [ "-d",  svc.destination[ipv] ]
-                        rule += [ "-j", "CT", "--helper", module ]
+                        rule += [ "-j", "CT", "--helper", helper.name ]
                         zone_transaction.add_rule(ipv, rule)
 
             # handle rules
@@ -1781,6 +1763,34 @@ class FirewallZone(object):
 
     def list_services(self, zone):
         return self.get_settings(zone)["services"].keys()
+
+    def get_helpers_for_service_modules(self, modules, enable):
+        # If automatic helper assignment is turned off, helpers that
+        # do not have ports defined will be replaced by the helpers
+        # that the helper.module defines.
+        _helpers = [ ]
+        for module in modules:
+            try:
+                helper = self._fw.helper.get_helper(module)
+            except FirewallError:
+                raise FirewallError(errors.INVALID_HELPER, module)
+            if helper.module not in self._fw.nf_conntrack_helpers:
+                raise FirewallError(
+                    errors.INVALID_HELPER,
+                    "'%s' is not available" % helper.module)
+            if self._fw.nf_conntrack_helper_setting == 0 and \
+               len(helper.ports) < 1:
+                for mod in self._fw.nf_conntrack_helpers[helper.module]:
+                    try:
+                        _helper = self._fw.helper.get_helper(mod)
+                    except FirewallError:
+                        if enable:
+                            log.warning("Helper '%s' is not available" % mod)
+                        continue
+                    _helpers.append(_helper)
+            else:
+                _helpers.append(helper)
+        return _helpers
 
     # PORTS
 
