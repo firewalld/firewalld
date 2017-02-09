@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.2
+Version: 0.4.4.3
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -309,6 +309,55 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Feb  9 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.3-1
+- New service freeipa-trust (RHBZ#1411650)
+- Complete icmp types for IPv4 and IPv6
+- New h323 helper container
+- Support helper container: h323
+- firewall.server.decorators: ALREADY_ errors should be logged as warnings
+- firewall.command: ALREADY_SET should also result in zero exit code
+- tests/firewall-offline-cmd_test.sh: Only use firewall-offline-cmd
+- Support more ipset types: hash:ip,port, hash:ip,port,ip, hash:ip,port,net,
+  hash:ip,mark, hash:net,net, hash:net,port, hash:net,port,net, hash:net,iface
+- New checks for ipset entry validation
+- Use ipset dimension for match
+- firewall.core.base: New ZONE_SOURCE_IPSET_TYPES list
+- New firewall.core.icmp providing names and types for icmp and icmpv6 values
+- firewall.core.fw_ipset: New methods to get ipset dimension and applied state
+- firewall.errors: New error NOT_APPLIED
+- firewall-cmd man page: Add missing --get-ipset-types
+- firewall.core.fw_nm: No trace back on failed get_connection call
+  (RHBZ#1413345)
+- firewall.core.prog: Fix addition of the error output in runProg
+- Speed up ipset handling, (re)loading and import from file
+- Support --family option for --new-ipset
+- Handle FirewallError for query sequences in command line tools
+- Fail to alter entries of ipsets with timeout
+- Extended tests for ipset options
+- Return empty list for ipsets using timeouts
+- firewall.functions: Fix checks in checkIPnMask and checkIP6nMask (issue#186)
+- firewalld.conf man page: New section about AutomaticHelpers
+- firewall-offline-cmd man page: Added -v and -q options, fixed section ids
+- firewall{-cmd, ctl}: Fix scope of final return in try_set_zone_of_interface
+- firewall.core.fw_zone: Limit masquerading forward rule to new connections
+- firewall-config: Update active zones on reloaded signal
+- firewall-applet: Update active zones and tooltip on reloaded signal
+- firewall.core.fw_zone: Fix missing chain for helper in rich rules using
+  service (RHBZ#1416578)
+- Support icmp-type usage in rich rules (RHBZ#1409544)
+- firewall[-offline]-cmd: Fix --{set,get}-{short,description} for ipset and
+  helper (RHBZ#1416325)
+- firewall.core.ipset: Solve ipset creation issues with -exist and more flag
+  tests
+- Speed up start and restart for ipsets with lots of entries (RHBZ#1416817)
+- Speed up of ipset alteration by adding and removing entries using a file
+  (RHBZ#1416817)
+- Code cleanup and minor bug fixes
+- firewall.core.prog: Fix addition of the error output in runProg
+- New services mssql, kibana, elasticsearch, quassel, bitcoin-rpc,
+  bitcoin-testnet-rpc, bitcoin-testnet, bitcoin and spideroak-lansync
+- Translation updates
+
 * Thu Dec  1 2016 Thomas Woerner <twoerner@redhat.com> - 0.4.4.2-1
 - firewalld.spec: Added helpers and ipsets paths to firewalld-filesystem
 - firewall.core.fw_nm: create NMClient lazily
