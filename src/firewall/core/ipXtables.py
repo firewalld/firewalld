@@ -68,7 +68,7 @@ for chain in BUILT_IN_CHAINS["raw"]:
     DEFAULT_RULES["raw"].append("-I %s 1 -j %s_direct" % (chain, chain))
     OUR_CHAINS["raw"].add("%s_direct" % chain)
 
-    if chain == "PREROUTING":
+    if chain in [ "PREROUTING", "OUTPUT" ]:
         DEFAULT_RULES["raw"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["raw"].append("-N %s_ZONES" % chain)
         DEFAULT_RULES["raw"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
@@ -82,7 +82,7 @@ for chain in BUILT_IN_CHAINS["mangle"]:
     DEFAULT_RULES["mangle"].append("-I %s 1 -j %s_direct" % (chain, chain))
     OUR_CHAINS["mangle"].add("%s_direct" % chain)
 
-    if chain == "PREROUTING":
+    if chain in [ "PREROUTING", "OUTPUT" ]:
         DEFAULT_RULES["mangle"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["mangle"].append("-N %s_ZONES" % chain)
         DEFAULT_RULES["mangle"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
@@ -96,7 +96,7 @@ for chain in BUILT_IN_CHAINS["nat"]:
     DEFAULT_RULES["nat"].append("-I %s 1 -j %s_direct" % (chain, chain))
     OUR_CHAINS["nat"].add("%s_direct" % chain)
 
-    if chain in [ "PREROUTING", "POSTROUTING" ]:
+    if chain in [ "PREROUTING", "POSTROUTING", "OUTPUT" ]:
         DEFAULT_RULES["nat"].append("-N %s_ZONES_SOURCE" % chain)
         DEFAULT_RULES["nat"].append("-N %s_ZONES" % chain)
         DEFAULT_RULES["nat"].append("-I %s 2 -j %s_ZONES_SOURCE" % (chain, chain))
@@ -133,10 +133,12 @@ DEFAULT_RULES["filter"] = [
     "-I FORWARD 9 -j %%REJECT%%",
 
     "-N OUTPUT_direct",
+    "-N OUTPUT_ZONES_SOURCE",
     "-N OUTPUT_ZONES",
 
     "-I OUTPUT 1 -j OUTPUT_direct",
-    "-I OUTPUT 2 -j OUTPUT_ZONES",
+    "-I OUTPUT 2 -j OUTPUT_ZONES_SOURCE",
+    "-I OUTPUT 3 -j OUTPUT_ZONES",
 ]
 
 LOG_RULES["filter"] = [
@@ -151,7 +153,7 @@ OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
                             "FORWARD_direct", "FORWARD_IN_ZONES_SOURCE",
                             "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
                             "FORWARD_OUT_ZONES", "OUTPUT_direct",
-                            "OUTPUT_ZONES"])
+                            "OUTPUT_ZONES_SOURCE", "OUTPUT_ZONES"])
 
 class ip4tables(object):
     ipv = "ipv4"
