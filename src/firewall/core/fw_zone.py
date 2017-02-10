@@ -76,6 +76,7 @@ class FirewallZone(object):
                 "INPUT": [ "ipv4", "ipv6" ],
                 "FORWARD_IN": [ "ipv4", "ipv6" ],
                 "FORWARD_OUT": [ "ipv4", "ipv6" ],
+                "OUTPUT": [ "ipv4", "ipv6" ],
             },
             "nat": {
                 "PREROUTING": nat,
