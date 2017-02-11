@@ -124,6 +124,7 @@ CONFIG_FILES = \
 	services/amanda-k5-client.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
+	services/bgp.xml \
 	services/bitcoin-rpc.xml \
 	services/bitcoin-testnet-rpc.xml \
 	services/bitcoin-testnet.xml \
