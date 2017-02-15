@@ -55,10 +55,11 @@ class FirewallIPSet(object):
     def has_ipsets(self):
         return len(self._ipsets) > 0
 
-    def get_ipset(self, name):
+    def get_ipset(self, name, applied=False):
         self.check_ipset(name)
         obj = self._ipsets[name]
-        self.check_applied_obj(obj)
+        if applied:
+            self.check_applied_obj(obj)
         return obj
 
     def _error2warning(self, f, name, *args):
@@ -141,11 +142,11 @@ class FirewallIPSet(object):
     # TYPE
 
     def get_type(self, name):
-        return self.get_ipset(name).type
+        return self.get_ipset(name, applied=True).type
 
     # DIMENSION
     def get_dimension(self, name):
-        return len(self.get_ipset(name).type.split(","))
+        return len(self.get_ipset(name, applied=True).type.split(","))
 
     # APPLIED
 
@@ -164,7 +165,7 @@ class FirewallIPSet(object):
     # OPTIONS
 
     def get_family(self, name):
-        obj = self.get_ipset(name)
+        obj = self.get_ipset(name, applied=True)
         if "family" in obj.options:
             if obj.options["family"] == "inet6":
                 return "ipv6"
@@ -179,7 +180,7 @@ class FirewallIPSet(object):
         pass
 
     def add_entry(self, name, entry):
-        obj = self.get_ipset(name)
+        obj = self.get_ipset(name, applied=True)
         if "timeout" in obj.options and obj.options["timeout"] != "0":
             # no entries visible for ipsets with timeout
             raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
@@ -201,7 +202,7 @@ class FirewallIPSet(object):
                 obj.entries.append(entry)
 
     def remove_entry(self, name, entry):
-        obj = self.get_ipset(name)
+        obj = self.get_ipset(name, applied=True)
         if "timeout" in obj.options and obj.options["timeout"] != "0":
             # no entries visible for ipsets with timeout
             raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
@@ -222,7 +223,7 @@ class FirewallIPSet(object):
                 obj.entries.remove(entry)
 
     def query_entry(self, name, entry):
-        obj = self.get_ipset(name)
+        obj = self.get_ipset(name, applied=True)
         if "timeout" in obj.options and obj.options["timeout"] != "0":
             # no entries visible for ipsets with timeout
             raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
@@ -230,11 +231,11 @@ class FirewallIPSet(object):
         return entry in obj.entries
 
     def get_entries(self, name):
-        obj = self.get_ipset(name)
+        obj = self.get_ipset(name, applied=True)
         return obj.entries
 
     def set_entries(self, name, entries):
-        obj = self.get_ipset(name)
+        obj = self.get_ipset(name, applied=True)
         if "timeout" in obj.options and obj.options["timeout"] != "0":
             # no entries visible for ipsets with timeout
             raise FirewallError(errors.IPSET_WITH_TIMEOUT, name)
