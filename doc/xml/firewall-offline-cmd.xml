@@ -81,8 +81,8 @@
       The following options are supported:
     </para>
 
-    <refsect2 id="help_options">
-      <title>Help Options</title>
+    <refsect2 id="general_options">
+      <title>General Options</title>
       <variablelist>
 	<varlistentry>
           <term><option>-h</option></term>
@@ -90,6 +90,24 @@
           <listitem>
 	    <para>
 	      Prints a short help text and exists.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>-V</option></term>
+          <term><option>--version</option></term>
+          <listitem>
+	    <para>
+	      Prints the version string of firewalld and exits.
+	    </para>
+	  </listitem>
+	</varlistentry>
+	<varlistentry>
+          <term><option>-q</option></term>
+          <term><option>--quiet</option></term>
+          <listitem>
+	    <para>
+	      Do not print status messages.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -116,16 +134,23 @@
 	    </para>
 	  </listitem>
 	</varlistentry>
-
       </variablelist>
     </refsect2>
 
-    <refsect2 id="genernal_options">
+    <refsect2 id="lokkit_options">
       <title>Lokkit Compatibility Options</title>
       <para>
         These options are nearly identical to the options of <command>lokkit</command>.
       </para>
       <variablelist>
+	<varlistentry>
+          <term><option>--migrate-system-config-firewall=<replaceable>file</replaceable></option></term>
+          <listitem>
+	    <para>
+	      Migrate system-config-firewall configuration from the given file. No further
+	    </para>
+	  </listitem>
+	</varlistentry>
 	<varlistentry>
 	  <term><option>--addmodule</option>=<replaceable>module</replaceable></term>
 	  <listitem>

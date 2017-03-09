@@ -46,6 +46,7 @@ ALREADY_SET         =   34
 MISSING_IMPORT      =   35
 DBUS_ERROR          =   36
 BUILTIN_HELPER      =   37
+NOT_APPLIED         =   38
 
 INVALID_ACTION      =  100
 INVALID_SERVICE     =  101

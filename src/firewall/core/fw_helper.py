@@ -23,8 +23,6 @@
 
 __all__ = [ "FirewallHelper" ]
 
-from firewall.core.logger import log
-from firewall.core.io.helper import Helper
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -63,6 +61,5 @@ class FirewallHelper(object):
 
     def remove_helper(self, name):
         if name not in self._helpers:
-            raise FirewallError(errors.INVALID_HELPER, helper)
-        obj = self._helpers[name]
+            raise FirewallError(errors.INVALID_HELPER, name)
         del self._helpers[name]

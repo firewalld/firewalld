@@ -171,8 +171,7 @@ class firewalld_conf(object):
 
         # check automatic helpers
         value = self.get("AutomaticHelpers")
-        if not value or value.lower() not in [ "system",
-                                               "yes", "true", "no", "false" ]:
+        if not value or value.lower() not in AUTOMATIC_HELPERS_VALUES:
             if value is not None:
                 log.warning("AutomaticHelpers '%s' is not valid, using default "
                             "value %s", value if value else '',

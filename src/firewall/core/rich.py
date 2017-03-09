@@ -21,6 +21,7 @@
 
 __all__ = [ "Rich_Source", "Rich_Destination", "Rich_Service", "Rich_Port",
             "Rich_Protocol", "Rich_Masquerade", "Rich_IcmpBlock",
+            "Rich_IcmpType",
             "Rich_SourcePort", "Rich_ForwardPort", "Rich_Log", "Rich_Audit",
             "Rich_Accept", "Rich_Reject", "Rich_Drop", "Rich_Mark",
             "Rich_Limit", "Rich_Rule" ]
@@ -104,6 +105,13 @@ class Rich_IcmpBlock(object):
 
     def __str__(self):
         return 'icmp-block name="%s"' % (self.name)
+
+class Rich_IcmpType(object):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return 'icmp-type name="%s"' % (self.name)
 
 class Rich_ForwardPort(object):
     def __init__(self, port, protocol, to_port, to_address):
@@ -319,14 +327,15 @@ class Rich_Rule(object):
                     raise FirewallError(errors.INVALID_RULE, "bad attribute '%s'" % attr_name)
             else:             # element
                 if element in ['rule', 'source', 'destination', 'protocol',
-                               'service', 'port', 'icmp-block', 'masquerade',
+                               'service', 'port', 'icmp-block', 'icmp-type', 'masquerade',
                                'forward-port', 'source-port', 'log', 'audit',
                                'accept', 'drop', 'reject', 'mark', 'limit', 'not', 'NOT', 'EOL']:
                     if element == 'source' and self.source:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'source' element")
                     elif element == 'destination' and self.destination:
                         raise FirewallError(errors.INVALID_RULE, "more than one 'destination' element")
-                    elif element in ['protocol', 'service', 'port', 'icmp-block',
+                    elif element in ['protocol', 'service', 'port',
+                                     'icmp-block', 'icmp-type',
                                      'masquerade', 'forward-port',
                                      'source-port'] and self.element:
                         raise FirewallError(errors.INVALID_RULE, "more than one element. There cannot be both '%s' and '%s' in one rule." % (element, self.element))
@@ -410,6 +419,12 @@ class Rich_Rule(object):
                     in_elements.pop() # icmp-block
                 else:
                     raise FirewallError(errors.INVALID_RULE, "invalid 'icmp-block' element")
+            elif in_element == 'icmp-type':
+                if attr_name == 'name':
+                    self.element = Rich_IcmpType(attr_value)
+                    in_elements.pop() # icmp-type
+                else:
+                    raise FirewallError(errors.INVALID_RULE, "invalid 'icmp-type' element")
             elif in_element == 'masquerade':
                 self.element = Rich_Masquerade()
                 in_elements.pop()
@@ -584,6 +599,13 @@ class Rich_Rule(object):
                 raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
             if self.action:
                 raise FirewallError(errors.INVALID_RULE, "icmp-block and action")
+
+        # icmp-type
+        elif type(self.element) == Rich_IcmpType:
+            # icmp type availability needs to be checked in Firewall, here is no
+            # knowledge about this, therefore only simple check
+            if self.element.name is None or len(self.element.name) < 1:
+                raise FirewallError(errors.INVALID_ICMPTYPE, str(self.element.name))
 
         # forward-port
         elif type(self.element) == Rich_ForwardPort:

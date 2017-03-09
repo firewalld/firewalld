@@ -46,9 +46,11 @@ def runProg(prog, argv=None, stdin=None):
         return (255, '')
 
     (output, err_output) = process.communicate(input_string)
-    if output is not None:
+    if output is not None and output != "":
         output = output.decode('utf-8', 'replace')
-    elif err_output is not None:
-        output = err_output.decode('utf-8', 'replace')
+    elif err_output is not None and err_output != "":
+        if output is None:
+            output = ""
+        output += err_output.decode('utf-8', 'replace')
 
     return (process.returncode, output)

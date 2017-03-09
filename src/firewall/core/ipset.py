@@ -41,16 +41,16 @@ IPSET_TYPES = [
     # "list:set",
 
     "hash:ip",
-    #"hash:ip,port",
-    #"hash:ip,port,ip",
-    #"hash:ip,port,net",
-    #"hash:ip,mark",
+    "hash:ip,port",
+    "hash:ip,port,ip",
+    "hash:ip,port,net",
+    "hash:ip,mark",
 
     "hash:net",
-    #"hash:net,net",
-    #"hash:net,port",
-    #"hash:net,port,net",
-    #"hash:net,iface",
+    "hash:net,net",
+    "hash:net,port",
+    "hash:net,port,net",
+    "hash:net,iface",
 
     "hash:mac",
 ]
@@ -136,7 +136,7 @@ class ipset(object):
         return self.__run([ "destroy", set_name ])
 
     def add(self, set_name, entry, options=None):
-        args = [ "add", set_name, entry ]
+        args = [ "add", set_name, entry, "-exist" ]
         if options:
             args.append("%s" % " ".join(options))
         return self.__run(args)
@@ -183,7 +183,8 @@ class ipset(object):
                 i = 0
                 while i < len(splits):
                     opt = splits[i]
-                    if opt in [ "family", "hashsize", "maxelem", "timeout" ]:
+                    if opt in [ "family", "hashsize", "maxelem", "timeout",
+                                "netmask" ]:
                         if len(splits) > i:
                             i += 1
                             _options[opt] = splits[i]
@@ -226,10 +227,10 @@ class ipset(object):
             if ' ' in entry:
                 entry = "'%s'" % entry
             if entry_options:
-                temp_file.write("add %s %s %s\n" % (set_name, entry,
-                                                    " ".join(entry_options)))
+                temp_file.write("add %s %s %s -exist\n" % \
+                                (set_name, entry, " ".join(entry_options)))
             else:
-                temp_file.write("add %s %s\n" % (set_name, entry))
+                temp_file.write("add %s %s -exist\n" % (set_name, entry))
         temp_file.close()
 
         stat = os.stat(temp_file.name)

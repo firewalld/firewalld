@@ -89,6 +89,7 @@
       &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
       &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
       &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
+      &lt;icmp-type name="<replaceable>icmptype</replaceable>"/&gt; |
       &lt;masquerade/&gt; |
       &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
     ]
@@ -409,6 +410,7 @@
     &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
     &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
     &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
+    &lt;icmp-type name="<replaceable>icmptype</replaceable>"/&gt; |
     &lt;masquerade/&gt; |
     &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt; |
     &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |

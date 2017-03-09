@@ -412,6 +412,8 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
                    ",".join(entries))
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
+        if "timeout" in settings[4] and settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         settings[5] = entries
         self.update(settings)
 
@@ -423,6 +425,8 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
         log.debug1("%s.addEntry('%s')", self._log_prefix, entry)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
+        if "timeout" in settings[4] and settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         if entry in settings[5]:
             raise FirewallError(errors.ALREADY_ENABLED, entry)
         settings[5].append(entry)
@@ -436,6 +440,8 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
         log.debug1("%s.removeEntry('%s')", self._log_prefix, entry)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
+        if "timeout" in settings[4] and settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         if entry not in settings[5]:
             raise FirewallError(errors.NOT_ENABLED, entry)
         settings[5].remove(entry)
@@ -447,4 +453,7 @@ class FirewallDConfigIPSet(slip.dbus.service.Object):
     def queryEntry(self, entry, sender=None): # pylint: disable=W0613
         entry = dbus_to_python(entry, str)
         log.debug1("%s.queryEntry('%s')", self._log_prefix, entry)
-        return entry in self.getSettings()[5]
+        settings = list(self.getSettings())
+        if "timeout" in settings[4] and settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
+        return entry in settings[5]

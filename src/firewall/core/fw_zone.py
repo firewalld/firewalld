@@ -20,13 +20,15 @@
 #
 
 import time
-from firewall.core.base import *
+from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET, \
+    ZONE_SOURCE_IPSET_TYPES
 from firewall.core.logger import log
 from firewall.functions import portStr, checkIPnMask, checkIP6nMask, \
     checkProtocol, enable_ip_forwarding, check_single_address, check_mac
 from firewall.core.rich import Rich_Rule, Rich_Accept, Rich_Reject, \
     Rich_Drop, Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
-    Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock
+    Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
+    Rich_IcmpType
 from firewall.core.ipXtables import OUR_CHAINS
 from firewall.core.fw_transaction import FirewallTransaction, \
     FirewallZoneTransaction
@@ -709,6 +711,26 @@ class FirewallZone(object):
             return None
         return self._fw.ipset.get_family(name)
 
+    def ipset_type(self, name):
+        return self._fw.ipset.get_type(name)
+
+    def ipset_dimension(self, name):
+        return self._fw.ipset.get_dimension(name)
+
+    def ipset_match_flags(self, name, flag):
+        return ",".join([flag] * self._fw.ipset.get_dimension(name))
+
+    def check_ipset_applied(self, name):
+        return self._fw.ipset.check_applied(name)
+
+    def check_ipset_type_for_source(self, name):
+        _type = self.ipset_type(name)
+        if _type not in ZONE_SOURCE_IPSET_TYPES:
+            raise FirewallError(
+                errors.INVALID_IPSET,
+                "ipset '%s' with type '%s' not usable as source" % \
+                (name, _type))
+
     # SOURCES
 
     def check_source(self, source):
@@ -719,6 +741,8 @@ class FirewallZone(object):
         elif check_mac(source):
             return ""
         elif source.startswith("ipset:"):
+            self.check_ipset_type_for_source(source[6:])
+            self.check_ipset_applied(source[6:])
             return self.ipset_family(source[6:])
         else:
             raise FirewallError(errors.INVALID_ADDR, source)
@@ -760,14 +784,16 @@ class FirewallZone(object):
                         opt = self.source_zone_opts[chain]
 
                         if source.startswith("ipset:"):
+                            _name = source[6:]
                             if opt == "-d":
                                 opt = "dst"
                             else:
                                 opt = "src"
+                            flags = self.ipset_match_flags(_name, opt)
                             rule = [ add_del,
                                      "%s_ZONES_SOURCE" % chain, "-t", table,
-                                     "-m", "set", "--match-set", source[6:],
-                                     opt, action, target ]
+                                     "-m", "set", "--match-set", _name,
+                                     flags, action, target ]
                         else:
                             # outgoing can not be set
                             if opt == "-d":
@@ -799,13 +825,15 @@ class FirewallZone(object):
 
                     rule = [ add_del, "%s_ZONES_SOURCE" % chain, "-t", table ]
                     if source.startswith("ipset:"):
+                        _name = source[6:]
                         if opt == "-d":
                             opt = "dst"
                         else:
                             opt = "src"
+                        flags = self.ipset_match_flags(_name, opt)
                         rule = [ add_del,
                                  "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 "-m", "set", "--match-set", source[6:], opt,
+                                 "-m", "set", "--match-set", _name, flags,
                                  action, target ]
                     else:
                         rule = [ add_del,
@@ -946,6 +974,8 @@ class FirewallZone(object):
         elif hasattr(source, "mac") and source.mac:
             return ""
         elif hasattr(source, "ipset") and source.ipset:
+            self.check_ipset_type_for_source(source.ipset)
+            self.check_ipset_applied(source.ipset)
             return self.ipset_family(source.ipset)
 
         return None
@@ -967,7 +997,8 @@ class FirewallZone(object):
                 command += [ "-m", "set" ]
                 if source.invert:
                     command.append("!")
-                command += [ "--match-set", source.ipset, "src" ]
+                flags = self.ipset_match_flags(source.ipset, "src")
+                command += [ "--match-set", source.ipset, flags ]
 
     def __rule_destination(self, destination, command):
         if destination:
@@ -1091,22 +1122,20 @@ class FirewallZone(object):
                 table = "filter"
                 if enable:
                     zone_transaction.add_chain(table, "INPUT")
+                    if self._fw.nf_conntrack_helper_setting == 0:
+                        zone_transaction.add_chain("raw", "PREROUTING")
 
                 if type(rule.action) == Rich_Accept:
                     # only load modules for accept action
+                    helpers = self.get_helpers_for_service_modules(svc.modules,
+                                                                   enable)
+
                     modules = [ ]
-                    for module in svc.modules:
-                        try:
-                            helper = self._fw.helper.get_helper(module)
-                        except Exception as msg:
-                            raise FirewallError(errors.INVALID_HELPER, module)
-                        if helper.module not in self._fw.nf_conntrack_helpers:
-                            raise FirewallError(
-                                errors.INVALID_HELPER,
-                                "'%s' not available in kernel" % helper.module)
+                    for helper in helpers:
+                        module = helper.module
                         if self._fw.nf_conntrack_helper_setting == 0:
-                            if module not in \
-                               self._fw.nf_conntrack_helpers[helper.module]:
+                            if helper.name not in \
+                               self._fw.nf_conntrack_helpers[module]:
                                 raise FirewallError(
                                     errors.INVALID_HELPER,
                                     "'%s' not available in kernel" % module)
@@ -1123,7 +1152,7 @@ class FirewallZone(object):
                                 if ipv in svc.destination and \
                                    svc.destination[ipv] != "":
                                     _rule += [ "-d",  svc.destination[ipv] ]
-                                _rule += [ "-j", "CT", "--helper", module ]
+                                _rule += [ "-j", "CT", "--helper", helper.name ]
                                 self.__rule_source(rule.source, _rule)
                                 zone_transaction.add_rule(ipv, _rule)
                         else:
@@ -1378,18 +1407,23 @@ class FirewallZone(object):
                 self.__rule_action(enable, zone, ipv, table, target, rule,
                                    command, zone_transaction)
 
-            # ICMP BLOCK
-            elif type(rule.element) == Rich_IcmpBlock:
+            # ICMP BLOCK and ICMP TYPE
+            elif type(rule.element) == Rich_IcmpBlock or \
+                 type(rule.element) == Rich_IcmpType:
                 ict = self._fw.icmptype.get_icmptype(rule.element.name)
 
-                if rule.action and type(rule.action) == Rich_Accept:
+                if type(rule.element) == Rich_IcmpBlock and \
+                   rule.action and type(rule.action) == Rich_Accept:
                     # icmp block might have reject or drop action, but not accept
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
                 if ict.destination and ipv not in ict.destination:
-                    raise FirewallError(errors.INVALID_RULE,
-                                        "IcmpBlock %s not usable with %s" % \
-                                        (rule.element.name, ipv))
+                    raise FirewallError(
+                        errors.INVALID_RULE,
+                        "Icmp%s %s not usable with %s" % \
+                        ("Block" if type(rule.element) == \
+                         Rich_IcmpBlock else "Type",
+                         rule.element.name, ipv))
 
                 table = "filter"
                 if enable:
@@ -1578,21 +1612,14 @@ class FirewallZone(object):
             zone_transaction = use_zone_transaction
 
         svc = self._fw.service.get_service(service)
+        helpers = self.get_helpers_for_service_modules(svc.modules, enable)
 
         if enable:
             if self._fw.nf_conntrack_helper_setting == 0:
                 zone_transaction.add_chain("raw", "PREROUTING")
             else:
                 modules = [ ]
-                for module in svc.modules:
-                    try:
-                        helper = self._fw.helper.get_helper(module)
-                    except Exception as msg:
-                        raise FirewallError(errors.INVALID_HELPER, module)
-                    if helper.module not in self._fw.nf_conntrack_helpers:
-                        raise FirewallError(
-                            errors.INVALID_HELPER,
-                            "'%s' not available in kernel" % helper.module)
+                for helper in helpers:
                     modules.append(helper.module)
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
@@ -1604,20 +1631,13 @@ class FirewallZone(object):
                 continue
 
             if self._fw.nf_conntrack_helper_setting == 0:
-                for module in svc.modules:
-                    try:
-                        helper = self._fw.helper.get_helper(module)
-                    except Exception as msg:
-                        raise FirewallError(errors.INVALID_HELPER, module)
-                    if helper.module not in self._fw.nf_conntrack_helpers:
+                for helper in helpers:
+                    module = helper.module
+                    if helper.name not in \
+                       self._fw.nf_conntrack_helpers[module]:
                         raise FirewallError(
                             errors.INVALID_HELPER,
-                            "'%s' not available in kernel" % helper.module)
-                    if module not in \
-                       self._fw.nf_conntrack_helpers[helper.module]:
-                        raise FirewallError(
-                            errors.INVALID_HELPER,
-                            "'%s' not available in kernel" % module)
+                            "'%s' is not available in kernel" % module)
                     if helper.family != "" and helper.family != ipv:
                         # no support for family ipv, continue
                         continue
@@ -1631,7 +1651,7 @@ class FirewallZone(object):
                         if ipv in svc.destination and \
                            svc.destination[ipv] != "":
                             rule += [ "-d",  svc.destination[ipv] ]
-                        rule += [ "-j", "CT", "--helper", module ]
+                        rule += [ "-j", "CT", "--helper", helper.name ]
                         zone_transaction.add_rule(ipv, rule)
 
             # handle rules
@@ -1743,6 +1763,34 @@ class FirewallZone(object):
 
     def list_services(self, zone):
         return self.get_settings(zone)["services"].keys()
+
+    def get_helpers_for_service_modules(self, modules, enable):
+        # If automatic helper assignment is turned off, helpers that
+        # do not have ports defined will be replaced by the helpers
+        # that the helper.module defines.
+        _helpers = [ ]
+        for module in modules:
+            try:
+                helper = self._fw.helper.get_helper(module)
+            except FirewallError:
+                raise FirewallError(errors.INVALID_HELPER, module)
+            if helper.module not in self._fw.nf_conntrack_helpers:
+                raise FirewallError(
+                    errors.INVALID_HELPER,
+                    "'%s' is not available" % helper.module)
+            if self._fw.nf_conntrack_helper_setting == 0 and \
+               len(helper.ports) < 1:
+                for mod in self._fw.nf_conntrack_helpers[helper.module]:
+                    try:
+                        _helper = self._fw.helper.get_helper(mod)
+                    except FirewallError:
+                        if enable:
+                            log.warning("Helper '%s' is not available" % mod)
+                        continue
+                    _helpers.append(_helper)
+            else:
+                _helpers.append(helper)
+        return _helpers
 
     # PORTS
 
@@ -2084,7 +2132,10 @@ class FirewallZone(object):
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
             zone_transaction.add_rule(ipv, [ add_del, "%s_allow" % (target),
-                                             "-t", "filter", "-j", "ACCEPT" ])
+                                             "-t", "filter",
+                                             "-m", "conntrack",
+                                             "--ctstate", "NEW",
+                                             "-j", "ACCEPT" ])
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
@@ -2613,7 +2664,7 @@ class FirewallZone(object):
         self.__unregister_icmp_block_inversion(_obj,
                                                icmp_block_inversion_id)
         zone_transaction.add_fail(self.__register_icmp_block_inversion, _obj,
-                                  icmp_block_inversion_id, None) # FIXME: None
+                                  icmp_block_inversion_id, None)
 
         # redo icmp blocks
         if _obj.applied:
