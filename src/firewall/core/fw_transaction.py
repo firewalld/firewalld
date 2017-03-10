@@ -27,6 +27,7 @@ __all__ = [ "check_rule", "reverse_rule",
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
+from firewall.fw_types import LastUpdatedOrderedDict
 
 # function check_rule
 
@@ -259,7 +260,7 @@ class FirewallTransaction(SimpleFirewallTransaction):
 
     def __init__(self, fw):
         super(FirewallTransaction, self).__init__(fw)
-        self.zone_transactions = { } # { zone: transaction, .. }
+        self.zone_transactions = LastUpdatedOrderedDict() # { zone: transaction, .. }
 
     def clear(self):
         super(FirewallTransaction, self).clear()

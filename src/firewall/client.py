@@ -1038,21 +1038,33 @@ class FirewallClientIPSetSettings(object):
         return self.settings[5]
     @handle_exceptions
     def setEntries(self, entries):
+        if "timeout" in self.settings[4] and \
+           self.settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         self.settings[5] = entries
     @handle_exceptions
     def addEntry(self, entry):
+        if "timeout" in self.settings[4] and \
+           self.settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         if entry not in self.settings[5]:
             self.settings[5].append(entry)
         else:
             raise FirewallError(errors.ALREADY_ENABLED, entry)
     @handle_exceptions
     def removeEntry(self, entry):
+        if "timeout" in self.settings[4] and \
+           self.settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         if entry in self.settings[5]:
             self.settings[5].remove(entry)
         else:
             raise FirewallError(errors.NOT_ENABLED, entry)
     @handle_exceptions
     def queryEntry(self, entry):
+        if "timeout" in self.settings[4] and \
+           self.settings[4]["timeout"] != "0":
+            raise FirewallError(errors.IPSET_WITH_TIMEOUT)
         return entry in self.settings[5]
 
 # ipset config

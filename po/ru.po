@@ -14,12 +14,13 @@
 # Игорь Горбунов <igor.gorbounov@gmail.com>, 2013
 # yuliya <ypoyarko@redhat.com>, 2015. #zanata
 # yuliya <ypoyarko@redhat.com>, 2016. #zanata
+# Thomas Woerner <twoerner@redhat.com>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-01 12:20+0100\n"
-"PO-Revision-Date: 2016-05-18 10:30-0400\n"
+"PO-Revision-Date: 2017-02-09 05:29-0500\n"
 "Last-Translator: Copied by Zanata <copied-by-zanata@zanata.org>\n"
 "Language-Team: Russian (http://www.transifex.com/projects/p/firewalld/"
 "language/ru/)\n"
@@ -181,7 +182,7 @@ msgstr "{entry} (зона {zone})"
 
 #: ../src/firewall-applet:681
 msgid "{entry} (Default Zone: {default_zone})"
-msgstr ""
+msgstr "{entry} (Зона по умолчанию: {default_zone})"
 
 #: ../src/firewall-applet:762 ../src/firewall-config:1554
 msgid "Failed to get connections from NetworkManager"
@@ -209,6 +210,8 @@ msgid ""
 "Default Zone '{default_zone}' active for connection '{connection}' on "
 "interface '{interface}'"
 msgstr ""
+"Зона по умолчанию «{default_zone}» активна для подключения «{connection}» на "
+"интерфейсе «{interface}»"
 
 #: ../src/firewall-applet:873
 msgid ""
@@ -263,6 +266,8 @@ msgid ""
 "Default zone '{default_zone}' {activated_deactivated} for connection "
 "'{connection}' on interface '{interface}'"
 msgstr ""
+"Зона по умолчанию «{default_zone}» {activated_deactivated} для подключения "
+"«{connection}» на интерфейсе «{interface}»"
 
 #: ../src/firewall-applet:1033
 msgid ""
@@ -292,11 +297,11 @@ msgstr "Зона «%s» включена для источника «%s»"
 
 #: ../src/firewall-config:85
 msgid "Connection to firewalld established."
-msgstr ""
+msgstr "Подключение к firewalld установлено."
 
 #: ../src/firewall-config:87
 msgid "Trying to connect to firewalld, waiting..."
-msgstr ""
+msgstr "Попытка подключения к firewalld. Подождите..."
 
 #: ../src/firewall-config:88
 msgid "Changes applied."
@@ -310,7 +315,7 @@ msgstr "Используется подключением «%s»"
 #: ../src/firewall-config:90
 #, c-format
 msgid "Default zone used by network connection '%s'"
-msgstr ""
+msgstr "Зона по умолчанию, используемая сетевым подключением «%s»"
 
 #: ../src/firewall-config:92
 msgid "enabled"
@@ -360,7 +365,7 @@ msgstr "На адрес"
 
 #: ../src/firewall-config:608
 msgid "Bindings"
-msgstr ""
+msgstr "Привязки"
 
 #: ../src/firewall-config:642
 msgid "Entry"
@@ -458,7 +463,7 @@ msgstr "маскировка"
 #: ../src/firewall-config:3294 ../src/firewall-config:3610
 #: ../src/firewall-config.glade.h:280
 msgid "source-port"
-msgstr ""
+msgstr "source-port"
 
 #: ../src/firewall-config:2046
 msgid "level"
@@ -476,13 +481,13 @@ msgstr "Зона"
 #: ../src/firewall-config:2405
 #, c-format
 msgid "Default Zone: %s"
-msgstr ""
+msgstr "Зона по умолчанию: %s"
 
 #: ../src/firewall-config:2412 ../src/firewall-config:2443
 #: ../src/firewall-config:2473
 #, c-format
 msgid "Zone: %s"
-msgstr ""
+msgstr "Зона: %s"
 
 #: ../src/firewall-config:2748
 #, c-format
@@ -638,15 +643,15 @@ msgstr "Имя встроенного ipset не может быть измен�
 
 #: ../src/firewall-config:5838 ../src/firewall-config:5920
 msgid "Please select a file"
-msgstr ""
+msgstr "Выберите файл"
 
 #: ../src/firewall-config:5845 ../src/firewall-config:5927
 msgid "Text Files"
-msgstr ""
+msgstr "Текстовые файлы"
 
 #: ../src/firewall-config:5850 ../src/firewall-config:5932
 msgid "All Files"
-msgstr ""
+msgstr "Все файлы"
 
 #: ../src/firewall-config:6331 ../src/firewall-config:6360
 #: ../src/firewall-config.glade.h:40
@@ -664,8 +669,9 @@ msgid "IPv6"
 msgstr "IPv6"
 
 #: ../src/firewall-config:6337
+#, fuzzy
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Имя встроенного ipset не может быть изменено."
 
 #: ../src/firewall-config:6821
 msgid "Built-in icmp, rename not supported."
@@ -674,7 +680,7 @@ msgstr "Встроенный ICMP, переименование не подде�
 #: ../src/firewall-config:7894
 #, c-format
 msgid "Failed to read file '%s': %s"
-msgstr ""
+msgstr "Не удалось прочитать файл %s: %s"
 
 #: ../src/firewall-config:8026
 #, c-format
@@ -690,12 +696,13 @@ msgid "Automatic Helpers"
 msgstr ""
 
 #: ../src/firewall-config.glade.h:3
+#, fuzzy
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Выберите режим ограничения журналирования:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
-msgstr ""
+msgstr "Командная строка"
 
 #: ../src/firewall-config.glade.h:5
 msgid "Please enter the command line."
@@ -703,7 +710,7 @@ msgstr "Введите команду."
 
 #: ../src/firewall-config.glade.h:6
 msgid "Context"
-msgstr ""
+msgstr "Контекст"
 
 #: ../src/firewall-config.glade.h:7
 msgid "Please enter the context."
@@ -807,12 +814,14 @@ msgid "Forward to another port"
 msgstr "Направить другому порту"
 
 #: ../src/firewall-config.glade.h:32
+#, fuzzy
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Настройки основной зоны"
 
 #: ../src/firewall-config.glade.h:33
+#, fuzzy
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Настройте основные параметры IPSet:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -839,16 +848,19 @@ msgid "Family:"
 msgstr "Семейство протоколов:"
 
 #: ../src/firewall-config.glade.h:43
+#, fuzzy
 msgid "Module:"
-msgstr ""
+msgstr "Модули"
 
 #: ../src/firewall-config.glade.h:44
+#, fuzzy
 msgid "Helper"
-msgstr ""
+msgstr "_Справка"
 
 #: ../src/firewall-config.glade.h:45
+#, fuzzy
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Выберите файл"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -872,19 +884,19 @@ msgstr "Добавить запись"
 
 #: ../src/firewall-config.glade.h:51
 msgid "Add Entries From File"
-msgstr ""
+msgstr "Добавить записи из файла"
 
 #: ../src/firewall-config.glade.h:52
 msgid "Remove Selected Entry"
-msgstr ""
+msgstr "Удалить выбранную запись"
 
 #: ../src/firewall-config.glade.h:53
 msgid "Remove All Entries"
-msgstr ""
+msgstr "Удалить все записи"
 
 #: ../src/firewall-config.glade.h:54
 msgid "Remove Entries From File"
-msgstr ""
+msgstr "Удалить записи из файла"
 
 #: ../src/firewall-config.glade.h:56
 msgid "_File"
@@ -978,8 +990,9 @@ msgid "ICMP Types"
 msgstr "Типы ICMP"
 
 #: ../src/firewall-config.glade.h:77
+#, fuzzy
 msgid "Helpers"
-msgstr ""
+msgstr "_Справка"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -991,7 +1004,7 @@ msgstr "Белый список блокировки"
 
 #: ../src/firewall-config.glade.h:80
 msgid "Active Bindings"
-msgstr ""
+msgstr "Активные привязки"
 
 #: ../src/firewall-config.glade.h:81
 msgid "_Help"
@@ -999,17 +1012,21 @@ msgstr "_Справка"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change zone of binding"
-msgstr ""
+msgstr "Изменить зону привязки"
 
 #: ../src/firewall-config.glade.h:83
 msgid ""
 "Hide active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Скрыть активные привязки подключений, интерфейсов и источников к зонам в "
+"среде выполнения"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
 "Show active runtime bindings of connections, interfaces and sources to zones"
 msgstr ""
+"Показать активные привязки подключений, интерфейсов и источников к зонам в "
+"среде выполнения"
 
 #: ../src/firewall-config.glade.h:85
 msgid "Configuration:"
@@ -1117,10 +1134,13 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks that can connect to the machine."
 msgstr ""
+"Добавьте дополнительные порты источника или диапазоны портов, которые должны "
+"быть доступны для всех хостов и сетей, подключающихся к машине."
 
 #: ../src/firewall-config.glade.h:106
+#, fuzzy
 msgid "Source Ports"
-msgstr ""
+msgstr "Порт источника"
 
 #: ../src/firewall-config.glade.h:107
 msgid ""
@@ -1196,10 +1216,13 @@ msgid ""
 "If Invert Filter is enabled, marked ICMP entries are accepted and the others "
 "are rejected. In a zone with the target DROP, they are dropped."
 msgstr ""
+"Если фильтр «Инверсия» включен, отмеченные записи ICMP принимаются, а "
+"остальные отклоняются. В зоне с отбрасыванием назначений они будут "
+"отбрасываться."
 
 #: ../src/firewall-config.glade.h:118
 msgid "Invert Filter"
-msgstr ""
+msgstr "Фильтр «Инверсия»"
 
 #: ../src/firewall-config.glade.h:119
 msgid "ICMP Filter"
@@ -1316,14 +1339,17 @@ msgid ""
 "Add additional source ports or port ranges, which need to be accessible for "
 "all hosts or networks."
 msgstr ""
+"Добавьте дополнительные порты источника или диапазоны портов, которые должны "
+"быть доступны для всех хостов и сетей."
 
 #: ../src/firewall-config.glade.h:146
 msgid "Source Port"
-msgstr ""
+msgstr "Порт источника"
 
 #: ../src/firewall-config.glade.h:147
+#, fuzzy
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Модули поддержки Netfilter"
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1404,7 +1430,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:161
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
 #: ../src/firewall-config.glade.h:163
 msgid "Entries"
@@ -1771,16 +1797,18 @@ msgid "Mask:"
 msgstr "Маска:"
 
 #: ../src/firewall-config.glade.h:237
+#, fuzzy
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Выберите файл"
 
 #: ../src/firewall-config.glade.h:238
 msgid "- Select -"
 msgstr "- Выберите -"
 
 #: ../src/firewall-config.glade.h:239
+#, fuzzy
 msgid "Other Module:"
-msgstr ""
+msgstr "Другой протокол:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "Port and Protocol"
@@ -1914,7 +1942,7 @@ msgstr "Введите имя пользователя."
 
 #: ../src/firewall-config.glade.h:291
 msgid "label"
-msgstr ""
+msgstr "метка"
 
 #: ../src/firewall-config.glade.h:292
 msgid "Base Zone Settings"

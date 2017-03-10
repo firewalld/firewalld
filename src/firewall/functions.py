@@ -182,14 +182,16 @@ def checkIPnMask(ip):
     if "/" in ip:
         addr = ip[:ip.index("/")]
         mask = ip[ip.index("/")+1:]
+        if len(addr) < 1 or len(mask) < 1:
+            return False
     else:
         addr = ip
         mask = None
     if not checkIP(addr):
         return False
     if mask:
-        if "." in mask and checkIP(addr):
-            return False
+        if "." in mask:
+            return checkIP(mask)
         else:
             try:
                 i = int(mask)
@@ -203,6 +205,8 @@ def checkIP6nMask(ip):
     if "/" in ip:
         addr = ip[:ip.index("/")]
         mask = ip[ip.index("/")+1:]
+        if len(addr) < 1 or len(mask) < 1:
+            return False
     else:
         addr = ip
         mask = None

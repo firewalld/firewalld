@@ -466,7 +466,7 @@ def try_set_zone_of_interface(_zone, interface):
                     cmd.print_msg("The interface is under control of NetworkManager, setting zone to '%s'." % _zone)
                 nm_set_zone_of_connection(_zone, connection)
                 return True
-        return False
+    return False
 
 parser = argparse.ArgumentParser(usage="see firewall-cmd man page",
                                  add_help=False)
@@ -1039,6 +1039,8 @@ if a.permanent:
         if a.option:
             for opt in a.option:
                 settings.addOption(*cmd.parse_ipset_option(opt))
+        if a.family:
+            settings.addOption("family", a.family)
         config = fw.config()
         config.addIPSet(a.new_ipset, settings)
 
@@ -1079,79 +1081,102 @@ if a.permanent:
         cmd.print_and_exit("%s/%s" % (ipset.get_property("path"),
                                       ipset.get_property("filename")))
 
-    elif a.add_entry:
+    elif a.ipset:
         ipset = fw.config().getIPSetByName(a.ipset)
         settings = ipset.getSettings()
-        cmd.add_sequence(a.add_entry, settings.addEntry, settings.queryEntry,
-                         None, "'%s'")
-        ipset.update(settings)
 
-    elif a.remove_entry:
-        ipset = fw.config().getIPSetByName(a.ipset)
-        settings = ipset.getSettings()
-        cmd.remove_sequence(a.remove_entry, settings.removeEntry,
-                            settings.queryEntry, None, "'%s'")
-        ipset.update(settings)
-
-    elif a.query_entry:
-        ipset = fw.config().getIPSetByName(a.ipset)
-        settings = ipset.getSettings()
-        cmd.query_sequence(a.query_entry, settings.queryEntry, None, "'%s'")
-
-    elif a.get_entries:
-        ipset = fw.config().getIPSetByName(a.ipset)
-        settings = ipset.getSettings()
-        l = settings.getEntries()
-        cmd.print_and_exit("\n".join(l))
-
-    elif a.add_entries_from_file:
-        ipset = fw.config().getIPSetByName(a.ipset)
-        settings = ipset.getSettings()
-        changed = False
-
-        for filename in a.add_entries_from_file:
-            try:
-                entries = cmd.get_ipset_entries_from_file(filename)
-            except IOError as msg:
-                message = "Failed to read file '%s': %s" % (filename, msg)
-                if len(a.add_entries_from_file) > 1:
-                    cmd.print_warning(message)
-                else:
-                    cmd.print_and_exit(message)
-            else:
-                for entry in entries:
-                    if not settings.queryEntry(entry):
-                        settings.addEntry(entry)
-                        changed = True
-                    else:
-                        cmd.print_if_verbose("Warning: ALREADY_ENABLED: %s" % \
-                                             entry)
-        if changed:
+        if a.add_entry:
+            cmd.add_sequence(a.add_entry, settings.addEntry,
+                             settings.queryEntry, None, "'%s'")
             ipset.update(settings)
 
-    elif a.remove_entries_from_file:
-        ipset = fw.config().getIPSetByName(a.ipset)
-        settings = ipset.getSettings()
-        changed = False
-
-        for filename in a.remove_entries_from_file:
-            try:
-                entries = cmd.get_ipset_entries_from_file(filename)
-            except IOError as msg:
-                message = "Failed to read file '%s': %s" % (filename, msg)
-                if len(a.remove_entries_from_file) > 1:
-                    cmd.print_warning(message)
-                else:
-                    cmd.print_and_exit(message)
-            else:
-                for entry in entries:
-                    if settings.queryEntry(entry):
-                        settings.removeEntry(entry)
-                        changed = True
-                    else:
-                        cmd.print_if_verbose("Warning: NOT_ENABLED: %s" % entry)
-        if changed:
+        elif a.remove_entry:
+            cmd.remove_sequence(a.remove_entry, settings.removeEntry,
+                                settings.queryEntry, None, "'%s'")
             ipset.update(settings)
+
+        elif a.query_entry:
+            cmd.query_sequence(a.query_entry, settings.queryEntry, None, "'%s'")
+
+        elif a.get_entries:
+            l = settings.getEntries()
+            cmd.print_and_exit("\n".join(l))
+
+        elif a.add_entries_from_file:
+            changed = False
+
+            for filename in a.add_entries_from_file:
+                try:
+                    entries = cmd.get_ipset_entries_from_file(filename)
+                except IOError as msg:
+                    message = "Failed to read file '%s': %s" % (filename, msg)
+                    if len(a.add_entries_from_file) > 1:
+                        cmd.print_warning(message)
+                    else:
+                        cmd.print_and_exit(message)
+                else:
+                    old_entries = settings.getEntries()
+                    entries_set = set()
+                    for entry in old_entries:
+                        entries_set.add(entry)
+                    for entry in entries:
+                        if entry not in entries_set:
+                            old_entries.append(entry)
+                            entries_set.add(entry)
+                            changed = True
+                        else:
+                            cmd.print_if_verbose(
+                                "Warning: ALREADY_ENABLED: %s" % entry)
+                    if changed:
+                        settings.setEntries(old_entries)
+            if changed:
+                ipset.update(settings)
+
+        elif a.remove_entries_from_file:
+            changed = False
+
+            for filename in a.remove_entries_from_file:
+                try:
+                    entries = cmd.get_ipset_entries_from_file(filename)
+                except IOError as msg:
+                    message = "Failed to read file '%s': %s" % (filename, msg)
+                    if len(a.remove_entries_from_file) > 1:
+                        cmd.print_warning(message)
+                    else:
+                        cmd.print_and_exit(message)
+                else:
+                    old_entries = settings.getEntries()
+                    entries_set = set()
+                    for entry in old_entries:
+                        entries_set.add(entry)
+                    for entry in entries:
+                        if entry in entries_set:
+                            old_entries.remove(entry)
+                            entries_set.discard(entry)
+                            changed = True
+                        else:
+                            cmd.print_if_verbose("Warning: NOT_ENABLED: %s" % entry)
+                    if changed:
+                        settings.setEntries(old_entries)
+            if changed:
+                ipset.update(settings)
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            ipset.update(settings)
+
+        elif a.get_description:
+            cmd.print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            ipset.update(settings)
+
+        elif a.get_short:
+            cmd.print_and_exit(settings.getShort())
+
+        else:
+            cmd.fail(parser.format_usage() + "Unknown option")
 
     elif a.get_zones:
         cmd.print_and_exit(" ".join(fw.config().getZoneNames()))
@@ -1326,6 +1351,20 @@ if a.permanent:
         elif a.set_family:
             settings.setFamily(cmd.check_helper_family(a.set_family[0]))
             helper.update(settings)
+
+        elif a.set_description:
+            settings.setDescription(a.set_description)
+            helper.update(settings)
+
+        elif a.get_description:
+            cmd.print_and_exit(settings.getDescription())
+
+        elif a.set_short:
+            settings.setShort(a.set_short)
+            helper.update(settings)
+
+        elif a.get_short:
+            cmd.print_and_exit(settings.getShort())
 
         else:
             cmd.fail(parser.format_usage() + "Unknown option")
@@ -1993,7 +2032,7 @@ elif a.set_automatic_helpers:
     fw.setAutomaticHelpers(a.set_automatic_helpers)
 elif a.get_ipset_types:
     types = fw.get_property("IPSetTypes")
-    cmd.print_and_exit(" ".join(types))
+    cmd.print_and_exit(" ".join(sorted(types)))
 elif a.reload:
     fw.reload()
 elif a.complete_reload:
@@ -2164,9 +2203,13 @@ elif a.add_entries_from_file:
             else:
                 cmd.print_and_exit(message)
         else:
+            entries_set = set()
+            for entry in old_entries:
+                entries_set.add(entry)
             for entry in entries:
-                if entry not in old_entries:
+                if entry not in entries_set:
                     old_entries.append(entry)
+                    entries_set.add(entry)
                     changed = True
                 else:
                     cmd.print_if_verbose("Warning: ALREADY_ENABLED: %s" % entry)
@@ -2187,9 +2230,13 @@ elif a.remove_entries_from_file:
             else:
                 cmd.print_and_exit(message)
         else:
+            entries_set = set()
+            for entry in old_entries:
+                entries_set.add(entry)
             for entry in entries:
-                if entry in old_entries:
+                if entry in entries_set:
                     old_entries.remove(entry)
+                    entries_set.discard(entry)
                     changed = True
                 else:
                     cmd.print_if_verbose("Warning: NOT_ENABLED: %s" % entry)

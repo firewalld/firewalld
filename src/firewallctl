@@ -72,7 +72,7 @@ def try_set_zone_of_interface(_zone, interface):
                                   "to '%s'." % _zone)
                 nm_set_zone_of_connection(_zone, connection)
                 return True
-        return False
+    return False
 
 #
 
@@ -2951,9 +2951,13 @@ elif args.parser == "ipset":
                     else:
                         cmd.print_and_exit(message)
                 else:
+                    entries_set = set()
+                    for entry in old_entries:
+                        entries_set.add(entry)
                     for entry in entries:
-                        if entry not in old_entries:
+                        if entry not in entries_set:
                             old_entries.append(entry)
+                            entries_set.add(entry)
                             changed = True
                         else:
                             cmd.print_if_verbose(
@@ -3042,9 +3046,13 @@ elif args.parser == "ipset":
                     else:
                         cmd.print_and_exit(message)
                 else:
+                    entries_set = set()
+                    for entry in old_entries:
+                        entries_set.add(entry)
                     for entry in entries:
-                        if entry in old_entries:
+                        if entry in entries_set:
                             old_entries.remove(entry)
+                            entries_set.discard(entry)
                             changed = True
                         else:
                             cmd.print_if_verbose(
@@ -4150,7 +4158,7 @@ elif args.parser == "settings":
             cmd.print_and_exit(("no", "yes")[fw.get_property(args.item)])
 
         elif args.item == "IPSetTypes":
-            cmd.print_and_exit(" ".join(fw.get_property(args.item)))
+            cmd.print_and_exit(" ".join(sorted(fw.get_property(args.item))))
 
         elif args.item == "IPv4":
             cmd.print_and_exit(("no", "yes")[fw.get_property(args.item)])

@@ -970,6 +970,8 @@ class TrayApplet(QtWidgets.QSystemTrayIcon):
     def reloaded(self):
         if self.notificationsAction.isChecked():
             self.notify(escape(_("FirewallD has been reloaded.")))
+        self.update_active_zones()
+        self.update_tooltip()
 
     def default_zone_changed(self, zone):
         self.default_zone = zone

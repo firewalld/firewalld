@@ -53,7 +53,7 @@
     </para>
 
     <para>
-      The rich language extends the current zone elements (service, port, icmp-block, masquerade, forward-port and source-port) with additional source and destination addresses, logging, actions and limits for logs and actions.
+      The rich language extends the current zone elements (service, port, icmp-block, icmp-type, masquerade, forward-port and source-port) with additional source and destination addresses, logging, actions and limits for logs and actions.
     </para>
 
     <para>
@@ -70,7 +70,7 @@
 rule
   [source]
   [destination]
-  service|port|protocol|icmp-block|masquerade|forward-port|source-port
+  service|port|protocol|icmp-block|icmp-type|masquerade|forward-port|source-port
   [log]
   [audit]
   [accept|reject|drop|mark]
@@ -199,6 +199,18 @@ masquerade
       </para>
       <para>
 	It is not allowed to specify an action here.
+      </para>
+    </refsect2>
+
+    <refsect2>
+      <title>ICMP-Type</title>
+      <para>
+	<programlisting>
+icmp-type name="icmptype name"
+	</programlisting>
+      </para>
+      <para>
+	The icmptype is the one of the icmp types firewalld supports. To get a listing of supported icmp types: <command>firewall-cmd --get-icmptypes</command>
       </para>
     </refsect2>
 

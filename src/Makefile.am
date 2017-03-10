@@ -35,6 +35,7 @@ nobase_dist_python_DATA = \
 	firewall/core/fw_transaction.py \
 	firewall/core/fw_zone.py \
 	firewall/core/helper.py \
+	firewall/core/icmp.py \
 	firewall/core/__init__.py \
 	firewall/core/io/direct.py \
 	firewall/core/io/firewalld_conf.py \
