@@ -873,6 +873,9 @@ def zone_writer(zone, path=None):
             elif type(rule.element) == rich.Rich_IcmpBlock:
                 element = "icmp-block"
                 attrs["name"] = rule.element.name
+            elif type(rule.element) == rich.Rich_IcmpType:
+                element = "icmp-type"
+                attrs["name"] = rule.element.name
             elif type(rule.element) == rich.Rich_ForwardPort:
                 element = "forward-port"
                 attrs["port"] = rule.element.port
@@ -886,7 +889,9 @@ def zone_writer(zone, path=None):
                 attrs["port"] = rule.element.port
                 attrs["protocol"] = rule.element.protocol
             else:
-                log.warning("Unknown element '%s'", type(rule.element))
+                raise FirewallError(
+                    errors.INVALID_OBJECT,
+                    "Unknown element '%s' in zone_writer" % type(rule.element))
 
             handler.ignorableWhitespace("    ")
             handler.simpleElement(element, attrs)
