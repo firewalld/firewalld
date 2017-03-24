@@ -1775,6 +1775,12 @@ class FirewallConfig(object):
         # fallback
         selection.select_path(0)
 
+        if not self.get_selected_zone():
+            self.zoneEditEditButton.set_sensitive(False)
+            self.zoneEditRemoveButton.set_sensitive(False)
+            self.zoneEditLoadDefaultsButton.set_sensitive(False)
+            self.zoneNotebook.set_sensitive(False)
+
     def get_active_service(self):
         selection = self.serviceConfServiceView.get_selection()
         (model, iter) = selection.get_selected()
@@ -1812,6 +1818,12 @@ class FirewallConfig(object):
                 return
             iter = self.serviceConfServiceStore.iter_next(iter)
         selection.select_path(0)
+
+        if not self.get_active_service():
+            self.serviceConfEditServiceButton.set_sensitive(False)
+            self.serviceConfRemoveServiceButton.set_sensitive(False)
+            self.serviceConfLoadDefaultsServiceButton.set_sensitive(False)
+            self.serviceConfServiceNotebook.set_sensitive(False)
 
     def change_rich_rule_selection_cb(self, selection):
         (model, iter) = selection.get_selected()
@@ -5690,6 +5702,12 @@ class FirewallConfig(object):
         self.ipsetConfRemoveEntryMenubutton.set_sensitive(
             len(self.ipsetConfEntryStore) > 0)
 
+        if not self.get_active_ipset():
+            self.ipsetConfEditIPSetButton.set_sensitive(False)
+            self.ipsetConfRemoveIPSetButton.set_sensitive(False)
+            self.ipsetConfLoadDefaultsIPSetButton.set_sensitive(False)
+            self.ipsetConfEntryBox.set_sensitive(False)
+
     def onIPSetConfAddIPSet(self, *args):
         self.add_edit_ipset(True)
 
@@ -6306,6 +6324,12 @@ class FirewallConfig(object):
             iter = self.helperConfHelperStore.iter_next(iter)
         selection.select_path(0)
 
+        if not self.get_active_helper():
+            self.helperConfEditHelperButton.set_sensitive(False)
+            self.helperConfRemoveHelperButton.set_sensitive(False)
+            self.helperConfLoadDefaultsHelperButton.set_sensitive(False)
+            self.helperConfHelperNotebook.set_sensitive(False)
+
     def onHelperConfAddHelper(self, *args):
         self.add_edit_helper(True)
 
@@ -6770,6 +6794,12 @@ class FirewallConfig(object):
                 return
             iter = self.icmpDialogIcmpStore.iter_next(iter)
         selection.select_path(0)
+
+        if not self.get_active_icmp():
+            self.icmpDialogEditIcmpButton.set_sensitive(False)
+            self.icmpDialogRemoveIcmpButton.set_sensitive(False)
+            self.icmpDialogLoadDefaultsIcmpButton.set_sensitive(False)
+            self.icmpDialogIcmpNotebook.set_sensitive(False)
 
     def onChangeIcmp(self, *args):
         active_icmp = self.get_active_icmp()
