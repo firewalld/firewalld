@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.3
+Version: 0.4.4.4
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -309,6 +309,16 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Mar 27 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.4-1
+- Drop references to fedorahosted.org from spec file and Makefile.am
+- Fix inconsistent ordering of rules in INPUT_ZONE_SOURCE (issue#166)
+- Fix ipset overloading from /etc/firewalld/ipsets
+- Fix permanent rich rules using icmp-type elements (RHBZ#1434594)
+- firewall-config: Deactivate edit, remove, .. buttons if there are no items
+- Check if ICMP types are supported by kernel before trying to use them
+- firewall-config: Show invalid ipset type in the ipset configuration dialog
+  in a special label
+
 * Thu Feb  9 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.3-1
 - New service freeipa-trust (RHBZ#1411650)
 - Complete icmp types for IPv4 and IPv6
