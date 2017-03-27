@@ -488,7 +488,11 @@ class Firewall(object):
                         self.icmptype.remove_icmptype(orig_obj.name)
                     elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
-                    self.icmptype.add_icmptype(obj)
+                    try:
+                        self.icmptype.add_icmptype(obj)
+                    except FirewallError as error:
+                        log.warning("%s: %s, ignoring for run-time." % \
+                                    (obj.name, str(error)))
                     # add a deep copy to the configuration interface
                     self.config.add_icmptype(copy.deepcopy(obj))
                 elif reader_type == "service":
@@ -548,7 +552,11 @@ class Firewall(object):
                         self.ipset.remove_ipset(orig_obj.name)
                     elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
-                    self.ipset.add_ipset(obj)
+                    try:
+                        self.ipset.add_ipset(obj)
+                    except FirewallError as error:
+                        log.warning("%s: %s, ignoring for run-time." % \
+                                    (obj.name, str(error)))
                     # add a deep copy to the configuration interface
                     self.config.add_ipset(copy.deepcopy(obj))
                 elif reader_type == "helper":
