@@ -708,6 +708,8 @@ class FirewallConfig(object):
             "changed", self.onIPSetBaseDialogChanged)
         self.ipsetBaseDialogTypeCombobox = \
             builder.get_object("ipsetBaseDialogTypeCombobox")
+        self.ipsetBaseDialogBadTypeLabel = \
+            builder.get_object("ipsetBaseDialogBadTypeLabel")
 
         self.ipsetBaseDialogFamilyLabel = \
             builder.get_object("ipsetBaseDialogFamilyLabel")
@@ -5742,8 +5744,10 @@ class FirewallConfig(object):
 
     def add_edit_ipset(self, add):
         self.ipsetBaseDialogTypeCombobox.remove_all()
-        for x in self.fw.get_property("IPSetTypes"):
+        ipset_types = self.fw.get_property("IPSetTypes")
+        for x in ipset_types:
             self.ipsetBaseDialogTypeCombobox.append_text(x)
+        self.ipsetBaseDialogBadTypeLabel.set_text("")
 
         if add:
             default = True
@@ -5783,8 +5787,11 @@ class FirewallConfig(object):
             self.ipsetBaseDialogVersionEntry.set_text(old_version)
             self.ipsetBaseDialogShortEntry.set_text(old_short)
             self.ipsetBaseDialogDescText.get_buffer().set_text(old_desc)
-            combobox_select_text(self.ipsetBaseDialogTypeCombobox,
-                                 old_ipset_type)
+            if old_ipset_type not in ipset_types:
+                self.ipsetBaseDialogBadTypeLabel.set_text(old_ipset_type)
+            else:
+                combobox_select_text(self.ipsetBaseDialogTypeCombobox,
+                                     old_ipset_type)
             if "family" in old_options and \
                old_options["family"] in [ "inet", "inet6" ]:
                 combobox_select_text(self.ipsetBaseDialogFamilyCombobox,
@@ -5832,6 +5839,7 @@ class FirewallConfig(object):
         buffer = self.ipsetBaseDialogDescText.get_buffer()
         desc = buffer.get_text(buffer.get_start_iter(), buffer.get_end_iter(),
                                False)
+        ipset_type = self.ipsetBaseDialogBadTypeLabel.get_text()
         ipset_type = self.ipsetBaseDialogTypeCombobox.get_active_text()
         options = { }
         if self.ipsetBaseDialogFamilyCombobox.is_sensitive():
@@ -5884,6 +5892,9 @@ class FirewallConfig(object):
         self.changes_applied()
 
     def onIPSetChanged(self, *args):
+        if self.ipsetBaseDialogTypeCombobox.get_active_text() is None:
+            # unsupported ipset type
+            return
         if self.ipsetBaseDialogTypeCombobox.get_active_text() == "hash:mac":
             self.ipsetBaseDialogFamilyLabel.set_sensitive(False)
             self.ipsetBaseDialogFamilyCombobox.set_sensitive(False)
