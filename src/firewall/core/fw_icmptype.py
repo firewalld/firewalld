@@ -21,6 +21,7 @@
 
 __all__ = [ "FirewallIcmpType" ]
 
+from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 
@@ -49,7 +50,33 @@ class FirewallIcmpType(object):
         return self._icmptypes[icmptype]
 
     def add_icmptype(self, obj):
-        self._icmptypes[obj.name] = obj
+        orig_ipvs = obj.destination
+        if len(orig_ipvs) == 0:
+            orig_ipvs = [ "ipv4", "ipv6" ]
+        ipvs = orig_ipvs[:]
+        for ipv in orig_ipvs:
+            if ipv == "ipv4":
+                if not self._fw.ip4tables_enabled:
+                    continue
+                supported_icmps = self._fw.ip4tables_supported_icmp_types
+            elif ipv == "ipv6":
+                if not self._fw.ip6tables_enabled:
+                    continue
+                supported_icmps = self._fw.ip6tables_supported_icmp_types
+            else:
+                supported_icmps = [ ]
+            if obj.name.lower() not in supported_icmps:
+                log.warning("ICMP type '%s' is not supported by the kernel for %s." % (obj.name, ipv))
+                ipvs.remove(ipv)
+        if len(ipvs) != len(orig_ipvs):
+            if len(ipvs) < 1:
+                raise FirewallError(errors.INVALID_ICMPTYPE,
+                                    "No supported ICMP type.")
+            new_obj = copy.deepcopy(obj)
+            new_obj.destination = ipvs
+            self._icmptypes[obj.name] = new_obj
+        else:
+            self._icmptypes[obj.name] = obj
 
     def remove_icmptype(self, icmptype):
         self.check_icmptype(icmptype)
