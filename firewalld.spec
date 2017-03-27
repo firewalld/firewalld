@@ -115,6 +115,7 @@ firewalld.
 
 %prep
 %setup -q
+./autogen.sh
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -127,13 +128,12 @@ sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
 
 %build
 %configure --enable-sysconfig --enable-rpmmacros
-# Enable the make line if there are patches affecting man pages to
-# regenerate them
-# make %{?_smp_mflags}
+make %{?_smp_mflags}
 
 %if 0%{?with_python3}
 pushd %{py3dir}
 %configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
+make %{?_smp_mflags}
 popd
 %endif #0%{?with_python3}
 
