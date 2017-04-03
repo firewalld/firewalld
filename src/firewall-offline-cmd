@@ -2076,7 +2076,8 @@ try:
             cmd.add_sequence(a.add_service, fw_settings.addService,
                              fw_settings.queryService, None, "'%s'")
         elif a.remove_service_from_zone:
-            cmd.remove_sequence(a.remove_service, fw_settings.removeService,
+            cmd.remove_sequence(a.remove_service_from_zone,
+                                fw_settings.removeService,
                                 fw_settings.queryService, None, "'%s'")
         elif a.query_service:
             cmd.query_sequence(a.query_service, fw_settings.queryService,
