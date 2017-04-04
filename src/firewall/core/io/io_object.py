@@ -292,9 +292,10 @@ def check_port(port):
                             "'%s' is invalid port range" % port)
 
 def check_tcpudp(protocol):
-    if protocol not in [ "tcp", "udp" ]:
+    if protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
         raise FirewallError(errors.INVALID_PROTOCOL,
-                            "'%s' not from {'tcp'|'udp'}" % protocol)
+                            "'%s' not from {'tcp'|'udp'|'sctp'|'dccp'}" % \
+                            protocol)
 
 def check_protocol(protocol):
     if not functions.checkProtocol(protocol):

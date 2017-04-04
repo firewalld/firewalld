@@ -1263,6 +1263,8 @@
                     <items>
                       <item>tcp</item>
                       <item>udp</item>
+                      <item>sctp</item>
+                      <item>dccp</item>
                     </items>
                     <signal name="changed" handler="onForwardChanged" swapped="no"/>
                   </object>
@@ -9196,6 +9198,8 @@
                     <items>
                       <item>tcp</item>
                       <item>udp</item>
+                      <item>sctp</item>
+                      <item>dccp</item>
                     </items>
                     <signal name="changed" handler="onPortChanged" swapped="no"/>
                   </object>
@@ -9597,6 +9601,7 @@
                       <item translatable="yes">- Select -</item>
                       <item>ah</item>
                       <item>esp</item>
+                      <item>dccp</item>
                       <item>ddp</item>
                       <item>icmp</item>
                       <item>igmp</item>

@@ -267,9 +267,10 @@ class FirewallCommand(object):
                                 "portid[-portid]%sprotocol" % separator)
         if not check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
-        if proto not in [ "tcp", "udp" ]:
+        if proto not in [ "tcp", "udp", "sctp", "dccp" ]:
             raise FirewallError(errors.INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'}" % proto)
+                                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
+                                proto)
         return (port, proto)
 
     def parse_forward_port(self, value):
@@ -301,9 +302,10 @@ class FirewallCommand(object):
 
         if not check_port(port):
             raise FirewallError(errors.INVALID_PORT, port)
-        if protocol not in [ "tcp", "udp" ]:
+        if protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
             raise FirewallError(errors.INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'}" % protocol)
+                                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
+                                protocol)
         if toport and not check_port(toport):
             raise FirewallError(errors.INVALID_PORT, toport)
         if toaddr and not check_single_address("ipv4", toaddr):

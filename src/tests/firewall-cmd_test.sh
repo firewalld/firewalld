@@ -339,6 +339,15 @@ assert_good " --query-port=111-222/udp --zone=${default_zone}"
 assert_good "--remove-port 111-222/udp"
 assert_bad  " --query-port=111-222/udp"
 
+assert_good "   --add-port=5000/sctp"
+assert_good " --query-port=5000/sctp --zone=${default_zone}"
+assert_good "--remove-port 5000/sctp"
+assert_bad  " --query-port=5000/sctp"
+assert_good "   --add-port=222/dccp"
+assert_good " --query-port=222/dccp --zone=${default_zone}"
+assert_good "--remove-port 222/dccp"
+assert_bad  " --query-port=222/dccp"
+
 assert_bad  "--permanent    --add-port=666" # no protocol
 assert_bad  "--permanent    --add-port=666/dummy" # bad protocol
 assert_good "--permanent    --add-port=666/tcp"
@@ -347,6 +356,15 @@ assert_good "--permanent    --add-port=111-222/udp --zone=${default_zone}"
 assert_good "--permanent  --query-port=111-222/udp"
 assert_good "--permanent --remove-port 111-222/udp"
 assert_bad  "--permanent  --query-port=111-222/udp"
+
+assert_good "--permanent    --add-port=5000/sctp"
+assert_good "--permanent  --query-port=5000/sctp --zone=${default_zone}"
+assert_good "--permanent --remove-port 5000/sctp"
+assert_bad  "--permanent  --query-port=5000/sctp"
+assert_good "--permanent    --add-port=222/dccp"
+assert_good "--permanent  --query-port=222/dccp --zone=${default_zone}"
+assert_good "--permanent --remove-port 222/dccp"
+assert_bad  "--permanent  --query-port=222/dccp"
 
 assert_good "   --add-port=80/tcp --add-port 443-444/udp"
 assert_good " --query-port=80/tcp --zone=${default_zone}"
@@ -488,6 +506,10 @@ assert_good "   --add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 assert_good " --query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7 --zone=${default_zone}"
 assert_good "--remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 assert_bad  " --query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_good "   --add-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
+assert_good " --query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=${default_zone}"
+assert_good "--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
+assert_bad  " --query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
 
 assert_bad  "--permanent         --add-forward-port=666" # no protocol
 assert_good "--permanent    --add-forward-port=port=11:proto=tcp:toport=22 --zone=${default_zone}"
@@ -499,6 +521,10 @@ assert_good "--permanent    --add-forward-port=port=55:proto=tcp:toport=66:toadd
 assert_good "--permanent  --query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 assert_good "--permanent --remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
 assert_bad  "--permanent  --query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7"
+assert_good "--permanent    --add-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
+assert_good "--permanent  --query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=${default_zone}"
+assert_good "--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
+assert_bad  "--permanent  --query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
 
 assert_good "   --add-forward-port=port=88:proto=udp:toport=99 --add-forward-port port=100:proto=tcp:toport=200"
 assert_good " --query-forward-port=port=100:proto=tcp:toport=200"
@@ -596,6 +622,18 @@ assert_good "--permanent --icmptype=${myicmp} --add-destination=ipv4"
 assert_good "--permanent --icmptype=${myicmp} --query-destination=ipv4"
 assert_good "--permanent --icmptype=${myicmp} --remove-destination=ipv4"
 assert_bad "--permanent --icmptype=${myicmp} --query-destination=ipv4"
+
+# test sctp and dccp ports
+assert_good "--permanent --service=${myservice} --add-port=666/sctp"
+assert_good "--permanent --service=${myservice} --remove-port=666/sctp"
+assert_good "--permanent --service=${myservice} --remove-port 666/sctp"
+assert_bad  "--permanent --service=${myservice} --query-port=666/sctp"
+assert_good "--permanent --service=${myservice} --add-port=999/dccp"
+assert_good "--permanent --service=${myservice} --remove-port=999/dccp"
+assert_good "--permanent --service=${myservice} --remove-port 999/dccp"
+assert_bad  "--permanent --service=${myservice} --query-port=999/dccp"
+assert_good "--permanent --service=${myservice} --add-port=666/sctp"
+assert_good "--permanent --service=${myservice} --add-port=999/dccp"
 
 # add them to zone
 assert_good "--permanent --zone=${myzone} --add-service=${myservice}"
@@ -906,7 +944,9 @@ good_rules=(
  'rule family="ipv4" source address="192.168.1.0/24" masquerade'
  'rule family="ipv4" destination address="192.168.1.0/24" masquerade' # masquerade & destination
  'rule family="ipv6" masquerade'
- 'rule forward-port port="2222" to-port="22" to-addr="192.168.100.2" protocol="tcp" family="ipv4" source address="192.168.2.100"')
+ 'rule forward-port port="2222" to-port="22" to-addr="192.168.100.2" protocol="tcp" family="ipv4" source address="192.168.2.100"'
+ 'rule forward-port port="66" to-port="666" to-addr="192.168.100.2" protocol="sctp" family="ipv4" source address="192.168.2.100"'
+ 'rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"')
 
 for (( i=0;i<${#good_rules[@]};i++)); do
   rule=${good_rules[${i}]}

@@ -576,7 +576,7 @@ class Rich_Rule(object):
         elif type(self.element) == Rich_Port:
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in [ "tcp", "udp" ]:
+            if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # protocol
@@ -611,7 +611,7 @@ class Rich_Rule(object):
         elif type(self.element) == Rich_ForwardPort:
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in [ "tcp", "udp" ]:
+            if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
             if self.element.to_port == "" and self.element.to_address == "":
                 raise FirewallError(errors.INVALID_PORT, self.element.to_port)
@@ -631,7 +631,7 @@ class Rich_Rule(object):
         elif type(self.element) == Rich_SourcePort:
             if not functions.check_port(self.element.port):
                 raise FirewallError(errors.INVALID_PORT, self.element.port)
-            if self.element.protocol not in [ "tcp", "udp" ]:
+            if self.element.protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
                 raise FirewallError(errors.INVALID_PROTOCOL, self.element.protocol)
 
         # other element and not empty?
