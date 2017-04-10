@@ -153,6 +153,8 @@ CONFIG_FILES = \
 	services/ipp-client.xml \
 	services/ipp.xml \
 	services/ipsec.xml \
+	services/ircs.xml \
+	services/irc.xml \
 	services/iscsi-target.xml \
 	services/kadmin.xml \
 	services/kerberos.xml \
