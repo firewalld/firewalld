@@ -1987,31 +1987,31 @@ if a.permanent:
         elif a.list_all_zones:
             names = fw.config().getZoneNames()
             for zone in sorted(names):
-                settings = fw.config().getZoneByName(zone)
-                cmd.print_zone_info(zone, settings.getSettings())
+                settings = fw.config().getZoneByName(zone).getSettings()
+                cmd.print_zone_info(zone, settings)
                 cmd.print_msg("")
             sys.exit(0)
 
         # set zone description
         elif a.set_description:
-            settings = fw.config().getZoneByName(zone)
+            settings = fw.config().getZoneByName(zone).getSettings()
             settings.setDescription(a.set_description)
             fw_zone.update(settings)
 
         # get zone description
         elif a.get_description:
-            settings = fw.config().getZoneByName(zone)
+            settings = fw.config().getZoneByName(zone).getSettings()
             cmd.print_and_exit(settings.getDescription())
 
         # set zone short description
         elif a.set_short:
-            settings = fw.config().getZoneByName(zone)
+            settings = fw.config().getZoneByName(zone).getSettings()
             settings.setShort(a.set_short)
             fw_zone.update(settings)
 
         # get zone short description
         elif a.get_short:
-            settings = fw.config().getZoneByName(zone)
+            settings = fw.config().getZoneByName(zone).getSettings()
             cmd.print_and_exit(settings.getShort())
 
 elif a.version:
