@@ -174,6 +174,7 @@ CONFIG_FILES = \
 	services/nfs.xml \
 	services/ntp.xml \
 	services/openvpn.xml \
+	services/ovirt-imageio.xml \
 	services/pmcd.xml \
 	services/pmproxy.xml \
 	services/pmwebapis.xml \
