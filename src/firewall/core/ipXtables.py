@@ -157,6 +157,7 @@ class ip4tables(object):
         self._command = config.COMMANDS[self.ipv]
         self._restore_command = config.COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
+        self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
 
     def fill_exists(self):
@@ -251,6 +252,8 @@ class ip4tables(object):
         log.debug2("%s: %s %s", self.__class__, self._restore_command,
                    "%s: %d" % (temp_file.name, stat.st_size))
         args = [ ]
+        if self.restore_wait_option:
+            args.append(self.restore_wait_option)
         if not flush:
             args.append("-n")
 
@@ -317,6 +320,24 @@ class ip4tables(object):
             if ret[0] == 0:
                 wait_option = "-w2"  # wait max 2 seconds
             log.debug2("%s: %s will be using %s option.", self.__class__, self._command, wait_option)
+
+        return wait_option
+
+    def _detect_restore_wait_option(self):
+        temp_file = tempFile()
+        temp_file.write("#foo")
+        temp_file.close()
+
+        wait_option = ""
+        ret = runProg(self._restore_command, ["-w"], stdin=temp_file.name)  # proposed for iptables-1.6.2
+        if ret[0] == 0:
+            wait_option = "-w"  # wait for xtables lock
+            ret = runProg(self._restore_command, ["--wait=2"], stdin=temp_file.name)  # since iptables > 1.4.21
+            if ret[0] == 0:
+                wait_option = "--wait=2"  # wait max 2 seconds
+            log.debug2("%s: %s will be using %s option.", self.__class__, self._restore_command, wait_option)
+
+        os.unlink(temp_file.name)
 
         return wait_option
 
