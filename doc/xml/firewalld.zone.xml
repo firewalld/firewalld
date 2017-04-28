@@ -59,7 +59,7 @@
 
     <para>
       A firewalld zone configuration file contains the information for a zone.
-      These are the zone description, services, ports, protcols, icmp-blocks, masquerade, forward-ports and rich language rules in an XML file format.
+      These are the zone description, services, ports, protocols, icmp-blocks, masquerade, forward-ports and rich language rules in an XML file format.
       The file name has to be <replaceable>zone_name</replaceable>.xml where length of <replaceable>zone_name</replaceable> is currently limited to 17 chars.
     </para>
     <para>
@@ -74,7 +74,7 @@
   [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
   [ &lt;service name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; ]
-  [ &lt;protcol value="<replaceable>protocol</replaceable>"/&gt; ]
+  [ &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; ]
   [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;icmp-block-inversion/&gt; ]
   [ &lt;masquerade/&gt; ]
