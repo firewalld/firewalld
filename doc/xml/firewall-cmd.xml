@@ -549,7 +549,7 @@
 	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
-	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	    <para>
 	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
@@ -639,7 +639,7 @@
 	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
-	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	    <para>
 	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
@@ -732,7 +732,7 @@
 	      <replaceable>timeval</replaceable> is either a number (of seconds) or number followed by one of characters <literal>s</literal> (seconds), <literal>m</literal> (minutes), <literal>h</literal> (hours), for example <literal>20m</literal> or <literal>1h</literal>.
 	    </para>
 	    <para>
-	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is a simple IP address.
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>. The destination address is a simple IP address.
 	    </para>
 	    <para>
 	      The <option>--timeout</option> option is not combinable with the <option>--permanent</option> option.
