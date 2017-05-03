@@ -70,7 +70,7 @@
   &lt;short&gt;<replaceable>My Service</replaceable>&lt;/short&gt;
   &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
   &lt;port port="<replaceable>137</replaceable>" protocol="<replaceable>tcp</replaceable>"/&gt;
-  &lt;protcol value="<replaceable>igmp</replaceable>"/&gt;
+  &lt;protocol value="<replaceable>igmp</replaceable>"/&gt;
   &lt;module name="<replaceable>nf_conntrack_netbios_ns</replaceable>"/&gt;
   &lt;destination ipv4="<replaceable>224.0.0.251</replaceable>" ipv6="<replaceable>ff02::fb</replaceable>"/&gt;
 &lt;/service&gt;
@@ -136,7 +136,7 @@
 	  <term>protocol="<replaceable>string</replaceable>"</term>
           <listitem>
 	    <para>
-              The protocol value can either be <option>tcp</option> or <option>udp</option>.
+              The protocol value can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -185,7 +185,7 @@
 	  <term>protocol="<replaceable>string</replaceable>"</term>
           <listitem>
 	    <para>
-              The protocol value can either be <option>tcp</option> or <option>udp</option>.
+              The protocol value can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>

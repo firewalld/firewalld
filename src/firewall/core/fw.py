@@ -62,8 +62,10 @@ class Firewall(object):
 
         self.ip4tables_backend = ipXtables.ip4tables()
         self.ip4tables_enabled = True
+        self.ip4tables_supported_icmp_types = [ ]
         self.ip6tables_backend = ipXtables.ip6tables()
         self.ip6tables_enabled = True
+        self.ip6tables_supported_icmp_types = [ ]
         self.ebtables_backend = ebtables.ebtables()
         self.ebtables_enabled = True
         self.ipset_backend = ipset.ipset()
@@ -159,7 +161,11 @@ class Firewall(object):
                 log.warning("iptables-restore and iptables are missing, "
                             "disabling IPv4 firewall.")
                 self.ip4tables_enabled = False
-
+        if self.ip4tables_enabled:
+            self.ip4tables_supported_icmp_types = \
+                self.ip4tables_backend.supported_icmp_types()
+        else:
+            self.ip4tables_supported_icmp_types = [ ]
         self.ip6tables_backend.fill_exists()
         if not self.ip6tables_backend.restore_command_exists:
             if self.ip6tables_backend.command_exists:
@@ -169,7 +175,11 @@ class Firewall(object):
                 log.warning("ip6tables-restore and ip6tables are missing, "
                             "disabling IPv6 firewall.")
                 self.ip6tables_enabled = False
-
+        if self.ip6tables_enabled:
+            self.ip6tables_supported_icmp_types = \
+                self.ip6tables_backend.supported_icmp_types()
+        else:
+            self.ip6tables_supported_icmp_types = [ ]
         self.ebtables_backend.fill_exists()
         if not self.ebtables_backend.restore_command_exists:
             if self.ebtables_backend.command_exists:
@@ -478,7 +488,11 @@ class Firewall(object):
                         self.icmptype.remove_icmptype(orig_obj.name)
                     elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
-                    self.icmptype.add_icmptype(obj)
+                    try:
+                        self.icmptype.add_icmptype(obj)
+                    except FirewallError as error:
+                        log.warning("%s: %s, ignoring for run-time." % \
+                                    (obj.name, str(error)))
                     # add a deep copy to the configuration interface
                     self.config.add_icmptype(copy.deepcopy(obj))
                 elif reader_type == "service":
@@ -538,7 +552,11 @@ class Firewall(object):
                         self.ipset.remove_ipset(orig_obj.name)
                     elif obj.path.startswith(config.ETC_FIREWALLD):
                         obj.default = True
-                    self.ipset.add_ipset(obj)
+                    try:
+                        self.ipset.add_ipset(obj)
+                    except FirewallError as error:
+                        log.warning("%s: %s, ignoring for run-time." % \
+                                    (obj.name, str(error)))
                     # add a deep copy to the configuration interface
                     self.config.add_ipset(copy.deepcopy(obj))
                 elif reader_type == "helper":
@@ -971,9 +989,10 @@ class Firewall(object):
     def check_tcpudp(self, protocol):
         if not protocol:
             raise FirewallError(errors.MISSING_PROTOCOL)
-        if protocol not in [ "tcp", "udp" ]:
+        if protocol not in [ "tcp", "udp", "sctp", "dccp" ]:
             raise FirewallError(errors.INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'}" % protocol)
+                                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
+                                protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):

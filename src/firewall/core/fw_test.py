@@ -456,9 +456,10 @@ class Firewall_test(object):
     def check_tcpudp(self, protocol):
         if not protocol:
             raise FirewallError(errors.MISSING_PROTOCOL)
-        if not protocol in [ "tcp", "udp" ]:
+        if not protocol in [ "tcp", "udp", "sctp", "dccp" ]:
             raise FirewallError(errors.INVALID_PROTOCOL,
-                                "'%s' not in {'tcp'|'udp'}" % protocol)
+                                "'%s' not in {'tcp'|'udp'|'sctp'|'dccp'}" % \
+                                protocol)
 
     def check_ip(self, ip):
         if not functions.checkIP(ip):

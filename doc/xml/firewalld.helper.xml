@@ -69,7 +69,7 @@
 &lt;helper module="<replaceable>nf_conntrack_module</replaceable>" [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
   &lt;short&gt;<replaceable>short</replaceable>&lt;/short&gt;
   &lt;description&gt;<replaceable>description</replaceable>&lt;/description&gt;
-  &lt;port <replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt;
+  &lt;port <replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt;
 &lt;/helper&gt;
       </programlisting>
     </para>
@@ -149,7 +149,7 @@
 	  <term>protocol="<replaceable>string</replaceable>"</term>
           <listitem>
 	    <para>
-              The protocol value can either be <option>tcp</option> or <option>udp</option>.
+              The protocol value can either be <option>tcp</option>, <option>udp</option>, <option>sctp</option> or <option>dccp</option>.
 	    </para>
 	  </listitem>
 	</varlistentry>

@@ -59,7 +59,7 @@
 
     <para>
       A firewalld zone configuration file contains the information for a zone.
-      These are the zone description, services, ports, protcols, icmp-blocks, masquerade, forward-ports and rich language rules in an XML file format.
+      These are the zone description, services, ports, protocols, icmp-blocks, masquerade, forward-ports and rich language rules in an XML file format.
       The file name has to be <replaceable>zone_name</replaceable>.xml where length of <replaceable>zone_name</replaceable> is currently limited to 17 chars.
     </para>
     <para>
@@ -73,25 +73,25 @@
   [ &lt;interface name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>"/&gt; ]
   [ &lt;service name="<replaceable>string</replaceable>"/&gt; ]
-  [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
-  [ &lt;protcol value="<replaceable>protocol</replaceable>"/&gt; ]
+  [ &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; ]
+  [ &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; ]
   [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;icmp-block-inversion/&gt; ]
   [ &lt;masquerade/&gt; ]
-  [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
-  [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; ]
+  [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
+  [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; ]
   [
     &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
     [ &lt;source address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]"|mac="<replaceable>MAC</replaceable>"|ipset="<replaceable>ipset</replaceable>" [invert="<replaceable>True</replaceable>"]/&gt; ]
     [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
     [
       &lt;service name="<replaceable>string</replaceable>"/&gt; |
-      &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
+      &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
       &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
       &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
       &lt;icmp-type name="<replaceable>icmptype</replaceable>"/&gt; |
       &lt;masquerade/&gt; |
-      &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
+      &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt;
     ]
     [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
     [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]
@@ -249,10 +249,10 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"</term>
           <listitem>
 	    <para>
-	      The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+	      The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -329,10 +329,10 @@
 	  </varlistentry>
 
 	  <varlistentry>
-	    <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+	    <term>protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"</term>
             <listitem>
 	      <para>
-		The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+		The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	      </para>
 	    </listitem>
 	  </varlistentry>
@@ -382,10 +382,10 @@
 	</varlistentry>
 
 	<varlistentry>
-	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>"</term>
+	  <term>protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"</term>
           <listitem>
 	    <para>
-	      The protocol can either be <replaceable>tcp</replaceable> or <replaceable>udp</replaceable>.
+	      The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -407,13 +407,13 @@
   [ &lt;destination address="<replaceable>address</replaceable>[/<replaceable>mask</replaceable>]" [invert="<replaceable>True</replaceable>"]/&gt; ]
   [
     &lt;service name="<replaceable>string</replaceable>"/&gt; |
-    &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
+    &lt;port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
     &lt;protocol value="<replaceable>protocol</replaceable>"/&gt; |
     &lt;icmp-block name="<replaceable>icmptype</replaceable>"/&gt; |
     &lt;icmp-type name="<replaceable>icmptype</replaceable>"/&gt; |
     &lt;masquerade/&gt; |
-    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt; |
-    &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>"/&gt; |
+    &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>address</replaceable>"]/&gt; |
+    &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; |
   ]
   [ &lt;log [prefix="<replaceable>prefixtext</replaceable>"] [level="<literal>emerg</literal>|<literal>alert</literal>|<literal>crit</literal>|<literal>err</literal>|<literal>warn</literal>|<literal>notice</literal>|<literal>info</literal>|<literal>debug</literal>"]/&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/log&gt; ]
   [ &lt;audit&gt; [&lt;limit value="<replaceable>rate</replaceable>/<replaceable>duration</replaceable>"/&gt;] &lt;/audit&gt; ]

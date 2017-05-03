@@ -131,6 +131,7 @@ CONFIG_FILES = \
 	services/ceph.xml \
 	services/cfengine.xml \
 	services/condor-collector.xml \
+	services/ctdb.xml \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
@@ -174,6 +175,9 @@ CONFIG_FILES = \
 	services/nfs.xml \
 	services/ntp.xml \
 	services/openvpn.xml \
+	services/ovirt-imageio.xml \
+	services/ovirt-storageconsole.xml \
+	services/ovirt-vmconsole.xml \
 	services/pmcd.xml \
 	services/pmproxy.xml \
 	services/pmwebapis.xml \

@@ -443,6 +443,10 @@
             <term><parameter>IPv4</parameter> - b - (ro)</term>
             <listitem><para>Indicates whether the firewall has IPv4 support.</para></listitem>
           </varlistentry>
+	  <varlistentry id="FirewallD1.Properties.IPv4ICMPTypes">
+            <term><parameter>IPv4ICMPTypes</parameter> - as - (ro)</term>
+            <listitem><para>The list of supported IPv4 ICMP types.</para></listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.Properties.IPv6">
             <term><parameter>IPv6</parameter> - b - (ro)</term>
             <listitem><para>Indicates whether the firewall has IPv6 support.</para></listitem>
@@ -450,6 +454,10 @@
           <varlistentry id="FirewallD1.Properties.IPv6_rpfilter">
             <term><parameter>IPv6_rpfilter</parameter> - b - (ro)</term>
             <listitem><para>Indicates whether the reverse path filter test on a packet for IPv6 is enabled. If a reply to the packet would be sent via the same interface that the packet arrived on, the packet will match and be accepted, otherwise dropped.</para></listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.Properties.IPv6ICMPTypes">
+            <term><parameter>IPv6ICMPTypes</parameter> - as - (ro)</term>
+            <listitem><para>The list of supported IPv6 ICMP types.</para></listitem>
           </varlistentry>
           <varlistentry id="FirewallD1.Properties.interface_version">
             <term><parameter>interface_version</parameter> - s - (ro)</term>

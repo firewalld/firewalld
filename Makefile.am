@@ -1,4 +1,5 @@
 SUBDIRS = config doc po shell-completion src
+DIST_TARGETS = dist-gzip
 
 EXTRA_DIST = \
 	COPYING \
@@ -93,24 +94,21 @@ push-translations:
 update-translations: pull-translations update-po push-translations 
 
 archive: dist-check $(desktop_DATA) tag dist
-	scp "${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2" fedorahosted.org:${PACKAGE_NAME}
-	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
-	@echo "Also have a look at https://fedorahosted.org/released/${PACKAGE_NAME}/"
 
 local: distclean
-	@rm -rf ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2
+	@rm -rf ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz
 	@rm -rf /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION) /tmp/${PACKAGE_NAME}
 	@dir=$$PWD; cd /tmp; cp -a $$dir ${PACKAGE_NAME}
 	@mv /tmp/${PACKAGE_NAME} /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION)
-	@dir=$$PWD; cd /tmp; tar --bzip2 -cSpf $$dir/${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2 ${PACKAGE_NAME}-$(PACKAGE_VERSION)
+	@dir=$$PWD; cd /tmp; tar --gzip -cSpf $$dir/${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz ${PACKAGE_NAME}-$(PACKAGE_VERSION)
 	@rm -rf /tmp/${PACKAGE_NAME}-$(PACKAGE_VERSION)	
-	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.bz2"
+	@echo "The archive is in ${PACKAGE_NAME}-$(PACKAGE_VERSION).tar.gz"
 
 test-rpm: dist
-	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.bz2
+	@rpmbuild -ta $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
 test-srpm: dist
-	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.bz2
+	@rpmbuild -ts $(PACKAGE_NAME)-$(PACKAGE_VERSION).tar.gz
 
 update-po:
 	ls $(top_srcdir)/po/*.po | sed 's/.*\/po\///;s/.po//' > $(top_srcdir)/po/LINGUAS

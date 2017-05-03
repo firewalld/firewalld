@@ -162,6 +162,7 @@ class ip4tables(object):
         self._command = config.COMMANDS[self.ipv]
         self._restore_command = config.COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
+        self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
 
     def fill_exists(self):
@@ -256,6 +257,8 @@ class ip4tables(object):
         log.debug2("%s: %s %s", self.__class__, self._restore_command,
                    "%s: %d" % (temp_file.name, stat.st_size))
         args = [ ]
+        if self.restore_wait_option:
+            args.append(self.restore_wait_option)
         if not flush:
             args.append("-n")
 
@@ -325,6 +328,24 @@ class ip4tables(object):
 
         return wait_option
 
+    def _detect_restore_wait_option(self):
+        temp_file = tempFile()
+        temp_file.write("#foo")
+        temp_file.close()
+
+        wait_option = ""
+        ret = runProg(self._restore_command, ["-w"], stdin=temp_file.name)  # proposed for iptables-1.6.2
+        if ret[0] == 0:
+            wait_option = "-w"  # wait for xtables lock
+            ret = runProg(self._restore_command, ["--wait=2"], stdin=temp_file.name)  # since iptables > 1.4.21
+            if ret[0] == 0:
+                wait_option = "--wait=2"  # wait max 2 seconds
+            log.debug2("%s: %s will be using %s option.", self.__class__, self._restore_command, wait_option)
+
+        os.unlink(temp_file.name)
+
+        return wait_option
+
     def flush(self, transaction=None):
         tables = self.used_tables()
         for table in tables:
@@ -352,6 +373,39 @@ class ip4tables(object):
                                          [ "-t", table, "-P", chain, policy ])
                 else:
                     self.__run([ "-t", table, "-P", chain, policy ])
+
+    def supported_icmp_types(self):
+        """Return ICMP types that are supported by the iptables/ip6tables command and kernel"""
+        ret = [ ]
+        output = ""
+        try:
+            output = self.__run(["-p",
+                                 "icmp" if self.ipv == "ipv4" else "ipv6-icmp",
+                                 "--help"])
+        except ValueError as ex:
+            if self.ipv == "ipv4":
+                log.debug1("iptables error: %s" % ex)
+            else:
+                log.debug1("ip6tables error: %s" % ex)
+        lines = output.splitlines()
+
+        in_types = False
+        for line in lines:
+            #print(line)
+            if in_types:
+                line = line.strip().lower()
+                splits = line.split()
+                for split in splits:
+                    if split.startswith("(") and split.endswith(")"):
+                        x = split[1:-1]
+                    else:
+                        x = split
+                    if x not in ret:
+                        ret.append(x)
+            if self.ipv == "ipv4" and line.startswith("Valid ICMP Types:") or \
+               self.ipv == "ipv6" and line.startswith("Valid ICMPv6 Types:"):
+                in_types = True
+        return ret
 
 class ip6tables(ip4tables):
     ipv = "ipv6"

@@ -208,7 +208,7 @@
 	      Add the port to the default zone. This option can be specified multiple times.
 	    </para>
 	    <para>
-	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -264,7 +264,7 @@
 	      Add the <emphasis>IPv4</emphasis> forward port in the default zone. This option can be specified multiple times. 
 	    </para>
 	    <para>
-	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is an IP address.
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>. The destination address is an IP address.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -621,7 +621,7 @@
 	      Add the port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times.
 	    </para>
 	    <para>
-	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>
@@ -669,7 +669,7 @@
        </varlistentry>
 
        <varlistentry>
-         <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-protcol</option>=<replaceable>protocol</replaceable></term>
+         <term><optional><option>--zone</option>=<replaceable>zone</replaceable></optional> <option>--remove-protocol</option>=<replaceable>protocol</replaceable></term>
          <listitem>
            <para>
              Remove the protocol from <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times.
@@ -748,7 +748,7 @@
 	      Add the <emphasis>IPv4</emphasis> forward port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times.
 	    </para>
 	    <para>
-	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>. The destination address is a simple IP address.
+	      The port can either be a single port number <replaceable>portid</replaceable> or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>. The destination address is a simple IP address.
 	    </para>
 	    <para>
 	      For <emphasis>IPv6</emphasis> forward ports, please use the rich language.
@@ -798,7 +798,7 @@
 	      Add the source port for <replaceable>zone</replaceable>. If zone is omitted, default zone will be used. This option can be specified multiple times. If a timeout is supplied, the rule will be active for the specified amount of time and will be removed automatically afterwards.
 	    </para>
 	    <para>
-	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal> or <literal>udp</literal>.
+	      The port can either be a single port number or a port range <replaceable>portid</replaceable>-<replaceable>portid</replaceable>. The protocol can either be <literal>tcp</literal>, <literal>udp</literal>, <literal>sctp</literal> or <literal>dccp</literal>.
 	    </para>
 	  </listitem>
 	</varlistentry>

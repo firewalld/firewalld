@@ -7,12 +7,14 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.3
+Version: 0.4.4.4
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
-Source0: https://fedorahosted.org/released/firewalld/%{name}-%{version}.tar.bz2
+Source0: https://github.com/t-woerner/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch: noarch
+BuildRequires: autoconf
+BuildRequires: automake
 BuildRequires: desktop-file-utils
 BuildRequires: gettext
 BuildRequires: intltool
@@ -115,6 +117,7 @@ firewalld.
 
 %prep
 %setup -q
+./autogen.sh
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -127,13 +130,12 @@ sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
 
 %build
 %configure --enable-sysconfig --enable-rpmmacros
-# Enable the make line if there are patches affecting man pages to
-# regenerate them
-# make %{?_smp_mflags}
+make %{?_smp_mflags}
 
 %if 0%{?with_python3}
 pushd %{py3dir}
 %configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
+make %{?_smp_mflags}
 popd
 %endif #0%{?with_python3}
 
@@ -309,6 +311,16 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Mon Mar 27 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.4-1
+- Drop references to fedorahosted.org from spec file and Makefile.am
+- Fix inconsistent ordering of rules in INPUT_ZONE_SOURCE (issue#166)
+- Fix ipset overloading from /etc/firewalld/ipsets
+- Fix permanent rich rules using icmp-type elements (RHBZ#1434594)
+- firewall-config: Deactivate edit, remove, .. buttons if there are no items
+- Check if ICMP types are supported by kernel before trying to use them
+- firewall-config: Show invalid ipset type in the ipset configuration dialog
+  in a special label
+
 * Thu Feb  9 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.3-1
 - New service freeipa-trust (RHBZ#1411650)
 - Complete icmp types for IPv4 and IPv6
