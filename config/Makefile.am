@@ -173,6 +173,7 @@ CONFIG_FILES = \
 	services/ms-wbt.xml \
 	services/mysql.xml \
 	services/nfs.xml \
+	services/nrpe.xml \
 	services/ntp.xml \
 	services/openvpn.xml \
 	services/ovirt-imageio.xml \
