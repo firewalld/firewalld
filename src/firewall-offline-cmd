@@ -478,13 +478,13 @@ def pk_symlink(product='server'):
     _PK_DIR = '/usr/share/polkit-1/actions/'
     _PK_NAME = 'org.fedoraproject.FirewallD1.'
     os.chdir(_PK_DIR)
-    if os.path.isfile(_PK_NAME+product+'.policy'):
+    if os.path.isfile(_PK_NAME+product+'.policy.choice'):
         if os.path.isfile(_PK_NAME+'policy'):
             os.remove(_PK_NAME+'policy')
-        os.symlink(_PK_NAME+product+'.policy', _PK_NAME+'policy')
-        cmd.print_and_exit('symlink '+_PK_DIR+_PK_NAME+product+'.policy -> '+_PK_NAME+'policy')
+        os.symlink(_PK_NAME+product+'.policy.choice', _PK_NAME+'policy')
+        cmd.print_and_exit('symlink '+_PK_DIR+_PK_NAME+product+'.policy.choice -> '+_PK_NAME+'policy')
     else:
-        cmd.fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy')
+        cmd.fail('no such file '+_PK_DIR+_PK_NAME+product+'.policy.choice')
 
 # system-config-firewall
 def read_sysconfig_args(config_file=SYSTEM_CONFIG_FIREWALL):

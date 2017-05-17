@@ -347,5 +347,7 @@ uninstall-local: $(UNINSTALL_TARGETS)
 
 install-data-hook:
 	cd $(DESTDIR)$(polkit1_actiondir) && \
+		mv org.fedoraproject.FirewallD1.server.policy org.fedoraproject.FirewallD1.server.policy.choice && \
+		mv org.fedoraproject.FirewallD1.desktop.policy org.fedoraproject.FirewallD1.desktop.policy.choice && \
 		rm -f org.fedoraproject.FirewallD1.policy && \
-		$(LN_S) org.fedoraproject.FirewallD1.server.policy org.fedoraproject.FirewallD1.policy
+		$(LN_S) org.fedoraproject.FirewallD1.server.policy.choice org.fedoraproject.FirewallD1.policy
