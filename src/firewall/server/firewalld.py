@@ -184,8 +184,8 @@ class FirewallD(slip.dbus.service.Object):
 
         else:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % prop)
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % prop)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
@@ -196,12 +196,19 @@ class FirewallD(slip.dbus.service.Object):
         property_name = dbus_to_python(property_name, str)
         log.debug1("Get('%s', '%s')", interface_name, property_name)
 
-        if interface_name != config.dbus.DBUS_INTERFACE:
+        if interface_name == config.dbus.DBUS_INTERFACE:
+            return self._get_property(property_name)
+        elif interface_name in [ config.dbus.DBUS_INTERFACE_ZONE,
+                                 config.dbus.DBUS_INTERFACE_DIRECT,
+                                 config.dbus.DBUS_INTERFACE_POLICIES,
+                                 config.dbus.DBUS_INTERFACE_IPSET ]:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % property_name)
+        else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        return self._get_property(property_name)
+                "Interface '%s' does not exist" % interface_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='s',
                          out_signature='a{sv}')
@@ -210,17 +217,24 @@ class FirewallD(slip.dbus.service.Object):
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("GetAll('%s')", interface_name)
 
-        if interface_name != config.dbus.DBUS_INTERFACE:
+        ret = { }
+        if interface_name == config.dbus.DBUS_INTERFACE:
+            for x in [ "version", "interface_version", "state",
+                       "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
+                       "IPSet", "IPSetTypes", "nf_conntrack_helper_setting",
+                       "nf_conntrack_helpers", "IPv4ICMPTypes",
+                       "IPv6ICMPTypes" ]:
+                ret[x] = self._get_property(x)
+        elif interface_name in [ config.dbus.DBUS_INTERFACE_ZONE,
+                                 config.dbus.DBUS_INTERFACE_DIRECT,
+                                 config.dbus.DBUS_INTERFACE_POLICIES,
+                                 config.dbus.DBUS_INTERFACE_IPSET ]:
+            pass
+        else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
+                "Interface '%s' does not exist" % interface_name)
 
-        ret = { }
-        for x in [ "version", "interface_version", "state",
-                   "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
-                   "IPSet", "IPSetTypes", "nf_conntrack_helper_setting",
-                   "nf_conntrack_helpers", "IPv4ICMPTypes", "IPv6ICMPTypes" ]:
-            ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
@@ -234,14 +248,31 @@ class FirewallD(slip.dbus.service.Object):
                    new_value)
         self.accessCheck(sender)
 
-        if interface_name != config.dbus.DBUS_INTERFACE:
+        if interface_name == config.dbus.DBUS_INTERFACE:
+            if property_name in [ "version", "interface_version", "state",
+                                  "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
+                                  "IPSet", "IPSetTypes",
+                                  "nf_conntrack_helper_setting",
+                                  "nf_conntrack_helpers", "IPv4ICMPTypes",
+                                  "IPv6ICMPTypes" ]:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.PropertyReadOnly: "
+                    "Property '%s' is read-only" % property_name)
+            else:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.InvalidArgs: "
+                    "Property '%s' does not exist" % property_name)
+        elif interface_name in [ config.dbus.DBUS_INTERFACE_ZONE,
+                                 config.dbus.DBUS_INTERFACE_DIRECT,
+                                 config.dbus.DBUS_INTERFACE_POLICIES,
+                                 config.dbus.DBUS_INTERFACE_IPSET ]:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % property_name)
+        else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        raise dbus.exceptions.DBusException(
-            "org.freedesktop.DBus.Error.AccessDenied: "
-            "Property '%s' is not settable" % property_name)
+                "Interface '%s' does not exist" % interface_name)
 
     @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties,

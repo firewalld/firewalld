@@ -92,9 +92,8 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
             return dbus.Boolean(self.obj.builtin)
         else:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % \
-                property_name)
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % property_name)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
@@ -109,7 +108,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         if interface_name != config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
+                "Interface '%s' does not exist" % interface_name)
 
         return self._get_property(property_name)
 
@@ -123,7 +122,7 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         if interface_name != config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
+                "Interface '%s' does not exist" % interface_name)
 
         ret = { }
         for x in [ "name", "filename", "path", "default", "builtin" ]:
@@ -144,11 +143,11 @@ class FirewallDConfigIcmpType(slip.dbus.service.Object):
         if interface_name != config.dbus.DBUS_INTERFACE_CONFIG_ICMPTYPE:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
+                "Interface '%s' does not exist" % interface_name)
 
         raise dbus.exceptions.DBusException(
-            "org.freedesktop.DBus.Error.AccessDenied: "
-            "Property '%s' is not settable" % property_name)
+            "org.freedesktop.DBus.Error.PropertyReadOnly: "
+            "Property '%s' is read-only" % property_name)
 
     @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties,

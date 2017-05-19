@@ -486,8 +486,8 @@ class FirewallDConfig(slip.dbus.service.Object):
                          "Lockdown", "IPv6_rpfilter", "IndividualCalls",
                          "LogDenied", "AutomaticHelpers" ]:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % prop)
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % prop)
 
         value = self.config.get_firewalld_conf().get(prop)
 
@@ -546,8 +546,8 @@ class FirewallDConfig(slip.dbus.service.Object):
             return dbus.String(self._get_property(prop))
         else:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' isn't exported (or may not exist)" % prop)
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % prop)
 
     @dbus_service_method(dbus.PROPERTIES_IFACE, in_signature='ss',
                          out_signature='v')
@@ -558,10 +558,17 @@ class FirewallDConfig(slip.dbus.service.Object):
         property_name = dbus_to_python(property_name, str)
         log.debug1("config.Get('%s', '%s')", interface_name, property_name)
 
-        if interface_name != config.dbus.DBUS_INTERFACE_CONFIG:
+        if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
+            return self._get_dbus_property(property_name)
+        elif interface_name in [ config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+                                 config.dbus.DBUS_INTERFACE_CONFIG_POLICIES ]:
+            raise dbus.exceptions.DBusException(
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % property_name)
+        else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
+                "Interface '%s' does not exist" % interface_name)
 
         return self._get_dbus_property(property_name)
 
@@ -572,16 +579,20 @@ class FirewallDConfig(slip.dbus.service.Object):
         interface_name = dbus_to_python(interface_name, str)
         log.debug1("config.GetAll('%s')", interface_name)
 
-        if interface_name != config.dbus.DBUS_INTERFACE_CONFIG:
+        ret = { }
+        if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
+            for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit",
+                       "Lockdown", "IPv6_rpfilter", "IndividualCalls",
+                       "LogDenied", "AutomaticHelpers" ]:
+                ret[x] = self._get_property(x)
+        elif interface_name in [ config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+                                 config.dbus.DBUS_INTERFACE_CONFIG_POLICIES ]:
+            pass
+        else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
+                "Interface '%s' does not exist" % interface_name)
 
-        ret = { }
-        for x in [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown",
-                   "IPv6_rpfilter", "IndividualCalls", "LogDenied",
-                   "AutomaticHelpers" ]:
-            ret[x] = self._get_property(x)
         return dbus.Dictionary(ret, signature="sv")
 
     @slip.dbus.polkit.require_auth(config.dbus.PK_ACTION_CONFIG)
@@ -595,49 +606,55 @@ class FirewallDConfig(slip.dbus.service.Object):
                    property_name, new_value)
         self.accessCheck(sender)
 
-        if interface_name != config.dbus.DBUS_INTERFACE_CONFIG:
-            raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.UnknownInterface: "
-                "FirewallD does not implement %s" % interface_name)
-
-        if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
-                              "IPv6_rpfilter", "IndividualCalls", "LogDenied",
-                              "AutomaticHelpers" ]:
-            if property_name == "MinimalMark":
+        if interface_name == config.dbus.DBUS_INTERFACE_CONFIG:
+            if property_name in [ "MinimalMark", "CleanupOnExit", "Lockdown",
+                                  "IPv6_rpfilter", "IndividualCalls",
+                                  "LogDenied", "AutomaticHelpers" ]:
+                if property_name == "MinimalMark":
+                    try:
+                        int(new_value)
+                    except ValueError:
+                        raise FirewallError(errors.INVALID_MARK, new_value)
                 try:
-                    int(new_value)
-                except ValueError:
-                    raise FirewallError(errors.INVALID_MARK, new_value)
-            try:
-                new_value = str(new_value)
-            except:
-                raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
+                    new_value = str(new_value)
+                except:
+                    raise FirewallError(errors.INVALID_VALUE,
+                                        "'%s' for %s" % \
+                                        (new_value, property_name))
+                if property_name in [ "CleanupOnExit", "Lockdown",
+                                      "IPv6_rpfilter", "IndividualCalls" ]:
+                    if new_value.lower() not in [ "yes", "no",
+                                                  "true", "false" ]:
+                        raise FirewallError(errors.INVALID_VALUE,
+                                            "'%s' for %s" % \
                                             (new_value, property_name))
-            if property_name in [ "CleanupOnExit", "Lockdown",
-                                  "IPv6_rpfilter", "IndividualCalls" ]:
-                if new_value.lower() not in [ "yes", "no", "true", "false" ]:
-                    raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
+                if property_name == "LogDenied":
+                    if new_value not in config.LOG_DENIED_VALUES:
+                        raise FirewallError(errors.INVALID_VALUE,
+                                            "'%s' for %s" % \
                                             (new_value, property_name))
-            if property_name == "LogDenied":
-                if new_value not in config.LOG_DENIED_VALUES:
-                    raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
+                if property_name == "AutomaticHelpers":
+                    if new_value not in config.AUTOMATIC_HELPERS_VALUES:
+                        raise FirewallError(errors.INVALID_VALUE,
+                                            "'%s' for %s" % \
                                             (new_value, property_name))
-            if property_name == "AutomaticHelpers":
-                if new_value not in config.AUTOMATIC_HELPERS_VALUES:
-                    raise FirewallError(errors.INVALID_VALUE, "'%s' for %s" % \
-                                            (new_value, property_name))
-            self.config.get_firewalld_conf().set(property_name, new_value)
-            self.config.get_firewalld_conf().write()
-            self.PropertiesChanged(interface_name,
-                                   { property_name: new_value }, [ ])
-        elif property_name in [ "DefaultZone" ]:
+                self.config.get_firewalld_conf().set(property_name, new_value)
+                self.config.get_firewalld_conf().write()
+                self.PropertiesChanged(interface_name,
+                                       { property_name: new_value }, [ ])
+            else:
+                raise dbus.exceptions.DBusException(
+                    "org.freedesktop.DBus.Error.InvalidArgs: "
+                    "Property '%s' does not exist" % property_name)
+        elif interface_name in [ config.dbus.DBUS_INTERFACE_CONFIG_DIRECT,
+                                 config.dbus.DBUS_INTERFACE_CONFIG_POLICIES ]:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.PropertyReadOnly: "
-                "Property '%s' is read-only" % property_name)
+                "org.freedesktop.DBus.Error.InvalidArgs: "
+                "Property '%s' does not exist" % property_name)
         else:
             raise dbus.exceptions.DBusException(
-                "org.freedesktop.DBus.Error.AccessDenied: "
-                "Property '%s' does not exist" % property_name)
+                "org.freedesktop.DBus.Error.UnknownInterface: "
+                "Interface '%s' does not exist" % interface_name)
 
     @dbus.service.signal(dbus.PROPERTIES_IFACE, signature='sa{sv}as')
     def PropertiesChanged(self, interface_name, changed_properties,
