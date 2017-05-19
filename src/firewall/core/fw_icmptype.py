@@ -21,6 +21,7 @@
 
 __all__ = [ "FirewallIcmpType" ]
 
+import copy
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
