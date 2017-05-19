@@ -169,7 +169,7 @@ class Zone(IO_Object):
             rules_str = [str(rule) for rule in self.rules]
             return rules_str
         else:
-            return super(Zone, self).__getattr__(name)
+            return getattr(super(Zone, self), name)
 
     def __setattr__(self, name, value):
         if name == "rules_str":
