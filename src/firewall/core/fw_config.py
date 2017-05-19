@@ -43,7 +43,7 @@ class FirewallConfig(object):
         return '%s(%r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r, %r)' % \
             (self.__class__,
              self._ipsets, self._icmptypes, self._services, self._zones,
-             self.helpers,
+             self._helpers,
              self._builtin_ipsets, self._builtin_icmptypes,
              self._builtin_services, self._builtin_zones, self._builtin_helpers,
              self._firewalld_conf, self._policies, self._direct)
