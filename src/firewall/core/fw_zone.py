@@ -1155,9 +1155,15 @@ class FirewallZone(object):
                                 _rule += [ "-j", "CT", "--helper", helper.name ]
                                 self.__rule_source(rule.source, _rule)
                                 zone_transaction.add_rule(ipv, _rule)
+                                nat_module = module.replace("conntrack", "nat")
+                                if nat_module in self._fw.nf_nat_helpers:
+                                    modules.append(nat_module)
                         else:
                             if helper.module not in modules:
                                 modules.append(helper.module)
+                                nat_module = helper.module.replace("conntrack", "nat")
+                                if nat_module in self._fw.nf_nat_helpers:
+                                    modules.append(nat_module)
                     zone_transaction.add_modules(modules)
 
                 target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
@@ -1621,6 +1627,9 @@ class FirewallZone(object):
                 modules = [ ]
                 for helper in helpers:
                     modules.append(helper.module)
+                    nat_module = helper.module.replace("conntrack", "nat")
+                    if nat_module in self._fw.nf_nat_helpers:
+                        modules.append(nat_module)
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
 
@@ -1638,6 +1647,9 @@ class FirewallZone(object):
                         raise FirewallError(
                             errors.INVALID_HELPER,
                             "'%s' is not available in kernel" % module)
+                    nat_module = helper.module.replace("conntrack", "nat")
+                    if nat_module in self._fw.nf_nat_helpers:
+                        zone_transaction.add_module(nat_module)
                     if helper.family != "" and helper.family != ipv:
                         # no support for family ipv, continue
                         continue
