@@ -459,7 +459,15 @@
             <term><parameter>IPv6ICMPTypes</parameter> - as - (ro)</term>
             <listitem><para>The list of supported IPv6 ICMP types.</para></listitem>
           </varlistentry>
-          <varlistentry id="FirewallD1.Properties.interface_version">
+	  <varlistentry id="FirewallD1.Properties.nf_conntrach_helper_setting">
+            <term><parameter>nf_conntrach_helper_setting</parameter> - b - (ro)</term>
+            <listitem><para>Kernel nf_conntrack_helper setting.</para></listitem>
+          </varlistentry>
+          <varlistentry id="FirewallD1.Properties.nf_conntrack_helpers">
+            <term><parameter>nf_conntrack_helpers</parameter> - a{sas} - (ro)</term>
+            <listitem><para>The list of conntrack helpers supported by the kernel.</para></listitem>
+          </varlistentry>
+	  <varlistentry id="FirewallD1.Properties.interface_version">
             <term><parameter>interface_version</parameter> - s - (ro)</term>
             <listitem><para>firewalld D-Bus interface version string.</para></listitem>
           </varlistentry>
