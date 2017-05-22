@@ -25,7 +25,7 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "firewalld_is_active", "tempFile", "readfile", "writefile",
             "enable_ip_forwarding", "get_nf_conntrack_helper_setting",
             "set_nf_conntrack_helper_setting", "get_nf_conntrack_helpers",
-            "check_port", "check_address",
+            "get_nf_nat_helpers", "check_port", "check_address",
             "check_single_address", "check_mac", "uniqify", "ppid_of_pid",
             "max_zone_name_len", "checkUser", "checkUid", "checkCommand",
             "checkContext", "joinArgs", "splitArgs",
@@ -347,6 +347,26 @@ def get_nf_conntrack_helpers():
                 if line.startswith("alias:") and "-helper-" in line:
                     helper = line.split(":")[1].strip()
                     helper = helper.replace("nfct-helper-", "")
+                    helper = helper.replace("_", "-")
+                    helpers.setdefault(module, [ ]).append(helper)
+    return helpers
+
+def get_nf_nat_helpers():
+    kver = os.uname()[2]
+    path = "/lib/modules/%s/kernel/net/netfilter/" % kver
+    helpers = { }
+    if os.path.isdir(path):
+        for filename in sorted(os.listdir(path)):
+            if not filename.startswith("nf_nat_"):
+                continue
+            module = filename.split(".")[0]
+            (status, ret) = runProg(COMMANDS["modinfo"], [ module, ])
+            if status != 0:
+                continue
+            alias = None
+            for line in ret.split("\n"):
+                if line.startswith("description:") and "NAT helper" in line:
+                    helper = module.replace("nf_nat_", "")
                     helper = helper.replace("_", "-")
                     helpers.setdefault(module, [ ]).append(helper)
     return helpers
