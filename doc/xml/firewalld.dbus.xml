@@ -467,6 +467,10 @@
             <term><parameter>nf_conntrack_helpers</parameter> - a{sas} - (ro)</term>
             <listitem><para>The list of conntrack helpers supported by the kernel.</para></listitem>
           </varlistentry>
+          <varlistentry id="FirewallD1.Properties.nf_nat_helpers">
+            <term><parameter>nf_nat_helpers</parameter> - a{sas} - (ro)</term>
+            <listitem><para>The list of nat helpers supported by the kernel.</para></listitem>
+          </varlistentry>
 	  <varlistentry id="FirewallD1.Properties.interface_version">
             <term><parameter>interface_version</parameter> - s - (ro)</term>
             <listitem><para>firewalld D-Bus interface version string.</para></listitem>

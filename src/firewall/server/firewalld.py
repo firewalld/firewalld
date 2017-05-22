@@ -182,6 +182,9 @@ class FirewallD(slip.dbus.service.Object):
         elif prop == "nf_conntrack_helpers":
             return dbus.Dictionary(self.fw.nf_conntrack_helpers, "sas")
 
+        elif prop == "nf_nat_helpers":
+            return dbus.Dictionary(self.fw.nf_nat_helpers, "sas")
+
         else:
             raise dbus.exceptions.DBusException(
                 "org.freedesktop.DBus.Error.InvalidArgs: "
@@ -222,8 +225,8 @@ class FirewallD(slip.dbus.service.Object):
             for x in [ "version", "interface_version", "state",
                        "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
                        "IPSet", "IPSetTypes", "nf_conntrack_helper_setting",
-                       "nf_conntrack_helpers", "IPv4ICMPTypes",
-                       "IPv6ICMPTypes" ]:
+                       "nf_conntrack_helpers", "nf_nat_helpers",
+                       "IPv4ICMPTypes", "IPv6ICMPTypes" ]:
                 ret[x] = self._get_property(x)
         elif interface_name in [ config.dbus.DBUS_INTERFACE_ZONE,
                                  config.dbus.DBUS_INTERFACE_DIRECT,
@@ -253,8 +256,8 @@ class FirewallD(slip.dbus.service.Object):
                                   "IPv4", "IPv6", "IPv6_rpfilter", "BRIDGE",
                                   "IPSet", "IPSetTypes",
                                   "nf_conntrack_helper_setting",
-                                  "nf_conntrack_helpers", "IPv4ICMPTypes",
-                                  "IPv6ICMPTypes" ]:
+                                  "nf_conntrack_helpers", "nf_nat_helpers",
+                                  "IPv4ICMPTypes", "IPv6ICMPTypes" ]:
                 raise dbus.exceptions.DBusException(
                     "org.freedesktop.DBus.Error.PropertyReadOnly: "
                     "Property '%s' is read-only" % property_name)
