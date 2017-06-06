@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.4
+Version: 0.4.4.5
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -311,6 +311,51 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Tue Jun  6 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.5-1
+- Fix build from spec without fedorahosted.org archives
+- firewalld.spec: Add missing autotools dependencies
+- firewall-offline-cmd: Fix --remove-service-from-zone option RHBZ#1438127
+- Merge pull request 213 from hwoarang/add-missing-autotools
+- Support sctp and dccp in ports, source-ports, forward-ports, helpers and
+  rich rules
+- firewall-cmd: Fix --{set,get}-{short,description} for zone
+- firewall.core.ipXtables: Use new wait option for restore commands if
+  available
+- Merge pull request 212 from leongold/ovirt-imageio-service
+- config/Makefile.am: Install new ovirt-imageio service
+- README: Use www.firewalld.org/documentation as documentation link
+- Fix misspelled word in documentation
+- Merge pull request 216 from tobiasvl/fix-protocol-spelling
+- Man pages: Mention sctp and dccp protocols for remaining ports, ..
+- Adding ovirt-vmconsole service file
+- Adding oVirt storage-console service.
+- Adding ctdb service file.
+- Merge pull request 219 from leongold/ctdb-service
+- Fixing incorrect port number
+- Merge pull request 217 from leongold/ovirt-vmconsole
+- Merge pull request 218 from leongold/ovirt-storageconsole
+- config/Makefile.am: New services ctdb, ovirt-storageconsole and
+  ovirt-vmconsole
+- Adding service file for nrpe.
+- Merge pull request 220 from leongold/nrpe-service
+- config/Makefile.am: New services nrpe
+- Rename extension for policy choices (server and desktop) to .policy.choice
+  (RHBZ#1449754)
+- D-Bus interfaces: Fix GetAll for interfaces without properties
+  (RHBZ#1452017)
+- firewall.core.fw_config: Fix wrong variable use in repr output
+- firewall.core.fw_icmptype: Add missing import for copy
+- firewall.core.fw_test: Fix wrong format string in repr
+- firewall.core.io.zone: Fix __getattr__ use on super(Zone)
+- firewall.functions: New function get_nf_nat_helpers
+- firewall.core.fw: Get NAT helpers and store them internally.
+- firewall.core.fw_zone: Load NAT helpers with conntrack helpers
+- firewalld.dbus: Add missing properties nf_conntrach_helper_setting and
+  nf_conntrack_helpers
+- firewall.server.firewalld: New property for NAT helpers supported by the
+  kernel
+- Translation updates
+
 * Mon Mar 27 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.4-1
 - Drop references to fedorahosted.org from spec file and Makefile.am
 - Fix inconsistent ordering of rules in INPUT_ZONE_SOURCE (issue#166)
