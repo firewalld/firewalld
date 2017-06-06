@@ -235,8 +235,8 @@ fi
 #%attr(0755,root,root) %{_initrddir}/firewalld
 %{_unitdir}/firewalld.service
 %config(noreplace) %{_sysconfdir}/dbus-1/system.d/FirewallD.conf
-%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy
-%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy
+%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.desktop.policy.choice
+%{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy.choice
 %{_datadir}/polkit-1/actions/org.fedoraproject.FirewallD1.policy
 %{_mandir}/man1/firewall*cmd*.1*
 %{_mandir}/man1/firewallctl*.1*
