@@ -510,6 +510,10 @@ assert_good "   --add-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
 assert_good " --query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=${default_zone}"
 assert_good "--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
 assert_bad  " --query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
+assert_good "   --add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::"
+assert_good " --query-forward-port port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0:: --zone=${default_zone}"
+assert_good "--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::"
+assert_bad  " --query-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::"
 
 assert_bad  "--permanent         --add-forward-port=666" # no protocol
 assert_good "--permanent    --add-forward-port=port=11:proto=tcp:toport=22 --zone=${default_zone}"
@@ -525,6 +529,11 @@ assert_good "--permanent    --add-forward-port=port=66:proto=sctp:toport=66:toad
 assert_good "--permanent  --query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=${default_zone}"
 assert_good "--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
 assert_bad  "--permanent  --query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7"
+assert_good "--permanent    --add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::"
+assert_good "--permanent  --query-forward-port port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0:: --zone=${default_zone}"
+assert_good "--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::"
+assert_bad  "--permanent  --query-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::"
+
 
 assert_good "   --add-forward-port=port=88:proto=udp:toport=99 --add-forward-port port=100:proto=tcp:toport=200"
 assert_good " --query-forward-port=port=100:proto=tcp:toport=200"
@@ -946,7 +955,8 @@ good_rules=(
  'rule family="ipv6" masquerade'
  'rule forward-port port="2222" to-port="22" to-addr="192.168.100.2" protocol="tcp" family="ipv4" source address="192.168.2.100"'
  'rule forward-port port="66" to-port="666" to-addr="192.168.100.2" protocol="sctp" family="ipv4" source address="192.168.2.100"'
- 'rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"')
+ 'rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"'
+ 'rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"')
 
 for (( i=0;i<${#good_rules[@]};i++)); do
   rule=${good_rules[${i}]}

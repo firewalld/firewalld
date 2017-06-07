@@ -78,7 +78,7 @@
   [ &lt;icmp-block name="<replaceable>string</replaceable>"/&gt; ]
   [ &lt;icmp-block-inversion/&gt; ]
   [ &lt;masquerade/&gt; ]
-  [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>ipv4address</replaceable>"]/&gt; ]
+  [ &lt;forward-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>" [to-port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]"] [to-addr="<replaceable>IP address</replaceable>"]/&gt; ]
   [ &lt;source-port port="<replaceable>portid</replaceable>[-<replaceable>portid</replaceable>]" protocol="<literal>tcp</literal>|<literal>udp</literal>|<literal>sctp</literal>|<literal>dccp</literal>"/&gt; ]
   [
     &lt;rule [family="<literal>ipv4</literal>|<literal>ipv6</literal>"]&gt;
@@ -310,7 +310,7 @@
     <refsect2 id="forward-port">
       <title>forward-port</title>
       <para>
-	Is an optional empty-element tag and can be used several times to have more than one port or packet forward entry. This is for IPv4 only. Use rich language rules for IPv6. There are mandatory and also optional attributes for forward ports:
+	Is an optional empty-element tag and can be used several times to have more than one port or packet forward entry. There are mandatory and also optional attributes for forward ports:
       </para>
 
       <refsect3>
@@ -358,7 +358,7 @@
 	    <term>to-addr="<replaceable>address</replaceable>"</term>
             <listitem>
 	      <para>
-		The destination IPv4 IP address.
+		The destination IP address either for IPv4 or IPv6.
 	      </para>
 	    </listitem>
 	  </varlistentry>

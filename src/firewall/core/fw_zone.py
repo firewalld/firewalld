@@ -1325,7 +1325,7 @@ class FirewallZone(object):
                 self.check_forward_port(ipv, port, protocol, toport, toaddr)
 
                 if enable:
-                    enable_ip_forwarding(ipv)
+                    zone_transaction.add_post(enable_ip_forwarding, ipv)
                     mark_id = self._fw.new_mark()
 
                 filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
@@ -2239,12 +2239,22 @@ class FirewallZone(object):
                 "port-forwarding is missing to-port AND to-addr")
 
     def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
-        self.check_forward_port("ipv4", port, protocol, toport, toaddr)
+        if check_single_address("ipv6", toaddr):
+            self.check_forward_port("ipv6", port, protocol, toport, toaddr)
+        else:
+            self.check_forward_port("ipv4", port, protocol, toport, toaddr)
         return (portStr(port, "-"), protocol,
                 portStr(toport, "-"), str(toaddr))
 
     def __forward_port(self, enable, zone, port, protocol, toport=None,
                        toaddr=None, mark_id=None, use_zone_transaction=None):
+
+        ipvs = [ ]
+        if check_single_address("ipv6", toaddr):
+            ipvs.append("ipv6")
+        else:
+            ipvs.append("ipv4")
+
         if use_zone_transaction is None:
             zone_transaction = self.new_zone_transaction(zone)
         else:
@@ -2253,14 +2263,7 @@ class FirewallZone(object):
         mark_str = "0x%x" % mark_id
         port_str = portStr(port)
 
-        to = ""
-        if toaddr:
-            to += toaddr
-
         filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
-
-        if toport and toport != "":
-            to += ":%s" % portStr(toport, "-")
 
         mark = [ "-m", "mark", "--mark", mark_str ]
 
@@ -2268,10 +2271,19 @@ class FirewallZone(object):
             zone_transaction.add_chain("mangle", "PREROUTING")
             zone_transaction.add_chain("nat", "PREROUTING")
             zone_transaction.add_chain("filter", filter_chain)
-            zone_transaction.add_post(enable_ip_forwarding, "ipv4")
 
         add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in [ "ipv4" ]: # IPv4 only!
+        for ipv in ipvs:
+            to = ""
+            if toaddr:
+                if ipv == "ipv6":
+                    to += "[%s]" % toaddr
+                else:
+                    to += toaddr
+            if toport and toport != "":
+                to += ":%s" % portStr(toport, "-")
+
+            zone_transaction.add_post(enable_ip_forwarding, ipv)
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["PREROUTING"], zone=zone)
             zone_transaction.add_rule(ipv,

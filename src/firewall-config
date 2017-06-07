@@ -4970,7 +4970,7 @@ class FirewallConfig(object):
         self.forwardDialogLocalCheck.set_active(True)
         self.forwardDialogLocalCheck.set_active(False)
         self.forwardDialogToPortCheck.set_active(False)
-        self.forwardDialog.family = "ipv4"
+        self.forwardDialog.family = None
 
         old_port = None
         old_proto = None

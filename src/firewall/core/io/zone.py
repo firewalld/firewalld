@@ -27,7 +27,7 @@ import io
 import shutil
 
 from firewall.config import ETC_FIREWALLD
-from firewall.functions import checkIP, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
+from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import PY2, IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator, check_port, \
@@ -210,7 +210,7 @@ class Zone(IO_Object):
                 if fwd_port[2]:
                     check_port(fwd_port[2])
                 if fwd_port[3]:
-                    if not checkIP(fwd_port[3]):
+                    if not checkIP(fwd_port[3]) and not checkIP6(fwd_port[3]):
                         raise FirewallError(
                             errors.INVALID_ADDR,
                             "to-addr '%s' is not a valid address" % fwd_port[3])
@@ -446,7 +446,7 @@ class zone_ContentHandler(IO_Object_ContentHandler):
             if to_port:
                 check_port(to_port)
             if to_addr:
-                if not checkIP(to_addr):
+                if not checkIP(to_addr) and not checkIP6(to_addr):
                     raise FirewallError(errors.INVALID_ADDR,
                                         "to-addr '%s' is not a valid address" \
                                         % to_addr)
