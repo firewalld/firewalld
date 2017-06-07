@@ -1284,11 +1284,9 @@ class FirewallZone(object):
             # MASQUERADE
             elif type(rule.element) == Rich_Masquerade:
                 if enable:
-                    enable_ip_forwarding(ipv)
-
-                if enable:
                     zone_transaction.add_chain("nat", "POSTROUTING")
                     zone_transaction.add_chain("filter", "FORWARD_OUT")
+                    zone_transaction.add_post(enable_ip_forwarding, ipv)
 
                 # POSTROUTING
                 target = DEFAULT_ZONE_TARGET.format(
@@ -2134,10 +2132,10 @@ class FirewallZone(object):
         if enable:
             zone_transaction.add_chain("nat", "POSTROUTING")
             zone_transaction.add_chain("filter", "FORWARD_OUT")
-            zone_transaction.add_post(enable_ip_forwarding, "ipv4")
 
         add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in [ "ipv4" ]: # IPv4 only!
+        for ipv in [ "ipv4", "ipv6" ]:
+            zone_transaction.add_post(enable_ip_forwarding, ipv)
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["POSTROUTING"], zone=zone)
             zone_transaction.add_rule(ipv, [ add_del, "%s_allow" % (target),

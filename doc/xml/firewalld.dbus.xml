@@ -1353,7 +1353,7 @@
             <term><methodname>addMasquerade</methodname>(s: zone, i: timeout) &rarr; s</term>
             <listitem>
               <para>
-		Enable IPv4 masquerade in <replaceable>zone</replaceable>.
+		Enable masquerade in <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		If <replaceable>timeout</replaceable> is non-zero, masquerading will be active for the amount of seconds.
 		For permanent settings see <link linkend="FirewallD1.config.zone.Methods.addMasquerade">org.fedoraproject.FirewallD1.config.zone.Methods.addMasquerade</link>.
@@ -1756,7 +1756,7 @@
             <term><methodname>queryMasquerade</methodname>(s: zone) &rarr; b</term>
             <listitem>
               <para>
-		Return whether IPv4 masquerading has been enabled in <replaceable>zone</replaceable>
+		Return whether masquerading has been enabled in <replaceable>zone</replaceable>
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.queryMasquerade">org.fedoraproject.FirewallD1.config.zone.Methods.queryMasquerade</link>.
               </para>
@@ -1911,7 +1911,7 @@
             <term><methodname>removeMasquerade</methodname>(s: zone) &rarr; s</term>
             <listitem>
               <para>
-		Disable IPv4 masquerade for <replaceable>zone</replaceable>.
+		Disable masquerade for <replaceable>zone</replaceable>.
 		If <replaceable>zone</replaceable> is empty, use default zone.
 		For permanent operation see <link linkend="FirewallD1.config.zone.Methods.removeMasquerade">org.fedoraproject.FirewallD1.config.zone.Methods.removeMasquerade</link>.
               </para>
@@ -2093,7 +2093,7 @@
             <term>MasqueradeAdded(s: zone, i: timeout)</term>
             <listitem>
               <para>
-		Emitted when IPv4 masquerade has been enabled for <replaceable>zone</replaceable>.
+		Emitted when masquerade has been enabled for <replaceable>zone</replaceable>.
               </para>
             </listitem>
           </varlistentry>
@@ -2101,7 +2101,7 @@
             <term>MasqueradeRemoved(s: zone)</term>
             <listitem>
               <para>
-		Emitted when IPv4 masquerade has been disabled for <replaceable>zone</replaceable>.
+		Emitted when masquerade has been disabled for <replaceable>zone</replaceable>.
               </para>
             </listitem>
           </varlistentry>
