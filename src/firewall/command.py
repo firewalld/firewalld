@@ -273,26 +273,35 @@ class FirewallCommand(object):
                                 proto)
         return (port, proto)
 
-    def parse_forward_port(self, value):
+    def parse_forward_port(self, value, compat=False):
         port = None
         protocol = None
         toport = None
         toaddr = None
-        args = value.split(":")
-        for arg in args:
-            try:
-                (opt, val) = arg.split("=")
-                if opt == "port":
-                    port = val
-                elif opt == "proto":
-                    protocol = val
-                elif opt == "toport":
-                    toport = val
-                elif opt == "toaddr":
-                    toaddr = val
-            except ValueError:
+        i = 0
+        while ("=" in value[i:]):
+            opt = value[i:].split("=", 1)[0]
+            i += len(opt) + 1
+            if "=" in value[i:]:
+                val = value[i:].split(":", 1)[0]
+            else:
+                val = value[i:]
+            i += len(val) + 1
+
+            if opt == "port":
+                port = val
+            elif opt == "proto":
+                protocol = val
+            elif opt == "toport":
+                toport = val
+            elif opt == "toaddr":
+                toaddr = val
+            elif opt == "if" and compat:
+                # ignore if option in compat mode
+                pass
+            else:
                 raise FirewallError(errors.INVALID_FORWARD,
-                                    "invalid forward port arg '%s'" % (arg))
+                                    "invalid forward port arg '%s'" % (opt))
         if not port:
             raise FirewallError(errors.INVALID_FORWARD, "missing port")
         if not protocol:
@@ -309,7 +318,8 @@ class FirewallCommand(object):
         if toport and not check_port(toport):
             raise FirewallError(errors.INVALID_PORT, toport)
         if toaddr and not check_single_address("ipv4", toaddr):
-            raise FirewallError(errors.INVALID_ADDR, toaddr)
+            if compat or not check_single_address("ipv6", toaddr):
+                raise FirewallError(errors.INVALID_ADDR, toaddr)
 
         return (port, protocol, toport, toaddr)
 

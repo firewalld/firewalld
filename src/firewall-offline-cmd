@@ -1098,7 +1098,8 @@ try:
             fw_settings.setMasquerade(True)
         if a.forward_port:
             for fp in a.forward_port:
-                (port, protocol, toport, toaddr) = cmd.parse_forward_port(fp)
+                (port, protocol, toport, toaddr) = cmd.parse_forward_port(
+                    fp, compat=True)
                 cmd.print_msg("Adding forward port %s:%s:%s:%s to default zone." % \
                       (port, protocol, toport, toaddr))
                 if not fw_settings.queryForwardPort(port, protocol, toport,
