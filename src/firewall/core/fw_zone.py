@@ -1340,7 +1340,10 @@ class FirewallZone(object):
 
                 to = ""
                 if toaddr:
-                    to += toaddr
+                    if ipv == "ipv6":
+                        to += "[%s]" % toaddr
+                    else:
+                        to += toaddr
 
                 if toport and toport != "":
                     to += ":%s" % portStr(toport, "-")
