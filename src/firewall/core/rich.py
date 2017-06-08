@@ -46,15 +46,21 @@ class Rich_Source(object):
         if self.ipset == "":
             self.ipset = None
         self.invert = invert
+        if self.addr is None and self.mac is None and self.ipset is None:
+            raise FirewallError(errors.INVALID_RULE,
+                                "no address, mac and ipset")
 
     def __str__(self):
-        if self.addr:
-            x = ' address="%s"' % self.addr
-        elif self.mac:
-            x = ' mac="%s"' % self.mac
-        elif self.ipset:
-            x = ' ipset="%s"' % self.ipset
-        return 'source%s%s' % (" NOT" if self.invert else "", x)
+        ret = 'source%s ' % (" NOT" if self.invert else "")
+        if self.addr is not None:
+            return ret + 'address="%s"' % self.addr
+        elif self.mac is not None:
+            return ret + 'mac="%s"' % self.mac
+        elif self.ipset is not None:
+            return ret + 'ipset="%s"' % self.ipset
+        else:
+            raise FirewallError(errors.INVALID_RULE,
+                                "no address, mac and ipset")
 
 class Rich_Destination(object):
     def __init__(self, addr, invert=False):
@@ -542,10 +548,14 @@ class Rich_Rule(object):
                     raise FirewallError(errors.INVALID_FAMILY)
                 if self.source.mac is not None:
                     raise FirewallError(errors.INVALID_RULE, "address and mac")
+                if self.source.ipset is not None:
+                    raise FirewallError(errors.INVALID_RULE, "address and ipset")
                 if not functions.check_address(self.family, self.source.addr):
                     raise FirewallError(errors.INVALID_ADDR, str(self.source.addr))
 
             elif self.source.mac is not None:
+                if self.source.ipset is not None:
+                    raise FirewallError(errors.INVALID_RULE, "mac and ipset")
                 if not functions.check_mac(self.source.mac):
                     raise FirewallError(errors.INVALID_MAC, str(self.source.mac))
 
