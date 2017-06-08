@@ -1425,6 +1425,9 @@ class FirewallZone(object):
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
                 if ict.destination and ipv not in ict.destination:
+                    if rule.family is None:
+                        # Add for IPv4 or IPv6 depending on ict.destination
+                        continue
                     raise FirewallError(
                         errors.INVALID_RULE,
                         "Icmp%s %s not usable with %s" % \
