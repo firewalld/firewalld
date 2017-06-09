@@ -130,12 +130,20 @@ sed -i 's|/usr/bin/python|%{__python3}|' %{py3dir}/config/lockdown-whitelist.xml
 
 %build
 %configure --enable-sysconfig --enable-rpmmacros
+%if 0%{?use_python3}
+make -C src %{?_smp_mflags}
+%else
 make %{?_smp_mflags}
+%endif
 
 %if 0%{?with_python3}
 pushd %{py3dir}
 %configure --enable-sysconfig --enable-rpmmacros PYTHON=%{__python3}
+%if 0%{?use_python3}
 make %{?_smp_mflags}
+%else
+make -C src %{?_smp_mflags}
+%endif
 popd
 %endif #0%{?with_python3}
 
