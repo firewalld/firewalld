@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>Docker swarm</short>
+  <description>Ports and protocol required by docker in swarm mode</description>
+  <port port="2377" protocol="tcp"/>
+  <port port="7946" protocol="tcp"/>
+  <port port="7946" protocol="udp"/>
+  <port port="4789" protocol="udp"/>
+  <protcol value="esp"/>
+</service>
