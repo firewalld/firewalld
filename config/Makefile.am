@@ -147,6 +147,7 @@ CONFIG_FILES = \
 	services/ftp.xml \
 	services/ganglia-client.xml \
 	services/ganglia-master.xml \
+	services/git.xml \
 	services/high-availability.xml \
 	services/https.xml \
 	services/http.xml \
