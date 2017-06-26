@@ -163,6 +163,7 @@ CONFIG_FILES = \
 	services/kibana.xml \
 	services/klogin.xml \
 	services/kpasswd.xml \
+	services/kprop.xml \
 	services/kshell.xml \
 	services/ldaps.xml \
 	services/ldap.xml \
