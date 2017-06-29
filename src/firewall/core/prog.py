@@ -39,18 +39,12 @@ def runProg(prog, argv=None, stdin=None):
     env = {'LANG': 'C'}
     try:
         process = subprocess.Popen(args, stdin=subprocess.PIPE,
-                                   stderr=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT,
                                    stdout=subprocess.PIPE,
                                    close_fds=True, env=env)
     except OSError:
         return (255, '')
 
     (output, err_output) = process.communicate(input_string)
-    if output is not None and output != "":
-        output = output.decode('utf-8', 'replace')
-    elif err_output is not None and err_output != "":
-        if output is None:
-            output = ""
-        output += err_output.decode('utf-8', 'replace')
-
+    output = output.decode('utf-8', 'replace')
     return (process.returncode, output)
