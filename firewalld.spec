@@ -11,7 +11,7 @@ Version: 0.4.4.5
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
-Source0: https://github.com/t-woerner/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0: https://github.com/firewalld/firewalld/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch: noarch
 BuildRequires: autoconf
 BuildRequires: automake
