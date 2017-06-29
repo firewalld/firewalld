@@ -1054,7 +1054,7 @@ class Firewall(object):
         _new_dz = self.get_default_zone()
         if _new_dz != _old_dz:
             # if_new_dz has been introduced with the reload, we need to add it
-            # https://github.com/t-woerner/firewalld/issues/53
+            # https://github.com/firewalld/firewalld/issues/53
             if _new_dz not in _zone_interfaces:
                 _zone_interfaces[_new_dz] = { }
             # default zone changed. Move interfaces from old default zone to
