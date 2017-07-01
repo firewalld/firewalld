@@ -50,6 +50,9 @@ if [ ! -d "$checkdir" ]; then
     exit -2
 fi
 
+# Stop execution if something failed
+set -e
+
 for keyword in zone service icmptype ipset; do
     if [ -d "${checkdir}/${keyword}s" ]; then
 	echo "Checking ${keyword}s"
