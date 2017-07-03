@@ -87,6 +87,7 @@ class FirewallZone(object):
             },
             "raw": {
                 "PREROUTING": raw,
+                "OUTPUT": raw,
             },
         }
 
