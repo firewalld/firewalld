@@ -43,8 +43,9 @@ class Helper(IO_Object):
         ( "family", "", ),                    # s
         ( "module", "", ),                    # s
         ( "ports", [ ( "", "" ), ], ),        # a(ss)
+        ( "chain", "", ),                     # s
         )
-    DBUS_SIGNATURE = '(sssssa(ss))'
+    DBUS_SIGNATURE = '(sssssa(ss)s)'
     ADDITIONAL_ALNUM_CHARS = [ "-", "." ]
     PARSER_REQUIRED_ELEMENT_ATTRS = {
         "short": None,
@@ -52,7 +53,7 @@ class Helper(IO_Object):
         "helper": [ "module" ],
         }
     PARSER_OPTIONAL_ELEMENT_ATTRS = {
-        "helper": [ "name", "version", "family" ],
+        "helper": [ "name", "version", "family", "chain" ],
         "port": [ "port", "protocol" ],
         }
 
@@ -63,6 +64,7 @@ class Helper(IO_Object):
         self.description = ""
         self.module = ""
         self.family = ""
+        self.chain = "PREROUTING"
         self.ports = [ ]
 
     def cleanup(self):
@@ -71,6 +73,7 @@ class Helper(IO_Object):
         self.description = ""
         self.module = ""
         self.family = ""
+        self.chain = ""
         del self.ports[:]
 
     def encode_strings(self):
@@ -82,6 +85,7 @@ class Helper(IO_Object):
         self.description = u2b_if_py2(self.description)
         self.module = u2b_if_py2(self.module)
         self.family = u2b_if_py2(self.family)
+        self.chain = u2b_if_py2(self.chain)
         self.ports = [(u2b_if_py2(po),u2b_if_py2(pr)) for (po,pr) in self.ports]
 
     def check_ipv(self, ipv):
@@ -89,6 +93,13 @@ class Helper(IO_Object):
         if ipv not in ipvs:
             raise FirewallError(errors.INVALID_IPV,
                                 "'%s' not in '%s'" % (ipv, ipvs))
+
+    def check_chain(self, chain):
+        if chain not in ["OUTPUT", "PREROUTING"]:
+            raise FirewallError(
+                errors.INVALID_HELPER_CHAIN,
+                "'%s' is not an expected helper chain, expected 'OUTPUT'\
+                or 'PREROUTING'" % config)
 
     def _check_config(self, config, item):
         if item == "ports":
@@ -103,6 +114,8 @@ class Helper(IO_Object):
             if len(config.replace("nf_conntrack_", "")) < 1:
                 raise FirewallError(errors.INVALID_MODULE,
                                     "Module name '%s' too short" % config)
+        elif item == "chain":
+            self.check_chain(config)
 
 # PARSER
 
@@ -127,6 +140,9 @@ class helper_ContentHandler(IO_Object_ContentHandler):
                         errors.INVALID_MODULE,
                         "Module name '%s' too short" % attrs["module"])
                 self.item.module = attrs["module"]
+            if "chain" in attrs:
+                self.item.check_chain(attrs["chain"])
+                self.item.chain = attrs["chain"]
         elif name == "short":
             pass
         elif name == "description":
@@ -196,6 +212,7 @@ def helper_writer(helper, path=None):
     # start helper element
     attrs = {}
     attrs["module"] = helper.module
+    attrs["chain"] = helper.chain
     if helper.version and helper.version != "":
         attrs["version"] = helper.version
     if helper.family and helper.family != "":

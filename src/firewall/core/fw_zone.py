@@ -1146,7 +1146,7 @@ class FirewallZone(object):
                                 continue
                             for (port,proto) in helper.ports:
                                 target = DEFAULT_ZONE_TARGET.format(
-                                    chain=SHORTCUTS["PREROUTING"], zone=zone)
+                                    chain=SHORTCUTS[helper.chain], zone=zone)
                                 _rule = [ add_del, "%s_allow" % (target),
                                           "-t", "raw", "-p", proto ]
                                 if port:
@@ -1645,7 +1645,7 @@ class FirewallZone(object):
                         continue
                     for (port,proto) in helper.ports:
                         target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS["PREROUTING"], zone=zone)
+                            chain=SHORTCUTS[helper.chain], zone=zone)
                         rule = [ add_del, "%s_allow" % (target), "-t", "raw",
                                  "-p", proto ]
                         if port:
