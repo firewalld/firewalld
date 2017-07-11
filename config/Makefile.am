@@ -167,6 +167,7 @@ CONFIG_FILES = \
 	services/libvirt.xml \
 	services/managesieve.xml \
 	services/mdns.xml \
+	services/minidlna.xml \
 	services/mosh.xml \
 	services/mountd.xml \
 	services/mssql.xml \
