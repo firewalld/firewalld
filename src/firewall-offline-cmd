@@ -350,7 +350,7 @@ Options to Handle Bindings of Sources
                        Remove binding of the source from a zone [Z]
 
 Helper Options
-  --new-helper=<helper> --module=<module> [--family=<family>]
+  --new-helper=<helper> --module=<module> [--family=<family> --chain=<helperchain>]
                        Add a new helper
   --new-helper-from-file=<filename> [--name=<helper>]
                        Add a new helper from file with optional name
@@ -385,6 +385,10 @@ Helper Options
                        Set family for helper
   --helper=<helper> --get-family
                        Get module from helper
+  --helper=<helper> --set-chain={PREROUTING|OUTPUT|}
+                       Set chain for helper
+  --helper=<helper> --get-chain
+                       Get chain from helper
 
 Direct Options
   --direct             First option for all direct options
@@ -707,6 +711,7 @@ parser_service.add_argument("--get-short", action="store_true")
 parser.add_argument("--helper", metavar="<helper>")
 parser.add_argument("--family", metavar="<family>")
 parser.add_argument("--module", metavar="<module>")
+parser.add_argument("--chain", metavar="<chain>")
 
 parser_helper = parser.add_mutually_exclusive_group()
 #parser_helper.add_argument("--get-ports", action="store_true")
@@ -716,6 +721,8 @@ parser_helper.add_argument("--get-module", action="store_true")
 #parser_helper.add_argument("--query-module", metavar="<module>")
 parser_helper.add_argument("--set-family", metavar="<family>|''", nargs="*")
 parser_helper.add_argument("--get-family", action="store_true")
+parser_helper.add_argument("--set-chain", metavar="<helperchain>|''", nargs="*")
+parser_helper.add_argument("--get-chain", action="store_true")
 
 parser.add_argument("--direct", action="store_true")
 
@@ -903,8 +910,8 @@ options_service = a.add_port or a.remove_port or a.query_port or \
 
 options_helper = a.add_port or a.remove_port or a.query_port or \
                   a.get_ports or a.set_module or a.get_module or \
-                  a.set_family or a.get_family or \
-                  options_desc_xml_file
+                  a.set_family or a.get_family or a.set_chain or \
+                  a.get_chain or options_desc_xml_file
 
 options_permanent = options_config or options_zone or \
                     a.new_icmptype or a.delete_icmptype or \
@@ -1677,6 +1684,10 @@ try:
         settings.setModule(a.module)
         if a.family:
             settings.setFamily(a.family)
+        if a.chain:
+            settings.setChain(cmd.check_helper_chain(a.chain))
+        else:
+            settings.setChain("PREROUTING")
         fw.config.new_helper(a.new_helper, settings.settings)
 
     elif a.new_helper_from_file:
@@ -1751,6 +1762,13 @@ try:
 
         elif a.set_family:
             settings.setFamily(cmd.check_helper_family(a.set_family[0]))
+            fw.config.set_helper_config(obj, settings.settings)
+
+        elif a.get_chain:
+            cmd.print_and_exit(settings.getChain())
+
+        elif a.set_chain:
+            settings.setChain(cmd.check_helper_chain(a.set_chain[0]))
             fw.config.set_helper_config(obj, settings.settings)
 
         elif a.set_description:
