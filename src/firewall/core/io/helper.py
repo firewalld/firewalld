@@ -99,7 +99,7 @@ class Helper(IO_Object):
             raise FirewallError(
                 errors.INVALID_HELPER_CHAIN,
                 "'%s' is not an expected helper chain, expected 'OUTPUT'\
-                or 'PREROUTING'" % config)
+                or 'PREROUTING'" % chain)
 
     def _check_config(self, config, item):
         if item == "ports":

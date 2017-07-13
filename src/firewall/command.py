@@ -355,6 +355,14 @@ class FirewallCommand(object):
                                 (value, "', '".join(ipvs)))
         return value
 
+    def check_helper_chain(self, value):
+        chains = [ "PREROUTING", "OUTPUT" ]
+        if value not in chains:
+            raise FirewallError(errors.INVALID_HELPER_CHAIN,
+                                "invalid argument: %s (choose from '%s')" % \
+                                (value, "', '".join(chains)))
+        return value
+
     def check_module(self, value):
         if not value.startswith("nf_conntrack_"):
             raise FirewallError(
