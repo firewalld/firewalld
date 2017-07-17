@@ -171,6 +171,7 @@ CONFIG_FILES = \
 	services/mountd.xml \
 	services/mssql.xml \
 	services/ms-wbt.xml \
+	services/murmur.xml \
 	services/mysql.xml \
 	services/nfs.xml \
 	services/nrpe.xml \
