@@ -444,22 +444,22 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
                    protocol)
         return (port,protocol) in self.getSettings()[5]
 
-    # chain
+    # direction
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
                          out_signature='s')
     @dbus_handle_exceptions
-    def getChain(self, sender=None): # pylint: disable=W0613
-        log.debug1("%s.getChain()", self._log_prefix)
+    def getDirection(self, sender=None): # pylint: disable=W0613
+        log.debug1("%s.getDirection()", self._log_prefix)
         return self.getSettings()[6]
 
     @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
                          in_signature='s')
     @dbus_handle_exceptions
-    def setChain(self, version, sender=None):
-        chain = dbus_to_python(chain, str)
-        log.debug1("%s.setChain('%s')", self._log_prefix, chain)
+    def setDirection(self, version, sender=None):
+        direction = dbus_to_python(direction, str)
+        log.debug1("%s.setDirection('%s')", self._log_prefix, direction)
         self.parent.accessCheck(sender)
         settings = list(self.getSettings())
-        settings[6] = chain
+        settings[6] = direction
         self.update(settings)
