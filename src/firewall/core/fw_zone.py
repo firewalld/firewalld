@@ -100,6 +100,11 @@ class FirewallZone(object):
             "OUTPUT": "-o",
         }
 
+        self.helper_direction_chains = {
+            "PREROUTING": "PREROUTING",
+            "OUTPUT": "OUTPUT",
+        }
+
         ## transform self.interface_zone_opts for source address
         tbl = { "-i": "-s",
                 "-o": "-d" }
@@ -1146,7 +1151,8 @@ class FirewallZone(object):
                                 continue
                             for (port,proto) in helper.ports:
                                 target = DEFAULT_ZONE_TARGET.format(
-                                    chain=SHORTCUTS[helper.chain], zone=zone)
+                                    chain=SHORTCUTS[helper_direction_chains[helper.chain]],
+                                    zone=zone)
                                 _rule = [ add_del, "%s_allow" % (target),
                                           "-t", "raw", "-p", proto ]
                                 if port:
@@ -1645,7 +1651,8 @@ class FirewallZone(object):
                         continue
                     for (port,proto) in helper.ports:
                         target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS[helper.chain], zone=zone)
+                            chain=SHORTCUTS[self.helper_direction_chains[helper.chain]]
+                            , zone=zone)
                         rule = [ add_del, "%s_allow" % (target), "-t", "raw",
                                  "-p", proto ]
                         if port:
