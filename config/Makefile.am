@@ -176,6 +176,7 @@ CONFIG_FILES = \
 	services/murmur.xml \
 	services/mysql.xml \
 	services/nfs.xml \
+	services/nfs3.xml \
 	services/nrpe.xml \
 	services/ntp.xml \
 	services/openvpn.xml \
