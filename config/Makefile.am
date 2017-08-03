@@ -42,6 +42,7 @@ BUILT_SOURCES = \
 	$(applet_desktop_DATA) \
 	$(polkit1_action_DATA) \
 	$(gsettings_SCHEMAS) \
+	firewalld-sysctls.conf \
 	firewalld.service
 
 @INTLTOOL_DESKTOP_RULE@
@@ -51,7 +52,7 @@ BUILT_SOURCES = \
 
 all: $(desktop_DATA) $(appdata_DATA) $(applet_desktop_DATA) $(polkit1_action_DATA) $(gsettings_SCHEMAS)
 
-CLEANFILES = *~ *\# .\#* firewalld.service
+CLEANFILES = *~ *\# .\#* firewalld.service firewalld-sysctls.conf
 
 DISTCLEANFILES = \
 	$(desktop_DATA) \
@@ -249,12 +250,16 @@ EXTRA_DIST = \
 	$(CONFIG_FILES) \
 	$(dist_xmlschema_DATA) \
 	firewalld.init \
+	firewalld-sysctls.conf.in \
 	firewalld.service.in \
 	firewalld.sysconfig \
 	macros.firewalld
 
 INSTALL_TARGETS = install-config
 UNINSTALL_TARGETS = uninstall-config
+
+INSTALL_TARGETS += install-modprobe.d
+UNINSTALL_TARGETS += uninstall-modprobe.d
 
 if USE_SYSTEMD
 INSTALL_TARGETS += install-service
@@ -278,9 +283,14 @@ edit = sed \
 	-e 's|@bindir[@]|$(bindir)|g' \
 	-e 's|@sbindir[@]|$(sbindir)|g' \
 	-e 's|@sysconfdir[@]|$(sysconfdir)|g' \
-	-e 's|@localstatedir[@]|$(localstatedir)|g'
+	-e 's|@localstatedir[@]|$(localstatedir)|g' \
+	-e 's|@MODPROBE[@]|$(MODPROBE)|g' \
+	-e 's|@SYSCTL[@]|$(SYSCTL)|g'
 
 firewalld.service: firewalld.service.in
+	$(edit) $< >$@
+
+firewalld-sysctls.conf: firewalld-sysctls.conf.in
 	$(edit) $< >$@
 
 install-sysconfig:
@@ -314,6 +324,14 @@ install-service: install-sysconfig
 uninstall-service: uninstall-sysconfig
 	rm -f $(DESTDIR)$(SYSTEMD_UNITDIR)/firewalld.service
 	rmdir $(DESTDIR)$(SYSTEMD_UNITDIR) || :
+
+install-modprobe.d:
+	$(MKDIR_P) $(DESTDIR)$(sysconfdir)/modprobe.d
+	$(INSTALL_DATA) firewalld-sysctls.conf $(DESTDIR)$(sysconfdir)/modprobe.d/firewalld-sysctls.conf
+
+uninstall-modprobe.d:
+	rm -f $(DESTDIR)$(sysconfdir)/modprobe.d/firewalld-sysctls.conf
+	rmdir $(DESTDIR)$(sysconfdir)/modprobe.d || :
 
 install-config:
 	$(MKDIR_P) $(DESTDIR)$(sconfdir)
