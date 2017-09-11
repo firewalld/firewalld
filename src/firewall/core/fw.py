@@ -502,7 +502,7 @@ class Firewall(object):
                     try:
                         self.icmptype.add_icmptype(obj)
                     except FirewallError as error:
-                        log.warning("%s: %s, ignoring for run-time." % \
+                        log.info1("%s: %s, ignoring for run-time." % \
                                     (obj.name, str(error)))
                     # add a deep copy to the configuration interface
                     self.config.add_icmptype(copy.deepcopy(obj))
