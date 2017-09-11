@@ -132,6 +132,11 @@
 	      i.e. all runtime only changes done until reload are lost with reload
 	      if they have not been also in permanent configuration.
 	    </para>
+	    <para>
+	      Note: Runtime changes applied via the direct interface are not
+	      affected and will therefore stay in place until firewalld daemon
+	      is restarted completely.
+	    </para>
 	  </listitem>
 	</varlistentry>
 
@@ -140,6 +145,11 @@
 	  <listitem>
 	    <para>
 	      Reload firewall completely, even netfilter kernel modules. This will most likely terminate active connections, because state information is lost. This option should only be used in case of severe firewall problems. For example if there are state information problems that no connection can be established with correct firewall rules.
+	    </para>
+	    <para>
+	      Note: Runtime changes applied via the direct interface are not
+	      affected and will therefore stay in place until firewalld daemon
+	      is restarted completely.
 	    </para>
 	  </listitem>
 	</varlistentry>
