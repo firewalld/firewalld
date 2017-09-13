@@ -64,17 +64,19 @@ class FirewallCommand(object):
     def print_warning(self, msg=None):
         FAIL = '\033[91m'
         END = '\033[00m'
-        self.print_error_msg(FAIL + msg + END)
+        if sys.stderr.isatty():
+            msg = FAIL + msg + END
+        self.print_error_msg(msg)
 
     def print_and_exit(self, msg=None, exit_code=0):
         #OK = '\033[92m'
-        FAIL = '\033[91m'
-        END = '\033[00m'
+        #END = '\033[00m'
         if exit_code > 1:
-            self.print_error_msg(FAIL + msg + END)
+            self.print_warning(msg)
         else:
+            #if sys.stdout.isatty():
+            #   msg = OK + msg + END
             self.print_msg(msg)
-            #self.print_msg(OK + msg + END)
         sys.exit(exit_code)
 
     def fail(self, msg=None):
