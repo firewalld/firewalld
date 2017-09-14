@@ -1263,6 +1263,13 @@ class FirewallClientHelperSettings(object):
     def queryPort(self, port, protocol):
         return (port,protocol) in self.settings[5]
 
+    @handle_exceptions
+    def getChain(self):
+        return self.settings[6]
+    @handle_exceptions
+    def setChain(self, chain):
+        self.settings[6] = chain
+
 # helper config
 
 class FirewallClientConfigHelper(object):
@@ -1409,6 +1416,18 @@ class FirewallClientConfigHelper(object):
     @handle_exceptions
     def setModule(self, module):
         self.fw_helper.setModule(module)
+
+    # chain
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def getChain(self):
+        return self.fw_helper.getChain()
+
+    @slip.dbus.polkit.enable_proxy
+    @handle_exceptions
+    def setChain(self, chain):
+        self.fw_helper.setChain(chain)
 
 # service config
 

@@ -443,3 +443,23 @@ class FirewallDConfigHelper(slip.dbus.service.Object):
         log.debug1("%s.queryPort('%s', '%s')", self._log_prefix, port,
                    protocol)
         return (port,protocol) in self.getSettings()[5]
+
+    # chain
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
+                         out_signature='s')
+    @dbus_handle_exceptions
+    def getChain(self, sender=None): # pylint: disable=W0613
+        log.debug1("%s.getChain()", self._log_prefix)
+        return self.getSettings()[6]
+
+    @dbus_service_method(config.dbus.DBUS_INTERFACE_CONFIG_HELPER,
+                         in_signature='s')
+    @dbus_handle_exceptions
+    def setChain(self, version, sender=None):
+        chain = dbus_to_python(chain, str)
+        log.debug1("%s.setChain('%s')", self._log_prefix, chain)
+        self.parent.accessCheck(sender)
+        settings = list(self.getSettings())
+        settings[6] = chain
+        self.update(settings)

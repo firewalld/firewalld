@@ -754,6 +754,10 @@ class FirewallConfig(object):
             builder.get_object("helperBaseDialogVersionEntry")
         self.helperBaseDialogShortEntry = \
             builder.get_object("helperBaseDialogShortEntry")
+        self.helperBaseDialogChainRadioPrerouting = \
+            builder.get_object("helperBaseDialogChainRadioPrerouting")
+        self.helperBaseDialogChainRadioOutput = \
+            builder.get_object("helperBaseDialogChainRadioOutput")
         self.helperBaseDialogDescText = \
             builder.get_object("helperBaseDialogDescText")
         self.helperBaseDialogDescText.get_buffer().connect(\
@@ -6401,6 +6405,7 @@ class FirewallConfig(object):
             self.helperBaseDialogDescText.get_buffer().set_text("")
             self.helperBaseDialogModuleChooser.set_text("")
             self.helperBaseDialogFamilyCombobox.set_active(0)
+            self.helperBaseDialogChainRadioPrerouting.set_active(True)
 
         else:
             active_helper = self.get_active_helper()
@@ -6416,6 +6421,7 @@ class FirewallConfig(object):
             old_desc = settings.getDescription()
             old_module = settings.getModule()
             old_family = settings.getFamily()
+            old_chain = settings.getChain()
 
             self.helperBaseDialogNameEntry.set_text(old_name)
             self.helperBaseDialogVersionEntry.set_text(old_version)
@@ -6426,6 +6432,10 @@ class FirewallConfig(object):
             combobox_select_text(self.helperBaseDialogFamilyCombobox,
                                  { "": _("All") , "ipv4": _("IPv4"),
                                    "ipv6" : _("IPv6") }[old_family])
+            if old_chain == "OUTPUT":
+                self.helperBaseDialogChainRadioOutput.set_active(True)
+            else:
+                self.helperBaseDialogChainRadioPrerouting.set_active(True)
 
         self.helperBaseDialogOkButton.set_sensitive(False)
         if builtin:
@@ -6455,10 +6465,14 @@ class FirewallConfig(object):
         module = self.helperBaseDialogModuleChooser.get_text()
         family = { _("All") : "", _("IPv4") : "ipv4", _("IPv6") : "ipv6" } \
                  [self.helperBaseDialogFamilyCombobox.get_active_text()]
+        if self.helperBaseDialogChainRadioOutput.get_active():
+            chain = "OUTPUT"
+        else:
+            chain = "PREROUTING"
         if old_name == name and \
                 old_version == version and old_short == short and \
                 old_desc == desc and old_module == module and \
-                old_family == family:
+                old_family == family and old_chain == chain:
             # no changes
             return
 
@@ -6470,13 +6484,15 @@ class FirewallConfig(object):
             settings = client.FirewallClientHelperSettings()
 
         if old_version != version or old_short != short or \
-           old_desc != desc or old_family != family:
+           old_desc != desc or old_family != family or \
+           old_chain != chain:
             # settings
             settings.setVersion(version)
             settings.setShort(short)
             settings.setDescription(desc)
             settings.setModule(module)
             settings.setFamily(family)
+            settings.setChain(chain)
             if not add:
                 helper.update(settings)
 
