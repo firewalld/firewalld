@@ -2281,6 +2281,9 @@ firewall-cmd --permanent --add-port=443/tcp
 	</tgroup>
       </informaltable>
     </para>
+    <para>
+      Note that return codes of <command>--query-*</command> options are special: Successful queries return 0, unsuccessful ones return 1 unless an error occurred in which case the table above applies.
+    </para>
   </refsect1>
 
   &seealso;
