@@ -137,6 +137,7 @@ CONFIG_FILES = \
 	services/dhcp.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
+	services/docker-swarm.xml \
 	services/dropbox-lansync.xml \
 	services/elasticsearch.xml \
 	services/freeipa-ldaps.xml \
