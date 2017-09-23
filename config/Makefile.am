@@ -171,6 +171,7 @@ CONFIG_FILES = \
 	services/ldap.xml \
 	services/libvirt-tls.xml \
 	services/libvirt.xml \
+	services/llmnr.xml \
 	services/managesieve.xml \
 	services/mdns.xml \
 	services/minidlna.xml \
