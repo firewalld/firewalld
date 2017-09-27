@@ -237,6 +237,7 @@ CONFIG_FILES = \
 	services/xmpp-server.xml \
 	services/zabbix-agent.xml \
 	services/zabbix-server.xml \
+	services/redis.xml \
 	zones/block.xml \
 	zones/dmz.xml \
 	zones/drop.xml \
