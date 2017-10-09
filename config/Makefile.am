@@ -174,6 +174,7 @@ CONFIG_FILES = \
 	services/managesieve.xml \
 	services/mdns.xml \
 	services/minidlna.xml \
+	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
 	services/mssql.xml \
