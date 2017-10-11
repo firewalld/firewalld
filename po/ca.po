@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Angels Sala <m_angels15@yahoo.es>, 2004
 # Josep Puigdemont <josep.puigdemont@gmail.com>, 2004-2006
@@ -12,20 +12,21 @@
 # Xavier Conde Rueda <xavi.conde@gmail.com>, 2009
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2015. #zanata
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2016. #zanata
+# Eric Garver <e@erig.me>, 2017. #zanata
 # Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 13:12+0200\n"
-"PO-Revision-Date: 2017-02-14 03:30-0500\n"
-"Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
-"language/ca/)\n"
-"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-10-11 01:59-0400\n"
+"Last-Translator: Eric Garver <e@erig.me>\n"
+"Language-Team: Catalan (http://www.transifex.com/projects/p/firewalld/"
+"language/ca/)\n"
+"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -138,7 +139,7 @@ msgstr "Configura les zones d'escuts aixecats/baixats..."
 
 #: ../src/firewall-applet:487
 msgid "Block all network traffic"
-msgstr "Bloqueja tot el tràfic de xarxa"
+msgstr "Bloqueja tot el trànsit de xarxa"
 
 #: ../src/firewall-applet:492
 msgid "About"
@@ -196,7 +197,7 @@ msgstr "Sense connexió al dimoni del tallafoc"
 
 #: ../src/firewall-applet:860 ../src/firewall-applet:997
 msgid "All network traffic is blocked."
-msgstr "Tot el tràfic de xarxa està bloquejat."
+msgstr "Tot el trànsit de xarxa està bloquejat."
 
 #: ../src/firewall-applet:864
 #, c-format
@@ -213,7 +214,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "La zona '{zone}' es troba activa per a la connexió '{connection}' en la "
 "interfície '{interface}'"
@@ -249,7 +251,7 @@ msgstr "La zona predeterminada ha estat canviada a «%s»."
 
 #: ../src/firewall-applet:998
 msgid "Network traffic is not blocked anymore."
-msgstr "El tràfic de xarxa ja no està bloquejat."
+msgstr "El trànsit de xarxa ja no està bloquejat."
 
 #: ../src/firewall-applet:1024 ../src/firewall-applet:1078
 msgid "activated"
@@ -580,7 +582,7 @@ msgstr "bloqueig-icmp"
 #: ../src/firewall-config:3159 ../src/firewall-config:3330
 #: ../src/firewall-config:3640 ../src/firewall-config.glade.h:281
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp-type"
 
 #: ../src/firewall-config:3164 ../src/firewall-config:3332
 #: ../src/firewall-config:3643 ../src/firewall-config:3845
@@ -602,8 +604,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5057
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "El reenviament a un altre sistema tan sols és útil si la interfície de xarxa "
@@ -676,7 +677,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config:6433
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Ajudant incrustat, el canvi de nom no està admès."
 
 #: ../src/firewall-config:6923
 msgid "Built-in icmp, rename not supported."
@@ -698,11 +699,11 @@ msgstr "Adreça"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Ajudants automàtics"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Ajusts dels ajudants automàtics:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -820,11 +821,11 @@ msgstr "Reenvia a un altre port"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Ajusts de l'ajudant automàtic"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Configureu els ajusts de l'ajudant automàtic:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -856,11 +857,11 @@ msgstr "Mòdul:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
-msgstr ""
+msgstr "Ajudant"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Seleccioneu un ajudant:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -944,11 +945,11 @@ msgstr "Canvia el valor de la denegació de l'enregistrament."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Configura l'assignació de l'ajudant automàtic"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Configura l'establiment de l'assignació de l'ajudant automàtic."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -995,7 +996,7 @@ msgstr "Tipus d'ICMP"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
-msgstr ""
+msgstr "Ajudants"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1149,7 +1150,7 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:106
 msgid "Source Ports"
-msgstr ""
+msgstr "Ports d'origen"
 
 # translation auto-copied from project firewalld, version RHEL-7, document po/firewalld, author Robert Antoni Buj Gelonch
 #: ../src/firewall-config.glade.h:107
@@ -1361,7 +1362,7 @@ msgstr "Port d'origen"
 
 #: ../src/firewall-config.glade.h:147
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Alguns serveis necessiten els mòduls de l'ajudant de Netfilter."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1390,8 +1391,8 @@ msgid ""
 "Services can only be changed in the permanent configuration view. The "
 "runtime configuration of services is fixed."
 msgstr ""
-"Els serveis es poden canviar únicament en la vista de configuració "
-"permanent. La configuració en temps d'execució dels serveis és fixa."
+"Els serveis es poden canviar únicament en la vista de configuració permanent."
+" La configuració en temps d'execució dels serveis és fixa."
 
 #: ../src/firewall-config.glade.h:153
 msgid ""
@@ -1432,6 +1433,7 @@ msgstr ""
 "no estiguin utilitzant l'opció de temps d'expiració, i també únicament "
 "aquelles entrades que hagin estat afegides amb firewalld. Aquí no es "
 "llistaran aquelles entrades que s'hagin afegit directament amb l'ordre ipset."
+""
 
 #: ../src/firewall-config.glade.h:160
 msgid ""
@@ -1482,7 +1484,8 @@ msgstr "Carrega els valor predeterminats d'ICMP"
 
 #: ../src/firewall-config.glade.h:170
 msgid "Specify whether this ICMP Type is available for IPv4 and/or IPv6."
-msgstr "Especifiqueu si aquest tipus d'ICMP està disponible per IPv4 i/o IPv6."
+msgstr ""
+"Especifiqueu si aquest tipus d'ICMP està disponible per IPv4 i/o IPv6."
 
 #: ../src/firewall-config.glade.h:171
 msgid ""
@@ -1499,10 +1502,17 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Un ajudant de seguiment de connexió ajuda a fer que funcionin els protocols "
+"que utilitzen diferents fluxos per a la senyalització i les transferències "
+"de dades. Les transferències de dades utilitzen ports que no estan "
+"relacionats amb la senyalització de la connexió, per tant, sense l'ajudant "
+"són bloquejades pel tallafoc."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"Defineix els ports o els intervals de ports els quals estan monitorats per "
+"l'ajudant."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1738,7 +1748,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Ajudants automàtics:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1750,7 +1760,7 @@ msgstr "Zona predeterminada:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Interface"
-msgstr ""
+msgstr "Interfície"
 
 #: ../src/firewall-config.glade.h:221
 msgid "Base IPSet Settings"
@@ -1824,7 +1834,7 @@ msgstr "Màscara:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Seleccioneu un ajudant conntrack de netfilter:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "- Select -"
@@ -1904,11 +1914,11 @@ msgstr "inverteix"
 
 #: ../src/firewall-config.glade.h:259
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Per habilitar-ho l'acció ha de ser «rebutja» i la família «ipv4» o "
-"«ipv6» (no ambdós)."
+"Per habilitar-ho l'acció ha de ser «rebutja» i la família «ipv4» o «ipv6» "
+"(no ambdós)."
 
 #: ../src/firewall-config.glade.h:260
 msgid "with Type:"

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Dušan Kazik <prescott66@gmail.com>, 2012-2013
 # Marcel Telka <marcel@telka.sk>, 2004
@@ -14,14 +14,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 13:12+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-05-15 03:14-0400\n"
 "Last-Translator: feonsu <feonsu@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/firewalld/"
 "language/sk/)\n"
 "Language: sk\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -206,7 +206,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zóna '{zone}' je aktívna pre pripojenie '{connection}' na rozhraní "
 "'{interface}'"
@@ -594,8 +595,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5057
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Preposielanie na iný systém je užitočné len ak je na rozhraní maškaráda. \n"
@@ -1609,6 +1609,7 @@ msgid ""
 msgstr ""
 "Kontext je kontext zabezpečenia (SELinux) bežiacej aplikácie alebo služby. "
 "Ak chcete zistiť kontext bežiacej aplikácie použite <tt>ps -e --context</tt>."
+""
 
 #: ../src/firewall-config.glade.h:195
 msgid "Add Context"
@@ -1874,8 +1875,8 @@ msgstr "invertované"
 
 #: ../src/firewall-config.glade.h:259
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Ak chcete toto povoliť, akcia musí byť 'reject' a rodina buď 'ipv4' alebo "
 "'ipv6' (nie obe)."

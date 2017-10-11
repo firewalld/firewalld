@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Adam Pribyl <pribyl@lowlevel.cz>, 2007-2010
 # zdenek <chmelarz@gmail.com>, 2013
@@ -25,14 +25,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 13:12+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-05-15 08:30-0400\n"
 "Last-Translator: Zdenek <chmelarz@gmail.com>\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/firewalld/language/"
 "cs/)\n"
 "Language: cs\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -217,7 +217,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zóna '{zone}' aktivní pro spojení '{connection}' přes rozhraní '{interface}'"
 
@@ -604,12 +605,11 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5057
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
-"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní "
-"maškarádované.\n"
+"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní maškarádované."
+"\n"
 "Přejete si zamaškarádovat tuto zónu?"
 
 #: ../src/firewall-config:5420
@@ -919,6 +919,7 @@ msgstr ""
 "Aktualizuje pravidla firewallu. Současná trvalá konfigurace se stane novou "
 "běžící konfigurací. Tj. všechny změny provedeny v běžící konfiguraci budou "
 "po této aktualizaci ztraceny, pokud již v  trvalé konfiguraci předtím nebyly."
+""
 
 #: ../src/firewall-config.glade.h:60
 msgid "Change which zone a network connection belongs to."
@@ -1172,8 +1173,8 @@ msgid ""
 msgstr ""
 "Přidat záznamy pro přeposílání portů buď z jednoho portu na druhý na "
 "lokálním systému nebo z lokálního portu do portu na jiném systému. "
-"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní "
-"maškarádované. Přeposílání portů funguje pouze na IPv4."
+"Přeposílání na jiný systém je užitečné pouze pokud je rozhraní maškarádované."
+" Přeposílání portů funguje pouze na IPv4."
 
 #: ../src/firewall-config.glade.h:112
 msgid "Add Forward Port"
@@ -1879,8 +1880,8 @@ msgstr "obrácený"
 
 #: ../src/firewall-config.glade.h:259
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "K povolení tohoto musí být Akce nastavena na 'odmítnout' a Rodina buď 'IPv4' "
 "nebo 'IPv6' (ne obojí)."

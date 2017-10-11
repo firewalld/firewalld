@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -39,14 +39,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 13:12+0200\n"
-"PO-Revision-Date: 2017-05-21 05:22-0400\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-06-14 03:15-0400\n"
 "Last-Translator: Roman Spirgi <rspirgi@gmail.com>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
 "language/de/)\n"
 "Language: de\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -234,7 +234,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
@@ -622,8 +623,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5057
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, wenn die "
@@ -695,7 +695,7 @@ msgstr "IPv6"
 
 #: ../src/firewall-config:6433
 msgid "Built-in helper, rename not supported."
-msgstr ""
+msgstr "Enthaltene Helfer, Umbenennen nicht unterstützt."
 
 #: ../src/firewall-config:6923
 msgid "Built-in icmp, rename not supported."
@@ -717,11 +717,11 @@ msgstr "Adresse"
 
 #: ../src/firewall-config.glade.h:2
 msgid "Automatic Helpers"
-msgstr ""
+msgstr "Automatische Helfer"
 
 #: ../src/firewall-config.glade.h:3
 msgid "Please select the automatic helpers value:"
-msgstr ""
+msgstr "Bitte den Wert für automatische Helfer wählen:"
 
 #: ../src/firewall-config.glade.h:4
 msgid "Command line"
@@ -842,11 +842,11 @@ msgstr "An einen anderen Port weiterleiten"
 
 #: ../src/firewall-config.glade.h:32
 msgid "Base Helper Settings"
-msgstr ""
+msgstr "Basis-Helfer Einstellungen"
 
 #: ../src/firewall-config.glade.h:33
 msgid "Please configure base helper settings:"
-msgstr ""
+msgstr "Bitte Basis-Helfer Einstellungen konfigurieren:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
@@ -878,11 +878,11 @@ msgstr "Module:"
 
 #: ../src/firewall-config.glade.h:44
 msgid "Helper"
-msgstr ""
+msgstr "Helfer"
 
 #: ../src/firewall-config.glade.h:45
 msgid "Please select a helper:"
-msgstr ""
+msgstr "Bitte einen Helfer wählen:"
 
 #: ../src/firewall-config.glade.h:46
 msgid "Base ICMP Type Settings"
@@ -890,7 +890,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:48
 msgid "ICMP Type"
@@ -966,11 +967,11 @@ msgstr "Wert für LogDenied ändern."
 
 #: ../src/firewall-config.glade.h:66
 msgid "Configure Automatic Helper Assigment"
-msgstr ""
+msgstr "Konfigurieren der automatischen Helferzuweisung"
 
 #: ../src/firewall-config.glade.h:67
 msgid "Configure Automatic Helper Assignment setting."
-msgstr ""
+msgstr "Konfigurieren der Einstellung für die automatische Helferzuweisung."
 
 #: ../src/firewall-config.glade.h:68
 msgid "Panic mode means that all incoming and outgoing packets are dropped."
@@ -1016,7 +1017,7 @@ msgstr "ICMP-Typen"
 
 #: ../src/firewall-config.glade.h:77
 msgid "Helpers"
-msgstr ""
+msgstr "Helfer"
 
 #: ../src/firewall-config.glade.h:78
 msgid "Direct Configuration"
@@ -1102,9 +1103,9 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig "
-"sind. Vertrauenswürdige Dienste sind zugänglich von allen Hosts und "
-"Netzwerken, die den Rechner über mit dieser Zone verbundenen Verbindungen, "
+"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig sind."
+" Vertrauenswürdige Dienste sind zugänglich von allen Hosts und Netzwerken, "
+"die den Rechner über mit dieser Zone verbundenen Verbindungen, "
 "Schnittstellen und Quellen erreichen können."
 
 #: ../src/firewall-config.glade.h:94
@@ -1381,7 +1382,7 @@ msgstr "Quell-Port"
 
 #: ../src/firewall-config.glade.h:147
 msgid "Netfilter helper modules are needed for some services."
-msgstr ""
+msgstr "Netfilter-Helfer-Module werden für einige Dienste benötigt."
 
 #: ../src/firewall-config.glade.h:148
 msgid "Modules"
@@ -1520,10 +1521,16 @@ msgid ""
 "are using ports that are unrelated to the signaling connection and are "
 "therefore blocked by the firewall without the helper."
 msgstr ""
+"Ein Verbindungsüberwachungs-Helfer unterstützt Protokolle, die "
+"unterschiedliche Ströme für Signalisierung und Datenübertragungen verwenden. "
+"Die Datenübertragungen verwenden Ports, die nicht mit der "
+"Signalisierungsverbindung verknüpft sind und daher von der Firewall ohne "
+"Helfer blockiert würden."
 
 #: ../src/firewall-config.glade.h:173
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
+"Ports oder Portbereiche definieren, welche vom Helfer überwacht werden."
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1647,9 +1654,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:194
 msgid ""
@@ -1764,7 +1771,7 @@ msgctxt ""
 "Meaning: Log of denied packets. But this is too long. LogDenied is also the "
 "parameter used in firewalld.conf."
 msgid "Automatic Helpers:"
-msgstr ""
+msgstr "Automatische Helfer:"
 
 #: ../src/firewall-config.glade.h:218
 msgid "Lockdown:"
@@ -1849,7 +1856,7 @@ msgstr "Maskieren:"
 
 #: ../src/firewall-config.glade.h:239
 msgid "Please select a netfilter conntrack helper:"
-msgstr ""
+msgstr "Bitte einen Netfilter Conntrack Helfer wählen:"
 
 #: ../src/firewall-config.glade.h:240
 msgid "- Select -"
@@ -1927,8 +1934,8 @@ msgstr "invertiert"
 
 #: ../src/firewall-config.glade.h:259
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Zum Aktivieren muss diese Aktion 'reject' sein und die Familie muss entweder "
 "'ipv4' oder 'ipv6' sein (nicht beides)."
