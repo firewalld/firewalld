@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Arpad Biro <biro_arpad@yahoo.com>, 2004,2006,2008
 # teknos.ferenc <teknos.ferenc@gmail.com>, 2013
@@ -18,20 +18,21 @@
 # teknos.ferenc <teknos.ferenc@gmail.com>, 2013
 # Zoltan Hoppár <zoltanh721@fedoraproject.org>, 2012-2013
 # Bendegúz Gyönki <gyonkibendeguz@gmail.com>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2017. #zanata
 # Meskó Balázs <meskobalazs@gmail.com>, 2017. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 13:12+0200\n"
-"PO-Revision-Date: 2017-04-17 01:55-0400\n"
-"Last-Translator: Meskó Balázs <meskobalazs@gmail.com>\n"
-"Language-Team: Hungarian (http://www.transifex.com/projects/p/firewalld/"
-"language/hu/)\n"
-"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2017-10-11 02:01-0400\n"
+"Last-Translator: Eric Garver <e@erig.me>\n"
+"Language-Team: Hungarian (http://www.transifex.com/projects/p/firewalld/"
+"language/hu/)\n"
+"Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -221,7 +222,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "A(z) „{zone}” zóna aktív a(z) „{connection}” kapcsolatnál ezen a csatolón: "
 "„{interface}”"
@@ -588,7 +590,7 @@ msgstr "icmp-blokk"
 #: ../src/firewall-config:3159 ../src/firewall-config:3330
 #: ../src/firewall-config:3640 ../src/firewall-config.glade.h:281
 msgid "icmp-type"
-msgstr ""
+msgstr "icmp-type"
 
 #: ../src/firewall-config:3164 ../src/firewall-config:3332
 #: ../src/firewall-config:3643 ../src/firewall-config:3845
@@ -610,8 +612,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5057
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "A továbbítás egy másik rendszerbe csak akkor hasznos, ha a csatoló maszkolva "
@@ -1192,8 +1193,8 @@ msgid ""
 msgstr ""
 "Bejegyzések hozzáadása portok továbbításához vagy egy portról egy másikra a "
 "helyi rendszeren, vagy a helyi rendszerről egy másik rendszerre. Egy másik "
-"rendszerre történő továbbítás csak akkor hasznos, ha a csatoló maszkolva "
-"van. A port továbbítás csak IPv4 esetén használható."
+"rendszerre történő továbbítás csak akkor hasznos, ha a csatoló maszkolva van."
+" A port továbbítás csak IPv4 esetén használható."
 
 #: ../src/firewall-config.glade.h:112
 msgid "Add Forward Port"
@@ -1609,7 +1610,8 @@ msgstr ""
 
 #: ../src/firewall-config.glade.h:188
 msgid "Please be careful with passthrough rules to not damage the firewall."
-msgstr "Legyen óvatos az áteresztő szabályokkal, hogy ne károsítsa a tűzfalat."
+msgstr ""
+"Legyen óvatos az áteresztő szabályokkal, hogy ne károsítsa a tűzfalat."
 
 #: ../src/firewall-config.glade.h:189
 msgid "Add Passthrough"
@@ -1763,7 +1765,7 @@ msgstr "Alapértelmezett zóna:"
 
 #: ../src/firewall-config.glade.h:220
 msgid "Interface"
-msgstr ""
+msgstr "Csatoló"
 
 #: ../src/firewall-config.glade.h:221
 msgid "Base IPSet Settings"
@@ -1916,8 +1918,8 @@ msgstr "fordított"
 
 #: ../src/firewall-config.glade.h:259
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "A művelet engedélyezéséhez „elutasítás” értékűnek kell lennie, és a család "
 "vagy „IPv4”, vagy „IPv6” (nem mindkettő)."

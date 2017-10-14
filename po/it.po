@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andrea La Fauci <andrea.lafauci@weproudlymanage.com>, 2010
 # antonio montagnani <antonio.montagnani@alice.it>, 2013
@@ -33,14 +33,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-31 13:12+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 "PO-Revision-Date: 2017-04-13 04:41-0400\n"
 "Last-Translator: Andrea Masala <andrea.masala87@gmail.com>\n"
 "Language-Team: Italian (http://www.transifex.com/projects/p/firewalld/"
 "language/it/)\n"
 "Language: it\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -101,9 +101,9 @@ msgid ""
 "This feature is useful for people using the default zones mostly. For users, "
 "that are changing zones of connections, it might be of limited use."
 msgstr ""
-"Questa funzione è utile per coloro che usano soprattutto le zone "
-"predefinite. Per gli utenti che modificano le zone delle connessioni, "
-"potrebbe essere limitata."
+"Questa funzione è utile per coloro che usano soprattutto le zone predefinite."
+" Per gli utenti che modificano le zone delle connessioni, potrebbe essere "
+"limitata."
 
 #: ../src/firewall-applet:230
 msgid "Shields Up Zone:"
@@ -227,7 +227,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zona '{zone}' attiva per la connessione '{connection}' sull'interfaccia "
 "'{interface}'"
@@ -615,8 +616,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5057
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "L'inoltro ad un altro sistema è utile solo se l'interfaccia è nattata.\n"
@@ -848,7 +848,8 @@ msgstr "Configurare le impostazioni di base ipset:"
 
 #: ../src/firewall-config.glade.h:34
 msgid "Bold entries are mandatory, all others are optional."
-msgstr "Le voci in grassetto sono obbligatorie, tutte le altre sono opzionali."
+msgstr ""
+"Le voci in grassetto sono obbligatorie, tutte le altre sono opzionali."
 
 #: ../src/firewall-config.glade.h:35
 msgid "Name:"
@@ -1458,8 +1459,8 @@ msgid ""
 "This IPSet uses the timeout option, therefore no entries are visible here. "
 "The entries should be taken care directly with the ipset command."
 msgstr ""
-"Questo IPSet usa l'opzione timeout, perciò nessuna delle voci è visibile "
-"qui. Le voci dovrebbero essere prese in considerazione direttamente con il "
+"Questo IPSet usa l'opzione timeout, perciò nessuna delle voci è visibile qui."
+" Le voci dovrebbero essere prese in considerazione direttamente con il "
 "comando ipset."
 
 #: ../src/firewall-config.glade.h:161
@@ -1510,8 +1511,8 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"E' possibile cambiare i tipi ICMP solo nella vista configurazione "
-"permanente. La configurazione runtime dei tipi ICMP è fissa."
+"E' possibile cambiare i tipi ICMP solo nella vista configurazione permanente."
+" La configurazione runtime dei tipi ICMP è fissa."
 
 #: ../src/firewall-config.glade.h:172
 #, fuzzy
@@ -1531,6 +1532,7 @@ msgstr ""
 msgid "Define ports or port ranges, which are monitored by the helper."
 msgstr ""
 "Definire le porte o intervalli di porte, che sono monitorati dall'assistente."
+""
 
 #: ../src/firewall-config.glade.h:174
 msgid ""
@@ -1934,8 +1936,8 @@ msgstr "invertito"
 
 #: ../src/firewall-config.glade.h:259
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Per abilitarlo, Action deve essere 'reject' e Family 'ipv4' o 'ipv6' (non "
 "entrambi)."
