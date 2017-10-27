@@ -24,7 +24,7 @@ __all__ = [ "ebtables" ]
 import os.path, errno
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import tempFile, readfile
+from firewall.functions import tempFile, readfile, splitArgs
 from firewall.config import COMMANDS
 import string
 
@@ -237,3 +237,24 @@ class ebtables(object):
                     except Exception as msg:
                         log.error("Failed to set policy for %s: %s", self.ipv,
                                   msg)
+
+    def apply_default_rules(self, transaction, log_denied="off"):
+        for table in DEFAULT_RULES:
+            if table not in self.available_tables():
+                continue
+            default_rules = DEFAULT_RULES[table][:]
+            if log_denied != "off" and LOG_RULES.has_key(table):
+                default_rules.extend(LOG_RULES[table])
+            prefix = [ "-t", table ]
+            for rule in DEFAULT_RULES[table]:
+                if type(rule) == list:
+                    _rule = prefix + rule
+                else:
+                    _rule = prefix + splitArgs(rule)
+                #if self._individual_calls or \
+                #   (ipv == "eb" and not
+                #    self.ebtables_backend.restore_noflush_option):
+                #    self.rule(ipv, _rule)
+                #else:
+                #    transaction.add_rule(ipv, _rule)
+                transaction.add_rule(self.ipv, _rule)

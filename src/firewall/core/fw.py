@@ -671,35 +671,13 @@ class Firewall(object):
 
     # apply default rules
     def __apply_default_rules(self, ipv, transaction):
-        default_rules = { }
-
-        if ipv in [ "ipv4", "ipv6" ]:
-            x = ipXtables
+        if ipv is "ipv4":
+            x = self.ip4tables_backend
+        elif ipv is "ipv6":
+            x = self.ip6tables_backend
         else:
-            x = ebtables
-        for table in x.DEFAULT_RULES:
-            default_rules[table] = x.DEFAULT_RULES[table][:]
-
-        if self._log_denied != "off":
-            for table in x.LOG_RULES:
-                default_rules.setdefault(table, []).extend(x.LOG_RULES[table])
-
-        for table in default_rules:
-            if table not in self.get_available_tables(ipv):
-                continue
-            prefix = [ "-t", table ]
-            for rule in default_rules[table]:
-                if type(rule) == list:
-                    _rule = prefix + rule
-                else:
-                    _rule = prefix + functions.splitArgs(rule)
-                #if self._individual_calls or \
-                #   (ipv == "eb" and not
-                #    self.ebtables_backend.restore_noflush_option):
-                #    self.rule(ipv, _rule)
-                #else:
-                #    transaction.add_rule(ipv, _rule)
-                transaction.add_rule(ipv, _rule)
+            x = self.ebtables_backend
+        x.apply_default_rules(transaction, self._log_denied)
 
     def apply_default_rules(self, use_transaction=None):
         if use_transaction is None:
@@ -718,22 +696,7 @@ class Firewall(object):
             # Start new transaction
             transaction.clear()
 
-            # here is no check for ebtables.restore_noflush_option needed
-            # as ebtables is not used in here
-            transaction.add_rule("ipv6",
-                                 [ "-I", "PREROUTING", "1", "-t", "raw",
-                                   "-p", "ipv6-icmp",
-                                   "--icmpv6-type=router-advertisement",
-                                   "-j", "ACCEPT" ]) # RHBZ#1058505
-            transaction.add_rule("ipv6",
-                                 [ "-I", "PREROUTING", "2", "-t", "raw",
-                                   "-m", "rpfilter", "--invert", "-j", "DROP" ])
-            if self._log_denied != "off":
-                transaction.add_rule("ipv6",
-                                     [ "-I", "PREROUTING", "2", "-t", "raw",
-                                       "-m", "rpfilter", "--invert",
-                                       "-j", "LOG",
-                                       "--log-prefix", "rpfilter_DROP: " ])
+            self.ip6tables_backend.apply_rpfilter_rules(transaction, self._log_denied)
 
             # Execute ipv6_rpfilter transaction, it might fail
             try:

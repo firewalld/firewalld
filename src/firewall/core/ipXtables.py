@@ -23,7 +23,7 @@ import os.path
 
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import tempFile, readfile
+from firewall.functions import tempFile, readfile, splitArgs
 from firewall import config
 import string
 
@@ -402,5 +402,44 @@ class ip4tables(object):
                 in_types = True
         return ret
 
+    def apply_default_rules(self, transaction, log_denied="off"):
+        for table in DEFAULT_RULES:
+            if table not in self.available_tables():
+                continue
+            default_rules = DEFAULT_RULES[table][:]
+            if log_denied != "off" and LOG_RULES.has_key(table):
+                default_rules.extend(LOG_RULES[table])
+            prefix = [ "-t", table ]
+            for rule in DEFAULT_RULES[table]:
+                if type(rule) == list:
+                    _rule = prefix + rule
+                else:
+                    _rule = prefix + splitArgs(rule)
+                #if self._individual_calls or \
+                #   (ipv == "eb" and not
+                #    self.ebtables_backend.restore_noflush_option):
+                #    self.rule(ipv, _rule)
+                #else:
+                #    transaction.add_rule(ipv, _rule)
+                transaction.add_rule(self.ipv, _rule)
+
 class ip6tables(ip4tables):
     ipv = "ipv6"
+
+    def apply_rpfilter_rules(self, transaction, log_denied=False):
+            transaction.add_rule(self.ipv,
+                                 [ "-I", "PREROUTING", "1", "-t", "raw",
+                                   "-p", "ipv6-icmp",
+                                   "--icmpv6-type=router-advertisement",
+                                   "-j", "ACCEPT" ]) # RHBZ#1058505
+            transaction.add_rule(self.ipv,
+                                 [ "-I", "PREROUTING", "2", "-t", "raw",
+                                   "-m", "rpfilter", "--invert", "-j", "DROP" ])
+            if log_denied != "off":
+                transaction.add_rule(self.ipv,
+                                     [ "-I", "PREROUTING", "2", "-t", "raw",
+                                       "-m", "rpfilter", "--invert",
+                                       "-j", "LOG",
+                                       "--log-prefix", "rpfilter_DROP: " ])
+
+
