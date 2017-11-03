@@ -230,6 +230,7 @@ CONFIG_FILES = \
 	services/tinc.xml \
 	services/tor-socks.xml \
 	services/transmission-client.xml \
+	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
 	services/wbem-https.xml \
