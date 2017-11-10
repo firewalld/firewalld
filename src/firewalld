@@ -62,6 +62,9 @@ def parse_cmdline():
     parser.add_argument('--default-config',
                         help="""Path to firewalld default configuration""",
                         metavar="path")
+    parser.add_argument('--log-file',
+                        help="""Path to firewalld log file""",
+                        metavar="path")
     return parser.parse_args()
 
 def setup_logging(args):
@@ -172,6 +175,9 @@ def main():
 
     # Process the command-line arguments
     args = parse_cmdline()
+
+    if args.log_file:
+        config.FIREWALLD_LOGFILE = args.log_file
 
     setup_logging(args)
 
