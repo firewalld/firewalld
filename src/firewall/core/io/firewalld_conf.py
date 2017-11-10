@@ -24,11 +24,7 @@ import io
 import tempfile
 import shutil
 
-from firewall.config import ETC_FIREWALLD, \
-    FALLBACK_ZONE, FALLBACK_MINIMAL_MARK, \
-    FALLBACK_CLEANUP_ON_EXIT, FALLBACK_LOCKDOWN, FALLBACK_IPV6_RPFILTER, \
-    FALLBACK_INDIVIDUAL_CALLS, FALLBACK_LOG_DENIED, LOG_DENIED_VALUES, \
-    FALLBACK_AUTOMATIC_HELPERS, AUTOMATIC_HELPERS_VALUES
+from firewall import config
 from firewall.core.logger import log
 from firewall.functions import b2u, u2b, PY2
 
@@ -75,14 +71,14 @@ class firewalld_conf(object):
             f = open(self.filename, "r")
         except Exception as msg:
             log.error("Failed to load '%s': %s", self.filename, msg)
-            self.set("DefaultZone", FALLBACK_ZONE)
-            self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
-            self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
-            self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
-            self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
-            self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
-            self.set("LogDenied", FALLBACK_LOG_DENIED)
-            self.set("AutomaticHelpers", FALLBACK_AUTOMATIC_HELPERS)
+            self.set("DefaultZone", config.FALLBACK_ZONE)
+            self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
+            self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
+            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
+            self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
+            self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
+            self.set("LogDenied", config.FALLBACK_LOG_DENIED)
+            self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
             raise
 
         for line in f:
@@ -111,8 +107,8 @@ class firewalld_conf(object):
         # check default zone
         if not self.get("DefaultZone"):
             log.error("DefaultZone is not set, using default value '%s'",
-                      FALLBACK_ZONE)
-            self.set("DefaultZone", str(FALLBACK_ZONE))
+                      config.FALLBACK_ZONE)
+            self.set("DefaultZone", str(config.FALLBACK_ZONE))
 
         # check minimal mark
         value = self.get("MinimalMark")
@@ -122,8 +118,8 @@ class firewalld_conf(object):
             if value is not None:
                 log.warning("MinimalMark '%s' is not valid, using default "
                             "value '%d'", value if value else '',
-                            FALLBACK_MINIMAL_MARK)
-            self.set("MinimalMark", str(FALLBACK_MINIMAL_MARK))
+                            config.FALLBACK_MINIMAL_MARK)
+            self.set("MinimalMark", str(config.FALLBACK_MINIMAL_MARK))
 
         # check cleanup on exit
         value = self.get("CleanupOnExit")
@@ -131,8 +127,8 @@ class firewalld_conf(object):
             if value is not None:
                 log.warning("CleanupOnExit '%s' is not valid, using default "
                             "value %s", value if value else '',
-                            FALLBACK_CLEANUP_ON_EXIT)
-            self.set("CleanupOnExit", "yes" if FALLBACK_CLEANUP_ON_EXIT else "no")
+                            config.FALLBACK_CLEANUP_ON_EXIT)
+            self.set("CleanupOnExit", "yes" if config.FALLBACK_CLEANUP_ON_EXIT else "no")
 
         # check lockdown
         value = self.get("Lockdown")
@@ -140,8 +136,8 @@ class firewalld_conf(object):
             if value is not None:
                 log.warning("Lockdown '%s' is not valid, using default "
                             "value %s", value if value else '',
-                            FALLBACK_LOCKDOWN)
-            self.set("Lockdown", "yes" if FALLBACK_LOCKDOWN else "no")
+                            config.FALLBACK_LOCKDOWN)
+            self.set("Lockdown", "yes" if config.FALLBACK_LOCKDOWN else "no")
 
         # check ipv6_rpfilter
         value = self.get("IPv6_rpfilter")
@@ -149,8 +145,8 @@ class firewalld_conf(object):
             if value is not None:
                 log.warning("IPv6_rpfilter '%s' is not valid, using default "
                             "value %s", value if value else '',
-                            FALLBACK_IPV6_RPFILTER)
-            self.set("IPv6_rpfilter","yes" if FALLBACK_IPV6_RPFILTER else "no")
+                            config.FALLBACK_IPV6_RPFILTER)
+            self.set("IPv6_rpfilter","yes" if config.FALLBACK_IPV6_RPFILTER else "no")
 
         # check individual calls
         value = self.get("IndividualCalls")
@@ -158,25 +154,25 @@ class firewalld_conf(object):
             if value is not None:
                 log.warning("IndividualCalls '%s' is not valid, using default "
                             "value %s", value if value else '',
-                            FALLBACK_INDIVIDUAL_CALLS)
-            self.set("IndividualCalls", "yes" if FALLBACK_INDIVIDUAL_CALLS else "no")
+                            config.FALLBACK_INDIVIDUAL_CALLS)
+            self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
 
         # check log denied
         value = self.get("LogDenied")
-        if not value or value not in LOG_DENIED_VALUES:
+        if not value or value not in config.LOG_DENIED_VALUES:
             if value is not None:
                 log.warning("LogDenied '%s' is invalid, using default value '%s'",
-                            value, FALLBACK_LOG_DENIED)
-            self.set("LogDenied", str(FALLBACK_LOG_DENIED))
+                            value, config.FALLBACK_LOG_DENIED)
+            self.set("LogDenied", str(config.FALLBACK_LOG_DENIED))
 
         # check automatic helpers
         value = self.get("AutomaticHelpers")
-        if not value or value.lower() not in AUTOMATIC_HELPERS_VALUES:
+        if not value or value.lower() not in config.AUTOMATIC_HELPERS_VALUES:
             if value is not None:
                 log.warning("AutomaticHelpers '%s' is not valid, using default "
                             "value %s", value if value else '',
-                            FALLBACK_AUTOMATIC_HELPERS)
-            self.set("AutomaticHelpers", str(FALLBACK_AUTOMATIC_HELPERS))
+                            config.FALLBACK_AUTOMATIC_HELPERS)
+            self.set("AutomaticHelpers", str(config.FALLBACK_AUTOMATIC_HELPERS))
 
     # save to self.filename if there are key/value changes
     def write(self):
@@ -187,8 +183,8 @@ class firewalld_conf(object):
         # handled keys
         done = [ ]
 
-        if not os.path.exists(ETC_FIREWALLD):
-            os.mkdir(ETC_FIREWALLD, 0o750)
+        if not os.path.exists(config.ETC_FIREWALLD):
+            os.mkdir(config.ETC_FIREWALLD, 0o750)
 
         try:
             temp_file = tempfile.NamedTemporaryFile(mode='wt',

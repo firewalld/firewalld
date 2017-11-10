@@ -26,7 +26,7 @@ import os
 import io
 import shutil
 
-from firewall.config import ETC_FIREWALLD
+from firewall import config
 from firewall.functions import checkIP, checkIP6, checkIPnMask, checkIP6nMask, checkInterface, uniqify, max_zone_name_len, u2b_if_py2, check_mac, portStr
 from firewall.core.base import DEFAULT_ZONE_TARGET, ZONE_TARGETS
 from firewall.core.io.io_object import PY2, IO_Object, \
@@ -683,7 +683,7 @@ def zone_reader(filename, path):
     zone.check_name(zone.name)
     zone.filename = filename
     zone.path = path
-    zone.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    zone.builtin = False if path.startswith(config.ETC_FIREWALLD) else True
     zone.default = zone.builtin
     handler = zone_ContentHandler(zone)
     parser = sax.make_parser()
@@ -717,9 +717,9 @@ def zone_writer(zone, path=None):
             log.error("Backup of file '%s' failed: %s", name, msg)
 
     dirpath = os.path.dirname(name)
-    if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
-        if not os.path.exists(ETC_FIREWALLD):
-            os.mkdir(ETC_FIREWALLD, 0o750)
+    if dirpath.startswith(config.ETC_FIREWALLD) and not os.path.exists(dirpath):
+        if not os.path.exists(config.ETC_FIREWALLD):
+            os.mkdir(config.ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
     f = io.open(name, mode='wt', encoding='UTF-8')
