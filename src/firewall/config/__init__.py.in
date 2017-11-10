@@ -41,11 +41,12 @@ CONFIG_NAME = 'firewall-config'
 APPLET_NAME = 'firewall-applet'
 DATADIR = '/usr/share/' + DAEMON_NAME
 CONFIG_GLADE_NAME = CONFIG_NAME + '.glade'
-COPYRIGHT = '(C) 2010-2016 Red Hat, Inc.'
+COPYRIGHT = '(C) 2010-2017 Red Hat, Inc.'
 VERSION = '@PACKAGE_VERSION@'
 AUTHORS = [
     "Thomas Woerner <twoerner@redhat.com>",
     "Jiri Popelka <jpopelka@redhat.com>",
+    "Eric Garver <e@erig.me>",
     ]
 LICENSE = _(
     "This program is free software; you can redistribute it and/or modify "
@@ -62,30 +63,38 @@ LICENSE = _(
     "along with this program.  If not, see <http://www.gnu.org/licenses/>.")
 WEBSITE = 'http://www.firewalld.org'
 
-ETC_FIREWALLD = '/etc/firewalld'
-FIREWALLD_CONF = ETC_FIREWALLD + '/firewalld.conf'
-ETC_FIREWALLD_ZONES = ETC_FIREWALLD + '/zones'
-ETC_FIREWALLD_SERVICES = ETC_FIREWALLD + '/services'
-ETC_FIREWALLD_ICMPTYPES = ETC_FIREWALLD + '/icmptypes'
-ETC_FIREWALLD_IPSETS = ETC_FIREWALLD + '/ipsets'
-ETC_FIREWALLD_HELPERS = ETC_FIREWALLD + '/helpers'
+def set_system_config_paths(path):
+    global ETC_FIREWALLD, FIREWALLD_CONF, ETC_FIREWALLD_ZONES, \
+           ETC_FIREWALLD_SERVICES, ETC_FIREWALLD_ICMPTYPES, \
+           ETC_FIREWALLD_IPSETS, ETC_FIREWALLD_HELPERS, \
+           FIREWALLD_DIRECT, LOCKDOWN_WHITELIST
+    ETC_FIREWALLD = path
+    FIREWALLD_CONF = path + '/firewalld.conf'
+    ETC_FIREWALLD_ZONES = path + '/zones'
+    ETC_FIREWALLD_SERVICES = path + '/services'
+    ETC_FIREWALLD_ICMPTYPES = path + '/icmptypes'
+    ETC_FIREWALLD_IPSETS = path + '/ipsets'
+    ETC_FIREWALLD_HELPERS = path + '/helpers'
+    FIREWALLD_DIRECT = path + '/direct.xml'
+    LOCKDOWN_WHITELIST = path + '/lockdown-whitelist.xml'
+set_system_config_paths('/etc/firewalld')
 
-USR_LIB_FIREWALLD = '/usr/lib/firewalld'
-FIREWALLD_ZONES = USR_LIB_FIREWALLD + '/zones'
-FIREWALLD_SERVICES = USR_LIB_FIREWALLD + '/services'
-FIREWALLD_ICMPTYPES = USR_LIB_FIREWALLD + '/icmptypes'
-FIREWALLD_IPSETS = USR_LIB_FIREWALLD + '/ipsets'
-FIREWALLD_HELPERS = USR_LIB_FIREWALLD + '/helpers'
+def set_default_config_paths(path):
+    global USR_LIB_FIREWALLD, FIREWALLD_ZONES, FIREWALLD_SERVICES, \
+           FIREWALLD_ICMPTYPES, FIREWALLD_IPSETS, FIREWALLD_HELPERS
+    USR_LIB_FIREWALLD = path
+    FIREWALLD_ZONES = path + '/zones'
+    FIREWALLD_SERVICES = path + '/services'
+    FIREWALLD_ICMPTYPES = path + '/icmptypes'
+    FIREWALLD_IPSETS = path + '/ipsets'
+    FIREWALLD_HELPERS = path + '/helpers'
+set_default_config_paths('/usr/lib/firewalld')
 
 FIREWALLD_LOGFILE = '/var/log/firewalld'
 
 FIREWALLD_PIDFILE = "/var/run/firewalld.pid"
 
 FIREWALLD_TEMPDIR = '/run/firewalld'
-
-FIREWALLD_DIRECT = ETC_FIREWALLD + '/direct.xml'
-
-LOCKDOWN_WHITELIST = ETC_FIREWALLD + '/lockdown-whitelist.xml'
 
 SYSCONFIGDIR = '/etc/sysconfig'
 IFCFGDIR = SYSCONFIGDIR + '/network-scripts'
