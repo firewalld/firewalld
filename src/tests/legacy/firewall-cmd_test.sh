@@ -380,16 +380,20 @@ assert_bad  "--permanent  --query-port=80/tcp"
 assert_bad  "--permanent  --query-port=443-444/udp"
 
 assert_bad  "    --add-protocol=dummy" # bad protocol
+if grep "^mux" /etc/protocols > /dev/null; then
 assert_good "    --add-protocol=mux"
 assert_good " --remove-protocol=mux     --zone=${default_zone}"
+fi
 assert_good "    --add-protocol=dccp --zone=${default_zone}"
 assert_good " --query-protocol=dccp"
 assert_good "--remove-protocol dccp"
 assert_bad  " --query-protocol=dccp"
 
 assert_bad  "--permanent    --add-protocol=dummy" # bad protocol
+if grep "^mux" /etc/protocols > /dev/null; then
 assert_good "--permanent    --add-protocol=mux"
 assert_good "--permanent --remove-protocol=mux     --zone=${default_zone}"
+fi
 assert_good "--permanent    --add-protocol=dccp --zone=${default_zone}"
 assert_good "--permanent  --query-protocol=dccp"
 assert_good "--permanent --remove-protocol dccp"
