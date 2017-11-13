@@ -1,7 +1,6 @@
 #!/bin/bash
 
-#readonly path="/usr/bin/"
-readonly path="../"
+readonly path="../../../"
 
 readonly RED='\033[00;31m'
 readonly GREEN='\033[00;32m'

@@ -23,6 +23,7 @@
 
 # To use in git tree: PYTHONPATH=.. python firewalld-test.py
 
+import sys
 import unittest
 import time
 import firewall
@@ -310,4 +311,5 @@ class TestFirewallDInterfaceConfig(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallDInterfaceConfig)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    results = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(0 if results.wasSuccessful() else 1)

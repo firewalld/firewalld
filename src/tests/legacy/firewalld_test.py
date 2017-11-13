@@ -28,7 +28,6 @@ import sys
 import time
 import unittest
 
-from firewall.config import *
 from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
 from pprint import pprint
@@ -309,6 +308,5 @@ class TestFirewallD(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallD)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-
-
+    results = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(0 if results.wasSuccessful() else 1)
