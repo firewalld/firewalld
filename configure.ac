@@ -67,6 +67,11 @@ AC_ARG_WITH([bashcompletiondir],
        [BASHCOMPLETIONDIR=$withval], [BASHCOMPLETIONDIR="${datadir}/bash-completion/completions"])
 AC_SUBST(BASHCOMPLETIONDIR)
 
+AC_ARG_WITH([ifcfgdir],
+       AS_HELP_STRING([--with-ifcfgdir=DIR], [The ifcfg configuration directory]),
+       [IFCFGDIR=$withval], [IFCFGDIR="/etc/sysconfig/network-scripts"])
+AC_SUBST(IFCFGDIR)
+
 # Extend PATH to include /sbin etc in case we are building as non-root
 FW_TOOLS_PATH="$PATH:/usr/local/sbin:/sbin:/usr/sbin"
 

@@ -130,7 +130,7 @@
     </para>
     <para>
       You can add these interfaces to a zone with <command>firewall-cmd [--permanent] --zone=<replaceable>zone</replaceable> --add-interface=<replaceable>interface</replaceable></command>.
-      If there is a /etc/sysconfig/network-scripts/ifcfg-<replaceable>interface</replaceable> file, firewalld tries to change the ZONE=<replaceable>zone</replaceable> setting in this file.
+	  If there is a @IFCFGDIR@/ifcfg-<replaceable>interface</replaceable> file, firewalld tries to change the ZONE=<replaceable>zone</replaceable> setting in this file.
     </para>
     <para>
       If firewalld gets reloaded, it will restore the interface bindings that were in place before reloading to keep interface bindings stable in the case of NetworkManager uncontrolled interfaces.
