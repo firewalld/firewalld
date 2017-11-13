@@ -601,7 +601,7 @@
 	    </para>
 	    <para>
 	      As a end user you don't need to create or change zone bindings of interfaces in most cases, because NetworkManager (or legacy network service) adds interfaces into zones automatically (according to <option>ZONE=</option> option from ifcfg-<replaceable>interface</replaceable> file) if <replaceable>NM_CONTROLLED=no</replaceable> is not set.
-	      You should do it only if there's no /etc/sysconfig/network-scripts/ifcfg-<replaceable>interface</replaceable> file.
+	      You should do it only if there's no @IFCFGDIR@/ifcfg-<replaceable>interface</replaceable> file.
 	      If there is such file and you add interface to zone with this <option>--add-interface</option> option, make sure the zone is the same in both cases, otherwise the behaviour would be undefined.
 	      Please also have a look at the <citerefentry><refentrytitle>firewalld</refentrytitle><manvolnum>1</manvolnum></citerefentry> man page in the <replaceable>Concepts</replaceable> section.
 	      For permanent association of interface with a zone, see also 'How to set or change a zone for a connection?' in <citerefentry><refentrytitle>firewalld.zones</refentrytitle><manvolnum>5</manvolnum></citerefentry>.
