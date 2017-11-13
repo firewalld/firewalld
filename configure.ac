@@ -35,6 +35,8 @@ AC_PATH_PROG([MODPROBE], [modprobe], [/sbin/modprobe])
 AC_PATH_PROG([RMMOD], [rmmod], [/sbin/rmmod])
 AC_PATH_PROG([SYSCTL], [sysctl], [/sbin/sysctl])
 
+AC_CONFIG_TESTDIR([src/tests])
+
 GLIB_GSETTINGS
 
 #############################################################
@@ -162,5 +164,6 @@ AC_CONFIG_FILES([Makefile
 		 shell-completion/Makefile
 		 src/firewall/config/__init__.py
 		 src/Makefile
+		 src/tests/Makefile
 		 src/icons/Makefile])
 AC_OUTPUT
