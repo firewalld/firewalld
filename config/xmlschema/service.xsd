@@ -22,7 +22,7 @@ elementFormDefault="qualified">
 </xs:complexType>
 
 <xs:complexType name="prototype">
-  <xs:attribute name="name" type="xs:string" use="required"/>
+  <xs:attribute name="value" type="xs:string" use="required"/>
 </xs:complexType>
 
 <xs:complexType name="porttype">
