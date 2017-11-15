@@ -2,7 +2,8 @@ XSLTPROC = xsltproc
 
 EXTRA_DIST = $(HTMLS:../html/%.html=%.xml) \
 	authors.xml notes.xml seealso.xml errorcodes.xml \
-	transform-man.xsl.in transform-html.xsl.in
+	transform-man.xsl.in transform-html.xsl.in \
+	firewalld.xml.in firewall-cmd.xml.in firewallctl.xml.in
 
 man_MANS = $(man1_MANS) $(man5_MANS)
 HTMLS = $(man1_MANS:../man/man1/%.1=../html/%.html) $(man5_MANS:../man/man5/%.5=../html/%.html)
@@ -28,8 +29,10 @@ man5_MANS = \
 	../man/man5/firewalld.zone.5 \
 	../man/man5/firewalld.zones.5
 
+XML_FIREWALLD_DEPS=firewalld.xml firewall-cmd.xml firewallctl.xml
+
 CLEAN_FILES = *~ errorcodes.xml
-DISTCLEANFILES = $(man_MANS) $(HTMLS) transform-*.xsl
+DISTCLEANFILES = $(man_MANS) $(HTMLS) transform-*.xsl $(XML_FIREWALLD_DEPS)
 
 #SGML_CATALOG_FILES
 #XSLTPROC_FLAGS = --catalogs --nonet --xinclude
@@ -44,17 +47,17 @@ all: $(man_MANS) $(HTMLS)
 clean:
 	-test -z "$(CLEAN_FILES)" || rm -f $(CLEAN_FILES)
 
-../man/man1/firewall-cmd.1: errorcodes.xml
+../man/man1/firewall-cmd.1: errorcodes.xml firewall-cmd.xml
 
-../html/firewall-cmd.html: errorcodes.xml
+../html/firewall-cmd.html: errorcodes.xml firewall-cmd.xml
 
-../man/man1/%.1: %.xml authors.xml notes.xml seealso.xml transform-man.xsl
+../man/man1/%.1: %.xml authors.xml notes.xml seealso.xml transform-man.xsl $(XML_FIREWALLD_DEPS)
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
 
-../man/man5/%.5: %.xml authors.xml notes.xml seealso.xml transform-man.xsl
+../man/man5/%.5: %.xml authors.xml notes.xml seealso.xml transform-man.xsl $(XML_FIREWALLD_DEPS)
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
 
-../html/%.html: %.xml authors.xml notes.xml seealso.xml transform-html.xsl
+../html/%.html: %.xml authors.xml notes.xml seealso.xml transform-html.xsl $(XML_FIREWALLD_DEPS)
 	$(XSLTPROC) -o $@ $(XSLTPROC_HTML_FLAGS) $<
 
 errorcodes.xml: ../../src/firewall/errors.py
@@ -67,9 +70,16 @@ errorcodes.xml: ../../src/firewall/errors.py
 edit = sed \
 	-e 's|\@PREFIX\@|$(prefix)|' \
 	-e 's|\@SYSCONFDIR\@|$(sysconfdir)|' \
-	-e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|'
+	-e 's|\@PACKAGE_STRING\@|$(PACKAGE_STRING)|' \
+	-e 's|\@IFCFGDIR\@|$(IFCFGDIR)|'
 
 transform-man.xsl: transform-man.xsl.in
 	$(edit) $< >$@
 transform-html.xsl: transform-html.xsl.in
+	$(edit) $< >$@
+firewall-cmd.xml: firewall-cmd.xml.in
+	$(edit) $< >$@
+firewalld.xml: firewalld.xml.in
+	$(edit) $< >$@
+firewallctl.xml: firewallctl.xml.in
 	$(edit) $< >$@
