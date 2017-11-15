@@ -97,7 +97,7 @@ FIREWALLD_PIDFILE = "/var/run/firewalld.pid"
 FIREWALLD_TEMPDIR = '/run/firewalld'
 
 SYSCONFIGDIR = '/etc/sysconfig'
-IFCFGDIR = SYSCONFIGDIR + '/network-scripts'
+IFCFGDIR = "@IFCFGDIR@"
 
 SYSCTL_CONFIG = '/etc/sysctl.conf'
 
