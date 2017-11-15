@@ -36,15 +36,6 @@ def search_ifcfg_of_interface(interface):
     if not os.path.exists(config.IFCFGDIR):
         return None
 
-    # RedHat puts ifcfg files in 'network-scripts'
-    suseifcfg = not "network-scripts" in config.IFCFGDIR
-    filename = "%s/ifcfg-%s" % (config.IFCFGDIR, interface)
-    if os.path.exists(filename):
-        ifcfg_file = ifcfg(filename)
-        ifcfg_file.read()
-        if ifcfg_file.get("DEVICE") == interface or suseifcfg:
-            return ifcfg_file
-
     for filename in sorted(os.listdir(config.IFCFGDIR)):
         if not filename.startswith("ifcfg-"):
             continue
@@ -58,6 +49,13 @@ def search_ifcfg_of_interface(interface):
         ifcfg_file.read()
         if ifcfg_file.get("DEVICE") == interface:
             return ifcfg_file
+
+    # Wasn't found above, so assume filename matches the device we want
+    filename = "%s/ifcfg-%s" % (config.IFCFGDIR, interface)
+    if os.path.exists(filename):
+        ifcfg_file = ifcfg(filename)
+        ifcfg_file.read()
+        return ifcfg_file
 
     return None
 
