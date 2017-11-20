@@ -2,6 +2,9 @@ AT_INIT
 AT_COLOR_TESTS
 m4_include([functions.at])
 
+AT_BANNER([regression tests])
+m4_include([regression/rhbz1514043.at])
+
 AT_BANNER([legacy test suite (slow)])
 
 FWD_START_TEST([firewall-cmd_test.sh])
