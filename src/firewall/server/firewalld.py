@@ -939,6 +939,10 @@ class FirewallD(slip.dbus.service.Object):
         self.accessCheck(sender)
         self.fw.set_log_denied(value)
         self.LogDeniedChanged(value)
+        # must reload the firewall as well
+        self.fw.reload()
+        self.config.reload()
+        self.Reloaded()
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions
@@ -969,6 +973,10 @@ class FirewallD(slip.dbus.service.Object):
         self.accessCheck(sender)
         self.fw.set_automatic_helpers(value)
         self.AutomaticHelpersChanged(value)
+        # must reload the firewall as well
+        self.fw.reload()
+        self.config.reload()
+        self.Reloaded()
 
     @dbus.service.signal(config.dbus.DBUS_INTERFACE, signature='s')
     @dbus_handle_exceptions
