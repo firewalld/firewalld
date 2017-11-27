@@ -4,6 +4,7 @@ m4_include([functions.at])
 
 AT_BANNER([regression tests])
 m4_include([regression/rhbz1514043.at])
+m4_include([regression/rhbz1498923.at])
 
 AT_BANNER([legacy test suite (slow)])
 
