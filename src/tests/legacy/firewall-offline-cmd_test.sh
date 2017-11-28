@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#readonly path="/usr/bin/"
-readonly path="../"
+readonly path="../../../"
+readonly static_args="--system-config ./ --default-config ../../../../config"
 
 readonly RED='\033[00;31m'
 readonly GREEN='\033[00;32m'
@@ -22,7 +22,7 @@ assert_cmd_good() {
 assert_good() {
   local args="${1}"
 
-  ${path}firewall-offline-cmd ${args} > /dev/null 2>&1
+  ${path}firewall-offline-cmd ${static_args} ${args} > /dev/null 2>&1
   if [[ "$?" -eq 0 ]]; then
     echo "${args} ... OK"
   else
@@ -35,7 +35,7 @@ assert_good_notempty() {
   local args="${1}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
+  ret=$(${path}firewall-offline-cmd ${static_args} ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( -n "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -48,7 +48,7 @@ assert_good_empty() {
   local args="${1}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
+  ret=$(${path}firewall-offline-cmd ${static_args} ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( -z "${ret}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -62,7 +62,7 @@ assert_good_equals() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
+  ret=$(${path}firewall-offline-cmd ${static_args} ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( "${ret}" = "${value}" ) ]]; then
     echo "${args} ... OK"
   else
@@ -76,7 +76,7 @@ assert_good_contains() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
+  ret=$(${path}firewall-offline-cmd ${static_args} ${args}) > /dev/null 2>&1
   if [[ ( "$?" -eq 0 ) && ( "${ret}" = *${value}* ) ]]; then
     echo "${args} ... OK"
   else
@@ -88,7 +88,7 @@ assert_good_contains() {
 assert_bad() {
   local args="${1}"
 
-  ${path}firewall-offline-cmd ${args} 1> /dev/null 2>&1 2>&1
+  ${path}firewall-offline-cmd ${static_args} ${args} 1> /dev/null 2>&1 2>&1
   if [[ "$?" -ne 0 ]]; then
     echo "${args} ... OK"
   else
@@ -102,7 +102,7 @@ assert_bad_contains() {
   local value="${2}"
   local ret
 
-  ret=$(${path}firewall-offline-cmd ${args}) > /dev/null 2>&1
+  ret=$(${path}firewall-offline-cmd ${static_args} ${args}) > /dev/null 2>&1
   if [[ ( "$?" -ne 0 ) || ( "${ret}" = *${value}* ) ]]; then
     ((failures++))
     echo -e "${args} ... ${RED}${failures}. FAILED (non-zero exit status or '${ret}' does contain '${value}')${RESTORE}"
@@ -125,7 +125,7 @@ assert_rich_good() {
     command="--query-rich-rule"
   fi
 
-  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null 2>&1
+  ${path}firewall-offline-cmd ${static_args} ${command} "${args}" > /dev/null 2>&1
   if [[ "$?" -eq 0 ]]; then
     echo ${command} "${args} ... OK"
   else
@@ -147,7 +147,7 @@ assert_rich_bad() {
     command="--query-rich-rule"
   fi
 
-  ${path}firewall-offline-cmd ${command} "${args}" > /dev/null 2>&1
+  ${path}firewall-offline-cmd ${static_args} ${command} "${args}" > /dev/null 2>&1
   if [[ "$?" -ne 0 ]]; then
     echo ${command} "${args} ... OK"
   else
@@ -160,7 +160,7 @@ assert_exit_code() {
   local args="${1}"
   local ret="${2}"
 
-  ${path}firewall-offline-cmd ${args} > /dev/null 2>&1
+  ${path}firewall-offline-cmd ${static_args} ${args} > /dev/null 2>&1
   got=$?
   if [[ "$got" -eq "$ret" ]]; then
     echo "${args} ... OK"
@@ -171,10 +171,8 @@ assert_exit_code() {
 }
 
 test_lokkit_opts() {
-rm -f /etc/firewalld/zones/*
 assert_good "${lokkit_opts}"
 
-assert_cmd_good "systemctl is-enabled firewalld.service"
 assert_good     "--zone=trusted --query-interface=${trusted_iface1}"
 assert_good     "--zone=trusted --query-interface=${trusted_iface2}"
 assert_good     "--query-service ${service1}"
@@ -189,14 +187,19 @@ assert_good     "--query-forward-port ${fw_port2}"
 # MAIN
 failures=0
 
-while true; do
-    read -p "This test overwrites your /etc/firewalld/zones/* and /etc/sysconfig/system-config-firewall. Do you want to continue ?" yn
-    case $yn in
-        [Yy]* ) break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+# firewall-offline-cmd expects some of this to exist.
+#
+mkdir helpers icmptypes ipsets services zones
+cat > ./firewalld.conf <<HERE
+DefaultZone=public
+MinimalMark=100
+CleanupOnExit=yes
+Lockdown=no
+IPv6_rpfilter=yes
+IndividualCalls=no
+LogDenied=off
+AutomaticHelpers=system
+HERE
 
 assert_good "-h"
 assert_good "--help"
@@ -222,7 +225,7 @@ lokkit_opts="--enabled --addmodule=abc --addmodule=efg --removemodule=xyz
  --forward-port=if=ippp+:${fw_port2}"
 test_lokkit_opts
 
-cat << EOF > /etc/sysconfig/system-config-firewall
+cat << EOF > ./system-config-firewall
 --enabled
 --addmodule=abc
 --addmodule=efg
@@ -243,14 +246,14 @@ cat << EOF > /etc/sysconfig/system-config-firewall
 --forward-port=if=ippp+:${fw_port2}
 EOF
 
-# running firewall-offline-cmd without options should import /etc/sysconfig/system-config-firewall
-lokkit_opts=""
+# import from lokkit
+lokkit_opts="--migrate-system-config-firewall=./system-config-firewall"
 test_lokkit_opts
 
 # disable dns again for later tests
 assert_good --remove-service=${service1}
 
-default_zone=$(${path}firewall-offline-cmd --get-default-zone 2>/dev/null)
+default_zone=$(${path}firewall-offline-cmd ${static_args} --get-default-zone 2>/dev/null)
 zone="home"
 assert_good_notempty "--get-default-zone"
 assert_good          "--set-default-zone=${zone}"
@@ -349,8 +352,10 @@ assert_bad  " --query-port=80/tcp"
 assert_bad  " --query-port=443-444/udp"
 
 assert_bad  "    --add-protocol=dummy" # bad protocol
+if grep "^mux" /etc/protocols > /dev/null; then
 assert_good "    --add-protocol=mux"
 assert_good " --remove-protocol=mux     --zone=${default_zone}"
+fi
 assert_good "    --add-protocol=dccp --zone=${default_zone}"
 assert_good " --query-protocol=dccp"
 assert_good "--remove-protocol dccp"

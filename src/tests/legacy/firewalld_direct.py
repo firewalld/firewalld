@@ -109,6 +109,5 @@ class TestFirewallDInterfaceDirect(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(TestFirewallDInterfaceDirect)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-
-
+    results = unittest.TextTestRunner(verbosity=2).run(suite)
+    sys.exit(0 if results.wasSuccessful() else 1)

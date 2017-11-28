@@ -1,4 +1,4 @@
-SUBDIRS = icons
+SUBDIRS = icons tests
 
 dist_bin_SCRIPTS = firewall-applet firewall-cmd firewall-offline-cmd firewall-config firewallctl
 dist_sbin_SCRIPTS = firewalld
@@ -8,11 +8,6 @@ dist_glade_DATA = firewall-config.glade
 
 gtkextradir = $(pkgdatadir)
 dist_gtkextra_DATA = gtk3_chooserbutton.py gtk3_niceexpander.py
-
-testsdir = $(pkgdatadir)/tests
-dist_tests_DATA = \
-	tests/firewall-cmd_test.sh \
-	tests/firewall-offline-cmd_test.sh
 
 nobase_dist_python_DATA = \
 	firewall/client.py \
@@ -76,7 +71,7 @@ EXTRA_DIST = \
 
 CLEANFILES = *~ *\# .\#* *.py?
 
-install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS install-dist_testsDATA
+install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS
 	@echo "Fixing python shebang"
 	@list='$(dist_bin_SCRIPTS)'; \
 	for p in $$list; do \
@@ -87,10 +82,4 @@ install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS install-dis
 	for p in $$list; do \
 	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
 	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
-	done
-	@echo "Fixing path for test suite scripts"
-	@list='$(dist_tests_DATA)'; \
-	for p in $$list; do \
-	  echo sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)/\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
-	  sed -i -e 's@^readonly path=.*@readonly path=\"$(bindir)/\"@' "$(DESTDIR)$(pkgdatadir)/$$p"; \
 	done

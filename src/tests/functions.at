@@ -1,0 +1,69 @@
+m4_define([FWD_CHECK_FIREWALLD], [
+    AT_SKIP_IF([pgrep firewalld])
+
+    dnl Can't start the dbus interface unless these exist, but we don't want to
+    dnl install it and dirty the host.
+    dnl
+    dnl This can be manually installed with:
+    dnl    ./configure --sysconfdir=/etc
+    dnl    make -C config install-dist_dbus_policyDATA install-polkit1_actionDATA
+    dnl    ln -s /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.server.policy \
+    dnl          /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy
+    dnl
+    dnl You might have to restart dbus-daemon and polkitd.
+    dnl Alternatively, fully install firewalld first.
+    dnl
+    AT_SKIP_IF([! test -f /etc/dbus-1/system.d/FirewallD.conf])
+    AT_SKIP_IF([! test -f /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy])
+    ])
+
+m4_define([FWD_START_FIREWALLD], [
+    FWD_CHECK_FIREWALLD
+    ${top_srcdir}/src/firewalld --nofork --nopid --system-config "./" --default-config "${top_srcdir}/config" --log-file "./firewalld.log" &
+    if test $? -ne 0; then
+        AT_FAIL_IF([:])
+    fi
+    echo "$!" > firewalld.pid
+
+    dnl Give it some time for the dbus interface to come up
+    up=0
+    for I in 1 2 3 4 5 6 7 8 9 0; do
+        if ${top_srcdir}/src/firewall-cmd --state; then
+            up=1
+            break
+        fi
+        sleep 1
+    done
+    AT_FAIL_IF([test $up -ne 1])
+    ])
+
+m4_define([FWD_START_TEST], [
+    AT_SETUP([$1])
+
+    function kill_firewalld() {
+        local pid=$(< firewalld.pid)
+        kill $pid
+        for I in 1 2 3 4 5 6 7 8 9 0; do
+            ps --pid $pid >/dev/null || { pid=0; break; }
+            sleep 1
+        done
+        test $pid -eq 0 || { kill -9 $pid; sleep 3; }
+    }
+
+    dnl run cleanup commands on test exit
+    echo "" > cleanup
+    trap ". ./cleanup" EXIT
+    trap "kill_firewalld" EXIT
+
+    FWD_START_FIREWALLD
+    ])
+
+m4_define([FWD_END_TEST], [
+    AT_CLEANUP
+    ])
+
+m4_define([FWD_CHECK], [
+    AT_CHECK([${top_srcdir}/src/firewall-cmd $1], $2, $3, $4, $5, $6)
+    ])
+
+m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])

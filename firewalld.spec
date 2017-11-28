@@ -235,9 +235,6 @@ fi
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/ipsets
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/services
 %attr(0750,root,root) %dir %{_sysconfdir}/firewalld/zones
-%dir %{_datadir}/firewalld
-%dir %{_datadir}/firewalld/tests
-%{_datadir}/firewalld/tests
 %defattr(0644,root,root)
 %config(noreplace) %{_sysconfdir}/sysconfig/firewalld
 #%attr(0755,root,root) %{_initrddir}/firewalld

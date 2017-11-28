@@ -60,6 +60,8 @@ General Options
   -h, --help           Prints a short help text and exists
   -V, --version        Print the version string of firewalld
   -q, --quiet          Do not print status messages
+      --system-config  Path to firewalld system configuration
+      --default-config Path to firewalld default configuration
 
 Lokkit Compatibility Options
   --migrate-system-config-firewall=<file>
@@ -527,6 +529,9 @@ parser_group_lokkit.add_argument("--masq", "-m", metavar="<iface>", action='appe
 parser_group_lokkit.add_argument("--custom-rules", metavar="<filename>", action='append')
 parser_group_lokkit.add_argument("--forward-port", metavar="<port>", action='append')
 parser_group_lokkit.add_argument("--block-icmp", metavar="<icmptype>", action='append')
+
+parser.add_argument("--system-config", metavar="path")
+parser.add_argument("--default-config", metavar="path")
 
 parser_group_standalone = parser.add_mutually_exclusive_group()
 parser_group_standalone.add_argument("-h", "--help",
@@ -1025,6 +1030,11 @@ if a.help:
     sys.exit(0)
 
 assert_root()
+
+if a.system_config:
+    config.set_system_config_paths(a.system_config)
+if a.default_config:
+    config.set_default_config_paths(a.default_config)
 
 zone = a.zone
 fw = Firewall_test()

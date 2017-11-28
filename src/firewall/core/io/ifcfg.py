@@ -100,9 +100,6 @@ class ifcfg(object):
         # handled keys
         done = [ ]
 
-        #if not os.path.exists(ETC_FIREWALLD):
-        #    os.mkdir(ETC_FIREWALLD, 0o750)
-
         try:
             temp_file = tempfile.NamedTemporaryFile(
                 mode='wt',

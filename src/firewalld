@@ -56,6 +56,15 @@ def parse_cmdline():
                         help="""Disable writing pid file and don't check
                                 for existing server process.""",
                         action="store_true")
+    parser.add_argument('--system-config',
+                        help="""Path to firewalld system configuration""",
+                        metavar="path")
+    parser.add_argument('--default-config',
+                        help="""Path to firewalld default configuration""",
+                        metavar="path")
+    parser.add_argument('--log-file',
+                        help="""Path to firewalld log file""",
+                        metavar="path")
     return parser.parse_args()
 
 def setup_logging(args):
@@ -123,6 +132,12 @@ def startup(args):
         if not os.path.exists(config.FIREWALLD_TEMPDIR):
             os.mkdir(config.FIREWALLD_TEMPDIR, 0o750)
 
+        if args.system_config:
+            config.set_system_config_paths(args.system_config)
+
+        if args.default_config:
+            config.set_default_config_paths(args.default_config)
+
         # Start the server mainloop here
         from firewall.server import server
         server.run_server(args.debug_gc)
@@ -160,6 +175,9 @@ def main():
 
     # Process the command-line arguments
     args = parse_cmdline()
+
+    if args.log_file:
+        config.FIREWALLD_LOGFILE = args.log_file
 
     setup_logging(args)
 

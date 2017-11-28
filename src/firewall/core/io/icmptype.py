@@ -26,7 +26,7 @@ import os
 import io
 import shutil
 
-from firewall.config import ETC_FIREWALLD
+from firewall import config
 from firewall.functions import u2b_if_py2
 from firewall.core.io.io_object import PY2, IO_Object, \
     IO_Object_ContentHandler, IO_Object_XMLGenerator
@@ -115,7 +115,7 @@ def icmptype_reader(filename, path):
     icmptype.check_name(icmptype.name)
     icmptype.filename = filename
     icmptype.path = path
-    icmptype.builtin = False if path.startswith(ETC_FIREWALLD) else True
+    icmptype.builtin = False if path.startswith(config.ETC_FIREWALLD) else True
     icmptype.default = icmptype.builtin
     handler = icmptype_ContentHandler(icmptype)
     parser = sax.make_parser()
@@ -149,9 +149,9 @@ def icmptype_writer(icmptype, path=None):
             log.error("Backup of file '%s' failed: %s", name, msg)
 
     dirpath = os.path.dirname(name)
-    if dirpath.startswith(ETC_FIREWALLD) and not os.path.exists(dirpath):
-        if not os.path.exists(ETC_FIREWALLD):
-            os.mkdir(ETC_FIREWALLD, 0o750)
+    if dirpath.startswith(config.ETC_FIREWALLD) and not os.path.exists(dirpath):
+        if not os.path.exists(config.ETC_FIREWALLD):
+            os.mkdir(config.ETC_FIREWALLD, 0o750)
         os.mkdir(dirpath, 0o750)
 
     f = io.open(name, mode='wt', encoding='UTF-8')

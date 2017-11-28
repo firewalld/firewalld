@@ -1142,9 +1142,6 @@ class Firewall(object):
             self._log_denied = value
             self._firewalld_conf.set("LogDenied", value)
             self._firewalld_conf.write()
-
-            # now reload the firewall
-            self.reload()
         else:
             raise FirewallError(errors.ALREADY_SET, value)
 
@@ -1163,9 +1160,6 @@ class Firewall(object):
             self._automatic_helpers = value
             self._firewalld_conf.set("AutomaticHelpers", value)
             self._firewalld_conf.write()
-
-            # now reload the firewall
-            self.reload()
         else:
             raise FirewallError(errors.ALREADY_SET, value)
 
