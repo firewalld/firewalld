@@ -147,6 +147,16 @@ if test "x$IPSET" = "x"; then
 fi
 AC_SUBST(IPSET)
 
+AC_ARG_WITH([nft],
+       AS_HELP_STRING([--with-nft], [Path to nft (nftables) executable]),
+       [NFT=$withval
+       AC_MSG_NOTICE([Using for nft: $NFT])],
+       [AC_PATH_PROG([NFT], [nft], [], [$FW_TOOLS_PATH])])
+if test "x$NFT" = "x"; then
+    AC_MSG_ERROR([nft was not found in $FW_TOOLS_PATH])
+fi
+AC_SUBST(NFT)
+
 #############################################################
 
 AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')
