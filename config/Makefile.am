@@ -122,6 +122,8 @@ CONFIG_FILES = \
 	ipsets/README \
 	services/amanda-client.xml \
 	services/amanda-k5-client.xml \
+	services/amqp.xml \
+	services/amqps.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/bgp.xml \
