@@ -207,12 +207,42 @@ class ip4tables(object):
 
         return out_rules
 
-    def set_rules(self, rules, flush=False):
+    def _rule_replace(self, rule, pattern, replacement):
+        try:
+            i = rule.index(pattern)
+        except ValueError:
+            return False
+        else:
+            rule[i:i+1] = replacement
+            return True
+
+    def set_rules(self, rules, flush=False, log_denied="off"):
         temp_file = tempFile()
 
         table_rules = { }
         for _rule in rules:
             rule = _rule[:]
+
+            # replace %%REJECT%%
+            self._rule_replace(rule, "%%REJECT%%", \
+                    ["REJECT", "--reject-with", DEFAULT_REJECT_TYPE[self.ipv]])
+
+            # replace %%ICMP%%
+            self._rule_replace(rule, "%%ICMP%%", [ICMP[self.ipv]])
+
+            # replace %%LOGTYPE%%
+            try:
+                i = rule.index("%%LOGTYPE%%")
+            except ValueError:
+                pass
+            else:
+                if log_denied == "off":
+                    return ""
+                if log_denied in [ "unicast", "broadcast", "multicast" ]:
+                    rule[i:i+1] = [ "-m", "pkttype", "--pkt-type", log_denied ]
+                else:
+                    rule.pop(i)
+
             table = "filter"
             # get table form rule
             for opt in [ "-t", "--table" ]:
@@ -277,7 +307,28 @@ class ip4tables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def set_rule(self, rule):
+    def set_rule(self, rule, log_denied="off"):
+        # replace %%REJECT%%
+        self._rule_replace(rule, "%%REJECT%%", \
+                ["REJECT", "--reject-with", DEFAULT_REJECT_TYPE[self.ipv]])
+
+        # replace %%ICMP%%
+        self._rule_replace(rule, "%%ICMP%%", [ICMP[self.ipv]])
+
+        # replace %%LOGTYPE%%
+        try:
+            i = rule.index("%%LOGTYPE%%")
+        except ValueError:
+            pass
+        else:
+            if log_denied == "off":
+                return ""
+            if log_denied in [ "unicast", "broadcast", "multicast" ]:
+                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
+                                self._log_denied ]
+            else:
+                rule.pop(i)
+
         return self.__run(rule)
 
     def append_rule(self, rule):

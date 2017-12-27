@@ -112,13 +112,39 @@ class ebtables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def set_rules(self, rules, flush=False):
+    def _rule_contains(self, rule, pattern):
+        try:
+            i = rule.index(pattern)
+        except ValueError:
+            return False
+        return True
+
+    def _rule_validate(self, rule):
+        # make sure %%REJECT%% is not present
+        if self._rule_contains(rule, "%%REJECT%%"):
+            raise FirewallError(errors.EBTABLES_NO_REJECT,
+                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+
+        # make sure %%ICMP%% is not present
+        if self._rule_contains(rule, "%%ICMP%%"):
+            raise FirewallError(errors.INVALID_IPV,
+                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+
+        # make sure %%LOGTYPE%% is not present
+        if self._rule_contains(rule, "%%LOGTYPE%%"):
+            raise FirewallError(errors.INVALID_IPV,
+                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+
+    def set_rules(self, rules, flush=False, log_denied="off"):
         temp_file = tempFile()
 
         table = "filter"
         table_rules = { }
         for _rule in rules:
             rule = _rule[:]
+
+            self._rule_validate(rule)
+
             # get table form rule
             for opt in [ "-t", "--table" ]:
                 try:
@@ -175,7 +201,8 @@ class ebtables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def set_rule(self, rule):
+    def set_rule(self, rule, log_denied):
+        self._rule_validate(rule)
         return self.__run(rule)
 
     def append_rule(self, rule):
