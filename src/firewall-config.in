@@ -2382,7 +2382,7 @@ class FirewallConfig:
             self.left_menu.remove(child)
             child.destroy()
 
-        # add connecitons entry
+        # add connections entry
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Connections")))
