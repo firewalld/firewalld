@@ -399,6 +399,7 @@ class FirewallConfig(object):
         self.runtime_view = True
 
         self.zoneView = builder.get_object("zoneView")
+        self.zoneDescription = builder.get_object("labelZoneDescription")
         self.zoneStore = Gtk.ListStore(GObject.TYPE_STRING, # name
                                        GObject.TYPE_INT) # weight
         self.zoneView.append_column(
@@ -2357,7 +2358,7 @@ class FirewallConfig(object):
             self.left_menu.remove(child)
             child.destroy()
 
-        # add connecitons entry
+        # add connections entry
         item = Gtk.MenuItem.new()
         label = Gtk.Label()
         label.set_markup(escape(_("Connections")))
@@ -2682,6 +2683,11 @@ class FirewallConfig(object):
 
     def onChangeZone(self, *args):
         selected_zone = self.get_selected_zone()
+
+        # Set zone description
+        zone = self.fw.config().getZoneByName(selected_zone)
+        settings = zone.getSettings()
+        self.zoneDescription.set_text(settings.getDescription())
 
         ### load zone settings
 
