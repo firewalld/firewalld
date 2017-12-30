@@ -27,7 +27,7 @@ from firewall import config
 from firewall import functions
 from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
-from firewall.core.fw_zone import FirewallZone
+from firewall.core.fw_zone import IPTablesFirewallZone
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
@@ -68,7 +68,7 @@ class Firewall_test(object):
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
-        self.zone = FirewallZone(self)
+        self.zone = IPTablesFirewallZone(self)
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
         self.policies = FirewallPolicies()
