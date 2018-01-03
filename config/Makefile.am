@@ -223,6 +223,7 @@ CONFIG_FILES = \
 	services/squid.xml \
 	services/ssh.xml \
 	services/syncthing.xml \
+	services/syncthing-gui.xml \
 	services/synergy.xml \
 	services/syslog-tls.xml \
 	services/syslog.xml \
