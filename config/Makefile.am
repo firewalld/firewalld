@@ -222,6 +222,8 @@ CONFIG_FILES = \
 	services/spideroak-lansync.xml \
 	services/squid.xml \
 	services/ssh.xml \
+	services/syncthing-gui.xml \
+	services/syncthing.xml \
 	services/synergy.xml \
 	services/syslog-tls.xml \
 	services/syslog.xml \
