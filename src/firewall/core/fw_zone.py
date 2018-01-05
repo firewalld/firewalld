@@ -531,9 +531,9 @@ class FirewallZone(object):
         elif check_mac(source):
             return ""
         elif source.startswith("ipset:"):
-            self.check_ipset_type_for_source(source[6:])
-            self.check_ipset_applied(source[6:])
-            return self.ipset_family(source[6:])
+            self._check_ipset_type_for_source(source[6:])
+            self._check_ipset_applied(source[6:])
+            return self._ipset_family(source[6:])
         else:
             raise FirewallError(errors.INVALID_ADDR, source)
 
@@ -669,9 +669,9 @@ class FirewallZone(object):
         elif hasattr(source, "mac") and source.mac:
             return ""
         elif hasattr(source, "ipset") and source.ipset:
-            self.check_ipset_type_for_source(source.ipset)
-            self.check_ipset_applied(source.ipset)
-            return self.ipset_family(source.ipset)
+            self._check_ipset_type_for_source(source.ipset)
+            self._check_ipset_applied(source.ipset)
+            return self._ipset_family(source.ipset)
 
         return None
 
@@ -1641,25 +1641,25 @@ class IPTablesFirewallZone(FirewallZone):
 
     # IPSETS
 
-    def ipset_family(self, name):
+    def _ipset_family(self, name):
         if self._fw.ipset.get_type(name) == "hash:mac":
             return None
         return self._fw.ipset.get_family(name)
 
-    def ipset_type(self, name):
+    def __ipset_type(self, name):
         return self._fw.ipset.get_type(name)
 
-    def ipset_dimension(self, name):
-        return self._fw.ipset.get_dimension(name)
+    #def ipset_dimension(self, name):
+    #    return self._fw.ipset.get_dimension(name)
 
-    def ipset_match_flags(self, name, flag):
+    def __ipset_match_flags(self, name, flag):
         return ",".join([flag] * self._fw.ipset.get_dimension(name))
 
-    def check_ipset_applied(self, name):
+    def _check_ipset_applied(self, name):
         return self._fw.ipset.check_applied(name)
 
-    def check_ipset_type_for_source(self, name):
-        _type = self.ipset_type(name)
+    def _check_ipset_type_for_source(self, name):
+        _type = self.__ipset_type(name)
         if _type not in ZONE_SOURCE_IPSET_TYPES:
             raise FirewallError(
                 errors.INVALID_IPSET,
@@ -1699,7 +1699,7 @@ class IPTablesFirewallZone(FirewallZone):
                                 opt = "dst"
                             else:
                                 opt = "src"
-                            flags = self.ipset_match_flags(_name, opt)
+                            flags = self.__ipset_match_flags(_name, opt)
                             rule = [ add_del,
                                      "%s_ZONES_SOURCE" % chain, "-t", table,
                                      "-m", "set", "--match-set", _name,
@@ -1740,7 +1740,7 @@ class IPTablesFirewallZone(FirewallZone):
                             opt = "dst"
                         else:
                             opt = "src"
-                        flags = self.ipset_match_flags(_name, opt)
+                        flags = self.__ipset_match_flags(_name, opt)
                         rule = [ add_del,
                                  "%s_ZONES_SOURCE" % chain, "-t", table,
                                  "-m", "set", "--match-set", _name, flags,
@@ -1768,7 +1768,7 @@ class IPTablesFirewallZone(FirewallZone):
                 command += [ "-m", "set" ]
                 if source.invert:
                     command.append("!")
-                flags = self.ipset_match_flags(source.ipset, "src")
+                flags = self.__ipset_match_flags(source.ipset, "src")
                 command += [ "--match-set", source.ipset, flags ]
 
     def __rule_destination(self, destination, command):
