@@ -1471,7 +1471,7 @@ class FirewallZone(object):
         return self.__icmp_block_inversion_id() in \
             self.get_settings(zone)["icmp_block_inversion"]
 
-class IPTablesFirewallZone(FirewallZone):
+class FirewallZoneIPTables(FirewallZone):
     def __init__(self, fw):
         self._fw = fw
         self._chains = { }
