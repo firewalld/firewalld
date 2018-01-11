@@ -120,20 +120,10 @@ class ebtables(object):
         return True
 
     def _rule_validate(self, rule):
-        # make sure %%REJECT%% is not present
-        if self._rule_contains(rule, "%%REJECT%%"):
-            raise FirewallError(errors.EBTABLES_NO_REJECT,
-                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-
-        # make sure %%ICMP%% is not present
-        if self._rule_contains(rule, "%%ICMP%%"):
-            raise FirewallError(errors.INVALID_IPV,
-                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-
-        # make sure %%LOGTYPE%% is not present
-        if self._rule_contains(rule, "%%LOGTYPE%%"):
-            raise FirewallError(errors.INVALID_IPV,
-                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
+        for str in ["%%REJECT%%", "%%ICMP%%", "%%LOGTYPE%%"]:
+            if self._rule_contains(rule, str):
+                raise FirewallError(errors.INVALID_IPV,
+                        "'%s' invalid for ebtables" % str)
 
     def set_rules(self, rules, flush=False, log_denied="off"):
         temp_file = tempFile()
