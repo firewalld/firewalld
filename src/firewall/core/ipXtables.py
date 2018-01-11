@@ -466,12 +466,6 @@ class ip4tables(object):
                     _rule = prefix + rule
                 else:
                     _rule = prefix + splitArgs(rule)
-                #if self._individual_calls or \
-                #   (ipv == "eb" and not
-                #    self.ebtables_backend.restore_noflush_option):
-                #    self.rule(ipv, _rule)
-                #else:
-                #    transaction.add_rule(ipv, _rule)
                 transaction.add_rule(self.ipv, _rule)
 
 class ip6tables(ip4tables):
