@@ -32,7 +32,7 @@ from firewall.core import ipset
 from firewall.core import modules
 from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
-from firewall.core.fw_zone import FirewallZone
+from firewall.core.fw_zone import FirewallZoneIPTables
 from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
@@ -81,7 +81,7 @@ class Firewall(object):
 
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
-        self.zone = FirewallZone(self)
+        self.zone = FirewallZoneIPTables(self)
         self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
         self.policies = FirewallPolicies()
@@ -671,35 +671,13 @@ class Firewall(object):
 
     # apply default rules
     def __apply_default_rules(self, ipv, transaction):
-        default_rules = { }
-
-        if ipv in [ "ipv4", "ipv6" ]:
-            x = ipXtables
+        if ipv is "ipv4":
+            x = self.ip4tables_backend
+        elif ipv is "ipv6":
+            x = self.ip6tables_backend
         else:
-            x = ebtables
-        for table in x.DEFAULT_RULES:
-            default_rules[table] = x.DEFAULT_RULES[table][:]
-
-        if self._log_denied != "off":
-            for table in x.LOG_RULES:
-                default_rules.setdefault(table, []).extend(x.LOG_RULES[table])
-
-        for table in default_rules:
-            if table not in self.get_available_tables(ipv):
-                continue
-            prefix = [ "-t", table ]
-            for rule in default_rules[table]:
-                if type(rule) == list:
-                    _rule = prefix + rule
-                else:
-                    _rule = prefix + functions.splitArgs(rule)
-                #if self._individual_calls or \
-                #   (ipv == "eb" and not
-                #    self.ebtables_backend.restore_noflush_option):
-                #    self.rule(ipv, _rule)
-                #else:
-                #    transaction.add_rule(ipv, _rule)
-                transaction.add_rule(ipv, _rule)
+            x = self.ebtables_backend
+        x.apply_default_rules(transaction, self._log_denied)
 
     def apply_default_rules(self, use_transaction=None):
         if use_transaction is None:
@@ -718,22 +696,7 @@ class Firewall(object):
             # Start new transaction
             transaction.clear()
 
-            # here is no check for ebtables.restore_noflush_option needed
-            # as ebtables is not used in here
-            transaction.add_rule("ipv6",
-                                 [ "-I", "PREROUTING", "1", "-t", "raw",
-                                   "-p", "ipv6-icmp",
-                                   "--icmpv6-type=router-advertisement",
-                                   "-j", "ACCEPT" ]) # RHBZ#1058505
-            transaction.add_rule("ipv6",
-                                 [ "-I", "PREROUTING", "2", "-t", "raw",
-                                   "-m", "rpfilter", "--invert", "-j", "DROP" ])
-            if self._log_denied != "off":
-                transaction.add_rule("ipv6",
-                                     [ "-I", "PREROUTING", "2", "-t", "raw",
-                                       "-m", "rpfilter", "--invert",
-                                       "-j", "LOG",
-                                       "--log-prefix", "rpfilter_DROP: " ])
+            self.ip6tables_backend.apply_rpfilter_rules(transaction, self._log_denied)
 
             # Execute ipv6_rpfilter transaction, it might fail
             try:
@@ -807,48 +770,6 @@ class Firewall(object):
     # rule function used in handle_ functions
 
     def rule(self, ipv, rule):
-        # replace %%REJECT%%
-        try:
-            i = rule.index("%%REJECT%%")
-        except ValueError:
-            pass
-        else:
-            if ipv in [ "ipv4", "ipv6" ]:
-                rule[i:i+1] = [ "REJECT", "--reject-with",
-                                ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
-            else:
-                raise FirewallError(errors.EBTABLES_NO_REJECT,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-
-        # replace %%ICMP%%
-        try:
-            i = rule.index("%%ICMP%%")
-        except ValueError:
-            pass
-        else:
-            if ipv in [ "ipv4", "ipv6" ]:
-                rule[i] = ipXtables.ICMP[ipv]
-            else:
-                raise FirewallError(errors.INVALID_IPV,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-
-        # replace %%LOGTYPE%%
-        try:
-            i = rule.index("%%LOGTYPE%%")
-        except ValueError:
-            pass
-        else:
-            if self._log_denied == "off":
-                return ""
-            if ipv not in [ "ipv4", "ipv6" ]:
-                raise FirewallError(errors.INVALID_IPV,
-                                    "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-            if self._log_denied in [ "unicast", "broadcast", "multicast" ]:
-                rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
-                                self._log_denied ]
-            else:
-                rule.pop(i)
-
         # remove leading and trailing '"' for use with execve
         i = 0
         while i < len(rule):
@@ -860,15 +781,15 @@ class Firewall(object):
         if ipv == "ipv4":
             # do not call if disabled
             if self.ip4tables_enabled:
-                return self.ip4tables_backend.set_rule(rule)
+                return self.ip4tables_backend.set_rule(rule, self._log_denied)
         elif ipv == "ipv6":
             # do not call if disabled
             if self.ip6tables_enabled:
-                return self.ip6tables_backend.set_rule(rule)
+                return self.ip6tables_backend.set_rule(rule, self._log_denied)
         elif ipv == "eb":
             # do not call if disabled
             if self.ebtables_enabled:
-                return self.ebtables_backend.set_rule(rule)
+                return self.ebtables_backend.set_rule(rule, self._log_denied)
         else:
             raise FirewallError(errors.INVALID_IPV,
                                 "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
@@ -876,53 +797,7 @@ class Firewall(object):
         return ""
 
     def rules(self, ipv, rules):
-        _rules = [ ]
-
-        for rule in rules:
-            # replace %%REJECT%%
-            try:
-                i = rule.index("%%REJECT%%")
-            except ValueError:
-                pass
-            else:
-                if ipv in [ "ipv4", "ipv6" ]:
-                    rule[i:i+1] = [ "REJECT", "--reject-with",
-                                    ipXtables.DEFAULT_REJECT_TYPE[ipv] ]
-                else:
-                    raise FirewallError(errors.EBTABLES_NO_REJECT,
-                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-
-            # replace %%ICMP%%
-            try:
-                i = rule.index("%%ICMP%%")
-            except ValueError:
-                pass
-            else:
-                if ipv in [ "ipv4", "ipv6" ]:
-                    rule[i] = ipXtables.ICMP[ipv]
-                else:
-                    raise FirewallError(errors.INVALID_IPV,
-                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-
-            # replace %%LOGTYPE%%
-            try:
-                i = rule.index("%%LOGTYPE%%")
-            except ValueError:
-                pass
-            else:
-                if self._log_denied == "off":
-                    continue
-                if ipv not in [ "ipv4", "ipv6" ]:
-                    raise FirewallError(errors.INVALID_IPV,
-                                        "'%s' not in {'ipv4'|'ipv6'}" % ipv)
-                if self._log_denied in [ "unicast", "broadcast",
-                                         "multicast" ]:
-                    rule[i:i+1] = [ "-m", "pkttype", "--pkt-type",
-                                    self._log_denied ]
-                else:
-                    rule.pop(i)
-
-            _rules.append(rule)
+        _rules = rules[:]
 
         backend = None
         if ipv == "ipv4":
@@ -970,7 +845,7 @@ class Firewall(object):
                     return False
             return True
         else:
-            return backend.set_rules(_rules)
+            return backend.set_rules(_rules, log_denied=self._log_denied)
 
     # check functions
 

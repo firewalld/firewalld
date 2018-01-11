@@ -38,73 +38,6 @@ from firewall.errors import FirewallError
 from firewall.fw_types import LastUpdatedOrderedDict
 
 class FirewallZone(object):
-    def __init__(self, fw):
-        self._fw = fw
-        self._chains = { }
-        self._zones = { }
-
-        ip4tables_tables = self._fw.get_available_tables("ipv4")
-        ip6tables_tables = self._fw.get_available_tables("ipv6")
-
-        mangle = []
-        if "mangle" in ip4tables_tables:
-            mangle.append("ipv4")
-        if "mangle" in ip6tables_tables:
-            mangle.append("ipv6")
-
-        raw = []
-        if "raw" in ip4tables_tables:
-            raw.append("ipv4")
-        if "raw" in ip6tables_tables:
-            raw.append("ipv6")
-
-        nat = []
-        if "nat" in ip4tables_tables:
-            nat.append("ipv4")
-        else:
-            if "ipv4" in mangle:
-                mangle.remove("ipv4")
-
-        if "nat" in ip6tables_tables:
-            nat.append("ipv6")
-        else:
-            if "ipv6" in mangle:
-                mangle.remove("ipv6")
-
-        self.zone_chains = {
-            "filter": {
-                "INPUT": [ "ipv4", "ipv6" ],
-                "FORWARD_IN": [ "ipv4", "ipv6" ],
-                "FORWARD_OUT": [ "ipv4", "ipv6" ],
-            },
-            "nat": {
-                "PREROUTING": nat,
-                "POSTROUTING": nat,
-            },
-            "mangle": {
-                "PREROUTING": mangle,
-            },
-            "raw": {
-                "PREROUTING": raw,
-            },
-        }
-
-        self.interface_zone_opts = {
-            "PREROUTING": "-i",
-            "POSTROUTING": "-o",
-            "INPUT": "-i",
-            "FORWARD_IN": "-i",
-            "FORWARD_OUT": "-o",
-            "OUTPUT": "-o",
-        }
-
-        ## transform self.interface_zone_opts for source address
-        tbl = { "-i": "-s",
-                "-o": "-d" }
-        self.source_zone_opts = {
-            key: tbl[val] for key,val in self.interface_zone_opts.items()
-        }
-
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__, self._chains, self._zones)
 
@@ -226,8 +159,7 @@ class FirewallZone(object):
             # apply icmp accept/reject rule always
             if obj.applied:
                 self._error2warning(self.__icmp_block_inversion, True,
-                                    obj.name,
-                                    use_zone_transaction=zone_transaction)
+                                    obj.name, zone_transaction)
 
         if use_transaction is None:
             transaction.execute(True)
@@ -280,77 +212,7 @@ class FirewallZone(object):
 
     # dynamic chain handling
 
-    def gen_chain_rules(self, zone, create, chains, transaction):
-        for (table, chain) in chains:
-            if create:
-                if zone in self._chains and  \
-                   table in self._chains[zone] and \
-                   chain in self._chains[zone][table]:
-                    continue
-            else:
-                if zone not in self._chains or \
-                   table not in self._chains[zone] or \
-                   chain not in self._chains[zone][table]:
-                    continue
-
-            _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                               zone=zone)
-
-            ipvs = [ ]
-            if table in self._fw.get_available_tables("ipv4"):
-                ipvs.append("ipv4")
-            if table in self._fw.get_available_tables("ipv6"):
-                ipvs.append("ipv6")
-
-            for ipv in ipvs:
-                OUR_CHAINS[table].update(set([_zone,
-                                              "%s_log" % _zone,
-                                              "%s_deny" % _zone,
-                                              "%s_allow" % _zone]))
-                transaction.add_rule(ipv, [ "-N", _zone, "-t", table ])
-                transaction.add_rule(ipv, [ "-N", "%s_log" % (_zone), "-t", table ])
-                transaction.add_rule(ipv, [ "-N", "%s_deny" % (_zone), "-t", table ])
-                transaction.add_rule(ipv, [ "-N", "%s_allow" % (_zone), "-t", table ])
-                transaction.add_rule(ipv, [ "-I", _zone, "1", "-t", table,
-                                            "-j", "%s_log" % (_zone) ])
-                transaction.add_rule(ipv, [ "-I", _zone, "2", "-t", table,
-                                            "-j", "%s_deny" % (_zone) ])
-                transaction.add_rule(ipv, [ "-I", _zone, "3", "-t", table,
-                                            "-j", "%s_allow" % (_zone) ])
-
-                # Handle trust, block and drop zones:
-                # Add an additional rule with the zone target (accept, reject
-                # or drop) to the base _zone only in the filter table.
-                # Otherwise it is not be possible to have a zone with drop
-                # target, that is allowing traffic that is locally initiated
-                # or that adds additional rules. (RHBZ#1055190)
-                target = self._zones[zone].target
-                if table == "filter" and \
-                   target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
-                   chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    transaction.add_rule(ipv, [ "-I", _zone, "4",
-                                                "-t", table, "-j", target ])
-
-                if self._fw.get_log_denied() != "off":
-                    if table == "filter" and \
-                       chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                        if target in [ "REJECT", "%%REJECT%%" ]:
-                            transaction.add_rule(
-                                ipv, [ "-I", _zone, "4", "-t", table,
-                                       "%%LOGTYPE%%",
-                                       "-j", "LOG", "--log-prefix",
-                                       "\"%s_REJECT: \"" % _zone ])
-                        if target == "DROP":
-                            transaction.add_rule(
-                                ipv, [ "-I", _zone, "4", "-t", table,
-                                       "%%LOGTYPE%%",
-                                       "-j", "LOG", "--log-prefix",
-                                       "\"%s_DROP: \"" % _zone ])
-
-            self.__register_chains(zone, create, chains)
-            transaction.add_fail(self.__register_chains, zone, create, chains)
-
-    def __register_chains(self, zone, create, chains):
+    def _register_chains(self, zone, create, chains):
         # this method is used by FirewallZoneTransaction
         for (table, chain) in chains:
             if create:
@@ -437,39 +299,34 @@ class FirewallZone(object):
             for args in settings[key]:
                 try:
                     if key == "icmp_blocks":
-                        self.__icmp_block(enable, _zone, args,
-                                          use_zone_transaction=zone_transaction)
+                        self._icmp_block(enable, _zone, args, zone_transaction)
                     elif key == "icmp_block_inversion":
                         continue
                     elif key == "forward_ports":
                         mark = obj.settings["forward_ports"][args]["mark"]
-                        self.__forward_port(enable, _zone, *args, mark_id=mark,
-                                            use_zone_transaction=zone_transaction)
+                        self._forward_port(enable, _zone, zone_transaction,
+                                            *args, mark_id=mark)
                     elif key == "services":
-                        self.__service(enable, _zone, args,
-                                       use_zone_transaction=zone_transaction)
+                        self._service(enable, _zone, args, zone_transaction)
                     elif key == "ports":
-                        self.__port(enable, _zone, *args,
-                                    use_zone_transaction=zone_transaction)
+                        self._port(enable, _zone, args[0], args[1],
+                                    zone_transaction)
                     elif key == "protocols":
-                        self.__protocol(enable, _zone, args,
-                                        use_zone_transaction=zone_transaction)
+                        self._protocol(enable, _zone, args, zone_transaction)
                     elif key == "source_ports":
-                        self.__source_port(enable, _zone, *args,
-                                           use_zone_transaction=zone_transaction)
+                        self._source_port(enable, _zone, args[0], args[1],
+                                           zone_transaction)
                     elif key == "masquerade":
-                        self.__masquerade(enable, _zone,
-                                          use_zone_transaction=zone_transaction)
+                        self._masquerade(enable, _zone, zone_transaction)
                     elif key == "rules":
                         self.__rule(enable, _zone,
                                     Rich_Rule(rule_str=args), None,
-                                    use_zone_transaction=zone_transaction)
+                                    zone_transaction)
                     elif key == "interfaces":
-                        self.__interface(enable, _zone, args,
-                                         use_zone_transaction=zone_transaction)
+                        self._interface(enable, _zone, args, zone_transaction)
                     elif key == "sources":
-                        self.__source(enable, _zone, *args,
-                                      use_zone_transaction=zone_transaction)
+                        self._source(enable, _zone, args[0], args[1],
+                                      zone_transaction)
                     else:
                         log.warning("Zone '%s': Unknown setting '%s:%s', "
                                     "unable to apply", zone, key, args)
@@ -478,8 +335,7 @@ class FirewallZone(object):
 
         if enable:
             # add icmp rule(s) always
-            self.__icmp_block_inversion(True, obj.name,
-                                        use_zone_transaction=zone_transaction)
+            self._icmp_block_inversion(True, obj.name, zone_transaction)
 
         if use_zone_transaction is None:
             zone_transaction.execute(enable)
@@ -536,41 +392,6 @@ class FirewallZone(object):
         self.check_interface(interface)
         return interface
 
-    def __interface(self, enable, zone, interface, append=False,
-                    use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        for table in self.zone_chains:
-            for chain in self.zone_chains[table]:
-                # create needed chains if not done already
-                if enable:
-                    zone_transaction.add_chain(table, chain)
-
-                for ipv in self.zone_chains[table][chain]:
-                    # handle all zones in the same way here, now
-                    # trust and block zone targets are handled now in __chain
-                    opt = self.interface_zone_opts[chain]
-                    target = DEFAULT_ZONE_TARGET.format(
-                        chain=SHORTCUTS[chain], zone=zone)
-                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                        action = "-g"
-                    else:
-                        action = "-j"
-                    if enable and not append:
-                        rule = [ "-I", "%s_ZONES" % chain, "1" ]
-                    elif enable:
-                        rule = [ "-A", "%s_ZONES" % chain ]
-                    else:
-                        rule = [ "-D", "%s_ZONES" % chain ]
-                    rule += [ "-t", table, opt, interface, action, target ]
-                    zone_transaction.add_rule(ipv, rule)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
     def add_interface(self, zone, interface, sender=None,
                       use_zone_transaction=None):
         self._fw.check_panic()
@@ -600,8 +421,7 @@ class FirewallZone(object):
                                      use_zone_transaction=zone_transaction)
             zone_transaction.add_fail(self.set_zone_applied, _zone, False)
 
-        self.__interface(True, _zone, interface,
-                         use_zone_transaction=zone_transaction)
+        self._interface(True, _zone, interface, zone_transaction)
 
         self.__register_interface(_obj, interface_id, zone, sender)
         zone_transaction.add_fail(self.__unregister_interface, _obj,
@@ -646,12 +466,10 @@ class FirewallZone(object):
 
         zone_transaction = transaction.zone_transaction(new_zone)
         self.apply_zone_settings(new_zone, zone_transaction)
-        self.__interface(True, new_zone, "+", append=True,
-                         use_zone_transaction=zone_transaction)
+        self._interface(True, new_zone, "+", zone_transaction, append=True)
         if old_zone is not None and old_zone != "":
             zone_transaction = transaction.zone_transaction(old_zone)
-            self.__interface(False, old_zone, "+", append=True,
-                             use_zone_transaction=zone_transaction)
+            self._interface(False, old_zone, "+", zone_transaction, append=True)
 
         if use_transaction is None:
             transaction.execute(True)
@@ -676,8 +494,7 @@ class FirewallZone(object):
 
         _obj = self._zones[_zone]
         interface_id = self.__interface_id(interface)
-        self.__interface(False, _zone, interface,
-                         use_zone_transaction=zone_transaction)
+        self._interface(False, _zone, interface, zone_transaction)
 
         zone_transaction.add_post(self.__unregister_interface, _obj,
                                   interface_id)
@@ -704,33 +521,6 @@ class FirewallZone(object):
     def list_interfaces(self, zone):
         return self.get_settings(zone)["interfaces"].keys()
 
-    # IPSETS
-
-    def ipset_family(self, name):
-        if self._fw.ipset.get_type(name) == "hash:mac":
-            return None
-        return self._fw.ipset.get_family(name)
-
-    def ipset_type(self, name):
-        return self._fw.ipset.get_type(name)
-
-    def ipset_dimension(self, name):
-        return self._fw.ipset.get_dimension(name)
-
-    def ipset_match_flags(self, name, flag):
-        return ",".join([flag] * self._fw.ipset.get_dimension(name))
-
-    def check_ipset_applied(self, name):
-        return self._fw.ipset.check_applied(name)
-
-    def check_ipset_type_for_source(self, name):
-        _type = self.ipset_type(name)
-        if _type not in ZONE_SOURCE_IPSET_TYPES:
-            raise FirewallError(
-                errors.INVALID_IPSET,
-                "ipset '%s' with type '%s' not usable as source" % \
-                (name, _type))
-
     # SOURCES
 
     def check_source(self, source):
@@ -741,108 +531,15 @@ class FirewallZone(object):
         elif check_mac(source):
             return ""
         elif source.startswith("ipset:"):
-            self.check_ipset_type_for_source(source[6:])
-            self.check_ipset_applied(source[6:])
-            return self.ipset_family(source[6:])
+            self._check_ipset_type_for_source(source[6:])
+            self._check_ipset_applied(source[6:])
+            return self._ipset_family(source[6:])
         else:
             raise FirewallError(errors.INVALID_ADDR, source)
 
     def __source_id(self, source):
         ipv = self.check_source(source)
         return (ipv, source)
-
-    def __source(self, enable, zone, ipv, source, use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        # make sure mac addresses are unique
-        if check_mac(source):
-            source = source.upper()
-
-        add_del = { True: "-A", False: "-D" }[enable]
-
-        # For mac source bindings ipv is an empty string, the mac source will
-        # be added for ipv4 and ipv6
-        if ipv == "" or ipv is None:
-            for ipv in [ "ipv4", "ipv6" ]:
-                for table in self.zone_chains:
-                    for chain in self.zone_chains[table]:
-                        # create needed chains if not done already
-                        if enable:
-                            zone_transaction.add_chain(table, chain)
-
-                        # for zone mac source bindings the features are limited
-
-                        if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                            action = "-g"
-                        else:
-                            action = "-j"
-                        target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS[chain], zone=zone)
-                        opt = self.source_zone_opts[chain]
-
-                        if source.startswith("ipset:"):
-                            _name = source[6:]
-                            if opt == "-d":
-                                opt = "dst"
-                            else:
-                                opt = "src"
-                            flags = self.ipset_match_flags(_name, opt)
-                            rule = [ add_del,
-                                     "%s_ZONES_SOURCE" % chain, "-t", table,
-                                     "-m", "set", "--match-set", _name,
-                                     flags, action, target ]
-                        else:
-                            # outgoing can not be set
-                            if opt == "-d":
-                                continue
-                            rule = [ add_del,
-                                     "%s_ZONES_SOURCE" % chain, "-t", table,
-                                     "-m", "mac", "--mac-source", source,
-                                     action, target ]
-                        zone_transaction.add_rule(ipv, rule)
-
-        else:
-            for table in self.zone_chains:
-                for chain in self.zone_chains[table]:
-                    # create needed chains if not done already
-                    if enable:
-                        zone_transaction.add_chain(table, chain)
-
-                    # handle all zone bindings in the same way
-                    # trust, block and drop zone targets are handled in __chain
-
-                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                        action = "-g"
-                    else:
-                        action = "-j"
-
-                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                        zone=zone)
-                    opt = self.source_zone_opts[chain]
-
-                    rule = [ add_del, "%s_ZONES_SOURCE" % chain, "-t", table ]
-                    if source.startswith("ipset:"):
-                        _name = source[6:]
-                        if opt == "-d":
-                            opt = "dst"
-                        else:
-                            opt = "src"
-                        flags = self.ipset_match_flags(_name, opt)
-                        rule = [ add_del,
-                                 "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 "-m", "set", "--match-set", _name, flags,
-                                 action, target ]
-                    else:
-                        rule = [ add_del,
-                                 "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 opt, source, action, target ]
-                    zone_transaction.add_rule(ipv, rule)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
 
     def add_source(self, zone, source, sender=None, use_zone_transaction=None):
         self._fw.check_panic()
@@ -871,8 +568,7 @@ class FirewallZone(object):
                                      use_zone_transaction=zone_transaction)
             zone_transaction.add_fail(self.set_zone_applied, _zone, False)
 
-        self.__source(True, _zone, source_id[0], source_id[1],
-                      use_zone_transaction=zone_transaction)
+        self._source(True, _zone, source_id[0], source_id[1], zone_transaction)
 
         self.__register_source(_obj, source_id, zone, sender)
         zone_transaction.add_fail(self.__unregister_source, _obj,
@@ -929,8 +625,7 @@ class FirewallZone(object):
 
         _obj = self._zones[_zone]
         source_id = self.__source_id(source)
-        self.__source(False, _zone, source_id[0], source_id[1],
-                      use_zone_transaction=zone_transaction)
+        self._source(False, _zone, source_id[0], source_id[1], zone_transaction)
 
         zone_transaction.add_post(self.__unregister_source, _obj,
                                   source_id)
@@ -962,7 +657,7 @@ class FirewallZone(object):
         self.check_rule(rule)
         return str(rule)
 
-    def __rule_source_ipv(self, source):
+    def _rule_source_ipv(self, source):
         if not source:
             return None
 
@@ -974,11 +669,1087 @@ class FirewallZone(object):
         elif hasattr(source, "mac") and source.mac:
             return ""
         elif hasattr(source, "ipset") and source.ipset:
-            self.check_ipset_type_for_source(source.ipset)
-            self.check_ipset_applied(source.ipset)
-            return self.ipset_family(source.ipset)
+            self._check_ipset_type_for_source(source.ipset)
+            self._check_ipset_applied(source.ipset)
+            return self._ipset_family(source.ipset)
 
         return None
+
+    def __rule(self, enable, zone, rule, mark_id, zone_transaction):
+        try:
+            mark = self._rule_prepare(enable, zone, rule, mark_id,
+                                       zone_transaction)
+        except FirewallError as msg:
+            log.warning(str(msg))
+            mark = None
+
+        return mark
+
+    def add_rule(self, zone, rule, timeout=0, sender=None,
+                 use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        rule_id = self.__rule_id(rule)
+        if rule_id in _obj.settings["rules"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (rule, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            mark = self.__rule(True, _zone, rule, None, zone_transaction)
+        else:
+            mark = None
+
+        self.__register_rule(_obj, rule_id, mark, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_rule(self, _obj, rule_id, mark, timeout, sender):
+        _obj.settings["rules"][rule_id] = self.__gen_settings(
+            timeout, sender, mark=mark)
+
+    def remove_rule(self, zone, rule,
+                    use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        rule_id = self.__rule_id(rule)
+        if rule_id not in _obj.settings["rules"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s' not in '%s'" % (rule, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if "mark" in _obj.settings["rules"][rule_id]:
+            mark = _obj.settings["rules"][rule_id]["mark"]
+        else:
+            mark = None
+        if _obj.applied:
+            self.__rule(False, _zone, rule, mark, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_rule, _obj, rule_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_rule(self, _obj, rule_id):
+        if rule_id in _obj.settings["rules"]:
+            del _obj.settings["rules"][rule_id]
+
+    def query_rule(self, zone, rule):
+        return self.__rule_id(rule) in self.get_settings(zone)["rules"]
+
+    def list_rules(self, zone):
+        return list(self.get_settings(zone)["rules"].keys())
+
+    # SERVICES
+
+    def check_service(self, service):
+        self._fw.check_service(service)
+
+    def __service_id(self, service):
+        self.check_service(service)
+        return service
+
+    def add_service(self, zone, service, timeout=0, sender=None,
+                    use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        service_id = self.__service_id(service)
+        if service_id in _obj.settings["services"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (service, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._service(True, _zone, service, zone_transaction)
+
+        self.__register_service(_obj, service_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_service, _obj, service_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_service(self, _obj, service_id, timeout, sender):
+        _obj.settings["services"][service_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_service(self, zone, service,
+                       use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        service_id = self.__service_id(service)
+        if service_id not in _obj.settings["services"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s' not in '%s'" % (service, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._service(False, _zone, service, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_service, _obj,
+                                  service_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_service(self, _obj, service_id):
+        if service_id in _obj.settings["services"]:
+            del _obj.settings["services"][service_id]
+
+    def query_service(self, zone, service):
+        return self.__service_id(service) in self.get_settings(zone)["services"]
+
+    def list_services(self, zone):
+        return self.get_settings(zone)["services"].keys()
+
+    def get_helpers_for_service_modules(self, modules, enable):
+        # If automatic helper assignment is turned off, helpers that
+        # do not have ports defined will be replaced by the helpers
+        # that the helper.module defines.
+        _helpers = [ ]
+        for module in modules:
+            try:
+                helper = self._fw.helper.get_helper(module)
+            except FirewallError:
+                raise FirewallError(errors.INVALID_HELPER, module)
+            if helper.module not in self._fw.nf_conntrack_helpers:
+                raise FirewallError(
+                    errors.INVALID_HELPER,
+                    "'%s' is not available" % helper.module)
+            if self._fw.nf_conntrack_helper_setting == 0 and \
+               len(helper.ports) < 1:
+                for mod in self._fw.nf_conntrack_helpers[helper.module]:
+                    try:
+                        _helper = self._fw.helper.get_helper(mod)
+                    except FirewallError:
+                        if enable:
+                            log.warning("Helper '%s' is not available" % mod)
+                        continue
+                    _helpers.append(_helper)
+            else:
+                _helpers.append(helper)
+        return _helpers
+
+    # PORTS
+
+    def check_port(self, port, protocol):
+        self._fw.check_port(port)
+        self._fw.check_tcpudp(protocol)
+
+    def __port_id(self, port, protocol):
+        self.check_port(port, protocol)
+        return (portStr(port, "-"), protocol)
+
+    def add_port(self, zone, port, protocol, timeout=0, sender=None,
+                 use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        port_id = self.__port_id(port, protocol)
+        if port_id in _obj.settings["ports"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s' already in '%s'" % (port, protocol,
+                                                             _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._port(True, _zone, port, protocol, zone_transaction)
+
+        self.__register_port(_obj, port_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_port, _obj, port_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_port(self, _obj, port_id, timeout, sender):
+        _obj.settings["ports"][port_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_port(self, zone, port, protocol,
+                    use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        port_id = self.__port_id(port, protocol)
+        if port_id not in _obj.settings["ports"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s' not in '%s'" % (port, protocol, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._port(False, _zone, port, protocol, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_port, _obj,
+                                  port_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_port(self, _obj, port_id):
+        if port_id in _obj.settings["ports"]:
+            del _obj.settings["ports"][port_id]
+
+    def query_port(self, zone, port, protocol):
+        return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
+
+    def list_ports(self, zone):
+        return list(self.get_settings(zone)["ports"].keys())
+
+    # PROTOCOLS
+
+    def check_protocol(self, protocol):
+        if not checkProtocol(protocol):
+            raise FirewallError(errors.INVALID_PROTOCOL, protocol)
+
+    def __protocol_id(self, protocol):
+        self.check_protocol(protocol)
+        return protocol
+
+    def add_protocol(self, zone, protocol, timeout=0, sender=None,
+                     use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        protocol_id = self.__protocol_id(protocol)
+        if protocol_id in _obj.settings["protocols"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (protocol, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._protocol(True, _zone, protocol, zone_transaction)
+
+        self.__register_protocol(_obj, protocol_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_protocol(self, _obj, protocol_id, timeout, sender):
+        _obj.settings["protocols"][protocol_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_protocol(self, zone, protocol,
+                        use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        protocol_id = self.__protocol_id(protocol)
+        if protocol_id not in _obj.settings["protocols"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s' not in '%s'" % (protocol, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._protocol(False, _zone, protocol, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_protocol, _obj,
+                                  protocol_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_protocol(self, _obj, protocol_id):
+        if protocol_id in _obj.settings["protocols"]:
+            del _obj.settings["protocols"][protocol_id]
+
+    def query_protocol(self, zone, protocol):
+        return self.__protocol_id(protocol) in self.get_settings(zone)["protocols"]
+
+    def list_protocols(self, zone):
+        return list(self.get_settings(zone)["protocols"].keys())
+
+    # SOURCE PORTS
+
+    def __source_port_id(self, port, protocol):
+        self.check_port(port, protocol)
+        return (portStr(port, "-"), protocol)
+
+    def add_source_port(self, zone, port, protocol, timeout=0, sender=None,
+                        use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        port_id = self.__source_port_id(port, protocol)
+        if port_id in _obj.settings["source_ports"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s' already in '%s'" % (port, protocol,
+                                                             _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._source_port(True, _zone, port, protocol, zone_transaction)
+
+        self.__register_source_port(_obj, port_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_source_port, _obj, port_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_source_port(self, _obj, port_id, timeout, sender):
+        _obj.settings["source_ports"][port_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_source_port(self, zone, port, protocol,
+                           use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        port_id = self.__source_port_id(port, protocol)
+        if port_id not in _obj.settings["source_ports"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s' not in '%s'" % (port, protocol, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._source_port(False, _zone, port, protocol, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_source_port, _obj,
+                                  port_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_source_port(self, _obj, port_id):
+        if port_id in _obj.settings["source_ports"]:
+            del _obj.settings["source_ports"][port_id]
+
+    def query_source_port(self, zone, port, protocol):
+        return self.__source_port_id(port, protocol) in \
+            self.get_settings(zone)["source_ports"]
+
+    def list_source_ports(self, zone):
+        return list(self.get_settings(zone)["source_ports"].keys())
+
+    # MASQUERADE
+
+    def __masquerade_id(self):
+        return True
+
+    def add_masquerade(self, zone, timeout=0, sender=None,
+                       use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        masquerade_id = self.__masquerade_id()
+        if masquerade_id in _obj.settings["masquerade"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "masquerade already enabled in '%s'" % _zone)
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._masquerade(True, _zone, zone_transaction)
+
+        self.__register_masquerade(_obj, masquerade_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_masquerade, _obj,
+                                  masquerade_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_masquerade(self, _obj, masquerade_id, timeout, sender):
+        _obj.settings["masquerade"][masquerade_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_masquerade(self, zone, use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        masquerade_id = self.__masquerade_id()
+        if masquerade_id not in _obj.settings["masquerade"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "masquerade not enabled in '%s'" % _zone)
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._masquerade(False, _zone, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_masquerade, _obj,
+                                  masquerade_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_masquerade(self, _obj, masquerade_id):
+        if masquerade_id in _obj.settings["masquerade"]:
+            del _obj.settings["masquerade"][masquerade_id]
+
+    def query_masquerade(self, zone):
+        return self.__masquerade_id() in self.get_settings(zone)["masquerade"]
+
+    # PORT FORWARDING
+
+    def check_forward_port(self, ipv, port, protocol, toport=None, toaddr=None):
+        self._fw.check_port(port)
+        self._fw.check_tcpudp(protocol)
+        if toport:
+            self._fw.check_port(toport)
+        if toaddr:
+            if not check_single_address(ipv, toaddr):
+                raise FirewallError(errors.INVALID_ADDR, toaddr)
+        if not toport and not toaddr:
+            raise FirewallError(
+                errors.INVALID_FORWARD,
+                "port-forwarding is missing to-port AND to-addr")
+
+    def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
+        if check_single_address("ipv6", toaddr):
+            self.check_forward_port("ipv6", port, protocol, toport, toaddr)
+        else:
+            self.check_forward_port("ipv4", port, protocol, toport, toaddr)
+        return (portStr(port, "-"), protocol,
+                portStr(toport, "-"), str(toaddr))
+
+    def add_forward_port(self, zone, port, protocol, toport=None,
+                         toaddr=None, timeout=0, sender=None,
+                         use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
+        if forward_id in _obj.settings["forward_ports"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s:%s:%s:%s' already in '%s'" % \
+                                (port, protocol, toport, toaddr, _zone))
+
+        mark = self._fw.new_mark()
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._forward_port(True, _zone, zone_transaction, port, protocol,
+                                toport, toaddr, mark_id=mark)
+
+        self.__register_forward_port(_obj, forward_id, timeout, sender, mark)
+        zone_transaction.add_fail(self.__unregister_forward_port, _obj,
+                                  forward_id, mark)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_forward_port(self, _obj, forward_id, timeout, sender, mark):
+        _obj.settings["forward_ports"][forward_id] = \
+            self.__gen_settings(timeout, sender, mark=mark)
+
+    def remove_forward_port(self, zone, port, protocol, toport=None,
+                            toaddr=None, use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
+        if not forward_id in _obj.settings["forward_ports"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s:%s:%s:%s' not in '%s'" % \
+                                (port, protocol, toport, toaddr, _zone))
+
+        mark = _obj.settings["forward_ports"][forward_id]["mark"]
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._forward_port(False, _zone, zone_transaction, port, protocol,
+                                toport, toaddr, mark_id=mark)
+
+        zone_transaction.add_post(self.__unregister_forward_port, _obj,
+                                  forward_id, mark)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_forward_port(self, _obj, forward_id, mark):
+        if forward_id in _obj.settings["forward_ports"]:
+            del _obj.settings["forward_ports"][forward_id]
+        self._fw.del_mark(mark)
+
+    def query_forward_port(self, zone, port, protocol, toport=None,
+                           toaddr=None):
+        forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
+        return forward_id in self.get_settings(zone)["forward_ports"]
+
+    def list_forward_ports(self, zone):
+        return list(self.get_settings(zone)["forward_ports"].keys())
+
+    # ICMP BLOCK
+
+    def check_icmp_block(self, icmp):
+        self._fw.check_icmptype(icmp)
+
+    def __icmp_block_id(self, icmp):
+        self.check_icmp_block(icmp)
+        return icmp
+
+    def add_icmp_block(self, zone, icmp, timeout=0, sender=None,
+                       use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_timeout(timeout)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        icmp_id = self.__icmp_block_id(icmp)
+        if icmp_id in _obj.settings["icmp_blocks"]:
+            raise FirewallError(errors.ALREADY_ENABLED,
+                                "'%s' already in '%s'" % (icmp, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._icmp_block(True, _zone, icmp, zone_transaction)
+
+        self.__register_icmp_block(_obj, icmp_id, timeout, sender)
+        zone_transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_icmp_block(self, _obj, icmp_id, timeout, sender):
+        _obj.settings["icmp_blocks"][icmp_id] = \
+            self.__gen_settings(timeout, sender)
+
+    def remove_icmp_block(self, zone, icmp, use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        icmp_id = self.__icmp_block_id(icmp)
+        if icmp_id not in _obj.settings["icmp_blocks"]:
+            raise FirewallError(errors.NOT_ENABLED,
+                                "'%s' not in '%s'" % (icmp, _zone))
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            self._icmp_block(False, _zone, icmp, zone_transaction)
+
+        zone_transaction.add_post(self.__unregister_icmp_block, _obj,
+                                  icmp_id)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_icmp_block(self, _obj, icmp_id):
+        if icmp_id in _obj.settings["icmp_blocks"]:
+            del _obj.settings["icmp_blocks"][icmp_id]
+
+    def query_icmp_block(self, zone, icmp):
+        return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
+
+    def list_icmp_blocks(self, zone):
+        return self.get_settings(zone)["icmp_blocks"].keys()
+
+    # ICMP BLOCK INVERSION
+
+    def __icmp_block_inversion_id(self):
+        return True
+
+    def add_icmp_block_inversion(self, zone, sender=None,
+                                 use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        icmp_block_inversion_id = self.__icmp_block_inversion_id()
+        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+            raise FirewallError(
+                errors.ALREADY_ENABLED,
+                "icmp-block-inversion already enabled in '%s'" % _zone)
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            # undo icmp blocks
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self._icmp_block(False, _zone, args, zone_transaction)
+
+            self._icmp_block_inversion(False, _zone, zone_transaction)
+
+        self.__register_icmp_block_inversion(_obj, icmp_block_inversion_id,
+                                             sender)
+        zone_transaction.add_fail(self.__undo_icmp_block_inversion, _zone, _obj,
+                                  icmp_block_inversion_id)
+
+        # redo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self._icmp_block(True, _zone, args, zone_transaction)
+
+            self._icmp_block_inversion(True, _zone, zone_transaction)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __register_icmp_block_inversion(self, _obj, icmp_block_inversion_id,
+                                        sender):
+        _obj.settings["icmp_block_inversion"][icmp_block_inversion_id] = \
+            self.__gen_settings(0, sender)
+
+    def __undo_icmp_block_inversion(self, _zone, _obj, icmp_block_inversion_id):
+        zone_transaction = self.new_zone_transaction(_zone)
+
+        # undo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self._icmp_block(False, _zone, args, zone_transaction)
+
+        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
+
+        # redo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self._icmp_block(True, _zone, args, zone_transaction)
+
+        zone_transaction.execute(True)
+
+    def remove_icmp_block_inversion(self, zone, use_zone_transaction=None):
+        _zone = self._fw.check_zone(zone)
+        self._fw.check_panic()
+        _obj = self._zones[_zone]
+
+        icmp_block_inversion_id = self.__icmp_block_inversion_id()
+        if icmp_block_inversion_id not in _obj.settings["icmp_block_inversion"]:
+            raise FirewallError(
+                errors.NOT_ENABLED,
+                "icmp-block-inversion not enabled in '%s'" % _zone)
+
+        if use_zone_transaction is None:
+            zone_transaction = self.new_zone_transaction(_zone)
+        else:
+            zone_transaction = use_zone_transaction
+
+        if _obj.applied:
+            # undo icmp blocks
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self._icmp_block(False, _zone, args, zone_transaction)
+
+            self._icmp_block_inversion(False, _zone, zone_transaction)
+
+        self.__unregister_icmp_block_inversion(_obj,
+                                               icmp_block_inversion_id)
+        zone_transaction.add_fail(self.__register_icmp_block_inversion, _obj,
+                                  icmp_block_inversion_id, None)
+
+        # redo icmp blocks
+        if _obj.applied:
+            for args in self.get_settings(_zone)["icmp_blocks"]:
+                self._icmp_block(True, _zone, args, zone_transaction)
+
+            self._icmp_block_inversion(True, _zone, zone_transaction)
+
+        if use_zone_transaction is None:
+            zone_transaction.execute(True)
+
+        return _zone
+
+    def __unregister_icmp_block_inversion(self, _obj, icmp_block_inversion_id):
+        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
+            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
+
+    def query_icmp_block_inversion(self, zone):
+        return self.__icmp_block_inversion_id() in \
+            self.get_settings(zone)["icmp_block_inversion"]
+
+class FirewallZoneIPTables(FirewallZone):
+    def __init__(self, fw):
+        self._fw = fw
+        self._chains = { }
+        self._zones = { }
+
+        ip4tables_tables = self._fw.get_available_tables("ipv4")
+        ip6tables_tables = self._fw.get_available_tables("ipv6")
+
+        mangle = []
+        if "mangle" in ip4tables_tables:
+            mangle.append("ipv4")
+        if "mangle" in ip6tables_tables:
+            mangle.append("ipv6")
+
+        raw = []
+        if "raw" in ip4tables_tables:
+            raw.append("ipv4")
+        if "raw" in ip6tables_tables:
+            raw.append("ipv6")
+
+        nat = []
+        if "nat" in ip4tables_tables:
+            nat.append("ipv4")
+        else:
+            if "ipv4" in mangle:
+                mangle.remove("ipv4")
+
+        if "nat" in ip6tables_tables:
+            nat.append("ipv6")
+        else:
+            if "ipv6" in mangle:
+                mangle.remove("ipv6")
+
+        self.zone_chains = {
+            "filter": {
+                "INPUT": [ "ipv4", "ipv6" ],
+                "FORWARD_IN": [ "ipv4", "ipv6" ],
+                "FORWARD_OUT": [ "ipv4", "ipv6" ],
+            },
+            "nat": {
+                "PREROUTING": nat,
+                "POSTROUTING": nat,
+            },
+            "mangle": {
+                "PREROUTING": mangle,
+            },
+            "raw": {
+                "PREROUTING": raw,
+            },
+        }
+
+        self.interface_zone_opts = {
+            "PREROUTING": "-i",
+            "POSTROUTING": "-o",
+            "INPUT": "-i",
+            "FORWARD_IN": "-i",
+            "FORWARD_OUT": "-o",
+            "OUTPUT": "-o",
+        }
+
+        ## transform self.interface_zone_opts for source address
+        tbl = { "-i": "-s",
+                "-o": "-d" }
+        self.source_zone_opts = {
+            key: tbl[val] for key,val in self.interface_zone_opts.items()
+        }
+
+
+    # dynamic chain handling
+
+    def gen_chain_rules(self, zone, create, chains, transaction):
+        for (table, chain) in chains:
+            if create:
+                if zone in self._chains and  \
+                   table in self._chains[zone] and \
+                   chain in self._chains[zone][table]:
+                    continue
+            else:
+                if zone not in self._chains or \
+                   table not in self._chains[zone] or \
+                   chain not in self._chains[zone][table]:
+                    continue
+
+            _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                               zone=zone)
+
+            ipvs = [ ]
+            if table in self._fw.get_available_tables("ipv4"):
+                ipvs.append("ipv4")
+            if table in self._fw.get_available_tables("ipv6"):
+                ipvs.append("ipv6")
+
+            for ipv in ipvs:
+                OUR_CHAINS[table].update(set([_zone,
+                                              "%s_log" % _zone,
+                                              "%s_deny" % _zone,
+                                              "%s_allow" % _zone]))
+                transaction.add_rule(ipv, [ "-N", _zone, "-t", table ])
+                transaction.add_rule(ipv, [ "-N", "%s_log" % (_zone), "-t", table ])
+                transaction.add_rule(ipv, [ "-N", "%s_deny" % (_zone), "-t", table ])
+                transaction.add_rule(ipv, [ "-N", "%s_allow" % (_zone), "-t", table ])
+                transaction.add_rule(ipv, [ "-I", _zone, "1", "-t", table,
+                                            "-j", "%s_log" % (_zone) ])
+                transaction.add_rule(ipv, [ "-I", _zone, "2", "-t", table,
+                                            "-j", "%s_deny" % (_zone) ])
+                transaction.add_rule(ipv, [ "-I", _zone, "3", "-t", table,
+                                            "-j", "%s_allow" % (_zone) ])
+
+                # Handle trust, block and drop zones:
+                # Add an additional rule with the zone target (accept, reject
+                # or drop) to the base _zone only in the filter table.
+                # Otherwise it is not be possible to have a zone with drop
+                # target, that is allowing traffic that is locally initiated
+                # or that adds additional rules. (RHBZ#1055190)
+                target = self._zones[zone].target
+                if table == "filter" and \
+                   target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
+                   chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                    transaction.add_rule(ipv, [ "-I", _zone, "4",
+                                                "-t", table, "-j", target ])
+
+                if self._fw.get_log_denied() != "off":
+                    if table == "filter" and \
+                       chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                        if target in [ "REJECT", "%%REJECT%%" ]:
+                            transaction.add_rule(
+                                ipv, [ "-I", _zone, "4", "-t", table,
+                                       "%%LOGTYPE%%",
+                                       "-j", "LOG", "--log-prefix",
+                                       "\"%s_REJECT: \"" % _zone ])
+                        if target == "DROP":
+                            transaction.add_rule(
+                                ipv, [ "-I", _zone, "4", "-t", table,
+                                       "%%LOGTYPE%%",
+                                       "-j", "LOG", "--log-prefix",
+                                       "\"%s_DROP: \"" % _zone ])
+
+            self._register_chains(zone, create, chains)
+            transaction.add_fail(self._register_chains, zone, create, chains)
+
+    def _interface(self, enable, zone, interface, zone_transaction,
+                    append=False):
+        for table in self.zone_chains:
+            for chain in self.zone_chains[table]:
+                # create needed chains if not done already
+                if enable:
+                    zone_transaction.add_chain(table, chain)
+
+                for ipv in self.zone_chains[table][chain]:
+                    # handle all zones in the same way here, now
+                    # trust and block zone targets are handled now in __chain
+                    opt = self.interface_zone_opts[chain]
+                    target = DEFAULT_ZONE_TARGET.format(
+                        chain=SHORTCUTS[chain], zone=zone)
+                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                        action = "-g"
+                    else:
+                        action = "-j"
+                    if enable and not append:
+                        rule = [ "-I", "%s_ZONES" % chain, "1" ]
+                    elif enable:
+                        rule = [ "-A", "%s_ZONES" % chain ]
+                    else:
+                        rule = [ "-D", "%s_ZONES" % chain ]
+                    rule += [ "-t", table, opt, interface, action, target ]
+                    zone_transaction.add_rule(ipv, rule)
+
+    # IPSETS
+
+    def _ipset_family(self, name):
+        if self._fw.ipset.get_type(name) == "hash:mac":
+            return None
+        return self._fw.ipset.get_family(name)
+
+    def __ipset_type(self, name):
+        return self._fw.ipset.get_type(name)
+
+    #def ipset_dimension(self, name):
+    #    return self._fw.ipset.get_dimension(name)
+
+    def __ipset_match_flags(self, name, flag):
+        return ",".join([flag] * self._fw.ipset.get_dimension(name))
+
+    def _check_ipset_applied(self, name):
+        return self._fw.ipset.check_applied(name)
+
+    def _check_ipset_type_for_source(self, name):
+        _type = self.__ipset_type(name)
+        if _type not in ZONE_SOURCE_IPSET_TYPES:
+            raise FirewallError(
+                errors.INVALID_IPSET,
+                "ipset '%s' with type '%s' not usable as source" % \
+                (name, _type))
+
+    def _source(self, enable, zone, ipv, source, zone_transaction):
+        # make sure mac addresses are unique
+        if check_mac(source):
+            source = source.upper()
+
+        add_del = { True: "-A", False: "-D" }[enable]
+
+        # For mac source bindings ipv is an empty string, the mac source will
+        # be added for ipv4 and ipv6
+        if ipv == "" or ipv is None:
+            for ipv in [ "ipv4", "ipv6" ]:
+                for table in self.zone_chains:
+                    for chain in self.zone_chains[table]:
+                        # create needed chains if not done already
+                        if enable:
+                            zone_transaction.add_chain(table, chain)
+
+                        # for zone mac source bindings the features are limited
+
+                        if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                            action = "-g"
+                        else:
+                            action = "-j"
+                        target = DEFAULT_ZONE_TARGET.format(
+                            chain=SHORTCUTS[chain], zone=zone)
+                        opt = self.source_zone_opts[chain]
+
+                        if source.startswith("ipset:"):
+                            _name = source[6:]
+                            if opt == "-d":
+                                opt = "dst"
+                            else:
+                                opt = "src"
+                            flags = self.__ipset_match_flags(_name, opt)
+                            rule = [ add_del,
+                                     "%s_ZONES_SOURCE" % chain, "-t", table,
+                                     "-m", "set", "--match-set", _name,
+                                     flags, action, target ]
+                        else:
+                            # outgoing can not be set
+                            if opt == "-d":
+                                continue
+                            rule = [ add_del,
+                                     "%s_ZONES_SOURCE" % chain, "-t", table,
+                                     "-m", "mac", "--mac-source", source,
+                                     action, target ]
+                        zone_transaction.add_rule(ipv, rule)
+
+        else:
+            for table in self.zone_chains:
+                for chain in self.zone_chains[table]:
+                    # create needed chains if not done already
+                    if enable:
+                        zone_transaction.add_chain(table, chain)
+
+                    # handle all zone bindings in the same way
+                    # trust, block and drop zone targets are handled in __chain
+
+                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
+                        action = "-g"
+                    else:
+                        action = "-j"
+
+                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                                        zone=zone)
+                    opt = self.source_zone_opts[chain]
+
+                    rule = [ add_del, "%s_ZONES_SOURCE" % chain, "-t", table ]
+                    if source.startswith("ipset:"):
+                        _name = source[6:]
+                        if opt == "-d":
+                            opt = "dst"
+                        else:
+                            opt = "src"
+                        flags = self.__ipset_match_flags(_name, opt)
+                        rule = [ add_del,
+                                 "%s_ZONES_SOURCE" % chain, "-t", table,
+                                 "-m", "set", "--match-set", _name, flags,
+                                 action, target ]
+                    else:
+                        rule = [ add_del,
+                                 "%s_ZONES_SOURCE" % chain, "-t", table,
+                                 opt, source, action, target ]
+                    zone_transaction.add_rule(ipv, rule)
 
     def __rule_source(self, source, command):
         if source:
@@ -997,7 +1768,7 @@ class FirewallZone(object):
                 command += [ "-m", "set" ]
                 if source.invert:
                     command.append("!")
-                flags = self.ipset_match_flags(source.ipset, "src")
+                flags = self.__ipset_match_flags(source.ipset, "src")
                 command += [ "--match-set", source.ipset, flags ]
 
     def __rule_destination(self, destination, command):
@@ -1085,14 +1856,14 @@ class FirewallZone(object):
         _rule += _command
         zone_transaction.add_rule(ipv, _rule)
 
-    def __rule_prepare(self, enable, zone, rule, mark_id, zone_transaction):
+    def _rule_prepare(self, enable, zone, rule, mark_id, zone_transaction):
         if rule.family is not None:
             ipvs = [ rule.family ]
         else:
             ipvs = [ "ipv4", "ipv6" ]
 
         add_del = { True: "-A", False: "-D" }[enable]
-        source_ipv = self.__rule_source_ipv(rule.source)
+        source_ipv = self._rule_source_ipv(rule.source)
         if source_ipv is not None and source_ipv != "":
             if rule.family is not None:
                 # rule family is defined by user, no way to change it
@@ -1512,115 +2283,7 @@ class FirewallZone(object):
                                     type(rule.element))
         return mark_id
 
-    def __rule(self, enable, zone, rule, mark_id, use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        try:
-            mark = self.__rule_prepare(enable, zone, rule, mark_id,
-                                       zone_transaction)
-        except FirewallError as msg:
-            log.warning(str(msg))
-            mark = None
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-        return mark
-
-    def add_rule(self, zone, rule, timeout=0, sender=None,
-                 use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        rule_id = self.__rule_id(rule)
-        if rule_id in _obj.settings["rules"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (rule, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            mark = self.__rule(True, _zone, rule, None,
-                               use_zone_transaction=zone_transaction)
-        else:
-            mark = None
-
-        self.__register_rule(_obj, rule_id, mark, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_rule, _obj, rule_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_rule(self, _obj, rule_id, mark, timeout, sender):
-        _obj.settings["rules"][rule_id] = self.__gen_settings(
-            timeout, sender, mark=mark)
-
-    def remove_rule(self, zone, rule,
-                    use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        rule_id = self.__rule_id(rule)
-        if rule_id not in _obj.settings["rules"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s' not in '%s'" % (rule, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if "mark" in _obj.settings["rules"][rule_id]:
-            mark = _obj.settings["rules"][rule_id]["mark"]
-        else:
-            mark = None
-        if _obj.applied:
-            self.__rule(False, _zone, rule, mark,
-                        use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_rule, _obj, rule_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_rule(self, _obj, rule_id):
-        if rule_id in _obj.settings["rules"]:
-            del _obj.settings["rules"][rule_id]
-
-    def query_rule(self, zone, rule):
-        return self.__rule_id(rule) in self.get_settings(zone)["rules"]
-
-    def list_rules(self, zone):
-        return list(self.get_settings(zone)["rules"].keys())
-
-    # SERVICES
-
-    def check_service(self, service):
-        self._fw.check_service(service)
-
-    def __service_id(self, service):
-        self.check_service(service)
-        return service
-
-    def __service(self, enable, zone, service, use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
+    def _service(self, enable, zone, service, zone_transaction):
         svc = self._fw.service.get_service(service)
         helpers = self.get_helpers_for_service_modules(svc.modules, enable)
 
@@ -1706,124 +2369,7 @@ class FirewallZone(object):
                 rule += [ "-j", "ACCEPT" ]
                 zone_transaction.add_rule(ipv, rule)
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_service(self, zone, service, timeout=0, sender=None,
-                    use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        service_id = self.__service_id(service)
-        if service_id in _obj.settings["services"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (service, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__service(True, _zone, service,
-                           use_zone_transaction=zone_transaction)
-
-        self.__register_service(_obj, service_id, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_service, _obj, service_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_service(self, _obj, service_id, timeout, sender):
-        _obj.settings["services"][service_id] = \
-            self.__gen_settings(timeout, sender)
-
-    def remove_service(self, zone, service,
-                       use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        service_id = self.__service_id(service)
-        if service_id not in _obj.settings["services"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s' not in '%s'" % (service, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__service(False, _zone, service,
-                           use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_service, _obj,
-                                  service_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_service(self, _obj, service_id):
-        if service_id in _obj.settings["services"]:
-            del _obj.settings["services"][service_id]
-
-    def query_service(self, zone, service):
-        return self.__service_id(service) in self.get_settings(zone)["services"]
-
-    def list_services(self, zone):
-        return self.get_settings(zone)["services"].keys()
-
-    def get_helpers_for_service_modules(self, modules, enable):
-        # If automatic helper assignment is turned off, helpers that
-        # do not have ports defined will be replaced by the helpers
-        # that the helper.module defines.
-        _helpers = [ ]
-        for module in modules:
-            try:
-                helper = self._fw.helper.get_helper(module)
-            except FirewallError:
-                raise FirewallError(errors.INVALID_HELPER, module)
-            if helper.module not in self._fw.nf_conntrack_helpers:
-                raise FirewallError(
-                    errors.INVALID_HELPER,
-                    "'%s' is not available" % helper.module)
-            if self._fw.nf_conntrack_helper_setting == 0 and \
-               len(helper.ports) < 1:
-                for mod in self._fw.nf_conntrack_helpers[helper.module]:
-                    try:
-                        _helper = self._fw.helper.get_helper(mod)
-                    except FirewallError:
-                        if enable:
-                            log.warning("Helper '%s' is not available" % mod)
-                        continue
-                    _helpers.append(_helper)
-            else:
-                _helpers.append(helper)
-        return _helpers
-
-    # PORTS
-
-    def check_port(self, port, protocol):
-        self._fw.check_port(port)
-        self._fw.check_tcpudp(protocol)
-
-    def __port_id(self, port, protocol):
-        self.check_port(port, protocol)
-        return (portStr(port, "-"), protocol)
-
-    def __port(self, enable, zone, port, protocol, use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
+    def _port(self, enable, zone, port, protocol, zone_transaction):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
@@ -1839,97 +2385,7 @@ class FirewallZone(object):
                                         "-m", "conntrack", "--ctstate", "NEW",
                                         "-j", "ACCEPT" ])
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_port(self, zone, port, protocol, timeout=0, sender=None,
-                 use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        port_id = self.__port_id(port, protocol)
-        if port_id in _obj.settings["ports"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s:%s' already in '%s'" % (port, protocol,
-                                                             _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__port(True, _zone, port, protocol,
-                        use_zone_transaction=zone_transaction)
-
-        self.__register_port(_obj, port_id, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_port, _obj, port_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_port(self, _obj, port_id, timeout, sender):
-        _obj.settings["ports"][port_id] = \
-            self.__gen_settings(timeout, sender)
-
-    def remove_port(self, zone, port, protocol,
-                    use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        port_id = self.__port_id(port, protocol)
-        if port_id not in _obj.settings["ports"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s:%s' not in '%s'" % (port, protocol, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__port(False, _zone, port, protocol,
-                        use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_port, _obj,
-                                  port_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_port(self, _obj, port_id):
-        if port_id in _obj.settings["ports"]:
-            del _obj.settings["ports"][port_id]
-
-    def query_port(self, zone, port, protocol):
-        return self.__port_id(port, protocol) in self.get_settings(zone)["ports"]
-
-    def list_ports(self, zone):
-        return list(self.get_settings(zone)["ports"].keys())
-
-    # PROTOCOLS
-
-    def check_protocol(self, protocol):
-        if not checkProtocol(protocol):
-            raise FirewallError(errors.INVALID_PROTOCOL, protocol)
-
-    def __protocol_id(self, protocol):
-        self.check_protocol(protocol)
-        return protocol
-
-    def __protocol(self, enable, zone, protocol, use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
+    def _protocol(self, enable, zone, protocol, zone_transaction):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
@@ -1943,93 +2399,7 @@ class FirewallZone(object):
                                         "-m", "conntrack", "--ctstate", "NEW",
                                         "-j", "ACCEPT" ])
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_protocol(self, zone, protocol, timeout=0, sender=None,
-                     use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        protocol_id = self.__protocol_id(protocol)
-        if protocol_id in _obj.settings["protocols"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (protocol, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__protocol(True, _zone, protocol,
-                            use_zone_transaction=zone_transaction)
-
-        self.__register_protocol(_obj, protocol_id, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_protocol, _obj, protocol_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_protocol(self, _obj, protocol_id, timeout, sender):
-        _obj.settings["protocols"][protocol_id] = \
-            self.__gen_settings(timeout, sender)
-
-    def remove_protocol(self, zone, protocol,
-                        use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        protocol_id = self.__protocol_id(protocol)
-        if protocol_id not in _obj.settings["protocols"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s' not in '%s'" % (protocol, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__protocol(False, _zone, protocol,
-                            use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_protocol, _obj,
-                                  protocol_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_protocol(self, _obj, protocol_id):
-        if protocol_id in _obj.settings["protocols"]:
-            del _obj.settings["protocols"][protocol_id]
-
-    def query_protocol(self, zone, protocol):
-        return self.__protocol_id(protocol) in self.get_settings(zone)["protocols"]
-
-    def list_protocols(self, zone):
-        return list(self.get_settings(zone)["protocols"].keys())
-
-    # SOURCE PORTS
-
-    def __source_port_id(self, port, protocol):
-        self.check_port(port, protocol)
-        return (portStr(port, "-"), protocol)
-
-    def __source_port(self, enable, zone, port, protocol,
-                      use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
+    def _source_port(self, enable, zone, port, protocol, zone_transaction):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
@@ -2045,93 +2415,7 @@ class FirewallZone(object):
                                         "-m", "conntrack", "--ctstate", "NEW",
                                         "-j", "ACCEPT" ])
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_source_port(self, zone, port, protocol, timeout=0, sender=None,
-                        use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        port_id = self.__source_port_id(port, protocol)
-        if port_id in _obj.settings["source_ports"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s:%s' already in '%s'" % (port, protocol,
-                                                             _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__source_port(True, _zone, port, protocol,
-                               use_zone_transaction=zone_transaction)
-
-        self.__register_source_port(_obj, port_id, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_source_port, _obj, port_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_source_port(self, _obj, port_id, timeout, sender):
-        _obj.settings["source_ports"][port_id] = \
-            self.__gen_settings(timeout, sender)
-
-    def remove_source_port(self, zone, port, protocol,
-                           use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        port_id = self.__source_port_id(port, protocol)
-        if port_id not in _obj.settings["source_ports"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s:%s' not in '%s'" % (port, protocol, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__source_port(False, _zone, port, protocol,
-                               use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_source_port, _obj,
-                                  port_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_source_port(self, _obj, port_id):
-        if port_id in _obj.settings["source_ports"]:
-            del _obj.settings["source_ports"][port_id]
-
-    def query_source_port(self, zone, port, protocol):
-        return self.__source_port_id(port, protocol) in \
-            self.get_settings(zone)["source_ports"]
-
-    def list_source_ports(self, zone):
-        return list(self.get_settings(zone)["source_ports"].keys())
-
-    # MASQUERADE
-
-    def __masquerade_id(self):
-        return True
-
-    def __masquerade(self, enable, zone, use_zone_transaction=None):
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
-
+    def _masquerade(self, enable, zone, zone_transaction):
         if enable:
             zone_transaction.add_chain("nat", "POSTROUTING")
             zone_transaction.add_chain("filter", "FORWARD_OUT")
@@ -2153,113 +2437,14 @@ class FirewallZone(object):
                                              "--ctstate", "NEW",
                                              "-j", "ACCEPT" ])
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_masquerade(self, zone, timeout=0, sender=None,
-                       use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        masquerade_id = self.__masquerade_id()
-        if masquerade_id in _obj.settings["masquerade"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "masquerade already enabled in '%s'" % _zone)
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__masquerade(True, _zone,
-                              use_zone_transaction=zone_transaction)
-
-        self.__register_masquerade(_obj, masquerade_id, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_masquerade, _obj,
-                                  masquerade_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_masquerade(self, _obj, masquerade_id, timeout, sender):
-        _obj.settings["masquerade"][masquerade_id] = \
-            self.__gen_settings(timeout, sender)
-
-    def remove_masquerade(self, zone, use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        masquerade_id = self.__masquerade_id()
-        if masquerade_id not in _obj.settings["masquerade"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "masquerade not enabled in '%s'" % _zone)
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__masquerade(False, _zone,
-                              use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_masquerade, _obj,
-                                  masquerade_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_masquerade(self, _obj, masquerade_id):
-        if masquerade_id in _obj.settings["masquerade"]:
-            del _obj.settings["masquerade"][masquerade_id]
-
-    def query_masquerade(self, zone):
-        return self.__masquerade_id() in self.get_settings(zone)["masquerade"]
-
-    # PORT FORWARDING
-
-    def check_forward_port(self, ipv, port, protocol, toport=None, toaddr=None):
-        self._fw.check_port(port)
-        self._fw.check_tcpudp(protocol)
-        if toport:
-            self._fw.check_port(toport)
-        if toaddr:
-            if not check_single_address(ipv, toaddr):
-                raise FirewallError(errors.INVALID_ADDR, toaddr)
-        if not toport and not toaddr:
-            raise FirewallError(
-                errors.INVALID_FORWARD,
-                "port-forwarding is missing to-port AND to-addr")
-
-    def __forward_port_id(self, port, protocol, toport=None, toaddr=None):
-        if check_single_address("ipv6", toaddr):
-            self.check_forward_port("ipv6", port, protocol, toport, toaddr)
-        else:
-            self.check_forward_port("ipv4", port, protocol, toport, toaddr)
-        return (portStr(port, "-"), protocol,
-                portStr(toport, "-"), str(toaddr))
-
-    def __forward_port(self, enable, zone, port, protocol, toport=None,
-                       toaddr=None, mark_id=None, use_zone_transaction=None):
+    def _forward_port(self, enable, zone, zone_transaction, port, protocol,
+                       toport=None, toaddr=None, mark_id=None):
 
         ipvs = [ ]
         if check_single_address("ipv6", toaddr):
             ipvs.append("ipv6")
         else:
             ipvs.append("ipv4")
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
 
         mark_str = "0x%x" % mark_id
         port_str = portStr(port)
@@ -2309,109 +2494,8 @@ class FirewallZone(object):
 
         zone_transaction.add_fail(self._fw.del_mark, mark_id)
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_forward_port(self, zone, port, protocol, toport=None,
-                         toaddr=None, timeout=0, sender=None,
-                         use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s:%s:%s:%s' already in '%s'" % \
-                                (port, protocol, toport, toaddr, _zone))
-
-        mark = self._fw.new_mark()
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__forward_port(True, _zone, port, protocol, toport, toaddr,
-                                mark_id=mark,
-                                use_zone_transaction=zone_transaction)
-
-        self.__register_forward_port(_obj, forward_id, timeout, sender, mark)
-        zone_transaction.add_fail(self.__unregister_forward_port, _obj,
-                                  forward_id, mark)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_forward_port(self, _obj, forward_id, timeout, sender, mark):
-        _obj.settings["forward_ports"][forward_id] = \
-            self.__gen_settings(timeout, sender, mark=mark)
-
-    def remove_forward_port(self, zone, port, protocol, toport=None,
-                            toaddr=None, use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if not forward_id in _obj.settings["forward_ports"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s:%s:%s:%s' not in '%s'" % \
-                                (port, protocol, toport, toaddr, _zone))
-
-        mark = _obj.settings["forward_ports"][forward_id]["mark"]
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__forward_port(False, _zone, port, protocol, toport, toaddr,
-                                mark_id=mark,
-                                use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_forward_port, _obj,
-                                  forward_id, mark)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_forward_port(self, _obj, forward_id, mark):
-        if forward_id in _obj.settings["forward_ports"]:
-            del _obj.settings["forward_ports"][forward_id]
-        self._fw.del_mark(mark)
-
-    def query_forward_port(self, zone, port, protocol, toport=None,
-                           toaddr=None):
-        forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        return forward_id in self.get_settings(zone)["forward_ports"]
-
-    def list_forward_ports(self, zone):
-        return list(self.get_settings(zone)["forward_ports"].keys())
-
-    # ICMP BLOCK
-
-    def check_icmp_block(self, icmp):
-        self._fw.check_icmptype(icmp)
-
-    def __icmp_block_id(self, icmp):
-        self.check_icmp_block(icmp)
-        return icmp
-
-    def __icmp_block(self, enable, zone, icmp, use_zone_transaction=None):
+    def _icmp_block(self, enable, zone, icmp, zone_transaction):
         ict = self._fw.icmptype.get_icmptype(icmp)
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
 
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
@@ -2458,85 +2542,7 @@ class FirewallZone(object):
                                              "-t", "filter", ] + proto + \
                                       match + [ "-j", final_target ])
 
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_icmp_block(self, zone, icmp, timeout=0, sender=None,
-                       use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_timeout(timeout)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        icmp_id = self.__icmp_block_id(icmp)
-        if icmp_id in _obj.settings["icmp_blocks"]:
-            raise FirewallError(errors.ALREADY_ENABLED,
-                                "'%s' already in '%s'" % (icmp, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__icmp_block(True, _zone, icmp,
-                              use_zone_transaction=zone_transaction)
-
-        self.__register_icmp_block(_obj, icmp_id, timeout, sender)
-        zone_transaction.add_fail(self.__unregister_icmp_block, _obj, icmp_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_icmp_block(self, _obj, icmp_id, timeout, sender):
-        _obj.settings["icmp_blocks"][icmp_id] = \
-            self.__gen_settings(timeout, sender)
-
-    def remove_icmp_block(self, zone, icmp, use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        icmp_id = self.__icmp_block_id(icmp)
-        if icmp_id not in _obj.settings["icmp_blocks"]:
-            raise FirewallError(errors.NOT_ENABLED,
-                                "'%s' not in '%s'" % (icmp, _zone))
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            self.__icmp_block(False, _zone, icmp,
-                              use_zone_transaction=zone_transaction)
-
-        zone_transaction.add_post(self.__unregister_icmp_block, _obj,
-                                  icmp_id)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_icmp_block(self, _obj, icmp_id):
-        if icmp_id in _obj.settings["icmp_blocks"]:
-            del _obj.settings["icmp_blocks"][icmp_id]
-
-    def query_icmp_block(self, zone, icmp):
-        return self.__icmp_block_id(icmp) in self.get_settings(zone)["icmp_blocks"]
-
-    def list_icmp_blocks(self, zone):
-        return self.get_settings(zone)["icmp_blocks"].keys()
-
-    # ICMP BLOCK INVERSION
-
-    def __icmp_block_inversion_id(self):
-        return True
-
-    def __icmp_block_inversion(self, enable, zone, use_zone_transaction=None):
+    def _icmp_block_inversion(self, enable, zone, zone_transaction):
         target = self._zones[zone].target
 
         # Do not add general icmp accept rules into a trusted, block or drop
@@ -2547,11 +2553,6 @@ class FirewallZone(object):
             # ibi target and zone target are ACCEPT, no need to add an extra
             # rule
             return
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(zone)
-        else:
-            zone_transaction = use_zone_transaction
 
         zone_transaction.add_chain("filter", "INPUT")
         zone_transaction.add_chain("filter", "FORWARD_IN")
@@ -2590,129 +2591,3 @@ class FirewallZone(object):
                                           rule +
                                           [ "-t", table, "-p", "%%ICMP%%",
                                             "-j", ibi_target ])
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(enable)
-
-    def add_icmp_block_inversion(self, zone, sender=None,
-                                 use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        icmp_block_inversion_id = self.__icmp_block_inversion_id()
-        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
-            raise FirewallError(
-                errors.ALREADY_ENABLED,
-                "icmp-block-inversion already enabled in '%s'" % _zone)
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            # undo icmp blocks
-            for args in self.get_settings(_zone)["icmp_blocks"]:
-                self.__icmp_block(False, _zone, args,
-                                  use_zone_transaction=zone_transaction)
-
-            self.__icmp_block_inversion(False, _zone,
-                                        use_zone_transaction=zone_transaction)
-
-        self.__register_icmp_block_inversion(_obj, icmp_block_inversion_id,
-                                             sender)
-        zone_transaction.add_fail(self.__undo_icmp_block_inversion, _zone, _obj,
-                                  icmp_block_inversion_id)
-
-        # redo icmp blocks
-        if _obj.applied:
-            for args in self.get_settings(_zone)["icmp_blocks"]:
-                self.__icmp_block(True, _zone, args,
-                                  use_zone_transaction=zone_transaction)
-
-            self.__icmp_block_inversion(True, _zone,
-                                        use_zone_transaction=zone_transaction)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __register_icmp_block_inversion(self, _obj, icmp_block_inversion_id,
-                                        sender):
-        _obj.settings["icmp_block_inversion"][icmp_block_inversion_id] = \
-            self.__gen_settings(0, sender)
-
-    def __undo_icmp_block_inversion(self, _zone, _obj, icmp_block_inversion_id):
-        zone_transaction = self.new_zone_transaction(_zone)
-
-        # undo icmp blocks
-        if _obj.applied:
-            for args in self.get_settings(_zone)["icmp_blocks"]:
-                self.__icmp_block(False, _zone, args,
-                                  use_zone_transaction=zone_transaction)
-
-        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
-            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
-
-        # redo icmp blocks
-        if _obj.applied:
-            for args in self.get_settings(_zone)["icmp_blocks"]:
-                self.__icmp_block(True, _zone, args,
-                                  use_zone_transaction=zone_transaction)
-
-        zone_transaction.execute(True)
-
-    def remove_icmp_block_inversion(self, zone, use_zone_transaction=None):
-        _zone = self._fw.check_zone(zone)
-        self._fw.check_panic()
-        _obj = self._zones[_zone]
-
-        icmp_block_inversion_id = self.__icmp_block_inversion_id()
-        if icmp_block_inversion_id not in _obj.settings["icmp_block_inversion"]:
-            raise FirewallError(
-                errors.NOT_ENABLED,
-                "icmp-block-inversion not enabled in '%s'" % _zone)
-
-        if use_zone_transaction is None:
-            zone_transaction = self.new_zone_transaction(_zone)
-        else:
-            zone_transaction = use_zone_transaction
-
-        if _obj.applied:
-            # undo icmp blocks
-            for args in self.get_settings(_zone)["icmp_blocks"]:
-                self.__icmp_block(False, _zone, args,
-                                  use_zone_transaction=zone_transaction)
-
-            self.__icmp_block_inversion(False, _zone,
-                                        use_zone_transaction=zone_transaction)
-
-        self.__unregister_icmp_block_inversion(_obj,
-                                               icmp_block_inversion_id)
-        zone_transaction.add_fail(self.__register_icmp_block_inversion, _obj,
-                                  icmp_block_inversion_id, None)
-
-        # redo icmp blocks
-        if _obj.applied:
-            for args in self.get_settings(_zone)["icmp_blocks"]:
-                self.__icmp_block(True, _zone, args,
-                                  use_zone_transaction=zone_transaction)
-
-            self.__icmp_block_inversion(True, _zone,
-                                        use_zone_transaction=zone_transaction)
-
-        if use_zone_transaction is None:
-            zone_transaction.execute(True)
-
-        return _zone
-
-    def __unregister_icmp_block_inversion(self, _obj, icmp_block_inversion_id):
-        if icmp_block_inversion_id in _obj.settings["icmp_block_inversion"]:
-            del _obj.settings["icmp_block_inversion"][icmp_block_inversion_id]
-
-    def query_icmp_block_inversion(self, zone):
-        return self.__icmp_block_inversion_id() in \
-            self.get_settings(zone)["icmp_block_inversion"]
-
