@@ -21,46 +21,13 @@
 
 """Transaction classes for firewalld"""
 
-__all__ = [ "check_rule", "reverse_rule",
+__all__ = [ "reverse_rule",
             "FirewallTransaction", "FirewallZoneTransaction" ]
 
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 from firewall.fw_types import LastUpdatedOrderedDict
-
-# function check_rule
-
-def check_rule(args):
-    """ Check if rule is valid (only add, insert and new chain rules are
-    allowed) """
-
-    used_set = set(args)
-    not_allowed_set = set(["-D", "--delete",          # delete rule
-                           "-R", "--replace",         # replace rule
-                           "-L", "--list",            # list rule
-                           "-S", "--list-rules",      # print rules
-                           "-F", "--flush",           # flush rules
-                           "-Z", "--zero",            # zero rules
-                           "-X", "--delete-chain",    # delete chain
-                           "-P", "--policy",          # policy
-                           "-E", "--rename-chain"])   # rename chain)
-    # intersection of args and not_allowed is not empty, i.e.
-    # something from args is not allowed
-    if len(used_set & not_allowed_set) > 0:
-        raise FirewallError(errors.INVALID_RULE, "arg '%s' is not allowed" % \
-                            list(used_set & not_allowed_set)[0])
-
-    # args need to contain one of -A, -I, -C, -N
-    needed_set = set([ "-A", "--append",
-                       "-I", "--insert",
-                       "-C", "--check",
-                       "-N", "--new-chain" ])
-    # empty intersection of args and needed, i.e.
-    # none from args contains any needed command
-    if len(used_set & needed_set) == 0:
-        raise FirewallError(errors.INVALID_RULE,
-                            "no '-A', '-I', '-C' or '-N' arg")
 
 # function reverse_rule
 
