@@ -37,7 +37,7 @@ from firewall.core.fw_direct import FirewallDirectIPTables
 from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
-from firewall.core.fw_transaction import FirewallTransaction, reverse_rule
+from firewall.core.fw_transaction import FirewallTransaction
 from firewall.core.fw_helper import FirewallHelper
 from firewall.core.logger import log
 from firewall.core.io.firewalld_conf import firewalld_conf
@@ -836,7 +836,7 @@ class Firewall(object):
                     log.error(msg)
                     for rule in reversed(_rules[:i]):
                         try:
-                            backend.set_rule(reverse_rule(rule))
+                            backend.set_rule(ipXtables.reverse_rule(rule))
                         except Exception:
                             # ignore errors here
                             pass

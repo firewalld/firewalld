@@ -21,54 +21,13 @@
 
 """Transaction classes for firewalld"""
 
-__all__ = [ "reverse_rule",
-            "FirewallTransaction", "FirewallZoneTransaction" ]
+__all__ = [ "FirewallTransaction", "FirewallZoneTransaction" ]
 
 from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 from firewall.fw_types import LastUpdatedOrderedDict
-
-# function reverse_rule
-
-def reverse_rule(args):
-    """ Inverse valid rule """
-
-    replace_args = {
-        # Append
-        "-A": "-D",
-        "--append": "--delete",
-        # Insert
-        "-I": "-D",
-        "--insert": "--delete",
-        # New chain
-        "-N": "-X",
-        "--new-chain": "--delete-chain",
-    }
-
-    ret_args = args[:]
-
-    for arg in replace_args:
-        try:
-            idx = ret_args.index(arg)
-        except Exception:
-            continue
-
-        if arg in [ "-I", "--insert" ]:
-            # With insert rulenum, then remove it if it is a number
-            # Opt at position idx, chain at position idx+1, [rulenum] at
-            # position idx+2
-            try:
-                int(ret_args[idx+2])
-            except Exception:
-                pass
-            else:
-                ret_args.pop(idx+2)
-
-        ret_args[idx] = replace_args[arg]
-    return ret_args
-
-# class FirewallTransaction
+from firewall.core.ipXtables import reverse_rule
 
 class SimpleFirewallTransaction(object):
     """Base class for FirewallTransaction and FirewallZoneTransaction"""
