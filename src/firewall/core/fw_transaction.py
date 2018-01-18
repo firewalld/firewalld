@@ -168,12 +168,14 @@ class SimpleFirewallTransaction(object):
 
         # stage 1: apply rules
         error = False
+        errorMsg = ""
         done = [ ]
         for ipv in rules:
             try:
                 self.fw.rules(ipv, rules[ipv])
             except Exception as msg:
                 error = True
+                errorMsg = msg
                 log.error(msg)
             else:
                 done.append(ipv)
@@ -185,6 +187,7 @@ class SimpleFirewallTransaction(object):
                 (cleanup_modules, msg) = module_return
                 if cleanup_modules is not None:
                     error = True
+                    errorMsg = msg
                     self.fw.handle_modules(cleanup_modules, not enable)
 
         # error case: revert rules
@@ -207,7 +210,7 @@ class SimpleFirewallTransaction(object):
                     log.error("Calling fail func %s(%s) failed: %s" % \
                               (func, args, msg))
 
-            raise FirewallError(errors.COMMAND_FAILED)
+            raise FirewallError(errors.COMMAND_FAILED, errorMsg)
 
         # post
         self.post()
