@@ -112,20 +112,12 @@ class SimpleFirewallTransaction(object):
         self.pre_funcs = [ ] # [ (func, args),.. ]
         self.post_funcs = [ ] # [ (func, args),.. ]
         self.fail_funcs = [ ] # [ (func, args),.. ]
-        self.generous_mode = False
 
     def clear(self):
         self.rules.clear()
         del self.pre_funcs[:]
         del self.post_funcs[:]
         del self.fail_funcs[:]
-        self.generous_mode = False
-
-    def enable_generous_mode(self):
-        self.generous_mode = True
-
-    def disable_generous_mode(self):
-        self.generous_mode = False
 
     def add_rule(self, ipv, rule):
         if ipv not in self.rules or rule not in self.rules[ipv]:
@@ -182,22 +174,9 @@ class SimpleFirewallTransaction(object):
                 self.fw.rules(ipv, rules[ipv])
             except Exception as msg:
                 error = True
-                if not self.generous_mode:
-                    log.warning(msg)
+                log.error(msg)
             else:
                 done.append(ipv)
-
-        if error and self.generous_mode:
-            for ipv in rules:
-                if ipv in done:
-                    continue
-                for rule in rules[ipv]:
-                    try:
-                        self.fw.rule(ipv, rule)
-                    except Exception as msg:
-                        log.warning(msg)
-                done.append(ipv)
-            error = False
 
         # stage 2: load modules
         if not error:
