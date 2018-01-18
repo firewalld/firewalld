@@ -440,13 +440,11 @@ class Firewall(object):
 
         # apply direct chains, rules and passthrough rules
         if self.direct.has_configuration():
-            transaction.enable_generous_mode()
             log.debug1("Applying direct chains rules and passthrough rules")
             self.direct.apply_direct(transaction)
 
             # Execute transaction
             transaction.execute(True)
-            transaction.disable_generous_mode()
             transaction.clear()
 
         del transaction
