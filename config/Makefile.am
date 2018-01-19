@@ -185,6 +185,7 @@ CONFIG_FILES = \
 	services/mysql.xml \
 	services/nfs.xml \
 	services/nfs3.xml \
+	services/nmea-0183.xml \
 	services/nrpe.xml \
 	services/ntp.xml \
 	services/openvpn.xml \
