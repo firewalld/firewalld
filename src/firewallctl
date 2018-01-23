@@ -1935,6 +1935,10 @@ def myexcepthook(exctype, value, traceback):
     cmd.exception_handler(str(value))
 sys.excepthook = myexcepthook
 
+# Start with deprecation warning
+cmd.print_warning("firewallctl is deprecated and will be removed in a future release of firewalld.")
+cmd.print_warning("Please migrate to using firewall-cmd.\n")
+
 # use firewalld
 
 try:

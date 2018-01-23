@@ -56,6 +56,12 @@
     <title>Description</title>
 
     <para>
+	  <emphasis role="bold">Warning</emphasis>: This command is deprecated and
+	  will be removed in a future release of firewalld. Please migrate to using
+	  <command>firewall-cmd</command><manvolnum>1</manvolnum>.
+    </para>
+
+    <para>
       firewallctl is an alternate command line client of the firewalld daemon. It provides interface to manage runtime and permanent configuration.
     </para>
 
