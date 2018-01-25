@@ -7,7 +7,7 @@
 
 Summary: A firewall daemon with D-Bus interface providing a dynamic firewall
 Name: firewalld
-Version: 0.4.4.5
+Version: 0.5.0
 Release: 1%{?dist}
 URL:     http://www.firewalld.org
 License: GPLv2+
@@ -317,6 +317,9 @@ fi
 %{_mandir}/man1/firewall-config*.1*
 
 %changelog
+* Thu Jan 25 2018 Eric Garver <e@erig.me> - 0.5.0-1
+- rebase package to v0.5.0
+
 * Tue Jun  6 2017 Thomas Woerner <twoerner@redhat.com> - 0.4.4.5-1
 - Fix build from spec without fedorahosted.org archives
 - firewalld.spec: Add missing autotools dependencies
