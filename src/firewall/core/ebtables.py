@@ -26,6 +26,7 @@ from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs
 from firewall.config import COMMANDS
+from firewall.core import ipXtables # some common stuff lives there
 import string
 
 PROC_IPxTABLE_NAMES = {
@@ -108,6 +109,36 @@ class ebtables(object):
             if self._rule_contains(rule, str):
                 raise FirewallError(errors.INVALID_IPV,
                         "'%s' invalid for ebtables" % str)
+
+    def is_chain_builtin(self, table, chain):
+        return table in BUILT_IN_CHAINS and \
+               chain in BUILT_IN_CHAINS[table]
+
+    def build_chain(self, add, table, chain):
+        rule = [ "-t", table ]
+        if add:
+            rule.append("-N")
+        else:
+            rule.append("-X")
+        rule.append(chain)
+        if add:
+            rule += [ "-P", "RETURN" ]
+        return rule
+
+    def build_rule(self, add, table, chain, index, args):
+        rule = [ "-t", table ]
+        if add:
+            rule += [ "-I", chain, str(index) ]
+        else:
+            rule += [ "-D", chain ]
+        rule += args
+        return rule
+
+    def check_passthrough(self, args):
+        ipXtables.common_check_passthrough(args)
+
+    def reverse_passthrough(self, args):
+        return ipXtables.common_reverse_passthrough(args)
 
     def set_rules(self, rules, flush=False, log_denied="off"):
         temp_file = tempFile()

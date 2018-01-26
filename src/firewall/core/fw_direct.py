@@ -382,12 +382,9 @@ class FirewallDirectIPTables(FirewallDirect):
 
         _chain = chain
 
-        if ipv in [ "ipv4", "ipv6" ]:
-            _CHAINS = ipXtables.BUILT_IN_CHAINS
-        else:
-            _CHAINS = ebtables.BUILT_IN_CHAINS
+        backend = self._fw.get_ipv_backend(ipv)
 
-        if table in _CHAINS and chain in _CHAINS[table]:
+        if backend.is_chain_builtin(table, chain):
             _chain = "%s_direct" % (chain)
 
         chain_id = (ipv, table, chain)
@@ -455,14 +452,7 @@ class FirewallDirectIPTables(FirewallDirect):
                 index += self._rule_priority_positions[chain_id][positions[j]]
                 j += 1
 
-        rule = [ "-t", table ]
-        if enable:
-            rule += [ "-I", _chain, str(index) ]
-        else:
-            rule += [ "-D", _chain ]
-        rule += args
-
-        transaction.add_rule(ipv, rule)
+        transaction.add_rule(ipv, backend.build_rule(enable, table, _chain, index, args))
 
         self._register_rule(rule_id, chain_id, priority, enable)
         transaction.add_fail(self._register_rule,
@@ -486,16 +476,7 @@ class FirewallDirectIPTables(FirewallDirect):
                                     "chain '%s' is not in '%s:%s'" % \
                                     (chain, ipv, table))
 
-        rule = [ "-t", table ]
-        if add:
-            rule.append("-N")
-        else:
-            rule.append("-X")
-        rule.append(chain)
-        if add and ipv == "eb":
-            rule += [ "-P", "RETURN" ]
-
-        transaction.add_rule(ipv, rule)
+        transaction.add_rule(ipv, self._fw.get_ipv_backend(ipv).build_chain(add, table, chain))
 
         self._register_chain(table_id, chain, add)
         transaction.add_fail(self._register_chain, table_id, chain, not add)
@@ -515,108 +496,21 @@ class FirewallDirectIPTables(FirewallDirect):
                 raise FirewallError(errors.NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
 
+        backend = self._fw.get_ipv_backend(ipv)
+
         if enable:
-            self.check_passthrough(args)
+            backend.check_passthrough(args)
             # try to find out if a zone chain should be used
             if ipv in [ "ipv4", "ipv6" ]:
-                table = "filter"
-                try:
-                    i = args.index("-t")
-                except ValueError:
-                    pass
-                else:
-                    if len(args) >= i+1:
-                        table = args[i+1]
-                chain = None
-                for opt in [ "-A", "--append",
-                             "-I", "--insert",
-                             "-N", "--new-chain" ]:
-                    try:
-                        i = args.index(opt)
-                    except ValueError:
-                        pass
-                    else:
-                        if len(args) >= i+1:
-                            chain = args[i+1]
+                table, chain = backend.passthrough_parse_table_chain(args)
                 if table and chain:
                     self._fw.zone.create_zone_base_by_chain(ipv, table, chain)
             _args = args
         else:
-            _args = self.reverse_passthrough(args)
+            _args = backend.reverse_passthrough(args)
+
         transaction.add_rule(ipv, _args)
 
         self._register_passthrough(ipv, tuple_args, enable)
         transaction.add_fail(self._register_passthrough, ipv, tuple_args,
                              not enable)
-
-    def check_passthrough(self, args):
-        """ Check if passthough rule is valid (only add, insert and new chain
-        rules are allowed) """
-
-        args = set(args)
-        not_allowed = set(["-C", "--check",           # check rule
-                           "-D", "--delete",          # delete rule
-                           "-R", "--replace",         # replace rule
-                           "-L", "--list",            # list rule
-                           "-S", "--list-rules",      # print rules
-                           "-F", "--flush",           # flush rules
-                           "-Z", "--zero",            # zero rules
-                           "-X", "--delete-chain",    # delete chain
-                           "-P", "--policy",          # policy
-                           "-E", "--rename-chain"])   # rename chain)
-        # intersection of args and not_allowed is not empty, i.e.
-        # something from args is not allowed
-        if len(args & not_allowed) > 0:
-            raise FirewallError(errors.INVALID_PASSTHROUGH,
-                                "arg '%s' is not allowed" %
-                                list(args & not_allowed)[0])
-
-        # args need to contain one of -A, -I, -N
-        needed = set(["-A", "--append",
-                      "-I", "--insert",
-                      "-N", "--new-chain"])
-        # empty intersection of args and needed, i.e.
-        # none from args contains any needed command
-        if len(args & needed) == 0:
-            raise FirewallError(errors.INVALID_PASSTHROUGH,
-                                "no '-A', '-I' or '-N' arg")
-
-    def reverse_passthrough(self, args):
-        """ Reverse valid passthough rule """
-
-        replace_args = {
-            # Append
-            "-A": "-D",
-            "--append": "--delete",
-            # Insert
-            "-I": "-D",
-            "--insert": "--delete",
-            # New chain
-            "-N": "-X",
-            "--new-chain": "--delete-chain",
-        }
-
-        ret_args = args[:]
-
-        for x in replace_args:
-            try:
-                idx = ret_args.index(x)
-            except ValueError:
-                continue
-
-            if x in [ "-I", "--insert" ]:
-                # With insert rulenum, then remove it if it is a number
-                # Opt at position idx, chain at position idx+1, [rulenum] at
-                # position idx+2
-                try:
-                    int(ret_args[idx+2])
-                except ValueError:
-                    pass
-                else:
-                    ret_args.pop(idx+2)
-
-            ret_args[idx] = replace_args[x]
-            return ret_args
-
-        raise FirewallError(errors.INVALID_PASSTHROUGH,
-                            "no '-A', '-I' or '-N' arg")

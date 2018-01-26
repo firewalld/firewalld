@@ -150,6 +150,80 @@ OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
                             "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
                             "FORWARD_OUT_ZONES", "OUTPUT_direct"])
 
+def common_reverse_passthrough(args):
+    """ Reverse valid passthough rule """
+
+    replace_args = {
+        # Append
+        "-A": "-D",
+        "--append": "--delete",
+        # Insert
+        "-I": "-D",
+        "--insert": "--delete",
+        # New chain
+        "-N": "-X",
+        "--new-chain": "--delete-chain",
+    }
+
+    ret_args = args[:]
+
+    for x in replace_args:
+        try:
+            idx = ret_args.index(x)
+        except ValueError:
+            continue
+
+        if x in [ "-I", "--insert" ]:
+            # With insert rulenum, then remove it if it is a number
+            # Opt at position idx, chain at position idx+1, [rulenum] at
+            # position idx+2
+            try:
+                int(ret_args[idx+2])
+            except ValueError:
+                pass
+            else:
+                ret_args.pop(idx+2)
+
+        ret_args[idx] = replace_args[x]
+        return ret_args
+
+    raise FirewallError(errors.INVALID_PASSTHROUGH,
+                        "no '-A', '-I' or '-N' arg")
+
+# ipv ebtables also uses this
+#
+def common_check_passthrough(args):
+    """ Check if passthough rule is valid (only add, insert and new chain
+    rules are allowed) """
+
+    args = set(args)
+    not_allowed = set(["-C", "--check",           # check rule
+                       "-D", "--delete",          # delete rule
+                       "-R", "--replace",         # replace rule
+                       "-L", "--list",            # list rule
+                       "-S", "--list-rules",      # print rules
+                       "-F", "--flush",           # flush rules
+                       "-Z", "--zero",            # zero rules
+                       "-X", "--delete-chain",    # delete chain
+                       "-P", "--policy",          # policy
+                       "-E", "--rename-chain"])   # rename chain)
+    # intersection of args and not_allowed is not empty, i.e.
+    # something from args is not allowed
+    if len(args & not_allowed) > 0:
+        raise FirewallError(errors.INVALID_PASSTHROUGH,
+                            "arg '%s' is not allowed" %
+                            list(args & not_allowed)[0])
+
+    # args need to contain one of -A, -I, -N
+    needed = set(["-A", "--append",
+                  "-I", "--insert",
+                  "-N", "--new-chain"])
+    # empty intersection of args and needed, i.e.
+    # none from args contains any needed command
+    if len(args & needed) == 0:
+        raise FirewallError(errors.INVALID_PASSTHROUGH,
+                            "no '-A', '-I' or '-N' arg")
+
 class ip4tables(object):
     ipv = "ipv4"
 
@@ -215,6 +289,56 @@ class ip4tables(object):
         else:
             rule[i:i+1] = replacement
             return True
+
+    def is_chain_builtin(self, table, chain):
+        return table in BUILT_IN_CHAINS and \
+               chain in BUILT_IN_CHAINS[table]
+
+    def build_chain(self, add, table, chain):
+        rule = [ "-t", table ]
+        if add:
+            rule.append("-N")
+        else:
+            rule.append("-X")
+        rule.append(chain)
+        return rule
+
+    def build_rule(self, add, table, chain, index, args):
+        rule = [ "-t", table ]
+        if add:
+            rule += [ "-I", chain, str(index) ]
+        else:
+            rule += [ "-D", chain ]
+        rule += args
+        return rule
+
+    def check_passthrough(self, args):
+        common_check_passthrough(args)
+
+    def reverse_passthrough(self, args):
+        return common_reverse_passthrough(args)
+
+    def passthrough_parse_table_chain(self, args):
+        table = "filter"
+        try:
+            i = args.index("-t")
+        except ValueError:
+            pass
+        else:
+            if len(args) >= i+1:
+                table = args[i+1]
+        chain = None
+        for opt in [ "-A", "--append",
+                     "-I", "--insert",
+                     "-N", "--new-chain" ]:
+            try:
+                i = args.index(opt)
+            except ValueError:
+                pass
+            else:
+                if len(args) >= i+1:
+                    chain = args[i+1]
+        return (table, chain)
 
     def set_rules(self, rules, flush=False, log_denied="off"):
         temp_file = tempFile()
