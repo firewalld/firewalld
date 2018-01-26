@@ -667,15 +667,35 @@ class Firewall(object):
                         del self._module_refcount[module]
         return None
 
+    def get_ipv_backend(self, ipv):
+        if ipv == "ipv4":
+            return self.ip4tables_backend
+        elif ipv == "ipv6":
+            return self.ip6tables_backend
+        elif ipv == "eb":
+            return self.ebtables_backend
+        raise FirewallError(errors.INVALID_IPV,
+                            "'%s' is not a valid backend" % ipv)
+
+    def is_ipv_enabled(self, ipv):
+        if ipv == "ipv4":
+            return self.ip4tables_enabled
+        elif ipv == "ipv6":
+            return self.ip6tables_enabled
+        elif ipv == "eb":
+            return self.ebtables_enabled
+        return False
+
+    def enabled_backends(self):
+        ipvs = []
+        for ipv in ["ipv4", "ipv6", "eb"]:
+            if self.is_ipv_enabled(ipv):
+                ipvs.append(ipv)
+        return ipvs
+
     # apply default rules
     def __apply_default_rules(self, ipv, transaction):
-        if ipv is "ipv4":
-            x = self.ip4tables_backend
-        elif ipv is "ipv6":
-            x = self.ip6tables_backend
-        else:
-            x = self.ebtables_backend
-        x.apply_default_rules(transaction, self._log_denied)
+        self.get_ipv_backend(ipv).apply_default_rules(transaction, self._log_denied)
 
     def apply_default_rules(self, use_transaction=None):
         if use_transaction is None:
@@ -683,7 +703,7 @@ class Firewall(object):
         else:
             transaction = use_transaction
 
-        for ipv in [ "ipv4", "ipv6", "eb" ]:
+        for ipv in self.enabled_backends():
             self.__apply_default_rules(ipv, transaction)
 
         if self.ipv6_rpfilter_enabled and \
@@ -718,21 +738,11 @@ class Firewall(object):
 
         log.debug1("Flushing rule set")
 
-        if self.ip4tables_enabled:
+        for ipv in self.enabled_backends():
             try:
-                self.ip4tables_backend.flush(transaction)
+                self.get_ipv_backend(ipv).flush(transaction)
             except Exception as e:
-                log.error("Failed to flush ipv4 firewall: %s" % e)
-        if self.ip6tables_enabled:
-            try:
-                self.ip6tables_backend.flush(transaction)
-            except Exception as e:
-                log.error("Failed to flush ipv6 firewall: %s" % e)
-        if self.ebtables_enabled:
-            try:
-                self.ebtables_backend.flush(transaction)
-            except Exception as e:
-                log.error("Failed to flush eb firewall: %s" % e)
+                log.error("Failed to flush %s firewall: %s" % (ipv, e))
 
         if use_transaction is None:
             transaction.execute(True)
@@ -745,22 +755,11 @@ class Firewall(object):
 
         log.debug1("Setting policy to '%s'", policy)
 
-        if self.ip4tables_enabled:
+        for ipv in self.enabled_backends():
             try:
-                self.ip4tables_backend.set_policy(policy, which, transaction)
+                self.get_ipv_backend(ipv).set_policy(policy, which, transaction)
             except Exception as e:
-                log.error("Failed to set policy of ipv4 firewall: %s" % e)
-
-        if self.ip6tables_enabled:
-            try:
-                self.ip6tables_backend.set_policy(policy, which, transaction)
-            except Exception as e:
-                log.error("Failed to set policy of ipv6 firewall: %s" % e)
-        if self.ebtables_enabled:
-            try:
-                self.ebtables_backend.set_policy(policy, which, transaction)
-            except Exception as e:
-                log.error("Failed to set policy of eb firewall: %s" % e)
+                log.error("Failed to set policy of %s firewall: %s" % (ipv, e))
 
         if use_transaction is None:
             transaction.execute(True)
@@ -776,45 +775,25 @@ class Firewall(object):
                 rule[i] = x[1:-1]
             i += 1
 
-        if ipv == "ipv4":
-            # do not call if disabled
-            if self.ip4tables_enabled:
-                return self.ip4tables_backend.set_rule(rule, self._log_denied)
-        elif ipv == "ipv6":
-            # do not call if disabled
-            if self.ip6tables_enabled:
-                return self.ip6tables_backend.set_rule(rule, self._log_denied)
-        elif ipv == "eb":
-            # do not call if disabled
-            if self.ebtables_enabled:
-                return self.ebtables_backend.set_rule(rule, self._log_denied)
-        else:
+        backend = self.get_ipv_backend(ipv)
+        if not backend:
             raise FirewallError(errors.INVALID_IPV,
-                                "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
+                                "'%s' is not a valid backend" % ipv)
 
-        return ""
+        if not self.is_ipv_enabled(ipv):
+            return ""
+
+        return backend.set_rule(rule, self._log_denied)
 
     def rules(self, ipv, rules):
         _rules = rules[:]
 
-        backend = None
-        if ipv == "ipv4":
-            if self.ip4tables_enabled:
-                # do not call if disabled
-                backend = self.ip4tables_backend
-        elif ipv == "ipv6":
-            if self.ip6tables_enabled:
-                # do not call if disabled
-                backend = self.ip6tables_backend
-        elif ipv == "eb":
-            if self.ebtables_enabled:
-                # do not call if disabled
-                backend = self.ebtables_backend
-        else:
-            raise FirewallError(errors.INVALID_IPV,
-                                "'%s' not in {'ipv4'|'ipv6'|'eb'}" % ipv)
-
+        backend = self.get_ipv_backend(ipv)
         if not backend:
+            raise FirewallError(errors.INVALID_IPV,
+                                "'%s' is not a valid backend" % ipv)
+
+        if not self.is_ipv_enabled(ipv):
             return ""
 
         if self._individual_calls or \
