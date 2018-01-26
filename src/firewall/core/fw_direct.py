@@ -19,7 +19,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = [ "FirewallDirectIPTables" ]
+__all__ = [ "FirewallDirect" ]
 
 from firewall.fw_types import *
 from firewall.core import ipXtables
@@ -373,7 +373,6 @@ class FirewallDirect(object):
                 r.append(list(args))
         return r
 
-class FirewallDirectIPTables(FirewallDirect):
     def _rule(self, enable, ipv, table, chain, priority, args, transaction):
         self._check_ipv_table(ipv, table)
         if ipv in [ "ipv4", "ipv6" ]:

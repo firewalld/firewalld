@@ -33,7 +33,7 @@ from firewall.core import modules
 from firewall.core.fw_icmptype import FirewallIcmpType
 from firewall.core.fw_service import FirewallService
 from firewall.core.fw_zone import FirewallZoneIPTables
-from firewall.core.fw_direct import FirewallDirectIPTables
+from firewall.core.fw_direct import FirewallDirect
 from firewall.core.fw_config import FirewallConfig
 from firewall.core.fw_policies import FirewallPolicies
 from firewall.core.fw_ipset import FirewallIPSet
@@ -82,7 +82,7 @@ class Firewall(object):
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
         self.zone = FirewallZoneIPTables(self)
-        self.direct = FirewallDirectIPTables(self)
+        self.direct = FirewallDirect(self)
         self.config = FirewallConfig(self)
         self.policies = FirewallPolicies()
         self.ipset = FirewallIPSet(self)
