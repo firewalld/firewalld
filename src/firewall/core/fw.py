@@ -950,8 +950,7 @@ class Firewall(object):
             else:
                 log.info1("New zone '%s'.", zone)
         if len(_zone_interfaces) > 0:
-            keys = _zone_interfaces.keys()
-            for zone in keys:
+            for zone in list(_zone_interfaces.keys()):
                 log.info1("Lost zone '%s', zone interfaces dropped.", zone)
                 del _zone_interfaces[zone]
         del _zone_interfaces
