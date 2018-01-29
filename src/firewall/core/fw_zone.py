@@ -158,7 +158,7 @@ class FirewallZone(object):
                                     use_zone_transaction=zone_transaction)
             # apply icmp accept/reject rule always
             if obj.applied:
-                self._error2warning(self.__icmp_block_inversion, True,
+                self._error2warning(self._icmp_block_inversion, True,
                                     obj.name, zone_transaction)
 
         if use_transaction is None:
