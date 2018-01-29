@@ -19,6 +19,7 @@ m4_define([FWD_CHECK_FIREWALLD], [
 
 m4_define([FWD_START_FIREWALLD], [
     FWD_CHECK_FIREWALLD
+    AT_CHECK([if ! cp ${top_srcdir}/config/firewalld.conf ./firewalld.conf; then exit 77; fi])
     ${top_srcdir}/src/firewalld --nofork --nopid --system-config "./" --default-config "${top_srcdir}/config" --log-file "./firewalld.log" &
     if test $? -ne 0; then
         AT_FAIL_IF([:])
@@ -59,6 +60,13 @@ m4_define([FWD_START_TEST], [
     ])
 
 m4_define([FWD_END_TEST], [
+    if test x"$1" != x"ignore"; then
+        if test -n "$1"; then
+            sed -i $1 ./firewalld.log
+        fi
+        AT_FAIL_IF([grep ERROR ./firewalld.log])
+        AT_FAIL_IF([grep WARNING ./firewalld.log])
+    fi
     AT_CLEANUP
     ])
 
