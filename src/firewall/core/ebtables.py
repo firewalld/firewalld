@@ -191,7 +191,7 @@ class ebtables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def set_rule(self, rule, log_denied):
+    def set_rule(self, rule, log_denied="off"):
         self._rule_validate(rule)
         return self.__run(rule)
 
