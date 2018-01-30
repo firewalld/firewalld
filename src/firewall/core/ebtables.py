@@ -21,7 +21,7 @@
 
 __all__ = [ "ebtables" ]
 
-import os.path, errno
+import os.path
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs
@@ -55,28 +55,13 @@ class ebtables(object):
     def __init__(self):
         self._command = COMMANDS[self.ipv]
         self._restore_command = COMMANDS["%s-restore" % self.ipv]
-        self.ebtables_lock = "/var/lib/ebtables/lock"
         self.restore_noflush_option = self._detect_restore_noflush_option()
         self.concurrent_option = self._detect_concurrent_option()
-        self.__remove_dangling_lock()
         self.fill_exists()
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
         self.restore_command_exists = os.path.exists(self._restore_command)
-
-    def __remove_dangling_lock(self):
-        if os.path.exists(self.ebtables_lock):
-            ret = runProg("pidof", [ "-s", "ebtables" ])
-            ret2 = runProg("pidof", [ "-s", "ebtables-restore" ])
-            if ret[1] == "" and ret2[1] == "":
-                log.warning("Removing dangling ebtables lock file: '%s'" %
-                            self.ebtables_lock)
-                try:
-                    os.unlink(self.ebtables_lock)
-                except OSError as e:
-                    if e.errno != errno.ENOENT:
-                        raise
 
     def _detect_concurrent_option(self):
         # Do not change any rules, just try to use the --concurrent option
@@ -105,7 +90,6 @@ class ebtables(object):
             _args.append(self.concurrent_option)
         _args += ["%s" % item for item in args]
         log.debug2("%s: %s %s", self.__class__, self._command, " ".join(_args))
-        self.__remove_dangling_lock()
         (status, ret) = runProg(self._command, _args)
         if status != 0:
             raise ValueError("'%s %s' failed: %s" % (self._command,
