@@ -380,13 +380,14 @@ class ip4tables(object):
         temp_file.close()
 
         wait_option = ""
-        ret = runProg(self._restore_command, ["-w"], stdin=temp_file.name)  # proposed for iptables-1.6.2
-        if ret[0] == 0:
-            wait_option = "-w"  # wait for xtables lock
-            ret = runProg(self._restore_command, ["--wait=2"], stdin=temp_file.name)  # since iptables > 1.4.21
-            if ret[0] == 0:
-                wait_option = "--wait=2"  # wait max 2 seconds
-            log.debug2("%s: %s will be using %s option.", self.__class__, self._restore_command, wait_option)
+        for test_option in ["-w", "--wait=2"]:
+            ret = runProg(self._restore_command, [test_option], stdin=temp_file.name)
+            if ret[0] == 0 and "invalid option" not in ret[1] \
+                           and "unrecognized option" not in ret[1]:
+                wait_option = test_option
+                break
+
+        log.debug2("%s: %s will be using %s option.", self.__class__, self._restore_command, wait_option)
 
         os.unlink(temp_file.name)
 
