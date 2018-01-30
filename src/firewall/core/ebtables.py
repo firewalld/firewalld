@@ -244,7 +244,7 @@ class ebtables(object):
             if table not in self.available_tables():
                 continue
             default_rules = DEFAULT_RULES[table][:]
-            if log_denied != "off" and LOG_RULES.has_key(table):
+            if log_denied != "off" and table in LOG_RULES:
                 default_rules.extend(LOG_RULES[table])
             prefix = [ "-t", table ]
             for rule in DEFAULT_RULES[table]:
