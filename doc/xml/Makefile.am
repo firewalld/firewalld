@@ -57,6 +57,7 @@ clean:
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
 
 ../html/%.html: %.xml authors.xml notes.xml seealso.xml transform-html.xsl
+	mkdir -p $(dir $@) # avoid xsltproc directory create race
 	$(XSLTPROC) -o $@ $(XSLTPROC_HTML_FLAGS) $<
 
 errorcodes.xml: ../../src/firewall/errors.py
