@@ -555,7 +555,6 @@ class FirewallDirectIPTables(FirewallDirect):
 
         args = set(args)
         not_allowed = set(["-C", "--check",           # check rule
-                           "-D", "--delete",          # delete rule
                            "-R", "--replace",         # replace rule
                            "-L", "--list",            # list rule
                            "-S", "--list-rules",      # print rules
@@ -571,8 +570,9 @@ class FirewallDirectIPTables(FirewallDirect):
                                 "arg '%s' is not allowed" %
                                 list(args & not_allowed)[0])
 
-        # args need to contain one of -A, -I, -N
+        # args need to contain one of -A, -D, -I, -N
         needed = set(["-A", "--append",
+                      "-D", "--delete",
                       "-I", "--insert",
                       "-N", "--new-chain"])
         # empty intersection of args and needed, i.e.
