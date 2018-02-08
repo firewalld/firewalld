@@ -46,9 +46,11 @@ all: $(man_MANS) $(HTMLS)
 clean:
 	-test -z "$(CLEAN_FILES)" || rm -f $(CLEAN_FILES)
 
-../man/man1/firewall-cmd.1: errorcodes.xml firewall-cmd.xml
+../man/man1/firewallctl.1: errorcodes.xml
+../html/firewallctl.html: errorcodes.xml
 
-../html/firewall-cmd.html: errorcodes.xml firewall-cmd.xml
+../man/man1/firewall-cmd.1: errorcodes.xml
+../html/firewall-cmd.html: errorcodes.xml
 
 ../man/man1/%.1: %.xml authors.xml notes.xml seealso.xml transform-man.xsl
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
@@ -57,6 +59,7 @@ clean:
 	$(XSLTPROC) -o $@ $(XSLTPROC_MAN_FLAGS) $<
 
 ../html/%.html: %.xml authors.xml notes.xml seealso.xml transform-html.xsl
+	mkdir -p $(dir $@) # avoid xsltproc directory create race
 	$(XSLTPROC) -o $@ $(XSLTPROC_HTML_FLAGS) $<
 
 errorcodes.xml: ../../src/firewall/errors.py

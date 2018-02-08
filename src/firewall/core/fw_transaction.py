@@ -46,8 +46,7 @@ class SimpleFirewallTransaction(object):
         del self.fail_funcs[:]
 
     def add_rule(self, ipv, rule):
-        if ipv not in self.rules or rule not in self.rules[ipv]:
-            self.rules.setdefault(ipv, [ ]).append(rule)
+        self.rules.setdefault(ipv, [ ]).append(rule)
 
     def query_rule(self, ipv, rule):
         return ipv in self.rules and rule in self.rules[ipv]
