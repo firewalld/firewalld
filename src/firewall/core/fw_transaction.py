@@ -27,7 +27,6 @@ from firewall.core.logger import log
 from firewall import errors
 from firewall.errors import FirewallError
 from firewall.fw_types import LastUpdatedOrderedDict
-from firewall.core.ipXtables import reverse_rule
 
 class SimpleFirewallTransaction(object):
     """Base class for FirewallTransaction and FirewallZoneTransaction"""
@@ -76,7 +75,8 @@ class SimpleFirewallTransaction(object):
             # reverse rule order for cleanup
             for ipv in self.rules:
                 for rule in reversed(self.rules[ipv]):
-                    rules.setdefault(ipv, [ ]).append(reverse_rule(rule))
+                    rules.setdefault(ipv, [ ]).append(
+                        self.fw.get_ipv_backend(ipv).reverse_rule(rule))
         else:
             for ipv in self.rules:
                 rules.setdefault(ipv, [ ]).extend(self.rules[ipv])
@@ -121,7 +121,8 @@ class SimpleFirewallTransaction(object):
             for ipv in done:
                 undo_rules[ipv] = [ ]
                 for rule in reversed(rules[ipv]):
-                    undo_rules[ipv].append(reverse_rule(rule))
+                    undo_rules[ipv].append(
+                        self.fw.get_ipv_backend(ipv).reverse_rule(rule))
             for ipv in undo_rules:
                 try:
                     self.fw.rules(ipv, undo_rules[ipv])

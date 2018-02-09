@@ -150,6 +150,45 @@ OUR_CHAINS["filter"] = set(["INPUT_direct", "INPUT_ZONES_SOURCE", "INPUT_ZONES",
                             "FORWARD_IN_ZONES", "FORWARD_OUT_ZONES_SOURCE",
                             "FORWARD_OUT_ZONES", "OUTPUT_direct"])
 
+# ipv ebtables also uses this
+#
+def common_reverse_rule(self, args):
+    """ Inverse valid rule """
+
+    replace_args = {
+        # Append
+        "-A": "-D",
+        "--append": "--delete",
+        # Insert
+        "-I": "-D",
+        "--insert": "--delete",
+        # New chain
+        "-N": "-X",
+        "--new-chain": "--delete-chain",
+    }
+
+    ret_args = args[:]
+
+    for arg in replace_args:
+        try:
+            idx = ret_args.index(arg)
+        except Exception:
+            continue
+
+        if arg in [ "-I", "--insert" ]:
+            # With insert rulenum, then remove it if it is a number
+            # Opt at position idx, chain at position idx+1, [rulenum] at
+            # position idx+2
+            try:
+                int(ret_args[idx+2])
+            except Exception:
+                pass
+            else:
+                ret_args.pop(idx+2)
+
+        ret_args[idx] = replace_args[arg]
+    return ret_args
+
 def common_reverse_passthrough(args):
     """ Reverse valid passthough rule """
 
@@ -311,6 +350,9 @@ class ip4tables(object):
             rule += [ "-D", chain ]
         rule += args
         return rule
+
+    def reverse_rule(self, args):
+        return common_reverse_rule(args)
 
     def check_passthrough(self, args):
         common_check_passthrough(args)
@@ -611,42 +653,3 @@ class ip6tables(ip4tables):
                                        "-m", "rpfilter", "--invert",
                                        "-j", "LOG",
                                        "--log-prefix", "rpfilter_DROP: " ])
-
-# ipv ebtables also uses this
-#
-def reverse_rule(self, args):
-    """ Inverse valid rule """
-
-    replace_args = {
-        # Append
-        "-A": "-D",
-        "--append": "--delete",
-        # Insert
-        "-I": "-D",
-        "--insert": "--delete",
-        # New chain
-        "-N": "-X",
-        "--new-chain": "--delete-chain",
-    }
-
-    ret_args = args[:]
-
-    for arg in replace_args:
-        try:
-            idx = ret_args.index(arg)
-        except Exception:
-            continue
-
-        if arg in [ "-I", "--insert" ]:
-            # With insert rulenum, then remove it if it is a number
-            # Opt at position idx, chain at position idx+1, [rulenum] at
-            # position idx+2
-            try:
-                int(ret_args[idx+2])
-            except Exception:
-                pass
-            else:
-                ret_args.pop(idx+2)
-
-        ret_args[idx] = replace_args[arg]
-    return ret_args

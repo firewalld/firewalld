@@ -134,6 +134,9 @@ class ebtables(object):
         rule += args
         return rule
 
+    def reverse_rule(self, args):
+        return ipXtables.common_reverse_rule(args)
+
     def check_passthrough(self, args):
         ipXtables.common_check_passthrough(args)
 

@@ -815,7 +815,7 @@ class Firewall(object):
                     log.error(msg)
                     for rule in reversed(_rules[:i]):
                         try:
-                            backend.set_rule(ipXtables.reverse_rule(rule))
+                            backend.set_rule(backend.reverse_rule(rule))
                         except Exception:
                             # ignore errors here
                             pass
