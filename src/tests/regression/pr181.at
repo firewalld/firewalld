@@ -15,7 +15,7 @@ AT_CHECK([echo '<description>foobar desc</description>' >> ./zones/foobar/anothe
 AT_CHECK([echo '<service name="http"/>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
 AT_CHECK([echo '</zone>' >> ./zones/foobar/another_really_long_name_that_trigger_the_bug.xml])
 
-FWD_CHECK([-q --reload])
+FWD_RELOAD
 FWD_CHECK([--zone=foobar --list-all | TRIM | grep ^services], 0, [dnl
 services: ssh http
 ])

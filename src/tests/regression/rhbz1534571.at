@@ -9,7 +9,7 @@ FWD_CHECK([-q --remove-service nfs])
 
 dnl permanent config
 FWD_CHECK([-q --permanent --add-service nfs --add-service nfs3])
-FWD_CHECK([-q --reload])
+FWD_RELOAD
 FWD_CHECK([-q --remove-service nfs3])
 FWD_CHECK([-q --remove-service nfs])
 
