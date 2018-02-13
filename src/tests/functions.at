@@ -91,4 +91,8 @@ m4_define([FWD_CHECK], [
     AT_CHECK([${top_srcdir}/src/firewall-cmd $1], $2, $3, $4, $5, $6)
     ])
 
+m4_define([FWD_GREP_LOG], [
+    AT_CHECK([grep "$1" ./firewalld.log], 0, [ignore], [ignore])
+    ])
+
 m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
