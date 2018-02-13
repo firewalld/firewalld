@@ -252,8 +252,8 @@ class Firewall_test(object):
             try:
                 obj.read()
             except Exception as msg:
-                log.debug1("Failed to load direct rules file '%s': %s",
-                           config.FIREWALLD_DIRECT, msg)
+                log.error("Failed to load direct rules file '%s': %s",
+                          config.FIREWALLD_DIRECT, msg)
         self.config.set_direct(copy.deepcopy(obj))
 
         self._default_zone = self.check_zone(default_zone)
