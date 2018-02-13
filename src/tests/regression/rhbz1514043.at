@@ -1,7 +1,7 @@
 FWD_START_TEST([--set-log-denied does not zero config])
 FWD_CHECK([-q --set-log-denied=all])
 FWD_CHECK([-q --permanent --zone=public --add-service=samba])
-FWD_CHECK([-q --reload])
+FWD_RELOAD
 FWD_CHECK([--zone=public --list-all | TRIM | grep ^services], 0, [dnl
 services: ssh dhcpv6-client samba
 ])

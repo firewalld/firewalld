@@ -10,5 +10,5 @@ AT_CHECK([echo '<source address="172.16.0.0/12" />' >> ./zones/foobar.xml])
 AT_CHECK([echo '<icmp-block-inversion />' >> ./zones/foobar.xml])
 AT_CHECK([echo '</zone>' >> ./zones/foobar.xml])
 
-FWD_CHECK([-q --reload])
+FWD_RELOAD
 FWD_END_TEST
