@@ -370,8 +370,8 @@ class Firewall(object):
             try:
                 obj.read()
             except Exception as msg:
-                log.debug1("Failed to load direct rules file '%s': %s",
-                           config.FIREWALLD_DIRECT, msg)
+                log.error("Failed to load direct rules file '%s': %s",
+                          config.FIREWALLD_DIRECT, msg)
         self.direct.set_permanent_config(obj)
         self.config.set_direct(copy.deepcopy(obj))
 
