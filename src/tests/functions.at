@@ -38,6 +38,10 @@ m4_define([FWD_START_FIREWALLD], [
     AT_FAIL_IF([test $up -ne 1])
     ])
 
+m4_define([FWD_RELOAD], [
+    FWD_CHECK([-q --reload], $1, $2, $3)
+    ])
+
 m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
 
