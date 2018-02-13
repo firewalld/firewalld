@@ -29,7 +29,7 @@ m4_define([FWD_CHECK_FIREWALLD], [
 
 m4_define([FWD_START_FIREWALLD], [
     FWD_CHECK_FIREWALLD
-    AT_CHECK([if ! cp ${top_srcdir}/config/firewalld.conf ./firewalld.conf; then exit 77; fi])
+
     ${top_srcdir}/src/firewalld --debug --nofork --nopid --system-config "./" --default-config "${top_srcdir}/config" --log-file "./firewalld.log" &
     if test $? -ne 0; then
         AT_FAIL_IF([:])
@@ -55,6 +55,8 @@ m4_define([FWD_RELOAD], [
 m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
 
+    dnl start every test with the default config
+    AT_CHECK([if ! cp ${top_srcdir}/config/firewalld.conf ./firewalld.conf; then exit 77; fi])
 
     dnl dummy wrapper for trap syntax
     function kill_firewalld() {
