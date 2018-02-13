@@ -1,0 +1,26 @@
+FWD_START_TEST([invalid syntax in xml files])
+
+dnl direct.xml
+AT_CHECK([mkdir -p ./zones])
+AT_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./direct.xml])
+AT_CHECK([echo '<direct>' >> ./direct.xml])
+AT_CHECK([echo '<chain table="filter" chain="some_chain_name" ipv="ipv4"/>' >> ./direct.xml])
+AT_CHECK([echo '<rule table="filter" chain="some_chain_name" ipv="ipv4" priority="1">--destination 127.0.0.1 --jump RETURN' >> ./direct.xml])
+dnl missing closing </rule>
+AT_CHECK([echo '</direct>' >> ./direct.xml])
+
+dnl zone.xml
+AT_CHECK([mkdir -p ./zones])
+AT_CHECK([echo '<?xml version="1.0" encoding="utf-8"?>' > ./zones/foobar.xml])
+AT_CHECK([echo '<zone>' >> ./zones/foobar.xml])
+AT_CHECK([echo '<short>foobar</short>' >> ./zones/foobar.xml])
+dnl port missing required protocol
+AT_CHECK([echo '<port port="22" />' >> ./zones/foobar.xml])
+AT_CHECK([echo '<service name="http"/>' >> ./zones/foobar.xml])
+AT_CHECK([echo '</zone>' >> ./zones/foobar.xml])
+
+FWD_RESTART
+FWD_GREP_LOG([ERROR:.*mismatched tag])
+FWD_GREP_LOG([ERROR:.*Missing attribute protocol for port])
+FWD_END_TEST([-e '/ERROR:.*mismatched tag.*/d' dnl
+              -e '/ERROR:.*Missing attribute protocol for port.*/d'])
