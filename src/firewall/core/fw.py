@@ -72,11 +72,6 @@ class Firewall(object):
         self.ipset_enabled = True
         self.ipset_supported_types = [ ]
 
-        self.available_tables = { }
-        self.available_tables["ipv4"] = self.ip4tables_backend.available_tables()
-        self.available_tables["ipv6"] = self.ip6tables_backend.available_tables()
-        self.available_tables["eb"] = self.ebtables_backend.available_tables()
-
         self.modules_backend = modules.modules()
 
         self.icmptype = FirewallIcmpType(self)
@@ -122,17 +117,17 @@ class Firewall(object):
     def _check_tables(self):
         # check if iptables, ip6tables and ebtables are usable, else disable
         if self.ip4tables_enabled and \
-           "filter" not in self.get_available_tables("ipv4"):
+           "filter" not in self.get_ipv_backend("ipv4").get_available_tables():
             log.warning("iptables not usable, disabling IPv4 firewall.")
             self.ip4tables_enabled = False
 
         if self.ip6tables_enabled and \
-           "filter" not in self.get_available_tables("ipv6"):
+           "filter" not in self.get_ipv_backend("ipv6").get_available_tables():
             log.warning("ip6tables not usable, disabling IPv6 firewall.")
             self.ip6tables_enabled = False
 
         if self.ebtables_enabled and \
-           "filter" not in self.get_available_tables("eb"):
+           "filter" not in self.get_ipv_backend("eb").get_available_tables():
             log.warning("ebtables not usable, disabling ethernet bridge firewall.")
             self.ebtables_enabled = False
 
@@ -603,11 +598,6 @@ class Firewall(object):
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
 
-    def get_available_tables(self, ipv):
-        if ipv in [ "ipv4", "ipv6", "eb" ]:
-            return self.available_tables[ipv]
-        return [ ]
-
     def cleanup(self):
         self.icmptype.cleanup()
         self.service.cleanup()
@@ -707,7 +697,7 @@ class Firewall(object):
             self.__apply_default_rules(ipv, transaction)
 
         if self.ipv6_rpfilter_enabled and \
-           "raw" in self.get_available_tables("ipv6"):
+           "raw" in self.get_ipv_backend("ipv6").get_available_tables():
 
             # Execute existing transaction
             transaction.execute(True)

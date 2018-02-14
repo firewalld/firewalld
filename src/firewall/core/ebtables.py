@@ -59,6 +59,7 @@ class ebtables(object):
         self.restore_noflush_option = self._detect_restore_noflush_option()
         self.concurrent_option = self._detect_concurrent_option()
         self.fill_exists()
+        self.available_tables = []
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -219,15 +220,19 @@ class ebtables(object):
     def delete_rule(self, rule):
         self.__run([ "-D" ] + rule)
 
-    def available_tables(self, table=None):
+    def get_available_tables(self, table=None):
         ret = []
         tables = [ table ] if table else BUILT_IN_CHAINS.keys()
         for table in tables:
-            try:
-                self.__run(["-t", table, "-L"])
+            if table in self.available_tables:
                 ret.append(table)
-            except ValueError:
-                log.debug1("ebtables table '%s' does not exist." % table)
+            else:
+                try:
+                    self.__run(["-t", table, "-L"])
+                    self.available_tables.append(table)
+                    ret.append(table)
+                except ValueError:
+                    log.debug1("ebtables table '%s' does not exist." % table)
 
         return ret
 
@@ -275,7 +280,7 @@ class ebtables(object):
 
     def apply_default_rules(self, transaction, log_denied="off"):
         for table in DEFAULT_RULES:
-            if table not in self.available_tables():
+            if table not in self.get_available_tables():
                 continue
             default_rules = DEFAULT_RULES[table][:]
             if log_denied != "off" and table in LOG_RULES:

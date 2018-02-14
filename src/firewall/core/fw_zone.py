@@ -1477,8 +1477,8 @@ class FirewallZoneIPTables(FirewallZone):
         self._chains = { }
         self._zones = { }
 
-        ip4tables_tables = self._fw.get_available_tables("ipv4")
-        ip6tables_tables = self._fw.get_available_tables("ipv6")
+        ip4tables_tables = self._fw.get_ipv_backend("ipv4").get_available_tables()
+        ip6tables_tables = self._fw.get_ipv_backend("ipv6").get_available_tables()
 
         mangle = []
         if "mangle" in ip4tables_tables:
@@ -1559,9 +1559,9 @@ class FirewallZoneIPTables(FirewallZone):
                                                zone=zone)
 
             ipvs = [ ]
-            if table in self._fw.get_available_tables("ipv4"):
+            if table in self._fw.get_ipv_backend("ipv4").get_available_tables():
                 ipvs.append("ipv4")
-            if table in self._fw.get_available_tables("ipv6"):
+            if table in self._fw.get_ipv_backend("ipv6").get_available_tables():
                 ipvs.append("ipv6")
 
             for ipv in ipvs:

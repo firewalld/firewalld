@@ -272,6 +272,7 @@ class ip4tables(object):
         self.wait_option = self._detect_wait_option()
         self.restore_wait_option = self._detect_restore_wait_option()
         self.fill_exists()
+        self.available_tables = []
 
     def fill_exists(self):
         self.command_exists = os.path.exists(self._command)
@@ -503,15 +504,19 @@ class ip4tables(object):
     def delete_rule(self, rule):
         self.__run([ "-D" ] + rule)
 
-    def available_tables(self, table=None):
+    def get_available_tables(self, table=None):
         ret = []
         tables = [ table ] if table else BUILT_IN_CHAINS.keys()
         for table in tables:
-            try:
-                self.__run(["-t", table, "-L", "-n"])
+            if table in self.available_tables:
                 ret.append(table)
-            except ValueError:
-                log.debug1("%s table '%s' does not exist (or not enough permission to check)." % (self.ipv, table))
+            else:
+                try:
+                    self.__run(["-t", table, "-L", "-n"])
+                    self.available_tables.append(table)
+                    ret.append(table)
+                except ValueError:
+                    log.debug1("%s table '%s' does not exist (or not enough permission to check)." % (self.ipv, table))
 
         return ret
 
@@ -622,7 +627,7 @@ class ip4tables(object):
 
     def apply_default_rules(self, transaction, log_denied="off"):
         for table in DEFAULT_RULES:
-            if table not in self.available_tables():
+            if table not in self.get_available_tables():
                 continue
             default_rules = DEFAULT_RULES[table][:]
             if log_denied != "off" and table in LOG_RULES:

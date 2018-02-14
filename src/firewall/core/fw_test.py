@@ -61,11 +61,6 @@ class Firewall_test(object):
         self.ipset_enabled = False
         self.ipset_supported_types = IPSET_TYPES
 
-        self.available_tables = { }
-        self.available_tables["ipv4"] = [ ]
-        self.available_tables["ipv6"] = [ ]
-        self.available_tables["eb"] = [ ]
-
         self.icmptype = FirewallIcmpType(self)
         self.service = FirewallService(self)
         self.zone = FirewallZoneIPTables(self)
@@ -397,11 +392,6 @@ class Firewall_test(object):
                     pass
                 self.config.forget_zone(combined_zone.name)
             self.zone.add_zone(combined_zone)
-
-    def get_available_tables(self, ipv):
-        if ipv in [ "ipv4", "ipv6", "eb" ]:
-            return self.available_tables[ipv]
-        return [ ]
 
     def cleanup(self):
         self.icmptype.cleanup()
