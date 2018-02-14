@@ -641,6 +641,22 @@ class ip4tables(object):
                     _rule = prefix + splitArgs(rule)
                 transaction.add_rule(self.ipv, _rule)
 
+    def get_zone_table_chains(self, table):
+        if table == "filter":
+            return { "INPUT", "FORWARD_IN", "FORWARD_OUT" }
+        if table == "mangle":
+            if "mangle" in self.get_available_tables() and \
+               "nat" in self.get_available_tables():
+                return { "PREROUTING" }
+        if table == "nat":
+            if "nat" in self.get_available_tables():
+                return { "PREROUTING", "POSTROUTING" }
+        if table == "raw":
+            if "raw" in self.get_available_tables():
+                return { "PREROUTING" }
+
+        return {}
+
 class ip6tables(ip4tables):
     ipv = "ipv6"
 

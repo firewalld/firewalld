@@ -237,6 +237,9 @@ class ebtables(object):
 
         return ret
 
+    def get_zone_table_chains(self, table):
+        return {}
+
     def used_tables(self):
         return list(BUILT_IN_CHAINS.keys())
 

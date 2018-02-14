@@ -1477,52 +1477,6 @@ class FirewallZoneIPTables(FirewallZone):
         self._chains = { }
         self._zones = { }
 
-        ip4tables_tables = self._fw.get_ipv_backend("ipv4").get_available_tables()
-        ip6tables_tables = self._fw.get_ipv_backend("ipv6").get_available_tables()
-
-        mangle = []
-        if "mangle" in ip4tables_tables:
-            mangle.append("ipv4")
-        if "mangle" in ip6tables_tables:
-            mangle.append("ipv6")
-
-        raw = []
-        if "raw" in ip4tables_tables:
-            raw.append("ipv4")
-        if "raw" in ip6tables_tables:
-            raw.append("ipv6")
-
-        nat = []
-        if "nat" in ip4tables_tables:
-            nat.append("ipv4")
-        else:
-            if "ipv4" in mangle:
-                mangle.remove("ipv4")
-
-        if "nat" in ip6tables_tables:
-            nat.append("ipv6")
-        else:
-            if "ipv6" in mangle:
-                mangle.remove("ipv6")
-
-        self.zone_chains = {
-            "filter": {
-                "INPUT": [ "ipv4", "ipv6" ],
-                "FORWARD_IN": [ "ipv4", "ipv6" ],
-                "FORWARD_OUT": [ "ipv4", "ipv6" ],
-            },
-            "nat": {
-                "PREROUTING": nat,
-                "POSTROUTING": nat,
-            },
-            "mangle": {
-                "PREROUTING": mangle,
-            },
-            "raw": {
-                "PREROUTING": raw,
-            },
-        }
-
         self.interface_zone_opts = {
             "PREROUTING": "-i",
             "POSTROUTING": "-o",
@@ -1614,13 +1568,16 @@ class FirewallZoneIPTables(FirewallZone):
 
     def _interface(self, enable, zone, interface, zone_transaction,
                     append=False):
-        for table in self.zone_chains:
-            for chain in self.zone_chains[table]:
-                # create needed chains if not done already
-                if enable:
-                    zone_transaction.add_chain(table, chain)
+        for ipv in self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(ipv)
+            if not backend.zones_supported:
+                continue
+            for table in backend.get_available_tables():
+                for chain in backend.get_zone_table_chains(table):
+                    # create needed chains if not done already
+                    if enable:
+                        zone_transaction.add_chain(table, chain)
 
-                for ipv in self.zone_chains[table][chain]:
                     # handle all zones in the same way here, now
                     # trust and block zone targets are handled now in __chain
                     opt = self.interface_zone_opts[chain]
@@ -1676,9 +1633,10 @@ class FirewallZoneIPTables(FirewallZone):
         # For mac source bindings ipv is an empty string, the mac source will
         # be added for ipv4 and ipv6
         if ipv == "" or ipv is None:
-            for ipv in [ "ipv4", "ipv6" ]:
-                for table in self.zone_chains:
-                    for chain in self.zone_chains[table]:
+            for ipv in self._fw.enabled_backends():
+                backend = self._fw.get_ipv_backend(ipv)
+                for table in backend.get_available_tables():
+                    for chain in backend.get_zone_table_chains(table):
                         # create needed chains if not done already
                         if enable:
                             zone_transaction.add_chain(table, chain)
@@ -1715,8 +1673,9 @@ class FirewallZoneIPTables(FirewallZone):
                         zone_transaction.add_rule(ipv, rule)
 
         else:
-            for table in self.zone_chains:
-                for chain in self.zone_chains[table]:
+            backend = self._fw.get_ipv_backend(ipv)
+            for table in backend.get_available_tables():
+                for chain in backend.get_zone_table_chains(table):
                     # create needed chains if not done already
                     if enable:
                         zone_transaction.add_chain(table, chain)
