@@ -371,6 +371,13 @@ class Firewall(object):
         self.config.set_direct(copy.deepcopy(obj))
 
         # automatic helpers
+        #
+        # NOTE: must force loading of nf_conntrack to make sure the values are
+        # available in /proc
+        module_return = self.handle_modules(["nf_conntrack"], True)
+        if module_return:
+            log.error("Failed to load nf_conntrack module: %s" % module_return[1])
+            sys.exit(1)
         if self._automatic_helpers != "system":
             functions.set_nf_conntrack_helper_setting(self._automatic_helpers == "yes")
         self.nf_conntrack_helper_setting = \
