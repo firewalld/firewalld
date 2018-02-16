@@ -163,6 +163,7 @@ CONFIG_FILES = \
 	services/ircs.xml \
 	services/irc.xml \
 	services/iscsi-target.xml \
+	services/isns.xml \
 	services/jenkins.xml \
 	services/kadmin.xml \
 	services/kerberos.xml \
