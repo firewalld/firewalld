@@ -1477,20 +1477,13 @@ class FirewallZoneIPTables(FirewallZone):
         self._chains = { }
         self._zones = { }
 
-        self.interface_zone_opts = {
-            "PREROUTING": "-i",
-            "POSTROUTING": "-o",
-            "INPUT": "-i",
-            "FORWARD_IN": "-i",
-            "FORWARD_OUT": "-o",
-            "OUTPUT": "-o",
-        }
-
-        ## transform self.interface_zone_opts for source address
-        tbl = { "-i": "-s",
-                "-o": "-d" }
         self.source_zone_opts = {
-            key: tbl[val] for key,val in self.interface_zone_opts.items()
+            "PREROUTING": "-s",
+            "POSTROUTING": "-d",
+            "INPUT": "-s",
+            "FORWARD_IN": "-s",
+            "FORWARD_OUT": "-d",
+            "OUTPUT": "-d",
         }
 
 
@@ -1578,22 +1571,9 @@ class FirewallZoneIPTables(FirewallZone):
                     if enable:
                         zone_transaction.add_chain(table, chain)
 
-                    # handle all zones in the same way here, now
-                    # trust and block zone targets are handled now in __chain
-                    opt = self.interface_zone_opts[chain]
-                    target = DEFAULT_ZONE_TARGET.format(
-                        chain=SHORTCUTS[chain], zone=zone)
-                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                        action = "-g"
-                    else:
-                        action = "-j"
-                    if enable and not append:
-                        rule = [ "-I", "%s_ZONES" % chain, "1" ]
-                    elif enable:
-                        rule = [ "-A", "%s_ZONES" % chain ]
-                    else:
-                        rule = [ "-D", "%s_ZONES" % chain ]
-                    rule += [ "-t", table, opt, interface, action, target ]
+                    rule = backend.build_zone_source_interface(enable, zone,
+                                        self._zones[zone].target, interface,
+                                        table, chain, append)
                     zone_transaction.add_rule(ipv, rule)
 
     # IPSETS

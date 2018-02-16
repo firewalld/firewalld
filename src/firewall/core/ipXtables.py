@@ -21,6 +21,7 @@
 
 import os.path
 
+from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
 from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs
@@ -656,6 +657,33 @@ class ip4tables(object):
                 return { "PREROUTING" }
 
         return {}
+
+    def build_zone_source_interface(self, enable, zone, zone_target, interface,
+                                    table, chain, append=False):
+        # handle all zones in the same way here, now
+        # trust and block zone targets are handled now in __chain
+        opt = {
+            "PREROUTING": "-i",
+            "POSTROUTING": "-o",
+            "INPUT": "-i",
+            "FORWARD_IN": "-i",
+            "FORWARD_OUT": "-o",
+            "OUTPUT": "-o",
+        }[chain]
+
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
+        if zone_target == DEFAULT_ZONE_TARGET:
+            action = "-g"
+        else:
+            action = "-j"
+        if enable and not append:
+            rule = [ "-I", "%s_ZONES" % chain, "1" ]
+        elif enable:
+            rule = [ "-A", "%s_ZONES" % chain ]
+        else:
+            rule = [ "-D", "%s_ZONES" % chain ]
+        rule += [ "-t", table, opt, interface, action, target ]
+        return rule
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
