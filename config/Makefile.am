@@ -246,6 +246,8 @@ CONFIG_FILES = \
 	services/vdsm.xml \
 	services/vnc-server.xml \
 	services/wbem-https.xml \
+	services/wsman.xml \
+	services/wsmans.xml \
 	services/xmpp-bosh.xml \
 	services/xmpp-client.xml \
 	services/xmpp-local.xml \
