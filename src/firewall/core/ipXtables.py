@@ -24,7 +24,7 @@ import os.path
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import tempFile, readfile, splitArgs
+from firewall.functions import tempFile, readfile, splitArgs, check_mac
 from firewall import config
 import string
 
@@ -684,6 +684,51 @@ class ip4tables(object):
         else:
             rule = [ "-D", "%s_ZONES" % chain ]
         rule += [ "-t", table, opt, interface, action, target ]
+        return rule
+
+    def build_zone_source_address(self, enable, zone, zone_target, address,
+                                  table, chain):
+        add_del = { True: "-A", False: "-D" }[enable]
+
+        opt = {
+            "PREROUTING": "-s",
+            "POSTROUTING": "-d",
+            "INPUT": "-s",
+            "FORWARD_IN": "-s",
+            "FORWARD_OUT": "-d",
+            "OUTPUT": "-d",
+        }[chain]
+
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
+        if zone_target == DEFAULT_ZONE_TARGET:
+            action = "-g"
+        else:
+            action = "-j"
+
+        if address.startswith("ipset:"):
+            name = address[6:]
+            if opt == "-d":
+                opt = "dst"
+            else:
+                opt = "src"
+            flags = ",".join([opt] * self._fw.ipset.get_dimension(name))
+            rule = [ add_del,
+                     "%s_ZONES_SOURCE" % chain, "-t", table,
+                     "-m", "set", "--match-set", name,
+                     flags, action, target ]
+        else:
+            if check_mac(address):
+                # outgoing can not be set
+                if opt == "-d":
+                    return ""
+                rule = [ add_del,
+                         "%s_ZONES_SOURCE" % chain, "-t", table,
+                         "-m", "mac", "--mac-source", address.upper(),
+                         action, target ]
+            else:
+                rule = [ add_del,
+                         "%s_ZONES_SOURCE" % chain, "-t", table,
+                         opt, address, action, target ]
         return rule
 
 class ip6tables(ip4tables):

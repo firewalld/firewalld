@@ -1477,16 +1477,6 @@ class FirewallZoneIPTables(FirewallZone):
         self._chains = { }
         self._zones = { }
 
-        self.source_zone_opts = {
-            "PREROUTING": "-s",
-            "POSTROUTING": "-d",
-            "INPUT": "-s",
-            "FORWARD_IN": "-s",
-            "FORWARD_OUT": "-d",
-            "OUTPUT": "-d",
-        }
-
-
     # dynamic chain handling
 
     def gen_chain_rules(self, zone, create, chains, transaction):
@@ -1601,91 +1591,23 @@ class FirewallZoneIPTables(FirewallZone):
                 (name, _type))
 
     def _source(self, enable, zone, ipv, source, zone_transaction):
-        # make sure mac addresses are unique
-        if check_mac(source):
-            source = source.upper()
-
-        add_del = { True: "-A", False: "-D" }[enable]
-
         # For mac source bindings ipv is an empty string, the mac source will
         # be added for ipv4 and ipv6
-        if ipv == "" or ipv is None:
-            for ipv in self._fw.enabled_backends():
-                backend = self._fw.get_ipv_backend(ipv)
-                for table in backend.get_available_tables():
-                    for chain in backend.get_zone_table_chains(table):
-                        # create needed chains if not done already
-                        if enable:
-                            zone_transaction.add_chain(table, chain)
-
-                        # for zone mac source bindings the features are limited
-
-                        if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                            action = "-g"
-                        else:
-                            action = "-j"
-                        target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS[chain], zone=zone)
-                        opt = self.source_zone_opts[chain]
-
-                        if source.startswith("ipset:"):
-                            _name = source[6:]
-                            if opt == "-d":
-                                opt = "dst"
-                            else:
-                                opt = "src"
-                            flags = self.__ipset_match_flags(_name, opt)
-                            rule = [ add_del,
-                                     "%s_ZONES_SOURCE" % chain, "-t", table,
-                                     "-m", "set", "--match-set", _name,
-                                     flags, action, target ]
-                        else:
-                            # outgoing can not be set
-                            if opt == "-d":
-                                continue
-                            rule = [ add_del,
-                                     "%s_ZONES_SOURCE" % chain, "-t", table,
-                                     "-m", "mac", "--mac-source", source,
-                                     action, target ]
-                        zone_transaction.add_rule(ipv, rule)
-
-        else:
-            backend = self._fw.get_ipv_backend(ipv)
+        for _ipv in [ipv] if ipv else self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(_ipv)
+            if not backend.zones_supported:
+                continue
             for table in backend.get_available_tables():
                 for chain in backend.get_zone_table_chains(table):
                     # create needed chains if not done already
                     if enable:
                         zone_transaction.add_chain(table, chain)
 
-                    # handle all zone bindings in the same way
-                    # trust, block and drop zone targets are handled in __chain
+                    rule = backend.build_zone_source_address(enable, zone,
+                                    self._zones[zone].target, source, table,
+                                    chain)
 
-                    if self._zones[zone].target == DEFAULT_ZONE_TARGET:
-                        action = "-g"
-                    else:
-                        action = "-j"
-
-                    target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                        zone=zone)
-                    opt = self.source_zone_opts[chain]
-
-                    rule = [ add_del, "%s_ZONES_SOURCE" % chain, "-t", table ]
-                    if source.startswith("ipset:"):
-                        _name = source[6:]
-                        if opt == "-d":
-                            opt = "dst"
-                        else:
-                            opt = "src"
-                        flags = self.__ipset_match_flags(_name, opt)
-                        rule = [ add_del,
-                                 "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 "-m", "set", "--match-set", _name, flags,
-                                 action, target ]
-                    else:
-                        rule = [ add_del,
-                                 "%s_ZONES_SOURCE" % chain, "-t", table,
-                                 opt, source, action, target ]
-                    zone_transaction.add_rule(ipv, rule)
+                    zone_transaction.add_rule(_ipv, rule)
 
     def __rule_source(self, source, command):
         if source:
