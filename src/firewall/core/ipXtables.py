@@ -731,6 +731,48 @@ class ip4tables(object):
                          opt, address, action, target ]
         return rule
 
+    def build_zone_chain_rules(self, zone, table, chain):
+        _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
+
+        OUR_CHAINS[table].update(set([_zone,
+                                      "%s_log" % _zone,
+                                      "%s_deny" % _zone,
+                                      "%s_allow" % _zone]))
+
+        rules = []
+        rules.append([ "-N", _zone, "-t", table ])
+        rules.append([ "-N", "%s_log" % _zone, "-t", table ])
+        rules.append([ "-N", "%s_deny" % _zone, "-t", table ])
+        rules.append([ "-N", "%s_allow" % _zone, "-t", table ])
+        rules.append([ "-I", _zone, "1", "-t", table, "-j", "%s_log" % _zone ])
+        rules.append([ "-I", _zone, "2", "-t", table, "-j", "%s_deny" % _zone ])
+        rules.append([ "-I", _zone, "3", "-t", table, "-j", "%s_allow" % _zone ])
+
+        # Handle trust, block and drop zones:
+        # Add an additional rule with the zone target (accept, reject
+        # or drop) to the base zone only in the filter table.
+        # Otherwise it is not be possible to have a zone with drop
+        # target, that is allowing traffic that is locally initiated
+        # or that adds additional rules. (RHBZ#1055190)
+        target = self._fw.zone._zones[zone].target
+        if table == "filter" and \
+           target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
+           chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+            rules.append([ "-I", _zone, "4", "-t", table, "-j", target ])
+
+        if self._fw.get_log_denied() != "off":
+            if table == "filter" and \
+               chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
+                if target in [ "REJECT", "%%REJECT%%" ]:
+                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
+                                   "-j", "LOG", "--log-prefix",
+                                   "\"%s_REJECT: \"" % _zone ])
+                if target == "DROP":
+                    rules.append([ "-I", _zone, "4", "-t", table, "%%LOGTYPE%%",
+                                   "-j", "LOG", "--log-prefix",
+                                   "\"%s_DROP: \"" % _zone ])
+        return rules
+
 class ip6tables(ip4tables):
     ipv = "ipv6"
 

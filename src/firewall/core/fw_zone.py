@@ -29,7 +29,6 @@ from firewall.core.rich import Rich_Rule, Rich_Accept, Rich_Reject, \
     Rich_Drop, Rich_Mark, Rich_Service, Rich_Port, Rich_Protocol, \
     Rich_Masquerade, Rich_ForwardPort, Rich_SourcePort, Rich_IcmpBlock, \
     Rich_IcmpType
-from firewall.core.ipXtables import OUR_CHAINS
 from firewall.core.fw_transaction import FirewallTransaction, \
     FirewallZoneTransaction
 from firewall.core.fw_ifcfg import ifcfg_set_zone_of_interface
@@ -1492,59 +1491,12 @@ class FirewallZoneIPTables(FirewallZone):
                    chain not in self._chains[zone][table]:
                     continue
 
-            _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                               zone=zone)
-
-            ipvs = [ ]
-            if table in self._fw.get_ipv_backend("ipv4").get_available_tables():
-                ipvs.append("ipv4")
-            if table in self._fw.get_ipv_backend("ipv6").get_available_tables():
-                ipvs.append("ipv6")
-
-            for ipv in ipvs:
-                OUR_CHAINS[table].update(set([_zone,
-                                              "%s_log" % _zone,
-                                              "%s_deny" % _zone,
-                                              "%s_allow" % _zone]))
-                transaction.add_rule(ipv, [ "-N", _zone, "-t", table ])
-                transaction.add_rule(ipv, [ "-N", "%s_log" % (_zone), "-t", table ])
-                transaction.add_rule(ipv, [ "-N", "%s_deny" % (_zone), "-t", table ])
-                transaction.add_rule(ipv, [ "-N", "%s_allow" % (_zone), "-t", table ])
-                transaction.add_rule(ipv, [ "-I", _zone, "1", "-t", table,
-                                            "-j", "%s_log" % (_zone) ])
-                transaction.add_rule(ipv, [ "-I", _zone, "2", "-t", table,
-                                            "-j", "%s_deny" % (_zone) ])
-                transaction.add_rule(ipv, [ "-I", _zone, "3", "-t", table,
-                                            "-j", "%s_allow" % (_zone) ])
-
-                # Handle trust, block and drop zones:
-                # Add an additional rule with the zone target (accept, reject
-                # or drop) to the base _zone only in the filter table.
-                # Otherwise it is not be possible to have a zone with drop
-                # target, that is allowing traffic that is locally initiated
-                # or that adds additional rules. (RHBZ#1055190)
-                target = self._zones[zone].target
-                if table == "filter" and \
-                   target in [ "ACCEPT", "REJECT", "%%REJECT%%", "DROP" ] and \
-                   chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                    transaction.add_rule(ipv, [ "-I", _zone, "4",
-                                                "-t", table, "-j", target ])
-
-                if self._fw.get_log_denied() != "off":
-                    if table == "filter" and \
-                       chain in [ "INPUT", "FORWARD_IN", "FORWARD_OUT", "OUTPUT" ]:
-                        if target in [ "REJECT", "%%REJECT%%" ]:
-                            transaction.add_rule(
-                                ipv, [ "-I", _zone, "4", "-t", table,
-                                       "%%LOGTYPE%%",
-                                       "-j", "LOG", "--log-prefix",
-                                       "\"%s_REJECT: \"" % _zone ])
-                        if target == "DROP":
-                            transaction.add_rule(
-                                ipv, [ "-I", _zone, "4", "-t", table,
-                                       "%%LOGTYPE%%",
-                                       "-j", "LOG", "--log-prefix",
-                                       "\"%s_DROP: \"" % _zone ])
+            for ipv in self._fw.enabled_backends():
+                backend = self._fw.get_ipv_backend(ipv)
+                if backend.zones_supported and \
+                   table in backend.get_available_tables():
+                    rules = backend.build_zone_chain_rules(zone, table, chain)
+                    transaction.add_rules(ipv, rules)
 
             self._register_chains(zone, create, chains)
             transaction.add_fail(self._register_chains, zone, create, chains)
