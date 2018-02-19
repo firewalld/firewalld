@@ -60,10 +60,10 @@ class Firewall(object):
     def __init__(self):
         self._firewalld_conf = firewalld_conf(config.FIREWALLD_CONF)
 
-        self.ip4tables_backend = ipXtables.ip4tables()
+        self.ip4tables_backend = ipXtables.ip4tables(self)
         self.ip4tables_enabled = True
         self.ip4tables_supported_icmp_types = [ ]
-        self.ip6tables_backend = ipXtables.ip6tables()
+        self.ip6tables_backend = ipXtables.ip6tables(self)
         self.ip6tables_enabled = True
         self.ip6tables_supported_icmp_types = [ ]
         self.ebtables_backend = ebtables.ebtables()

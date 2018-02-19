@@ -268,7 +268,8 @@ class ip4tables(object):
     ipv = "ipv4"
     zones_supported = True
 
-    def __init__(self):
+    def __init__(self, fw):
+        self._fw = fw
         self._command = config.COMMANDS[self.ipv]
         self._restore_command = config.COMMANDS["%s-restore" % self.ipv]
         self.wait_option = self._detect_wait_option()
