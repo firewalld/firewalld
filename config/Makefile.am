@@ -216,6 +216,7 @@ CONFIG_FILES = \
 	services/rpc-bind.xml \
 	services/rsh.xml \
 	services/rsyncd.xml \
+	services/salt-master.xml \
 	services/samba-client.xml \
 	services/samba.xml \
 	services/sane.xml \
