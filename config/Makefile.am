@@ -194,6 +194,7 @@ CONFIG_FILES = \
 	services/nmea-0183.xml \
 	services/nrpe.xml \
 	services/ntp.xml \
+	services/nut.xml \
 	services/openvpn.xml \
 	services/ovirt-imageio.xml \
 	services/ovirt-storageconsole.xml \
