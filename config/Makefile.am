@@ -145,6 +145,7 @@ CONFIG_FILES = \
 	services/docker-swarm.xml \
 	services/dropbox-lansync.xml \
 	services/elasticsearch.xml \
+	services/finger.xml \
 	services/freeipa-ldaps.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
