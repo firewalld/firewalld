@@ -124,6 +124,7 @@ CONFIG_FILES = \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
 	services/amqps.xml \
+	services/apcupsd.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/bgp.xml \
