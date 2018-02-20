@@ -233,6 +233,7 @@ CONFIG_FILES = \
 	services/spideroak-lansync.xml \
 	services/squid.xml \
 	services/ssh.xml \
+	services/svdrp.xml \
 	services/syncthing.xml \
 	services/syncthing-gui.xml \
 	services/synergy.xml \
