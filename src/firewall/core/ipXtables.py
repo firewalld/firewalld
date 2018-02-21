@@ -824,6 +824,21 @@ class ip4tables(object):
 
         return rule
 
+    def build_zone_masquerade_rule(self, enable, zone):
+        add_del = { True: "-A", False: "-D" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["POSTROUTING"],
+                                            zone=zone)
+        rules = []
+        rules.append([ add_del, "%s_allow" % (target), "!", "-o", "lo",
+                     "-t", "nat", "-j", "MASQUERADE" ])
+        # FORWARD_OUT
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_OUT"],
+                                            zone=zone)
+        rules.append([ add_del, "%s_allow" % (target), "-t", "filter",
+                     "-m", "conntrack", "--ctstate", "NEW", "-j", "ACCEPT" ])
+
+        return rules
+
 class ip6tables(ip4tables):
     ipv = "ipv6"
 

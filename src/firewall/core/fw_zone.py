@@ -2202,22 +2202,15 @@ class FirewallZoneIPTables(FirewallZone):
             zone_transaction.add_chain("nat", "POSTROUTING")
             zone_transaction.add_chain("filter", "FORWARD_OUT")
 
-        add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in [ "ipv4", "ipv6" ]:
+        for ipv in self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(ipv)
+
+            if not backend.zones_supported:
+                continue
+
             zone_transaction.add_post(enable_ip_forwarding, ipv)
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["POSTROUTING"], zone=zone)
-            zone_transaction.add_rule(ipv, [ add_del, "%s_allow" % (target),
-                                             "!", "-o", "lo",
-                                             "-t", "nat", "-j", "MASQUERADE" ])
-            # FORWARD_OUT
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["FORWARD_OUT"], zone=zone)
-            zone_transaction.add_rule(ipv, [ add_del, "%s_allow" % (target),
-                                             "-t", "filter",
-                                             "-m", "conntrack",
-                                             "--ctstate", "NEW",
-                                             "-j", "ACCEPT" ])
+            rules = backend.build_zone_masquerade_rule(enable, zone)
+            zone_transaction.add_rules(ipv, rules)
 
     def _forward_port(self, enable, zone, zone_transaction, port, protocol,
                        toport=None, toaddr=None, mark_id=None):
