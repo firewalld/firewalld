@@ -2175,15 +2175,14 @@ class FirewallZoneIPTables(FirewallZone):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
-        add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in [ "ipv4", "ipv6" ]:
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                zone=zone)
-            zone_transaction.add_rule(ipv,
-                                      [ add_del, "%s_allow" % (target),
-                                        "-t", "filter", "-p", protocol,
-                                        "-m", "conntrack", "--ctstate", "NEW",
-                                        "-j", "ACCEPT" ])
+        for ipv in self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(ipv)
+
+            if not backend.zones_supported:
+                continue
+
+            rule = backend.build_zone_protocol_rule(enable, zone, protocol)
+            zone_transaction.add_rule(ipv, rule)
 
     def _source_port(self, enable, zone, port, protocol, zone_transaction):
         if enable:
