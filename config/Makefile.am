@@ -254,6 +254,7 @@ CONFIG_FILES = \
 	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
+	services/wbem-http.xml \
 	services/wbem-https.xml \
 	services/wsman.xml \
 	services/wsmans.xml \
