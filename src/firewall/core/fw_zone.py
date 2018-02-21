@@ -2110,11 +2110,19 @@ class FirewallZoneIPTables(FirewallZone):
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
 
-        add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in [ "ipv4", "ipv6" ]:
-            if len(svc.destination) > 0 and ipv not in svc.destination:
-                # destination is set, only use if it contains ipv
+        for ipv in self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(ipv)
+
+            if not backend.zones_supported:
                 continue
+
+            destination = None
+            if len(svc.destination) > 0:
+                if ipv not in svc.destination:
+                    # destination is set, only use if it contains ipv
+                    continue
+                else:
+                    destination = svc.destination[ipv]
 
             if self._fw.nf_conntrack_helper_setting == 0:
                 for helper in helpers:
@@ -2131,52 +2139,23 @@ class FirewallZoneIPTables(FirewallZone):
                         # no support for family ipv, continue
                         continue
                     for (port,proto) in helper.ports:
-                        target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS["PREROUTING"], zone=zone)
-                        rule = [ add_del, "%s_allow" % (target), "-t", "raw",
-                                 "-p", proto ]
-                        if port:
-                            rule += [ "--dport", "%s" % portStr(port) ]
-                        if ipv in svc.destination and \
-                           svc.destination[ipv] != "":
-                            rule += [ "-d",  svc.destination[ipv] ]
-                        rule += [ "-j", "CT", "--helper", helper.name ]
+                        rule = backend.build_zone_helper_ports_rule(
+                                        enable, zone, proto, port,
+                                        destination, helper.name)
                         zone_transaction.add_rule(ipv, rule)
 
-            # handle rules
             for (port,proto) in svc.ports:
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["INPUT"], zone=zone)
-                rule = [ add_del, "%s_allow" % (target), "-t", "filter",
-                         "-p", proto ]
-                if port:
-                    rule += [ "--dport", "%s" % portStr(port) ]
-                if ipv in svc.destination and svc.destination[ipv] != "":
-                    rule += [ "-d",  svc.destination[ipv] ]
-                rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
-                rule += [ "-j", "ACCEPT" ]
+                rule = backend.build_zone_ports_rule(enable, zone, proto, port,
+                                                     destination)
                 zone_transaction.add_rule(ipv, rule)
 
             for protocol in svc.protocols:
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["INPUT"], zone=zone)
-                rule = [ add_del, "%s_allow" % (target),
-                         "-t", "filter", "-p", protocol,
-                         "-m", "conntrack", "--ctstate", "NEW",
-                         "-j", "ACCEPT" ]
+                rule = backend.build_zone_protocol_rule(enable, zone, protocol)
                 zone_transaction.add_rule(ipv, rule)
 
             for (port,proto) in svc.source_ports:
-                target = DEFAULT_ZONE_TARGET.format(
-                    chain=SHORTCUTS["INPUT"], zone=zone)
-                rule = [ add_del, "%s_allow" % (target), "-t", "filter",
-                         "-p", proto ]
-                if port:
-                    rule += [ "--sport", "%s" % portStr(port) ]
-                if ipv in svc.destination and svc.destination[ipv] != "":
-                    rule += [ "-d",  svc.destination[ipv] ]
-                rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
-                rule += [ "-j", "ACCEPT" ]
+                rule = backend.build_zone_source_ports_rule(
+                                    enable, zone, proto, port, destination)
                 zone_transaction.add_rule(ipv, rule)
 
     def _port(self, enable, zone, port, protocol, zone_transaction):

@@ -24,7 +24,7 @@ import os.path
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import tempFile, readfile, splitArgs, check_mac
+from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr
 from firewall import config
 import string
 
@@ -772,6 +772,57 @@ class ip4tables(object):
                                    "-j", "LOG", "--log-prefix",
                                    "\"%s_DROP: \"" % _zone ])
         return rules
+
+    def build_zone_ports_rule(self, enable, zone, proto, port, destination=None):
+        add_del = { True: "-A", False: "-D" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
+        rule = [ add_del, "%s_allow" % (target), "-t", "filter", "-p", proto ]
+        if port:
+            rule += [ "--dport", "%s" % portStr(port) ]
+        if destination:
+            rule += [ "-d", destination ]
+        rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
+        rule += [ "-j", "ACCEPT" ]
+
+        return rule
+
+    def build_zone_protocol_rule(self, enable, zone, protocol):
+        add_del = { True: "-A", False: "-D" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
+        rule = [ add_del, "%s_allow" % (target),
+                 "-t", "filter", "-p", protocol,
+                 "-m", "conntrack", "--ctstate", "NEW",
+                 "-j", "ACCEPT" ]
+
+        return rule
+
+    def build_zone_source_ports_rule(self, enable, zone, proto, port,
+                                     destination=None):
+        add_del = { True: "-A", False: "-D" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"], zone=zone)
+        rule = [ add_del, "%s_allow" % (target), "-t", "filter", "-p", proto ]
+        if port:
+            rule += [ "--sport", "%s" % portStr(port) ]
+        if destination:
+            rule += [ "-d", destination ]
+        rule += [ "-m", "conntrack", "--ctstate", "NEW" ]
+        rule += [ "-j", "ACCEPT" ]
+
+        return rule
+
+    def build_zone_helper_ports_rule(self, enable, zone, proto, port,
+                                     destination, helper_name):
+        add_del = { True: "-A", False: "-D" }[enable]
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
+                                            zone=zone)
+        rule = [ add_del, "%s_allow" % (target), "-t", "raw", "-p", proto ]
+        if port:
+            rule += [ "--dport", "%s" % portStr(port) ]
+        if destination:
+            rule += [ "-d",  destination ]
+        rule += [ "-j", "CT", "--helper", helper_name ]
+
+        return rule
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
