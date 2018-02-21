@@ -47,6 +47,10 @@ class SimpleFirewallTransaction(object):
     def add_rule(self, ipv, rule):
         self.rules.setdefault(ipv, [ ]).append(rule)
 
+    def add_rules(self, ipv, rules):
+        for rule in rules:
+            self.add_rule(ipv, rule)
+
     def query_rule(self, ipv, rule):
         return ipv in self.rules and rule in self.rules[ipv]
 
