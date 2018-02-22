@@ -2239,46 +2239,17 @@ class FirewallZoneIPTables(FirewallZone):
             zone_transaction.add_chain("filter", "INPUT")
             zone_transaction.add_chain("filter", "FORWARD_IN")
 
-        add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in [ "ipv4", "ipv6" ]:
+        for ipv in self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(ipv)
+
+            if not backend.zones_supported:
+                continue
+
             if ict.destination and ipv not in ict.destination:
                 continue
 
-            if ipv == "ipv4":
-                proto = [ "-p", "icmp" ]
-                match = [ "-m", "icmp", "--icmp-type", icmp ]
-            else:
-                proto = [ "-p", "ipv6-icmp" ]
-                match = [ "-m", "icmp6", "--icmpv6-type", icmp ]
-
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                                zone=zone)
-            if self.query_icmp_block_inversion(zone):
-                final_chain = "%s_allow" % target
-                final_target = "ACCEPT"
-            else:
-                final_chain = "%s_deny" % target
-                final_target = "%%REJECT%%"
-            if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
-                zone_transaction.add_rule(
-                    ipv,
-                    [ add_del, final_chain, "-t", "filter" ] + proto + match +
-                    [ "%%LOGTYPE%%", "-j", "LOG",
-                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
-            zone_transaction.add_rule(ipv, [ add_del, final_chain,
-                                             "-t", "filter", ] + proto +
-                                      match + [ "-j", final_target ])
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["FORWARD_IN"], zone=zone)
-            if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
-                zone_transaction.add_rule(
-                    ipv,
-                    [ add_del, final_chain, "-t", "filter" ] + proto + match +
-                    [ "%%LOGTYPE%%", "-j", "LOG",
-                      "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
-            zone_transaction.add_rule(ipv, [ add_del, final_chain,
-                                             "-t", "filter", ] + proto + \
-                                      match + [ "-j", final_target ])
+            rules = backend.build_zone_icmp_block_rules(enable, zone, icmp)
+            zone_transaction.add_rules(ipv, rules)
 
     def _icmp_block_inversion(self, enable, zone, zone_transaction):
         target = self._zones[zone].target
