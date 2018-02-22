@@ -37,6 +37,11 @@ from firewall.errors import FirewallError
 from firewall.fw_types import LastUpdatedOrderedDict
 
 class FirewallZone(object):
+    def __init__(self, fw):
+        self._fw = fw
+        self._chains = { }
+        self._zones = { }
+
     def __repr__(self):
         return '%s(%r, %r)' % (self.__class__, self._chains, self._zones)
 
@@ -1469,12 +1474,6 @@ class FirewallZone(object):
     def query_icmp_block_inversion(self, zone):
         return self.__icmp_block_inversion_id() in \
             self.get_settings(zone)["icmp_block_inversion"]
-
-class FirewallZoneIPTables(FirewallZone):
-    def __init__(self, fw):
-        self._fw = fw
-        self._chains = { }
-        self._zones = { }
 
     # dynamic chain handling
 
