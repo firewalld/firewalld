@@ -265,6 +265,7 @@ def common_check_passthrough(args):
 
 class ip4tables(object):
     ipv = "ipv4"
+    zones_supported = True
 
     def __init__(self):
         self._command = config.COMMANDS[self.ipv]

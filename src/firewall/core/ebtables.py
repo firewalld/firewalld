@@ -52,6 +52,7 @@ for table in BUILT_IN_CHAINS.keys():
 
 class ebtables(object):
     ipv = "eb"
+    zones_supported = False # ebtables only supported with direct interface
 
     def __init__(self):
         self._command = COMMANDS[self.ipv]
