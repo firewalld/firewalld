@@ -2266,37 +2266,11 @@ class FirewallZoneIPTables(FirewallZone):
         zone_transaction.add_chain("filter", "INPUT")
         zone_transaction.add_chain("filter", "FORWARD_IN")
 
-        for ipv in [ "ipv4", "ipv6" ]:
-            rule_idx = 4
-            table = "filter"
-            for chain in [ "INPUT", "FORWARD_IN" ]:
-                _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
-                                                   zone=zone)
+        for ipv in self._fw.enabled_backends():
+            backend = self._fw.get_ipv_backend(ipv)
 
-                if self.query_icmp_block_inversion(zone):
-                    ibi_target = "%%REJECT%%"
+            if not backend.zones_supported:
+                continue
 
-                    if self._fw.get_log_denied() != "off":
-                        if enable:
-                            rule = [ "-I", _zone, str(rule_idx) ]
-                        else:
-                            rule = [ "-D", _zone ]
-
-                        zone_transaction.add_rule(
-                            ipv,
-                            rule + [ "-t", table, "-p", "%%ICMP%%",
-                                     "%%LOGTYPE%%",
-                                     "-j", "LOG", "--log-prefix",
-                                     "\"%s_ICMP_BLOCK: \"" % _zone ])
-                        rule_idx += 1
-                else:
-                    ibi_target = "ACCEPT"
-
-                if enable:
-                    rule = [ "-I", _zone, str(rule_idx) ]
-                else:
-                    rule = [ "-D", _zone ]
-                zone_transaction.add_rule(ipv,
-                                          rule +
-                                          [ "-t", table, "-p", "%%ICMP%%",
-                                            "-j", ibi_target ])
+            rules = backend.build_zone_icmp_block_inversion_rules(enable, zone)
+            zone_transaction.add_rules(ipv, rules)

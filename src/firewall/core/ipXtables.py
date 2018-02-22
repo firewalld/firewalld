@@ -915,6 +915,41 @@ class ip4tables(object):
 
         return rules
 
+    def build_zone_icmp_block_inversion_rules(self, enable, zone):
+        rule_idx = 4
+        table = "filter"
+        rules = []
+        for chain in [ "INPUT", "FORWARD_IN" ]:
+            _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                               zone=zone)
+
+            if self._fw.zone.query_icmp_block_inversion(zone):
+                ibi_target = "%%REJECT%%"
+
+                if self._fw.get_log_denied() != "off":
+                    if enable:
+                        rule = [ "-I", _zone, str(rule_idx) ]
+                    else:
+                        rule = [ "-D", _zone ]
+
+                    rule = rule + [ "-t", table, "-p", "%%ICMP%%",
+                                  "%%LOGTYPE%%",
+                                  "-j", "LOG", "--log-prefix",
+                                  "\"%s_ICMP_BLOCK: \"" % _zone ]
+                    rules.append(rule)
+                    rule_idx += 1
+            else:
+                ibi_target = "ACCEPT"
+
+            if enable:
+                rule = [ "-I", _zone, str(rule_idx) ]
+            else:
+                rule = [ "-D", _zone ]
+            rule = rule + [ "-t", table, "-p", "%%ICMP%%", "-j", ibi_target ]
+            rules.append(rule)
+
+        return rules
+
 class ip6tables(ip4tables):
     ipv = "ipv6"
 
