@@ -24,7 +24,8 @@ import os.path
 from firewall.core.base import SHORTCUTS, DEFAULT_ZONE_TARGET
 from firewall.core.prog import runProg
 from firewall.core.logger import log
-from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr
+from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr, \
+                               check_single_address
 from firewall import config
 import string
 
@@ -836,6 +837,42 @@ class ip4tables(object):
                                             zone=zone)
         rules.append([ add_del, "%s_allow" % (target), "-t", "filter",
                      "-m", "conntrack", "--ctstate", "NEW", "-j", "ACCEPT" ])
+
+        return rules
+
+    def build_zone_forward_port_rules(self, enable, zone, filter_chain, port,
+                                      protocol, toport, toaddr, mark_id):
+        add_del = { True: "-A", False: "-D" }[enable]
+
+        mark_str = "0x%x" % mark_id
+        mark = [ "-m", "mark", "--mark", mark_str ]
+
+        to = ""
+        if toaddr:
+            if check_single_address("ipv6", toaddr):
+                to += "[%s]" % toaddr
+            else:
+                to += toaddr
+        if toport and toport != "":
+            to += ":%s" % portStr(toport, "-")
+
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
+                                            zone=zone)
+        rules = []
+        rules.append([ add_del, "%s_allow" % (target), "-t", "mangle",
+                     "-p", protocol, "--dport", portStr(port),
+                     "-j", "MARK", "--set-mark", mark_str ])
+        # local and remote
+        rules.append([ add_del, "%s_allow" % (target), "-t", "nat",
+                     "-p", protocol ] + mark +
+                     [ "-j", "DNAT", "--to-destination", to ])
+
+        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
+                                            zone=zone)
+        rules.append([ add_del, "%s_allow" % (target),
+                     "-t", "filter", "-m", "conntrack",
+                     "--ctstate", "NEW" ] +
+                     mark + [ "-j", "ACCEPT" ])
 
         return rules
 

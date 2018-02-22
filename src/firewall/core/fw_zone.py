@@ -2214,60 +2214,23 @@ class FirewallZoneIPTables(FirewallZone):
 
     def _forward_port(self, enable, zone, zone_transaction, port, protocol,
                        toport=None, toaddr=None, mark_id=None):
-
-        ipvs = [ ]
         if check_single_address("ipv6", toaddr):
-            ipvs.append("ipv6")
+            ipv = "ipv6"
         else:
-            ipvs.append("ipv4")
-
-        mark_str = "0x%x" % mark_id
-        port_str = portStr(port)
+            ipv = "ipv4"
 
         filter_chain = "INPUT" if not toaddr else "FORWARD_IN"
-
-        mark = [ "-m", "mark", "--mark", mark_str ]
 
         if enable:
             zone_transaction.add_chain("mangle", "PREROUTING")
             zone_transaction.add_chain("nat", "PREROUTING")
             zone_transaction.add_chain("filter", filter_chain)
 
-        add_del = { True: "-A", False: "-D" }[enable]
-        for ipv in ipvs:
-            to = ""
-            if toaddr:
-                if ipv == "ipv6":
-                    to += "[%s]" % toaddr
-                else:
-                    to += toaddr
-            if toport and toport != "":
-                to += ":%s" % portStr(toport, "-")
-
-            zone_transaction.add_post(enable_ip_forwarding, ipv)
-            target = DEFAULT_ZONE_TARGET.format(
-                chain=SHORTCUTS["PREROUTING"], zone=zone)
-            zone_transaction.add_rule(ipv,
-                                      [ add_del, "%s_allow" % (target),
-                                        "-t", "mangle",
-                                        "-p", protocol, "--dport", port_str,
-                                        "-j", "MARK", "--set-mark", mark_str ])
-            # local and remote
-            zone_transaction.add_rule(ipv,
-                                      [ add_del, "%s_allow" % (target),
-                                        "-t", "nat",
-                                        "-p", protocol ] + mark +
-                                      [ "-j", "DNAT", "--to-destination", to ])
-
-            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[filter_chain],
-                                                zone=zone)
-            zone_transaction.add_rule(ipv,
-                                      [ add_del, "%s_allow" % (target),
-                                        "-t", "filter", "-m", "conntrack",
-                                        "--ctstate", "NEW" ] +
-                                      mark + [ "-j", "ACCEPT" ])
-
-        zone_transaction.add_fail(self._fw.del_mark, mark_id)
+        zone_transaction.add_post(enable_ip_forwarding, ipv)
+        rules = self._fw.get_ipv_backend(ipv).build_zone_forward_port_rules(
+                            enable, zone, filter_chain, port, protocol, toport,
+                            toaddr, mark_id)
+        zone_transaction.add_rules(ipv, rules)
 
     def _icmp_block(self, enable, zone, icmp, zone_transaction):
         ict = self._fw.icmptype.get_icmptype(icmp)
