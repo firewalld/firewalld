@@ -30,7 +30,7 @@ from firewall.functions import b2u, u2b, PY2
 
 valid_keys = [ "DefaultZone", "MinimalMark", "CleanupOnExit", "Lockdown", 
                "IPv6_rpfilter", "IndividualCalls", "LogDenied",
-               "AutomaticHelpers" ]
+               "AutomaticHelpers", "FirewallBackend" ]
 
 class firewalld_conf(object):
     def __init__(self, filename):
@@ -79,6 +79,7 @@ class firewalld_conf(object):
             self.set("IndividualCalls", "yes" if config.FALLBACK_INDIVIDUAL_CALLS else "no")
             self.set("LogDenied", config.FALLBACK_LOG_DENIED)
             self.set("AutomaticHelpers", config.FALLBACK_AUTOMATIC_HELPERS)
+            self.set("FirewallBackend", config.FALLBACK_FIREWALL_BACKEND)
             raise
 
         for line in f:
@@ -173,6 +174,14 @@ class firewalld_conf(object):
                             "value %s", value if value else '',
                             config.FALLBACK_AUTOMATIC_HELPERS)
             self.set("AutomaticHelpers", str(config.FALLBACK_AUTOMATIC_HELPERS))
+
+        value = self.get("FirewallBackend")
+        if not value or value.lower() not in config.FIREWALL_BACKEND_VALUES:
+            if value is not None:
+                log.warning("FirewallBackend '%s' is not valid, using default "
+                            "value %s", value if value else '',
+                            config.FALLBACK_FIREWALL_BACKEND)
+            self.set("FirewallBackend", str(config.FALLBACK_FIREWALL_BACKEND))
 
     # save to self.filename if there are key/value changes
     def write(self):

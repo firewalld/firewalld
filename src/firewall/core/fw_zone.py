@@ -1956,6 +1956,12 @@ class FirewallZone(object):
         zone_transaction.add_chain("filter", "INPUT")
         zone_transaction.add_chain("filter", "FORWARD_IN")
 
+        # To satisfy nftables backend rule lookup we must execute pending
+        # rules. See nftables.build_zone_icmp_block_inversion_rules()
+        if enable:
+            zone_transaction.execute(enable)
+            zone_transaction.clear()
+
         for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
