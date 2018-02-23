@@ -1,4 +1,5 @@
 FWD_START_TEST([invalid direct rule causes reload error])
+m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 0 -p tcp --dport 8080 -j ACCEPT])
 FWD_CHECK([-q --permanent --direct --add-rule ipv4 filter INPUT 1 --a-bogus-flag])
 FWD_RELOAD(13, [ignore], [ignore])

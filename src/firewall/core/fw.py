@@ -30,6 +30,7 @@ from firewall import config
 from firewall import functions
 from firewall.core import ipXtables
 from firewall.core import ebtables
+from firewall.core import nftables
 from firewall.core import ipset
 from firewall.core import modules
 from firewall.core.fw_icmptype import FirewallIcmpType
@@ -73,6 +74,8 @@ class Firewall(object):
         self.ipset_backend = ipset.ipset()
         self.ipset_enabled = True
         self.ipset_supported_types = [ ]
+        self.nftables_backend = nftables.nftables(self)
+        self.nftables_enabled = True
 
         self.modules_backend = modules.modules()
 
@@ -109,6 +112,7 @@ class Firewall(object):
         self._individual_calls = config.FALLBACK_INDIVIDUAL_CALLS
         self._log_denied = config.FALLBACK_LOG_DENIED
         self._automatic_helpers = config.FALLBACK_AUTOMATIC_HELPERS
+        self._firewall_backend = config.FALLBACK_FIREWALL_BACKEND
         self.nf_conntrack_helper_setting = 0
         self.nf_conntrack_helpers = { }
         self.nf_nat_helpers = { }
@@ -134,7 +138,8 @@ class Firewall(object):
             self.ebtables_enabled = False
 
         # is there at least support for ipv4 or ipv6
-        if not self.ip4tables_enabled and not self.ip6tables_enabled:
+        if not self.ip4tables_enabled and not self.ip6tables_enabled \
+           and not self.nftables_enabled:
             log.fatal("No IPv4 and IPv6 firewall.")
             sys.exit(1)
 
@@ -286,7 +291,14 @@ class Firewall(object):
                     log.debug1("AutomaticHelpers is set to '%s'",
                                self._automatic_helpers)
 
+            if self._firewalld_conf.get("FirewallBackend"):
+                self._firewall_backend = self._firewalld_conf.get("FirewallBackend")
+                log.debug1("FirewallBackend is set to '%s'",
+                           self._firewall_backend)
+
         self.config.set_firewalld_conf(copy.deepcopy(self._firewalld_conf))
+
+        self._select_firewall_backend(self._firewall_backend)
 
         self._start_check()
 
@@ -666,6 +678,12 @@ class Firewall(object):
                         del self._module_refcount[module]
         return None
 
+    def _select_firewall_backend(self, backend):
+        if backend != "nftables":
+            self.nftables_enabled = False
+        # even if using nftables, the other backends are enabled for use with
+        # the direct interface. nftables is used for the firewalld primitives.
+
     def get_backend_by_name(self, name):
         for backend in self.all_backends():
             if backend.name == name:
@@ -674,6 +692,8 @@ class Firewall(object):
                             "'%s' backend does not exist" % name)
 
     def get_backend_by_ipv(self, ipv):
+        if self.nftables_enabled:
+            return self.nftables_backend
         if ipv == "ipv4":
             return self.ip4tables_backend
         elif ipv == "ipv6":
@@ -690,9 +710,13 @@ class Firewall(object):
             return self.ip6tables_enabled
         elif name == "ebtables":
             return self.ebtables_enabled
+        elif name == "nftables":
+            return self.nftables_enabled
         return False
 
     def is_ipv_enabled(self, ipv):
+        if self.nftables_enabled:
+            return True
         if ipv == "ipv4":
             return self.ip4tables_enabled
         elif ipv == "ipv6":
@@ -722,6 +746,8 @@ class Firewall(object):
             backends.append(self.ip6tables_backend)
         if self.ebtables_enabled:
             backends.append(self.ebtables_backend)
+        if self.nftables_enabled:
+            backends.append(self.nftables_backend)
         return backends
 
     def apply_default_rules(self, use_transaction=None):

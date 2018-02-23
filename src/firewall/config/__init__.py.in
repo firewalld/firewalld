@@ -117,6 +117,7 @@ COMMANDS = {
 
 LOG_DENIED_VALUES = [ "all", "unicast", "broadcast", "multicast", "off" ]
 AUTOMATIC_HELPERS_VALUES = [ "yes", "no", "system" ]
+FIREWALL_BACKEND_VALUES = [ "nftables", "iptables" ]
 
 # fallbacks: will be overloaded by firewalld.conf
 FALLBACK_ZONE = "public"
@@ -127,3 +128,4 @@ FALLBACK_IPV6_RPFILTER = True
 FALLBACK_INDIVIDUAL_CALLS = False
 FALLBACK_LOG_DENIED = "off"
 FALLBACK_AUTOMATIC_HELPERS = "system"
+FALLBACK_FIREWALL_BACKEND = "nftables"

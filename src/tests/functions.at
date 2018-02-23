@@ -73,6 +73,9 @@ m4_define([FWD_START_TEST], [
     fi
 
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        dnl set the appropriate backend
+        AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
+
         dnl dummy wrapper for trap syntax
         function kill_firewalld() {
             FWD_STOP_FIREWALLD

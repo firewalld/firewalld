@@ -1,4 +1,4 @@
-AT_BANNER([python])
+AT_BANNER([python (FIREWALL_BACKEND)])
 
 FWD_START_TEST([firewalld_test.py])
 AT_CHECK([python ${srcdir}/python/firewalld_test.py], 0, [ignore], [ignore])
@@ -13,5 +13,6 @@ AT_CHECK([python ${srcdir}/python/firewalld_rich.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])
 
 FWD_START_TEST([firewalld_direct.py])
+m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
 AT_CHECK([python ${srcdir}/python/firewalld_direct.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])

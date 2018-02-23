@@ -1573,6 +1573,9 @@ class FirewallZone(object):
                 # use the source family as rule family
                 ipvs = [ source_ipv ]
 
+        # add an element to object to allow backends to know what ipvs this applies to
+        rule.ipvs = ipvs
+
         for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             # SERVICE
             if type(rule.element) == Rich_Service:
@@ -1969,6 +1972,12 @@ class FirewallZone(object):
 
         zone_transaction.add_chain("filter", "INPUT")
         zone_transaction.add_chain("filter", "FORWARD_IN")
+
+        # To satisfy nftables backend rule lookup we must execute pending
+        # rules. See nftables.build_zone_icmp_block_inversion_rules()
+        if enable:
+            zone_transaction.execute(enable)
+            zone_transaction.clear()
 
         for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
