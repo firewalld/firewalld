@@ -89,6 +89,9 @@ class FirewallConfig(object):
         self.connected_label = _("Connection to firewalld established.")
         self.trying_to_connect_label = \
             _("Trying to connect to firewalld, waiting...")
+        self.failed_to_connect_label = \
+            _("Failed to connect to firewalld. Please make sure that the "
+              "service has been started correctly and try again.")
         self.changes_applied_label = _("Changes applied.")
         self.used_by_label = _("Used by network connection '%s'")
         self.default_zone_used_by_label = _("Default zone used by network "
@@ -98,6 +101,7 @@ class FirewallConfig(object):
 
         self.settings = Gio.Settings.new(FIREWALL_CONFIG_SCHEMA)
         self.modified_timer = None
+        self.connection_timer = None
 
         self.zone_connection_editors = { }
         self.zone_interface_editors = { }
@@ -1614,7 +1618,16 @@ class FirewallConfig(object):
                         buttons=(("gtk-ok", 0),("gtk-quit", 1))) == 1:
             self.onQuit()
 
+    def connection_failed(self, msg):
+        if self._dialog("<b>"+_("Error")+"</b>",
+                        message_type=Gtk.MessageType.ERROR, msg=msg,
+                        buttons=[("gtk-quit", 1)]) == 1:
+            self.onQuit()
+
     def connection_changed(self):
+        if self.connection_timer:
+                self.connection_timer = None
+                GLib.source_remove(self.connection_timer)
         if self.fw.connected:
             self.fw.authorizeAll()
             self.statusLabel.set_text(self.connected_label)
@@ -1670,6 +1683,9 @@ class FirewallConfig(object):
             self.waitingWindow.show()
             self.waitingWindowLabel.set_text(self.trying_to_connect_label)
             self.waitingWindowSpinner.start()
+
+            self.connection_timer = GLib.timeout_add_seconds(
+                15, self.connection_failed, self.failed_to_connect_label)
 
         self.update_active_zones()
         self.mainPaned.set_sensitive(self.fw.connected)
