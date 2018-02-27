@@ -1580,7 +1580,7 @@ class FirewallConfig(object):
 
     def _dialog(self, text, msg=None, title=None,
                 message_type=Gtk.MessageType.INFO,
-                buttons=("gtk-close", 1)):
+                buttons=[("gtk-close", 1)]):
         dialog = Gtk.MessageDialog(parent=None, flags=0,
                                    message_type=message_type)
         dialog.set_markup(text)
