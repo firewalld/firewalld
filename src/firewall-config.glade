@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.0 -->
+<!-- Generated with glade 3.20.2 -->
 <interface>
   <requires lib="gtk+" version="3.6"/>
   <!-- interface-local-resource-path icons -->
@@ -30,6 +30,9 @@
           <placeholder/>
         </child>
       </object>
+    </child>
+    <child>
+      <placeholder/>
     </child>
   </object>
   <object class="GtkDialog" id="addressDialog">
@@ -166,6 +169,9 @@
       <action-widget response="-1">addressDialogCancelButton</action-widget>
       <action-widget response="1">addressDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="automaticHelpersDialog">
     <property name="can_focus">False</property>
@@ -286,6 +292,9 @@
       <action-widget response="-1">automaticHelpersDialogCancelButton</action-widget>
       <action-widget response="1">automaticHelpersDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="commandDialog">
     <property name="can_focus">False</property>
@@ -405,6 +414,9 @@
       <action-widget response="-1">commandDialogCancelButton</action-widget>
       <action-widget response="1">commandDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="contextDialog">
     <property name="can_focus">False</property>
@@ -524,6 +536,9 @@
       <action-widget response="-1">contextDialogCancelButton</action-widget>
       <action-widget response="1">contextDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="defaultZoneDialog">
     <property name="width_request">200</property>
@@ -645,6 +660,9 @@
       <action-widget response="-1">portDialogCancelButton1</action-widget>
       <action-widget response="1">defaultZoneDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="directChainDialog">
     <property name="can_focus">False</property>
@@ -844,6 +862,9 @@
       <action-widget response="-1">directChainDialogCancelButton</action-widget>
       <action-widget response="1">directChainDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="directPassthroughDialog">
     <property name="can_focus">False</property>
@@ -1007,6 +1028,9 @@
       <action-widget response="-1">directPassthroughDialogCancelButton</action-widget>
       <action-widget response="1">directPassthroughDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="forwardDialog">
     <property name="width_request">200</property>
@@ -1345,6 +1369,9 @@
       <action-widget response="-1">button15</action-widget>
       <action-widget response="1">forwardDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="helperBaseDialog">
     <property name="can_focus">False</property>
@@ -1688,6 +1715,9 @@
       <action-widget response="-1">helperBaseDialogCancelButton</action-widget>
       <action-widget response="1">helperBaseDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="helperDialog">
     <property name="height_request">300</property>
@@ -1802,6 +1832,9 @@
       <action-widget response="-1">helperDialogCancelButton</action-widget>
       <action-widget response="1">helperDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="icmpBaseDialog">
     <property name="can_focus">False</property>
@@ -2037,6 +2070,9 @@
       <action-widget response="-1">icmpBaseDialogCancelButton</action-widget>
       <action-widget response="1">icmpBaseDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="icmptypeDialog">
     <property name="height_request">300</property>
@@ -2150,6 +2186,9 @@
       <action-widget response="-1">icmptypeDialogCancelButton</action-widget>
       <action-widget response="1">icmptypeDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
@@ -7690,6 +7729,9 @@
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="interfaceDialog">
     <property name="can_focus">False</property>
@@ -7810,6 +7852,9 @@
       <action-widget response="-1">interfaceDialogCancelButton</action-widget>
       <action-widget response="1">interfaceDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="ipsetBaseDialog">
     <property name="can_focus">False</property>
@@ -8213,6 +8258,9 @@
       <action-widget response="-1">ipsetBaseDialogCancelButton</action-widget>
       <action-widget response="1">ipsetBaseDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="ipsetDialog">
     <property name="width_request">300</property>
@@ -8327,6 +8375,9 @@
       <action-widget response="-1">ipsetDialogCancelButton</action-widget>
       <action-widget response="1">ipsetDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="ipsetEntryDialog">
     <property name="can_focus">False</property>
@@ -8490,6 +8541,9 @@
       <action-widget response="-1">ipsetEntryDialogCancelButton</action-widget>
       <action-widget response="1">ipsetEntryDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="logDeniedDialog">
     <property name="can_focus">False</property>
@@ -8610,6 +8664,9 @@
       <action-widget response="-1">logDeniedDialogCancelButton</action-widget>
       <action-widget response="1">logDeniedDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkTextBuffer" id="logTextBuffer"/>
   <object class="GtkDialog" id="macDialog">
@@ -8732,6 +8789,9 @@
       <action-widget response="-1">macDialogCancelButton</action-widget>
       <action-widget response="1">macDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="markDialog">
     <property name="can_focus">False</property>
@@ -8909,6 +8969,9 @@
       <action-widget response="-1">markDialogCancelButton</action-widget>
       <action-widget response="1">markDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="moduleDialog">
     <property name="can_focus">False</property>
@@ -9076,6 +9139,9 @@
       <action-widget response="-1">moduleDialogCancelButton</action-widget>
       <action-widget response="1">moduleDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="portDialog">
     <property name="can_focus">False</property>
@@ -9241,6 +9307,9 @@
       <action-widget response="-1">portDialogCancelButton</action-widget>
       <action-widget response="1">portDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkAdjustment" id="priority_adjustment">
     <property name="lower">-99999999</property>
@@ -9494,6 +9563,9 @@
       <action-widget response="-1">directRuleDialogCancelButton</action-widget>
       <action-widget response="1">directRuleDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="protoDialog">
     <property name="can_focus">False</property>
@@ -9671,6 +9743,9 @@
       <action-widget response="-1">protoDialogCancelButton</action-widget>
       <action-widget response="1">protoDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="richRuleDialog">
     <property name="can_focus">False</property>
@@ -10782,6 +10857,9 @@
       <action-widget response="-1">richRuleDialogCancelButton</action-widget>
       <action-widget response="1">richRuleDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="serviceBaseDialog">
     <property name="can_focus">False</property>
@@ -11016,6 +11094,9 @@
       <action-widget response="-1">serviceBaseDialogCancelButton</action-widget>
       <action-widget response="1">serviceBaseDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="serviceDialog">
     <property name="height_request">300</property>
@@ -11129,6 +11210,9 @@
       <action-widget response="-1">serviceDialogCancelButton</action-widget>
       <action-widget response="1">serviceDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="sourceDialog">
     <property name="can_focus">False</property>
@@ -11308,6 +11392,9 @@
       <action-widget response="-1">sourceDialogCancelButton</action-widget>
       <action-widget response="1">sourceDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="uidDialog">
     <property name="can_focus">False</property>
@@ -11429,6 +11516,9 @@
       <action-widget response="-1">uidDialogCancelButton</action-widget>
       <action-widget response="1">uidDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkDialog" id="userDialog">
     <property name="can_focus">False</property>
@@ -11549,6 +11639,9 @@
       <action-widget response="-1">userDialogCancelButton</action-widget>
       <action-widget response="1">userDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
   <object class="GtkWindow" id="waitingWindow">
     <property name="can_focus">False</property>
@@ -11629,6 +11722,9 @@
           <placeholder/>
         </child>
       </object>
+    </child>
+    <child type="titlebar">
+      <placeholder/>
     </child>
   </object>
   <object class="GtkDialog" id="zoneBaseDialog">
@@ -11936,5 +12032,8 @@
       <action-widget response="-1">zoneBaseDialogCancelButton</action-widget>
       <action-widget response="1">zoneBaseDialogOkButton</action-widget>
     </action-widgets>
+    <child>
+      <placeholder/>
+    </child>
   </object>
 </interface>
