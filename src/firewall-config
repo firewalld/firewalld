@@ -1626,8 +1626,8 @@ class FirewallConfig(object):
 
     def connection_changed(self):
         if self.connection_timer:
-                self.connection_timer = None
                 GLib.source_remove(self.connection_timer)
+                self.connection_timer = None
         if self.fw.connected:
             self.fw.authorizeAll()
             self.statusLabel.set_text(self.connected_label)
