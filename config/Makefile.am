@@ -222,6 +222,7 @@ CONFIG_FILES = \
 	services/sane.xml \
 	services/sips.xml \
 	services/sip.xml \
+	services/slp.xml \
 	services/smtp-submission.xml \
 	services/smtps.xml \
 	services/smtp.xml \
