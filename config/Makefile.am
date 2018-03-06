@@ -234,6 +234,7 @@ CONFIG_FILES = \
 	services/squid.xml \
 	services/ssh.xml \
 	services/svdrp.xml \
+	services/svn.xml \
 	services/syncthing.xml \
 	services/syncthing-gui.xml \
 	services/synergy.xml \
