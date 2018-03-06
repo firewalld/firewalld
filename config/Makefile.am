@@ -256,6 +256,7 @@ CONFIG_FILES = \
 	services/wbem-https.xml \
 	services/wsman.xml \
 	services/wsmans.xml \
+	services/xdmcp.xml \
 	services/xmpp-bosh.xml \
 	services/xmpp-client.xml \
 	services/xmpp-local.xml \
