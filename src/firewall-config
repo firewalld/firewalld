@@ -184,7 +184,7 @@ class FirewallConfig(object):
         self.lockdownContextView = builder.get_object("lockdownContextView")
         self.lockdownContextStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.lockdownContextView.append_column(
-            Gtk.TreeViewColumn("Context", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn(_("Context"), Gtk.CellRendererText(), text=0))
         self.lockdownContextView.set_model(self.lockdownContextStore)
         self.lockdownContextView.get_selection().connect( \
             "changed", self.change_lockdown_context_selection_cb)
@@ -203,7 +203,7 @@ class FirewallConfig(object):
         self.lockdownCommandView = builder.get_object("lockdownCommandView")
         self.lockdownCommandStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.lockdownCommandView.append_column(
-            Gtk.TreeViewColumn("Command line", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn(_("Command line"), Gtk.CellRendererText(), text=0))
         self.lockdownCommandView.set_model(self.lockdownCommandStore)
         self.lockdownCommandView.get_selection().connect( \
             "changed", self.change_lockdown_command_selection_cb)
@@ -222,7 +222,7 @@ class FirewallConfig(object):
         self.lockdownUserView = builder.get_object("lockdownUserView")
         self.lockdownUserStore = Gtk.ListStore(GObject.TYPE_STRING)
         self.lockdownUserView.append_column(
-            Gtk.TreeViewColumn("User name", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn(_("User name"), Gtk.CellRendererText(), text=0))
         self.lockdownUserView.set_model(self.lockdownUserStore)
         self.lockdownUserView.get_selection().connect( \
             "changed", self.change_lockdown_user_selection_cb)
@@ -241,7 +241,7 @@ class FirewallConfig(object):
         self.lockdownUidView = builder.get_object("lockdownUidView")
         self.lockdownUidStore = Gtk.ListStore(GObject.TYPE_INT)
         self.lockdownUidView.append_column(
-            Gtk.TreeViewColumn("User id", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn(_("User id"), Gtk.CellRendererText(), text=0))
         self.lockdownUidView.set_model(self.lockdownUidStore)
         self.lockdownUidView.get_selection().connect( \
             "changed", self.change_lockdown_uid_selection_cb)
@@ -281,9 +281,9 @@ class FirewallConfig(object):
         self.directChainView.append_column(
             Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
         self.directChainView.append_column(
-            Gtk.TreeViewColumn("Table", Gtk.CellRendererText(), text=1))
+            Gtk.TreeViewColumn(_("Table"), Gtk.CellRendererText(), text=1))
         self.directChainView.append_column(
-            Gtk.TreeViewColumn("Chain", Gtk.CellRendererText(), text=2))
+            Gtk.TreeViewColumn(_("Chain"), Gtk.CellRendererText(), text=2))
         self.directChainView.set_model(self.directChainStore)
 
         self.directChainView.get_selection().connect( \
@@ -315,13 +315,13 @@ class FirewallConfig(object):
         self.directRuleView.append_column(
             Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
         self.directRuleView.append_column(
-            Gtk.TreeViewColumn("Table", Gtk.CellRendererText(), text=1))
+            Gtk.TreeViewColumn(_("Table"), Gtk.CellRendererText(), text=1))
         self.directRuleView.append_column(
-            Gtk.TreeViewColumn("Chain", Gtk.CellRendererText(), text=2))
+            Gtk.TreeViewColumn(_("Chain"), Gtk.CellRendererText(), text=2))
         self.directRuleView.append_column(
-            Gtk.TreeViewColumn("Priority", Gtk.CellRendererText(), text=3))
+            Gtk.TreeViewColumn(_("Priority"), Gtk.CellRendererText(), text=3))
         self.directRuleView.append_column(
-            Gtk.TreeViewColumn("Args", Gtk.CellRendererText(), text=4))
+            Gtk.TreeViewColumn(_("Args"), Gtk.CellRendererText(), text=4))
         self.directRuleView.set_model(self.directRuleStore)
 
         self.directRuleView.get_selection().connect( \
@@ -358,7 +358,7 @@ class FirewallConfig(object):
         self.directPassthroughView.append_column(
             Gtk.TreeViewColumn("ipv", Gtk.CellRendererText(), text=0))
         self.directPassthroughView.append_column(
-            Gtk.TreeViewColumn("Args", Gtk.CellRendererText(), text=1))
+            Gtk.TreeViewColumn(_("Args"), Gtk.CellRendererText(), text=1))
         self.directPassthroughView.set_model(self.directPassthroughStore)
 
         self.directPassthroughView.get_selection().connect( \
@@ -931,9 +931,9 @@ class FirewallConfig(object):
         self.interfaceStore = Gtk.ListStore(GObject.TYPE_STRING, # interface
                                             GObject.TYPE_STRING) # comment
         self.interfaceView.append_column(
-            Gtk.TreeViewColumn("Interface", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn(_("Interface"), Gtk.CellRendererText(), text=0))
         self.interfaceView.append_column(
-            Gtk.TreeViewColumn("Comment", Gtk.CellRendererText(), text=1))
+            Gtk.TreeViewColumn(_("Comment"), Gtk.CellRendererText(), text=1))
         self.interfaceView.set_model(self.interfaceStore)
         self.interfaceView.get_selection().connect(
             "changed", self.change_interface_selection_cb)
@@ -952,7 +952,7 @@ class FirewallConfig(object):
         self.sourceView = builder.get_object("sourceView")
         self.sourceStore = Gtk.ListStore(GObject.TYPE_STRING) # source
         self.sourceView.append_column(
-            Gtk.TreeViewColumn("Source", Gtk.CellRendererText(), text=0))
+            Gtk.TreeViewColumn(_("Source"), Gtk.CellRendererText(), text=0))
         self.sourceView.set_model(self.sourceStore)
         self.sourceView.get_selection().connect(
             "changed", self.change_source_selection_cb)
