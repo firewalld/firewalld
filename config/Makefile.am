@@ -139,6 +139,7 @@ CONFIG_FILES = \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
+	services/distcc.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/docker-swarm.xml \
