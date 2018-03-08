@@ -72,32 +72,82 @@ m4_define([FWD_START_TEST], [
         AT_CHECK([if ! cp /etc/firewalld/firewalld.conf ./firewalld.conf; then exit 77; fi])
     fi
 
-    dnl dummy wrapper for trap syntax
-    function kill_firewalld() {
-        FWD_STOP_FIREWALLD
-    }
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        dnl dummy wrapper for trap syntax
+        function kill_firewalld() {
+            FWD_STOP_FIREWALLD
+        }
 
-    dnl run cleanup commands on test exit
-    echo "" > cleanup
-    trap ". ./cleanup" EXIT
-    trap "kill_firewalld" EXIT
+        dnl run cleanup commands on test exit
+        echo "" > cleanup
+        trap ". ./cleanup" EXIT
+        trap "kill_firewalld" EXIT
 
-    FWD_START_FIREWALLD
+        FWD_START_FIREWALLD
+    ])
     ])
 
 m4_define([FWD_END_TEST], [
-    if test x"$1" != x"ignore"; then
-        if test -n "$1"; then
-            sed -i $1 ./firewalld.log
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        if test x"$1" != x"ignore"; then
+            if test -n "$1"; then
+                sed -i $1 ./firewalld.log
+            fi
+            AT_FAIL_IF([grep ERROR ./firewalld.log])
+            AT_FAIL_IF([grep WARNING ./firewalld.log])
         fi
-        AT_FAIL_IF([grep ERROR ./firewalld.log])
-        AT_FAIL_IF([grep WARNING ./firewalld.log])
-    fi
+    ])
     AT_CLEANUP
     ])
 
 m4_define([FWD_CHECK], [
-    AT_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        dnl Silently skip tests that don't affect permanent config or other
+        dnl flags we're interested in.
+        dnl
+        dnl if TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH
+        dnl     firewall-offline-cmd ...
+        dnl else
+        dnl     if ! --permanent
+        dnl         if -default-zone
+        dnl             firewall-offline-cmd ...
+        dnl     else
+        dnl         if ! --timeout
+        dnl             firewall-offline-cmd ...
+        dnl
+        m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH], [
+            m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+        ], [
+            m4_if(-1, m4_index([$1], [--permanent]), [
+                m4_if(-1, m4_index([$1], [-default-zone]), [], [
+                    m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+                ])
+            ], [
+                m4_if(-1, m4_index([$1], [--timeout]), [
+                    m4_define([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+                ], [])
+            ])
+        ])
+
+        m4_ifdef([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD], [
+            m4_undefine([FWD_CHECK_RUN_FIREWALL_OFFLINE_CMD])
+
+            FIREWALL_OFFLINE_CMD_ARGS="--system-config ./"
+            if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+                FIREWALL_OFFLINE_CMD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+            fi
+
+            AT_CHECK([firewall-offline-cmd $FIREWALL_OFFLINE_CMD_ARGS dnl
+                dnl This m4 mess is all about stripping --permanent
+                dnl flag if it exists, otherwise we pass arg 1 verbatim.
+                m4_if(-1, m4_index([$1], [--permanent]), [$1], [ dnl
+                    m4_substr([$1],0,m4_index([$1], [--permanent])) dnl before --permanent
+                    m4_substr([$1],m4_eval(m4_index([$1], [--permanent])+11),m4_eval(m4_len([$1])-11)) dnl after --permanent
+                ])], [$2], [$3], [$4], [$5], [$6])
+        ])
+    ], [
+        AT_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
+    ])
     ])
 
 m4_define([FWD_GREP_LOG], [
