@@ -5,21 +5,4 @@ m4_include([functions.at])
 m4_include([firewall-cmd.at])
 m4_include([firewall-offline-cmd.at])
 m4_include([regression.at])
-
-AT_BANNER([legacy test suite (slow)])
-
-FWD_START_TEST([firewalld_test.py])
-AT_CHECK([python ${srcdir}/legacy/firewalld_test.py], 0, [ignore], [ignore])
-FWD_END_TEST([ignore])
-
-FWD_START_TEST([firewalld_config.py])
-AT_CHECK([python ${srcdir}/legacy/firewalld_config.py], 0, [ignore], [ignore])
-FWD_END_TEST([ignore])
-
-FWD_START_TEST([firewalld_rich.py])
-AT_CHECK([python ${srcdir}/legacy/firewalld_rich.py], 0, [ignore], [ignore])
-FWD_END_TEST([ignore])
-
-FWD_START_TEST([firewalld_direct.py])
-AT_CHECK([python ${srcdir}/legacy/firewalld_direct.py], 0, [ignore], [ignore])
-FWD_END_TEST([ignore])
+m4_include([python.at])
