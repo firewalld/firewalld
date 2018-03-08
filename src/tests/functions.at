@@ -30,7 +30,12 @@ m4_define([FWD_CHECK_FIREWALLD], [
 m4_define([FWD_START_FIREWALLD], [
     FWD_CHECK_FIREWALLD
 
-    ${top_srcdir}/src/firewalld --debug --nofork --nopid --system-config "./" --default-config "${top_srcdir}/config" --log-file "./firewalld.log" &
+    FIREWALLD_ARGS="--debug --nofork --nopid --log-file ./firewalld.log --system-config ./"
+    if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+        FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
+    fi
+
+    firewalld $FIREWALLD_ARGS &
     if test $? -ne 0; then
         AT_FAIL_IF([:])
     fi
@@ -39,7 +44,7 @@ m4_define([FWD_START_FIREWALLD], [
     dnl Give it some time for the dbus interface to come up
     up=0
     for I in 1 2 3 4 5 6 7 8 9 0; do
-        if ${top_srcdir}/src/firewall-cmd --state; then
+        if firewall-cmd --state; then
             up=1
             break
         fi
@@ -61,7 +66,11 @@ m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
 
     dnl start every test with the default config
-    AT_CHECK([if ! cp ${top_srcdir}/config/firewalld.conf ./firewalld.conf; then exit 77; fi])
+    if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
+        AT_CHECK([if ! cp "${FIREWALLD_DEFAULT_CONFIG}/firewalld.conf" ./firewalld.conf; then exit 77; fi])
+    else
+        AT_CHECK([if ! cp /etc/firewalld/firewalld.conf ./firewalld.conf; then exit 77; fi])
+    fi
 
     dnl dummy wrapper for trap syntax
     function kill_firewalld() {
@@ -88,7 +97,7 @@ m4_define([FWD_END_TEST], [
     ])
 
 m4_define([FWD_CHECK], [
-    AT_CHECK([${top_srcdir}/src/firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
+    AT_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
     ])
 
 m4_define([FWD_GREP_LOG], [

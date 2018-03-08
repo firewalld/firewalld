@@ -23,17 +23,17 @@ AT_CHECK([${srcdir}/legacy/firewall-offline-cmd_test.sh], 0, [ignore], [ignore])
 AT_CLEANUP
 
 FWD_START_TEST([firewalld_test.py])
-AT_CHECK([env PYTHONPATH="${top_srcdir}/src" python ${srcdir}/legacy/firewalld_test.py], 0, [ignore], [ignore])
+AT_CHECK([python ${srcdir}/legacy/firewalld_test.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])
 
 FWD_START_TEST([firewalld_config.py])
-AT_CHECK([env PYTHONPATH="${top_srcdir}/src" python ${srcdir}/legacy/firewalld_config.py], 0, [ignore], [ignore])
+AT_CHECK([python ${srcdir}/legacy/firewalld_config.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])
 
 FWD_START_TEST([firewalld_rich.py])
-AT_CHECK([env PYTHONPATH="${top_srcdir}/src" python ${srcdir}/legacy/firewalld_rich.py], 0, [ignore], [ignore])
+AT_CHECK([python ${srcdir}/legacy/firewalld_rich.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])
 
 FWD_START_TEST([firewalld_direct.py])
-AT_CHECK([env PYTHONPATH="${top_srcdir}/src" python ${srcdir}/legacy/firewalld_direct.py], 0, [ignore], [ignore])
+AT_CHECK([python ${srcdir}/legacy/firewalld_direct.py], 0, [ignore], [ignore])
 FWD_END_TEST([ignore])
