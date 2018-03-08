@@ -3,14 +3,10 @@ AT_COLOR_TESTS
 m4_include([functions.at])
 
 m4_include([firewall-cmd.at])
+m4_include([firewall-offline-cmd.at])
 m4_include([regression.at])
 
 AT_BANNER([legacy test suite (slow)])
-
-dnl offline, so don't start firewalld
-AT_SETUP([firewall-offline-cmd_test.sh])
-AT_CHECK([${srcdir}/legacy/firewall-offline-cmd_test.sh], 0, [ignore], [ignore])
-AT_CLEANUP
 
 FWD_START_TEST([firewalld_test.py])
 AT_CHECK([python ${srcdir}/legacy/firewalld_test.py], 0, [ignore], [ignore])

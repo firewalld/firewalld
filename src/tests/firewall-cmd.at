@@ -1,4 +1,6 @@
-AT_BANNER([firewall-cmd])
+m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+    AT_BANNER([firewall-cmd])
+])
 
 FWD_START_TEST([basic options])
     FWD_CHECK([-h], 0, ignore)
@@ -45,7 +47,11 @@ FWD_START_TEST([user zone])
     FWD_CHECK([--permanent --new-zone=foobar], 0, ignore)
     FWD_CHECK([--permanent --get-zones | grep foobar], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --get-target | grep default], 0, ignore)
-    FWD_CHECK([--permanent --zone=foobar --set-target=BAD], 110, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --zone=foobar --set-target=BAD], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --zone=foobar --set-target=BAD], 110, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --zone=foobar --set-target=%%REJECT%%], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --set-target=DROP], 0, ignore)
     FWD_CHECK([--permanent --zone=foobar --set-target=ACCEPT], 0, ignore)
@@ -92,7 +98,9 @@ FWD_START_TEST([zone interfaces])
     FWD_CHECK([--permanent --zone=work --list-interfaces], 0, [perm_dummy
 ])
 
-    FWD_CHECK([--permanent --zone=public --add-interface=perm_dummy], 18, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+        FWD_CHECK([--permanent --zone=public --add-interface=perm_dummy], 18, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --zone=public --change-interface=perm_dummy], 0, ignore)
     FWD_CHECK([--permanent --get-zone-of-interface=perm_dummy], 0, [public
 ])
@@ -147,7 +155,9 @@ sources: $1
 ])
         FWD_CHECK([--permanent --zone public --query-source=$1], 0, ignore)
 
-        FWD_CHECK([--permanent --zone=work --add-source=$1], 18, ignore, ignore)
+        m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
+            FWD_CHECK([--permanent --zone=work --add-source=$1], 18, ignore, ignore)
+        ])
         FWD_CHECK([--permanent --zone=work --change-source=$1], 0, ignore)
         FWD_CHECK([--permanent --get-zone-of-source=$1], 0, [work
 ])
@@ -178,9 +188,17 @@ FWD_START_TEST([services])
     FWD_CHECK([--permanent --zone=external --list-services], 0, [ssh dns
 ])
     FWD_CHECK([--permanent --zone=external --query-service dns], 0, ignore)
-    FWD_CHECK([--permanent --zone=external --remove-service=dns], 0, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --zone=external --remove-service-from-zone=dns], 0, ignore)
+    ], [
+        FWD_CHECK([--permanent --zone=external --remove-service=dns], 0, ignore)
+    ])
     FWD_CHECK([--permanent --zone=external --query-service=dns], 1, ignore)
-    FWD_CHECK([--permanent --zone=external --add-service=smtpssssssss], 101, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --zone=external --add-service=smtpssssssss], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --zone=external --add-service=smtpssssssss], 101, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --zone=external --add-service=dns --add-interface=dummy0], 2, ignore, ignore) dnl impossible combination
 
     FWD_CHECK([--add-service=http --add-service=nfs --timeout=1h], 0, ignore)
@@ -193,13 +211,21 @@ FWD_START_TEST([services])
     FWD_CHECK([--permanent --add-service=http --add-service=nfs], 0, ignore)
     FWD_CHECK([--permanent --query-service http], 0, ignore)
     FWD_CHECK([--permanent --query-service=nfs --zone=public], 0, ignore)
-    FWD_CHECK([--permanent --remove-service=nfs --remove-service=http], 0, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --remove-service-from-zone=nfs --remove-service-from-zone=http], 0, ignore)
+    ], [
+        FWD_CHECK([--permanent --remove-service=nfs --remove-service=http], 0, ignore)
+    ])
     FWD_CHECK([--permanent  --query-service http], 1, ignore)
     FWD_CHECK([--permanent  --query-service nfs], 1, ignore)
 FWD_END_TEST([-e '/ERROR: INVALID_SERVICE:/d'])
 
 FWD_START_TEST([user services])
-    FWD_CHECK([--permanent --new-service=ssh], 26, ignore, ignore) dnl already exists
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --new-service=ssh], 2, ignore, ignore) dnl already exists
+    ], [
+        FWD_CHECK([--permanent --new-service=ssh], 26, ignore, ignore) dnl already exists
+    ])
 
     FWD_CHECK([--permanent --new-service=foobar], 0, ignore)
     FWD_CHECK([--permanent --get-services | grep foobar], 0, ignore)
@@ -239,7 +265,11 @@ FWD_START_TEST([user services])
     FWD_CHECK([--permanent --service=foobar --query-module=ftp], 1, ignore)
 
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4], 121, ignore, ignore) dnl no address
-    FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:foo], 105, ignore, ignore) dnl bad address
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:foo], 2, ignore, ignore) dnl bad address
+    ], [
+        FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:foo], 105, ignore, ignore) dnl bad address
+    ])
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:1.2.3.4], 0, ignore)
     FWD_CHECK([--permanent --service=foobar --remove-destination=ipv4], 0, ignore)
     FWD_CHECK([--permanent --service=foobar --set-destination=ipv6:fd00:dead:beef:ff0::/64], 0, ignore)
@@ -350,7 +380,11 @@ FWD_START_TEST([protocols])
     FWD_CHECK([--query-protocol=dccp], 0, ignore)
     FWD_CHECK([--remove-protocol dccp], 0, ignore)
     FWD_CHECK([--query-protocol=dccp], 1, ignore)
-    FWD_CHECK([--permanent --add-protocol=dummy], 103, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --add-protocol=dummy], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --add-protocol=dummy], 103, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --add-protocol=dccp --zone=public], 0, ignore)
     FWD_CHECK([--permanent --query-protocol=dccp], 0, ignore)
     FWD_CHECK([--permanent --remove-protocol dccp], 0, ignore)
@@ -444,7 +478,11 @@ FWD_START_TEST([ICMP block])
     FWD_CHECK([--zone=external --query-icmp-block=redirect], 0, ignore)
     FWD_CHECK([--zone=external --remove-icmp-block redirect], 0, ignore)
     FWD_CHECK([--zone=external --query-icmp-block=redirect], 1, ignore)
-    FWD_CHECK([--permanent --zone=external --add-icmp-block=dummyblock], 107, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --zone=external --add-icmp-block=dummyblock], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --zone=external --add-icmp-block=dummyblock], 107, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --zone=external --add-icmp-block=redirect], 0, ignore)
     FWD_CHECK([--permanent --zone=external --query-icmp-block=redirect], 0, ignore)
     FWD_CHECK([--permanent --zone=external --remove-icmp-block redirect], 0, ignore)
@@ -481,7 +519,11 @@ FWD_START_TEST([ICMP block])
 FWD_END_TEST([-e '/ERROR: INVALID_ICMPTYPE:/d'])
 
 FWD_START_TEST([user ICMP types])
-    FWD_CHECK([--permanent --new-icmptype=redirect], 26, ignore, ignore) dnl already exists
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --new-icmptype=redirect], 2, ignore, ignore) dnl already exists
+    ], [
+        FWD_CHECK([--permanent --new-icmptype=redirect], 26, ignore, ignore) dnl already exists
+    ])
 
     FWD_CHECK([--permanent --new-icmptype=foobar], 0, ignore)
     FWD_CHECK([--permanent --get-icmptypes | grep foobar], 0, ignore)
@@ -525,11 +567,19 @@ FWD_START_TEST([ipset])
 FWD_END_TEST([-e '/ERROR: INVALID_ENTRY: invalid address/d'])
 
 FWD_START_TEST([user helpers])
-    FWD_CHECK([--permanent --new-helper=foobar --module=foo], 132, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --new-helper=foobar --module=foo], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --new-helper=foobar --module=foo], 132, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --new-helper=foobar --module=nf_conntrack_foo], 0, ignore)
     FWD_CHECK([--permanent --get-helpers | grep foobar], 0, ignore)
     FWD_CHECK([--permanent --helper=foobar --get-family | grep ipv4], 1, ignore)
-    FWD_CHECK([--permanent --helper=foobar --set-family=ipv5], 111, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --helper=foobar --set-family=ipv5], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --helper=foobar --set-family=ipv5], 111, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --helper=foobar --set-family=ipv4], 0, ignore)
     FWD_CHECK([--permanent --helper=foobar --get-family | grep ipv4], 0, ignore)
     FWD_CHECK([--permanent --helper=foobar --set-family=], 0, ignore)
@@ -655,7 +705,11 @@ FWD_START_TEST([direct passthrough])
     FWD_CHECK([--direct --passthrough --get-chains ipv4 filter], 111, ignore, ignore)
 
     FWD_CHECK([--permanent --direct --add-passthrough ipv4], 2, ignore, ignore)
-    FWD_CHECK([--permanent --direct --add-passthrough ipv5 -nvL], 111, ignore, ignore)
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        FWD_CHECK([--permanent --direct --add-passthrough ipv5 -nvL], 2, ignore, ignore)
+    ], [
+        FWD_CHECK([--permanent --direct --add-passthrough ipv5 -nvL], 111, ignore, ignore)
+    ])
     FWD_CHECK([--permanent --direct --add-passthrough ipv4 -nvL], 0, ignore)
     FWD_CHECK([--permanent --direct --get-passthroughs ipv4 | grep "\-nvL"], 0, ignore)
     FWD_CHECK([--permanent --direct --get-all-passthroughs | grep "ipv4 \-nvL"], 0, ignore)
@@ -756,7 +810,11 @@ FWD_START_TEST([rich rules])
         FWD_CHECK([--add-rich-rule='$1'], $2, ignore, ignore)
         FWD_CHECK([--permanent --add-rich-rule='$1'], $2, ignore, ignore)
     ])
-    rich_rule_test([], 122) dnl empty
+    m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
+        rich_rule_test([], 2) dnl empty
+    ], [
+        rich_rule_test([], 122) dnl empty
+    ])
     rich_rule_test([family="ipv6" accept], 122) dnl no rule
     rich_rule_test([name="dns" accept], 122) dnl no rule
     rich_rule_test([protocol value="ah" reject], 122) dnl no rule
