@@ -1,0 +1,17 @@
+AT_BANNER([python])
+
+FWD_START_TEST([firewalld_test.py])
+AT_CHECK([python ${srcdir}/python/firewalld_test.py], 0, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([firewalld_config.py])
+AT_CHECK([python ${srcdir}/python/firewalld_config.py], 0, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([firewalld_rich.py])
+AT_CHECK([python ${srcdir}/python/firewalld_rich.py], 0, [ignore], [ignore])
+FWD_END_TEST([ignore])
+
+FWD_START_TEST([firewalld_direct.py])
+AT_CHECK([python ${srcdir}/python/firewalld_direct.py], 0, [ignore], [ignore])
+FWD_END_TEST([ignore])
