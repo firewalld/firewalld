@@ -2,13 +2,10 @@ AT_INIT
 AT_COLOR_TESTS
 m4_include([functions.at])
 
+m4_include([firewall-cmd.at])
 m4_include([regression.at])
 
 AT_BANNER([legacy test suite (slow)])
-
-FWD_START_TEST([firewall-cmd_test.sh])
-AT_CHECK([${srcdir}/legacy/firewall-cmd_test.sh], 0, [ignore], [ignore])
-FWD_END_TEST([ignore])
 
 dnl offline, so don't start firewalld
 AT_SETUP([firewall-offline-cmd_test.sh])
