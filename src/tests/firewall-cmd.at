@@ -828,7 +828,7 @@ FWD_START_TEST([rich rules])
     rich_rule_test([rule protocol value="ah" accept drop], 122) dnl accept && drop
     rich_rule_test([rule service name="radius" port port="4011" reject], 122) dnl service && port
     rich_rule_test([rule service bad_attribute="dns"], 122) dnl bad attribute
-    rich_rule_test([rule protocol value="mtp" log level="eror"], 125) dnl bad log level
+    rich_rule_test([rule protocol value="igmp" log level="eror"], 125) dnl bad log level
     rich_rule_test([rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 207) dnl missing family
     rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 123) dnl bad limit
     rich_rule_test([rule protocol value="esp"], 122) dnl no action/log/audit
