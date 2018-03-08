@@ -19,10 +19,13 @@ $(srcdir)/package.m4: $(top_srcdir)/configure.ac $(top_srcdir)/firewalld.spec
 	} > "$@"
 
 check-local: atconfig $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) \
+		AUTOTEST_PATH="src" \
+		PYTHONPATH="${abs_top_srcdir}/src:${PYTHONPATH}" \
+		FIREWALLD_DEFAULT_CONFIG="${abs_top_srcdir}/config"
 
 installcheck-local: atconfig $(TESTSUITE)
-	$(SHELL) '$(TESTSUITE)' AUTOTEST_PATH='$(bindir)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
