@@ -49,7 +49,7 @@ m4_define([FWD_START_FIREWALLD], [
     ])
 
 m4_define([FWD_RELOAD], [
-    FWD_CHECK([-q --reload], $1, $2, $3)
+    FWD_CHECK([-q --reload], [$1], [$2], [$3])
     ])
 
 m4_define([FWD_RESTART], [
@@ -88,7 +88,7 @@ m4_define([FWD_END_TEST], [
     ])
 
 m4_define([FWD_CHECK], [
-    AT_CHECK([${top_srcdir}/src/firewall-cmd $1], $2, $3, $4, $5, $6)
+    AT_CHECK([${top_srcdir}/src/firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
     ])
 
 m4_define([FWD_GREP_LOG], [
