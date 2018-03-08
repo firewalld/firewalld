@@ -16,7 +16,7 @@ m4_define([TESTING_FIREWALL_OFFLINE_CMD_PASSTHROUGH])
 
 FWD_START_TEST([lokkit migration])
     dnl from command line
-    FWD_CHECK([--enabled --addmodule=abc --addmodule=efg --removemodule=xyz dnl
+    FWD_CHECK([--addmodule=abc --addmodule=efg --removemodule=xyz dnl
         --trust=eth+ --trust=em0 dnl
         --masq=tun+ --masq=tap+ --port=7:tcp --port=666:udp dnl
         --custom-rules=ipv4:mangle:/etc/sysconfig/ebtables-config dnl
@@ -36,7 +36,6 @@ FWD_START_TEST([lokkit migration])
 
     dnl from file
     AT_CHECK([cat << EOF > ./system-config-firewall
-        --enabled
         --addmodule=abc
         --addmodule=efg
         --removemodule=xyz
