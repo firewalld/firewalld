@@ -6,7 +6,7 @@ m4_define([FWD_STOP_FIREWALLD], [
         sleep 1
     done
     test $pid -eq 0 || { kill -9 $pid; sleep 3; }
-    ])
+])
 
 m4_define([FWD_CHECK_FIREWALLD], [
     AT_SKIP_IF([pgrep firewalld])
@@ -25,7 +25,7 @@ m4_define([FWD_CHECK_FIREWALLD], [
     dnl
     AT_SKIP_IF([! test -f /etc/dbus-1/system.d/FirewallD.conf])
     AT_SKIP_IF([! test -f /usr/share/polkit-1/actions/org.fedoraproject.FirewallD1.policy])
-    ])
+])
 
 m4_define([FWD_START_FIREWALLD], [
     FWD_CHECK_FIREWALLD
@@ -51,16 +51,16 @@ m4_define([FWD_START_FIREWALLD], [
         sleep 1
     done
     AT_FAIL_IF([test $up -ne 1])
-    ])
+])
 
 m4_define([FWD_RELOAD], [
     FWD_CHECK([-q --reload], [$1], [$2], [$3])
-    ])
+])
 
 m4_define([FWD_RESTART], [
     FWD_STOP_FIREWALLD
     FWD_START_FIREWALLD
-    ])
+])
 
 m4_define([FWD_START_TEST], [
     AT_SETUP([$1])
@@ -85,7 +85,7 @@ m4_define([FWD_START_TEST], [
 
         FWD_START_FIREWALLD
     ])
-    ])
+])
 
 m4_define([FWD_END_TEST], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [], [
@@ -98,7 +98,7 @@ m4_define([FWD_END_TEST], [
         fi
     ])
     AT_CLEANUP
-    ])
+])
 
 m4_define([FWD_CHECK], [
     m4_ifdef([TESTING_FIREWALL_OFFLINE_CMD], [
@@ -148,10 +148,10 @@ m4_define([FWD_CHECK], [
     ], [
         AT_CHECK([firewall-cmd $1], [$2], [$3], [$4], [$5], [$6])
     ])
-    ])
+])
 
 m4_define([FWD_GREP_LOG], [
     AT_CHECK([grep "$1" ./firewalld.log], 0, [ignore], [ignore])
-    ])
+])
 
 m4_define([TRIM], [[sed -e 's/^[ \t]*//' -e 's/[ \t]*$//']])
