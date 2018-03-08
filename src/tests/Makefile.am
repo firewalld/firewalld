@@ -1,8 +1,7 @@
 TESTSUITE = $(srcdir)/testsuite
 TESTSUITE_FILES = \
-	$(srcdir)/testsuite.at \
-	$(wildcard $(srcdir)/regression/*.at) \
-	$(srcdir)/functions.at
+	$(wildcard $(srcdir)/*.at) \
+	$(wildcard $(srcdir)/regression/*.at)
 
 EXTRA_DIST = \
 	$(TESTSUITE) \
