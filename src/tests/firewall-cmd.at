@@ -1,0 +1,784 @@
+AT_BANNER([firewall-cmd])
+
+FWD_START_TEST([basic options])
+    FWD_CHECK([-h], 0, ignore)
+    FWD_CHECK([--help], 0, ignore)
+    FWD_CHECK([-V], 0, ignore)
+    FWD_CHECK([--reload], 0, ignore)
+    FWD_CHECK([--complete-reload], 0, ignore)
+    FWD_CHECK([--permanent --complete-reload], 2, ignore, ignore)
+
+    FWD_CHECK([--panic-on], 0, ignore)
+    FWD_CHECK([--query-panic], 0, [yes
+])
+    FWD_CHECK([--panic-off], 0, ignore)
+    FWD_CHECK([--query-panic], 1, [no
+])
+FWD_END_TEST
+
+FWD_START_TEST([get/list options])
+    FWD_CHECK([--get-zones], 0, ignore)
+    FWD_CHECK([--get-services], 0, ignore)
+    FWD_CHECK([--get-icmptypes], 0, ignore)
+    FWD_CHECK([--permanent --get-zones], 0, ignore)
+    FWD_CHECK([--permanent --get-services], 0, ignore)
+    FWD_CHECK([--permanent --get-icmptypes], 0, ignore)
+
+    FWD_CHECK([--list-all-zones], 0, ignore)
+    FWD_CHECK([--list-all], 0, ignore)
+    FWD_CHECK([--permanent --list-all-zones], 0, ignore)
+    FWD_CHECK([--permanent --list-all], 0, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([default zone])
+    FWD_CHECK([--get-default-zone], 0, [public
+])
+    FWD_CHECK([--set-default-zone="home"], 0, ignore)
+    FWD_CHECK([--get-default-zone], 0, [home
+])
+    FWD_CHECK([--set-default-zone="public"], 0, ignore)
+    FWD_CHECK([--set-default-zone], 2, ignore, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([user zone])
+    FWD_CHECK([--new-zone=foobar], 2, ignore, ignore) dnl no --permanent
+    FWD_CHECK([--permanent --new-zone=foobar], 0, ignore)
+    FWD_CHECK([--permanent --get-zones | grep foobar], 0, ignore)
+    FWD_CHECK([--permanent --zone=foobar --get-target | grep default], 0, ignore)
+    FWD_CHECK([--permanent --zone=foobar --set-target=BAD], 110, ignore, ignore)
+    FWD_CHECK([--permanent --zone=foobar --set-target=%%REJECT%%], 0, ignore)
+    FWD_CHECK([--permanent --zone=foobar --set-target=DROP], 0, ignore)
+    FWD_CHECK([--permanent --zone=foobar --set-target=ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --zone=foobar --get-target | grep ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --zone=foobar --add-service=ssh], 0, ignore)
+FWD_END_TEST([-e '/ERROR: INVALID_TARGET: BAD/g'])
+
+FWD_START_TEST([zone interfaces])
+    FWD_CHECK([--zone=work --add-interface=dummy], 0, ignore)
+    FWD_CHECK([--get-zone-of-interface=dummy], 0, [work
+])
+    FWD_CHECK([--get-active-zones], 0, ignore)
+    FWD_CHECK([--zone work --query-interface=dummy], 0, ignore)
+
+    FWD_CHECK([--zone=public --change-interface=dummy], 0, ignore)
+    FWD_CHECK([--get-zone-of-interface=dummy], 0, [public
+])
+
+    FWD_CHECK([--zone=dmz --change-zone=dummy], 0, ignore)
+    FWD_CHECK([--get-zone-of-interface=dummy], 0, [dmz
+])
+    FWD_CHECK([--zone=dmz --list-interfaces], 0, [dummy
+])
+    FWD_CHECK([--zone=dmz --remove-interface=dummy], 0, ignore)
+    FWD_CHECK([--zone=dmz --query-interface dummy], 1, ignore, ignore)
+
+    FWD_CHECK([--zone=dmz --change-interface=dummy], 0, ignore) dnl functions as an add
+    FWD_CHECK([--zone=dmz --query-interface dummy], 0, ignore)
+    FWD_CHECK([--zone=dmz --remove-interface=dummy], 0, ignore)
+
+    FWD_CHECK([--zone=dmz --query-interface dummy], 1, ignore, ignore)
+    FWD_CHECK([--get-zone-of-interface=dummy], 2, ignore, ignore)
+    FWD_CHECK([--get-zone-of-interface], 2, ignore, ignore)
+    FWD_CHECK([--zone=dmz --get-zones], 2, ignore, ignore)
+    FWD_CHECK([--zone=dmz --get-services], 2, ignore, ignore)
+    FWD_CHECK([--zone=dmz --get-default-zone], 2, ignore, ignore)
+    FWD_CHECK([--zone=dmz --set-default-zone], 2, ignore, ignore)
+    FWD_CHECK([--zone=dmz --get-zone-of-interface], 2, ignore, ignore)
+
+    FWD_CHECK([--permanent --zone=work --add-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --get-zone-of-interface=perm_dummy], 0, [work
+])
+    FWD_CHECK([--permanent --zone work --query-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --zone=work --list-interfaces], 0, [perm_dummy
+])
+
+    FWD_CHECK([--permanent --zone=public --add-interface=perm_dummy], 18, ignore, ignore)
+    FWD_CHECK([--permanent --zone=public --change-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --get-zone-of-interface=perm_dummy], 0, [public
+])
+    FWD_CHECK([--permanent --zone=public --remove-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --zone=public --query-interface perm_dummy], 1, ignore)
+    FWD_CHECK([--permanent --zone=public --change-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --get-zone-of-interface=perm_dummy], 0, [public
+])
+    FWD_CHECK([--permanent --zone=public --remove-interface=perm_dummy], 0, ignore)
+    FWD_CHECK([--permanent --zone=public --query-interface perm_dummy], 1, ignore)
+
+    FWD_CHECK([--add-interface=foo], 0, ignore)
+    FWD_CHECK([--add-interface=bar --zone=public], 0, ignore)
+    FWD_CHECK([--set-default-zone=trusted], 0, ignore)
+    FWD_CHECK([--get-default-zone], 0, [trusted
+])
+    dnl check that changing default zone moves interfaces in that zone
+    FWD_CHECK([--query-interface foo --zone=trusted], 0, ignore)
+    dnl check that *only* iface1 was moved to new default zone
+    FWD_CHECK([--query-interface bar --zone=public], 0, ignore)
+    FWD_CHECK([--set-default-zone=public], 0, ignore)
+    FWD_CHECK([--remove-interface=foo], 0, ignore)
+    FWD_CHECK([--remove-interface=bar], 0, ignore)
+FWD_END_TEST([-e '/ERROR: ZONE_CONFLICT: perm_dummy/d'])
+
+FWD_START_TEST([zone sources])
+    m4_define([check_zone_source], [
+        FWD_CHECK([--zone=public --add-source=$1], 0, ignore)
+        FWD_CHECK([--get-zone-of-source=$1], 0, [public
+])
+        FWD_CHECK([--zone=public --list-sources], 0, [$1
+])
+        FWD_CHECK([--zone=public --list-all | TRIM | grep ^sources], 0, [sources: $1
+])
+        FWD_CHECK([--get-active-zones | TRIM | grep "^\(public\|sources\)"], 0, [public
+sources: $1
+])
+        FWD_CHECK([--zone public --query-source=$1], 0, ignore)
+        FWD_CHECK([--zone=work --change-source=$1], 0, ignore)
+        FWD_CHECK([--get-zone-of-source=$1], 0, [work
+])
+        FWD_CHECK([--zone=work --remove-source=$1], 0, ignore)
+        FWD_CHECK([--zone work --query-source=$1], 1, ignore)
+        FWD_CHECK([--get-zone-of-source=$1], 2, ignore, ignore)
+        FWD_CHECK([--get-zone-of-source], 2, ignore, ignore) dnl missing arg
+        FWD_CHECK([--permanent --zone=public --add-source=$1], 0, ignore)
+        FWD_CHECK([--permanent --get-zone-of-source=$1], 0, [public
+])
+        FWD_CHECK([--permanent --zone=public --list-sources], 0, [$1
+])
+        FWD_CHECK([--permanent --zone=public --list-all | TRIM | grep ^sources], 0, [sources: $1
+])
+        FWD_CHECK([--permanent --zone public --query-source=$1], 0, ignore)
+
+        FWD_CHECK([--permanent --zone=work --add-source=$1], 18, ignore, ignore)
+        FWD_CHECK([--permanent --zone=work --change-source=$1], 0, ignore)
+        FWD_CHECK([--permanent --get-zone-of-source=$1], 0, [work
+])
+        FWD_CHECK([--permanent --zone=work --remove-source=$1], 0, ignore)
+        FWD_CHECK([--permanent --zone work --query-source=$1], 1, ignore)
+    ])
+
+    check_zone_source([1.2.3.4])
+    check_zone_source([192.168.1.0/24])
+    check_zone_source([3ffe:501:ffff::/64])
+    check_zone_source([dead:beef::babe])
+
+    m4_undefine([check_zone_source])
+
+FWD_END_TEST([ -e '/ERROR: ZONE_CONFLICT/d'])
+
+FWD_START_TEST([services])
+    FWD_CHECK([--add-service=dns --timeout 60 --zone=public], 0, ignore)
+    FWD_CHECK([--query-service dns], 0, ignore)
+    FWD_CHECK([--remove-service=dns], 0, ignore)
+    FWD_CHECK([--query-service=dns], 1, ignore)
+    FWD_CHECK([--add-service=smtpssssssss], 101, ignore, ignore)
+    FWD_CHECK([--add-service=dns --timeout], 2, ignore, ignore) dnl missing argument
+    FWD_CHECK([--add-service=dns --add-interface=dummy0], 2, ignore, ignore) dnl impossible combination
+
+    FWD_CHECK([--permanent --zone=external --add-service=dns --timeout 60], 2, ignore, ignore) dnl impossible combination
+    FWD_CHECK([--permanent --zone=external --add-service dns], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --list-services], 0, [ssh dns
+])
+    FWD_CHECK([--permanent --zone=external --query-service dns], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --remove-service=dns], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --query-service=dns], 1, ignore)
+    FWD_CHECK([--permanent --zone=external --add-service=smtpssssssss], 101, ignore, ignore)
+    FWD_CHECK([--permanent --zone=external --add-service=dns --add-interface=dummy0], 2, ignore, ignore) dnl impossible combination
+
+    FWD_CHECK([--add-service=http --add-service=nfs --timeout=1h], 0, ignore)
+    FWD_CHECK([--query-service http], 0, ignore)
+    FWD_CHECK([--query-service=nfs --zone=public], 0, ignore)
+    FWD_CHECK([--remove-service=nfs --remove-service=http], 0, ignore)
+    FWD_CHECK([--query-service http], 1, ignore)
+    FWD_CHECK([--query-service nfs], 1, ignore)
+
+    FWD_CHECK([--permanent --add-service=http --add-service=nfs], 0, ignore)
+    FWD_CHECK([--permanent --query-service http], 0, ignore)
+    FWD_CHECK([--permanent --query-service=nfs --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-service=nfs --remove-service=http], 0, ignore)
+    FWD_CHECK([--permanent  --query-service http], 1, ignore)
+    FWD_CHECK([--permanent  --query-service nfs], 1, ignore)
+FWD_END_TEST([-e '/ERROR: INVALID_SERVICE:/d'])
+
+FWD_START_TEST([user services])
+    FWD_CHECK([--permanent --new-service=ssh], 26, ignore, ignore) dnl already exists
+
+    FWD_CHECK([--permanent --new-service=foobar], 0, ignore)
+    FWD_CHECK([--permanent --get-services | grep foobar], 0, ignore)
+
+    FWD_CHECK([--permanent --service=foobar --add-port=666], 102, ignore, ignore) dnl no protocol
+    FWD_CHECK([--permanent --service=foobar --add-port=666/dummy], 103, ignore, ignore) dnl bad protocol
+    FWD_CHECK([--permanent --service=foobar --add-port=666/tcp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-port=666/tcp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-port=111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-port=111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-port 111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-port=111-222/udp], 1, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-port=666/sctp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-port=666/sctp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-port 666/sctp], 0, ignore, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-port=666/sctp], 1, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-port=999/dccp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-port=999/dccp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-port 999/dccp], 0, ignore, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-port=999/dccp], 1, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-port=666/sctp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-port=999/dccp], 0, ignore)
+
+    FWD_CHECK([--permanent --service=foobar --add-protocol=ddp --add-protocol gre], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-protocol=ddp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-protocol=gre], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-protocol ddp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-protocol gre], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-protocol=ddp], 1, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-protocol=gre], 1, ignore)
+
+    FWD_CHECK([--permanent --service=foobar --add-module=sip], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-module=sip], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --add-module=ftp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-module=ftp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-module=ftp], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-module=ftp], 1, ignore)
+
+    FWD_CHECK([--permanent --service=foobar --set-destination=ipv4], 121, ignore, ignore) dnl no address
+    FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:foo], 105, ignore, ignore) dnl bad address
+    FWD_CHECK([--permanent --service=foobar --set-destination=ipv4:1.2.3.4], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-destination=ipv4], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --set-destination=ipv6:fd00:dead:beef:ff0::/64], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-destination=ipv6:fd00:dead:beef:ff0::/64], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --remove-destination=ipv6], 0, ignore)
+    FWD_CHECK([--permanent --service=foobar --query-destination=ipv6:fd00:dead:beef:ff0::/64], 1, ignore)
+
+    FWD_CHECK([--permanent --zone=public --add-service=foobar], 0, ignore)
+    FWD_CHECK([--permanent --zone=public --list-services | grep foobar], 0, ignore)
+    FWD_CHECK([--permanent --delete-service=foobar], 0, ignore)
+    FWD_CHECK([--permanent --zone=public --list-services | grep foobar], 1, ignore)
+FWD_END_TEST([-e '/ERROR: NAME_CONFLICT: new_service():/d' dnl
+              -e '/ERROR: INVALID_ADDR:/d'])
+
+FWD_START_TEST([ports])
+    FWD_CHECK([--zone home --list-ports], 0, ignore)
+    FWD_CHECK([--add-port=666], 102, ignore, ignore) dnl no protocol
+    FWD_CHECK([--add-port=666/dummy], 103, ignore, ignore) dnl bad protocol
+    FWD_CHECK([--add-port 122/udpa --add-port 122/udpp --add-port 8745897/foo], 254, ignore, ignore)
+    FWD_CHECK([--add-port 122/udpa --add-port 122/udpp --add-port 8745897/foo --add-port bar], 254, ignore, ignore)
+    FWD_CHECK([--add-port=666/tcp --zone=public --timeout=30m], 0, ignore)
+    FWD_CHECK([--remove-port=666/tcp], 0, ignore)
+    FWD_CHECK([--add-port=111-222/udp], 0, ignore)
+    FWD_CHECK([--query-port=111-222/udp --zone=public], 0, ignore)
+    FWD_CHECK([--remove-port 111-222/udp], 0, ignore)
+    FWD_CHECK([--query-port=111-222/udp], 1, ignore)
+
+    FWD_CHECK([--add-port=5000/sctp], 0, ignore)
+    FWD_CHECK([--query-port=5000/sctp --zone=public], 0, ignore)
+    FWD_CHECK([--remove-port 5000/sctp], 0, ignore)
+    FWD_CHECK([--query-port=5000/sctp], 1, ignore)
+    FWD_CHECK([--add-port=222/dccp], 0, ignore)
+    FWD_CHECK([--query-port=222/dccp --zone=public], 0, ignore)
+    FWD_CHECK([--remove-port 222/dccp], 0, ignore)
+    FWD_CHECK([--query-port=222/dccp], 1, ignore)
+
+    FWD_CHECK([--permanent --add-port=666], 102, ignore, ignore) dnl no protocol
+    FWD_CHECK([--permanent --add-port=666/dummy], 103, ignore, ignore) dnl bad protocol
+    FWD_CHECK([--permanent --add-port=666/tcp], 0, ignore)
+    FWD_CHECK([--permanent --remove-port=666/tcp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --add-port=111-222/udp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-port=111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --remove-port 111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=111-222/udp], 1, ignore)
+
+    FWD_CHECK([--permanent --add-port=5000/sctp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=5000/sctp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-port 5000/sctp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=5000/sctp], 1, ignore)
+    FWD_CHECK([--permanent --add-port=222/dccp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=222/dccp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-port 222/dccp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=222/dccp], 1, ignore)
+
+    FWD_CHECK([--add-port=80/tcp --add-port 443-444/udp], 0, ignore)
+    FWD_CHECK([--query-port=80/tcp --zone=public], 0, ignore)
+    FWD_CHECK([--query-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--remove-port 80/tcp --remove-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--query-port=80/tcp], 1, ignore)
+    FWD_CHECK([--query-port=443-444/udp], 1, ignore)
+
+    FWD_CHECK([--permanent --add-port=80/tcp --add-port 443-444/udp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=80/tcp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--permanent --remove-port 80/tcp --remove-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--permanent --query-port=80/tcp], 1, ignore)
+    FWD_CHECK([--permanent --query-port=443-444/udp], 1, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([source ports])
+    FWD_CHECK([--zone home --list-source-ports], 0, ignore)
+    FWD_CHECK([--add-source-port=666], 102, ignore, ignore) dnl no protocol
+    FWD_CHECK([--add-source-port=666/dummy], 103, ignore, ignore) dnl bad protocol
+    FWD_CHECK([--add-source-port=666/tcp --zone=public --timeout=30m], 0, ignore)
+    FWD_CHECK([--remove-source-port=666/tcp], 0, ignore)
+    FWD_CHECK([--add-source-port=111-222/udp], 0, ignore)
+    FWD_CHECK([--query-source-port=111-222/udp --zone=public], 0, ignore)
+    FWD_CHECK([--remove-source-port 111-222/udp], 0, ignore)
+    FWD_CHECK([--query-source-port=111-222/udp], 1, ignore)
+
+    FWD_CHECK([--permanent --add-source-port=666], 102, ignore, ignore) dnl no protocol
+    FWD_CHECK([--permanent --add-source-port=666/dummy], 103, ignore, ignore) dnl bad protocol
+    FWD_CHECK([--permanent --add-source-port=666/tcp], 0, ignore)
+    FWD_CHECK([--permanent --remove-source-port=666/tcp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --add-source-port=111-222/udp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-source-port=111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --remove-source-port 111-222/udp], 0, ignore)
+    FWD_CHECK([--permanent --query-source-port=111-222/udp], 1, ignore)
+
+    FWD_CHECK([--add-source-port=80/tcp --add-source-port 443-444/udp], 0, ignore)
+    FWD_CHECK([--query-source-port=80/tcp --zone=public], 0, ignore)
+    FWD_CHECK([--query-source-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--remove-source-port 80/tcp --remove-source-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--query-source-port=80/tcp], 1, ignore)
+    FWD_CHECK([--query-source-port=443-444/udp], 1, ignore)
+
+    FWD_CHECK([--permanent --add-source-port=80/tcp --add-source-port 443-444/udp], 0, ignore)
+    FWD_CHECK([--permanent --query-source-port=80/tcp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-source-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--permanent --remove-source-port 80/tcp --remove-source-port=443-444/udp], 0, ignore)
+    FWD_CHECK([--permanent --query-source-port=80/tcp], 1, ignore)
+    FWD_CHECK([--permanent --query-source-port=443-444/udp], 1, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([protocols])
+    FWD_CHECK([--add-protocol=dummy], 103, ignore, ignore)
+    FWD_CHECK([--add-protocol=dccp --zone=public], 0, ignore)
+    FWD_CHECK([--query-protocol=dccp], 0, ignore)
+    FWD_CHECK([--remove-protocol dccp], 0, ignore)
+    FWD_CHECK([--query-protocol=dccp], 1, ignore)
+    FWD_CHECK([--permanent --add-protocol=dummy], 103, ignore, ignore)
+    FWD_CHECK([--permanent --add-protocol=dccp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-protocol=dccp], 0, ignore)
+    FWD_CHECK([--permanent --remove-protocol dccp], 0, ignore)
+    FWD_CHECK([--permanent --query-protocol=dccp], 1, ignore)
+
+    FWD_CHECK([--add-protocol=ddp --add-protocol gre], 0, ignore)
+    FWD_CHECK([--query-protocol=ddp --zone=public], 0, ignore)
+    FWD_CHECK([--query-protocol=gre], 0, ignore)
+    FWD_CHECK([--remove-protocol ddp --remove-protocol=gre], 0, ignore)
+    FWD_CHECK([--query-protocol=ddp], 1, ignore)
+    FWD_CHECK([--query-protocol=gre], 1, ignore)
+    FWD_CHECK([--permanent --add-protocol=ddp --add-protocol gre], 0, ignore)
+    FWD_CHECK([--permanent --query-protocol=ddp --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-protocol=gre], 0, ignore)
+    FWD_CHECK([--permanent --remove-protocol ddp --remove-protocol=gre], 0, ignore)
+    FWD_CHECK([--permanent --query-protocol=ddp], 1, ignore)
+    FWD_CHECK([--permanent --query-protocol=gre], 1, ignore)
+FWD_END_TEST([-e '/ERROR: INVALID_PROTOCOL: dummy/d'])
+
+FWD_START_TEST([masquerade])
+    FWD_CHECK([--add-masquerade --zone=public], 0, ignore)
+    FWD_CHECK([--query-masquerade], 0, ignore)
+    FWD_CHECK([--remove-masquerade], 0, ignore)
+    FWD_CHECK([--query-masquerade], 1, ignore)
+
+    FWD_CHECK([--permanent --add-masquerade --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-masquerade], 0, ignore)
+    FWD_CHECK([--permanent --remove-masquerade], 0, ignore)
+    FWD_CHECK([--permanent --query-masquerade], 1, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([forward ports])
+    FWD_CHECK([--add-forward-port=666], 106, ignore, ignore)
+    FWD_CHECK([--add-forward-port=port=11:proto=tcp:toport=22], 0, ignore)
+    FWD_CHECK([--remove-forward-port=port=11:proto=tcp:toport=22 --zone=public], 0, ignore)
+    FWD_CHECK([--add-forward-port=port=33:proto=tcp:toaddr=4444], 105, ignore, ignore) dnl bad address
+    FWD_CHECK([--add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4 --zone=public], 0, ignore)
+    FWD_CHECK([--remove-forward-port=port=33:proto=tcp:toaddr=4.4.4.4], 0, ignore)
+    FWD_CHECK([--add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
+    FWD_CHECK([--remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 1, ignore)
+    FWD_CHECK([--add-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
+    FWD_CHECK([--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 1, ignore)
+    FWD_CHECK([--add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
+    FWD_CHECK([--query-forward-port port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0:: --zone=public], 0, ignore)
+    FWD_CHECK([--remove-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
+    FWD_CHECK([--query-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 1, ignore)
+    FWD_CHECK([--add-forward-port=port=88:proto=udp:toport=99 --add-forward-port port=100:proto=tcp:toport=200], 0, ignore)
+    FWD_CHECK([--query-forward-port=port=100:proto=tcp:toport=200], 0, ignore)
+    FWD_CHECK([--query-forward-port=port=88:proto=udp:toport=99 --zone=public], 0, ignore)
+    FWD_CHECK([--remove-forward-port port=100:proto=tcp:toport=200 --remove-forward-port=port=88:proto=udp:toport=99], 0, ignore)
+    FWD_CHECK([--query-forward-port port=100:proto=tcp:toport=200], 1, ignore)
+    FWD_CHECK([--query-forward-port=port=88:proto=udp:toport=99], 1, ignore)
+    FWD_CHECK([--list-forward-ports], 0, ignore)
+
+    FWD_CHECK([--permanent --add-forward-port=666], 106, ignore, ignore)
+    FWD_CHECK([--permanent --add-forward-port=port=11:proto=tcp:toport=22], 0, ignore)
+    FWD_CHECK([--permanent --remove-forward-port=port=11:proto=tcp:toport=22 --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --add-forward-port=port=33:proto=tcp:toaddr=4444], 105, ignore, ignore) dnl bad address
+    FWD_CHECK([--permanent --add-forward-port=port=33:proto=tcp:toaddr=4.4.4.4 --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-forward-port=port=33:proto=tcp:toaddr=4.4.4.4], 0, ignore)
+    FWD_CHECK([--permanent --add-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port port=55:proto=tcp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port=port=55:proto=tcp:toport=66:toaddr=7.7.7.7], 1, ignore)
+    FWD_CHECK([--permanent --add-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port port=66:proto=sctp:toport=66:toaddr=7.7.7.7 --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port=port=66:proto=sctp:toport=66:toaddr=7.7.7.7], 1, ignore)
+    FWD_CHECK([--permanent --add-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0:: --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port=port=66:proto=sctp:toport=66:toaddr=fd00:dead:beef:ff0::], 1, ignore)
+    FWD_CHECK([--permanent --add-forward-port=port=88:proto=udp:toport=99 --add-forward-port port=100:proto=tcp:toport=200], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port=port=100:proto=tcp:toport=200], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port=port=88:proto=udp:toport=99 --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --remove-forward-port port=100:proto=tcp:toport=200 --remove-forward-port=port=88:proto=udp:toport=99], 0, ignore)
+    FWD_CHECK([--permanent --query-forward-port port=100:proto=tcp:toport=200], 1, ignore)
+    FWD_CHECK([--permanent --query-forward-port=port=88:proto=udp:toport=99], 1, ignore)
+    FWD_CHECK([--permanent --list-forward-ports], 0, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([ICMP block])
+    FWD_CHECK([--list-icmp-blocks], 0, ignore)
+
+    FWD_CHECK([--zone=external --add-icmp-block=dummyblock], 107, ignore, ignore)
+    FWD_CHECK([--zone=external --add-icmp-block=redirect], 0, ignore)
+    FWD_CHECK([--zone=external --query-icmp-block=redirect], 0, ignore)
+    FWD_CHECK([--zone=external --remove-icmp-block redirect], 0, ignore)
+    FWD_CHECK([--zone=external --query-icmp-block=redirect], 1, ignore)
+    FWD_CHECK([--permanent --zone=external --add-icmp-block=dummyblock], 107, ignore, ignore)
+    FWD_CHECK([--permanent --zone=external --add-icmp-block=redirect], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --query-icmp-block=redirect], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --remove-icmp-block redirect], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --query-icmp-block=redirect], 1, ignore)
+
+    FWD_CHECK([--add-icmp-block-inversion --zone=public], 0, ignore)
+    FWD_CHECK([--query-icmp-block-inversion], 0, ignore)
+    FWD_CHECK([--remove-icmp-block-inversion], 0, ignore)
+    FWD_CHECK([--query-icmp-block-inversion], 1, ignore)
+    FWD_CHECK([--permanent --add-icmp-block-inversion --zone=public], 0, ignore)
+    FWD_CHECK([--permanent --query-icmp-block-inversion], 0, ignore)
+    FWD_CHECK([--permanent --remove-icmp-block-inversion], 0, ignore)
+    FWD_CHECK([--permanent --query-icmp-block-inversion], 1, ignore)
+
+    FWD_CHECK([--add-icmp-block-inversion --zone=block], 0, ignore)
+    FWD_CHECK([--remove-icmp-block-inversion --zone=block], 0, ignore)
+    FWD_CHECK([--add-icmp-block-inversion --zone=drop], 0, ignore)
+    FWD_CHECK([--remove-icmp-block-inversion --zone=drop], 0, ignore)
+    FWD_CHECK([--add-icmp-block-inversion --zone=trusted], 0, ignore)
+    FWD_CHECK([--remove-icmp-block-inversion --zone=trusted], 0, ignore)
+
+    FWD_CHECK([--zone=external --add-icmp-block=echo-reply --add-icmp-block=router-solicitation], 0, ignore)
+    FWD_CHECK([--zone=external --query-icmp-block=echo-reply], 0, ignore)
+    FWD_CHECK([--zone=external --query-icmp-block=router-solicitation], 0, ignore)
+    FWD_CHECK([--zone=external --remove-icmp-block echo-reply --remove-icmp-block=router-solicitation], 0, ignore)
+    FWD_CHECK([--zone=external --query-icmp-block=echo-reply], 1, ignore)
+    FWD_CHECK([--zone=external --query-icmp-block=router-solicitation], 1, ignore)
+    FWD_CHECK([--permanent --zone=external --add-icmp-block=echo-reply --add-icmp-block=router-solicitation], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --query-icmp-block=echo-reply], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --query-icmp-block=router-solicitation], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --remove-icmp-block echo-reply --remove-icmp-block=router-solicitation], 0, ignore)
+    FWD_CHECK([--permanent --zone=external --query-icmp-block=echo-reply], 1, ignore)
+    FWD_CHECK([--permanent --zone=external --query-icmp-block=router-solicitation], 1, ignore)
+FWD_END_TEST([-e '/ERROR: INVALID_ICMPTYPE:/d'])
+
+FWD_START_TEST([user ICMP types])
+    FWD_CHECK([--permanent --new-icmptype=redirect], 26, ignore, ignore) dnl already exists
+
+    FWD_CHECK([--permanent --new-icmptype=foobar], 0, ignore)
+    FWD_CHECK([--permanent --get-icmptypes | grep foobar], 0, ignore)
+
+    FWD_CHECK([--permanent --icmptype=foobar --add-destination=ipv5], 111, ignore, ignore)
+    FWD_CHECK([--permanent --icmptype=foobar --add-destination=ipv4], 0, ignore, ignore)
+    FWD_CHECK([--permanent --icmptype=foobar --remove-destination=ipv4], 0, ignore)
+    FWD_CHECK([--permanent --icmptype=foobar --add-destination=ipv4], 0, ignore)
+    FWD_CHECK([--permanent --icmptype=foobar --query-destination=ipv4], 0, ignore)
+    FWD_CHECK([--permanent --icmptype=foobar --remove-destination=ipv4], 0, ignore)
+    FWD_CHECK([--permanent --icmptype=foobar --query-destination=ipv4], 1, ignore)
+
+    FWD_CHECK([--permanent --zone=public --add-icmp-block=foobar], 0, ignore)
+    FWD_CHECK([--permanent --zone=public --list-icmp-blocks | grep foobar], 0, ignore)
+
+    FWD_CHECK([--permanent --delete-icmptype=foobar], 0, ignore)
+    FWD_CHECK([--permanent --zone=public --list-icmp-blocks | grep foobar], 1, ignore)
+FWD_END_TEST([-e '/NAME_CONFLICT: new_icmptype():/d'])
+
+FWD_START_TEST([ipset])
+    FWD_CHECK([--permanent --new-ipset=foobar --type=hash:ip], 0, ignore)
+    FWD_CHECK([--reload], 0, ignore)
+    FWD_CHECK([--ipset=foobar --get-entries], 0, [
+])
+    FWD_CHECK([--ipset=foobar --add-entry=1.2.3.4], 0, ignore)
+    FWD_CHECK([--ipset=foobar --get-entries | grep "1.2.3.4"], 0, ignore)
+    FWD_CHECK([--ipset=foobar --add-entry=1.2.3.400], 136, ignore, ignore)
+    FWD_CHECK([--ipset=foobar --remove-entry=1.2.3.4], 0, ignore)
+    FWD_CHECK([--ipset=foobar --get-entries], 0, [
+])
+
+    FWD_CHECK([--zone=public --add-source=ipset:foobar], 0, ignore)
+    FWD_CHECK([--get-zone-of-source=ipset:foobar | grep public], 0, ignore)
+    FWD_CHECK([--zone=public --list-sources | grep "ipset:foobar"], 0, ignore)
+    FWD_CHECK([--zone=public --query-source=ipset:foobar], 0, ignore)
+    FWD_CHECK([--zone=public --remove-source=ipset:foobar], 0, ignore)
+    FWD_CHECK([--zone=public --query-source=ipset:foobar], 1, ignore)
+
+    FWD_CHECK([--permanent --delete-ipset=foobar], 0, ignore)
+    FWD_CHECK([--reload], 0, ignore)
+FWD_END_TEST([-e '/ERROR: INVALID_ENTRY: invalid address/d'])
+
+FWD_START_TEST([user helpers])
+    FWD_CHECK([--permanent --new-helper=foobar --module=foo], 132, ignore, ignore)
+    FWD_CHECK([--permanent --new-helper=foobar --module=nf_conntrack_foo], 0, ignore)
+    FWD_CHECK([--permanent --get-helpers | grep foobar], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --get-family | grep ipv4], 1, ignore)
+    FWD_CHECK([--permanent --helper=foobar --set-family=ipv5], 111, ignore, ignore)
+    FWD_CHECK([--permanent --helper=foobar --set-family=ipv4], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --get-family | grep ipv4], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --set-family=], 0, ignore)
+
+    FWD_CHECK([--permanent --helper=foobar --get-family], 0, [
+])
+    FWD_CHECK([--permanent --helper=foobar --get-ports], 0, [
+])
+
+    FWD_CHECK([--permanent --helper=foobar --add-port=44/tcp], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --get-ports | grep 44], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --query-port=44/tcp], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --remove-port=44/tcp], 0, ignore)
+    FWD_CHECK([--permanent --helper=foobar --query-port=44/tcp], 1, ignore)
+    FWD_CHECK([--permanent --helper=foobar --get-ports], 0, [
+])
+    FWD_CHECK([--permanent --delete-helper=foobar], 0, ignore)
+    FWD_CHECK([--permanent --get-helpers | grep foobar], 1, ignore)
+FWD_END_TEST([-e '/ERROR: INVALID_MODULE:/d'])
+
+FWD_START_TEST([direct])
+    FWD_CHECK([--direct --add-chain ipv4 filter mychain], 0, ignore)
+    FWD_CHECK([--direct --get-chains ipv4 filter | grep mychain], 0, ignore)
+    FWD_CHECK([--direct --get-all-chains | grep "ipv4 filter mychain"], 0, ignore)
+    FWD_CHECK([--direct --query-chain ipv4 filter mychain], 0, ignore)
+    FWD_CHECK([--direct --add-chain ipv5 filter mychain], 111, ignore, ignore)
+    FWD_CHECK([--direct --add-chain ipv4 badtable mychain], 108, ignore, ignore)
+
+    FWD_CHECK([--direct --add-rule ipv4 filter mychain 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --get-rules ipv4 filter mychain | grep "3 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--direct --get-all-rules | grep "ipv4 filter mychain 3 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--direct --query-rule ipv4 filter mychain 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --remove-rule ipv4 filter mychain 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --query-rule ipv4 filter mychain 3 -j ACCEPT], 1, ignore)
+    FWD_CHECK([--direct --add-rule ipv5 filter mychain 3 -j ACCEPT], 111, ignore, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 badtable mychain 3 -j ACCEPT], 108, ignore, ignore)
+
+    FWD_CHECK([--direct --add-rule ipv4 filter mychain 3 -s 192.168.1.1 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 filter mychain 4 -s 192.168.1.2 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 filter mychain 5 -s 192.168.1.3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --add-rule ipv4 filter mychain 6 -s 192.168.1.4 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --get-rules ipv4 filter mychain | grep "3 -s 192.168.1.1 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--direct --get-rules ipv4 filter mychain | grep "4 -s 192.168.1.2 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--direct --get-rules ipv4 filter mychain | grep "5 -s 192.168.1.3 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--direct --get-rules ipv4 filter mychain | grep "6 -s 192.168.1.4 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--direct --remove-rules ipv4 filter mychain], 0, ignore)
+    FWD_CHECK([--direct --query-rule ipv4 filter mychain 3 -s 192.168.1.1 -j ACCEPT], 1, ignore)
+    FWD_CHECK([--direct --query-rule ipv4 filter mychain 4 -s 192.168.1.2 -j ACCEPT], 1, ignore)
+    FWD_CHECK([--direct --query-rule ipv4 filter mychain 5 -s 192.168.1.3 -j ACCEPT], 1, ignore)
+    FWD_CHECK([--direct --query-rule ipv4 filter mychain 6 -s 192.168.1.4 -j ACCEPT], 1, ignore)
+
+    FWD_CHECK([--direct --remove-chain ipv5 filter mychain], 111, ignore, ignore)
+    FWD_CHECK([--direct --remove-chain ipv4 badtable mychain], 108, ignore, ignore)
+    FWD_CHECK([--direct --remove-chain ipv4 filter mychain], 0, ignore)
+    FWD_CHECK([--direct --query-chain ipv4 filter mychain], 1, ignore)
+    FWD_CHECK([--direct --remove-chain ipv4 filter dummy], 0, ignore, ignore)
+
+    dnl impossible combinations
+    FWD_CHECK([--direct --reload], 2, ignore, ignore)
+    FWD_CHECK([--direct --list-all], 2, ignore, ignore)
+    FWD_CHECK([--direct --get-services], 2, ignore, ignore)
+    FWD_CHECK([--direct --get-default-zone], 2, ignore, ignore)
+    FWD_CHECK([--direct --zone=home --list-services], 2, ignore, ignore)
+    FWD_CHECK([--direct --permanent --list-all], 2, ignore, ignore)
+
+    dnl try some non-ascii magic
+    FWD_CHECK([--permanent --direct --add-chain ipv4 filter žluťoučký], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-chains ipv4 filter |grep "žluťoučký"], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-all-chains | grep "ipv4 filter žluťoučký"], 0, ignore)
+    FWD_CHECK([--permanent --direct --query-chain ipv4 filter žluťoučký], 0, ignore)
+    FWD_CHECK([--permanent --direct --add-rule ipv4 filter žluťoučký 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-rules ipv4 filter žluťoučký | grep ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-all-rules | grep "ipv4 filter žluťoučký 3 -j ACCEPT"], 0, ignore)
+    FWD_CHECK([--permanent --direct --query-rule ipv4 filter žluťoučký 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --direct --remove-rule ipv4 filter žluťoučký 3 -j ACCEPT], 0, ignore)
+    FWD_CHECK([--permanent --direct --query-rule ipv4 filter žluťoučký 3 -j ACCEPT], 1, ignore)
+    FWD_CHECK([--permanent --direct --remove-chain ipv4 filter žluťoučký], 0, ignore)
+    FWD_CHECK([--permanent --direct --query-chain ipv4 filter žluťoučký], 1, ignore)
+
+    m4_define([direct_rule1], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 81])
+    m4_define([direct_rule2], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 82])
+    FWD_CHECK([--permanent --direct --add-rule direct_rule1], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-all-rules | grep "direct_rule1"], 0, ignore)
+    FWD_CHECK([--reload], 0, ignore)
+    FWD_CHECK([--direct --get-all-rules | grep "direct_rule1"], 0, ignore)
+    FWD_CHECK([--permanent --direct --remove-rule direct_rule1], 0, ignore)
+    FWD_CHECK([--permanent --direct --add-rule direct_rule2], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-all-rules | grep "direct_rule2"], 0, ignore)
+    FWD_CHECK([--reload], 0, ignore)
+    FWD_CHECK([--direct --get-all-rules |grep "direct_rule1"], 1, ignore)
+    FWD_CHECK([--direct --get-all-rules | grep "direct_rule2"], 0, ignore)
+    FWD_CHECK([--permanent --direct --remove-rule direct_rule2], 0, ignore)
+    FWD_CHECK([--reload], 0, ignore)
+    FWD_CHECK([--direct --get-all-rules | grep "direct_rule2"], 1, ignore)
+    m4_undefine([direct_rule1])
+    m4_undefine([direct_rule2])
+FWD_END_TEST([-e '/ERROR: INVALID_TABLE:/d' dnl
+              -e '/WARNING: NOT_ENABLED: chain/d'])
+
+FWD_START_TEST([direct passthrough])
+    AT_CHECK([if ! modprobe dummy; then exit 77; fi])
+
+    FWD_CHECK([--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
+    FWD_CHECK([--direct --passthrough ipv4 --table mangle --delete POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
+
+    FWD_CHECK([--direct --add-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 111, ignore, ignore)
+    FWD_CHECK([--direct --add-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --query-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 111, ignore, ignore)
+    FWD_CHECK([--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --remove-passthrough ipv7 --table filter -A INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 111, ignore, ignore)
+    FWD_CHECK([--direct --remove-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --query-passthrough ipv4 --table filter --append INPUT --in-interface dummy0 --protocol tcp --destination-port 67 --jump ACCEPT], 1, ignore, ignore)
+
+    FWD_CHECK([--direct --add-passthrough ipv6 --table filter --append FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT], 0, ignore)
+    FWD_CHECK([--direct --get-passthroughs ipv6 | grep "fd00:dead:beef:ff0::/64"], 0, ignore)
+    FWD_CHECK([--direct --get-all-passthroughs | grep "fd00:dead:beef:ff0::/64"], 0, ignore)
+    FWD_CHECK([--direct --passthrough ipv6 -nvL | grep "fd00:dead:beef:ff0::/64"], 0, ignore)
+    FWD_CHECK([--direct --remove-passthrough ipv6 --table filter --delete FORWARD --destination fd00:dead:beef:ff0::/64 --in-interface dummy0 --out-interface dummy0 --jump ACCEPT], 0, ignore, ignore)
+
+    FWD_CHECK([--direct --passthrough ipv5 -nvL], 111, ignore, ignore)
+    FWD_CHECK([--direct --passthrough ipv4], 2, ignore, ignore)
+
+    FWD_CHECK([--direct --passthrough --get-chains ipv4 filter], 111, ignore, ignore)
+
+    FWD_CHECK([--permanent --direct --add-passthrough ipv4], 2, ignore, ignore)
+    FWD_CHECK([--permanent --direct --add-passthrough ipv5 -nvL], 111, ignore, ignore)
+    FWD_CHECK([--permanent --direct --add-passthrough ipv4 -nvL], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-passthroughs ipv4 | grep "\-nvL"], 0, ignore)
+    FWD_CHECK([--permanent --direct --get-all-passthroughs | grep "ipv4 \-nvL"], 0, ignore)
+    FWD_CHECK([--permanent --direct --query-passthrough ipv4 -nvL], 0, ignore)
+    FWD_CHECK([--permanent --direct --remove-passthrough ipv4 -nvL], 0, ignore)
+    FWD_CHECK([--permanent --direct --query-passthrough ipv4 -nvL], 1, ignore, ignore)
+FWD_END_TEST([-e '/WARNING: NOT_ENABLED: passthrough/d'])
+
+FWD_START_TEST([lockdown])
+    FWD_CHECK([--add-lockdown-whitelist-command /usr/bin/command], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 0, ignore)
+    FWD_CHECK([--list-lockdown-whitelist-commands | grep "/usr/bin/command"], 0, ignore)
+    FWD_CHECK([--remove-lockdown-whitelist-command /usr/bin/command], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-command /usr/bin/command], 1, ignore)
+    FWD_CHECK([--permanent --add-lockdown-whitelist-command /usr/bin/command], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-command /usr/bin/command], 0, ignore)
+    FWD_CHECK([--permanent --list-lockdown-whitelist-commands | grep "/usr/bin/command"], 0, ignore)
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-command /usr/bin/command], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-command /usr/bin/command], 1, ignore)
+
+    FWD_CHECK([--add-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
+    FWD_CHECK([--list-lockdown-whitelist-contexts | grep "system_u:system_r:MadDaemon_t:s0"], 0, ignore)
+    FWD_CHECK([--remove-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 1, ignore)
+    FWD_CHECK([--permanent --add-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
+    FWD_CHECK([--permanent --list-lockdown-whitelist-contexts | grep "system_u:system_r:MadDaemon_t:s0"], 0, ignore)
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-context system_u:system_r:MadDaemon_t:s0], 1, ignore)
+
+    FWD_CHECK([--add-lockdown-whitelist-uid 6666], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-uid 6666], 0, ignore)
+    FWD_CHECK([--list-lockdown-whitelist-uids | grep "6666"], 0, ignore)
+    FWD_CHECK([--remove-lockdown-whitelist-uid 6666], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-uid 6666], 1, ignore)
+    FWD_CHECK([--add-lockdown-whitelist-uid 6666x], 2, ignore, ignore)
+    FWD_CHECK([--permanent --add-lockdown-whitelist-uid 6666], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-uid 6666], 0, ignore)
+    FWD_CHECK([--permanent --list-lockdown-whitelist-uids | grep "6666"], 0, ignore)
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-uid 6666], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-uid 6666], 1, ignore)
+    FWD_CHECK([--permanent --add-lockdown-whitelist-uid 6666x], 2, ignore, ignore)
+
+    FWD_CHECK([--add-lockdown-whitelist-user theboss], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-user theboss], 0, ignore)
+    FWD_CHECK([--list-lockdown-whitelist-users | grep "theboss"], 0, ignore)
+    FWD_CHECK([--remove-lockdown-whitelist-user theboss], 0, ignore)
+    FWD_CHECK([--query-lockdown-whitelist-user theboss], 1, ignore)
+    FWD_CHECK([--permanent --add-lockdown-whitelist-user theboss], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-user theboss], 0, ignore)
+    FWD_CHECK([--permanent --list-lockdown-whitelist-users | grep "theboss"], 0, ignore)
+    FWD_CHECK([--permanent --remove-lockdown-whitelist-user theboss], 0, ignore)
+    FWD_CHECK([--permanent --query-lockdown-whitelist-user theboss], 1, ignore)
+
+    AT_SKIP_IF([test `whoami` != 'root'])
+    FWD_CHECK([--add-lockdown-whitelist-user root], 0, ignore)
+    FWD_CHECK([--lockdown-on], 0, ignore)
+    FWD_CHECK([--query-lockdown], 0, ignore)
+    FWD_CHECK([--lockdown-off], 0, ignore)
+    FWD_CHECK([--query-lockdown], 1, ignore)
+FWD_END_TEST
+
+FWD_START_TEST([rich rules])
+    m4_define([rich_rule_test], [
+        FWD_CHECK([--add-rich-rule='$1'], 0, ignore)
+        FWD_CHECK([--query-rich-rule='$1'], 0, ignore)
+        FWD_CHECK([--remove-rich-rule='$1'], 0, ignore)
+        FWD_CHECK([--query-rich-rule='$1'], 1, ignore)
+        FWD_CHECK([--permanent --add-rich-rule='$1'], 0, ignore)
+        FWD_CHECK([--permanent --query-rich-rule='$1'], 0, ignore)
+        FWD_CHECK([--permanent --remove-rich-rule='$1'], 0, ignore)
+        FWD_CHECK([--permanent --query-rich-rule='$1'], 1, ignore)
+    ])
+    rich_rule_test([rule service name="ftp" audit limit value="1/m" accept])
+    rich_rule_test([rule protocol value="ah" reject])
+    rich_rule_test([rule protocol value="esp" accept])
+    rich_rule_test([rule protocol value="sctp" log])
+    rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" service name="tftp" log prefix="tftp" level="info" limit value="1/m" accept])
+    rich_rule_test([rule family="ipv4" source not address="192.168.0.0/24" service name="dns" log prefix="dns" level="info" limit value="2/m" drop])
+    rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" service name="radius" log prefix="dns" level="info" limit value="3/m" reject type="icmp6-addr-unreachable" limit value="20/m"])
+    rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" port port="4011" protocol="tcp" log prefix="port 4011/tcp" level="info" limit value="4/m" drop])
+    rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="1::2:3:4:7"])
+    rich_rule_test([rule family="ipv4" destination address="1.2.3.4" forward-port port="4011" protocol="tcp" to-port="4012" to-addr="9.8.7.6"])
+    rich_rule_test([rule family="ipv4" source address="192.168.0.0/24" icmp-block name="source-quench" log prefix="source-quench" level="info" limit value="4/m"])
+    rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log prefix="redirect" level="info" limit value="4/m"])
+    rich_rule_test([rule family="ipv4" source address="192.168.1.0/24" masquerade])
+    rich_rule_test([rule family="ipv4" destination address="192.168.1.0/24" masquerade])
+    rich_rule_test([rule family="ipv6" masquerade])
+    rich_rule_test([rule forward-port port="2222" to-port="22" to-addr="192.168.100.2" protocol="tcp" family="ipv4" source address="192.168.2.100"])
+    rich_rule_test([rule forward-port port="66" to-port="666" to-addr="192.168.100.2" protocol="sctp" family="ipv4" source address="192.168.2.100"])
+    rich_rule_test([rule forward-port port="99" to-port="999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
+    rich_rule_test([rule forward-port port="99" to-port="10999" to-addr="1::2:3:4:7" protocol="dccp" family="ipv6" source address="1:2:3:4:6::"])
+    m4_undefine([rich_rule_test])
+
+    dnl negative tests
+    m4_define([rich_rule_test], [
+        FWD_CHECK([--add-rich-rule='$1'], $2, ignore, ignore)
+        FWD_CHECK([--permanent --add-rich-rule='$1'], $2, ignore, ignore)
+    ])
+    rich_rule_test([], 122) dnl empty
+    rich_rule_test([family="ipv6" accept], 122) dnl no rule
+    rich_rule_test([name="dns" accept], 122) dnl no rule
+    rich_rule_test([protocol value="ah" reject], 122) dnl no rule
+    rich_rule_test([rule protocol value="ah" reject type="icmp-host-prohibited"], 122) dnl reject type needs specific family
+    rich_rule_test([rule family="ipv4" protocol value="ah" reject type="dummy"], 122) dnl dummy reject type
+    rich_rule_test([rule], 122) dnl no element
+    rich_rule_test([rule bad_element], 122) dnl no unknown element
+    rich_rule_test([rule family="ipv5"], 122) dnl bad family
+    rich_rule_test([rule name="dns" accept], 122) dnl name outside of element
+    rich_rule_test([rule protocol="ah" accept], 122) dnl bad protocol usage
+    rich_rule_test([rule protocol value="ah" accept drop], 122) dnl accept && drop
+    rich_rule_test([rule service name="radius" port port="4011" reject], 122) dnl service && port
+    rich_rule_test([rule service bad_attribute="dns"], 122) dnl bad attribute
+    rich_rule_test([rule protocol value="mtp" log level="eror"], 125) dnl bad log level
+    rich_rule_test([rule source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 207) dnl missing family
+    rich_rule_test([rule family="ipv6" source address="1:2:3:4:6::" icmp-block name="redirect" log level="info" limit value="1/2m"], 123) dnl bad limit
+    rich_rule_test([rule protocol value="esp"], 122) dnl no action/log/audit
+    rich_rule_test([rule family="ipv4" masquerade drop], 122) dnl masquerade & action
+    rich_rule_test([rule family="ipv4" icmp-block name="redirect" accept], 122) dnl icmp-block & action
+    rich_rule_test([rule forward-port port="2222" to-port="22" protocol="tcp" family="ipv4" accept], 122) dnl forward-port & action
+    m4_undefine([rich_rule_test])
+FWD_END_TEST([-e '/ERROR: INVALID_RULE:/d' dnl
+              -e '/ERROR: INVALID_LOG_LEVEL: eror/d' dnl
+              -e '/ERROR: MISSING_FAMILY/d' dnl
+              -e '/ERROR: INVALID_LIMIT: 1\/2m/d'])
