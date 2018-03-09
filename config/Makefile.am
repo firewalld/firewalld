@@ -124,6 +124,7 @@ CONFIG_FILES = \
 	services/amanda-k5-client.xml \
 	services/amqp.xml \
 	services/amqps.xml \
+	services/apcupsd.xml \
 	services/bacula-client.xml \
 	services/bacula.xml \
 	services/bgp.xml \
@@ -139,11 +140,15 @@ CONFIG_FILES = \
 	services/dhcpv6-client.xml \
 	services/dhcpv6.xml \
 	services/dhcp.xml \
+	services/distccd.xml \
 	services/dns.xml \
 	services/docker-registry.xml \
 	services/docker-swarm.xml \
 	services/dropbox-lansync.xml \
 	services/elasticsearch.xml \
+	services/etcd-client.xml \
+	services/etcd-server.xml \
+	services/finger.xml \
 	services/freeipa-ldaps.xml \
 	services/freeipa-ldap.xml \
 	services/freeipa-replication.xml \
@@ -163,6 +168,7 @@ CONFIG_FILES = \
 	services/ircs.xml \
 	services/irc.xml \
 	services/iscsi-target.xml \
+	services/isns.xml \
 	services/jenkins.xml \
 	services/kadmin.xml \
 	services/kerberos.xml \
@@ -182,6 +188,8 @@ CONFIG_FILES = \
 	services/mongodb.xml \
 	services/mosh.xml \
 	services/mountd.xml \
+	services/mqtt.xml \
+	services/mqtt-tls.xml \
 	services/mssql.xml \
 	services/ms-wbt.xml \
 	services/murmur.xml \
@@ -191,6 +199,7 @@ CONFIG_FILES = \
 	services/nmea-0183.xml \
 	services/nrpe.xml \
 	services/ntp.xml \
+	services/nut.xml \
 	services/openvpn.xml \
 	services/ovirt-imageio.xml \
 	services/ovirt-storageconsole.xml \
@@ -214,11 +223,13 @@ CONFIG_FILES = \
 	services/rpc-bind.xml \
 	services/rsh.xml \
 	services/rsyncd.xml \
+	services/salt-master.xml \
 	services/samba-client.xml \
 	services/samba.xml \
 	services/sane.xml \
 	services/sips.xml \
 	services/sip.xml \
+	services/slp.xml \
 	services/smtp-submission.xml \
 	services/smtps.xml \
 	services/smtp.xml \
@@ -227,6 +238,8 @@ CONFIG_FILES = \
 	services/spideroak-lansync.xml \
 	services/squid.xml \
 	services/ssh.xml \
+	services/svdrp.xml \
+	services/svn.xml \
 	services/syncthing.xml \
 	services/syncthing-gui.xml \
 	services/synergy.xml \
@@ -241,7 +254,11 @@ CONFIG_FILES = \
 	services/upnp-client.xml \
 	services/vdsm.xml \
 	services/vnc-server.xml \
+	services/wbem-http.xml \
 	services/wbem-https.xml \
+	services/wsman.xml \
+	services/wsmans.xml \
+	services/xdmcp.xml \
 	services/xmpp-bosh.xml \
 	services/xmpp-client.xml \
 	services/xmpp-local.xml \
