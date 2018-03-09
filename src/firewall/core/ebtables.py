@@ -247,7 +247,7 @@ class ebtables(object):
             if log_denied != "off" and table in LOG_RULES:
                 default_rules.extend(LOG_RULES[table])
             prefix = [ "-t", table ]
-            for rule in DEFAULT_RULES[table]:
+            for rule in default_rules:
                 if type(rule) == list:
                     _rule = prefix + rule
                 else:
