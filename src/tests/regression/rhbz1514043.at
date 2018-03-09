@@ -5,4 +5,6 @@ FWD_RELOAD
 FWD_CHECK([--zone=public --list-all | TRIM | grep ^services], 0, [dnl
 services: ssh dhcpv6-client samba
 ])
+dnl check that log denied actually took effect
+AT_CHECK([iptables -t filter -L | grep "FINAL_REJECT:"], 0, ignore)
 FWD_END_TEST
