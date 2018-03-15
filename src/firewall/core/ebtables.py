@@ -215,12 +215,6 @@ class ebtables(object):
         self._rule_validate(rule)
         return self.__run(rule)
 
-    def append_rule(self, rule):
-        self.__run([ "-A" ] + rule)
-
-    def delete_rule(self, rule):
-        self.__run([ "-D" ] + rule)
-
     def get_available_tables(self, table=None):
         ret = []
         tables = [ table ] if table else BUILT_IN_CHAINS.keys()
