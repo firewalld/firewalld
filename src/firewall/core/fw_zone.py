@@ -2532,6 +2532,10 @@ class FirewallZoneIPTables(FirewallZone):
                                       match + [ "-j", final_target ])
             target = DEFAULT_ZONE_TARGET.format(
                 chain=SHORTCUTS["FORWARD_IN"], zone=zone)
+            if self.query_icmp_block_inversion(zone):
+                final_chain = "%s_allow" % target
+            else:
+                final_chain = "%s_deny" % target
             if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
                 zone_transaction.add_rule(
                     ipv,
