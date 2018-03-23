@@ -1,0 +1,7 @@
+FWD_START_TEST([ICMP block present FORWARD chain])
+
+FWD_CHECK([-q --zone=public --add-icmp-block=host-prohibited])
+AT_CHECK([iptables -L IN_public_deny | grep "host-prohibited"], 0, ignore)
+AT_CHECK([iptables -L FWDI_public_deny | grep "host-prohibited"], 0, ignore)
+
+FWD_END_TEST
