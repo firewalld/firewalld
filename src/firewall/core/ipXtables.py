@@ -885,33 +885,25 @@ class ip4tables(object):
             proto = [ "-p", "ipv6-icmp" ]
             match = [ "-m", "icmp6", "--icmpv6-type", icmp ]
 
-        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["INPUT"],
-                                            zone=zone)
-        if self._fw.zone.query_icmp_block_inversion(zone):
-            final_chain = "%s_allow" % target
-            final_target = "ACCEPT"
-        else:
-            final_chain = "%s_deny" % target
-            final_target = "%%REJECT%%"
-
         rules = []
-        if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
-            rules.append([ add_del, final_chain, "-t", "filter" ]
-                         + proto + match +
-                         [ "%%LOGTYPE%%", "-j", "LOG",
-                           "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
+        for chain in ["INPUT", "FORWARD_IN"]:
+            target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain],
+                                                zone=zone)
+            if self._fw.zone.query_icmp_block_inversion(zone):
+                final_chain = "%s_allow" % target
+                final_target = "ACCEPT"
+            else:
+                final_chain = "%s_deny" % target
+                final_target = "%%REJECT%%"
+
+            if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
+                rules.append([ add_del, final_chain, "-t", "filter" ]
+                             + proto + match +
+                             [ "%%LOGTYPE%%", "-j", "LOG",
+                               "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
             rules.append([ add_del, final_chain, "-t", "filter", ]
                          + proto + match +
                          [ "-j", final_target ])
-        target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["FORWARD_IN"],
-                                            zone=zone)
-        if self._fw.get_log_denied() != "off" and final_target != "ACCEPT":
-            rules.append([ add_del, final_chain, "-t", "filter" ]
-                         + proto + match +
-                         [ "%%LOGTYPE%%", "-j", "LOG",
-                           "--log-prefix", "\"%s_ICMP_BLOCK: \"" % zone ])
-            rules.append([ add_del, final_chain, "-t", "filter", ]
-                         + proto + match + [ "-j", final_target ])
 
         return rules
 
