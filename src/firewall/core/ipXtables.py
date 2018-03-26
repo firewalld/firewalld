@@ -936,18 +936,17 @@ class ip4tables(object):
 class ip6tables(ip4tables):
     ipv = "ipv6"
 
-    def apply_rpfilter_rules(self, transaction, log_denied=False):
-            transaction.add_rule(self.ipv,
-                                 [ "-I", "PREROUTING", "1", "-t", "raw",
-                                   "-p", "ipv6-icmp",
-                                   "--icmpv6-type=router-advertisement",
-                                   "-j", "ACCEPT" ]) # RHBZ#1058505
-            transaction.add_rule(self.ipv,
-                                 [ "-I", "PREROUTING", "2", "-t", "raw",
-                                   "-m", "rpfilter", "--invert", "-j", "DROP" ])
-            if log_denied != "off":
-                transaction.add_rule(self.ipv,
-                                     [ "-I", "PREROUTING", "2", "-t", "raw",
-                                       "-m", "rpfilter", "--invert",
-                                       "-j", "LOG",
-                                       "--log-prefix", "rpfilter_DROP: " ])
+    def build_rpfilter_rules(self, log_denied=False):
+        rules = []
+        rules.append([ "-I", "PREROUTING", "1", "-t", "raw",
+                       "-p", "ipv6-icmp",
+                       "--icmpv6-type=router-advertisement",
+                       "-j", "ACCEPT" ]) # RHBZ#1058505
+        rules.append([ "-I", "PREROUTING", "2", "-t", "raw",
+                       "-m", "rpfilter", "--invert", "-j", "DROP" ])
+        if log_denied != "off":
+            rules.append([ "-I", "PREROUTING", "2", "-t", "raw",
+                           "-m", "rpfilter", "--invert",
+                           "-j", "LOG",
+                           "--log-prefix", "rpfilter_DROP: " ])
+        return rules

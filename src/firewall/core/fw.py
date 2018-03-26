@@ -708,7 +708,8 @@ class Firewall(object):
             # Start new transaction
             transaction.clear()
 
-            self.ip6tables_backend.apply_rpfilter_rules(transaction, self._log_denied)
+            rules = self.ip6tables_backend.build_rpfilter_rules(self._log_denied)
+            transaction.add_rules("ipv6", rules)
 
             # Execute ipv6_rpfilter transaction, it might fail
             try:
