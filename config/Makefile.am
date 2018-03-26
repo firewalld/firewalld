@@ -225,6 +225,7 @@ CONFIG_FILES = \
 	services/rsyncd.xml \
 	services/salt-master.xml \
 	services/samba-client.xml \
+	services/samba-dc.xml \
 	services/samba.xml \
 	services/sane.xml \
 	services/sips.xml \
