@@ -26,8 +26,7 @@ import dbus
 
 from firewall.core.base import DEFAULT_ZONE_TARGET
 from firewall import config
-from firewall.config.dbus import *
-from firewall.client import *
+from firewall.client import FirewallClientConfig, FirewallClientZoneSettings
 from firewall.dbus_utils import dbus_to_python
 
 bus = dbus.SystemBus()

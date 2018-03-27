@@ -28,7 +28,8 @@ import sys
 import time
 import unittest
 
-from firewall.config.dbus import *
+from firewall.config.dbus import DBUS_PATH, DBUS_INTERFACE, \
+                                 DBUS_INTERFACE_ZONE
 from firewall.dbus_utils import dbus_to_python
 from pprint import pprint
 
