@@ -32,8 +32,10 @@ __all__ = [ "PY2", "getPortID", "getPortRange", "portStr", "getServiceName",
             "b2u", "u2b", "u2b_if_py2" ]
 
 import socket
-import os, os.path
-import shlex, pipes
+import os
+import os.path
+import shlex
+import pipes
 import string
 import sys
 import tempfile

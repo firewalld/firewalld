@@ -22,7 +22,8 @@
 __all__ = [ "FirewallConfig" ]
 
 import copy
-import os, os.path
+import os
+import os.path
 import shutil
 from firewall import config
 from firewall.core.logger import log
