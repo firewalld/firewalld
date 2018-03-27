@@ -25,7 +25,7 @@ import io
 import shutil
 
 from firewall import config
-from firewall.fw_types import *
+from firewall.fw_types import LastUpdatedOrderedDict
 from firewall.functions import splitArgs, joinArgs, u2b_if_py2
 from firewall.core.io.io_object import IO_Object, IO_Object_ContentHandler, \
     IO_Object_XMLGenerator

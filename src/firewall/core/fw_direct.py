@@ -21,7 +21,7 @@
 
 __all__ = [ "FirewallDirect" ]
 
-from firewall.fw_types import *
+from firewall.fw_types import LastUpdatedOrderedDict
 from firewall.core import ipXtables
 from firewall.core import ebtables
 from firewall.core.fw_transaction import FirewallTransaction
