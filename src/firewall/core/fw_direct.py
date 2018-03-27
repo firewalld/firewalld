@@ -383,7 +383,7 @@ class FirewallDirect(object):
 
         backend = self._fw.get_ipv_backend(ipv)
 
-        if backend.is_chain_builtin(table, chain):
+        if backend.is_chain_builtin(ipv, table, chain):
             _chain = "%s_direct" % (chain)
 
         chain_id = (ipv, table, chain)

@@ -112,7 +112,7 @@ class ebtables(object):
                 raise FirewallError(errors.INVALID_IPV,
                         "'%s' invalid for ebtables" % str)
 
-    def is_chain_builtin(self, table, chain):
+    def is_chain_builtin(self, ipv, table, chain):
         return table in BUILT_IN_CHAINS and \
                chain in BUILT_IN_CHAINS[table]
 
