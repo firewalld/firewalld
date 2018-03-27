@@ -334,7 +334,7 @@ class ip4tables(object):
             rule[i:i+1] = replacement
             return True
 
-    def is_chain_builtin(self, table, chain):
+    def is_chain_builtin(self, ipv, table, chain):
         return table in BUILT_IN_CHAINS and \
                chain in BUILT_IN_CHAINS[table]
 
