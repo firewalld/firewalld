@@ -83,3 +83,8 @@ install-data-local: install-dist_sbinSCRIPTS install-dist_binSCRIPTS
 	  echo $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
 	  $(top_srcdir)/fix_python_shebang.sh "$(DESTDIR)$(sbindir)/$$p"; \
 	done
+
+check-local:
+	find . -name '*.py' |xargs flake8 --ignore=E121,E122,E123,E124,E126,E127,\
+	E128,E201,E202,E203,E211,E221,E222,E225,E226,E231,E241,E251,E261,E262,E265,\
+	E266,W291,W293,E301,E302,E303,E305,E306,W391,E402,E501,E502,W503
