@@ -23,7 +23,8 @@
 
 __all__ = [ "search_ifcfg_of_interface", "ifcfg_set_zone_of_interface" ]
 
-import os, os.path
+import os
+import os.path
 
 from firewall import config
 from firewall.core.logger import log

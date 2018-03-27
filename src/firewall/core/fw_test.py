@@ -21,7 +21,8 @@
 
 __all__ = [ "Firewall_test" ]
 
-import os.path, sys
+import os.path
+import sys
 import copy
 from firewall import config
 from firewall import functions

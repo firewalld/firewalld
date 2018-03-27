@@ -21,7 +21,8 @@
 
 __all__ = [ "Firewall" ]
 
-import os.path, sys
+import os.path
+import sys
 import copy
 import time
 from firewall import config
