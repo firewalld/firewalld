@@ -25,13 +25,10 @@
 
 import dbus
 import sys
-import time
 import unittest
 
 from firewall import config
-from firewall.config.dbus import *
 from firewall.dbus_utils import dbus_to_python
-from pprint import pprint
 
 class TestFirewallDInterfaceDirect(unittest.TestCase):
     def setUp(self):

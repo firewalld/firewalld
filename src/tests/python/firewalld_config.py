@@ -25,7 +25,6 @@
 
 import sys
 import unittest
-import time
 import firewall
 from firewall.client import FirewallClient, \
                             FirewallClientZoneSettings, \

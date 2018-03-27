@@ -33,7 +33,7 @@ DOMAIN = 'firewalld'
 import gettext
 gettext.install(domain=DOMAIN)
 
-from . import dbus
+from . import dbus # noqa: F401
 
 # configuration
 DAEMON_NAME = 'firewalld'
