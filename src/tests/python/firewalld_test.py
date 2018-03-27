@@ -84,7 +84,8 @@ class TestFirewallD(unittest.TestCase):
 
     def test_zone_getZones(self):
         z = self.fw_zone.getZones()
-        print ("\nZones:"); pprint(dbus_to_python(z))
+        print ("\nZones:")
+        pprint(dbus_to_python(z))
 
     def test_zone_add_remove_queryInterface(self):
         interface = "foo"
