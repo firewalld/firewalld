@@ -237,26 +237,15 @@ class ebtables(object):
     def used_tables(self):
         return list(BUILT_IN_CHAINS.keys())
 
-    def flush(self, transaction=None):
-        tables = self.used_tables()
-        for table in tables:
+    def build_flush_rules(self):
+        rules = []
+        for table in self.used_tables():
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
-            msgs = {
-                "-F": "flush",
-                "-X": "delete chains",
-                "-Z": "zero counters",
-            }
             for flag in [ "-F", "-X", "-Z" ]:
-                if transaction is not None:
-                    transaction.add_rule(self.ipv, [ "-t", table, flag ])
-                else:
-                    try:
-                        self.__run([ "-t", table, flag ])
-                    except Exception as msg:
-                        log.error("Failed to %s %s: %s",
-                                  msgs[flag], self.ipv, msg)
+                rules.append(["-t", table, flag])
+        return rules
 
     def set_policy(self, policy, which="used", transaction=None):
         if which == "used":
