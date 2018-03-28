@@ -572,21 +572,19 @@ class ip4tables(object):
                 rules.append(["-t", table, flag])
         return rules
 
-    def set_policy(self, policy, which="used", transaction=None):
+    def build_set_policy_rules(self, policy, which="used"):
         if which == "used":
             tables = self.used_tables()
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
+        rules = []
         for table in tables:
             if table == "nat":
                 continue
             for chain in BUILT_IN_CHAINS[table]:
-                if transaction is not None:
-                    transaction.add_rule(self.ipv,
-                                         [ "-t", table, "-P", chain, policy ])
-                else:
-                    self.__run([ "-t", table, "-P", chain, policy ])
+                rules.append(["-t", table, "-P", chain, policy])
+        return rules
 
     def supported_icmp_types(self):
         """Return ICMP types that are supported by the iptables/ip6tables command and kernel"""

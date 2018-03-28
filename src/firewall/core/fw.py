@@ -751,10 +751,8 @@ class Firewall(object):
         log.debug1("Setting policy to '%s'", policy)
 
         for ipv in self.enabled_backends():
-            try:
-                self.get_ipv_backend(ipv).set_policy(policy, which, transaction)
-            except Exception as e:
-                log.error("Failed to set policy of %s firewall: %s" % (ipv, e))
+            rules = self.get_ipv_backend(ipv).build_set_policy_rules(policy, which)
+            transaction.add_rules(ipv, rules)
 
         if use_transaction is None:
             transaction.execute(True)
