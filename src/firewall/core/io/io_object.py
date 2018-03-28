@@ -76,7 +76,7 @@ class IO_Object(object):
                 setattr(self, element, copy.deepcopy(conf[i]))
 
     def check_name(self, name):
-        if type(name) != type(""):
+        if not isinstance(name, str):
             raise FirewallError(errors.INVALID_TYPE,
                                 "'%s' not of type %s, but %s" % (name, type(""),
                                                                  type(name)))

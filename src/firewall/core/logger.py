@@ -31,9 +31,6 @@ import traceback
 import fcntl
 import os.path
 
-PY2 = sys.version < '3'
-PY3 = sys.version >= '3'
-
 # ---------------------------------------------------------------------------
 
 # abstract class for logging targets
@@ -631,11 +628,10 @@ class Logger(object):
 
         # class in module
         for (dummy, obj) in module.__dict__.items():
-            if (PY2 and isinstance(obj, types.ClassType)) or \
-               (PY3 and isinstance(obj, type)):
+            if isinstance(obj, types.ClassType):
                 if hasattr(obj, code.co_name):
                     value = getattr(obj, code.co_name)
-                    if type(value) == types.FunctionType:
+                    if isinstance(value, types.FunctionType):
                         if value.__code__ == code:
                             return obj
 
@@ -645,7 +641,7 @@ class Logger(object):
     def _getClass2(self, obj, code):
         """ Internal function to get calling class. Returns class or None. """
         for value in obj.__dict__.values():
-            if type(value) == types.FunctionType:
+            if isinstance(value, types.FunctionType):
                 if value.__code__ == code:
                     return obj
 
