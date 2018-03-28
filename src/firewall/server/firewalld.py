@@ -37,7 +37,9 @@ from firewall.core.rich import Rich_Rule
 from firewall.core.logger import log
 from firewall.client import FirewallClientZoneSettings
 from firewall.server.decorators import dbus_handle_exceptions, \
-                                       dbus_service_method
+                                       dbus_service_method, \
+                                       handle_exceptions, \
+                                       FirewallDBusException
 from firewall.server.config import FirewallDConfig
 from firewall.dbus_utils import dbus_to_python, \
     command_of_sender, context_of_sender, uid_of_sender, user_of_uid, \

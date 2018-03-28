@@ -27,6 +27,7 @@ from firewall.core.logger import log
 from firewall.functions import tempFile, readfile, splitArgs, check_mac, portStr, \
                                check_single_address
 from firewall import config
+from firewall.errors import FirewallError, INVALID_PASSTHROUGH
 import string
 
 PROC_IPxTABLE_NAMES = {
@@ -228,7 +229,7 @@ def common_reverse_passthrough(args):
         ret_args[idx] = replace_args[x]
         return ret_args
 
-    raise FirewallError(errors.INVALID_PASSTHROUGH,
+    raise FirewallError(INVALID_PASSTHROUGH,
                         "no '-A', '-I' or '-N' arg")
 
 # ipv ebtables also uses this
@@ -251,7 +252,7 @@ def common_check_passthrough(args):
     # intersection of args and not_allowed is not empty, i.e.
     # something from args is not allowed
     if len(args & not_allowed) > 0:
-        raise FirewallError(errors.INVALID_PASSTHROUGH,
+        raise FirewallError(INVALID_PASSTHROUGH,
                             "arg '%s' is not allowed" %
                             list(args & not_allowed)[0])
 
@@ -262,7 +263,7 @@ def common_check_passthrough(args):
     # empty intersection of args and needed, i.e.
     # none from args contains any needed command
     if len(args & needed) == 0:
-        raise FirewallError(errors.INVALID_PASSTHROUGH,
+        raise FirewallError(INVALID_PASSTHROUGH,
                             "no '-A', '-I' or '-N' arg")
 
 class ip4tables(object):

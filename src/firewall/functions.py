@@ -530,7 +530,7 @@ def joinArgs(args):
         return " ".join(pipes.quote(a) for a in args)
 
 def splitArgs(_string):
-    if PY2 and isinstance(_string, unicode):
+    if PY2 and isinstance(_string, unicode): # noqa: F821
         # Python2's shlex doesn't like unicode
         _string = u2b(_string)
         splits = shlex.split(_string)
@@ -552,6 +552,6 @@ def u2b(_string):
 
 def u2b_if_py2(_string):
     """ unicode to bytes only if Python 2"""
-    if PY2 and isinstance(_string, unicode):
+    if PY2 and isinstance(_string, unicode): # noqa: F821
         return _string.encode('UTF-8', 'replace')
     return _string
