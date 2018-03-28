@@ -562,17 +562,15 @@ class ip4tables(object):
 
         return wait_option
 
-    def flush(self, transaction=None):
-        tables = self.used_tables()
-        for table in tables:
+    def build_flush_rules(self):
+        rules = []
+        for table in self.used_tables():
             # Flush firewall rules: -F
             # Delete firewall chains: -X
             # Set counter to zero: -Z
             for flag in [ "-F", "-X", "-Z" ]:
-                if transaction is not None:
-                    transaction.add_rule(self.ipv, [ "-t", table, flag ])
-                else:
-                    self.__run([ "-t", table, flag ])
+                rules.append(["-t", table, flag])
+        return rules
 
     def set_policy(self, policy, which="used", transaction=None):
         if which == "used":
