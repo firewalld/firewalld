@@ -247,23 +247,17 @@ class ebtables(object):
                 rules.append(["-t", table, flag])
         return rules
 
-    def set_policy(self, policy, which="used", transaction=None):
+    def build_set_policy_rules(self, policy, which="used"):
         if which == "used":
             tables = self.used_tables()
         else:
             tables = list(BUILT_IN_CHAINS.keys())
 
+        rules = []
         for table in tables:
             for chain in BUILT_IN_CHAINS[table]:
-                if transaction is not None:
-                    transaction.add_rule(self.ipv,
-                                         [ "-t", table, "-P", chain, policy ])
-                else:
-                    try:
-                        self.__run([ "-t", table, "-P", chain, policy ])
-                    except Exception as msg:
-                        log.error("Failed to set policy for %s: %s", self.ipv,
-                                  msg)
+                rules.append(["-t", table, "-P", chain, policy])
+        return rules
 
     def apply_default_rules(self, transaction, log_denied="off"):
         for table in DEFAULT_RULES:
