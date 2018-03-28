@@ -64,7 +64,7 @@ def ifcfg_set_zone_of_interface(zone, interface):
     """Set zone (ZONE=<zone>) in the ifcfg file that uses the interface
     (DEVICE=<interface>)"""
 
-    if zone == None:
+    if zone is None:
         zone = ""
 
     ifcfg_file = search_ifcfg_of_interface(interface)
