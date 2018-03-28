@@ -108,10 +108,11 @@ class FirewallError(Exception):
         self.code = code
         if msg is not None:
             # escape msg if needed
-            try:
-                x = str(msg)
-            except UnicodeEncodeError:
-                msg = unicode(msg).encode("unicode_escape")
+            if sys.version < '3':
+                try:
+                    x = str(msg)
+                except UnicodeEncodeError:
+                    msg = unicode(msg).encode("unicode_escape") # noqa: F821
         self.msg = msg
 
     def __repr__(self):
