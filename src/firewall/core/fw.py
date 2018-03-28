@@ -690,10 +690,6 @@ class Firewall(object):
                 ipvs.append(ipv)
         return ipvs
 
-    # apply default rules
-    def __apply_default_rules(self, ipv, transaction):
-        self.get_ipv_backend(ipv).apply_default_rules(transaction, self._log_denied)
-
     def apply_default_rules(self, use_transaction=None):
         if use_transaction is None:
             transaction = FirewallTransaction(self)
@@ -701,7 +697,8 @@ class Firewall(object):
             transaction = use_transaction
 
         for ipv in self.enabled_backends():
-            self.__apply_default_rules(ipv, transaction)
+            rules = self.get_ipv_backend(ipv).build_default_rules(self._log_denied)
+            transaction.add_rules(ipv, rules)
 
         if self.ipv6_rpfilter_enabled and \
            "raw" in self.get_ipv_backend("ipv6").get_available_tables():

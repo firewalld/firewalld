@@ -259,17 +259,18 @@ class ebtables(object):
                 rules.append(["-t", table, "-P", chain, policy])
         return rules
 
-    def apply_default_rules(self, transaction, log_denied="off"):
+    def build_default_rules(self, log_denied="off"):
+        default_rules = []
         for table in DEFAULT_RULES:
             if table not in self.get_available_tables():
                 continue
-            default_rules = DEFAULT_RULES[table][:]
+            _default_rules = DEFAULT_RULES[table][:]
             if log_denied != "off" and table in LOG_RULES:
-                default_rules.extend(LOG_RULES[table])
+                _default_rules.extend(LOG_RULES[table])
             prefix = [ "-t", table ]
-            for rule in default_rules:
+            for rule in _default_rules:
                 if type(rule) == list:
-                    _rule = prefix + rule
+                    default_rules.append(prefix + rule)
                 else:
-                    _rule = prefix + splitArgs(rule)
-                transaction.add_rule(self.ipv, _rule)
+                    default_rules.append(prefix + splitArgs(rule))
+        return default_rules
