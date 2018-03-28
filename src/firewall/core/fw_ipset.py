@@ -148,11 +148,6 @@ class FirewallIPSet(object):
     def get_dimension(self, name):
         return len(self.get_ipset(name, applied=True).type.split(","))
 
-    # APPLIED
-
-    def is_applied(self, name):
-        return self.get_ipset(name).applied == True
-
     def check_applied(self, name):
         obj = self.get_ipset(name)
         self.check_applied_obj(obj)
