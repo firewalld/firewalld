@@ -317,7 +317,7 @@ class FirewallDirect(object):
 
     def passthrough(self, ipv, args):
         try:
-            return self._fw.rule(ipv, args)
+            return self._fw.rule(self._fw.get_backend_by_ipv(ipv).name, args)
         except Exception as msg:
             log.debug2(msg)
             raise FirewallError(errors.COMMAND_FAILED, msg)
@@ -381,7 +381,7 @@ class FirewallDirect(object):
 
         _chain = chain
 
-        backend = self._fw.get_ipv_backend(ipv)
+        backend = self._fw.get_backend_by_ipv(ipv)
 
         if backend.is_chain_builtin(ipv, table, chain):
             _chain = "%s_direct" % (chain)
@@ -451,7 +451,7 @@ class FirewallDirect(object):
                 index += self._rule_priority_positions[chain_id][positions[j]]
                 j += 1
 
-        transaction.add_rule(ipv, backend.build_rule(enable, table, _chain, index, args))
+        transaction.add_rule(self._fw.get_backend_by_ipv(ipv), backend.build_rule(enable, table, _chain, index, args))
 
         self._register_rule(rule_id, chain_id, priority, enable)
         transaction.add_fail(self._register_rule,
@@ -475,7 +475,7 @@ class FirewallDirect(object):
                                     "chain '%s' is not in '%s:%s'" % \
                                     (chain, ipv, table))
 
-        transaction.add_rule(ipv, self._fw.get_ipv_backend(ipv).build_chain(add, table, chain))
+        transaction.add_rule(self._fw.get_backend_by_ipv(ipv), self._fw.get_backend_by_ipv(ipv).build_chain(add, table, chain))
 
         self._register_chain(table_id, chain, add)
         transaction.add_fail(self._register_chain, table_id, chain, not add)
@@ -495,7 +495,7 @@ class FirewallDirect(object):
                 raise FirewallError(errors.NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
 
-        backend = self._fw.get_ipv_backend(ipv)
+        backend = self._fw.get_backend_by_ipv(ipv)
 
         if enable:
             backend.check_passthrough(args)
@@ -508,7 +508,7 @@ class FirewallDirect(object):
         else:
             _args = backend.reverse_passthrough(args)
 
-        transaction.add_rule(ipv, _args)
+        transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _args)
 
         self._register_passthrough(ipv, tuple_args, enable)
         transaction.add_fail(self._register_passthrough, ipv, tuple_args,

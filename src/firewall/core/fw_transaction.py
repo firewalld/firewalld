@@ -33,7 +33,7 @@ class SimpleFirewallTransaction(object):
 
     def __init__(self, fw):
         self.fw = fw
-        self.rules = { } # [ ( ipv, [ rule,.. ] ),.. ]
+        self.rules = { } # [ ( backend.name, [ rule,.. ] ),.. ]
         self.pre_funcs = [ ] # [ (func, args),.. ]
         self.post_funcs = [ ] # [ (func, args),.. ]
         self.fail_funcs = [ ] # [ (func, args),.. ]
@@ -44,19 +44,19 @@ class SimpleFirewallTransaction(object):
         del self.post_funcs[:]
         del self.fail_funcs[:]
 
-    def add_rule(self, ipv, rule):
-        self.rules.setdefault(ipv, [ ]).append(rule)
+    def add_rule(self, backend, rule):
+        self.rules.setdefault(backend.name, [ ]).append(rule)
 
-    def add_rules(self, ipv, rules):
+    def add_rules(self, backend, rules):
         for rule in rules:
-            self.add_rule(ipv, rule)
+            self.add_rule(backend, rule)
 
-    def query_rule(self, ipv, rule):
-        return ipv in self.rules and rule in self.rules[ipv]
+    def query_rule(self, backend, rule):
+        return backend.name in self.rules and rule in self.rules[backend.name]
 
-    def remove_rule(self, ipv, rule):
-        if ipv in self.rules and rule in self.rules[ipv]:
-            self.rules[ipv].remove(rule)
+    def remove_rule(self, backend, rule):
+        if backend.name in self.rules and rule in self.rules[backend.name]:
+            self.rules[backend.name].remove(rule)
 
     def add_pre(self, func, *args):
         self.pre_funcs.append((func, args))
@@ -77,13 +77,13 @@ class SimpleFirewallTransaction(object):
 
         if not enable:
             # reverse rule order for cleanup
-            for ipv in self.rules:
-                for rule in reversed(self.rules[ipv]):
-                    rules.setdefault(ipv, [ ]).append(
-                        self.fw.get_ipv_backend(ipv).reverse_rule(rule))
+            for backend_name in self.rules:
+                for rule in reversed(self.rules[backend_name]):
+                    rules.setdefault(backend_name, [ ]).append(
+                        self.fw.get_backend_by_name(backend_name).reverse_rule(rule))
         else:
-            for ipv in self.rules:
-                rules.setdefault(ipv, [ ]).extend(self.rules[ipv])
+            for backend_name in self.rules:
+                rules.setdefault(backend_name, [ ]).extend(self.rules[backend_name])
 
         return rules, modules
 
@@ -99,15 +99,15 @@ class SimpleFirewallTransaction(object):
         error = False
         errorMsg = ""
         done = [ ]
-        for ipv in rules:
+        for backend_name in rules:
             try:
-                self.fw.rules(ipv, rules[ipv])
+                self.fw.rules(backend_name, rules[backend_name])
             except Exception as msg:
                 error = True
                 errorMsg = msg
                 log.error(msg)
             else:
-                done.append(ipv)
+                done.append(backend_name)
 
         # stage 2: load modules
         if not error:
@@ -122,14 +122,14 @@ class SimpleFirewallTransaction(object):
         # error case: revert rules
         if error:
             undo_rules = { }
-            for ipv in done:
-                undo_rules[ipv] = [ ]
-                for rule in reversed(rules[ipv]):
-                    undo_rules[ipv].append(
-                        self.fw.get_ipv_backend(ipv).reverse_rule(rule))
-            for ipv in undo_rules:
+            for backend_name in done:
+                undo_rules[backend_name] = [ ]
+                for rule in reversed(rules[backend_name]):
+                    undo_rules[backend_name].append(
+                        self.fw.get_backend_by_name(backend_name).reverse_rule(rule))
+            for backend_name in undo_rules:
                 try:
-                    self.fw.rules(ipv, undo_rules[ipv])
+                    self.fw.rules(backend_name, undo_rules[backend_name])
                 except Exception as msg:
                     log.error(msg)
             # call failure functions
