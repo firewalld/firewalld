@@ -1244,7 +1244,7 @@ class FirewallZone(object):
         _obj = self._zones[_zone]
 
         forward_id = self.__forward_port_id(port, protocol, toport, toaddr)
-        if not forward_id in _obj.settings["forward_ports"]:
+        if forward_id not in _obj.settings["forward_ports"]:
             raise FirewallError(errors.NOT_ENABLED,
                                 "'%s:%s:%s:%s' not in '%s'" % \
                                 (port, protocol, toport, toaddr, _zone))
