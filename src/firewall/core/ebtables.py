@@ -100,16 +100,9 @@ class ebtables(object):
                                                      " ".join(args), ret))
         return ret
 
-    def _rule_contains(self, rule, pattern):
-        try:
-            i = rule.index(pattern)
-        except ValueError:
-            return False
-        return True
-
     def _rule_validate(self, rule):
         for str in ["%%REJECT%%", "%%ICMP%%", "%%LOGTYPE%%"]:
-            if self._rule_contains(rule, str):
+            if str in rule:
                 raise FirewallError(INVALID_IPV,
                         "'%s' invalid for ebtables" % str)
 

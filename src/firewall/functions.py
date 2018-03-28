@@ -385,7 +385,6 @@ def get_nf_nat_helpers():
                     continue
                 # Else we get module alias and if "NAT helper" in "description:" line of modinfo
                 # then we add it to helpers list and goto next module
-                alias = None
                 for line in ret.split("\n"):
                     if line.startswith("description:") and "NAT helper" in line:
                         helper = module.replace("nf_nat_", "")
