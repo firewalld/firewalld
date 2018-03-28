@@ -541,7 +541,6 @@ class Firewall_test(object):
     def set_default_zone(self, zone):
         _zone = self.check_zone(zone)
         if _zone != self._default_zone:
-            _old_dz = self._default_zone
             self._default_zone = _zone
             self._firewalld_conf.set("DefaultZone", _zone)
             self._firewalld_conf.write()

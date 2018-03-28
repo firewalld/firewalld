@@ -110,7 +110,7 @@ class FirewallError(Exception):
             # escape msg if needed
             if sys.version < '3':
                 try:
-                    x = str(msg)
+                    x = str(msg) # noqa: F841
                 except UnicodeEncodeError:
                     msg = unicode(msg).encode("unicode_escape") # noqa: F821
         self.msg = msg
