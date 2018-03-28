@@ -1490,20 +1490,18 @@ class FirewallZone(object):
                    chain not in self._chains[zone][table]:
                     continue
 
-            for ipv in self._fw.enabled_backends():
-                backend = self._fw.get_ipv_backend(ipv)
+            for backend in self._fw.enabled_backends():
                 if backend.zones_supported and \
                    table in backend.get_available_tables():
                     rules = backend.build_zone_chain_rules(zone, table, chain)
-                    transaction.add_rules(ipv, rules)
+                    transaction.add_rules(backend, rules)
 
             self._register_chains(zone, create, chains)
             transaction.add_fail(self._register_chains, zone, create, chains)
 
     def _interface(self, enable, zone, interface, zone_transaction,
                     append=False):
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
             for table in backend.get_available_tables():
@@ -1515,7 +1513,7 @@ class FirewallZone(object):
                     rule = backend.build_zone_source_interface(enable, zone,
                                         self._zones[zone].target, interface,
                                         table, chain, append)
-                    zone_transaction.add_rule(ipv, rule)
+                    zone_transaction.add_rule(backend, rule)
 
     # IPSETS
 
@@ -1544,8 +1542,7 @@ class FirewallZone(object):
     def _source(self, enable, zone, ipv, source, zone_transaction):
         # For mac source bindings ipv is an empty string, the mac source will
         # be added for ipv4 and ipv6
-        for _ipv in [ipv] if ipv else self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(_ipv)
+        for backend in [self._fw.get_backend_by_ipv(ipv)] if ipv else self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
             for table in backend.get_available_tables():
@@ -1558,7 +1555,7 @@ class FirewallZone(object):
                                     self._zones[zone].target, source, table,
                                     chain)
 
-                    zone_transaction.add_rule(_ipv, rule)
+                    zone_transaction.add_rule(backend, rule)
 
     def __rule_source(self, source, command):
         if source:
@@ -1607,7 +1604,7 @@ class FirewallZone(object):
         add_del = { True: "-A", False: "-D" }[enable]
         _rule = [ add_del, chain, "-t", table ]
         _rule += _command
-        zone_transaction.add_rule(ipv, _rule)
+        zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
     def __rule_audit(self, enable, ipv, table, target, rule, command,
                      zone_transaction):
@@ -1629,7 +1626,7 @@ class FirewallZone(object):
         add_del = { True: "-A", False: "-D" }[enable]
         _rule = [ add_del, chain, "-t", table ]
         _rule += _command
-        zone_transaction.add_rule(ipv, _rule)
+        zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
     def __rule_action(self, enable, zone, ipv, table, target, rule, command,
                       zone_transaction):
@@ -1663,7 +1660,7 @@ class FirewallZone(object):
         add_del = { True: "-A", False: "-D" }[enable]
         _rule = [ add_del, chain, "-t", table ]
         _rule += _command
-        zone_transaction.add_rule(ipv, _rule)
+        zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
     def _rule_prepare(self, enable, zone, rule, mark_id, zone_transaction):
         if rule.family is not None:
@@ -1734,7 +1731,7 @@ class FirewallZone(object):
                                     _rule += [ "-d",  svc.destination[ipv] ]
                                 _rule += [ "-j", "CT", "--helper", helper.name ]
                                 self.__rule_source(rule.source, _rule)
-                                zone_transaction.add_rule(ipv, _rule)
+                                zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
                                 nat_module = module.replace("conntrack", "nat")
                                 if nat_module in self._fw.nf_nat_helpers:
                                     modules.append(nat_module)
@@ -1878,7 +1875,7 @@ class FirewallZone(object):
 
                 _rule = [ add_del, "%s_allow" % target, "-t", "nat" ]
                 _rule += command
-                zone_transaction.add_rule(ipv, _rule)
+                zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
                 # FORWARD_OUT
                 target = DEFAULT_ZONE_TARGET.format(
@@ -1892,7 +1889,7 @@ class FirewallZone(object):
 
                 _rule = [ add_del, "%s_allow" % target, "-t", "filter" ]
                 _rule += command
-                zone_transaction.add_rule(ipv, _rule)
+                zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
             # FORWARD PORT
             elif type(rule.element) == Rich_ForwardPort:
@@ -1944,7 +1941,7 @@ class FirewallZone(object):
 
                 _rule = [ add_del, "%s_allow" % target, "-t", "mangle" ]
                 _rule += command
-                zone_transaction.add_rule(ipv, _rule)
+                zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
                 # local and remote
                 command = [ "-p", protocol ] + mark + \
@@ -1952,7 +1949,7 @@ class FirewallZone(object):
 
                 _rule = [ add_del, "%s_allow" % target, "-t", "nat" ]
                 _rule += command
-                zone_transaction.add_rule(ipv, _rule)
+                zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
                 target = DEFAULT_ZONE_TARGET.format(
                     chain=SHORTCUTS[filter_chain], zone=zone)
@@ -1961,7 +1958,7 @@ class FirewallZone(object):
 
                 _rule = [ add_del, "%s_allow" % target, "-t", "filter" ]
                 _rule += command
-                zone_transaction.add_rule(ipv, _rule)
+                zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
                 if not enable:
                     zone_transaction.add_post(self._fw.del_mark, mark_id)
@@ -2046,7 +2043,7 @@ class FirewallZone(object):
                     command += [ "-j", "%%REJECT%%" ]
                     _rule = [ add_del, "%s_deny" % target, "-t", table ]
                     _rule += command
-                    zone_transaction.add_rule(ipv, _rule)
+                    zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
                 # FORWARD_IN
                 target = DEFAULT_ZONE_TARGET.format(
@@ -2066,7 +2063,7 @@ class FirewallZone(object):
                     command += [ "-j", "%%REJECT%%" ]
                     _rule = [ add_del, "%s_deny" % target, "-t", table ]
                     _rule += command
-                    zone_transaction.add_rule(ipv, _rule)
+                    zone_transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _rule)
 
             elif rule.element is None:
                 # source/destination action
@@ -2109,19 +2106,17 @@ class FirewallZone(object):
                 zone_transaction.add_modules(modules)
             zone_transaction.add_chain("filter", "INPUT")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
-
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
             destination = None
             if len(svc.destination) > 0:
-                if ipv not in svc.destination:
+                if backend.ipv not in svc.destination:
                     # destination is set, only use if it contains ipv
                     continue
                 else:
-                    destination = svc.destination[ipv]
+                    destination = svc.destination[backend.ipv]
 
             if self._fw.nf_conntrack_helper_setting == 0:
                 for helper in helpers:
@@ -2134,82 +2129,76 @@ class FirewallZone(object):
                     nat_module = helper.module.replace("conntrack", "nat")
                     if nat_module in self._fw.nf_nat_helpers:
                         zone_transaction.add_module(nat_module)
-                    if helper.family != "" and helper.family != ipv:
+                    if helper.family != "" and helper.family != backend.ipv:
                         # no support for family ipv, continue
                         continue
                     for (port,proto) in helper.ports:
                         rule = backend.build_zone_helper_ports_rule(
                                         enable, zone, proto, port,
                                         destination, helper.name)
-                        zone_transaction.add_rule(ipv, rule)
+                        zone_transaction.add_rule(backend, rule)
 
             for (port,proto) in svc.ports:
                 rule = backend.build_zone_ports_rule(enable, zone, proto, port,
                                                      destination)
-                zone_transaction.add_rule(ipv, rule)
+                zone_transaction.add_rule(backend, rule)
 
             for protocol in svc.protocols:
                 rule = backend.build_zone_protocol_rule(enable, zone, protocol)
-                zone_transaction.add_rule(ipv, rule)
+                zone_transaction.add_rule(backend, rule)
 
             for (port,proto) in svc.source_ports:
                 rule = backend.build_zone_source_ports_rule(
                                     enable, zone, proto, port, destination)
-                zone_transaction.add_rule(ipv, rule)
+                zone_transaction.add_rule(backend, rule)
 
     def _port(self, enable, zone, port, protocol, zone_transaction):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
-
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
             rule = backend.build_zone_ports_rule(enable, zone, protocol, port)
-            zone_transaction.add_rule(ipv, rule)
+            zone_transaction.add_rule(backend, rule)
 
     def _protocol(self, enable, zone, protocol, zone_transaction):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
-
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
             rule = backend.build_zone_protocol_rule(enable, zone, protocol)
-            zone_transaction.add_rule(ipv, rule)
+            zone_transaction.add_rule(backend, rule)
 
     def _source_port(self, enable, zone, port, protocol, zone_transaction):
         if enable:
             zone_transaction.add_chain("filter", "INPUT")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
-
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
             rule = backend.build_zone_source_ports_rule(enable, zone, protocol, port)
-            zone_transaction.add_rule(ipv, rule)
+            zone_transaction.add_rule(backend, rule)
 
     def _masquerade(self, enable, zone, zone_transaction):
         if enable:
             zone_transaction.add_chain("nat", "POSTROUTING")
             zone_transaction.add_chain("filter", "FORWARD_OUT")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
+        for ipv in ["ipv4", "ipv6"]:
+            zone_transaction.add_post(enable_ip_forwarding, ipv)
 
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
-            zone_transaction.add_post(enable_ip_forwarding, ipv)
             rules = backend.build_zone_masquerade_rule(enable, zone)
-            zone_transaction.add_rules(ipv, rules)
+            zone_transaction.add_rules(backend, rules)
 
     def _forward_port(self, enable, zone, zone_transaction, port, protocol,
                        toport=None, toaddr=None, mark_id=None):
@@ -2226,10 +2215,11 @@ class FirewallZone(object):
             zone_transaction.add_chain("filter", filter_chain)
 
         zone_transaction.add_post(enable_ip_forwarding, ipv)
-        rules = self._fw.get_ipv_backend(ipv).build_zone_forward_port_rules(
+        backend = self._fw.get_backend_by_ipv(ipv)
+        rules = backend.build_zone_forward_port_rules(
                             enable, zone, filter_chain, port, protocol, toport,
                             toaddr, mark_id)
-        zone_transaction.add_rules(ipv, rules)
+        zone_transaction.add_rules(backend, rules)
 
     def _icmp_block(self, enable, zone, icmp, zone_transaction):
         ict = self._fw.icmptype.get_icmptype(icmp)
@@ -2238,17 +2228,15 @@ class FirewallZone(object):
             zone_transaction.add_chain("filter", "INPUT")
             zone_transaction.add_chain("filter", "FORWARD_IN")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
-
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
-            if ict.destination and ipv not in ict.destination:
+            if ict.destination and backend.ipv not in ict.destination:
                 continue
 
             rules = backend.build_zone_icmp_block_rules(enable, zone, icmp)
-            zone_transaction.add_rules(ipv, rules)
+            zone_transaction.add_rules(backend, rules)
 
     def _icmp_block_inversion(self, enable, zone, zone_transaction):
         target = self._zones[zone].target
@@ -2265,11 +2253,9 @@ class FirewallZone(object):
         zone_transaction.add_chain("filter", "INPUT")
         zone_transaction.add_chain("filter", "FORWARD_IN")
 
-        for ipv in self._fw.enabled_backends():
-            backend = self._fw.get_ipv_backend(ipv)
-
+        for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
 
             rules = backend.build_zone_icmp_block_inversion_rules(enable, zone)
-            zone_transaction.add_rules(ipv, rules)
+            zone_transaction.add_rules(backend, rules)

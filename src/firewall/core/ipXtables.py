@@ -268,6 +268,7 @@ def common_check_passthrough(args):
 
 class ip4tables(object):
     ipv = "ipv4"
+    name = "ip4tables"
     zones_supported = True
 
     def __init__(self, fw):
@@ -936,6 +937,7 @@ class ip4tables(object):
 
 class ip6tables(ip4tables):
     ipv = "ipv6"
+    name = "ip6tables"
 
     def build_rpfilter_rules(self, log_denied=False):
         rules = []
