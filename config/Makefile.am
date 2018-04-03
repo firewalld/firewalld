@@ -133,7 +133,6 @@ CONFIG_FILES = \
 	services/bitcoin-testnet.xml \
 	services/bitcoin.xml \
 	services/lightning-network.xml \
-	services/lightning-network-testnet.xml \
 	services/ceph-mon.xml \
 	services/ceph.xml \
 	services/cfengine.xml \
