@@ -363,12 +363,9 @@ def get_nf_nat_helpers():
             (status, ret) = runProg(COMMANDS["modinfo"], [ module, ])
             if status != 0:
                 continue
-            alias = None
-            for line in ret.split("\n"):
-                if line.startswith("description:") and "NAT helper" in line:
-                    helper = module.replace("nf_nat_", "")
-                    helper = helper.replace("_", "-")
-                    helpers.setdefault(module, [ ]).append(helper)
+            helper = filename.split(".")[0].strip()
+            helper = helper.replace("_", "-")
+            helpers.setdefault(module, [ ]).append(helper)
     return helpers
 
 def get_nf_conntrack_helper_setting():
