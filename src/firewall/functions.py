@@ -343,12 +343,9 @@ def get_nf_conntrack_helpers():
             (status, ret) = runProg(COMMANDS["modinfo"], [ module, ])
             if status != 0:
                 continue
-            for line in ret.split("\n"):
-                if line.startswith("alias:") and "-helper-" in line:
-                    helper = line.split(":")[1].strip()
-                    helper = helper.replace("nfct-helper-", "")
-                    helper = helper.replace("_", "-")
-                    helpers.setdefault(module, [ ]).append(helper)
+            helper = filename.split(".")[0].strip()
+            helper = helper.replace("_", "-")
+            helpers.setdefault(module, [ ]).append(helper)
     return helpers
 
 def get_nf_nat_helpers():
