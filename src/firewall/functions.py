@@ -362,31 +362,33 @@ def get_nf_conntrack_helpers():
 
 def get_nf_nat_helpers():
     kver = os.uname()[2]
-    path = "/lib/modules/%s/kernel/net/netfilter/" % kver
     helpers = { }
-    if os.path.isdir(path):
-        for filename in sorted(os.listdir(path)):
-            if not filename.startswith("nf_nat_"):
-                continue
-            module = filename.split(".")[0]
-            (status, ret) = runProg(COMMANDS["modinfo"], [ module, ])
-            if status != 0:
-                continue
-            # If module name matches "nf_nat_proto_*"
-            # the we add it to helpers list and goto next module
-            if filename.startswith("nf_nat_proto_"):
-                helper = filename.split(".")[0].strip()
-                helper = helper.replace("_", "-")
-                helpers.setdefault(module, [ ]).append(helper)
-                continue
-            # Else we get module alias and if "NAT helper" in "description:" line of modinfo
-            # then we add it to helpers list and goto next module
-            alias = None
-            for line in ret.split("\n"):
-                if line.startswith("description:") and "NAT helper" in line:
-                    helper = module.replace("nf_nat_", "")
+    for path in ["/lib/modules/%s/kernel/net/netfilter/" % kver,
+                 "/lib/modules/%s/kernel/net/ipv4/netfilter/" % kver,
+                 "/lib/modules/%s/kernel/net/ipv6/netfilter/" % kver]:
+        if os.path.isdir(path):
+            for filename in sorted(os.listdir(path)):
+                if not filename.startswith("nf_nat_"):
+                    continue
+                module = filename.split(".")[0]
+                (status, ret) = runProg(COMMANDS["modinfo"], [ module, ])
+                if status != 0:
+                    continue
+                # If module name matches "nf_nat_proto_*"
+                # the we add it to helpers list and goto next module
+                if filename.startswith("nf_nat_proto_"):
+                    helper = filename.split(".")[0].strip()
                     helper = helper.replace("_", "-")
                     helpers.setdefault(module, [ ]).append(helper)
+                    continue
+                # Else we get module alias and if "NAT helper" in "description:" line of modinfo
+                # then we add it to helpers list and goto next module
+                alias = None
+                for line in ret.split("\n"):
+                    if line.startswith("description:") and "NAT helper" in line:
+                        helper = module.replace("nf_nat_", "")
+                        helper = helper.replace("_", "-")
+                        helpers.setdefault(module, [ ]).append(helper)
     return helpers
 
 def get_nf_conntrack_helper_setting():
