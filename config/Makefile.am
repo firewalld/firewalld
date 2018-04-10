@@ -64,6 +64,7 @@ DISTCLEANFILES = \
 CONFIG_FILES = \
 	helpers/amanda.xml \
 	helpers/ftp.xml \
+	helpers/gre.xml \
 	helpers/h323.xml \
 	helpers/irc.xml \
 	helpers/netbios-ns.xml \
