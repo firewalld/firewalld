@@ -211,6 +211,7 @@ CONFIG_FILES = \
 	services/pmproxy.xml \
 	services/pmwebapis.xml \
 	services/pmwebapi.xml \
+	services/plex.xml \
 	services/pop3s.xml \
 	services/pop3.xml \
 	services/postgresql.xml \
