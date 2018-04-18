@@ -729,7 +729,7 @@ class Firewall(object):
             # Start new transaction
             transaction.clear()
 
-            rules = self.ip6tables_backend.build_rpfilter_rules(self._log_denied)
+            rules = ipv6_backend.build_rpfilter_rules(self._log_denied)
             transaction.add_rules(ipv6_backend, rules)
 
             # Execute ipv6_rpfilter transaction, it might fail
