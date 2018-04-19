@@ -1551,11 +1551,10 @@ class FirewallZone(object):
                     if enable:
                         zone_transaction.add_chain(table, chain)
 
-                    rule = backend.build_zone_source_address(enable, zone,
+                    rules = backend.build_zone_source_address_rules(enable, zone,
                                     self._zones[zone].target, source, table,
                                     chain)
-
-                    zone_transaction.add_rule(backend, rule)
+                    zone_transaction.add_rules(backend, rules)
 
     def _rule_prepare(self, enable, zone, rule, mark_id, zone_transaction):
         if rule.family is not None:

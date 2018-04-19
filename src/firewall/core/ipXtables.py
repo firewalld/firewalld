@@ -682,8 +682,8 @@ class ip4tables(object):
         rule += [ "-t", table, opt, interface, action, target ]
         return [rule]
 
-    def build_zone_source_address(self, enable, zone, zone_target, address,
-                                  table, chain):
+    def build_zone_source_address_rules(self, enable, zone, zone_target,
+                                        address, table, chain):
         add_del = { True: "-A", False: "-D" }[enable]
 
         opt = {
@@ -725,7 +725,7 @@ class ip4tables(object):
                 rule = [ add_del,
                          "%s_ZONES_SOURCE" % chain, "-t", table,
                          opt, address, action, target ]
-        return rule
+        return [rule]
 
     def build_zone_chain_rules(self, zone, table, chain):
         _zone = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS[chain], zone=zone)
