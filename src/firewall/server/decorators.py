@@ -72,12 +72,14 @@ def dbus_handle_exceptions(func, *args, **kwargs):
                      errors.ZONE_ALREADY_SET, errors.ALREADY_SET ]:
             log.warning(str(error))
         else:
+            log.debug1(traceback.format_exc())
             log.error(str(error))
         raise FirewallDBusException(str(error))
     except DBusException as ex:
         # only log DBusExceptions once
         raise ex
     except Exception as ex:
+        log.debug1(traceback.format_exc())
         log.exception()
         raise FirewallDBusException(str(ex))
 
