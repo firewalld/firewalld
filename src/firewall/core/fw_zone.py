@@ -1510,10 +1510,10 @@ class FirewallZone(object):
                     if enable:
                         zone_transaction.add_chain(table, chain)
 
-                    rule = backend.build_zone_source_interface(enable, zone,
-                                        self._zones[zone].target, interface,
-                                        table, chain, append)
-                    zone_transaction.add_rule(backend, rule)
+                    rules = backend.build_zone_source_interface_rules(enable,
+                                        zone, self._zones[zone].target,
+                                        interface, table, chain, append)
+                    zone_transaction.add_rules(backend, rules)
 
     # IPSETS
 

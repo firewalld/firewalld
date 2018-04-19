@@ -654,8 +654,9 @@ class ip4tables(object):
 
         return {}
 
-    def build_zone_source_interface(self, enable, zone, zone_target, interface,
-                                    table, chain, append=False):
+    def build_zone_source_interface_rules(self, enable, zone, zone_target,
+                                          interface, table, chain,
+                                          append=False):
         # handle all zones in the same way here, now
         # trust and block zone targets are handled now in __chain
         opt = {
@@ -679,7 +680,7 @@ class ip4tables(object):
         else:
             rule = [ "-D", "%s_ZONES" % chain ]
         rule += [ "-t", table, opt, interface, action, target ]
-        return rule
+        return [rule]
 
     def build_zone_source_address(self, enable, zone, zone_target, address,
                                   table, chain):
