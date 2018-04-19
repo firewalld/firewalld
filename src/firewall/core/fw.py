@@ -25,6 +25,7 @@ import os.path
 import sys
 import copy
 import time
+import traceback
 from firewall import config
 from firewall import functions
 from firewall.core import ipXtables
@@ -823,6 +824,7 @@ class Firewall(object):
                 try:
                     backend.set_rule(rule)
                 except Exception as msg:
+                    log.debug1(traceback.format_exc())
                     log.error("Failed to apply rules. A firewall reload might solve the issue if the firewall has been modified using ip*tables or ebtables.")
                     log.error(msg)
                     for rule in reversed(_rules[:i]):
