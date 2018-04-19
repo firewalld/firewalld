@@ -30,7 +30,7 @@ m4_define([FWD_CHECK_FIREWALLD], [
 m4_define([FWD_START_FIREWALLD], [
     FWD_CHECK_FIREWALLD
 
-    FIREWALLD_ARGS="--debug --nofork --nopid --log-file ./firewalld.log --system-config ./"
+    FIREWALLD_ARGS="--debug=2 --nofork --nopid --log-file ./firewalld.log --system-config ./"
     if test "x${FIREWALLD_DEFAULT_CONFIG}" != x ; then
         FIREWALLD_ARGS+=" --default-config ${FIREWALLD_DEFAULT_CONFIG}"
     fi
