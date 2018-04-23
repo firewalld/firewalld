@@ -1143,6 +1143,9 @@ class ip4tables(object):
 
         return rules
 
+    def is_ipv_supported(self, ipv):
+        return ipv == self.ipv
+
 class ip6tables(ip4tables):
     ipv = "ipv6"
     name = "ip6tables"

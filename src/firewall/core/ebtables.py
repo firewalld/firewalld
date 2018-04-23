@@ -269,3 +269,6 @@ class ebtables(object):
                 else:
                     default_rules.append(prefix + splitArgs(rule))
         return default_rules
+
+    def is_ipv_supported(self, ipv):
+        return ipv == self.ipv
