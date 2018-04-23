@@ -1573,28 +1573,25 @@ class FirewallZone(object):
                 # use the source family as rule family
                 ipvs = [ source_ipv ]
 
-        for backend in self._fw.enabled_backends():
-            # FIXME: backend.ipv not valid for nftables
-            if backend.ipv not in ipvs:
-                continue
-
+        for backend in set([self._fw.get_backend_by_ipv(x) for x in ipvs]):
             # SERVICE
             if type(rule.element) == Rich_Service:
                 svc = self._fw.service.get_service(rule.element.name)
 
                 destination = rule.destination if rule.destination else None
                 if len(svc.destination) > 0:
-                    if backend.ipv not in svc.destination:
-                        # destination is set, only use if it contains ipv
-                        raise FirewallError(errors.INVALID_RULE,
-                                            "Service %s is not usable with %s" %
-                                            (rule.element.name, backend.ipv))
-                    elif svc.destination[backend.ipv] != "" and rule.destination:
-                        # we can not use two destinations at the same time
-                        raise FirewallError(errors.INVALID_RULE,
-                                            "Destination conflict with service.")
-                    else:
-                        destination = svc.destination
+                    for ipv in ipvs:
+                        if ipv in svc.destination:
+                            if not backend.is_ipv_supported(ipv):
+                                # destination is set, only use if it contains ipv
+                                raise FirewallError(errors.INVALID_RULE,
+                                                    "Service %s is not usable with %s" %
+                                                    (rule.element.name, backend.name))
+                            elif svc.destination[ipv] != "" and rule.destination:
+                                # we can not use two destinations at the same time
+                                raise FirewallError(errors.INVALID_RULE,
+                                                    "Destination conflict with service.")
+                            destination = svc.destination[ipv]
 
                 if enable:
                     zone_transaction.add_chain("filter", "INPUT")
@@ -1618,7 +1615,7 @@ class FirewallZone(object):
                             nat_module = module.replace("conntrack", "nat")
                             if nat_module in self._fw.nf_nat_helpers:
                                 modules.append(nat_module)
-                            if helper.family != "" and helper.family != backend.ipv:
+                            if helper.family != "" and not backend.is_ipv_supported(helper.family):
                                 # no support for family ipv, continue
                                 continue
                             for (port,proto) in helper.ports:
@@ -1691,7 +1688,9 @@ class FirewallZone(object):
                 if enable:
                     zone_transaction.add_chain("nat", "POSTROUTING")
                     zone_transaction.add_chain("filter", "FORWARD_OUT")
-                    zone_transaction.add_post(enable_ip_forwarding, backend.ipv)
+                    for ipv in ipvs:
+                        if backend.is_ipv_supported(ipv):
+                            zone_transaction.add_post(enable_ip_forwarding, ipv)
 
                 rules = backend.build_zone_masquerade_rules(enable, zone)
                 zone_transaction.add_rules(backend, rules)
@@ -1702,16 +1701,17 @@ class FirewallZone(object):
                 protocol = rule.element.protocol
                 toport = rule.element.to_port
                 toaddr = rule.element.to_address
-                self.check_forward_port(backend.ipv, port, protocol, toport, toaddr)
+                for ipv in ipvs:
+                    if backend.is_ipv_supported(ipv):
+                        self.check_forward_port(ipv, port, protocol, toport, toaddr)
 
                 if check_single_address("ipv6", toaddr):
                     ipv = "ipv6"
                 else:
                     ipv = "ipv4"
 
-                if backend.ipv != ipv:
-                    # FIXME: error here
-                    pass
+                if not backend.is_ipv_supported(ipv):
+                    continue
 
                 if enable:
                     zone_transaction.add_post(enable_ip_forwarding, ipv)
@@ -1758,16 +1758,16 @@ class FirewallZone(object):
                     # icmp block might have reject or drop action, but not accept
                     raise FirewallError(errors.INVALID_RULE,
                                         "IcmpBlock not usable with accept action")
-                if ict.destination and backend.ipv not in ict.destination:
-                    if rule.family is None:
-                        # Add for IPv4 or IPv6 depending on ict.destination
-                        continue
-                    raise FirewallError(
-                        errors.INVALID_RULE,
-                        "Icmp%s %s not usable with %s" % \
-                        ("Block" if type(rule.element) == \
-                         Rich_IcmpBlock else "Type",
-                         rule.element.name, backend.ipv))
+                if ict.destination:
+                    for ipv in ipvs:
+                        if ipv in ict.destination \
+                           and not backend.is_ipv_supported(ipv):
+                            raise FirewallError(
+                                errors.INVALID_RULE,
+                                "Icmp%s %s not usable with %s" % \
+                                ("Block" if type(rule.element) == \
+                                 Rich_IcmpBlock else "Type",
+                                 rule.element.name, backend.name))
 
                 table = "filter"
                 if enable:
@@ -1811,14 +1811,20 @@ class FirewallZone(object):
         for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
+            skip_backend = False
 
             destination = None
             if len(svc.destination) > 0:
-                if backend.ipv not in svc.destination:
-                    # destination is set, only use if it contains ipv
-                    continue
-                else:
-                    destination = svc.destination[backend.ipv]
+                for ipv in ["ipv4", "ipv6"]:
+                    if ipv in svc.destination:
+                        if not backend.is_ipv_supported(ipv):
+                            # destination is set, only use if it contains ipv
+                            skip_backend = True
+                            break
+                        destination = svc.destination[ipv]
+
+            if skip_backend:
+                continue
 
             if self._fw.nf_conntrack_helper_setting == 0:
                 for helper in helpers:
@@ -1831,7 +1837,7 @@ class FirewallZone(object):
                     nat_module = helper.module.replace("conntrack", "nat")
                     if nat_module in self._fw.nf_nat_helpers:
                         zone_transaction.add_module(nat_module)
-                    if helper.family != "" and helper.family != backend.ipv:
+                    if helper.family != "" and not backend.is_ipv_supported(helper.family):
                         # no support for family ipv, continue
                         continue
                     for (port,proto) in helper.ports:
@@ -1934,8 +1940,16 @@ class FirewallZone(object):
         for backend in self._fw.enabled_backends():
             if not backend.zones_supported:
                 continue
+            skip_backend = False
 
-            if ict.destination and backend.ipv not in ict.destination:
+            if ict.destination:
+                for ipv in ["ipv4", "ipv6"]:
+                    if ipv in ict.destination:
+                        if not backend.is_ipv_supported(ipv):
+                            skip_backend = True
+                            break
+
+            if skip_backend:
                 continue
 
             rules = backend.build_zone_icmp_block_rules(enable, zone, icmp)
