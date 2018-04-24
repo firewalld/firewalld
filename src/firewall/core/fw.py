@@ -703,6 +703,19 @@ class Firewall(object):
 
     def enabled_backends(self):
         backends = []
+        if self.nftables_enabled:
+            backends.append(self.nftables_backend)
+        else:
+            if self.ip4tables_enabled:
+                backends.append(self.ip4tables_backend)
+            if self.ip6tables_enabled:
+                backends.append(self.ip6tables_backend)
+            if self.ebtables_enabled:
+                backends.append(self.ebtables_backend)
+        return backends
+
+    def all_backends(self):
+        backends = []
         if self.ip4tables_enabled:
             backends.append(self.ip4tables_backend)
         if self.ip6tables_enabled:
