@@ -768,7 +768,7 @@ class Firewall(object):
 
         log.debug1("Flushing rule set")
 
-        for backend in self.enabled_backends():
+        for backend in self.all_backends():
             rules = backend.build_flush_rules()
             transaction.add_rules(backend, rules)
 
