@@ -667,7 +667,7 @@ class Firewall(object):
         return None
 
     def get_backend_by_name(self, name):
-        for backend in self.enabled_backends():
+        for backend in self.all_backends():
             if backend.name == name:
                 return backend
         raise FirewallError(errors.UNKNOWN_ERROR,
