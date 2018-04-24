@@ -1622,10 +1622,10 @@ class FirewallZone(object):
                                 # no support for family ipv, continue
                                 continue
                             for (port,proto) in helper.ports:
-                                rule = backend.build_zone_helper_ports_rule(
+                                rules = backend.build_zone_helper_ports_rules(
                                                 enable, zone, proto, port,
                                                 destination, helper.name)
-                                zone_transaction.add_rule(backend, rule)
+                                zone_transaction.add_rules(backend, rules)
                         else:
                             if helper.module not in modules:
                                 modules.append(helper.module)
@@ -1835,10 +1835,10 @@ class FirewallZone(object):
                         # no support for family ipv, continue
                         continue
                     for (port,proto) in helper.ports:
-                        rule = backend.build_zone_helper_ports_rule(
+                        rules = backend.build_zone_helper_ports_rules(
                                         enable, zone, proto, port,
                                         destination, helper.name)
-                        zone_transaction.add_rule(backend, rule)
+                        zone_transaction.add_rules(backend, rules)
 
             for (port,proto) in svc.ports:
                 rules = backend.build_zone_ports_rules(enable, zone, proto,

@@ -956,8 +956,8 @@ class ip4tables(object):
 
         return rules
 
-    def build_zone_helper_ports_rule(self, enable, zone, proto, port,
-                                     destination, helper_name):
+    def build_zone_helper_ports_rules(self, enable, zone, proto, port,
+                                      destination, helper_name):
         add_del = { True: "-A", False: "-D" }[enable]
         target = DEFAULT_ZONE_TARGET.format(chain=SHORTCUTS["PREROUTING"],
                                             zone=zone)
@@ -968,7 +968,7 @@ class ip4tables(object):
             rule += [ "-d",  destination ]
         rule += [ "-j", "CT", "--helper", helper_name ]
 
-        return rule
+        return [rule]
 
     def build_zone_masquerade_rules(self, enable, zone, rich_rule=None):
         add_del = { True: "-A", False: "-D" }[enable]
