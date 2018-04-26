@@ -1043,16 +1043,16 @@ class ip4tables(object):
 
         return rules
 
-    def build_zone_icmp_block_rules(self, enable, zone, icmp, rich_rule=None):
+    def build_zone_icmp_block_rules(self, enable, zone, ict, rich_rule=None):
         table = "filter"
         add_del = { True: "-A", False: "-D" }[enable]
 
         if self.ipv == "ipv4":
             proto = [ "-p", "icmp" ]
-            match = [ "-m", "icmp", "--icmp-type", icmp ]
+            match = [ "-m", "icmp", "--icmp-type", ict.name ]
         else:
             proto = [ "-p", "ipv6-icmp" ]
-            match = [ "-m", "icmp6", "--icmpv6-type", icmp ]
+            match = [ "-m", "icmp6", "--icmpv6-type", ict.name ]
 
         rules = []
         for chain in ["INPUT", "FORWARD_IN"]:

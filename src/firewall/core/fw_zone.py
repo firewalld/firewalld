@@ -1774,7 +1774,7 @@ class FirewallZone(object):
                     zone_transaction.add_chain(table, "INPUT")
                     zone_transaction.add_chain(table, "FORWARD_IN")
 
-                rules = backend.build_zone_icmp_block_rules(enable, zone, rule.element.name, rule)
+                rules = backend.build_zone_icmp_block_rules(enable, zone, ict, rule)
                 zone_transaction.add_rules(backend, rules)
 
             elif rule.element is None:
@@ -1952,7 +1952,7 @@ class FirewallZone(object):
             if skip_backend:
                 continue
 
-            rules = backend.build_zone_icmp_block_rules(enable, zone, icmp)
+            rules = backend.build_zone_icmp_block_rules(enable, zone, ict)
             zone_transaction.add_rules(backend, rules)
 
     def _icmp_block_inversion(self, enable, zone, zone_transaction):
