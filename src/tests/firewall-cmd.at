@@ -602,7 +602,6 @@ FWD_START_TEST([user helpers])
 FWD_END_TEST([-e '/ERROR: INVALID_MODULE:/d'])
 
 FWD_START_TEST([direct])
-    m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
     FWD_CHECK([--direct --add-chain ipv4 filter mychain], 0, ignore)
     FWD_CHECK([--direct --get-chains ipv4 filter | grep mychain], 0, ignore)
     FWD_CHECK([--direct --get-all-chains | grep "ipv4 filter mychain"], 0, ignore)
@@ -661,6 +660,7 @@ FWD_START_TEST([direct])
     FWD_CHECK([--permanent --direct --remove-chain ipv4 filter žluťoučký], 0, ignore)
     FWD_CHECK([--permanent --direct --query-chain ipv4 filter žluťoučký], 1, ignore)
 
+    m4_if(nftables, FIREWALL_BACKEND, [], [
     m4_define([direct_rule1], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 81])
     m4_define([direct_rule2], [ipv4 nat OUTPUT 0 -s 1.2.3.4 -d 1.2.3.4 -p tcp --dport 80 -j REDIRECT --to-ports 82])
     FWD_CHECK([--permanent --direct --add-rule direct_rule1], 0, ignore)
@@ -678,11 +678,11 @@ FWD_START_TEST([direct])
     FWD_CHECK([--direct --get-all-rules | grep "direct_rule2"], 1, ignore)
     m4_undefine([direct_rule1])
     m4_undefine([direct_rule2])
+    ])
 FWD_END_TEST([-e '/ERROR: INVALID_TABLE:/d' dnl
               -e '/WARNING: NOT_ENABLED: chain/d'])
 
 FWD_START_TEST([direct passthrough])
-    m4_if(nftables, FIREWALL_BACKEND, [AT_CHECK([exit 77])])
     AT_CHECK([if ! modprobe dummy; then exit 77; fi])
 
     FWD_CHECK([--direct --passthrough ipv4 --table mangle --append POSTROUTING --out-interface dummy0 --protocol udp --destination-port 68 --jump CHECKSUM --checksum-fill], 0, ignore)
