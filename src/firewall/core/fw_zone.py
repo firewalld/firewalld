@@ -1913,22 +1913,25 @@ class FirewallZoneIPTables(FirewallZone):
                             if helper.family != "" and helper.family != ipv:
                                 # no support for family ipv, continue
                                 continue
-                            for (port,proto) in helper.ports:
-                                target = DEFAULT_ZONE_TARGET.format(
-                                    chain=SHORTCUTS["PREROUTING"], zone=zone)
-                                _rule = [ add_del, "%s_allow" % (target),
-                                          "-t", "raw", "-p", proto ]
-                                if port:
-                                    _rule += [ "--dport", "%s" % portStr(port) ]
-                                if ipv in svc.destination and \
-                                   svc.destination[ipv] != "":
-                                    _rule += [ "-d",  svc.destination[ipv] ]
-                                _rule += [ "-j", "CT", "--helper", helper.name ]
-                                self.__rule_source(rule.source, _rule)
-                                zone_transaction.add_rule(ipv, _rule)
-                                nat_module = module.replace("conntrack", "nat")
-                                if nat_module in self._fw.nf_nat_helpers:
-                                    modules.append(nat_module)
+                            if len(helper.ports) < 1:
+                                modules.append(module)
+                            else:
+                                for (port,proto) in helper.ports:
+                                    target = DEFAULT_ZONE_TARGET.format(
+                                        chain=SHORTCUTS["PREROUTING"], zone=zone)
+                                    _rule = [ add_del, "%s_allow" % (target),
+                                              "-t", "raw", "-p", proto ]
+                                    if port:
+                                        _rule += [ "--dport", "%s" % portStr(port) ]
+                                    if ipv in svc.destination and \
+                                       svc.destination[ipv] != "":
+                                        _rule += [ "-d",  svc.destination[ipv] ]
+                                    _rule += [ "-j", "CT", "--helper", helper.name ]
+                                    self.__rule_source(rule.source, _rule)
+                                    zone_transaction.add_rule(ipv, _rule)
+                                    nat_module = module.replace("conntrack", "nat")
+                                    if nat_module in self._fw.nf_nat_helpers:
+                                        modules.append(nat_module)
                         else:
                             if helper.module not in modules:
                                 modules.append(helper.module)
@@ -2320,18 +2323,21 @@ class FirewallZoneIPTables(FirewallZone):
                     if helper.family != "" and helper.family != ipv:
                         # no support for family ipv, continue
                         continue
-                    for (port,proto) in helper.ports:
-                        target = DEFAULT_ZONE_TARGET.format(
-                            chain=SHORTCUTS["PREROUTING"], zone=zone)
-                        rule = [ add_del, "%s_allow" % (target), "-t", "raw",
-                                 "-p", proto ]
-                        if port:
-                            rule += [ "--dport", "%s" % portStr(port) ]
-                        if ipv in svc.destination and \
-                           svc.destination[ipv] != "":
-                            rule += [ "-d",  svc.destination[ipv] ]
-                        rule += [ "-j", "CT", "--helper", helper.name ]
-                        zone_transaction.add_rule(ipv, rule)
+                    if len(helper.ports) < 1:
+                        zone_transaction.add_module(module)
+                    else:
+                        for (port,proto) in helper.ports:
+                            target = DEFAULT_ZONE_TARGET.format(
+                                chain=SHORTCUTS["PREROUTING"], zone=zone)
+                            rule = [ add_del, "%s_allow" % (target), "-t", "raw",
+                                     "-p", proto ]
+                            if port:
+                                rule += [ "--dport", "%s" % portStr(port) ]
+                            if ipv in svc.destination and \
+                               svc.destination[ipv] != "":
+                                rule += [ "-d",  svc.destination[ipv] ]
+                            rule += [ "-j", "CT", "--helper", helper.name ]
+                            zone_transaction.add_rule(ipv, rule)
 
             # handle rules
             for (port,proto) in svc.ports:
