@@ -317,7 +317,7 @@ class FirewallDirect(object):
 
     def passthrough(self, ipv, args):
         try:
-            return self._fw.rule(self._fw.get_backend_by_ipv(ipv).name, args)
+            return self._fw.rule(self._fw.get_direct_backend_by_ipv(ipv).name, args)
         except Exception as msg:
             log.debug2(msg)
             raise FirewallError(errors.COMMAND_FAILED, msg)
@@ -375,15 +375,21 @@ class FirewallDirect(object):
 
     def _rule(self, enable, ipv, table, chain, priority, args, transaction):
         self._check_ipv_table(ipv, table)
-        if ipv in [ "ipv4", "ipv6" ]:
+        # Do not create zone chains if we're using nftables. Only allow direct
+        # rules in the built in chains.
+        if not self._fw.nftables_enabled \
+           and ipv in [ "ipv4", "ipv6" ]:
             self._fw.zone.create_zone_base_by_chain(ipv, table, chain,
                                                     transaction)
 
         _chain = chain
 
-        backend = self._fw.get_backend_by_ipv(ipv)
+        backend = self._fw.get_direct_backend_by_ipv(ipv)
 
-        if backend.is_chain_builtin(ipv, table, chain):
+        # if nftables is in use, just put the direct rules in the chain
+        # specified by the user. i.e. don't append _direct.
+        if not self._fw.nftables_enabled \
+           and backend.is_chain_builtin(ipv, table, chain):
             _chain = "%s_direct" % (chain)
 
         chain_id = (ipv, table, chain)
@@ -451,7 +457,7 @@ class FirewallDirect(object):
                 index += self._rule_priority_positions[chain_id][positions[j]]
                 j += 1
 
-        transaction.add_rule(self._fw.get_backend_by_ipv(ipv), backend.build_rule(enable, table, _chain, index, args))
+        transaction.add_rule(backend, backend.build_rule(enable, table, _chain, index, args))
 
         self._register_rule(rule_id, chain_id, priority, enable)
         transaction.add_fail(self._register_rule,
@@ -475,7 +481,8 @@ class FirewallDirect(object):
                                     "chain '%s' is not in '%s:%s'" % \
                                     (chain, ipv, table))
 
-        transaction.add_rule(self._fw.get_backend_by_ipv(ipv), self._fw.get_backend_by_ipv(ipv).build_chain(add, table, chain))
+        backend = self._fw.get_direct_backend_by_ipv(ipv)
+        transaction.add_rule(backend, backend.build_chain(add, table, chain))
 
         self._register_chain(table_id, chain, add)
         transaction.add_fail(self._register_chain, table_id, chain, not add)
@@ -495,7 +502,7 @@ class FirewallDirect(object):
                 raise FirewallError(errors.NOT_ENABLED,
                                     "passthrough '%s', '%s'" % (ipv, args))
 
-        backend = self._fw.get_backend_by_ipv(ipv)
+        backend = self._fw.get_direct_backend_by_ipv(ipv)
 
         if enable:
             backend.check_passthrough(args)
@@ -508,7 +515,7 @@ class FirewallDirect(object):
         else:
             _args = backend.reverse_passthrough(args)
 
-        transaction.add_rule(self._fw.get_backend_by_ipv(ipv), _args)
+        transaction.add_rule(backend, _args)
 
         self._register_passthrough(ipv, tuple_args, enable)
         transaction.add_fail(self._register_passthrough, ipv, tuple_args,

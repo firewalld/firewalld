@@ -703,6 +703,16 @@ class Firewall(object):
         raise FirewallError(errors.INVALID_IPV,
                             "'%s' is not a valid backend" % ipv)
 
+    def get_direct_backend_by_ipv(self, ipv):
+        if ipv == "ipv4":
+            return self.ip4tables_backend
+        elif ipv == "ipv6":
+            return self.ip6tables_backend
+        elif ipv == "eb":
+            return self.ebtables_backend
+        raise FirewallError(errors.INVALID_IPV,
+                            "'%s' is not a valid backend" % ipv)
+
     def is_backend_enabled(self, name):
         if name == "ip4tables":
             return self.ip4tables_enabled
