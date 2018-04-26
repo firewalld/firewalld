@@ -350,6 +350,7 @@ def get_nf_conntrack_helpers():
             if filename.startswith("nf_conntrack_proto_"):
                 helper = filename.split(".")[0].strip()
                 helper = helper.replace("_", "-")
+                helper = helper.replace("nf-conntrack-", "")
                 helpers.setdefault(module, [ ]).append(helper)
                 continue
             # Else we get module alias and if "-helper" in the "alias:" line of modinfo
@@ -381,6 +382,7 @@ def get_nf_nat_helpers():
                 if filename.startswith("nf_nat_proto_"):
                     helper = filename.split(".")[0].strip()
                     helper = helper.replace("_", "-")
+                    helper = helper.replace("nf-nat-", "")
                     helpers.setdefault(module, [ ]).append(helper)
                     continue
                 # Else we get module alias and if "NAT helper" in "description:" line of modinfo
