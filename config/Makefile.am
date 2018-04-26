@@ -64,11 +64,11 @@ DISTCLEANFILES = \
 CONFIG_FILES = \
 	helpers/amanda.xml \
 	helpers/ftp.xml \
-	helpers/gre.xml \
 	helpers/h323.xml \
 	helpers/irc.xml \
 	helpers/netbios-ns.xml \
 	helpers/pptp.xml \
+	helpers/proto-gre.xml \
 	helpers/Q.931.xml \
 	helpers/RAS.xml \
 	helpers/sane.xml \
