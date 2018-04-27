@@ -70,7 +70,12 @@ Use
 
 to create the documentation and to update the po files.
 
-Now you are done.
+Use
+
+  make check
+
+to run the testsuite. This assumes full control of the host and also requires
+the host's firewalld to be stopped.
 
 
 RPM package
@@ -115,4 +120,4 @@ shell-completion/bash/  Bash auto completion scripts
 src/                    Source tree
 src/firewall/           Import tree for the sevice and all applications
 src/icons/              Icons in the sizes: 16, 22, 24, 32, 48 and scalable
-src/tests/              Test scripts
+src/tests/              Testsuite
