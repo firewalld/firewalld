@@ -20,6 +20,7 @@ before_install:
 # Once travis supports a newer Ubuntu version we can remove this and add
 # nftables to the apt comamnd above.
 install:
+  - echo "/usr/local/lib" | sudo tee /etc/ld.so.conf.d/local.conf
   - sudo apt-get -qq -y install libmnl-dev libgmp-dev libreadline-dev
     && pushd /tmp
     && wget ftp://ftp.netfilter.org/pub/libnftnl/libnftnl-1.0.9.tar.bz2
@@ -28,6 +29,7 @@ install:
     && ./configure
     && make
     && sudo make install
+    && sudo ldconfig
     && cd /tmp
     && wget ftp://ftp.netfilter.org/pub/nftables/nftables-0.8.2.tar.bz2
     && tar xf nftables-0.8.2.tar.bz2
