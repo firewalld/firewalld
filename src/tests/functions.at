@@ -76,6 +76,15 @@ m4_define([FWD_START_TEST], [
         dnl set the appropriate backend
         AT_CHECK([sed -i 's/^FirewallBackend.*/FirewallBackend=FIREWALL_BACKEND/' ./firewalld.conf])
 
+        dnl fib matching is pretty new in nftables. Don't use rpfilter on older
+        dnl kernels.
+        m4_if(nftables, FIREWALL_BACKEND, [[
+            KERNEL_VER=( $(uname -r | tr '.' ' ') )
+            if [ ${KERNEL_VER[0]} -lt 4 ] || [ ${KERNEL_VER[1]} -lt 10 ]; then
+                sed -i 's/^IPv6_rpfilter.*/IPv6_rpfilter=no/' ./firewalld.conf
+            fi
+        ]])
+
         dnl dummy wrapper for trap syntax
         function kill_firewalld() {
             FWD_STOP_FIREWALLD
