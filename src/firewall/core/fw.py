@@ -769,6 +769,12 @@ class Firewall(object):
         for backend in self.enabled_backends():
             rules = backend.build_default_rules(self._log_denied)
             transaction.add_rules(backend, rules)
+            if backend.name == "nftables":
+                # nftables backend must flush default rules to create the
+                # "tables" first. Otherwise we attempt to add rules to
+                # non-existent tables.
+                transaction.execute(True)
+                transaction.clear()
 
         ipv6_backend = self.get_backend_by_ipv("ipv6")
         if self.ipv6_rpfilter_enabled and \
