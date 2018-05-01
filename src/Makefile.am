@@ -47,6 +47,7 @@ nobase_dist_python_DATA = \
 	firewall/core/ipXtables.py \
 	firewall/core/logger.py \
 	firewall/core/modules.py \
+	firewall/core/nftables.py \
 	firewall/core/prog.py \
 	firewall/core/rich.py \
 	firewall/core/watcher.py \
