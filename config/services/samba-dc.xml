@@ -13,6 +13,8 @@
   <port protocol="tcp" port="389"/><!-- LDAP -->
   <port protocol="udp" port="389"/><!-- CLDAP -->
   <port protocol="tcp" port="445"/><!-- SMB over TCP -->
+  <port protocol="tcp" port="464"/><!-- Kerberos kpasswd -->
+  <port protocol="udp" port="464"/><!-- Kerberos kpasswd -->
   <port protocol="tcp" port="636"/><!-- LDAPS -->
   <port protocol="tcp" port="49152-65535"/><!-- Dynamic RPC Ports -->
   <port protocol="tcp" port="3268"/><!-- Global Catalog -->
