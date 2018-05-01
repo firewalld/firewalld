@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Andreas Müller <redhat@andreas-mueller.com>, 2003
 # Bernd Bartmann <Bernd.Bartmann@sohanet.de>, 2004
@@ -34,19 +34,20 @@
 # Thomas Woerner <twoerner@redhat.com>, 2016. #zanata
 # Robert Scheck <robert@fedoraproject.org>, 2017. #zanata
 # Roman Spirgi <bigant@fedoraproject.org>, 2017. #zanata
+# Eric Garver <e@erig.me>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-09 14:37-0500\n"
-"PO-Revision-Date: 2017-06-14 03:15-0400\n"
-"Last-Translator: Roman Spirgi <bigant@fedoraproject.org>\n"
-"Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
-"language/de/)\n"
-"Language: de\n"
+"POT-Creation-Date: 2018-04-30 20:38-0400\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-03-29 10:05-0400\n"
+"Last-Translator: Eric Garver <e@erig.me>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/firewalld/"
+"language/de/)\n"
+"Language: de\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -147,7 +148,7 @@ msgstr "Meldungen aktivieren"
 
 #: ../src/firewall-applet:475
 msgid "Edit Firewall Settings..."
-msgstr "Firwall-Einstellungen bearbeiten..."
+msgstr "Firewall-Einstellungen bearbeiten..."
 
 #: ../src/firewall-applet:479 ../src/firewall-config.glade.h:61
 msgid "Change Zones of Connections..."
@@ -234,7 +235,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "'{zone}'-Zone aktiv für '{connection}'-Verbindung auf '{interface}'-"
 "Schnittstelle"
@@ -672,8 +674,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5073
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Die Weiterleitung an ein anderes System ist nur dann sinnvoll, wenn die "
@@ -928,7 +929,8 @@ msgstr "Grundlegende ICMP Typ-Einstellungen"
 
 #: ../src/firewall-config.glade.h:47
 msgid "Please configure base ICMP type settings:"
-msgstr "Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
+msgstr ""
+"Bitte konfigurieren Sie die grundlegenden Einstellungen des ICMP-Typs:"
 
 #: ../src/firewall-config.glade.h:48
 msgid "ICMP Type"
@@ -1144,9 +1146,9 @@ msgid ""
 "are accessible from all hosts and networks that can reach the machine from "
 "connections, interfaces and sources bound to this zone."
 msgstr ""
-"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig "
-"sind. Vertrauenswürdige Dienste sind zugänglich von allen Hosts und "
-"Netzwerken, die den Rechner über mit dieser Zone verbundenen Verbindungen, "
+"Hier können Sie definieren, welche Dienste in der Zone vertrauenswürdig sind."
+" Vertrauenswürdige Dienste sind zugänglich von allen Hosts und Netzwerken, "
+"die den Rechner über mit dieser Zone verbundenen Verbindungen, "
 "Schnittstellen und Quellen erreichen können."
 
 #: ../src/firewall-config.glade.h:95
@@ -1695,9 +1697,9 @@ msgid ""
 "contain commands, contexts, users and user ids."
 msgstr ""
 "Die Sperroption ist eine einfache Version von Benutzer- und "
-"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der "
-"Firewall. Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und "
-"Benutzer-IDs enthalten."
+"Anwendungsrichtlinien für firewalld. Sie begrenzt Änderungen an der Firewall."
+" Die Sperr-Positivliste kann Befehle, Kontexte, Benutzer und Benutzer-IDs "
+"enthalten."
 
 #: ../src/firewall-config.glade.h:195
 msgid ""
@@ -1979,8 +1981,8 @@ msgstr "invertiert"
 
 #: ../src/firewall-config.glade.h:262
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Zum Aktivieren muss diese Aktion 'reject' sein und die Familie muss entweder "
 "'ipv4' oder 'ipv6' sein (nicht beides)."

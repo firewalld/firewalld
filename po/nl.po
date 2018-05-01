@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Bart Couvreur <couf@fedoraproject.org>, 2007
 # Geert Warrink <geert.warrink@onsnet.nu>, 2009-2014
@@ -11,19 +11,20 @@
 # Geert Warrink <geert.warrink@onsnet.nu>, 2015. #zanata
 # Geert Warrink <geert.warrink@onsnet.nu>, 2016. #zanata
 # Geert Warrink <geert.warrink@onsnet.nu>, 2017. #zanata
+# Geert Warrink <geert.warrink@onsnet.nu>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-09 14:37-0500\n"
-"PO-Revision-Date: 2017-05-12 11:19-0400\n"
+"POT-Creation-Date: 2018-04-30 20:38-0400\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-04-04 01:11-0400\n"
 "Last-Translator: Geert Warrink <geert.warrink@onsnet.nu>\n"
 "Language-Team: Dutch (http://www.transifex.com/projects/p/firewalld/language/"
 "nl/)\n"
 "Language: nl\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -209,7 +210,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zone '{zone}' actief voor verbinding '{connection}' op interface "
 "'{interface}'"
@@ -302,6 +304,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"De verbinding met firewalld mislukte. Zorg ervoor dat de service correct "
+"opgestart is en probeer het opnieuw."
 
 #: ../src/firewall-config:95
 msgid "Changes applied."
@@ -343,23 +347,23 @@ msgstr "Gebruikersnaam"
 
 #: ../src/firewall-config:244
 msgid "User id"
-msgstr ""
+msgstr "Gebruikers-ID"
 
 #: ../src/firewall-config:284 ../src/firewall-config:318
 msgid "Table"
-msgstr ""
+msgstr "Tabel"
 
 #: ../src/firewall-config:286 ../src/firewall-config:320
 msgid "Chain"
-msgstr ""
+msgstr "Keten"
 
 #: ../src/firewall-config:322
 msgid "Priority"
-msgstr ""
+msgstr "Prioriteit"
 
 #: ../src/firewall-config:324 ../src/firewall-config:361
 msgid "Args"
-msgstr ""
+msgstr "Argumenten"
 
 #: ../src/firewall-config:401 ../src/firewall-config:2328
 msgid "Runtime"
@@ -441,7 +445,7 @@ msgstr "Interface"
 
 #: ../src/firewall-config:936
 msgid "Comment"
-msgstr ""
+msgstr "Opmerking"
 
 #: ../src/firewall-config:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -647,8 +651,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5073
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Het doorsturen naar een ander systeem is alleen nuttig als de interface "
@@ -1044,7 +1047,7 @@ msgstr "_Hulp"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Verander de zone"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1518,8 +1521,8 @@ msgid ""
 "ICMP Types can only be changed in the permanent configuration view. The "
 "runtime configuration of ICMP Types is fixed."
 msgstr ""
-"ICMP types kunnen alleen in de permanente configuratie view veranderd "
-"worden. De runtime configuratie van ICMP types is gefixeerd."
+"ICMP types kunnen alleen in de permanente configuratie view veranderd worden."
+" De runtime configuratie van ICMP types is gefixeerd."
 
 #: ../src/firewall-config.glade.h:173
 msgid ""
@@ -1788,7 +1791,7 @@ msgstr "Standaard zone:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Geef een interfacenaam op:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1832,7 +1835,7 @@ msgstr "Selecteer een ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Geef een ipset ingang op:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1944,11 +1947,11 @@ msgstr "geïnverteerd"
 
 #: ../src/firewall-config.glade.h:262
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
-"Om dit aan te zetten moet Actie 'afwijzen' zijn en Familie 'ipv4' of "
-"'ipv6' (niet beide)."
+"Om dit aan te zetten moet Actie 'afwijzen' zijn en Familie 'ipv4' of 'ipv6' "
+"(niet beide)."
 
 #: ../src/firewall-config.glade.h:263
 msgid "with Type:"
@@ -1992,7 +1995,7 @@ msgstr "Selecteer een service."
 
 #: ../src/firewall-config.glade.h:293
 msgid "Please enter a source."
-msgstr ""
+msgstr "Geef een bron op."
 
 #: ../src/firewall-config.glade.h:294
 msgid "User ID"

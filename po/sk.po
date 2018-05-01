@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 # Dušan Kazik <prescott66@gmail.com>, 2012-2013
 # Marcel Telka <marcel@telka.sk>, 2004
@@ -9,19 +9,20 @@
 # feonsu <feonsu@gmail.com>, 2008-2010
 # feonsu <feonsu@gmail.com>, 2016. #zanata
 # feonsu <feonsu@gmail.com>, 2017. #zanata
+# feonsu <feonsu@gmail.com>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-09 14:37-0500\n"
-"PO-Revision-Date: 2017-05-15 03:14-0400\n"
+"POT-Creation-Date: 2018-04-30 20:38-0400\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2018-04-04 06:13-0400\n"
 "Last-Translator: feonsu <feonsu@gmail.com>\n"
 "Language-Team: Slovak (http://www.transifex.com/projects/p/firewalld/"
 "language/sk/)\n"
 "Language: sk\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 "X-Generator: Zanata 3.9.6\n"
 
@@ -206,7 +207,8 @@ msgstr ""
 
 #: ../src/firewall-applet:873
 msgid ""
-"Zone '{zone}' active for connection '{connection}' on interface '{interface}'"
+"Zone '{zone}' active for connection '{connection}' on interface "
+"'{interface}'"
 msgstr ""
 "Zóna '{zone}' je aktívna pre pripojenie '{connection}' na rozhraní "
 "'{interface}'"
@@ -299,6 +301,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Zlyhalo pripojenie k firewalld. Uistite sa, že bola služba spustená správne "
+"a skúste to znovu."
 
 #: ../src/firewall-config:95
 msgid "Changes applied."
@@ -340,23 +344,23 @@ msgstr "Používateľské meno"
 
 #: ../src/firewall-config:244
 msgid "User id"
-msgstr ""
+msgstr "ID používateľa"
 
 #: ../src/firewall-config:284 ../src/firewall-config:318
 msgid "Table"
-msgstr ""
+msgstr "Tabuľka"
 
 #: ../src/firewall-config:286 ../src/firewall-config:320
 msgid "Chain"
-msgstr ""
+msgstr "Reťaz"
 
 #: ../src/firewall-config:322
 msgid "Priority"
-msgstr ""
+msgstr "Priorita"
 
 #: ../src/firewall-config:324 ../src/firewall-config:361
 msgid "Args"
-msgstr ""
+msgstr "Argumenty"
 
 #: ../src/firewall-config:401 ../src/firewall-config:2328
 msgid "Runtime"
@@ -438,7 +442,7 @@ msgstr "Rozhranie"
 
 #: ../src/firewall-config:936
 msgid "Comment"
-msgstr ""
+msgstr "Komentár"
 
 #: ../src/firewall-config:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -644,8 +648,7 @@ msgstr "ipv6"
 
 #: ../src/firewall-config:5073
 msgid ""
-"Forwarding to another system is only useful if the interface is "
-"masqueraded.\n"
+"Forwarding to another system is only useful if the interface is masqueraded.\n"
 "Do you want to masquerade this zone ?"
 msgstr ""
 "Preposielanie na iný systém je užitočné len ak je na rozhraní maškaráda. \n"
@@ -1041,7 +1044,7 @@ msgstr "_Pomocník"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Zmeniť zónu"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1651,6 +1654,7 @@ msgid ""
 msgstr ""
 "Kontext je kontext zabezpečenia (SELinux) bežiacej aplikácie alebo služby. "
 "Ak chcete zistiť kontext bežiacej aplikácie použite <tt>ps -e --context</tt>."
+""
 
 #: ../src/firewall-config.glade.h:196
 msgid "Add Context"
@@ -1766,7 +1770,7 @@ msgstr "Predvolená zóna:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Prosím zadajte názov rozhrania:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1810,7 +1814,7 @@ msgstr "Prosím vyberte ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Prosím zadajte položku ipset:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1920,8 +1924,8 @@ msgstr "invertované"
 
 #: ../src/firewall-config.glade.h:262
 msgid ""
-"To enable this Action has to be 'reject' and Family either 'ipv4' or "
-"'ipv6' (not both)."
+"To enable this Action has to be 'reject' and Family either 'ipv4' or 'ipv6' "
+"(not both)."
 msgstr ""
 "Ak chcete toto povoliť, akcia musí byť 'reject' a rodina buď 'ipv4' alebo "
 "'ipv6' (nie obe)."
@@ -1968,7 +1972,7 @@ msgstr "Prosím vyberte službu."
 
 #: ../src/firewall-config.glade.h:293
 msgid "Please enter a source."
-msgstr ""
+msgstr "Prosím zadajte zdroj."
 
 #: ../src/firewall-config.glade.h:294
 msgid "User ID"
