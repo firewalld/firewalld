@@ -9,12 +9,13 @@
 # Yuri Chornoivan <yurchor@ukr.net>, 2015. #zanata
 # Yuri Chornoivan <yurchor@ukr.net>, 2016. #zanata
 # Yuri Chornoivan <yurchor@ukr.net>, 2017. #zanata
+# Yuri Chornoivan <yurchor@ukr.net>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-09 14:37-0500\n"
-"PO-Revision-Date: 2017-05-13 03:12-0400\n"
+"POT-Creation-Date: 2018-04-30 20:38-0400\n"
+"PO-Revision-Date: 2018-03-10 02:14-0500\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian (http://www.transifex.com/projects/p/firewalld/"
 "language/uk/)\n"
@@ -303,6 +304,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Не вдалося встановити зв'язок із firewalld. Будь ласка, переконайтеся, що "
+"службу запущено належним чином, потім повторіть спробу."
 
 #: ../src/firewall-config:95
 msgid "Changes applied."
@@ -344,23 +347,23 @@ msgstr "Ім’я користувача"
 
 #: ../src/firewall-config:244
 msgid "User id"
-msgstr ""
+msgstr "Ід. користувача"
 
 #: ../src/firewall-config:284 ../src/firewall-config:318
 msgid "Table"
-msgstr ""
+msgstr "Таблиця"
 
 #: ../src/firewall-config:286 ../src/firewall-config:320
 msgid "Chain"
-msgstr ""
+msgstr "Ланцюжок"
 
 #: ../src/firewall-config:322
 msgid "Priority"
-msgstr ""
+msgstr "Пріоритетність"
 
 #: ../src/firewall-config:324 ../src/firewall-config:361
 msgid "Args"
-msgstr ""
+msgstr "Аргументи"
 
 #: ../src/firewall-config:401 ../src/firewall-config:2328
 msgid "Runtime"
@@ -442,7 +445,7 @@ msgstr "Інтерфейс"
 
 #: ../src/firewall-config:936
 msgid "Comment"
-msgstr ""
+msgstr "Коментар"
 
 #: ../src/firewall-config:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -1048,7 +1051,7 @@ msgstr "_Довідка"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Змінити зону"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
@@ -1792,7 +1795,7 @@ msgstr "Типова зона:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Будь ласка, вкажіть назву інтерфейсу:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1836,7 +1839,7 @@ msgstr "Будь ласка, виберіть ipset:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Будь ласка, вкажіть запис ipset:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1999,7 +2002,7 @@ msgstr "Будь ласка, виберіть службу."
 
 #: ../src/firewall-config.glade.h:293
 msgid "Please enter a source."
-msgstr ""
+msgstr "Будь ласка, вкажіть джерело."
 
 #: ../src/firewall-config.glade.h:294
 msgid "User ID"

@@ -9,12 +9,13 @@
 # Göran Uddeborg <goeran@uddeborg.se>, 2015. #zanata
 # Göran Uddeborg <goeran@uddeborg.se>, 2016. #zanata
 # Göran Uddeborg <goeran@uddeborg.se>, 2017. #zanata
+# Göran Uddeborg <goeran@uddeborg.se>, 2018. #zanata
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-03-09 14:37-0500\n"
-"PO-Revision-Date: 2017-06-02 03:59-0400\n"
+"POT-Creation-Date: 2018-04-30 20:38-0400\n"
+"PO-Revision-Date: 2018-04-17 10:15-0400\n"
 "Last-Translator: Göran Uddeborg <goeran@uddeborg.se>\n"
 "Language-Team: Swedish (http://www.transifex.com/projects/p/firewalld/"
 "language/sv/)\n"
@@ -301,6 +302,8 @@ msgid ""
 "Failed to connect to firewalld. Please make sure that the service has been "
 "started correctly and try again."
 msgstr ""
+"Misslyckades att ansluta till firewalld.  Se till att tjänsten har kommit "
+"igång som den skall och försök igen."
 
 #: ../src/firewall-config:95
 msgid "Changes applied."
@@ -342,23 +345,23 @@ msgstr "Användarnamn"
 
 #: ../src/firewall-config:244
 msgid "User id"
-msgstr ""
+msgstr "Användar-id"
 
 #: ../src/firewall-config:284 ../src/firewall-config:318
 msgid "Table"
-msgstr ""
+msgstr "Tabell"
 
 #: ../src/firewall-config:286 ../src/firewall-config:320
 msgid "Chain"
-msgstr ""
+msgstr "Kedja"
 
 #: ../src/firewall-config:322
 msgid "Priority"
-msgstr ""
+msgstr "Prioritet"
 
 #: ../src/firewall-config:324 ../src/firewall-config:361
 msgid "Args"
-msgstr ""
+msgstr "Argument"
 
 #: ../src/firewall-config:401 ../src/firewall-config:2328
 msgid "Runtime"
@@ -440,7 +443,7 @@ msgstr "Gränssnitt"
 
 #: ../src/firewall-config:936
 msgid "Comment"
-msgstr ""
+msgstr "Kommentera"
 
 #: ../src/firewall-config:955 ../src/firewall-config.glade.h:27
 msgid "Source"
@@ -1041,11 +1044,11 @@ msgstr "_Hjälp"
 
 #: ../src/firewall-config.glade.h:82
 msgid "Change Zone"
-msgstr ""
+msgstr "Byt zon"
 
 #: ../src/firewall-config.glade.h:83
 msgid "Change zone of binding"
-msgstr "Ändra bindningszon"
+msgstr "Byt bindningszon"
 
 #: ../src/firewall-config.glade.h:84
 msgid ""
@@ -1776,7 +1779,7 @@ msgstr "Standardzon:"
 
 #: ../src/firewall-config.glade.h:222
 msgid "Please enter an interface name:"
-msgstr ""
+msgstr "Ange ett gränssnittsnamn:"
 
 #: ../src/firewall-config.glade.h:223
 msgid "Base IPSet Settings"
@@ -1820,7 +1823,7 @@ msgstr "Välj en ipmängd:"
 
 #: ../src/firewall-config.glade.h:234
 msgid "Please enter an ipset entry:"
-msgstr ""
+msgstr "Ange en ipmängdpost:"
 
 #: ../src/firewall-config.glade.h:235
 msgid "Log Denied"
@@ -1977,7 +1980,7 @@ msgstr "Välj en tjänst."
 
 #: ../src/firewall-config.glade.h:293
 msgid "Please enter a source."
-msgstr ""
+msgstr "Ange en källa."
 
 #: ../src/firewall-config.glade.h:294
 msgid "User ID"
